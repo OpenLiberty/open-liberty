@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Invalid syntax in httpSessionCache URI.  Cause is {0}.
 INCORRECT_URI_SYNTAX.explanation=The syntax of the specified httpSessionCache JCache configuration URI is invalid.
 INCORRECT_URI_SYNTAX.useraction=Correct the syntax of the specified httpSessionCache configuration URI.
+
+ERROR_REMOVING_SESSION=SESN0301E: An exception occurred when removing a session from the cache. The exception is: {0}.
+ERROR_REMOVING_SESSION.explanation=An operation against the cache failed due to the specified exception.
+ERROR_REMOVING_SESSION.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
+
+PROP_HIT_ERROR=SESN0302E: An exception occurred when storing application data changes to the cache. The exception is: {0}.
+PROP_HIT_ERROR.explanation=An operation against the cache failed due to the specified exception.
+PROP_HIT_ERROR.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
+
+STORE_SESS_ERROR=SESN0303E: An exception occurred when storing a session in the cache. The exception is: {0}.
+STORE_SESS_ERROR.explanation=An operation against the cache failed due to the specified exception.
+STORE_SESS_ERROR.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
+
+LOAD_VALUE_ERROR=SESN0304E: An exception occurred when reading in an object of the application data for a session from the cache. The exception is: {0}.
+LOAD_VALUE_ERROR.explanation=An operation against the cache failed due to the specified exception.
+LOAD_VALUE_ERROR.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
+
+ERROR_CACHE_ACCESS=SESN0305E: An exception occurred while attempting to access the cache. The exception is: {0}.
+ERROR_CACHE_ACCESS.explanation=An operation against the cache failed due to the specified exception.
+ERROR_CACHE_ACCESS.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
+
+ERROR_SESSION_INVAL=SESN0306E: An exception occurred when invalidating a session in the cache. The exception is: {0}.
+ERROR_SESSION_INVAL.explanation=An operation against the cache failed due to the specified exception.
+ERROR_SESSION_INVAL.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
+
+ERROR_SESSION_INIT=SESN0307E: An exception occurred when initializing the cache. The exception is: {0}.
+ERROR_SESSION_INIT.explanation=An operation against the cache failed due to the specified exception.
+ERROR_SESSION_INIT.useraction=See the exception for more details. The JCache provider's configuration might need to be updated.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: An invalid or missing httpSessionCache configuration was detected. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=The sessionCache feature was unable to fully initialize due to missing or invalid configuration.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Verify that the server configuration defines an httpSessionCache element that includes a libraryRef attribute.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: The {0} session cache library is empty. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=The sessionCache feature could not find a JCache provider to load.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Verify that the library contains a JCache provider and all paths are specified correctly.
+
+INTERNAL_SERVER_ERROR=Internal Server Error
+
+SESSION_CACHE_CONFIG_MESSAGE=Verify that the server configuration contains a valid httpSessionCache configuration. See the sample configuration. {0}

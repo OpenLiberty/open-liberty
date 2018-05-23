@@ -137,3 +137,11 @@ SEC_JACC_AUTHZ_FAILED.useraction=Contacta\u0163i-v\u0103 administratorul de secu
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: URL-ul furnizat pe logoutExitPage personalizat al serviciului Delogare cu formular nu poate fi afi\u015fat, requestURL={0}, logoutExitPage={1}. Delogarea s-a f\u0103cut cu succes \u015fi a fost afi\u015fat\u0103 pagina implicit\u0103 Delogare cu formular.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Serviciul de Delogare cu formular a e\u015fuat redirec\u0163ionarea la pagina specificat\u0103 pe parametrul de servlet logoutExitPage. URL-ul specificat este fie un URL formatat invalid fie numele de gazd\u0103 nu este specificat pe proprietatea com.ibm.websphere.security.logoutExitPageDomainList.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Corecta\u0163i URL-ul specificat pe parametrul logoutExitPage.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: Autentificarea care utilizeaz\u0103 un JSON Web Token nu a reu\u015fit deoarece jetonul a fost delogat anterior.
+JWT_ALREADY_LOGGED_OUT.explanation=Un JSON Web Token (JWT) care a fost delogat anterior a fost retrimis pentru autentificare.
+JWT_ALREADY_LOGGED_OUT.useraction=Ob\u0163ine\u0163i un nou JSON Web Token.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: Caracteristica jwtSso seteaz\u0103 un cookie securizat pe o cerere HTTP nesecurizat\u0103.  Aceasta ar putea fi o eroare de configurare.  Utiliza\u0163i protocolul HTTPS sau seta\u0163i setCookieSecureFlag al atributului de configura\u0163ie jwtSso la false.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=Un cookie este marcat ca securizat dar protocolul este HTTP, deci cookie-ul nu va fi returnat niciodat\u0103, aceasta ar putea face ca cererile ulterioare s\u0103 e\u015fueze.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Utiliza\u0163i protocolul HTTPS sau seta\u0163i setCookieSecureFlag al atributului de configura\u0163ie jwtSso la false.

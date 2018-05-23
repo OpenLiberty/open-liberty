@@ -34,7 +34,7 @@ public interface JwtSsoConfig extends MicroProfileJwtConfig {
 
 	boolean isCookieSecured();
 
-	String getJwtBuilderRef();
+	// String getJwtBuilderRef();
 
 	String getJwtConsumerRef();
 

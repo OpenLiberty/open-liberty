@@ -19,11 +19,11 @@ IBM-Process-Types: client
  com.ibm.ws.org.apache.cxf-rt-databinding-jaxb.2.6.2, \
  com.ibm.ws.org.apache.cxf-rt-management.2.6.2, \
  com.ibm.ws.org.apache.cxf-rt-ws-addr.2.6.2, \
- com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/", \
+ com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
  com.ibm.ws.org.apache.cxf-rt-frontend-simple.2.6.2, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.ws.jaxws.clientcontainer, \
- com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/", \
+ com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
  com.ibm.ws.prereq.wsdl4j.1.6.2, \
  com.ibm.ws.org.apache.cxf-rt-frontend-jaxws.2.6.2, \
  com.ibm.ws.org.apache.cxf-rt-ws-policy.2.6.2, \

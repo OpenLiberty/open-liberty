@@ -1,0 +1,14 @@
+<server description="JavaEESec EL for LoginToContinue FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>jsp-2.3</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <application type="war" location="LTCELImmediate.war"/>
+    <application type="war" location="LTCELDeferred.war"/>
+
+    <include location="../fatTestPorts.xml" />
+</server>

@@ -102,6 +102,7 @@
             required="false" type="String" > 
  				<Option label="%allowAuthenticationFailOverToAuthMethod.BASIC" value="BASIC" />
             	<Option label="%allowAuthenticationFailOverToAuthMethod.FORM" value="FORM" />
+            	<Option label="%allowAuthenticationFailOverToAuthMethod.APP_DEFINED" value="APP_DEFINED" />
         </AD> 
 		<AD id="includePathInWASReqURL" name="%includePathInWASReqURL" description="%includePathInWASReqURL.desc"
             required="false" type="Boolean"
@@ -110,10 +111,11 @@
             required="false" type="Boolean"
             default="false" />
 
-        <AD id="overrideHttpAuthenticationMechanism" name="%overrideHttpAuthenticationMechanism" description="%overrideHttpAuthenticationMechanism.desc"
+        <AD id="overrideHttpAuthMethod" name="%overrideHttpAuthMethod" description="%overrideHttpAuthMethod.desc"
             required="false" type="String">
                 <Option label="BASIC" value="BASIC" />
                 <Option label="FORM" value="FORM" />
+                <Option label="CLIENT_CERT" value="CLIENT_CERT" />
         </AD> 
 
         <AD id="contextRootForFormAuthenticationMechanism" name="%contextRootForFormAuthenticationMechanism" description="%contextRootForFormAuthenticationMechanism.desc"
@@ -124,7 +126,7 @@
 
         <AD id="jaspicSessionForMechanismsEnabled" name="%jaspicSessionForMechanismsEnabled" description="%jaspicSessionForMechanismsEnabled.desc"
             required="false" type="Boolean"
-            default="true" />
+            default="false" />
 
         <AD id="jaspicSessionCookieName" name="%jaspicSessionCookieName" description="%jaspicSessionCookieName.desc"
             required="false" type="String"

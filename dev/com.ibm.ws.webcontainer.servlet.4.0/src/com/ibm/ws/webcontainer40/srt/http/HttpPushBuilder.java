@@ -48,7 +48,8 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
     private static final String HDR_IF_NONE_MATCH = HttpHeaderKeys.HDR_IF_NONE_MATCH.getName();
     private static final String HDR_IF_RANGE = HttpHeaderKeys.HDR_IF_RANGE.getName();
     private static final String HDR_IF_UNMODIFIED_SINCE = HttpHeaderKeys.HDR_IF_UNMODIFIED_SINCE.getName();
-    private static final String COOKIE_HEADER_NAME = "Cookie";
+    private static final String HDR_COOKIE = HttpHeaderKeys.HDR_COOKIE.getName();
+    private static final String HDR_AUTHORIZATION = HttpHeaderKeys.HDR_AUTHORIZATION.getName();
 
     private final SRTServletRequest40 _inboundRequest;
 
@@ -82,6 +83,12 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
             }
         }
 
+        // If the request is authenticated, an Authorization header should be set to the PushBuilder
+        if (request.getUserPrincipal() != null) {
+            // Set PushBuilder's Authorization header with the same value as the original request
+            this.setHeader(HDR_AUTHORIZATION, request.getHeader(HDR_AUTHORIZATION));
+        }
+
         if (addedCookies != null) {
             for (Cookie cookie : addedCookies) {
                 if (cookie.getMaxAge() > 0) {
@@ -103,12 +110,22 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
                     // Need to add the Cookie to the headers for the push request. Cookies were
                     // added to the response and therefore not included in the Cookie request header.
                     // Without adding this a call to getHeader("Cookie") would return null.
-                    addHeader(COOKIE_HEADER_NAME, cookie.getName() + "=" + cookie.getValue());
+                    addHeader(HDR_COOKIE, cookie.getName() + "=" + cookie.getValue());
                 }
             }
         } else {
             _cookies = null;
         }
+
+        // set the REFERER header
+        String referer = _inboundRequest.getRequestURI();
+        String queryString = _inboundRequest.getQueryString();
+
+        if (queryString != null) {
+            referer += "?" + queryString;
+        }
+
+        this.setHeader(HDR_REFERER, referer);
 
     }
 
@@ -231,12 +248,6 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
             }
             throw new IllegalStateException();
         }
-
-        String referer = _inboundRequest.getRequestURI();
-        if (_inboundRequest.getQueryString() != null) {
-            referer += "?" + _inboundRequest.getQueryString();
-        }
-        this.setHeader(HDR_REFERER, referer);
 
         if (_queryString != null) {
             if (_pathQueryString != null) {

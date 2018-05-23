@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2016 IBM Corporation and others.
+ * Copyright (c) 2006, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -165,8 +165,7 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
  * are started, and additional processing which occurs as beans (ie. EJBs)
  * are started.
  **/
-public abstract class EJBMDOrchestrator
-{
+public abstract class EJBMDOrchestrator {
     private static final String CLASS_NAME = EJBMDOrchestrator.class.getName();
     private static final TraceComponent tc = Tr.register(EJBMDOrchestrator.class, "EJBContainer", "com.ibm.ejs.container.container");
 
@@ -186,7 +185,7 @@ public abstract class EJBMDOrchestrator
      * Static initializer for common_tc.
      */
     static {
-        // poplulate static mapping tables
+        // populate static mapping tables
         populateNameTypeFromBeanTypeMap();
         populateCompressBeanTypeMap();
     }
@@ -215,8 +214,7 @@ public abstract class EJBMDOrchestrator
     public EJBModuleMetaDataImpl createEJBModuleMetaDataImpl(EJBApplicationMetaData ejbAMD, // F743-4950
                                                              ModuleInitData mid,
                                                              SfFailoverCache statefulFailoverCache,
-                                                             EJSContainer container)
-    {
+                                                             EJSContainer container) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -246,23 +244,21 @@ public abstract class EJBMDOrchestrator
         // d461917.1
         if (mmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
             if ((LimitSetRollbackOnlyBehaviorToInstanceFor == null) ||
-                (!LimitSetRollbackOnlyBehaviorToInstanceFor.
-                                contains(mmd.ivAppName))) {
+                (!LimitSetRollbackOnlyBehaviorToInstanceFor.contains(mmd.ivAppName))) {
                 mmd.ivUseExtendedSetRollbackOnlyBehavior = true;
             }
 
         } else { // not a 3.0 module
             if ((ExtendSetRollbackOnlyBehaviorBeyondInstanceFor != null) &&
                 (ExtendSetRollbackOnlyBehaviorBeyondInstanceFor.contains("*") ||
-                ExtendSetRollbackOnlyBehaviorBeyondInstanceFor.contains(mmd.ivAppName))) {
+                 ExtendSetRollbackOnlyBehaviorBeyondInstanceFor.contains(mmd.ivAppName))) {
                 mmd.ivUseExtendedSetRollbackOnlyBehavior = true;
             }
         }
 
         // Get the failover instance ID and SFSB Failover value to use for this module if
         // a SfFailoverCache object was created.
-        if (statefulFailoverCache != null)
-        {
+        if (statefulFailoverCache != null) {
             mmd.ivSfsbFailover = getSFSBFailover(mmd, container);
             mmd.ivFailoverInstanceId = getFailoverInstanceId(mmd, statefulFailoverCache);
         }
@@ -273,25 +269,20 @@ public abstract class EJBMDOrchestrator
 
     } // createEJBModuleMetaDataImpl
 
-    private Map<String, javax.ejb.ApplicationException> createApplicationExceptionMap(EJBJar ejbJar)
-    {
+    private Map<String, javax.ejb.ApplicationException> createApplicationExceptionMap(EJBJar ejbJar) {
         // Get List of ApplicationException objects and convert to a Map where
         // key is String name of exceptions class and value is the rollback
         // setting of the exception class from xml.
         // d541552, d541552.1 - Improve performance and footprint.  Returned
         //                      exceptionMap in MDO may be null (ie. the
         //                      map is only created when it is needed).
-        if (ejbJar != null)
-        {
+        if (ejbJar != null) {
             AssemblyDescriptor assemblyDescriptor = ejbJar.getAssemblyDescriptor();
-            if (assemblyDescriptor != null)
-            {
+            if (assemblyDescriptor != null) {
                 List<ApplicationException> applicationExceptions = assemblyDescriptor.getApplicationExceptionList();
-                if (!applicationExceptions.isEmpty())
-                {
+                if (!applicationExceptions.isEmpty()) {
                     Map<String, javax.ejb.ApplicationException> appExMap = new HashMap<String, javax.ejb.ApplicationException>(); // F743-14982
-                    for (ApplicationException appEx : applicationExceptions)
-                    {
+                    for (ApplicationException appEx : applicationExceptions) {
                         String className = appEx.getExceptionClassName();
                         appExMap.put(className, new ApplicationExceptionImpl(appEx.isRollback(), appEx.isInherited())); // F743-14982
                     }
@@ -324,9 +315,7 @@ public abstract class EJBMDOrchestrator
                                            EJBModuleMetaDataImpl mmd,
                                            EJSContainer container,
                                            boolean initAtStartup,
-                                           boolean initAtStartupSet)
-                    throws EJBConfigurationException, ContainerException
-    {
+                                           boolean initAtStartupSet) throws EJBConfigurationException, ContainerException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) {
@@ -353,19 +342,16 @@ public abstract class EJBMDOrchestrator
         bmd.wccm = container.getEJBRuntime().setupBean(bmd, hasRemote); // F743-13023, F743-13024, F743-18775
         bmd.wccm.initialize(bid); // F743-18775
 
-        if (bmd.wccm.hasApplicationVersion()) // F68113.4
-        {
+        if (bmd.wccm.hasApplicationVersion()) {
             bmd.ivApplicationVersionId = bmd.wccm.getApplicationVersion(); // F68113.4
         }
 
         bmd.ivLocalBean = bid.ivLocalBean;
 
         // Load presence of WebServiceEndpoint                      F743-1756CodRv
-        if (bid.ivWebServiceEndpointInterfaceName != null)
-        {
+        if (bid.ivWebServiceEndpointInterfaceName != null) {
             // F743-16272
-            if (mmd.ivEJBInWAR)
-            {
+            if (mmd.ivEJBInWAR) {
                 // Section 20.4.6 of EJB 3.1 spec prohibits JAX-RPC endpoints from being
                 // packaged inside a war.
                 String endpointInterface = bid.ivWebServiceEndpointInterfaceName; // 658576
@@ -385,13 +371,9 @@ public abstract class EJBMDOrchestrator
             // bean has a service endpoint if it is stateless or singleton.
             bmd.ivHasWebServiceEndpoint = bmd.type == InternalConstants.TYPE_STATELESS_SESSION ||
                                           bmd.type == InternalConstants.TYPE_SINGLETON_SESSION;
-        }
-        else
-        {
-            if (mmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0)
-            {
-                if (bmd.type == InternalConstants.TYPE_STATELESS_SESSION)
-                {
+        } else {
+            if (mmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
+                if (bmd.type == InternalConstants.TYPE_STATELESS_SESSION) {
                     // d630468 - In EJB 3.0, the container did not want to have
                     // logic to determine whether or not a JAX-WS service endpoint
                     // existed, so it allowed service endpoints to be defined for
@@ -400,9 +382,7 @@ public abstract class EJBMDOrchestrator
                     // being declared in ejb-jar.xml.  For compatibility, we allow
                     // this even though it is clearly disallowed by the EJB spec.
                     bmd.ivHasWebServiceEndpoint = true;
-                }
-                else if (bid.ivWebServiceEndpoint)
-                {
+                } else if (bid.ivWebServiceEndpoint) {
                     // Otherwise, if the bean is a singleton, we have already
                     // determined whether or not the bean has a JAX-WS endpoint.
                     bmd.ivHasWebServiceEndpoint = bmd.type == InternalConstants.TYPE_SINGLETON_SESSION;
@@ -412,8 +392,7 @@ public abstract class EJBMDOrchestrator
 
         bmd.passivationCapable = bid.ivPassivationCapable;
 
-        if (bid.ivStartup && bmd.type != InternalConstants.TYPE_SINGLETON_SESSION)
-        {
+        if (bid.ivStartup && bmd.type != InternalConstants.TYPE_SINGLETON_SESSION) {
             // Error - only Singletons can be marked with Startup
             // via annotations or XML.
             Tr.error(tc, "STARTUP_SPECIFIED_ON_NON_SINGLETON_SESSION_BEAN_CNTR0189E",
@@ -427,8 +406,7 @@ public abstract class EJBMDOrchestrator
         // F743-4950 - Perform basic error checking for DependsOn.  The bulk of
         // the processing occurs at the end of application start time when the
         // links can be resolved.
-        if (bid.ivDependsOn != null && bmd.type != InternalConstants.TYPE_SINGLETON_SESSION)
-        {
+        if (bid.ivDependsOn != null && bmd.type != InternalConstants.TYPE_SINGLETON_SESSION) {
             Tr.error(tc, "DEPENDS_ON_SPECIFIED_ON_NON_SINGLETON_BEAN_CNTR0197E",
                      new Object[] { bmd.j2eeName.getComponent() });
             throw new EJBConfigurationException("CNTR0197E: The " + bmd.j2eeName.getComponent()
@@ -463,15 +441,14 @@ public abstract class EJBMDOrchestrator
         // For performance reasons, only check other parameters if this home has not already
         // been determined to be for a MDB or ManagedBean.
         if (bmd.type != InternalConstants.TYPE_MESSAGE_DRIVEN &&
-            bmd.type != InternalConstants.TYPE_MANAGED_BEAN) // F743-34301
-        {
+            bmd.type != InternalConstants.TYPE_MANAGED_BEAN) {
             // Check if Module or Application Startup Bean
             String appStartupbeanHomeInterface = "com.ibm.websphere.startupservice.AppStartUpHome";
             String modStartupbeanHomeInterface = "com.ibm.websphere.startupservice.ModStartUpHome"; //234978
             String homeInterfaceClassName = bid.ivRemoteHomeInterfaceName;
             if ((homeInterfaceClassName != null) &&
                 ((homeInterfaceClassName.equals(appStartupbeanHomeInterface)) ||
-                (homeInterfaceClassName.equals(modStartupbeanHomeInterface)))) { //234978
+                 (homeInterfaceClassName.equals(modStartupbeanHomeInterface)))) { //234978
                 isStartupBean = true;
 
                 // F743-21901 d641395
@@ -485,8 +462,7 @@ public abstract class EJBMDOrchestrator
                 // If the ModuleDataObject contains a WARFile, then that tells us
                 // we are dealing with an ejb embedded inside a war module, and so
                 // we want to fail the application startup.
-                if (mmd.ivEJBInWAR) // d658777.1
-                {
+                if (mmd.ivEJBInWAR) {
                     Tr.error(tc, "LEGACY_STARTUP_BEAN_IN_WAR_CNTR0319E", new Object[] { bmd.j2eeName });
                     throw new EJBConfigurationException("The " + bmd.j2eeName + " bean is a startup bean, and is " +
                                                         "packaged inside of a Web archive (WAR) module, which is not allowed.  Startup " +
@@ -517,10 +493,9 @@ public abstract class EJBMDOrchestrator
         // adjunct process on z.                                           d259812
         if (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN ||
             (!EJSPlatformHelper.isZOSCRA() &&
-            (isStartupBean ||
-             initAtStartup ||
-            isStartEJBAtApplicationStart)))
-        {
+             (isStartupBean ||
+              initAtStartup ||
+              isStartEJBAtApplicationStart))) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, bmd.enterpriseBeanName + " will be initialized at Application start");
             deferEJBInitialization = false;
@@ -558,8 +533,7 @@ public abstract class EJBMDOrchestrator
      * @param mmd the module metadata
      */
     // F743-36290.1
-    public abstract void processEJBJarBindings(ModuleInitData mid, EJBModuleMetaDataImpl mmd)
-                    throws EJBConfigurationException;
+    public abstract void processEJBJarBindings(ModuleInitData mid, EJBModuleMetaDataImpl mmd) throws EJBConfigurationException;
 
     /*************************************************************************************
      *
@@ -576,25 +550,20 @@ public abstract class EJBMDOrchestrator
      * @return Persister provides persistence services for CMP 1.1 beans.
      * @throws ContainerException - for internal problems creating persister
      */
-
     public abstract Persister createCMP11Persister(BeanMetaData bmd,
-                                                   String defaultDataSourceJNDIName)
-                    throws ContainerException;
+                                                   String defaultDataSourceJNDIName) throws ContainerException;
 
     /**
      * Perform metadata processing for a bean that is being deferred.
      */
-    public void processDeferredBMD(BeanMetaData bmd)
-                    throws EJBConfigurationException, ContainerException
-    {
+    public void processDeferredBMD(BeanMetaData bmd) throws EJBConfigurationException, ContainerException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processDeferredBMD: " + bmd.j2eeName);
 
         // F743-506 - Process automatic timers.  This always needs to be
         // done regardless of deferred EJB initialization.
-        if (bmd.ivInitData.ivTimerMethods == null)
-        {
+        if (bmd.ivInitData.ivTimerMethods == null) {
             processAutomaticTimerMetaData(bmd);
         }
 
@@ -616,28 +585,21 @@ public abstract class EJBMDOrchestrator
      * @throws EJBConfigurationException - for customer configuration errors
      */
     //  F743-17630 refactored method F743-17630CodRv
-    public void finishBMDInitWithReferenceContext(BeanMetaData bmd)
-                    throws ContainerException, EJBConfigurationException
-    {
+    public void finishBMDInitWithReferenceContext(BeanMetaData bmd) throws ContainerException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) //367834.5
             Tr.entry(tc, "finishBMDInitWithReferenceContext", bmd.j2eeName); //367834.5  d640935.1
 
-        try
-        {
+        try {
             processReferenceContext(bmd);
-        } catch (InjectionException ex)
-        {
+        } catch (InjectionException ex) {
             // Unwrap the exception thrown by ComponentNameSpaceConfigurationProviderImpl.
-            for (Throwable cause = ex.getCause(); cause != null; cause = cause.getCause())
-            {
-                if (cause instanceof EJBConfigurationException)
-                {
+            for (Throwable cause = ex.getCause(); cause != null; cause = cause.getCause()) {
+                if (cause instanceof EJBConfigurationException) {
                     throw (EJBConfigurationException) cause;
                 }
-                if (cause instanceof ContainerException)
-                {
+                if (cause instanceof ContainerException) {
                     throw (ContainerException) cause;
                 }
             }
@@ -651,8 +613,7 @@ public abstract class EJBMDOrchestrator
         // Look for Session Synchronization methods for Stateful beans  F743-25855
         // -----------------------------------------------------------------------
         if (bmd.isStatefulSessionBean() &&
-            !bmd.usesBeanManagedTx)
-        {
+            !bmd.usesBeanManagedTx) {
             processSessionSynchronizationMD(bmd, (Session) eb);
         }
 
@@ -689,13 +650,11 @@ public abstract class EJBMDOrchestrator
         // -----------------------------------------------------------------------
         // For an annotations only configuration, there will be no Enterprise
         // Bean in WCCM.  In this case there are no resource refs in xml to retrieve.
-        if (eb != null && eb.getKindValue() == EnterpriseBean.KIND_MESSAGE_DRIVEN)
-        {
+        if (eb != null && eb.getKindValue() == EnterpriseBean.KIND_MESSAGE_DRIVEN) {
             MessageDriven mdb = (MessageDriven) eb;
             String link = mdb.getLink();
 
-            if (link != null)
-            {
+            if (link != null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "processing message-destination-link : " + link +
                                  " : " + bmd.j2eeName);
@@ -707,8 +666,7 @@ public abstract class EJBMDOrchestrator
                 Map<String, Map<String, String>> appMap = InjectionEngineAccessor.getMessageDestinationLinkInstance().getMessageDestinationLinks().get(appName); //d493167
 
                 // create a new application map if one is not present
-                if (appMap == null)
-                {
+                if (appMap == null) {
                     appMap = new HashMap<String, Map<String, String>>();
                     InjectionEngineAccessor.getMessageDestinationLinkInstance().getMessageDestinationLinks().put(appName, appMap); //493167
                 }
@@ -718,30 +676,23 @@ public abstract class EJBMDOrchestrator
 
                 // parse the link if the link name is in the format of moduleName#linkName
                 int lindex = link.indexOf('#');
-                if (lindex != -1)
-                {
+                if (lindex != -1) {
                     // Module name may have path information... remove it.    d510405
                     int mindex = link.lastIndexOf('/');
-                    if (mindex > -1 && mindex < lindex)
-                    {
+                    if (mindex > -1 && mindex < lindex) {
                         moduleName = link.substring(mindex + 1, lindex);
-                    }
-                    else
-                    {
+                    } else {
                         // If no path was specified, then the referenced module
                         // is in the same location. Use first half of the link.
                         moduleName = link.substring(0, lindex);
                     }
                     link = link.substring(lindex + 1);
-                }
-                else
-                {
+                } else {
                     moduleName = bmd.j2eeName.getModule();
                 }
 
                 Map<String, String> moduleMap = appMap.get(moduleName);
-                if (moduleMap == null)
-                {
+                if (moduleMap == null) {
                     moduleMap = new HashMap<String, String>();
                     appMap.put(moduleName, moduleMap);
                 }
@@ -778,8 +729,7 @@ public abstract class EJBMDOrchestrator
         bmd.wccm = null;
         bmd.ivInitData = null;
         removeTemporaryMethodData(bmd); // F743-17630
-        if (bmd._moduleMetaData.ivInterceptorBindingMap != null)
-        {
+        if (bmd._moduleMetaData.ivInterceptorBindingMap != null) {
             bmd._moduleMetaData.removeEJBInterceptorBindings(bmd.enterpriseBeanName); // d695226
         }
 
@@ -821,8 +771,7 @@ public abstract class EJBMDOrchestrator
      *
      **/
     //d481127.11
-    protected abstract void setActivationLoadPolicy(BeanMetaData bmd)
-                    throws EJBConfigurationException;
+    protected abstract void setActivationLoadPolicy(BeanMetaData bmd) throws EJBConfigurationException;
 
     /**
      *
@@ -864,18 +813,15 @@ public abstract class EJBMDOrchestrator
      *
      * @param bmd
      */
-    protected void setCommitDanglingWork(BeanMetaData bmd)
-    {
+    protected void setCommitDanglingWork(BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         int unresolvedAction = bmd._localTran.getUnresolvedAction();
-        if (unresolvedAction == LocalTransactionSettings.UNRESOLVED_COMMIT)
-        {
+        if (unresolvedAction == LocalTransactionSettings.UNRESOLVED_COMMIT) {
             bmd.commitDanglingWork = true;
         }
 
-        if (isTraceOn && tc.isDebugEnabled())
-        {
+        if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "The commitDanglingWork flag is set to " + bmd.commitDanglingWork);
         }
     }
@@ -899,9 +845,7 @@ public abstract class EJBMDOrchestrator
                                                            String[] methodSignatures,
                                                            TransactionAttribute[] transactionAttrs,
                                                            ActivitySessionAttribute[] activitySessionAttrs,
-                                                           BeanMetaData bmd)
-                    throws EJBConfigurationException
-    {
+                                                           BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -910,8 +854,7 @@ public abstract class EJBMDOrchestrator
         int numMethods = ejbMethods.length;
         int numExplicitMethods = numMethods - (addRemove ? 1 : 0);
 
-        for (int i = 0; i < numExplicitMethods; i++)
-        {
+        for (int i = 0; i < numExplicitMethods; i++) {
             // For Bean-managed TX (session beans only), initialize method Tx attrs
             // to TX_BEAN_MANAGED.  For other cases, initialize to TX_REQUIRED.
             // FIX_ME (RRS): I made this TX_REQUIRED to conform to the way it was in 4.0.1, but
@@ -923,19 +866,16 @@ public abstract class EJBMDOrchestrator
 
             // LIDB441.5 - For Bean-managed AS (session beans only), initialize method AS attrs
             // to AS_BEAN_MANAGED.  For other cases, initialize to AS_UNKNOWN.
-            activitySessionAttrs[i] = (bmd.usesBeanManagedAS) ?
-                            ActivitySessionAttribute.AS_BEAN_MANAGED : ActivitySessionAttribute.AS_UNKNOWN;
+            activitySessionAttrs[i] = (bmd.usesBeanManagedAS) ? ActivitySessionAttribute.AS_BEAN_MANAGED : ActivitySessionAttribute.AS_UNKNOWN;
         }
 
         int metaMethodElementKind = methodInterface.getValue();
 
         // Only get and check method-level Tx attributes if container is managing Tx
-        if (!bmd.usesBeanManagedTx)
-        {
+        if (!bmd.usesBeanManagedTx) {
             // Process all Transaction Attributes from WCCM. If there is no transactionList,
             // assume this is an annotations only configuration scenario.
-            if (transactionList != null) //PK93643
-            {
+            if (transactionList != null) {
                 MethodAttribUtils.getXMLCMTransactions(transactionAttrs,
                                                        metaMethodElementKind,
                                                        methodNames,
@@ -957,9 +897,9 @@ public abstract class EJBMDOrchestrator
             if (isEntity) {
                 MethodAttribUtils.checkTxAttrs(transactionAttrs,
                                                methodNames,
-                                               methodSignatures,//PQ63130
+                                               methodSignatures, //PQ63130
                                                entityNoTxAttrMethods,
-                                               entityNoTxAttrMethodSignatures,//PQ63130
+                                               entityNoTxAttrMethodSignatures, //PQ63130
                                                TransactionAttribute.TX_NOT_SUPPORTED);
             } else if (addRemove) {
                 // For Session beans, the only EJBObject or EJBLocalObject method
@@ -971,8 +911,7 @@ public abstract class EJBMDOrchestrator
                 transactionAttrs[numExplicitMethods] = TransactionAttribute.TX_NOT_SUPPORTED;
             }
 
-            if (methodInterface == MethodInterface.TIMED_OBJECT)
-            {
+            if (methodInterface == MethodInterface.TIMED_OBJECT) {
                 // Per EJB Specification, ejbTimeout must be TX_REQUIRES_NEW or
                 // TX_NOT_SUPPORTED.  However, internally, TX_REQUIRES_NEW will be
                 // implemented as TX_REQUIRED so that the EJB method shares the
@@ -981,32 +920,24 @@ public abstract class EJBMDOrchestrator
                 // implemented as TX_REQUIRES_NEW, which uses scheduler
                 // QOS_ATLEASTONCE and then begins a new global transaction for the
                 // EJB method as expected.                                 RTC116312
-                for (int i = 0; i < numMethods; i++)
-                {
+                for (int i = 0; i < numMethods; i++) {
                     TransactionAttribute txAttr = transactionAttrs[i];
-                    if (txAttr == TransactionAttribute.TX_REQUIRES_NEW)
-                    {
+                    if (txAttr == TransactionAttribute.TX_REQUIRES_NEW) {
                         transactionAttrs[i] = TransactionAttribute.TX_REQUIRED;
-                    }
-                    else if (txAttr == TransactionAttribute.TX_REQUIRED &&
-                             ContainerProperties.TimerQOSAtLeastOnceForRequired)
-                    {
+                    } else if (txAttr == TransactionAttribute.TX_REQUIRED &&
+                               ContainerProperties.TimerQOSAtLeastOnceForRequired) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "updating " + ejbMethods[i] +
                                          " from TX_REQUIRED to TX_REQUIRES_NEW for QOS_ATLEASTONCE");
                         transactionAttrs[i] = TransactionAttribute.TX_REQUIRES_NEW;
                     }
                 }
-            }
-            else if (methodInterface == MethodInterface.LIFECYCLE_INTERCEPTOR &&
-                     bmd.type == InternalConstants.TYPE_SINGLETON_SESSION)
-            {
+            } else if (methodInterface == MethodInterface.LIFECYCLE_INTERCEPTOR &&
+                       bmd.type == InternalConstants.TYPE_SINGLETON_SESSION) {
                 // F743-1751 - Like timer methods, lifecycle interceptor methods
                 // translate REQUIRED into REQUIRES_NEW for singleton.
-                for (int i = 0; i < numMethods; i++)
-                {
-                    if (transactionAttrs[i] == TransactionAttribute.TX_REQUIRED)
-                    {
+                for (int i = 0; i < numMethods; i++) {
+                    if (transactionAttrs[i] == TransactionAttribute.TX_REQUIRED) {
                         transactionAttrs[i] = TransactionAttribute.TX_REQUIRES_NEW;
                     }
                 }
@@ -1095,7 +1026,7 @@ public abstract class EJBMDOrchestrator
                                                      Method beanMethods[],
                                                      Method implMethods[], // d494984
                                                      String[] entityNoTxAttrMethods,
-                                                     String[] entityNoTxAttrMethodSignatures,//PQ63130
+                                                     String[] entityNoTxAttrMethodSignatures, //PQ63130
                                                      List<?> accessIntentList,
                                                      List<?> isoLevelList,
                                                      List<ContainerTransaction> transactionList,
@@ -1103,14 +1034,12 @@ public abstract class EJBMDOrchestrator
                                                      ExcludeList excludeList,
                                                      List<ActivitySessionMethod> activitySessionList,
                                                      BeanMetaData bmd,
-                                                     ByteCodeMetaData byteCodeMetaData)
-                    throws EJBConfigurationException
-    { // LIDB441.5
-      //--------------------------------------------------------
-      // Initialize per-method attributes (include place-holder
-      // for remove()  method at end of per-method attribute
-      // tables)
-      //--------------------------------------------------------
+                                                     ByteCodeMetaData byteCodeMetaData) throws EJBConfigurationException {
+        //--------------------------------------------------------
+        // Initialize per-method attributes (include place-holder
+        // for remove()  method at end of per-method attribute
+        // tables)
+        //--------------------------------------------------------
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1128,8 +1057,7 @@ public abstract class EJBMDOrchestrator
         boolean addRemove = false; // LI2281.07
         if (interfaceClass != null && // d366807
             (methodInterface == MethodInterface.REMOTE ||
-            methodInterface == MethodInterface.LOCAL))
-        {
+             methodInterface == MethodInterface.LOCAL)) {
             addRemove = true;
             numMethods++;
         }
@@ -1162,8 +1090,7 @@ public abstract class EJBMDOrchestrator
 
         ActivitySessionAttribute[] activitySessionAttrs = new ActivitySessionAttribute[numMethods]; // LIDB441.5
 
-        for (int i = 0; i < beanMethods.length; i++)
-        {
+        for (int i = 0; i < beanMethods.length; i++) {
             methodNames[i] = beanMethods[i].getName();
             methodParamTypes[i] = beanMethods[i].getParameterTypes();
             methodSignatures[i] = MethodAttribUtils.methodSignatureOnly(beanMethods[i]);
@@ -1178,17 +1105,12 @@ public abstract class EJBMDOrchestrator
             // d571522 - For timed object methods, the interface method might be a
             // non-public method from the bean class.  In that case, we already
             // have the Method object.
-            if (methodInterface == MethodInterface.TIMED_OBJECT && !Modifier.isPublic(beanMethods[i].getModifiers()))
-            {
+            if (methodInterface == MethodInterface.TIMED_OBJECT && !Modifier.isPublic(beanMethods[i].getModifiers())) {
                 ejbMethods[i] = beanMethods[i];
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     ejbMethods[i] = bmd.enterpriseBeanClass.getMethod(methodNames[i], methodParamTypes[i]);
-                } catch (NoSuchMethodException nsmex)
-                {
+                } catch (NoSuchMethodException nsmex) {
                     Tr.error(tc, "BEAN_DOES_NOT_IMPLEMENT_REQUIRED_METHOD_CNTR0157E",
                              new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName, beanMethods[i] });
                     throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName +
@@ -1199,13 +1121,11 @@ public abstract class EJBMDOrchestrator
             // d494984.1
             // If the ejbMethod is a bridge method, then replace with the target
             // of the bridge method.
-            if (ejbMethods[i].isBridge())
-            {
+            if (ejbMethods[i].isBridge()) {
                 bridgeMethods[i] = ejbMethods[i];
                 ejbMethods[i] = byteCodeMetaData.getBridgeMethodTarget(ejbMethods[i]); // F61004.1
 
-                if (ejbMethods[i] == null)
-                {
+                if (ejbMethods[i] == null) {
                     //FFDCFilter.processException(e, CLASS_NAME + ".initializeBeanMethodMD", "2452", this);
 
                     // Note, when looking for target of a bridge method, using the toGenericString() method
@@ -1230,8 +1150,7 @@ public abstract class EJBMDOrchestrator
         } // for all bean methods
 
         // Special case the remove method of the EJBObject interface
-        if (addRemove)
-        {
+        if (addRemove) {
             int lastMethodIndex = numMethods - 1;
             methodNames[lastMethodIndex] = "remove";
             methodParamTypes[lastMethodIndex] = NO_PARAMS;
@@ -1246,8 +1165,7 @@ public abstract class EJBMDOrchestrator
             if (bmd.usesBeanManagedTx)
                 transactionAttrs[lastMethodIndex] = TransactionAttribute.TX_BEAN_MANAGED;
             else
-                transactionAttrs[lastMethodIndex] = (isEntity) ?
-                                TransactionAttribute.TX_REQUIRED : TransactionAttribute.TX_NOT_SUPPORTED;
+                transactionAttrs[lastMethodIndex] = (isEntity) ? TransactionAttribute.TX_REQUIRED : TransactionAttribute.TX_NOT_SUPPORTED;
 
             // LIDB441.5
             if (bmd.usesBeanManagedAS) // d127328 - do this independent of ActivityPolicyKind
@@ -1260,8 +1178,7 @@ public abstract class EJBMDOrchestrator
 
         // Process methods to exclude via security from WCCM. If there is no excludeList,
         // then any methods to exclude must have been specified via annotations.  //PK93643
-        if (excludeList != null) //PK93643
-        {
+        if (excludeList != null) {
             // Process all method-permission elements.   //d366845.11.1
             MethodAttribUtils.getXMLMethodsDenied(denyAll,
                                                   metaMethodElementKind,
@@ -1314,8 +1231,7 @@ public abstract class EJBMDOrchestrator
                                                   bmd);
 
         if (bmd.ivModuleVersion <= BeanMetaData.J2EE_EJB_VERSION_1_1 ||
-            bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) // 134261, d155348
-        {
+            bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
             //Need Isolation level for
             //1) All beans in Java EE 1.2 app
             //2) CMP11 beans ONLY in Java EE 1.3 app
@@ -1326,8 +1242,7 @@ public abstract class EJBMDOrchestrator
                                isoLevelList,
                                wccmEnterpriseBean);
 
-            if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) // d155348,not for session beans
-            {
+            if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
                 getReadOnlyAttributes(readOnlyAttrs, // F743-18775
                                       metaMethodElementKind,
                                       methodNames,
@@ -1343,8 +1258,7 @@ public abstract class EJBMDOrchestrator
         //F743-4582:
         // Process all Asynchronous methods configured via xml. If there is no EnterpriseBean,
         // assume this is an annotations only configuration scenario.
-        if (wccmEnterpriseBean != null)
-        {
+        if (wccmEnterpriseBean != null) {
 
             // 621123 - If any method of the bean is asychronous, set the flag in bmd.  Use bit-wise
             //          OR so that it is not unset by mistake because either XML or annotations happened
@@ -1374,8 +1288,7 @@ public abstract class EJBMDOrchestrator
         boolean singletonWithContainerManagedConcurrency = bmd.isSingletonSessionBean()
                                                            && (bmd.ivSingletonUsesBeanManagedConcurrency == false);
 
-        if (singletonWithContainerManagedConcurrency)
-        {
+        if (singletonWithContainerManagedConcurrency) {
             // The default AccessTimeout for Singletons is to wait forever (-1),
             // unless overridden by a system property.                      d704504
             long defaultTimeout = DefaultSessionAccessTimeout;
@@ -1387,8 +1300,7 @@ public abstract class EJBMDOrchestrator
             // F743-7027 start
             // Process all @Lock/@AccessAsynchronous methods configured via xml. If there is no EnterpriseBean,
             // assume this is an annotations only configuration scenario.
-            if (wccmEnterpriseBean != null)
-            {
+            if (wccmEnterpriseBean != null) {
                 Session sessionBean = (Session) wccmEnterpriseBean;
                 MethodAttribUtils.getXMLCMCLockType(lockType, ejbMethods, sessionBean);
                 MethodAttribUtils.getXMLCMCLockAccessTimeout(accessTimeout, ejbMethods, sessionBean);
@@ -1403,8 +1315,7 @@ public abstract class EJBMDOrchestrator
         } // F743-1752.1 end
 
         // Also get AccessTimeout metadata for Stateful session beans.  F743-22462
-        else if (bmd.isStatefulSessionBean())
-        {
+        else if (bmd.isStatefulSessionBean()) {
             // The default AccessTimeout starting in EE6 is to wait forever (-1),
             // though this may be overrident with a system property.
             // Previously, concurrent access of Stateful beans was not supported
@@ -1438,20 +1349,16 @@ public abstract class EJBMDOrchestrator
         // Finally, build up method info objects containing all the configuratin attributes
         // for each ejb method.
 
-        for (int i = 0; i < numMethods; i++)
-        {
+        for (int i = 0; i < numMethods; i++) {
             String[] rolesAllowed = null;
-            if (roleArrays[i] != null && !roleArrays[i].isEmpty())
-            {
+            if (roleArrays[i] != null && !roleArrays[i].isEmpty()) {
                 rolesAllowed = new String[roleArrays[i].size()];
                 rolesAllowed = roleArrays[i].toArray(new String[0]); //d366845.11.2
             }
 
-            if (isTraceOn && tc.isDebugEnabled())
-            {
-                String ms = (i < beanMethods.length)
-                                ? MethodAttribUtils.methodSignature(ejbMethods[i])
-                                : methodNames[i] + MethodAttribUtils.METHOD_ARGLIST_SEP + methodSignatures[i]; //d494984.1
+            if (isTraceOn && tc.isDebugEnabled()) {
+                String ms = (i < beanMethods.length) ? MethodAttribUtils.methodSignature(ejbMethods[i]) : methodNames[i] + MethodAttribUtils.METHOD_ARGLIST_SEP
+                                                                                                          + methodSignatures[i]; //d494984.1
                 Tr.debug(tc, "Createing MethodInfo:  methodName = " +
                              methodNames[i] + " methodSignature = " +
                              ms + " PermitAll = " + //d494984.1
@@ -1462,23 +1369,20 @@ public abstract class EJBMDOrchestrator
             Class<?>[][] declaredExceptions = null;
             Class<?>[] declaredExceptionsComp = null; // d734957
 
-            if (ejbMethods[i] != null)
-            {
+            if (ejbMethods[i] != null) {
                 Class<?> classReturnType = ejbMethods[i].getReturnType();
 
-                if (asynchMethodFlags[i])
-                {
+                if (asynchMethodFlags[i]) {
                     // If the current method is an asynchronous method, and the bean uses CMT transactions, but has an incorrect
                     // TX attribute configured, we can stop now and log an error.  Asynch methods can only have TX attributes of
                     // type TX_REQUIRED, TX_REQUIRES_NEW, or TX_NOT_SUPPORTED configured.
                     if (!bmd.usesBeanManagedTx &&
                         transactionAttrs[i] != TransactionAttribute.TX_REQUIRED &&
                         transactionAttrs[i] != TransactionAttribute.TX_REQUIRES_NEW &&
-                        transactionAttrs[i] != TransactionAttribute.TX_NOT_SUPPORTED)
-                    {
+                        transactionAttrs[i] != TransactionAttribute.TX_NOT_SUPPORTED) {
                         Tr.error(tc, "INVALID_TX_ATTRIBUTE_FOR_ASYNCH_METHOD_CNTR0187E",
                                  new Object[] { methodNames[i], bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(),
-                                               bmd.j2eeName.getApplication(), transactionAttrs[i] });
+                                                bmd.j2eeName.getApplication(), transactionAttrs[i] });
                         throw new EJBConfigurationException("The " + methodNames[i] +
                                                             " method on the " + bmd.j2eeName.getComponent() +
                                                             " bean in the " + bmd.j2eeName.getModule() +
@@ -1491,8 +1395,7 @@ public abstract class EJBMDOrchestrator
 
                     // F743-4633
                     // Ensure for async methods the return type is void or Future<V> otherwise throw EJBConfigurationException.
-                    if (classReturnType != Void.TYPE && classReturnType != Future.class)
-                    {
+                    if (classReturnType != Void.TYPE && classReturnType != Future.class) {
                         Tr.error(tc, "ASYNC_METHOD_MUST_RETURN_VOID_OR_FUTURE_CNTR0206E",
                                  new Object[] { methodNames[i], bmd.j2eeName.getComponent(), classReturnType.getName() });
                         throw new EJBConfigurationException("CNTR0206E: The " + methodNames[i]
@@ -1509,16 +1412,13 @@ public abstract class EJBMDOrchestrator
                 // the methods on the bean class.
                 // d668039 - Also check component interfaces by using a special
                 // index of -1.
-                for (int interfaceIndex = minInterfaceIndex; interfaceIndex < numBusinessInterfaces; interfaceIndex++)
-                {
+                for (int interfaceIndex = minInterfaceIndex; interfaceIndex < numBusinessInterfaces; interfaceIndex++) {
                     Class<?> klass = interfaceIndex >= 0 ? businessInterfaceClasses[interfaceIndex] : interfaceClass; // d668039
 
                     Method method;
-                    try
-                    {
+                    try {
                         method = klass.getMethod(methodNames[i], methodParamTypes[i]);
-                    } catch (NoSuchMethodException ex)
-                    {
+                    } catch (NoSuchMethodException ex) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "method " + beanMethods[i] + " not found on " + klass.getName());
                         continue;
@@ -1527,31 +1427,26 @@ public abstract class EJBMDOrchestrator
                     // F743-16193 d644502
                     // Ensure the bean return type and the interface return type match
                     Class<?> interfaceReturnType = method.getReturnType();
-                    if (!classReturnType.equals(interfaceReturnType))
-                    {
+                    if (!classReturnType.equals(interfaceReturnType)) {
                         // d645058
                         // For asynchronous methods this will be an error condition.
                         // To be compatible with previous versions when this return type checking was not done,
                         // only a warning will be issued when the customer has setup for validation logging.
-                        if (asynchMethodFlags[i])
-                        {
+                        if (asynchMethodFlags[i]) {
                             Tr.error(tc, "INCOMPATIBLE_RETURN_TYPES_CNTR0321E",
                                      new Object[] { classReturnType.getName(), methodNames[i], bmd.j2eeName.getComponent(),
-                                                   interfaceReturnType.getName(), klass.getName() });
+                                                    interfaceReturnType.getName(), klass.getName() });
                             throw new EJBConfigurationException("CNTR0321E: The " + classReturnType.getName()
                                                                 + " return type for the " + methodNames[i]
                                                                 + " method of the " + bmd.j2eeName.getComponent()
                                                                 + " enterprise bean does not match the " + interfaceReturnType.getName()
                                                                 + " return type for the corresponding method on the " + klass.getName()
                                                                 + " interface.");
-                        }
-                        else if (isValidationLoggable(checkAppConfigCustom)) // F743-33178
-                        {
+                        } else if (isValidationLoggable(checkAppConfigCustom)) {
                             Tr.warning(tc, "INCOMPATIBLE_RETURN_TYPES_CNTR0322W",
                                        new Object[] { classReturnType.getName(), methodNames[i], bmd.j2eeName.getComponent(),
-                                                     interfaceReturnType.getName(), klass.getName() });
-                            if (isValidationFailable(checkAppConfigCustom)) // d668039
-                            {
+                                                      interfaceReturnType.getName(), klass.getName() });
+                            if (isValidationFailable(checkAppConfigCustom)) {
                                 throw new EJBConfigurationException("The " + classReturnType.getName() +
                                                                     " return type for the " + methodNames[i] +
                                                                     " method of the " + bmd.j2eeName.getComponent() +
@@ -1562,25 +1457,19 @@ public abstract class EJBMDOrchestrator
                         }
                     }
 
-                    if (asynchMethodFlags[i])
-                    {
+                    if (asynchMethodFlags[i]) {
                         Class<?>[] interfaceDeclaredExceptions = DeploymentUtil.getCheckedExceptions(
                                                                                                      method, Remote.class.isAssignableFrom(klass),
                                                                                                      DeploymentUtil.DeploymentTarget.WRAPPER); // d660332
-                        if (interfaceIndex >= 0)
-                        {
+                        if (interfaceIndex >= 0) {
                             declaredExceptions[interfaceIndex] = interfaceDeclaredExceptions;
-                        }
-                        else
-                        {
+                        } else {
                             declaredExceptionsComp = interfaceDeclaredExceptions;
                         }
-                        if (classReturnType == Void.TYPE && interfaceDeclaredExceptions.length != 0)
-                        {
+                        if (classReturnType == Void.TYPE && interfaceDeclaredExceptions.length != 0) {
                             // Pass all the required params to the error message.  F743-4633
                             String exceptionList = "";
-                            for (Class<?> exception : interfaceDeclaredExceptions)
-                            {
+                            for (Class<?> exception : interfaceDeclaredExceptions) {
                                 exceptionList += exception.getName() + ", ";
                             }
 
@@ -1597,8 +1486,8 @@ public abstract class EJBMDOrchestrator
 
             // build the method info object of this method
             EJBMethodInfoImpl methodInfoImpl = bmd.createEJBMethodInfoImpl(slotSize);
-            String methodSig = i < beanMethods.length ? MethodAttribUtils.methodSignature(beanMethods[i]) :
-                            methodNames[i] + MethodAttribUtils.METHOD_ARGLIST_SEP + methodSignatures[i];
+            String methodSig = i < beanMethods.length ? MethodAttribUtils.methodSignature(beanMethods[i]) : methodNames[i] + MethodAttribUtils.METHOD_ARGLIST_SEP
+                                                                                                            + methodSignatures[i];
             methodInfoImpl.initializeInstanceData(methodSig,
                                                   methodNames[i],
                                                   bmd,
@@ -1616,13 +1505,10 @@ public abstract class EJBMDOrchestrator
 
             // If this is a singleton session bean that uses container managed concurrency
             // control, then set the LockType and AccessTimeout for this method.
-            if (singletonWithContainerManagedConcurrency) // F743-1752.1
-            {
+            if (singletonWithContainerManagedConcurrency) {
                 methodInfoImpl.setCMLockType(lockType[i]); // F743-1752.1
                 methodInfoImpl.setCMLockAccessTimeout(accessTimeout[i]); // F743-1752.1
-            }
-            else if (bmd.isStatefulSessionBean())
-            {
+            } else if (bmd.isStatefulSessionBean()) {
                 methodInfoImpl.setCMLockAccessTimeout(accessTimeout[i]); // F743-22462
             }
 
@@ -1632,15 +1518,13 @@ public abstract class EJBMDOrchestrator
             methodInfos[i] = methodInfoImpl; // F743-1752.1
         }
 
-        if (addRemove) // d647928.2
-        {
+        if (addRemove) {
             methodInfos[numMethods - 1].setComponentRemove(true);
 
             // EJB 2.1 Stateful remove methods (EJBObject/EJBLocalObject) must
             // throw a RemoveException if the bean is in use, so set concurrency
             // timout to 0 (no waiting).                                    d704504
-            if (bmd.isStatefulSessionBean())
-            {
+            if (bmd.isStatefulSessionBean()) {
                 methodInfos[numMethods - 1].setCMLockAccessTimeout(0);
             }
         }
@@ -1660,13 +1544,11 @@ public abstract class EJBMDOrchestrator
     private void initializeLifecycleInterceptorMethodMD(Method[] ejbMethods,
                                                         List<ContainerTransaction> transactionList,
                                                         List<ActivitySessionMethod> activitySessionList,
-                                                        BeanMetaData bmd)
-                    throws EJBConfigurationException
-    {
+                                                        BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "initializeLifecycleInterceptorMethodMD", (Object[])ejbMethods);
+            Tr.entry(tc, "initializeLifecycleInterceptorMethodMD", (Object[]) ejbMethods);
 
         final int numMethods = LifecycleInterceptorWrapper.NUM_METHODS;
         String[] methodNames = new String[numMethods];
@@ -1675,10 +1557,8 @@ public abstract class EJBMDOrchestrator
         TransactionAttribute[] transactionAttrs = new TransactionAttribute[numMethods];
         ActivitySessionAttribute[] activitySessionAttrs = new ActivitySessionAttribute[numMethods];
 
-        for (int i = 0; i < numMethods; i++)
-        {
-            if (ejbMethods[i] == null)
-            {
+        for (int i = 0; i < numMethods; i++) {
+            if (ejbMethods[i] == null) {
                 methodNames[i] = LifecycleInterceptorWrapper.METHOD_NAMES[i];
                 methodParamTypes[i] = LifecycleInterceptorWrapper.METHOD_PARAM_TYPES[i];
                 methodSignatures[i] = LifecycleInterceptorWrapper.METHOD_SIGNATURES[i];
@@ -1693,12 +1573,8 @@ public abstract class EJBMDOrchestrator
                 //
                 // By specifying the default transaction attribute here, we avoid
                 // NPE in getAnnotationCMTransactions by using null ejbMethods[i].
-                transactionAttrs[i] = bmd.type == InternalConstants.TYPE_STATEFUL_SESSION ?
-                                TransactionAttribute.TX_NOT_SUPPORTED :
-                                TransactionAttribute.TX_REQUIRED;
-            }
-            else
-            {
+                transactionAttrs[i] = bmd.type == InternalConstants.TYPE_STATEFUL_SESSION ? TransactionAttribute.TX_NOT_SUPPORTED : TransactionAttribute.TX_REQUIRED;
+            } else {
                 methodNames[i] = ejbMethods[i].getName();
                 methodParamTypes[i] = ejbMethods[i].getParameterTypes();
                 methodSignatures[i] = MethodAttribUtils.methodSignatureOnly(ejbMethods[i]);
@@ -1723,14 +1599,10 @@ public abstract class EJBMDOrchestrator
         EJBMethodInfoImpl[] methodInfos = new EJBMethodInfoImpl[numMethods];
 
         int slotSize = bmd.container.getEJBRuntime().getMetaDataSlotSize(MethodMetaData.class);
-        for (int i = 0; i < numMethods; i++)
-        {
-            String methodSig = ejbMethods[i] == null ?
-                            methodNames[i] + MethodAttribUtils.METHOD_ARGLIST_SEP + methodSignatures[i] :
-                            MethodAttribUtils.methodSignature(ejbMethods[i]);
-            String jdiMethodSig = ejbMethods[i] == null ?
-                            LifecycleInterceptorWrapper.METHOD_JDI_SIGNATURES[i] :
-                            MethodAttribUtils.jdiMethodSignature(ejbMethods[i]);
+        for (int i = 0; i < numMethods; i++) {
+            String methodSig = ejbMethods[i] == null ? methodNames[i] + MethodAttribUtils.METHOD_ARGLIST_SEP
+                                                       + methodSignatures[i] : MethodAttribUtils.methodSignature(ejbMethods[i]);
+            String jdiMethodSig = ejbMethods[i] == null ? LifecycleInterceptorWrapper.METHOD_JDI_SIGNATURES[i] : MethodAttribUtils.jdiMethodSignature(ejbMethods[i]);
 
             EJBMethodInfoImpl methodInfo = bmd.createEJBMethodInfoImpl(slotSize);
             methodInfo.initializeInstanceData(methodSig, methodNames[i], bmd, MethodInterface.LIFECYCLE_INTERCEPTOR, transactionAttrs[i], false);
@@ -1771,17 +1643,16 @@ public abstract class EJBMDOrchestrator
                                                      MethodInterface methodInterface,
                                                      Method homeMethods[],
                                                      String[] sessionHomeNoTxAttrMethods,
-                                                     String[] sessionHomeNoTxAttrMethodSignatures,//PQ63130
+                                                     String[] sessionHomeNoTxAttrMethodSignatures, //PQ63130
                                                      String[] entityHomeNoTxAttrMethods,
-                                                     String[] entityHomeNoTxAttrMethodSignatures,//PQ63130
+                                                     String[] entityHomeNoTxAttrMethodSignatures, //PQ63130
                                                      List<?> accessIntentList,
                                                      List<?> isoLevelList,
                                                      List<ContainerTransaction> transactionList,
                                                      List<MethodPermission> securityList,
                                                      ExcludeList excludeList,
                                                      List<ActivitySessionMethod> activitySessionList,
-                                                     BeanMetaData bmd)
-    {
+                                                     BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1807,8 +1678,7 @@ public abstract class EJBMDOrchestrator
         TransactionAttribute[] homeTransactionAttrs = new TransactionAttribute[homeMethods.length];
         ActivitySessionAttribute[] homeActivitySessionAttrs = new ActivitySessionAttribute[homeMethods.length]; // LIDB441.5
 
-        for (int i = 0; i < homeMethods.length; i++)
-        {
+        for (int i = 0; i < homeMethods.length; i++) {
             homeMethodNames[i] = homeMethods[i].getName();
             homeMethodParamTypes[i] = homeMethods[i].getParameterTypes();
             homeMethodSignatures[i] = MethodAttribUtils.methodSignatureOnly(homeMethods[i]);
@@ -1822,21 +1692,18 @@ public abstract class EJBMDOrchestrator
             // to TX_BEAN_MANAGED.  For other cases, initialize to TX_REQUIRED.
             // Home methods are considered 'internal', and the tx attribute cannot be set
             // via annotations, so set the default here; XML may still override.
-            homeTransactionAttrs[i] = (bmd.usesBeanManagedTx) ?
-                            TransactionAttribute.TX_BEAN_MANAGED : TransactionAttribute.TX_REQUIRED;
+            homeTransactionAttrs[i] = (bmd.usesBeanManagedTx) ? TransactionAttribute.TX_BEAN_MANAGED : TransactionAttribute.TX_REQUIRED;
 
             // LIDB441.5 - For Bean-managed AS (session beans only), initialize method AS attrs
             // to AS_BEAN_MANAGED.  For other cases, initialize to AS_UNKNOWN.
-            homeActivitySessionAttrs[i] = (bmd.usesBeanManagedAS) ?
-                            ActivitySessionAttribute.AS_BEAN_MANAGED : ActivitySessionAttribute.AS_UNKNOWN;
+            homeActivitySessionAttrs[i] = (bmd.usesBeanManagedAS) ? ActivitySessionAttribute.AS_BEAN_MANAGED : ActivitySessionAttribute.AS_UNKNOWN;
         }
 
         //Process the Security MetaData       //366845.11.1
 
         // Process methods to exclude via security from WCCM. If there is no excludeList,
         // then any methods to exclude must have been specified via annotations.  //PK93643
-        if (excludeList != null) //PK93643
-        {
+        if (excludeList != null) {
             // Process all exclude-list elements.
             MethodAttribUtils.getXMLMethodsDenied(homeDenyAll,
                                                   metaMethodElementKind,
@@ -1863,12 +1730,10 @@ public abstract class EJBMDOrchestrator
         // FYI... Homes have no annotations
 
         // Only get and check method-level Tx attributes if container is managing Tx
-        if (!bmd.usesBeanManagedTx)
-        {
+        if (!bmd.usesBeanManagedTx) {
             // Process all Transaction Attributes from WCCM. If there is no transactionList,
             // assume this is an annotations only configuration scenario.
-            if (transactionList != null) //PK93643
-            {
+            if (transactionList != null) {
                 MethodAttribUtils.getXMLCMTransactions(homeTransactionAttrs,
                                                        metaMethodElementKind,
                                                        homeMethodNames,
@@ -1886,16 +1751,16 @@ public abstract class EJBMDOrchestrator
             if (isEntity) {
                 MethodAttribUtils.checkTxAttrs(homeTransactionAttrs,
                                                homeMethodNames,
-                                               homeMethodSignatures,//PQ63130
+                                               homeMethodSignatures, //PQ63130
                                                entityHomeNoTxAttrMethods,
-                                               entityHomeNoTxAttrMethodSignatures,//PQ63130
+                                               entityHomeNoTxAttrMethodSignatures, //PQ63130
                                                TransactionAttribute.TX_NOT_SUPPORTED);
             } else { // SessionBean
                 MethodAttribUtils.checkTxAttrs(homeTransactionAttrs,
                                                homeMethodNames,
-                                               homeMethodSignatures,//PQ63130
+                                               homeMethodSignatures, //PQ63130
                                                sessionHomeNoTxAttrMethods,
-                                               sessionHomeNoTxAttrMethodSignatures,//PQ63130
+                                               sessionHomeNoTxAttrMethodSignatures, //PQ63130
                                                TransactionAttribute.TX_NOT_SUPPORTED);
             }
         } // if !usesBeanManagedTx
@@ -1912,8 +1777,7 @@ public abstract class EJBMDOrchestrator
         } // if !usesBeanManagedAS
 
         if (bmd.ivModuleVersion <= BeanMetaData.J2EE_EJB_VERSION_1_1 ||
-            bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) // 134261, d155348
-        {
+            bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
             //Need Isolation level for
             //1) All beans in Java EE 1.2 app
             //2) CMP11 beans ONLY in Java EE 1.3 app
@@ -1925,8 +1789,7 @@ public abstract class EJBMDOrchestrator
                                isoLevelList,
                                bmd.wccm.enterpriseBean);
 
-            if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) // d155348,not for session beans
-            {
+            if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
                 // Get user-specified access intent settings
                 getReadOnlyAttributes(homeReadOnlyAttrs, // F743-18775
                                       metaMethodElementKind,
@@ -1948,8 +1811,7 @@ public abstract class EJBMDOrchestrator
 
         boolean fbpkReadOnlyOverride = false;
 
-        if (FbpkAlwaysReadOnly)
-        {
+        if (FbpkAlwaysReadOnly) {
             fbpkReadOnlyOverride = true;
             // If the user overrode all beans, only show the message once in the console (rather than
             // for every bean type)
@@ -1963,8 +1825,8 @@ public abstract class EJBMDOrchestrator
 
         boolean cfHonorAccessIntent = false; // default is disable this unless customer
         String cfMethodSignatures[][] = null;
-        if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) // custom finder support only applies to 1_x beans
-        {
+        if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
+            // custom finder support only applies to 1_x beans
             if (!BeanMetaData.allowCustomFinderSQLForUpdateALLBeans) { // static initializer, avoid this if "all" is specified
                 String allowCustomFinderSQLForUpdateStr = AllowCustomFinderSQLForUpdate;
                 if (isTraceOn && tc.isDebugEnabled()) {
@@ -2018,8 +1880,7 @@ public abstract class EJBMDOrchestrator
                     Tr.debug(tc, "Method Level Finders Defined [" + envCustomFinderMethodsStr + "]");
                 }
                 // initialize this vector
-                cfMethodSignatures =
-                                bmd.getMethodLevelCustomFinderMethodSignatures(envCustomFinderMethodsStr);
+                cfMethodSignatures = bmd.getMethodLevelCustomFinderMethodSignatures(envCustomFinderMethodsStr);
                 /*
                  * if (isTraceOn && tc.isDebugEnabled()) {
                  * for(int lcv=0;lcv<cfMethodSignatures.length;lcv++){
@@ -2097,8 +1958,8 @@ public abstract class EJBMDOrchestrator
             if (!homeReadOnlyAttrs[i] && // must be a r/w method, r/o only method opts
                 !bmd.optimisticConcurrencyControl && // optimistic concurrency not support case
                 !bmd.optionACommitOption && // option A not supported
-                bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) // must be a 1_X bean  (either module type ok)
-            {
+                bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
+                // must be a 1_X bean  (either module type ok)
                 // either enaabled at server or bean level or method specific approval in effect
                 if (bmd.allowCustomFinderSQLForUpdateMethodLevel || cfHonorAccessIntent) {
                     if (finderDetect) {
@@ -2182,8 +2043,7 @@ public abstract class EJBMDOrchestrator
      * @param bmd
      * @return String or Null
      */
-    protected String getCustomFinderSignatures(String requiredAttr, BeanMetaData bmd)
-    {
+    protected String getCustomFinderSignatures(String requiredAttr, BeanMetaData bmd) {
         return null;
     } // getCustomFinderSignatures
 
@@ -2194,8 +2054,7 @@ public abstract class EJBMDOrchestrator
      * @return boolean
      *
      */
-    protected Boolean getWAS390CustomFinderBeanLevel(String requiredAttr, BeanMetaData bmd)
-    {
+    protected Boolean getWAS390CustomFinderBeanLevel(String requiredAttr, BeanMetaData bmd) {
         return Boolean.FALSE;
     }
 
@@ -2210,8 +2069,7 @@ public abstract class EJBMDOrchestrator
      * @throws EJBConfigurationException for customer configuration errors.
      */
     public abstract void processGeneralizations(EJBModuleConfigData moduleConfig,
-                                                EJBModuleMetaDataImpl mmd)
-                    throws EJBConfigurationException;
+                                                EJBModuleMetaDataImpl mmd) throws EJBConfigurationException;
 
     /**
      *
@@ -2220,8 +2078,7 @@ public abstract class EJBMDOrchestrator
      */
     //d494984 eliminate assignment to parameter t.
     @SuppressWarnings("deprecation")
-    protected Throwable getNestedException(Throwable t)
-    {
+    protected Throwable getNestedException(Throwable t) {
         Throwable root = t;
         for (;;) {
             if (root instanceof RemoteException) {
@@ -2272,8 +2129,7 @@ public abstract class EJBMDOrchestrator
      * This method processes the optional system property {@link ContainerConfigConstants#allowCachedTimerDataFor}.
      **/
     //F001419
-    private void processCachedTimerDataSettings(BeanMetaData bmd)
-    {
+    private void processCachedTimerDataSettings(BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "processCachedTimerDataSettings " + AllowCachedTimerDataFor);
@@ -2301,8 +2157,7 @@ public abstract class EJBMDOrchestrator
                             FFDCFilter.processException(e, CLASS_NAME + ".processCachedTimerDataSettings", "3923", this);
                         }
                     }
-                }
-                else { //token did not include an equals sign....case where we have just 'j2eename' or '*'.  Apply all caching in this case.
+                } else { //token did not include an equals sign....case where we have just 'j2eename' or '*'.  Apply all caching in this case.
                     if (token.equals(bmd.j2eeName.toString()) || token.equals("*")) { // d130438
                         bmd.allowCachedTimerDataForMethods = -1; // d642293
                         bmd._moduleMetaData.ivAllowsCachedTimerData = true;
@@ -2361,8 +2216,7 @@ public abstract class EJBMDOrchestrator
      *            bmd.ivInitialPoolSize
      *            bmd.ivMaxCreation.
      */
-    private void processBeanPoolLimits(BeanMetaData bmd) throws EJBConfigurationException
-    {
+    private void processBeanPoolLimits(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) {
@@ -2454,11 +2308,9 @@ public abstract class EJBMDOrchestrator
                 } else {
                     // Syntax error -- token did not include an equals sign....
                     Tr.warning(tc, "POOLSIZE_MISSING_EQUALS_SIGN_CNTR0062W", new Object[] { token });
-                    if (isValidationFailable(checkAppConfigCustom)) // fail if enabled       F743-14449
-                    {
-                        EJBConfigurationException ecex = new EJBConfigurationException
-                                        ("An equals sign was not found in the pool size specification string " +
-                                         token + ".");
+                    if (isValidationFailable(checkAppConfigCustom)) {
+                        EJBConfigurationException ecex = new EJBConfigurationException("An equals sign was not found in the pool size specification string " +
+                                                                                       token + ".");
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                         throw ecex;
@@ -2474,21 +2326,17 @@ public abstract class EJBMDOrchestrator
         if (minStr != null) {
             try {
                 // An H prefix indicates a hard limit (pre-load pool).       PK20648
-                if (minStr.startsWith("H"))
-                {
+                if (minStr.startsWith("H")) {
                     setInitialPoolSize = true;
                     minStr = minStr.substring(1);
                 }
                 tmpMinPoolSize = Integer.parseInt(minStr);
-                if (tmpMinPoolSize < 1)
-                {
+                if (tmpMinPoolSize < 1) {
                     Tr.warning(tc, "INVALID_MIN_POOLSIZE_CNTR0057W", new Object[] { (bmd.j2eeName).toString(), Integer.toString(tmpMinPoolSize) });
                     tmpMinPoolSize = defaultMinPoolSize;
-                    if (isValidationFailable(checkAppConfigCustom)) // fail if enabled       F743-14449
-                    {
-                        EJBConfigurationException ecex = new EJBConfigurationException
-                                        ("Minimum pool size specified for bean " + bmd.j2eeName +
-                                         " not a valid positive integer: " + tmpMinPoolSize + ".");
+                    if (isValidationFailable(checkAppConfigCustom)) {
+                        EJBConfigurationException ecex = new EJBConfigurationException("Minimum pool size specified for bean " + bmd.j2eeName +
+                                                                                       " not a valid positive integer: " + tmpMinPoolSize + ".");
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                         throw ecex;
@@ -2498,11 +2346,9 @@ public abstract class EJBMDOrchestrator
                 FFDCFilter.processException(e, CLASS_NAME + ".processBeanPoolLimits", "2594", this);
                 Tr.warning(tc, "INVALID_MIN_POOLSIZE_CNTR0057W", new Object[] { (bmd.j2eeName).toString(), minStr });
                 tmpMinPoolSize = defaultMinPoolSize;
-                if (isValidationFailable(checkAppConfigCustom)) // fail if enabled       F743-14449
-                {
-                    EJBConfigurationException ecex = new EJBConfigurationException
-                                    ("Minimum pool size specified for bean " + bmd.j2eeName +
-                                     " not a valid integer: " + minStr + ".");
+                if (isValidationFailable(checkAppConfigCustom)) {
+                    EJBConfigurationException ecex = new EJBConfigurationException("Minimum pool size specified for bean " + bmd.j2eeName +
+                                                                                   " not a valid integer: " + minStr + ".");
                     if (isTraceOn && tc.isEntryEnabled())
                         Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                     throw ecex;
@@ -2515,8 +2361,7 @@ public abstract class EJBMDOrchestrator
         if (maxStr != null) {
             try {
                 // An H prefix indicates a hard limit (Max Creation).        PK20648
-                if (maxStr.startsWith("H"))
-                {
+                if (maxStr.startsWith("H")) {
                     setMaxCreation = true;
                     maxStr = maxStr.substring(1);
                 }
@@ -2524,11 +2369,9 @@ public abstract class EJBMDOrchestrator
                 if (tmpMaxPoolSize < 1) {
                     Tr.warning(tc, "INVALID_MAX_POOLSIZE_CNTR0058W", new Object[] { (bmd.j2eeName).toString(), Integer.toString(tmpMaxPoolSize) });
                     tmpMaxPoolSize = defaultMaxPoolSize;
-                    if (isValidationFailable(checkAppConfigCustom)) // fail if enabled       F743-14449
-                    {
-                        EJBConfigurationException ecex = new EJBConfigurationException
-                                        ("Maximum pool size specified for bean " + bmd.j2eeName +
-                                         " not a valid positive integer: " + tmpMaxPoolSize + ".");
+                    if (isValidationFailable(checkAppConfigCustom)) {
+                        EJBConfigurationException ecex = new EJBConfigurationException("Maximum pool size specified for bean " + bmd.j2eeName +
+                                                                                       " not a valid positive integer: " + tmpMaxPoolSize + ".");
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                         throw ecex;
@@ -2538,11 +2381,9 @@ public abstract class EJBMDOrchestrator
                 FFDCFilter.processException(e, CLASS_NAME + ".processBeanPoolLimits", "2616", this);
                 Tr.warning(tc, "INVALID_MAX_POOLSIZE_CNTR0058W", new Object[] { (bmd.j2eeName).toString(), maxStr });
                 tmpMaxPoolSize = defaultMaxPoolSize;
-                if (isValidationFailable(checkAppConfigCustom)) // fail if enabled       F743-14449
-                {
-                    EJBConfigurationException ecex = new EJBConfigurationException
-                                    ("Maximum pool size specified for bean " + bmd.j2eeName +
-                                     " not a valid integer: " + maxStr + ".");
+                if (isValidationFailable(checkAppConfigCustom)) {
+                    EJBConfigurationException ecex = new EJBConfigurationException("Maximum pool size specified for bean " + bmd.j2eeName +
+                                                                                   " not a valid integer: " + maxStr + ".");
                     if (isTraceOn && tc.isEntryEnabled())
                         Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                     throw ecex;
@@ -2558,11 +2399,9 @@ public abstract class EJBMDOrchestrator
                 if (tmpMaxCreationTimeout < 0) {
                     Tr.warning(tc, "INVALID_MAX_POOLTIMEOUT_CNTR0127W", new Object[] { (bmd.j2eeName).toString(), timeoutStr, "300" });
                     tmpMaxCreationTimeout = defaultMaxCreationTimeout;
-                    if (isValidationFailable(checkAppConfigCustom)) // fail if enabled
-                    {
-                        EJBConfigurationException ecex = new EJBConfigurationException
-                                        ("Maximum pool size timeout specified for bean " + bmd.j2eeName +
-                                         " not a valid positive integer: " + timeoutStr + ".");
+                    if (isValidationFailable(checkAppConfigCustom)) {
+                        EJBConfigurationException ecex = new EJBConfigurationException("Maximum pool size timeout specified for bean " + bmd.j2eeName +
+                                                                                       " not a valid positive integer: " + timeoutStr + ".");
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                         throw ecex;
@@ -2572,11 +2411,9 @@ public abstract class EJBMDOrchestrator
                 FFDCFilter.processException(e, CLASS_NAME + ".processBeanPoolLimits", "2573", this);
                 Tr.warning(tc, "INVALID_MAX_POOLTIMEOUT_CNTR0127W", new Object[] { (bmd.j2eeName).toString(), timeoutStr, "300" });
                 tmpMaxCreationTimeout = defaultMaxCreationTimeout;
-                if (isValidationFailable(checkAppConfigCustom)) // fail if enabled       F743-14449
-                {
-                    EJBConfigurationException ecex = new EJBConfigurationException
-                                    ("Maximum pool size timeout specified for bean " + bmd.j2eeName +
-                                     " not a valid integer: " + timeoutStr + ".");
+                if (isValidationFailable(checkAppConfigCustom)) {
+                    EJBConfigurationException ecex = new EJBConfigurationException("Maximum pool size timeout specified for bean " + bmd.j2eeName +
+                                                                                   " not a valid integer: " + timeoutStr + ".");
                     if (isTraceOn && tc.isEntryEnabled())
                         Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                     throw ecex;
@@ -2589,24 +2426,20 @@ public abstract class EJBMDOrchestrator
         // If the noEJBPool system property has been set to "true", then a
         // no-capacity ejb pool will be created. (This should only be used
         // for development / debug purposes)                    // d262413 PK20648
-        if (noEJBPool)
-        {
+        if (noEJBPool) {
             bmd.minPoolSize = 0;
             bmd.maxPoolSize = 0;
         }
         // Otherwise, if an invalid min/max pair was specified, then the
         // defaults will be used, and a warning issued.
-        else if (tmpMaxPoolSize < tmpMinPoolSize)
-        {
+        else if (tmpMaxPoolSize < tmpMinPoolSize) {
             Tr.warning(tc, "INVALID_POOLSIZE_COMBO_CNTR0059W", new Object[] { (bmd.j2eeName).toString(), Integer.toString(tmpMinPoolSize), Integer.toString(tmpMaxPoolSize) });
             bmd.minPoolSize = defaultMinPoolSize;
             bmd.maxPoolSize = defaultMaxPoolSize;
-            if (isValidationFailable(checkAppConfigCustom)) // fail if enabled       F743-14449
-            {
-                EJBConfigurationException ecex = new EJBConfigurationException
-                                ("Minimum pool size specified for bean " + bmd.j2eeName +
-                                 " is greater than maximum pool size specified: (" +
-                                 tmpMinPoolSize + "," + tmpMaxPoolSize + ")");
+            if (isValidationFailable(checkAppConfigCustom)) {
+                EJBConfigurationException ecex = new EJBConfigurationException("Minimum pool size specified for bean " + bmd.j2eeName +
+                                                                               " is greater than maximum pool size specified: (" +
+                                                                               tmpMinPoolSize + "," + tmpMaxPoolSize + ")");
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(tc, "processBeanPoolLimits : " + ecex);
                 throw ecex;
@@ -2614,8 +2447,7 @@ public abstract class EJBMDOrchestrator
         }
         // And finally, everything looks good, so the configured sizes
         // and pre-load / max creation limit values will be used.
-        else
-        {
+        else {
             bmd.minPoolSize = tmpMinPoolSize;
             bmd.maxPoolSize = tmpMaxPoolSize;
 
@@ -2630,8 +2462,7 @@ public abstract class EJBMDOrchestrator
             }
         }
 
-        if (poolSizeSpec != null || noEJBPool)
-        {
+        if (poolSizeSpec != null || noEJBPool) {
             // Log an Info message indicating pool min/max values, including
             // whether or not they are 'hard' limits.                       PK20648
             String minPoolSizeStr = Integer.toString(bmd.minPoolSize);
@@ -2686,8 +2517,7 @@ public abstract class EJBMDOrchestrator
                                        Method[] localHomeMethods,
                                        Method[] remoteHomeMethods,
                                        Method[] implMethods) // d494984
-    throws EJBConfigurationException
-    {
+                    throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) {
@@ -2711,8 +2541,7 @@ public abstract class EJBMDOrchestrator
         //------------------------------------------------------------------------
 
         if (bmd.remoteInterfaceClass != null ||
-            bmd.ivBusinessRemoteInterfaceClasses != null) // d366807
-        {
+            bmd.ivBusinessRemoteInterfaceClasses != null) {
             // f111627 Begin
             //---------------------------------------------------------------------
             // Determine method level metadata (include place-holder
@@ -2725,7 +2554,7 @@ public abstract class EJBMDOrchestrator
                                    remoteBeanMethods, // d366807
                                    implMethods, // d494984
                                    BeanMetaData.entityRemoteNoTxAttrMethods,
-                                   BeanMetaData.entityRemoteNoTxAttrMethodSignatures,//PQ63130
+                                   BeanMetaData.entityRemoteNoTxAttrMethodSignatures, //PQ63130
                                    bmd.accessIntentList,
                                    bmd.isoLevelList,
                                    transactionList,
@@ -2737,22 +2566,19 @@ public abstract class EJBMDOrchestrator
         }
 
         if (bmd.localInterfaceClass != null ||
-            bmd.ivBusinessLocalInterfaceClasses != null) // d366807
-        {
+            bmd.ivBusinessLocalInterfaceClasses != null) {
             //--------------------------------------------------------
             // Determine method level metadata (include place-holder
             // for remove() ) for Local methods.
             //--------------------------------------------------------
             initializeBeanMethodMD(beanType == Entity_Type,
-                                   (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN) ?
-                                                   MethodInterface.MESSAGE_LISTENER :
-                                                   MethodInterface.LOCAL, // d162441
+                                   (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN) ? MethodInterface.MESSAGE_LISTENER : MethodInterface.LOCAL, // d162441
                                    bmd.localInterfaceClass,
                                    bmd.ivBusinessLocalInterfaceClasses, // F743-24429
                                    localBeanMethods, // d366807
                                    implMethods, // d494984
                                    BeanMetaData.entityLocalNoTxAttrMethods,
-                                   BeanMetaData.entityLocalNoTxAttrMethodSignatures,//PQ63130
+                                   BeanMetaData.entityLocalNoTxAttrMethodSignatures, //PQ63130
                                    bmd.accessIntentList,
                                    bmd.isoLevelList,
                                    transactionList,
@@ -2763,8 +2589,7 @@ public abstract class EJBMDOrchestrator
                                    byteCodeMetaData).postProcessLocalBeanMethodData(bmd); // d115551
         }
 
-        if (timerMethods != null) // F743-506
-        {
+        if (timerMethods != null) {
             // -----------------------------------------------------------------
             // Determine method level metadata (include place-holder
             // for remove() ) for TimedObject methods.                 LI2281.07
@@ -2790,14 +2615,12 @@ public abstract class EJBMDOrchestrator
             //Currently, the EJBMethodInfoImpl.ivNumberOfParms variable we set here
             //is only needed to invoke timer callback methods.  If it's ever needed
             //elsewhere, we may need to move this logic into a more common location.
-            for (EJBMethodInfoImpl ejbMethodInfoImpl : bmd.timedMethodInfos)
-            {
+            for (EJBMethodInfoImpl ejbMethodInfoImpl : bmd.timedMethodInfos) {
                 ejbMethodInfoImpl.setNumberOfMethodParms(ejbMethodInfoImpl.getMethod().getParameterTypes().length);
             }
         }
 
-        if (bmd.ivHasWebServiceEndpoint) // LI3294-35 F743-1756CodRv
-        {
+        if (bmd.ivHasWebServiceEndpoint) {
             // --------------------------------------------------------------------
             // Determine method level metadata (include place-holder
             // for remove() ) for WebService Endpoint methods.            LI2281.24
@@ -2820,10 +2643,8 @@ public abstract class EJBMDOrchestrator
                                    byteCodeMetaData).postProcessWebserviceBeanMethodData(bmd);
         }
 
-        if (bmd.type != InternalConstants.TYPE_MESSAGE_DRIVEN)
-        {
-            if (bmd.homeInterfaceClass != null)
-            {
+        if (bmd.type != InternalConstants.TYPE_MESSAGE_DRIVEN) {
+            if (bmd.homeInterfaceClass != null) {
                 //--------------------------------------------------------
                 // Determine method level metadata for Remote home methods.
                 //--------------------------------------------------------
@@ -2831,9 +2652,9 @@ public abstract class EJBMDOrchestrator
                                        MethodInterface.HOME, // d162441
                                        remoteHomeMethods,
                                        BeanMetaData.sessionRemoteHomeNoTxAttrMethods,
-                                       BeanMetaData.sessionRemoteHomeNoTxAttrMethodSignatures,//PQ63130
+                                       BeanMetaData.sessionRemoteHomeNoTxAttrMethodSignatures, //PQ63130
                                        BeanMetaData.entityRemoteHomeNoTxAttrMethods,
-                                       BeanMetaData.entityRemoteHomeNoTxAttrMethodSignatures,//PQ63130
+                                       BeanMetaData.entityRemoteHomeNoTxAttrMethodSignatures, //PQ63130
                                        bmd.accessIntentList,
                                        bmd.isoLevelList,
                                        transactionList,
@@ -2851,9 +2672,9 @@ public abstract class EJBMDOrchestrator
                                        MethodInterface.LOCAL_HOME, // d162441
                                        localHomeMethods,
                                        BeanMetaData.sessionLocalHomeNoTxAttrMethods,
-                                       BeanMetaData.sessionLocalHomeNoTxAttrMethodSignatures,//PQ63130
+                                       BeanMetaData.sessionLocalHomeNoTxAttrMethodSignatures, //PQ63130
                                        BeanMetaData.entityLocalHomeNoTxAttrMethods,
-                                       BeanMetaData.entityLocalHomeNoTxAttrMethodSignatures,//PQ63130
+                                       BeanMetaData.entityLocalHomeNoTxAttrMethodSignatures, //PQ63130
                                        bmd.accessIntentList,
                                        bmd.isoLevelList,
                                        transactionList,
@@ -2873,21 +2694,15 @@ public abstract class EJBMDOrchestrator
         // method info object(s)                                        d184523
         //------------------------------------------------------------------------
         if (bmd.localMethodInfos != null &&
-            bmd.cmpVersion == InternalConstants.CMP_VERSION_2_X)
-        {
+            bmd.cmpVersion == InternalConstants.CMP_VERSION_2_X) {
             Relationships relationships = bmd.wccm.ejbjar.getRelationshipList();
             List<CMRField> cmrFields = new ArrayList<CMRField>();
-            if (relationships != null)
-            {
-                for (EJBRelation rel : relationships.getEjbRelations())
-                {
-                    for (EJBRelationshipRole role : rel.getRelationshipRoles())
-                    {
-                        if (role.getSource().getEntityBeanName().equals(bmd.enterpriseBeanName))
-                        {
+            if (relationships != null) {
+                for (EJBRelation rel : relationships.getEjbRelations()) {
+                    for (EJBRelationshipRole role : rel.getRelationshipRoles()) {
+                        if (role.getSource().getEntityBeanName().equals(bmd.enterpriseBeanName)) {
                             CMRField cmrField = role.getCmrField();
-                            if (cmrField != null)
-                            {
+                            if (cmrField != null) {
                                 cmrFields.add(cmrField);
                             }
                         }
@@ -2896,27 +2711,21 @@ public abstract class EJBMDOrchestrator
             }
 
             int cmrFieldSize = cmrFields.size();
-            if (cmrFieldSize > 0)
-            {
+            if (cmrFieldSize > 0) {
                 // First, build a list of all CMR set method names.
                 ArrayList<String> cmrSetters = new ArrayList<String>();
-                for (int i = 0; i < cmrFieldSize; i++)
-                {
+                for (int i = 0; i < cmrFieldSize; i++) {
                     CMRField cmrField = cmrFields.get(i);
                     String name = cmrField.getName();
                     cmrSetters.add("set" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
                 }
 
                 // Loop through all local method names, looking for a match
-                for (int i = 0; i < bmd.localMethodInfos.length && !cmrSetters.isEmpty(); i++)
-                {
+                for (int i = 0; i < bmd.localMethodInfos.length && !cmrSetters.isEmpty(); i++) {
                     String methodName = bmd.localMethodInfos[i].getName();
-                    if (methodName.startsWith("set"))
-                    {
-                        for (int j = 0; j < cmrSetters.size(); j++)
-                        {
-                            if (methodName.equals(cmrSetters.get(j)))
-                            {
+                    if (methodName.startsWith("set")) {
+                        for (int j = 0; j < cmrSetters.size(); j++) {
+                            if (methodName.equals(cmrSetters.get(j))) {
                                 if (isTraceOn && tc.isDebugEnabled())
                                     Tr.debug(tc, methodName + " is a CMR Set Method");
 
@@ -2950,8 +2759,7 @@ public abstract class EJBMDOrchestrator
      *
      * @param bmd BeanMetaData for the specific Enterprise Bean
      */
-    private void processSecurityIdentity(BeanMetaData bmd) //d366845.11.1
-    {
+    private void processSecurityIdentity(BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) {
@@ -2963,17 +2771,13 @@ public abstract class EJBMDOrchestrator
         if (ejbBean != null) {
             // get runAs identity
             SecurityIdentity secIdentity = ejbBean.getSecurityIdentity();
-            if (secIdentity != null)
-            {
+            if (secIdentity != null) {
                 runAsSet = true;
-                if (secIdentity.isUseCallerIdentity())
-                {
+                if (secIdentity.isUseCallerIdentity()) {
                     bmd.ivUseCallerIdentity = true;
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "RunAs set to Caller Identity ");
-                }
-                else
-                {
+                } else {
                     bmd.ivRunAs = secIdentity.getRunAs().getRoleName();
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "RunAs set to " + bmd.ivRunAs);
@@ -3007,8 +2811,7 @@ public abstract class EJBMDOrchestrator
      * @param bmd BeanMetaData for the specific Enterprise Bean
      */
 
-    private void processSecurityRoleLink(BeanMetaData bmd)
-    {
+    private void processSecurityRoleLink(BeanMetaData bmd) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) {
@@ -3074,14 +2877,12 @@ public abstract class EJBMDOrchestrator
     /**
      * Processes session bean extensions.
      */
-    protected abstract void processSessionExtension(BeanMetaData bmd)
-                    throws EJBConfigurationException;
+    protected abstract void processSessionExtension(BeanMetaData bmd) throws EJBConfigurationException;
 
     /**
      * Processes entity bean extensions.
      */
-    protected abstract void processEntityExtension(BeanMetaData bmd)
-                    throws EJBConfigurationException;
+    protected abstract void processEntityExtension(BeanMetaData bmd) throws EJBConfigurationException;
 
     /**
      * Metadata processing that is unique for Z/OS platform
@@ -3106,8 +2907,7 @@ public abstract class EJBMDOrchestrator
      */
     private void processMetadataByBeanType(BeanMetaData bmd,
                                            int beanType) // F743-17630
-    throws ContainerException, EJBConfigurationException
-    {
+                    throws ContainerException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) {
@@ -3124,8 +2924,7 @@ public abstract class EJBMDOrchestrator
                 // 10 minutes is set in the ContainerProperties.DefaultStatefulSessionTimeout.
                 // Initially use this value, then check if the timeout is set in
                 // ibm-ejb-jar-ext.xmi file, then take that value.     d627044
-                if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION)
-                {
+                if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION) {
                     // F743-14726  d627044
                     // Set initially to the value of ContainerProperties.DefaultStatefulSessionTimeout
                     bmd.sessionTimeout = DefaultStatefulSessionTimeout;
@@ -3151,15 +2950,13 @@ public abstract class EJBMDOrchestrator
                                              " found in extension with stateful-timeout with " +
                                              statefulTimeoutXMLTimeout + " " + statefulTimeoutXMLUnit +
                                              " found in ejb-jar.xml.");
-                            }
-                            else {
+                            } else {
                                 Tr.debug(tc, "Using stateful timeout " + bmd.sessionTimeout + " from XML for bean " + bmd.getName());
                             }
 
                         }
 
-                    }
-                    else {
+                    } else {
 
                         // XML value not found, so look for @StatefulTimeout annotation
 
@@ -3178,8 +2975,7 @@ public abstract class EJBMDOrchestrator
                                     Tr.debug(tc, "Overriding session timeout " + bmd.sessionTimeout +
                                                  " found in extension with StatefulTimeout with " +
                                                  statefulTimeoutAnnTimeout + " " + unit + " found in bean-level annotation.");
-                                }
-                                else {
+                                } else {
                                     Tr.debug(tc, "Using stateful timeout " + bmd.sessionTimeout + " from annotation for bean " + bmd.getName()); // F743-6605.1
                                 }
                             }
@@ -3192,29 +2988,22 @@ public abstract class EJBMDOrchestrator
                     //LIDB2018-1 begins
                     // Check if this SFSB is a startup bean by looking at whether
                     // home interface is the startup bean home interface.
-                    if ((bmd.homeInterfaceClassName != null && bmd.homeInterfaceClassName.equals("com.ibm.websphere.startupservice.AppStartUpHome")) || //d210506 d215348
-                        (bmd.localHomeInterfaceClassName != null && bmd.localHomeInterfaceClassName.equals("com.ibm.websphere.startupservice.AppStartUpHome"))) //d215348
-                    {
+                    if ((bmd.homeInterfaceClassName != null && bmd.homeInterfaceClassName.equals("com.ibm.websphere.startupservice.AppStartUpHome")) ||
+                        (bmd.localHomeInterfaceClassName != null && bmd.localHomeInterfaceClassName.equals("com.ibm.websphere.startupservice.AppStartUpHome"))) {
                         // It is a startup bean, so ensure failover is disabled since we never
                         // want to failover a startup bean.
                         bmd.ivSFSBFailover = false; //d210506
-                    }
-                    else //d210506
-                    {
+                    } else {
                         // Not a startup bean, so determine if failover should be enabled.
                         // d361748 start of change.
                         EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
-                        if (mmd.ivSfsbFailover)
-                        {
-                            if (!bmd.passivationCapable)
-                            {
+                        if (mmd.ivSfsbFailover) {
+                            if (!bmd.passivationCapable) {
                                 Tr.info(tc, "FAILOVER_DISABLED_NOT_PASSIVATION_CAPABLE_CNTR0331I",
                                         new Object[] { bmd.enterpriseBeanName,
-                                                      bmd._moduleMetaData.ivName,
-                                                      bmd._moduleMetaData.ivAppName });
-                            }
-                            else
-                            {
+                                                       bmd._moduleMetaData.ivName,
+                                                       bmd._moduleMetaData.ivAppName });
+                            } else {
                                 // SFSB failover is enabled for this module, so initialize
                                 // BeanMetaData with SFSB failover flag and reference to
                                 // the SfFailoverClient object to use for replication of SFSB data.
@@ -3223,12 +3012,9 @@ public abstract class EJBMDOrchestrator
                                 String failoverId = mmd.ivFailoverInstanceId;
                                 SfFailoverCache failover = bmd.container.getSfFailoverCache();
                                 bmd.ivSfFailoverClient = failover.getCachedSfFailoverClient(failoverId);
-                                if (bmd.ivSfFailoverClient != null)
-                                {
+                                if (bmd.ivSfFailoverClient != null) {
                                     bmd.ivSFSBFailover = true;
-                                }
-                                else
-                                {
+                                } else {
                                     // This should never happen if the admin console GUI is used to
                                     // configure SFSB failover. However, if customer edits the deployment.xml
                                     // and/or server.xml file directly, then we could end up in this
@@ -3243,9 +3029,7 @@ public abstract class EJBMDOrchestrator
                         } // d361748 end of change.
 
                     } //LIDB2018-1 ends
-                }
-                else if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION) // F743-1752.1
-                {
+                } else if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION) {
                     // Determine singleton session bean concurrency control.
                     processSingletonConcurrencyManagementType(bmd);
                 }
@@ -3262,9 +3046,7 @@ public abstract class EJBMDOrchestrator
 
                 processSessionExtension(bmd); // F743-18775
 
-                bmd.usesBeanManagedAS =
-                                (bmd.container).getContainerExtensionFactory()
-                                                .isActivitySessionBeanManaged(bmd.usesBeanManagedTx); // LIDB441.5, d126204.2
+                bmd.usesBeanManagedAS = (bmd.container).getContainerExtensionFactory().isActivitySessionBeanManaged(bmd.usesBeanManagedTx); // LIDB441.5, d126204.2
 
                 bmd.pKeyClass = null;
 
@@ -3308,9 +3090,7 @@ public abstract class EJBMDOrchestrator
                 // as stated in 15.8.4 of EJB 2.1 specification.
                 bmd.reentrant = false;
 
-                bmd.usesBeanManagedAS =
-                                bmd.container.getContainerExtensionFactory()
-                                                .isActivitySessionBeanManaged(bmd.usesBeanManagedTx); // LIDB441.5, d126204.2
+                bmd.usesBeanManagedAS = bmd.container.getContainerExtensionFactory().isActivitySessionBeanManaged(bmd.usesBeanManagedTx); // LIDB441.5, d126204.2
 
                 bmd.pKeyClass = null;
 
@@ -3319,8 +3099,7 @@ public abstract class EJBMDOrchestrator
                 // Note:  Starting in EJB3 the MessageListenerInterface is no longer required to be on
                 // the implements clause of the EJB, so this check is only for prior versions.  //450391
                 if (!(bmd.localInterfaceClass.isAssignableFrom(bmd.enterpriseBeanAbstractClass)) &&
-                    (bmd.getEJBModuleVersion() < BeanMetaData.J2EE_EJB_VERSION_3_0))
-                {
+                    (bmd.getEJBModuleVersion() < BeanMetaData.J2EE_EJB_VERSION_3_0)) {
                     // Whoops, the EJB 2.x specification says the MDB class must implement,
                     // directly or indirectly, the message listener interface required by the
                     // messaging type that it supports. In the case of JMS, this is the
@@ -3330,9 +3109,7 @@ public abstract class EJBMDOrchestrator
                     // the messaging listener interface.
 
                     // Log CNTR0112E: The user-provided class "{0}" must implement the "{1}" interface.
-                    Tr.error(tc
-                             , "MDB_MUST_IMPLEMENT_INTERFACE_CNTR0112E"
-                             , new Object[] { bmd.enterpriseBeanClassName, bmd.localInterfaceClass.getName() });
+                    Tr.error(tc, "MDB_MUST_IMPLEMENT_INTERFACE_CNTR0112E", new Object[] { bmd.enterpriseBeanClassName, bmd.localInterfaceClass.getName() });
                     throw new EJBConfigurationException("MDB " + bmd.enterpriseBeanClassName
                                                         + " must implement interface "
                                                         + bmd.localInterfaceClass.getName());
@@ -3369,13 +3146,10 @@ public abstract class EJBMDOrchestrator
      */
     // F743-1752.1 added entire method.
     // F743-1752CodRev rewrote to do error checking and validation.
-    private void processSingletonConcurrencyManagementType(BeanMetaData bmd)
-                    throws EJBConfigurationException // F743-1752CodRev
-    {
+    private void processSingletonConcurrencyManagementType(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "processSingletonConcurrencyManagementType");
         }
 
@@ -3385,15 +3159,11 @@ public abstract class EJBMDOrchestrator
 
         // F743-7027 start
         Session sessionBean = (Session) bmd.wccm.enterpriseBean;
-        if (sessionBean != null)
-        {
+        if (sessionBean != null) {
             int type = sessionBean.getConcurrencyManagementTypeValue();
-            if (type == Session.CONCURRENCY_MANAGEMENT_TYPE_CONTAINER)
-            {
+            if (type == Session.CONCURRENCY_MANAGEMENT_TYPE_CONTAINER) {
                 ddType = ConcurrencyManagementType.CONTAINER;
-            }
-            else if (type == Session.CONCURRENCY_MANAGEMENT_TYPE_BEAN)
-            {
+            } else if (type == Session.CONCURRENCY_MANAGEMENT_TYPE_BEAN) {
                 ddType = ConcurrencyManagementType.BEAN;
             }
         } // F743-7027 end
@@ -3402,22 +3172,18 @@ public abstract class EJBMDOrchestrator
         // non null value only if metadata complete is false and annotation is used
         // for this Singleton session bean.
         ConcurrencyManagementType annotationType = null;
-        if (bmd.metadataComplete == false)
-        {
+        if (bmd.metadataComplete == false) {
             // Metadata complete is false, so do we have annotation value?
             // Note, EJB spec says annotation can not be inherited from superclass.
             Class<?> ejbClass = bmd.enterpriseBeanClass;
             ConcurrencyManagement annotation = ejbClass.getAnnotation(javax.ejb.ConcurrencyManagement.class);
-            if (annotation != null)
-            {
+            if (annotation != null) {
                 // We have an annotation on EJB class, so validate that it is a valid value.
                 annotationType = annotation.value();
-                if (annotationType != ConcurrencyManagementType.CONTAINER && annotationType != ConcurrencyManagementType.BEAN)
-                {
+                if (annotationType != ConcurrencyManagementType.CONTAINER && annotationType != ConcurrencyManagementType.BEAN) {
                     // CNTR0193E: The value, {0}, that is specified for the concurrency management type of
                     // the {1} enterprise bean class must be either BEAN or CONTAINER.
-                    Tr.error(tc, "SINGLETON_INVALID_CONCURRENCY_MANAGEMENT_CNTR0193E"
-                             , new Object[] { annotationType, bmd.enterpriseBeanClassName });
+                    Tr.error(tc, "SINGLETON_INVALID_CONCURRENCY_MANAGEMENT_CNTR0193E", new Object[] { annotationType, bmd.enterpriseBeanClassName });
 
                     throw new EJBConfigurationException("CNTR0193E: The value, " + annotationType
                                                         + ", that is specified for the concurrency management type of the "
@@ -3437,31 +3203,23 @@ public abstract class EJBMDOrchestrator
         // throw an exception.
 
         // Was a value provided via DD?
-        if (ddType == null)
-        {
+        if (ddType == null) {
             // DD did not provide a value, so use annotation value if one was provided.
             // Otherwise, use default value required by EJB 3.1 spec.
-            if (annotationType != null)
-            {
+            if (annotationType != null) {
                 // No DD, but we have annotation. So use the annotation.
                 bmd.ivSingletonUsesBeanManagedConcurrency = (annotationType == ConcurrencyManagementType.BEAN);
-            }
-            else
-            {
+            } else {
                 // Neither DD nor annotation, so default to Container Concurrency Management type.
                 bmd.ivSingletonUsesBeanManagedConcurrency = false;
             }
-        }
-        else
-        {
+        } else {
             // DD did provide a concurrency management type. Verify it matches annotation type
             // if both annotation and DD provided a value.
-            if (annotationType != null && ddType != annotationType)
-            {
+            if (annotationType != null && ddType != annotationType) {
                 // CNTR0194E: The value {0} that is specified in the ejb-jar.xml file for concurrency management type is
                 // not the same as the @ConcurrencyManagement annotation value {1} on the {2} enterprise bean class.
-                Tr.error(tc, "SINGLETON_XML_OVERRIDE_CONCURRENCY_MANAGEMENT_CNTR0194E"
-                         , new Object[] { ddType, annotationType, bmd.enterpriseBeanClassName });
+                Tr.error(tc, "SINGLETON_XML_OVERRIDE_CONCURRENCY_MANAGEMENT_CNTR0194E", new Object[] { ddType, annotationType, bmd.enterpriseBeanClassName });
 
                 throw new EJBConfigurationException("CNTR0194E: The value " + ddType
                                                     + " that is specified in the ejb-jar.xml file for concurrency management type is not the same "
@@ -3473,8 +3231,7 @@ public abstract class EJBMDOrchestrator
             bmd.ivSingletonUsesBeanManagedConcurrency = (ddType == ConcurrencyManagementType.BEAN);
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "processSingletonConcurrencyManagementType returning "
                         + bmd.ivSingletonUsesBeanManagedConcurrency + " for j2ee name = " + bmd.j2eeName);
         }
@@ -3484,8 +3241,7 @@ public abstract class EJBMDOrchestrator
      * Create the appropriate ManagedObjectFactory for the bean type, or obtain the constructor
      * if a ManagedObjectFactory will not be used.
      */
-    private void initializeManagedObjectFactoryOrConstructor(BeanMetaData bmd) throws EJBConfigurationException
-    {
+    private void initializeManagedObjectFactoryOrConstructor(BeanMetaData bmd) throws EJBConfigurationException {
         if (bmd.isManagedBean()) {
             bmd.ivEnterpriseBeanFactory = getManagedBeanManagedObjectFactory(bmd, bmd.enterpriseBeanClass);
 
@@ -3624,9 +3380,7 @@ public abstract class EJBMDOrchestrator
      * @throws EJBConfigurationException for customer configuration errors
      *
      */
-    private void loadCustomerProvidedClasses(BeanMetaData bmd)
-                    throws ContainerException, EJBConfigurationException
-    {
+    private void loadCustomerProvidedClasses(BeanMetaData bmd) throws ContainerException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled()) {
@@ -3638,11 +3392,9 @@ public abstract class EJBMDOrchestrator
         // MDBs are allowed to specified a MessageListener interface other
         // than javax.jms.MessageListener (ie. this is referred to as Messaging
         // Type in the xml).   //430621
-        if (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-        {
+        if (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
             bmd.ivMessagingTypeClassName = bmd.ivInitData.ivMessageListenerInterfaceName;
-            if (bmd.ivMessagingTypeClassName == null)
-            {
+            if (bmd.ivMessagingTypeClassName == null) {
                 // d659661.1 - validateMergedMetaData has already ensured that 3.0+
                 // beans have a valid interface specified.
                 bmd.ivMessagingTypeClassName = "javax.jms.MessageListener";
@@ -3662,12 +3414,10 @@ public abstract class EJBMDOrchestrator
         // the code below attempts to obtain a reference to them.  F3438-12805CdRv
         // -----------------------------------------------------------------------
         EJBConfiguration facadeConfig = bmd.ivInitData.ivFacadeConfiguration;
-        if (facadeConfig != null)
-        {
+        if (facadeConfig != null) {
             EJBClassFactory facadeClassFactory = facadeConfig.getEJBClassFactory();
 
-            if (facadeClassFactory != null)
-            {
+            if (facadeClassFactory != null) {
                 facadeClassFactory.loadEJBClasses(classLoader,
                                                   facadeConfig);
             }
@@ -3688,17 +3438,14 @@ public abstract class EJBMDOrchestrator
 
         String classNameToLoad = null;
 
-        try
-        {
+        try {
             classNameToLoad = bmd.ivInitData.ivRemoteInterfaceName;
-            if (classNameToLoad != null)
-            {
+            if (classNameToLoad != null) {
                 bmd.remoteInterfaceClass = classLoader.loadClass(classNameToLoad);
             }
 
             classNameToLoad = bmd.ivInitData.ivRemoteHomeInterfaceName;
-            if (classNameToLoad != null)
-            {
+            if (classNameToLoad != null) {
                 bmd.homeInterfaceClass = classLoader.loadClass(classNameToLoad);
 
                 // When a component remote interface is added via annotations, just
@@ -3706,13 +3453,11 @@ public abstract class EJBMDOrchestrator
                 // interface must be derived from the remote home.  The component
                 // remote interface must be the return type of all remote home
                 // create methods.                                          366845.9
-                if (bmd.remoteInterfaceClass == null)
-                {
+                if (bmd.remoteInterfaceClass == null) {
                     // JITDeploy knows how to extract this information and
                     // perform some validation (will fail if null).           d443878
-                    bmd.remoteInterfaceClass = JITDeploy.getComponentInterface
-                                    (bmd.homeInterfaceClass,
-                                     bmd.j2eeName.toString());
+                    bmd.remoteInterfaceClass = JITDeploy.getComponentInterface(bmd.homeInterfaceClass,
+                                                                               bmd.j2eeName.toString());
 
                     // save the name for NameUtil/JITDeploy use later.
                     bmd.ivInitData.ivRemoteInterfaceName = bmd.remoteInterfaceClass.getName();
@@ -3720,21 +3465,16 @@ public abstract class EJBMDOrchestrator
             }
 
             classNameToLoad = bmd.ivInitData.ivLocalInterfaceName;
-            if (classNameToLoad != null)
-            {
+            if (classNameToLoad != null) {
                 bmd.localInterfaceClass = classLoader.loadClass(classNameToLoad);
-            }
-            else
-            {
+            } else {
                 classNameToLoad = bmd.ivMessagingTypeClassName;
-                if (classNameToLoad != null) // d659661.1
-                {
+                if (classNameToLoad != null) {
                     bmd.localInterfaceClass = classLoader.loadClass(classNameToLoad);
                 }
             }
             classNameToLoad = bmd.ivInitData.ivLocalHomeInterfaceName;
-            if (classNameToLoad != null)
-            {
+            if (classNameToLoad != null) {
                 bmd.localHomeInterfaceClass = classLoader.loadClass(classNameToLoad);
 
                 // When a component local interface is added via annotations, just
@@ -3742,13 +3482,11 @@ public abstract class EJBMDOrchestrator
                 // interface must be derived from the local home.  The component
                 // local interface must be the return type of all local home
                 // create methods. 366845.9
-                if (bmd.localInterfaceClass == null)
-                {
+                if (bmd.localInterfaceClass == null) {
                     // JITDeploy knows how to extract this information and
                     // perform some validation (will fail if null).           d443878
-                    bmd.localInterfaceClass = JITDeploy.getComponentInterface
-                                    (bmd.localHomeInterfaceClass,
-                                     bmd.j2eeName.toString());
+                    bmd.localInterfaceClass = JITDeploy.getComponentInterface(bmd.localHomeInterfaceClass,
+                                                                              bmd.j2eeName.toString());
 
                     // save the name for NameUtil/JITDeploy use later.
                     bmd.ivInitData.ivLocalInterfaceName = bmd.localInterfaceClass.getName();
@@ -3757,8 +3495,7 @@ public abstract class EJBMDOrchestrator
 
             // Load business local interface classes.                     d366807.4
             String[] businessLocalInterfaceName = bmd.ivInitData.ivLocalBusinessInterfaceNames;
-            if (businessLocalInterfaceName != null)
-            {
+            if (businessLocalInterfaceName != null) {
                 int offset = 0;
                 int numInterfaces = businessLocalInterfaceName.length;
 
@@ -3768,32 +3505,26 @@ public abstract class EJBMDOrchestrator
                 }
 
                 bmd.ivBusinessLocalInterfaceClasses = new Class[numInterfaces + offset];
-                for (int i = 0; i < numInterfaces; ++i)
-                {
+                for (int i = 0; i < numInterfaces; ++i) {
                     classNameToLoad = businessLocalInterfaceName[i];
-                    bmd.ivBusinessLocalInterfaceClasses[i + offset] =
-                                    classLoader.loadClass(classNameToLoad);
+                    bmd.ivBusinessLocalInterfaceClasses[i + offset] = classLoader.loadClass(classNameToLoad);
                 }
             }
 
             // Load business remote interface classes.                    d366807.4
             String[] businessRemoteInterfaceName = bmd.ivInitData.ivRemoteBusinessInterfaceNames;
-            if (businessRemoteInterfaceName != null)
-            {
+            if (businessRemoteInterfaceName != null) {
                 int numInterfaces = businessRemoteInterfaceName.length;
                 bmd.ivBusinessRemoteInterfaceClasses = new Class[numInterfaces];
-                for (int i = 0; i < numInterfaces; ++i)
-                {
+                for (int i = 0; i < numInterfaces; ++i) {
                     classNameToLoad = businessRemoteInterfaceName[i];
-                    bmd.ivBusinessRemoteInterfaceClasses[i] =
-                                    classLoader.loadClass(classNameToLoad);
+                    bmd.ivBusinessRemoteInterfaceClasses[i] = classLoader.loadClass(classNameToLoad);
                 }
             }
 
             // load webservice endpoint interface if applicable
             classNameToLoad = bmd.ivInitData.ivWebServiceEndpointInterfaceName;
-            if (classNameToLoad != null)
-            {
+            if (classNameToLoad != null) {
                 //d495288: start
                 try {
                     bmd.webserviceEndpointInterfaceClass = bmd.classLoader.loadClass(classNameToLoad);
@@ -3813,8 +3544,7 @@ public abstract class EJBMDOrchestrator
                                          + "<service-endpoint> stanza in their ejb-jar.xml file, but didn't provide the SEI class (at least "
                                          + "it is not found on the classpath).");
                         }
-                    }
-                    else {
+                    } else {
                         //rethrow the exception and let the 'outer' catch block catch and handle the exception
                         throw ex;
                     }
@@ -3835,18 +3565,15 @@ public abstract class EJBMDOrchestrator
 
             // If No-Interface view (LocalBean), then add the EJB impl class
             // as the first local business interface.                     F743-1756
-            if (bmd.ivLocalBean)
-            {
-                if (bmd.ivBusinessLocalInterfaceClasses == null)
-                {
+            if (bmd.ivLocalBean) {
+                if (bmd.ivBusinessLocalInterfaceClasses == null) {
                     bmd.ivBusinessLocalInterfaceClasses = new Class[1];
                 }
                 bmd.ivBusinessLocalInterfaceClasses[0] = bmd.enterpriseBeanClass;
             }
 
             // Trace all the customer provided classes we have loaded.
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, " **** component local interface class = " +
                              bmd.ivInitData.ivLocalInterfaceName);
                 Tr.debug(tc, "   (OR) **** MDB local interface class = " +
@@ -3873,8 +3600,7 @@ public abstract class EJBMDOrchestrator
                              bmd.localHomeInterfaceClassName);
             }
 
-        } catch (ClassNotFoundException ex)
-        {
+        } catch (ClassNotFoundException ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".loadCustomerProvidedClasses", "3830");
             if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Failed to initialize BeanMetaData instance", ex);
@@ -3882,8 +3608,7 @@ public abstract class EJBMDOrchestrator
             ecex = new EJBConfigurationException("Bean class " + classNameToLoad + " could not be found or loaded", ex);
             Tr.error(tc, "BEANCLASS_NOT_FOUND_CNTR0075E", classNameToLoad);
             throw ecex;
-        } catch (LinkageError ex)
-        {
+        } catch (LinkageError ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".loadCustomerProvidedClasses", "3840");
             if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Failed to initialize BeanMetaData instance", ex);
@@ -3891,17 +3616,13 @@ public abstract class EJBMDOrchestrator
             ecex = new EJBConfigurationException("Bean class " + classNameToLoad + " could not be loaded", ex);
             Tr.error(tc, "BEANCLASS_NOT_FOUND_CNTR0075E", classNameToLoad);
             throw ecex;
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".loadCustomerProvidedClasses", "3850");
             ContainerException cex;
-            if (classNameToLoad != null)
-            {
+            if (classNameToLoad != null) {
                 cex = new ContainerException("Bean class " + classNameToLoad + " could not be found or loaded", ex);
                 Tr.error(tc, "BEANCLASS_NOT_FOUND_CNTR0075E", classNameToLoad);
-            }
-            else
-            {
+            } else {
                 cex = new ContainerException("Failed to initialize BeanMetaData instance - " +
                                              "caught Throwable", ex);
                 Tr.error(tc, "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
@@ -3916,8 +3637,7 @@ public abstract class EJBMDOrchestrator
         // to the type of checking done by EJBDeploy.                      d443878
         // Note: only required JITDeployed beans, as EJBDeploy will have
         // already performed similar validation for other beans.           PK60953
-        if (!bmd._moduleMetaData.isEJBDeployed()) // F743-21131CodRv
-        {
+        if (!bmd._moduleMetaData.isEJBDeployed()) {
             JITDeploy.validateInterfaceBasics(bmd.homeInterfaceClass,
                                               bmd.remoteInterfaceClass,
                                               bmd.localHomeInterfaceClass,
@@ -3945,9 +3665,7 @@ public abstract class EJBMDOrchestrator
      * @throws EJBConfigurationException for customer configuration errors
      */
     // F743-506
-    private static Class<?> loadCustomerProvidedBeanClass(BeanMetaData bmd)
-                    throws ContainerException, EJBConfigurationException
-    {
+    private static Class<?> loadCustomerProvidedBeanClass(BeanMetaData bmd) throws ContainerException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "loadCustomerProvidedBeanClass : " + bmd.enterpriseBeanClassName);
@@ -3955,13 +3673,10 @@ public abstract class EJBMDOrchestrator
         // enterpriseBeanClass will be null only if loadCustomerProvidedBeanClass
         // is called prior to loadCustomerProvidedClasses.  For example, from
         // processAutomaticTimerMetaData via processBean if deferred init.
-        if (bmd.enterpriseBeanClass == null)
-        {
-            try
-            {
+        if (bmd.enterpriseBeanClass == null) {
+            try {
                 bmd.enterpriseBeanClass = bmd.classLoader.loadClass(bmd.enterpriseBeanClassName);
-            } catch (Throwable ex)
-            {
+            } catch (Throwable ex) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".loadCustomerProvidedBeanClass", "6369");
                 Tr.error(tc, "BEANCLASS_NOT_FOUND_CNTR0075E", bmd.enterpriseBeanClassName);
 
@@ -3989,8 +3704,7 @@ public abstract class EJBMDOrchestrator
                                                     Method[] localMethods,
                                                     Method[] remoteMethods,
                                                     Method[] localHomeMethods,
-                                                    Method[] remoteHomeMethods)
-                    throws ContainerException, EJBConfigurationException {
+                                                    Method[] remoteHomeMethods) throws ContainerException, EJBConfigurationException {
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
@@ -4002,16 +3716,16 @@ public abstract class EJBMDOrchestrator
         EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
         bmd.ivIndirectLocalProxies = (ContainerProperties.IndirectLocalProxies ||
                                       mmd.getEJBApplicationMetaData().isIndirectLocalProxies() ||
-                                     bmd.ivUnversionedJ2eeName != null) &&
+                                      bmd.ivUnversionedJ2eeName != null)
+                                     &&
                                      (bmd.isEntityBean() ||
                                       bmd.isStatelessSessionBean() ||
-                                     bmd.isSingletonSessionBean());
+                                      bmd.isSingletonSessionBean());
 
         String classNameToLoad = null;
         EJBRuntime runtime = bmd.container.getEJBRuntime();
 
-        try
-        {
+        try {
             String componentRemoteWrapperImplName = null;
             String componentLocalWrapperImplName = null;
             String businessRemoteWrapperImplName[] = null;
@@ -4033,8 +3747,7 @@ public abstract class EJBMDOrchestrator
             // is needed (which skips pre/post inovke).. so fall through to
             // the code below and generate one.                        F743-34301.1
             // --------------------------------------------------------------------
-            if (bmd.type == InternalConstants.TYPE_MANAGED_BEAN)
-            {
+            if (bmd.type == InternalConstants.TYPE_MANAGED_BEAN) {
                 // ManagedBeans have special home for bean creation
                 bmd.homeBeanClass = ManagedBeanHome.class;
 
@@ -4042,13 +3755,10 @@ public abstract class EJBMDOrchestrator
                     return; // no interceptors = no wrapper
                 }
 
-                if (bmd.ivInterceptorMetaData.ivPreDestroyInterceptors == null)
-                {
+                if (bmd.ivInterceptorMetaData.ivPreDestroyInterceptors == null) {
                     boolean hasAroundInvoke = false;
-                    for (EJBMethodInfoImpl methodInfo : bmd.localMethodInfos)
-                    {
-                        if (methodInfo.getAroundInterceptorProxies() != null)
-                        {
+                    for (EJBMethodInfoImpl methodInfo : bmd.localMethodInfos) {
+                        if (methodInfo.getAroundInterceptorProxies() != null) {
                             hasAroundInvoke = true;
                             break;
                         }
@@ -4090,14 +3800,10 @@ public abstract class EJBMDOrchestrator
             // No-Interface view counts as a local interface, and since it requires
             // the same processing below, will be added to the list of local business
             // interfaces (and may be the only local interface).          F743-1756
-            if (bmd.ivLocalBean)
-            {
-                if (localBusinessInterfaces == null)
-                {
+            if (bmd.ivLocalBean) {
+                if (localBusinessInterfaces == null) {
                     localBusinessInterfaces = new String[1];
-                }
-                else
-                {
+                } else {
                     String[] newNames = new String[localBusinessInterfaces.length + 1];
                     System.arraycopy(localBusinessInterfaces, 0, newNames, 1,
                                      localBusinessInterfaces.length);
@@ -4113,8 +3819,7 @@ public abstract class EJBMDOrchestrator
             // RELEASE: This switch statement must be updated with every new release level
             // Calculate NameUtil version from bean version
             int nameUtilBeanVersion = -1;
-            switch (bmd.ivModuleVersion)
-            {
+            switch (bmd.ivModuleVersion) {
                 case BeanMetaData.J2EE_EJB_VERSION_1_1:
                 case BeanMetaData.J2EE_EJB_VERSION_1_0:
                     nameUtilBeanVersion = NameUtil.EJB_1X;
@@ -4130,23 +3835,12 @@ public abstract class EJBMDOrchestrator
                     break;
             }
 
-            NameUtil nameUtil = new NameUtil(bmd.enterpriseBeanName,
-                            remoteHomeInterface,
-                            remoteInterface,
-                            localHomeInterface,
-                            localInterface,
-                            remoteBusinessInterfaces,
-                            localBusinessInterfaces,
-                            beanClass,
-                            primaryKey,
-                            nameUtilBeanType,
-                            nameUtilBeanVersion);
+            NameUtil nameUtil = new NameUtil(bmd.enterpriseBeanName, remoteHomeInterface, remoteInterface, localHomeInterface, localInterface, remoteBusinessInterfaces, localBusinessInterfaces, beanClass, primaryKey, nameUtilBeanType, nameUtilBeanVersion);
 
             // --------------------------------------------------------------------
             //JITDeploy handling for all MDB's.
             // --------------------------------------------------------------------
-            if (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-            {
+            if (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
                 // Set localImplClassName based on whether the old or new MDB implementation
                 // is being used. A null value indicates the new MDB implementation and will
                 // always be returned on Liberty. The new MDB implementation runs through JITDeploy.
@@ -4183,8 +3877,7 @@ public abstract class EJBMDOrchestrator
                 // on the generated proxy class that holds a reference to the
                 // MessageEndpointBase object and make it accessible so it may be set
                 // when an instance is created.
-                if (bmd.ivIsNoMethodInterfaceMDB)
-                {
+                if (bmd.ivIsNoMethodInterfaceMDB) {
                     bmd.ivMessageEndpointBaseField = bmd.localImplClass.getDeclaredField(MESSAGE_ENDPOINT_BASE_FIELD);
                     bmd.ivMessageEndpointBaseField.setAccessible(true);
                 }
@@ -4206,20 +3899,18 @@ public abstract class EJBMDOrchestrator
             // special version of a no-interface wrapper that doesn't call pre
             // or post invoke.                                         F743-34301.1
             // --------------------------------------------------------------------
-            else if (bmd.type == InternalConstants.TYPE_MANAGED_BEAN)
-            {
+            else if (bmd.type == InternalConstants.TYPE_MANAGED_BEAN) {
                 bmd.ivBusinessLocalImplClasses = new Class[1];
                 classNameToLoad = nameUtil.getBusinessLocalImplClassName(0);
-                bmd.ivBusinessLocalImplClasses[0] = JITDeploy.generateEJBWrapper
-                                (classLoader,
-                                 classNameToLoad,
-                                 new Class<?>[] { bmd.ivBusinessLocalInterfaceClasses[0] },
-                                 EJBWrapperType.MANAGED_BEAN,
-                                 localMethods,
-                                 bmd.localMethodInfos,
-                                 bmd.enterpriseBeanClassName,
-                                 bmd.j2eeName.toString(),
-                                 runtime.getClassDefiner()); // F70650
+                bmd.ivBusinessLocalImplClasses[0] = JITDeploy.generateEJBWrapper(classLoader,
+                                                                                 classNameToLoad,
+                                                                                 new Class<?>[] { bmd.ivBusinessLocalInterfaceClasses[0] },
+                                                                                 EJBWrapperType.MANAGED_BEAN,
+                                                                                 localMethods,
+                                                                                 bmd.localMethodInfos,
+                                                                                 bmd.enterpriseBeanClassName,
+                                                                                 bmd.j2eeName.toString(),
+                                                                                 runtime.getClassDefiner()); // F70650
 
                 // For No-Interface view (LocalBean), obtain the Fields on
                 // the generated wrapper class that holds a reference to the
@@ -4231,13 +3922,9 @@ public abstract class EJBMDOrchestrator
                 // reported in the catch block below as a ClassNotFound,
                 // but instead as a general container error.
                 classNameToLoad = null;
-                bmd.ivLocalBeanWrapperField =
-                                bmd.ivBusinessLocalImplClasses[0].getDeclaredField
-                                                (LOCAL_BEAN_WRAPPER_FIELD);
+                bmd.ivLocalBeanWrapperField = bmd.ivBusinessLocalImplClasses[0].getDeclaredField(LOCAL_BEAN_WRAPPER_FIELD);
                 bmd.ivLocalBeanWrapperField.setAccessible(true);
-                bmd.ivManagedBeanBeanOField =
-                                bmd.ivBusinessLocalImplClasses[0].getDeclaredField
-                                                (MANAGED_BEAN_BEANO_FIELD);
+                bmd.ivManagedBeanBeanOField = bmd.ivBusinessLocalImplClasses[0].getDeclaredField(MANAGED_BEAN_BEANO_FIELD);
                 bmd.ivManagedBeanBeanOField.setAccessible(true);
             }
 
@@ -4246,23 +3933,20 @@ public abstract class EJBMDOrchestrator
             // (except CMP) are generated and loaded dynamically via ASM
             // (i.e. 'just-in-time' deploy).
             // --------------------------------------------------------------------
-            else if (!mmd.isEJBDeployed()) // F743-21131CodRv
-            {
+            else if (!mmd.isEJBDeployed()) {
                 // Generate/Load the Component Remote Implementation ('Wrapper')
-                if (remoteInterface != null)
-                {
+                if (remoteInterface != null) {
                     componentRemoteWrapperImplName = nameUtil.getRemoteImplClassName();
                     classNameToLoad = componentRemoteWrapperImplName;
-                    bmd.remoteImplClass = JITDeploy.generateEJBWrapper
-                                    (classLoader,
-                                     classNameToLoad,
-                                     new Class<?>[] { bmd.remoteInterfaceClass },
-                                     EJBWrapperType.REMOTE, // d413752
-                                     remoteMethods,
-                                     bmd.methodInfos, // d367572.4
-                                     bmd.enterpriseBeanClassName,
-                                     bmd.j2eeName.toString(), // d443878
-                                     runtime.getClassDefiner()); // F70650
+                    bmd.remoteImplClass = JITDeploy.generateEJBWrapper(classLoader,
+                                                                       classNameToLoad,
+                                                                       new Class<?>[] { bmd.remoteInterfaceClass },
+                                                                       EJBWrapperType.REMOTE, // d413752
+                                                                       remoteMethods,
+                                                                       bmd.methodInfos, // d367572.4
+                                                                       bmd.enterpriseBeanClassName,
+                                                                       bmd.j2eeName.toString(), // d443878
+                                                                       runtime.getClassDefiner()); // F70650
 
                     bmd.remoteTieClass = JITDeploy.generate_Tie // d413752
                     (classLoader,
@@ -4275,55 +3959,47 @@ public abstract class EJBMDOrchestrator
                 }
 
                 // Generate/Load the Component Local Implementation ('Wrapper')
-                if (localInterface != null)
-                {
+                if (localInterface != null) {
                     componentLocalWrapperImplName = nameUtil.getLocalImplClassName(); // d114199 d147734
 
                     // L001126: Moved this section into the else block, this used to sit outside the if/else block
                     // but is no longer valid if the bmd.type is MESSAGE_DRIVEN as we will set localImplClass
                     // directly at that point.
                     classNameToLoad = componentLocalWrapperImplName;
-                    bmd.localImplClass = JITDeploy.generateEJBWrapper
-                                    (classLoader,
-                                     classNameToLoad,
-                                     new Class<?>[] { bmd.localInterfaceClass },
-                                     EJBWrapperType.LOCAL, // d413752
-                                     localMethods,
-                                     bmd.localMethodInfos, // d367572.4
-                                     bmd.enterpriseBeanClassName,
-                                     bmd.j2eeName.toString(), // d443878
-                                     runtime.getClassDefiner()); // F70650
+                    bmd.localImplClass = JITDeploy.generateEJBWrapper(classLoader,
+                                                                      classNameToLoad,
+                                                                      new Class<?>[] { bmd.localInterfaceClass },
+                                                                      EJBWrapperType.LOCAL, // d413752
+                                                                      localMethods,
+                                                                      bmd.localMethodInfos, // d367572.4
+                                                                      bmd.enterpriseBeanClassName,
+                                                                      bmd.j2eeName.toString(), // d443878
+                                                                      runtime.getClassDefiner()); // F70650
 
                     // L001126 - end change
                 }
 
                 // Generate/Load the implementation classes (wrappers) for the
                 // Business Local interfaces (except for MDB).              d369262
-                if (bmd.ivBusinessLocalInterfaceClasses != null) // d414873
-                {
+                if (bmd.ivBusinessLocalInterfaceClasses != null) {
                     int numInterfaces = bmd.ivBusinessLocalInterfaceClasses.length;
                     bmd.ivBusinessLocalImplClasses = new Class[numInterfaces];
                     businessLocalWrapperImplName = new String[numInterfaces];
                     // If No-Interface view present (LocalBean), then the first
                     // local wrapper is of type LOCAL_BEAN                  F743-1756
-                    EJBWrapperType wrapperType =
-                                    (bmd.ivLocalBean) ? EJBWrapperType.LOCAL_BEAN
-                                                    : EJBWrapperType.BUSINESS_LOCAL;
-                    for (int i = 0; i < numInterfaces; ++i)
-                    {
-                        businessLocalWrapperImplName[i] =
-                                        nameUtil.getBusinessLocalImplClassName(i);
+                    EJBWrapperType wrapperType = (bmd.ivLocalBean) ? EJBWrapperType.LOCAL_BEAN : EJBWrapperType.BUSINESS_LOCAL;
+                    for (int i = 0; i < numInterfaces; ++i) {
+                        businessLocalWrapperImplName[i] = nameUtil.getBusinessLocalImplClassName(i);
                         classNameToLoad = businessLocalWrapperImplName[i];
-                        bmd.ivBusinessLocalImplClasses[i] = JITDeploy.generateEJBWrapper
-                                        (classLoader,
-                                         classNameToLoad,
-                                         new Class<?>[] { bmd.ivBusinessLocalInterfaceClasses[i] },
-                                         wrapperType, // d413752 F743-1756
-                                         localMethods,
-                                         bmd.localMethodInfos, // d367572.4
-                                         bmd.enterpriseBeanClassName,
-                                         bmd.j2eeName.toString(), // d443878
-                                         runtime.getClassDefiner()); // F70650
+                        bmd.ivBusinessLocalImplClasses[i] = JITDeploy.generateEJBWrapper(classLoader,
+                                                                                         classNameToLoad,
+                                                                                         new Class<?>[] { bmd.ivBusinessLocalInterfaceClasses[i] },
+                                                                                         wrapperType, // d413752 F743-1756
+                                                                                         localMethods,
+                                                                                         bmd.localMethodInfos, // d367572.4
+                                                                                         bmd.enterpriseBeanClassName,
+                                                                                         bmd.j2eeName.toString(), // d443878
+                                                                                         runtime.getClassDefiner()); // F70650
                         wrapperType = EJBWrapperType.BUSINESS_LOCAL; // F743-1756
                     }
 
@@ -4332,55 +4008,45 @@ public abstract class EJBMDOrchestrator
                     // container and wrapper metadata (an EJSWrapperBase subclass)
                     // and make them accessible so they may be set when an
                     // instance is created.                                 F743-1756
-                    if (bmd.ivLocalBean)
-                    {
+                    if (bmd.ivLocalBean) {
                         // Clear classNameToLoad so any exceptions here won't get
                         // reported in the catch block below as a ClassNotFound,
                         // but instead as a general container error.
                         classNameToLoad = null;
-                        bmd.ivLocalBeanWrapperField =
-                                        bmd.ivBusinessLocalImplClasses[0].getDeclaredField
-                                                        (LOCAL_BEAN_WRAPPER_FIELD);
+                        bmd.ivLocalBeanWrapperField = bmd.ivBusinessLocalImplClasses[0].getDeclaredField(LOCAL_BEAN_WRAPPER_FIELD);
                         bmd.ivLocalBeanWrapperField.setAccessible(true);
                     }
 
-                    if (bmd.ivIndirectLocalProxies) // F58064
-                    {
+                    if (bmd.ivIndirectLocalProxies) {
                         bmd.ivBusinessLocalImplProxyConstructors = new Constructor<?>[numInterfaces];
-                        for (int i = 0; i < numInterfaces; i++)
-                        {
+                        for (int i = 0; i < numInterfaces; i++) {
                             Class<?> interfaceClass = bmd.ivBusinessLocalInterfaceClasses[i];
                             Method[] methods = DeploymentUtil.getMethods(null, new Class<?>[] { interfaceClass });
                             classNameToLoad = EJBWrapperProxy.getProxyClassName(interfaceClass);
-                            bmd.ivBusinessLocalImplProxyConstructors[i] =
-                                            getWrapperProxyConstructor(bmd, classNameToLoad, interfaceClass, methods);
+                            bmd.ivBusinessLocalImplProxyConstructors[i] = getWrapperProxyConstructor(bmd, classNameToLoad, interfaceClass, methods);
                         }
                     }
                 }
 
                 // Generate/Load the implementation classes (wrappers) for the
                 // Business Remote interfaces.                               d369262
-                if (bmd.ivBusinessRemoteInterfaceClasses != null)
-                {
+                if (bmd.ivBusinessRemoteInterfaceClasses != null) {
                     int numInterfaces = bmd.ivBusinessRemoteInterfaceClasses.length;
                     bmd.ivBusinessRemoteImplClasses = new Class[numInterfaces];
                     bmd.ivBusinessRemoteTieClasses = new Class[numInterfaces]; // d416391
                     businessRemoteWrapperImplName = new String[numInterfaces];
-                    for (int i = 0; i < numInterfaces; ++i)
-                    {
-                        businessRemoteWrapperImplName[i] =
-                                        nameUtil.getBusinessRemoteImplClassName(i);
+                    for (int i = 0; i < numInterfaces; ++i) {
+                        businessRemoteWrapperImplName[i] = nameUtil.getBusinessRemoteImplClassName(i);
                         classNameToLoad = businessRemoteWrapperImplName[i];
-                        bmd.ivBusinessRemoteImplClasses[i] = JITDeploy.generateEJBWrapper
-                                        (classLoader,
-                                         classNameToLoad,
-                                         new Class<?>[] { bmd.ivBusinessRemoteInterfaceClasses[i] },
-                                         EJBWrapperType.BUSINESS_REMOTE, // d413752
-                                         remoteMethods,
-                                         bmd.methodInfos, // d367572.4
-                                         bmd.enterpriseBeanClassName,
-                                         bmd.j2eeName.toString(), // d443878
-                                         runtime.getClassDefiner()); // F70650
+                        bmd.ivBusinessRemoteImplClasses[i] = JITDeploy.generateEJBWrapper(classLoader,
+                                                                                          classNameToLoad,
+                                                                                          new Class<?>[] { bmd.ivBusinessRemoteInterfaceClasses[i] },
+                                                                                          EJBWrapperType.BUSINESS_REMOTE, // d413752
+                                                                                          remoteMethods,
+                                                                                          bmd.methodInfos, // d367572.4
+                                                                                          bmd.enterpriseBeanClassName,
+                                                                                          bmd.j2eeName.toString(), // d443878
+                                                                                          runtime.getClassDefiner()); // F70650
 
                         bmd.ivBusinessRemoteTieClasses[i] = JITDeploy.generate_Tie // d413752
                         (classLoader,
@@ -4397,25 +4063,21 @@ public abstract class EJBMDOrchestrator
                 // class if necessary via JITDeploy.
                 homeImplName = nameUtil.getHomeBeanClassName(); // d114199 d147734
 
-                if (homeImplName != null)
-                {
+                if (homeImplName != null) {
                     classNameToLoad = homeImplName;
-                    bmd.homeBeanClass = JITDeploy.generateEJBHomeImplClass
-                                    (bmd.classLoader,
-                                     classNameToLoad,
-                                     bmd.homeInterfaceClass,
-                                     bmd.localHomeInterfaceClass,
-                                     bmd.enterpriseBeanClass, // d369262.5
-                                     bmd.pKeyClass, // d369262.8
-                                     bmd.ivInitMethodMap, // d369262.5
-                                     bmd.j2eeName.toString(), // d443878
-                                     bmd.type,
-                                     runtime.getClassDefiner()); // F70650
-                }
-                else if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION || // F743-508
-                         bmd.type == InternalConstants.TYPE_STATELESS_SESSION ||
-                         bmd.type == InternalConstants.TYPE_STATEFUL_SESSION)
-                {
+                    bmd.homeBeanClass = JITDeploy.generateEJBHomeImplClass(bmd.classLoader,
+                                                                           classNameToLoad,
+                                                                           bmd.homeInterfaceClass,
+                                                                           bmd.localHomeInterfaceClass,
+                                                                           bmd.enterpriseBeanClass, // d369262.5
+                                                                           bmd.pKeyClass, // d369262.8
+                                                                           bmd.ivInitMethodMap, // d369262.5
+                                                                           bmd.j2eeName.toString(), // d443878
+                                                                           bmd.type,
+                                                                           runtime.getClassDefiner()); // F70650
+                } else if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION || // F743-508
+                           bmd.type == InternalConstants.TYPE_STATELESS_SESSION ||
+                           bmd.type == InternalConstants.TYPE_STATEFUL_SESSION) {
                     // Use generic SessionHome when no home is defined.
                     bmd.homeBeanClass = SessionHome.class; // F743-34301.1
                 }
@@ -4423,19 +4085,17 @@ public abstract class EJBMDOrchestrator
                 // load generated remote Home ('Wrapper') Impl class - EJSRemote[Type]HomeItf
                 //    e.g. EJSRemoteCMPTest1Home
                 homeRemoteWrapperImplName = nameUtil.getHomeRemoteImplClassName(); // d114199 d147734
-                if (homeRemoteWrapperImplName != null)
-                {
+                if (homeRemoteWrapperImplName != null) {
                     classNameToLoad = homeRemoteWrapperImplName;
-                    bmd.homeRemoteImplClass = JITDeploy.generateEJBWrapper
-                                    (bmd.classLoader,
-                                     classNameToLoad,
-                                     new Class<?>[] { bmd.homeInterfaceClass },
-                                     EJBWrapperType.REMOTE_HOME, // d413752
-                                     remoteHomeMethods, // d413752
-                                     bmd.homeMethodInfos, // d367572.4
-                                     bmd.homeBeanClass.getName(),
-                                     bmd.j2eeName.toString(), // d443878
-                                     runtime.getClassDefiner()); // F70650
+                    bmd.homeRemoteImplClass = JITDeploy.generateEJBWrapper(bmd.classLoader,
+                                                                           classNameToLoad,
+                                                                           new Class<?>[] { bmd.homeInterfaceClass },
+                                                                           EJBWrapperType.REMOTE_HOME, // d413752
+                                                                           remoteHomeMethods, // d413752
+                                                                           bmd.homeMethodInfos, // d367572.4
+                                                                           bmd.homeBeanClass.getName(),
+                                                                           bmd.j2eeName.toString(), // d443878
+                                                                           runtime.getClassDefiner()); // F70650
 
                     bmd.homeRemoteTieClass = JITDeploy.generate_Tie // d413752
                     (classLoader,
@@ -4450,19 +4110,17 @@ public abstract class EJBMDOrchestrator
                 // load generated local Home ('Wrapper') Impl class - EJSLocal[Type]HomeItf
                 //    e.g. EJSLocalCMPTest1Home
                 homeLocalWrapperImplName = nameUtil.getHomeLocalImplClassName(); // f111627 d114199 d147734
-                if (homeLocalWrapperImplName != null)
-                {
+                if (homeLocalWrapperImplName != null) {
                     classNameToLoad = homeLocalWrapperImplName;
-                    bmd.homeLocalImplClass = JITDeploy.generateEJBWrapper
-                                    (bmd.classLoader,
-                                     classNameToLoad,
-                                     new Class<?>[] { bmd.localHomeInterfaceClass },
-                                     EJBWrapperType.LOCAL_HOME, // d413752
-                                     localHomeMethods, // d413752
-                                     bmd.localHomeMethodInfos, // d367572.4
-                                     bmd.homeBeanClass.getName(),
-                                     bmd.j2eeName.toString(), // d443878
-                                     runtime.getClassDefiner()); // F70650
+                    bmd.homeLocalImplClass = JITDeploy.generateEJBWrapper(bmd.classLoader,
+                                                                          classNameToLoad,
+                                                                          new Class<?>[] { bmd.localHomeInterfaceClass },
+                                                                          EJBWrapperType.LOCAL_HOME, // d413752
+                                                                          localHomeMethods, // d413752
+                                                                          bmd.localHomeMethodInfos, // d367572.4
+                                                                          bmd.homeBeanClass.getName(),
+                                                                          bmd.j2eeName.toString(), // d443878
+                                                                          runtime.getClassDefiner()); // F70650
                 }
             }
 
@@ -4470,8 +4128,7 @@ public abstract class EJBMDOrchestrator
             // For module versions <= EJB 2.1, the classes generated by
             // EJBDeploy are still loaded, just as in previous releases.
             // ----------------------------------------------------------
-            else
-            {
+            else {
                 // Load the Component Remote Implementation ('Wrapper')
                 componentRemoteWrapperImplName = nameUtil.getRemoteImplClassName();
                 classNameToLoad = componentRemoteWrapperImplName;
@@ -4500,8 +4157,7 @@ public abstract class EJBMDOrchestrator
 
                 if (isPost11DD && // 114138.3 d147734
                     bmd.type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY &&
-                    bmd.cmpVersion == InternalConstants.CMP_VERSION_2_X) //d166997.1
-                {
+                    bmd.cmpVersion == InternalConstants.CMP_VERSION_2_X) {
                     // This is an EJB 2.x CMP Entity Bean.  The bean class loaded
                     // above is abstract. Determine the concrete implementation
                     // name and load it, replacing the abstract one from above.
@@ -4512,9 +4168,7 @@ public abstract class EJBMDOrchestrator
                     classNameToLoad = bmd.enterpriseBeanClassName;
                     bmd.enterpriseBeanClass = loadGeneratedClass(classLoader, classNameToLoad, nameUtil); // d183360
 
-                }
-                else if (bmd.type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY)
-                {
+                } else if (bmd.type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY) {
                     // This is an EJB 1.x CMP Entity Bean. Persistence will be
                     // handled through a generated persister class which was loaded
                     // elsewhere.                                                  f110762.2
@@ -4533,11 +4187,9 @@ public abstract class EJBMDOrchestrator
                     classNameToLoad = homeImplName;
                     bmd.homeBeanClass = loadGeneratedClass(classLoader, classNameToLoad, nameUtil); // f111627 d147734
 
-                }
-                else if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION || // F743-508
-                         bmd.type == InternalConstants.TYPE_STATELESS_SESSION ||
-                         bmd.type == InternalConstants.TYPE_STATEFUL_SESSION)
-                {
+                } else if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION || // F743-508
+                           bmd.type == InternalConstants.TYPE_STATELESS_SESSION ||
+                           bmd.type == InternalConstants.TYPE_STATEFUL_SESSION) {
                     // Use generic SessionHome when no home is defined.
                     bmd.homeBeanClass = SessionHome.class; // F743-34301.1
                 }
@@ -4556,21 +4208,17 @@ public abstract class EJBMDOrchestrator
 
             } // End else version <= 2.1 load EJBDeploy generated classes
 
-            if (bmd.ivIndirectLocalProxies && bmd.localHomeInterfaceClass != null) // F58064
-            {
+            if (bmd.ivIndirectLocalProxies && bmd.localHomeInterfaceClass != null) {
                 classNameToLoad = EJBWrapperProxy.getProxyClassName(bmd.localHomeInterfaceClass);
-                bmd.homeLocalImplProxyConstructor =
-                                getWrapperProxyConstructor(bmd, classNameToLoad, bmd.localHomeInterfaceClass, localHomeMethods);
+                bmd.homeLocalImplProxyConstructor = getWrapperProxyConstructor(bmd, classNameToLoad, bmd.localHomeInterfaceClass, localHomeMethods);
 
                 classNameToLoad = EJBWrapperProxy.getProxyClassName(bmd.localInterfaceClass);
-                bmd.localImplProxyConstructor =
-                                getWrapperProxyConstructor(bmd, classNameToLoad, bmd.localInterfaceClass, localMethods);
+                bmd.localImplProxyConstructor = getWrapperProxyConstructor(bmd, classNameToLoad, bmd.localInterfaceClass, localMethods);
             }
 
             // If there is a WebService Endpoint, save the name to be used when
             // generating the WebService Endpoint wrapper class.     F743-1756CodRv
-            if (bmd.ivHasWebServiceEndpoint)
-            {
+            if (bmd.ivHasWebServiceEndpoint) {
                 bmd.ivWebServiceEndpointProxyName = nameUtil.getWebServiceEndpointProxyClassName();
             }
 
@@ -4600,8 +4248,7 @@ public abstract class EJBMDOrchestrator
                              homeImplName);
             }
 
-        } catch (ClassNotFoundException ex)
-        {
+        } catch (ClassNotFoundException ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".loadGeneratedImplementationClasses", "4353");
             if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Failed to initialize BeanMetaData instance", ex);
@@ -4609,8 +4256,7 @@ public abstract class EJBMDOrchestrator
             ecex = new EJBConfigurationException("Bean class " + classNameToLoad + " could not be found or loaded", ex);
             Tr.error(tc, "BEANCLASS_NOT_FOUND_CNTR0075E", classNameToLoad);
             throw ecex;
-        } catch (LinkageError ex)
-        {
+        } catch (LinkageError ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".loadGeneratedImplementationClasses", "4363");
             if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Failed to initialize BeanMetaData instance", ex);
@@ -4618,17 +4264,13 @@ public abstract class EJBMDOrchestrator
             ecex = new EJBConfigurationException("Bean class " + classNameToLoad + " could not be loaded", ex);
             Tr.error(tc, "BEANCLASS_NOT_FOUND_CNTR0075E", classNameToLoad);
             throw ecex;
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".loadGeneratedImplementationClasses", "4373");
             ContainerException cex;
-            if (classNameToLoad != null)
-            {
+            if (classNameToLoad != null) {
                 cex = new ContainerException("Bean class " + classNameToLoad + " could not be found or loaded", ex);
                 Tr.error(tc, "BEANCLASS_NOT_FOUND_CNTR0075E", classNameToLoad);
-            }
-            else
-            {
+            } else {
                 cex = new ContainerException("Failed to initialize BeanMetaData instance - " +
                                              "caught Throwable", ex);
                 Tr.error(tc, "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
@@ -4674,9 +4316,7 @@ public abstract class EJBMDOrchestrator
      */
     private Class<?> loadGeneratedClass(ClassLoader classLoader,
                                         String className,
-                                        NameUtil nameUtil)
-                    throws ClassNotFoundException
-    {
+                                        NameUtil nameUtil) throws ClassNotFoundException {
         if (className == null)
             return null;
 
@@ -4700,11 +4340,9 @@ public abstract class EJBMDOrchestrator
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(tc, "loadGeneratedClass: Loading class = " + loadClassName);
 
-        try
-        {
+        try {
             loadedClass = classLoader.loadClass(loadClassName);
-        } catch (ClassNotFoundException cnfe)
-        {
+        } catch (ClassNotFoundException cnfe) {
             // Do not FFDC log this, as this is a normal exception when the
             // class was generated with an older version of EJBDeploy
             // FFDCFilter.processException(ex, CLASS_NAME + ".loadGeneratedClass", "4458");
@@ -4722,18 +4360,14 @@ public abstract class EJBMDOrchestrator
         // subsequent classes will be loaded by the first attempt above,
         // reducing the number of ClassNotFoundExceptions.
         // -----------------------------------------------------------------------
-        if (loadedClass == null)
-        {
+        if (loadedClass == null) {
             loadClassName = nameUtil.updateFilenameHashCode(loadClassName);
-            if (loadClassName != null)
-            {
+            if (loadClassName != null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "loadGeneratedClass: Loading class = " + loadClassName);
-                try
-                {
+                try {
                     loadedClass = classLoader.loadClass(loadClassName);
-                } catch (ClassNotFoundException cnfe)
-                {
+                } catch (ClassNotFoundException cnfe) {
                     // Do not FFDC log this, as this is a normal exception when the
                     // class was generated with an older version of EJBDeploy
                     // FFDCFilter.processException(ex, CLASS_NAME + ".loadGeneratedClass", "378");
@@ -4755,18 +4389,14 @@ public abstract class EJBMDOrchestrator
         // subsequent classes will be loaded by the first attempt above,
         // reducing the number of ClassNotFoundExceptions.
         // -----------------------------------------------------------------------
-        if (loadedClass == null)
-        {
+        if (loadedClass == null) {
             loadClassName = nameUtil.updateFilenameHashCode(loadClassName);
-            if (loadClassName != null) //F743-KEN.1
-            {
+            if (loadClassName != null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "loadGeneratedClass: Loading class = " + loadClassName);
-                try
-                {
+                try {
                     loadedClass = classLoader.loadClass(loadClassName);
-                } catch (ClassNotFoundException cnfe)
-                {
+                } catch (ClassNotFoundException cnfe) {
                     // Do not FFDC log this, as it will be logged by the caller
                     // FFDCFilter.processException(ex, CLASS_NAME + ".loadGeneratedClass", "4520");
                     primaryException = cnfe; // F743-1752.1
@@ -4780,8 +4410,7 @@ public abstract class EJBMDOrchestrator
         // Finally, insure an exception is thrown if none of the class load
         // attempts were successful.
         // -----------------------------------------------------------------------
-        if (loadedClass == null)
-        {
+        if (loadedClass == null) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "loadGeneratedClass: all attempts failed: " + primaryException);
 
@@ -4802,8 +4431,7 @@ public abstract class EJBMDOrchestrator
      * @throws EJBConfigurationException
      */
     private ClassLoader getWrapperProxyClassLoader(BeanMetaData bmd, Class<?> intf) // F58064
-    throws EJBConfigurationException
-    {
+                    throws EJBConfigurationException {
         // Wrapper proxies are intended to support application restart scenarios.
         // In order to allow GC of the target EJB class loader when the
         // application stops, the wrapper proxy class must not be defined by the
@@ -4814,14 +4442,11 @@ public abstract class EJBMDOrchestrator
 
         // Classes defined by the boot class loader (i.e., java.lang.Runnable)
         // have a null class loader.
-        if (loader != null)
-        {
-            try
-            {
+        if (loader != null) {
+            try {
                 loader.loadClass(BusinessLocalWrapperProxy.class.getName());
                 return loader;
-            } catch (ClassNotFoundException ex)
-            {
+            } catch (ClassNotFoundException ex) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "unable to load EJSLocalWrapperProxy for " + intf.getName() + " from " + loader);
             }
@@ -4832,14 +4457,11 @@ public abstract class EJBMDOrchestrator
         // server class loader instead.
         loader = bmd.container.getEJBRuntime().getServerClassLoader();
 
-        try
-        {
-            if (loader.loadClass(intf.getName()) == intf)
-            {
+        try {
+            if (loader.loadClass(intf.getName()) == intf) {
                 return loader;
             }
-        } catch (ClassNotFoundException ex)
-        {
+        } catch (ClassNotFoundException ex) {
             // Nothing.
         }
 
@@ -4868,19 +4490,15 @@ public abstract class EJBMDOrchestrator
                                                       String proxyClassName,
                                                       Class<?> interfaceClass,
                                                       Method[] methods) // F58064
-    throws EJBConfigurationException,
-                    ClassNotFoundException
-    {
+                    throws EJBConfigurationException, ClassNotFoundException {
         ClassLoader proxyClassLoader = getWrapperProxyClassLoader(bmd, interfaceClass);
         Class<?>[] interfaces = new Class<?>[] { interfaceClass };
         Class<?> proxyClass = JITDeploy.generateEJBWrapperProxy(proxyClassLoader, proxyClassName, interfaces, methods,
                                                                 bmd.container.getEJBRuntime().getClassDefiner()); // F70650
 
-        try
-        {
+        try {
             return proxyClass.getConstructor(WrapperProxyState.class);
-        } catch (NoSuchMethodException ex)
-        {
+        } catch (NoSuchMethodException ex) {
             throw new IllegalStateException(ex);
         }
     }
@@ -4891,15 +4509,12 @@ public abstract class EJBMDOrchestrator
      * @param method the method to check
      * @return true if the method throws clause is empty
      */
-    private static boolean hasEmptyThrowsClause(Method method) // d666251
-    {
-        for (Class<?> klass : method.getExceptionTypes())
-        {
+    private static boolean hasEmptyThrowsClause(Method method) {
+        for (Class<?> klass : method.getExceptionTypes()) {
             // Per CTS, callback methods can declare unchecked exceptions on the
             // throws clause.
             if (!RuntimeException.class.isAssignableFrom(klass) &&
-                !Error.class.isAssignableFrom(klass))
-            {
+                !Error.class.isAssignableFrom(klass)) {
                 return false;
             }
         }
@@ -4924,8 +4539,7 @@ public abstract class EJBMDOrchestrator
      **/
     // d438133.2
     void processTimeoutMetaData(BeanMetaData bmd) //d738042
-    throws EJBConfigurationException, ContainerException
-    {
+                    throws EJBConfigurationException, ContainerException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -4937,14 +4551,11 @@ public abstract class EJBMDOrchestrator
         // -----------------------------------------------------------------------
         // First - determine if the bean implements the TimedObject interface.
         // -----------------------------------------------------------------------
-        if (BeanMetaData.svTimedObjectClass.isAssignableFrom(bmd.enterpriseBeanClass))
-        {
+        if (BeanMetaData.svTimedObjectClass.isAssignableFrom(bmd.enterpriseBeanClass)) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "processTimeoutMetaData : implements TimedObject");
             bmd.isTimedObject = true;
-        }
-        else
-        {
+        } else {
             // The default is 'false', but if a bean fails to start, and a 2nd
             // attempt is made to start the bean, then insure it is reset to the
             // default value before executing timer metadata processing.    d547849
@@ -4959,15 +4570,13 @@ public abstract class EJBMDOrchestrator
         int timeoutMethodParmCount = -1; //Compiler requires us to initialize variable.
 
         if (bmd.wccm.enterpriseBean != null &&
-            bmd.wccm.enterpriseBean instanceof Session)
-        {
+            bmd.wccm.enterpriseBean instanceof Session) {
             NamedMethod toMethod = ((Session) bmd.wccm.enterpriseBean).getTimeoutMethod();
 
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "processTimeoutMetaData : timeout-method = " + toMethod);
 
-            if (toMethod != null)
-            {
+            if (toMethod != null) {
                 timeoutName = toMethod.getMethodName();
                 timeoutMethodParmCount = verifyXMLTimerParmList(toMethod.getMethodParamList(), //F743-15870
                                                                 bmd,
@@ -4975,10 +4584,8 @@ public abstract class EJBMDOrchestrator
                                                                 true);
 
                 // If the EJB implements the timed object interface, the timed object method must be named "ejbTimeout".
-                if (bmd.isTimedObject)
-                {
-                    if (!"ejbTimeout".equals(timeoutName))
-                    {
+                if (bmd.isTimedObject) {
+                    if (!"ejbTimeout".equals(timeoutName)) {
                         Tr.error(tc, "TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E",
                                  new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                         throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName + " inherits from TimedObject " +
@@ -5002,8 +4609,7 @@ public abstract class EJBMDOrchestrator
         // -----------------------------------------------------------------------
 
         if (timeoutName != null ||
-            !bmd.metadataComplete)
-        {
+            !bmd.metadataComplete) {
             Method annotationMethod = null;
             Method[] xmlMethods = new Method[2];
             Class<?> clazz = bmd.enterpriseBeanClass;
@@ -5014,40 +4620,30 @@ public abstract class EJBMDOrchestrator
                 Tr.debug(tc, "processTimeoutMetaData : looking through methods of " +
                              clazz.getName() + " : " + methodInfos.size());
 
-            for (MethodMap.MethodInfo methodInfo : methodInfos)
-            {
+            for (MethodMap.MethodInfo methodInfo : methodInfos) {
                 Method method = methodInfo.getMethod();
 
                 if (method.getName().equals(timeoutName) &&
-                    hasTimeoutCallbackParameters(methodInfo))
-                {
+                    hasTimeoutCallbackParameters(methodInfo)) {
                     int numParms = methodInfo.getNumParameters();
                     // If the expected number of parameters is unspecified or 0,
                     // defer the selection between no-param and 1-param.
-                    if (timeoutMethodParmCount <= 0)
-                    {
-                        if (xmlMethods[numParms] == null)
-                        {
+                    if (timeoutMethodParmCount <= 0) {
+                        if (xmlMethods[numParms] == null) {
                             xmlMethods[numParms] = method;
                         }
-                    }
-                    else if (numParms == 1)
-                    {
-                        if (timeoutMethod == null) //d738042
-                        {
+                    } else if (numParms == 1) {
+                        if (timeoutMethod == null) {
                             timeoutMethod = method; //d738042
                         }
                     }
                 }
 
-                if (!bmd.metadataComplete)
-                {
+                if (!bmd.metadataComplete) {
                     Object annotation = method.getAnnotation(Timeout.class);
 
-                    if (annotation != null)
-                    {
-                        if (!hasTimeoutCallbackParameters(methodInfo)) // d666251
-                        {
+                    if (annotation != null) {
+                        if (!hasTimeoutCallbackParameters(methodInfo)) {
                             Tr.error(tc, "TIMEOUT_METHOD_MISSING_REQUIRED_PARM_CNTR0158E",
                                      new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName, method.getName() });
                             throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName + " has timeout method: " +
@@ -5055,8 +4651,7 @@ public abstract class EJBMDOrchestrator
                         }
 
                         if (bmd.isTimedObject &&
-                            !("ejbTimeout".equals(method.getName())))
-                        {
+                            !("ejbTimeout".equals(method.getName()))) {
                             Tr.error(tc, "TIMER_BEAN_MUST_IMPLEMENT_EJBTIMEOUT_CNTR0160E",
                                      new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                             throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName + " inherits from TimedObject "
@@ -5064,12 +4659,9 @@ public abstract class EJBMDOrchestrator
                                                                 "but does not implement the required method: ejbTimeout");
                         }
 
-                        if (annotationMethod == null)
-                        {
+                        if (annotationMethod == null) {
                             annotationMethod = method;
-                        }
-                        else
-                        {
+                        } else {
                             Tr.error(tc, "TIMEOUT_ANNOTATION_OVERSPECIFIED_CNTR0161E",
                                      new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                             throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName +
@@ -5085,26 +4677,19 @@ public abstract class EJBMDOrchestrator
             //          matching method now.                                   d659928
             // -----------------------------------------------------------------------
 
-            if (timeoutName != null)
-            {
-                if (timeoutMethodParmCount == 0)
-                {
+            if (timeoutName != null) {
+                if (timeoutMethodParmCount == 0) {
                     // Per the spec, "<method-params/>" can refer to either no-param
                     // or 1-param, with preference for no-param.
                     timeoutMethod = xmlMethods[0] != null ? xmlMethods[0] : xmlMethods[1]; // d738042
-                }
-                else if (timeoutMethodParmCount == -1)
-                {
+                } else if (timeoutMethodParmCount == -1) {
                     // The user did not specify <method-params/>.  Prefer to use the
                     // annotated method if possible.  For backwards compatibility,
                     // prefer to use the 1-param method rather than no-param.
                     if (annotationMethod != null &&
-                        annotationMethod.getName().equals(timeoutName))
-                    {
+                        annotationMethod.getName().equals(timeoutName)) {
                         timeoutMethod = annotationMethod; // d738042
-                    }
-                    else
-                    {
+                    } else {
                         timeoutMethod = xmlMethods[1] != null ? xmlMethods[1] : xmlMethods[0]; //d738042
                     }
                 }
@@ -5117,8 +4702,7 @@ public abstract class EJBMDOrchestrator
             // --------------------------------------------------------------------
 
             if (timeoutName != null &&
-                timeoutMethod == null) //d738042
-            {
+                timeoutMethod == null) {
                 // The configured timeout method was not found on the bean implementation.
                 Tr.error(tc, "CONFIGURED_TIMEOUT_METHOD_NOT_FOUND_CNTR0162E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName, timeoutName });
@@ -5128,8 +4712,7 @@ public abstract class EJBMDOrchestrator
 
             if (timeoutMethod != null && //d738042
                 annotationMethod != null &&
-                timeoutMethod != annotationMethod) //d738042
-            {
+                timeoutMethod != annotationMethod) {
                 // Timeout method configuration conflict:
                 // XML has one configured timeout method name, and an @Timeout annotation has a different timeout method name
                 Tr.error(tc, "CONFLICTING_TIMEOUT_METHOD_NAMES_CNTR0163E",
@@ -5138,15 +4721,12 @@ public abstract class EJBMDOrchestrator
                                                     + timeoutMethod.getName() + " in XML, and timeout method: " + annotationMethod.getName() + " via an @Timeout annotation."); // d738042
             }
 
-            if (timeoutMethod == null) //d738042
-            {
+            if (timeoutMethod == null) {
                 timeoutMethod = annotationMethod; //d738042
             }
 
-            if (timeoutMethod != null) //d738042
-            {
-                if (!hasEmptyThrowsClause(timeoutMethod)) // d666251 d738042
-                {
+            if (timeoutMethod != null) {
+                if (!hasEmptyThrowsClause(timeoutMethod)) {
                     Tr.error(tc, "TIMEOUT_METHOD_THROWS_APP_EXCEPTION_CNTR0164E",
                              new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName, timeoutMethod.getName() }); // d738042
                     throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName + " has timeout method "
@@ -5154,8 +4734,7 @@ public abstract class EJBMDOrchestrator
                 }
 
                 Class<?> returnType = timeoutMethod.getReturnType(); //d738042
-                if (returnType != Void.TYPE)
-                {
+                if (returnType != Void.TYPE) {
                     Tr.error(tc, "TIMEOUT_METHOD_MUST_RETURN_VOID_CNTR0165E",
                              new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName, timeoutMethod.getName() }); //d738042
                     throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName + " has timeout method: "
@@ -5164,8 +4743,7 @@ public abstract class EJBMDOrchestrator
 
                 int modifiers = timeoutMethod.getModifiers(); //d738042
                 if (Modifier.isStatic(modifiers) ||
-                    Modifier.isFinal(modifiers))
-                {
+                    Modifier.isFinal(modifiers)) {
                     Tr.error(tc, "TIMEOUT_METHOD_STATIC_OR_FINAL_CNTR0166E",
                              new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName, timeoutMethod.getName() }); //d738042
                     throw new EJBConfigurationException("The bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName + " has timeout method: "
@@ -5194,8 +4772,7 @@ public abstract class EJBMDOrchestrator
         // -----------------------------------------------------------------------
 
         if (bmd.isTimedObject &&
-            !bmd._moduleMetaData.isEJBDeployed()) // F743-21131CodRv
-        {
+            !bmd._moduleMetaData.isEJBDeployed()) {
             bmd.container.getEJBRuntime().setupTimers(bmd); // F743-13022
         }
 
@@ -5215,9 +4792,7 @@ public abstract class EJBMDOrchestrator
      * @param bmd the bean metadata
      */
     // F743-506
-    private void processAutomaticTimerMetaData(BeanMetaData bmd)
-                    throws EJBConfigurationException, ContainerException
-    {
+    private void processAutomaticTimerMetaData(BeanMetaData bmd) throws EJBConfigurationException, ContainerException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processAutomaticTimerMetaData: " + bmd.j2eeName);
@@ -5239,14 +4814,11 @@ public abstract class EJBMDOrchestrator
         // only do so if the merged view tells us we should expect to find
         // automatic timers.
 
-        if (bmd.ivInitData.ivHasScheduleTimers == null)
-        {
+        if (bmd.ivInitData.ivHasScheduleTimers == null) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "processAutomaticTimerMetaData: class scan data not found");
             // If there's no merged view data, then just keep going.
-        }
-        else if (!bmd.ivInitData.ivHasScheduleTimers)
-        {
+        } else if (!bmd.ivInitData.ivHasScheduleTimers) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "processAutomaticTimerMetaData: no class scan scheduler timers");
             return;
@@ -5278,8 +4850,7 @@ public abstract class EJBMDOrchestrator
         Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timersUnspecifiedParmByMethodName = new HashMap<String, List<com.ibm.ws.javaee.dd.ejb.Timer>>();
 
         // Add each timer specified in xml to the correct list, based on its parms.
-        for (com.ibm.ws.javaee.dd.ejb.Timer timer : timers)
-        {
+        for (com.ibm.ws.javaee.dd.ejb.Timer timer : timers) {
             NamedMethod namedMethod = timer.getTimeoutMethod();
             String methodName = timer.getTimeoutMethod().getMethodName();
             List<String> methodParams = namedMethod.getMethodParamList();
@@ -5300,8 +4871,7 @@ public abstract class EJBMDOrchestrator
         Class<?> beanClass = loadCustomerProvidedBeanClass(bmd);
 
         // Determine if the unspecified timers map to 0 or 1 parm Methods
-        if (!timersUnspecifiedParmByMethodName.isEmpty())
-        {
+        if (!timersUnspecifiedParmByMethodName.isEmpty()) {
             mapUnspecifiedTimers(timers0ParmByMethodName,
                                  timers1ParmByMethodName,
                                  timersUnspecifiedParmByMethodName,
@@ -5318,16 +4888,14 @@ public abstract class EJBMDOrchestrator
         List<TimerMethodData> timerMethods = new ArrayList<TimerMethodData>();
         Method timeoutMethod = getTimeoutMethod(bmd);
 
-        if (timeoutMethod != null)
-        {
+        if (timeoutMethod != null) {
             boolean oneParm = timeoutMethod.getParameterTypes().length == 1; //F743-15870
             timerMethods.add(new TimerMethodData(timeoutMethod, -1, oneParm)); //F743-15780
         }
 
         // Iterate over all methods declared in all classes, and build a list of
         // AutomaticTimerMethod objects for this bean.
-        for (MethodMap.MethodInfo methodInfo : MethodMap.getAllDeclaredMethods(beanClass)) // d666251
-        {
+        for (MethodMap.MethodInfo methodInfo : MethodMap.getAllDeclaredMethods(beanClass)) {
             Method method = methodInfo.getMethod();
             int depth = methodInfo.getClassDepth();
             String methodName = method.getName();
@@ -5335,8 +4903,7 @@ public abstract class EJBMDOrchestrator
             TimerMethodData timerMethod = null;
             boolean createdTimerMethod = false;
 
-            if (method.equals(timeoutMethod))
-            {
+            if (method.equals(timeoutMethod)) {
                 timerMethod = timerMethods.get(0);
 
                 if (isTraceOn && tc.isDebugEnabled())
@@ -5350,56 +4917,43 @@ public abstract class EJBMDOrchestrator
             List<com.ibm.ws.javaee.dd.ejb.Timer> timerList;
             boolean methodHas1Parm = false;
 
-            if (hasTimeoutCallbackParameters(methodInfo)) // d666251
-            {
-                if (methodInfo.getNumParameters() == 0)
-                {
+            if (hasTimeoutCallbackParameters(methodInfo)) {
+                if (methodInfo.getNumParameters() == 0) {
                     timerList = timers0ParmByMethodName.remove(methodName);
-                }
-                else
-                {
+                } else {
                     timerList = timers1ParmByMethodName.remove(methodName);
                     methodHas1Parm = true;
                 }
-            }
-            else
-            {
+            } else {
                 timerList = null;
             }
 
-            if (timerList != null)
-            {
+            if (timerList != null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "processing XML timer for " + method);
 
-                if (timerMethod == null)
-                {
+                if (timerMethod == null) {
                     timerMethod = new TimerMethodData(method, depth, methodHas1Parm); //F743-15870
                     timerMethods.add(timerMethod);
                     createdTimerMethod = true; // d666251
                 }
 
-                for (com.ibm.ws.javaee.dd.ejb.Timer timer : timerList)
-                {
+                for (com.ibm.ws.javaee.dd.ejb.Timer timer : timerList) {
                     timerMethod.addAutomaticTimer(processAutomaticTimerFromXML(timer));
                 }
             }
             // Check annoations if metadata is NOT complete, and we did NOT
             // have any xml defined timer (0, 1, or undefined parms) mapping
             // to this Method
-            else if (!bmd.metadataComplete) // d594951
-            {
+            else if (!bmd.metadataComplete) {
                 // Process the @Schedules annotation, if any.
                 Schedules schedulesAnnotation = method.getAnnotation(Schedules.class);
-                if (schedulesAnnotation != null)
-                {
+                if (schedulesAnnotation != null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "processing @Schedules for " + method);
 
-                    for (Schedule scheduleAnnotation : schedulesAnnotation.value())
-                    {
-                        if (timerMethod == null)
-                        {
+                    for (Schedule scheduleAnnotation : schedulesAnnotation.value()) {
+                        if (timerMethod == null) {
                             timerMethod = new TimerMethodData(method, depth, methodHas1Parm);
                             timerMethods.add(timerMethod);
                             createdTimerMethod = true; // d666251
@@ -5411,13 +4965,11 @@ public abstract class EJBMDOrchestrator
 
                 // Process the @Schedule annotation, if any.
                 Schedule scheduleAnnotation = method.getAnnotation(Schedule.class);
-                if (scheduleAnnotation != null)
-                {
+                if (scheduleAnnotation != null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "processing @Schedule for " + method);
 
-                    if (timerMethod == null)
-                    {
+                    if (timerMethod == null) {
                         timerMethod = new TimerMethodData(method, depth, methodHas1Parm); //F743-15870
                         timerMethods.add(timerMethod);
                         createdTimerMethod = true; // d666251
@@ -5428,8 +4980,7 @@ public abstract class EJBMDOrchestrator
             }
 
             // d666251 - Validate method signature.
-            if (createdTimerMethod)
-            {
+            if (createdTimerMethod) {
                 validateTimeoutCallbackMethod(bmd, methodInfo);
             }
         }
@@ -5439,11 +4990,9 @@ public abstract class EJBMDOrchestrator
                                      timers0ParmByMethodName,
                                      bmd);
 
-        if (!timerMethods.isEmpty())
-        {
+        if (!timerMethods.isEmpty()) {
             if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION ||
-                bmd.type == InternalConstants.TYPE_MANAGED_BEAN) // F743-34301
-            {
+                bmd.type == InternalConstants.TYPE_MANAGED_BEAN) {
                 Tr.error(tc, "AUTOMATIC_TIMER_ON_STATEFUL_SESSION_CNTR0207E",
                          new Object[] { bmd.j2eeName.getComponent(), bmd.j2eeName.getModule() });
                 throw new EJBConfigurationException("CNTR0207E: The " + bmd.j2eeName.getComponent()
@@ -5461,8 +5010,7 @@ public abstract class EJBMDOrchestrator
             Collections.sort(timerMethods);
 
             int methodId = 0;
-            for (TimerMethodData timerMethod : timerMethods)
-            {
+            for (TimerMethodData timerMethod : timerMethods) {
                 timerMethod.ivMethodId = methodId++;
             }
 
@@ -5509,8 +5057,7 @@ public abstract class EJBMDOrchestrator
                                       Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timers1ParmByMethodName,
                                       Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timersUnspecifiedParmByMethodName,
                                       Class<?> beanClass,
-                                      BeanMetaData bmd) throws EJBConfigurationException
-    {
+                                      BeanMetaData bmd) throws EJBConfigurationException {
         //F743-15870CodRv
         //There are four scenarios we must deal with here:
         //
@@ -5544,21 +5091,18 @@ public abstract class EJBMDOrchestrator
         //       is a deployment error.
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "mapUnspecifiedTimers", new Object[] { timersUnspecifiedParmByMethodName });
         }
 
         Map<String, Integer> unspecParamCounts = new HashMap<String, Integer>();
         String ambiguousTimer = null;
-        for (MethodMap.MethodInfo methodInfo : MethodMap.getAllDeclaredMethods(beanClass)) // d666251
-        {
+        for (MethodMap.MethodInfo methodInfo : MethodMap.getAllDeclaredMethods(beanClass)) {
             Method method = methodInfo.getMethod();
             String methodName = methodInfo.getMethod().getName();
 
             if (timersUnspecifiedParmByMethodName.containsKey(methodName) &&
-                hasTimeoutCallbackParameters(methodInfo))
-            {
+                hasTimeoutCallbackParameters(methodInfo)) {
                 //Method has a signature that makes it a valid recipient of a
                 //timer callback, and its got the same name as method that was
                 //targeted by undefined xml timers.
@@ -5568,32 +5112,25 @@ public abstract class EJBMDOrchestrator
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "method=" + method + ", currentCount=" + currentCount);
 
-                if (currentCount == null)
-                {
+                if (currentCount == null) {
                     //scenario #1
                     //This is the first time we've encountered a callback
                     //eligible method of this name in the bean's class
                     //heirarchy. Indicate whether the undefined timers targeting
                     //this method should go into the 0 or 1 parm list.
                     unspecParamCounts.put(methodName, methodInfo.getNumParameters());
-                }
-                else
-                {
+                } else {
                     //This is NOT the first time we've encountered a callback
                     //eligible method of this name in the bean's class
                     //heirarchy.  Determine if this is a deployment error or not.
-                    if (currentCount != methodInfo.getNumParameters())
-                    {
+                    if (currentCount != methodInfo.getNumParameters()) {
                         //scenario #4
                         ambiguousTimer = methodName;
                         Tr.error(tc, "AUTOMATIC_TIMER_METHOD_AMBIGUOUS_CNTR0314E",
                                  new Object[] { bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), methodName });
-                    }
-                    else
-                    {
+                    } else {
                         //scenario #2 or scenario #3
-                        if (isTraceOn && tc.isDebugEnabled())
-                        {
+                        if (isTraceOn && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Encountered an additional definition of Method **" + methodName + "** in the class hierarchy, but " +
                                          "not flagging this as an ambiguous situation because the method has the same number of parms as the " +
                                          "method of the same name on the child class.");
@@ -5604,8 +5141,7 @@ public abstract class EJBMDOrchestrator
         }
 
         //Fail if we have any ambiguous timers
-        if (ambiguousTimer != null)
-        {
+        if (ambiguousTimer != null) {
 
             throw new EJBConfigurationException("CNTR0314: The " + bmd.j2eeName.getComponent()
                                                 + " enterprise bean in the " + bmd.j2eeName.getModule()
@@ -5620,11 +5156,9 @@ public abstract class EJBMDOrchestrator
         //
         //Now, add the timers targeting these methodNames to the
         //correct 0 or 1 parm list.
-        for (String methodTargetedByUnspecifiedParms : timersUnspecifiedParmByMethodName.keySet())
-        {
+        for (String methodTargetedByUnspecifiedParms : timersUnspecifiedParmByMethodName.keySet()) {
             Integer paramCount = unspecParamCounts.get(methodTargetedByUnspecifiedParms);
-            if (paramCount == null)
-            {
+            if (paramCount == null) {
                 //An unspecified timer was defined in xml, but we failed to associated
                 //that with a Method in the bean's class heirarchy
                 Tr.error(tc, "AUTOMATIC_TIMER_METHOD_NOT_FOUND_CNTR0210E",
@@ -5634,30 +5168,23 @@ public abstract class EJBMDOrchestrator
                                                     + " enterprise bean in the " + bmd.j2eeName.getModule()
                                                     + " module has an automatic timer configured in the deployment descriptor for the " + methodTargetedByUnspecifiedParms
                                                     + " method, but no timeout callback method with that name was found.");
-            }
-            else if (paramCount == 0)
-            {
+            } else if (paramCount == 0) {
                 addUnspecifiedTimersToMap(timers0ParmByMethodName,
                                           methodTargetedByUnspecifiedParms,
                                           timersUnspecifiedParmByMethodName);
-            }
-            else
-            {
+            } else {
                 addUnspecifiedTimersToMap(timers1ParmByMethodName,
                                           methodTargetedByUnspecifiedParms,
                                           timersUnspecifiedParmByMethodName);
             }
         }
 
-        if (isTraceOn)
-        {
-            if (tc.isDebugEnabled())
-            {
+        if (isTraceOn) {
+            if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "List of xml timers explicitly specifiying 0 parm: **" + timers0ParmByMethodName + "**");
                 Tr.debug(tc, "List of xml timers explicitly specifiying 1 parms: **" + timers1ParmByMethodName + "**");
             }
-            if (tc.isEntryEnabled())
-            {
+            if (tc.isEntryEnabled()) {
                 Tr.exit(tc, "mapUnspecifiedTimers");
             }
         }
@@ -5681,16 +5208,14 @@ public abstract class EJBMDOrchestrator
      */
     private void addUnspecifiedTimersToMap(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> methodToTimers,
                                            String methodName,
-                                           Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timersUnspecifiedParmByMethodName)
-    {
+                                           Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timersUnspecifiedParmByMethodName) {
         //note: We use .get() instead of .remove() to avoid a ConcurrentAccessException,
         //      because the map is being used in a loop in the caling method
         List<com.ibm.ws.javaee.dd.ejb.Timer> targetingTimers = timersUnspecifiedParmByMethodName.get(methodName);
 
         List<com.ibm.ws.javaee.dd.ejb.Timer> timerList = methodToTimers.get(methodName);
 
-        if (timerList == null)
-        {
+        if (timerList == null) {
             timerList = new ArrayList<com.ibm.ws.javaee.dd.ejb.Timer>();
             methodToTimers.put(methodName, timerList);
         }
@@ -5711,28 +5236,22 @@ public abstract class EJBMDOrchestrator
      */
     private void dealWithUnsatisifedXMLTimers(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timers1ParmByMethodName,
                                               Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timers0ParmByMethodName,
-                                              BeanMetaData bmd) throws EJBConfigurationException
-    {
+                                              BeanMetaData bmd) throws EJBConfigurationException {
         String oneMethodInError = null;
 
         String last1ParmError = dealWithUnsatisfiedXMLTimers(timers1ParmByMethodName, bmd);
         String last0ParmError = dealWithUnsatisfiedXMLTimers(timers0ParmByMethodName, bmd);
 
         //We log all the methods-in-error, but we only explicitly callout one of them in the exception, and it doesn't matter which one we pick.
-        if (last1ParmError != null)
-        {
+        if (last1ParmError != null) {
             oneMethodInError = last1ParmError;
-        }
-        else
-        {
-            if (last0ParmError != null)
-            {
+        } else {
+            if (last0ParmError != null) {
                 oneMethodInError = last0ParmError;
             }
         }
 
-        if (oneMethodInError != null)
-        {
+        if (oneMethodInError != null) {
             throw new EJBConfigurationException("CNTR0210: The " + bmd.j2eeName.getComponent()
                                                 + " enterprise bean in the " + bmd.j2eeName.getModule()
                                                 + " module has an automatic timer configured in the deployment descriptor for the " + oneMethodInError
@@ -5750,13 +5269,10 @@ public abstract class EJBMDOrchestrator
      * @return
      * @throws EJBConfigurationException
      */
-    private String dealWithUnsatisfiedXMLTimers(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> xmlTimers, BeanMetaData bmd) throws EJBConfigurationException
-    {
+    private String dealWithUnsatisfiedXMLTimers(Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> xmlTimers, BeanMetaData bmd) throws EJBConfigurationException {
         String mostRecentMethodWithError = null;
-        for (Map.Entry<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> entry : xmlTimers.entrySet())
-        {
-            for (com.ibm.ws.javaee.dd.ejb.Timer timer : entry.getValue())
-            {
+        for (Map.Entry<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> entry : xmlTimers.entrySet()) {
+            for (com.ibm.ws.javaee.dd.ejb.Timer timer : entry.getValue()) {
                 String methodName = timer.getTimeoutMethod().getMethodName();
                 Tr.error(tc, "AUTOMATIC_TIMER_METHOD_NOT_FOUND_CNTR0210E",
                          new Object[] { bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), methodName });
@@ -5774,8 +5290,7 @@ public abstract class EJBMDOrchestrator
      * @param methodInfo the method info
      * @return true if the method has the proper parameter
      */
-    private boolean hasTimeoutCallbackParameters(MethodMap.MethodInfo methodInfo) // d666251
-    {
+    private boolean hasTimeoutCallbackParameters(MethodMap.MethodInfo methodInfo) {
         int numParams = methodInfo.getNumParameters();
         return numParams == 0 ||
                (numParams == 1 && methodInfo.getParameterType(0) == Timer.class);
@@ -5798,34 +5313,26 @@ public abstract class EJBMDOrchestrator
                                       Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> timersUnspecifiedParmByMethodName,
                                       int parmCount,
                                       String methodName,
-                                      com.ibm.ws.javaee.dd.ejb.Timer timer)
-    {
+                                      com.ibm.ws.javaee.dd.ejb.Timer timer) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         Map<String, List<com.ibm.ws.javaee.dd.ejb.Timer>> mapToUse = null;
-        if (parmCount == 0)
-        {
+        if (parmCount == 0) {
             mapToUse = timers0ParmByMethodName;
-        }
-        else if (parmCount == 1)
-        {
+        } else if (parmCount == 1) {
             mapToUse = timers1ParmByMethodName;
-        }
-        else
-        {
+        } else {
             mapToUse = timersUnspecifiedParmByMethodName;
         }
 
         List<com.ibm.ws.javaee.dd.ejb.Timer> timerList = mapToUse.get(methodName);
 
-        if (timerList == null)
-        {
+        if (timerList == null) {
             timerList = new ArrayList<com.ibm.ws.javaee.dd.ejb.Timer>();
             mapToUse.put(methodName, timerList);
         }
 
-        if (isTraceOn && tc.isDebugEnabled())
-        {
+        if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "found XML timer for method " + methodName);
         }
         timerList.add(timer);
@@ -5846,62 +5353,45 @@ public abstract class EJBMDOrchestrator
     private int verifyXMLTimerParmList(List<String> params,
                                        BeanMetaData bmd,
                                        String methodName,
-                                       boolean programaticallyCreatedFlow) throws EJBConfigurationException
-    {
+                                       boolean programaticallyCreatedFlow) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         final int UNSPECIFIED = -1;
         final int INVALID = -2;
 
         int parmCount;
-        if (params == null)
-        {
+        if (params == null) {
             //<method-parms> tag was omitted from xml
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "The <method-parms> element was omitted from xml, so the " +
                              "parm count is unspecified.");
             }
             parmCount = UNSPECIFIED; // d659928
-        }
-        else
-        {
+        } else {
             int size = params.size();
-            if (size > 1)
-            {
+            if (size > 1) {
                 //multiple <method-parm> tags specified inside of the <method-params> tag
-                if (isTraceOn && tc.isDebugEnabled())
-                {
+                if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "The parm list is invalid because more than 1 parameter was specified.");
                 }
                 parmCount = INVALID; // d659928
-            }
-            else if (size < 1)
-            {
+            } else if (size < 1) {
                 //the <method-params> tag was specified, but the <method-parm> tag inside
                 //of it was omitted
-                if (isTraceOn && tc.isDebugEnabled())
-                {
+                if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "The xml explicitly specified exactly zero parameters.");
                 }
                 parmCount = 0; // d659928
-            }
-            else
-            {
+            } else {
                 //both the <method-params> and the <method-parm> tag were specified
                 String classTypeOfParm = params.get(0);
-                if (classTypeOfParm.equals("javax.ejb.Timer"))
-                {
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                if (classTypeOfParm.equals("javax.ejb.Timer")) {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "The xml explicitly specified exactly one parameter, and it was of type javax.ejb.Timer.");
                     }
                     parmCount = 1;
-                }
-                else
-                {
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                } else {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "The xml explicitly specified exactly one parameter, but it was of type **" + classTypeOfParm + "**");
                     }
                     parmCount = INVALID; // d659928
@@ -5909,22 +5399,18 @@ public abstract class EJBMDOrchestrator
             }
         }
 
-        if (parmCount == INVALID) // d659928
-        {
+        if (parmCount == INVALID) {
             Object[] args = new Object[] { bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), methodName };
             String exceptionText;
 
-            if (programaticallyCreatedFlow)
-            {
+            if (programaticallyCreatedFlow) {
                 Tr.error(tc, "TIMEOUT_METHOD_MISSING_REQUIRED_PARM_CNTR0158E", args);
                 exceptionText = "The bean: " + bmd.enterpriseBeanName + " in module: " +
                                 bmd._moduleMetaData.ivName + " has timeout method: " + methodName +
                                 " configured, but the method parameters are not correct. " +
                                 "The method must take zero parameters or a single parameter of type " +
                                 "javax.ejb.Timer.";
-            }
-            else
-            {
+            } else {
                 Tr.error(tc, "AUTOMATIC_TIMER_XML_METHOD_PARAMS_CNTR0208E", args);
                 exceptionText = "CNTR0208E: The " + bmd.j2eeName.getComponent()
                                 + " enterprise bean in the " + bmd.j2eeName.getModule()
@@ -5936,8 +5422,7 @@ public abstract class EJBMDOrchestrator
             throw new EJBConfigurationException(exceptionText);
         }
 
-        if (isTraceOn && tc.isDebugEnabled())
-        {
+        if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "Returning parmCount of **" + parmCount + "**");
         }
         return parmCount;
@@ -5963,8 +5448,7 @@ public abstract class EJBMDOrchestrator
      *             coded properly based on the rules in the specification
      */
     private void validateTimeoutCallbackMethod(BeanMetaData bmd, MethodMap.MethodInfo methodInfo) // d666251
-    throws EJBConfigurationException
-    {
+                    throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "validateTimeoutCallbackMethod : " + methodInfo.getMethod());
@@ -5973,33 +5457,27 @@ public abstract class EJBMDOrchestrator
         String specificCause = "";
 
         int modifiers = method.getModifiers();
-        if (Modifier.isStatic(modifiers))
-        {
+        if (Modifier.isStatic(modifiers)) {
             specificCause += " The 'static' modifier is not allowed.";
         }
 
-        if (Modifier.isFinal(modifiers))
-        {
+        if (Modifier.isFinal(modifiers)) {
             specificCause += " The 'final' modifier is not allowed.";
         }
 
-        if (method.getReturnType() != Void.TYPE)
-        {
+        if (method.getReturnType() != Void.TYPE) {
             specificCause += " The return type must be 'void'.";
         }
 
-        if (!hasTimeoutCallbackParameters(methodInfo))
-        {
+        if (!hasTimeoutCallbackParameters(methodInfo)) {
             specificCause += " The method must take 0 parameters or a Timer parameter.";
         }
 
-        if (!hasEmptyThrowsClause(method))
-        {
+        if (!hasEmptyThrowsClause(method)) {
             specificCause += " The method must not throw any exceptions.";
         }
 
-        if (!"".equals(specificCause))
-        {
+        if (!"".equals(specificCause)) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "validateTimeoutCallbackMethod :" + specificCause);
 
@@ -6021,18 +5499,14 @@ public abstract class EJBMDOrchestrator
      * @return a non-null list of timer stanzas from the deployment descriptor
      */
     // F743-506
-    public static List<com.ibm.ws.javaee.dd.ejb.Timer> getAutomaticTimersFromXML(EnterpriseBean eb)
-    {
-        if (eb != null) // d595977
-        {
-            if (eb.getKindValue() == EnterpriseBean.KIND_SESSION)
-            {
+    public static List<com.ibm.ws.javaee.dd.ejb.Timer> getAutomaticTimersFromXML(EnterpriseBean eb) {
+        if (eb != null) {
+            if (eb.getKindValue() == EnterpriseBean.KIND_SESSION) {
                 // F00743.9717
                 return ((Session) eb).getTimers();
             }
 
-            if (eb.getKindValue() == EnterpriseBean.KIND_MESSAGE_DRIVEN)
-            {
+            if (eb.getKindValue() == EnterpriseBean.KIND_MESSAGE_DRIVEN) {
                 // F00743.9717
                 return ((MessageDriven) eb).getTimers();
             }
@@ -6048,52 +5522,44 @@ public abstract class EJBMDOrchestrator
      * @return the processed automatic timer metadata
      */
     // F743-506
-    private static TimerMethodData.AutomaticTimer processAutomaticTimerFromXML(com.ibm.ws.javaee.dd.ejb.Timer timer) //F743-15870
-    {
+    private static TimerMethodData.AutomaticTimer processAutomaticTimerFromXML(com.ibm.ws.javaee.dd.ejb.Timer timer) {
         TimerSchedule timerSchedule = timer.getSchedule();
 
         boolean persistent = !timer.isSetPersistent() || timer.isPersistent();
         ScheduleExpression schedule = new ScheduleExpression();
 
         String year = timerSchedule.getYear();
-        if (year != null)
-        {
+        if (year != null) {
             schedule.year(year);
         }
 
         String month = timerSchedule.getMonth();
-        if (month != null)
-        {
+        if (month != null) {
             schedule.month(month);
         }
 
         String dayOfMonth = timerSchedule.getDayOfMonth();
-        if (dayOfMonth != null)
-        {
+        if (dayOfMonth != null) {
             schedule.dayOfMonth(dayOfMonth);
         }
 
         String dayOfWeek = timerSchedule.getDayOfWeek();
-        if (dayOfWeek != null)
-        {
+        if (dayOfWeek != null) {
             schedule.dayOfWeek(dayOfWeek);
         }
 
         String hour = timerSchedule.getHour();
-        if (hour != null)
-        {
+        if (hour != null) {
             schedule.hour(hour);
         }
 
         String minute = timerSchedule.getMinute();
-        if (minute != null)
-        {
+        if (minute != null) {
             schedule.minute(minute);
         }
 
         String second = timerSchedule.getSecond();
-        if (second != null)
-        {
+        if (second != null) {
             schedule.second(second);
         }
 
@@ -6120,27 +5586,17 @@ public abstract class EJBMDOrchestrator
     private static TimerMethodData.AutomaticTimer processScheduleAnnotation(TimerMethodData timerMethod,
                                                                             Method method,
                                                                             List<TimerMethodData> timerMethods,
-                                                                            Schedule annotation)
-    {
+                                                                            Schedule annotation) {
         boolean persistent = annotation.persistent();
-        ScheduleExpression schedule = new ScheduleExpression()
-                        .year(annotation.year())
-                        .month(annotation.month())
-                        .dayOfMonth(annotation.dayOfMonth())
-                        .dayOfWeek(annotation.dayOfWeek())
-                        .hour(annotation.hour())
-                        .minute(annotation.minute())
-                        .second(annotation.second());
+        ScheduleExpression schedule = new ScheduleExpression().year(annotation.year()).month(annotation.month()).dayOfMonth(annotation.dayOfMonth()).dayOfWeek(annotation.dayOfWeek()).hour(annotation.hour()).minute(annotation.minute()).second(annotation.second());
         String info = annotation.info();
-        if (info.length() == 0) // d607801
-        {
+        if (info.length() == 0) {
             info = null;
         }
 
         // The default value for the annotation is "", which will cause parse
         // errors.  Only set the timezone if it's non-empty.
-        if (annotation.timezone().length() != 0)
-        {
+        if (annotation.timezone().length() != 0) {
             schedule.timezone(annotation.timezone());
         }
 
@@ -6156,31 +5612,23 @@ public abstract class EJBMDOrchestrator
      * @return the timer methods, or null if the bean has none
      */
     // F743-506
-    private Method[] getTimerMethods(BeanMetaData bmd)
-    {
+    private Method[] getTimerMethods(BeanMetaData bmd) {
         List<TimerMethodData> timerMethodList = bmd.ivInitData.ivTimerMethods;
         Method[] timerMethods;
 
-        if (timerMethodList == null)
-        {
+        if (timerMethodList == null) {
             Method timeoutMethod = getTimeoutMethod(bmd);
             timerMethods = timeoutMethod == null ? null : new Method[] { timeoutMethod };
-        }
-        else if (timerMethodList.isEmpty())
-        {
+        } else if (timerMethodList.isEmpty()) {
             timerMethods = null;
-        }
-        else
-        {
+        } else {
             timerMethods = new Method[timerMethodList.size()];
-            for (int i = 0; i < timerMethodList.size(); i++)
-            {
+            for (int i = 0; i < timerMethodList.size(); i++) {
                 timerMethods[i] = timerMethodList.get(i).getMethod();
             }
         }
 
-        if (timerMethods != null)
-        {
+        if (timerMethods != null) {
             AccessibleObject.setAccessible(timerMethods, true);
         }
 
@@ -6197,15 +5645,12 @@ public abstract class EJBMDOrchestrator
      * @return the timeout method, or null if the bean does not have one
      */
     // F743-506
-    private static Method getTimeoutMethod(BeanMetaData bmd)
-    {
-        if (!bmd.isTimedObject)
-        {
+    private static Method getTimeoutMethod(BeanMetaData bmd) {
+        if (!bmd.isTimedObject) {
             return null;
         }
 
-        if (bmd.ivTimeoutMethod != null)
-        {
+        if (bmd.ivTimeoutMethod != null) {
             return bmd.ivTimeoutMethod;
         }
 
@@ -6222,26 +5667,22 @@ public abstract class EJBMDOrchestrator
      * @param bmd is the BeanMetaData for the EJB. <b>Note: </b> The {@link #finishBMDInit(BeanMetaData, ComponentDataObject, String)} and the
      *            {@link #finishBMDInit(BeanMetaData, ComponentDataObject, InjectionEngine)} methods are required to be called prior to this method.
      *
-     * @throws EJBConfigurationException is thrown if an error in inteceptor configuration
+     * @throws EJBConfigurationException is thrown if an error in interceptor configuration
      *             (either annotation or WCCM) is detected.
      */
     // d367572.3 added entire method. // d367572.4 re-wrote method.
-    private void initializeInterceptorMD(BeanMetaData bmd
-                                         , final Map<Method, ArrayList<EJBMethodInfoImpl>> methodInfoMap) // d430356
-    throws EJBConfigurationException
-    {
+    private void initializeInterceptorMD(BeanMetaData bmd, final Map<Method, ArrayList<EJBMethodInfoImpl>> methodInfoMap) // d430356
+                    throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "initializeInterceptorMD for " + bmd.j2eeName);
         }
 
         InterceptorMetaData imd = null; // d439634
 
         // Is this a EJB 3 module or later?
-        if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) // d439634
-        {
+        if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
             // d367572.9 start
             // Get the module metadata for the EJB 3 module.
             EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
@@ -6254,19 +5695,16 @@ public abstract class EJBMDOrchestrator
             // thread is starting.  In other words, all beans in this module are
             // processed by the thread that is starting the module. Therefore, we
             // do not need to synchronize on the EJBModuleMetaDataImpl object.
-            if (mmd.ivReadWCCMInterceptors)
-            {
+            if (mmd.ivReadWCCMInterceptors) {
                 // No, we have not, so get WCCM EJBJar object, which represents
                 // the ejb-jar.xml file if there was one in the module.
                 EJBJar ejbJar = bmd.wccm.ejbjar;
 
                 // Is there a ejb-jar.xml file for this module (there may not be one for EJB 3 modules)?
-                if (ejbJar != null)
-                {
+                if (ejbJar != null) {
                     // Yes, there is a DD, so get the interceptors from it.
                     Interceptors interceptors = ejbJar.getInterceptors(); // d438904
-                    if (interceptors != null) // d438904
-                    {
+                    if (interceptors != null) {
                         // There is an <interceptors> stanza, so determine how many interceptor
                         // classes are defined in it so that we know the maximum number of entries
                         // to create in the IdentityHashMap.
@@ -6274,30 +5712,24 @@ public abstract class EJBMDOrchestrator
                         int expectedMaxSize = (interceptorsList != null) ? interceptorsList.size() : 0; // d438904
 
                         // Is there atleast 1 interceptor class?
-                        if (expectedMaxSize > 0) // d438904
-                        {
+                        if (expectedMaxSize > 0) {
                             // Yes, there is alteast 1 interceptor class. Create the IdentityHashMap
                             // to hold metadata about the interceptor methods in each of these classes.
                             mmd.ivInterceptorsMap = new IdentityHashMap<Class<?>, EnumMap<InterceptorMethodKind, List<Method>>>(expectedMaxSize); // d438904
 
                             // process the interceptors stanza that is in ejb-jar.xml for the module so that
                             // Map of interceptors is populated with meta data needed.
-                            mmd.ivInterceptorMap = InterceptorMetaDataHelper.populateInterceptorsMap(bmd.classLoader
-                                                                                                     , interceptors, mmd.ivInterceptorsMap
-                                                                                                     , bmd.j2eeName); // d450431 // d468919
+                            mmd.ivInterceptorMap = InterceptorMetaDataHelper.populateInterceptorsMap(bmd.classLoader, interceptors, mmd.ivInterceptorsMap, bmd.j2eeName); // d450431 // d468919
                         }
                     }
 
                     // Now get assembly descriptor from the DD and process the interceptor bindings.
                     AssemblyDescriptor ad = ejbJar.getAssemblyDescriptor();
-                    if (ad != null)
-                    {
+                    if (ad != null) {
                         List<InterceptorBinding> bindingList = ad.getInterceptorBinding();
-                        if (bindingList != null)
-                        {
+                        if (bindingList != null) {
                             int listSize = bindingList.size(); // d438904
-                            if (listSize > 0) // d438904
-                            {
+                            if (listSize > 0) {
                                 int initialCapacity = (int) (listSize * 1.5); // d438904
                                 mmd.ivInterceptorBindingMap = new HashMap<String, List<EJBInterceptorBinding>>(initialCapacity); // d438904
                                 InterceptorMetaDataHelper.populateInterceptorBindingMap(bindingList, mmd.ivInterceptorBindingMap);
@@ -6315,8 +5747,7 @@ public abstract class EJBMDOrchestrator
             // Use factory to create InterceptorMetaData for this EJB.
             // Note, a null reference is returned if this EJB does not require any
             // EJB 3 interceptor method to ever be invoked.
-            if (!bmd.isEntityBean())
-            {
+            if (!bmd.isEntityBean()) {
                 // Not a CMP, or BMP, so attempt to create InterceptorMetaData for this EJB.
                 imd = InterceptorMetaDataFactory.createInterceptorMetaData(this, bmd, methodInfoMap); // d430356
             }
@@ -6327,79 +5758,62 @@ public abstract class EJBMDOrchestrator
 
         // Now set CallbackKind dependent on whether there are interceptors or
         // not and the type of EJB if there are no interceptor methods to invoke.
-        if (imd != null)
-        {
+        if (imd != null) {
             // A InteceptorMetaData object was created, so use CallbackKind of
             // InvocationContext to indicate interceptors do need to be called.
             bmd.ivCallbackKind = CallbackKind.InvocationContext;
-        }
-        else if (bmd.isSessionBean())
-        {
+        } else if (bmd.isSessionBean()) {
             // No interceptors and bean is a SessionBean. Does it implement the
             // javax.ejb.SessionBean interface?
-            if ((SessionBean.class).isAssignableFrom(bmd.enterpriseBeanClass))
-            {
+            if ((SessionBean.class).isAssignableFrom(bmd.enterpriseBeanClass)) {
                 // Yes it does, so set CallbackKind to SessionBean.
                 bmd.ivCallbackKind = CallbackKind.SessionBean;
 
                 // d453778 get Method object for ejbCreate method if one is implemented
                 // by the statless session bean.
-                try
-                {
+                try {
                     Method m = bmd.enterpriseBeanClass.getMethod("ejbCreate", new Class[] {});
                     bmd.ivEjbCreateMethod = m;
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     //FFDCFilter.processException( t, CLASS_NAME + ".initializeInterceptorMD", "5920", this );
                     // Ignore since method does not exist.
                 }
-            }
-            else
-            {
+            } else {
                 // Set CallbackKind to None to indicate no interceptor or
                 // javax.ejb.SessionBean callback methods ever need to be called.
                 bmd.ivCallbackKind = CallbackKind.None;
             }
-        }
-        else if (bmd.isMessageDrivenBean())
-        {
+        } else if (bmd.isMessageDrivenBean()) {
             // No interceptors and bean is a MDB. Does it implement the
             // javax.ejb.MessageDrivenBean interface?
-            if ((MessageDrivenBean.class).isAssignableFrom(bmd.enterpriseBeanClass))
-            {
+            if ((MessageDrivenBean.class).isAssignableFrom(bmd.enterpriseBeanClass)) {
                 // Yes it does, so set CallbackKind to MessageDrivenBean.
                 bmd.ivCallbackKind = CallbackKind.MessageDrivenBean;
 
                 // d453778 get Method object for ejbCreate method if one is implemented
                 // by the MDB class.
-                try
-                {
+                try {
                     Method m = bmd.enterpriseBeanClass.getMethod("ejbCreate", new Class[] {});
                     bmd.ivEjbCreateMethod = m;
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     //FFDCFilter.processException( t, CLASS_NAME + ".initializeInterceptorMD", "5949", this );
                     // Ignore since method does not exist in MDB class.
                 }
-            }
-            else
-            {
+            } else {
                 // Set CallbackKind to None to indicate no interceptor or
                 // javax.ejb.MessageDrivenBean callback methods ever need to be called.
                 bmd.ivCallbackKind = CallbackKind.None;
             }
-        }
-        else
-        {
+        } else {
             // No interceptors and not a SessionBean or MDB.  Must be a EntityBean. So set
             // the CallbackKind to None since EntityBean do not have EJB 3 interceptors.
             bmd.ivCallbackKind = CallbackKind.None;
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "initializeInterceptorMD set CallbackKind to: " + bmd.ivCallbackKind
-                        + " for " + bmd.j2eeName, new Object[] { bmd.ivInterceptorMetaData }); // F743-17630
+                        + " for " + bmd.j2eeName,
+                    new Object[] { bmd.ivInterceptorMetaData }); // F743-17630
         }
 
     } // initializeInterceptorMD
@@ -6411,19 +5825,16 @@ public abstract class EJBMDOrchestrator
      * be unable to notice.
      */
     // F61004.1
-    private void processAutomaticLightweightTransaction(BeanMetaData bmd, ByteCodeMetaData byteCodeMetaData)
-    {
+    private void processAutomaticLightweightTransaction(BeanMetaData bmd, ByteCodeMetaData byteCodeMetaData) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (ContainerProperties.DisableAutomaticLightweightMethods)
-        {
+        if (ContainerProperties.DisableAutomaticLightweightMethods) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "processAutomaticLightweightTransaction: disabled");
             return;
         }
 
-        if (bmd.isLightweight)
-        {
+        if (bmd.isLightweight) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "processAutomaticLightweightTransaction: already lightweight");
             return;
@@ -6431,20 +5842,16 @@ public abstract class EJBMDOrchestrator
 
         if (bmd.type != InternalConstants.TYPE_STATELESS_SESSION &&
             bmd.type != InternalConstants.TYPE_STATEFUL_SESSION &&
-            bmd.type != InternalConstants.TYPE_SINGLETON_SESSION)
-        {
+            bmd.type != InternalConstants.TYPE_SINGLETON_SESSION) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "processAutomaticLightweightTransaction: unsupported bean type");
             return;
         }
 
-        if (bmd.localMethodInfos != null)
-        {
-            for (EJBMethodInfoImpl methodInfo : bmd.localMethodInfos)
-            {
+        if (bmd.localMethodInfos != null) {
+            for (EJBMethodInfoImpl methodInfo : bmd.localMethodInfos) {
                 Method method = methodInfo.getMethod();
-                if (method == null)
-                {
+                if (method == null) {
                     // Ignore special-case remove method for component interfaces.
                     continue;
                 }
@@ -6452,11 +5859,9 @@ public abstract class EJBMDOrchestrator
                 TransactionAttribute txAttr = methodInfo.getTransactionAttribute();
                 ActivitySessionAttribute asAttr = methodInfo.getActivitySessionAttribute();
 
-                if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION)
-                {
+                if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION) {
                     if (txAttr != TransactionAttribute.TX_SUPPORTS &&
-                        txAttr != TransactionAttribute.TX_NOT_SUPPORTED)
-                    {
+                        txAttr != TransactionAttribute.TX_NOT_SUPPORTED) {
                         // BMT SFSB always switch transactions (either resume a
                         // sticky global, or start a new local), so it would be safe
                         // to elide the transaction pre/postInvoke.  However, we
@@ -6482,20 +5887,17 @@ public abstract class EJBMDOrchestrator
                     }
 
                     // Remove methods are transaction-aware.
-                    if (methodInfo.isSFSBRemoveMethod())
-                    {
+                    if (methodInfo.isSFSBRemoveMethod()) {
                         continue;
                     }
-                }
-                else
-                {
+                } else {
                     if ((txAttr != TransactionAttribute.TX_BEAN_MANAGED ||
-                        bmd.type != InternalConstants.TYPE_SINGLETON_SESSION) &&
+                         bmd.type != InternalConstants.TYPE_SINGLETON_SESSION)
+                        &&
                         txAttr != TransactionAttribute.TX_REQUIRED &&
                         txAttr != TransactionAttribute.TX_REQUIRES_NEW &&
                         txAttr != TransactionAttribute.TX_SUPPORTS &&
-                        txAttr != TransactionAttribute.TX_NOT_SUPPORTED)
-                    {
+                        txAttr != TransactionAttribute.TX_NOT_SUPPORTED) {
                         // We only support the transaction attributes that don't
                         // require preInvoke validation.  We do not support BMT SLSB
                         // because BMStatelessBeanO.postInvoke relies on ContainerTx,
@@ -6505,14 +5907,13 @@ public abstract class EJBMDOrchestrator
                 }
 
                 if ((asAttr == ActivitySessionAttribute.AS_UNKNOWN ||
-                    asAttr == ActivitySessionAttribute.AS_SUPPORTS) &&
+                     asAttr == ActivitySessionAttribute.AS_SUPPORTS)
+                    &&
                     // Interceptor proxies run arbitrary user code that should run
                     // in the new transaction context.
-                    methodInfo.getAroundInterceptorProxies() == null)
-                {
+                    methodInfo.getAroundInterceptorProxies() == null) {
                     ByteCodeMetaData.MethodMetaData byteCodeMethod = byteCodeMetaData.getByteCodeMethodMetaData(method);
-                    if (byteCodeMethod != null && byteCodeMethod.ivTrivial)
-                    {
+                    if (byteCodeMethod != null && byteCodeMethod.ivTrivial) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "enabling lightweight tx for trivial method " + method);
                         methodInfo.isLightweightTxCapable = true;
@@ -6529,8 +5930,7 @@ public abstract class EJBMDOrchestrator
      */
     static String nameTypeFromBeanTypeMap[];
 
-    private static final void populateNameTypeFromBeanTypeMap()
-    {
+    private static final void populateNameTypeFromBeanTypeMap() {
         // array element #0 is unused.  Valid array indexes
         // are #1 - #7
         nameTypeFromBeanTypeMap = new String[9]; // F743-508
@@ -6556,8 +5956,7 @@ public abstract class EJBMDOrchestrator
     static final int Message_Type = 3;
     static final int Managed_Type = 4; // F743-34301
 
-    private static final void populateCompressBeanTypeMap()
-    {
+    private static final void populateCompressBeanTypeMap() {
         // array element #0 is unused.  Valid array indexes
         // are #1 - #7
         compressBeanTypeMap = new int[9]; // F743-508
@@ -6583,14 +5982,11 @@ public abstract class EJBMDOrchestrator
      */
     // d384182 added entire method.
     // d430356 updated for init-method in xml.
-    private void initializeSFSBInitMethodMap(BeanMetaData bmd, Method[] methods)
-                    throws EJBConfigurationException
-    {
+    private void initializeSFSBInitMethodMap(BeanMetaData bmd, Method[] methods) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         String ejbName = bmd.enterpriseBeanName;
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "initializeSFSBInitMethodMap: " + ejbName);
         }
 
@@ -6598,8 +5994,7 @@ public abstract class EJBMDOrchestrator
         // Note, eb is set to null if there is no ejb-jar.xml file.
         List<InitMethod> initList = null;
         EnterpriseBean eb = bmd.wccm.enterpriseBean;
-        if (eb != null)
-        {
+        if (eb != null) {
             // Get init-method list for this Session bean from WCCM and process.
             Session sb = (Session) eb;
             List<InitMethod> imList = sb.getInitMethod();
@@ -6609,8 +6004,7 @@ public abstract class EJBMDOrchestrator
         // Populate HashMap of all of the Init methods for SFSB.
         HashMap<String, String> map = new HashMap<String, String>();
         boolean isSessionBean = (SessionBean.class).isAssignableFrom(bmd.enterpriseBeanClass);
-        if (isSessionBean)
-        {
+        if (isSessionBean) {
             // The bean is written to EJB 2.1 API or earlier, so the ejbCreate<METHOD> are the
             // only methods that can be annotated as a Init method, but is not required
             // to be annotated as a Init method. See section 4.3.10.1 Stateful Session Beans
@@ -6620,16 +6014,13 @@ public abstract class EJBMDOrchestrator
 
             // Process any init-method from ejb-jar.xml file and verify an init-method
             // provided only specifies a ejbCreate method name.
-            if (initList != null)
-            {
-                if (isTraceOn && tc.isDebugEnabled())
-                {
+            if (initList != null) {
+                if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "verify init-method is for ejbCreate of bean written to EJB 2.1 API");
                 }
 
                 // Verify an init-method provided only specifies a ejbCreate method name.
-                for (InitMethod im : initList)
-                {
+                for (InitMethod im : initList) {
                     // Get SFSB method name and verify it is ejbCreate. Don't bother with
                     // verifying whether method exists by signature specified. The code
                     // below automatically treats all ejbCreate methods as an init method.
@@ -6637,8 +6028,7 @@ public abstract class EJBMDOrchestrator
                     // with the create method on the home.  It will provide an error message if
                     // signature does not match.
                     String method = im.getBeanMethod().getMethodName();
-                    if (!ejbCreate.equals(method))
-                    {
+                    if (!ejbCreate.equals(method)) {
                         // CNTR0234E: An initialization method for a stateful session bean can be an ejbCreate&lt;METHOD&gt; method
                         // only when the bean conforms to the Enterprise JavaBeans (EJB) 2.1 or earlier specification levels. Therefore, it
                         // cannot be applied to the {0} method of the {1} enterprise bean.
@@ -6652,52 +6042,41 @@ public abstract class EJBMDOrchestrator
             }
 
             // For each public method of the bean.
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "processing public ejbCreate methods written to EJB 2.1 API");
             }
 
-            for (Method m : methods)
-            {
+            for (Method m : methods) {
                 // Is the method a ejbCreate<METHOD>?
                 String methodName = m.getName();
-                if (methodName.startsWith(ejbCreate))
-                {
+                if (methodName.startsWith(ejbCreate)) {
                     // It is a ejbCreate<METHOD>, so insert a map entry using
                     // create<METHOD> + JDIMethodSignature as the key and
                     // METHOD as the value.
                     String key;
-                    if (methodName.length() <= ejbCreateLength)
-                    {
+                    if (methodName.length() <= ejbCreateLength) {
                         key = "create" + MethodAttribUtils.jdiMethodSignature(m);
-                    }
-                    else
-                    {
+                    } else {
                         String suffix = methodName.substring(ejbCreateLength);
                         key = "create" + suffix + MethodAttribUtils.jdiMethodSignature(m);
                     }
 
                     map.put(key, m.getName());
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "added key: " + key
                                      + ", for method name = " + m.getName());
                     }
-                }
-                else
-                {
+                } else {
                     // Don't bother to look for annotations if all config data
                     // came from xml.
-                    if (!bmd.metadataComplete)
-                    {
+                    if (!bmd.metadataComplete) {
                         // The bean is written to EJB 3 API,  or earlier, so the ejbCreate<METHOD> are the
                         // only methods that can be annotated as a Init method, but is not required
                         // to be annotated as a Init method. See section 4.3.10.1 Stateful Session Beans
                         // in the EJB 3 core specifications.
                         // Not a ejbCreate<METHOD>.  Verify it is not annotated as a Init method.
                         Init initMethod = m.getAnnotation(Init.class);
-                        if (initMethod != null)
-                        {
+                        if (initMethod != null) {
 
                             // CNTR0234E: An initialization method for a stateful session bean can be an ejbCreate&lt;METHOD&gt; method
                             // only when the bean conforms to the Enterprise JavaBeans (EJB) 2.1 or earlier specification levels. Therefore, it
@@ -6710,42 +6089,32 @@ public abstract class EJBMDOrchestrator
                                                                 +
                                                                 "cannot be applied to the " + method + " method of the " + bmd.enterpriseBeanName + " enterprise bean.");
                         }
-                    }
-                    else
-                    {
-                        if (isTraceOn && tc.isDebugEnabled())
-                        {
+                    } else {
+                        if (isTraceOn && tc.isDebugEnabled()) {
                             Tr.debug(tc, "metadata complete, skipping Init annotations");
                         }
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             // The bean is written to EJB 3 API, so any method can be annotated as an Init method.
             // We only need to populate the HashMap if the EJB 3 bean has either a remote or
             // local home interface. If it has neither,  Init method will never be called,
             // so do not bother populating the map in that case.
-            if (bmd.homeInterfaceClass != null || bmd.localHomeInterfaceClass != null)
-            {
+            if (bmd.homeInterfaceClass != null || bmd.localHomeInterfaceClass != null) {
                 // We have a remote or local home interface, so we need process init methods.
                 // Always process any init-method from ejb-jar.xml file.
-                if (initList != null)
-                {
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                if (initList != null) {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "processing init-method from ejb-jar.xml for bean written to EJB 3.0 API");
                     }
-                    for (InitMethod im : initList)
-                    {
+                    for (InitMethod im : initList) {
                         // Attempt to find Method object for the InitMethod.
                         NamedMethod namedMethod = im.getBeanMethod();
                         Method m = DDUtil.findMethod(namedMethod, methods);
 
                         // Method found for InitMethod?
-                        if (m == null)
-                        {
+                        if (m == null) {
                             // CNTR0236E: The {1} enterprise bean has an init-method element, which specifies
                             //  the {0} method. This method is not a public method of this bean.
                             String method = namedMethod.getMethodName();
@@ -6753,9 +6122,7 @@ public abstract class EJBMDOrchestrator
                             Tr.error(tc, "INIT_METHOD_NOT_FOUND_CNTR0236E", data);
                             throw new EJBConfigurationException("CNTR0236E: The " + bmd.enterpriseBeanName + " enterprise bean has an init-method element, which " +
                                                                 "specifies the " + method + " method. This method is not a public method of this bean.");
-                        }
-                        else
-                        {
+                        } else {
                             // Method found. Create a HashMap entry for it using home method name
                             // and JDI method signature as the key and method name as the value.
                             // Note, if Init annotation did not provide home method name, then
@@ -6764,8 +6131,7 @@ public abstract class EJBMDOrchestrator
                             String homeMethodName = im.getCreateMethod().getMethodName();
                             String key = homeMethodName + MethodAttribUtils.jdiMethodSignature(m);
                             String oldValue = map.put(key, m.getName());
-                            if (oldValue != null)
-                            {
+                            if (oldValue != null) {
                                 // See section 10.1.2.1 Init Annotation for Stateful Session Beans
                                 // of EJB 3 simplified view specification.
 
@@ -6783,21 +6149,17 @@ public abstract class EJBMDOrchestrator
 
                 // Don't bother to look for annotations if all config data
                 // came from xml.
-                if (!bmd.metadataComplete)
-                {
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                if (!bmd.metadataComplete) {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "processing Init annotations for bean written to EJB 3.0 API");
                     }
 
                     // Not metadata-complete, so we need to process all public methods
                     // to look for Init annotation.
-                    for (Method m : methods)
-                    {
+                    for (Method m : methods) {
                         // Is this method annotated as an Init method?
                         Init initMethod = m.getAnnotation(Init.class);
-                        if (initMethod != null)
-                        {
+                        if (initMethod != null) {
                             // Yes it is, so create a HashMap entry for it using home method name
                             // and JDI method signature as the key and method name as the value.
                             // Note, if Init annotation did not provide home method name, then
@@ -6806,8 +6168,7 @@ public abstract class EJBMDOrchestrator
                             String homeMethodName = initMethod.value();
                             String key = homeMethodName + MethodAttribUtils.jdiMethodSignature(m);
                             String oldValue = map.put(key, m.getName());
-                            if (oldValue != null)
-                            {
+                            if (oldValue != null) {
                                 // See section 10.1.2.1 Init Annotation for Stateful Session Beans
                                 // of EJB 3 simplified view specification.
 
@@ -6821,11 +6182,8 @@ public abstract class EJBMDOrchestrator
                             }
                         }
                     }
-                }
-                else
-                {
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                } else {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "metadata complete, skipping Init annotations for bean written to EJB 3.0 API");
                     }
                 }
@@ -6834,13 +6192,11 @@ public abstract class EJBMDOrchestrator
 
         // Put map in BeanMetaData if map is not empty. Otherwise, leave BMD
         // set to null.
-        if (!map.isEmpty())
-        {
+        if (!map.isEmpty()) {
             bmd.ivInitMethodMap = map;
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "initializeSFSBInitMethodMap: " + ejbName);
         }
 
@@ -6861,13 +6217,10 @@ public abstract class EJBMDOrchestrator
      * @throws EJBConfigurationException
      */
     // d430356 - added entire method
-    private Map<Method, ArrayList<EJBMethodInfoImpl>>
-                    createEJBMethodInfoMap(final BeanMetaData bmd, final Method[] allMethodsOfEJB)
-    {
+    private Map<Method, ArrayList<EJBMethodInfoImpl>> createEJBMethodInfoMap(final BeanMetaData bmd, final Method[] allMethodsOfEJB) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "createEJBMethodInfoMap: " + bmd.enterpriseBeanName);
         }
 
@@ -6875,8 +6228,7 @@ public abstract class EJBMDOrchestrator
 
         // Determine which public methods of the EJB are business methods
         // and populate the EJBMethodInfo map with entries for each business method.
-        if (bmd.isMessageDrivenBean())
-        {
+        if (bmd.isMessageDrivenBean()) {
             // As described section 5.4.9 Message Listener Interceptor Methods for Message-Driven
             // Beans, the AroundInvoke business method interceptor methods are supported for
             // message-driven beans. These interceptor methods may be defined on the bean class
@@ -6884,19 +6236,15 @@ public abstract class EJBMDOrchestrator
             // bean's message listener method(s).  Therefore, only the methods of the
             // message listener interface need to be processed.
             EJBMethodInfoImpl[] methodInfos = bmd.localMethodInfos;
-            for (Method method : allMethodsOfEJB)
-            {
+            for (Method method : allMethodsOfEJB) {
                 EJBMethodInfoImpl info = findMethodInEJBMethodInfoArray(methodInfos, method); //d494984.1
-                if (info != null)
-                {
+                if (info != null) {
                     ArrayList<EJBMethodInfoImpl> list = new ArrayList<EJBMethodInfoImpl>();
                     list.add(info);
                     map.put(method, list);
                 }
             }
-        }
-        else if (bmd.isSessionBean() || bmd.isManagedBean()) // F743-34301.1
-        {
+        } else if (bmd.isSessionBean() || bmd.isManagedBean()) {
             // As described in section 4.3.9 Business Method Delegation, the session bean's
             // business interface, component interface, or web service endpoint defines the
             // business methods callable by a client.  Therefore, only process methods
@@ -6905,42 +6253,33 @@ public abstract class EJBMDOrchestrator
             EJBMethodInfoImpl[] remoteInfos = bmd.methodInfos;
             EJBMethodInfoImpl[] webServiceInfos = bmd.wsEndpointMethodInfos;
 
-            for (Method method : allMethodsOfEJB)
-            {
+            for (Method method : allMethodsOfEJB) {
                 ArrayList<EJBMethodInfoImpl> list = new ArrayList<EJBMethodInfoImpl>();
-                if (localInfos != null)
-                {
+                if (localInfos != null) {
                     EJBMethodInfoImpl info = findMethodInEJBMethodInfoArray(localInfos, method); //d494984.1
-                    if (info != null)
-                    {
+                    if (info != null) {
                         list.add(info);
                     }
                 }
-                if (remoteInfos != null)
-                {
+                if (remoteInfos != null) {
                     EJBMethodInfoImpl info = findMethodInEJBMethodInfoArray(remoteInfos, method); //d494984.1
-                    if (info != null)
-                    {
+                    if (info != null) {
                         list.add(info);
                     }
                 }
-                if (webServiceInfos != null)
-                {
+                if (webServiceInfos != null) {
                     EJBMethodInfoImpl info = findMethodInEJBMethodInfoArray(webServiceInfos, method); //d494984.1
-                    if (info != null)
-                    {
+                    if (info != null) {
                         list.add(info);
                     }
                 }
-                if (!list.isEmpty())
-                {
+                if (!list.isEmpty()) {
                     map.put(method, list);
                 }
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "createEJBMethodInfoMap: " + bmd.enterpriseBeanName);
         }
         return map;
@@ -6958,29 +6297,23 @@ public abstract class EJBMDOrchestrator
      *         not found in the array specified by methodInfos parameter.
      */
     // d494984.1 - added entire method
-    private EJBMethodInfoImpl findMethodInEJBMethodInfoArray(EJBMethodInfoImpl[] methodInfos, final Method targetMethod)
-    {
+    private EJBMethodInfoImpl findMethodInEJBMethodInfoArray(EJBMethodInfoImpl[] methodInfos, final Method targetMethod) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "findMethodInEJBMethodInfoArray for method \"" + targetMethod.toString() + "\"");
         }
 
-        for (EJBMethodInfoImpl info : methodInfos)
-        {
-            if (targetMethod.equals(info.getMethod()))
-            {
-                if (isTraceOn && tc.isEntryEnabled())
-                {
+        for (EJBMethodInfoImpl info : methodInfos) {
+            if (targetMethod.equals(info.getMethod())) {
+                if (isTraceOn && tc.isEntryEnabled()) {
                     Tr.exit(tc, "findMethodInEJBMethodInfoArray found EJBMethodInfoImpl for method \"" + targetMethod.toString() + "\"");
                 }
                 return info;
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "findMethodInEJBMethodInfoArray did not find EJBMethodInfoImpl for method \"" + targetMethod.toString() + "\"");
         }
         return null;
@@ -6994,36 +6327,26 @@ public abstract class EJBMDOrchestrator
      * @throws EJBConfigurationException if configuration error detected.
      */
     // d430356 - added entire method
-    private void flagSFSBRemoveMethods
-                    (BeanMetaData bmd
-                     , final Method[] allMethodsOfEJB
-                     , Map<Method, ArrayList<EJBMethodInfoImpl>> methodInfoMap
-                    ) throws EJBConfigurationException
-    {
+    private void flagSFSBRemoveMethods(BeanMetaData bmd, final Method[] allMethodsOfEJB, Map<Method, ArrayList<EJBMethodInfoImpl>> methodInfoMap) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         String ejbName = bmd.enterpriseBeanName;
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "flagSFSBRemoveMethods: " + ejbName);
         }
 
         // First process any method that is annotated as a remove method
         // if metadata complete is false. This is done first since the xml
         // can be used to override the retain if exception setting.
-        if (!bmd.metadataComplete) //d454711
-        {
-            for (Method m : allMethodsOfEJB)
-            {
+        if (!bmd.metadataComplete) {
+            for (Method m : allMethodsOfEJB) {
                 // Does this method have the Remove annotation?
                 Remove ra = m.getAnnotation(Remove.class);
-                if (ra != null)
-                {
+                if (ra != null) {
                     // find the list of EJBMEthodInfoImpl objects that need to be
                     // flagged as remove methods.
                     ArrayList<EJBMethodInfoImpl> infoList = methodInfoMap.get(m);
-                    if (infoList == null)
-                    {
+                    if (infoList == null) {
                         // CNTR0233E: The {1} enterprise bean specifies an @Remove annotation on the {0} method.
                         // This annotation is not valid because this method is not a business method of this bean.
                         String method = m.toGenericString();
@@ -7032,19 +6355,15 @@ public abstract class EJBMDOrchestrator
                         throw new EJBConfigurationException("CNTR0233E:  The " + ejbName + " enterprise bean specifies an @Remove annotation on the " +
                                                             m.toGenericString()
                                                             + " method.  This annotation is not valid because this method is not a business method of this bean.");
-                    }
-                    else
-                    {
+                    } else {
                         // Get retainIfException from remove annotation
                         boolean retainIfException = ra.retainIfException();
 
                         // Flag each of the EJBMethodInfoImpl objects for this business method that
                         // it is a SFSB remove method.
-                        for (EJBMethodInfoImpl methodInfo : infoList)
-                        {
+                        for (EJBMethodInfoImpl methodInfo : infoList) {
                             methodInfo.setSFSBRemove(retainIfException);
-                            if (isTraceOn && tc.isDebugEnabled())
-                            {
+                            if (isTraceOn && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "SFSB @Remove method: " + methodInfo.getInterfaceType()
                                              + " - " + methodInfo.getJDIMethodSignature()
                                              + ", retain-if-exception = " + retainIfException);
@@ -7059,13 +6378,11 @@ public abstract class EJBMDOrchestrator
         // defined in the ejb-jar.xml file (note, eb is set to null if there is no
         // ejb-jar.xml file).
         EnterpriseBean eb = bmd.wccm.enterpriseBean;
-        if (eb != null)
-        {
+        if (eb != null) {
             // Get remove-method list for this Session bean from WCCM and process.
             Session sb = (Session) eb;
             List<RemoveMethod> rmList = sb.getRemoveMethod();
-            for (RemoveMethod rm : rmList)
-            {
+            for (RemoveMethod rm : rmList) {
                 NamedMethod namedMethod = rm.getBeanMethod();
                 String namedMethodName = namedMethod.getMethodName();
                 ArrayList<EJBMethodInfoImpl> infoList = null;
@@ -7073,39 +6390,29 @@ public abstract class EJBMDOrchestrator
                 // Determine if the remove method was specified using style
                 // 1, 2, or 3 and build the list of EJBMethodInfos that need
                 // to be flagged as remove methods.                          d615325
-                if ("*".equals(namedMethodName))
-                {
+                if ("*".equals(namedMethodName)) {
                     // style 1 - all methods are considered remove methods
                     infoList = new ArrayList<EJBMethodInfoImpl>(methodInfoMap.size());
-                    for (ArrayList<EJBMethodInfoImpl> methodInfoList : methodInfoMap.values())
-                    {
+                    for (ArrayList<EJBMethodInfoImpl> methodInfoList : methodInfoMap.values()) {
                         infoList.addAll(methodInfoList);
                     }
-                }
-                else if (namedMethod.getMethodParamList() == null)
-                {
+                } else if (namedMethod.getMethodParamList() == null) {
                     // style 2 - all methods with the same name are remove methods
                     infoList = new ArrayList<EJBMethodInfoImpl>();
-                    for (Method method : methodInfoMap.keySet())
-                    {
-                        if (method.getName().equals(namedMethodName))
-                        {
+                    for (Method method : methodInfoMap.keySet()) {
+                        if (method.getName().equals(namedMethodName)) {
                             infoList.addAll(methodInfoMap.get(method));
                         }
                     }
-                }
-                else
-                {
+                } else {
                     // style 3 - remove method must match both name and parameters
                     Method m = DDUtil.findMethod(namedMethod, allMethodsOfEJB);
-                    if (m != null)
-                    {
+                    if (m != null) {
                         infoList = methodInfoMap.get(m);
                     }
                 }
 
-                if (infoList == null || infoList.size() == 0)
-                {
+                if (infoList == null || infoList.size() == 0) {
                     // CNTR0233E: Remove annotation can not be applied to method "{0}"
                     // since the method is not a business method of EJB name "{1}".
                     String method = namedMethod.getMethodName();
@@ -7117,45 +6424,36 @@ public abstract class EJBMDOrchestrator
                     throw new EJBConfigurationException("remove-method annotation can not be applied to method \""
                                                         + method + "\" since the method is not a business method of EJB name \""
                                                         + ejbName + "\"");
-                }
-                else
-                {
+                } else {
                     // Determine if retain-if-exception is set in ejb-jar.xml for this EJB.
                     boolean retainIfExceptionIsSet = rm.isSetRetainIfException(); //d454711
 
                     // Flag each of the EJBMethodInfoImpl objects for this business method that
                     // it is a SFSB remove method.
-                    for (EJBMethodInfoImpl methodInfo : infoList)
-                    {
+                    for (EJBMethodInfoImpl methodInfo : infoList) {
                         // Was method annotated as a remove method?
-                        if (methodInfo.isSFSBRemoveMethod()) //d454711
-                        {
+                        if (methodInfo.isSFSBRemoveMethod()) {
                             // Yep, it was annoted with Remove method. Is the ejb-jar.xml
                             // overriding the retain if exception setting?
-                            if (retainIfExceptionIsSet) //d454711
-                            {
+                            if (retainIfExceptionIsSet) {
                                 // Yep, ejb-jar.xml is overriding the retain if exception,
                                 // so get setting from xml and set it in EJBMethodInfo object.
                                 boolean retainIfException = rm.isRetainIfException();
                                 methodInfo.setSFSBRemove(retainIfException);
-                                if (isTraceOn && tc.isDebugEnabled())
-                                {
+                                if (isTraceOn && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "SFSB remove-method: " + methodInfo.getInterfaceType()
                                                  + " - " + methodInfo.getJDIMethodSignature()
                                                  + ", ejb-jar.xml overriding retain-if-exception to be " + retainIfException);
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             // d454711
                             // Method was not annotated as a remove method, but it is a remove
                             // method in the xml file.  So flag method using information from xml file.
                             // Need to default retain if exception if not specified in xml file.
                             boolean retainIfException = (retainIfExceptionIsSet) ? rm.isRetainIfException() : false; //d454711
                             methodInfo.setSFSBRemove(retainIfException);
-                            if (isTraceOn && tc.isDebugEnabled())
-                            {
+                            if (isTraceOn && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "SFSB remove-method: " + methodInfo.getInterfaceType()
                                              + " - " + methodInfo.getJDIMethodSignature()
                                              + ", retain-if-exception = " + retainIfException);
@@ -7166,8 +6464,7 @@ public abstract class EJBMDOrchestrator
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "flagSFSBRemoveMethods: " + ejbName);
         }
     }
@@ -7183,13 +6480,10 @@ public abstract class EJBMDOrchestrator
      * @param bmd is the BeanMetaData for the EJB.
      *
      */
-    public void validateMergedMetaData(BeanMetaData bmd)
-                    throws EJBConfigurationException
-    {
+    public void validateMergedMetaData(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "validateMergedMetaData for bean: " + bmd.enterpriseBeanName + " ");
         }
 
@@ -7211,11 +6505,9 @@ public abstract class EJBMDOrchestrator
         String[] remoteBusinessInterfaces = bmd.ivInitData.ivRemoteBusinessInterfaceNames;
         String messageListenerInterface = bmd.ivInitData.ivMessageListenerInterfaceName;
 
-        if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION)
-        {
+        if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION) {
             // F743-20281.1 - Component views are not supported for singletons.
-            if (remoteHomeInterface != null || localHomeInterface != null)
-            {
+            if (remoteHomeInterface != null || localHomeInterface != null) {
                 Tr.error(tc, "INVALID_SINGLETON_COMPONENT_INTERFACE_SPECIFIED_CNTR0320E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 throw new EJBConfigurationException("The " + bmd.enterpriseBeanName + " singleton session bean in the " +
@@ -7227,8 +6519,7 @@ public abstract class EJBMDOrchestrator
                 localBusinessInterfaces == null &&
                 remoteBusinessInterfaces == null &&
                 bmd.ivHasWebServiceEndpoint == false && // F743-1756CodRv
-                bmd.ivLocalBean == false) // F743-1756
-            {
+                bmd.ivLocalBean == false) {
 
                 Tr.error(tc, "REQUIRED_INTERFACE_MISSING_CNTR0131E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
@@ -7244,13 +6535,11 @@ public abstract class EJBMDOrchestrator
         // Statlesss and Singleton session beans must have a component, business, or webservice endpoint interface, but
         // Stateless session beans may not have a message listener interfaces.      // F743-508
         if (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION ||
-            bmd.type == InternalConstants.TYPE_STATELESS_SESSION)
-        {
+            bmd.type == InternalConstants.TYPE_STATELESS_SESSION) {
             // Since a SLSB at EJB 3.0 or above will always have ivHasWebServiceEndpoint==true,
             // don't need to check for lack of valid interface types.
 
-            if (messageListenerInterface != null)
-            {
+            if (messageListenerInterface != null) {
                 Tr.error(tc, "INVALID_SESSION_BEAN_INTERFACE_SPECIFIED_CNTR0132E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
@@ -7262,14 +6551,12 @@ public abstract class EJBMDOrchestrator
 
         // Stateful session beans must have a component, or business interfaces, but may not have
         // webservice endpoint or message listener interfaces.
-        else if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION)
-        {
+        else if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION) {
             if (localHomeInterface == null &&
                 remoteHomeInterface == null &&
                 localBusinessInterfaces == null &&
                 remoteBusinessInterfaces == null &&
-                bmd.ivLocalBean == false) // F743-1756
-            {
+                bmd.ivLocalBean == false) {
                 Tr.error(tc, "REQUIRED_INTERFACE_MISSING_CNTR0131E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
@@ -7279,8 +6566,7 @@ public abstract class EJBMDOrchestrator
             }
 
             if (messageListenerInterface != null ||
-                bmd.ivHasWebServiceEndpoint == true) // F743-1756CodRv
-            {
+                bmd.ivHasWebServiceEndpoint == true) {
                 Tr.error(tc, "INVALID_SESSION_BEAN_INTERFACE_SPECIFIED_CNTR0132E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
@@ -7293,10 +6579,8 @@ public abstract class EJBMDOrchestrator
         // Entity beans must have a component interfaces, but may not have any of the other
         // interface types
         else if (bmd.type == InternalConstants.TYPE_BEAN_MANAGED_ENTITY ||
-                 bmd.type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY)
-        {
-            if ((localHomeInterface == null) && (remoteHomeInterface == null))
-            {
+                 bmd.type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY) {
+            if ((localHomeInterface == null) && (remoteHomeInterface == null)) {
                 Tr.error(tc, "REQUIRED_INTERFACE_MISSING_CNTR0131E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
@@ -7309,8 +6593,7 @@ public abstract class EJBMDOrchestrator
                 remoteBusinessInterfaces != null ||
                 messageListenerInterface != null ||
                 bmd.ivHasWebServiceEndpoint == true || // F743-1756CodRv
-                bmd.ivLocalBean == true) // F743-1756
-            {
+                bmd.ivLocalBean == true) {
                 Tr.error(tc, "INVALID_ENTITY_BEAN_INTERFACE_SPECIFIED_CNTR0133E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
@@ -7321,20 +6604,17 @@ public abstract class EJBMDOrchestrator
         }
 
         // Managed beans may only have a name an no-interface view      F743-34301
-        else if (bmd.type == InternalConstants.TYPE_MANAGED_BEAN)
-        {
+        else if (bmd.type == InternalConstants.TYPE_MANAGED_BEAN) {
             // No merge metadata to validate... no xml representation
         }
 
         // Otherwise, this must be an MDB.  MDBs must have a message listener interface, but may
         // not have any of the other interface types, or a home.
-        else
-        {
+        else {
             //d460602 - for pre-EJB3 modules we always default the message listener interface if none is provided.
             // Therefore,the following check is only needed for EJB3 or newer modules.
             if (messageListenerInterface == null &&
-                bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0)
-            {
+                bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
                 Tr.error(tc, "NO_MESSAGE_LISTENER_INTERFACE_CNTR0126E", // d659661.1
                          new Object[] { bmd.enterpriseBeanName });
                 throw new EJBConfigurationException("The " + bmd.enterpriseBeanName +
@@ -7349,8 +6629,7 @@ public abstract class EJBMDOrchestrator
                 bmd.ivHasWebServiceEndpoint == true || // F743-1756CodRv
                 localHomeInterface != null ||
                 remoteHomeInterface != null ||
-                bmd.ivLocalBean == true) // F743-1756
-            {
+                bmd.ivLocalBean == true) {
                 Tr.error(tc, "INVALID_MDB_INTERFACE_SPECIFIED_CNTR0134E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
@@ -7361,8 +6640,7 @@ public abstract class EJBMDOrchestrator
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "validateMergedMetaData");
         }
 
@@ -7380,9 +6658,7 @@ public abstract class EJBMDOrchestrator
      * @param bmd is the BeanMetaData for the EJB.
      */
     //d448783 d465813
-    public void findAndProcessExtendedPC(BeanMetaData bmd)
-                    throws EJBConfigurationException
-    {
+    public void findAndProcessExtendedPC(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -7392,15 +6668,13 @@ public abstract class EJBMDOrchestrator
         // container managed persistent units.
         EJBJPAContainer jpaComponent = bmd.container.getEJBRuntime().getEJBJPAContainer();
 
-        if (jpaComponent == null) // d668340
-        {
+        if (jpaComponent == null) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "findAndProcessExtendedPC : JPA disabled");
             return;
         }
 
-        if (bmd.ivJavaColonCompEnvMap == null) // d705480
-        {
+        if (bmd.ivJavaColonCompEnvMap == null) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "findAndProcessExtendedPC : java:comp unavailable");
             return;
@@ -7421,8 +6695,7 @@ public abstract class EJBMDOrchestrator
                                                                bmd.ivPersistenceRefNames,
                                                                jpaExPcBindingList); // F743-30682
 
-        if (bmd.ivExPcPuIds.length > 0)
-        {
+        if (bmd.ivExPcPuIds.length > 0) {
             // Finding extended PuIds means that this sfsb has a container-managed
             // extended persistence context so we can set the bmd flag.
             bmd.ivHasCMExtendedPersistenceContext = true;
@@ -7447,8 +6720,7 @@ public abstract class EJBMDOrchestrator
 
         // Container Managed Extended Persistence Context is only allowed on StatefulSessionBeans
         if (bmd.ivHasCMExtendedPersistenceContext &&
-            !bmd.isStatefulSessionBean()) //d448783
-        {
+            !bmd.isStatefulSessionBean()) {
             throw new EJBConfigurationException("Extended-scoped persistence unit declared in non-SFSB: " + bmd.j2eeName);
         }
 
@@ -7464,12 +6736,10 @@ public abstract class EJBMDOrchestrator
         }
 
         if (bmd.ivHasCMExtendedPersistenceContext ||
-            bmd.ivHasAppManagedPersistenceContext)
-        {
+            bmd.ivHasAppManagedPersistenceContext) {
             // d460432
             // SFSB failover is not supported with Extended-scoped Persistence Context   //d448832
-            if (bmd.ivSFSBFailover)
-            {
+            if (bmd.ivSFSBFailover) {
                 Tr.error(tc, "SFSB_FAILOVER_NOT_ALLOWED_WITH_EXTEND_PERSIST_CNTX_CNTR0156E",
                          new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName });
                 throw new EJBConfigurationException("Bean: " + bmd.enterpriseBeanName + " in module: " + bmd._moduleMetaData.ivName + " is configured " +
@@ -7480,16 +6750,13 @@ public abstract class EJBMDOrchestrator
             // passivate SFSB's with extendedPC since the EntityManager may not be serializable.
             // This will override whatever was set back in setActivationLoadPolicy().
 
-            if (bmd.activationPolicy != BeanMetaData.ACTIVATION_POLICY_ONCE)
-            {
-                String policyName =
-                                (bmd.activationPolicy == BeanMetaData.ACTIVATION_POLICY_TRANSACTION)
-                                                ? "TRANSACTION" : "ACTIVITY_SESSION";
+            if (bmd.activationPolicy != BeanMetaData.ACTIVATION_POLICY_ONCE) {
+                String policyName = (bmd.activationPolicy == BeanMetaData.ACTIVATION_POLICY_TRANSACTION) ? "TRANSACTION" : "ACTIVITY_SESSION";
                 Tr.warning(tc, "STATEFUL_PERSISTENCE_CONTEXT_ACTIVATE_ONCE_CNTR0175W",
                            new Object[] { bmd.j2eeName.getComponent(),
-                                         bmd.j2eeName.getModule(),
-                                         bmd.j2eeName.getApplication(),
-                                         policyName }); // LIDB441.5 d479669
+                                          bmd.j2eeName.getModule(),
+                                          bmd.j2eeName.getApplication(),
+                                          policyName }); // LIDB441.5 d479669
 
                 bmd.sessionActivateTran = false;
                 bmd.sessionActivateSession = false;
@@ -7499,8 +6766,7 @@ public abstract class EJBMDOrchestrator
 
         } // if (bmd.ivHasExtendedPersistenceContext)
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "findAndProcessExtendedPC : " + " CMExtendedPC =  " +
                         bmd.ivHasCMExtendedPersistenceContext + ", AppManagedPC = " +
                         bmd.ivHasAppManagedPersistenceContext);
@@ -7510,8 +6776,7 @@ public abstract class EJBMDOrchestrator
     protected abstract void populateBindings(BeanMetaData bmd,
                                              Map<JNDIEnvironmentRefType, Map<String, String>> allBindings,
                                              Map<String, String> envEntryValues,
-                                             ResourceRefConfigList resRefList)
-                    throws EJBConfigurationException;
+                                             ResourceRefConfigList resRefList) throws EJBConfigurationException;
 
     // F743-17630 F743-17630CodRv
     /**
@@ -7534,8 +6799,7 @@ public abstract class EJBMDOrchestrator
     public ComponentNameSpaceConfiguration finishBMDInitForReferenceContext(BeanMetaData bmd,
                                                                             String defaultCnrJndiName,
                                                                             WSEJBHandlerResolver wsHandlerResolver) // F743-17630CodRv
-    throws ContainerException, EJBConfigurationException
-    {
+                    throws ContainerException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "finishBMDInitForReferenceContext: " + bmd.j2eeName); // d640935.1
@@ -7567,15 +6831,13 @@ public abstract class EJBMDOrchestrator
         // deferred EJB initialize, processBean might have already done this
         // processing.
         // ----------------------------------------------------------------------
-        if (bmd.ivInitData.ivTimerMethods == null)
-        {
+        if (bmd.ivInitData.ivTimerMethods == null) {
             processAutomaticTimerMetaData(bmd);
 
             // Automatic timer metadata depends on timeout metadata, so we only need
             // to process timeout metadata if automatic timer processing hasn't
             // already done so.
-            if (bmd.ivInitData.ivTimerMethods == null)
-            {
+            if (bmd.ivInitData.ivTimerMethods == null) {
                 // ----------------------------------------------------------------
                 // Determine if this EJB implements TimedObject or contains a 'timeout'
                 // method and initialize the BMD fields for runtime processing. This
@@ -7626,8 +6888,7 @@ public abstract class EJBMDOrchestrator
         // because the connection manager factory uses ComponentMetaData (ie. bmd). d114138.3
         // Also, it depends on bmd._resourceRefList set above.
         // -----------------------------------------------------------------------
-        if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) //129321
-        {
+        if (bmd.cmpVersion == InternalConstants.CMP_VERSION_1_X) {
             bmd.persister = createCMP11Persister(bmd, defaultCnrJndiName);
 
             //F001925 start: now that we have a persister, we need to use reflections to determine
@@ -7673,8 +6934,7 @@ public abstract class EJBMDOrchestrator
         // above.
         // ----------------------------------------------------------------------
         if (bmd.optionACommitOption || // d173022.11
-            bmd.ivMaxCreation > 0) // PK20648
-        {
+            bmd.ivMaxCreation > 0) {
             bmd.container.initOptACleanUpLockManager();
         }
 
@@ -7718,11 +6978,9 @@ public abstract class EJBMDOrchestrator
         // Get list of all methods that have TX or Security attributes from WCCM
         // ----------------------------------------------------------------------
         EJBJar ejbjar = bmd.wccm.ejbjar; //89981
-        if (ejbjar != null)
-        {
+        if (ejbjar != null) {
             AssemblyDescriptor assemblyDescriptor = ejbjar.getAssemblyDescriptor();
-            if (assemblyDescriptor != null)
-            {
+            if (assemblyDescriptor != null) {
                 transactionList = assemblyDescriptor.getContainerTransactions();
                 securityList = assemblyDescriptor.getMethodPermissions(); //d366845.11.1
                 excludeList = assemblyDescriptor.getExcludeList(); //d366845.11.1
@@ -7742,18 +7000,14 @@ public abstract class EJBMDOrchestrator
         // because they are an optional PME extension.
         // ----------------------------------------------------------------------
         List<ActivitySessionMethod> activitySessionList = null;
-        if (!bmd.usesBeanManagedAS)
-        {
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+        if (!bmd.usesBeanManagedAS) {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Attempting to do any needed activitySession work for bean " + bmd.j2eeName.getComponent());
             }
 
-            try
-            {
+            try {
                 activitySessionList = bmd.container.getContainerExtensionFactory().getActivitySessionAttributes(bmd);//d143954 F743-24095
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".finishBMDInit", "913", this);
                 ContainerException cex = new ContainerException("Failed to initialize BeanMetaData instance", ex);
                 Tr.error(tc, "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
@@ -7768,11 +7022,18 @@ public abstract class EJBMDOrchestrator
         localBeanMethods = DeploymentUtil.getMethods(bmd.localInterfaceClass,
                                                      bmd.ivBusinessLocalInterfaceClasses);
 
-        // If this is a no-method interface MDB, we need to collect the methods off the bean class instead of the interface.
-        if (bmd.container.isNoMethodInterfaceMDBEnabled() && localBeanMethods.length == 0 && bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
-            localBeanMethods = DeploymentUtil.getMethods(null,
-                                                         new Class[] { bmd.enterpriseBeanClass });
-            bmd.ivIsNoMethodInterfaceMDB = true;
+        if (bmd.type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
+            // If this is a no-method interface MDB, we need to collect the methods off the bean class instead of the interface.
+            if (bmd.container.isNoMethodInterfaceMDBEnabled() && localBeanMethods.length == 0) {
+                localBeanMethods = DeploymentUtil.getMethods(null, new Class[] { bmd.enterpriseBeanClass });
+                bmd.ivIsNoMethodInterfaceMDB = true;
+            }
+
+            // For MDBs using an ActivationSpec, remove any message listener interface methods that
+            // conflict with the MessageEndpoint interface methods; they cannot be overridden.
+            if (bmd.ivActivationSpecJndiName != null) {
+                localBeanMethods = removeMessageEndpointMethods(localBeanMethods);
+            }
         }
 
         remoteBeanMethods = DeploymentUtil.getMethods(bmd.remoteInterfaceClass,
@@ -7794,8 +7055,7 @@ public abstract class EJBMDOrchestrator
         // bean class now and filter out the unneeded ones then.
         if (bmd.ivHasWebServiceEndpoint &&
             (bmd.webserviceEndpointInterfaceClass == null ||
-            bmd.ivInitData.ivWebServiceEndpoint))
-        {
+             bmd.ivInitData.ivWebServiceEndpoint)) {
             webserviceMethods = DeploymentUtil.getMethods(bmd.enterpriseBeanClass, null);
         }
 
@@ -7837,8 +7097,7 @@ public abstract class EJBMDOrchestrator
         //------------------------------------------------------------------------
         if (bmd.remoteInterfaceClass != null ||
             bmd.homeInterfaceClass != null ||
-            bmd.ivBusinessRemoteInterfaceClasses != null)
-        {
+            bmd.ivBusinessRemoteInterfaceClasses != null) {
             bmd.ivCluster = bmd.container.getEJBRuntime().getClusterIdentity(bmd.j2eeName);
         }
 
@@ -7859,14 +7118,12 @@ public abstract class EJBMDOrchestrator
         // generate the objects that invoke those methods.
         //------------------------------------------------------------------------
         if (bmd.type == InternalConstants.TYPE_STATEFUL_SESSION &&
-            !bmd._moduleMetaData.isEJBDeployed()) // d646955
-        {
+            !bmd._moduleMetaData.isEJBDeployed()) {
             initializeSFSBInitMethodMap(bmd, allPublicMethods);
 
             // For EJB 3 modules, also flag the EJBMethodInfo object for each of
             // the @Remove method in SFSB.
-            if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0)
-            {
+            if (bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) {
                 flagSFSBRemoveMethods(bmd, allPublicMethods, methodInfoMap); // d430356
             }
         }
@@ -7880,8 +7137,7 @@ public abstract class EJBMDOrchestrator
         //------------------------------------------------------------------------
         initializeInterceptorMD(bmd, methodInfoMap); //d367572.4 // d430356
 
-        if (bmd.ivInterceptorMetaData != null && bmd.ivInterceptorMetaData.ivBeanLifecycleMethods != null) // F743-1751
-        {
+        if (bmd.ivInterceptorMetaData != null && bmd.ivInterceptorMetaData.ivBeanLifecycleMethods != null) {
             initializeLifecycleInterceptorMethodMD(bmd.ivInterceptorMetaData.ivBeanLifecycleMethods,
                                                    transactionList,
                                                    activitySessionList,
@@ -7907,8 +7163,7 @@ public abstract class EJBMDOrchestrator
 
         InterceptorMetaData imd = bmd.ivInterceptorMetaData;
         List<Class<?>> interceptorClassList = null;
-        if (imd != null)
-        {
+        if (imd != null) {
             // There is atleast 1 interceptor class for this EJB.  So add the classes
             // to the injectionClasses list.
             interceptorClassList = Arrays.asList(imd.ivInterceptorClasses);
@@ -7922,12 +7177,9 @@ public abstract class EJBMDOrchestrator
         if ((bmd.ivModuleVersion >= BeanMetaData.J2EE_EJB_VERSION_3_0) &&
             (wsHandlerResolver != null) &&
             (bmd.type == InternalConstants.TYPE_SINGLETON_SESSION || // F743-508
-            bmd.type == InternalConstants.TYPE_STATELESS_SESSION))
-        {
-            List<Class<?>> handlerClasses =
-                            wsHandlerResolver.retrieveJAXWSHandlers(bmd.j2eeName);
-            if (handlerClasses != null)
-            {
+             bmd.type == InternalConstants.TYPE_STATELESS_SESSION)) {
+            List<Class<?>> handlerClasses = wsHandlerResolver.retrieveJAXWSHandlers(bmd.j2eeName);
+            if (handlerClasses != null) {
                 classesInPlay.addAll(handlerClasses);
             }
         }
@@ -7936,13 +7188,11 @@ public abstract class EJBMDOrchestrator
         // Get the WCCM artifacts relavent to refeference processing
         //----------------------------------------------------------
         String displayName = null;
-        Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs =
-                        new EnumMap<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>>(JNDIEnvironmentRefType.class);
+        Map<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>> allRefs = new EnumMap<JNDIEnvironmentRefType, List<? extends JNDIEnvironmentRef>>(JNDIEnvironmentRefType.class);
 
         // get WCCM artifacts associated with bean itself
         EnterpriseBean enterpriseBean = bmd.wccm.enterpriseBean;
-        if (enterpriseBean != null)
-        {
+        if (enterpriseBean != null) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "adding references from enterprise bean: " + enterpriseBean);
 
@@ -7958,12 +7208,10 @@ public abstract class EJBMDOrchestrator
         Map<String, Interceptor> interceptorMap = bmd._moduleMetaData.ivInterceptorMap;
         if ((interceptorMap != null) &&
             (interceptorClassList != null) &&
-            (interceptorClassList.size() > 0)) // d649796
-        {
+            (interceptorClassList.size() > 0)) {
             // There is atleast one interceptor class bound to the EJB class,
             // so do for each interceptor class in list passed to this method.
-            for (Class<?> interceptorClass : interceptorClassList)
-            {
+            for (Class<?> interceptorClass : interceptorClassList) {
                 // Get the fully qualified interceptor class name and lookup in the
                 // map passed to this method the WCCM Interceptor object associated
                 // with the interceptor class name.
@@ -7973,8 +7221,7 @@ public abstract class EJBMDOrchestrator
                 // Only process if found in the interceptor map. If will not be found
                 // if the Interceptor is reference via the @Inteceptor annotation
                 // rather than the <interceptor> element in ejb-jar.xml file for the module.
-                if (interceptor != null)
-                {
+                if (interceptor != null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "adding references from interceptor: " + interceptor);
 
@@ -7989,12 +7236,9 @@ public abstract class EJBMDOrchestrator
         //-------------------------------------------
         //Ensure display name is set correctly
         //-------------------------------------------
-        if (displayName == null || displayName.equals(""))
-        {
+        if (displayName == null || displayName.equals("")) {
             displayName = bmd.j2eeName.getComponent();
-        }
-        else if (!displayName.equals(bmd.j2eeName.getComponent()))
-        {
+        } else if (!displayName.equals(bmd.j2eeName.getComponent())) {
             displayName = displayName + " (" + bmd.j2eeName.getComponent() + ")";
         }
 
@@ -8016,12 +7260,10 @@ public abstract class EJBMDOrchestrator
         String logicalModuleName = mmd.ivLogicalName; // F743-23167
         Object loadStrategy = bmd.wccm.getModuleLoadStrategy(); // F68113.4
         UserTransaction ejbUserTransaction = bmd.usesBeanManagedTx ? UserTransactionWrapper.INSTANCE : null; // F743-17630.1, d631349
-        ComponentNameSpaceConfiguration.ReferenceFlowKind owningFlow = bmd.type == InternalConstants.TYPE_MANAGED_BEAN
-                        ? ComponentNameSpaceConfiguration.ReferenceFlowKind.MANAGED_BEAN // d705480
+        ComponentNameSpaceConfiguration.ReferenceFlowKind owningFlow = bmd.type == InternalConstants.TYPE_MANAGED_BEAN ? ComponentNameSpaceConfiguration.ReferenceFlowKind.MANAGED_BEAN // d705480
                         : ComponentNameSpaceConfiguration.ReferenceFlowKind.EJB;
 
-        ComponentNameSpaceConfiguration compNSConfig =
-                        new ComponentNameSpaceConfiguration(displayName, bmd.getJ2EEName()); // F48603.7
+        ComponentNameSpaceConfiguration compNSConfig = new ComponentNameSpaceConfiguration(displayName, bmd.getJ2EEName()); // F48603.7
         compNSConfig.setLogicalModuleName(logicalAppName, logicalModuleName); // F743-23167
         compNSConfig.setOwningFlow(owningFlow);
         compNSConfig.setCheckApplicationConfiguration(checkAppConfigCustom); // F743-33178
@@ -8060,10 +7302,7 @@ public abstract class EJBMDOrchestrator
      * In either case, the InjectionEngine processing is completed, and then the
      * resulting output data structures are persisted into BeanMetaData for future use.
      */
-    protected void processReferenceContext(BeanMetaData bmd)
-                    throws InjectionException,
-                    EJBConfigurationException
-    {
+    protected void processReferenceContext(BeanMetaData bmd) throws InjectionException, EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "ensureReferenceDataIsProcessed");
@@ -8096,15 +7335,12 @@ public abstract class EJBMDOrchestrator
         // Stick the InjectionTargets that are visible to each interceptor
         // class into the InterceptorMetaData
         InterceptorMetaData imd = bmd.ivInterceptorMetaData;
-        if (imd != null)
-        {
+        if (imd != null) {
             Class<?>[] interceptorClasses = imd.ivInterceptorClasses;
-            if (interceptorClasses != null && interceptorClasses.length > 0)
-            {
+            if (interceptorClasses != null && interceptorClasses.length > 0) {
                 InjectionTarget[][] interceptorInjectionTargets = new InjectionTarget[interceptorClasses.length][0];
 
-                for (int i = 0; i < interceptorClasses.length; i++)
-                {
+                for (int i = 0; i < interceptorClasses.length; i++) {
                     // The InjectionTarget[] associated with the interceptor class is
                     // empty (ie, 0 length array) if there are no visible
                     // InjectionTargets. Its added to the interceptorInjectionTargets
@@ -8124,8 +7360,7 @@ public abstract class EJBMDOrchestrator
                 Tr.debug(tc, "Interceptor metadata after adding any InjectionTargets:\n" + imd);
         }
 
-        if (!EJSPlatformHelper.isZOSCRA()) // d435372
-        {
+        if (!EJSPlatformHelper.isZOSCRA()) {
             // Verify that a MDB or stateless session bean instance or the
             // interceptor instances of MDB and SLSB are not the target of a
             // extended persistent context injection since extended persistent
@@ -8155,19 +7390,13 @@ public abstract class EJBMDOrchestrator
      */
     // F49213.1
     private InjectionTarget[] getInjectionTargets(BeanMetaData bmd,
-                                                  Class<?> beanClass)
-                    throws InjectionException,
-                    EJBConfigurationException
-    {
+                                                  Class<?> beanClass) throws InjectionException, EJBConfigurationException {
         InjectionTarget[] targets = bmd.ivReferenceContext.getInjectionTargets(beanClass);
 
         if (!bmd.usesBeanManagedTx &&
-            bmd.type != InternalConstants.TYPE_MANAGED_BEAN) // d715269
-        {
-            for (InjectionTarget target : targets)
-            {
-                if (target.getInjectionBinding().getInjectionClassType() == UserTransaction.class) // F48603.10
-                {
+            bmd.type != InternalConstants.TYPE_MANAGED_BEAN) {
+            for (InjectionTarget target : targets) {
+                if (target.getInjectionBinding().getInjectionClassType() == UserTransaction.class) {
                     Tr.error(tcInjection, "INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E");
                     throw new EJBConfigurationException("Injecting a UserTransaction into a" +
                                                         " container-managed transaction bean is not allowed");
@@ -8176,8 +7405,7 @@ public abstract class EJBMDOrchestrator
         }
 
         // No need to perform any sorting if the existing array isn't big enough
-        if (targets.length <= 1)
-        {
+        if (targets.length <= 1) {
             return targets;
         }
 
@@ -8185,15 +7413,13 @@ public abstract class EJBMDOrchestrator
         boolean sorted = false;
         ArrayList<InjectionTarget> sortedTargets = new ArrayList<InjectionTarget>(targets.length);
 
-        for (InjectionTarget target : targets)
-        {
+        for (InjectionTarget target : targets) {
             Member targetMember = target.getMember();
 
             // If this target is for a field, then add it just prior to the first
             // method; the fields will remain in the same order as produced by the
             // injection engine, though that shouldn't really matter.
-            if (targetMember instanceof Field)
-            {
+            if (targetMember instanceof Field) {
                 sortedTargets.add(nextField, target);
                 ++nextField;
             }
@@ -8201,32 +7427,26 @@ public abstract class EJBMDOrchestrator
             // Must be a method, so if it is an EJBContext, then add it to the
             // beginning of the list, ahead of both methods and fields; otherwise
             // add it to the end.
-            else
-            {
+            else {
                 Class<?> targetType = target.getInjectionBinding().getInjectionClassType();
                 if (targetType != null && // d718208
-                    EJBContext.class.isAssignableFrom(targetType))
-                {
+                    EJBContext.class.isAssignableFrom(targetType)) {
                     if ((SessionBean.class.isAssignableFrom(beanClass) &&
-                        "setSessionContext".equals(targetMember.getName())) ||
+                         "setSessionContext".equals(targetMember.getName()))
+                        ||
                         (MessageDrivenBean.class.isAssignableFrom(beanClass) &&
-                        "setMessageDrivenContext".equals(targetMember.getName())))
-                    {
+                         "setMessageDrivenContext".equals(targetMember.getName()))) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "Skipping Session/MessageDrivenBean set context method : " + target);
                         sorted = true;
-                    }
-                    else
-                    {
+                    } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "Sorting EJBContext set method to first in list : " + target);
                         sortedTargets.add(0, target);
                         sorted = true;
                         ++nextField;
                     }
-                }
-                else
-                {
+                } else {
                     sortedTargets.add(target);
                 }
             }
@@ -8261,9 +7481,7 @@ public abstract class EJBMDOrchestrator
      *             specification.
      */
     // F743-25855
-    private void processSessionSynchronizationMD(BeanMetaData bmd, Session bean)
-                    throws EJBConfigurationException
-    {
+    private void processSessionSynchronizationMD(BeanMetaData bmd, Session bean) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processSessionSynchronizationMD : " + bmd.j2eeName);
@@ -8271,8 +7489,7 @@ public abstract class EJBMDOrchestrator
         Class<?>[] afterCompletionParams = new Class<?>[] { Boolean.TYPE };
 
         // First, obtain each method object that was specified in XML.
-        if (bean != null)
-        {
+        if (bean != null) {
             bmd.ivAfterBegin = getSessionSynchMethod(bmd,
                                                      bean.getAfterBeginMethod(),
                                                      null,
@@ -8292,8 +7509,7 @@ public abstract class EJBMDOrchestrator
         if (!bmd.metadataComplete &&
             (bmd.ivAfterBegin == null ||
              bmd.ivBeforeCompletion == null ||
-            bmd.ivAfterCompletion == null))
-        {
+             bmd.ivAfterCompletion == null)) {
             findAnnotatedSessionSynchMethods(bmd);
         }
 
@@ -8307,16 +7523,14 @@ public abstract class EJBMDOrchestrator
 
         if ((bmd.ivAfterBegin != null ||
              bmd.ivBeforeCompletion != null ||
-            bmd.ivAfterCompletion != null) &&
-            SessionSynchronization.class.isAssignableFrom(bmd.enterpriseBeanClass))
-        {
+             bmd.ivAfterCompletion != null)
+            &&
+            SessionSynchronization.class.isAssignableFrom(bmd.enterpriseBeanClass)) {
             J2EEName j2eeName = bmd.j2eeName;
-            Method method = (bmd.ivAfterBegin != null) ? bmd.ivAfterBegin
-                            : ((bmd.ivBeforeCompletion != null) ? bmd.ivBeforeCompletion
-                                            : bmd.ivAfterCompletion);
+            Method method = (bmd.ivAfterBegin != null) ? bmd.ivAfterBegin : ((bmd.ivBeforeCompletion != null) ? bmd.ivBeforeCompletion : bmd.ivAfterCompletion);
             Tr.error(tc, "BOTH_SESSION_SYNCH_STYLES_CNTR0323E",
                      new Object[] { j2eeName.getComponent(), j2eeName.getModule(),
-                                   j2eeName.getApplication(), method });
+                                    j2eeName.getApplication(), method });
             throw new EJBConfigurationException("CNTR0323E: The " + j2eeName.getComponent() + " bean in the " +
                                                 j2eeName.getModule() + " module of the " + j2eeName.getApplication() +
                                                 " application implements the javax.ejb.SessionSynchronization" +
@@ -8329,7 +7543,7 @@ public abstract class EJBMDOrchestrator
             Tr.exit(tc, "processSessionSynchronizationMD : found = " +
                         (bmd.ivAfterBegin != null ||
                          bmd.ivBeforeCompletion != null ||
-                        bmd.ivAfterCompletion != null));
+                         bmd.ivAfterCompletion != null));
         }
     }
 
@@ -8351,11 +7565,8 @@ public abstract class EJBMDOrchestrator
     private Method getSessionSynchMethod(BeanMetaData bmd,
                                          NamedMethod namedMethod,
                                          Class<?>[] expectedParams,
-                                         String xmlType)
-                    throws EJBConfigurationException
-    {
-        if (namedMethod == null)
-        {
+                                         String xmlType) throws EJBConfigurationException {
+        if (namedMethod == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, xmlType + " not specified in XML");
             return null;
@@ -8363,16 +7574,13 @@ public abstract class EJBMDOrchestrator
 
         String methodName = namedMethod.getMethodName().trim();
         List<String> paramTypes = namedMethod.getMethodParamList();
-        if (paramTypes != null)
-        {
-            if (expectedParams == null || expectedParams.length == 0)
-            {
-                if (paramTypes.size() > 0)
-                {
+        if (paramTypes != null) {
+            if (expectedParams == null || expectedParams.length == 0) {
+                if (paramTypes.size() > 0) {
                     J2EEName j2eeName = bmd.j2eeName;
                     Tr.error(tc, "INVALID_SESSION_SYNCH_PARAM_CNTR0324E",
                              new Object[] { methodName, xmlType, j2eeName.getComponent(),
-                                           j2eeName.getModule(), j2eeName.getApplication() });
+                                            j2eeName.getModule(), j2eeName.getApplication() });
                     throw new EJBConfigurationException("CNTR0324E: The " + methodName + " method configured in the ejb-jar.xml" +
                                                         " file does not have the required method signature for a " + xmlType +
                                                         " session synchronization method for the " + j2eeName.getComponent() +
@@ -8380,15 +7588,12 @@ public abstract class EJBMDOrchestrator
                                                         j2eeName.getApplication() + " application. The number of parameters" +
                                                         " configured is " + paramTypes.size() + " but must be 0.");
                 }
-            }
-            else
-            {
-                if (paramTypes.size() != expectedParams.length)
-                {
+            } else {
+                if (paramTypes.size() != expectedParams.length) {
                     J2EEName j2eeName = bmd.j2eeName;
                     Tr.error(tc, "INVALID_SESSION_SYNCH_PARAM_CNTR0324E",
                              new Object[] { methodName, xmlType, j2eeName.getComponent(),
-                                           j2eeName.getModule(), j2eeName.getApplication() });
+                                            j2eeName.getModule(), j2eeName.getApplication() });
                     int configuredSize = paramTypes.size();
                     throw new EJBConfigurationException("CNTR0324E: The " + methodName + " method configured in the ejb-jar.xml" +
                                                         " file does not have the required method signature for a " + xmlType +
@@ -8398,14 +7603,12 @@ public abstract class EJBMDOrchestrator
                                                         " configured is " + configuredSize + " but must be " +
                                                         expectedParams.length + ".");
                 }
-                for (int i = 0; i < expectedParams.length; i++)
-                {
-                    if (!paramTypes.get(i).equals(expectedParams[i].getName()))
-                    {
+                for (int i = 0; i < expectedParams.length; i++) {
+                    if (!paramTypes.get(i).equals(expectedParams[i].getName())) {
                         J2EEName j2eeName = bmd.j2eeName;
                         Tr.error(tc, "INVALID_SESSION_SYNCH_PARAM_CNTR0324E",
                                  new Object[] { methodName, xmlType, j2eeName.getComponent(),
-                                               j2eeName.getModule(), j2eeName.getApplication() });
+                                                j2eeName.getModule(), j2eeName.getApplication() });
                         throw new EJBConfigurationException("CNTR0324E: The " + methodName + " method configured in the ejb-jar.xml" +
                                                             " file does not have the required method signature for a " + xmlType +
                                                             " session synchronization method for the " + j2eeName.getComponent() +
@@ -8422,14 +7625,11 @@ public abstract class EJBMDOrchestrator
 
         Exception firstException = null;
         Class<?> clazz = bmd.enterpriseBeanClass;
-        while (clazz != Object.class && method == null)
-        {
-            try
-            {
+        while (clazz != Object.class && method == null) {
+            try {
                 method = clazz.getDeclaredMethod(methodName, expectedParams);
                 method.setAccessible(true);
-            } catch (NoSuchMethodException ex)
-            {
+            } catch (NoSuchMethodException ex) {
                 // FFDC not required... this may be normal
                 if (firstException == null) {
                     firstException = ex;
@@ -8438,12 +7638,11 @@ public abstract class EJBMDOrchestrator
             }
         }
 
-        if (method == null)
-        {
+        if (method == null) {
             J2EEName j2eeName = bmd.j2eeName;
             Tr.error(tc, "SESSION_SYNCH_METHOD_NOT_FOUND_CNTR0325E",
                      new Object[] { xmlType, methodName, j2eeName.getComponent(),
-                                   j2eeName.getModule(), j2eeName.getApplication() });
+                                    j2eeName.getModule(), j2eeName.getApplication() });
             throw new EJBConfigurationException("CNTR0325E: The configured " + xmlType + " session synchronization method " +
                                                 methodName + " is not implemented by the " + j2eeName.getComponent() +
                                                 " bean in the " + j2eeName.getModule() + " module of the " +
@@ -8468,33 +7667,26 @@ public abstract class EJBMDOrchestrator
      *             been coded with the same annotation.
      */
     // F743-25855
-    private void findAnnotatedSessionSynchMethods(BeanMetaData bmd)
-                    throws EJBConfigurationException
-    {
+    private void findAnnotatedSessionSynchMethods(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         boolean lookForAfterBegin = (bmd.ivAfterBegin == null);
         boolean lookForBeforeCompletion = (bmd.ivBeforeCompletion == null);
         boolean lookForAfterCompletion = (bmd.ivAfterCompletion == null);
 
-        for (MethodMap.MethodInfo methodInfo : MethodMap.getAllDeclaredMethods(bmd.enterpriseBeanClass)) // d666251
-        {
+        for (MethodMap.MethodInfo methodInfo : MethodMap.getAllDeclaredMethods(bmd.enterpriseBeanClass)) {
             Method method = methodInfo.getMethod();
             if (lookForAfterBegin &&
-                method.isAnnotationPresent(AfterBegin.class))
-            {
-                if (bmd.ivAfterBegin == null)
-                {
+                method.isAnnotationPresent(AfterBegin.class)) {
+                if (bmd.ivAfterBegin == null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "@AfterBegin = " + method);
                     method.setAccessible(true); // d666251
                     bmd.ivAfterBegin = method;
-                }
-                else
-                {
+                } else {
                     Tr.error(tc, "MULTIPLE_SESSION_SYNCH_METHODS_CNTR0326E",
                              new Object[] { "after-begin-method",
-                                           bmd.j2eeName.getComponent(),
-                                           bmd.ivAfterBegin, method });
+                                            bmd.j2eeName.getComponent(),
+                                            bmd.ivAfterBegin, method });
                     throw new EJBConfigurationException("CNTR0326E: Multiple after-begin-method session synchronization" +
                                                         " methods have been configured for the " + bmd.j2eeName.getComponent() +
                                                         " bean. The configured session synchronization methods are : " +
@@ -8502,21 +7694,17 @@ public abstract class EJBMDOrchestrator
                 }
             }
             if (lookForBeforeCompletion &&
-                method.isAnnotationPresent(BeforeCompletion.class))
-            {
-                if (bmd.ivBeforeCompletion == null)
-                {
+                method.isAnnotationPresent(BeforeCompletion.class)) {
+                if (bmd.ivBeforeCompletion == null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "@BeforeCompletion = " + method);
                     method.setAccessible(true); // d666251
                     bmd.ivBeforeCompletion = method;
-                }
-                else
-                {
+                } else {
                     Tr.error(tc, "MULTIPLE_SESSION_SYNCH_METHODS_CNTR0326E",
                              new Object[] { "before-completion-method",
-                                           bmd.j2eeName.getComponent(),
-                                           bmd.ivBeforeCompletion, method });
+                                            bmd.j2eeName.getComponent(),
+                                            bmd.ivBeforeCompletion, method });
                     throw new EJBConfigurationException("CNTR0326E: Multiple before-completion-method session synchronization" +
                                                         " methods have been configured for the " + bmd.j2eeName.getComponent() +
                                                         " bean. The configured session synchronization methods are : " +
@@ -8524,21 +7712,17 @@ public abstract class EJBMDOrchestrator
                 }
             }
             if (lookForAfterCompletion &&
-                method.isAnnotationPresent(AfterCompletion.class))
-            {
-                if (bmd.ivAfterCompletion == null)
-                {
+                method.isAnnotationPresent(AfterCompletion.class)) {
+                if (bmd.ivAfterCompletion == null) {
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "@AfterCompletion = " + method);
                     method.setAccessible(true); // d666251
                     bmd.ivAfterCompletion = method;
-                }
-                else
-                {
+                } else {
                     Tr.error(tc, "MULTIPLE_SESSION_SYNCH_METHODS_CNTR0326E",
                              new Object[] { "after-completion-method",
-                                           bmd.j2eeName.getComponent(),
-                                           bmd.ivAfterCompletion, method });
+                                            bmd.j2eeName.getComponent(),
+                                            bmd.ivAfterCompletion, method });
                     throw new EJBConfigurationException("CNTR0326E: Multiple after-completion-method session synchronization" +
                                                         " methods have been configured for the " + bmd.j2eeName.getComponent() +
                                                         " bean. The configured session synchronization methods are : " +
@@ -8549,7 +7733,7 @@ public abstract class EJBMDOrchestrator
     }
 
     /**
-     * Verifies that a session syncronization method has been coded properly
+     * Verifies that a session synchronization method has been coded properly
      * based on the rules from the specification. <p>
      *
      * The following rules are validated:
@@ -8572,9 +7756,7 @@ public abstract class EJBMDOrchestrator
     private void validateSessionSynchronizationMethod(BeanMetaData bmd,
                                                       Method method,
                                                       Class<?>[] expectedParams,
-                                                      String methodType)
-                    throws EJBConfigurationException
-    {
+                                                      String methodType) throws EJBConfigurationException {
         if (method == null) {
             return;
         }
@@ -8582,42 +7764,30 @@ public abstract class EJBMDOrchestrator
         String specificCause = "";
 
         int modifiers = method.getModifiers();
-        if (Modifier.isStatic(modifiers))
-        {
+        if (Modifier.isStatic(modifiers)) {
             specificCause += " The 'static' modifier is not allowed.";
         }
 
-        if (Modifier.isFinal(modifiers))
-        {
+        if (Modifier.isFinal(modifiers)) {
             specificCause += " The 'final' modifier is not allowed.";
         }
 
-        if (method.getReturnType() != Void.TYPE)
-        {
+        if (method.getReturnType() != Void.TYPE) {
             specificCause += " The return type must be 'void'.";
         }
 
         Class<?>[] paramTypes = method.getParameterTypes();
-        if (expectedParams == null || expectedParams.length == 0)
-        {
-            if (paramTypes != null && paramTypes.length > 0)
-            {
+        if (expectedParams == null || expectedParams.length == 0) {
+            if (paramTypes != null && paramTypes.length > 0) {
                 specificCause += " The method must take 0 arguments.";
             }
-        }
-        else
-        {
-            if (paramTypes == null || paramTypes.length != expectedParams.length)
-            {
+        } else {
+            if (paramTypes == null || paramTypes.length != expectedParams.length) {
                 specificCause += " The method must take " + expectedParams.length +
                                  " arguments.";
-            }
-            else
-            {
-                for (int i = 0; i < expectedParams.length; i++)
-                {
-                    if (!paramTypes[i].equals(expectedParams[i]))
-                    {
+            } else {
+                for (int i = 0; i < expectedParams.length; i++) {
+                    if (!paramTypes[i].equals(expectedParams[i])) {
                         specificCause += " Parameter number " + i + " of type " +
                                          paramTypes[i] + " must be of type " +
                                          expectedParams[i] + ".";
@@ -8626,19 +7796,17 @@ public abstract class EJBMDOrchestrator
             }
         }
 
-        // The spec does not specificially prohibit a throws clause, but also does
-        // not indicate one is allowed. To be consistant with what the spec does
+        // The spec does not specifically prohibit a throws clause, but also does
+        // not indicate one is allowed. To be consistent with what the spec does
         // say about interceptors, a throws clause is being prohibited. If we are
         // required to relax this, consider using the same method that the
         // lifecycle interceptors use: isLifecycleApplicationException.
         Class<?>[] exceptions = method.getExceptionTypes();
-        if (exceptions.length > 0)
-        {
+        if (exceptions.length > 0) {
             specificCause += " The method must not throw any exceptions.";
         }
 
-        if (!"".equals(specificCause))
-        {
+        if (!"".equals(specificCause)) {
             Tr.error(tc, "INVALID_SESSION_SYNCH_SIGNATURE_CNTR0327E",
                      new Object[] { method, methodType });
             throw new EJBConfigurationException("CNTR0327E: The " + method + " method does not have the required" +
@@ -8650,12 +7818,65 @@ public abstract class EJBMDOrchestrator
             Tr.debug(tc, "validateSessionSynchronizationMethod : valid : " + method);
     }
 
+    /**
+     * Removes the MessageEndpoint interface methods from the list of methods
+     * declared on the message listener interface (or the message-driven bean
+     * class when the listener interface has no methods). <p>
+     *
+     * The message listener interface cannot override the methods on the
+     * MessageEndpoint interface; the JCA specification requires that
+     * MessageEndpoint interface method calls on the generated proxy be
+     * intercepted and perform the defined MessageEndpoint behavior. Some
+     * message listener implementations may define methods corresponding to the
+     * MessageEndpoint interface methods to simplify code in the resource
+     * adapter, so this should not be considered an error, but the generated
+     * MessageEndpoint proxy must ensure the method behavior are not overridden.
+     * Removing these methods from the message listener interface methods will
+     * prevent the methods from being overridden in the generated proxy/wrapper. <p>
+     *
+     * @param listenerMethods
+     *            methods declared on the listener interface or message-driven
+     *            bean implementation when the listener interface has no
+     *            methods.
+     *
+     * @return the listener methods excluding methods that overlap with the
+     *         MessageEndpoint interface.
+     */
+    private Method[] removeMessageEndpointMethods(Method[] listenerMethods) {
+        ArrayList<Method> methods = new ArrayList<Method>();
+
+        for (Method method : listenerMethods) {
+            String name = method.getName();
+            Class<?>[] params = method.getParameterTypes();
+
+            if ("afterDelivery".equals(name) && params.length == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "removeMessageEndpointMethods: removing afterDelivery");
+                continue;
+            } else if ("beforeDelivery".equals(name) && params.length == 1 && params[0] == Method.class) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "removeMessageEndpointMethods: removing beforeDelivery");
+                continue;
+            } else if ("release".equals(name) && params.length == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "removeMessageEndpointMethods: removing release");
+                continue;
+            }
+            methods.add(method);
+        }
+
+        if (methods.size() == listenerMethods.length) {
+            return listenerMethods;
+        }
+
+        return methods.toArray(new Method[methods.size()]);
+    }
+
     // F743-17630
     /**
      * Removes temporary lists of data from BMD when they are no longer needed.
      */
-    private void removeTemporaryMethodData(BeanMetaData bmd)
-    {
+    private void removeTemporaryMethodData(BeanMetaData bmd) {
         bmd.methodsExposedOnLocalHomeInterface = null;
         bmd.methodsExposedOnLocalInterface = null;
         bmd.methodsExposedOnRemoteHomeInterface = null;
@@ -8717,15 +7938,13 @@ public abstract class EJBMDOrchestrator
             // Isolation & ReadOnly Attrs not required for 2.x beans.
         }
 
-        void postProcessTimedBeanMethodData(BeanMetaData bmd) // LI2281.07
-        {
+        void postProcessTimedBeanMethodData(BeanMetaData bmd) {
             bmd.timedMethodInfos = wrapperMethodInfos;
             bmd.timedMethodNames = wrapperMethodNames;
             // Isolation & ReadOnly Attrs not required for 2.x beans.
         }
 
-        void postProcessWebserviceBeanMethodData(BeanMetaData bmd) // LI2281.24
-        {
+        void postProcessWebserviceBeanMethodData(BeanMetaData bmd) {
             bmd.wsEndpointMethodInfos = wrapperMethodInfos;
             bmd.wsEndpointMethodNames = wrapperMethodNames;
             // Isolation & ReadOnly Attrs not required for 2.x beans.

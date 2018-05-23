@@ -28,7 +28,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2, \
  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
- com.ibm.websphere.javaee.jaxrs.2.1; location:="dev/api/spec/,lib/", \
+ com.ibm.websphere.javaee.jaxrs.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.ws.rs:javax.ws.rs-api:2.1", \
  com.ibm.ws.jaxrs.2.0.tools, \
  com.ibm.ws.jaxrs.2.0.web, \
  com.ibm.ws.jaxrs.2.0.server, \

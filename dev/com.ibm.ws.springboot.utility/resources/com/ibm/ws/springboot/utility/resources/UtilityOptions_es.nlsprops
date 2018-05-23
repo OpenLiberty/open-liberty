@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Descripci\u00f3n:
+global.actions=Acciones:
+global.options=Opciones:
+global.usage=Uso:
+global.required=Necesario:
+global.options.statement=\tUtilice help [nombreAcci\u00f3n] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\tImprimir informaci\u00f3n de ayuda para la acci\u00f3n especificada.
+#Note to translator the word "help" should not be translated
+help.usage.options=\t{0} help [nombreAcci\u00f3n]
+
+
+# -------- THIN OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+thin.desc=\tCree una aplicaci\u00f3n ligera thin para su uso en una configuraci\u00f3n de servidor. 
+#Note to translator the word "thin" should not be translated
+thin.usage.options=\t{0} thin --sourceAppPath=path [opciones]
+
+thin.required-key.sourceapp=\ \ \ \ --sourceAppPath=file
+thin.required-desc.sourceapp=\tV\u00eda de acceso del archivo de la aplicaci\u00f3n de origen a la aplicaci\u00f3n ligera.
+
+thin.optional-key.targetthinapp=\ \ \ \ --targetThinAppPath=file
+#Note to translator the word ".spring" should not be translated
+thin.optional-desc.targetthinapp=\tV\u00eda de acceso utilizada para guardar el archivo de la aplicaci\u00f3n ligera.\n\
+\tSi no se especifica esta opci\u00f3n, se crear\u00e1 un archivo nuevo con la extensi\u00f3n .spring\n\
+\ten el directorio padre de la aplicaci\u00f3n de origen. 
+
+thin.optional-key.targetlibcache=\ \ \ \ --targetLibCachePath=directory
+#Note to translator the word "lib.index.cache" should not be translated
+thin.optional-desc.targetlibcache=\tV\u00eda de acceso del directorio utilizada para guardar la memoria cach\u00e9 de biblioteca.\n\
+\tSi no se especifica esta opci\u00f3n, un directorio de nombre lib.index.cache\n\
+\tse crear\u00e1 en el directorio padre de la aplicaci\u00f3n de origen.
+
+thin.optional-key.parentlibcache=\ \ \ \ --parentLibCachePath=directory
+thin.optional-desc.parentlibcache=\tV\u00eda de acceso del directorio de la memoria cach\u00e9 de biblioteca padre de solo lectura.\n\
+\tPrimero se buscan las bibliotecas existentes en la memoria cach\u00e9\n\
+\tde la biblioteca padre. Si no se encuentra la biblioteca, la biblioteca se\n\
+\talmacena en la cach\u00e9 de biblioteca grabable especificada en la\n\
+\topci\u00f3n --targetLibCachePath. Si no se ha especificado esta opci\u00f3n,\n\
+\tno se realizar\u00e1n b\u00fasquedas en la memoria cach\u00e9 de biblioteca padre.
+
+
+

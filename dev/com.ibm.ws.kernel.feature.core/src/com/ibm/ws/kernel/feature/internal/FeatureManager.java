@@ -663,7 +663,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 Tr.info(tc, "STARTING_AUDIT");
             }
 
-            preInstalledFeatures = featureRepository.getInstalledFeatures();
+            preInstalledFeatures = new HashSet<>(featureRepository.getInstalledFeatures());
 
             String pkgs = bundleContext.getProperty("com.ibm.ws.kernel.classloading.apiPackagesToHide");
             Set<String> apiPkgsToIgnore = pkgs == null ? null : new HashSet<String>(Arrays.asList(pkgs.split(",")));
@@ -832,7 +832,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                                      Set<String> deletedPublicAutoFeatures) {
         writeServiceMessages();
 
-        Set<String> postInstalledFeatures = featureRepository.getInstalledFeatures();
+        Set<String> postInstalledFeatures = new HashSet<>(featureRepository.getInstalledFeatures());
 
         postInstalledFeatures.removeAll(preInstalledFeatures);
         Set<String> installedPublicFeatures = Collections.emptySet();

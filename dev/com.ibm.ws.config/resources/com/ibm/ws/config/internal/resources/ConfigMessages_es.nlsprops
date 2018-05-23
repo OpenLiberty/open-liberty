@@ -455,6 +455,11 @@ warning.binding.config=CWWKG0101W: La configuraci\u00f3n con la identidad persis
 warning.binding.config.explanation=Se enlaza una configuraci\u00f3n al paquete que llama cuando se invoca por primera vez el m\u00e9todo getConfiguration de la interfaz ConfigurationAdmin. Una vez que se ha enlazado la configuraci\u00f3n, deja de estar visible a los otros paquetes. 
 warning.binding.config.useraction=Para garantizar que la ubicaci\u00f3n del paquete tenga el valor esperado, utilice el m\u00e9todo getConfiguration en la interfaz ConfigurationAdmin que acepta una ubicaci\u00f3n de paquete como segundo par\u00e1metro.
 
+# This message is used with config.validator.foundConflictSingleton and other conflict messages from this file.  
+info.config.conflict=CWWKG0102I: {0}
+info.config.conflict.explanation=Se han especificado varios valores para la misma propiedad de configuraci\u00f3n. 
+info.config.conflict.useraction=No se requiere ninguna acci\u00f3n. El mensaje informativo se puede evitar si se edita la configuraci\u00f3n del servidor para eliminar el conflicto.
+ 
 
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

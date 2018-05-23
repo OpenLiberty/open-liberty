@@ -93,7 +93,8 @@ Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer.webapp;provide:=true, \
     com.ibm.ws.webcontainer.upgrade*, \
     com.ibm.ws.webcontainer.servlet, \
-    com.ibm.ws.webcontainer.spiadapter.collaborator
+    com.ibm.ws.webcontainer.spiadapter.collaborator, \
+    com.ibm.ws.container
     
 Private-Package: \
 	com.ibm.websphere.csi, \
@@ -101,7 +102,6 @@ Private-Package: \
 	com.ibm.ejs.j2c, \
 	com.ibm.servlet.util, \
 	com.ibm.ws.app.framework.webcontainer.internal*, \
-	com.ibm.ws.container, \
 	com.ibm.ws.http, \
 	com.ibm.ws.webcontainer.osgi.container*, \
 	com.ibm.ws.webcontainer.osgi*, \

@@ -58,9 +58,9 @@ public class MetaDataServlet extends HttpServlet {
             type = beanStartMetaData.getType().toString();
         }
 
-        pw.append("Default event qualifiers: " + qualifiers + System.getProperty("line.separator"));
-        pw.append("Default event injection points: " + injectionPoint + System.getProperty("line.separator"));
-        pw.append("Default event type: " + type + System.getProperty("line.separator"));
+        pw.append("Default event qualifiers: " + qualifiers + System.lineSeparator());
+        pw.append("Default event injection points: " + injectionPoint + System.lineSeparator());
+        pw.append("Default event type: " + type + System.lineSeparator());
 
         qualifiers = "null";
         injectionPoint = "null";
@@ -76,9 +76,9 @@ public class MetaDataServlet extends HttpServlet {
             type = beanFiredMetaData.getType().toString();
         }
 
-        pw.append("Non-default event qualifiers: " + qualifiers + System.getProperty("line.separator"));
-        pw.append("Non-default event injection points: " + injectionPoint + System.getProperty("line.separator"));
-        pw.append("Non-default event type: " + type + System.getProperty("line.separator"));
+        pw.append("Non-default event qualifiers: " + qualifiers + System.lineSeparator());
+        pw.append("Non-default event injection points: " + injectionPoint + System.lineSeparator());
+        pw.append("Non-default event type: " + type + System.lineSeparator());
 
     }
 

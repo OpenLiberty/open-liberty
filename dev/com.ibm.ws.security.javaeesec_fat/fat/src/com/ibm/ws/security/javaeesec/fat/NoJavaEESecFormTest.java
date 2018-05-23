@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,10 +53,10 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
     protected static Class<?> logClass = NoJavaEESecFormTest.class;
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
-    protected static String APP_NAME = "NoJavaEESec";
+    protected static String APP_NAME = "NoJavaEESecForm";
     protected static String WAR_NAME = APP_NAME + ".war";
     protected static String XML_NAME = "nojavaeesec.xml";
-    protected String queryString = "/" + APP_NAME + "/NoJavaEESecServlet";
+    protected String queryString = "/" + APP_NAME + "/NoJavaEESecFormServlet";
     protected static String loginUri = "/" + APP_NAME + "/login.jsp";
     protected static String loginformUri = "/" + APP_NAME + "/j_security_check";
     protected static String TITLE_LOGIN_PAGE = "login page for the form login test";
@@ -83,7 +83,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec", "web.war.servlets.nojavaeesec.form");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -133,7 +133,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESec_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -165,7 +165,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testNoJavaEESecAuthorizationFailure_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -196,7 +196,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @AllowedFFDC({"javax.naming.AuthenticationException" })
     @Test
     public void testNoJavaEESecAuthenticationFailure_DeniedAccess() throws Exception {

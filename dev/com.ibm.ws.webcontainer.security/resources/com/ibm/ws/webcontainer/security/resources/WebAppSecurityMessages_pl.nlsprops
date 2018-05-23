@@ -202,3 +202,23 @@ SEC_JACC_AUTHZ_FAILED.useraction=Je\u015bli niepowodzenie by\u0142o nieoczekiwan
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: Adres URL podany w niestandardowym parametrze logoutExitPage us\u0142ugi Form-Logout nie mo\u017ce zosta\u0107 wy\u015bwietlony (requestURL={0}, logoutExitPage={1}). Logowanie powiod\u0142o si\u0119 i zosta\u0142a wy\u015bwietlona strona domy\u015blna Form-Logout.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=Nie powiod\u0142a si\u0119 podj\u0119ta przez us\u0142ug\u0119 Form-Logout pr\u00f3ba przekierowania do strony podanej w parametrze serwletu logoutExitPage. Podany adres URL ma niepoprawn\u0105 sk\u0142adni\u0119 lub we w\u0142a\u015bciwo\u015bci com.ibm.websphere.security.logoutExitPageDomainList nie podano nazwy hosta.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Popraw adres URL podany w parametrze logoutExitPage.  
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: Uwierzytelnianie przy \
+u\u017cyciu znacznika JSON Web Token nie powiod\u0142o si\u0119, poniewa\u017c znacznik zosta\u0142 \
+wcze\u015bniej wylogowany.
+JWT_ALREADY_LOGGED_OUT.explanation=Znacznik JSON Web Token \
+(JWT), kt\u00f3ry zosta\u0142 wcze\u015bniej wylogowany, zosta\u0142 przes\u0142any ponownie w celu \
+uwierzytelnienia.
+JWT_ALREADY_LOGGED_OUT.useraction=Uzyskaj nowy znacznik JSON \
+Web Token.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: Sk\u0142adnik jwtSso \
+ustawia bezpieczn\u0105 informacj\u0119 cookie w niezabezpieczonym \u017c\u0105daniu HTTP. Mo\u017ce to by\u0107 b\u0142\u0105d konfiguracji.   \
+U\u017cyj protoko\u0142u HTTPS lub ustaw atrybut konfiguracji sk\u0142adnika jwtSso \
+setCookieSecureFlag na warto\u015b\u0107 false.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=Informacja cookie \
+jest oznaczona jako bezpieczna, ale protok\u00f3\u0142 to HTTP, dlatego informacja cookie \
+nie zostanie nigdy zwr\u00f3cona, co mo\u017ce powodowa\u0107 niepowodzenie kolejnych \u017c\u0105da\u0144.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=U\u017cyj protoko\u0142u HTTPS \
+lub ustaw atrybut konfiguracji sk\u0142adnika jwtSso setCookieSecureFlag na warto\u015b\u0107 \
+false.

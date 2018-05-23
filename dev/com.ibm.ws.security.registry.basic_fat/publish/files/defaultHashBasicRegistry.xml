@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="FAT configuration for BasicRegistry">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>basicRegistryInternals-1.0</feature>
+    </featureManager>
+
+    <basicRegistry id="alternate" realm="AlternateRealm">
+        <user name="hashedUser" password="{hash}ATAAAAAId6vI62nuJqhAAAAAILwljlr66Kw64EAJK/DDxFGSyehzHSh24eQNH47WXVlh" />
+        <user name="customHashedUser" password="{hash}ASAAAAPnUAAAAgAwAAAABCRhbHRAAAAAQMZ+7ueY73Iz02CP1dZ0XzAPrkm9rsWTyT+ARBIBe2mLrCQpGV5LlcIN9zWxKWLTuYOYeHCBTZXmTJtXo6+WfOg=" />
+    </basicRegistry>
+
+</server>

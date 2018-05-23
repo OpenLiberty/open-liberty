@@ -133,3 +133,11 @@ SEC_JACC_AUTHZ_FAILED.useraction=Ha nem ezt v\u00e1rta, akkor l\u00e9pjen kapcso
 SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: A Form-Logout szolg\u00e1ltat\u00e1s egy\u00e9ni logoutExitPage oldal\u00e1n megadott URL c\u00edm nem jelen\u00edthet\u0151 meg; requestURL={0}, logoutExitPage={1}. A kijelentkez\u00e9s sikeres volt \u00e9s az alap\u00e9rtelmezett Form-Logout oldal ker\u00fclt megjelen\u00edt\u00e9sre.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=A Form-Logout szolg\u00e1ltat\u00e1snak nem siker\u00fclt \u00e1tir\u00e1ny\u00edtania a logoutExitPage szervlet param\u00e9terben megadott oldalra. A megadott URL \u00e9rv\u00e9nytelen form\u00e1tum\u00fa URL vagy nincs megadva a hosztn\u00e9v a com.ibm.websphere.security.logoutExitPageDomainList tulajdons\u00e1gban.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Jav\u00edtsa ki a logoutExitPage param\u00e9terben megadott URL c\u00edmet.
+
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: A JSON webtoken haszn\u00e1lat\u00e1val t\u00f6rt\u00e9n\u0151 hiteles\u00edt\u00e9s sikertelen volt, mert a tokent kor\u00e1bban kijelentkeztett\u00e9k.
+JWT_ALREADY_LOGGED_OUT.explanation=A kor\u00e1bban kijelentkeztetett JSON webtokent (JWT) k\u00fcldt\u00e9k el \u00fajra a hiteles\u00edt\u00e9shez.
+JWT_ALREADY_LOGGED_OUT.useraction=Szerezzen be \u00faj JSON webtokent.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: A jwtSso szolg\u00e1ltat\u00e1s biztons\u00e1gos cookie-t \u00e1ll\u00edt be nem biztons\u00e1gos HTTP k\u00e9r\u00e9sben. Ez konfigur\u00e1ci\u00f3s hiba lehet.  Haszn\u00e1lja a HTTPS protokollt vagy \u00e1ll\u00edtsa be a jwtSso konfigur\u00e1ci\u00f3s attrib\u00fatumot (setCookieSecureFlag) hamis \u00e9rt\u00e9kre.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=A cookie biztons\u00e1gosk\u00e9nt van megjel\u00f6lve, de a protokoll HTTP, \u00edgy a cookie soha nem ker\u00fcl visszak\u00fcld\u00e9sre, ami a soron k\u00f6vetkez\u0151 k\u00e9r\u00e9sek meghib\u00e1sod\u00e1s\u00e1t okozhatja.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Haszn\u00e1lja a HTTPS protokollt vagy \u00e1ll\u00edtsa be a jwtSso konfigur\u00e1ci\u00f3s attrib\u00fatumot (setCookieSecureFlag) hamis \u00e9rt\u00e9kre.

@@ -241,7 +241,7 @@ patchingNotApplicableNoChange=\u672a\u622a\u53d6\u4efb\u4f55\u5185\u5bb9\uff0c\u
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
 patchingSkippedSupersededFix={0} \u4fee\u8ba2\u88ab\u5df2\u7ecf\u5b89\u88c5\u7684 {1} \u53d6\u4ee3\u3002\n\
-\u5df2\u8df3\u8fc7 {0} \u7684\u5b89\u88c5\u3002
+{0} \u7684\u5b89\u88c5\u88ab\u8df3\u8fc7\u3002
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=\u8bfb\u53d6\u5f53\u524d\u5b89\u88c5\u7684\u4e34\u65f6\u4fee\u8ba2\u4fe1\u606f\u65f6\u53d1\u751f\u9519\u8bef\u3002\u5f02\u5e38\u6d88\u606f\u662f\uff1a{0}\u3002

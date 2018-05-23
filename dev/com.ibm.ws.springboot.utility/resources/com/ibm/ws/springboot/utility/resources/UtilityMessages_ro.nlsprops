@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Eroare: {0}
+error.inputConsoleNotAvailable=Consola de intrare nu este disponibil\u0103.
+error.missingIO=Eroare, dispozitiv I/E lips\u0103: {0}.
+
+usage=Utilizare:  {0}
+task.unknown=Task necunoscut: {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+insufficientArgs=Argumente insuficiente.
+invalidArg=Argument invalid {0}.
+missingArg=Argument lips\u0103 {0}.
+missingArg2=Trebuie furnizat fie argumentul {0} fie argumentul {1}.
+exclusiveArg=Trebuie specificat argumentul {0} sau argumentul {1}, dar nu ambele.
+missingValue=Valoare lips\u0103 pentru argumentul {0}.
+
+thin.abort=Abandonare task sub\u0163ire aplica\u0163ie:
+thin.appNotFound=Aplica\u0163ia specificat\u0103 nu a putut fi g\u0103sit\u0103 la loca\u0163ia {0}
+thin.appTargetIsDirectory=\u0162inta de aplica\u0163ie specificat\u0103 este un director {0}
+thin.libCacheIsFile=\u0162inta de cache bibliotec\u0103 specificat\u0103 este un fi\u015fier {0}
+thin.creating=Creare aplica\u0163ie sub\u0163ire de la: {0}
+thin.libraryCache=Cache bibliotec\u0103: {0}
+thin.applicationLoc=Aplica\u0163ie sub\u0163ire: {0}
+
+file.requiredDirNotCreated=Nu a putut crea structura de director necesar\u0103 pentru {0}
+file.failedDirCreate=Creare director e\u015fuat\u0103 {0}
+
+

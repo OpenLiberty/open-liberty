@@ -5086,19 +5086,42 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         ByteArrayOutputStream ppHb = new ByteArrayOutputStream();
         try {
             // Add the four required pseudo headers to the push_promise frame header block fragment
+            // :method
             ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, "GET", LiteralIndexType.NOINDEXING));
-            // Encode authority
-            String auth = ((H2HttpInboundLinkWrap) link).muxLink.getAuthority();
-            if (auth != null) {
-                ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
-            }
-            if (this.isSecure()) {
-                ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "https", LiteralIndexType.NOINDEXING));
-            } else {
-                ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
-            }
 
+            // :scheme
+            String scheme = new String("https");
+            if (!this.isSecure()) {
+                scheme = new String("http");
+            }
+            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, scheme, LiteralIndexType.NOINDEXING));
+
+            // :path
             ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, uri, LiteralIndexType.NOINDEXING));
+
+            // :authority
+            // If the :authority header was sent in the request, get the information from there
+            // If it was not, use getLocalAddr and and getLocalPort to create it
+            // If it's still null, we have to bail, since it's a required header in a push_promise frame
+            String auth = ((H2HttpInboundLinkWrap) link).muxLink.getAuthority();
+            if (null == auth) {
+                auth = getLocalAddr().getHostName();
+                if (null != auth) {
+                    if (0 <= getLocalPort()) {
+                        auth = auth + ":" + Integer.toString(getLocalPort());
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "handleH2LinkPreload(): Cannot find hostname for required :authority pseudo header");
+                    }
+                    return;
+                }
+            }
+            ppHb.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, auth, LiteralIndexType.NOINDEXING));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.debug(tc, "handleH2LinkPreload(): Method is GET, authority is " + auth + ", scheme is " + scheme);
+            }
 
         }
         // Either IOException from write, or CompressionException from encodeHeader

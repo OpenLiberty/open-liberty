@@ -19,6 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -39,9 +41,17 @@ public class HazelcastClientTest extends FATServletClient {
     public static void setUp() throws Exception {
         serverB.useSecondaryHTTPPort();
 
+        String serverAhazelcastConfigFile = "hazelcast-localhost-only.xml";
+
+        if (FATSuite.isMulticastDisabled()) {
+            Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            serverAhazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
         String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/hazelcast-client-localhost-only.xml").getAbsolutePath();
         String rand = UUID.randomUUID().toString();
-        serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand));
+        serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
+                                            "-Dhazelcast.config.file=" + serverAhazelcastConfigFile));
         serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
                                             "-Dhazelcast.config=" + configLocation));
     }

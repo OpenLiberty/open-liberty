@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+
+error=Erreur : {0}
+error.inputConsoleNotAvailable=La console d'entr\u00e9e n'est pas disponible.
+error.missingIO=Erreur. P\u00e9riph\u00e9rique d''entr\u00e9e-sortie manquant : {0}.
+
+usage=Syntaxe : {0}
+task.unknown=T\u00e2che inconnue : {0}
+
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Common messages
+insufficientArgs=Arguments insuffisants.
+invalidArg=Argument {0} non valide.
+missingArg=Argument {0} manquant.
+missingArg2=L''argument {0} ou l''argument {1} doivent \u00eatre fournis.
+exclusiveArg=L''argument {0} ou l''argument {1} doivent \u00eatre sp\u00e9cifi\u00e9s, mais pas les deux.
+missingValue=Valeur manquante pour l''argument {0}.
+
+thin.abort=Abandon de la t\u00e2che d'application l\u00e9g\u00e8re :
+thin.appNotFound=L''application sp\u00e9cifi\u00e9e est introuvable \u00e0 l''emplacement {0}
+thin.appTargetIsDirectory=La cible d''application sp\u00e9cifi\u00e9e est le r\u00e9pertoire {0}
+thin.libCacheIsFile=La cible de cache de biblioth\u00e8que sp\u00e9cifi\u00e9e est le fichier {0}
+thin.creating=Cr\u00e9ation d''une application l\u00e9g\u00e8re depuis {0}
+thin.libraryCache=Cache de biblioth\u00e8que : {0}
+thin.applicationLoc=Application l\u00e9g\u00e8re : {0}
+
+file.requiredDirNotCreated=Impossible de cr\u00e9er la structure de r\u00e9pertoires requise pour {0}
+file.failedDirCreate=La cr\u00e9ation du r\u00e9pertoire {0} a \u00e9chou\u00e9
+
+
