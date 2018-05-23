@@ -62,7 +62,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 
 	private boolean setCookiePathToWebAppContextPath;
 	private boolean includeLtpaCookie;
-	private boolean fallbackToLtpa;
+	private boolean useLtpaIfJwtAbsent;
 	private boolean cookieSecureFlag;
 	private String jwtBuilderRef;
 	private String jwtConsumerRef;
@@ -106,8 +106,8 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	}
 
 	@Override
-	public boolean isFallbackToLtpa() {
-		return fallbackToLtpa;
+	public boolean isUseLtpaIfJwtAbsent() {
+		return useLtpaIfJwtAbsent;
 	}
 
 	@Override
@@ -207,7 +207,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 		setCookiePathToWebAppContextPath = (Boolean) props
 				.get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
 		includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
-		fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
+		useLtpaIfJwtAbsent = (Boolean) props.get(JwtSsoConstants.CFG_USE_LTPA_IF_JWT_ABSENT);
 		cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
 		jwtBuilderRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
 		isDefaultBuilder = false;

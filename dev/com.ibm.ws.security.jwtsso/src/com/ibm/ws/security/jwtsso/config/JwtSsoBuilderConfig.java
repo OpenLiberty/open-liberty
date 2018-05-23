@@ -30,7 +30,7 @@ public interface JwtSsoBuilderConfig extends JwtConfig {
 
 	boolean isIncludeLtpaCookie();
 
-	boolean isFallbackToLtpa();
+	boolean isUseLtpaIfJwtAbsent();
 
 	boolean isCookieSecured();
 
