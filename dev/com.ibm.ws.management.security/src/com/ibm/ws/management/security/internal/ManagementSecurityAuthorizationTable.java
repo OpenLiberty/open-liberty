@@ -63,9 +63,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
     private final Map<String, String> userToAccessId = new HashMap<String, String>();
     private final Map<String, String> groupToAccessId = new HashMap<String, String>();
     private final Map<String, RoleSet> userToRoles = new HashMap<String, RoleSet>();
-    private final Map<String, RoleSet> userAccessIdToRoles = new HashMap<String, RoleSet>();
     private final Map<String, RoleSet> groupToRoles = new HashMap<String, RoleSet>();
-    private final Map<String, RoleSet> groupAccessIdToRoles = new HashMap<String, RoleSet>();
 
     private static HashSet<String> ALL_AUTHENTICATED_USERS_SET = new HashSet<String>();
     static {
@@ -169,9 +167,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         userToAccessId.clear();
         groupToAccessId.clear();
         userToRoles.clear();
-        userAccessIdToRoles.clear();
         groupToRoles.clear();
-        groupAccessIdToRoles.clear();
     }
 
     /**
@@ -192,9 +188,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         clearAuthorizationTable();
 
         Map<String, Set<String>> userToRoleName = new HashMap<String, Set<String>>();
-        Map<String, Set<String>> userAccessIdToRoleName = new HashMap<String, Set<String>>();
         Map<String, Set<String>> groupToRoleName = new HashMap<String, Set<String>>();
-        Map<String, Set<String>> groupAccessIdToRoleName = new HashMap<String, Set<String>>();
         Iterator<ManagementRole> itr = managementRoles.getServices();
         while (itr.hasNext()) {
             ManagementRole role = itr.next();
@@ -208,29 +202,11 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 assignedRoles.add(roleName);
             }
 
-            for (String userAccessId : role.getUserAccessIds()) {
-                Set<String> assignedRoles = userAccessIdToRoleName.get(userAccessId);
-                if (assignedRoles == null) {
-                    assignedRoles = new HashSet<String>();
-                    userAccessIdToRoleName.put(userAccessId, assignedRoles);
-                }
-                assignedRoles.add(roleName);
-            }
-
             for (String group : role.getGroups()) {
                 Set<String> assignedRoles = groupToRoleName.get(group);
                 if (assignedRoles == null) {
                     assignedRoles = new HashSet<String>();
                     groupToRoleName.put(group, assignedRoles);
-                }
-                assignedRoles.add(roleName);
-            }
-
-            for (String groupAccessId : role.getGroupAccessIds()) {
-                Set<String> assignedRoles = groupAccessIdToRoleName.get(groupAccessId);
-                if (assignedRoles == null) {
-                    assignedRoles = new HashSet<String>();
-                    groupAccessIdToRoleName.put(groupAccessId, assignedRoles);
                 }
                 assignedRoles.add(roleName);
             }
@@ -241,17 +217,10 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
             userToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
         }
 
-        for (Map.Entry<String, Set<String>> entry : userAccessIdToRoleName.entrySet()) {
-            userAccessIdToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
-        }
-
         for (Map.Entry<String, Set<String>> entry : groupToRoleName.entrySet()) {
             groupToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
         }
 
-        for (Map.Entry<String, Set<String>> entry : groupAccessIdToRoleName.entrySet()) {
-            groupAccessIdToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
-        }
     }
 
     /**
@@ -290,28 +259,28 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         if (!AccessIdUtil.isAccessId(accessId)) {
             throw new IllegalArgumentException("Invalid accessId");
         }
-        RoleSet roles = null;
 
         if (AccessIdUtil.isUserAccessId(accessId)) {
-            // access id takes precedence
-            roles = userAccessIdToRoles.get(accessId);
-            if (roles != null && !roles.isEmpty()) {
-                return roles;
-            }
-
+            // An user can be configured as user or an user-access-Id
+            // Ex: bob or user:realm/bob
             for (String user : userToRoles.keySet()) {
                 String userAccessId = userToAccessId.get(user);
                 if (userAccessId == null) {
-                    userAccessId = getUserAccessId(user);
-                    if (userAccessId == null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Unable to determine accessId of user " + user);
+                    if (AccessIdUtil.isUserAccessId(user)) {
+                        userAccessId = user;
+                    } else {
+                        // user is not accessId format, so we have to look up the user registry.
+                        userAccessId = getUserAccessId(user);
+                        if (userAccessId == null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Unable to determine accessId of user " + user);
+                            }
+                            // We could not determine the access ID here, skip
+                            // For all unknown IDs we try to re-compute each time
+                            // we see it. This is probably the right thing to do
+                            // as the user could add that entry in the future.
+                            continue;
                         }
-                        // We could not determine the access ID here, skip
-                        // For all unknown IDs we try to re-compute each time
-                        // we see it. This is probably the right thing to do
-                        // as the user could add that entry in the future.
-                        continue;
                     }
                     userToAccessId.put(user, userAccessId);
                 }
@@ -323,25 +292,27 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 }
             }
         } else if (AccessIdUtil.isGroupAccessId(accessId)) {
-            // access id takes precedence
-            roles = groupAccessIdToRoles.get(accessId);
-            if (roles != null && !roles.isEmpty()) {
-                return roles;
-            }
-
+            // A group can be configured as a group or group-access-id
+            // Ex: group1 or group1:realm/group1
             for (String group : groupToRoles.keySet()) {
                 String groupAccessId = groupToAccessId.get(group);
                 if (groupAccessId == null) {
-                    groupAccessId = getGroupAccessId(group);
-                    if (groupAccessId == null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Unable to determine accessId of group " + group);
+
+                    if (AccessIdUtil.isGroupAccessId(group)) {
+                        groupAccessId = group;
+                    } else {
+                        // group is not accessId format, so we have to look up the user registry.
+                        groupAccessId = getGroupAccessId(group);
+                        if (groupAccessId == null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Unable to determine accessId of group " + group);
+                            }
+                            // We could not determine the access ID here, skip
+                            // For all unknown IDs we try to re-compute each time
+                            // we see it. This is probably the right thing to do
+                            // as the user could add that entry in the future.
+                            continue;
                         }
-                        // We could not determine the access ID here, skip
-                        // For all unknown IDs we try to re-compute each time
-                        // we see it. This is probably the right thing to do
-                        // as the user could add that entry in the future.
-                        continue;
                     }
                     groupToAccessId.put(group, groupAccessId);
                 }

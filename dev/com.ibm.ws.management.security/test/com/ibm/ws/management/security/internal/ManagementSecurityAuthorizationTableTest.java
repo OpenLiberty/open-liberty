@@ -61,9 +61,9 @@ public class ManagementSecurityAuthorizationTableTest {
     static class ManagementRoleDouble implements ManagementRole {
         private final String roleName;
         private Set<String> users = new HashSet<String>();
-        private Set<String> userAccessIds = new HashSet<String>();
+        private final Set<String> userAccessIds = new HashSet<String>();
         private Set<String> groups = new HashSet<String>();
-        private Set<String> groupAccessIds = new HashSet<String>();
+        private final Set<String> groupAccessIds = new HashSet<String>();
 
         ManagementRoleDouble(String roleName) {
             this.roleName = roleName;
@@ -81,17 +81,8 @@ public class ManagementSecurityAuthorizationTableTest {
             return users;
         }
 
-        @Override
-        public Set<String> getUserAccessIds() {
-            return userAccessIds;
-        }
-
         public void setUsers(Set<String> users) {
             this.users = users;
-        }
-
-        public void setUserAccessIds(Set<String> userAccessIds) {
-            this.userAccessIds = userAccessIds;
         }
 
         /** {@inheritDoc} */
@@ -100,17 +91,8 @@ public class ManagementSecurityAuthorizationTableTest {
             return groups;
         }
 
-        @Override
-        public Set<String> getGroupAccessIds() {
-            return groupAccessIds;
-        }
-
         public void setGroups(Set<String> groups) {
             this.groups = groups;
-        }
-
-        public void setGroupAccessIds(Set<String> groupAccessIds) {
-            this.groupAccessIds = groupAccessIds;
         }
 
     }

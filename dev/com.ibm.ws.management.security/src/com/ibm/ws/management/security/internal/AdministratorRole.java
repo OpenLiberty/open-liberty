@@ -18,12 +18,15 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.management.security.ManagementRole;
 import com.ibm.ws.management.security.ManagementSecurityConstants;
+import com.ibm.ws.security.AccessIdUtil;
 
 /**
  * Administrator role binding: {@code
  * <administrator-role>
- * <user>userName</user>
- * <group>groupName</group>
+ *      <user>userName</user>
+ *      <user-access-id>user:realm/utle</user-access-id>  or user-access-id>realm/utle</user-access-id>                 //realm is required
+ *      <group>groupName</group>
+ *      <group-access-id>group:realm/group1</group-access-id> or <group-access-id>realm/group1</group-access-id>        //realm is required
  * </administrator-role> }
  */
 public class AdministratorRole implements ManagementRole {
@@ -33,20 +36,18 @@ public class AdministratorRole implements ManagementRole {
     static final String CFG_KEY_USER_ACCESSID = "user-access-id";
     static final String CFG_KEY_GROUP = "group";
     static final String CFG_KEY_GROUP_ACCESSID = "group-access-id";
+    // The users set have both user and access-id
     private final Set<String> users = new HashSet<String>();
-    private final Set<String> userAccessIds = new HashSet<String>();
+    // The groups set have both group and group-access-id
     private final Set<String> groups = new HashSet<String>();
-    private final Set<String> groupAccessIds = new HashSet<String>();
 
     protected synchronized void activate(Map<String, Object> props) {
         resetBindings();
-
         updateBindings(props);
     }
 
     protected synchronized void modify(Map<String, Object> props) {
         resetBindings();
-
         updateBindings(props);
     }
 
@@ -59,9 +60,7 @@ public class AdministratorRole implements ManagementRole {
      */
     private void resetBindings() {
         users.clear();
-        userAccessIds.clear();
         groups.clear();
-        groupAccessIds.clear();
     }
 
     /**
@@ -70,124 +69,79 @@ public class AdministratorRole implements ManagementRole {
      * @param props
      */
     private void updateBindings(Map<String, Object> props) {
-        processUsers(props);
-        processUserAccessIds(props);
-        processGroups(props);
-        processGroupAccessIds(props);
+
+        // Process the user element
+        processProps(props, CFG_KEY_USER, users);
+        // Process the user-access-id element
+        processProps(props, CFG_KEY_USER_ACCESSID, users);
+        // Process the group element
+        processProps(props, CFG_KEY_GROUP, groups);
+        // Process the group-access-id element
+        processProps(props, CFG_KEY_GROUP_ACCESSID, groups);
     }
 
     /**
      * @param props
+     * @param element
+     * @param entries
      */
-    private void processUsers(Map<String, Object> props) {
-        Set<String> badUsers = new HashSet<String>();
-        String[] cfgUsers = (String[]) props.get(CFG_KEY_USER);
-        if (cfgUsers != null) {
-            for (String user : cfgUsers) {
-                if (badUsers.contains(user)) {
-                    // This user is already flagged as a duplicate
+    private void processProps(Map<String, Object> props, String element, Set<String> entries) {
+        Set<String> badEntries = new HashSet<String>();
+        String[] cfgEntries = (String[]) props.get(element);
+        if (cfgEntries != null) {
+            for (String entry : cfgEntries) {
+                if (badEntries.contains(entry)) {
+                    // This entry is already flagged as a duplicate or bad
                     continue;
                 }
-                if (user.trim().isEmpty()) {
+                if (entry.trim().isEmpty()) {
                     // Empty entry, ignoring
                     continue;
                 }
-                if (!users.add(user)) {
-                    Tr.error(tc, "ROLE_ENTRY_DUPLICATE", getRoleName(), CFG_KEY_USER, user);
-                    badUsers.add(user);
-                    users.remove(user);
+
+                if (CFG_KEY_USER_ACCESSID.equals(element) || CFG_KEY_GROUP_ACCESSID.equals(element)) {
+                    String updateAccessId = getCompleteAccessId(element, entry);
+                    if (updateAccessId == null) {
+                        if (!badEntries.contains(entry)) {
+                            badEntries.add(entry);
+                            continue;
+                        }
+                    } else
+                        entry = updateAccessId;
+                }
+
+                if (!entries.add(entry)) {
+                    Tr.error(tc, "ROLE_ENTRY_DUPLICATE", getRoleName(), element, entry);
+                    badEntries.add(entry);
+                    entries.remove(entry);
                 }
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Administrator role user binding", users);
+            Tr.debug(tc, "Administrator role " + element + " binding", entries);
         }
     }
 
     /**
-     * @param props
+     * @param element
+     * @param entry
+     * @return updateAccessId
      */
-    private void processUserAccessIds(Map<String, Object> props) {
-        Set<String> badUserAccessIds = new HashSet<String>();
-        String[] cfgUserAccessIds = (String[]) props.get(CFG_KEY_USER_ACCESSID);
-        if (cfgUserAccessIds != null) {
-            for (String userAccessId : cfgUserAccessIds) {
-                if (badUserAccessIds.contains(userAccessId)) {
-                    // This user is already flagged as a duplicate
-                    continue;
-                }
-                if (userAccessId.trim().isEmpty()) {
-                    // Empty entry, ignoring
-                    continue;
-                }
-                if (!userAccessIds.add(userAccessId)) {
-                    Tr.error(tc, "ROLE_ENTRY_DUPLICATE", getRoleName(), CFG_KEY_USER_ACCESSID, userAccessId);
-                    badUserAccessIds.add(userAccessId);
-                    userAccessIds.remove(userAccessId);
-                }
-            }
+    private String getCompleteAccessId(String element, String accessId) {
+        String updateAccessId = null;
+        if (AccessIdUtil.isAccessId(accessId)) {
+            return accessId;
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Administrator role user accessId binding", userAccessIds);
-        }
+        String type = CFG_KEY_USER_ACCESSID.equals(element) ? AccessIdUtil.TYPE_USER : AccessIdUtil.TYPE_GROUP;
 
-    }
-
-    /**
-     * @param props
-     */
-    private void processGroups(Map<String, Object> props) {
-        Set<String> badGroups = new HashSet<String>();
-        String[] cfgGroups = (String[]) props.get(CFG_KEY_GROUP);
-        if (cfgGroups != null) {
-            for (String group : cfgGroups) {
-                if (badGroups.contains(group)) {
-                    // This user is already flagged as a duplicate
-                    continue;
-                }
-                if (group.trim().isEmpty()) {
-                    // Empty entry, ignoring
-                    continue;
-                }
-                if (!groups.add(group)) {
-                    Tr.error(tc, "ROLE_ENTRY_DUPLICATE", getRoleName(), CFG_KEY_GROUP, group);
-                    badGroups.add(group);
-                    groups.remove(group);
-                }
-            }
+        updateAccessId = type + AccessIdUtil.TYPE_SEPARATOR + accessId;
+        if (AccessIdUtil.isAccessId(updateAccessId)) {
+            return updateAccessId;
+        } else {
+            //TODO: nls
+            Tr.error(tc, "Invalid " + element, accessId);
+            return null;
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Administrator role group binding", groups);
-        }
-    }
-
-    /**
-     * @param props
-     */
-    private void processGroupAccessIds(Map<String, Object> props) {
-        Set<String> badGroupAccessIds = new HashSet<String>();
-        String[] cfgGroupAccessIds = (String[]) props.get(CFG_KEY_GROUP_ACCESSID);
-        if (cfgGroupAccessIds != null) {
-            for (String groupAccessId : cfgGroupAccessIds) {
-                if (badGroupAccessIds.contains(groupAccessId)) {
-                    // This user is already flagged as a duplicate
-                    continue;
-                }
-                if (groupAccessId.trim().isEmpty()) {
-                    // Empty entry, ignoring
-                    continue;
-                }
-                if (!groupAccessIds.add(groupAccessId)) {
-                    Tr.error(tc, "ROLE_ENTRY_DUPLICATE", getRoleName(), CFG_KEY_GROUP_ACCESSID, groupAccessId);
-                    badGroupAccessIds.add(groupAccessId);
-                    groupAccessIds.remove(groupAccessId);
-                }
-            }
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Administrator role group accessId binding", groupAccessIds);
-        }
-
     }
 
     /** {@inheritDoc} */
@@ -204,19 +158,7 @@ public class AdministratorRole implements ManagementRole {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized Set<String> getUserAccessIds() {
-        return userAccessIds;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public synchronized Set<String> getGroups() {
         return groups;
     }
-
-    @Override
-    public Set<String> getGroupAccessIds() {
-        return groupAccessIds;
-    }
-
 }
