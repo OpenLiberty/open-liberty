@@ -67,6 +67,14 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                                             "-Dhazelcast.config=" + configLocation));
 
         serverA.startServer();
+
+        // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
+        // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
+        // cluster and not join to the cluster created on serverA.
+        List<String> sessionA = new ArrayList<>();
+        appA.sessionPut("init-app-A", "A", sessionA, true);
+        appA.invalidateSession(sessionA);
+
         serverB.startServer();
     }
 

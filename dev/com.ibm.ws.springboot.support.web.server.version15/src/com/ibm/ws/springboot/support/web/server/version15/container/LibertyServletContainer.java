@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerException;
+import org.springframework.boot.context.embedded.MimeMappings;
 import org.springframework.boot.context.embedded.Ssl;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.util.ResourceUtils;
@@ -116,6 +117,10 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
                 ibm_spring_errpg.setGlobal(true);
             }
             configHolder.addErrorPage(ibm_spring_errpg);
+        }
+
+        for (MimeMappings.Mapping mapping : factory.getMimeMappings()) {
+            configHolder.addMimeMapping(mapping.getExtension(), mapping.getMimeType());
         }
         return configHolder;
     }
