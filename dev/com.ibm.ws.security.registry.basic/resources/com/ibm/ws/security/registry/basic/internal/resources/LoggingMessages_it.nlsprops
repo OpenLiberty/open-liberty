@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Definire una sola voce membro p
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: La voce di membro con il nome ''{0}'' per il gruppo ''{1}'' non corrisponde a un utente definito.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Il nome specificato per la voce di membro non corrisponde ad alcun utente definito.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Controllare l'ortografia del nome membro e accertarsi che corrisponda a un utente definito nel registro.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Un mapper certificato X.509 personalizzato non era collegato con questo registro di base.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=La modalit\u00e0 di associazione certificato X.509 era impostata su CUSTOM, ma nessun mapper certificato X.509 personalizzato era collegato al registro di base. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Verificare che l'attributo certificateMapperId nel registro di base sia configurato per puntare ad un mapper certificato X.509 personalizzato valido.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Il filtro o il DN ''{0}'' restituito dal mapper certificato X.509 personalizzato non \u00e8 in corrispondenza con un utente del registro.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=Il valore restituito dal mapper certificato X.509 personalizzato con corrisponde a un utente nel registro di base.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Verificare che l'utente esista nel registro di base e che l'associazione sia valida.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Se l'eccezione era imprevista, esaminare l'implementazione del mapper certificato X.509 personalizzato ed effettuare le modifiche necessarie.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Il mapper certificato X.509 personalizzato ha emesso un'eccezione CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Se l'eccezione era imprevista, esaminare l'implementazione del mapper certificato X.509 personalizzato ed effettuare le modifiche necessarie.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: Il DN ''{0}'' non corrisponde a un utente registro di base valido.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=Il DN del principal oggetto non corrisponde a un utente registro di base valido. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Verificare che il DN del principal soggetto contenga un RDN (relative distinguished name) 'cn' e che un utente nel registro di base corrisponda al valore dell'RDN. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Il registro di base \u00e8 configurato per ignorare le richieste di autenticazione del certificato X.509.
+BASIC_REGISTRY_CERT_IGNORED.explanation=L'attributo di configurazione certificateMapMode per il registro di base \u00e8 impostato su IGNORE.
+BASIC_REGISTRY_CERT_IGNORED.useraction=Per abilitare il registro di base per elaborare le richieste di autenticazione certificato X.509, modificare l'attributo di configurazione certificateMapMode per consentire l'elaborazione.

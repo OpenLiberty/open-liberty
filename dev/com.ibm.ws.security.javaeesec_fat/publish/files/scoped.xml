@@ -9,7 +9,7 @@
     <application type="war" id="ApplicationScopedMechanismWithRequestScopedStore" name="ApplicationScopedMechanismWithRequestScopedStore" location="ApplicationScopedMechanismWithRequestScopedStore.war">
         <application-bnd>
             <security-role name="javaeesec_basic">
-                <user name="jaspiuser1_requestscoped" access-id="defaultRealm/jaspiuser1_requestscoped" />
+                <user name="jaspiuser1_requestscoped" access-id="BaseIdentityStore/jaspiuser1_requestscoped" />
                 <group name="group1" />
             </security-role>
         </application-bnd>
@@ -18,7 +18,7 @@
     <application type="war" id="ApplicationScopedMechanismWithSessionScopedStore" name="ApplicationScopedMechanismWithSessionScopedStore" location="ApplicationScopedMechanismWithSessionScopedStore.war">
         <application-bnd>
             <security-role name="javaeesec_basic">
-                <user name="jaspiuser1_sessionscoped" access-id="defaultRealm/jaspiuser1_sessionscoped" />
+                <user name="jaspiuser1_sessionscoped" access-id="BaseIdentityStore/jaspiuser1_sessionscoped" />
                 <group name="group1" />
             </security-role>
         </application-bnd>
@@ -27,7 +27,7 @@
     <application type="war" id="RequestScopedMechanismWithApplicationScopedStore" name="RequestScopedMechanismWithApplicationScopedStore" location="RequestScopedMechanismWithApplicationScopedStore.war">
         <application-bnd>
             <security-role name="javaeesec_basic">
-                <user name="jaspiuser1" access-id="defaultRealm/jaspiuser1" />
+                <user name="jaspiuser1" access-id="BaseIdentityStore/jaspiuser1" />
                 <group name="group1" />
             </security-role>
         </application-bnd>

@@ -44,44 +44,44 @@ public class BeanManagerLookupServlet extends HttpServlet {
         BeanManager bm = cdi.getBeanManager();
         PrintWriter pw = response.getWriter();
 
-        pw.append("Bean manager from CDI.current().getBeanManager: " + (bm instanceof BeanManager) + System.getProperty("line.separator"));
+        pw.append("Bean manager from CDI.current().getBeanManager: " + (bm instanceof BeanManager) + System.lineSeparator());
 
         Context c;
         BeanManager bmJ = null;
         try {
             c = new InitialContext();
             bmJ = (BeanManager) c.lookup("java:comp/BeanManager");
-            pw.append("Bean manager from JNDI: " + (bmJ instanceof BeanManager) + System.getProperty("line.separator"));
+            pw.append("Bean manager from JNDI: " + (bmJ instanceof BeanManager) + System.lineSeparator());
 
         } catch (NamingException e) {
-            pw.append("JNDI lookup failed" + System.getProperty("line.separator"));
+            pw.append("JNDI lookup failed" + System.lineSeparator());
 
         }
 
-        pw.append("Bean manager from inject: " + (bmI instanceof BeanManager) + System.getProperty("line.separator"));
+        pw.append("Bean manager from inject: " + (bmI instanceof BeanManager) + System.lineSeparator());
 
         Set<Bean<?>> set = bm.getBeans(MyBean.class);
         if (!set.isEmpty()) {
-            pw.append("BeanManager from CDI.current().getBeanManager found a Bean." + System.getProperty("line.separator"));
+            pw.append("BeanManager from CDI.current().getBeanManager found a Bean." + System.lineSeparator());
 
         } else {
-            pw.append("BeanManager from CDI.current().getBeanManager could not find a Bean" + System.getProperty("line.separator"));
+            pw.append("BeanManager from CDI.current().getBeanManager could not find a Bean" + System.lineSeparator());
         }
 
         set = bmI.getBeans(MyBean.class);
         if (!set.isEmpty()) {
-            pw.append("BeanManager from injection found a Bean." + System.getProperty("line.separator"));
+            pw.append("BeanManager from injection found a Bean." + System.lineSeparator());
 
         } else {
-            pw.append("BeanManager from injection could not find a Bean" + System.getProperty("line.separator"));
+            pw.append("BeanManager from injection could not find a Bean" + System.lineSeparator());
         }
 
         set = bmJ.getBeans(MyBean.class);
         if (!set.isEmpty()) {
-            pw.append("BeanManager from jndi found a Bean." + System.getProperty("line.separator"));
+            pw.append("BeanManager from jndi found a Bean." + System.lineSeparator());
 
         } else {
-            pw.append("BeanManager from jndi could not find a Bean" + System.getProperty("line.separator"));
+            pw.append("BeanManager from jndi could not find a Bean" + System.lineSeparator());
         }
 
         pw.flush();

@@ -135,6 +135,10 @@ SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: El URL proporcionado en la logoutExi
 SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=El servicio Form-Logout no ha podido redireccionar satisfactoriamente a la p\u00e1gina especificada en el par\u00e1metro de servlet logoutExitPage. El URL especificado es un URL con formato no v\u00e1lido o no se ha especificado el nombre de host en la propiedad com.ibm.websphere.security.logoutExitPageDomainList.
 SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Corrija el URL especificado en el par\u00e1metro logoutExitPage.
 
-JWT_ALREADY_LOGGED_OUT=CWWKS9126E: Se ha producido un error en el inicio de sesi\u00f3n con JSON Web Token porque la se\u00f1al hab\u00eda finalizado la sesi\u00f3n previamente.
-JWT_ALREADY_LOGGED_OUT.explanation=Una se\u00f1al JSON Web Token (JWT) que anteriormente hab\u00eda finalizado sesi\u00f3n se ha reenviado para autenticaci\u00f3n de inicio de sesi\u00f3n.
-JWT_ALREADY_LOGGED_OUT.useraction=Obtenga una nueva JSON Web Token o establezca el atributo de configuraci\u00f3n trackLoggedOutSSOCookiesEnabled en false, que es menos seguro.
+JWT_ALREADY_LOGGED_OUT=CWWKS9126A: No se ha realizado correctamente la autenticaci\u00f3n mediante la se\u00f1al web de JSON porque la se\u00f1al hab\u00eda finalizado la sesi\u00f3n previamente.
+JWT_ALREADY_LOGGED_OUT.explanation=Una se\u00f1al web de JSON (JWT) cuya sesi\u00f3n hab\u00eda finalizado se ha reenviado para su autenticaci\u00f3n.
+JWT_ALREADY_LOGGED_OUT.useraction=Obtenga una nueva se\u00f1al web de JSON.
+
+JWT_COOKIE_SECURITY_MISMATCH=CWWKS9127W: La caracter\u00edstica jwtSso est\u00e1 estableciendo una cookie segura en una solicitud HTTP no segura. Puede tratarse de un error de configuraci\u00f3n. Utilice el protocolo HTTPS o establezca el atributo de configuraci\u00f3n de jwtSso setCookieSecureFlag en false.
+JWT_COOKIE_SECURITY_MISMATCH.explanation=Una cookie se ha marcado como segura pero el protocolo es HTTP, por lo que la cookie nunca se devolver\u00e1; esto podr\u00eda provocar errores en las solicitudes siguientes.
+JWT_COOKIE_SECURITY_MISMATCH.useraction=Use el protocolo HTTPS o establezca el atributo de configuraci\u00f3n de jwtSso setCookieSecureFlag en false.

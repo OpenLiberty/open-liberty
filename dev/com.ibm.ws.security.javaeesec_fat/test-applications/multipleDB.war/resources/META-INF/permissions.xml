@@ -20,4 +20,45 @@
       <name>wssecurity.getRunAsSubject</name>
    </permission>
 
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>derby.system.home</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>"derby.storage.pageSize"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>"derby.language.bulkFetchDefault"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>"derby.language.stalePlanCheckInterval"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.util.PropertyPermission</class-name>
+      <name>"derby.stream.error.logSeverityLevel"</name>
+      <actions>read</actions>
+   </permission>
+
+   <permission>
+      <class-name>javax.management.MBeanPermission</class-name>
+      <name>*</name>
+      <actions>registerMBean,unregisterMBean</actions>
+   </permission>
+
+   <permission>
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>createClassLoader</name>
+   </permission>
+
 </permissions>

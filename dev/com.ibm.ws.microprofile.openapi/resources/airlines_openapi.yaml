@@ -512,9 +512,14 @@ components:
         name:
           type: string
           example: Acme Air
+          xml:
+            name: airlinename
         contactPhone:
           type: string
           example: 1-888-1234-567
+          xml:
+            prefix: number
+            namespace: http://example.com/schema/sample
     Flight:
       required:
       - airportFrom

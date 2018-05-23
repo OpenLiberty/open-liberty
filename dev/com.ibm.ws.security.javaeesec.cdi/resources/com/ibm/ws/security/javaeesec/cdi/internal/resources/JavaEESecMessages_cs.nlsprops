@@ -17,50 +17,45 @@
 # -------------------------------------------------------------------------------------------------
 
 # Message prefix block: CWWKS1925 - CWWKS1949
-
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Implementace pro modul {0} v aplikaci {1} se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Seznam t\u0159\u00edd je {2}. S nejv\u011bt\u0161\u00ed pravd\u011bpodobnost\u00ed se jedn\u00e1 o probl\u00e9m balen\u00ed aplikace. Ujist\u011bte se, \u017ee v ka\u017ed\u00e9m modulu existuje pouze jedna implementace HttpAuthenticationMechanism.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Implementace aplikace se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism. Tato situace nen\u00ed povolena.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: Implementace pro modul {0} v aplikaci {1} se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism: {2}. Toto selh\u00e1n\u00ed je pravd\u011bpodobn\u011b probl\u00e9mem balen\u00ed aplikace. Ujist\u011bte se, \u017ee ka\u017ed\u00fd modul m\u00e1 pouze jednu implementaci HttpAuthenticationMechanism.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=Implementace aplikace se nezda\u0159ila, proto\u017ee bylo nalezeno v\u00edce implementac\u00ed HttpAuthenticationMechanism.
 JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Ujist\u011bte se, \u017ee v aplikaci pro ka\u017ed\u00fd modul existuje pouze jedna implementace HttpAuthenticationMechanism.
 
-JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: Objekt typu LoginToContinueProperties bean neexistuje. Formul\u00e1\u0159ov\u00e9 p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed povoleno. Ujist\u011bte se, \u017ee aplikace je anotov\u00e1na anotac\u00ed LoginToContinue.
-JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=Objekt typu LoginToContinueProperties, kter\u00fd je nezbytn\u00fd pro ov\u011b\u0159en\u00ed formul\u00e1\u0159ov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed, neexistuje.
-JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Ujist\u011bte se, \u017ee aplikace je anotov\u00e1na anotac\u00ed LoginToContinue v anotaci FormAuthenticationMechanismDefinition nebo CustomFormAuthenticationMechanismDefinition.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST=CWWKS1926E: Objekt typu HttpAuthenticationMechanism formul\u00e1\u0159ov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed nebo p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed vlastn\u00edho p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed spr\u00e1vn\u011b nakonfigurov\u00e1no. Chyb\u00ed mu anotace LoginToContinue.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST.explanation=Objekt typu HttpAuthenticationMechanism formul\u00e1\u0159ov\u00e9ho p\u0159ihl\u00e1\u0161en\u00ed nebo p\u0159ihl\u00e1\u0161en\u00ed pomoc\u00ed vlastn\u00edho p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed spr\u00e1vn\u011b nakonfigurov\u00e1no.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST.useraction=P\u0159esv\u011bd\u010dte se, \u017ee je aplikace anotov\u00e1na anotac\u00ed LoginToContinue v anotaci FormAuthenticationMechanismDefinition nebo CustomFormAuthentiAuthentiAuthenticationMechanismDefinition.
 
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: Dodan\u00e1 t\u0159\u00edda pov\u011b\u0159en\u00ed {0} nen\u00ed podporov\u00e1na registrem u\u017eivatel\u016f. Pou\u017eijte pro ov\u011b\u0159en\u00ed bu\u010f javax.security.enterprise.credential.UsernamePasswordCredential, nebo javax.security.enterprise.credential.BasicAuthenticationCredential.
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=Dodan\u00e1 t\u0159\u00edda pov\u011b\u0159en\u00ed pro ov\u011b\u0159en\u00ed nen\u00ed podporov\u00e1na registrem u\u017eivatel\u016f. Pou\u017eijte pro ov\u011b\u0159en\u00ed bu\u010f javax.security.enterprise.credential.UsernamePasswordCredential, nebo javax.security.enterprise.credential.BasicAuthenticationCredential.
-JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Ujist\u011bte se, \u017ee podporovan\u00e1 t\u0159\u00edda pov\u011b\u0159en\u00ed se pou\u017e\u00edv\u00e1 pro ov\u011b\u0159ov\u00e1n\u00ed pomoc\u00ed registru u\u017eivatel\u016f.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: Nebyla konfigurov\u00e1na \u017e\u00e1dn\u00e1 \u00falo\u017ei\u0161t\u011b identit. Pov\u011b\u0159en\u00ed, kter\u00e9 m\u00e1 typ {0}, nelze pou\u017e\u00edt pro n\u00e1hradn\u00ed ov\u011b\u0159en\u00ed s registrem u\u017eivatel\u016f. Pro n\u00e1hradn\u00ed ov\u011b\u0159en\u00ed pou\u017eijte bu\u010f t\u0159\u00eddu javax.security.enterprise.credential.UsernamePasswordCredential, nebo t\u0159\u00eddu javax.security.enterprise.credential.BasicAuthenticationCredential.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation= Registr u\u017eivatel\u016f nepodporuje dodanou t\u0159\u00eddu pov\u011b\u0159en\u00ed pro ov\u011b\u0159en\u00ed. T\u0159\u00eddy javax.security.enterprise.credential.UsernamePasswordCredential a javax.security.enterprise.credential.BasicAuthenticationCredential jsou podporovan\u00e9 t\u0159\u00eddy pov\u011b\u0159en\u00ed.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Ujist\u011bte se, \u017ee jsou \u00falo\u017ei\u0161t\u011b identit nakonfigurovan\u00e1 nebo \u017ee registr u\u017eivatel\u016f pou\u017e\u00edv\u00e1 podporovanou t\u0159\u00eddu pov\u011b\u0159en\u00ed k ov\u011b\u0159en\u00ed u\u017eivatele.
 
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE=CWWKS1930W: Nakonfigurovan\u00fd objekt IdentityStore nebyl nalezen. Pokud je nakonfigurov\u00e1n registr u\u017eivatel\u016f, bude pou\u017eit m\u00edsto n\u011bj. Ujist\u011bte se, \u017ee objekt IdentityStore nakonfigurovan\u00fd aplikac\u00ed je k dispozici.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.explanation=P\u0159\u00ed\u010dina, pro\u010d objekt IdentityStore nebyl nalezen, se li\u0161\u00ed. Chybov\u00e9 zpr\u00e1vy pro objekt IdentityStore poskytuj\u00ed informace o tom, pro\u010d objekt IdentityStore nebyl nalezen.
-JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.useraction=Prozkoumejte v\u0161echny chybov\u00e9 zpr\u00e1vy z objektu IdentityStore a prove\u010fte opravy zalo\u017een\u00e9 na chybov\u00fdch zpr\u00e1v\u00e1ch.
+JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE=CWWKS1930I: Nakonfigurovan\u00fd objekt IdentityStore nebyl nalezen. Pokud je nakonfigurov\u00e1n registr u\u017eivatel\u016f, bude pou\u017eit m\u00edsto n\u011bj. Pokud mus\u00ed b\u00fdt objekt IdentityStore pou\u017eit, ujist\u011bte se, \u017ee je objekt IdentityStore \u0159\u00e1dn\u011b nakonfigurov\u00e1n.
+JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE.explanation=P\u0159\u00ed\u010dina, pro\u010d objekt IdentityStore nebyl nalezen, se li\u0161\u00ed. Chybov\u00e9 zpr\u00e1vy pro objekt IdentityStore poskytuj\u00ed informace o tom, pro\u010d objekt IdentityStore nebyl nalezen.
+JAVAEESEC_CDI_INFO_NO_IDENTITY_STORE.useraction=Prozkoumejte v\u0161echny chybov\u00e9 zpr\u00e1vy z objektu IdentityStore a prove\u010fte opravy zalo\u017een\u00e9 na chybov\u00fdch zpr\u00e1v\u00e1ch.
 
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Implementace aplikace se nezda\u0159ila, proto\u017ee byl nalezen prvek login-config v souboru web.xml pro modul {0} v aplikaci {1}. Chcete-li povolit objekt HttpAuthenticationMechanism bean, odeberte prvek login-config ze souboru web.xml.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Implementace aplikace se nezda\u0159ila, proto\u017ee byly nadefinov\u00e1ny prvek login-config i objekt HttpAuthenticationMechanism bean. V aplikaci lze pou\u017e\u00edt pouze jeden z t\u011bchto mechanizm\u016f.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Chcete-li povolit objekt HttpAuthenticationMechanism bean, odeberte prvek login-config ze souboru web.xml.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: Implementace aplikace {1} se nezda\u0159ila, proto\u017ee byl pro modul {0} zad\u00e1n prvek login-config v souboru web.xml a prvek HttpAuthenticationsMechanizm. Ujist\u011bte se, \u017ee je nakonfigurov\u00e1n pouze jeden mechanizmus ov\u011b\u0159ov\u00e1n\u00ed.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=Implementace aplikace se nezda\u0159ila, proto\u017ee byly nadefinov\u00e1ny prvky login-config i HttpAuthenticationMechanism. V aplikaci lze pou\u017e\u00edt pouze jeden z t\u011bchto mechanizm\u016f.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Ujist\u011bte se, \u017ee je nakonfigurov\u00e1n pouze jeden z mechanizm\u016f ov\u011b\u0159ov\u00e1n\u00ed.
 
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: N\u00e1zev sf\u00e9ry pro z\u00e1kladn\u00ed ov\u011b\u0159en\u00ed nen\u00ed nastaven, tak\u017ee se pou\u017eije v\u00fdchoz\u00ed hodnota defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Proto\u017ee n\u00e1zev sf\u00e9ry pro z\u00e1kladn\u00ed ov\u011b\u0159en\u00ed nen\u00ed nadefinov\u00e1n, byl n\u00e1zev sf\u00e9ry nastaven na v\u00fdchoz\u00ed hodnotu defaultRealm.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=Chcete-li nastavit n\u00e1zev sf\u00e9ry, definujte jej v aplikaci na anotaci BasicAuthenticationMechanismDefinition. Voliteln\u011b pokud je atribut overrideHttpAuthenticationMechanism nastaven jako BASIC, nastavte hodnotu atributu basicAuthenticationMechanismRealmName.
-
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Hodnota {0} konfigura\u010dn\u00edho parametru {1} je neplatn\u00e1.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Hodnota konfigura\u010dn\u00edho parametru nen\u00ed platn\u00e1.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: Ha\u0161ov\u00e1n\u00ed hesla pro atribut DatabaseIdentityStore nen\u00ed platn\u00e9, proto\u017ee konfigura\u010dn\u00ed parametr {1} m\u00e1 hodnotu {0}, kter\u00e1 nen\u00ed platn\u00e1.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=Ha\u0161ov\u00e1n\u00ed hesla pro atribut DatabaseIdentityStore nen\u00ed platn\u00e9, proto\u017ee hodnota konfigura\u010dn\u00edho parametru nen\u00ed platn\u00e1. Pod\u00edvejte se na platnou hodnotu do dokumentace javadoc rozhran\u00ed javax.security.enterprise.identitystore.Pbkdf2PasswordHash.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Ujist\u011bte se, \u017ee je konfigura\u010dn\u00ed parametr nastaven spr\u00e1vn\u011b.
 
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: Hodnota {0} konfigura\u010dn\u00edho parametru {1} je men\u0161\u00ed ne\u017e minim\u00e1ln\u00ed hodnota {2}.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=Hodnota konfigura\u010dn\u00edho parametru je men\u0161\u00ed ne\u017e minim\u00e1ln\u00ed hodnota.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: Ha\u0161ov\u00e1n\u00ed hesla pro atribut DatabaseIdentityStore nen\u00ed platn\u00e9, proto\u017ee hodnota {0} konfigura\u010dn\u00edho parametru {1} je men\u0161\u00ed ne\u017e minim\u00e1ln\u00ed hodnota {2}.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=M\u00e1-li b\u00fdt ha\u0161ov\u00e1n\u00ed hesla atributu DatabaseIdentityStore platn\u00e9, mus\u00ed b\u00fdt hodnota konfigura\u010dn\u00edho parametru v\u011bt\u0161\u00ed nebo rovna minim\u00e1ln\u00ed hodnot\u011b.
 JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Ujist\u011bte se, \u017ee hodnota konfigura\u010dn\u00edho parametru je rovna nebo v\u011bt\u0161\u00ed ne\u017e minim\u00e1ln\u00ed hodnota.
 
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Ha\u0161ovac\u00ed data jsou neplatn\u00e1. {0}
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Ha\u0161ovac\u00ed hodnota v datab\u00e1zi nen\u00ed platn\u00e1.
-JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Ujist\u011bte se, \u017ee ha\u0161ovac\u00ed data v datab\u00e1zi byla ha\u0161ov\u00e1na ha\u0161ovac\u00edm algoritmem, kter\u00fd podporuje implementa\u010dn\u00ed t\u0159\u00eddu PasswordHash.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: Ha\u0161ov\u00e1n\u00ed hesla z datab\u00e1ze nen\u00ed platn\u00e9. {0}
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=Ha\u0161ov\u00e1n\u00ed hesla z datab\u00e1ze nen\u00ed platn\u00e9, pravd\u011bpodobn\u011b proto, \u017ee form\u00e1t hesla je nespr\u00e1vn\u00fd. 
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Ujist\u011bte se, \u017ee ha\u0161ov\u00e1n\u00ed hesla v datab\u00e1zi m\u00e1 spr\u00e1vn\u00fd form\u00e1t, kter\u00fd je po\u017eadov\u00e1n implementac\u00ed Pbkdf2PasswordHash.
 
-JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: Atribut {0} nen\u00ed v prvku webAppSecurity nastaven, HttpAuthenticationMechanism s p\u0159episov\u00e1n\u00edm kontejnerem nebude spr\u00e1vn\u011b fungovat."
-JAVAEESEC_CDI_ERROR_NO_URL.explanation=Proto\u017ee nen\u00ed po\u017eadovan\u00fd atribut nastaven, nebude ov\u011b\u0159ov\u00e1n\u00ed na z\u00e1klad\u011b formul\u00e1\u0159e HttpAuthenticationMechanism s p\u0159episov\u00e1n\u00edm kontejnerem funk\u010dn\u00ed.
-JAVAEESEC_CDI_ERROR_NO_URL.useraction=Atribut ve zpr\u00e1v\u011b vy\u017eaduje nastaven\u00ed.
+JAVAEESEC_CDI_ERROR_NO_URL=CWWKS1936E: U\u017eivatel se nemohl p\u0159ihl\u00e1sit. Atribut FormLoginHttpAuthenticationMechanism nebylo mo\u017en\u00e9 pou\u017e\u00edt pro p\u0159ihl\u00e1\u0161en\u00ed, proto\u017ee atribut {0} nen\u00ed nastaven v prvku webAppSecurity.
+JAVAEESEC_CDI_ERROR_NO_URL.explanation=U\u017eivateli se p\u0159i pokusu o p\u0159ihl\u00e1\u0161en\u00ed m\u016f\u017ee zobrazit chyba 401 nebo 403. FormLoginHttpAuthenticationMechanism nelze pou\u017e\u00edt pro p\u0159ihl\u00e1\u0161en\u00ed, proto\u017ee v prvku webAppSecurity nen\u00ed nastaven atribut loginFormURL ani atribut loginErrorURL.
+JAVAEESEC_CDI_ERROR_NO_URL.useraction=Ujist\u011bte se, \u017ee je nastaven atribut loginFormURL i atribut loginErrorURL.
 
-JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: Hodnota {0} atributu contextRootForFormAuthenticationMechanism neodpov\u00edd\u00e1 hodnot\u011b kontextov\u00e9ho ko\u0159enov\u00e9ho adres\u00e1\u0159e {1} atributu {2} v prvku webAppSecurity, HttpAuthenticationMechanism s p\u0159episov\u00e1n\u00edm kontejnerem nebude spr\u00e1vn\u011b fungovat."
-JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Proto\u017ee hodnota kontextov\u00e9ho ko\u0159enov\u00e9ho adres\u00e1\u0159e neodpov\u00edd\u00e1 ur\u010den\u00e9mu atributu, nen\u00ed ov\u011b\u0159ov\u00e1n\u00ed na z\u00e1klad\u011b formul\u00e1\u0159e HttpAuthenticationMechanism s p\u0159episov\u00e1n\u00edm kontejnerem funk\u010dn\u00ed."
-JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=Atribut ve zpr\u00e1v\u011b vy\u017eaduje shodu s ur\u010den\u00fdm kontextov\u00fdm ko\u0159enov\u00fdm adres\u00e1\u0159em.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT=CWWKS1937E: Existuje neshoda mezi atributem {0} contextRootForFormAuthenticationMechanism a adresou URL {1} {2}.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.explanation=Bu\u010f atribut loginFormURL, nebo atribut loginErrorURL neza\u010d\u00edn\u00e1 hodnotou atributu contextRootForFormAuthenticationMechanism.
+JAVAEESEC_CDI_ERROR_INVALID_CONTEXT_ROOT.useraction=Ujist\u011bte se, \u017ee atribut loginFormURL a atribut loginErrorURL za\u010d\u00ednaj\u00ed hodnotou atributu contextRootForFormAuthenticationMechanizm.
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_CDI_INVALID_ITERATION=Iterace {0} nejsou \u010d\u00edslo.

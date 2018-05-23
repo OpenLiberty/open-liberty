@@ -365,7 +365,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
         webAppSecConfig = newWebAppSecConfig;
         updateComponents();
-        notifyWebAppSecurityConfigChangeListeners(new ArrayList(deltaMap.keySet()));
+        if (deltaMap != null) {
+            notifyWebAppSecurityConfigChangeListeners(new ArrayList(deltaMap.keySet()));
+        }
         Tr.audit(tc, "WEB_APP_SECURITY_CONFIGURATION_UPDATED", deltaString);
     }
 
@@ -460,8 +462,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     @Override
     public boolean isCDINeeded() {
-        Set<String> installedFeatures = provisionerService.getInstalledFeatures();
-        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 && installedFeatures.contains("appSecurity-3.0");
+        return WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40 &&
+               provisionerService.getInstalledFeatures().contains("appSecurity-3.0");
     }
 
     /**

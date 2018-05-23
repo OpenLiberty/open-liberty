@@ -35,20 +35,20 @@ public class GlobalState {
     public static String buildString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Applicaiton Scoped Bean: " + ApplicationScopedState.toString() + System.getProperty("line.separator"));
-        sb.append("Request Scoped Bean: " + RequestScopedState.toString() + System.getProperty("line.separator"));
-        sb.append("Session Scoped Bean: " + SessionScopedState.toString() + System.getProperty("line.separator"));
-        sb.append("Conversation Scoped Bean: " + ConversationScopedState.toString() + System.getProperty("line.separator"));
+        sb.append("Applicaiton Scoped Bean: " + ApplicationScopedState.toString() + System.lineSeparator());
+        sb.append("Request Scoped Bean: " + RequestScopedState.toString() + System.lineSeparator());
+        sb.append("Session Scoped Bean: " + SessionScopedState.toString() + System.lineSeparator());
+        sb.append("Conversation Scoped Bean: " + ConversationScopedState.toString() + System.lineSeparator());
 
-        sb.append("Applicaiton Scoped Bean Starts: " + ApplicationScopedStarts + System.getProperty("line.separator"));
-        sb.append("Request Scoped Bean Starts: " + RequestScopedStarts + System.getProperty("line.separator"));
-        sb.append("Session Scoped Bean Starts: " + SessionScopedStarts + System.getProperty("line.separator"));
-        sb.append("Conversation Scoped Bean Starts: " + ConversationScopedStarts + System.getProperty("line.separator"));
+        sb.append("Applicaiton Scoped Bean Starts: " + ApplicationScopedStarts + System.lineSeparator());
+        sb.append("Request Scoped Bean Starts: " + RequestScopedStarts + System.lineSeparator());
+        sb.append("Session Scoped Bean Starts: " + SessionScopedStarts + System.lineSeparator());
+        sb.append("Conversation Scoped Bean Starts: " + ConversationScopedStarts + System.lineSeparator());
 
-        sb.append("Applicaiton Scoped Bean Stops: " + ApplicationScopedStops + System.getProperty("line.separator"));
-        sb.append("Request Scoped Bean Stops: " + RequestScopedStops + System.getProperty("line.separator"));
-        sb.append("Session Scoped Bean Stops: " + SessionScopedStops + System.getProperty("line.separator"));
-        sb.append("Conversation Scoped Bean Stops: " + ConversationScopedStops + System.getProperty("line.separator"));
+        sb.append("Applicaiton Scoped Bean Stops: " + ApplicationScopedStops + System.lineSeparator());
+        sb.append("Request Scoped Bean Stops: " + RequestScopedStops + System.lineSeparator());
+        sb.append("Session Scoped Bean Stops: " + SessionScopedStops + System.lineSeparator());
+        sb.append("Conversation Scoped Bean Stops: " + ConversationScopedStops + System.lineSeparator());
 
         sb.append(cheat);
 

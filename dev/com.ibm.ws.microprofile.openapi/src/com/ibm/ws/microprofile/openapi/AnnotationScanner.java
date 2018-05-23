@@ -90,6 +90,10 @@ public class AnnotationScanner {
                 if (!annInfoVal.startsWith("/")) {
                     annInfoVal = "/" + annInfoVal;
                 }
+                if (annInfoVal.endsWith("/*"))
+                    annInfoVal = annInfoVal.substring(0, annInfoVal.length() - 2);
+                if (annInfoVal.endsWith("/"))
+                    annInfoVal = annInfoVal.substring(0, annInfoVal.length() - 1);
                 if (OpenAPIUtils.isEventEnabled(tc)) {
                     Tr.event(tc, "Found url mapping " + annInfoVal + " in Application classs " + appName);
                 }

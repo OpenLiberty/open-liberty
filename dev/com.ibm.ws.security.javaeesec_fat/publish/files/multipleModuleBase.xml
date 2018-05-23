@@ -1,0 +1,11 @@
+<server description="JavaEESec Multiple Module FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>jsf-2.3</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <include location="../fatTestPorts.xml" />
+</server>

@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
@@ -169,7 +171,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     /** {@inheritDoc} */
     @Override
     public SecurityCookieImpl preInvoke(EJBRequestData request) throws EJBAccessDeniedException {
-        Subject invokedSubject= subjectManager.getInvocationSubject();
+        Subject invokedSubject = subjectManager.getInvocationSubject();
         Subject callerSubject = subjectManager.getCallerSubject();
 
         EJBMethodMetaData methodMetaData = request.getEJBMethodMetaData();
@@ -212,7 +214,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
             if ((invocationSubject == null || invocationSubject.equals(securityCookie.getAdjustedInvokedSubject())) &&
                 (callerSubject == null || callerSubject.equals(securityCookie.getAdjustedReceivedSubject()))) {
                 // if invocation and caller subject are unchanged, this means that a programmatic authentication
-                // was not carried out, thus put the original subject back. 
+                // was not carried out, thus put the original subject back.
                 // otherwise, keep the current subjects in order to preserve the subjects from the programmatic login.
                 Subject invokedSubject = securityCookie.getInvokedSubject();
                 Subject receivedSubject = securityCookie.getReceivedSubject();
@@ -554,10 +556,10 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     private void performDelegation(EJBMethodMetaData methodMetaData, Subject delegationSubject) {
         ArrayList<String> delUsers = new ArrayList<String>();
         String invalidUser = "";
-        if (delegationSubject != null && delegationSubject.getPublicCredentials(WSCredential.class) != null
-            && delegationSubject.getPublicCredentials(WSCredential.class).iterator() != null &&
-            delegationSubject.getPublicCredentials(WSCredential.class).iterator().hasNext()) {
-            WSCredential credential = delegationSubject.getPublicCredentials(WSCredential.class).iterator().next();
+        Set<WSCredential> publicCredentials = (delegationSubject == null ? null : delegationSubject.getPublicCredentials(WSCredential.class));
+        Iterator<WSCredential> it = null;
+        if (publicCredentials != null && (it = publicCredentials.iterator()) != null && it.hasNext()) {
+            WSCredential credential = it.next();
             try {
                 extraAuditData.put("REALM", credential.getRealmName());
             } catch (CredentialExpiredException e) {
