@@ -66,6 +66,10 @@ public class RepeatableDSDTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, RepeatableDSDMixTest);
         ShrinkHelper.exportAppToServer(server, RepeatableDSDXMLTest);
 
+        server.addInstalledAppForValidation("RepeatableDSDAnnTest");
+        server.addInstalledAppForValidation("RepeatableDSDMixTest");
+        server.addInstalledAppForValidation("RepeatableDSDXMLTest");
+
         server.startServer();
     }
 

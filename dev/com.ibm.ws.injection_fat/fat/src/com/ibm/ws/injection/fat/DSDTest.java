@@ -67,6 +67,10 @@ public class DSDTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, DSDMixTest);
         ShrinkHelper.exportAppToServer(server, DSDXMLTest);
 
+        server.addInstalledAppForValidation("DSDAnnTest");
+        server.addInstalledAppForValidation("DSDMixTest");
+        server.addInstalledAppForValidation("DSDXMLTest");
+
         server.startServer();
     }
 
