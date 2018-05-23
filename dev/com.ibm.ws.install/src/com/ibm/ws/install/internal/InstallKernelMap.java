@@ -618,8 +618,8 @@ public class InstallKernelMap implements Map {
         try {
             InstallKernelImpl installKernel = (InstallKernelImpl) this.installKernel;
             File esaFile = (File) data.get(ACTION_INSTALL);
-            Collection<String> installedAssets = installKernel.installLocalFeature(esaFile.getAbsolutePath(), InstallConstants.TO_USER, true,
-                                                                                   InstallConstants.ExistsAction.replace);
+            Collection<String> installedAssets = installKernel.installLocalFeatureNoResolve(esaFile.getAbsolutePath(), InstallConstants.TO_USER, true,
+                                                                                            InstallConstants.ExistsAction.replace);
             data.put(ACTION_INSTALL_RESULT, installedAssets);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);
