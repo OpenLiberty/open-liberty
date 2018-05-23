@@ -215,9 +215,20 @@ class ResolveDirector extends AbstractDirector {
         List<RepositoryConfig> repositoryConfigs = RepositoryConfigUtils.getRepositoryConfigs(repoProperties);
         proxy = RepositoryConfigUtils.getProxyInfo(repoProperties);
         List<RepositoryConnection> loginEntries = new ArrayList<RepositoryConnection>(repositoryConfigs.size());
+
+        boolean isOpenLiberty = false;
+        try {
+            for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    isOpenLiberty = true;
+                }
+            }
+        } catch (Exception e) {
+            throw ExceptionUtils.create(e);
+        }
+
         for (RepositoryConfig rc : repositoryConfigs) {
             RepositoryConnection lie = null;
-
             String url = rc.getUrl();
             if (url != null && url.toLowerCase().startsWith("file:")) {
                 try {
@@ -252,7 +263,8 @@ class ResolveDirector extends AbstractDirector {
                         }
                         throw ExceptionUtils.createByKey(e, "ERROR_FAILED_TO_CONNECT");
                     }
-                    throw ExceptionUtils.create(e, featureNames, false, proxy, true);
+
+                    throw ExceptionUtils.create(e, featureNames, false, proxy, true, isOpenLiberty);
                 }
             } else {
                 String decodedPwd = rc.getUserPwd();
@@ -288,6 +300,16 @@ class ResolveDirector extends AbstractDirector {
                 InstallLogUtils.logLoginInfo(repositoryConnectionList, logLable);
                 return repositoryConnectionList;
             }
+            boolean isOpenLiberty = false;
+            try {
+                for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                    if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                        isOpenLiberty = true;
+                    }
+                }
+            } catch (Exception e) {
+                throw ExceptionUtils.create(e);
+            }
             try {
                 //Retrieve and set proxy server settings
                 proxy = RepositoryConfigUtils.getProxyInfo(repoProperties);
@@ -299,7 +321,8 @@ class ResolveDirector extends AbstractDirector {
                     }
                     throw ExceptionUtils.createByKey(e, "ERROR_FAILED_TO_CONNECT");
                 }
-                throw ExceptionUtils.create(e, featureNames, false, proxy, true);
+
+                throw ExceptionUtils.create(e, featureNames, false, proxy, true, isOpenLiberty);
             }
             if (userId != null) {
                 restConnection.setUserId(userId);
@@ -405,9 +428,13 @@ class ResolveDirector extends AbstractDirector {
             featureNamesProcessed.add(s.replaceAll("\\\\+$", ""));
         }
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
+        boolean isOpenLiberty = false;
         try {
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    isOpenLiberty = true;
+                }
             }
         } catch (Exception e) {
             throw ExceptionUtils.create(e);
@@ -417,6 +444,7 @@ class ResolveDirector extends AbstractDirector {
 
         RepositoryResolver resolver;
         Collection<List<RepositoryResource>> installResources;
+
         try {
             if (downloadOption == DownloadOption.all || downloadOption == DownloadOption.none) {
                 resolver = new RepositoryResolver(productDefinitions, Collections.<ProvisioningFeatureDefinition> emptySet(), Collections.<IFixInfo> emptySet(), loginInfo);
@@ -430,10 +458,12 @@ class ResolveDirector extends AbstractDirector {
                 resolver = new RepositoryResolver(productDefinitions, product.getFeatureDefinitions().values(), FixAdaptor.getInstalledIFixes(product.getInstallDir()), loginInfo);
                 installResources = resolver.resolve(featuresToInstall);
             }
+
         } catch (RepositoryResolutionException e) {
-            throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false);
+
+            throw ExceptionUtils.create(e, featureNamesProcessed, product.getInstallDir(), false, isOpenLiberty);
         } catch (RepositoryException e) {
-            throw ExceptionUtils.create(e, featureNamesProcessed, false, proxy, defaultRepo());
+            throw ExceptionUtils.create(e, featureNamesProcessed, false, proxy, defaultRepo(), isOpenLiberty);
         }
         List<List<RepositoryResource>> installResourcesCollection = new ArrayList<List<RepositoryResource>>(installResources.size());
         List<RepositoryResource> installResourcesSingleList = new ArrayList<RepositoryResource>();
@@ -582,10 +612,15 @@ class ResolveDirector extends AbstractDirector {
             assetNamesProcessed.add(s.replaceAll("\\\\+$", ""));
         }
         Collection<ProductDefinition> productDefinitions = new HashSet<ProductDefinition>();
+        boolean isOpenLiberty = false;
         try {
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    isOpenLiberty = true;
+                }
             }
+
         } catch (Exception e) {
             throw ExceptionUtils.create(e);
         }
@@ -604,9 +639,10 @@ class ResolveDirector extends AbstractDirector {
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo);
             installResources = resolver.resolve(assetsToInstall);
         } catch (RepositoryResolutionException e) {
-            throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true);
+
+            throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), true, isOpenLiberty);
         } catch (RepositoryException e) {
-            throw ExceptionUtils.create(e, assetNamesProcessed, true, proxy, defaultRepo());
+            throw ExceptionUtils.create(e, assetNamesProcessed, true, proxy, defaultRepo(), isOpenLiberty);
         }
 
         List<List<RepositoryResource>> installResourcesCollection = new ArrayList<List<RepositoryResource>>(installResources.size());
