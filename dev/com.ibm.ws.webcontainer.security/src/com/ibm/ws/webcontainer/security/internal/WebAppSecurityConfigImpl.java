@@ -67,7 +67,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthMethod";
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
-    static final String CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED = "jaspicSessionEnabled";
+    static final String CFG_KEY_JASPIC_SESSION_ENABLED = "jaspicSessionEnabled";
     static final String CFG_KEY_JASPIC_SESSION_COOKIE_NAME = "jaspicSessionCookieName";
 
     // New attributes must update getChangedProperties method
@@ -113,7 +113,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_DISPLAY_AUTHENTICATION_REALM, "displayAuthenticationRealm");
             put(CFG_KEY_HTTP_ONLY_COOKIES, "httpOnlyCookies");
             put(CFG_KEY_JASPIC_SESSION_COOKIE_NAME, "jaspicSessionCookieName");
-            put(CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED, "jaspicSessionEnabled");
+            put(CFG_KEY_JASPIC_SESSION_ENABLED, "jaspicSessionEnabled");
             put(CFG_KEY_LOGOUT_ON_HTTP_SESSION_EXPIRE, "logoutOnHttpSessionExpire");
             put(CFG_KEY_LOGOUT_PAGE_REDIRECT_DOMAIN_NAMES, "logoutPageRedirectDomainNames");
             put(CFG_KEY_PRESERVE_FULLY_QUALIFIED_REFERRER_URL, "preserveFullyQualifiedReferrerUrl");
@@ -173,7 +173,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         jaspicSessionCookieName = (String) newProperties.get(CFG_KEY_JASPIC_SESSION_COOKIE_NAME);
-        jaspicSessionEnabled = (Boolean) newProperties.get(CFG_KEY_JASPIC_SESSION_FOR_MECHANISMS_ENABLED);
+        jaspicSessionEnabled = (Boolean) newProperties.get(CFG_KEY_JASPIC_SESSION_ENABLED);
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
 
@@ -543,7 +543,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isJaspicSessionForMechanismsEnabled() {
+    public boolean isJaspicSessionEnabled() {
         return jaspicSessionEnabled;
     }
 
