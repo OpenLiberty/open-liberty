@@ -11,22 +11,24 @@
 package com.ibm.websphere.security.web;
 
 import javax.servlet.ServletException;
+
 /**
- *
+ * This exception is thrown when a programmatic login is performed against a user registry which is configured
+ * to report when a user's password is expired.
  */
 public class PasswordExpiredException extends ServletException{
 
-    private static final long serialVersionUID = 1L;
-
-    public PasswordExpiredException(String message) {
-        super(message);
-    }
-
     /**
-     * @param message
-     * @param e
+     * Comment for <code>serialVersionUID</code>
      */
-    public PasswordExpiredException(String message, Exception e) {
+    private static final long serialVersionUID = 12345622414392883L;
+    
+    /**
+     * Creates a new PasswordExpiredException with a message
+     *
+     * @param message Exception message about what caused the error
+     */
+    public PasswordExpiredException(String message) {
         super(message);
     }
 }

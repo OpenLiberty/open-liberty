@@ -13,21 +13,21 @@ package com.ibm.websphere.security.web;
 import javax.servlet.ServletException;
 
 /**
- *
+ * This exception is thrown when a programmatic login is performed against a user registry which is configured 
+ * to report when a user's id is revoked.
  */
 public class UserRevokedException extends ServletException {
-
-    private static final long serialVersionUID = 1L;
-
-    public UserRevokedException(String message) {
-        super(message);
-    }
+    
+    /**
+     * Comment for <code>serialVersionUID</code>
+     */
+    private static final long serialVersionUID = 3257556722414392883L;
 
     /**
-     * @param message
-     * @param e
+     * Creates a new UserRevokedException with a message
+     * @param message Exception message that explains what caused the error
      */
-    public UserRevokedException(String message, Exception e) {
+    public UserRevokedException(String message) {
         super(message);
     }
 }

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -470,6 +471,7 @@ public class AuthenticateApiTest {
         
         try {
             authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
+            fail("PasswordExpiredException not thrown!");
         } catch (Exception e) {
             boolean foundException = false;
             if(e instanceof com.ibm.websphere.security.web.PasswordExpiredException){
@@ -522,6 +524,7 @@ public class AuthenticateApiTest {
         
         try {
             authApi.login(req, resp, user, password, config, basicAuthAuthenticator);
+            fail("UserRevokedException was not thrown!");
         } catch (Exception e) {
             
             boolean foundException = false;
