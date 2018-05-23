@@ -28,18 +28,12 @@ src: \
 	test-applications/DatabaseAuthAliasBasicAuthServlet.war/src,\
 	test-applications/IdentityStores.jar/src,\
 	test-applications/AuthMechs.jar/src,\
-	test-applications/DatabaseIdstoreDeferred.war/src,\
 	test-applications/DatabaseIdstoreImmediate.war/src,\
-	test-applications/securityContextHamApp.war/src,\
-	test-applications/SecurityEJBinWAR.jar/src,\
-	test-applications/ejbinwarservlet.war/src,\
 	test-applications/multipleDB.war/src,\
-	test-applications/securityContextEJBInWar.war/src,\
 	test-applications/CustomPasswordHash.jar/src,\
 	test-applications/CustomPasswordHashBean.jar/src,\
 	test-applications/DatabaseAnnotatedCustomHash.war/src,\
 	test-applications/DatabaseAnnotatedCustomHashBean.war/src,\
- 	test-applications/securityContextEJBInWar.war/src,\
 	test-applications/DatabaseIdstoreDeferred.war/src,\
 	test-applications/securityContextHamApp.war/src,\
 	test-applications/SecurityEJBinWAR.jar/src,\
@@ -87,4 +81,3 @@ fat.project: true
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest, \
 	com.ibm.ws.security.javaeesec.cdi;version=latest
-
