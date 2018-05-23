@@ -17,10 +17,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6351 - CWWKS6399
 
-JWTSSO_CONFIG_INVALID=CWWKS6351E: The JWTSSO feature configuration is invalid. Check the JWTSSO feature configuration. Check for prior error messages in the log.
+JWTSSO_CONFIG_INVALID=CWWKS6351E: The JWTSSO feature configuration is not valid. Check the JWTSSO feature configuration. Check for prior error messages in the log.
 JWTSSO_CONFIG_INVALID.explanation=A valid JWTSSO feature configuration could not be obtained.
 JWTSSO_CONFIG_INVALID.useraction=Check the JWTSSO feature configuration. Check for prior error messages in the log.
 
-JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID=CWWKS6352E: JWTSSO token validation failed. Check the JWTSSO feature configuration. Check for prior error messages in the log.
-JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID.explanation=Validation of the supplied JSON web token failed. The token or feature configuration might be invalid.
+JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID=CWWKS6352E: JWTSSO token validation did not succeed. Check the JWTSSO feature configuration. Check for prior error messages in the log.
+JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID.explanation=Validation of the supplied JSON web token did not succeed. The token or feature configuration might not be valid.
 JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID.useraction=Check the JWTSSO feature configuration. Check for prior error messages in the log. 
