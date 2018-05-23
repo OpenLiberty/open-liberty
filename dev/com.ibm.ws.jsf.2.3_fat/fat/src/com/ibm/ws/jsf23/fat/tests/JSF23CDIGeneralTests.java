@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -842,6 +843,7 @@ public class JSF23CDIGeneralTests {
      */
     @Mode(TestMode.FULL)
     @Test
+    @Ignore("Ignore until MYFACES-4229 is fixed in the open source.")
     public void testSpecIssue790Test1() throws Exception {
         WebClient webClient = new WebClient();
         // Use a synchronizing ajax controller to allow proper ajax updating
