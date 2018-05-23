@@ -392,9 +392,7 @@ public class Director extends AbstractDirector {
      */
     public void installFeatureNoResolve(String esaLocation, String toExtension, boolean acceptLicense) throws InstallException {
         fireProgressEvent(InstallProgressEvent.CHECK, 1, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
-        //ArrayList<InstallAsset> installAssets = new ArrayList<InstallAsset>();
         ArrayList<InstallAsset> singleFeatureInstall = new ArrayList<InstallAsset>();
-        //String feature = getResolveDirector().resolve(esaLocation, toExtension, product.getInstalledFeatures(), installAssets, 10, 40);
         InstallAsset esa = null;
         try {
             esa = new ESAAsset(new File(esaLocation), toExtension, false);
