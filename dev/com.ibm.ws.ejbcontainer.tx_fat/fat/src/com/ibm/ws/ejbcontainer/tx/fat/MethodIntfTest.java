@@ -21,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.ejbcontainer.tx.methodintf.web.MethodIntfServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -29,7 +30,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import suite.r80.base.ejb31misc.methodintf.MethodIntfServlet;
 
 /**
  * This test ensures that the new method-intf element values specified in the
@@ -48,8 +48,8 @@ public class MethodIntfTest {
     @BeforeClass
     public static void setUp() throws Exception {
         // Use ShrinkHelper to build the ears
-        JavaArchive MethodIntfEJB = ShrinkHelper.buildJavaArchive("MethodIntfEJB.jar", "suite.r80.base.ejb31misc.methodintf.ejb.");
-        WebArchive MethodIntfWeb = ShrinkHelper.buildDefaultApp("MethodIntfWeb.war", "suite.r80.base.ejb31misc.methodintf.");
+        JavaArchive MethodIntfEJB = ShrinkHelper.buildJavaArchive("MethodIntfEJB.jar", "com.ibm.ws.ejbcontainer.tx.methodintf.ejb.");
+        WebArchive MethodIntfWeb = ShrinkHelper.buildDefaultApp("MethodIntfWeb.war", "com.ibm.ws.ejbcontainer.tx.methodintf.web.");
         EnterpriseArchive MethodIntfTestApp = ShrinkWrap.create(EnterpriseArchive.class, "MethodIntfTest.ear");
         MethodIntfTestApp.addAsModule(MethodIntfEJB).addAsModule(MethodIntfWeb);
 

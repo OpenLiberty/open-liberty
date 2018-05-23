@@ -20,6 +20,8 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.ejbcontainer.tx.statlesmixsec.web.AsmDescSecRolesServlet;
+import com.ibm.ws.ejbcontainer.tx.statlesmixsec.web.AsmDescTranAttrServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -28,8 +30,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import suite.r70.base.ejb3session.sl.mix.web.AsmDescSecRolesServlet;
-import suite.r70.base.ejb3session.sl.mix.web.AsmDescTranAttrServlet;
 
 @RunWith(FATRunner.class)
 public class SecureTests {
@@ -45,8 +45,8 @@ public class SecureTests {
     @BeforeClass
     public static void setUp() throws Exception {
         // Use ShrinkHelper to build the ears
-        JavaArchive StatelessMixASMDescEJB = ShrinkHelper.buildJavaArchive("StatelessMixASMDescEJB.jar", "suite.r70.base.ejb3session.sl.mix.asmdesc.");
-        WebArchive StatelessMixSecWeb = ShrinkHelper.buildDefaultApp("StatelessMixSecWeb.war", "suite.r70.base.ejb3session.sl.mix.web.");
+        JavaArchive StatelessMixASMDescEJB = ShrinkHelper.buildJavaArchive("StatelessMixASMDescEJB.jar", "com.ibm.ws.ejbcontainer.tx.statlesmixsec.ejb.");
+        WebArchive StatelessMixSecWeb = ShrinkHelper.buildDefaultApp("StatelessMixSecWeb.war", "com.ibm.ws.ejbcontainer.tx.statlesmixsec.web.");
         EnterpriseArchive StatelessMixSecApp = ShrinkWrap.create(EnterpriseArchive.class, "StatelessMixSec.ear");
         StatelessMixSecApp.addAsModule(StatelessMixASMDescEJB).addAsModule(StatelessMixSecWeb);
 
