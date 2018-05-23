@@ -474,11 +474,17 @@ public class InstallKernelMap implements Map {
         Collection<List<RepositoryResource>> resolveResult = null;
         RepositoryResolver resolver = null;
         Collection<String> featuresResolved = new ArrayList<String>();
-
+        boolean isOpenLiberty = false;
         try {
             for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
                 productDefinitions.add(new ProductInfoProductDefinition(productInfo));
+
+                if (productInfo.getReplacedBy() == null && productInfo.getId().equals("io.openliberty")) {
+                    isOpenLiberty = true;
+                }
+
             }
+
             RepositoryConnectionList repoList = new RepositoryConnectionList();
             List<File> singleJsonRepos = (List<File>) data.get(SINGLE_JSON_FILE);
             for (File jsonRepo : singleJsonRepos) {
@@ -535,7 +541,7 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         } catch (RepositoryResolutionException e) {
             data.put(ACTION_RESULT, ERROR);
-            InstallException ie = ExceptionUtils.create(e, (Collection<String>) data.get(FEATURES_TO_RESOLVE), (File) data.get(RUNTIME_INSTALL_DIR), false);
+            InstallException ie = ExceptionUtils.create(e, (Collection<String>) data.get(FEATURES_TO_RESOLVE), (File) data.get(RUNTIME_INSTALL_DIR), false, isOpenLiberty);
             data.put(ACTION_ERROR_MESSAGE, ie.toString());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
         } catch (InstallException e) {

@@ -50,3 +50,11 @@ error.missing.servlet.useraction=Funkce servletu vy\u017eaduje konfiguraci v sou
 error.multiple.applications.not.allowed=CWWKC0255E: Aplikaci Spring Boot {0} nelze spustit, proto\u017ee aplikace {1} je ji\u017e aktivn\u00ed. Ve stejn\u00e9 konfiguraci serveru nelze konfigurovat v\u00edce aplikac\u00ed Spring Boot.
 error.multiple.applications.not.allowed.explanation=Konfigurace v\u00edce aplikac\u00ed Spring Boot ve stejn\u00e9 konfiguraci serveru nen\u00ed podporov\u00e1na.
 error.multiple.applications.not.allowed.useraction=Nakonfigurujte pouze jednu aplikaci Spring Boot na konfiguraci serveru.
+
+error.no.manifest.found=CWWKC0256E: Nebyl nalezen \u017e\u00e1dn\u00fd soubor META-INF/MANIFEST.MF pro aplikaci Spring Boot {0}.
+error.no.manifest.found.explanation=Aplikace Spring Boot mus\u00ed obsahovat soubor META-INF/MANIFEST.MF.
+error.no.manifest.found.useraction=Nakonfigurujte platnou aplikaci Spring Boot, kter\u00e1 obsahuje soubor META-INF/MANIFEST.MF, se serverem.
+
+error.no.spring.class.found=CWWKC0257E: Soubor META-INF/MANIFEST.MF aplikace Spring Boot mus\u00ed ur\u010dovat z\u00e1hlav\u00ed Start-Class.
+error.no.spring.class.found.explanation=Aplikace Spring Boot mus\u00ed obsahovat hlav\u00ed t\u0159\u00eddu ur\u010denou z\u00e1hlav\u00edm souboru typu manifest Start-Class.
+error.no.spring.class.found.useraction=Nakonfigurujte platnou aplikaci Spring Boot, kter\u00e1 obsahuje z\u00e1hlav\u00ed souboru typu manifest Start-Class, se serverem.

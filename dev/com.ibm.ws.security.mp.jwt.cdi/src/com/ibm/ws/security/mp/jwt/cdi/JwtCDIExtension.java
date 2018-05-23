@@ -56,7 +56,7 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<ClaimProducer> producer = bm.createAnnotatedType(ClaimProducer.class);
-        bbd.addAnnotatedType(producer);
+        bbd.addAnnotatedType(producer, ClaimProducer.class.getName() + ":" + getClass().getClassLoader().hashCode());
     }
 
     public void processInjectionTarget(@Observes ProcessInjectionTarget<?> pit) {

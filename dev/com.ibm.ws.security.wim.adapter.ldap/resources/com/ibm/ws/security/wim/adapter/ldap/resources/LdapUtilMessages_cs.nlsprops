@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Zopakujte operaci a zadejte jin\u00fd n\u00e1zev
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Operace z\u00e1pisu nejsou na sekund\u00e1rn\u00edm serveru LDAP {0} povoleny.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=V\u0161echny operace z\u00e1pisu (vytvo\u0159it, aktualizovat, odstranit) jsou povoleny pouze na prim\u00e1rn\u00edm serveru LDAP.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Zkontrolujte, zda je prim\u00e1rn\u00ed server LDAP spu\u0161t\u011bn\u00fd, a zopakujte operaci.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 nebyl sv\u00e1z\u00e1n s t\u00edmto registrem LDAP.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=Re\u017eim mapov\u00e1n\u00ed certifik\u00e1tu X.509 byl nastaven na CUSTOM (Vlastn\u00ed), ale k registru LDAP nebyl sv\u00e1z\u00e1n \u017e\u00e1dn\u00fd vlastn\u00ed mapova\u010d certifik\u00e1tu X.509. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Ujist\u011bte se, \u017ee atribut certificateMapperId v registru LDAP je nakonfigurov\u00e1na tak, aby ukazoval na platn\u00fd vlastn\u00ed mapova\u010d certifik\u00e1tu X.509.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolat v\u00fdjimku CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolat v\u00fdjimku CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Pokud byla v\u00fdjimka neo\u010dek\u00e1van\u00e1, zkontrolujte implementaci vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 a prove\u010fte nezbytn\u00e9 zm\u011bny.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolal v\u00fdjimku CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolal v\u00fdjimku CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Pokud byla v\u00fdjimka neo\u010dek\u00e1van\u00e1, zkontrolujte implementaci vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 a prove\u010fte nezbytn\u00e9 zm\u011bny.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vr\u00e1til pr\u00e1zdnou hodnotu nebo hodnotu null. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 mus\u00ed vr\u00e1tit nepr\u00e1zdnou hodnotu nebo nenulovou hodnotu nebo vyvolat jednu z pojmenovan\u00fdch v\u00fdjimek.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=Upravte implementaci vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 tak, aby nevracela pr\u00e1zdnou hodnotu nebo hodnotu null. Pokud nem\u016f\u017ee b\u00fdt platn\u00e1 hodnota vr\u00e1cena, mus\u00ed implementace vyvolat kontrolovanou v\u00fdjimku. 

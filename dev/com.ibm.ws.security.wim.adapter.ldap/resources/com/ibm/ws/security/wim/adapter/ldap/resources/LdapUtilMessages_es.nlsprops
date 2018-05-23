@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Vuelva a intentar la operaci\u00f3n y especifiqu
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Las operaciones de escritura no est\u00e1n permitidas en el servidor LDAP secundario {0}.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Todas las operaciones de escritura (crear, actualizar, suprimir) solo est\u00e1n permitidas en el servidor LDAP principal.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Aseg\u00farese de que el servidor principal se ha iniciado y vuelva a intentar la operaci\u00f3n.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: No se ha enlazado ning\u00fan correlacionador de certificado X.509 personalizado con este registro LDAP.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=La modalidad de correlaci\u00f3n de certificado X.509 se ha establecido en CUSTOM, pero no se ha enlazado ning\u00fan correlacionador de certificado X.509 personalizado con el registro LDAP. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Aseg\u00farese de que el atributo certificateMapperId del registro LDAP se haya configurado de modo que apunte a un correlacionador de certificado X.509 personalizado v\u00e1lido.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Si la excepci\u00f3n no se esperaba, revise la implementaci\u00f3n del correlacionador de certificado X.509 personalizado y realice los cambios pertinentes.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=El correlacionador de certificado X.509 personalizado ha emitido una excepci\u00f3n CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Si la excepci\u00f3n no se esperaba, revise la implementaci\u00f3n del correlacionador de certificado X.509 personalizado y realice los cambios pertinentes.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: El correlacionador de certificado X.509 personalizado ha devuelto un valor vac\u00edo o nulo. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=El correlacionador de certificado X.509 personalizado debe devolver un valor no vac\u00edo ni nulo o emitir una de las excepciones nombradas.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifique la implementaci\u00f3n del correlacionador de certificado X.509 personalizado para que no devuelva un valor vac\u00edo o nulo. Si no se puede devolver un valor v\u00e1lido, la implementaci\u00f3n debe emitir una excepci\u00f3n comprobada. 

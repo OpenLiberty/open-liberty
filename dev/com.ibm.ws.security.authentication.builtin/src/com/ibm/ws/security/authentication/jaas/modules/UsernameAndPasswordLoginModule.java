@@ -24,6 +24,7 @@ import javax.security.auth.spi.LoginModule;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationException;
@@ -43,7 +44,7 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ AuthenticationException.class, IllegalArgumentException.class })
+    @FFDCIgnore({ AuthenticationException.class, IllegalArgumentException.class, WSLoginFailedException.class })
     public boolean login() throws LoginException {
         if (isAlreadyProcessed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -88,6 +89,11 @@ public class UsernameAndPasswordLoginModule extends ServerCommonLoginModule impl
             throw e; // no-need to wrap
         } catch (IllegalArgumentException e) {
             // NO FFDC: This is normal when user and/or password are blank/null
+            throw new AuthenticationException(e.getLocalizedMessage(), e);
+        } catch (WSLoginFailedException e) {
+            // NO FFDC: This is normal when user and/or password are blank/null
+            throw new AuthenticationException(e.getLocalizedMessage(), e);
+        } catch (LoginException e) {
             throw new AuthenticationException(e.getLocalizedMessage(), e);
         } catch (Exception e) {
             // This is not normal: FFDC will be instrumented
