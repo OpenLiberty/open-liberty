@@ -121,7 +121,6 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
             ldapServer.stop();
         }
         myServer.stopServer("CWWKS0005E");
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before
@@ -245,9 +244,6 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
         httpclient.getConnectionManager().shutdown();
 
         myServer.setMarkToEndOfLog();
-        myServer.setServerConfigurationFile(XML_BASE_NAME);
-        myServer.removeInstalledAppForValidation(APP_NAME);
-        myServer.removeInstalledAppForValidation(APP_DB_NAME);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
