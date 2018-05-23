@@ -189,18 +189,18 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
 
     protected void updateDestination(HttpServletRequest request) {
 
-        String ad = destination.getEndpointInfo().getAddress();
-        String base = getBaseURL(request);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "EndpointInfo address = " + ad);
-            Tr.debug(tc, "EndpointInfo base URL = " + base);
-        }
+        synchronized (destination) {   //moved up for OLGH3669
+            String ad = destination.getEndpointInfo().getAddress();
+            String base = getBaseURL(request);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "EndpointInfo address = " + ad);
+                Tr.debug(tc, "EndpointInfo base URL = " + base);
+            }
 
-        if (ad != null && ad.startsWith(HTTP_PREFIX) && (ad.startsWith(HTTPS_PREFIX) == base.startsWith(HTTPS_PREFIX))) {
-            return;
-        }
-
-        synchronized (destination) {
+            if (ad != null && ad.startsWith(HTTP_PREFIX) && (ad.startsWith(HTTPS_PREFIX) == base.startsWith(HTTPS_PREFIX))) {
+                return;
+            }
+         
             ad = null;
             if (destination.getAddress() != null
                 && destination.getAddress().getAddress() != null) {
