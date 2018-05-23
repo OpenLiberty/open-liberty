@@ -389,13 +389,31 @@ public class SpringBootThinUtil {
                                                                                              "org.jboss.spec.javax.websocket:jboss-websocket-api_1.1_spec:jar:1.1.3.Final:compile",
                                                                                              "javax.servlet:javax.servlet-api:jar:3.1.0:compile",
                                                                                              "org.glassfish:javax.el:jar:3.0.0:compile");
+        private final static List<String> mvnSpringBoot20NettyStarterDeps = Arrays.asList(
+                                                                                          "org.springframework.boot:spring-boot-starter-reactor-netty:jar:2.0.1.RELEASE:compile",
+                                                                                          "io.projectreactor.ipc:reactor-netty:jar:0.7.6.RELEASE:compile",
+                                                                                          "io.netty:netty-codec-http:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-codec:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-handler:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-buffer:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-transport:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-resolver:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-handler-proxy:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-codec-socks:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-transport-native-epoll:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-common:jar:4.1.23.Final:compile",
+                                                                                          "io.netty:netty-transport-native-unix-common:jar:4.1.23.Final:compile",
+                                                                                          "io.projectreactor:reactor-core:jar:3.1.6.RELEASE:compile",
+                                                                                          "org.reactivestreams:reactive-streams:jar:1.0.2:compile");
 
         public static final String TOMCAT = "tomcat";
         public static final String JETTY = "jetty";
         public static final String UNDERTOW = "undertow";
         public static final String LIBERTY = "liberty";
+        public static final String NETTY = "netty";
 
         public static final String SPRING_BOOT_STARTER = "spring-boot-starter";
+        public static final String SPRING_BOOT_STARTER_REACTOR = "spring-boot-starter-reactor";
 
         public static Map<String, Set<String>> getStartersToDependentArtifactIdsMap() {
             return startersToDependentArtifactIdsMap;
@@ -412,11 +430,15 @@ public class SpringBootThinUtil {
             theMap.put(starterJarNamePrefix(JETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20JettyStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "1.5"), loadStarterMvnDeps(mvnSpringBoot15UndertowStarterDeps));
             theMap.put(starterJarNamePrefix(UNDERTOW, "2.0"), loadStarterMvnDeps(mvnSpringBoot20UndertowStarterDeps));
+            theMap.put(starterJarNamePrefix(NETTY, "2.0"), loadStarterMvnDeps(mvnSpringBoot20NettyStarterDeps));
             startersToDependentArtifactIdsMap = Collections.unmodifiableMap(theMap);
         }
 
         private static String starterJarNamePrefix(String embeddedContainer, String versionInfo) {
             // e.g. spring-boot-starter-jetty-2.0
+            if (NETTY.equals(embeddedContainer)) {
+                return SPRING_BOOT_STARTER_REACTOR + "-" + embeddedContainer + "-" + versionInfo;
+            }
             return SPRING_BOOT_STARTER + "-" + embeddedContainer + "-" + versionInfo;
         }
 
