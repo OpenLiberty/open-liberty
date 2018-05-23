@@ -89,7 +89,9 @@ public class OperationParser {
             if (StringUtils.isNotBlank(annotationContent.mediaType())) {
                 content.addMediaType(annotationContent.mediaType(), mediaType);
             } else {
-                AnnotationsUtils.applyTypes(classTypes, methodTypes, content, mediaType);
+                if (mediaType.getSchema() != null) {
+                    AnnotationsUtils.applyTypes(classTypes, methodTypes, content, mediaType);
+                }
             }
         }
         if (content.size() == 0) {
