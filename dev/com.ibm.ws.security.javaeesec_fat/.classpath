@@ -11,7 +11,9 @@
 	<classpathentry kind="src" path="test-applications/dbfatAuthAlias.war/src"/>
 	<classpathentry kind="src" path="test-applications/DatabaseAuthAliasBasicAuthServlet.war/src"/>
 	<classpathentry kind="src" path="test-applications/DatabaseAnnotatedBasicAuthServlet.war/src"/>
+	<classpathentry kind="src" path="test-applications/DatabaseAnnotatedDSServlet.war/src"/>
 	<classpathentry kind="src" path="test-applications/DatabaseIdstoreDeferred.war/src"/>
+	<classpathentry kind="src" path="test-applications/DatabaseIdstoreImmediate.war/src"/>
 	<classpathentry kind="src" path="test-applications/securityContextHamApp.war/src"/>
 	<classpathentry kind="src" path="test-applications/SecurityEJBinWAR.jar/src"/>
 	<classpathentry kind="src" path="test-applications/ejbinwarservlet.war/src"/>

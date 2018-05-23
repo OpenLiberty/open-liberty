@@ -48,7 +48,7 @@ public class BaseIdentityStore implements IdentityStore {
             Set<String> groups = new HashSet<String>();
             groups.add("group1");
             groups.add("group2");
-            result = new CredentialValidationResult(callerPrincipal, groups);
+            result = new CredentialValidationResult("BaseIdentityStore", callerPrincipal, null, expectedUser, groups);
         }
 
         logger.exiting(sourceClass, "validate", result);

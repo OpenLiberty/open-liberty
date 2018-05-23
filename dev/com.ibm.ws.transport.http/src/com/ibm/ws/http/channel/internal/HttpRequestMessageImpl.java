@@ -1938,7 +1938,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         }
 
         if ((((H2HttpInboundLinkWrap) link).muxLink == null) ||
-            (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings() == null)) {
+            (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings() == null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
             }
@@ -1954,7 +1954,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         // }
 
         // Don't send the push_promise frame if the client doesn't want it
-        if (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings().getEnablePush() != 1) {
+        if (((H2HttpInboundLinkWrap) link).muxLink.getRemoteConnectionSettings().getEnablePush() != 1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HTTPRequestMessageImpl.isPushSupported(): The client does not accept push_promise frames, push() was ignored.");
             }

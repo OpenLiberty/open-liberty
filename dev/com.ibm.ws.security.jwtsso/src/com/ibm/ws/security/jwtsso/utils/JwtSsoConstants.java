@@ -22,7 +22,7 @@ public class JwtSsoConstants {
 	public static final String CFG_KEY_SSODOMAINNAMES = "ssoDomainNames";
 	public static final String CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH = "setCookiePathToWebAppContextRoot";
 	public static final String CFG_KEY_INCLUDELTPACOOKIE = "includeLtpaCookie";
-	public static final String CFG_KEY_FALLBACKTOLTPA = "useLtpaIfJwtAbsent";
+	public static final String CFG_USE_LTPA_IF_JWT_ABSENT = "useLtpaIfJwtAbsent";
 	public static final String CFG_KEY_COOKIESECUREFLAG = "setCookieSecureFlag";
 
 	public static final String CFG_KEY_JWTBUILDERREF = "jwtBuilderRef";

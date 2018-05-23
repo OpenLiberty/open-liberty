@@ -76,6 +76,8 @@ javac.source: 1.7
 javac.target: 1.7
 javac.debug: true
 javac.encoding: UTF-8
+# Switch for opting out of the --release javac option introduced in JDK 9, which is useful for more tightly controlling the set of root modules
+javac.args.release: true
 -sources: false
 
 -pedantic: ${if;${driver;gradle};true;false}

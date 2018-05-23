@@ -205,3 +205,19 @@ ENTITY_ALREADY_EXIST.useraction=Pon\u00f3w operacj\u0119 i podaj inn\u0105 nazw\
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED=CWIML4547E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Operacje zapisu s\u0105 niedozwolone na dodatkowym serwerze LDAP {0}.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.explanation=Wszystkie operacje zapisu (tworzenia, aktualizacji i usuwania) s\u0105 dozwolone tylko na podstawowym serwerze LDAP.
 WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED.useraction=Upewnij si\u0119, \u017ce serwer podstawowy zosta\u0142 uruchomiony i pon\u00f3w operacj\u0119.
+
+LDAP_REGISTRY_MAPPER_NOT_BOUND=CWIML4500W: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 nie zosta\u0142 powi\u0105zany z tym rejestrem LDAP.
+LDAP_REGISTRY_MAPPER_NOT_BOUND.explanation=Tryb odwzorowania certyfikatu X.509 zosta\u0142 ustawiony na warto\u015b\u0107 CUSTOM, ale \u017caden niestandardowy program odwzorowuj\u0105cy certyfikat X.509 nie zosta\u0142 powi\u0105zany z rejestrem LDAP. 
+LDAP_REGISTRY_MAPPER_NOT_BOUND.useraction=Upewnij si\u0119, \u017ce atrybut certificateMapperId w rejestrze LDAP jest skonfigurowany w taki spos\u00f3b, aby wskazywa\u0142 poprawny niestandardowy program odwzorowuj\u0105cy certyfikat X.509.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWIML4502W: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapNotSupportedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Je\u015bli wyj\u0105tek by\u0142 nieoczekiwany, sprawd\u017a implementacj\u0119 niestandardowego programu odwzorowuj\u0105cego certyfikat X.509 i wprowad\u017a niezb\u0119dne zmiany.
+
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED=CWIML4503E: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zg\u0142osi\u0142 wyj\u0105tek CertificateMapFailedException.
+LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Je\u015bli wyj\u0105tek by\u0142 nieoczekiwany, sprawd\u017a implementacj\u0119 niestandardowego programu odwzorowuj\u0105cego certyfikat X.509 i wprowad\u017a niezb\u0119dne zmiany.
+
+LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zwr\u00f3ci\u0142 pust\u0105 warto\u015b\u0107 lub warto\u015b\u0107 NULL. 
+LDAP_REGISTRY_INVALID_MAPPING.explanation=Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 musi zwr\u00f3ci\u0107 warto\u015b\u0107 inn\u0105 ni\u017c pust\u0105 i inn\u0105 ni\u017c warto\u015b\u0107 NULL lub zg\u0142osi\u0107 jeden z nazwanych wyj\u0105tk\u00f3w.
+LDAP_REGISTRY_INVALID_MAPPING.useraction=Zmodyfikuj implementacj\u0119 niestandardowego programu odwzorowuj\u0105cego certyfikat X.509 w taki spos\u00f3b, aby nie zwraca\u0142a pustej warto\u015bci ani warto\u015bci NULL. Je\u015bli nie mo\u017cna zwr\u00f3ci\u0107 poprawnej warto\u015bci, implementacja musi zg\u0142osi\u0107 sprawdzony wyj\u0105tek. 

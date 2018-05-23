@@ -48,8 +48,7 @@ help.usage.options=\t{0} help [m\u0171veletn\u00e9v]
 #------------------------------\n at 72 chars -------------------------\n\#
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
-thin.desc=\tV\u00e9kony alkalmaz\u00e1s l\u00e9trehoz\u00e1sa a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 sz\u00e1m\u00e1ra.
-
+thin.desc=\tV\u00e9kony alkalmaz\u00e1s l\u00e9trehoz\u00e1sa a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 sz\u00e1m\u00e1ra. 
 #Note to translator the word "thin" should not be translated
 thin.usage.options=\t{0} thin --sourceAppPath=path [param\u00e9terek]
 

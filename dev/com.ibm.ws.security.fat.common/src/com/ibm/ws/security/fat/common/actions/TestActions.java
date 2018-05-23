@@ -22,6 +22,7 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
+import com.meterware.httpunit.Base64;
 
 public class TestActions {
 
@@ -51,6 +52,37 @@ public class TestActions {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
         }
     }
+    
+    /**
+     * Invoke the specified URL, adding a basic auth header first
+     */
+    public Page invokeUrlWithBasicAuth(String currentTest, WebClient wc, String url, String user, String password) throws Exception {
+        String thisMethod = "invokeUrlWithBasicAuth";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);
+            String encodedIdPw= Base64.encode(user + ":" + password);
+            request.setAdditionalHeader("Authorization", "Basic "+ encodedIdPw);
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+    
+    /**
+     * Invoke the specified URL, adding a bearer token header first.
+     */
+    public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token) throws Exception {
+        String thisMethod = "invokeUrlWithBearerToken";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);            
+            request.setAdditionalHeader("Authorization", "Bearer "+ token);
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+}
 
     /**
      * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
