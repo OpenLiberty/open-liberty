@@ -169,45 +169,6 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     }
 
     /**
-     * Convert a value to be understood by traditional WAS J2C,
-     * according to the specified rules.
-     *
-     * @param value value to convert
-     * @param defaultValue default to use if the value isn't supported
-     * @param tWAS_immediate value used by tWAS for immediate. Null if not supported.
-     * @param tWAS_infinite value used by tWAS for infinite or never time out. Null if not supported.
-     * @param propName name of the property (in case we need to raise an error).
-     * @param connectorSvc connector service
-     * @return configured value as understood by traditional WAS J2C code.
-     * @throws ResourceException if the value isn't supported and the ignore/warn/fail setting is configured to fail.
-     */
-    private static final int convert(int value, int defaultValue, Integer tWAS_immediate, Integer tWAS_infinite, String propName,
-                                     ConnectorService connectorSvc) throws ResourceException {
-        boolean supported = true;
-        if (value == 0)
-            if (tWAS_immediate == null) // immediate not supported
-                supported = false;
-            else
-                return tWAS_immediate;
-        else if (value < 0)
-            if (tWAS_infinite == null) // infinite not supported
-                supported = false;
-            else
-                return tWAS_infinite;
-
-        if (supported)
-            return value;
-        else {
-            ResourceException failure = connectorSvc.ignoreWarnOrFail(tc, null, ResourceException.class, "UNSUPPORTED_VALUE_J2CA8011",
-                                                                      value, propName, CONNECTION_MANAGER);
-            if (failure == null)
-                return defaultValue;
-            else
-                throw failure;
-        }
-    }
-
-    /**
      * Create and initialize the connection manager/pool configuration
      * based on the connection factory configuration.
      * Precondition: invoker must have the write lock for this connection manager service.
