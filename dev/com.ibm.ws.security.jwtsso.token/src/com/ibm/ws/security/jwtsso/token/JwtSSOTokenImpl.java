@@ -47,6 +47,7 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
  */
 @Component(service = JwtSSOTokenProxy.class, name = "JwtSSOTokenProxy", immediate = true, property = "service.vendor=IBM")
 public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
+
 	private static final TraceComponent tc = Tr.register(JwtSSOTokenImpl.class);
 
 	public static final String JSON_WEB_TOKEN_SSO_CONFIG = "jwtSsoConfig";
@@ -145,8 +146,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 				}
 				updateSubject(subject, ssotoken);
 			} else {
-				// TODO : nls
-				String msg = "jwtsso configuration is not valid";
+				String msg = Tr.formatMessage(tc, "JWTSSO_CONFIG_INVALID", new Object[] {});				
 				throw new WSLoginFailedException(msg);
 			}
 		}
@@ -355,9 +355,8 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	@Override
 	// @FFDCIgnore(Exception.class)
 	public Subject handleJwtSSOTokenValidation(Subject subject, String encodedjwt) throws WSLoginFailedException {
-		// TODO Auto-generated method stub
-		// TODO : nls
-		String msg = "jwtsso configuration is not valid or token is not valid";
+		// TODO Auto-generated method stub		
+        String msg = Tr.formatMessage(tc, "JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID", new Object[] {});		
 		Subject resultSub = null;
 
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenConsumerUtils();
@@ -539,5 +538,6 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 		}
 		return true;
 	}
+
 
 }

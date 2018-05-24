@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,12 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 package com.ibm.ws.security.jwtsso.token;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+/**
+ *
+ */
+public interface TraceConstants {
+    public final static String TRACE_GROUP = "JWTSSOTOKEN";
+    public final static String MESSAGE_BUNDLE = "com.ibm.ws.security.jwtsso.token.resources.JWTSSOTOKENMessages";
+}
