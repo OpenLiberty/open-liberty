@@ -255,7 +255,7 @@ public class ClassSourceImpl_MappedJar
 
                     String nextClassName = getClassNameFromResourceName(nextEntryName);
                     if ( isJava9SpecificClass(nextClassName) ) {
-                        Tr.debug(tc, MessageFormat.format("[ {0} ] Invalid class name [ {1} ]", 
+                        Tr.debug(tc, MessageFormat.format("[ {0} ] Unsupported class; skipping [ {1} ]", 
                                                           new Object[] { getHashText(), nextClassName }));
                         continue;
                     }

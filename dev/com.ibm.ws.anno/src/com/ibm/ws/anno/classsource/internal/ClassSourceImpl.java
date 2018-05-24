@@ -764,7 +764,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      */
     protected boolean isJava9SpecificClass(String name) {
 
-        if ( ( name.length() >= META_INF_LENGTH ) && name.regionMatches(true, 0, "META_INF", 0, META_INF_LENGTH) ) {
+        if ( ( name.length() >= META_INF_LENGTH ) && name.regionMatches(true, 0, "META-INF", 0, META_INF_LENGTH) ) {
             return true; // Starts with "META-INF" ignoring case
         }        
 
