@@ -16,6 +16,8 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.jmock.Expectations;
@@ -29,9 +31,12 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
+import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import test.common.SharedOutputManager;
@@ -46,6 +51,7 @@ public class TestActionsTest extends CommonTestClass {
     private final WebRequest request = mockery.mock(WebRequest.class);
     private final HtmlPage htmlPage = mockery.mock(HtmlPage.class);
     private final Page page = mockery.mock(Page.class);
+    private final Cookie cookie = mockery.mock(Cookie.class);
 
     private final String url = "http://localhost:8010";
     private final String username = "testuser";
@@ -119,33 +125,6 @@ public class TestActionsTest extends CommonTestClass {
 
     /**
      * Tests:
-     * - Do not provide a WebClient object
-     * - Invoke with a valid WebRequest
-     * Expects:
-     * - Response object should be returned
-     */
-    @Test
-    public void test_invokeUrl_withoutWebClient_withWebRequest() {
-        try {
-            printMethodNameExpectation();
-            printRequestPartsExpectation();
-            mockery.checking(new Expectations() {
-                {
-                    one(webClient).getPage(request);
-                    will(returnValue(page));
-                }
-            });
-            printResponsePartsExpectation();
-
-            Page result = actions.submitRequest(testName.getMethodName(), request);
-            assertEquals("Resulting page object did not point to expected object.", page, result);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Tests:
      * - URL string is null
      * Expects:
      * - Exception should be thrown saying the web request couldn't be created because the URL is malformed
@@ -199,6 +178,35 @@ public class TestActionsTest extends CommonTestClass {
     /**
      * Tests:
      * - URL string is a valid URL
+     * - Provided WebClient is null
+     * Expects:
+     * - New web client will be created for us
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrl_validUrl_nullWebClient() {
+        try {
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrl(testName.getMethodName(), null, url);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is a valid URL
      * Expects:
      * - Response object should be returned
      */
@@ -223,6 +231,207 @@ public class TestActionsTest extends CommonTestClass {
         }
     }
 
+    /************************************** invokeUrlWithCookie **************************************/
+
+    /**
+     * Tests:
+     * - Cookie is null
+     * Expects:
+     * - Exception should be thrown because of the null cookie
+     */
+    @Test
+    public void test_invokeUrlWithCookie_nullCookie() {
+        try {
+            printMethodNameExpectation();
+            try {
+                Page result = actions.invokeUrlWithCookie(testName.getMethodName(), url, null);
+                fail("Should have thrown an exception but got a page result: " + WebResponseUtils.getResponseText(result));
+            } catch (Exception e) {
+                verifyException(e, "error occurred invoking the URL.*null cookie");
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is not a valid URL
+     * Expects:
+     * - Exception should be thrown saying the web request couldn't be created because the URL is malformed
+     */
+    @Test
+    public void test_invokeUrlWithCookie_invalidUrl() {
+        try {
+            actions = new TestActions();
+            actions.loggingUtils = loggingUtils;
+
+            String url = "some invalid string";
+
+            printMethodNameExpectation();
+            try {
+                Page result = actions.invokeUrlWithCookie(testName.getMethodName(), url, cookie);
+                fail("Should have thrown an exception but got a page result: " + WebResponseUtils.getResponseText(result));
+            } catch (Exception e) {
+                verifyException(e, ".*error occurred invoking the URL.*MalformedURLException");
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is a valid URL
+     * - Cookie is valid
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithCookie_validUrl() {
+        try {
+            final String cookieName = "myCookie";
+            final String cookieValue = "cookieValue";
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(cookie).getName();
+                    will(returnValue(cookieName));
+                    one(cookie).getValue();
+                    will(returnValue(cookieValue));
+                    one(request).setAdditionalHeader("Cookie", cookieName + "=" + cookieValue);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithCookie(testName.getMethodName(), url, cookie);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** invokeUrlWithParameters **************************************/
+
+    /**
+     * Tests:
+     * - Parameters list is null
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParameters_nullParametersList() {
+        try {
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, url, null);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is not a valid URL
+     * Expects:
+     * - Exception should be thrown saying the web request couldn't be created because the URL is malformed
+     */
+    @Test
+    public void test_invokeUrlWithParameters_invalidUrl() {
+        try {
+            actions = new TestActions();
+            actions.loggingUtils = loggingUtils;
+
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            String url = "some invalid string";
+
+            printMethodNameExpectation();
+            try {
+                Page result = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, url, params);
+                fail("Should have thrown an exception but got a page result: " + WebResponseUtils.getResponseText(result));
+            } catch (Exception e) {
+                verifyException(e, ".*error occurred invoking the URL.*MalformedURLException");
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - URL string is a valid URL
+     * - Cookie is valid
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_invokeUrlWithParameters_withParams() {
+        try {
+            final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new NameValuePair("name", "value"));
+
+            printMethodNameExpectation();
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(request).setRequestParameters(params);
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, url, params);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** submitRequest **************************************/
+
+    /**
+     * Tests:
+     * - Do not provide a WebClient object
+     * - Invoke with a valid WebRequest
+     * Expects:
+     * - Response object should be returned
+     */
+    @Test
+    public void test_submitRequest_withoutWebClient_withWebRequest() {
+        try {
+            printMethodNameExpectation();
+            printRequestPartsExpectation();
+            mockery.checking(new Expectations() {
+                {
+                    one(webClient).getPage(request);
+                    will(returnValue(page));
+                }
+            });
+            printResponsePartsExpectation();
+
+            Page result = actions.submitRequest(testName.getMethodName(), request);
+            assertEquals("Resulting page object did not point to expected object.", page, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /**
      * Tests:
      * - WebRequest object is null
@@ -230,7 +439,7 @@ public class TestActionsTest extends CommonTestClass {
      * - Exception should be thrown saying the WebRequest object is null
      */
     @Test
-    public void test_invokeUrl_nullWebRequest() {
+    public void test_submitRequest_nullWebRequest() {
         try {
             WebClient wc = null;
             WebRequest request = null;
@@ -255,7 +464,7 @@ public class TestActionsTest extends CommonTestClass {
      * - TestActionException should be thrown saying an error occurred while invoking the URL
      */
     @Test
-    public void test_invokeUrl_nullWebClient_exceptionThrownGettingResponse() {
+    public void test_submitRequest_nullWebClient_exceptionThrownGettingResponse() {
         try {
             WebClient wc = null;
 
@@ -288,7 +497,7 @@ public class TestActionsTest extends CommonTestClass {
      * - Response object should be returned
      */
     @Test
-    public void test_invokeUrl_successful() {
+    public void test_submitRequest_successful() {
         try {
             final String testName = null;
 

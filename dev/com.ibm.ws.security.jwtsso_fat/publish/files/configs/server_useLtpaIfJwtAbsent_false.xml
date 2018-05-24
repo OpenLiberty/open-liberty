@@ -18,6 +18,8 @@
 
     <authentication cacheEnabled="false"/>
 
-    <webAppSecurity httpOnlyCookies="false" />
+    <jwtSso setCookieSecureFlag="false" useLtpaIfJwtAbsent="false" />
+
+    <mpJwt id="mpJwt_shortClockSkew" clockSkew="5s" issuer="ALL_ISSUERS" />
 
 </server>

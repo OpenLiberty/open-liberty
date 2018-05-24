@@ -18,6 +18,6 @@
 
     <authentication cacheEnabled="false"/>
 
-    <webAppSecurity httpOnlyCookies="false" />
+    <jwtSso cookieName="cookie name with white space" setCookieSecureFlag="false" />
 
 </server>

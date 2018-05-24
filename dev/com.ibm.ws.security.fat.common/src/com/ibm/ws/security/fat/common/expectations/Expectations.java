@@ -89,7 +89,7 @@ public class Expectations {
                 Log.info(thisClass, thisMethod, "Skip adding expected status code for action: " + exceptAction);
                 continue;
             }
-            addExpectation(Expectation.createResponseStatusExpectation(action, HttpServletResponse.SC_OK));
+            addExpectation(new ResponseStatusExpectation(action, HttpServletResponse.SC_OK));
         }
     }
 

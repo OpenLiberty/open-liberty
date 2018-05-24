@@ -193,7 +193,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
             exp.validate(content);
             fail("Should have thrown an error because the response object type was not an expected type, but did not.");
         } catch (Exception e) {
-            verifyException(e, Pattern.quote(FAILURE_MESSAGE) + ".+" + String.format(UnitTestUtils.ERR_UNKNOWN_RESPONSE_TYPE, Pattern.quote(content.getClass().getName())));
+            verifyException(e, String.format(UnitTestUtils.ERR_UNKNOWN_RESPONSE_TYPE, Pattern.quote(content.getClass().getName())));
         }
     }
 
@@ -215,7 +215,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
             exp.validate(content);
             fail("Should have thrown an exception because of an unknown expectation type but did not.");
         } catch (Exception e) {
-            verifyException(e, Pattern.quote(FAILURE_MESSAGE) + ".+" + String.format(UnitTestUtils.ERR_COMPARISON_TYPE_UNKNOWN, Pattern.quote(exp.getCheckType())));
+            verifyException(e, String.format(UnitTestUtils.ERR_COMPARISON_TYPE_UNKNOWN, Pattern.quote(exp.getCheckType())));
         }
     }
 
@@ -224,7 +224,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
             exp.validate(content);
             fail("Should have thrown an assertion error because the expected string was not found, but did not.");
         } catch (Exception e) {
-            verifyException(e, Pattern.quote(FAILURE_MESSAGE) + ".+" + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, exp.getValidationValue(), actualContentValue));
+            verifyException(e, String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, exp.getValidationValue(), actualContentValue));
         }
     }
 
@@ -233,7 +233,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
             exp.validate(content);
             fail("Should have thrown an assertion error because the string was found when it shouldn't have been, but did not.");
         } catch (Exception e) {
-            verifyException(e, Pattern.quote(FAILURE_MESSAGE) + ".+" + String.format(UnitTestUtils.ERR_STRING_FOUND, exp.getValidationValue(), actualContentValue));
+            verifyException(e, String.format(UnitTestUtils.ERR_STRING_FOUND, exp.getValidationValue(), actualContentValue));
         }
     }
 
@@ -242,7 +242,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
             exp.validate(content);
             fail("Should have thrown an assertion error because the expected regex was not found, but did not.");
         } catch (Exception e) {
-            verifyException(e, Pattern.quote(FAILURE_MESSAGE) + ".+" + String.format(UnitTestUtils.ERR_REGEX_NOT_FOUND, Pattern.quote(exp.getValidationValue()), actualContentValue));
+            verifyException(e, String.format(UnitTestUtils.ERR_REGEX_NOT_FOUND, Pattern.quote(exp.getValidationValue()), actualContentValue));
         }
     }
 
@@ -251,7 +251,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
             exp.validate(content);
             fail("Should have thrown an assertion error because the regex was found, but did not.");
         } catch (Exception e) {
-            verifyException(e, Pattern.quote(FAILURE_MESSAGE) + ".+" + String.format(UnitTestUtils.ERR_REGEX_FOUND, Pattern.quote(exp.getValidationValue()), actualContentValue));
+            verifyException(e, String.format(UnitTestUtils.ERR_REGEX_FOUND, Pattern.quote(exp.getValidationValue()), actualContentValue));
         }
     }
 

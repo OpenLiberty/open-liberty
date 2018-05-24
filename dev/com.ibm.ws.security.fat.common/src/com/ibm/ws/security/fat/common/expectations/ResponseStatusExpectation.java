@@ -17,8 +17,18 @@ public class ResponseStatusExpectation extends Expectation {
 
     protected static Class<?> thisClass = ResponseStatusExpectation.class;
 
+    public static final String DEFAULT_FAILURE_MSG = "Did not receive the expected status code [%s] during test action [%s].";
+
     public ResponseStatusExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_STATUS, checkType, searchFor, failureMsg);
+    }
+
+    public ResponseStatusExpectation(String testAction, int expectedStatus) {
+        this(testAction, expectedStatus, String.format(DEFAULT_FAILURE_MSG, Integer.toString(expectedStatus), testAction));
+    }
+
+    public ResponseStatusExpectation(String testAction, int expectedStatus, String failureMsg) {
+        super(testAction, Constants.RESPONSE_STATUS, Constants.STRING_EQUALS, Integer.toString(expectedStatus), failureMsg);
     }
 
     @Override
@@ -27,7 +37,7 @@ public class ResponseStatusExpectation extends Expectation {
             int responseStatus = getResponseStatus(contentToValidate);
             validationUtils.validateStringContent(this, Integer.toString(responseStatus));
         } catch (Throwable e) {
-            throw new Exception(failureMsg + " Failed to validate response status: " + e.getMessage());
+            throw new Exception("Failed to validate response status: " + e.getMessage());
         }
     }
 

@@ -18,6 +18,6 @@
 
     <authentication cacheEnabled="false"/>
 
-    <jwtSso  includeLtpaCookie="true" useLtpaIfJwtAbsent="true" jwtBuilderRef="bogus" setCookieSecureFlag="false"/>
+    <jwtSso cookieName="not;a, very;good=cookie;name" setCookieSecureFlag="false" />
 
 </server>

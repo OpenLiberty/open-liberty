@@ -61,7 +61,11 @@ public class CookieExpectation extends Expectation {
     private void validateCookieValue(Cookie cookie) throws Exception {
         setFailureMessageForCookieValue(validationKey, validationValue, webClient);
         String valueToValidate = (cookie == null) ? null : cookie.getValue();
-        validationUtils.validateStringContent(this, valueToValidate);
+        try {
+            validationUtils.validateStringContent(this, valueToValidate);
+        } catch (Throwable t) {
+            throw new Exception(failureMsg + " " + t);
+        }
     }
 
     private void setFailureMessageForCookieValue(String cookieName, String expectedValue, WebClient webClient) {
@@ -82,6 +86,11 @@ public class CookieExpectation extends Expectation {
         if (isHttpOnly != null) {
             assertEquals("HttpOnly flag for cookie [" + cookie.getName() + "] did not match the expected value.", isHttpOnly, cookie.isHttpOnly());
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" [ Secure: %b | HttpOnly %b ]", isSecure, isHttpOnly);
     }
 
 }

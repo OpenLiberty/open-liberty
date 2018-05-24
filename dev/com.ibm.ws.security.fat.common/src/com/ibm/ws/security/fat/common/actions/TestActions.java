@@ -87,15 +87,19 @@ public class TestActions {
 }
 
     /**
-     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     * Invokes the specified URL, including the specified cookie in the request, and returns the Page object that represents the
+     * response.
      */
     public Page invokeUrlWithCookie(String currentTest, String url, Cookie cookie) throws Exception {
         String thisMethod = "invokeUrlWithCookie";
         loggingUtils.printMethodName(thisMethod);
         try {
+            if (cookie == null) {
+                throw new Exception("Cannot invoke the URL because a null cookie was provided.");
+            }
             WebRequest request = createGetRequest(url);
             request.setAdditionalHeader("Cookie", cookie.getName() + "=" + cookie.getValue());
-            return submitRequest(currentTest, new WebClient(), request);
+            return submitRequest(currentTest, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
         }
@@ -109,7 +113,9 @@ public class TestActions {
         loggingUtils.printMethodName(thisMethod);
         try {
             WebRequest request = createGetRequest(url);
-            request.setRequestParameters(requestParams);
+            if (requestParams != null) {
+                request.setRequestParameters(requestParams);
+            }
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);

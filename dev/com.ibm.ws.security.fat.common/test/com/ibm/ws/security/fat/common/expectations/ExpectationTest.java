@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.expectations;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -141,40 +139,6 @@ public class ExpectationTest extends CommonExpectationTestClass {
             Expectation exp = Expectation.createResponseMissingValueExpectation(testAction, searchForVal, failureMsg);
 
             verifyExpectationValues(exp, testAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, null, searchForVal, failureMsg);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /************************************** createResponseStatusExpectation **************************************/
-
-    @Test
-    public void test_createResponseStatusExpectation_nullAction() {
-        try {
-            String testAction = null;
-            int statusCode = -12345;
-
-            Expectation exp = Expectation.createResponseStatusExpectation(testAction, statusCode);
-
-            String failureMsg = "Did not receive status code [" + statusCode + "] during test action [" + testAction + "].";
-            verifyExpectationValues(exp, testAction, Constants.RESPONSE_STATUS, Constants.STRING_EQUALS, null, Integer.toString(statusCode), failureMsg);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_createResponseStatusExpectation() {
-        try {
-            String testAction = "Some test action";
-            int statusCode = HttpServletResponse.SC_BAD_GATEWAY;
-
-            Expectation exp = Expectation.createResponseStatusExpectation(testAction, statusCode);
-
-            String failureMsg = "Did not receive status code [" + statusCode + "] during test action [" + testAction + "].";
-            verifyExpectationValues(exp, testAction, Constants.RESPONSE_STATUS, Constants.STRING_EQUALS, null, Integer.toString(statusCode), failureMsg);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

@@ -16,8 +16,9 @@
     <include location="${shared.config.dir}/formloginApp.xml" />
     <include location="../fatTestPorts.xml"/>
 
-    <jwtSso setCookieSecureFlag="false" useLtpaIfJwtAbsent="true" />
-
     <authentication cacheEnabled="false"/>
+
+    <!-- cookieName set to "MyCookie" in unicode -->
+    <jwtSso cookieName="&#x004D;&#x0079;&#x0043;&#x006F;&#x006F;&#x006B;&#x0069;&#x0065;" setCookieSecureFlag="false" />
 
 </server>
