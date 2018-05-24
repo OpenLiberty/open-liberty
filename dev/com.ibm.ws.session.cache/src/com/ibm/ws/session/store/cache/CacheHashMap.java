@@ -298,7 +298,7 @@ public class CacheHashMap extends BackedHashMap {
                     entry = null;
                 }
                 String id = entry == null ? null : entry.getKey();
-                ArrayList<?> value = entry.getValue();
+                ArrayList<?> value = id == null ? null : entry.getValue();
 
                 if (trace && tc.isDebugEnabled())
                     tcReturn(tcSessionMetaCache, "_iterator.next", id, value);
@@ -1087,7 +1087,7 @@ public class CacheHashMap extends BackedHashMap {
                 entry = null;
             }
             String id = entry == null ? null : entry.getKey();
-            ArrayList<?> value = entry.getValue();
+            ArrayList<?> value = id == null ? null : entry.getValue();
 
             if (trace && tc.isDebugEnabled())
                 tcReturn(tcSessionMetaCache, "_iterator.next", id, value);
