@@ -28,6 +28,7 @@ import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseTitleExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
@@ -286,7 +287,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Mode(TestMode.LITE)
     @Test
-    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException", "com.ibm.websphere.security.WSSecurityException" })
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException" })
     public void test_invalidBuilderRef_useLtpaIfJwtAbsentFalse() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_testbadbuilder.xml");
 
@@ -299,8 +300,8 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
         // things should have bombed and we should be back at the login page
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
-        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6201W_JWT_SSO_TOKEN_SERVICE_ERROR));
+        expectations.addExpectation(new ResponseTitleExpectation(currentAction, JwtFatConstants.STRING_CONTAINS, "A Form login authentication failure occurred", "Did not find the expected title for a failed form login."));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6008E_JWT_BUILDER_INVALID));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, currentAction, expectations);
@@ -380,8 +381,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      * Test the detection of the mpJwt server config element. Specify an extra element and try to authenticate.
      * We should get an error message about the extra element.
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException",
-                    "com.ibm.websphere.security.WSSecurityException" })
+    @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException" })
     @Mode(TestMode.LITE)
     @Test
     public void test_invalidConsumerRef() throws Exception {

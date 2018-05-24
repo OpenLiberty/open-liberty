@@ -25,6 +25,8 @@ public class MessageConstants extends Constants {
     public static final String CWWKS5508E_ERROR_CREATING_RESULT = "CWWKS5508E";
     public static final String CWWKS5519E_PRINCIPAL_MAPPING_MISSING_ATTR = "CWWKS5519E";
 
+    public static final String CWWKS6008E_JWT_BUILDER_INVALID = "CWWKS6008E";
+
     public static final String CWWKS6201W_JWT_SSO_TOKEN_SERVICE_ERROR = "CWWKS6201W";
     public static final String CWWKS6022E_JWT_ISSUER_NOT_TRUSTED = "CWWKS6022E";
     public static final String CWWKS6025E_JWT_TOKEN_EXPIRED = "CWWKS6025E";
