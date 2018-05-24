@@ -34,26 +34,27 @@ public class JwtFatActions extends TestActions {
      * Accesses the protected resource and logs in successfully, ensuring that a JWT SSO cookie is included in the result.
      */
     public Cookie logInAndObtainJwtCookie(String testName, WebClient webClient, String protectedUrl, String username, String password) throws Exception {
-        Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
-        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl, username));
-        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.LTPA_COOKIE_NAME));
-
-        return logInAndObtainJwtCookie(testName, webClient, protectedUrl, username, password, expectations);
+        return logInAndObtainJwtCookie(testName, webClient, protectedUrl, username, password, JwtFatConstants.DEFAULT_ISS_REGEX);
     }
 
     /**
      * Accesses the protected resource and logs in successfully, ensuring that a JWT SSO cookie is included in the result.
      */
-    private Cookie logInAndObtainJwtCookie(String testName, WebClient webClient, String protectedUrl, String username, String password,
-                                           Expectations expectations) throws Exception {
+    public Cookie logInAndObtainJwtCookie(String testName, WebClient webClient, String protectedUrl, String username, String password, String issuerRegex) throws Exception {
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl, username,
+                                                                                                          issuerRegex));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.LTPA_COOKIE_NAME));
+
         return logInAndObtainCookie(testName, webClient, protectedUrl, username, password, JwtFatConstants.JWT_COOKIE_NAME, expectations);
     }
 
     /**
      * Accesses the protected resource and logs in successfully, ensuring that an LTPA cookie is included in the result.
      */
-    public Cookie logInAndObtainLtpaCookie(String testName, WebClient webClient, String protectedUrl, String username, String password) throws Exception {
+    public Cookie logInAndObtainLtpaCookie(String testName, String protectedUrl, String username, String password) throws Exception {
+        WebClient webClient = new WebClient();
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
         expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithLtpaCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, protectedUrl,

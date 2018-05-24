@@ -44,6 +44,7 @@ public class WebResponseUtilsTest extends CommonTestClass {
     private final com.gargoylesoftware.htmlunit.html.HtmlPage htmlunitHtmlPage = mockery.mock(com.gargoylesoftware.htmlunit.html.HtmlPage.class);
     private final com.gargoylesoftware.htmlunit.TextPage htmlunitTextPage = mockery.mock(com.gargoylesoftware.htmlunit.TextPage.class);
     private final com.gargoylesoftware.htmlunit.xml.XmlPage htmlunitXmlPage = mockery.mock(com.gargoylesoftware.htmlunit.xml.XmlPage.class);
+    private final com.gargoylesoftware.htmlunit.UnexpectedPage htmlunitUnexpectedPage = mockery.mock(com.gargoylesoftware.htmlunit.UnexpectedPage.class);
     private final com.gargoylesoftware.htmlunit.WebClient htmlunitWebClient = mockery.mock(com.gargoylesoftware.htmlunit.WebClient.class);
     private final com.gargoylesoftware.htmlunit.CookieManager htmlunitCookieManager = mockery.mock(com.gargoylesoftware.htmlunit.CookieManager.class);
 
@@ -348,6 +349,58 @@ public class WebResponseUtilsTest extends CommonTestClass {
         }
     }
 
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * - Returned content is null
+     * Expects:
+     * - Result should be null
+     */
+    @Test
+    public void test_getResponseText_htmlunitUnexpectedPage_nullContent() {
+        try {
+            final String content = null;
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getWebResponse();
+                    will(returnValue(htmlunitWebResponse));
+                    one(htmlunitWebResponse).getContentAsString();
+                    will(returnValue(content));
+                }
+            });
+            String result = WebResponseUtils.getResponseText(htmlunitUnexpectedPage);
+            assertNull("Result should have been null but was [" + result + "].", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * - Returned content is not null
+     * Expects:
+     * - Result match the content
+     */
+    @Test
+    public void test_getResponseText_htmlunitUnexpectedPage_nonNullContent() {
+        try {
+            final String content = HELLO_WORLD;
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getWebResponse();
+                    will(returnValue(htmlunitWebResponse));
+                    one(htmlunitWebResponse).getContentAsString();
+                    will(returnValue(content));
+                }
+            });
+            String result = WebResponseUtils.getResponseText(htmlunitUnexpectedPage);
+            assertEquals("Result did not match expected value.", content, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** getResponseStatusCode **************************************/
 
     /**
@@ -511,6 +564,31 @@ public class WebResponseUtilsTest extends CommonTestClass {
         }
     }
 
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Result should match expected status code
+     */
+    @Test
+    public void test_getResponseStatusCode_htmlunitUnexpectedPage() {
+        try {
+            final int statusCode = 500;
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getWebResponse();
+                    will(returnValue(htmlunitWebResponse));
+                    one(htmlunitWebResponse).getStatusCode();
+                    will(returnValue(statusCode));
+                }
+            });
+            int result = WebResponseUtils.getResponseStatusCode(htmlunitUnexpectedPage);
+            assertEquals("Result did not match the expected status code.", statusCode, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** getResponseTitle **************************************/
 
     /**
@@ -648,6 +726,22 @@ public class WebResponseUtilsTest extends CommonTestClass {
         try {
             String result = WebResponseUtils.getResponseTitle(htmlunitXmlPage);
             assertEquals("Result did not match expected value.", htmlunitXmlPage.getClass().getName() + " has no title", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Result should be "UnexpectedPage has no title"
+     */
+    @Test
+    public void test_getResponseTitle_htmlunitUnexpectedPage() {
+        try {
+            String result = WebResponseUtils.getResponseTitle(htmlunitUnexpectedPage);
+            assertEquals("Result did not match expected value.", htmlunitUnexpectedPage.getClass().getName() + " has no title", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -802,6 +896,29 @@ public class WebResponseUtilsTest extends CommonTestClass {
                 }
             });
             String result = WebResponseUtils.getResponseUrl(htmlunitXmlPage);
+            assertEquals("Result did not match expected value.", URL_STRING, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Result should match the expected URL string
+     */
+    @Test
+    public void test_getResponseUrl_htmlunitUnexpectedPage() {
+        try {
+            final URL url = new URL(URL_STRING);
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getUrl();
+                    will(returnValue(url));
+                }
+            });
+            String result = WebResponseUtils.getResponseUrl(htmlunitUnexpectedPage);
             assertEquals("Result did not match expected value.", URL_STRING, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -988,6 +1105,31 @@ public class WebResponseUtilsTest extends CommonTestClass {
                 }
             });
             String result = WebResponseUtils.getResponseMessage(htmlunitXmlPage);
+            assertEquals("Result did not match expected value.", message, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Result should match the expected response string
+     */
+    @Test
+    public void test_getResponseMessage_htmlunitUnexpectedPage() {
+        try {
+            final String message = "This is the response message.";
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getWebResponse();
+                    will(returnValue(htmlunitWebResponse));
+                    one(htmlunitWebResponse).getStatusMessage();
+                    will(returnValue(message));
+                }
+            });
+            String result = WebResponseUtils.getResponseMessage(htmlunitUnexpectedPage);
             assertEquals("Result did not match expected value.", message, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1260,6 +1402,35 @@ public class WebResponseUtilsTest extends CommonTestClass {
         }
     }
 
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Result should be array containing the names of each header
+     */
+    @Test
+    public void test_getResponseHeaderNames_htmlunitUnexpectedPage() {
+        try {
+            final List<NameValuePair> headers = new ArrayList<NameValuePair>();
+            headers.add(new NameValuePair(HEADER_NAME_1, HEADER_VALUE_1));
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getWebResponse();
+                    will(returnValue(htmlunitWebResponse));
+                    one(htmlunitWebResponse).getResponseHeaders();
+                    will(returnValue(headers));
+                }
+            });
+            String[] result = WebResponseUtils.getResponseHeaderNames(htmlunitUnexpectedPage);
+            assertNotNull("Result should not have been null but was.", result);
+
+            String expectedResult = Arrays.toString(new String[] { HEADER_NAME_1 });
+            assertEquals("Result did not match the list of expected header names.", expectedResult, Arrays.toString(result));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** getResponseHeaderList **************************************/
 
     /**
@@ -1502,6 +1673,32 @@ public class WebResponseUtilsTest extends CommonTestClass {
                 }
             });
             List<NameValuePair> result = WebResponseUtils.getResponseHeaderList(htmlunitXmlPage);
+            assertEquals("Result did not match the expected list of headers.", headers, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Result should be array containing the names of each header
+     */
+    @Test
+    public void test_getResponseHeaderList_htmlunitUnexpectedPage() {
+        try {
+            final List<NameValuePair> headers = new ArrayList<NameValuePair>();
+            headers.add(new NameValuePair(HEADER_NAME_2, HEADER_VALUE_2));
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getWebResponse();
+                    will(returnValue(htmlunitWebResponse));
+                    one(htmlunitWebResponse).getResponseHeaders();
+                    will(returnValue(headers));
+                }
+            });
+            List<NameValuePair> result = WebResponseUtils.getResponseHeaderList(htmlunitUnexpectedPage);
             assertEquals("Result did not match the expected list of headers.", headers, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -1868,6 +2065,32 @@ public class WebResponseUtilsTest extends CommonTestClass {
         }
     }
 
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Result should match expected header value
+     */
+    @Test
+    public void test_getResponseHeaderField_htmlunitUnexpectedPage() {
+        try {
+            final String headerName = HEADER_NAME_1;
+            final String headerValue = HEADER_VALUE_1;
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).getWebResponse();
+                    will(returnValue(htmlunitWebResponse));
+                    one(htmlunitWebResponse).getResponseHeaderValue(headerName);
+                    will(returnValue(headerValue));
+                }
+            });
+            String result = WebResponseUtils.getResponseHeaderField(htmlunitUnexpectedPage, headerName);
+            assertEquals("Returned header value did not match expected value.", headerValue, result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /************************************** getResponseCookieNames **************************************/
 
     /**
@@ -1995,6 +2218,26 @@ public class WebResponseUtilsTest extends CommonTestClass {
                 fail("Should have thrown an exception but got result [" + result + "].");
             } catch (Exception e) {
                 verifyException(e, "not supported.+" + "com.gargoylesoftware.htmlunit.xml.XmlPage");
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * Expects:
+     * - Exception should be thrown
+     */
+    @Test
+    public void test_getResponseCookieNames_htmlunitUnexpectedPage() {
+        try {
+            try {
+                String[] result = WebResponseUtils.getResponseCookieNames(htmlunitUnexpectedPage);
+                fail("Should have thrown an exception but got result [" + result + "].");
+            } catch (Exception e) {
+                verifyException(e, "not supported.+" + "com.gargoylesoftware.htmlunit.UnexpectedPage");
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -2339,11 +2582,11 @@ public class WebResponseUtilsTest extends CommonTestClass {
         try {
             mockery.checking(new org.jmock.Expectations() {
                 {
-                    one(htmlunitTextPage).isHtmlPage();
+                    one(htmlunitXmlPage).isHtmlPage();
                     will(returnValue(false));
                 }
             });
-            boolean result = WebResponseUtils.getResponseIsHtml(htmlunitTextPage);
+            boolean result = WebResponseUtils.getResponseIsHtml(htmlunitXmlPage);
             assertFalse("Assertion did not match the expected value (false).", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -2367,6 +2610,52 @@ public class WebResponseUtilsTest extends CommonTestClass {
                 }
             });
             boolean result = WebResponseUtils.getResponseIsHtml(htmlunitXmlPage);
+            assertTrue("Assertion did not match the expected value (true).", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * - Object is mocked to return false
+     * Expects:
+     * - Result should match expected value
+     */
+    @Test
+    public void test_getResponseIsHtml_htmlunitUnexpectedPage_false() {
+        try {
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).isHtmlPage();
+                    will(returnValue(false));
+                }
+            });
+            boolean result = WebResponseUtils.getResponseIsHtml(htmlunitUnexpectedPage);
+            assertFalse("Assertion did not match the expected value (false).", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Argument: com.gargoylesoftware.htmlunit.UnexpectedPage
+     * - Object is mocked to return true
+     * Expects:
+     * - Result should match expected value
+     */
+    @Test
+    public void test_getResponseIsHtml_htmlunitUnexpectedPage_true() {
+        try {
+            mockery.checking(new org.jmock.Expectations() {
+                {
+                    one(htmlunitUnexpectedPage).isHtmlPage();
+                    will(returnValue(true));
+                }
+            });
+            boolean result = WebResponseUtils.getResponseIsHtml(htmlunitUnexpectedPage);
             assertTrue("Assertion did not match the expected value (true).", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
