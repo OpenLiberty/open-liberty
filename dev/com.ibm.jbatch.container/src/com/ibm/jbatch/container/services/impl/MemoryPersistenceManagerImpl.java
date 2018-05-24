@@ -306,7 +306,7 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     }
 
     @Override
-    public JobInstance updateJobInstanceWithInstanceState(long jobInstanceId, InstanceState state, Date lastUpdated) {
+    public JobInstanceEntity updateJobInstanceWithInstanceState(long jobInstanceId, InstanceState state, Date lastUpdated) {
         JobInstanceEntity jobInstance = data.jobInstanceData.get(jobInstanceId);
 
         try {
@@ -321,18 +321,18 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     }
 
     @Override
-    public JobInstance updateJobInstanceWithInstanceStateUponRestart(long jobInstanceId, InstanceState state, Date lastUpdated) {
+    public JobInstance updateJobInstanceOnRestart(long jobInstanceId, Date lastUpdated) {
         JobInstanceEntity jobInstance = data.jobInstanceData.get(jobInstanceId);
         if ((jobInstance.getInstanceState() == InstanceState.STOPPED) ||
             (jobInstance.getInstanceState() == InstanceState.FAILED)) {
 
             try {
-                verifyStateTransitionIsValid(jobInstance, state);
+                verifyStateTransitionIsValid(jobInstance, InstanceState.SUBMITTED);
             } catch (BatchIllegalJobStatusTransitionException e) {
                 throw new PersistenceException(e);
             }
 
-            jobInstance.setInstanceState(state);
+            jobInstance.setInstanceState(InstanceState.SUBMITTED);
             jobInstance.setBatchStatus(BatchStatus.STARTING);
             jobInstance.setLastUpdatedTime(lastUpdated);
         } else {
@@ -448,7 +448,7 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
         exec.getJobInstance().setLastUpdatedTime(endTime);
         // set the state to be the same value as the batchstatus
         // Note: we only want to do this is if the batchStatus is one of the "done" statuses.
-        if (FINAL_STATUS_SET.contains(finalBatchStatus)) {
+        if (isFinalBatchStatus(finalBatchStatus)) {
             InstanceState newInstanceState = InstanceState.valueOf(finalBatchStatus.toString());
             exec.getJobInstance().setInstanceState(newInstanceState);
         }

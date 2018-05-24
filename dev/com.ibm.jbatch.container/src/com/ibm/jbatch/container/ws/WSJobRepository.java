@@ -21,6 +21,7 @@ import javax.batch.operations.NoSuchJobExecutionException;
 import javax.batch.operations.NoSuchJobInstanceException;
 import javax.batch.runtime.BatchStatus;
 
+import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.services.IJPAQueryHelper;
 
@@ -156,6 +157,7 @@ public interface WSJobRepository {
      */
     public abstract WSJobInstance updateJobInstanceState(long instanceId, InstanceState state);
 
+    // DELETE ME
     /**
      * Update the instanceState of this job instance if state is currently STOPPED or FAILED
      *
@@ -163,6 +165,27 @@ public interface WSJobRepository {
      * @param state
      */
     public abstract WSJobInstance updateJobInstanceStateUponRestart(long instanceId, InstanceState state);
+
+    /**
+     * Update the instanceState to SUBMITTED for this job instance if state is currently STOPPED or FAILED
+     *
+     * @param instanceId
+     */
+    public abstract WSJobInstance updateJobInstanceStateOnRestart(long instanceId);
+
+    /**
+     * Update the instanceState to JMS_CONSUMED if it's a valid status transition
+     *
+     * @param instanceId
+     */
+    public abstract WSJobInstance updateJobInstanceStateOnConsumed(long instanceId) throws BatchIllegalJobStatusTransitionException;
+
+    /**
+     * Update the instanceState to JMS_QUEUED if it's a valid status transition
+     *
+     * @param instanceId
+     */
+    public abstract WSJobInstance updateJobInstanceStateOnQueued(long instanceId) throws BatchIllegalJobStatusTransitionException;
 
     /**
      * Update the instanceState and batch status of this job instance
