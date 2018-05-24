@@ -70,21 +70,23 @@ public class CookieProcessingTests extends CommonJwtFat {
      * @throws Exception
      */
     void doHappyPath() throws Exception {
-        expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
         wc = new WebClient();
-        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl); // get back the login page
-        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
 
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl));
-        expectations.addExpectation(new CookieExpectation(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, wc, JwtFatConstants.JWT_COOKIE_NAME, ".+", JwtFatConstants.NOT_SECURE, JwtFatConstants.HTTPONLY));
-        expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.JWT_COOKIE_NAME,
-                                                                                                defaultUser, JwtFatConstants.BASIC_REALM));
-        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl); // get back the login page
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectation(new CookieExpectation(currentAction, wc, JwtFatConstants.JWT_COOKIE_NAME, ".+", JwtFatConstants.NOT_SECURE, JwtFatConstants.HTTPONLY));
+        expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(currentAction, JwtFatConstants.JWT_COOKIE_NAME, defaultUser));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
 
         response = actions.doFormLogin(response, JwtFatConstants.TESTUSER, JwtFatConstants.TESTUSERPWD);
         // confirm protected resource was accessed
-        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+        validationUtils.validateResult(response, currentAction, expectations);
     }
 
     /**

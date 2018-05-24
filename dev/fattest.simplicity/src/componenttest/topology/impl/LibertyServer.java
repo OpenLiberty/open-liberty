@@ -3712,7 +3712,10 @@ public class LibertyServer implements LogMonitorClient {
 
     /**
      * Reconfigures the server to use the new configuration file provided (relative to the autoFVT test files directory), waits for the
-     * configuration update to be processed, and waits for all of the specified messages (if any).
+     * configuration update to be processed, and waits for all of the specified messages (if any). Note: The autoFVT test files directory
+     * is populated using the files in {@code <FAT-root>/publish/files/}, so the configuration file specified should be relative to that
+     * directory in the FAT project. For example, specifying {@code "configs/server_test1.xml"} as the config file will use the file
+     * located at {@code <FAT-root>/publish/files/configs/server_test1.xml}.
      */
     public void reconfigureServer(String newConfigFile, String... waitForMessages) throws Exception {
         Log.info(c, "reconfigureServer", "Reconfiguring server to use new config: " + newConfigFile);

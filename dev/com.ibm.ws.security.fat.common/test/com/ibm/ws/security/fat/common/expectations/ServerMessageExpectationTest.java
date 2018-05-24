@@ -58,6 +58,22 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
     /************************************** Constructors/getters **************************************/
 
     @Test
+    public void test_constructor_nullArgs_noFailureMsg() {
+        try {
+            String testAction = null;
+            String searchForVal = null;
+
+            ServerMessageExpectation exp = new ServerMessageExpectation(testAction, server, searchForVal);
+
+            String defaultExpectedMessage = String.format(ServerMessageExpectation.DEFAULT_FAILURE_MSG, searchForVal);
+            verifyExpectationValues(exp, testAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, null, searchForVal, defaultExpectedMessage);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_constructor_nullArgs() {
         try {
             String testAction = null;
@@ -66,7 +82,7 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
 
             ServerMessageExpectation exp = new ServerMessageExpectation(testAction, server, searchForVal, failureMsg);
 
-            verifyExpectationValues(exp, testAction, null, Constants.STRING_MATCHES, null, searchForVal, failureMsg);
+            verifyExpectationValues(exp, testAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, null, searchForVal, failureMsg);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -82,7 +98,7 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
 
             ServerMessageExpectation exp = new ServerMessageExpectation(testAction, server, searchForVal, failureMsg);
 
-            verifyExpectationValues(exp, testAction, null, Constants.STRING_MATCHES, null, searchForVal, failureMsg);
+            verifyExpectationValues(exp, testAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, null, searchForVal, failureMsg);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

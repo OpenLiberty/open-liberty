@@ -25,6 +25,9 @@ public class JwtFatConstants extends Constants {
 
     public static final String SIMPLE_SERVLET_PATH = "/formlogin/SimpleServlet";
 
+    public static final String USER_1 = "user1";
+    public static final String USER_1_PWD = "user1pwd";
+
     public static final String COMMON_CONFIG_DIR = "configs";
 
     public static final boolean SECURE = true;
