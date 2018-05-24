@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -46,7 +47,7 @@ public class OpenAPIServlet extends HttpServlet {
             String acceptHeader = "";
             acceptHeader = request.getHeader(Constants.ACCEPT_HEADER);
             String format = "yaml";
-            if (acceptHeader != null && acceptHeader.equals(Constants.CONTENT_TYPE_JSON)) {
+            if (acceptHeader != null && acceptHeader.equals(MediaType.APPLICATION_JSON)) {
                 format = "json";
             }
             String formatParam = request.getParameter("format");
@@ -58,7 +59,7 @@ public class OpenAPIServlet extends HttpServlet {
             if (format.equals("json")) {
                 String document = applicationProcessor.getOpenAPIDocument(request, DocType.JSON);
                 if (document != null) {
-                    response.setContentType(Constants.CONTENT_TYPE_JSON);
+                    response.setContentType(MediaType.APPLICATION_JSON);
                     Writer writer = response.getWriter();
                     writer.write(document);
                 } else {
@@ -70,6 +71,7 @@ public class OpenAPIServlet extends HttpServlet {
             } else {
                 String document = applicationProcessor.getOpenAPIDocument(request, DocType.YAML);
                 if (document != null) {
+                    response.setContentType(MediaType.TEXT_PLAIN);
                     Writer writer = response.getWriter();
                     writer.write(document);
                 } else {
