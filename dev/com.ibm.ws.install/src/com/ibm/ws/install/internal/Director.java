@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
+import java.util.zip.ZipException;
 
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
@@ -380,6 +381,32 @@ public class Director extends AbstractDirector {
         this.installAssets = new ArrayList<List<InstallAsset>>(1);
         this.installAssets.add(installAssets);
     }
+
+    /**
+     * Installs the feature found in the given esa location without resolving dependencies
+     *
+     * @param esaLocation location of esa
+     * @param toExtension location of a product extension
+     * @param acceptLicense if license is accepted
+     * @throws InstallException
+     */
+    public void installFeatureNoResolve(String esaLocation, String toExtension, boolean acceptLicense) throws InstallException {
+        fireProgressEvent(InstallProgressEvent.CHECK, 1, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
+        ArrayList<InstallAsset> singleFeatureInstall = new ArrayList<InstallAsset>();
+        InstallAsset esa = null;
+        try {
+            esa = new ESAAsset(new File(esaLocation), toExtension, false);
+        } catch (ZipException e) {
+            throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.download.esa", esaLocation, e.getMessage()),
+                                        InstallException.BAD_ARGUMENT);
+        } catch (IOException e) {
+            throw ExceptionUtils.create(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.download.esa", esaLocation, e.getMessage()),
+                                        InstallException.BAD_ARGUMENT);
+        }
+        singleFeatureInstall.add(esa);
+        this.installAssets = new ArrayList<List<InstallAsset>>(1);
+        this.installAssets.add(singleFeatureInstall);
+}
 
     /**
      * Installs the features found in the inputed featureIds collection
