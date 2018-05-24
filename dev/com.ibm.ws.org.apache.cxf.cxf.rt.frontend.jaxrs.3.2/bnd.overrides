@@ -17,7 +17,7 @@ Import-Package: \
   !org.apache.cxf.configuration.spring,\
   javax.tools;resolution:=optional,\
   javax.validation;resolution:=optional,\
-  com.ibm.json.java,\
+  com.ibm.json.java;resolution:=optional,\
   *
 
 exportVer=3.2.4

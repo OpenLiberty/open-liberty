@@ -254,7 +254,8 @@ public class ExceptionUtils {
      * @param defaultRepo
      * @return
      */
-    static InstallException create(RepositoryException e, Collection<String> featureNames, boolean installingAsset, RestRepositoryConnectionProxy proxy, boolean defaultRepo) {
+    static InstallException create(RepositoryException e, Collection<String> featureNames, boolean installingAsset, RestRepositoryConnectionProxy proxy,
+                                   boolean defaultRepo, boolean isOpenLiberty) {
         Throwable cause = e;
         Throwable rootCause = e;
 
@@ -271,9 +272,16 @@ public class ExceptionUtils {
                 return createByKey(InstallException.CONNECTION_FAILED, e, defaultRepo ? "ERROR_FAILED_TO_CONNECT_CAUSED_BY_CERT" : "ERROR_FAILED_TO_CONNECT_REPOS_CAUSED_BY_CERT");
 
             String featuresListStr = InstallUtils.getFeatureListOutput(featureNames);
-            InstallException ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES",
-                                                                                        featuresListStr),
-                                         e);
+            InstallException ie;
+            if (isOpenLiberty) {
+                ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY",
+                                                                           featuresListStr),
+                            e);
+            } else {
+                ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES",
+                                                                           featuresListStr),
+                            e);
+            }
             ie.setData(featuresListStr);
 
             return ie;
@@ -287,11 +295,13 @@ public class ExceptionUtils {
      *
      * @param e
      * @param assetNames
+     * @param edition
      * @param installDir
      * @param installingAsset
      * @return
      */
-    static InstallException create(RepositoryResolutionException e, Collection<String> assetNames, File installDir, boolean installingAsset) {
+    static InstallException create(RepositoryResolutionException e, Collection<String> assetNames, File installDir, boolean installingAsset,
+                                   boolean isOpenLiberty) {
         Collection<MissingRequirement> allRequirementsNotFound = e.getAllRequirementsResourcesNotFound();
         Collection<MissingRequirement> dependants = new ArrayList<MissingRequirement>(allRequirementsNotFound.size());
         for (MissingRequirement f : allRequirementsNotFound) {
@@ -401,9 +411,17 @@ public class ExceptionUtils {
             }
         }
 
-        InstallException ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES",
-                                                                                    InstallUtils.getFeatureListOutput(assetNames)),
-                                     e);
+        InstallException ie;
+        if (isOpenLiberty) {
+            ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY",
+                                                                       InstallUtils.getFeatureListOutput(assetNames)),
+                        e);
+        } else {
+            ie = create(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_FAILED_TO_RESOLVE_ASSETS" : "ERROR_FAILED_TO_RESOLVE_FEATURES",
+                                                                       InstallUtils.getFeatureListOutput(assetNames)),
+                        e);
+        }
+
         ie.setData(assetNames);
 
         return ie;
@@ -506,6 +524,7 @@ public class ExceptionUtils {
                     editions = new ArrayList<String>();
                     editions.add("Early Access");
                 }
+
                 Collections.sort(editions);
                 Map<String, String> productMap = new HashMap<String, String>();
                 applicableProducts.append(InstallUtils.NEWLINE);
@@ -522,13 +541,22 @@ public class ExceptionUtils {
                 applicableProducts.append(InstallUtils.NEWLINE);
                 //installing asset has invalid product version and/or edition
                 if (dependency == null || dependency.isEmpty()) {
-                    if (appliesToVersion.equals("")) //installing asset has invalid product edition only
-                        errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION",
-                                                                                new Object[] { feature, productName, edition, applicableProducts.toString(), productName,
-                                                                                               edition });
-                    else
+                    if (appliesToVersion.equals("")) { //installing asset has invalid product edition only
+
+                        if (((String) params[productEdition]).equalsIgnoreCase("Open_Web") && productName.equalsIgnoreCase("IBM WebSphere Application Server Liberty")) {
+                            errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE",
+                                                                                    new Object[] { feature });
+                        } else {
+
+                            errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION",
+                                                                                    new Object[] { feature, productName, edition, applicableProducts.toString(), productName,
+                                                                                                   edition });
+                        }
+
+                    } else {
                         errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION" : "ERROR_INVALID_PRODUCT_EDITION_VERSION",
                                                                                 new Object[] { feature, productName, edition, version, applicableProducts.toString() });
+                    }
                 } else
                     errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_DEPENDENT_INVALID_VERSION_EDITION" : "ERROR_DEPENDENT_INVALID_VERSION_EDITION",
                                                                             new Object[] { feature, dependency, productName, edition, version,

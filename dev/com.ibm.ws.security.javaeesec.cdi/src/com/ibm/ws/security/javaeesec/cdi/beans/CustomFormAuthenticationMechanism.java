@@ -58,7 +58,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
-        if (isJaspicSessionForMechanismsEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
+        if (isJaspicSessionEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
             httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
             return AuthenticationStatus.SUCCESS;
         }
@@ -95,9 +95,9 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return status;
     }
 
-    private boolean isJaspicSessionForMechanismsEnabled(HttpMessageContext httpMessageContext) {
+    private boolean isJaspicSessionEnabled(HttpMessageContext httpMessageContext) {
         WebAppSecurityConfig webAppSecurityConfig = (WebAppSecurityConfig) httpMessageContext.getRequest().getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
-        return webAppSecurityConfig.isJaspicSessionForMechanismsEnabled();
+        return webAppSecurityConfig.isJaspicSessionEnabled();
     }
 
     @Override
@@ -122,7 +122,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         if (status == AuthenticationStatus.SUCCESS) {
             Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
             messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
-            if (isJaspicSessionForMechanismsEnabled(httpMessageContext)) {
+            if (isJaspicSessionEnabled(httpMessageContext)) {
                 messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
                 setCacheKey(clientSubject);
             }

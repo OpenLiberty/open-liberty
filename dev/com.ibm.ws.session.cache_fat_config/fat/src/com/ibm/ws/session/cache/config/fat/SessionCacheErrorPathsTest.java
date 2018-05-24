@@ -36,6 +36,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.File;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -55,6 +56,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     private static final String SERVLET_NAME = "SessionCacheConfigTestServlet";
 
     private static ServerConfiguration savedConfig;
+    private static String hazelcastConfigFile = "hazelcast-localhost-only.xml";
 
     @Server("sessionCacheServer")
     public static LibertyServer server;
@@ -77,8 +79,14 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
 
-        String configLocation = new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        if (FATSuite.isMulticastDisabled()) {
+            Log.info(SessionCacheErrorPathsTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
+        String configLocation = new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         server.setJvmOptions(Arrays.asList("-Dhazelcast.config=" + configLocation,
+                                           "-Dhazelcast.config.file=" + hazelcastConfigFile,
                                            "-Dhazelcast.group.name=" + UUID.randomUUID()));
 
         savedConfig = server.getServerConfiguration().clone();
@@ -136,7 +144,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before
      * (in absence of sessionCache-1.0 feature) is not.
      */
-    @AllowedFFDC("java.net.MalformedURLException")
     @Test
     public void testAddFeature() throws Exception {
         // Start the server with sessionCache-1.0 enabled
@@ -184,9 +191,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Start the server with an invalid Hazelcast uri configured on httpSessionCache.
      * Verify that after correcting the uri, session data is persisted.
      */
-    @AllowedFFDC(value = { "javax.cache.CacheException", // for invalid uri
-                           "java.net.MalformedURLException" // TODO possible bug
-    })
+    @AllowedFFDC(value = { "javax.cache.CacheException" }) // for invalid uri
     @Test
     public void testInvalidURI() throws Exception {
         // Start the server with invalid httpSessionCache uri
@@ -201,7 +206,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("testSessionCacheNotAvailable", session);
 
             // Correct the URI
-            String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+            String validHazelcastURI = "file:" + new java.io.File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
             config.getHttpSessionCaches().get(0).setUri(validHazelcastURI);
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
@@ -229,7 +234,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         } finally {
             server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context java.lang.RuntimeException: Internal Server Error
                               "SESN0307E", // An exception occurred when trying to initialize the cache. Exception is javax.cache.CacheException: Error opening URI
-                              "SRVE0297E.*NullPointerException" // TODO fails when WebApp.destroy/SessionContext.stop invoked after deactivate
+                              "SRVE0297E.*NullPointerException" // We get this if the serialization service is unavailable during the post-servlet processing due to the web app being taken down
             );
         }
     }
@@ -238,9 +243,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Configure httpSessionCache pointing at a library that lacks a valid JCache provider. Access a session before and after,
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not.
      */
-    @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
-                           "java.net.MalformedURLException" // TODO possible bug
-    })
+    @AllowedFFDC(value = { "javax.cache.CacheException" }) // expected on error path: No CachingProviders have been configured
     @Test
     public void testLibraryWithoutJCacheProvider() throws Exception {
         // Start the server with libraryRef missing
@@ -273,6 +276,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             run("invalidateSession", session);
         } finally {
             server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context java.lang.RuntimeException: Internal Server Error
+                              "SESN0309E", // The libraryWithoutJCacheProvider session cache library is empty.
                               "SESN0307E"); // An exception occurred when trying to initialize the cache. Exception is: javax.cache.CacheException: No CachingProviders have been configured
         }
     }
@@ -282,40 +286,40 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before is not
      * (the OSGi service backing httpSessionCache config will be unable to activate in the absence of libraryRef).
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testMissingLibraryRef() throws Exception {
-        // Start the server with libraryRef missing
-        ServerConfiguration config = savedConfig.clone();
-        config.getHttpSessionCaches().get(0).setLibraryRef(null);
-        server.updateServerConfiguration(config);
-        server.startServer(testName.getMethodName() + ".log");
+        try {
+            // Start the server with libraryRef missing
+            LibertyServer.setValidateApps(false); //With a bad config, the sessionCacheConfigApp won't start.
+            ServerConfiguration config = savedConfig.clone();
+            config.getHttpSessionCaches().get(0).setLibraryRef(null);
+            server.updateServerConfiguration(config);
+            server.startServer(testName.getMethodName() + ".log");
 
-        // Session manager should warn user that sessions will be stored in memory
-        assertEquals(1, server.findStringsInLogs("SESN8501I").size());
+            // RuntimeUpdateListenerImpl should display an error of invalid or missing httpSessionCache configuration.
+            assertEquals(1, server.findStringsInLogs("SESN0308E").size());
 
-        List<String> session = new ArrayList<>();
-        run("testSetAttribute&attribute=testMissingLibraryRef1&value=MLF1", session);
+            List<String> session = new ArrayList<>();
 
-        // Add the libraryRef
-        server.setMarkToEndOfLog();
-        server.updateServerConfiguration(savedConfig);
-        server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+            // Add the libraryRef
+            server.setMarkToEndOfLog();
+            server.updateServerConfiguration(savedConfig);
+            server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
-        run("testSetAttribute&attribute=testMissingLibraryRef2&value=MLF2", session);
+            run("testSetAttribute&attribute=testMissingLibraryRef2&value=MLF2", session);
 
-        // second value should be written to the cache
-        run("testCacheContains&attribute=testMissingLibraryRef2&value=MLF2", session);
+            // MLF2 value should be written to the cache
+            run("testCacheContains&attribute=testMissingLibraryRef2&value=MLF2", session);
 
-        // first value should not be written to the cache
-        run("testCacheContains&attribute=testMissingLibraryRef1&value=null", session);
-
-        run("invalidateSession", session);
+            run("invalidateSession", session);
+        } finally {
+            if (server.isStarted())
+                server.stopServer("SESN0308E"); // An invalid or missing httpSessionCache configuration was detected.
+            LibertyServer.setValidateApps(true);
+        }
     }
 
-    @AllowedFFDC(value = { "javax.cache.CacheException", // expected on error path: No CachingProviders have been configured
-                           "java.net.MalformedURLException" // TODO possible bug
-    })
+    @AllowedFFDC(value = { "javax.cache.CacheException" }) // expected on error path: No CachingProviders have been configured
     @Test
     public void testModifyFileset() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
@@ -344,14 +348,13 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         run("testSetAttribute&attribute=testModifyFileset&value=1", session);
         run("testCacheContains&attribute=testModifyFileset&value=1", session);
 
-        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException", "SESN0307E");
+        server.stopServer("CWWKL0012W.*bogus", "SRVE8059E", "CWWKE0701E.*CacheException", "SESN0307E", "SESN0309E");
     }
 
     /**
      * Capture a dump of the server without monitoring enabled. This means the JCache MXBeans will be unavailable
      * and so cache statistics will not be included in the dump output.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testServerDumpWithMonitoring() throws Exception {
         ServerConfiguration config = savedConfig.clone();
@@ -424,7 +427,6 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * Capture a dump of the server with monitoring enabled. This means the JCache MXBeans will be available
      * and should have cache statistics included in the dump output.
      */
-    @AllowedFFDC("java.net.MalformedURLException") // TODO possible bug
     @Test
     public void testServerDumpWithoutMonitoring() throws Exception {
         server.startServer(testName.getMethodName() + ".log");

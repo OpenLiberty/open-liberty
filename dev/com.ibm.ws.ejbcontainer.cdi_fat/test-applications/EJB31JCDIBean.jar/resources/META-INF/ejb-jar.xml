@@ -12,7 +12,7 @@
         <resource-env-ref-name>BeanManager</resource-env-ref-name>
         <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
         <injection-target>
-          <injection-target-class>suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerStatelessXMLBean</injection-target-class>
+          <injection-target-class>com.ibm.ws.ejbcontainer.cdi.jcdi.ejb.BeanManagerStatelessXMLBean</injection-target-class>
           <injection-target-name>ivBeanManager</injection-target-name>
         </injection-target>
       </resource-env-ref>
@@ -20,13 +20,13 @@
 
     <session>
       <ejb-name>SimpleStatefulTran</ejb-name>
-      <ejb-class>suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulBean</ejb-class>
+      <ejb-class>com.ibm.ws.ejbcontainer.cdi.jcdi.ejb.SimpleStatefulBean</ejb-class>
       <env-entry>
         <env-entry-name>EJBName</env-entry-name>
         <env-entry-type>java.lang.String</env-entry-type>
         <env-entry-value>SimpleStatefulTran</env-entry-value>
         <injection-target>
-          <injection-target-class>suite.r80.base.ejb31misc.jcdi.ejb.SimpleStatefulBean</injection-target-class>
+          <injection-target-class>com.ibm.ws.ejbcontainer.cdi.jcdi.ejb.SimpleStatefulBean</injection-target-class>
           <injection-target-name>ivEJBName</injection-target-name>
         </injection-target>
       </env-entry>

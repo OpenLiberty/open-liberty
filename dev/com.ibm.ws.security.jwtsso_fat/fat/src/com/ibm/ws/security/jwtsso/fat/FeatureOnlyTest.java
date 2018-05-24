@@ -21,6 +21,7 @@ import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 
 import componenttest.annotation.Server;
@@ -38,7 +39,7 @@ public class FeatureOnlyTest extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private TestActions actions = new TestActions();
+    private JwtFatActions actions = new JwtFatActions();
     private TestValidationUtils validationUtils = new TestValidationUtils();
     private WebClient webClient = new WebClient();
 
@@ -70,21 +71,25 @@ public class FeatureOnlyTest extends CommonJwtFat {
     public void test_simpleLogin_featureEnabled() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
 
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
-        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, webClient, JwtFatConstants.JWT_COOKIE_NAME));
-        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
 
         Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
-        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+        validationUtils.validateResult(response, currentAction, expectations);
 
-        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, protectedUrl,
-                                                                                                          defaultUser));
-        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
-        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.LTPA_COOKIE_NAME));
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
-        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+        validationUtils.validateResult(response, currentAction, expectations);
     }
 
     /**
@@ -101,21 +106,23 @@ public class FeatureOnlyTest extends CommonJwtFat {
     public void test_simpleLogin_featureNotEnabled() throws Exception {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
-        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, webClient, JwtFatConstants.JWT_COOKIE_NAME));
-        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
 
         Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
-        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+        validationUtils.validateResult(response, currentAction, expectations);
 
-        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithLtpaCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, webClient, protectedUrl,
-                                                                                                           defaultUser));
-        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, webClient, JwtFatConstants.JWT_COOKIE_NAME));
-        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.JWT_COOKIE_NAME));
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithLtpaCookie(currentAction, webClient, protectedUrl, defaultUser));
+        expectations.addExpectations(CommonExpectations.ltpaCookieExists(currentAction, webClient));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.JWT_COOKIE_NAME));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
-        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+        validationUtils.validateResult(response, currentAction, expectations);
     }
 
 }

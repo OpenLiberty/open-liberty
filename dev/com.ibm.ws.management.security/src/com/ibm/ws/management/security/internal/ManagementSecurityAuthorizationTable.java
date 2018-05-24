@@ -134,8 +134,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         if (ManagementSecurityConstants.ADMIN_RESOURCE_NAME.equals(resName)) {
             if (specialSubject.equals(AuthorizationTableService.ALL_AUTHENTICATED_USERS)) {
                 return ALL_AUTHENTICATED_USERS_ROLESET;
-            }
-            else {
+            } else {
                 return RoleSet.EMPTY_ROLESET;
             }
         } else {
@@ -202,6 +201,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 }
                 assignedRoles.add(roleName);
             }
+
             for (String group : role.getGroups()) {
                 Set<String> assignedRoles = groupToRoleName.get(group);
                 if (assignedRoles == null) {
@@ -210,19 +210,22 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 }
                 assignedRoles.add(roleName);
             }
+
         }
 
         for (Map.Entry<String, Set<String>> entry : userToRoleName.entrySet()) {
             userToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
         }
+
         for (Map.Entry<String, Set<String>> entry : groupToRoleName.entrySet()) {
             groupToRoles.put(entry.getKey(), new RoleSet(entry.getValue()));
         }
+
     }
 
     /**
      * Retrieve the roles, if any, for the given accessId.
-     * 
+     *
      * @param accessId
      * @return a non-null RoleSet
      */
@@ -244,11 +247,11 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
      * update the accessId-to-roles mapping with the result. If the accessId was
      * not found, an empty list is added to the accessId-to-role map. Otherwise,
      * the list contains the set of roles mapped to the accessId.
-     * 
+     *
      * @param accessid the access id of the entity
      * @param resName the name of the application, this is the key used when
      *            updating the accessId-to-roles map
-     * 
+     *
      * @return the updated accessId-to-roles map
      */
     private RoleSet findRolesForAccessId(String accessId) {
@@ -258,19 +261,26 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         }
 
         if (AccessIdUtil.isUserAccessId(accessId)) {
+            // An user can be configured as user or an user-access-Id
+            // Ex: bob or user:realm/bob
             for (String user : userToRoles.keySet()) {
                 String userAccessId = userToAccessId.get(user);
                 if (userAccessId == null) {
-                    userAccessId = getUserAccessId(user);
-                    if (userAccessId == null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Unable to determine accessId of user " + user);
+                    if (AccessIdUtil.isUserAccessId(user)) {
+                        userAccessId = user;
+                    } else {
+                        // user is not accessId format, so we have to look up the user registry.
+                        userAccessId = getUserAccessId(user);
+                        if (userAccessId == null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Unable to determine accessId of user " + user);
+                            }
+                            // We could not determine the access ID here, skip
+                            // For all unknown IDs we try to re-compute each time
+                            // we see it. This is probably the right thing to do
+                            // as the user could add that entry in the future.
+                            continue;
                         }
-                        // We could not determine the access ID here, skip
-                        // For all unknown IDs we try to re-compute each time
-                        // we see it. This is probably the right thing to do
-                        // as the user could add that entry in the future.
-                        continue;
                     }
                     userToAccessId.put(user, userAccessId);
                 }
@@ -282,19 +292,27 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
                 }
             }
         } else if (AccessIdUtil.isGroupAccessId(accessId)) {
+            // A group can be configured as a group or group-access-id
+            // Ex: group1 or group1:realm/group1
             for (String group : groupToRoles.keySet()) {
                 String groupAccessId = groupToAccessId.get(group);
                 if (groupAccessId == null) {
-                    groupAccessId = getGroupAccessId(group);
-                    if (groupAccessId == null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Unable to determine accessId of group " + group);
+
+                    if (AccessIdUtil.isGroupAccessId(group)) {
+                        groupAccessId = group;
+                    } else {
+                        // group is not accessId format, so we have to look up the user registry.
+                        groupAccessId = getGroupAccessId(group);
+                        if (groupAccessId == null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Unable to determine accessId of group " + group);
+                            }
+                            // We could not determine the access ID here, skip
+                            // For all unknown IDs we try to re-compute each time
+                            // we see it. This is probably the right thing to do
+                            // as the user could add that entry in the future.
+                            continue;
                         }
-                        // We could not determine the access ID here, skip
-                        // For all unknown IDs we try to re-compute each time
-                        // we see it. This is probably the right thing to do
-                        // as the user could add that entry in the future.
-                        continue;
                     }
                     groupToAccessId.put(group, groupAccessId);
                 }
@@ -321,7 +339,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
 
     /**
      * Get the access id for a user by performing a looking up in the user registry.
-     * 
+     *
      * @param userName the user for which to create an access id
      * @return the access id of the userName specified,
      *         otherwise null when a registry error occurs or the entry is not found
@@ -351,7 +369,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
 
     /**
      * Get the access id for a group by performing a looking up in the user registry.
-     * 
+     *
      * @param groupName the user for which to create an access id
      * @return the access id of the groupName specified,
      *         otherwise null when a registry error occurs or the entry is not found
@@ -405,7 +423,7 @@ public class ManagementSecurityAuthorizationTable implements AuthorizationTableS
         return match;
     }
 
-    // in order to decouple the dependency to com.ibm.ws.security.authorization.builtin bundle, the getIgnoreCase method 
+    // in order to decouple the dependency to com.ibm.ws.security.authorization.builtin bundle, the getIgnoreCase method
     // and some other methods are copied from com.ibm.ws.security.authorization.builtin.BaseAuthorizationTableService class.
     protected boolean getIgnoreCase() {
         boolean value = false;

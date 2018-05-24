@@ -42,6 +42,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MissingServletTests15.class,
                 MissingServletTests20.class,
                 MissingSslFeatureTests.class,
+                MissingWebsocketFeatureTests15.class,
                 MultipleApplicationsNotSupported.class,
                 NeedSpringBoot15FeatureTests.class,
                 NeedSpringBoot20FeatureTests.class,
@@ -51,8 +52,11 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 WebAnnotationTests.class,
                 ExtractedAppTests.class,
                 WebSocketTests15.class,
+                MimeMapping15.class,
+                MimeMapping20.class,
                 ErrorPage15Test.class,
-                ErrorPage20Test.class
+                ErrorPage20Test.class,
+                WebFluxApplicationNotSupportedTest.class
 })
 
 public class FATSuite {

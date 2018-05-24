@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.cache.Cache;
 import javax.cache.Cache.Entry;
+import javax.cache.CacheException;
 import javax.cache.CacheManager;
 import javax.cache.Caching;
 import javax.cache.configuration.CompleteConfiguration;
@@ -197,6 +198,11 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
             if (trace && tc.isDebugEnabled())
                 CacheHashMap.tcReturn(tcCachingProvider, "isSupported", supportsStoreByReference);
+        } catch (CacheException x) {
+            if (library.getFiles().isEmpty()) {
+                Tr.error(tc, "ERROR_CONFIG_EMPTY_LIBRARY", library.id(), Tr.formatMessage(tc, "SESSION_CACHE_CONFIG_MESSAGE", RuntimeUpdateListenerImpl.sampleConfig));
+            }
+            throw x;
         } catch (Error | RuntimeException x) {
             // deactivate will not be invoked if activate fails, so ensure CachingProvider is closed on error paths
             if (cachingProvider != null) {

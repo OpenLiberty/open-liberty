@@ -18,66 +18,91 @@ import com.ibm.ws.app.manager.springboot.container.ApplicationError;
 import com.ibm.ws.app.manager.springboot.container.ApplicationError.Type;
 
 public class FeatureAuditor implements EnvironmentPostProcessor {
-	@Override
-	public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
-		/*
-		 * Throw an Application error if the wrong version of spring boot feature is
-		 * enabled
-		 */
-		try {
-			Class.forName("org.springframework.boot.context.embedded.EmbeddedServletContainerFactory");
-			Class.forName(
-					"com.ibm.ws.springboot.support.web.server.version20.container.LibertyServletContainerConfiguration");
-			checkSpringBootVersion15();
-		} catch (ClassNotFoundException e) {
+    @Override
+    public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
 
-		}
+        /* Throw an Application error when Webflux application is deployed */
+        try {
+            Class.forName("org.springframework.web.reactive.config.EnableWebFlux");
+            throw new ApplicationError(Type.WEBFLUX_NOT_SUPPORTED);
+        } catch (ClassNotFoundException e) {
 
-		try {
-			Class.forName("org.springframework.boot.web.servlet.server.ServletWebServerFactory");
-			Class.forName(
-					"com.ibm.ws.springboot.support.web.server.version15.container.LibertyServletContainerConfiguration");
-			checkSpringBootVersion20();
-		} catch (ClassNotFoundException e) {
+        }
 
-		}
+        /*
+         * Throw an Application error if the wrong version of spring boot feature is
+         * enabled
+         */
+        try {
+            Class.forName("org.springframework.boot.context.embedded.EmbeddedServletContainerFactory");
+            Class.forName(
+                          "com.ibm.ws.springboot.support.web.server.version20.container.LibertyServletContainerConfiguration");
+            checkSpringBootVersion15();
+        } catch (ClassNotFoundException e) {
 
-		/* Throw an application error if servlet feature is not enabled */
-		try {
-			Class.forName("org.springframework.web.WebApplicationInitializer");
-			checkServletPresent();
-		} catch (ClassNotFoundException e) {
+        }
 
-		}
+        try {
+            Class.forName("org.springframework.boot.web.servlet.server.ServletWebServerFactory");
+            Class.forName(
+                          "com.ibm.ws.springboot.support.web.server.version15.container.LibertyServletContainerConfiguration");
+            checkSpringBootVersion20();
+        } catch (ClassNotFoundException e) {
 
-	}
+        }
 
-	private void checkServletPresent() {
-		try {
-			Class.forName("javax.servlet.Servlet");
-		} catch (ClassNotFoundException e) {
-			throw new ApplicationError(Type.MISSING_SERVLET_FEATURE);
-		}
+        /* Throw an application error if servlet feature is not enabled */
+        try {
+            Class.forName("org.springframework.web.WebApplicationInitializer");
+            checkServletPresent();
+        } catch (ClassNotFoundException e) {
 
-	}
+        }
 
-	private void checkSpringBootVersion15() {
-		try {
-			Class.forName(
-					"com.ibm.ws.springboot.support.web.server.version15.container.LibertyServletContainerConfiguration");
-		} catch (ClassNotFoundException e) {
-			throw new ApplicationError(Type.NEED_SPRING_BOOT_VERSION_15);
-		}
+        /* Throw an application error if websocket feature is not enabled */
+        try {
+            Class.forName("org.springframework.web.socket.WebSocketHandler");
+            checkWebSocketPresent();
+        } catch (ClassNotFoundException e) {
 
-	}
+        }
 
-	private void checkSpringBootVersion20() {
-		try {
-			Class.forName(
-					"com.ibm.ws.springboot.support.web.server.version20.container.LibertyServletContainerConfiguration");
-		} catch (ClassNotFoundException e) {
-			throw new ApplicationError(Type.NEED_SPRING_BOOT_VERSION_20);
-		}
+    }
 
-	}
+    private void checkWebSocketPresent() {
+        try {
+            Class.forName("javax.websocket.WebSocketContainer");
+        } catch (ClassNotFoundException e) {
+            throw new ApplicationError(Type.MISSING_WEBSOCKET_FEATURE);
+        }
+    }
+
+    private void checkServletPresent() {
+        try {
+            Class.forName("javax.servlet.Servlet");
+        } catch (ClassNotFoundException e) {
+            throw new ApplicationError(Type.MISSING_SERVLET_FEATURE);
+        }
+
+    }
+
+    private void checkSpringBootVersion15() {
+        try {
+            Class.forName(
+                          "com.ibm.ws.springboot.support.web.server.version15.container.LibertyServletContainerConfiguration");
+        } catch (ClassNotFoundException e) {
+            throw new ApplicationError(Type.NEED_SPRING_BOOT_VERSION_15);
+        }
+
+    }
+
+    private void checkSpringBootVersion20() {
+        try {
+            Class.forName(
+                          "com.ibm.ws.springboot.support.web.server.version20.container.LibertyServletContainerConfiguration");
+        } catch (ClassNotFoundException e) {
+            throw new ApplicationError(Type.NEED_SPRING_BOOT_VERSION_20);
+        }
+
+    }
 }

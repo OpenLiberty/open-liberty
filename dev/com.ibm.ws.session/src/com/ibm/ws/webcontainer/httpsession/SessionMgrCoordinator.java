@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,13 +63,14 @@ public class SessionMgrCoordinator {
      * (unless applications are already running somehow) 
      * 
      * @param context the context used to register the SessionManager service
+     * @throws Throwable 
      */
-    protected void activate(ComponentContext context) {
+    protected void activate(ComponentContext context) throws Throwable {
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.entering(CLASS_NAME, "activate", context);
         }
         this.context = context;
-        if(sessionStoreService == null && this.foundDatabaseConfig()) {
+        if(sessionStoreService == null && this.foundSessionStoreServiceConfig()) {
             if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "activate", "Will not register default SessionManager service because a SesionStoreService will be available soon");
             }
@@ -228,26 +229,45 @@ public class SessionMgrCoordinator {
      * We use configAdmin to foresee whether a SessionStoreService will be coming shortly.
      * 
      * @return true if config for a SessionStoreService is found by ConfigurationAdmin
+     * @throws Throwable 
      */
-    private boolean foundDatabaseConfig() {
+    private boolean foundSessionStoreServiceConfig() throws Throwable {
         boolean found = false;
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.entering(CLASS_NAME, "foundDatabaseConfig");
         }
-        String configFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, "com.ibm.ws.session.db");
+        String databaseConfigFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, "com.ibm.ws.session.db");
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "foundDatabaseConfig", "Configuration filter: "+configFilter);
+            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "foundSessionStoreServiceConfig", "Database configuration filter: " + databaseConfigFilter);
+        }
+        
+        String sessionCacheConfigFilter = FilterUtils.createPropertyFilter(Constants.SERVICE_PID, "com.ibm.ws.session.cache");
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "foundSessionStoreServiceConfig", "Session Cache configuration filter: " + sessionCacheConfigFilter);
         }
         try {
-            Configuration[] configurations = this.configAdmin.listConfigurations(configFilter);
-            if(configurations!=null) {
-                for(Configuration configuration : configurations) {
-                    if(configuration==null) {
+            Configuration[] sessionCacheConfigurations = configAdmin.listConfigurations(sessionCacheConfigFilter);
+            if(sessionCacheConfigurations != null) {
+                for(Configuration configuration : sessionCacheConfigurations) {
+                    if(configuration == null) {
                         continue;
                     }
                     found = true;
                     if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                        LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "foundDatabaseConfig", "Found matching configuration at "+configuration.getBundleLocation()+": "+configuration.getProperties());
+                        LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "foundSessionCacheConfig", "Found matching session cache configuration at " + configuration.getBundleLocation() + ": " + configuration.getProperties());
+                    }
+                }
+            }
+            
+            Configuration[] databaseConfigurations = configAdmin.listConfigurations(databaseConfigFilter);
+            if(databaseConfigurations != null) {
+                for(Configuration configuration : databaseConfigurations) {
+                    if(configuration == null) {
+                        continue;
+                    }
+                    found = true;
+                    if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                        LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, CLASS_NAME, "foundDatabaseConfig", "Found matching database configuration at " + configuration.getBundleLocation() + ": " + configuration.getProperties());
                     }
                 }
             }

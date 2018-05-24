@@ -17,14 +17,14 @@
 
   <httpSession hideSessionValues="false"/>
 
-  <jndiEntry jndiName="hazelcast/configlocation" value="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+  <jndiEntry jndiName="hazelcast/configlocation" value="${shared.resource.dir}/hazelcast/${hazelcast.config.file}"/>
 
   <library id="HazelcastLib">
     <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
   </library>
 
   <!-- Needed because the application uses Hazelcast directly   -->
-  <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+  <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
@@ -40,7 +40,8 @@
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.net.URLPermission" actions="GET:User-Agent" name="http://phonehome.hazelcast.com/ping"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/hazelcast-localhost-only.xml"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.xerces.impl.xpath.regex"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>

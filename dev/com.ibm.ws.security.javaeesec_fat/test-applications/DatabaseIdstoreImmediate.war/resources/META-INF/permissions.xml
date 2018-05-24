@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+    version="7">
+    
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.getCallerSubject</name>
+   </permission>
+   
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.applicationReadCredential</name>
+   </permission>
+   
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.getRunAsSubject</name>
+   </permission>
+
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
+   <!-- this is for web.war.database.deferred.DatabaseSettingsBean.refreshConfiguration -->
+   <permission>
+      <class-name>java.io.FilePermission</class-name>
+      <name>DatabaseSettingsBean.props</name>
+      <actions>read</actions>
+   </permission>
+
+</permissions>

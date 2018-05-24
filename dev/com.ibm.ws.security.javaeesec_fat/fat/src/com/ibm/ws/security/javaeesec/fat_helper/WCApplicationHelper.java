@@ -50,6 +50,14 @@ public class WCApplicationHelper {
     }
 
     /*
+     * Helper method to create a war and add it to the apps directory
+     */
+    public static void addWarToServerApps(LibertyServer server, String warName, boolean addWarResources, String warResourceLocation, String jarName, boolean addJarResources,
+                                          String... packageNames) throws Exception {
+        addEarToServer(server, DIR_APPS, null, false, warName, addWarResources, warResourceLocation, jarName, addJarResources, packageNames);
+    }
+
+    /*
      * Helper method to create an ear and add it to the dropins directory
      */
     public static void addEarToServerDropins(LibertyServer server, String earName, boolean addEarResources,
@@ -188,9 +196,17 @@ public class WCApplicationHelper {
     private static void addEarToServer(LibertyServer server, String dir, String earName, boolean addEarResources,
                                        String warName, boolean addWarResources, String jarName, boolean addJarResources, String... packageNames) throws Exception {
 
+        addEarToServer(server, dir, earName, addEarResources, warName, addWarResources, null, jarName, addJarResources, packageNames);
+    }
+
+    private static void addEarToServer(LibertyServer server, String dir, String earName, boolean addEarResources,
+                                       String warName, boolean addWarResources,  String warResourceLocation,  String jarName, boolean addJarResources, String... packageNames) throws Exception {
+
         if (warName == null)
             return;
-
+        if (addWarResources && warResourceLocation == null) {
+            warResourceLocation = warName;
+        }
         // If server is already started and app exists no need to add it.
         if (server.isStarted()) {
             String appName = warName.substring(0, warName.indexOf(".war"));
@@ -232,7 +248,7 @@ public class WCApplicationHelper {
         if (jar != null)
             war.addAsLibrary(jar);
         if (addWarResources)
-            ShrinkHelper.addDirectory(war, "test-applications/" + warName + "/resources");
+            ShrinkHelper.addDirectory(war, "test-applications/" + warResourceLocation + "/resources");
 
         boolean deploy = false;
         if (dir.equals(DIR_APPS) || dir.equals(DIR_DROPINS)) {

@@ -13,7 +13,6 @@ package com.ibm.ws.session.cache.fat;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +22,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -54,22 +55,33 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, false, "session.cache.web"); // no HttpSessionListeners are registered by this app
         serverB.useSecondaryHTTPPort();
 
-        String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+
+        if (FATSuite.isMulticastDisabled()) {
+            Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
         String rand = UUID.randomUUID().toString();
-        serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand));
+        serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
+                                            "-Dhazelcast.config.file=" + hazelcastConfigFile));
         serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
-                                            "-Dhazelcast.config=" + configLocation));
+                                            "-Dhazelcast.config.file=" + hazelcastConfigFile));
 
         serverA.startServer();
-        serverB.startServer();
 
-        // Use HTTP sessions on each of the servers before running any tests, so that the time it takes to initialize
-        // the JCache provider does not interfere with timing of tests.
-
+        // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
+        // the JCache provider does not interfere with timing of tests. Invoking this before starting
+        // serverB, also ensures the JCache provider cluster in serverA is ready to accept a node from
+        // serverB. Otherwise, serverB could start up its own separate cluster.
         List<String> sessionA = new ArrayList<>();
         appA.sessionPut("init-app-A", "A", sessionA, true);
         appA.invalidateSession(sessionA);
 
+        serverB.startServer();
+
+        // Use HTTP session on serverB before running any tests, so that the time it takes to initialize
+        // the JCache provider does not interfere with timing of tests.
         List<String> sessionB = new ArrayList<>();
         appB.sessionPut("init-app-B", "B", sessionB, true);
         appB.invalidateSession(sessionB);

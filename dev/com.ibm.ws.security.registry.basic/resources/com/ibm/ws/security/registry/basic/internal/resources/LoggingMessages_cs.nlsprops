@@ -53,3 +53,27 @@ BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Pro u\u017eivatele v ur\u010den
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: Polo\u017eka \u010dlena se jm\u00e9nem ''{0}'' pro skupinu ''{1}'' neodpov\u00edd\u00e1 definovan\u00e9mu u\u017eivateli.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=Jm\u00e9no zadan\u00e9 pro polo\u017eku \u010dlena neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9mu definovan\u00e9mu u\u017eivateli.
 BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Zkontrolujte, zda je jm\u00e9no \u010dlena zad\u00e1no spr\u00e1vn\u011b a shoduje se s u\u017eivatelem definovan\u00fdm v registru.
+
+BASIC_REGISTRY_MAPPER_NOT_BOUND=CWWKS3108W: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 nebyl sv\u00e1z\u00e1n s t\u00edmto z\u00e1kladn\u00edm registrem.
+BASIC_REGISTRY_MAPPER_NOT_BOUND.explanation=Re\u017eim mapov\u00e1n\u00ed certifik\u00e1tu X.509 byl nastaven na CUSTOM (Vlastn\u00ed), ale k z\u00e1kladn\u00edmu registru nebyl sv\u00e1z\u00e1n \u017e\u00e1dn\u00fd vlastn\u00ed mapova\u010d certifik\u00e1tu X.509. 
+BASIC_REGISTRY_MAPPER_NOT_BOUND.useraction=Ujist\u011bte se, \u017ee atribut certificateMapperId v z\u00e1kladn\u00edm registru je nakonfigurov\u00e1na tak, aby ukazoval na platn\u00fd vlastn\u00ed mapova\u010d certifik\u00e1tu X.509.
+
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND=CWWKS3109W: Filtr nebo rozli\u0161uj\u00edc\u00ed n\u00e1zev ''{0}'' vr\u00e1cen\u00fd z vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 nemapuje na registr u\u017eivatel\u016f.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.explanation=Hodnota vr\u00e1cen\u00e1 z vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 nen\u00ed mapov\u00e1na na u\u017eivatele v z\u00e1kladn\u00edm registru.
+BASIC_REGISTRY_MAPPED_NAME_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee u\u017eivatel v z\u00e1kladn\u00edm registru existuje a \u017ee mapov\u00e1n\u00ed je platn\u00e9.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED=CWWKS3110W: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolat v\u00fdjimku CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.explanation=Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolat v\u00fdjimku CertificateMapNotSupportedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_NOT_SUPPORTED.useraction=Pokud byla v\u00fdjimka neo\u010dek\u00e1van\u00e1, zkontrolujte implementaci vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 a prove\u010fte nezbytn\u00e9 zm\u011bny.
+
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED=CWWKS3111E: Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolal v\u00fdjimku CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.explanation=Vlastn\u00ed mapova\u010d certifik\u00e1tu X.509 vyvolal v\u00fdjimku CertificateMapFailedException.
+BASIC_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Pokud byla v\u00fdjimka neo\u010dek\u00e1van\u00e1, zkontrolujte implementaci vlastn\u00edho mapova\u010de certifik\u00e1tu X.509 a prove\u010fte nezbytn\u00e9 zm\u011bny.
+
+BASIC_REGISTRY_NAME_NOT_FOUND=CWWKS3112W: Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) ''{0}'' nemapuje na platn\u00e9ho u\u017eivatele z\u00e1kladn\u00edho registru.
+BASIC_REGISTRY_NAME_NOT_FOUND.explanation=Rozli\u0161uj\u00edc\u00ed n\u00e1zev (DN) \u010dinitele subjektu v certifik\u00e1tu X.509 nemapuje na platn\u00e9ho u\u017eivatele z\u00e1kladn\u00edho registru. 
+BASIC_REGISTRY_NAME_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee rozli\u0161uj\u00edc\u00ed n\u00e1zev DN \u010dinitele subjektu obsahuje relativn\u00ed rozli\u0161uj\u00edc\u00ed n\u00e1zev (RDN) 'cn' a \u017ee u\u017eivatel v z\u00e1kladn\u00edm registru odpov\u00edd\u00e1 hodnot\u011b n\u00e1zvu RDN. 
+
+BASIC_REGISTRY_CERT_IGNORED=CWWKS3113W: Z\u00e1kladn\u00ed registr je nakonfigurov\u00e1n tak, aby ignoroval po\u017eadavky na ov\u011b\u0159en\u00ed certifik\u00e1tu X.509.
+BASIC_REGISTRY_CERT_IGNORED.explanation=Atribut konfigurace certificateMapMode pro z\u00e1kladn\u00ed registr je nastaven na hodnotu IGNORE (Ignorovat).
+BASIC_REGISTRY_CERT_IGNORED.useraction=Chcete-li povolit z\u00e1kladn\u00ed registr ke zpracov\u00e1n\u00ed po\u017eadavk\u016f na ov\u011b\u0159en\u00ed certifik\u00e1tu X.509, zm\u011b\u0148te atribut konfigurace certificateMapMode, aby bylo mo\u017en\u00e9 prov\u00e1d\u011bt zpracov\u00e1n\u00ed.

@@ -95,7 +95,6 @@ public class AutoApplySessionTest extends JavaEESecTestBase {
             return;
         }
         myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @SuppressWarnings("restriction")

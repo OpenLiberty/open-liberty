@@ -615,3 +615,7 @@ ssl.defaultKeyStore.expected.CWPKI0817A.useraction=Se l'SSL non \u00e8 richiesto
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E=CWPKI0818E: La configurazione SSL predefinita fa riferimento a un elemento <keyStore> con un valore id di {0}, che non esiste nella configurazione o nella sua definizione manca una password. Definire un keystore con id {0} o aggiornare <ssl id="defaultSSLConfig" keyStoreRef="{0}" /> per fare riferimento a un keystore esistente.
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.explanation=La configurazione SSL predefinita prevede un elemento keystore, che non esiste.
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=Esaminare la configurazione e modificarela per riferimento a un keystore esistente, oppure definire il keystore di riferimento.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: Il keystore predefinito non viene creato perch\u00e9 non \u00e8 configurata una password nell'elemento <keyStore id="defaultKeyStore"/> e la variabile di ambiente 'keystore_password' non \u00e8 impostata. 
+ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=Il keystore predefinito non viene creato perch\u00e9 non \u00e8 configurata una password nell'elemento <keyStore id="defaultKeyStore"/> e la variabile di ambiente 'keystore_password' non \u00e8 impostata.
+ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Non sono richieste azioni.

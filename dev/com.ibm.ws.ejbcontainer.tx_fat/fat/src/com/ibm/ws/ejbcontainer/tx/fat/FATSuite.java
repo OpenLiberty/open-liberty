@@ -16,6 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                RunUnderUOWTest.class
+                RunUnderUOWTest.class,
+                MethodIntfTest.class,
+                SecureTests.class
 })
 public class FATSuite {}

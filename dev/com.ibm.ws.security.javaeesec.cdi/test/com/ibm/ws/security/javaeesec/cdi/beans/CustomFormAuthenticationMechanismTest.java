@@ -599,7 +599,7 @@ public class CustomFormAuthenticationMechanismTest {
     private CustomFormAuthenticationMechanismTest withJaspicSessionEnabled(final boolean enabled) {
         mockery.checking(new Expectations() {
             {
-                allowing(webAppSecurityConfig).isJaspicSessionForMechanismsEnabled();
+                allowing(webAppSecurityConfig).isJaspicSessionEnabled();
                 will(returnValue(enabled));
             }
         });

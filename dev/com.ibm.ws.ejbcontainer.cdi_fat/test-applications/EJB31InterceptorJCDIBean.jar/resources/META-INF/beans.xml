@@ -2,8 +2,8 @@
 <beans>
 
    <interceptors>
-      <class>suite.r80.base.ejb31misc.jcdi.ejb_int.CDIInterceptor</class>
-      <class>suite.r80.base.ejb31misc.jcdi.ejb_int.SFCDIInterceptor</class>
+      <class>com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.CDIInterceptor</class>
+      <class>com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.SFCDIInterceptor</class>
    </interceptors>
 
    <Deploy>

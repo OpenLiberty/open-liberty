@@ -34,7 +34,7 @@ no.application.name.CWMCG0201E.useraction=Examina\u0163i istoricele de server me
 # More than one application found with name {0}
 duplicate.application.name.CWMCG0202E=CWMCG0202E: S-a g\u0103sit mai mult de o aplica\u0163ie cu numele {0}.
 duplicate.application.name.CWMCG0202E.explanation=Numele aplica\u0163iei trebuie s\u0103 fie unic.
-duplicate.application.name.CWMCG0202E.useraction=Examina\u0163i fi\u015fierul server.xml pentru a v\u0103 asigura c\u0103 numele aplica\u0163iei este unic.
+duplicate.application.name.CWMCG0202E.useraction=Examina\u0163i fi\u015fierul server.xml pentru a v\u0103 asigura c\u0103 fiecare nume de aplica\u0163ie este unic.
 
 # More than one configuration found for application with name {0}
 duplicate.application.configuration.name.CWMCG0203E=CWMCG0203E: S-a g\u0103sit mai mult de o aplica\u0163ie cu numele {0}.

@@ -154,7 +154,7 @@ public class H2Headers {
                 }
 
                 int fragmentLength = IntegerRepresentation.decode(buffer, ByteFormatType.TABLE_UPDATE);
-                if (settings != null && fragmentLength > settings.headerTableSize) {
+                if (settings != null && fragmentLength > settings.getHeaderTableSize()) {
                     throw new CompressionException("dynamic table size update size was larger than SETTINGS_HEADER_TABLE_SIZE");
                 }
                 table.updateTableSize(fragmentLength);

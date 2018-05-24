@@ -1800,7 +1800,7 @@ public class ProfileManager implements ProfileServiceLite {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, METHODNAME + " result == null && countedException == 0, certExceptionCount = " + certExceptionCount);
             }
-            if (certExceptionCount == getRepositoryManager().getNumberOfRepositories()) {
+            if (certExceptionCount != 0 && certExceptionCount == getRepositoryManager().getNumberOfRepositories()) {
                 String msg = Tr.formatMessage(tc, WIMMessageKey.AUTHENTICATION_WITH_CERT_NOT_SUPPORTED);
                 throw new CertificateMapNotSupportedException(WIMMessageKey.AUTHENTICATION_WITH_CERT_NOT_SUPPORTED, msg);
             } else {

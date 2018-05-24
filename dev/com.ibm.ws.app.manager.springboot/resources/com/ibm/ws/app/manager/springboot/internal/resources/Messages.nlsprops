@@ -62,3 +62,11 @@ error.no.spring.class.found.useraction=Configure a valid Spring Boot application
 error.missing.ssl=CWWKC0258E: The application failed to start because it requires an SSL feature to be configured in the server.xml file.
 error.missing.ssl.explanation=The application is a secure application, and it requires an SSL feature to be configured in the server.xml file.
 error.missing.ssl.useraction=Configure the transportSecurity-1.0 feature in the server.xml file.
+
+error.missing.websocket=CWWKC0259E: The application failed to start because it requires a websocket feature to be configured in the server.xml file.
+error.missing.websocket.explanation=The application is a web socket application, and it requires a websocket feature to be configured in the server.xml file.
+error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
+
+error.webflux.not.supported=CWWKC0260E: Unable to start the application because Spring WebFlux is not supported.
+error.webflux.not.supported.explanation=The application is a WebFlux application. The reactive programming support provided by Spring WebFlux is not supported.
+error.webflux.not.supported.useraction=Configure an application that does not use Spring WebFlux with the server.

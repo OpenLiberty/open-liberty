@@ -239,7 +239,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
         setCookiePathToWebAppContextPath = (Boolean) props
                 .get(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH);
         includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
-        fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_KEY_FALLBACKTOLTPA);
+        fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_USE_LTPA_IF_JWT_ABSENT);
         cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
         // jwtBuilderRef = JwtUtils.trimIt((String)
         // props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));

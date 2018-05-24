@@ -96,10 +96,10 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        myServer.stopServer();
         if (ldapServer != null) {
             ldapServer.stop();
         }
-        myServer.stopServer();
     }
 
     @SuppressWarnings("restriction")

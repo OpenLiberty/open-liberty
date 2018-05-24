@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#CMVCPATHNAME com/ibm/ws/cloudant/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKD
+#COMPONENTNAMEFOR CWWKD Cloudant client
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: This message prefix is shared with other Liberty components
+# Message IDs 0300-0399 are reserved for cloudant.
+
+#{0} is the config element name (either jndi name or config id)
+error.cloudant.config.CWWKD0300E=CWWKD0300E: Un attribut d''URL ou de compte doit \u00eatre sp\u00e9cifi\u00e9 dans l''\u00e9l\u00e9ment de configuration Cloudant {0}.
+error.cloudant.config.CWWKD0300E.explanation=Pour cr\u00e9er un client Cloudant, vous devez sp\u00e9cifier dans la configuration l'URL d'une base de donn\u00e9es ou bien un compte.
+error.cloudant.config.CWWKD0300E.useraction=Ajoutez \u00e0 la configuration du serveur un attribut d'URL ou de compte.
+
+#{0} JNDI name of the cloudant config element
+# ClientBuilder is a class name
+direct.lookup.CWWKD0301E=CWWKD0301E: La recherche de Cloudant ClientBuilder {0} requiert une r\u00e9f\u00e9rence de ressource.
+direct.lookup.CWWKD0301E.explanation=Les ressources modifiables telles que CloudantBuilder doivent \u00eatre recherch\u00e9es via une r\u00e9f\u00e9rence de ressource de sorte qu'une nouvelle instance soit renvoy\u00e9e pour chaque recherche. Si une recherche sans r\u00e9f\u00e9rence de ressource \u00e9tait admise, ceci engendrerait une instance ClientBuilder partag\u00e9e entra\u00eenant un comportement impr\u00e9visible lors de sa recherche r\u00e9p\u00e9t\u00e9e par des applications la modifiant de mani\u00e8res diff\u00e9rentes.
+direct.lookup.CWWKD0301E.useraction=Incluez dans votre application une r\u00e9f\u00e9rence de ressource pour ClientBuilder et utilisez une r\u00e9f\u00e9rence de ressource pour rechercher l'instance Cloudant ClientBuilder. Vous pouvez \u00e9galement utiliser une injection de ressource (laquelle cr\u00e9e implicitement une r\u00e9f\u00e9rence de ressource) pour injecter une instance ClientBuilder dans votre application.
+
+#{0} Cloudant class name
+#{1} JNDI name of the cloudant config element
+class.not.found.CWWKD0302E=CWWKD0302E: Impossible de charger {0} vu que l''\u00e9l\u00e9ment de configuration cloudant {1} n''est pas configur\u00e9 avec un \u00e9l\u00e9ment libraryRef et que l''unit\u00e9 d''ex\u00e9cution actuelle n''a pas acc\u00e8s \u00e0 un chargeur de classe d''application.
+class.not.found.CWWKD0302E.explanation=L'\u00e9l\u00e9ment de configuration cloudant doit \u00eatre configur\u00e9 avec un \u00e9l\u00e9ment libraryRef pointant vers les biblioth\u00e8ques Cloudant ou bien les biblioth\u00e8ques Cloudant doivent \u00eatre incluses dans l'application, auquel cas la ressource JNDI Cloudant doit \u00eatre recherch\u00e9e depuis une unit\u00e9 d'ex\u00e9cution d'application.
+class.not.found.CWWKD0302E.useraction=Ajoutez un \u00e9l\u00e9ment libraryRef \u00e0 l'\u00e9l\u00e9ment de configuration cloudant ou mettez \u00e0 jour le code d'application afin de rechercher uniquement la ressource JNDI Cloudant depuis des unit\u00e9s d'ex\u00e9cution d'application.

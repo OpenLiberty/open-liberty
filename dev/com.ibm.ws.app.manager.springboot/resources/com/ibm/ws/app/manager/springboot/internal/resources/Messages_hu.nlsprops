@@ -36,13 +36,25 @@ warning.could.not.thin.application.explanation=Az alkalmaz\u00e1s nem alak\u00ed
 warning.could.not.thin.application.useraction=Pr\u00f3b\u00e1lja meg elh\u00e1r\u00edtani a kiv\u00e9tel \u00fczenet\u00e9ben jelzett probl\u00e9m\u00e1t, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy friss\u00edtse az alkalmaz\u00e1st. 
 
 error.need.springboot.version.15=CWWKC0252E: Nem siker\u00fclt futtatni az alkalmaz\u00e1st, mert a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban. Az alkalmaz\u00e1s a springBoot-1.5 szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t ig\u00e9nyli.
-error.need.springboot.version.15.explanation= Az alkalmaz\u00e1s a Spring Boot 1.5 v\u00e1ltozatot ig\u00e9nyli, azonban a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban.  
-error.need.springboot.version.15.useraction= A springBoot-1.5 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
+error.need.springboot.version.15.explanation=Az alkalmaz\u00e1s a Spring Boot 1.5 v\u00e1ltozatot ig\u00e9nyli, azonban a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban.  
+error.need.springboot.version.15.useraction=A springBoot-1.5 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
 
 error.need.springboot.version.20=CWWKC0253E: Nem siker\u00fclt futtatni az alkalmaz\u00e1st, mert a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban. Az alkalmaz\u00e1s a springBoot-2.0 szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t ig\u00e9nyli.
-error.need.springboot.version.20.explanation= Az alkalmaz\u00e1s a Spring Boot 2.0 v\u00e1ltozatot ig\u00e9nyli, azonban a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban.  
-error.need.springboot.version.20.useraction= A springBoot-2.0 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
+error.need.springboot.version.20.explanation=Az alkalmaz\u00e1s a Spring Boot 2.0 v\u00e1ltozatot ig\u00e9nyli, azonban a Spring Boot szolg\u00e1ltat\u00e1snak helytelen v\u00e1ltozata van konfigur\u00e1lva a server.xml f\u00e1jlban.  
+error.need.springboot.version.20.useraction=A springBoot-2.0 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
 
-error.missing.servlet=CWWKC0254E: Nem siker\u00fclt futtatni az alkalmaz\u00e1st, mert az egy Servlet szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t ig\u00e9nyli a server.xml f\u00e1jlban. A servlet-3.1 vagy a servlet-4.0 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni.
-error.missing.servlet.explanation= Az alkalmaz\u00e1s egy webalkalmaz\u00e1s, \u00e9s megk\u00f6veteli egy Servlet szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t a server.xml f\u00e1jlban.
-error.missing.servlet.useraction= A servlet-3.1 vagy a servlet-4.0 szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
+error.missing.servlet=CWWKC0254E: Nem siker\u00fclt futtatni az alkalmaz\u00e1st, mert az egy Servlet szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t ig\u00e9nyli a server.xml f\u00e1jlban.
+error.missing.servlet.explanation=Az alkalmaz\u00e1s egy webalkalmaz\u00e1s, \u00e9s megk\u00f6veteli egy Servlet szolg\u00e1ltat\u00e1s konfigur\u00e1l\u00e1s\u00e1t a server.xml f\u00e1jlban.
+error.missing.servlet.useraction=A szervlet szolg\u00e1ltat\u00e1st kell konfigur\u00e1lni a server.xml f\u00e1jlban.
+
+error.multiple.applications.not.allowed=CWWKC0255E: A Spring Boot alkalmaz\u00e1s ({0}) nem ind\u00edthat\u00f3 el, mert a(z) {1} alkalmaz\u00e1s m\u00e1r akt\u00edv. Nem \u00e1ll\u00edthat be t\u00f6bb Spring Boot alkalmaz\u00e1st ugyanabban a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+error.multiple.applications.not.allowed.explanation=T\u00f6bb Spring Boot alkalmaz\u00e1s be\u00e1ll\u00edt\u00e1sa ugyanabban a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nem t\u00e1mogatott.
+error.multiple.applications.not.allowed.useraction=Kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3nk\u00e9nt csak egy Spring Boot alkalmaz\u00e1st \u00e1ll\u00edtson be.
+
+error.no.manifest.found=CWWKC0256E: Nem tal\u00e1lhat\u00f3 META-INF/MANIFEST.MF f\u00e1jl a(z) {0} Spring Boot alkalmaz\u00e1shoz.
+error.no.manifest.found.explanation=A Spring Boot alkalmaz\u00e1snak tartalmaznia kell egy META-INF/MANIFEST.MF f\u00e1jlt.
+error.no.manifest.found.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes Spring Boot alkalmaz\u00e1st, amely tartalmaz META-INF/MANIFEST.MF f\u00e1jlt a kiszolg\u00e1l\u00f3val egy\u00fctt.
+
+error.no.spring.class.found=CWWKC0257E: A Spring Boot alkalmaz\u00e1s META-INF/MANIFEST.MF f\u00e1jlj\u00e1nak meg kell hat\u00e1roznia egy Start-Class fejl\u00e9cet.
+error.no.spring.class.found.explanation=A Spring Boot alkalmaz\u00e1soknak tartalmazniuk kell egy, a Sart-Class le\u00edr\u00f3 fejl\u00e9cben meghat\u00e1rozott f\u0151 oszt\u00e1lyt.
+error.no.spring.class.found.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes Spring Boot alkalmaz\u00e1st, amely tartalmazza a Start-Class le\u00edr\u00f3 fejl\u00e9cet, a kiszolg\u00e1l\u00f3val egy\u00fctt.

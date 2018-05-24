@@ -61,6 +61,8 @@ public class JSON4JJAXBProvider implements MessageBodyWriter {
         }
         if (this.bodyWriter == null) {
             Class<?> c = ProviderUtils.getJSON4JClass("com.ibm.json.java.JSONObject");
+            if (c == null)
+                return false;
             this.bodyWriter = this.providers.getMessageBodyWriter(c, c, annotations, mediaType);
 
             if (this.bodyWriter == null) {

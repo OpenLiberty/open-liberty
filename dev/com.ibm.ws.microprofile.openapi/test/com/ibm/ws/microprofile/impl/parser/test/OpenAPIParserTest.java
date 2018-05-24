@@ -31,6 +31,7 @@ import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.info.License;
 import org.eclipse.microprofile.openapi.models.links.Link;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
+import org.eclipse.microprofile.openapi.models.media.XML;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.parameters.Parameter;
 import org.eclipse.microprofile.openapi.models.parameters.RequestBody;
@@ -286,6 +287,27 @@ public class OpenAPIParserTest {
     }
 
     @Test
+    public void testXML() {
+        assertNotNull(result.getOpenAPI());
+        assertNotNull(result.getOpenAPI().getComponents());
+        Map<String, Schema> schemas = result.getOpenAPI().getComponents().getSchemas();
+        Schema airline = schemas.get("Airline");
+        assertNotNull(airline);
+        assertNotNull(airline.getProperties());
+        Schema name = airline.getProperties().get("name");
+        Schema contactPhone = airline.getProperties().get("contactPhone");
+        assertNotNull(name);
+        assertNotNull(contactPhone);
+        XML xml = name.getXml();
+        assertNotNull(xml);
+        assertEquals(xml.getName(), "airlinename");
+        xml = contactPhone.getXml();
+        assertNotNull(xml);
+        assertEquals(xml.getPrefix(), "number");
+        assertEquals(xml.getNamespace(), "http://example.com/schema/sample");
+
+    }
+  
     public void testSchemaInResponseContent() {
         assertNotNull(result);
         assertNotNull(result.getOpenAPI());

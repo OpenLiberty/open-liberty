@@ -12,15 +12,19 @@ package com.ibm.ws.security.fat.common.actions;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.web.WebFormUtils;
+import com.meterware.httpunit.Base64;
 
 public class TestActions {
 
@@ -45,6 +49,67 @@ public class TestActions {
         loggingUtils.printMethodName(thisMethod);
         try {
             WebRequest request = createGetRequest(url);
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+    
+    /**
+     * Invoke the specified URL, adding a basic auth header first
+     */
+    public Page invokeUrlWithBasicAuth(String currentTest, WebClient wc, String url, String user, String password) throws Exception {
+        String thisMethod = "invokeUrlWithBasicAuth";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);
+            String encodedIdPw= Base64.encode(user + ":" + password);
+            request.setAdditionalHeader("Authorization", "Basic "+ encodedIdPw);
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+    
+    /**
+     * Invoke the specified URL, adding a bearer token header first.
+     */
+    public Page invokeUrlWithBearerToken(String currentTest, WebClient wc, String url, String token) throws Exception {
+        String thisMethod = "invokeUrlWithBearerToken";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);            
+            request.setAdditionalHeader("Authorization", "Bearer "+ token);
+            return submitRequest(currentTest, wc, request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+}
+
+    /**
+     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     */
+    public Page invokeUrlWithCookie(String currentTest, String url, Cookie cookie) throws Exception {
+        String thisMethod = "invokeUrlWithCookie";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);
+            request.setAdditionalHeader("Cookie", cookie.getName() + "=" + cookie.getValue());
+            return submitRequest(currentTest, new WebClient(), request);
+        } catch (Exception e) {
+            throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
+        }
+    }
+
+    /**
+     * Invokes the specified URL using the provided WebClient object and returns the Page object that represents the response.
+     */
+    public Page invokeUrlWithParameters(String currentTest, WebClient wc, String url, List<NameValuePair> requestParams) throws Exception {
+        String thisMethod = "invokeUrlWithParameters";
+        loggingUtils.printMethodName(thisMethod);
+        try {
+            WebRequest request = createGetRequest(url);
+            request.setRequestParameters(requestParams);
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
@@ -127,7 +192,9 @@ public class TestActions {
     }
 
     WebClient createWebClient() {
-        return new WebClient();
+        WebClient webClient = new WebClient();
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        return webClient;
     }
 
     WebRequest createGetRequest(String url) throws MalformedURLException {

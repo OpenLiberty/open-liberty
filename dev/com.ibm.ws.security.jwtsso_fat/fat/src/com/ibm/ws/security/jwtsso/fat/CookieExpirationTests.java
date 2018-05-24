@@ -1,0 +1,129 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.jwtsso.fat;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.Cookie;
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
+import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatActions;
+import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
+import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
+
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
+
+@Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
+public class CookieExpirationTests extends CommonJwtFat {
+
+    protected static Class<?> thisClass = CookieExpirationTests.class;
+
+    @Server("com.ibm.ws.security.jwtsso.fat")
+    public static LibertyServer server;
+
+    private JwtFatActions actions = new JwtFatActions();
+    private TestValidationUtils validationUtils = new TestValidationUtils();
+
+    String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + JwtFatConstants.SIMPLE_SERVLET_PATH;
+    String defaultUser = JwtFatConstants.TESTUSER;
+    String defaultPassword = JwtFatConstants.TESTUSERPWD;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+    }
+
+    /**
+     * Tests:
+     * - Log into the protected resource with the JWT SSO feature configured
+     * - JWT builder being used has its expiry attribute set to 0
+     * - JWT consumer with the default clock skew will be used
+     * - Sleep a few seconds to go beyond the JWT SSO cookie's lifetime
+     * - Re-invoke the protected resource with the JWT SSO cookie
+     * Expects:
+     * - Should reach the protected resource because we're still within the JWT consumer's clock skew
+     */
+    @Test
+    public void test_shortJwtCookieLifetime_reuseCookieWithinClockSkew() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_shortJwtLifetime.xml");
+
+        WebClient webClient = new WebClient();
+        String expectedIssuer = "https://" + "[^/]+" + "/jwt/builder_shortLifetime";
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), webClient, protectedUrl, defaultUser, defaultPassword, expectedIssuer);
+
+        Log.info(thisClass, testName.getMethodName(), "Sleeping beyond JWT SSO cookie's lifetime...");
+        Thread.sleep(5000);
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser, expectedIssuer));
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+    /**
+     * Tests:
+     * - Log into the protected resource with the JWT SSO feature configured
+     * - JWT builder being used has its expiry attribute set to 0
+     * - JWT consumer being used has its clockSkew attribute set to a very short time (a few seconds)
+     * - Sleep a few seconds to go beyond the JWT SSO cookie's lifetime and the consumer's clock skew
+     * - Re-invoke the protected resource with the JWT SSO cookie
+     * Expects:
+     * - Should be prompted with the login page because the JWT SSO cookie is no longer valid
+     */
+    @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidClaimException", "com.ibm.websphere.security.jwt.InvalidTokenException",
+                    "com.ibm.ws.security.authentication.AuthenticationException" })
+    @Test
+    public void test_shortJwtCookieLifetime_reuseCookieOutsideClockSkew() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_shortJwtLifetime_shortClockSkew.xml");
+
+        WebClient webClient = new WebClient();
+        String expectedIssuer = "https://" + "[^/]+" + "/jwt/builder_shortLifetime";
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), webClient, protectedUrl, defaultUser, defaultPassword, expectedIssuer);
+
+        Log.info(thisClass, testName.getMethodName(), "Sleeping beyond JWT SSO cookie's lifetime and JWT consumer's clock skew...");
+        Thread.sleep(8000);
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6025E_JWT_TOKEN_EXPIRED));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
+
+        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
+}

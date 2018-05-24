@@ -34,7 +34,6 @@ import com.ibm.ws.jandex.JandexApplicationHelper;
  */
 public class JandexAppFalseAppMgrFalseTest extends LoggingTest {
 
-    @SuppressWarnings("unused")
     private static final Logger LOG = Logger.getLogger(JandexAppFalseAppMgrFalseTest.class.getName());
 
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
@@ -76,7 +75,7 @@ public class JandexAppFalseAppMgrFalseTest extends LoggingTest {
 
         LOG.info("Setup : wait for message to indicate app has started");
 
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* TestServlet40", 10000);
+        SHARED_SERVER.getLibertyServer().addInstalledAppForValidation("TestServlet40");
 
         LOG.info("Setup : app has started, or so we believe");
 
@@ -114,7 +113,7 @@ public class JandexAppFalseAppMgrFalseTest extends LoggingTest {
         // Search for message indicating Jandex is being used.
         // CWWKC0092I: Read Jandex indexes for {0} out of {1} archives ({2} out of {3} classes) in {4}.
         List l = SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKC0092I");
-        assertTrue("   ", l.isEmpty()); // The list should be empty
+        assertTrue("Should not find CWWKC0092I, since Jandex is not in use.", l.isEmpty());
     }
 
     /**

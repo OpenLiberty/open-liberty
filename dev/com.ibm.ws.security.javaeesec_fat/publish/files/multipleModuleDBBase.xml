@@ -1,0 +1,37 @@
+<server description="JavaEESec Multiple Module FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+        <feature>jsf-2.3</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <basicRegistry id="basic1" realm="NoJavaEESecRealm">
+        <user name="basicuser1" password="s3cur1ty" />
+        <user name="basicuser2" password="s3cur1ty" />
+        <user name="basicrunasuser1" password="s3cur1ty" />
+        <group name="basicgroup1">
+            <member name="basicuser1" />
+        </group>
+    </basicRegistry>
+
+<!-- in order to avoid ACEs the following elements are required even jdbc is not used -->
+    <dataSource id="db1" fat.modify="true"  jndiName="jdbc/db1">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="memory:db1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    <dataSource id="db2" fat.modify="true"  jndiName="jdbc/db2">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="memory:db2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+
+    <library id="DerbyLib" fat.modify="true">
+        <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+    </library>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <include location="../fatTestPorts.xml" />
+</server>

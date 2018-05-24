@@ -15,6 +15,7 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getRemoteUserFo
 import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipalFound;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -95,17 +99,26 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS1916W", "CWWKS1919W", "CWWKS1918E");
+        myServer.stopServer("CWWKS1916W", "CWWKS1919W", "CWWKS1918E", "CWWKS1924W");
     }
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        // disable auto redirect.
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
     public void cleanupConnection() {
         httpclient.getConnectionManager().shutdown();
+    }
+
+    public void resetConnection() {
+        cleanupConnection();
+        setupConnection();
     }
 
     @Override
@@ -130,12 +143,16 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         }
         passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER1_PWD);
 
+        resetConnection();
+
         /* DB_USER2 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER2, Constants.DB_USER2_PWD, code2);
         if (code2 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER2, getRemoteUserFound + Constants.DB_USER2);
         }
         passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER2_PWD);
+
+        resetConnection();
 
         /* DB_USER3 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER3, Constants.DB_USER3_PWD, code3);
@@ -194,6 +211,103 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         String msg = "CWWKS1918E";
         List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
         assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Malicious test: CallerQuery is an insert statement. Should fail because it doesn't have a parameter to input.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ExpectedFFDC({ "java.sql.SQLException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
+    public void callerQuery_insertStatement() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        // Should cause java.sql.SQLException: No input parameters
+        overrides.put(JavaEESecConstants.CALLER_QUERY, "insert into callers (password, name) values ('badWolf', 'badWolf' )");
+
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        String msg = "CWWKS1918E";
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Malicious test: CallerQuery is an insert statement with a select with a parameter.
+     * Should fail because we called executeQuery and this is a write reguest
+     *
+     * @throws Exception
+     */
+    @Test
+    @ExpectedFFDC({ "java.sql.SQLException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
+    public void callerQuery_insertStatementWithParam() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+
+        // Should cause java.sql.SQLException: An SQL data change is not permitted for a read-only connection, user or database.
+        overrides.put(JavaEESecConstants.CALLER_QUERY, "insert into callers (password) select callers.name from callers where callers.name = ?");
+
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+
+        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
+
+        String msg = "CWWKS1918E";
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Malicious test: CallerQuery is a wildcard and should match multiple results.
+     * Should fail because the result set returned more than 1 result.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void callerQuery_likeCaller() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+
+        overrides.put(JavaEESecConstants.CALLER_QUERY, "select * from callers where callers.name like ?");
+
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase, "blue%", Constants.DB_USER1_PWD, SC_UNAUTHORIZED);
+
+        String msg = "CWWKS1924W"; // should get multiple results error
+        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
+        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * Malicious test: Caller is an sql statement.
+     * Should fail because we use setString on the statement had the caller won't match anything.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void callerQuery_sqlCaller() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put(JavaEESecConstants.CALLER_QUERY, "select password from callers where name = ?");
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+
+        // send in an sql statement for the caller
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase, "select * from callers", Constants.DB_USER1_PWD, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

@@ -31,9 +31,11 @@ public class NonMappingCallbackHandler extends JaspiCallbackHandler implements C
     }
 
     @Override
-    protected void addCommonAttributes(String securityName, Hashtable<String, Object> credData) {
-        credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:defaultRealm/" + securityName);
+    protected void addCommonAttributes(String realm, String securityName, Hashtable<String, Object> credData) {
+        credData.put(AttributeNameConstants.WSCREDENTIAL_REALM, realm);
+        credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:" + realm + "/" + securityName);
         credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, securityName);
+
     }
 
     @Override

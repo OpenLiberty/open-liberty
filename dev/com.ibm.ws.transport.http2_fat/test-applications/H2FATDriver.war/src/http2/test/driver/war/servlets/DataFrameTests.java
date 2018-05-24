@@ -160,7 +160,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(5, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
-        byte[] data = new byte[33000];
+        byte[] data = new byte[57345];
         for (int i = 0; i < data.length; i++) {
             data[i] = 0x01;
         }

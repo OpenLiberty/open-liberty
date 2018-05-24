@@ -80,7 +80,6 @@ public class HttpAuthenticationMechanismDBAuthAliasTest extends JavaEESecTestBas
     @AfterClass
     public static void tearDown() throws Exception {
         myServer.stopServer();
-
     }
 
     @Before

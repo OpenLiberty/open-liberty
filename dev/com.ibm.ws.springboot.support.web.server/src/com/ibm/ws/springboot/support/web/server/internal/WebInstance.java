@@ -86,9 +86,10 @@ public class WebInstance implements Instance {
             WebAppConfiguration wac = ((WebAppConfiguration) mmd.getConfiguration());
             @SuppressWarnings("unchecked")
             HashMap<Integer, com.ibm.ws.container.ErrorPage> code_errorPage_hm = wac.getCodeErrorPages();
+            //configure spring mime-mappings
+            wac.setMimeMappings(additionalConfig.getMimeMappings());
             @SuppressWarnings("unchecked")
             HashMap<String, com.ibm.ws.container.ErrorPage> exception_errorPage_hm = wac.getExceptionErrorPages();
-
             for (SpringErrorPageData spr_ep : additionalConfig.getErrorPages()) {
                 if (spr_ep.isGlobal()) {
                     wac.setDefaultErrorPage(spr_ep.getLocation());

@@ -25,6 +25,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -50,13 +52,29 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, true, "session.cache.web", "session.cache.web.cdi", "session.cache.web.listener1");
         serverB.useSecondaryHTTPPort();
 
-        String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/hazelcast-localhost-only.xml").getAbsolutePath();
+        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+
+        if (FATSuite.isMulticastDisabled()) {
+            Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+        }
+
+        String configLocation = new File(serverB.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         String rand = UUID.randomUUID().toString();
-        serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand));
+        serverA.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
+                                            "-Dhazelcast.config.file=" + hazelcastConfigFile));
         serverB.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + rand,
                                             "-Dhazelcast.config=" + configLocation));
 
         serverA.startServer();
+
+        // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
+        // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
+        // cluster and not join to the cluster created on serverA.
+        List<String> sessionA = new ArrayList<>();
+        appA.sessionPut("init-app-A", "A", sessionA, true);
+        appA.invalidateSession(sessionA);
+
         serverB.startServer();
     }
 

@@ -7,6 +7,15 @@
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
+    <basicRegistry id="basic1" realm="NoJavaEESecRealm">
+        <user name="basicuser1" password="s3cur1ty" />
+        <user name="basicuser2" password="s3cur1ty" />
+        <user name="basicrunasuser1" password="s3cur1ty" />
+        <group name="basicgroup1">
+            <member name="basicuser1" />
+        </group>
+    </basicRegistry>
+
     <application type="ear" id="multipleModuleRunAs" name="multipleModuleRunAs" location="multipleModuleRunAs.ear">
         <application-bnd>
             <security-role name="grantedgroup">
