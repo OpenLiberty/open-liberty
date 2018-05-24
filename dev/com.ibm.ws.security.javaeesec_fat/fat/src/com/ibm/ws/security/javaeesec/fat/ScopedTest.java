@@ -79,7 +79,6 @@ public class ScopedTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before

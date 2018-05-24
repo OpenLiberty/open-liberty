@@ -97,11 +97,10 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        myServer.stopServer();
         if (ldapServer != null) {
             ldapServer.stop();
         }
-        myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
 
     }
 

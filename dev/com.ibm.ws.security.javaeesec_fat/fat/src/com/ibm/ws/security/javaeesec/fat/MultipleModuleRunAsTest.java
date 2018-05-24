@@ -134,11 +134,10 @@ public class MultipleModuleRunAsTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        myServer.stopServer("CWWKS0005E");
         if (ldapServer != null) {
             ldapServer.stop();
         }
-        myServer.stopServer("CWWKS0005E");
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before

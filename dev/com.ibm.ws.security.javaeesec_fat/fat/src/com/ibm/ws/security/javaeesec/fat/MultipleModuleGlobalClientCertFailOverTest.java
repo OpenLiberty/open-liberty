@@ -151,11 +151,10 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
 
     @AfterClass
     public static void tearDown() throws Exception {
+        myServer.stopServer("CWWKO0801E");
         if (ldapServer != null) {
             ldapServer.stop();
         }
-        myServer.stopServer("CWWKO0801E");
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before

@@ -114,7 +114,6 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDown() throws Exception {
         myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
     }
 
     @Before

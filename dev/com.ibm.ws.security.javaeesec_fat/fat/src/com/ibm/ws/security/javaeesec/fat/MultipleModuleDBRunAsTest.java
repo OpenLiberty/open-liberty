@@ -117,10 +117,10 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        myServer.stopServer("CWWKS0005E");
         if (ldapServer != null) {
             ldapServer.stop();
         }
-        myServer.stopServer("CWWKS0005E");
     }
 
     @Before
@@ -243,7 +243,6 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
         verifyResponse(response, REALM2_USER, REALM2_REALM_NAME, null, REALM2_GROUPS, Constants.DB_USER2);
         httpclient.getConnectionManager().shutdown();
 
-        myServer.setMarkToEndOfLog();
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
