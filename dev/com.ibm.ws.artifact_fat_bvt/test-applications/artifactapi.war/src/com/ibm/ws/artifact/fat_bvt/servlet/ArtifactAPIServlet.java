@@ -412,6 +412,7 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("unused")
     private void dumpRecursive(int depth, FileSystem f, PrintWriter out) {
         String pad = "";
         for (int i = 0; i < depth; i++) {
@@ -1910,7 +1911,6 @@ public class ArtifactAPIServlet extends HttpServlet {
         boolean passed = true;
 
         // First need a ArtifactContainer
-        File dirFile = new File(dir);
         ArtifactContainer ArtifactContainer = getContainerForDirectory();
 
         // Test a sub-dir
@@ -3032,7 +3032,6 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
 
         /** {@inheritDoc} */
-        @SuppressWarnings("deprecation")
         @Override
         public String getPhysicalPath() {
             return null;
@@ -3072,6 +3071,7 @@ public class ArtifactAPIServlet extends HttpServlet {
             writer.println("FAIL: unable to obtain /a/aa/aa.txt from overlay");
             return false;
         }
+
         //overlaid retrieval
         ArtifactEntry acTxt = oc.getEntry("/a/ac/aa.txt");
         if (acTxt == null) {
@@ -3143,14 +3143,16 @@ public class ArtifactAPIServlet extends HttpServlet {
             writer.println("FAIL: unable to locate /c/b.jar in the overlay");
             return false;
         }
-        ArtifactContainer nestedNestedOpened = null;
+
         ArtifactContainer nestedOpened = nestedUnderOverlay.convertToContainer();
+        if (nestedOpened == null) {
+            writer.println("FAIL: unable to open /c/b.jar in the overlay as a ArtifactContainer");
+            return false;
+        }
+
         nestedOpened.useFastMode();
+
         try {
-            if (nestedOpened == null) {
-                writer.println("FAIL: unable to open /c/b.jar in the overlay as a ArtifactContainer");
-                return false;
-            }
             if (nestedOpened.getEnclosingContainer().getEntry("b.jar") == null) {
                 writer.println("FAIL: couldn't find self in parent for nested fs under overlay");
                 return false;
@@ -3162,23 +3164,27 @@ public class ArtifactAPIServlet extends HttpServlet {
                 writer.println("FAIL: unable to locate /bb/a.jar in nested b.jar in the overlay");
                 return false;
             }
-            nestedNestedOpened = nestedNestedUnderOverlay.convertToContainer();
-            nestedNestedOpened.useFastMode();
+
+            ArtifactContainer nestedNestedOpened = nestedNestedUnderOverlay.convertToContainer();
             if (nestedNestedOpened == null) {
                 writer.println("FAIL: unable to open /bb/a.jar in nested b.jar in the overlay as a ArtifactContainer");
                 return false;
             }
-            if (nestedNestedOpened.getEnclosingContainer().getEntry("a.jar") == null) {
-                writer.println("FAIL: couldn't find self in parent for nested nested fs under overlay");
-                return false;
-            }
-        } finally {
-            if (nestedOpened != null) {
-                nestedOpened.stopUsingFastMode();
-            }
-            if (nestedNestedOpened != null) {
+
+            nestedNestedOpened.useFastMode();
+
+            try {
+                if (nestedNestedOpened.getEnclosingContainer().getEntry("a.jar") == null) {
+                    writer.println("FAIL: couldn't find self in parent for nested nested fs under overlay");
+                    return false;
+                }
+
+            } finally {
                 nestedNestedOpened.stopUsingFastMode();
             }
+
+        } finally {
+            nestedOpened.stopUsingFastMode();
         }
 
         return true;
@@ -4578,6 +4584,7 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("unused")
     private void dumpContainerRecursive2(int depth, ArtifactContainer zc, String root, PrintWriter out) {
         out.println("Processing ArtifactContainer of class " + zc.getClass().getName());
         out.println("Container has path " + zc.getPath());
@@ -4588,12 +4595,10 @@ public class ArtifactAPIServlet extends HttpServlet {
             ArtifactContainer zc1 = e.convertToContainer();
             out.format("c?%7s %3d: %30s %s\n", Boolean.valueOf(zc1 != null).toString(), depth, root, e.getPath());
 
-            if (e.getPath().equals("/b/bb/a.jar")) {
-                //System.out.println("problem #1");
-                Iterator<ArtifactEntry> ei = zc1.iterator();
-            }
-
             if (zc1 != null) {
+                if (e.getPath().equals("/b/bb/a.jar")) {
+                    Iterator<ArtifactEntry> ei = zc1.iterator();
+                }
                 out.println("container class: " + e.getClass());
                 dumpContainerRecursive2(depth + 1, zc1, zc1.isRoot() ? e.getName() : root, out);
             }

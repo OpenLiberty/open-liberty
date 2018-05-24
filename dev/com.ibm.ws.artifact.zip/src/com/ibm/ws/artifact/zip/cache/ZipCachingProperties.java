@@ -544,4 +544,42 @@ public class ZipCachingProperties {
             ARTIFACT_ZIP_COLLECT_TIMINGS_PROPERTY_NAME,
             ARTIFACT_ZIP_COLLECT_TIMINGS_DEFAULT_VALUE);
     }
+
+    public static long initialTiming;
+
+    static {
+        initialTiming = (( ZIP_REAPER_COLLECT_TIMINGS || ARTIFACT_ZIP_COLLECT_TIMINGS) ? System.nanoTime() : -1L );
+    }
+
+    @Trivial
+    public static String toRelMilliSec(long baseNS, long actualNS, int pad) {
+        return toAbsSec((actualNS - baseNS) * 1000, pad);
+    }
+
+    @Trivial
+    public static String toAbsMilliSec(long eventAt, int pad) {
+        return ZipCachingProperties.toAbsSec(eventAt * 1000, pad);
+    }
+
+    @Trivial
+    public static String toRelMilliSec(long baseNS, long actualNS) {
+        return toAbsSec((actualNS - baseNS) * 1000);
+    }
+
+    @Trivial
+    public static String toAbsMilliSec(long eventAt) {
+        return ZipCachingProperties.toAbsSec(eventAt * 1000);
+    }
+
+    @Trivial
+    public static String dualTiming(long eventAt, long initialAt) {
+        return " [ " + toAbsMilliSec(eventAt) + "ms ]" +
+               " [ " + toAbsMilliSec(eventAt - initialAt) + "ms ]";
+    }
+
+    @Trivial
+    public static String dualTiming(long eventAt) {
+        return " [ " + toAbsMilliSec(eventAt) + "ms ]" +
+               " [ " + toAbsMilliSec(eventAt - initialTiming) + "ms ]";
+    }
 }

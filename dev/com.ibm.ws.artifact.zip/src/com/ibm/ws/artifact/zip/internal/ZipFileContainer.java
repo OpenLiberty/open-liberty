@@ -167,8 +167,22 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     public static final boolean COLLECT_TIMINGS =
         ZipCachingProperties.ARTIFACT_ZIP_COLLECT_TIMINGS;
 
+    @Trivial
+    private static String toAbsMilliSec(long eventAt) {
+        return ZipCachingProperties.toAbsMilliSec(eventAt);
+    }
+
+    @Trivial
+    private static String dualTiming(long eventAt) {
+    	return ZipCachingProperties.dualTiming(eventAt);
+    }
+
     private static enum Timings {
-        DataTime, MapTime, DataLookupTime, MapLookupTime; 
+        ARRAY_CREATE_TIME,
+        MAP_CREATE_TIME,
+        ARRAY_LOOKUP_TIME,
+        MAP_LOOKUP_TIME,
+        EXTRACT_TIME;
     }
 
     public static class TimingsLock {
@@ -179,6 +193,23 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     private static int[] timingCounts = ( COLLECT_TIMINGS ? new int[ Timings.values().length ] : null );
     private static long[] timingTotals= ( COLLECT_TIMINGS ? new long[ Timings.values().length ] : null );
 
+    static {
+        if ( COLLECT_TIMINGS ) {
+            System.out.println("ZFC Timings Key");
+            System.out.println("ZFC [ " + Timings.ARRAY_CREATE_TIME + " ] [ Time creating the zip entry data array ]");
+            System.out.println("ZFC [ " + Timings.MAP_CREATE_TIME + " ] [ Time creating zip entry data map ]");
+            System.out.println("ZFC [ " + Timings.ARRAY_LOOKUP_TIME + " ] [ Time doing array lookups ]");
+            System.out.println("ZFC [ " + Timings.MAP_LOOKUP_TIME + " ] [ Time doing map lookups ]");
+            System.out.println("ZFC [ " + Timings.EXTRACT_TIME + " ] [ Time extracting nested containers ]");
+        }
+    }
+
+    private static final int MAP_LOOKUP_FREQUENCY = 100;
+    private static final int ARRAY_LOOKUP_FREQUENCY = 100;
+
+    private static final int EXTRACT_FREQUENCY = 10;
+
+    @Trivial
     private static void record(
         Timings timing, long startTimeNs, long endTimeNs,
         String data, int frequency) {
@@ -195,14 +226,17 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
 
         if ( data != null ) {
-            String startText = ZipCachingProperties.toAbsSec(startTimeNs);
-            String durationText = ZipCachingProperties.toAbsSec(durationNs);
-            System.out.println("ZFC [ " + data + " ]: Timing [ " + timing + " ] Count [ " + newCount + " ] Next [ " + durationText + " ] at [ " + startText + " ]");
+            String startText = dualTiming(startTimeNs);
+            String durationText = toAbsMilliSec(durationNs);
+            System.out.println("ZFC [ " + data + " ] Timing [ " + timing + " ]" +
+                               " Count [ " + newCount + " ]" +
+                               " at [ " + startText + " ] Duration [ " + durationText + "ms ]");
         }
 
         if ( newCount % frequency == 0 ) {
-            String totalText = ZipCachingProperties.toAbsSec(newTotal);
-            System.out.println("ZFC: Timing [ " + timing + " ] Count [ " + newCount + " ] Total [ " + totalText + " ]");
+            String totalText = toAbsMilliSec(newTotal);
+            System.out.println("ZFC Timing [ " + timing + " ] Count [ " + newCount + " ]" +
+                               " Total Duration [ " + totalText + "ms ]");
         }
     }
 
@@ -250,7 +284,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
 
         if ( COLLECT_TIMINGS ) {
-            System.out.println("ZFC: Timings [ " + archiveFilePath + " ]");
+            System.out.println("ZFC ZipContainer [ " + archiveFilePath + " ]");
         }
     }
 
@@ -313,7 +347,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
 
         if ( COLLECT_TIMINGS ) {
-            System.out.println("ZFC: Timings [ " + enclosingContainer.getPath() + " : " + entryInEnclosingContainer.getName() + " ]");
+            System.out.println("ZFC ZipContainer [ " + enclosingContainer.getPath() + " : " + entryInEnclosingContainer.getName() + " ]");
         }
     }
 
@@ -801,23 +835,19 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         if ( zipEntryData == null ) {
             synchronized( zipEntryDataLock ) {
                 if ( zipEntryData == null ) {
+                    String timingName = (COLLECT_TIMINGS ? getTimingName() : null);
 
                     long dataStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
-                    String timingName = (COLLECT_TIMINGS ? getTimingName() : null);
                     ZipEntryData[] useZipEntryData = createZipEntryData();
                     if ( COLLECT_TIMINGS ) {
-                        record(Timings.DataTime, dataStart, System.nanoTime(), timingName, 1);
+                        record(Timings.ARRAY_CREATE_TIME, dataStart, System.nanoTime(), timingName, 1);
                     }
 
                     if ( USE_EXTRA_PATH_CACHE ) {
-                        if ( COLLECT_TIMINGS ) {
-                            System.out.println("ZFC: Timings [ " + archiveFilePath + " ]");
-                        }
-
                         long mapStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
                         zipEntryDataMap = ZipFileContainerUtils.setLocations(useZipEntryData);
                         if ( COLLECT_TIMINGS ) {
-                            record(Timings.MapTime, mapStart, System.nanoTime(), timingName, 1);
+                            record(Timings.MAP_CREATE_TIME, mapStart, System.nanoTime(), timingName, 1);
                         }
                     }
 
@@ -857,18 +887,19 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             long mapLookupStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
             ZipEntryData entryData = fastGetZipEntryData(r_path);
             if ( COLLECT_TIMINGS ) {
-                record(Timings.MapLookupTime, mapLookupStart, System.nanoTime(), null, 100);
+                record(Timings.MAP_LOOKUP_TIME, mapLookupStart, System.nanoTime(), null, MAP_LOOKUP_FREQUENCY);
             }
             if ( entryData != null ) {
                 return entryData.getOffset();
             }
         }
+
         // Have to fall back to the locate call: The path might be of a virtual
         // directory entry which is the parent of an entry.
         long lookupStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);        
         int location = ZipFileContainerUtils.locatePath( getZipEntryData(), r_path );
         if ( COLLECT_TIMINGS ) {
-            record(Timings.DataLookupTime, lookupStart, System.nanoTime(), null, 100);
+            record(Timings.ARRAY_LOOKUP_TIME, lookupStart, System.nanoTime(), null, ARRAY_LOOKUP_FREQUENCY);
         }
         return location;
     }
@@ -1449,6 +1480,8 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 Tr.debug(tc, "Primary extraction: [ " + outputPath + " ] (" + extractCase + ")");
             }
 
+            long extractStart = (COLLECT_TIMINGS ? System.nanoTime() : -1L);
+
             if ( doRemove ) {
                 deleteAll(outputFile);
             }
@@ -1458,6 +1491,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 setLastModified(inputEntry, outputFile, outputPath);
             }
 
+            if ( COLLECT_TIMINGS ) {
+                record(Timings.EXTRACT_TIME, extractStart, System.nanoTime(), null, EXTRACT_FREQUENCY);
+            }
+            
             return outputFile;
 
         } finally {
