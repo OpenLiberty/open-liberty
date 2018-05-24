@@ -78,7 +78,6 @@ public class HttpAuthenticationMechanismDBAuthDataTest extends JavaEESecTestBase
     @AfterClass
     public static void tearDown() throws Exception {
         myServer.stopServer();
-
     }
 
     @Before

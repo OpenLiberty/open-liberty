@@ -95,9 +95,6 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDown() throws Exception {
         myServer.stopServer();
-
-        myServer.setServerConfigurationFile("server.xml");
-
     }
 
     @Before
