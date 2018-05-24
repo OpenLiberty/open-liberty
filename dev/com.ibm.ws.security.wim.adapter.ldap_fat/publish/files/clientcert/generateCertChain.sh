@@ -8,13 +8,13 @@
 PASSWORD=security
 VALIDITY=3650
 
-ROOT_JKS=root.jks
-ROOT_PEM=root.pem
-ROOT_ALIAS=root
+ROOT_ALIAS=chain_root
+ROOT_JKS=${ROOT_ALIAS}.jks
+ROOT_PEM=${ROOT_ALIAS}.pem
 
-CA_JKS=ca.jks
-CA_PEM=ca.pem
-CA_ALIAS=ca
+CA_ALIAS=chain_ca
+CA_JKS=${CA_ALIAS}.jks
+CA_PEM=${CA_ALIAS}.pem
 
 USER_JKS=LDAPUser3.jks
 USER_PEM=LDAPUser3.pem
@@ -23,9 +23,9 @@ USER_ALIAS=ldapuser3
 rm -f ${ROOT_JKS} ${ROOT_PEM} ${CA_JKS} ${CA_PEM} ${USER_JKS} ${USER_PEM}
 
 # Generate private keys
-keytool -genkeypair -keystore ${ROOT_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${ROOT_ALIAS} -validity ${VALIDITY} -dname "cn=root"
-keytool -genkeypair -keystore ${CA_JKS}   -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${CA_ALIAS}   -validity ${VALIDITY} -dname "cn=ca"
-keytool -genkeypair -keystore ${USER_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${USER_ALIAS} -validity ${VALIDITY} -dname "cn=LDAPUser3,o=IBM,c=US"
+keytool -genkeypair -keyalg RSA -keystore ${ROOT_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${ROOT_ALIAS} -validity ${VALIDITY} -dname "cn=${ROOT_ALIAS}"
+keytool -genkeypair -keyalg RSA -keystore ${CA_JKS}   -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${CA_ALIAS}   -validity ${VALIDITY} -dname "cn=${CA_ALIAS}"
+keytool -genkeypair -keyalg RSA -keystore ${USER_JKS} -storepass ${PASSWORD} -keypass ${PASSWORD} -alias ${USER_ALIAS} -validity ${VALIDITY} -dname "cn=LDAPUser3,o=IBM,c=US"
 
 # Generate the root certificate
 keytool -exportcert -keystore ${ROOT_JKS} -storepass ${PASSWORD} -alias ${ROOT_ALIAS} -rfc > ${ROOT_PEM}
@@ -47,14 +47,15 @@ keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${ROOT_
 keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${CA_ALIAS}   -file ${CA_PEM}
 keytool -importcert -keystore ${USER_JKS}  -storepass ${PASSWORD} -alias ${USER_ALIAS} -file ${USER_PEM}
 
-rm -f ${ROOT_PEM}
+#rm -f ${ROOT_PEM}
 rm -f ${ROOT_JKS}
 #rm -f ${CA_PEM}
 rm -f ${CA_JKS}
-rm -f ${USER_PEM}
+#rm -f ${USER_PEM}
 
 echo
-echo "Install the root cert into any trust stores using the following command and then delete the 'root.pem' file:"
+echo "Install the CA cert into any trust stores using the following commands:"
 echo
+echo "   keytool -keystore <TRUSTSTORE> -storepass <PASSWORD> -delete -alias ${CA_ALIAS}"
 echo "   keytool -keystore <TRUSTSTORE> -storepass <PASSWORD> -importcert -trustcacerts -noprompt -alias ${CA_ALIAS} -file ${CA_PEM}"
 echo
