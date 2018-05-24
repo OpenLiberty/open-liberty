@@ -73,7 +73,8 @@ public class JSON4JArrayProvider implements MessageBodyWriter,
     @Override
     public boolean isWriteable(Class clazz, Type type,
                                Annotation[] annotations, MediaType mediaType) {
-        return ProviderUtils.getJSON4JClass("com.ibm.json.java.JSONArray").isAssignableFrom(clazz);
+        Class<?> JSONArray = ProviderUtils.getJSON4JClass("com.ibm.json.java.JSONArray");
+        return JSONArray != null && JSONArray.isAssignableFrom(clazz);
     }
 
     @Override
