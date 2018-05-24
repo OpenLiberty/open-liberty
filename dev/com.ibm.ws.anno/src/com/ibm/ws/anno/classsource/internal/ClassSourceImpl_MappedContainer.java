@@ -290,7 +290,7 @@ public class ClassSourceImpl_MappedContainer
                     // version in the first class source.
 
                     String nextClassName = getClassNameFromResourceName(nextPrefix);
-                    if ( !isValidPackageName(nextClassName) ) {
+                    if ( isJava9SpecificClass(nextClassName) ) {
                         Tr.debug(tc, MessageFormat.format("[ {0} ] Invalid class name [ {1} ]", 
                                                           new Object[] { getHashText(), nextClassName }));
                         continue;

@@ -15,8 +15,6 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Set;
 
-import javax.lang.model.SourceVersion;
-
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 
@@ -740,39 +738,33 @@ public abstract class ClassSourceImpl implements ClassSource {
         }
 
         return true;
-    }
+    } 
     
     /**
-     * Test validity using rules for Java classes and package names.
-     * @param name - simple class name or fully qualified class name.
-     * @return
+     *
+     * The intent of this method is to add toleration of Java V9 classes in multi-release
+     * JAR files.  Java V9 adds classes under the META-INF directory. This is a characteristic of
+     * multi-release JARs.  Java 9 also adds a file module-info.java which we want to allow, but 
+     * we don't want to scan these until support for Java 9 is added.  For now we want
+     * to just ignore all of these classes.
+     *
+     * @param name - simple class name,  (without .class suffix)
+     *               fully qualified class name, (example com.ibm.someClass OR com/ibm/someClass)
+     *               or simple directory name
+     *
+     * @return     - true if the name startsWith "META-INF" or ends with "module-info"
+     *             The "contains" test does not definitively confirm Java-9-multi-release-JAR specificity,
+     *             but for all intents and purposes, it works.  For example if we get a class name
+     *             or directory name that contains META-INF or module-info, but it's not really
+     *             a multi-release JAR case, well it's still not a valid class name or it's not
+     *             a valid directory name when it is part of a java package name.  Returning
+     *             true has the end result of the class being ignored.
      */
-    protected boolean isValidPackageName(String name) {
+    protected boolean isJava9SpecificClass(String name) {
 
-        // Normal validity test.
-        if ( SourceVersion.isName(name) ) {
+        // See method notes above. 
+        if (name.startsWith("META-INF") || name.endsWith("module-info")) {
             return true;
-        }
-
-        // TODO:  When Java 9 support is added, uncomment this:
-        //        if (name.equals("package-info")) {
-        //            return true;
-        //        }
-        
-        // "package-info" alone is a valid class name, but SourceVersion.isName() returns false 
-        // for the name "package-info".  Test for "package-info" separately and allow it to pass.        
-        if (name.equals("package-info")) {
-            return true;
-        }
-
-        // ".package-info" at the end of a fully qualified class name fails
-        // the SourceVersion.isName() test. However, it is valid.  Remove "package-info" 
-        // and test just the package name alone.
-        final String DOT_PACKAGE_INFO = ".package-info";
-        if (name.endsWith(DOT_PACKAGE_INFO)) {
-
-            String packageOnly = name.substring(0, name.length() - DOT_PACKAGE_INFO.length());
-            return SourceVersion.isName(packageOnly);
         }
 
         return false;
