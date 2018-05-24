@@ -91,6 +91,11 @@ public class ShrinkHelper {
      */
     public static void exportDropinAppToServer(LibertyServer server, Archive<?> a) throws Exception {
         exportToServer(server, "dropins", a);
+
+        String appName = a.getName();
+        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
+                        ? appName.substring(0, appName.length() - 4) : appName;
+        server.addInstalledAppForValidation(installedAppName);
     }
 
     /**
@@ -234,9 +239,7 @@ public class ShrinkHelper {
     public static WebArchive defaultDropinApp(LibertyServer server, String appName, String... packages) throws Exception {
         WebArchive app = buildDefaultApp(appName, packages);
         exportDropinAppToServer(server, app);
-        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
-                        ? appName.substring(0, appName.length() - 4) : appName;
-        server.addInstalledAppForValidation(installedAppName);
+
         return app;
     }
 
