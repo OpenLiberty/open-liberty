@@ -20,6 +20,9 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.ejbcontainer.cdi.jcdi.web.BeanManagerInjectionServlet;
+import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InjectMultiLocalEJBServlet;
+import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InterceptorIntegrationServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -29,9 +32,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import suite.r80.base.ejb31misc.jcdi.web.BeanManagerInjectionServlet;
-import suite.r80.base.ejb31misc.jcdi.web.InjectMultiLocalEJBServlet;
-import suite.r80.base.ejb31misc.jcdi.web.InterceptorIntegrationServlet;
 
 @RunWith(FATRunner.class)
 public class EJBxCDITest extends FATServletClient {
@@ -49,10 +49,10 @@ public class EJBxCDITest extends FATServletClient {
     public static void setUp() throws Exception {
 
         //Use ShrinkHelper to build the Ear
-        JavaArchive EJB31JCDIBeanjar = ShrinkHelper.buildJavaArchive("EJB31JCDIBean.jar", "suite.r80.base.ejb31misc.jcdi.ejb.");
-        JavaArchive EJB31InterceptorJCDIBean = ShrinkHelper.buildJavaArchive("EJB31InterceptorJCDIBean.jar", "suite.r80.base.ejb31misc.jcdi.ejb_int.");
-        JavaArchive EJB31NonJCDIBean = ShrinkHelper.buildJavaArchive("EJB31NonJCDIBean.jar", "suite.r80.base.ejb31misc.jcdi.ejb2.");
-        WebArchive EJB31JCDIWeb = ShrinkHelper.buildDefaultApp("EJB31JCDIWeb.war", "suite.r80.base.ejb31misc.jcdi.web.");
+        JavaArchive EJB31JCDIBeanjar = ShrinkHelper.buildJavaArchive("EJB31JCDIBean.jar", "com.ibm.ws.ejbcontainer.cdi.jcdi.ejb.");
+        JavaArchive EJB31InterceptorJCDIBean = ShrinkHelper.buildJavaArchive("EJB31InterceptorJCDIBean.jar", "com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.");
+        JavaArchive EJB31NonJCDIBean = ShrinkHelper.buildJavaArchive("EJB31NonJCDIBean.jar", "com.ibm.ws.ejbcontainer.cdi.jcdi.ejb2.");
+        WebArchive EJB31JCDIWeb = ShrinkHelper.buildDefaultApp("EJB31JCDIWeb.war", "com.ibm.ws.ejbcontainer.cdi.jcdi.web.");
         EnterpriseArchive EJB31JCDITestApp = ShrinkWrap.create(EnterpriseArchive.class, "EJB31JCDITestApp.ear");
         EJB31JCDITestApp.addAsModule(EJB31JCDIBeanjar).addAsModule(EJB31InterceptorJCDIBean).addAsModule(EJB31NonJCDIBean).addAsModule(EJB31JCDIWeb);
         ShrinkHelper.addDirectory(EJB31JCDITestApp, "test-applications/EJB31JCDITestApp.ear/resources");

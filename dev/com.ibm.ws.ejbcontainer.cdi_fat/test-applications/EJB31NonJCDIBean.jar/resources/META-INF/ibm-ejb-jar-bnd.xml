@@ -4,7 +4,7 @@
              version="1.0">
 
   <session name="BasicStatelessNonJcdi">
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb.BeanManagerLocal" binding-name="ejblocal:BasicStatelessNonJcdi"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb.BeanManagerLocal" binding-name="ejblocal:BasicStatelessNonJcdi"/>
   </session>
 
 </ejb-jar-bnd>

@@ -21,6 +21,10 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.ejbcontainer.injection.ann.web.SFEnvInjectionServlet;
+import com.ibm.ws.ejbcontainer.injection.ann.web.SFRemoteEnvInjectionServlet;
+import com.ibm.ws.ejbcontainer.injection.ann.web.SLEnvInjectionServlet;
+import com.ibm.ws.ejbcontainer.injection.ann.web.SLRmtServEnvInjectionServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -29,10 +33,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import suite.r70.base.injection.ann.web.SFEnvInjectionServlet;
-import suite.r70.base.injection.ann.web.SFRemoteEnvInjectionServlet;
-import suite.r70.base.injection.ann.web.SLEnvInjectionServlet;
-import suite.r70.base.injection.ann.web.SLRmtServEnvInjectionServlet;
 
 @RunWith(FATRunner.class)
 public class RemoteInjectionTest {
@@ -51,8 +51,8 @@ public class RemoteInjectionTest {
     public static void beforeClass() throws Exception {
         //Use ShrinkHelper to build the Ear
 
-        JavaArchive EJB3INJSABeanJar = ShrinkHelper.buildJavaArchive("EJB3INJSABean.jar", "suite.r70.base.injection.ann.ejb.");
-        WebArchive EJB3INJSAWeb = ShrinkHelper.buildDefaultApp("EJB3INJSAWeb.war", "suite.r70.base.injection.ann.web.");
+        JavaArchive EJB3INJSABeanJar = ShrinkHelper.buildJavaArchive("EJB3INJSABean.jar", "com.ibm.ws.ejbcontainer.injection.ann.ejb.");
+        WebArchive EJB3INJSAWeb = ShrinkHelper.buildDefaultApp("EJB3INJSAWeb.war", "com.ibm.ws.ejbcontainer.injection.ann.web.");
 
         EnterpriseArchive EJB3INJSATestApp = ShrinkWrap.create(EnterpriseArchive.class, "EJB3INJSATestApp.ear");
         EJB3INJSATestApp.addAsModule(EJB3INJSABeanJar).addAsModule(EJB3INJSAWeb);
