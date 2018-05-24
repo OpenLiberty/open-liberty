@@ -151,6 +151,6 @@ public interface WebAppSecurityConfig {
 
     String getJaspicSessionCookieName();
 
-    boolean isJaspicSessionForMechanismsEnabled();
+    boolean isJaspicSessionEnabled();
 
 }
