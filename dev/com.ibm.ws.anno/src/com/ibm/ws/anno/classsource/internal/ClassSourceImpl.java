@@ -740,6 +740,8 @@ public abstract class ClassSourceImpl implements ClassSource {
         return true;
     } 
     
+
+    private static final int META_INF_LENGTH = "META-INF".length();   
     /**
      *
      * The intent of this method is to add toleration of Java V9 classes in multi-release
@@ -753,19 +755,22 @@ public abstract class ClassSourceImpl implements ClassSource {
      *               or simple directory name
      *
      * @return     - true if the name startsWith "META-INF" or ends with "module-info"
-     *             The "contains" test does not definitively confirm Java-9-multi-release-JAR specificity,
-     *             but for all intents and purposes, it works.  For example if we get a class name
-     *             or directory name that contains META-INF or module-info, but it's not really
-     *             a multi-release JAR case, well it's still not a valid class name or it's not
-     *             a valid directory name when it is part of a java package name.  Returning
+     *             The startsWith & endsWith tests do not definitively confirm Java-9 specificity,
+     *             but for all intents and purposes, it does what we want.  For example if we get a 
+     *             class name or directory name that starts with META-INF or ends with module-info, 
+     *             but it's not really a Java 9 case, well it's still not a valid class name or it's not
+     *             a valid directory name that could be part of a java package name.  Returning
      *             true has the end result of the class being ignored.
      */
     protected boolean isJava9SpecificClass(String name) {
 
-        // See method notes above. 
-        if (name.startsWith("META-INF") || name.endsWith("module-info")) {
+        if ( ( name.length() >= META_INF_LENGTH ) && name.regionMatches(true, 0, "META_INF", 0, META_INF_LENGTH) ) {
+            return true; // Starts with "META-INF" ignoring case
+        }        
+
+        if ( name.endsWith("module-info") ) {
             return true;
-        }
+        }        
 
         return false;
     }
