@@ -210,13 +210,16 @@ public class InjectInjectionObjectFactory {
             Object[] referencesArray = references.toArray(new Object[references.size()]);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 StringBuilder exitStringBuilder = new StringBuilder("[");
+                boolean first = true;
                 for (Object object : referencesArray){ 
+                    if(!first){
+                        exitStringBuilder.append(", ");
+                    }
+                    else first = false;
                     exitStringBuilder.append(Util.identity(object));
-                    exitStringBuilder.append(", ");
                 }
-                String exitString = exitStringBuilder.toString();
-                String finalExitString = exitString.substring(0,exitString.length()-2) + "]";
-                Tr.exit(tc, "getObjectInstance", finalExitString);
+                exitStringBuilder.append("]");
+                Tr.exit(tc, "getObjectInstance", exitStringBuilder.toString());
             }
             return referencesArray;
         }
