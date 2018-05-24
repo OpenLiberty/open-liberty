@@ -33,13 +33,23 @@ public class CommonJwtFat extends CommonSecurityFat {
     }
 
     protected static void deployTestMarkerApp(LibertyServer server) throws Exception {
+        // testmarker app goes into dropins so we don't have to specifically configure it in server.xml
         ShrinkHelper.exportDropinAppToServer(server, getTestMarkerApp());
         server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
     }
 
     protected static void deployFormLoginApp(LibertyServer server) throws Exception {
-        ShrinkHelper.exportAppToServer(server, getFormLoginApp());
-        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        deployApp(server, getFormLoginApp(), JwtFatConstants.APP_FORMLOGIN);
+    }
+
+    protected static void buildAndDeployApp(LibertyServer server, String appName, String... packages) throws Exception {
+        WebArchive jwtBuilderApp = ShrinkHelper.buildDefaultApp(appName, packages);
+        deployApp(server, jwtBuilderApp, appName);
+    }
+
+    protected static void deployApp(LibertyServer server, WebArchive app, String appName) throws Exception {
+        ShrinkHelper.exportAppToServer(server, app);
+        server.addInstalledAppForValidation(appName);
     }
 
     private static WebArchive getTestMarkerApp() throws Exception {

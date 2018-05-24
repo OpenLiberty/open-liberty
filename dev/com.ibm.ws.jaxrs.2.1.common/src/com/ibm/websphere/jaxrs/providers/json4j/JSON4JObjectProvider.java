@@ -75,7 +75,8 @@ public class JSON4JObjectProvider implements MessageBodyWriter,
     @Override
     public boolean isWriteable(Class clazz, Type type,
                                Annotation[] annotations, MediaType mediaType) {
-        return ProviderUtils.getJSON4JClass("com.ibm.json.java.JSONObject").isAssignableFrom(clazz);
+        Class<?> JSONObject = ProviderUtils.getJSON4JClass("com.ibm.json.java.JSONObject");
+        return JSONObject != null && JSONObject.isAssignableFrom(clazz);
     }
 
     @Override

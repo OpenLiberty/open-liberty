@@ -1,0 +1,41 @@
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: CouchDB
+Bundle-SymbolicName: com.ibm.ws.couchdb
+Bundle-Description: Integration with CouchDB; version=${bVersion}
+
+WS-TraceGroup: couchdb
+
+Import-Package: \
+	*	
+
+Private-Package:\
+     com.ibm.ws.couchdb.*
+
+Include-Resource:\
+    OSGI-INF=resources/OSGI-INF
+
+Service-Component:\
+  com.ibm.ws.couchdb.couchdb;\
+    provide:='com.ibm.ws.couchdb.internal.CouchDbService,com.ibm.wsspi.resource.ResourceFactory,com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent';\
+    implementation:=com.ibm.ws.couchdb.internal.CouchDbService;\
+    configuration-policy:=require; \
+    appRecycleService=com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;\
+    library='com.ibm.wsspi.library.Library';\
+    properties:='\
+      library.target=(id=unbound),\
+      creates.objectClass=|org.ektorp.CouchDbInstance'
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

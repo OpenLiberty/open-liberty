@@ -15,6 +15,8 @@
     <include location="${shared.config.dir}/formloginApp.xml" />
     <include location="../fatTestPorts.xml"/>
 
+    <authentication cacheEnabled="false"/>
+
     <jwtSso  setCookieSecureFlag="false"/>
 
     <basicRegistry realm="BasicRealm">

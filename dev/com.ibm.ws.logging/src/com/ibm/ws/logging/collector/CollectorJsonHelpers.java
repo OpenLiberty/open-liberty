@@ -424,7 +424,7 @@ public class CollectorJsonHelpers {
 
     public static void handleExtensions(KeyValuePairList extensions, String extKey, String extValue) {
         extKey = LogFieldConstants.EXT_PREFIX + extKey;
-        if (extKey.indexOf('_', extKey.length() - 6) != -1) {
+        if (extKey.indexOf('_', 4) != -1) {
             if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
                 try {
                     extensions.addPair(extKey, Integer.parseInt(extValue));

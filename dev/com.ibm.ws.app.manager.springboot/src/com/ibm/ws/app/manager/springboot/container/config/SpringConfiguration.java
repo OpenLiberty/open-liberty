@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 public class SpringConfiguration {
     private LinkedHashSet<SpringErrorPageData> errorPages = new LinkedHashSet<>();
+    private final HashMap<String, String> mimeMappings = new HashMap<String, String>();
 
     public HashSet<SpringErrorPageData> getErrorPages() {
         return errorPages;
@@ -29,8 +31,21 @@ public class SpringConfiguration {
         this.errorPages = errorPages;
     }
 
+    public void addMimeMapping(String extension, String type) {
+        mimeMappings.put(extension, type);
+    }
+
+    public HashMap<String, String> getMimeMappings() {
+        return mimeMappings;
+    }
+
     @Override
     public String toString() {
-        return errorPages.stream().map(Object::toString).collect(Collectors.joining(", "));
+        return String.join("",
+                           "Error pages = [",
+                           errorPages.stream().map(Object::toString).collect(Collectors.joining(", ")),
+                           "]; Mime mappings = [",
+                           mimeMappings.toString(),
+                           "]");
     }
 }

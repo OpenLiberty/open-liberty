@@ -17,7 +17,12 @@
          ibm:alias="administrator-role" ibm:objectClass="com.ibm.ws.management.security.ManagementRole">
         <AD id="user" name="%role.user" description="%role.user.desc"
             required="false" type="String" cardinality="2147483647" />
+        <AD id="user-access-id" name="%role.userAccessId" description="%role.userAccessId.desc"
+            required="false" type="String" cardinality="2147483647" />
+        
         <AD id="group" name="%role.group" description="%role.group.desc"
+            required="false" type="String" cardinality="2147483647" />
+     	<AD id="group-access-id" name="%role.groupAccessId" description="%role.groupAccessId.desc"
             required="false" type="String" cardinality="2147483647" />
     </OCD>
 

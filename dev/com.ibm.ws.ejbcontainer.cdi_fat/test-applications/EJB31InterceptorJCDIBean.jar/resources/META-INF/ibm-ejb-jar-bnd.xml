@@ -4,27 +4,27 @@
              version="1.0">
 
   <session name="NoInterceptorBasicStateless">
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:NoInterceptorBasicStateless"/>
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/NoInterceptorBasicStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:NoInterceptorBasicStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/NoInterceptorBasicStateless"/>
   </session>
 
   <session name="EJBInterceptorStateless">
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:EJBInterceptorStateless"/>
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/EJBInterceptorStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:EJBInterceptorStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/EJBInterceptorStateless"/>
   </session>
 
   <session name="CDIInterceptorStateless">
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:CDIInterceptorStateless"/>
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/CDIInterceptorStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:CDIInterceptorStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/CDIInterceptorStateless"/>
   </session>
 
   <session name="BothInterceptorStateless">
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:BothInterceptorStateless"/>
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/BothInterceptorStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorLocal" binding-name="ejblocal:BothInterceptorStateless"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorRemote" binding-name="ejb/BothInterceptorStateless"/>
   </session>
 
   <session name="BothInterceptorStateful">
-    <interface class="suite.r80.base.ejb31misc.jcdi.ejb_int.InterceptorStatefulLocal" binding-name="ejblocal:BothInterceptorStateful"/>
+    <interface class="com.ibm.ws.ejbcontainer.cdi.jcdi.ejb_int.InterceptorStatefulLocal" binding-name="ejblocal:BothInterceptorStateful"/>
   </session>
 
 </ejb-jar-bnd>

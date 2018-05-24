@@ -25,23 +25,23 @@ public interface ManagementRole {
 
     /**
      * Answers the name of the role.
-     * 
+     *
      * @return The role name. Must not be {@code null}.
      */
     String getRoleName();
 
     /**
-     * Answers the set of users assigned this role.
-     * If no users are assigned, an empty set shall be returned.
-     * 
-     * @return A Set of group names. Must not be {@code null}.
+     * Answers the set of users or accessIds assigned this role.
+     * If no users and accessIds are assigned, an empty set shall be returned.
+     *
+     * @return A Set of user names. Must not be {@code null}.
      */
     Set<String> getUsers();
 
     /**
-     * Answers the set of groups assigned this role.
-     * If no groups are assigned, an empty set shall be returned.
-     * 
+     * Answers the set of groups or accessIds assigned this role.
+     * If no groups and accessIds are assigned, an empty set shall be returned.
+     *
      * @return A Set of group names. Must not be {@code null}.
      */
     Set<String> getGroups();

@@ -800,7 +800,7 @@ public class BasicHttpAuthenticationMechanismTest {
     private BasicHttpAuthenticationMechanismTest withJaspicSessionEnabled(final boolean enabled) {
         mockery.checking(new Expectations() {
             {
-                allowing(webAppSecurityConfig).isJaspicSessionForMechanismsEnabled();
+                allowing(webAppSecurityConfig).isJaspicSessionEnabled();
                 will(returnValue(enabled));
             }
         });

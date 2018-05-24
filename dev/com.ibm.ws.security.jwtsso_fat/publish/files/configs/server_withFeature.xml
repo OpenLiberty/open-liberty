@@ -18,4 +18,6 @@
 
     <jwtSso setCookieSecureFlag="false" />
 
+    <authentication cacheEnabled="false"/>
+
 </server>

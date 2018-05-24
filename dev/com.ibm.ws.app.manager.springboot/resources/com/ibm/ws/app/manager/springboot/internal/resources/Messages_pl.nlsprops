@@ -36,13 +36,25 @@ warning.could.not.thin.application.explanation=Nie mo\u017cna przekszta\u0142ci\
 warning.could.not.thin.application.useraction=Spr\u00f3buj rozwi\u0105za\u0107 problem zg\u0142oszony w komunikacie o wyj\u0105tku i zrestartuj serwer lub zaktualizuj aplikacj\u0119. 
 
 error.need.springboot.version.15=CWWKC0252E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. Aplikacja wymaga skonfigurowania sk\u0142adnika springBoot-1.5.
-error.need.springboot.version.15.explanation= Aplikacja wymaga sk\u0142adnika Spring Boot 1.5, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. 
-error.need.springboot.version.15.useraction= W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-1.5.
+error.need.springboot.version.15.explanation=Aplikacja wymaga sk\u0142adnika Spring Boot 1.5, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot.  
+error.need.springboot.version.15.useraction=W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-1.5.
 
 error.need.springboot.version.20=CWWKC0253E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. Aplikacja wymaga skonfigurowania sk\u0142adnika springBoot-2.0.
-error.need.springboot.version.20.explanation= Aplikacja wymaga sk\u0142adnika Spring Boot 2.0, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. 
-error.need.springboot.version.20.useraction= W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-2.0.
+error.need.springboot.version.20.explanation=Aplikacja wymaga sk\u0142adnika Spring Boot 2.0, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot.  
+error.need.springboot.version.20.useraction=W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-2.0.
 
-error.missing.servlet=CWWKC0254E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c wymaga ona skonfigurowania sk\u0142adnika Servlet w pliku server.xml. Konieczne jest skonfigurowanie sk\u0142adnika servlet-3.1 lub servlet-4.0.
-error.missing.servlet.explanation= Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika Servlet w pliku server.xml.
-error.missing.servlet.useraction= W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik servlet-3.1 lub servlet-4.0.
+error.missing.servlet=CWWKC0254E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c wymaga ona skonfigurowania sk\u0142adnika Servlet w pliku server.xml.
+error.missing.servlet.explanation=Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika Servlet w pliku server.xml.
+error.missing.servlet.useraction=W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik Servlet.
+
+error.multiple.applications.not.allowed=CWWKC0255E: Nie mo\u017cna uruchomi\u0107 aplikacji Spring Boot {0}, poniewa\u017c jest ju\u017c aktywna aplikacja {1}. W tej samej konfiguracji serwera nie mo\u017cna skonfigurowa\u0107 wielu aplikacji Spring Boot.
+error.multiple.applications.not.allowed.explanation=Konfigurowanie wielu aplikacji Spring Boot w tej samej konfiguracji serwera nie jest obs\u0142ugiwane.
+error.multiple.applications.not.allowed.useraction=Skonfiguruj tylko jedn\u0105 aplikacj\u0119 Spring Boot na konfiguracj\u0119 serwera.
+
+error.no.manifest.found=CWWKC0256E: Nie znaleziono pliku META-INF/MANIFEST.MF dla aplikacji Spring Boot {0}.
+error.no.manifest.found.explanation=Aplikacje Spring Boot musz\u0105 zawiera\u0107 plik META-INF/MANIFEST.MF.
+error.no.manifest.found.useraction=Skonfiguruj z serwerem poprawn\u0105 aplikacj\u0119 Spring Boot, kt\u00f3ra zawiera plik META-INF/MANIFEST.MF.
+
+error.no.spring.class.found=CWWKC0257E: W pliku META-INF/MANIFEST.MF aplikacji Spring Boot musi by\u0107 podany nag\u0142\u00f3wek Start-Class.
+error.no.spring.class.found.explanation=Aplikacja Spring Boot musi zawiera\u0107 klas\u0119 main wskazan\u0105 przez nag\u0142\u00f3wek manifestu Start-Class.
+error.no.spring.class.found.useraction=Skonfiguruj z serwerem poprawn\u0105 aplikacj\u0119 Spring Boot, kt\u00f3ra zawiera nag\u0142\u00f3wek manifestu Start-Class.

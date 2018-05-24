@@ -113,9 +113,9 @@ public class SSOAuthenticator implements WebAuthenticator {
         }
 
         authResult = handleJwtSSO(req, res);
-        // If there is a jwtSSOToken in a request, fallback to LTPA will not be allowed.
-        // If there is NO jwtSSOToken in a request and shouldFallbackToLtpaCookie is true, fall back to LTPA will be allowed
-        if (authResult != null || !JwtSSOTokenHelper.shouldFallbackToLtpaCookie()) {
+        // If there is a jwtSSOToken in a request, use LTPA will not be allowed.
+        // If there is NO jwtSSOToken in a request and shouldUseLtpaIfJwtAbsent is true, use LTPA will be allowed
+        if (authResult != null || !JwtSSOTokenHelper.shouldUseLtpaIfJwtAbsent()) {
             return authResult;
         }
 
@@ -158,7 +158,7 @@ public class SSOAuthenticator implements WebAuthenticator {
 
     /**
      * If there is no jwtSSOToken, we will return null. Otherwise, we will AuthenticationResult.
-     * 
+     *
      * @param cookies
      * @return
      */

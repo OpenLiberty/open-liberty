@@ -14,7 +14,8 @@ bVersion=1.0
 src: \
     fat/src, \
     test-applications/testmarker/src, \
-    test-applications/formlogin/src
+    test-applications/formlogin/src, \
+    test-applications/jwtbuilder/src
 
 test.project: true
 
@@ -33,5 +34,7 @@ test.project: true
     net.sourceforge.htmlunit:htmlunit;version=2.27,\
     com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
     com.ibm.websphere.security;version=latest, \
-    com.ibm.ws.security.token;version=latest
+    com.ibm.ws.security.token;version=latest, \
+    com.ibm.ws.security.jwt;version=latest, \
+    com.ibm.ws.common.encoder;version=latest
     

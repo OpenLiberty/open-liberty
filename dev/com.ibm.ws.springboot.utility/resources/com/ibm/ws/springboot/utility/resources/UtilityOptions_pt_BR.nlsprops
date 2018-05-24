@@ -48,7 +48,7 @@ help.usage.options=\t{0} help [actionName]
 #------------------------------\n at 72 chars -------------------------\n\#
 #------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
-thin.desc=\tCrie um aplicativo thin para ser usado pela configura\u00e7\u00e3o do servidor.
+thin.desc=\tCrie um aplicativo thin para ser usado pela configura\u00e7\u00e3o do servidor. 
 #Note to translator the word "thin" should not be translated
 thin.usage.options=\t{0} thin --sourceAppPath=path [options]
 

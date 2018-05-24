@@ -70,21 +70,23 @@ public class CookieProcessingTests extends CommonJwtFat {
      * @throws Exception
      */
     void doHappyPath() throws Exception {
-        expectations = new Expectations();
-        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
         wc = new WebClient();
-        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl); // get back the login page
-        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
 
-        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl));
-        expectations.addExpectation(new CookieExpectation(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, wc, JwtFatConstants.JWT_COOKIE_NAME, ".+", JwtFatConstants.NOT_SECURE, JwtFatConstants.HTTPONLY));
-        expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, JwtFatConstants.JWT_COOKIE_NAME,
-                                                                                                defaultUser, JwtFatConstants.BASIC_REALM));
-        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+        expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+        response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl); // get back the login page
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+        expectations.addExpectations(CommonExpectations.successfullyReachedUrl(currentAction, protectedUrl));
+        expectations.addExpectation(new CookieExpectation(currentAction, wc, JwtFatConstants.JWT_COOKIE_NAME, ".+", JwtFatConstants.NOT_SECURE, JwtFatConstants.HTTPONLY));
+        expectations.addExpectations(CommonExpectations.getResponseTextExpectationsForJwtCookie(currentAction, JwtFatConstants.JWT_COOKIE_NAME, defaultUser));
+        expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
 
         response = actions.doFormLogin(response, JwtFatConstants.TESTUSER, JwtFatConstants.TESTUSERPWD);
         // confirm protected resource was accessed
-        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+        validationUtils.validateResult(response, currentAction, expectations);
     }
 
     /**
@@ -231,6 +233,43 @@ public class CookieProcessingTests extends CommonJwtFat {
         // CWWKS9126A: Authentication using a JSON Web Token did not succeed because the token was previously logged out.
         String errorMsg = server.waitForStringInLogUsingMark("CWWKS9126A", 100);
         assertFalse("Did not find expected replay warning message CWWKS9126A in log", errorMsg == null);
+    }
+
+    /**
+     * Test that when a JWT token is sent in the auth header instead of in a cookie,
+     * we accept it same as if we sent a cookie.
+     *
+     * Since the option to respect the type of application_auth is not specified
+     * in the mpJwt configuration, any application will be accessed directly
+     * without going through login page, basic challenge, etc.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void test_TokenInAuthHeader() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+
+        // get jwt token from token endpoint.
+        String tokenEndpointUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() +
+                                  "/jwt/ibm/api/defaultJwtSso/token";
+        wc = new WebClient();
+        wc.getOptions().setUseInsecureSSL(true);
+        response = actions.invokeUrlWithBasicAuth(testName.getMethodName(), wc, tokenEndpointUrl, defaultUser, defaultPassword);
+        String responseStr = response.getWebResponse().getContentAsString();
+        Log.info(thisClass, "", "received this from token endpoint: " + responseStr);
+        // strip json
+        String token = responseStr.replace("{\"token\": ", "").replaceAll("\"}", "");
+        Log.info(thisClass, "", "parsed token: " + token);
+
+        wc = new WebClient();
+        response = actions.invokeUrlWithBearerToken(testName.getMethodName(), wc, protectedUrl, token);
+
+        // should be able to reach protected page, skipping login form
+        responseStr = response.getWebResponse().getContentAsString();
+        boolean check2 = responseStr.contains("SimpleServlet");
+        assertTrue("Did not successfully access the protected resource", check2);
+
     }
 
     //TODO: more tests for multiple cookies on non-root path

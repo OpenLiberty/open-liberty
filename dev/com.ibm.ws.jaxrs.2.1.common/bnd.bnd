@@ -36,7 +36,7 @@ Export-Package: \
 
 
 Import-Package: \
-  com.ibm.json.java,\
+  com.ibm.json.java;resolution:=optional,\
   *
 # !com.wordnik.swagger.jaxrs.config, \
 # !com.wordnik.swagger.jaxrs.listing, \

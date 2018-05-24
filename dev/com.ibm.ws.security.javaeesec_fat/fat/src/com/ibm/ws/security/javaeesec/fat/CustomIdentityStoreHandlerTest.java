@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 201 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,11 +78,10 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        myServer.stopServer();
         if (ldapServer != null) {
             ldapServer.stop();
         }
-        myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
 
     }
 
@@ -116,7 +115,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
      * <LI> Veirfy the customidentitystorehandler is loaded.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testCustomIDSHandlerBAWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -146,7 +145,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testCustomIDSHandlerBAWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -199,7 +198,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
      * <LI> Return code 401
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @Test
     public void testCustomIDSHandlerBANoCred_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -242,7 +241,7 @@ public class CustomIdentityStoreHandlerTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testCustomIDSHandlerBAWith1st2ndFail_DeniedAccess() throws Exception {

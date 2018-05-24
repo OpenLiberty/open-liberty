@@ -168,7 +168,7 @@ public class WebAppSecurityConfigImplTest {
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(createMapChanged(), locationAdminRef, securityServiceRef);
 
         assertEquals("When all settings have changed, all should be listed",
-                     "allowFailOverToBasicAuth=false,autoGenSsoCookieName=true,basicAuthenticationMechanismRealmName=newRealm,contextRootForFormAuthenticationMechanism=/modified,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionForMechanismsEnabled=false,loginErrorURL=modifiedLoginError,overrideHttpAuthMethod=modified,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
+                     "allowFailOverToBasicAuth=false,autoGenSsoCookieName=true,basicAuthenticationMechanismRealmName=newRealm,contextRootForFormAuthenticationMechanism=/modified,displayAuthenticationRealm=true,jaspicSessionCookieName=myJaspicSession,jaspicSessionEnabled=false,loginErrorURL=modifiedLoginError,overrideHttpAuthMethod=modified,ssoCookieName=mySSOCookie,ssoDomainNames=,webAlwaysLogin=false",
                      webCfg.getChangedProperties(webCfgOld));
     }
 
@@ -191,7 +191,7 @@ public class WebAppSecurityConfigImplTest {
                 put("autoGenSsoCookieName", Boolean.FALSE);
                 put("ssoDomainNames", "austin.ibm.com|raleigh.ibm.com|useDomainFromURL");
                 put("webAlwaysLogin", Boolean.TRUE);
-                put("jaspicSessionForMechanismsEnabled", Boolean.TRUE);
+                put("jaspicSessionEnabled", Boolean.TRUE);
                 put("jaspicSessionCookieName", "jaspicSession");
                 put("loginErrorURL", "originalLoginError");
                 put("contextRootForFormAuthenticationMechanism", "/original");
@@ -211,7 +211,7 @@ public class WebAppSecurityConfigImplTest {
                 put("autoGenSsoCookieName", Boolean.TRUE);
                 put("ssoDomainNames", "");
                 put("webAlwaysLogin", Boolean.FALSE);
-                put("jaspicSessionForMechanismsEnabled", Boolean.FALSE);
+                put("jaspicSessionEnabled", Boolean.FALSE);
                 put("jaspicSessionCookieName", "myJaspicSession");
                 put("loginErrorURL", "modifiedLoginError");
                 put("contextRootForFormAuthenticationMechanism", "/modified");
@@ -274,8 +274,8 @@ public class WebAppSecurityConfigImplTest {
     }
 
     @Test
-    public void getChangedProperties_jaspicSessionForMechanismsEnabled() {
-        driveSingleAttributeTest("jaspicSessionForMechanismsEnabled",
+    public void getChangedProperties_jaspicSessionEnabled() {
+        driveSingleAttributeTest("jaspicSessionEnabled",
                                  Boolean.TRUE, Boolean.FALSE);
     }
 
@@ -397,12 +397,12 @@ public class WebAppSecurityConfigImplTest {
     }
 
     @Test
-    public void testIsJaspicSessionForMechanismsEnabled() {
+    public void testIsJaspicSessionEnabled() {
         Boolean expectedValue = Boolean.TRUE;
         Map<String, Object> cfg = new HashMap<String, Object>();
-        cfg.put("jaspicSessionForMechanismsEnabled", expectedValue);
+        cfg.put("jaspicSessionEnabled", expectedValue);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef);
-        assertEquals("The jaspicSessionForMechanismsEnabled value must be set.", expectedValue, webCfg.isJaspicSessionForMechanismsEnabled());
+        assertEquals("The jaspicSessionEnabled value must be set.", expectedValue, webCfg.isJaspicSessionEnabled());
     }
 
     @Test

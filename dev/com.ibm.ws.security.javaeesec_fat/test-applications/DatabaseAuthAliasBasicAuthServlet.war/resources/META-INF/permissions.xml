@@ -19,5 +19,25 @@
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>wssecurity.getRunAsSubject</name>
    </permission>
+   
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+   
+
+   <permission>
+      <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+      <name>* * "*"</name>
+      <actions>read</actions>
+   </permission>
+
+   <!-- this is for java.io.PrintWriter.write in FlexibleBaseNoJavaEESecServlet.class -->
+   <permission>
+      <class-name>java.net.SocketPermission</class-name>
+      <name>127.0.0.1</name>
+      <actions>resolve</actions>
+   </permission>
 
 </permissions>

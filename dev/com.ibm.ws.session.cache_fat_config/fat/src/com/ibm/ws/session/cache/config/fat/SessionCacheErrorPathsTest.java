@@ -234,7 +234,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         } finally {
             server.stopServer("SRVE8059E", // An unexpected exception occurred when trying to retrieve the session context java.lang.RuntimeException: Internal Server Error
                               "SESN0307E", // An exception occurred when trying to initialize the cache. Exception is javax.cache.CacheException: Error opening URI
-                              "SRVE0297E.*NullPointerException" // TODO fails when WebApp.destroy/SessionContext.stop invoked after deactivate
+                              "SRVE0297E.*NullPointerException" // We get this if the serialization service is unavailable during the post-servlet processing due to the web app being taken down
             );
         }
     }

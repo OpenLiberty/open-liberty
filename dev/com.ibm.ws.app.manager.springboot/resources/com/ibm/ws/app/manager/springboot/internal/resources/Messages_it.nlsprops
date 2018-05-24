@@ -36,13 +36,25 @@ warning.could.not.thin.application.explanation=L'applicazione non pu\u00f2 esser
 warning.could.not.thin.application.useraction=Tentare di risolvere il problema nel messaggio di eccezione e riavviare il server o aggiornare l'applicazione. 
 
 error.need.springboot.version.15=CWWKC0252E: Impossibile eseguire l'applicazione perch\u00e9  \u00e8 configurata la versione errata della funzione Spring Boot in server.xml. L'applicazione richiede la configurazione della funzione springBoot-1.5.
-error.need.springboot.version.15.explanation= L'applicazione richiede Spring Boot versione 1.5 ma \u00e8 stata configurata una versione errata della funzione Spring Boot in server.xml.  
-error.need.springboot.version.15.useraction= La funzione springBoot-1.5 deve essere configurata in server.xml.
+error.need.springboot.version.15.explanation=L'applicazione richiede Spring Boot versione 1.5 ma \u00e8 stata configurata una versione errata della funzione Spring Boot in server.xml.  
+error.need.springboot.version.15.useraction=La funzione springBoot-1.5 deve essere configurata in server.xml.
 
 error.need.springboot.version.20=CWWKC0253E: Impossibile eseguire l'applicazione perch\u00e9  \u00e8 configurata la versione errata della funzione Spring Boot in server.xml. L'applicazione richiede la configurazione della funzione springBoot-2.0.
-error.need.springboot.version.20.explanation= L'applicazione richiede Spring Boot versione 2.0 ma \u00e8 stata configurata una versione errata della funzione Spring Boot in server.xml.  
-error.need.springboot.version.20.useraction= La funzione springBoot-2.0 deve essere configurata in server.xml.
+error.need.springboot.version.20.explanation=L'applicazione richiede Spring Boot versione 2.0 ma \u00e8 stata configurata una versione errata della funzione Spring Boot in server.xml.  
+error.need.springboot.version.20.useraction=La funzione springBoot-2.0 deve essere configurata in server.xml.
 
-error.missing.servlet=CWWKC0254E: Impossibile eseguire l'applicazione perch\u00e9 richiede che una funzione Servlet sia configurata nel file server.xml. \u00c8 necessario configurare servlet-3.1 o servlet-4.0.
-error.missing.servlet.explanation= L'applicazione \u00e8 un'applicazione Web e richiede che una funzione Servlet sia configurata nel file server.xml.
-error.missing.servlet.useraction= \u00c8 necessario configurare servlet-3.1 o servlet-4.0 nel file server.xml.
+error.missing.servlet=CWWKC0254E: Impossibile eseguire l'applicazione perch\u00e9 richiede che una funzione Servlet sia configurata nel file server.xml.
+error.missing.servlet.explanation=L'applicazione \u00e8 un'applicazione Web e richiede che una funzione Servlet sia configurata nel file server.xml.
+error.missing.servlet.useraction=Una funzione servlet deve essere configurata in server.xml.
+
+error.multiple.applications.not.allowed=CWWKC0255E: Impossibile avviare l''applicazione Spring Boot {0} perch\u00e9 l''applicazione {1} \u00e8 gi\u00e0 attiva. Non \u00e8 possibile configurare pi\u00f9 applicazioni Spring Boot nella stessa configurazione del server.
+error.multiple.applications.not.allowed.explanation=La configurazione di pi\u00f9 applicazioni Spring Boot nella stessa configurazione server non \u00e8 supportata.
+error.multiple.applications.not.allowed.useraction=Configurare una sola applicazione Spring Boot per configurazione server.
+
+error.no.manifest.found=CWWKC0256E: Nessun file META-INF/MANIFEST.MF trovato per l''applicazione Spring Boot {0}.
+error.no.manifest.found.explanation=Le applicazioni Spring Boot devono contenere un file META-INF/MANIFEST.MF.
+error.no.manifest.found.useraction=Configurare un'applicazione Spring Boot valida, che contenga un file META-INF/MANIFEST.MF, con il server.
+
+error.no.spring.class.found=CWWKC0257E: Il file META-INF/MANIFEST.MF dell'applicazione Spring Boot deve specificare un'intestazione Start-Class.
+error.no.spring.class.found.explanation=Le applicazioni Spring Boot devono contenere una classe principale specificata dall'intestazione manifest Start-Class.
+error.no.spring.class.found.useraction=Configurare un'applicazione Spring Boot valida, che contenga un'intestazione manifest Start-Class, con il server.

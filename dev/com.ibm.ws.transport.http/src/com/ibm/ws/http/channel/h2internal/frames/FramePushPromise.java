@@ -161,7 +161,7 @@ public class FramePushPromise extends Frame {
         if (streamId == 0) {
             throw new ProtocolException("PUSH_PROMISE Frame stream ID cannot be 0x0");
         }
-        if (this.getPayloadLength() > settings.maxFrameSize) {
+        if (this.getPayloadLength() > settings.getMaxFrameSize()) {
             throw new FrameSizeException("PUSH_PROMISE payload greater than max allowed");
         }
         if (this.paddingLength >= this.payloadLength) {

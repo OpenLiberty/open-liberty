@@ -7,8 +7,8 @@
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
-    <application type="war" id="JavaEESecMultipleISForm" name="JavaEESecMultipleISForm" location="JavaEESecMultipleISForm.war">
-    </application>
+    <application type="war" location="FormRedirect.war"/>
+    <application type="war" location="FormForward.war"/>
 
     <include location="../fatTestPorts.xml" />
 </server>

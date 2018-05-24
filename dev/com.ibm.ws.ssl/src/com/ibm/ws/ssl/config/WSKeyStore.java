@@ -220,6 +220,7 @@ public class WSKeyStore extends Properties {
             if (password.isEmpty()) {
                 String envPassword = System.getenv("keystore_password");
                 if (envPassword != null && !envPassword.isEmpty()) {
+                    Tr.audit(tc, "ssl.defaultKeyStore.env.password.CWPKI0820A");
                     password = new SerializableProtectedString(envPassword.toCharArray());
                 } else {
                     Tr.info(tc, "ssl.defaultKeyStore.not.created.CWPKI0819I");

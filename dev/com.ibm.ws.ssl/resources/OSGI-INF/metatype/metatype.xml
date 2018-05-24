@@ -17,6 +17,9 @@
     <OCD description="%keystore.config.desc" name="%keystore.config" 
          id="com.ibm.ws.ssl.keystore" ibm:alias="keyStore">
          
+        <AD id="id" name="%id" description="%id.desc"
+            type="String" default="defaultKeyStore"/> 
+         
         <AD id="password" name="%password" description="%password.desc" 
             required="false" type="String" ibm:type="password" />
 
