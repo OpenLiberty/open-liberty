@@ -13,11 +13,11 @@ package com.ibm.ws.logging.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
@@ -53,12 +53,18 @@ public class EMQSychronousHandlerTest {
     public static void tearDownAfterClass() throws Exception {
         // Make stdout and stderr "normal"
         outputMgr.restoreStreams();
+        System.out.println("@AGG order is: " + order);
     }
 
-    @Before
+    public static String order = "";
+
+    @Rule
+    public TestName tn = new TestName();
+
     public void BeforeTest() throws Exception {
         testBufferManager = new BufferManagerImpl(10000, "testData");
         syncHandler = new DummyHandler();
+        order += "  " + tn.getMethodName();
     }
 
     /**
@@ -66,14 +72,42 @@ public class EMQSychronousHandlerTest {
      *
      * @throws Exception
      */
-    @After
     public void tearDown() throws Exception {
         // Clear the output generated after each method invocation
         outputMgr.resetStreams();
         testBufferManager.removeHandler(syncHandler.getHandlerName());
     }
 
+    // Different JDKs will run unit tests in different orderings.  Since the tests in this class depend on test ordering,
+    // we will simply combine all tests into one JUnit test to control the ordering
     @Test
+    public void testAll() throws Exception {
+        BeforeTest();
+        SendEMQMessagesToSyncHandler();
+        tearDown();
+
+        BeforeTest();
+        SendEMQMessagesToMultipleSyncHandlers();
+        tearDown();
+
+        BeforeTest();
+        EmptyEMQSentToSyncHandler();
+        tearDown();
+
+        BeforeTest();
+        FullEMQSentToSyncHandler();
+        tearDown();
+
+        BeforeTest();
+        RemoveEMQThenAddSyncHandler();
+        tearDown();
+
+        BeforeTest();
+        RemoveEMQ();
+        tearDown();
+    }
+
+    //@Test
     public void SendEMQMessagesToSyncHandler() {
         for (int i = 0; i < 50; i++) {
             testBufferManager.add("Message" + i);
@@ -82,7 +116,7 @@ public class EMQSychronousHandlerTest {
         assertEquals(50, syncHandler.getNumOfMessages());
     }
 
-    @Test
+    //@Test
     public void SendEMQMessagesToMultipleSyncHandlers() {
         DummyHandler syncHandler2 = new DummyHandler();
 
@@ -96,13 +130,13 @@ public class EMQSychronousHandlerTest {
         testBufferManager.removeSyncHandler(syncHandler2);
     }
 
-    @Test
+    //@Test
     public void EmptyEMQSentToSyncHandler() {
         testBufferManager.addSyncHandler(syncHandler);
         assertEquals(0, syncHandler.getNumOfMessages());
     }
 
-    @Test
+    //@Test
     public void FullEMQSentToSyncHandler() {
         for (int i = 0; i < 401; i++) {
             testBufferManager.add("Message" + i);
@@ -116,7 +150,7 @@ public class EMQSychronousHandlerTest {
         assertEquals(400, syncHandler.getNumOfMessages());
     }
 
-    @Test
+    //@Test
     public void RemoveEMQThenAddSyncHandler() {
         for (int i = 0; i < 200; i++) {
             testBufferManager.add("Message" + i);
@@ -130,7 +164,7 @@ public class EMQSychronousHandlerTest {
         assertEquals(0, syncHandler2.getNumOfMessages());
     }
 
-    @Test
+    //@Test
     public void RemoveEMQ() {
         BufferManagerEMQHelper.removeEMQTrigger();
         assertTrue(BufferManagerEMQHelper.getEMQRemovedFlag());
