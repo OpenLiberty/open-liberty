@@ -28,7 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -101,12 +104,21 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        // disable auto redirect.
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
     public void cleanupConnection() {
         httpclient.getConnectionManager().shutdown();
+    }
+
+    public void resetConnection() {
+        cleanupConnection();
+        setupConnection();
     }
 
     @Override
@@ -131,12 +143,16 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         }
         passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER1_PWD);
 
+        resetConnection();
+
         /* DB_USER2 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER2, Constants.DB_USER2_PWD, code2);
         if (code2 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER2, getRemoteUserFound + Constants.DB_USER2);
         }
         passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER2_PWD);
+
+        resetConnection();
 
         /* DB_USER3 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER3, Constants.DB_USER3_PWD, code3);
