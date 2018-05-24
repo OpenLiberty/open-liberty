@@ -12,6 +12,7 @@ package com.ibm.ws.rsadapter.jdbc.v42;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLType;
 import java.util.Arrays;
 
@@ -48,7 +49,14 @@ public class WSJdbc42PreparedStatement extends WSJdbc41PreparedStatement impleme
 
     @Override
     public long getCompatibleUpdateCount() throws SQLException {
-        return mcf.jdbcDriverSpecVersion >= 42 ? stmtImpl.getLargeUpdateCount() : stmtImpl.getUpdateCount();
+        if (mcf.jdbcDriverSpecVersion >= 42 && mcf.supportsGetLargeUpdateCount) {
+            try {
+                return stmtImpl.getLargeUpdateCount();
+            } catch (SQLFeatureNotSupportedException notSupp) {
+                mcf.supportsGetLargeUpdateCount = false;
+            }
+        }
+        return stmtImpl.getUpdateCount();
     }
 
     @Override
