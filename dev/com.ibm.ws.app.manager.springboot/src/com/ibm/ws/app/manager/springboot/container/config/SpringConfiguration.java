@@ -16,6 +16,39 @@ import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 public class SpringConfiguration {
+
+    // below '*_in-spring_app' booleans used to WARN when a currently non-supported configuration is detected.
+    private boolean compression_configured_in_spring_app = false;
+    private boolean session_configured_in_spring_app = false;
+
+    /**
+     * @return the compression_configured_in_spring
+     */
+    public boolean isCompression_configured_in_spring_app() {
+        return compression_configured_in_spring_app;
+    }
+
+    /**
+     * @return the session_configured_in_spring
+     */
+    public boolean isSession_configured_in_spring_app() {
+        return session_configured_in_spring_app;
+    }
+
+    /**
+     * @param compression_configured_in_spring the compression_configured_in_spring to set
+     */
+    public void setCompression_configured_in_spring_app(boolean compression_enabled_in_spring) {
+        this.compression_configured_in_spring_app = compression_enabled_in_spring;
+    }
+
+    /**
+     * @param session_configured_in_spring the session_configured_in_spring to set
+     */
+    public void setSession_configured_in_spring_app(boolean session_configured_in_spring) {
+        this.session_configured_in_spring_app = session_configured_in_spring;
+    }
+
     private LinkedHashSet<SpringErrorPageData> errorPages = new LinkedHashSet<>();
     private final HashMap<String, String> mimeMappings = new HashMap<String, String>();
 
@@ -46,6 +79,9 @@ public class SpringConfiguration {
                            errorPages.stream().map(Object::toString).collect(Collectors.joining(", ")),
                            "]; Mime mappings = [",
                            mimeMappings.toString(),
-                           "]");
+                           "]; session_configured_in_spring = ",
+                           Boolean.toString(session_configured_in_spring_app),
+                           "; compression_enabled_in_spring = ",
+                           Boolean.toString(compression_configured_in_spring_app));
     }
 }
