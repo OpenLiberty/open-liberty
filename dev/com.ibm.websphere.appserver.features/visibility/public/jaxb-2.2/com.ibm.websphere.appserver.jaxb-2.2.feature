@@ -14,10 +14,7 @@ IBM-Process-Types: client, \
  server
 Subsystem-Name: Java XML Bindings 2.2
 -features=\
-  com.ibm.websphere.appserver.classloading-1.0,\
   com.ibm.websphere.appserver.internal.jaxb-2.2
--jars=\
-  com.ibm.ws.jaxb.tools.2.2.10; location:=lib/
 -files=\
   bin/jaxb/xjc.bat, \
   bin/jaxb/tools/ws-schemagen.jar, \
