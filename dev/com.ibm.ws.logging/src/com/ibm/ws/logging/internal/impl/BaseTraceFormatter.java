@@ -29,7 +29,6 @@ import com.ibm.ws.logging.collector.DateFormatHelper;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
-import com.ibm.ws.logging.data.Pair;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
 
@@ -432,16 +431,16 @@ public class BaseTraceFormatter extends Formatter {
      */
     public String consoleLogFormat(GenericData genData) {
         StringBuilder sb = new StringBuilder(256);
-        ArrayList<Pair> pairs = genData.getPairs();
+        ArrayList<KeyValuePair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String message = null;
         String throwable = null;
         Integer levelValue = null;
-        for (Pair p : pairs) {
+        for (KeyValuePair p : pairs) {
 
-            if (p instanceof KeyValuePair) {
+            if (!p.isList()) {
 
-                kvp = (KeyValuePair) p;
+                kvp = p;
                 if (kvp.getKey().equals(LogFieldConstants.FORMATTEDMSG)) {
                     message = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.LEVELVALUE)) {
@@ -505,7 +504,7 @@ public class BaseTraceFormatter extends Formatter {
         // This is a very light trace format, based on enhanced:
         StringBuilder sb = new StringBuilder(256);
         String name = null;
-        ArrayList<Pair> pairs = genData.getPairs();
+        ArrayList<KeyValuePair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String message = null;
         Long datetime = null;
@@ -513,11 +512,11 @@ public class BaseTraceFormatter extends Formatter {
         String loggerName = null;
         String srcClassName = null;
         String throwable = null;
-        for (Pair p : pairs) {
+        for (KeyValuePair p : pairs) {
 
-            if (p instanceof KeyValuePair) {
+            if (!p.isList()) {
 
-                kvp = (KeyValuePair) p;
+                kvp = p;
                 if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
                     message = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
@@ -678,7 +677,7 @@ public class BaseTraceFormatter extends Formatter {
      */
     public String traceFormatGenData(GenericData genData) {
 
-        ArrayList<Pair> pairs = genData.getPairs();
+        ArrayList<KeyValuePair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String txt = null;
         Integer id = null;
@@ -701,11 +700,11 @@ public class BaseTraceFormatter extends Formatter {
 
         String threadName = null;
         String stackTrace = null;
-        for (Pair p : pairs) {
+        for (KeyValuePair p : pairs) {
 
-            if (p instanceof KeyValuePair) {
+            if (!p.isList()) {
 
-                kvp = (KeyValuePair) p;
+                kvp = p;
                 if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
                     txt = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
@@ -1076,12 +1075,12 @@ public class BaseTraceFormatter extends Formatter {
         String loglevel = null;
         KeyValuePair kvp = null;
 
-        ArrayList<Pair> pairs = genData.getPairs();
-        for (Pair p : pairs) {
+        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        for (KeyValuePair p : pairs) {
 
-            if (p instanceof KeyValuePair) {
+            if (!p.isList()) {
 
-                kvp = (KeyValuePair) p;
+                kvp = p;
                 if (kvp.getKey().equals("message")) {
                     txt = kvp.getStringValue();
                 } else if (kvp.getKey().equals("loglevel")) {
