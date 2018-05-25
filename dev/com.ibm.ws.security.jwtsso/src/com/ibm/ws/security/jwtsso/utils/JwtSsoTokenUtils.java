@@ -67,7 +67,10 @@ public class JwtSsoTokenUtils {
 
     public JwtSsoTokenUtils(String consumer, AtomicServiceReference<TrustAssociationInterceptor> mpjwttaiserviceref) {
         consumerId = consumer;
-        mpjwttai = (MicroProfileJwtTAI) mpjwttaiserviceref.getService();
+        TrustAssociationInterceptor service = mpjwttaiserviceref.getService();
+        if (service instanceof MicroProfileJwtTAI) {
+            mpjwttai = (MicroProfileJwtTAI) service;
+        }
     }
 
     /**
