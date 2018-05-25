@@ -432,7 +432,7 @@ public class BaseTraceService implements TrService {
      */
     private void commonConsoleLogHandlerUpdates() {
         if (consoleLogHandler != null) {
-            consoleLogHandler.setFormatter(formatter);
+            consoleLogHandler.setBasicFormatter(formatter);
             consoleLogHandler.setConsoleLogLevel(consoleLogLevel.intValue());
             consoleLogHandler.setCopySystemStreams(copySystemStreams);
         }
@@ -444,7 +444,7 @@ public class BaseTraceService implements TrService {
     private void commonMessageLogHandlerUpdates() {
         if (messageLogHandler != null) {
             messageLogHandler.setWriter(messagesLog);
-            messageLogHandler.setFormatter(formatter);
+            messageLogHandler.setBasicFormatter(formatter);
         }
     }
 
@@ -735,7 +735,6 @@ public class BaseTraceService implements TrService {
         Level level = logRecord.getLevel();
         int levelValue = level.intValue();
         TraceWriter detailLog = traceLog;
-        //check if tracefilename is stdout
 
         if (levelValue >= Level.INFO.intValue()) {
 
@@ -1112,7 +1111,7 @@ public class BaseTraceService implements TrService {
      * @return null if the stack trace should be suppressed, or an indicator we're suppressing,
      *         or maybe the original stack trace
      */
-    private String filterStackTraces(String txt) {
+    public static String filterStackTraces(String txt) {
         // Check for stack traces, which we may want to trim
         StackTraceFlags stackTraceFlags = traceFlags.get();
         // We have a little thread-local state machine here with four states controlled by two

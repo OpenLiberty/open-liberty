@@ -111,7 +111,7 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
     }
 
     /**
-     * Used by the collectorManagerPipelineConfigurator to identify if pipeline was spawned as part
+     * Used by the MessageRouterConfigurator and TraceRouterConfigurator to identify if pipeline was spawned as part
      * of BaseTraceService, If it is then the LogSource and Trace Source will not be set into WsMessageRouter or WsTraceRouter.
      * Otherwise it will be set into the Routers (e.g. through an HPEL BaseTraceService)
      *

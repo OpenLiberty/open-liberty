@@ -15,7 +15,6 @@ import java.util.logging.LogRecord;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
@@ -98,12 +97,7 @@ public class TraceSource implements Source, WsTraceHandler {
     /** {@inheritDoc} */
     @Override
     public void publish(RoutedMessage routedMessage) {
-        //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
-            if (routedMessage.getLogRecord() != null && bufferMgr != null) {
-                bufferMgr.add(parse(routedMessage, null));
-            }
-        }
+        publish(routedMessage, null);
     }
 
     public LogTraceData parse(RoutedMessage routedMessage, Object id) {
@@ -126,16 +120,26 @@ public class TraceSource implements Source, WsTraceHandler {
         traceData.setThreadName(threadName);
 
         WsLogRecord wsLogRecord = getWsLogRecord(logRecord);
+        //Extensions KVP calculated below, but needs to bet set in the correct 'order' further below
+        KeyValuePairList extensions = null;
         if (wsLogRecord != null) {
             traceData.setCorrelationId(wsLogRecord.getCorrelationId());
             traceData.setOrg(wsLogRecord.getOrganization());
             traceData.setProduct(wsLogRecord.getProduct());
             traceData.setComponent(wsLogRecord.getComponent());
+            if (wsLogRecord.getExtensions() != null) {
+                extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
+                Map<String, String> extMap = wsLogRecord.getExtensions();
+                for (Map.Entry<String, String> entry : extMap.entrySet()) {
+                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
+                }
+            }
         } else {
             traceData.setCorrelationId(null);
             traceData.setOrg(null);
             traceData.setProduct(null);
             traceData.setComponent(null);
+            extensions = null;
         }
 
         String sequenceNum = sequenceNumber.next(datetimeValue);
@@ -153,18 +157,7 @@ public class TraceSource implements Source, WsTraceHandler {
 
         traceData.setFormattedMsg(null);
 
-        if (logRecord instanceof WsLogRecord) {
-            if (((WsLogRecord) logRecord).getExtensions() != null) {
-                KeyValuePairList extensions = new KeyValuePairList(LogFieldConstants.EXTENSIONS_KVPL);
-                Map<String, String> extMap = ((WsLogRecord) logRecord).getExtensions();
-                for (Map.Entry<String, String> entry : extMap.entrySet()) {
-                    CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
-                }
-                traceData.setExtensions(extensions);
-            }
-        } else {
-            traceData.setExtensions(null);
-        }
+        traceData.setExtensions(extensions);
 
         if (id != null) {
             int objid = System.identityHashCode(id);
@@ -178,12 +171,7 @@ public class TraceSource implements Source, WsTraceHandler {
         return traceData;
     }
 
-    @FFDCIgnore(value = { ClassCastException.class })
     private WsLogRecord getWsLogRecord(LogRecord logRecord) {
-        try {
-            return (WsLogRecord) logRecord;
-        } catch (ClassCastException ex) {
-            return null;
-        }
+        return (logRecord instanceof WsLogRecord) ? (WsLogRecord) logRecord : null;
     }
 }
