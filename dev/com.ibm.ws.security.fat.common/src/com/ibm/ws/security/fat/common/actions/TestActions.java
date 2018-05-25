@@ -54,7 +54,7 @@ public class TestActions {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
         }
     }
-    
+
     /**
      * Invoke the specified URL, adding a basic auth header first
      */
@@ -63,14 +63,14 @@ public class TestActions {
         loggingUtils.printMethodName(thisMethod);
         try {
             WebRequest request = createGetRequest(url);
-            String encodedIdPw= Base64.encode(user + ":" + password);
-            request.setAdditionalHeader("Authorization", "Basic "+ encodedIdPw);
+            String encodedIdPw = Base64.encode(user + ":" + password);
+            request.setAdditionalHeader("Authorization", "Basic " + encodedIdPw);
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
         }
     }
-    
+
     /**
      * Invoke the specified URL, adding a bearer token header first.
      */
@@ -78,13 +78,13 @@ public class TestActions {
         String thisMethod = "invokeUrlWithBearerToken";
         loggingUtils.printMethodName(thisMethod);
         try {
-            WebRequest request = createGetRequest(url);            
-            request.setAdditionalHeader("Authorization", "Bearer "+ token);
+            WebRequest request = createGetRequest(url);
+            request.setAdditionalHeader("Authorization", "Bearer " + token);
             return submitRequest(currentTest, wc, request);
         } catch (Exception e) {
             throw new Exception("An error occurred invoking the URL [" + url + "]: " + e);
         }
-}
+    }
 
     /**
      * Invokes the specified URL, including the specified cookie in the request, and returns the Page object that represents the
@@ -200,6 +200,7 @@ public class TestActions {
     WebClient createWebClient() {
         WebClient webClient = new WebClient();
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.getOptions().setUseInsecureSSL(true);
         return webClient;
     }
 

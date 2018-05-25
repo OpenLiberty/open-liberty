@@ -12,6 +12,7 @@ package com.ibm.ws.security.jwtsso.fat;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
@@ -58,6 +59,13 @@ public class CommonJwtFat extends CommonSecurityFat {
 
     private static WebArchive getFormLoginApp() throws Exception {
         return ShrinkHelper.buildDefaultApp(JwtFatConstants.APP_FORMLOGIN, "com.ibm.ws.security.fat.common.apps.formlogin.*");
+    }
+
+    protected static WebClient getHtmlUnitWebClient() {
+        WebClient webClient = new WebClient();
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.getOptions().setUseInsecureSSL(true);
+        return webClient;
     }
 
 }
