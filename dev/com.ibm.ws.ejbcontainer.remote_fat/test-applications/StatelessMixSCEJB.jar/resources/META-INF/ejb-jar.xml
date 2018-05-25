@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+      metadata-complete="false" version="3.0">
+      <display-name>StatelessMixSCEJB</display-name>
+      <enterprise-beans>
+         <session id="CMTStatelessLocal">
+         	<ejb-name>CMTStatelessLocalBean</ejb-name>
+         	<business-local>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.sc2.CMTStatelessLocal</business-local>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.sc1.CMTStatelessLocalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="CMTStatelessRemote">
+            <ejb-name>CMTStatelessRemote</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.sc1.CMTStatelessRemoteBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+         <container-transaction id="MethodTransaction_1">
+            <description>NotSupported</description>
+            <method id="MethodElement_11">
+               <ejb-name>CMTStatelessLocalBean</ejb-name>
+               <method-name>tx_NotSupported</method-name>
+            </method>
+            <trans-attribute>NotSupported</trans-attribute>
+         </container-transaction>
+      </assembly-descriptor>
+   </ejb-jar>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>Bad3XmlBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb3.Bad3XmlBean</ejb-class>
+      <session-type>Stateless</session-type>
+       
+      <env-entry>
+        <description>E3x - Non-existent enum value specified in XML only</description>
+        <env-entry-name>EnvEntry_Non-existentEnumValue_EntryName</env-entry-name>
+        <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</env-entry-type>
+        <env-entry-value>NO_SUCH_ENUM_VALUE</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb3.Bad3XmlBean</injection-target-class>
+          <injection-target-name>ivEnvEntry_NoSuchEnumValue</injection-target-name>
+        </injection-target>
+      </env-entry>
+    </session>
+
+    <session>
+      <ejb-name>Bad3AnnBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb3.Bad3AnnBean</ejb-class>
+      <session-type>Stateless</session-type>
+       
+      <env-entry>
+        <description>E3a - Non-existent enum value specified in XML, with annotation</description>
+        <env-entry-name>EnvEntry_Non-existentEnumValue_EntryName</env-entry-name>
+        <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</env-entry-type>
+        <env-entry-value>NO_SUCH_ENUM_VALUE</env-entry-value>
+      </env-entry>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

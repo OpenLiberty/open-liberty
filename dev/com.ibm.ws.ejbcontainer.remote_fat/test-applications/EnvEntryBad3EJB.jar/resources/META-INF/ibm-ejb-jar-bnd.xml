@@ -1,0 +1,14 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+  <session name="Bad3XmlBean">
+    <interface class="com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad" binding-name="ejblocal:Bad3Xml"/>
+  </session>    
+
+  <session name="Bad3AnnBean">
+    <interface class="com.ibm.ws.ejbcontainer.remote.enventry.shared.Bad" binding-name="ejblocal:Bad3Ann"/>
+  </session>    
+</ejb-jar-bnd>

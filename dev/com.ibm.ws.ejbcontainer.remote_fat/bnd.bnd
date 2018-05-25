@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/EnvEntryBad1EJB.jar/src, \
+	test-applications/EnvEntryBad2EJB.jar/src, \
+	test-applications/EnvEntryBad3EJB.jar/src, \
+	test-applications/EnvEntryBad4EJB.jar/src, \
+	test-applications/EnvEntryEJB.jar/src, \
+	test-applications/EnvEntryShared.jar/src, \
+	test-applications/EnvEntryWeb.war/src, \
+	test-applications/AppExcExtendsThrowableErrBean.jar/src, \
+	test-applications/JitDeployEJB.jar/src, \
+	test-applications/JitDeployWeb.war/src, \
+	test-applications/StatelessAnnEJB.jar/src, \
+	test-applications/StatelessAnnWeb.war/src, \
+	test-applications/StatelessMixEJB.jar/src, \
+	test-applications/StatelessMixMDCEJB.jar/src, \
+	test-applications/StatelessMixSCEJB.jar/src, \
+	test-applications/StatelessMixIntf.jar/src, \
+	test-applications/StatelessMixWeb.war/src, \
+	test-applications/StatelessMixASMDescEJB.jar/src
+
+fat.project: true
+
+tested.features: \
+	servlet-4.0
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.jms.1.1;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1; version=latest, \
+	com.ibm.websphere.security; version=latest, \
+	com.ibm.ws.ejbcontainer.fat_tools; version=latest
