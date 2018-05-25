@@ -75,14 +75,10 @@ public class BatchStatusValidator {
 
     /**
      * Validates that the JobExecution is the latest and greatest
-     * 
+     *
      * @param previousExecutionId
      * @return
      */
-    public static boolean isJobExecutionMostRecentOnPartitionRestart(long previousExecutionId) {
-        return isJobExecutionMostRecentImpl(previousExecutionId);
-    }
-
     public static boolean isJobExecutionMostRecent(long previousExecutionId) {
         return isJobExecutionMostRecentImpl(previousExecutionId);
     }
@@ -260,10 +256,10 @@ public class BatchStatusValidator {
 
         /*
          * @param status The BatchStatus that needs to be checked
-         * 
+         *
          * @param listAcceptable The list of BatchStatus that should be acceptable
          * match
-         * 
+         *
          * @returns boolean true if status is one of the list
          */
         private boolean checkIfStatusMatchesFromList(BatchStatus status,
@@ -279,10 +275,10 @@ public class BatchStatusValidator {
 
         /*
          * @param state The InstanceState that needs to be checked
-         * 
+         *
          * @param listAcceptable The list of InstanceStates that should be acceptable
          * match
-         * 
+         *
          * @returns boolean true if state is one of the list
          */
         private boolean checkIfStateMatchesFromList(InstanceState state,

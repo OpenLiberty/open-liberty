@@ -239,13 +239,6 @@ public class WSJobRepositoryImpl implements WSJobRepository {
         return persistenceManagerService.updateJobInstanceWithInstanceState(instanceId, state, new Date());
     }
 
-    // DELETE ME
-    @Override
-    public WSJobInstance updateJobInstanceStateUponRestart(long instanceId, InstanceState state) {
-        // Switch to use new internal interface
-        return (WSJobInstance) persistenceManagerService.updateJobInstanceOnRestart(instanceId, new Date());
-    }
-
     @Override
     public WSJobInstance updateJobInstanceStateOnRestart(long instanceId) {
         return (WSJobInstance) persistenceManagerService.updateJobInstanceOnRestart(instanceId, new Date());
