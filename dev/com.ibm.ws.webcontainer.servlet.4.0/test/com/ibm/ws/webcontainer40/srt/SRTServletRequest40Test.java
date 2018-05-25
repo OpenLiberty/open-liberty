@@ -132,6 +132,18 @@ public class SRTServletRequest40Test {
                 oneOf(dispContext).getRequestedSessionId();
                 will(returnValue(null));
 
+                oneOf(IReq40).getScheme();
+                will(returnValue("https"));
+
+                oneOf(IReq40).getServerPort();
+                will(returnValue(9443));
+
+                oneOf(IReq40).getServerPort();
+                will(returnValue(9443));
+
+                oneOf(IReq40).getServerName();
+                will(returnValue("localhost"));
+
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(dispContext).getRequestURI();
                 will(returnValue("/UnitTest/test_PushBuilderHeaders"));
@@ -171,7 +183,7 @@ public class SRTServletRequest40Test {
         // sent to the PushBuilder. The Referer header is then reconstructed with the following
         // values when the PushBuilder is initialized:
         //      The Referer(sic) header will be set to HttpServletRequest.getRequestURL() plus any HttpServletRequest.getQueryString()
-        String expectedRefererHeaderValue = "/UnitTest/test_PushBuilderHeaders?test=queryStringFromRequest";
+        String expectedRefererHeaderValue = "https://localhost:9443/UnitTest/test_PushBuilderHeaders?test=queryStringFromRequest";
         String actualRefererHeaderValue = pb.getHeader("Referer");
 
         assertTrue("The value of the Referer header was: " + actualRefererHeaderValue + " but should have been: "
