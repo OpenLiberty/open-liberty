@@ -62,6 +62,8 @@ public class ServerConfigurationFactory {
     public static final String SSL_TRUST_STORE_PROVIDER = "ssl.trust-store-provider";
     public static final String SSL_TRUST_STORE_TYPE = "ssl.trust-store-type";
     public static final String HTTP2 = "http2";
+    public static final String NEED = "NEED";
+    public static final String WANT = "WANT";
     private static final String HTTP_11 = "http/1.1";
     private static final String HTTP_2 = "http/2";
 
@@ -177,9 +179,9 @@ public class ServerConfigurationFactory {
 
         String clientAuth = (String) serverProperties.get(SSL_CLIENT_AUTH);
         if (clientAuth != null) {
-            if ("NEED".equals(clientAuth)) {
+            if (NEED.equals(clientAuth)) {
                 sslConfig.setClientAuthentication(true);
-            } else if ("WANT".equals(clientAuth)) {
+            } else if (WANT.equals(clientAuth)) {
                 sslConfig.setClientAuthenticationSupported(true);
             }
         }
