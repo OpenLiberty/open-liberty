@@ -38,6 +38,7 @@ public abstract class FaceletCache<V>
     
     public abstract boolean isViewMetadataFaceletCached(URL url);
     
+    @Deprecated
     protected void setMemberFactories(FaceletCache.MemberFactory<V> faceletFactory,
                                       FaceletCache.MemberFactory<V> viewMetadataFaceletFactory)
     {

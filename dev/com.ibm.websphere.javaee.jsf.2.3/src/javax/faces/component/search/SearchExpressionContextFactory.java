@@ -31,10 +31,6 @@ public abstract class SearchExpressionContextFactory implements FacesWrapper<Sea
 {
     private SearchExpressionContextFactory delegate;
 
-    public SearchExpressionContextFactory()
-    {
-    }
-
     public SearchExpressionContextFactory(SearchExpressionContextFactory delegate)
     {
         this.delegate = delegate;
@@ -44,5 +40,8 @@ public abstract class SearchExpressionContextFactory implements FacesWrapper<Sea
             FacesContext context,  UIComponent source,
             Set<SearchExpressionHint> expressionHints, Set<VisitHint> visitHints);
 
-    public abstract SearchExpressionContextFactory getWrapped();
+    public SearchExpressionContextFactory getWrapped()
+    {
+        return this.delegate;
+    }
 }
