@@ -13,6 +13,9 @@
  * implementation.
  */
 @Version("1.0.0")
+@TraceOptions(traceGroups = { "springboot", "applications" })
 package com.ibm.ws.springboot.support.web.server.initializer;
 
 import org.osgi.annotation.versioning.Version;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;
