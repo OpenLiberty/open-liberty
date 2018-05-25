@@ -35,17 +35,17 @@ public class CertificateMapper4 implements X509CertificateMapper {
         }
 
         X509Certificate subject = certificates[0];
-        X509Certificate ca = certificates[1];
+        X509Certificate intermediate = certificates[1];
 
         /*
          * Do some simple (non-sensical) checks on the certificate chain.
          */
         String issuer = subject.getIssuerDN().getName();
-        if (!("cn=ca".equalsIgnoreCase(issuer))) {
+        if (!("cn=chain_ca".equalsIgnoreCase(issuer))) {
             throw new CertificateMapFailedException("Subject's certificate was signed by unknown CA: " + issuer);
         }
-        issuer = ca.getIssuerDN().getName();
-        if (!("cn=root".equalsIgnoreCase(ca.getIssuerDN().getName()))) {
+        issuer = intermediate.getIssuerDN().getName();
+        if (!("cn=chain_root".equalsIgnoreCase(intermediate.getIssuerDN().getName()))) {
             throw new CertificateMapFailedException("CA's certificate was signed by unknown root: " + issuer);
         }
 
