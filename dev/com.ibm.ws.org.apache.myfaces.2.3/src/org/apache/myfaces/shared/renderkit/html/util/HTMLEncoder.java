@@ -488,7 +488,7 @@ public abstract class HTMLEncoder
      * following the rules mentioned on RFC 3986.  
      * 
      * @param string
-     * @param encodeNonLatin
+     * @param characterEncoding
      * @return
      * @throws IOException
      */
@@ -880,9 +880,9 @@ public abstract class HTMLEncoder
      * Encode an URI, escaping or percent-encoding all required characters and
      * following the rules mentioned on RFC 3986.  
      * 
+     * @param writer
      * @param string
-     * @param encodeNonLatin
-     * @return
+     * @param characterEncoding
      * @throws IOException
      */
     public static void encodeURIAttribute(Writer writer, final String string, final String characterEncoding)

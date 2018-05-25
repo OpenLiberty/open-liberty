@@ -46,6 +46,7 @@ import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.ValueExpression;
 import javax.faces.FacesException;
+import javax.faces.FacesWrapper;
 import javax.faces.application.Application;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ProjectStage;
@@ -61,11 +62,15 @@ import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.Behavior;
+import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorBase;
-import javax.faces.context.ExternalContext;
+import javax.faces.component.behavior.FacesBehavior;
+import javax.faces.component.search.SearchExpressionHandler;
+import javax.faces.component.search.SearchKeywordResolver;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.DateTimeConverter;
+import javax.faces.convert.FacesConverter;
 import javax.faces.el.MethodBinding;
 import javax.faces.el.PropertyResolver;
 import javax.faces.el.ReferenceSyntaxException;
@@ -84,6 +89,7 @@ import javax.faces.render.ClientBehaviorRenderer;
 import javax.faces.render.RenderKit;
 import javax.faces.render.Renderer;
 import javax.faces.render.RendererWrapper;
+import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.naming.Context;
@@ -91,10 +97,25 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.myfaces.application.cdi.ConverterWrapper;
-import org.apache.myfaces.cdi.util.ExternalArtifactResolver;
-import org.apache.myfaces.application.cdi.ValidatorWrapper;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
+import org.apache.myfaces.cdi.behavior.FacesBehaviorCDIWrapper;
+import org.apache.myfaces.cdi.behavior.FacesClientBehaviorCDIWrapper;
+import org.apache.myfaces.cdi.converter.FacesConverterCDIWrapper;
+import org.apache.myfaces.cdi.validator.FacesValidatorCDIWrapper;
+import org.apache.myfaces.component.search.AllSearchKeywordResolver;
+import org.apache.myfaces.component.search.ChildSearchKeywordResolver;
+import org.apache.myfaces.component.search.CompositeComponentParentSearchKeywordResolver;
+import org.apache.myfaces.component.search.CompositeSearchKeywordResolver;
+import org.apache.myfaces.component.search.FormSearchKeywordResolver;
+import org.apache.myfaces.component.search.IdSearchKeywordResolver;
+import org.apache.myfaces.component.search.NamingContainerSearchKeywordResolver;
+import org.apache.myfaces.component.search.NextSearchKeywordResolver;
+import org.apache.myfaces.component.search.NoneSearchKeywordResolver;
+import org.apache.myfaces.component.search.ParentSearchKeywordResolver;
+import org.apache.myfaces.component.search.PreviousSearchKeywordResolver;
+import org.apache.myfaces.component.search.RootSearchKeywordResolver;
+import org.apache.myfaces.component.search.SearchExpressionHandlerImpl;
+import org.apache.myfaces.component.search.ThisSearchKeywordResolver;
 import org.apache.myfaces.config.RuntimeConfig;
 import org.apache.myfaces.config.element.Property;
 import org.apache.myfaces.config.element.ResourceBundle;
@@ -113,27 +134,21 @@ import org.apache.myfaces.flow.FlowHandlerImpl;
 import org.apache.myfaces.lifecycle.LifecycleImpl;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
-import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.FaceletCompositionContext;
 import org.apache.myfaces.view.facelets.el.ELText;
-import org.apache.myfaces.webapp.AbstractFacesInitializer;
-
-import com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory;
-import com.ibm.wsspi.el.ELFactoryWrapperForCDI;
 
 /**
  * DOCUMENT ME!
  * 
- * @author Manfred Geiler (latest modification by $Author: lu4242 $)
+ * @author Manfred Geiler (latest modification by $Author: tandraschko $)
  * @author Anton Koinov
  * @author Thomas Spiegl
  * @author Stan Silvert
- * @version $Revision: 1550609 $ $Date: 2013-12-13 01:18:08 +0000 (Fri, 13 Dec 2013) $
+ * @version $Revision: 1813155 $ $Date: 2017-10-24 05:20:13 -0400 (Tue, 24 Oct 2017) $
  */
 @SuppressWarnings("deprecation")
 public class ApplicationImpl extends Application
 {
-    //private static final Log log = LogFactory.getLog(ApplicationImpl.class);
     private static final Logger log = Logger.getLogger(ApplicationImpl.class.getName());
 
     private final static VariableResolver VARIABLERESOLVER = new VariableResolverToApplicationELResolverAdapter();
@@ -233,10 +248,21 @@ public class ApplicationImpl extends Application
     private List<Class<? extends Converter>> _noArgConstructorConverterClasses 
             = new CopyOnWriteArrayList<Class<? extends Converter>>();
     
+    private Map<Class<? extends Converter>, Boolean> _cdiManagedConverterMap
+            = new ConcurrentHashMap<Class<? extends Converter>, Boolean>();
+    
+    private Map<Class<? extends Validator>, Boolean> _cdiManagedValidatorMap
+            = new ConcurrentHashMap<Class<? extends Validator>, Boolean>();
+    
+    private Map<Class<? extends Behavior>, Boolean> _cdiManagedBehaviorMap
+            = new ConcurrentHashMap<Class<? extends Behavior>, Boolean>();
+    
     /** Value of javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE parameter */
     private boolean _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = false; 
     
-    private final ExternalArtifactResolver _externalArtifactResolver;
+    private SearchExpressionHandler _searchExpressionHandler;
+    
+    private SearchKeywordResolver _searchExpressionResolver;
     
     /**
      * Represents semantic null in _componentClassMap. 
@@ -281,6 +307,7 @@ public class ApplicationImpl extends Application
         _elContextListeners = new ArrayList<ELContextListener>();
         _resourceHandler = new ResourceHandlerImpl();
         _flowHandler = new FlowHandlerImpl();
+        _searchExpressionHandler = new SearchExpressionHandlerImpl();
         _runtimeConfig = runtimeConfig;
 
         if (log.isLoggable(Level.FINEST))
@@ -293,17 +320,6 @@ public class ApplicationImpl extends Application
         if (configParam != null && configParam.toLowerCase().equals("true"))
         {
             _dateTimeConverterDefaultTimeZoneIsSystemTimeZone = true;
-        }
-        
-        if (ExternalSpecifications.isCDIAvailable(getFaceContext().getExternalContext()))
-        {
-            _externalArtifactResolver = (ExternalArtifactResolver) 
-                ClassUtils.newInstance(
-                    "org.apache.myfaces.cdi.util.CDIExternalArtifactResolver");
-        }
-        else
-        {
-            _externalArtifactResolver = null;
         }
     }
 
@@ -377,8 +393,9 @@ public class ApplicationImpl extends Application
 
     private ELResolver createFacesResolver()
     {
+        FacesContext facesContext = getFaceContext();
         boolean supportJSPAndFacesEL = MyfacesConfig.getCurrentInstance(
-                                getFaceContext().getExternalContext()).isSupportJSPAndFacesEL();
+                                facesContext.getExternalContext()).isSupportJSPAndFacesEL();
         CompositeELResolver resolver;
         if (supportJSPAndFacesEL)
         {
@@ -388,7 +405,7 @@ public class ApplicationImpl extends Application
         {
             resolver = new CompositeELResolver();
         }
-        getResolverBuilderForFaces().build(resolver);
+        getResolverBuilderForFaces().build(facesContext, resolver);
         return resolver;
     }
 
@@ -542,29 +559,7 @@ public class ApplicationImpl extends Application
 
     @Override
     public final ExpressionFactory getExpressionFactory()
-    {   
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        // Check to see if CDI feature is enabled AND the app has an active BeanManager
-        if (ExternalSpecifications.isCDIAvailable(externalContext) &&
-                        externalContext.getApplicationMap().get(AbstractFacesInitializer.CDI_BEAN_MANAGER_INSTANCE) != null) 
-        {
-            ExpressionFactory expressionFactory = null;
-            // casting using a null could produce an NPE, so structure this code such that we 
-            // won't throw an NPE on the cast.
-            ELFactoryWrapperForCDI x = JSPExtensionFactory.getWrapperExpressionFactory();
-            if (x != null) {
-                expressionFactory = (ExpressionFactory) x;
-            }    
-            
-            // The code above works fine with Open Web Beans, under which we expect to have 
-            // a 'wrapped' expression factory in the service registry. However we're not yet
-            // sure that Weld provides such a thing. So...
-            
-            if (expressionFactory == null) { 
-                expressionFactory = _runtimeConfig.getExpressionFactory();
-            }
-            return expressionFactory;
-        }
+    {
         return _runtimeConfig.getExpressionFactory();
     }
 
@@ -619,22 +614,24 @@ public class ApplicationImpl extends Application
                 // SystemEventListenerHolder.getListenersForEventClass(java.lang.Class) on it, passing the
                 // systemEventClass
                 // argument. If the list is not empty, perform algorithm traverseListenerList on the list.
-                event = _traverseListenerList(holder.getListenersForEventClass(systemEventClass), systemEventClass,
-                                              source, event);
+                event = _ApplicationUtils._traverseListenerList(
+                        facesContext, holder.getListenersForEventClass(systemEventClass),
+                        systemEventClass, source, event);
             }
             
             UIViewRoot uiViewRoot = facesContext.getViewRoot();
             if (uiViewRoot != null)
             {
                 //Call listeners on view level
-                event = _traverseListenerListWithCopy(uiViewRoot.getViewListenersForEventClass(systemEventClass), 
+                event = _ApplicationUtils._traverseListenerListWithCopy(
+                        facesContext, uiViewRoot.getViewListenersForEventClass(systemEventClass), 
                         systemEventClass, source, event);
             }
 
             SystemListenerEntry systemListenerEntry = _systemEventListenerClassMap.get(systemEventClass);
             if (systemListenerEntry != null)
             {
-                systemListenerEntry.publish(systemEventClass, sourceBaseType, source, event);
+                systemListenerEntry.publish(facesContext, systemEventClass, sourceBaseType, source, event);
             }
         }
         catch (AbortProcessingException e)
@@ -1219,21 +1216,64 @@ public class ApplicationImpl extends Application
             throw new FacesException("Could not find any registered behavior-class for behaviorId : " + behaviorId);
         }
         
+        if (!_cdiManagedBehaviorMap.containsKey(behaviorClass))
+        {
+            FacesBehavior annotation = behaviorClass.getAnnotation(FacesBehavior.class);
+            if (annotation != null && annotation.managed())
+            {
+                _cdiManagedBehaviorMap.put(behaviorClass, true);
+            }
+            else
+            {
+                _cdiManagedBehaviorMap.put(behaviorClass, false);
+            }
+        }
+        
         try
         {
-            Behavior behavior = behaviorClass.newInstance();
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
-
-            if (behavior instanceof ClientBehaviorBase)
+            Behavior behavior = null;
+            if (Boolean.TRUE.equals(_cdiManagedBehaviorMap.get(behaviorClass)))
             {
-              ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
-              String renderType = clientBehavior.getRendererType();
-              if (renderType != null)
-              {
-                ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
-                _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
-              }
+                if (ClientBehavior.class.isAssignableFrom(behaviorClass))
+                {
+                    behavior = new FacesClientBehaviorCDIWrapper((Class<ClientBehavior>)behaviorClass, behaviorId);
+                }
+                else
+                {
+                    behavior = new FacesBehaviorCDIWrapper(behaviorClass, behaviorId);
+                }
+                Behavior innerBehavior = ((FacesWrapper<Behavior>)behavior).getWrapped();
+
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                _handleAttachedResourceDependencyAnnotations(facesContext, innerBehavior);
+
+                if (innerBehavior instanceof ClientBehaviorBase)
+                {
+                  ClientBehaviorBase clientBehavior = (ClientBehaviorBase) innerBehavior;
+                  String renderType = clientBehavior.getRendererType();
+                  if (renderType != null)
+                  {
+                    ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
+                    _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
+                  }
+                }
+            }
+            else
+            {
+                behavior = behaviorClass.newInstance();
+                FacesContext facesContext = FacesContext.getCurrentInstance();
+                _handleAttachedResourceDependencyAnnotations(facesContext, behavior);
+
+                if (behavior instanceof ClientBehaviorBase)
+                {
+                  ClientBehaviorBase clientBehavior = (ClientBehaviorBase) behavior;
+                  String renderType = clientBehavior.getRendererType();
+                  if (renderType != null)
+                  {
+                    ClientBehaviorRenderer cbr = facesContext.getRenderKit().getClientBehaviorRenderer(renderType);
+                    _handleAttachedResourceDependencyAnnotations(facesContext, cbr);
+                  }
+                }
             }
 
             return behavior;
@@ -1560,13 +1600,40 @@ public class ApplicationImpl extends Application
             throw new FacesException("Could not find any registered converter-class by converterId : " + converterId);
         }
 
+        if (!_cdiManagedConverterMap.containsKey(converterClass))
+        {
+            FacesConverter annotation = converterClass.getAnnotation(FacesConverter.class);
+            if (annotation != null && annotation.managed())
+            {
+                _cdiManagedConverterMap.put(converterClass, true);
+            }
+            else
+            {
+                _cdiManagedConverterMap.put(converterClass, false);
+            }
+        }
+        
         try
         {
-            final Converter converter = createConverterInstance(converterClass);
-
-            setConverterProperties(converterClass, converter);
+            Converter converter = null;
             
-            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), converter);
+            if (Boolean.TRUE.equals(_cdiManagedConverterMap.get(converterClass)))
+            {
+                converter = new FacesConverterCDIWrapper(converterClass, null, converterId);
+                
+                setConverterProperties(converterClass, ((FacesWrapper<Converter>)converter).getWrapped());
+
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), 
+                        ((FacesWrapper<Converter>)converter).getWrapped());
+            }
+            else
+            {
+                converter = createConverterInstance(converterClass);
+
+                setConverterProperties(converterClass, converter);
+
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), converter);
+            }
 
             return converter;
         }
@@ -1580,17 +1647,7 @@ public class ApplicationImpl extends Application
     private Converter createConverterInstance(Class<? extends Converter> converterClass)
             throws InstantiationException, IllegalAccessException
     {
-        Converter result = _externalArtifactResolver != null ? 
-            _externalArtifactResolver.resolveManagedConverter(converterClass) : null;
-
-        if (result == null)
-        {
-            return converterClass.newInstance();
-        }
-        else
-        {
-            return new ConverterWrapper(result);
-        }
+        return converterClass.newInstance();
     }
 
     @Override
@@ -1656,39 +1713,62 @@ public class ApplicationImpl extends Application
                     _converterTargetClassToConverterClassMap.remove(targetClass);
                 }
                 
+                boolean managed = false;
+                if (!_cdiManagedConverterMap.containsKey(converterClass))
+                {
+                    FacesConverter annotation = converterClass.getAnnotation(FacesConverter.class);
+                    if (annotation != null && annotation.managed())
+                    {
+                        _cdiManagedConverterMap.put(converterClass, true);
+                    }
+                    else
+                    {
+                        _cdiManagedConverterMap.put(converterClass, false);
+                    }
+                }
+                
                 Converter converter = null;
                 
-                // check cached constructor information
-                if (!_noArgConstructorConverterClasses.contains(converterClass))
+                if (Boolean.TRUE.equals(_cdiManagedConverterMap.get(converterClass)))
                 {
-                    // the converter class either supports the one-arg constructor
-                    // or has never been processed before
-                    try
-                    {
-                        // look for a constructor that takes a single Class object
-                        // See JSF 1.2 javadoc for Converter
-                        Constructor<? extends Converter> constructor = converterClass
-                                .getConstructor(new Class[] { Class.class });
-
-                        converter = constructor.newInstance(new Object[] { targetClass });
-                    }
-                    catch (Exception e)
-                    {
-                        // the constructor does not exist
-                        // add the class to the no-arg constructor classes cache
-                        _noArgConstructorConverterClasses.add(converterClass);
-                        
-                        // use no-arg constructor
-                        converter = createConverterInstance(converterClass);
-                    }
+                    converter = new FacesConverterCDIWrapper(converterClass, targetClass, null);
+                    
+                    setConverterProperties(converterClass, ((FacesWrapper<Converter>)converter).getWrapped());
                 }
                 else
                 {
-                    // use no-arg constructor
-                    converter = createConverterInstance(converterClass);
-                }
+                    // check cached constructor information
+                    if (!_noArgConstructorConverterClasses.contains(converterClass))
+                    {
+                        // the converter class either supports the one-arg constructor
+                        // or has never been processed before
+                        try
+                        {
+                            // look for a constructor that takes a single Class object
+                            // See JSF 1.2 javadoc for Converter
+                            Constructor<? extends Converter> constructor = converterClass
+                                    .getConstructor(new Class[] { Class.class });
 
-                setConverterProperties(converterClass, converter);
+                            converter = constructor.newInstance(new Object[] { targetClass });
+                        }
+                        catch (Exception e)
+                        {
+                            // the constructor does not exist
+                            // add the class to the no-arg constructor classes cache
+                            _noArgConstructorConverterClasses.add(converterClass);
+
+                            // use no-arg constructor
+                            converter = createConverterInstance(converterClass);
+                        }
+                    }
+                    else
+                    {
+                        // use no-arg constructor
+                        converter = createConverterInstance(converterClass);
+                    }
+                    
+                    setConverterProperties(converterClass, converter);
+                }
 
                 return converter;
             }
@@ -2050,12 +2130,37 @@ public class ApplicationImpl extends Application
             log.severe(message);
             throw new FacesException(message);
         }
+        
+        if (!_cdiManagedValidatorMap.containsKey(validatorClass))
+        {
+            FacesValidator annotation = validatorClass.getAnnotation(FacesValidator.class);
+            if (annotation != null && annotation.managed())
+            {
+                _cdiManagedValidatorMap.put(validatorClass, true);
+            }
+            else
+            {
+                _cdiManagedValidatorMap.put(validatorClass, false);
+            }
+        }
 
         try
         {
-            Validator validator = createValidatorInstance(validatorClass);
+            Validator validator = null;
             
-            _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), validator);
+            if (Boolean.TRUE.equals(_cdiManagedValidatorMap.get(validatorClass)))
+            {
+                validator = new FacesValidatorCDIWrapper(validatorClass, validatorId);
+                
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), 
+                        ((FacesWrapper<Validator>)validator).getWrapped());
+            }
+            else
+            {
+                validator = createValidatorInstance(validatorClass);
+        
+                _handleAttachedResourceDependencyAnnotations(FacesContext.getCurrentInstance(), validator);
+            }
             
             return validator;
         }
@@ -2069,17 +2174,7 @@ public class ApplicationImpl extends Application
     private Validator createValidatorInstance(Class<? extends Validator> validatorClass)
             throws InstantiationException, IllegalAccessException
     {
-        Validator result = _externalArtifactResolver != null ? 
-            _externalArtifactResolver.resolveManagedValidator(validatorClass) : null;
-
-        if (result == null)
-        {
-            return validatorClass.newInstance();
-        }
-        else
-        {
-            return new ValidatorWrapper(result);
-        }
+        return validatorClass.newInstance();
     }
 
     /**
@@ -2177,41 +2272,6 @@ public class ApplicationImpl extends Application
         {
             throw new NullPointerException("String " + paramName + " cannot be empty.");
         }
-    }
-
-    private static SystemEvent _createEvent(Class<? extends SystemEvent> systemEventClass, Object source,
-                                            SystemEvent event)
-    {
-        if (event == null)
-        {
-            try
-            {
-                Constructor<?>[] constructors = systemEventClass.getConstructors();
-                Constructor<? extends SystemEvent> constructor = null;
-                for (Constructor<?> c : constructors)
-                {
-                    if (c.getParameterTypes().length == 1)
-                    {
-                        // Safe cast, since the constructor belongs
-                        // to a class of type SystemEvent
-                        constructor = (Constructor<? extends SystemEvent>) c;
-                        break;
-                    }
-                }
-                if (constructor != null)
-                {
-                    event = constructor.newInstance(source);
-                }
-
-            }
-            catch (Exception e)
-            {
-                throw new FacesException("Couldn't instanciate system event of type " + 
-                        systemEventClass.getName(), e);
-            }
-        }
-
-        return event;
     }
 
     private void _handleAnnotations(FacesContext context, Object inspected, UIComponent component)
@@ -2580,136 +2640,6 @@ public class ApplicationImpl extends Application
         }
     }
 
-    private static SystemEvent _traverseListenerList(List<? extends SystemEventListener> listeners,
-                                                     Class<? extends SystemEvent> systemEventClass, Object source,
-                                                     SystemEvent event)
-    {
-        if (listeners != null && !listeners.isEmpty())
-        {
-            // perf: org.apache.myfaces.application.ApplicationImpl.
-            //    SystemListenerEntry.getSpecificSourceListenersNotNull(Class<?>)
-            // or javax.faces.component.UIComponent.subscribeToEvent(
-            //      Class<? extends SystemEvent>, ComponentSystemEventListener)
-            // creates a ArrayList:
-            for (int i  = 0, size = listeners.size(); i < size; i++)
-            {
-                SystemEventListener listener = listeners.get(i);
-                // Call SystemEventListener.isListenerForSource(java.lang.Object), passing the source argument.
-                // If this returns false, take no action on the listener.
-                if (listener.isListenerForSource(source))
-                {
-                    // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
-                    // construct the event, passing source as the argument to the one-argument constructor that takes
-                    // an Object. This same event instance must be passed to all listener instances.
-                    event = _createEvent(systemEventClass, source, event);
-
-                    // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
-                    // instance as the argument. If this returns false, take no action on the listener.
-                    if (event.isAppropriateListener(listener))
-                    {
-                        // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
-                        // instance.
-                        event.processListener(listener);
-                    }
-                }
-            }
-        }
-
-        return event;
-    }
-    
-    private static SystemEvent _traverseListenerListWithCopy(List<? extends SystemEventListener> listeners,
-            Class<? extends SystemEvent> systemEventClass, Object source,
-            SystemEvent event)
-    {
-        if (listeners != null && !listeners.isEmpty())
-        {
-            List<SystemEventListener> listenersCopy = new ArrayList<SystemEventListener>();
-            int processedListenerIndex = 0;
-            
-            for (int i = 0; i < listeners.size(); i++)
-            {
-                listenersCopy.add(listeners.get(i));
-            }
-            
-            // If the inner for is succesful, processedListenerIndex == listenersCopy.size()
-            // and the loop will be complete.
-            while (processedListenerIndex < listenersCopy.size())
-            {                
-                for (; processedListenerIndex < listenersCopy.size(); processedListenerIndex++ )
-                {
-                    SystemEventListener listener = listenersCopy.get(processedListenerIndex);
-                    // Call SystemEventListener.isListenerForSource(java.lang.Object), passing the source argument.
-                    // If this returns false, take no action on the listener.
-                    if (listener.isListenerForSource(source))
-                    {
-                        // Otherwise, if the event to be passed to the listener instances has not yet been constructed,
-                        // construct the event, passing source as the argument
-                        // to the one-argument constructor that takes
-                        // an Object. This same event instance must be passed to all listener instances.
-                        event = _createEvent(systemEventClass, source, event);
-    
-                        // Call SystemEvent.isAppropriateListener(javax.faces.event.FacesListener), passing the listener
-                        // instance as the argument. If this returns false, take no action on the listener.
-                        if (event.isAppropriateListener(listener))
-                        {
-                            // Call SystemEvent.processListener(javax.faces.event.FacesListener), passing the listener
-                            // instance.
-                            event.processListener(listener);
-                        }
-                    }
-                }
-                
-                boolean listChanged = false;
-                if (listeners.size() == listenersCopy.size())
-                {
-                    for (int i = 0; i < listenersCopy.size(); i++)
-                    {
-                        if (listenersCopy.get(i) != listeners.get(i))
-                        {
-                            listChanged = true;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    listChanged = true;
-                }
-                
-                if (listChanged)
-                {
-                    for (int i = 0; i < listeners.size(); i++)
-                    {
-                        SystemEventListener listener = listeners.get(i);
-                        
-                        // check if listenersCopy.get(i) is valid
-                        if (i < listenersCopy.size())
-                        {
-                            // The normal case is a listener was added, 
-                            // so as heuristic, check first
-                            // if we can find it at the same location
-                            if (!listener.equals(listenersCopy.get(i)) &&
-                                !listenersCopy.contains(listener))
-                            {
-                                listenersCopy.add(listener);
-                            }
-                        }
-                        else
-                        {
-                            if (!listenersCopy.contains(listener))
-                            {
-                                listenersCopy.add(listener);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return event;
-    }
-
     /**
      * Method to handle determining if the first request has 
      * been handled by the associated LifecycleImpl.
@@ -2790,15 +2720,17 @@ public class ApplicationImpl extends Application
             }
         }
 
-        public void publish(Class<? extends SystemEvent> systemEventClass, Class<?> classSource, Object source,
-                            SystemEvent event)
+        public void publish(FacesContext facesContext, Class<? extends SystemEvent> systemEventClass,
+                Class<?> classSource, Object source, SystemEvent event)
         {
             if (source != null && _sourceClassMap != null)
             {
-                event = _traverseListenerList(_sourceClassMap.get(classSource), systemEventClass, source, event);
+                event = _ApplicationUtils._traverseListenerList(facesContext, _sourceClassMap.get(classSource),
+                        systemEventClass, source, event);
             }
 
-            _traverseListenerList(_lstSystemEventListener, systemEventClass, source, event);
+            _ApplicationUtils._traverseListenerList(facesContext, _lstSystemEventListener,
+                    systemEventClass, source, event);
         }
 
         private void addListenerNoDuplicate(List<SystemEventListener> listeners, SystemEventListener listener)
@@ -2890,5 +2822,77 @@ public class ApplicationImpl extends Application
                                      : Boolean.parseBoolean(configParam);
         }
         return _lazyLoadConfigObjects;
+    }
+    
+    
+    @Override
+    public final void setSearchExpressionHandler(SearchExpressionHandler searchExpressionHandler)
+    {
+        checkNull(searchExpressionHandler, "searchExpressionHandler");
+
+        if(isFirstRequestProcessed())
+        {
+            throw new IllegalStateException(
+                    "setFlowHandler may not be executed after a lifecycle request has been completed");
+        }
+        _searchExpressionHandler = searchExpressionHandler;
+    }
+
+    @Override
+    public final SearchExpressionHandler getSearchExpressionHandler()
+    {
+        return _searchExpressionHandler;
+    }
+
+    @Override
+    public SearchKeywordResolver getSearchKeywordResolver()
+    {
+        // we don't need synchronization here since it is ok to have multiple
+        // instances of the elresolver
+        if (_searchExpressionResolver == null)
+        {
+            _searchExpressionResolver = createSearchExpressionResolver();
+        }
+        return _searchExpressionResolver;
+    }
+    
+    private SearchKeywordResolver createSearchExpressionResolver()
+    {
+        // Chain of responsibility pattern
+        CompositeSearchKeywordResolver baseResolver = new CompositeSearchKeywordResolver();
+        
+        for (SearchKeywordResolver child : getRuntimeConfig().getApplicationSearchExpressionResolvers())
+        {
+            baseResolver.add(child);
+        }
+        
+        baseResolver.add(new ThisSearchKeywordResolver());
+        baseResolver.add(new ParentSearchKeywordResolver());
+        baseResolver.add(new ChildSearchKeywordResolver());
+        baseResolver.add(new CompositeComponentParentSearchKeywordResolver());
+        baseResolver.add(new FormSearchKeywordResolver());
+        baseResolver.add(new NamingContainerSearchKeywordResolver());
+        baseResolver.add(new NextSearchKeywordResolver());
+        baseResolver.add(new NoneSearchKeywordResolver());
+        baseResolver.add(new PreviousSearchKeywordResolver());
+        baseResolver.add(new RootSearchKeywordResolver());
+        baseResolver.add(new IdSearchKeywordResolver());
+        baseResolver.add(new AllSearchKeywordResolver());
+        
+        return baseResolver;
+    }
+
+    @Override
+    public void addSearchKeywordResolver(SearchKeywordResolver resolver)
+    {
+        if (isFirstRequestProcessed())
+        {
+            throw new IllegalStateException(
+                    "It is illegal to add a search expression resolver after the first request is processed");
+        }
+        if (resolver != null)
+        {
+            _runtimeConfig.addApplicationSearchExpressionResolver(resolver);
+        }
     }
 }

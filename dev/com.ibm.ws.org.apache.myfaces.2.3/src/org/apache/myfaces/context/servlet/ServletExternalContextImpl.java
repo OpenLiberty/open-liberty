@@ -22,15 +22,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.faces.FacesException;
@@ -51,25 +55,35 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.context.flash.FlashImpl;
+import org.apache.myfaces.shared.util.WebConfigParamUtils;
 import org.apache.myfaces.util.EnumerationIterator;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 /**
  * Implements the external context for servlet request. JSF 1.2, 6.1.3
  *
- * @author Manfred Geiler (latest modification by $Author: lu4242 $)
+ * @author Manfred Geiler (latest modification by $Author: paulnicolucci $)
  * @author Anton Koinov
- * @version $Revision: 1542444 $ $Date: 2013-11-16 01:41:08 +0000 (Sat, 16 Nov 2013) $
+ * @version $Revision: 1828254 $ $Date: 2018-04-03 12:33:38 -0400 (Tue, 03 Apr 2018) $
  */
 public final class ServletExternalContextImpl extends ServletExternalContextImplBase
 {
-    //private static final Log log = LogFactory.getLog(ServletExternalContextImpl.class);
     private static final Logger log = Logger.getLogger(ServletExternalContextImpl.class.getName());
 
     private static final String URL_PARAM_SEPERATOR="&";
-    private static final String URL_QUERY_SEPERATOR="?";
-    private static final String URL_FRAGMENT_SEPERATOR="#";
+    private static final char URL_QUERY_SEPERATOR='?';
+    private static final char URL_FRAGMENT_SEPERATOR='#';
     private static final String URL_NAME_VALUE_PAIR_SEPERATOR="=";
+    private static final String PUSHED_RESOURCE_URLS = "oam.PUSHED_RESOURCE_URLS";
+    private static final String PUSH_SUPPORTED = "oam.PUSH_SUPPORTED";
+
+    /**
+     * Indicates the port used for websocket connections.
+     */
+    @JSFWebConfigParam(since = "2.3")
+    public static final java.lang.String WEBSOCKET_ENDPOINT_PORT = "javax.faces.WEBSOCKET_ENDPOINT_PORT";
 
     private ServletRequest _servletRequest;
     private ServletResponse _servletResponse;
@@ -362,9 +376,65 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     {
         checkNull(url, "url");
         checkHttpServletRequest();
-        return ((HttpServletResponse) _servletResponse).encodeURL(url);
+        String encodedUrl = ((HttpServletResponse) _servletResponse).encodeURL(url);
+        
+        pushResource(encodedUrl);
+        
+        return encodedUrl;
     }
 
+    protected void pushResource(String resourceUrl)
+    {
+        if (!ExternalSpecifications.isServlet4Available())
+        {
+            return;
+        }
+        
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Map<Object, Object> attributes = facesContext.getAttributes();
+
+        javax.servlet.http.PushBuilder pushBuilder = null;
+        
+        if (!attributes.containsKey(PUSH_SUPPORTED))
+        {
+            Object request = getRequest();
+            boolean pushSupported = false;
+            if (request instanceof HttpServletRequest)
+            {
+                HttpServletRequest servletRequest = (HttpServletRequest) request;
+                pushBuilder = servletRequest.newPushBuilder();
+                pushSupported = pushBuilder != null;
+            }
+            
+            attributes.put(PUSH_SUPPORTED, pushSupported);
+        }
+
+        boolean pushSupported = (boolean) attributes.get(PUSH_SUPPORTED);
+        if (!pushSupported)
+        {
+            return;
+        }
+        
+        Set<String> pushedResourceUrls = (Set<String>) facesContext.getAttributes()
+                 .computeIfAbsent(PUSHED_RESOURCE_URLS, a -> new HashSet<>());
+        if (pushedResourceUrls.contains(resourceUrl))
+        {
+            return;
+        }
+
+        // might be != null on the first hit
+        if (pushBuilder == null)
+        {
+            HttpServletRequest servletRequest = (HttpServletRequest) getRequest();
+            pushBuilder = servletRequest.newPushBuilder();
+        }
+        
+        if (pushBuilder != null)
+        {
+            pushBuilder.path(resourceUrl).push();
+        }
+    }
+    
     @Override
     public String encodeNamespace(final String s)
     {
@@ -383,6 +453,39 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
     public String encodeRedirectURL(String baseUrl, Map<String,List<String>> parameters)
     {
         return _httpServletResponse.encodeRedirectURL(encodeURL(baseUrl, parameters));
+    }
+
+    @Override
+    public String encodeWebsocketURL(String url)
+    {
+
+        checkNull(url, "url");
+        FacesContext facesContext = getCurrentFacesContext();
+        Integer port = WebConfigParamUtils.getIntegerInitParameter(
+                getCurrentFacesContext().getExternalContext(), WEBSOCKET_ENDPOINT_PORT);
+        port = (port == 0) ? null : port;
+        if (port != null && 
+            !port.equals(facesContext.getExternalContext().getRequestServerPort()))
+        {
+            String scheme = facesContext.getExternalContext().getRequestScheme();
+            String serverName = facesContext.getExternalContext().getRequestServerName();
+            String webSocketUrl;
+            try
+            {
+                webSocketUrl = new URL(scheme, serverName, port, url).toExternalForm();
+                webSocketUrl = webSocketUrl.replaceFirst("http", "ws");
+                return ((HttpServletResponse) _servletResponse).encodeURL(webSocketUrl);
+            }
+            catch (MalformedURLException ex)
+            {
+                //If cannot build the url, return the base one unchanged
+                return url;
+            }
+        }
+        else
+        {
+            return url;
+        }
     }
 
     @Override
@@ -859,8 +962,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
             boolean isFirstPair = true;
             for (Map.Entry<String, List<String>> pair : paramMap.entrySet())
             {
-                for (String value : pair.getValue())
+                for (int i = 0; i < pair.getValue().size(); i++)
                 {
+                    String value = pair.getValue().get(i);
+                    
                     if (!isFirstPair)
                     {
                         newUrl.append(URL_PARAM_SEPERATOR);
@@ -875,7 +980,7 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
                     newUrl.append(URL_NAME_VALUE_PAIR_SEPERATOR);
                     try
                     {
-                        newUrl.append(URLEncoder.encode(value,getResponseCharacterEncoding()));
+                        newUrl.append(URLEncoder.encode(value, getResponseCharacterEncoding()));
                     }
                     catch (UnsupportedEncodingException e)
                     {

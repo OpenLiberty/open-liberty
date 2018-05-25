@@ -44,7 +44,6 @@ import org.apache.myfaces.shared.util.StreamCharBuffer;
 public class HtmlResponseWriterImpl
         extends ResponseWriter
 {
-    //private static final Log log = LogFactory.getLog(HtmlResponseWriterImpl.class);
     private static final Logger log = Logger.getLogger(HtmlResponseWriterImpl.class.getName());
 
     private static final String DEFAULT_CONTENT_TYPE = "text/html";
@@ -304,9 +303,10 @@ public class HtmlResponseWriterImpl
 
     public void endDocument() throws IOException
     {
-        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance().getExternalContext());
+        MyfacesConfig myfacesConfig = MyfacesConfig.getCurrentInstance(
+            FacesContext.getCurrentInstance().getExternalContext());
         if (myfacesConfig.isEarlyFlushEnabled())
-        { 
+        {
             _currentWriter.flush();
         }
         _facesContext = null;
@@ -848,7 +848,7 @@ public class HtmlResponseWriterImpl
         {
             String strValue = (value==null)?"":value.toString();
             String encodedStr = org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                    strValue, false, false, !_isUTF8); 
+                    strValue, false, false, !_isUTF8);
             StringBuilder sb = new StringBuilder(name.length() + encodedStr.length() + 4);
             sb.append(' ');
             sb.append(name);
@@ -863,7 +863,7 @@ public class HtmlResponseWriterImpl
     {
         String strValue = (value==null)?"":value.toString();
         String encodedStr = org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder.encode(
-                strValue, false, false, !_isUTF8); 
+                strValue, false, false, !_isUTF8);
         StringBuilder sb = new StringBuilder(name.length() + encodedStr.length() + 4);
         sb.append(' ');
         sb.append(name);
