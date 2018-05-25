@@ -50,15 +50,18 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 SecurityContextEJBTest.class,
                 DatabaseIdentityStoreDeferredSettingsTest.class,
                 DatabaseIdentityStoreImmediateSettingsTest.class,
-                EAREJBModuleTest.class,
+                EJBModuleTestProtectedServlet.class,
+                EJBModuleTestUnprotectedServlet.class,
                 MultipleModuleGlobalLoginTest.class,
-                MultipleModuleRunAsTest.class,
                 MultipleModuleDBRunAsTest.class,
                 ScopedTest.class,
+                MultipleModuleRunAsTest.class,
+                FeatureTest.class,
+                EJBModuleRealmTest.class,
                 CustomIdentityStoreHandlerTest.class,
-                NoIdentityStoreTest.class,
                 MultipleModuleGlobalClientCertTest.class,
-                MultipleModuleGlobalClientCertFailOverTest.class
+                MultipleModuleGlobalClientCertFailOverTest.class,
+                NoIdentityStoreTest.class
 })
 
 /**

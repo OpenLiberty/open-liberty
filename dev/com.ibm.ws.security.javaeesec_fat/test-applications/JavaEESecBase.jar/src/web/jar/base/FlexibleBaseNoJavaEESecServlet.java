@@ -109,6 +109,7 @@ public abstract class FlexibleBaseNoJavaEESecServlet extends HttpServlet {
      */
     public void handleRequest(String type, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
+        writer.println("HandleRequest: We are at the WRONG manager method call!!!!");
         writer.println("ServletName: " + servletName);
         writer.println("Request type: " + type);
 

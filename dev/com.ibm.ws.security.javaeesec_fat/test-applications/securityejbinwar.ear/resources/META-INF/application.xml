@@ -4,8 +4,14 @@
   <display-name>securityejbinwar.ear</display-name>
   <module id="WebModule_1">
     <web>
-      <web-uri>ejbinwarservlet.war</web-uri>
-      <context-root>/securityejbinwar</context-root>
+      <web-uri>AnnotatedEjbinWarServletLdapDB.war</web-uri>
+      <context-root>/AnnotatedEjbinWarServletLdapDB</context-root>
+    </web>
+  </module>
+    <module id="WebModule_2">
+    <web>
+      <web-uri>AnnotatedEjbinWarServletLdap.war</web-uri>
+      <context-root>/AnnotatedEjbinWarServletLdap</context-root>
     </web>
   </module>
 </application>

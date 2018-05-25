@@ -48,6 +48,7 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     @Override
     protected SecurityContext getSecurityContext() {
         return securityContext;
+
     }
 
     @Override
@@ -139,7 +140,9 @@ public class SecurityEJBA02Bean extends SecurityEJBBeanBase implements SecurityE
     @Override
     public String declareRoles01() {
         String result1 = authenticate("declareRoles01");
+
         boolean isDeclaredMgr = securityContext.isCallerInRole("DeclaredRole01");
+
         int len = result1.length() + 5;
         StringBuffer result2 = new StringBuffer(len);
         result2.append(result1);

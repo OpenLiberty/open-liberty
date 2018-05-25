@@ -11,16 +11,18 @@
 package web.war.identitystores.db.db1;
 
 import java.util.logging.Logger;
+
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 
 @DatabaseIdentityStoreDefinition(
-                                 dataSourceLookup="jdbc/db1",
-                                 priority=200,
+                                 dataSourceLookup = "jdbc/db1",
+                                 priority = 200,
                                  callerQuery = "select password from callers where name = ?",
                                  groupsQuery = "select group_name from caller_groups where caller_name = ?")
 
 public class DatabaseAnnotate200 {
     private static Logger log = Logger.getLogger(DatabaseAnnotate200.class.getName());
+
     public DatabaseAnnotate200() {
         log.info("<ctor>");
     }

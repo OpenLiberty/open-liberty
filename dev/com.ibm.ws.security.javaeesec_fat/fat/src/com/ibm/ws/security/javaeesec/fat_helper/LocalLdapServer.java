@@ -12,6 +12,7 @@ package com.ibm.ws.security.javaeesec.fat_helper;
 
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapException;
+
 import com.ibm.ws.apacheds.EmbeddedApacheDS;
 
 public class LocalLdapServer {
@@ -43,7 +44,7 @@ public class LocalLdapServer {
     public static final String ANOTHERGROUP1 = "anothergroup1";
     public static final String ANOTHERGROUP2 = "anothergroup2";
     public static final String ANOTHERRUNASGROUP1 = "anotherrunasgroup1";
-    public static final String GRANTEDGROUP = "grantedgroup";  // this group is allowed to access the servlet. this group is added if user id contains "user"
+    public static final String GRANTEDGROUP = "grantedgroup"; // this group is allowed to access the servlet. this group is added if user id contains "user"
     public static final String GRANTEDGROUP2 = "grantedgroup2";
     public static final String CERTGROUP1 = "certgroup1";
 
@@ -57,8 +58,8 @@ public class LocalLdapServer {
         ldapServer.add(entry);
         // create ou for users and groups.
 
-        String[] CREATE_OUS = { USERS, ANOTHERUSERS, GROUPS, ANOTHERGROUPS};
-        for(String ou : CREATE_OUS) {
+        String[] CREATE_OUS = { USERS, ANOTHERUSERS, GROUPS, ANOTHERGROUPS };
+        for (String ou : CREATE_OUS) {
             addOU(ldapServer, BASE_DN, ou);
         }
 
@@ -73,11 +74,11 @@ public class LocalLdapServer {
         addUser(ldapServer, USERS_BASE, CERTUSER2, PASSWORD);
 
         String GROUPS_BASE = "ou=" + GROUPS + "," + BASE_DN;
-        String[] GROUP1_MEMBERS ={"uid=" + USER1 + "," + USERS_BASE, "uid=" + USER2 + "," + USERS_BASE};
+        String[] GROUP1_MEMBERS = { "uid=" + USER1 + "," + USERS_BASE, "uid=" + USER2 + "," + USERS_BASE };
         addGroup(ldapServer, GROUPS_BASE, GROUP1, GROUP1_MEMBERS);
-        String[] GROUP2_MEMBERS ={"uid=" + USER2 + "," + USERS_BASE};
+        String[] GROUP2_MEMBERS = { "uid=" + USER2 + "," + USERS_BASE };
         addGroup(ldapServer, GROUPS_BASE, GROUP2, GROUP2_MEMBERS);
-        String[] RUNASGROUP1_MEMBERS ={"uid=" + RUNASUSER1 + "," + USERS_BASE};
+        String[] RUNASGROUP1_MEMBERS = { "uid=" + RUNASUSER1 + "," + USERS_BASE };
         addGroup(ldapServer, GROUPS_BASE, RUNASGROUP1, RUNASGROUP1_MEMBERS);
         String[] CERTGROUP1_MEMBERS ={"uid=" + CERTUSER1 + "," + USERS_BASE, "uid=" + USER3 + "," + USERS_BASE,};
         addGroup(ldapServer, GROUPS_BASE, CERTGROUP1, CERTGROUP1_MEMBERS);
@@ -91,11 +92,12 @@ public class LocalLdapServer {
         addUser(ldapServer, ANOTHERUSERS_BASE, ANOTHERRUNASUSER1, ANOTHERPASSWORD);
 
         String ANOTHERGROUPS_BASE = "ou=" + ANOTHERGROUPS + "," + BASE_DN;
-        String[] ANOTHERGROUP1_MEMBERS ={"uid=" + USER1 + "," + ANOTHERUSERS_BASE, "uid=" + USER2 + "," + ANOTHERUSERS_BASE, "uid=" + ANOTHERUSER1 + "," + ANOTHERUSERS_BASE, "uid=" + ANOTHERUSER2 + "," + ANOTHERUSERS_BASE};
+        String[] ANOTHERGROUP1_MEMBERS = { "uid=" + USER1 + "," + ANOTHERUSERS_BASE, "uid=" + USER2 + "," + ANOTHERUSERS_BASE, "uid=" + ANOTHERUSER1 + "," + ANOTHERUSERS_BASE,
+                                           "uid=" + ANOTHERUSER2 + "," + ANOTHERUSERS_BASE };
         addGroup(ldapServer, ANOTHERGROUPS_BASE, ANOTHERGROUP1, ANOTHERGROUP1_MEMBERS);
-        String[] ANOTHERGROUP2_MEMBERS ={"uid=" + USER2 + "," + ANOTHERUSERS_BASE};
+        String[] ANOTHERGROUP2_MEMBERS = { "uid=" + USER2 + "," + ANOTHERUSERS_BASE };
         addGroup(ldapServer, ANOTHERGROUPS_BASE, ANOTHERGROUP2, ANOTHERGROUP2_MEMBERS);
-        String[] ANOTHERRUNASGROUP1_MEMBERS ={"uid=" + ANOTHERRUNASUSER1 + "," + ANOTHERUSERS_BASE};
+        String[] ANOTHERRUNASGROUP1_MEMBERS = { "uid=" + ANOTHERRUNASUSER1 + "," + ANOTHERUSERS_BASE };
         addGroup(ldapServer, ANOTHERGROUPS_BASE, ANOTHERRUNASGROUP1, ANOTHERRUNASGROUP1_MEMBERS);
 
     }
@@ -113,7 +115,7 @@ public class LocalLdapServer {
         ls.add(entry);
     }
 
-    private void addGroup(EmbeddedApacheDS ls, String base, String cn, String [] members) throws LdapException {
+    private void addGroup(EmbeddedApacheDS ls, String base, String cn, String[] members) throws LdapException {
         Entry entry = ls.newEntry("cn=" + cn + "," + base);
         entry.add("objectclass", "groupOfNames");
         for (String member : members) {

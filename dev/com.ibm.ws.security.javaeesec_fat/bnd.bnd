@@ -22,22 +22,28 @@ src: \
 	test-applications/DatabaseAnnotatedBasicAuthServlet.war/src,\
 	test-applications/DatabaseAnnotatedDSServlet.war/src,\
 	test-applications/dbfat.war/src,\
+	test-applications/dbfat2.war/src,\
 	test-applications/dbfatCustomHash.war/src,\
 	test-applications/dbfatAuthAlias.war/src,\
 	test-applications/DatabaseAuthAliasBasicAuthServlet.war/src,\
 	test-applications/IdentityStores.jar/src,\
 	test-applications/AuthMechs.jar/src,\
-	test-applications/DatabaseIdstoreDeferred.war/src,\
 	test-applications/DatabaseIdstoreImmediate.war/src,\
-	test-applications/securityContextHamApp.war/src,\
-	test-applications/SecurityEJBinWAR.jar/src,\
-	test-applications/ejbinwarservlet.war/src,\
 	test-applications/multipleDB.war/src,\
-	test-applications/securityContextEJBInWar.war/src,\
 	test-applications/CustomPasswordHash.jar/src,\
 	test-applications/CustomPasswordHashBean.jar/src,\
 	test-applications/DatabaseAnnotatedCustomHash.war/src,\
-	test-applications/DatabaseAnnotatedCustomHashBean.war/src
+	test-applications/DatabaseAnnotatedCustomHashBean.war/src,\
+	test-applications/DatabaseIdstoreDeferred.war/src,\
+	test-applications/securityContextHamApp.war/src,\
+	test-applications/SecurityEJBinWAR.jar/src,\
+	test-applications/securityContextEJBInWar.war/src,\
+	test-applications/AnnotatedEjbinWarServletLdapDB.war/src,\
+	test-applications/AnnotatedEjbinWarServletLdap.war/src,\
+	test-applications/EjbinWarServletISLdapDb.war/src,\
+	test-applications/EjbinWarServletISLdap.war/src,\
+	test-applications/AnnotatedEjbinWarServletLdapRealm1.war/src,\
+	test-applications/AnnotatedEjbinWarServletLdapRealm2.war/src
 
 javac.source: 1.8
 javac.target: 1.8
@@ -75,4 +81,3 @@ fat.project: true
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest, \
 	com.ibm.ws.security.javaeesec.cdi;version=latest
-

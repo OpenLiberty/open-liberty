@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="EjbinWarServletLdapDb" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+  <display-name>EjbinWarServletLdapDb</display-name>
+  <description>This is a servlet to test EJBs</description>
+
+  <!-- SERVLET DEFINITIONS -->
+   
+  <servlet id="Default_Servlet_1">
+    <description>SecurityEJBServlet</description>
+    <display-name>SecurityEJBServlet</display-name>
+    <servlet-name>SecurityEJBServlet</servlet-name>
+    <servlet-class>web.war.ejb.annotated.servlet.SecurityEJBServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+    <servlet id="RunAs_Servlet_2">
+    <description>SecurityEJBRunAsServlet</description>
+    <display-name>SecurityEJBRunAsServlet</display-name>
+    <servlet-name>SecurityEJBRunAsServlet</servlet-name>
+    <servlet-class>web.war.ejb.annotated.servlet.SecurityEJBRunAsServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  
+  <!-- SERVLET MAPPINGS -->   
+   
+  <servlet-mapping id="Default_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBServlet</servlet-name>
+    <url-pattern>/SimpleServlet</url-pattern>
+  </servlet-mapping>
+  
+    <servlet-mapping id="RunAs_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBRunAsServlet</servlet-name>
+    <url-pattern>/SimpleServletRunAs</url-pattern>
+  </servlet-mapping>
+  
+  
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_Ann_Default">
+     <web-resource-collection id="WebResourceCollection_Default">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_Default">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+  
+        <security-constraint id="SecurityConstraint_RunAs">
+     <web-resource-collection id="WebResourceCollection_RunAS">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleServletRunAs/*</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+      <auth-constraint id="AuthConstraint_RunAs">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+
+   <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_1">
+     <description>Manager role</description>
+     <role-name>Manager</role-name>
+  </security-role>
+  
+</web-app>

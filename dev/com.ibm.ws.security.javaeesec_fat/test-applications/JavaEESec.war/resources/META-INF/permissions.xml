@@ -25,6 +25,13 @@
       <name>* * "*"</name>
       <actions>read</actions>
    </permission>
+   
+    <permission>
+      <class-name>java.net.SocketPermission</class-name>
+            <name>127.0.0.1</name>
+            <actions>resolve</actions>
+   </permission>
+   
 
 <!-- this is for java.io.PrintWriter.write in FlexibleBaseNoJavaEESecServlet.class -->
    <permission>

@@ -100,7 +100,6 @@ public class SecurityContextTest extends JavaEESecTestBase {
         queryString = queryString + "/JavaEESecBasic";
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
                                                           HttpServletResponse.SC_OK);
-        // verifyJaspiAuthenticationProcessedByProvider(response, DEFAULT_JASPI_PROVIDER, DEFAULT_BASICAUTH_SERVLET_NAME);
         verifySecurityContextResponse(response, Constants.secContextGetPrincipal + " WSPrincipal:" + Constants.javaeesec_basicRoleUser,
                                       Constants.secContextGetPrincipalName + " " + Constants.javaeesec_basicRoleUser);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());

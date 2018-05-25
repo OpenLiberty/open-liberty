@@ -5,11 +5,19 @@
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
     version="7">
     
+    <permission>
+      <class-name>javax.security.enterprise.identitystore.IdentityStorePermission</class-name>
+      <name>getGroups</name>
+   </permission>
+
    <permission>
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>wssecurity.getCallerSubject</name>
    </permission>
-
+   <permission>
+   <class-name>java.security.SecurityPermission</class-name>
+   <name>printIdentity</name>
+      </permission>
    <permission>
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>wssecurity.applicationReadCredential</name>
@@ -19,8 +27,8 @@
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>wssecurity.getRunAsSubject</name>
    </permission>
-   
-      <permission>
+
+   <permission>
       <class-name>javax.security.auth.AuthPermission</class-name>
       <name>modifyPrivateCredentials</name>
    </permission>
@@ -36,6 +44,22 @@
       <name>getClassLoader</name>
    </permission>
 
+   <permission>
+      <class-name>java.security.SecurityPermission</class-name>
+      <name>getProperty.authconfigprovider.factory</name>
+   </permission>
+
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>createLoginContext.system.WEB_INBOUND</name>
+   </permission>
+
+   <permission>
+      <class-name>java.net.SocketPermission</class-name>
+      <name>*</name>
+      <actions>connect,resolve</actions>
+   </permission>
+ 
    <permission>
       <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
       <name>* * "*"</name>
