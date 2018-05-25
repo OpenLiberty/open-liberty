@@ -71,10 +71,13 @@ public abstract class HTMLEncoder
 
         StringBuilder sb = null;    //create later on demand
         String app;
-        char c;
-        for (int i = 0; i < string.length (); ++i)
+        char c = ' ';
+        char prevC;
+        int length = string.length();
+        for (int i = 0; i < length; ++i)
         {
             app = null;
+            prevC = c;
             c = string.charAt(i);
             
             // All characters before letters
@@ -88,7 +91,7 @@ public abstract class HTMLEncoder
                     case '>': app = "&gt;"; break;      //>
                     case ' ':
                         if (encodeSubsequentBlanksToNbsp &&
-                                (i == 0 || (i - 1 >= 0 && string.charAt(i - 1) == ' ')))
+                                prevC == ' ')
                         {
                             //Space at beginning or after another space
                             app = "&#160;";
@@ -202,10 +205,13 @@ public abstract class HTMLEncoder
 
         int start = 0;
         String app;
-        char c;
-        for (int i = 0; i < string.length (); ++i)
+        char c = ' ';
+        char prevC;
+        int length = string.length();
+        for (int i = 0; i < length; ++i)
         {
             app = null;
+            prevC = c;
             c = string.charAt(i);
             
             // All characters before letters
@@ -219,7 +225,7 @@ public abstract class HTMLEncoder
                     case '>': app = "&gt;"; break;      //>
                     case ' ':
                         if (encodeSubsequentBlanksToNbsp &&
-                                (i == 0 || (i - 1 >= 0 && string.charAt(i - 1) == ' ')))
+                                prevC == ' ')
                         {
                             //Space at beginning or after another space
                             app = "&#160;";
@@ -304,9 +310,9 @@ public abstract class HTMLEncoder
         {
             writer.write(string);
         }
-        else if (start < string.length())
+        else if (start < length)
         {
-            writer.write(string,start,string.length()-start);
+            writer.write(string,start,length-start);
         }
     }
 
@@ -359,12 +365,14 @@ public abstract class HTMLEncoder
 
         //StringBuilder sb = null;    //create later on demand
         String app;
-        char c;
+        char c = ' ';
+        char prevC;
         int start = offset;
         
         for (int i = offset; i < offset + realLength; ++i)
         {
             app = null;
+            prevC = c;
             c = string[i];
 
             // All characters before letters
@@ -378,7 +386,7 @@ public abstract class HTMLEncoder
                     case '>': app = "&gt;"; break;      //>
                     case ' ':
                         if (encodeSubsequentBlanksToNbsp &&
-                                (i == 0 || (i - 1 >= 0 && string[i - 1] == ' ')))
+                                prevC == ' ')
                         {
                             //Space at beginning or after another space
                             app = "&#160;";
@@ -484,14 +492,15 @@ public abstract class HTMLEncoder
      * @return
      * @throws IOException
      */
-    public static String encodeURIAtributte(final String string, final String characterEncoding)
+    public static String encodeURIAttribute(final String string, final String characterEncoding)
         throws IOException
     {
         StringBuilder sb = null;    //create later on demand
         String app;
         char c;
         boolean endLoop = false;
-        for (int i = 0; i < string.length (); ++i)
+        int length = string.length();
+        for (int i = 0; i < length; ++i)
         {
             app = null;
             c = string.charAt(i);
@@ -632,7 +641,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '%')
             {
-                if (i + 2 < string.length())
+                if (i + 2 < length)
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
@@ -654,7 +663,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '?' || c == '#')
             {
-                if (i+1 < string.length())
+                if (i+1 < length)
                 {
                     // The remaining part of the URI are data that should be encoded
                     // using the document character encoding.
@@ -762,7 +771,8 @@ public abstract class HTMLEncoder
         String app;
         char c;
         boolean endLoop = false;
-        for (int i = 0; i < string.length (); ++i)
+        int length = string.length();
+        for (int i = 0; i < length; ++i)
         {
             app = null;
             c = string.charAt(i);
@@ -791,7 +801,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '%')
             {
-                if (i + 2 < string.length())
+                if (i + 2 < length)
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
@@ -812,7 +822,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '&')
             {
-                if (i+4 < string.length() )
+                if (i+4 < length )
                 {
                     if ('a' == string.charAt(i+1) &&
                         'm' == string.charAt(i+2) &&
@@ -875,7 +885,7 @@ public abstract class HTMLEncoder
      * @param characterEncoding
      * @throws IOException
      */
-    public static void encodeURIAtributte(Writer writer, final String string, final String characterEncoding)
+    public static void encodeURIAttribute(Writer writer, final String string, final String characterEncoding)
         throws IOException
     {
         //StringBuilder sb = null;    //create later on demand
@@ -883,7 +893,8 @@ public abstract class HTMLEncoder
         String app;
         char c;
         boolean endLoop = false;
-        for (int i = 0; i < string.length (); ++i)
+        int length = string.length();
+        for (int i = 0; i < length; ++i)
         {
             app = null;
             c = string.charAt(i);
@@ -1030,7 +1041,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '%')
             {
-                if (i + 2 < string.length())
+                if (i + 2 < length)
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
@@ -1064,7 +1075,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '?' || c == '#')
             {
-                if (i+1 < string.length())
+                if (i+1 < length)
                 {
                     // The remaining part of the URI are data that should be encoded
                     // using the document character encoding.
@@ -1108,7 +1119,7 @@ public abstract class HTMLEncoder
             //}
             if (endLoop)
             {
-                start = string.length();
+                start = length;
                 break;
             }
         }
@@ -1124,9 +1135,9 @@ public abstract class HTMLEncoder
         {
             writer.write(string);
         }
-        else if (start < string.length())
+        else if (start < length)
         {
-            writer.write(string,start,string.length()-start);
+            writer.write(string,start,length-start);
         }
     }
 
@@ -1202,11 +1213,12 @@ public abstract class HTMLEncoder
     {
         //StringBuilder sb = null;    //create later on demand
         int start = offset;
-        int realLength = string.length()-offset;
+        int length = string.length();
+        int realLength = length-offset;
         String app;
         char c;
         //boolean endLoop = false;
-        for (int i = offset; i < offset+realLength; ++i)
+        for (int i = offset; i < length; ++i)
         {
             app = null;
             c = string.charAt(i);
@@ -1241,7 +1253,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '%')
             {
-                if (i + 2 < string.length())
+                if (i + 2 < length)
                 {
                     char c1 = string.charAt(i+1);
                     char c2 = string.charAt(i+2);
@@ -1274,7 +1286,7 @@ public abstract class HTMLEncoder
             }
             else if (c == '&')
             {
-                if (i+4 < string.length() )
+                if (i+4 < length )
                 {
                     if ('a' == string.charAt(i+1) &&
                         'm' == string.charAt(i+2) &&
@@ -1337,9 +1349,9 @@ public abstract class HTMLEncoder
         {
             writer.write(string, offset, realLength);
         }
-        else if (start < offset+realLength)
+        else if (start < length)
         {
-            writer.write(string,start,offset+realLength-start);
+            writer.write(string,start,length-start);
         }
     }
 }
