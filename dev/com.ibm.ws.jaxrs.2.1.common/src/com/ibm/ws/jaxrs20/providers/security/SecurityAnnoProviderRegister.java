@@ -27,7 +27,7 @@ public class SecurityAnnoProviderRegister implements JaxRsProviderRegister {
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
 
         if (!clientSide) {
-            if (features.contains("appSecurity-2.0") || features.contains("appSecurity-1.0")) {
+            if (features.contains("appSecurity-2.0") || features.contains("appSecurity-1.0") || features.contains("appSecurity-3.0")) {
                 //add one built-in ContainerRequestFilter to handle basic security
                 LibertyAuthFilter laf = new LibertyAuthFilter();
                 LibertySimpleAuthorizingInterceptor in = new LibertySimpleAuthorizingInterceptor();

@@ -20,9 +20,12 @@ WS-TraceGroup: JAXRS
 # jaxrs-2.0-appSecurity is part of EE7 and therefore requires java 1.7 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
 
+Export-Package: \
+  com.ibm.ws.jaxrs20.appsecurity.security
+
 Import-Package: \
   javax.ws.rs.*; version="[2.0,3)", \
-  com.ibm.websphere.security.web, \
+  com.ibm.websphere.security.web;resolution:=optional, \
   com.ibm.websphere.*, \
   javax.servlet.http, \
   javax.net.ssl.*, \

@@ -27,6 +27,7 @@ Export-Package: \
 Import-Package: \
    org.apache.cxf.*;version=3.1.14, \
    com.ibm.websphere.security.saml2;resolution:=optional, \
+   com.ibm.ws.jaxrs20.appsecurity.security;resolution:=optional, \
    *
    
 Private-Package:\
