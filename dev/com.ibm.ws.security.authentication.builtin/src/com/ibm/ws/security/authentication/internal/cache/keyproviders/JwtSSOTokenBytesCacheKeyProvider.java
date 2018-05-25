@@ -29,6 +29,8 @@ public class JwtSSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
 
     private String getJwtSSOTokenBytes(final Subject subject) {
         String jwtSSOToken = JwtSSOTokenHelper.getJwtSSOToken(subject);
+        if (jwtSSOToken == null)
+            return null;
         return JwtSSOTokenHelper.getCacheKeyForJwtSSOToken(subject, jwtSSOToken);
     }
 }
