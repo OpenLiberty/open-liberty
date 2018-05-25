@@ -67,6 +67,8 @@ public abstract class BackedHashMap extends LRUHashMap {
                                                  "put", "putNoReplace", "superRemove", "superGet", "superPut",
                                                  "passivateSession", "doScheduledInvalidation", "handleDiscardedCacheItems", "cleanUpCache", "doTimeBasedWrites" };
 
+    private final static String WELD_SESSION_ATTRIBUTE_PREFIX = "WELD_S#";
+
     /*
      * Constructor
      */
@@ -433,6 +435,15 @@ public abstract class BackedHashMap extends LRUHashMap {
         if (_smc.writeAllProperties()) {
             propHit = true;
         }
+        else {
+            for (Enumeration<String> e = backedSess.getAttributeNames(); e.hasMoreElements(); ) {
+                String key = e.nextElement();
+                if (key.startsWith(WELD_SESSION_ATTRIBUTE_PREFIX)) {
+                    backedSess.setAttribute(key, backedSess.getAttribute(key), Boolean.FALSE);
+                }
+            }
+        }
+
 
         if (!propHit && backedSess.appDataChanges != null) {
             propHit = !backedSess.appDataChanges.isEmpty();
