@@ -197,6 +197,15 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SpringConfiguration Info = " + additionalConfig);
             }
+            if (tc.isWarningEnabled()) {
+                //WRN about some configurations we don't currently support.
+                if (additionalConfig.isCompression_configured_in_spring_app()) {
+                    Tr.warning(tc, "warning.spring_config.ignored.compression");
+                }
+                if (additionalConfig.isSession_configured_in_spring_app()) {
+                    Tr.warning(tc, "warning.spring_config.ignored.session");
+                }
+            }
             if (!config.getSsls().isEmpty() && !isSSLEnabled()) {
                 throw new IllegalStateException(Tr.formatMessage(tc, "error.missing.ssl"));
             }

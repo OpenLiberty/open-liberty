@@ -105,7 +105,15 @@ public class LibertyServletContainer implements WebServer {
     }
 
     private SpringConfiguration collectAdditionalConfig(LibertyServletContainerFactory factory) {
+        final boolean DEFAULT_COMPRESSION_ENABLED_SETTING = false;
+        final boolean DEFAULT_SESSION_PERSISTENT_SETTING = false;
+        final int DEFAULT_SESSION_TIMEOUT_SECONDS = 30 * 60;
         SpringConfiguration configHolder = new SpringConfiguration();
+        //check if spring compression configured so a not-supported warning may be issued.
+        configHolder.setCompression_configured_in_spring_app(factory.getCompression().getEnabled() != DEFAULT_COMPRESSION_ENABLED_SETTING);
+        // check if spring session config changes made so that a not-supported warning may be issued.
+        configHolder.setSession_configured_in_spring_app(factory.getSession().getTimeout().getSeconds() != DEFAULT_SESSION_TIMEOUT_SECONDS ||
+                                                         factory.getSession().isPersistent() != DEFAULT_SESSION_PERSISTENT_SETTING);
         Set<org.springframework.boot.web.server.ErrorPage> errorPages = factory.getErrorPages();
         for (org.springframework.boot.web.server.ErrorPage spring_ep : errorPages) {
             SpringErrorPageData ibm_spring_errpg = new SpringErrorPageData();
