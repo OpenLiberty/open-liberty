@@ -34,6 +34,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import com.ibm.websphere.simplicity.RemoteFile;
+
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -41,27 +43,55 @@ import componenttest.topology.impl.LibertyServer;
  */
 public abstract class SSLCommonTests extends AbstractSpringTests {
 
-    public String getKeyStorePath() {
+    private static final String TEST_CLIENT_AUTH_NEED = "testClientAuthNeedWithClientSideKeyStore";
+
+    public String getKeyStorePath(String methodName) {
+        if (methodName.startsWith(TEST_CLIENT_AUTH_NEED)) {
+            try {
+                RemoteFile ksRemoteFile = server.getFileFromLibertyServerRoot("client-keystore.jks");
+                return ksRemoteFile.getAbsolutePath();
+            } catch (Exception e) {
+                throw new IllegalStateException("Key Store file not found", e);
+            }
+        }
         return null;
     }
 
-    public String getKeyStorePassword() {
+    public String getKeyStorePassword(String methodName) {
+        if (methodName.startsWith(TEST_CLIENT_AUTH_NEED)) {
+            return "secret";
+        }
         return null;
     }
 
-    public String getTrustStorePath() {
+    public String getTrustStorePath(String methodName) {
+        if (methodName.startsWith(TEST_CLIENT_AUTH_NEED)) {
+            try {
+                RemoteFile tsRemoteFile = server.getFileFromLibertyServerRoot("client-truststore.jks");
+                return tsRemoteFile.getAbsolutePath();
+            } catch (Exception e) {
+                throw new IllegalStateException("Trust Store file not found", e);
+            }
+        }
         return null;
     }
 
-    public String getTrustStorePassword() {
+    public String getTrustStorePassword(String methodName) {
+        if (methodName.startsWith(TEST_CLIENT_AUTH_NEED)) {
+            return "secret";
+        }
         return null;
     }
 
     protected void testSSLApplication() throws Exception {
-        final String ksPath = getKeyStorePath();
-        final String ksPassword = getKeyStorePassword();
-        final String tsPath = getTrustStorePath();
-        final String tsPassword = getTrustStorePassword();
+        String methodName = testName.getMethodName();
+        if (methodName == null) {
+            return;
+        }
+        final String ksPath = getKeyStorePath(methodName);
+        final String ksPassword = getKeyStorePassword(methodName);
+        final String tsPath = getTrustStorePath(methodName);
+        final String tsPassword = getTrustStorePassword(methodName);
 
         String result = sendHttpsGet("/", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
@@ -176,15 +206,22 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
 
     @Override
     public Map<String, String> getBootStrapProperties() {
+        String methodName = testName.getMethodName();
         Map<String, String> properties = new HashMap<>();
         properties.put("server.ssl.key-store", "classpath:server-keystore.jks");
         properties.put("server.ssl.key-store-password", "secret");
         properties.put("server.ssl.key-password", "secret");
         properties.put("server.ssl.trust-store", "classpath:server-truststore.jks");
         properties.put("server.ssl.trust-store-password", "secret");
+        if (methodName != null) {
+            if (methodName.contains("Need")) {
+                properties.put("server.ssl.client-auth", "NEED");
+            } else if (methodName.contains("Want")) {
+                properties.put("server.ssl.client-auth", "WANT");
+            }
+        }
         return properties;
     }
-
 }
 
 class MyHostnameVerifier implements HostnameVerifier {
