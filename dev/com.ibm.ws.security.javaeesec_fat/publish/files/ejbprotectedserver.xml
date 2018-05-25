@@ -28,7 +28,7 @@
 			</security-role>
 			<security-role name="Manager">
 				<user name="user1" access-id="uid=user1,ou=users,o=ibm,c=us" />
-				<user name="jaspiuser1" access-id="EJBMultipleIdentityStore2/jaspiuser1" />
+				<user name="jaspiuser1" access-id="BaseIdentityStore/jaspiuser1" />
 				<user name="anotheruser1" access-id="uid=anotheruser1,ou=anotherusers,o=ibm,c=us" />
 				<user name="blue1" access-id="user:jdbc/derby2fat/blue1" />
 				<user name="blue3" access-id="user:jdbc/derby2fat/blue3" />
