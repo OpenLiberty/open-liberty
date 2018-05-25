@@ -289,7 +289,6 @@ task createJSONForPublicArtifacts {
     enabled isAutomatedBuild
 
     doLast {
-        // Create JSON descriptor
         delete "${buildDir}/info.json"
         File json = new File("${buildDir}/info.json")
         json.createNewFile()
@@ -308,8 +307,19 @@ task createJSONForPublicArtifacts {
         String junitPath = props.getProperty("junit.report.zip")
         String logPath = props.getProperty("published.gradle.log")
         String driverLocation = props.getProperty("zipopenliberty.archivename")
-        assert junitPath != null
-        assert logPath != null
+
+        if (junitPath == null) {
+            raise InvalidUserDataException("Could not find property named 'junit.report.zip'")
+        }
+
+        if (logPath == null) {
+            raise InvalidUserDataException("Could not find property named 'published.gradle.log'")
+        }
+
+        if (driverLocation == null) {
+            raise InvalidUserDataException("Could not find property named 'zipopenliberty.archivename'")
+        }
+
         String testResultName = new File(junitPath).getName()
         String logName = new File(logPath).getName()
         String driverLocationName = new File(driverLocation).getName()
@@ -328,7 +338,6 @@ task createJSONForPublicArtifacts {
 
         props.setProperty('published.json', json.toString())
 
-        // Store props to file
         File propsFile = new File('generated.properties')
         props.store(propsFile.newWriter(), null)
     }
@@ -451,43 +460,6 @@ task publishPublicArtifactsOnDhe {
                     put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
                 }
             }
-        }
-    }
-}
-
-task publishPublicArtifactsOnBintray {
-    dependsOn createJSONForPublicArtifacts
-    enabled isAutomatedBuild && isPublicPublishing
-
-    doLast {
-        String bintrayUser = props.getProperty("bintray.user")
-        String bintrayApikey = props.getProperty("bintray.apikey")
-
-        // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
-        def (yr, mo, d, t) = [bnd.buildLabel.substring(0,4), bnd.buildLabel.substring(4,6), bnd.buildLabel.substring(6,8), bnd.buildLabel.substring(8)]
-        String version = "${yr}-${mo}-${d}_${t}"
-        String packageName = (isRelease ? props.getProperty("published.package.release") : props.getProperty("published.package.nightly"))
-        String bintrayREST = "https://api.bintray.com/content/" + props.getProperty("bintray.organization") + "/" + props.getProperty("bintray.repository") + "/${packageName}/${version}/"
-
-        // Upload files using REST API https://api.bintray.com/content/:subject/:repo/:package/:version/${packageName}/${version}
-        exec {
-            commandLine "curl", "-T", props.getProperty("published.json"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
-        }
-        exec {
-            commandLine "curl", "-T", props.getProperty("published.gradle.log"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
-        }
-        exec {
-            commandLine "curl", "-T", props.getProperty("junit.report.zip"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
-        }
-        if (isContinuousBuild || isRelease) {
-            exec {
-                commandLine "curl", "-T", props.getProperty("zipopenliberty.archivename"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
-            }
-        }
-
-        // Publish using REST API https://api.bintray.com/content/:subject/:repo/:package/:version/publish
-        exec {
-            commandLine "curl", "-X", "POST", "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "publish"
         }
     }
 }
