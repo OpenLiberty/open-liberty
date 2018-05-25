@@ -241,24 +241,29 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     public final AtomicReference<DSConfig> dsConfig;
 
     /**
-     * Indicates whether or not the JDBC driver supports Connection.getNetworkTimeout.
+     * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getNetworkTimeout()</code>.
      */
     public boolean supportsGetNetworkTimeout;
 
     /**
-     * Indicates whether or not the JDBC driver supports Connection.getSchema.
+     * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getSchema()</code>.
      */
     public boolean supportsGetSchema;
 
     /**
-     * Indicates whether the JDBC driver supports <code>java.sql.Connection.getTypeMap</code>.
+     * Indicates whether the JDBC driver supports <code>java.sql.Connection.getTypeMap()</code>.
      */
     boolean supportsGetTypeMap = true;
 
     /**
-     * Indicates whether the JDBC driver supports <code>java.sql.Connection.isReadOnly</code>.
+     * Indicates whether the JDBC driver supports <code>java.sql.Connection.isReadOnly()</code>.
      */
     boolean supportsIsReadOnly = true;
+
+    /**
+     * Indicates whether the JDBC driver supports <code>java.sql.Statement.getLargeUpdateCount()</code>.
+     */
+    public boolean supportsGetLargeUpdateCount = true;
 
     /**
      * Identifies whether or not unit-of-work detection API is supported by the backend database.
