@@ -118,7 +118,7 @@ public class HttpPushBuilder implements PushBuilder, com.ibm.wsspi.http.ee8.Http
         }
 
         // set the REFERER header
-        String referer = _inboundRequest.getRequestURI();
+        String referer = _inboundRequest.getRequestURL().toString();
         String queryString = _inboundRequest.getQueryString();
 
         if (queryString != null) {

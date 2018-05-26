@@ -75,8 +75,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_method"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_method")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -138,8 +138,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_queryString"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_queryString")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -174,8 +174,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_sessionId"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_sessionId")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -202,8 +202,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_sessionId"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_sessionId")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -240,8 +240,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_path"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_path")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -297,7 +297,7 @@ public class HttpPushBuilderTest {
 
         assertTrue(pb.getPath() == null);
         assertTrue(pb.getQueryString() == null);
-        assertTrue("Referer header = " + pb.getHeader("Referer"), pb.getHeader("Referer").equals("/UnitTest/testAPI_path?test=queryStringFromRequest"));
+        assertTrue("Referer header = " + pb.getHeader("Referer"), pb.getHeader("Referer").equals("https://localhost:9443/UnitTest/testAPI_path?test=queryStringFromRequest"));
     }
 
     /**
@@ -323,8 +323,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_Push_Error_Condition"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_Push_Error_Condition")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -422,8 +422,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_Headers"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_Headers")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -522,8 +522,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_pushBuilderCookies"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_pushBuilderCookies")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -604,8 +604,8 @@ public class HttpPushBuilderTest {
                 will(returnValue("Basic xyz"));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/testAPI_conditionalHeadersAfterPush"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_conditionalHeadersAfterPush")));
 
                 // Used to construct the Referer header when the PushBuilder is initialized.
                 oneOf(srtReq).getQueryString();
@@ -617,8 +617,8 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
-                oneOf(srtReq).getRequestURI();
-                will(returnValue("/UnitTest/TestAPI_path"));
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_conditionalHeadersAfterPush")));
 
                 oneOf(srtReq).getIRequest();
                 will(returnValue(IReq40));
