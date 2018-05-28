@@ -119,6 +119,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                 Map<String, Object> requestProps = new HashMap<String, Object>();
                 requestProps.put("javax.servlet.http.registerSession.subject", authResult.getSubject());
                 webRequest.setProperties(requestProps);
+                removeSessionWhenDisabled(webRequest);
             }
 
             authResult = jaspiAuthenticator.authenticate(webRequest);
@@ -196,6 +197,34 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         }
         return false;
     }
+
+    private void removeSessionWhenDisabled(final WebRequest webRequest) {
+        if (!webAppSecurityConfig.isJaspicSessionEnabled() && existsSessionCookie(webRequest.getHttpServletRequest())) {
+            final SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, webAppSecurityConfig.getJaspicSessionCookieName());
+            if (System.getSecurityManager() == null) {
+                ssoCh.createLogoutCookies(webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), false);
+            } else {
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    @Override
+                    public Object run() {
+                        ssoCh.createLogoutCookies(webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), false);
+                        return null;
+                    }
+                });
+            }
+        }
+    }
+
+    private boolean existsSessionCookie(HttpServletRequest req) {
+        String cookieName = webAppSecurityConfig.getJaspicSessionCookieName();
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            if (CookieHelper.getCookieValues(cookies, cookieName) != null) {
+                return true;
+            }
+        }
+        return false;
+   }
 
     private HttpServletResponse attemptToRestorePostParams(WebRequest webRequest) {
         HttpServletResponse res = webRequest.getHttpServletResponse();

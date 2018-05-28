@@ -143,6 +143,8 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
             }
         } else {
             postFormLoginProcess(request, response, authResult.getSubject());
+            WebRequest webRequest = new WebRequestImpl(request, response, null, webAppSecConfig);
+            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(response.getStatus()));
         }
         return true;
     }
