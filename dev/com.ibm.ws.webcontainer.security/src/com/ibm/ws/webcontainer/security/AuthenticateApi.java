@@ -173,6 +173,13 @@ public class AuthenticateApi {
             authResult.setAuditCredType(req.getAuthType());
             authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
+        } else {
+            if (config.isJaspicSessionEnabled()) {
+                // need to clean up jaspiSession.
+                SSOCookieHelper ssoCh = new SSOCookieHelperImpl(config, config.getJaspicSessionCookieName());
+                ssoCh.removeSSOCookieFromResponse(res);
+                ssoCh.createLogoutCookies(req, res);
+            }
         }
 
         removeEntryFromAuthCache(req, res, config);
@@ -314,11 +321,18 @@ public class AuthenticateApi {
         if (authCacheService == null) {
             return;
         }
+        String ssoCookieName;
+        if (getJaspiService() != null && config.isJaspicSessionEnabled()) {
+            // remove jaspiSession.
+            ssoCookieName = config.getJaspicSessionCookieName();
+        } else {
+            ssoCookieName = ssoCookieHelper.getSSOCookiename();
+        }
 
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             String cookieValues[] = null;
-            cookieValues = CookieHelper.getCookieValues(cookies, ssoCookieHelper.getSSOCookiename());
+            cookieValues = CookieHelper.getCookieValues(cookies, ssoCookieName);
             if ((cookieValues == null || cookieValues.length == 0) &&
                 !SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME.equalsIgnoreCase(ssoCookieHelper.getSSOCookiename())) {
                 cookieValues = CookieHelper.getCookieValues(cookies, SSOAuthenticator.DEFAULT_SSO_COOKIE_NAME);
