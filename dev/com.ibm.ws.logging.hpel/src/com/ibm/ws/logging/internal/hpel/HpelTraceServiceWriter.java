@@ -28,7 +28,7 @@ import com.ibm.ws.logging.internal.hpel.HpelTraceServiceConfig.TraceState;
 /**
  * Writer into HPEL repository instance. Handles configuration requests and publishing records
  * coming either from TrService or from JUL Loggers.
- * 
+ *
  * Locking schema:
  * - Need to have write lock for the duration of configuration change or stop request.
  * - Need to have read lock for the duration of record publishing.

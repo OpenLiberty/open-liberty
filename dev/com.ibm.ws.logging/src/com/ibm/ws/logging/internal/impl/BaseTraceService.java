@@ -307,8 +307,6 @@ public class BaseTraceService implements TrService {
         //Retrieve collectormgrPiplineUtils
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
-            collectorMgrPipelineUtils.setJsonTrService(true);
-
         }
 
         //Sources
@@ -788,7 +786,7 @@ public class BaseTraceService implements TrService {
     /**
      * @param routedMessage
      */
-    private void publishToLogSource(RoutedMessage routedMessage) {
+    protected void publishToLogSource(RoutedMessage routedMessage) {
         try {
             if (!(counterForLogSource.incrementCount() > 2)) {
                 logSource.publish(routedMessage);

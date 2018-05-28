@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.logging.RoutedMessage;
-import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -34,7 +33,7 @@ import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
-public class LogSource implements Source, WsLogHandler {
+public class LogSource implements Source {
 
     private static final TraceComponent tc = Tr.register(LogSource.class);
 
@@ -106,7 +105,6 @@ public class LogSource implements Source, WsLogHandler {
     }
 
     /** {@inheritDoc} */
-    @Override
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread

@@ -185,11 +185,7 @@ public class MessageRouterConfigurator implements BundleListener {
     	* is set to true and we do not need to set the WsLoghandler (i.e.
     	* source ) into the messageRouter
     	*/
-    	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService() && (bundleContext.getService(ref) instanceof LogSource)) {
-    		return;
-    	} else {
-    		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
-    	}
+    	getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
     }
 
     /**
