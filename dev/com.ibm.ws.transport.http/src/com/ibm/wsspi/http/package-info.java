@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.3
+ * @version 2.0
  */
-@org.osgi.annotation.versioning.Version("1.3")
+@org.osgi.annotation.versioning.Version("2.0")
 package com.ibm.wsspi.http;
