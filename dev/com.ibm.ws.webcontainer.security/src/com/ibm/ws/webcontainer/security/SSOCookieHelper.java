@@ -29,6 +29,8 @@ public interface SSOCookieHelper {
 
     void createLogoutCookies(HttpServletRequest req, HttpServletResponse resp);
 
+    void createLogoutCookies(HttpServletRequest req, HttpServletResponse resp, boolean deleteJwtCookies);
+
     SingleSignonToken getDefaultSSOTokenFromSubject(final javax.security.auth.Subject subject);
 
     String getSSOCookiename();

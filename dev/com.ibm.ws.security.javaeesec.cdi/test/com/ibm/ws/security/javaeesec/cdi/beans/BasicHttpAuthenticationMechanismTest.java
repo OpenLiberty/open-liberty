@@ -121,6 +121,10 @@ public class BasicHttpAuthenticationMechanismTest {
             protected CDI getCDI() {
                 return cdi;
             }
+            @Override
+            protected WebAppSecurityConfig getWebAppSecurityConfig() {
+                return webAppSecurityConfig;
+            }
         };
         realmName = "My Basic Realm";
         request = mockery.mock(HttpServletRequest.class);
@@ -148,16 +152,6 @@ public class BasicHttpAuthenticationMechanismTest {
         cdiHelperTestWrapper = new CDIHelperTestWrapper(mockery, null);
         cdiHelperTestWrapper.setCDIService(cdis);
         webAppSecurityConfig = mockery.mock(WebAppSecurityConfig.class);
-        setRequestExpections(request, webAppSecurityConfig);
-    }
-
-    private void setRequestExpections(HttpServletRequest request, final WebAppSecurityConfig webAppSecurityConfig) {
-        mockery.checking(new Expectations() {
-            {
-                allowing(request).getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
-                will(returnValue(webAppSecurityConfig));
-            }
-        });
     }
 
     @After

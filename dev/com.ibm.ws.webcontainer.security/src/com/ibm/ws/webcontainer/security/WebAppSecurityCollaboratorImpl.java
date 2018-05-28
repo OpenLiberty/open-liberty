@@ -1067,7 +1067,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             authResult = authenticateRequest(webRequest);
         }
         if (authResult.getStatus() == AuthResult.SUCCESS) {
-            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, true, !isNewAuthenticate);
+            boolean isPostLoginProcessDone = isPostLoginProcessDone(req);
+            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult, !isPostLoginProcessDone, !isNewAuthenticate && !isPostLoginProcessDone);
         } else {
             result = false;
             if (!isCredentialPresent) {
@@ -1676,5 +1677,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             sb.append(entry.getKey()).append("=").append(entry.getValue());
         }
         return sb.toString();
+    }
+
+    private boolean isPostLoginProcessDone(HttpServletRequest req) {
+        Boolean result = (Boolean)req.getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
+        if (result != null && result) {
+            return true;
+        }
+        return false;
     }
 }

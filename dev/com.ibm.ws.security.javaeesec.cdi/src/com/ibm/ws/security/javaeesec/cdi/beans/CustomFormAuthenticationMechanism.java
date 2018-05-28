@@ -58,11 +58,6 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
-        if (isJaspicSessionEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
-            httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
-            return AuthenticationStatus.SUCCESS;
-        }
-
         Subject clientSubject = httpMessageContext.getClientSubject();
         AuthenticationParameters authParams = httpMessageContext.getAuthParameters();
         if (tc.isDebugEnabled()) {
@@ -95,11 +90,6 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return status;
     }
 
-    private boolean isJaspicSessionEnabled(HttpMessageContext httpMessageContext) {
-        WebAppSecurityConfig webAppSecurityConfig = (WebAppSecurityConfig) httpMessageContext.getRequest().getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
-        return webAppSecurityConfig.isJaspicSessionEnabled();
-    }
-
     @Override
     public AuthenticationStatus secureResponse(HttpServletRequest request,
                                                HttpServletResponse response,
@@ -122,10 +112,8 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         if (status == AuthenticationStatus.SUCCESS) {
             Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
             messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
-            if (isJaspicSessionEnabled(httpMessageContext)) {
-                messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
-                setCacheKey(clientSubject);
-            }
+            messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+            utils.setCacheKey(clientSubject);
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
@@ -138,14 +126,6 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
             rsp.setStatus(rspStatus);
         }
         return status;
-    }
-
-    private void setCacheKey(Subject clientSubject) {
-        Hashtable<String, Object> subjectHashtable = utils.getSubjectExistingHashtable(clientSubject);
-        String uniqueId = (String) subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
-        if (uniqueId != null && uniqueId.trim().isEmpty() == false) {
-            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
-        }
     }
 
     protected CDI getCDI() {

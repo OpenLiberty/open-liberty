@@ -138,9 +138,13 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
             WebRequest webRequest = new WebRequestImpl(request, response, null, webAppSecConfig);
             WebReply reply = new DenyReply("AuthenticationFailed");
             Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(reply.getStatusCode()));
-            handleError(request, response);
+            if (!isJaspiEnabled() || !isPostLoginProcessDone(request)) {
+                handleError(request, response);
+            }
         } else {
             postFormLoginProcess(request, response, authResult.getSubject());
+            WebRequest webRequest = new WebRequestImpl(request, response, null, webAppSecConfig);
+            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(response.getStatus()));
         }
         return true;
     }
@@ -212,17 +216,19 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
         subjectManager.setCallerSubject(subject);
         subjectManager.setInvocationSubject(subject);
 
-        storedReq = getStoredReq(req, referrerURLHandler);
-        // If storedReq(WASReqURL) is bad, RuntimeExceptions are thrown in isReferrerHostValid. These exceptions are not caught here. If we return here, WASReqURL is good.
-        if (storedReq != null && storedReq.length() > 0) {
-            ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(storedReq),
-                                                         webAppSecConfig.getWASReqURLRedirectDomainNames());
-        }
-        ssoCookieHelper.addSSOCookiesToResponse(subject, req, res);
-        referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
+        boolean isPostLoginProcessDone = isJaspiEnabled() && isPostLoginProcessDone(req);
 
-        if (!res.isCommitted())
+        if (!isPostLoginProcessDone) {
+            storedReq = getStoredReq(req, referrerURLHandler);
+            // If storedReq(WASReqURL) is bad, RuntimeExceptions are thrown in isReferrerHostValid. These exceptions are not caught here. If we return here, WASReqURL is good.
+            if (storedReq != null && storedReq.length() > 0) {
+                ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(storedReq),
+                                                             webAppSecConfig.getWASReqURLRedirectDomainNames());
+            }
+            referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
+            ssoCookieHelper.addSSOCookiesToResponse(subject, req, res);
             res.sendRedirect(res.encodeURL(storedReq));
+        }
     }
 
     /**
@@ -360,4 +366,13 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
         WebAuthenticator jaspiAuthenticator = webAuthenticatorRef != null ? webAuthenticatorRef.getService("com.ibm.ws.security.jaspi") : null;
         return jaspiAuthenticator != null;
     }
+
+    private boolean isPostLoginProcessDone(HttpServletRequest req) {
+        Boolean result = (Boolean)req.getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
+        if (result != null && result) {
+            return true;
+        }
+        return false;
+    }
+
 }

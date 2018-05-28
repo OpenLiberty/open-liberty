@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -147,7 +148,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                     messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
                     if (isJaspicSessionEnabled(httpMessageContext)) {
                         messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
-                        setCacheKey(clientSubject);
+                        utils.setCacheKey(clientSubject);
                     }
                     rspStatus = HttpServletResponse.SC_OK;
                 } else if (status == AuthenticationStatus.NOT_DONE) {
@@ -160,17 +161,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
-    private void setCacheKey(Subject clientSubject) {
-        Hashtable<String, Object> subjectHashtable = utils.getSubjectExistingHashtable(clientSubject);
-        String uniqueId = (String) subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
-        if (uniqueId != null && uniqueId.trim().isEmpty() == false) {
-            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
-        }
-    }
-
     private boolean isJaspicSessionEnabled(HttpMessageContext httpMessageContext) {
-        WebAppSecurityConfig webAppSecurityConfig = (WebAppSecurityConfig) httpMessageContext.getRequest().getAttribute("com.ibm.ws.webcontainer.security.WebAppSecurityConfig");
-        return webAppSecurityConfig.isJaspicSessionEnabled();
+        return getWebAppSecurityConfig().isJaspicSessionEnabled();
     }
 
     @Sensitive
@@ -200,6 +192,10 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             return modulePropertiesProivderInstance.get();
         }
         return null;
+    }
+
+    protected WebAppSecurityConfig getWebAppSecurityConfig() {
+        return WebConfigUtils.getWebAppSecurityConfig();
     }
 
     // this is for unit test.

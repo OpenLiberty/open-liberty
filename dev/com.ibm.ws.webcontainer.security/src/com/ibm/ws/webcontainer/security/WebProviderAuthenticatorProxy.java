@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,7 +41,6 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
     private static final TraceComponent tc = Tr.register(WebProviderAuthenticatorProxy.class);
-    private static final String WEB_APP_SECURITY_CONFIG = "com.ibm.ws.webcontainer.security.WebAppSecurityConfig";
 
     AuthenticationResult JASPI_CONT = new AuthenticationResult(AuthResult.CONTINUE, "JASPI said continue...");
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -91,15 +91,11 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             WebAuthenticator jaspiAuthenticator = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
             if (jaspiAuthenticator != null) {
                 HttpServletRequest request = webRequest.getHttpServletRequest();
-                request.setAttribute(WEB_APP_SECURITY_CONFIG, webAppSecurityConfig);
-
                 if (props == null) {
                     authResult = authenticateForOtherMechanisms(webRequest, authResult, jaspiAuthenticator);
                 } else {
                     authResult = authenticateForFormMechanism(webRequest, props, jaspiAuthenticator);
                 }
-
-                request.removeAttribute(WEB_APP_SECURITY_CONFIG);
 
                 if (authResult.getStatus() == AuthResult.SUCCESS) {
                     processAuthenticationSuccess(webRequest, props, authResult);
@@ -123,6 +119,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                 Map<String, Object> requestProps = new HashMap<String, Object>();
                 requestProps.put("javax.servlet.http.registerSession.subject", authResult.getSubject());
                 webRequest.setProperties(requestProps);
+                removeSessionWhenDisabled(webRequest);
             }
 
             authResult = jaspiAuthenticator.authenticate(webRequest);
@@ -170,16 +167,18 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     }
 
     private void processAuthenticationSuccess(WebRequest webRequest, HashMap<String, Object> props, AuthenticationResult authResult) {
-        registerSessionWhenRequested(webRequest, authResult);
+        registerSessionWhenRequested(webRequest, authResult, (props != null));
         attemptToRestorePostParams(webRequest);
         attemptToRemoveLtpaToken(webRequest, props);
     }
 
-    private void registerSessionWhenRequested(final WebRequest webRequest, final AuthenticationResult authResult) {
-        boolean registerSession = false;
-        Map<String, Object> reqProps = webRequest.getProperties();
-        if (reqProps != null) {
-            registerSession = Boolean.valueOf((String) reqProps.get("javax.servlet.http.registerSession")).booleanValue();
+    private boolean registerSessionWhenRequested(final WebRequest webRequest, final AuthenticationResult authResult, boolean isFormLogin) {
+        boolean registerSession = isFormLogin;
+        if (!isFormLogin) {
+            Map<String, Object> reqProps = webRequest.getProperties();
+            if (reqProps != null) {
+                registerSession = Boolean.valueOf((String) reqProps.get("javax.servlet.http.registerSession")).booleanValue();
+            }
         }
         if (registerSession || webAppSecurityConfig.isJaspicSessionEnabled()) {
             final SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, webAppSecurityConfig.getJaspicSessionCookieName());
@@ -195,8 +194,38 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     }
                 });
             }
+            return true;
+        }
+        return false;
+    }
+
+    private void removeSessionWhenDisabled(final WebRequest webRequest) {
+        if (!webAppSecurityConfig.isJaspicSessionEnabled() && existsSessionCookie(webRequest.getHttpServletRequest())) {
+            final SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, webAppSecurityConfig.getJaspicSessionCookieName());
+            if (System.getSecurityManager() == null) {
+                ssoCh.createLogoutCookies(webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), false);
+            } else {
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    @Override
+                    public Object run() {
+                        ssoCh.createLogoutCookies(webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse(), false);
+                        return null;
+                    }
+                });
+            }
         }
     }
+
+    private boolean existsSessionCookie(HttpServletRequest req) {
+        String cookieName = webAppSecurityConfig.getJaspicSessionCookieName();
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            if (CookieHelper.getCookieValues(cookies, cookieName) != null) {
+                return true;
+            }
+        }
+        return false;
+   }
 
     private HttpServletResponse attemptToRestorePostParams(WebRequest webRequest) {
         HttpServletResponse res = webRequest.getHttpServletResponse();

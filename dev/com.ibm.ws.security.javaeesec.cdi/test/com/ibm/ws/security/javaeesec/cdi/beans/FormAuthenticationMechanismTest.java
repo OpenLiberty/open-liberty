@@ -190,11 +190,9 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withMessageInfo();
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
-        assertRegisterSessionProperty(false);
     }
 
     @Test
@@ -203,7 +201,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext();
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -215,7 +212,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withHandler(mch).withMessageInfo();
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false);
         withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -226,7 +222,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext();
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false);
         withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
 
         isRegistryAvailable = false;
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
@@ -240,7 +235,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withHandler(mch);
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(false);
         withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -252,7 +246,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withMessageInfo();
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -264,7 +257,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext();
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -276,7 +268,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withMessageInfo().withHandler(mch);
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true);
         withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -288,7 +279,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withHandler(mch);
         withUsernamePassword(USER1, "invalid").withAuthenticationRequest(true);
         withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -302,7 +292,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withHandler(ch);
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true);
         withIDSBeanInstance(null, true, false).withCallbackHandlerException(ex);
-        withJaspicSessionEnabled(false);
 
         try {
             fam.validateRequest(request, res, hmc);
@@ -317,7 +306,6 @@ public class FormAuthenticationMechanismTest {
         withMessageContext().withHandler(null);
         withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true);
         withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
-        withJaspicSessionEnabled(false);
 
         fam.validateRequest(request, res, hmc);
     }
@@ -326,7 +314,6 @@ public class FormAuthenticationMechanismTest {
     public void testValidateRequestAuthReqFalseNoIdAndPWProtectedTrue() throws Exception {
         withMessageContext();
         withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(true);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -336,7 +323,6 @@ public class FormAuthenticationMechanismTest {
     public void testValidateRequestAuthReqFalseNoIdAndPWProtectedFalse() throws Exception {
         withMessageContext();
         withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(false);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be NOT_DONE", AuthenticationStatus.NOT_DONE, status);
@@ -346,7 +332,6 @@ public class FormAuthenticationMechanismTest {
     public void testValidateRequestAuthReqTrueNoIdAndPW() throws Exception {
         withMessageContext();
         withUsernamePassword(null, null).withAuthenticationRequest(true);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -357,7 +342,6 @@ public class FormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withNewAuthenticate(baCred).withMessageInfo();
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -368,7 +352,6 @@ public class FormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withNewAuthenticate(upCred).withMessageInfo();
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -379,7 +362,6 @@ public class FormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withNewAuthenticate(invalidUpCred);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -390,64 +372,9 @@ public class FormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withNewAuthenticate(coCred);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = fam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
-    }
-
-    @Test
-    public void testValidateRequestRegistersJaspicSession() throws Exception {
-        IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext().withMessageInfo();
-        withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(false);
-        withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(true);
-        withoutJaspicSessionPrincipal();
-
-        AuthenticationStatus status = fam.validateRequest(request, res, hmc);
-        assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
-        assertRegisterSessionProperty(true);
-    }
-
-    @Test
-    public void testValidateRequestWithJaspicSessionPrincipal() throws Exception {
-        withMessageContext().withMessageInfo().withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(true);
-        withJaspicSessionPrincipal();
-
-        AuthenticationStatus status = fam.validateRequest(request, res, hmc);
-        assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
-        assertRegisterSessionProperty(false);
-    }
-
-    private void withoutJaspicSessionPrincipal() {
-        mockery.checking(new Expectations() {
-            {
-                one(request).getUserPrincipal();
-                will(returnValue(null));
-            }
-        });
-    }
-
-    private void withJaspicSessionPrincipal() {
-        Principal principal = mockery.mock(Principal.class);
-        mockery.checking(new Expectations() {
-            {
-                one(request).getUserPrincipal();
-                will(returnValue(principal));
-            }
-        });
-    }
-
-    private void assertRegisterSessionProperty(boolean registersNewJaspicSession) {
-        if (registersNewJaspicSession) {
-            assertTrue("The javax.servlet.http.registerSession property must be set in the MessageInfo's map.",
-                       Boolean.valueOf((String) hmc.getMessageInfo().getMap().get("javax.servlet.http.registerSession")));
-        } else {
-            assertNull("The javax.servlet.http.registerSession property must not be set in the MessageInfo's map.",
-                       hmc.getMessageInfo().getMap().get("javax.servlet.http.registerSession"));
-        }
     }
 
     /*************** support methods **************/

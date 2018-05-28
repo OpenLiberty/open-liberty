@@ -254,6 +254,16 @@ public class Utils {
         return false;
     }
 
+    public void setCacheKey(Subject clientSubject) {
+        Hashtable<String, Object> subjectHashtable = getSubjectExistingHashtable(clientSubject);
+        if (subjectHashtable != null) {
+            String uniqueId = (String) subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
+            if (uniqueId != null && uniqueId.trim().isEmpty() == false) {
+                subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, subjectHashtable.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+            }
+        }
+    }
+
     private boolean isSupportedCredential(@Sensitive Credential cred) {
         if (cred != null && (cred instanceof UsernamePasswordCredential || cred instanceof BasicAuthenticationCredential)) {
             return true;

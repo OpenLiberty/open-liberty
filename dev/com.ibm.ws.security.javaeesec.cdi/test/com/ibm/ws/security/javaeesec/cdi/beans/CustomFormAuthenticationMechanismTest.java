@@ -99,8 +99,8 @@ public class CustomFormAuthenticationMechanismTest {
     private final String PASSWORD1 = "s3cur1ty";
     private final String INVALID_PASSWORD = "invalid";
 
-    @SuppressWarnings("restriction")
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
+//    @SuppressWarnings("restriction")
+//    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
 
     @Rule
     public final TestName testName = new TestName();
@@ -108,22 +108,22 @@ public class CustomFormAuthenticationMechanismTest {
     /**
      * @throws java.lang.Exception
      */
-    @SuppressWarnings("restriction")
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        outputMgr.captureStreams();
-    }
+//    @SuppressWarnings("restriction")
+//    @BeforeClass
+//    public static void setUpBeforeClass() throws Exception {
+//        outputMgr.captureStreams();
+//    }
 
     /**
      * @throws java.lang.Exception
      */
-    @SuppressWarnings("restriction")
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        outputMgr.dumpStreams();
-        outputMgr.resetStreams();
-        outputMgr.restoreStreams();
-    }
+//    @SuppressWarnings("restriction")
+//    @AfterClass
+//    public static void tearDownAfterClass() throws Exception {
+//        outputMgr.dumpStreams();
+//        outputMgr.resetStreams();
+//        outputMgr.restoreStreams();
+//    }
 
     @SuppressWarnings("unchecked")
     @Before
@@ -180,7 +180,8 @@ public class CustomFormAuthenticationMechanismTest {
     public void tearDown() throws Exception {
         cdiHelperTestWrapper.unsetCDIService(cdis);
         mockery.assertIsSatisfied();
-        outputMgr.resetStreams();
+//        outputMgr.dumpStreams();
+//        outputMgr.resetStreams();
     }
 
     @Test
@@ -188,7 +189,6 @@ public class CustomFormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withMessageInfo();
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -199,7 +199,6 @@ public class CustomFormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse();
         withUsernamePassword(USER1, "invalid").withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -210,7 +209,6 @@ public class CustomFormAuthenticationMechanismTest {
         final MyCallbackHandler mch = new MyCallbackHandler();
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withMessageInfo().withHandler(mch);
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -220,7 +218,6 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestValidIdAndPWNoIdentityStoreHandlerNoUserRegistry() throws Exception {
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse();
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(false);
         isRegistryAvailable = false;
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         isRegistryAvailable = true;
@@ -232,7 +229,6 @@ public class CustomFormAuthenticationMechanismTest {
         final MyCallbackHandler mch = new MyCallbackHandler();
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withHandler(mch);
         withUsernamePassword(USER1, "invalid").withIDSBeanInstance(null, false, true).withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -244,7 +240,6 @@ public class CustomFormAuthenticationMechanismTest {
         IOException ex = new IOException(msg);
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withHandler(ch);
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(null, true, false).withCallbackHandlerException(ex);
-        withJaspicSessionEnabled(false);
 
         try {
             cfam.validateRequest(request, res, hmc);
@@ -260,13 +255,12 @@ public class CustomFormAuthenticationMechanismTest {
         CallerOnlyCredential coc = new CallerOnlyCredential(USER1);
         withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withHandler(ch);
         withCredential(coc).withIDSBeanInstance(null, false, true);
-        withJaspicSessionEnabled(false);
 
         try {
             cfam.validateRequest(request, res, hmc);
             fail("AuthenticationException should be thrown.");
         } catch (AuthenticationException e) {
-            assertTrue("CWWKS1927E  message was not logged", outputMgr.checkForStandardErr("CWWKS1927E:"));
+//            assertTrue("CWWKS1927E  message was not logged", outputMgr.checkForStandardErr("CWWKS1927E:"));
             assertTrue("The message should contains CWWKS1927E", e.getMessage().contains("CWWKS1927E"));
         }
     }
@@ -275,7 +269,6 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestNoIdAndPWAuthReqFalseProtectedTrue() throws Exception {
         withMessageContext(ap);
         withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(true);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -285,7 +278,6 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestNoIdAndPWAuthReqTrueProtectedFalse() throws Exception {
         withMessageContext(ap);
         withUsernamePassword(null, null).withAuthenticationRequest(true);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -295,7 +287,6 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestNoIdAndPWAuthReqFalseProtectedFalse() throws Exception {
         withMessageContext(ap);
         withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(false);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be NOT_DONE", AuthenticationStatus.NOT_DONE, status);
@@ -304,7 +295,6 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestNoIdAndPW() throws Exception {
         withMessageContext(null);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -315,7 +305,6 @@ public class CustomFormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withNewAuthenticate(baCred).withMessageInfo();
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -326,7 +315,6 @@ public class CustomFormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withNewAuthenticate(upCred).withMessageInfo();
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -337,7 +325,6 @@ public class CustomFormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withNewAuthenticate(invalidUpCred);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -348,36 +335,11 @@ public class CustomFormAuthenticationMechanismTest {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
         withMessageContext(ap).withNewAuthenticate(coCred);
         withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
-        withJaspicSessionEnabled(false);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
     }
 
-    @Test
-    public void testValidateRequestRegistersJaspicSession() throws Exception {
-        IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ap).withMessageInfo().withGetResponse();
-        withUsernamePassword(USER1, PASSWORD1).withIsNewAuthentication(false);
-        withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(true);
-        withoutJaspicSessionPrincipal();
-
-        AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
-        assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
-        assertRegisterSessionProperty(true);
-    }
-
-    @Test
-    public void testValidateRequestWithJaspicSessionPrincipal() throws Exception {
-        withMessageContext(ap).withMessageInfo().withGetResponse().withSetStatusToResponse(HttpServletResponse.SC_OK);
-        withJaspicSessionEnabled(true);
-        withJaspicSessionPrincipal();
-
-        AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
-        assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
-        assertRegisterSessionProperty(false);
-    }
 
     private void withoutJaspicSessionPrincipal() {
         mockery.checking(new Expectations() {
@@ -386,26 +348,6 @@ public class CustomFormAuthenticationMechanismTest {
                 will(returnValue(null));
             }
         });
-    }
-
-    private void withJaspicSessionPrincipal() {
-        Principal principal = mockery.mock(Principal.class);
-        mockery.checking(new Expectations() {
-            {
-                one(request).getUserPrincipal();
-                will(returnValue(principal));
-            }
-        });
-    }
-
-    private void assertRegisterSessionProperty(boolean registersNewJaspicSession) {
-        if (registersNewJaspicSession) {
-            assertTrue("The javax.servlet.http.registerSession property must be set in the MessageInfo's map.",
-                       Boolean.valueOf((String) hmc.getMessageInfo().getMap().get("javax.servlet.http.registerSession")));
-        } else {
-            assertNull("The javax.servlet.http.registerSession property must not be set in the MessageInfo's map.",
-                       hmc.getMessageInfo().getMap().get("javax.servlet.http.registerSession"));
-        }
     }
 
     /*************** support methods **************/
@@ -591,16 +533,6 @@ public class CustomFormAuthenticationMechanismTest {
             {
                 allowing(ap).getCredential();
                 will(returnValue(cred));
-            }
-        });
-        return this;
-    }
-
-    private CustomFormAuthenticationMechanismTest withJaspicSessionEnabled(final boolean enabled) {
-        mockery.checking(new Expectations() {
-            {
-                allowing(webAppSecurityConfig).isJaspicSessionEnabled();
-                will(returnValue(enabled));
             }
         });
         return this;
