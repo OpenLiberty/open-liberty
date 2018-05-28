@@ -308,7 +308,7 @@ public class LoginToContinueInterceptorTest {
      * while intercepting the request.
      * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
-//    @Test
+    @Test
     public void testInterceptContinueFormELImmediate() throws Exception {
         isInterceptedMethod = true;
         hamClass = FORM_CLASS;
@@ -333,7 +333,7 @@ public class LoginToContinueInterceptorTest {
      * use deferred EL. Make sure that el resolution happens every interception.
      * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
-//    @Test
+    @Test
     public void testInterceptContinueFormELDeferred() throws Exception {
         isInterceptedMethod = true;
         hamClass = FORM_CLASS;
@@ -356,7 +356,7 @@ public class LoginToContinueInterceptorTest {
      * valid method. valid objects.
      * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
-//    @Test
+    @Test
     public void testInterceptContinueFormRedirect() throws Exception {
         hamClass = FORM_CLASS;
         isInterceptedMethod = true;
@@ -377,7 +377,7 @@ public class LoginToContinueInterceptorTest {
      * valid method. valid objects.
      * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
-//    @Test
+    @Test
     public void testInterceptContinueFormForward() throws Exception {
         hamClass = CUSTOM_FORM_CLASS;
         isInterceptedMethod = true;
@@ -398,7 +398,7 @@ public class LoginToContinueInterceptorTest {
      * valid method. valid objects.
      * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
-//    @Test
+    @Test
     public void testInterceptContinueFormDefault() throws Exception {
         hamClass = FORM_CLASS;
         isInterceptedMethod = true;
@@ -417,7 +417,7 @@ public class LoginToContinueInterceptorTest {
      * valid method. valid objects.
      * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
-//    @Test
+    @Test
     public void testInterceptSuccessCustomForm() throws Exception {
         isInterceptedMethod = true;
         hamClass = CUSTOM_FORM_CLASS;
@@ -436,7 +436,7 @@ public class LoginToContinueInterceptorTest {
      * valid method. valid objects.
      * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
-//    @Test
+    @Test
     public void testInterceptSuccessForm() throws Exception {
         isInterceptedMethod = true;
         hamClass = FORM_CLASS;
@@ -487,6 +487,9 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SUCCESS;
         withProps(props).withParams().withNoELP().withAuthParams(null).withReferrer();
         withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(true).withRemoveWasReqUrlCookie();
+=======
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies);
+>>>>>>> update UnitTest
         ltci.initialize(ici);
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
