@@ -55,13 +55,11 @@ public final class CheckDuplicateIdFaceletUtils
         
         id = component.getClientId (context);
         
-        if (existingIds.contains (id))
+        if (!existingIds.add (id))
         {
             DuplicateIdException duplicateIdException = createAndQueueException(context, component, id);
             throw duplicateIdException;
         }
-        
-        existingIds.add (id);
         
         int facetCount = component.getFacetCount();
         if (facetCount > 0)
@@ -102,13 +100,11 @@ public final class CheckDuplicateIdFaceletUtils
         
         id = component.getClientId (context);
         
-        if (existingIds.contains (id))
+        if (!existingIds.add (id))
         {
             DuplicateIdException duplicateIdException = createAndQueueException(context, component, id);
             throw duplicateIdException;
         }
-        
-        existingIds.add (id);
         
         int facetCount = component.getFacetCount();
         if (facetCount > 0)
