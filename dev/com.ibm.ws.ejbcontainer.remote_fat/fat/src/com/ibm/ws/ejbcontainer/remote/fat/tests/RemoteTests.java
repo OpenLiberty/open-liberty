@@ -44,6 +44,8 @@ import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.web.TxAttrOverrideServl
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.ann.web.TxAttrServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.AnnotationOverByXMLTxAttrServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.CMTVerificationServlet;
+import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.ExternalBeanClassWithAnnServlet;
+import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.ExternalBeanClassWithNoAnnServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.MixBMTVerificationServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.MixCompCMTStatelessLocalServlet;
 import com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.MixCompCMTStatelessRemoteServlet;
@@ -96,8 +98,8 @@ public class RemoteTests extends AbstractTest {
                     @TestServlet(servlet = CMTVerificationServlet.class, contextRoot = "StatelessMixWeb"),
                     @TestServlet(servlet = MixCompCMTStatelessLocalServlet.class, contextRoot = "StatelessMixWeb"),
                     @TestServlet(servlet = MixCompCMTStatelessRemoteServlet.class, contextRoot = "StatelessMixWeb"),
-                    //@TestServlet(servlet = ExternalBeanClassWithAnnServlet.class, contextRoot = "StatelessMixWeb"),
-                    //@TestServlet(servlet = ExternalBeanClassWithNoAnnServlet.class, contextRoot = "StatelessMixWeb"),
+                    @TestServlet(servlet = ExternalBeanClassWithAnnServlet.class, contextRoot = "StatelessMixWeb"),
+                    @TestServlet(servlet = ExternalBeanClassWithNoAnnServlet.class, contextRoot = "StatelessMixWeb"),
                     @TestServlet(servlet = RemoteStatelessTwoNamesServlet.class, contextRoot = "StatelessMixWeb"),
                     @TestServlet(servlet = StatelessTwoNamesServlet.class, contextRoot = "StatelessMixWeb"),
                     @TestServlet(servlet = TxAttrMixedAnnotationXMLServlet.class, contextRoot = "StatelessMixWeb") })
@@ -113,7 +115,7 @@ public class RemoteTests extends AbstractTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        //Use ShrinkHelper to build the Ears
+        // Use ShrinkHelper to build the Ears
 
         //#################### AppExcExtendsThrowableErrBean
         JavaArchive AppExcExtendsThrowableErrBeanJar = ShrinkHelper.buildJavaArchive("AppExcExtendsThrowableErrBean.jar", "com.ibm.ws.ejbcontainer.remote.jitdeploy.error1.ejb.");
@@ -200,10 +202,12 @@ public class RemoteTests extends AbstractTest {
         WebArchive StatelessMixWeb = ShrinkHelper.buildDefaultApp("StatelessMixWeb.war", "com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.web.");
 
         EnterpriseArchive StatelessMixApp = ShrinkWrap.create(EnterpriseArchive.class, "StatelessMixTest.ear");
-        StatelessMixApp.addAsModule(StatelessMixASMDescEJBJar).addAsModule(StatelessMixEJBJar).addAsModule(StatelessMixIntfJar).addAsModule(StatelessMixMDCEJBJar).addAsModule(StatelessMixSCEJBJar).addAsModule(StatelessMixWeb);
+        StatelessMixApp.addAsModule(StatelessMixASMDescEJBJar).addAsModule(StatelessMixEJBJar).addAsModule(StatelessMixMDCEJBJar).addAsModule(StatelessMixSCEJBJar).addAsModule(StatelessMixWeb);
+        StatelessMixApp.addAsLibrary(StatelessMixIntfJar);
 
         ShrinkHelper.exportDropinAppToServer(server, StatelessMixApp);
 
+        // Finally, start server
         server.startServer();
 
     }
