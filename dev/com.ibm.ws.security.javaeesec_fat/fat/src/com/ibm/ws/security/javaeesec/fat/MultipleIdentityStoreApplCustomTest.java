@@ -114,7 +114,6 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISApplCustomWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -141,7 +140,6 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISApplCustomWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -168,7 +166,6 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISApplCustomWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
@@ -193,7 +190,6 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISApplCustomNoCred_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -212,7 +208,6 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISApplCustomWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -234,7 +229,6 @@ public class MultipleIdentityStoreApplCustomTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISApplCustomWith1st2ndFail_DeniedAccess() throws Exception {

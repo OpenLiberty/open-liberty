@@ -137,7 +137,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISCustomFormRedirectWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -171,7 +170,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISCustomFormRedirectWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -205,7 +203,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISCustomFormRedirectWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
@@ -239,7 +236,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISCustomFormRedirectWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -269,7 +265,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISCustomFormRedirectWith1st2ndFail_DeniedAccess() throws Exception {
@@ -301,7 +296,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISCustomFormForwardWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -335,7 +329,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISCustomFormForwardWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -369,7 +362,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISCustomFormForwardWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
@@ -403,7 +395,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISCustomFormForwardWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -433,7 +424,6 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISCustomFormForwardWith1st2ndFail_DeniedAccess() throws Exception {

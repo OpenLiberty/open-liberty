@@ -42,7 +42,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 @MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-
 public class SecurityContextEJBTest extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.ejb.fat");
     protected static Class<?> logClass = SecurityContextEJBTest.class;
@@ -111,7 +110,6 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testejb_manager__getCallerPrincipal() throws Exception {
         Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());
@@ -125,7 +123,6 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
         Log.info(logClass, name.getMethodName(), "Exiting " + name.getMethodName());
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testejb_manager_isUserInRole() throws Exception {
         Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());
@@ -139,7 +136,6 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
         Log.info(logClass, name.getMethodName(), "Exiting " + name.getMethodName());
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testejb_employee_isUserInRole() throws Exception {
         Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());
@@ -153,7 +149,6 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
         Log.info(logClass, name.getMethodName(), "Exiting " + name.getMethodName());
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testejb_employee_group_isUserInRole() throws Exception {
         Log.info(logClass, name.getMethodName(), "Entering " + name.getMethodName());

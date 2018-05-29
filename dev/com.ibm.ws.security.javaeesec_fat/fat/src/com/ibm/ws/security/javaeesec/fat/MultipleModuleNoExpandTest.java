@@ -169,7 +169,6 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
      * the one which are bundled with each module is only visible within the module.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWars() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -286,7 +285,6 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
      * the one which are bundled with each module is only visible within the module.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsWithModuleJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -400,7 +398,6 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
      * <LI> users in the common ear identitystore is visible from both war file
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWithCommonJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -459,7 +456,6 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWithModuleHAMJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -516,7 +512,6 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWithCommonHAMJar() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
