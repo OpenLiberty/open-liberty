@@ -22,10 +22,6 @@ public class KeyValuePairList implements KeyValuePair {
         keyValuePairs = new ArrayList<KeyValuePair>();
     }
 
-    public ArrayList<KeyValuePair> getKeyValuePairs() {
-        return keyValuePairs;
-    }
-
     public void addKeyValuePair(String key, String value) {
         KeyValuePair kvp = new KeyValueStringPair(key, value);
         keyValuePairs.add(kvp);

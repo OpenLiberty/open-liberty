@@ -89,6 +89,6 @@ public class KeyValueStringPair implements KeyValuePair {
 
     @Override
     public ArrayList<KeyValuePair> getList() {
-        return null;
+        throw new UnsupportedOperationException("Cannot call getList method on KeyValueStringPair class");
     }
 }

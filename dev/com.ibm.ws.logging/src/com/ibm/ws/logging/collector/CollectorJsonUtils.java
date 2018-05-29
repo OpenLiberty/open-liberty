@@ -203,7 +203,7 @@ public class CollectorJsonUtils {
         KeyValuePairList kvpl = logData.getExtensions();
         if (kvpl != null) {
             if (kvpl.getKey().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
-                ArrayList<KeyValuePair> extensions = kvpl.getKeyValuePairs();
+                ArrayList<KeyValuePair> extensions = kvpl.getList();
                 for (KeyValuePair k : extensions) {
                     String extKey = k.getKey();
                     if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {

@@ -82,7 +82,7 @@ public class KeyValueBooleanPair implements KeyValuePair {
 
     @Override
     public ArrayList<KeyValuePair> getList() {
-        return null;
+        throw new UnsupportedOperationException("Cannot call getList method on KeyValueBooleanPair class");
     }
 
     @Override

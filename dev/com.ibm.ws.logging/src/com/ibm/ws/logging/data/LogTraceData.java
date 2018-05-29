@@ -176,7 +176,7 @@ public class LogTraceData extends GenericData {
         setPair(18, s);
     }
 
-    public void setExtensions(KeyValuePair kvps) {
+    public void setExtensions(KeyValuePairList kvps) {
         setPair(19, kvps);
     }
 

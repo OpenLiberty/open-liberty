@@ -43,7 +43,7 @@ public class GenericData {
         pairs.add(index, kvp);
     }
 
-    public void setPair(int index, KeyValuePair kvps) {
+    public void setPair(int index, KeyValuePairList kvps) {
         pairs.add(index, kvps);
     }
 
@@ -62,7 +62,7 @@ public class GenericData {
         pairs.add(kvp);
     }
 
-    public void addPair(KeyValuePair kvps) {
+    public void addPair(KeyValuePairList kvps) {
         pairs.add(kvps);
     }
 

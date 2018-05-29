@@ -92,6 +92,6 @@ public class KeyValueLongPair implements KeyValuePair {
 
     @Override
     public ArrayList<KeyValuePair> getList() {
-        return null;
+        throw new UnsupportedOperationException("Cannot call getList method on KeyValueLongPair class");
     }
 }

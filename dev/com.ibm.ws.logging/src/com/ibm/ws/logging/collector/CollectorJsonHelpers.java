@@ -422,33 +422,33 @@ public class CollectorJsonHelpers {
         return loglevel;
     }
 
-    public static void handleExtensions(KeyValuePair extensions, String extKey, String extValue) {
+    public static void handleExtensions(KeyValuePairList extensions, String extKey, String extValue) {
         extKey = LogFieldConstants.EXT_PREFIX + extKey;
         if (extKey.indexOf('_', 4) != -1) {
             if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
                 try {
-                    ((KeyValuePairList) extensions).addKeyValuePair(extKey, Integer.parseInt(extValue));
+                    extensions.addKeyValuePair(extKey, Integer.parseInt(extValue));
                 } catch (NumberFormatException e) {
                 }
             } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
                 try {
-                    ((KeyValuePairList) extensions).addKeyValuePair(extKey, Float.parseFloat(extValue));
+                    extensions.addKeyValuePair(extKey, Float.parseFloat(extValue));
                 } catch (NumberFormatException e) {
                 }
             } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
                 if (extValue.toLowerCase().trim().equals(TRUE_BOOL)) {
-                    ((KeyValuePairList) extensions).addKeyValuePair(extKey, true);
+                    extensions.addKeyValuePair(extKey, true);
                 } else if (extValue.toLowerCase().trim().equals(FALSE_BOOL)) {
-                    ((KeyValuePairList) extensions).addKeyValuePair(extKey, false);
+                    extensions.addKeyValuePair(extKey, false);
                 }
             } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
                 try {
-                    ((KeyValuePairList) extensions).addKeyValuePair(extKey, Long.parseLong(extValue));
+                    extensions.addKeyValuePair(extKey, Long.parseLong(extValue));
                 } catch (NumberFormatException e) {
                 }
             }
         } else {
-            ((KeyValuePairList) extensions).addKeyValuePair(extKey, extValue);
+            extensions.addKeyValuePair(extKey, extValue);
         }
     }
 }
