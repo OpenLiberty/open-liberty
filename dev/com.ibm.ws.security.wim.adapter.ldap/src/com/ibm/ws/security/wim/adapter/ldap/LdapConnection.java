@@ -31,6 +31,7 @@ import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_POOL_WA
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_PORT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_PREF_POOL_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_PRIMARY_SERVER_QUERY_TIME_INTERVAL;
+import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_READ_TIMEOUT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_REFERAL;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_REFERRAL;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_RETURN_TO_PRIMARY_SERVER;
@@ -370,7 +371,6 @@ public class LdapConnection {
      * @throws WIMException If there was an error initializing the {@link ContextManager}.
      */
     private void initializeContextManager(Map<String, Object> configProps) throws WIMException {
-        final String METHODNAME = "initializeContextManager";
 
         iContextManager = new ContextManager();
 
@@ -407,6 +407,11 @@ public class LdapConnection {
          * Set the connection timeout.
          */
         iContextManager.setConnectTimeout((Long) configProps.get(CONFIG_PROP_CONNECT_TIMEOUT));
+
+        /*
+         * Set the connection timeout.
+         */
+        iContextManager.setReadTimeout((Long) configProps.get(CONFIG_PROP_READ_TIMEOUT));
 
         /*
          * Determine referral handling behavior. Initially the attribute was spelled missing an 'r' so

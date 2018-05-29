@@ -87,8 +87,11 @@ public class ContextManager {
     /** Default preferred number of contexts in the context pool. */
     private static final int DEFAULT_PREF_POOL_SIZE = 3;
 
-    /** The default connect time limit. */
-    private static final long DEFAULT_TIMEOUT = 600000;
+    /** The default connect time limit - 1 minute. */
+    private static final long DEFAULT_CONNECT_TIMEOUT = 600000;
+
+    /** The default read time limit - infinite. */
+    private static final long DEFAULT_READ_TIMEOUT = 0;
 
     /** Key to use for accessing the active URL from the JNDI environment table. */
     private static final String ENVKEY_ACTIVE_URL = "_ACTIVE_URL_";
@@ -110,6 +113,9 @@ public class ContextManager {
 
     /** JNDI property for the socket factory settings. */
     private static final String LDAP_ENV_PROP_FACTORY_SOCKET = "java.naming.ldap.factory.socket";
+
+    /** JNDI property for read timeout setting. */
+    private static final String LDAP_ENV_PROP_READ_TIMEOUT = "com.sun.jndi.ldap.read.timeout";
 
     /** Timestamp of quick bind statistics trace. */
     private static final AtomicLong LDAP_STATS_TIMER = new AtomicLong(0);
@@ -202,6 +208,9 @@ public class ContextManager {
 
     /** Interval for querying whether we can return to the primary LDAP server. */
     private long iQueryInterval = 900;
+
+    /** LDAP read timeout. */
+    private Long iReadTimeout;
 
     /** Referral behavior ("ignore" or "follow"). */
     private String iReferral = "ignore";
@@ -1044,7 +1053,16 @@ public class ContextManager {
         if (iConnectTimeout != null) {
             iEnvironment.put(LDAP_ENV_PROP_CONNECT_TIMEOUT, iConnectTimeout.toString());
         } else {
-            iEnvironment.put(LDAP_ENV_PROP_CONNECT_TIMEOUT, String.valueOf(DEFAULT_TIMEOUT));
+            iEnvironment.put(LDAP_ENV_PROP_CONNECT_TIMEOUT, String.valueOf(DEFAULT_CONNECT_TIMEOUT));
+        }
+
+        /*
+         * Set the LDAP read time out.
+         */
+        if (iReadTimeout != null) {
+            iEnvironment.put(LDAP_ENV_PROP_READ_TIMEOUT, iReadTimeout.toString());
+        } else {
+            iEnvironment.put(LDAP_ENV_PROP_READ_TIMEOUT, String.valueOf(DEFAULT_READ_TIMEOUT));
         }
 
         /*
@@ -1430,6 +1448,15 @@ public class ContextManager {
     }
 
     /**
+     * Set the LDAP read timeout.
+     *
+     * @param readTimeout The LDAP read timeout in milliseconds.
+     */
+    public void setReadTimeout(Long readTimeout) {
+        this.iReadTimeout = readTimeout;
+    }
+
+    /**
      * Set JNDI referral behavior.
      *
      * @param referral Should be one of either "ignore" or "follow".
@@ -1496,6 +1523,7 @@ public class ContextManager {
         sb.append(", iSSLAlias=").append(iSSLAlias);
         sb.append(", iSSLEnabled=").append(iSSLEnabled);
         sb.append(", iConnectTimeout=").append(iConnectTimeout);
+        sb.append(", iReadTimeout=").append(iReadTimeout);
         sb.append(", iPrimaryServer=").append(iPrimaryServer);
         sb.append(", iFailoverServers=").append(iFailoverServers);
         sb.append(", iContextPoolEnabled=").append(iContextPoolEnabled);

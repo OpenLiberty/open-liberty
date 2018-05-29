@@ -391,11 +391,17 @@ public interface ConfigConstants {
     String CONFIG_PROP_DEREFALIASES = "derefAlias";
     String CONFIG_PROP_SSL_CONFIGURATION = "sslConfiguration";
     String CONFIG_PROP_CONNECTION_POOL = "connectionPool";
+
     /**
      * Define how long will LDAP adapter aborts the connection attempt if the connection cannot be established.
-     * Unit is second. By default, this timeout period is the network (TCP) timeout value, which is in the order of a few minutes.
      */
     String CONFIG_PROP_CONNECT_TIMEOUT = "connectTimeout";
+
+    /**
+     * Define how long will LDAP adapter aborts the read attempt if the connection cannot be established.
+     */
+    String CONFIG_PROP_READ_TIMEOUT = "readTimeout";
+
     /**
      * Define whether or not write operations are allowed on secondary servers.
      * default value is false.
