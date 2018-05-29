@@ -47,7 +47,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
     private final String jaspicSessionCookieName = "jaspicSession";
-    private final Boolean jaspicSessionEnabled = false;
+    private final Boolean jaspicSessionEnabled = true;
 
     FeatureWebSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -258,6 +258,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return "";
         }
     }
+
     /**
      * {@inheritDoc}<p>
      */
@@ -312,7 +313,6 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
         else
             return false;
     }
-
 
     /** {@inheritDoc} */
     @Override
