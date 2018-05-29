@@ -272,8 +272,8 @@ public class ClassSourceImpl_MappedSimple
                     // version in the first class source.
 
                     String nextClassName = getClassNameFromResourceName(nextResourceName);
-                    if ( !isValidPackageName(nextClassName) ) {
-                        Tr.debug(tc, MessageFormat.format("[ {0} ] Invalid class name [ {1} ]", 
+                    if ( isJava9SpecificClass(nextClassName) ) {
+                        Tr.debug(tc, MessageFormat.format("[ {0} ] Unsupported class; skipping [ {1} ]", 
                                                           new Object[] { getHashText(), nextClassName }));
                         continue;
                     }
