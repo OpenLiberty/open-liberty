@@ -26,7 +26,6 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
     private TraceSource traceSource = null;
     private BufferManagerImpl logConduit = null;
     private BufferManagerImpl traceConduit = null;
-    private final boolean isJsonTrService = false;
 
     /**
      * Create LogSource, TraceSource and their respective conduits and sets the conduit into the respective sources.
