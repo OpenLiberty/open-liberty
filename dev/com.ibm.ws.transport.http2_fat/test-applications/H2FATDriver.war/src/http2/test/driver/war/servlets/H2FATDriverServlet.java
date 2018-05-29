@@ -86,6 +86,7 @@ public class H2FATDriverServlet extends FATServlet {
     protected final int FRAME_SIZE_ERROR = 0x6;
     protected final int CANCEL_ERROR = 0x8;
     protected final int COMPRESSION_ERROR = 0x9;
+    protected final int REFUSED_STREAM_ERROR = 0x7;
 
     public void testUpgradeHeader(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
@@ -4849,6 +4850,48 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(windowUpdate);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
+        handleErrors(h2Client, testName);
+    }
+
+    public void testExceedMaxConcurrentStreams(HttpServletRequest request,
+                                               HttpServletResponse response) throws InterruptedException, Exception {
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testTwoWindowUpdateFrameAboveMaxSizeOnStream3", "Started!");
+            LOGGER.logp(Level.INFO, this.getClass().getName(), "testTwoWindowUpdateFrameAboveMaxSizeOnStream3",
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+        }
+
+        final int server_max_concurrent_streams = 200;
+        String testName = "testExceedMaxConcurrentStreams";
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
+
+        FrameRstStream rstFrame = new FrameRstStream(403, REFUSED_STREAM_ERROR, false);
+        h2Client.addExpectedFrame(rstFrame);
+
+        FrameHeaders frameHeaders = addFirstExpectedHeaders(h2Client);
+        h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
+        h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
+
+        //Headers frame to send for "second" request
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+
+        int currentStream = 1;
+        // create another 200 streams
+        for (int i = 0; i < server_max_concurrent_streams + 1; i++) {
+            currentStream += 2;
+            // note end_stream is set to false, so this stream will remain open
+            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(currentStream, null, 0, 0, 0, false, true, false, false, false, false);
+            frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+            h2Client.sendFrame(frameHeadersToSend);
+        }
+
+        blockUntilConnectionIsDone.await(10000, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);
     }
 
