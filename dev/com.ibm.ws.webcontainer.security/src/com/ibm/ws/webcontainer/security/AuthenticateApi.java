@@ -174,13 +174,6 @@ public class AuthenticateApi {
             authResult.setAuditCredType(req.getAuthType());
             authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
-        } else {
-            if (existsJaspicSessionCookie(req, config)) {
-                // need to clean up jaspiSession.
-                SSOCookieHelper ssoCh = new SSOCookieHelperImpl(config, config.getJaspicSessionCookieName());
-                ssoCh.removeSSOCookieFromResponse(res);
-                ssoCh.createLogoutCookies(req, res);
-            }
         }
 
         removeEntryFromAuthCache(req, res, config);

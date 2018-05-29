@@ -487,9 +487,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SUCCESS;
         withProps(props).withParams().withNoELP().withAuthParams(null).withReferrer();
         withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(true).withRemoveWasReqUrlCookie();
-=======
-        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies);
->>>>>>> update UnitTest
+
         ltci.initialize(ici);
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
