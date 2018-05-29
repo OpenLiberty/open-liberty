@@ -37,239 +37,240 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
  *
  */
 public class JwtSsoTokenUtils {
-    private static TraceComponent tc = Tr.register(JwtSsoTokenUtils.class);
-    // JwtConsumer consumer = null;
-    String builderId = null;
-    String consumerId = null;
-    boolean isValid = true;
-    MicroProfileJwtTAI mpjwttai = null;
-    TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
+	private static TraceComponent tc = Tr.register(JwtSsoTokenUtils.class);
+	// JwtConsumer consumer = null;
+	String builderId = null;
+	String consumerId = null;
+	boolean isValid = true;
+	MicroProfileJwtTAI mpjwttai = null;
+	TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
 
-    public JwtSsoTokenUtils() {
+	public JwtSsoTokenUtils() {
 
-    }
+	}
 
-    // public JwtSsoTokenUtils(String builderId, String consumerId) {
-    // this.builderId = builderId;
-    // this.consumerId = consumerId;
-    // // try {
-    // // JwtBuilder.create(builderId); // fail fast if id or config is
-    // // consumer = JwtConsumer.create(consumerId);
-    // // } catch (InvalidConsumerException | InvalidBuilderException e) {
-    // // // ffdc
-    // // isValid = false;
-    // // }
-    // }
+	// public JwtSsoTokenUtils(String builderId, String consumerId) {
+	// this.builderId = builderId;
+	// this.consumerId = consumerId;
+	// // try {
+	// // JwtBuilder.create(builderId); // fail fast if id or config is
+	// // consumer = JwtConsumer.create(consumerId);
+	// // } catch (InvalidConsumerException | InvalidBuilderException e) {
+	// // // ffdc
+	// // isValid = false;
+	// // }
+	// }
 
-    public JwtSsoTokenUtils(String builder) {
-        builderId = builder;
-    }
+	public JwtSsoTokenUtils(String builder) {
+		builderId = builder;
+	}
 
-    public JwtSsoTokenUtils(String consumer, AtomicServiceReference<TrustAssociationInterceptor> mpjwttaiserviceref) {
-        consumerId = consumer;
-        TrustAssociationInterceptor service = mpjwttaiserviceref.getService();
-        if (service instanceof MicroProfileJwtTAI) {
-            mpjwttai = (MicroProfileJwtTAI) service;
-        }
-    }
+	public JwtSsoTokenUtils(String consumer, AtomicServiceReference<TrustAssociationInterceptor> mpjwttaiserviceref) {
+		consumerId = consumer;
+		TrustAssociationInterceptor service = mpjwttaiserviceref.getService();
+		if (service instanceof MicroProfileJwtTAI) {
+			mpjwttai = (MicroProfileJwtTAI) service;
+		}
+	}
 
-    /**
-     * return true if the object was constructed successfully
-     *
-     * @return
-     */
-    public boolean isValid() {
-        return isValid;
-    }
+	/**
+	 * return true if the object was constructed successfully
+	 *
+	 * @return
+	 */
+	public boolean isValid() {
+		return isValid;
+	}
 
-    // private JwtConsumer getConsumer() throws InvalidConsumerException {
-    // if (consumer == null) {
-    // consumer = JwtConsumer.create(consumerId);
-    // }
-    // return consumer;
-    // }
+	// private JwtConsumer getConsumer() throws InvalidConsumerException {
+	// if (consumer == null) {
+	// consumer = JwtConsumer.create(consumerId);
+	// }
+	// return consumer;
+	// }
 
-    /**
-     *
-     * Build a JsonWebToken Principal from the current Thread's RunAsSubject
-     *
-     * @return - a DefaultJsonWebTokenImpl, or null if user wasn't
-     *         authenticated.
-     */
-    public JsonWebToken buildTokenFromSecuritySubject() throws Exception {
+	/**
+	 *
+	 * Build a JsonWebToken Principal from the current Thread's RunAsSubject
+	 *
+	 * @return - a DefaultJsonWebTokenImpl, or null if user wasn't
+	 *         authenticated.
+	 */
+	public JsonWebToken buildTokenFromSecuritySubject() throws Exception {
 
-        Subject subj = WSSubject.getRunAsSubject();
-        Set<Principal> principals = subj.getPrincipals();
-        // maybe we already have one, check.
-        for (Principal p : principals) {
-            if (p instanceof JsonWebToken) {
-                return (JsonWebToken) p;
-            }
-        }
-        return buildTokenFromSecuritySubject(subj);
+		Subject subj = WSSubject.getRunAsSubject();
+		Set<Principal> principals = subj.getPrincipals();
+		// maybe we already have one, check.
+		for (Principal p : principals) {
+			if (p instanceof JsonWebToken) {
+				return (JsonWebToken) p;
+			}
+		}
+		return buildTokenFromSecuritySubject(subj);
 
-    }
+	}
 
-    public JsonWebToken buildTokenFromSecuritySubject(Subject subject) throws Exception {
-        // TODO Auto-generated method stub
-        if (!isValid) {
-            return null;
-        }
-        TokenBuilder tb = new TokenBuilder();
-        SubjectUtil subjectUtil = new SubjectUtil(subject);
-        String customCacheKey = subjectUtil.getCustomCacheKey();
-        String tokenString = tb.createTokenString(builderId, subject, customCacheKey);
-        if (tokenString == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "returning null because tokenString was null, creation failed.");
-            }
-            return null;
-        }
-        String userName = tb.getUserName(subject);
+	public JsonWebToken buildTokenFromSecuritySubject(Subject subject) throws Exception {
+		// TODO Auto-generated method stub
+		if (!isValid) {
+			return null;
+		}
+		TokenBuilder tb = new TokenBuilder();
+		SubjectUtil subjectUtil = new SubjectUtil(subject);
+		String customCacheKey = subjectUtil.getCustomCacheKey();
+		String tokenString = tb.createTokenString(builderId, subject, customCacheKey);
+		if (tokenString == null) {
+			if (tc.isDebugEnabled()) {
+				Tr.debug(tc, "returning null because tokenString was null, creation failed.");
+			}
+			return null;
+		}
+		String userName = tb.getUserName(subject);
 
-        if (userName == null || userName.compareTo(JwtSsoConstants.UNAUTHENTICATED) == 0) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "returning null because username = " + userName);
-            }
-            return null;
-        }
-        return new DefaultJsonWebTokenImpl(tokenString, JwtSsoConstants.TOKEN_TYPE_JWT, userName);
+		if (userName == null || userName.compareTo(JwtSsoConstants.UNAUTHENTICATED) == 0) {
+			if (tc.isDebugEnabled()) {
+				Tr.debug(tc, "returning null because username = " + userName);
+			}
+			return null;
+		}
+		return new DefaultJsonWebTokenImpl(tokenString, JwtSsoConstants.TOKEN_TYPE_JWT, userName);
 
-    }
+	}
 
-    private boolean checkForClaim(JsonWebToken jwt, String claimName) {
-        return (jwt.containsClaim(claimName));
+	private boolean checkForClaim(JsonWebToken jwt, String claimName) {
+		return (jwt.containsClaim(claimName));
 
-    }
+	}
 
-    public Subject handleJwtSsoTokenValidation(String tokenstr) throws Exception {
-        Subject tempSubject = null;
-        tempSubject = handleValidationUsingMPjwtConsumer(tokenstr);
-        // JwtToken jwttoken = recreateJwt(tokenstr);
-        // if (jwttoken != null) {
-        // String decodedPayload = null;
-        // String payload = JsonUtils.getPayload(tokenstr);
-        // decodedPayload = JsonUtils.decodeFromBase64String(payload);
-        // if (decodedPayload != null) {
-        // TAIMappingHelper mappingHelper;
-        // try {
-        // mappingHelper = new TAIMappingHelper(decodedPayload);
-        // mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwttoken);
-        // tempSubject =
-        // mappingHelper.createSubjectFromCustomProperties(jwttoken);
-        //
-        // } catch (MpJwtProcessingException e) {
-        // // TODO Auto-generated catch block
-        // // e.printStackTrace();
-        // }
-        // }
-        // }
+	public Subject handleJwtSsoTokenValidation(String tokenstr) throws Exception {
+		Subject tempSubject = null;
+		tempSubject = handleValidationUsingMPjwtConsumer(tokenstr);
+		// JwtToken jwttoken = recreateJwt(tokenstr);
+		// if (jwttoken != null) {
+		// String decodedPayload = null;
+		// String payload = JsonUtils.getPayload(tokenstr);
+		// decodedPayload = JsonUtils.decodeFromBase64String(payload);
+		// if (decodedPayload != null) {
+		// TAIMappingHelper mappingHelper;
+		// try {
+		// mappingHelper = new TAIMappingHelper(decodedPayload);
+		// mappingHelper.createJwtPrincipalAndPopulateCustomProperties(jwttoken);
+		// tempSubject =
+		// mappingHelper.createSubjectFromCustomProperties(jwttoken);
+		//
+		// } catch (MpJwtProcessingException e) {
+		// // TODO Auto-generated catch block
+		// // e.printStackTrace();
+		// }
+		// }
+		// }
 
-        return tempSubject;
+		return tempSubject;
 
-    }
+	}
 
-    public Subject handleJwtSsoTokenValidationWithSubject(Subject subject, String tokenstr) throws Exception {
+	public Subject handleJwtSsoTokenValidationWithSubject(Subject subject, String tokenstr) throws Exception {
 
-        JwtToken jwttoken = recreateJwt(tokenstr);
-        if (jwttoken != null) {
-            TokenBuilder tb = new TokenBuilder();
-            String user = tb.getUserName(subject);
-            JsonWebToken principal = new DefaultJsonWebTokenImpl(tokenstr, JwtSsoConstants.TOKEN_TYPE_JWT, user);
-            subject.getPrincipals().add(principal);
-            return subject;
-        }
+		JwtToken jwttoken = recreateJwt(tokenstr);
+		if (jwttoken != null) {
+			TokenBuilder tb = new TokenBuilder();
+			String user = tb.getUserName(subject);
+			JsonWebToken principal = new DefaultJsonWebTokenImpl(tokenstr, JwtSsoConstants.TOKEN_TYPE_JWT, user);
+			subject.getPrincipals().add(principal);
+			return subject;
+		}
 
-        return null;
+		return null;
 
-    }
+	}
 
-    private Subject handleValidationUsingMPjwtConsumer(String tokenstr) throws Exception {
-        MicroProfileJwtConfig mpjwtConfig = getMpJwtConsumer();
-        return mpjwttai.handleMicroProfileJwtValidation(null, null, mpjwtConfig, tokenstr, true).getSubject();
-        // return getConsumer().createJwt(tokenstr);
+	private Subject handleValidationUsingMPjwtConsumer(String tokenstr) throws Exception {
+		MicroProfileJwtConfig mpjwtConfig = getMpJwtConsumer();
+		return mpjwttai.handleMicroProfileJwtValidation(null, null, mpjwtConfig, tokenstr, true).getSubject();
+		// return getConsumer().createJwt(tokenstr);
 
-    }
+	}
 
-    private JwtToken recreateJwt(String tokenstr) throws Exception {
-        JwtToken jwttoken = null;
-        try {
+	protected JwtToken recreateJwt(String tokenstr) throws Exception {
+		JwtToken jwttoken = null;
+		try {
 
-            jwttoken = taiJwtUtils.createJwt(tokenstr, getMpJwtConsumer().getUniqueId());
-        } catch (MpJwtProcessingException e) {
-            // ffdc will be produced, consumer should emit a usable message.
-        }
-        return jwttoken;
-    }
+			jwttoken = taiJwtUtils.createJwt(tokenstr, getMpJwtConsumer().getUniqueId());
+		} catch (MpJwtProcessingException e) {
+			// ffdc will be produced, consumer should emit a usable message.
+		}
+		return jwttoken;
+	}
 
-    private MicroProfileJwtConfig getMpJwtConsumer() throws MpJwtProcessingException {
+	private MicroProfileJwtConfig getMpJwtConsumer() throws MpJwtProcessingException {
 
-        Iterator<MicroProfileJwtConfig> it = mpjwttai.getServices();
-        boolean mpjwt = false;
-        int mpJwtConfigs = 0;
-        String mpjwtids = "";
-        String mpJwtConfigId = null;
-        while (it.hasNext()) {
-            MicroProfileJwtConfig mpJwtConfig = it.next();
-            if (!(mpJwtConfig.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent"))) {
-                mpjwt = true;
-                mpJwtConfigId = mpJwtConfig.getUniqueId();
-                mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
-                mpJwtConfigs++;
-            }
-        }
-        if (mpJwtConfigs > 1) {
-            String msg = Tr.formatMessage(tc, "TOO_MANY_MP_JWT_PROVIDERS", new Object[] { mpjwtids });
-            Tr.error(tc, msg);
-            throw new MpJwtProcessingException(msg);
-        } else if (mpjwt) {
-            // return mpjwttai.getMicroProfileJwtConfig(mpJwtConfigId);
-            consumerId = mpJwtConfigId;
-        }
-        MicroProfileJwtConfig mpjwtconfig = mpjwttai.getMicroProfileJwtConfig(consumerId);
-        if (mpjwtconfig == null) {
-            String msg = Tr.formatMessage(tc, "MPJWT_CONSUMER_CONFIG_NOT_FOUND", new Object[] { consumerId });
-            Tr.error(tc, msg);
-            throw new MpJwtProcessingException(msg);
-        }
-        return mpjwtconfig;
-    }
+		Iterator<MicroProfileJwtConfig> it = mpjwttai.getServices();
+		boolean mpjwt = false;
+		int mpJwtConfigs = 0;
+		String mpjwtids = "";
+		String mpJwtConfigId = null;
+		while (it.hasNext()) {
+			MicroProfileJwtConfig mpJwtConfig = it.next();
+			if (!(mpJwtConfig.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent"))) {
+				mpjwt = true;
+				mpJwtConfigId = mpJwtConfig.getUniqueId();
+				mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
+				mpJwtConfigs++;
+			}
+		}
+		if (mpJwtConfigs > 1) {
+			String msg = Tr.formatMessage(tc, "TOO_MANY_MP_JWT_PROVIDERS", new Object[] { mpjwtids });
+			Tr.error(tc, msg);
+			throw new MpJwtProcessingException(msg);
+		} else if (mpjwt) {
+			// return mpjwttai.getMicroProfileJwtConfig(mpJwtConfigId);
+			consumerId = mpJwtConfigId;
+		}
+		MicroProfileJwtConfig mpjwtconfig = mpjwttai.getMicroProfileJwtConfig(consumerId);
+		if (mpjwtconfig == null) {
+			String msg = Tr.formatMessage(tc, "MPJWT_CONSUMER_CONFIG_NOT_FOUND", new Object[] { consumerId });
+			Tr.error(tc, msg);
+			throw new MpJwtProcessingException(msg);
+		}
+		return mpjwtconfig;
+	}
 
-    public boolean isJwtValid(String tokenstr) {
-        try {
-            if (recreateJwt(tokenstr) == null) {
-                return false;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
+	public boolean isJwtValid(String tokenstr) {
+		try {
+			if (recreateJwt(tokenstr) == null) {
+				return false;
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
 
-    public String getCustomCacheKeyFromToken(String tokenstr) {
-        String customCacheKey = null;
-        String payload = decodedPayload(tokenstr);
-        if (payload != null) {
-            customCacheKey = (String) getClaim(payload, Constants.CCK_CLAIM);
-        }
-        return customCacheKey;
-    }
+	public String getCustomCacheKeyFromToken(String tokenstr) {
+		String customCacheKey = null;
+		String payload = decodedPayload(tokenstr);
+		if (payload != null) {
+			customCacheKey = (String) getClaim(payload, Constants.CCK_CLAIM);
+		}
+		return customCacheKey;
+	}
 
-    private Object getClaim(String payload, String claim) {
-        try {
-            return JsonUtils.claimFromJsonObject(payload, claim);
-        } catch (Exception e) {
-            // ffdc will be generated, the thrown exception org.jose4j.lang.JoseException
-            // is from a 3rd party lib not amenable to nls.
-        }
-        return null;
-    }
+	private Object getClaim(String payload, String claim) {
+		try {
+			return JsonUtils.claimFromJsonObject(payload, claim);
+		} catch (Exception e) {
+			// ffdc will be generated, the thrown exception
+			// org.jose4j.lang.JoseException
+			// is from a 3rd party lib not amenable to nls.
+		}
+		return null;
+	}
 
-    public String decodedPayload(String tokenstr) {
-        if (tokenstr != null) {
-            String payload = JsonUtils.getPayload(tokenstr);
-            return JsonUtils.decodeFromBase64String(payload);
-        }
-        return null;
-    }
+	public String decodedPayload(String tokenstr) {
+		if (tokenstr != null) {
+			String payload = JsonUtils.getPayload(tokenstr);
+			return JsonUtils.decodeFromBase64String(payload);
+		}
+		return null;
+	}
 }
