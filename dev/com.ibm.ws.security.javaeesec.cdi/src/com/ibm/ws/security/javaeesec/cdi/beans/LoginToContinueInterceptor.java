@@ -131,14 +131,20 @@ public class LoginToContinueInterceptor {
                             rediectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, res);
                         }
                         return result;
-                    } else if (!isCustomHAM && existsSessionCookie(hmc, req)) {
-                        // according to the specification, it needs to detect OnOriginalURLAfterAuthenticate step.
-                        // however, this implementation does not do so, since there is no task which needs to be done
-                        // in this step.
-                        // Subject already exists, no need to preceed if container provided HAM is used.
-                        return AuthenticationStatus.SUCCESS;
-                    } else if (isInitialProtectedUrl(hmc)) {
-                            // need to redirect.
+                    } else if (existsSessionCookie(hmc, req)) {
+                        if (existsCookie(req, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME)) {
+                            // OnOriginalURLAfterAuthenticate.
+                            // remove WasReqUrl cookie and return with success.
+                            removeWasReqUrlCookie(req, res);
+                            return AuthenticationStatus.SUCCESS;
+                        } else if (!isCustomHAM && getWebAppSecurityConfig().isJaspicSessionEnabled()) {
+                            // if jaspicSession is enabled and the container provided HAM is used,
+                            // return with success
+                            return AuthenticationStatus.SUCCESS;
+                        } 
+                    }
+                    if (isInitialProtectedUrl(hmc)) {
+                        // need to redirect.
                         return gotoLoginPage(mpp.getAuthMechProperties(getClass(ic)), req, res, hmc);
                     }
                 }
@@ -339,7 +345,6 @@ public class LoginToContinueInterceptor {
             ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(storedReq),
                                                          webAppSecConfig.getWASReqURLRedirectDomainNames());
         }
-        referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
         // this is for OnLoginPostback, don't redirect if the current URL is the same as original URL.
         if (!req.getRequestURL().equals(storedReq)) {
             res.setHeader("Location", res.encodeURL(storedReq));
@@ -356,6 +361,12 @@ public class LoginToContinueInterceptor {
             res.sendRedirect(res.encodeURL(getUrl(req, errorPage, _useGlobalLogin)));
         }
         req.setAttribute(ATTR_DONE_LOGIN_PROCESS, Boolean.TRUE);
+    }
+
+    protected void removeWasReqUrlCookie(HttpServletRequest req, HttpServletResponse res) throws IOException, RuntimeException {
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
+        referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
     }
 
     /**

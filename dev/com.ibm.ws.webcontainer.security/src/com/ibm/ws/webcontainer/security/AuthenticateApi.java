@@ -169,23 +169,25 @@ public class AuthenticateApi {
 
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subjectManager.getCallerSubject());
         JaspiService jaspiService = getJaspiService();
+        boolean removeJaspiSession = false;
         if (jaspiService == null) {
             authResult.setAuditCredType(req.getAuthType());
             authResult.setAuditOutcome(AuditEvent.OUTCOME_SUCCESS);
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_TERMINATE_01, req, authResult, Integer.valueOf(res.getStatus()));
-        } else {
-            if (existsJaspicSessionCookie(req, config)) {
-                // need to clean up jaspiSession.
-                SSOCookieHelper ssoCh = new SSOCookieHelperImpl(config, config.getJaspicSessionCookieName());
-                ssoCh.removeSSOCookieFromResponse(res);
-                ssoCh.createLogoutCookies(req, res);
-            }
         }
 
         removeEntryFromAuthCache(req, res, config);
         invalidateSession(req);
         ssoCookieHelper.removeSSOCookieFromResponse(res);
         ssoCookieHelper.createLogoutCookies(req, res);
+
+        if (jaspiService != null && existsJaspicSessionCookie(req, config)) {
+            // need to clean up jaspiSession.
+            SSOCookieHelper ssoCh = new SSOCookieHelperImpl(config, config.getJaspicSessionCookieName());
+            ssoCh.removeSSOCookieFromResponse(res);
+            ssoCh.createLogoutCookies(req, res);
+        }
+
         //If authenticated with form login, we need to clear the RefrrerURLCookie
         ReferrerURLCookieHandler referrerURLHandler = config.createReferrerURLCookieHandler();
         referrerURLHandler.clearReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
@@ -322,7 +324,7 @@ public class AuthenticateApi {
             return;
         }
         String ssoCookieName;
-        if (getJaspiService() != null && config.isJaspicSessionEnabled()) {
+        if (getJaspiService() != null && existsJaspicSessionCookie(req, config)) {
             // remove jaspiSession.
             ssoCookieName = config.getJaspicSessionCookieName();
         } else {

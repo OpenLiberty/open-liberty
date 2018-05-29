@@ -83,7 +83,7 @@ public class LoginToContinueInterceptorTest {
     private CDI cdi;
     private Credential cred;
     private Principal principal;
-    private Cookie sessionCookie;
+    private Cookie sessionCookie, wasReqUrlCookie;
 
     private boolean isInterceptedMethod = false;
     private Class hamClass = null;
@@ -151,7 +151,7 @@ public class LoginToContinueInterceptorTest {
         cred = mockery.mock(Credential.class, "cred1");
         principal = mockery.mock(Principal.class, "principal1");
         sessionCookie = mockery.mock(Cookie.class, "session");
-
+        wasReqUrlCookie = mockery.mock(Cookie.class, "wasrequrl");
         ltci = new LoginToContinueInterceptor() {
             @Override
             protected boolean isMethodToIntercept(InvocationContext ic) {
@@ -465,7 +465,27 @@ public class LoginToContinueInterceptorTest {
         final Cookie[] cookies = {sessionCookie};
         Object expect = AuthenticationStatus.SUCCESS;
         withProps(props).withParams().withNoELP().withAuthParams(null);
-        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(false).withJaspicSessionEnabled(true);
+        ltci.initialize(ici);
+        assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
+    }
+
+    /**
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     */
+    @Test
+    public void testInterceptSessionCookieExistOnOriginalURLAfterAuthenticate() throws Exception {
+        hamClass = FORM_CLASS;
+        isInterceptedMethod = true;
+        ltci.setMPP(mpp);
+        Properties props = new Properties();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
+        final Cookie[] cookies = {sessionCookie};
+        Object expect = AuthenticationStatus.SUCCESS;
+        withProps(props).withParams().withNoELP().withAuthParams(null).withReferrer();
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(true).withRemoveWasReqUrlCookie();
         ltci.initialize(ici);
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
@@ -646,8 +666,18 @@ public class LoginToContinueInterceptorTest {
                 one(res).setStatus(HttpServletResponse.SC_FOUND);
                 one(wasc).getWASReqURLRedirectDomainNames();
                 will(returnValue(null));
-                one(ruh).invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
                 one(req).setAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess", Boolean.TRUE);
+            }
+        });
+
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withRemoveWasReqUrlCookie() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(ruh).invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
             }
         });
 
@@ -748,10 +778,46 @@ public class LoginToContinueInterceptorTest {
     }
 
     @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withWasReqUrlCookie(boolean isExist) throws Exception {
+        if (isExist) {
+            final Cookie [] cookies = {wasReqUrlCookie};
+            mockery.checking(new Expectations() {
+                {
+                    one(req).getCookies();
+                    will(returnValue(cookies));
+                    one(wasReqUrlCookie).getName();
+                    will(returnValue(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME));
+                    one(wasReqUrlCookie).getValue();
+                    will(returnValue("value"));
+                }
+            });
+        } else {
+            mockery.checking(new Expectations() {
+                {
+                    one(req).getCookies();
+                    will(returnValue(null));
+                }
+            });
+        }
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
     private LoginToContinueInterceptorTest withProtected(final boolean value) throws Exception {
         mockery.checking(new Expectations() {
             {
                 one(hmc).isProtected();
+                will(returnValue(value));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withJaspicSessionEnabled(final boolean value) throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(wasc).isJaspicSessionEnabled();
                 will(returnValue(value));
             }
         });
