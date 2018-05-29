@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+      metadata-complete="true" version="3.0">
+      <display-name>StatelessMixMDCEJB</display-name>
+      <enterprise-beans>
+         <session id="MetadataTrue">
+         	<ejb-name>MetadataTrue</ejb-name>
+         	<business-local>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.mdc.MetadataTrueLocal</business-local>
+         	<business-remote>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.mdc.MetadataTrueRemote</business-remote>
+         	<ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.mdc.MetadataTrueBean</ejb-class>
+         	<session-type>Stateless</session-type>
+         </session> 
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+         <container-transaction id="MethodTransaction_1">
+            <description>RequiresNew</description>
+            <method id="MethodElement_11">
+               <ejb-name>MetadataTrue</ejb-name>
+               <method-name>txRequiresNew</method-name>
+            </method>
+            <trans-attribute>RequiresNew</trans-attribute>
+         </container-transaction>
+      </assembly-descriptor>
+</ejb-jar>

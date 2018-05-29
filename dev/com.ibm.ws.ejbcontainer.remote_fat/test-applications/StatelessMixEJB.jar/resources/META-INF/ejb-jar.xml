@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+      metadata-complete="false" version="3.0">
+      <display-name>StatelessMixEJB</display-name>
+      <enterprise-beans>
+         <session id="CMTStatelessLocal">
+            <ejb-name>CMTStatelessLocal2</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessLocalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <!-- TODO: Re-enable when merge issue is fixed -->
+         <!--
+         <session id="AltCMTStatelessLocal">
+            <ejb-name>NoNameCMTStatelessLocalBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.AltCMTStatelessLocalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="NoNameCMTStatelessLocal">
+            <ejb-name>RealNoNameBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.NoNameCMTStatelessLocalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         -->
+         <session id="CompCMTStatelessLocal">
+            <ejb-name>CompCMTStatelessLocal</ejb-name>
+            <local-home>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CompCMTStatelessLocalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="ExpClassExpAllxml">
+            <ejb-name>ExpClassExpAllxml</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.ExpClassExpAllxmlBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="ExpClassExpXMLMethod">
+            <ejb-name>ExpClassExpXMLMethod</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.ExpClassExpXMLMethodBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="ExpMethodExpAllxml">
+            <ejb-name>ExpMethodExpAllxml</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.ExpMethodExpAllxmlBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="ExpMethodExpXMLMethod">
+            <ejb-name>ExpMethodExpXMLMethod</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.ExpMethodExpXMLMethodBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="ImpClassExpAllxml">
+            <ejb-name>ImpClassExpAllxml</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.ImpClassExpAllxmlBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="ImpClassExpXMLMethod">
+            <ejb-name>ImpClassExpXMLMethod</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.ImpClassExpXMLMethodBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="BaseAnnotationOverByXMLTxAttrBean1">
+         	<ejb-name>BaseAnnotationOverByXMLTxAttrBean1</ejb-name>
+         	<ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.BaseAnnotationOverByXMLTxAttrBean1</ejb-class>
+         	<session-type>Stateless</session-type>
+         	<transaction-type>Container</transaction-type>
+         </session>
+         <session id="BaseAnnotationOverByXMLTxAttrBean2">
+         	<ejb-name>BaseAnnotationOverByXMLTxAttrBean2</ejb-name>
+         	<ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.BaseAnnotationOverByXMLTxAttrBean2</ejb-class>
+         	<session-type>Stateless</session-type>
+         	<transaction-type>Container</transaction-type>
+         </session>
+         <session id="BMTBean">
+         	<ejb-name>BMTBean</ejb-name>
+         	<ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.BMTBean</ejb-class>
+         	<session-type>Stateless</session-type>
+         	<transaction-type>Bean</transaction-type>
+         </session>
+         <session id="BMTNoXMLTranType">
+         	<ejb-name>BMTNoXMLTranType</ejb-name>
+         	<ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.BMTNoXMLTranTypeBean</ejb-class>
+         	<session-type>Stateless</session-type>
+         </session>
+         <session id="CompNoBizCMTStatelessLocal">
+            <ejb-name>CompNoBizCMTStatelessLocal</ejb-name>
+            <local-home>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJBLocalHome</local-home>
+            <local>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJBLocal</local>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CompNoBizCMTStatelessLocalBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session> 
+         <session id="CompCMTStatelessRemote">
+            <ejb-name>CompCMTStatelessRemote</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJBHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJB</remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CompCMTStatelessRemoteBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>  
+         <session id="CompNoBizCMTStatelessRemote">
+            <ejb-name>CompNoBizCMTStatelessRemote</ejb-name>
+            <home>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJBHome</home>
+            <remote>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessEJB</remote>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CompNoBizCMTStatelessRemoteBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>                         
+         <session id="CMTStatelessRemote">
+            <ejb-name>CMTStatelessRemote2</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTStatelessRemoteBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <!-- TODO: Re-enable when merge issue is fixed -->
+         <!--
+         <session id="AltCMTStatelessRemote">
+            <ejb-name>NoNameCMTStatelessRemoteBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.AltCMTStatelessRemoteBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="NoNameCMTStatelessRemote">
+            <ejb-name>RemoteRealNoNameBean</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.NoNameCMTStatelessRemoteBean</ejb-class>
+            <session-type>Stateless</session-type>
+            <transaction-type>Container</transaction-type>
+         </session>
+         -->
+         <session id="BasicAnnotStateless">
+            <ejb-name>BasicAnnotStateless</ejb-name>
+            <ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.BasicAnnotStatelessBean</ejb-class>
+            <transaction-type>Container</transaction-type>
+         </session>
+         <session id="CMTNoXMLTranType">
+         	<ejb-name>CMTNoXMLTranType</ejb-name>
+         	<business-local>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTLocal</business-local>
+         	<business-remote>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTRemote</business-remote>
+         	<ejb-class>com.ibm.ws.ejbcontainer.remote.ejb3session.sl.mix.ejb.CMTNoXMLTranTypeBean</ejb-class>
+         	<session-type>Stateless</session-type>
+         </session>
+      </enterprise-beans>
+      <assembly-descriptor id="AssemblyDescriptor_1">
+         <container-transaction id="MethodTransaction_1">
+            <description>RequiresNew</description>
+            <method id="MethodElement_11">
+               <ejb-name>ExpClassExpAllxml</ejb-name>
+               <method-name>*</method-name>
+            </method>
+            <method id="MethodElement_12">
+               <ejb-name>ExpClassExpXMLMethod</ejb-name>
+               <method-name>expClassExpXMLMethod</method-name>
+            </method>
+            <method id="MethodElement_13">
+               <ejb-name>ExpMethodExpAllxml</ejb-name>
+               <method-name>*</method-name>
+            </method>
+            <method id="MethodElement_14">
+               <ejb-name>ExpMethodExpXMLMethod</ejb-name>
+               <method-name>expMethodExpXMLMethod</method-name>
+            </method>
+            <method id="MethodElement_15">
+               <ejb-name>ImpClassExpAllxml</ejb-name>
+               <method-name>*</method-name>
+            </method>
+            <method id="MethodElement_16">
+               <ejb-name>ImpClassExpXMLMethod</ejb-name>
+               <method-name>impClassExpXMLMethod</method-name>
+            </method>
+            <method id="MethodElement_17">
+            	<ejb-name>BaseAnnotationOverByXMLTxAttrBean1</ejb-name>
+            	<method-name>*</method-name>
+            </method>
+            <method id="MethodElement_18">
+            	<ejb-name>BaseAnnotationOverByXMLTxAttrBean2</ejb-name>
+            	<method-name>superAnnotationMethod</method-name>
+            </method>
+            <method id="MethodElement_19">
+            	<ejb-name>CMTNoXMLTranType</ejb-name>
+            	<method-name>txRequiresNew</method-name>
+            </method>
+            <trans-attribute>RequiresNew</trans-attribute>
+         </container-transaction>
+      </assembly-descriptor>
+   </ejb-jar>

@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>EnvEntryXmlDriverBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryXmlDriverBean</ejb-class>
+
+      <env-entry>
+        <description>C1x - class specified in XML only</description>
+        <env-entry-name>EnvEntry_Class_EntryName</env-entry-name>
+        <env-entry-type>java.lang.Class</env-entry-type>
+        <env-entry-value>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryClass</env-entry-value>
+        <injection-target>
+           <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryXmlDriverBean</injection-target-class>
+           <injection-target-name>ivEnvEntry_Class</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <env-entry>
+        <description>E1x - enum specified in XML only</description>
+        <env-entry-name>EnvEntry_Enum_EntryName</env-entry-name>
+        <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</env-entry-type>
+        <env-entry-value>EV2</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryXmlDriverBean</injection-target-class>
+          <injection-target-name>ivEnvEntry_Enum</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <!-- begin 661640 -->
+      <env-entry>
+        <description>P1x - Integer specified in XML only</description>
+        <env-entry-name>EnvEntry_Integer_EntryName</env-entry-name>
+        <env-entry-value>451</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryXmlDriverBean</injection-target-class>
+          <injection-target-name>ivEnvEntry_Integer</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <env-entry>
+        <description>P2x - int specified in XML only</description>
+        <env-entry-name>EnvEntry_Int_EntryName</env-entry-name>
+        <env-entry-value>452</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryXmlDriverBean</injection-target-class>
+          <injection-target-name>ivEnvEntry_Xml_Int</injection-target-name>
+        </injection-target>
+      </env-entry>
+
+      <env-entry>
+        <description>P3x - Fully-qualified Enum specified in XML only</description>
+        <env-entry-name>EnvEntry_EnumQual_EntryName</env-entry-name>
+        <env-entry-value>EV1</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryXmlDriverBean</injection-target-class>
+          <injection-target-name>ivEnvEntry_EnumQual</injection-target-name>
+        </injection-target>
+      </env-entry>
+      <!-- end 661640 -->
+    </session>
+   
+    <session>
+      <ejb-name>EnvEntryAnnDriverBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryAnnDriverBean</ejb-class>
+       
+      <env-entry>
+        <description>C1a - Class specified in XML and @Resource annotation</description>
+        <env-entry-name>EnvEntry_Class_EntryName</env-entry-name>
+        <env-entry-type>java.lang.Class</env-entry-type>
+        <env-entry-value>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryClass</env-entry-value>
+      </env-entry>
+
+      <env-entry>
+        <description>C3a - Class specified in XML with @Resource lookup annotation</description>
+        <env-entry-name>EnvEntry_Class_Using_Lookup</env-entry-name>
+        <env-entry-type>java.lang.Class</env-entry-type>
+        <env-entry-value>com.ibm.ws.ejbcontainer.remote.enventry.ejb.EnvEntryClass</env-entry-value>
+      </env-entry>
+
+      <env-entry>
+        <description>E1a - Enum specified in XML and @Resource annotation</description>
+        <env-entry-name>EnvEntry_Enum_EntryName</env-entry-name>
+        <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</env-entry-type>
+        <env-entry-value>EV2</env-entry-value>
+      </env-entry>
+
+      <!-- begin 661640 -->
+      <env-entry>
+        <description>P1a - Integer specified in XML and @Resource annotation</description>
+        <env-entry-name>EnvEntry_Integer_EntryName</env-entry-name>
+        <env-entry-value>451</env-entry-value>
+      </env-entry>
+
+      <env-entry>
+        <description>P2a - int specified in XML and @Resource annotation</description>
+        <env-entry-name>EnvEntry_Int_EntryName</env-entry-name>
+        <env-entry-value>452</env-entry-value>
+      </env-entry>
+
+      <env-entry>
+        <description>P3a - Fully-qualified Enum specified in XML and @Resource annotation</description>
+        <env-entry-name>EnvEntry_EnumQual_EntryName</env-entry-name>
+        <env-entry-value>EV1</env-entry-value>
+      </env-entry>
+      <!-- end 661640 -->
+      
+      <env-entry>
+        <description>E5a - Enum specified in XML with @Resource lookup annotation</description>
+        <env-entry-name>EnvEntry_Enum_Using_Lookup</env-entry-name>
+        <env-entry-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</env-entry-type>
+        <env-entry-value>EV3</env-entry-value>
+      </env-entry>
+   
+      <resource-env-ref>
+        <description>C1a-resource-env-ref -  Class specified in XML and @Resource annotation</description>
+        <resource-env-ref-name>ResourceEnvRef_Class_RefName</resource-env-ref-name>
+        <resource-env-ref-type>java.lang.Class</resource-env-ref-type>
+      </resource-env-ref>
+      
+      <resource-env-ref>
+        <description>E1a-resource-env-ref - Enum specified in XML and @Resource annotation</description>
+        <resource-env-ref-name>ResourceEnvRef_Enum_RefName</resource-env-ref-name>
+        <resource-env-ref-type>com.ibm.ws.ejbcontainer.remote.enventry.shared.EnvEntryDriver$EnvEntryEnum</resource-env-ref-type>
+      </resource-env-ref>
+    </session>
+  </enterprise-beans>
+</ejb-jar>

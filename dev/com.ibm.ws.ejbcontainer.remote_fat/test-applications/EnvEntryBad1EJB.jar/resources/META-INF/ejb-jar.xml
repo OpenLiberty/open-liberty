@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<ejb-jar
+  xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+  version="3.1"
+>
+  <enterprise-beans>
+    <session>
+      <ejb-name>Bad1XmlBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.Bad1XmlBean</ejb-class>
+      <session-type>Stateless</session-type>
+      
+      <env-entry>
+        <description>C2x - Non-existent class specified in XML only</description>
+        <env-entry-name>EnvEntry_Non-existentClass_EntryName</env-entry-name>
+        <env-entry-type>java.lang.Class</env-entry-type>
+        <env-entry-value>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.NoSuchClass</env-entry-value>
+        <injection-target>
+          <injection-target-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.Bad1XmlBean</injection-target-class>
+          <injection-target-name>ivEnvEntry_NoSuchClass</injection-target-name>
+        </injection-target>
+      </env-entry>
+    </session>
+     
+    <session>
+      <ejb-name>Bad1AnnBean</ejb-name>
+      <ejb-class>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.Bad1AnnBean</ejb-class>
+      <session-type>Stateless</session-type>
+    
+      <env-entry>
+        <description>C2a - Non-existent class specified in XML, with annotation</description>
+        <env-entry-name>EnvEntry_Non-existentClass_EntryName</env-entry-name>
+        <env-entry-type>java.lang.Class</env-entry-type>
+        <env-entry-value>com.ibm.ws.ejbcontainer.remote.enventry.bad.ejb.NoSuchClass</env-entry-value>
+      </env-entry>
+    </session>
+  </enterprise-beans>
+</ejb-jar>
