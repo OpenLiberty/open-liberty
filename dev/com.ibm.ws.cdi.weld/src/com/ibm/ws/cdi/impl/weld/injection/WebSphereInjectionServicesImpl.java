@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl.weld.injection;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -17,12 +20,23 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Resource;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.AnnotatedField;
+import javax.enterprise.inject.spi.AnnotatedMethod;
+import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.InjectionPoint;
+import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
+import javax.xml.ws.WebServiceRef;
 
 import org.jboss.weld.injection.spi.InjectionContext;
 import org.jboss.weld.injection.spi.InjectionServices;
@@ -73,6 +87,12 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
     private final Set<ReferenceContext> referenceContexts = new HashSet<ReferenceContext>();
 
     private final Map<Object, WebSphereInjectionTargetListener<?>> injectionTargetListeners = new ConcurrentHashMap<>();
+
+    private EEValidationUtils eeValidationUtils;
+
+    public void setEEValidationUtils(EEValidationUtils eeValidationUtils) {
+        this.eeValidationUtils = eeValidationUtils;
+    } 
 
     public void addReferenceContext(ReferenceContext referenceContext) {
         referenceContexts.add(referenceContext);
@@ -287,11 +307,47 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
      */
     @Override
     public <T> void registerInjectionTarget(javax.enterprise.inject.spi.InjectionTarget<T> injectionTarget, AnnotatedType<T> annotatedType) {
-        //no op
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Injection Target Annotations: " + annotatedType.getAnnotations());
         }
+        //We don't need to worry about constructors because constructors cannot be a producer. 
+        for (Annotated annotated : annotatedType.getFields()) {
+            validateAnnotatedMember(annotated, annotatedType.getJavaClass());
+        }
+        for (Annotated annotated : annotatedType.getMethods()) {
+            List<AnnotatedParameter<?>> parameters = ((AnnotatedMethod) annotated).getParameters();
+            for (AnnotatedParameter<?> injectedParamater : parameters){
+                validateAnnotatedMember(annotated, annotatedType.getJavaClass());
+            }
+        }
+    }
 
+    private void validateAnnotatedMember(Annotated annotated, Class<?> declaringClass) {
+        for (Annotation annotation : annotated.getAnnotations()) {
+            if (annotation instanceof EJB) {
+                checkValidationUtils();
+                eeValidationUtils.validateEjb(((EJB) annotation), declaringClass, annotated);
+            } else if (annotation instanceof Resource) {
+                checkValidationUtils();
+                eeValidationUtils.validateResource(((Resource) annotation), declaringClass, annotated);
+            } else if (annotation instanceof WebServiceRef) {
+                checkValidationUtils();
+                eeValidationUtils.validateWebServiceRef(((WebServiceRef) annotation), declaringClass, annotated);
+            } else if (annotation instanceof PersistenceContext) {
+                checkValidationUtils();
+                eeValidationUtils.validatePersistenceContext(((PersistenceContext) annotation), declaringClass, annotated);
+            } else if (annotation instanceof PersistenceUnit) {
+                checkValidationUtils();
+                eeValidationUtils.validatePersistenceUnit(((PersistenceUnit) annotation), declaringClass, annotated);
+            }
+        }
+    }
+
+    private void checkValidationUtils() {
+        //eeValidationUtils are created and registered by BeanDeploymnetArchiveImpl
+        if (eeValidationUtils == null) { 
+            throw new IllegalStateException("An attempt was made to validate a Java EE injection point but the validation utils were not ready");
+        }
     }
 
     /**
