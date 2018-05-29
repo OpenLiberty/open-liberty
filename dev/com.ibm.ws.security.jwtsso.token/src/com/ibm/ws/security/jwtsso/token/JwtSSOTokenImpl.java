@@ -155,7 +155,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	/**
 	 * @return
 	 */
-	private JwtSsoTokenUtils getJwtSsoTokenBuilderUtils() {
+	protected JwtSsoTokenUtils getJwtSsoTokenBuilderUtils() {
 		JwtSsoBuilderConfig jwtssobuilderConfig = getJwtSSOBuilderConfig();
 		String builder = null;
 		if (jwtssobuilderConfig != null) {
@@ -221,7 +221,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 * @param builder
 	 * @param consumer
 	 */
-	private JwtSsoTokenUtils getJwtSsoTokenConsumerUtils() {
+	protected JwtSsoTokenUtils getJwtSsoTokenConsumerUtils() {
 
 		JwtSsoConfig jwtssoconsumerConfig = getJwtSSOConsumerConfig();
 		String consumer = null;
@@ -260,14 +260,14 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	/**
 	 *
 	 */
-	private JwtSsoConfig getJwtSSOConsumerConfig() {
+	protected JwtSsoConfig getJwtSSOConsumerConfig() {
 		if (jwtSSOConfigRef.getService() != null) {
 			return jwtSSOConfigRef.getService();
 		}
 		return null;
 	}
 
-	private JwtSsoBuilderConfig getJwtSSOBuilderConfig() {
+	protected JwtSsoBuilderConfig getJwtSSOBuilderConfig() {
 		if (jwtSSOBuilderConfigRef.getService() != null) {
 			return jwtSSOBuilderConfigRef.getService();
 		}
@@ -286,7 +286,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 		// TODO Auto-generated method stub
 		String encodedjwtprincipal = null;
 		Set<JsonWebToken> jsonWebTokenPrincipalSet = getJwtPrincipals(subject);
-		if (!jsonWebTokenPrincipalSet.isEmpty()) {
+		if (jsonWebTokenPrincipalSet != null && !jsonWebTokenPrincipalSet.isEmpty()) {
 			if (hasMultiplePrincipals(jsonWebTokenPrincipalSet)) {
 				// TODO error
 			} else {
@@ -326,6 +326,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	 */
 	private boolean hasMultiplePrincipals(Set<JsonWebToken> jsonWebTokenPrincipalSet) {
 		// TODO Auto-generated method stub
+		// return jsonWebTokenPrincipalSet.size() > 1;
 		return false;
 	}
 
@@ -432,7 +433,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 	@Override
 	public void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws WSLoginFailedException {
 		Set<JsonWebToken> jsonWebTokenPrincipals = getJwtPrincipals(subject);
-		if (!jsonWebTokenPrincipals.isEmpty()) {
+		if (jsonWebTokenPrincipals != null && !jsonWebTokenPrincipals.isEmpty()) {
 			subject.getPrincipals().removeAll(jsonWebTokenPrincipals);
 		}
 		createJwtSSOToken(subject);
@@ -450,7 +451,7 @@ public class JwtSSOTokenImpl implements JwtSSOTokenProxy {
 		// TODO Auto-generated method stub
 		String encodedjwt = getJwtSSOToken(subject);
 		JwtSsoTokenUtils tokenUtil = getJwtSsoTokenConsumerUtils();
-		if (tokenUtil != null) {
+		if (tokenUtil != null && encodedjwt != null) {
 			return tokenUtil.isJwtValid(encodedjwt);
 		}
 		return false;

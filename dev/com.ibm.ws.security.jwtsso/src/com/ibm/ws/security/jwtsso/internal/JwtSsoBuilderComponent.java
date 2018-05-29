@@ -182,7 +182,7 @@ public class JwtSsoBuilderComponent implements JwtSsoBuilderConfig {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties, ComponentContext cc) {
+	public void activate(Map<String, Object> properties, ComponentContext cc) {
 		uniqueId = (String) properties.get(KEY_UNIQUE_ID);
 		process(properties);
 	}
