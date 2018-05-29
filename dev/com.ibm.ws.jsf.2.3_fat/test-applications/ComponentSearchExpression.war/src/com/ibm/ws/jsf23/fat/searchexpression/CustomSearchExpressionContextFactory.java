@@ -28,6 +28,7 @@ public class CustomSearchExpressionContextFactory extends SearchExpressionContex
     private final SearchExpressionContextFactory wrapped;
 
     public CustomSearchExpressionContextFactory(SearchExpressionContextFactory wrapped) {
+        super(wrapped);
         this.wrapped = wrapped;
     }
 
