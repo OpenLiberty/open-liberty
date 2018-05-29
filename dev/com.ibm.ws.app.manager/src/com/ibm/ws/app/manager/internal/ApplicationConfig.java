@@ -76,6 +76,8 @@ public final class ApplicationConfig {
 
         boolean appMgr_useJandex = _applicationManager.getUseJandex();
 
+        // Display a message once if useJandex is set to true on the applicationManager.
+        // This causes the default useJandex setting for each application to be set to true.
         if (!ONE_TIME_JANDEX_MSGS_DISPLAYED) {
             if (appMgr_useJandex) {
                 Tr.info(tc, "APPLICATION_JANDEX_ENABLED_ALL");
@@ -83,7 +85,7 @@ public final class ApplicationConfig {
             ONE_TIME_JANDEX_MSGS_DISPLAYED = true;
         }
 
-        // The application setting overrides the applicationManager setting
+        // The application setting overrides the applicationManager setting.
         if (_config != null) {
             Object application_useJandex = _config.get(AppManagerConstants.USE_JANDEX);
             if (application_useJandex instanceof Boolean) {
@@ -102,7 +104,7 @@ public final class ApplicationConfig {
             Tr.info(tc, "APPLICATION_JANDEX_ENABLED", _name);
 
         } else {
-            Tr.info(tc, "APPLICATION_JANDEX_DISABLED", _name);
+            // Display nothing.  Since they are taking the defaults.
         }
     }
 
