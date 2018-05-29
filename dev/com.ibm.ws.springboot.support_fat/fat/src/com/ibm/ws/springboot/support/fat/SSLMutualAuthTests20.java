@@ -17,12 +17,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.net.ssl.SSLException;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
@@ -56,13 +57,14 @@ public class SSLMutualAuthTests20 extends SSLCommonTests {
      * This scenario throws a Socket Exception
      */
     @Test
-    @AllowedFFDC({ "java.net.SocketException" })
     public void testClientAuthNeedWithoutClientSideKeyStoreFor20() throws Exception {
         try {
             testSSLApplication();
             Assert.fail("The connection should not succeed");
         } catch (SocketException e) {
-
+            // we get different exceptions; this is from Oracle VM
+        } catch (SSLException e) {
+            // we get different exceptions; this is from IBM VM
         }
     }
 
