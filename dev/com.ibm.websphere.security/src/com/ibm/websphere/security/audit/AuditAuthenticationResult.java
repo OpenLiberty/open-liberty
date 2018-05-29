@@ -12,6 +12,8 @@ package com.ibm.websphere.security.audit;
 
 import javax.security.auth.Subject;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * An AuthenticationResult is returned by WebAuthenticator as a result of a
  * authenticate request.
@@ -169,6 +171,7 @@ public class AuditAuthenticationResult {
     /**
      * @param type
      */
+    @Trivial
     public void setAuditCredType(String type) {
         auditCredType = type;
     }
@@ -177,6 +180,7 @@ public class AuditAuthenticationResult {
      *
      * @return
      */
+    @Trivial
     public String getAuditCredType() {
         return auditCredType;
     }
@@ -199,6 +203,7 @@ public class AuditAuthenticationResult {
     /**
      * @param type
      */
+    @Trivial
     public void setAuditCredValue(String value) {
         auditCredValue = value;
     }
@@ -206,6 +211,7 @@ public class AuditAuthenticationResult {
     /**
      * @ return
      */
+    @Trivial
     public String getAuditAuthConfigProviderName() {
         return auditAuthConfigProviderName;
     }
@@ -213,6 +219,7 @@ public class AuditAuthenticationResult {
     /**
      * @param type
      */
+    @Trivial
     public void setAuditAuthConfigProviderName(String name) {
         auditAuthConfigProviderName = name;
     }
@@ -221,6 +228,7 @@ public class AuditAuthenticationResult {
      *
      * @return
      */
+    @Trivial
     public String getAuditCredValue() {
         return auditCredValue;
     }
@@ -228,6 +236,7 @@ public class AuditAuthenticationResult {
     /**
      * @param type
      */
+    @Trivial
     public void setAuditOutcome(String outcome) {
         auditOutcome = outcome;
     }
@@ -236,6 +245,7 @@ public class AuditAuthenticationResult {
      *
      * @return
      */
+    @Trivial
     public String getAuditOutcome() {
         return auditOutcome;
     }
@@ -243,6 +253,7 @@ public class AuditAuthenticationResult {
     /**
      *
      */
+    @Trivial
     public void setAuditData(String credType, String credValue, String outcome) {
         auditCredType = credType;
         auditCredValue = credValue;
@@ -253,6 +264,7 @@ public class AuditAuthenticationResult {
      *
      * @return
      */
+    @Trivial
     public void setAuditLogoutSubject(Subject subject) {
         auditLogoutSubject = subject;
     }
@@ -261,6 +273,7 @@ public class AuditAuthenticationResult {
      *
      * @ return Subject
      */
+    @Trivial
     public Subject getAuditLogoutSubject() {
         return auditLogoutSubject;
     }

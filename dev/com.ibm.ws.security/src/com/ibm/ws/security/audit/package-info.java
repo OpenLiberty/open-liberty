@@ -12,4 +12,7 @@
  * @version 1.0.16
  */
 @org.osgi.annotation.versioning.Version("1.0.16")
+@Trivial
 package com.ibm.ws.security.audit;
+
+import com.ibm.websphere.ras.annotation.Trivial;
