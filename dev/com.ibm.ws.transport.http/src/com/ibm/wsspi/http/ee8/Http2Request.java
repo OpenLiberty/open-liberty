@@ -18,12 +18,16 @@ import com.ibm.wsspi.http.HttpRequest;
  */
 public interface Http2Request extends HttpRequest {
 
+    /*
+     * Are push request supported? is push reques
+     */
+    boolean isPushSupported();
+
     /**
      * Initiate a Push request
      *
      * @return
      */
-    @Override
     void pushNewRequest(Http2PushBuilder pushBuilder);
 
 }

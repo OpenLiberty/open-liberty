@@ -52,7 +52,6 @@ import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
-import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 
 /**
  * Test session related apis.
@@ -205,11 +204,6 @@ public class SessionTest {
             return 0;
         }
 
-        @Override
-        public void pushNewRequest(Http2PushBuilder pushBuilder) {
-            return;
-        }
-
         /*
          * (non-Javadoc)
          *
@@ -239,17 +233,6 @@ public class SessionTest {
          */
         @Override
         public boolean isTrailersReady() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.ibm.wsspi.http.HttpRequest#isPushSupported()
-         */
-        @Override
-        public boolean isPushSupported() {
             // TODO Auto-generated method stub
             return false;
         }
