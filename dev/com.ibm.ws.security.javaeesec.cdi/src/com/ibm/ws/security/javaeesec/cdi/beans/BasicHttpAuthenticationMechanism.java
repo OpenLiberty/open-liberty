@@ -65,7 +65,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
-        if (isJaspicSessionEnabled(httpMessageContext) && httpMessageContext.getRequest().getUserPrincipal() != null) {
+        if (isJaspicSessionEnabled() && httpMessageContext.getRequest().getUserPrincipal() != null) {
             httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
             return AuthenticationStatus.SUCCESS;
         }
@@ -146,7 +146,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                 if (status == AuthenticationStatus.SUCCESS) {
                     Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
                     messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
-                    if (isJaspicSessionEnabled(httpMessageContext)) {
+                    if (isJaspicSessionEnabled()) {
                         messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
                         utils.setCacheKey(clientSubject);
                     }
@@ -161,7 +161,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
-    private boolean isJaspicSessionEnabled(HttpMessageContext httpMessageContext) {
+    private boolean isJaspicSessionEnabled() {
         return getWebAppSecurityConfig().isJaspicSessionEnabled();
     }
 

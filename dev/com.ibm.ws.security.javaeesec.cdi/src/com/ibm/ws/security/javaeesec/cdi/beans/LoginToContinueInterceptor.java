@@ -75,6 +75,7 @@ public class LoginToContinueInterceptor {
     private Boolean _isForward = null;
     private Boolean _useGlobalLogin = false;
     private String _formLoginContextRoot = null;
+    private boolean isCustomHAM = false;
 
     @SuppressWarnings("rawtypes")
     @PostConstruct
@@ -82,7 +83,7 @@ public class LoginToContinueInterceptor {
         mpp = getModulePropertiesProvider();
         if (mpp != null) {
             Class hamClass = getTargetClass(ic);
-            boolean isCustomHAM = isCustomHAM(hamClass);
+            isCustomHAM = isCustomHAM(hamClass);
             props = mpp.getAuthMechProperties(hamClass);
             _isForward = resolveBoolean((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION),
                                         (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true, isCustomHAM);
@@ -130,11 +131,11 @@ public class LoginToContinueInterceptor {
                             rediectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, res);
                         }
                         return result;
-                    } else if (existsSessionCookie(hmc, req)) {
+                    } else if (!isCustomHAM && existsSessionCookie(hmc, req)) {
                         // according to the specification, it needs to detect OnOriginalURLAfterAuthenticate step.
                         // however, this implementation does not do so, since there is no task which needs to be done
                         // in this step.
-                        // Subject already exists, no need to preceed.
+                        // Subject already exists, no need to preceed if container provided HAM is used.
                         return AuthenticationStatus.SUCCESS;
                     } else if (isInitialProtectedUrl(hmc)) {
                             // need to redirect.
@@ -446,10 +447,6 @@ public class LoginToContinueInterceptor {
 
     protected Class getTargetClass(InvocationContext ic) {
         return ic.getTarget().getClass().getSuperclass();
-    }
-
-    protected boolean isCustomForm(Class className) {
-        return CustomFormAuthenticationMechanism.class.equals(className);
     }
 
     protected boolean isCustomHAM(Class className) {

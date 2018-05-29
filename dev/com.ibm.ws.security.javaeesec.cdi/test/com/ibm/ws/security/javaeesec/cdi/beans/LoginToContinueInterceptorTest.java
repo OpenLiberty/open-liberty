@@ -357,6 +357,7 @@ public class LoginToContinueInterceptorTest {
      */
     @Test
     public void testInterceptContinueFormRedirect() throws Exception {
+        hamClass = FORM_CLASS;
         isInterceptedMethod = true;
         ltci.setMPP(mpp);
         Properties props = new Properties();
@@ -377,6 +378,7 @@ public class LoginToContinueInterceptorTest {
      */
     @Test
     public void testInterceptContinueFormForward() throws Exception {
+        hamClass = CUSTOM_FORM_CLASS;
         isInterceptedMethod = true;
         ltci.setMPP(mpp);
         Properties props = new Properties();
@@ -397,6 +399,7 @@ public class LoginToContinueInterceptorTest {
      */
     @Test
     public void testInterceptContinueFormDefault() throws Exception {
+        hamClass = FORM_CLASS;
         isInterceptedMethod = true;
         ltci.setMPP(mpp);
         Properties props = new Properties();
@@ -453,6 +456,7 @@ public class LoginToContinueInterceptorTest {
      */
     @Test
     public void testInterceptSessionCookieExist() throws Exception {
+        hamClass = FORM_CLASS;
         isInterceptedMethod = true;
         ltci.setMPP(mpp);
         Properties props = new Properties();
