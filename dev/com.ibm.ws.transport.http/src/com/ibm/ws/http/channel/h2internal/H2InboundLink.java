@@ -70,7 +70,7 @@ public class H2InboundLink extends HttpInboundLink {
     READ_LINK_STATUS readLinkStatus = READ_LINK_STATUS.NOT_READING;
     Object readLinkStatusSync = new Object() {};
 
-    private final int configuredInactivityTimeout = 0; // in milleseconds;
+    private int configuredInactivityTimeout = 0; // in milleseconds;
     private long lastWriteTime = 0;
     private int OutstandingWriteCount = 0;
     private final Object OutstandingWriteCountSync = new Object() {};
@@ -167,6 +167,7 @@ public class H2InboundLink extends HttpInboundLink {
         localConnectionSettings = new H2ConnectionSettings();
         localConnectionSettings.setMaxConcurrentStreams(this.config.getH2MaxConcurrentStreams());
         localConnectionSettings.setMaxFrameSize(this.config.getH2MaxFrameSize());
+        configuredInactivityTimeout = this.config.getH2ConnectionIdleTimeout();
         remoteConnectionSettings = new H2ConnectionSettings();
 
         h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();

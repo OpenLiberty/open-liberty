@@ -694,7 +694,7 @@ public class HttpChannelConfig {
             try {
                 this.http2MaxConcurrentStreams = convertInteger(value);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: HTTP/2 Max Concurrent Streams is " + getH2MaxFrameSize());
+                    Tr.event(tc, "Config: HTTP/2 Max Concurrent Streams is " + getH2MaxConcurrentStreams());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxConcurrentStreams", "1");
