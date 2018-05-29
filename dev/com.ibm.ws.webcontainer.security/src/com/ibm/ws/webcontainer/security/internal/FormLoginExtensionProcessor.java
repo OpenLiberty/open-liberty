@@ -143,8 +143,6 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
             }
         } else {
             postFormLoginProcess(request, response, authResult.getSubject());
-            WebRequest webRequest = new WebRequestImpl(request, response, null, webAppSecConfig);
-            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(response.getStatus()));
         }
         return true;
     }
@@ -225,9 +223,11 @@ public class FormLoginExtensionProcessor extends WebExtensionProcessor {
                 ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(storedReq),
                                                              webAppSecConfig.getWASReqURLRedirectDomainNames());
             }
-            referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
             ssoCookieHelper.addSSOCookiesToResponse(subject, req, res);
-            res.sendRedirect(res.encodeURL(storedReq));
+            referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
+            if (!res.isCommitted()) {
+                res.sendRedirect(res.encodeURL(storedReq));
+            }
         }
     }
 
