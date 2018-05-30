@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: The application failed to start because it r
 error.missing.websocket.explanation=The application is a web socket application, and it requires a websocket feature to be configured in the server.xml file.
 error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
 
-error.webflux.not.supported=CWWKC0260E: Unable to start the application because Spring WebFlux is not supported.
-error.webflux.not.supported.explanation=The application is a WebFlux application. The reactive programming support provided by Spring WebFlux is not supported.
-error.webflux.not.supported.useraction=Configure an application that does not use Spring WebFlux with the server.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: Compression has been enabled by the application. Compression is not supported and the setting will be ignored.
 warning.spring_config.ignored.compression.explanation=Compression is not supported and the setting will be ignored, but the application will continue to function otherwise.

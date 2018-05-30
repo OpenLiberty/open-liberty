@@ -25,8 +25,7 @@ public class ApplicationError extends RuntimeException {
         NEED_SPRING_BOOT_VERSION_15("error.need.springboot.version.15"),
         NEED_SPRING_BOOT_VERSION_20("error.need.springboot.version.20"),
         MISSING_SERVLET_FEATURE("error.missing.servlet"),
-        MISSING_WEBSOCKET_FEATURE("error.missing.websocket"),
-        WEBFLUX_NOT_SUPPORTED("error.webflux.not.supported");
+        MISSING_WEBSOCKET_FEATURE("error.missing.websocket");
 
         private final String msgKey;
 

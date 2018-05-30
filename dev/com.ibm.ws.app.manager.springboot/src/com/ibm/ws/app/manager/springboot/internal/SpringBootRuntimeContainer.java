@@ -145,9 +145,6 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                         case MISSING_WEBSOCKET_FEATURE:
                             msgKey = "error.missing.websocket";
                             break;
-                        case WEBFLUX_NOT_SUPPORTED:
-                            msgKey = "error.webflux.not.supported";
-                            break;
                         default:
                             break;
 

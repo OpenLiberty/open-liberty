@@ -58,7 +58,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MimeMapping20.class,
                 ErrorPage15Test.class,
                 ErrorPage20Test.class,
-                WebFluxApplicationNotSupportedTest.class,
                 EnableSpringBootTraceTests.class,
                 ExceptionOccuredAfterAppIsAvailableTest15.class,
                 JavaeeFeatureTests15.class,
