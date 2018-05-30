@@ -18,13 +18,10 @@
  */
 package org.apache.cxf.jaxrs.client;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseFilter;
@@ -41,43 +38,18 @@ import org.apache.cxf.jaxrs.provider.ProviderFactory;
 import org.apache.cxf.jaxrs.utils.ThreadLocalProxyCopyOnWriteArraySet;
 import org.apache.cxf.message.Message;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 public final class ClientProviderFactory extends ProviderFactory {
-    private static final TraceComponent tc = Tr.register(ClientProviderFactory.class);
-    private final List<ProviderInfo<ClientRequestFilter>> clientRequestFilters;
-    private final List<ProviderInfo<ClientResponseFilter>> clientResponseFilters;
-    private final List<ProviderInfo<ResponseExceptionMapper<?>>> responseExceptionMappers;
+    //Liberty code change start
+    private final AtomicReferenceProviderList<ClientRequestFilter> clientRequestFilters =
+        new AtomicReferenceProviderList<>();
+    private final AtomicReferenceProviderList<ClientResponseFilter> clientResponseFilters =
+        new AtomicReferenceProviderList<>();
+    private final AtomicReferenceProviderList<ResponseExceptionMapper<?>> responseExceptionMappers =
+        new AtomicReferenceProviderList<>();
+    //Liberty code change end
 
     private ClientProviderFactory(Bus bus) {
         super(bus);
-
-        //Liberty 226760 begin
-        String javaVersion = AccessController.doPrivileged(new PrivilegedAction<String>() {
-
-            @Override
-            public String run() {
-                return System.getProperty("java.version");
-            }
-        });
-
-        CharSequence cs = "1.7";
-
-        //In Java 7 CopyOnWriteArrayList doesn't support "sort".
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, javaVersion);
-        }
-        if (javaVersion.contains(cs)) {
-            this.clientRequestFilters = new ArrayList<ProviderInfo<ClientRequestFilter>>(1);
-            this.clientResponseFilters = new ArrayList<ProviderInfo<ClientResponseFilter>>(1);
-            this.responseExceptionMappers = new ArrayList<ProviderInfo<ResponseExceptionMapper<?>>>(1);
-        } else {
-            this.clientRequestFilters = new CopyOnWriteArrayList<ProviderInfo<ClientRequestFilter>>();
-            this.clientResponseFilters = new CopyOnWriteArrayList<ProviderInfo<ClientResponseFilter>>();
-            this.responseExceptionMappers = new CopyOnWriteArrayList<ProviderInfo<ResponseExceptionMapper<?>>>();
-        }
-        //Liberty 226760 end
     }
 
     public static ClientProviderFactory createInstance(Bus bus) {
@@ -104,27 +76,48 @@ public final class ClientProviderFactory extends ProviderFactory {
         List<ProviderInfo<? extends Object>> theProviders = prepareProviders(custom, busGlobal, providers, null);
         super.setCommonProviders(theProviders);
 
+        //Liberty code change start
+        List<ProviderInfo<ClientRequestFilter>> newClientRequestFilters = new ArrayList<>();
+        List<ProviderInfo<ClientResponseFilter>> newClientResponseFilters = new ArrayList<>();
+        List<ProviderInfo<ResponseExceptionMapper<?>>> newResponseExceptionMappers = new ArrayList<>();
+        //Liberty code change end
+
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(getBus(), provider.getProvider());
             if (filterContractSupported(provider, providerCls, ClientRequestFilter.class)) {
-                addProviderToList(clientRequestFilters, provider);
+                //Liberty code change start
+                addProviderToList(newClientRequestFilters, provider);
+                //Liberty code change end
             }
 
             if (filterContractSupported(provider, providerCls, ClientResponseFilter.class)) {
-                addProviderToList(clientResponseFilters, provider);
+                //Liberty code change start
+                addProviderToList(newClientResponseFilters, provider);
+                //Liberty code change end
             }
 
             if (ResponseExceptionMapper.class.isAssignableFrom(providerCls)) {
-                addProviderToList(responseExceptionMappers, provider);
+                //Liberty code change start
+                addProviderToList(newResponseExceptionMappers, provider);
+                //Liberty code change end
             }
         }
 
-        Collections.sort(clientRequestFilters,
-                         new BindingPriorityComparator(ClientRequestFilter.class, true));
-        Collections.sort(clientResponseFilters,
-                         new BindingPriorityComparator(ClientResponseFilter.class, false));
+        //Liberty code change start
+        if (newClientRequestFilters.size() > 0) {
+            clientRequestFilters.addAndSortProviders(newClientRequestFilters, 
+                       new BindingPriorityComparator<ClientRequestFilter>(ClientRequestFilter.class, true));
+        }
+        if (newClientResponseFilters.size() > 0) {
+            clientResponseFilters.addAndSortProviders(newClientResponseFilters, 
+                       new BindingPriorityComparator<ClientResponseFilter>(ClientResponseFilter.class, false));
+        }
+        if (newResponseExceptionMappers.size() > 0) {
+            responseExceptionMappers.addProviders(newResponseExceptionMappers);
+        }
 
-        injectContextProxies(responseExceptionMappers, clientRequestFilters, clientResponseFilters);
+        injectContextProxies(responseExceptionMappers.get(), clientRequestFilters.get(), clientResponseFilters.get());
+        //Liberty code change start
     }
 
     @SuppressWarnings("unchecked")
@@ -154,11 +147,15 @@ public final class ClientProviderFactory extends ProviderFactory {
     }
 
     public List<ProviderInfo<ClientRequestFilter>> getClientRequestFilters() {
-        return Collections.unmodifiableList(clientRequestFilters);
+        //Liberty code change start
+        return Collections.unmodifiableList(clientRequestFilters.get());
+        //Liberty code change end
     }
 
     public List<ProviderInfo<ClientResponseFilter>> getClientResponseFilters() {
-        return Collections.unmodifiableList(clientResponseFilters);
+        //Liberty code change start
+        return Collections.unmodifiableList(clientResponseFilters.get());
+        //Liberty code change end
     }
 
     @Override
