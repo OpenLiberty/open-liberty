@@ -15,10 +15,13 @@ import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
+
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Test the push method of PushBuilder from a secured and an unsecured servlet
@@ -27,6 +30,7 @@ import com.ibm.ws.fat.wc.WCApplicationHelper;
  * that we have in artifactory is an Alpha version. The latest version is in Beta. We should
  * wait until they release the official version to implement the actual automation.
  */
+@RunWith(FATRunner.class)
 public class WCPushBuilderSecurityTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCPushBuilderSecurityTest.class.getName());

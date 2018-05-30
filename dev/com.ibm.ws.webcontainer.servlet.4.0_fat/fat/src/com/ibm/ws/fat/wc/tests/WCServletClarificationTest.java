@@ -18,12 +18,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -32,6 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * getInitParameter return NPE if name is null Clarification 3. setAttribute,
  * setInitParameter return NPE if name is null
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class WCServletClarificationTest extends LoggingTest {
 
