@@ -1736,4 +1736,19 @@ public class Http2FullModeTests extends FATServletClient {
     public void testNegativeToPositiveWindowSize() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
+
+    /**
+     * Test Coverage: Open more streams from the client than the server has specified in SETTINGS_MAX_CONCURRENT_STREAMS (200)
+     * Test Outcome: On the stream that exceeds the server's limit (403) The server sends a reset frame with error code REFUSED_STREAM
+     * Spec Section: 6.5.2
+     *
+     * Notes: stream 1 (servicing the initial upgraded request) will be closed, but streams 3 and up are left open by the client.
+     * So client (odd) streams 3 through 401 gives 200 open streams; stream 403 will be peer stream number 201.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExceedMaxConcurrentStreams() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
 }

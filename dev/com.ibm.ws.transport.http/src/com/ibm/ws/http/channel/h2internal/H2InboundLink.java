@@ -83,6 +83,8 @@ public class H2InboundLink extends HttpInboundLink {
     private int highestLocalStreamId = -1; // this moves to 0 when the connection stream is established
     private int openPushStreams = 0;
     private final Object pushSync = new Object() {};
+    private int activeClientStreams = 0;
+    private final Object streamCounterSync = new Object() {};
 
     boolean connection_preface_sent = false; // empty SETTINGS frame has been sent
     boolean connection_preface_string_rcvd = false; // MAGIC string has been received
@@ -333,6 +335,7 @@ public class H2InboundLink extends HttpInboundLink {
             Tr.debug(tc, "handleHTTP2UpgradeRequest, creating stream processor");
         }
         H2StreamProcessor streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.HALF_CLOSED_REMOTE);
+        incrementActiveClientStreams();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleHTTP2UpgradeRequest, created stream processor : " + streamProcessor);
         }
@@ -818,12 +821,6 @@ public class H2InboundLink extends HttpInboundLink {
         return remoteConnectionSettings;
     }
 
-    public void cleanupStream(int streamID) {
-        if (streamID != 0) {
-            writeQ.removeNodeFromQ(streamID);
-        }
-    }
-
     /*
      * (non-Javadoc)
      *
@@ -1176,19 +1173,49 @@ public class H2InboundLink extends HttpInboundLink {
         }
     }
 
+    public int getActiveClientStreams() {
+        synchronized (streamCounterSync) {
+            return this.activeClientStreams;
+        }
+    }
+
+    public void incrementActiveClientStreams() {
+        synchronized (streamCounterSync) {
+            this.activeClientStreams++;
+        }
+    }
+
+    public void decrementActiveClientStreams() {
+        synchronized (streamCounterSync) {
+            this.activeClientStreams--;
+        }
+    }
+
     /**
-     * Set a stream as closed on this link: remove it from the open streams table
-     * If the stream is even (locally opened), decrement the number of open push streams
+     * Remove the stream matching the given ID from the write tree, and decrement the number of open streams.
      *
-     * @param streamProcessor
+     * @param int streamID
      */
-    public void triggerStreamClose(H2StreamProcessor streamProcessor) {
-        streamTable.remove(streamProcessor.getId());
-        if (streamProcessor.getId() % 2 == 0) {
-            synchronized (pushSync) {
-                this.openPushStreams--;
+    public void closeStream(int streamID) {
+        if (streamID != 0) {
+            writeQ.removeNodeFromQ(streamID);
+            if (streamID % 2 == 0) {
+                synchronized (pushSync) {
+                    this.openPushStreams--;
+                }
+            } else {
+                decrementActiveClientStreams();
             }
         }
+    }
+
+    /**
+     * Set a stream as closed on this link: remove it from the open streams table
+     *
+     * @param H2StreamProcessor
+     */
+    public void closeStreamPostTimeout(H2StreamProcessor streamProcessor) {
+        streamTable.remove(streamProcessor.getId());
     }
 
     /**

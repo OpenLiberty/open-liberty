@@ -26,6 +26,7 @@ import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
+import com.ibm.ws.http.channel.h2internal.exceptions.RefusedStreamException;
 import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
@@ -600,8 +601,8 @@ public class H2StreamProcessor {
     private void updateStreamState(StreamState state) {
         this.state = state;
         if (StreamState.CLOSED.equals(state)) {
+            muxLink.closeStream(getId());
             muxLink.getStreamCloseTimer().schedule(new CleanupTask(this), STREAM_CLOSE_DELAY);
-            muxLink.cleanupStream(getId());
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current stream state for stream " + this.myID + " : " + this.state);
@@ -919,6 +920,14 @@ public class H2StreamProcessor {
         // Can only receive HEADERS or PRIORITY frame in Idle state
         if (direction == Constants.Direction.READ_IN) {
             if (frameType == FrameTypes.HEADERS) {
+
+                // check to see if too many client streams are currently open for this stream's h2 connection
+                muxLink.incrementActiveClientStreams();
+                if (muxLink.getActiveClientStreams() > muxLink.getLocalConnectionSettings().getMaxConcurrentStreams()) {
+                    RefusedStreamException rse = new RefusedStreamException("too many client-initiated streams are currently active; rejecting this stream");
+                    rse.setConnectionError(false);
+                    throw rse;
+                }
 
                 processHeadersPriority();
                 getHeadersFromFrame();
@@ -1911,7 +1920,7 @@ public class H2StreamProcessor {
                 Tr.debug(tc, "CleanupTask.run: remove stream-id: " + h2sp.getId()
                              + " from the active stream table for H2InboundLink hc: " + h2sp.muxLink.hashCode());
             }
-            muxLink.triggerStreamClose(h2sp);
+            muxLink.closeStreamPostTimeout(h2sp);
         }
     }
 }
