@@ -124,11 +124,11 @@ CONSOLE_FORMAT_UPDATED=TRAS3003I: The console output format has now been updated
 CONSOLE_FORMAT_UPDATED.explanation=The output format for console has now been updated.
 CONSOLE_FORMAT_UPDATED.useraction=No action is required.
 
-FAILED_TO_WRITE_LOG=TRAS3004E: Failed to write message to file {0}.
+FAILED_TO_WRITE_LOG=TRAS3004E: Failed to write messages to the {0} file.
 FAILED_TO_WRITE_LOG.explanation=An error occurred when trying to write message to the file. 
 FAILED_TO_WRITE_LOG.useraction=Ensure that the directory exists, is writable, and has sufficient disk space.
 
-LOG_FILE_RESUMED=TRAS3005I: The file {0} has been resumed to log messages.
+LOG_FILE_RESUMED=TRAS3005I: Logging messages to the {0} file has resumed.
 LOG_FILE_RESUMED.explanation=Messages can be written to the file.
 LOG_FILE_RESUMED.useraction=No action is required.
 
