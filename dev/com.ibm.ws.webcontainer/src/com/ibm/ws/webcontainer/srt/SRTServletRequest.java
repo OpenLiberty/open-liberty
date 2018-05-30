@@ -4214,7 +4214,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
         }
-        _srtRequestHelper._InputStreamClosed=true;      
+        
+        if (_srtRequestHelper != null)
+            _srtRequestHelper._InputStreamClosed=true; 
     }
 
     /* (non-Javadoc)
