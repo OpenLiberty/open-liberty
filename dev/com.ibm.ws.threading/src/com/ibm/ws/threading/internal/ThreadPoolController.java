@@ -423,7 +423,7 @@ public final class ThreadPoolController {
      * creation in the case where every new task immediately gets blocked by the same
      * underlying condition.
      */
-    private final static int MAX_THREADS_TO_BREAK_HANG = Math.max(1000, 512 * NUMBER_CPUS);
+    private final static int MAX_THREADS_TO_BREAK_HANG = Math.max(1000, 128 * NUMBER_CPUS);
 
     /**
      * Reference to the configured ExecutorService implementation that
@@ -558,6 +558,13 @@ public final class ThreadPoolController {
      * condition is resolved, this counter should be reset to zero.
      */
     private int hangIntervalCounter = 0;
+
+    /**
+     * Hang resolution will add threads to the pool hoping to break the hang. If the pool is
+     * already at MAX_THREADS_TO_BREAK_HANG then hang resolution will emit a warning message.
+     * This variable is used to limit the warning message to occur only once per hang event.
+     */
+    private boolean hangMaxThreadsMessageEmitted = false;
 
     /**
      * Constructor
@@ -1437,10 +1444,11 @@ public final class ThreadPoolController {
             } else {
                 // there's a hang, but we can't add any more threads...  emit a warning the first time this
                 // happens for a given hang, but otherwise just bail
-                if (hangIntervalCounter == 1) {
+                if (hangMaxThreadsMessageEmitted == false && hangIntervalCounter > 0) {
                     if (tc.isWarningEnabled()) {
                         Tr.warning(tc, "unbreakableExecutorHang", poolSizeWhenHangDetected, poolSize);
                     }
+                    hangMaxThreadsMessageEmitted = true;
                 }
             }
             hangIntervalCounter++;
@@ -1448,6 +1456,7 @@ public final class ThreadPoolController {
             // no hang exists, so reset the appropriate variables that track hangs
             poolSizeWhenHangDetected = -1;
             hangIntervalCounter = 0;
+            hangMaxThreadsMessageEmitted = false;
             // manage hang resolution mode
             if (hangResolutionCountdown > 0) {
                 hangResolutionCountdown--;
