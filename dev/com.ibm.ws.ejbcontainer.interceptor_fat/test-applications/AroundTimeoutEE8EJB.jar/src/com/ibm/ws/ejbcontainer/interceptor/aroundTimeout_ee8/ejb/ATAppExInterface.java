@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.interceptor.fat;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.concurrent.CountDownLatch;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AroundTimeoutTest.class,
-                AroundTimeoutEE8Test.class
-})
-public class FATSuite {}
+public interface ATAppExInterface {
+    public static final String AUTO_TIMER_INFO = "automaticTimerAppEx";
+
+    public CountDownLatch getAutoTimerLatch();
+
+    public CountDownLatch createSingleActionTimer(String info);
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_3_2.xsd"
+	metadata-complete="false" version="3.2">
+	<display-name>AroundTimeoutEE8TestEJB</display-name>
+	<enterprise-beans id="enterprise_beans_id">
+		<session id="AroundTimeoutAppExBean">
+			<ejb-name>AroundTimeoutAppExBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.ATAppExInterface</business-local>
+			<ejb-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.AroundTimeoutAppExBean</ejb-class>
+			<session-type>Singleton</session-type>
+			<timeout-method>
+				<method-name>timeoutMethod</method-name>
+				<method-params>
+					<method-param>javax.ejb.Timer</method-param>
+				</method-params>
+			</timeout-method>
+			<around-timeout>
+				<method-name>aroundTimeout</method-name>
+			</around-timeout>
+		</session>
+		<session id="AroundTimeoutNoExBean">
+			<ejb-name>AroundTimeoutNoExBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.ATNoExInterface</business-local>
+			<ejb-class>	com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.AroundTimeoutNoExBean</ejb-class>
+			<session-type>Singleton</session-type>
+			<timeout-method>
+				<method-name>timeoutMethod</method-name>
+				<method-params>
+					<method-param>javax.ejb.Timer</method-param>
+				</method-params>
+			</timeout-method>
+			<around-timeout>
+				<method-name>aroundTimeout</method-name>
+			</around-timeout>
+		</session>
+	</enterprise-beans>
+	
+	<interceptors>
+		<interceptor>
+			<interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.AppExceptionInterceptor</interceptor-class>
+			<around-timeout>
+				<method-name>aroundTimeout</method-name>
+			</around-timeout>
+		</interceptor>
+	</interceptors>
+
+	<assembly-descriptor>
+		<interceptor-binding>
+			<ejb-name>AroundTimeoutAppExBean</ejb-name>
+			<interceptor-class>com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.AppExceptionInterceptor</interceptor-class>
+			<method>
+				<method-name>autoTimeoutMethod</method-name>
+			</method>
+		</interceptor-binding>
+	</assembly-descriptor>
+</ejb-jar>
