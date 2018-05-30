@@ -26,7 +26,6 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
     private TraceSource traceSource = null;
     private BufferManagerImpl logConduit = null;
     private BufferManagerImpl traceConduit = null;
-    private boolean isJsonTrService = false;
 
     /**
      * Create LogSource, TraceSource and their respective conduits and sets the conduit into the respective sources.
@@ -108,21 +107,6 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
     @Override
     public void setMessageHandler(Handler handler) {
         this.messageLogHandler = (MessageLogHandler) handler;
-    }
-
-    /**
-     * Used by the MessageRouterConfigurator and TraceRouterConfigurator to identify if pipeline was spawned as part
-     * of BaseTraceService, If it is then the LogSource and Trace Source will not be set into WsMessageRouter or WsTraceRouter.
-     * Otherwise it will be set into the Routers (e.g. through an HPEL BaseTraceService)
-     *
-     * @param value
-     */
-    public boolean getJsonTrService() {
-        return isJsonTrService;
-    }
-
-    public void setJsonTrService(boolean value) {
-        this.isJsonTrService = value;
     }
 
     @Override

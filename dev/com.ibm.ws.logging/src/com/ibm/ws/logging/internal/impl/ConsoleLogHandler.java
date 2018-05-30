@@ -35,7 +35,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
     private BaseTraceFormatter basicFormatter = null;
     private Integer consoleLogLevel = null;
 
-    private boolean copySystemStreams = false;
+    private static boolean copySystemStreams = false;
 
     private BaseTraceService baseTraceService = null;
 
