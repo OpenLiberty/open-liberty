@@ -180,11 +180,6 @@ public class MessageRouterConfigurator implements BundleListener {
      * This method is called from the ServiceListener.
      */
     protected void setWsLogHandler(ServiceReference<WsLogHandler> ref) {
-    	/*
-    	* If Liberty Server spawned with BaseTraceService, then JsonTrService
-    	* is set to true and we do not need to set the WsLoghandler (i.e.
-    	* source ) into the messageRouter
-    	*/
     	getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
     }
 
