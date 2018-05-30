@@ -27,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
@@ -34,7 +35,9 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -43,6 +46,9 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  *
  */
+@MinimumJavaLevel(javaLevel = 1.8)
+@RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class FeatureTest extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = EJBModuleTestUnprotectedServlet.class;
@@ -132,7 +138,6 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testEJBAppSecurity30() throws Exception {
         String response;
@@ -196,7 +201,6 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity20() throws Exception {
@@ -248,7 +252,6 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity10() throws Exception {
