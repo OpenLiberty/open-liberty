@@ -20,7 +20,6 @@ package javax.faces.component;
 
 import javax.el.ValueExpression;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 import java.io.Serializable;
 import javax.faces.component.UIComponent;
 
@@ -29,7 +28,7 @@ import javax.faces.component.UIComponent;
 //
 // WARNING: This file was automatically generated. Do not edit it directly,
 //          or you will lose your changes.
-public class UIWebsocket extends javax.faces.component.UIOutput
+public class UIWebsocket extends javax.faces.component.UIComponentBase
     implements javax.faces.component.behavior.ClientBehaviorHolder
 {
 
@@ -38,8 +37,23 @@ public class UIWebsocket extends javax.faces.component.UIOutput
     static public final String COMPONENT_TYPE =
         "javax.faces.Websocket";
 
-    //BEGIN CODE COPIED FROM javax.faces.component._UIWebsocket 
-    public java.util.Collection getEventNames()
+
+    public UIWebsocket()
+    {
+        setRendererType("javax.faces.Websocket");
+    }
+
+    @Override    
+    public String getFamily()
+    {
+        return COMPONENT_FAMILY;
+    }
+
+
+
+    // UIWebSocketGeneration START
+    @Override
+    public java.util.Collection<String> getEventNames()
     {
         return new java.util.Collection<String>(){
 
@@ -122,21 +136,7 @@ public class UIWebsocket extends javax.faces.component.UIOutput
             }
         };
     }
-
-
-    //END CODE COPIED FROM javax.faces.component._UIWebsocket
-
-    public UIWebsocket()
-    {
-        setRendererType("javax.faces.Websocket");
-    }
-
-    @Override    
-    public String getFamily()
-    {
-        return COMPONENT_FAMILY;
-    }
-
+    // END UIWebSocket getEventNames template
 
 
     

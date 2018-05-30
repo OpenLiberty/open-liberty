@@ -112,79 +112,72 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
 
         ResponseWriter writer = facesContext.getResponseWriter();
 
-        //Only the first time it is required a session id.
-        if (component.getValue() == null)
+        String channel = component.getChannel();
+
+        // TODO: use a single bean and entry point for this algorithm.
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+
+        WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.lookup(
+                beanManager,
+                WebsocketChannelTokenBuilderBean.class);
+
+        // This bean is required because you always need to register the token, so it can be properly destroyed
+        WebsocketViewBean viewTokenBean = CDIUtils.lookup(
+                beanManager,
+                WebsocketViewBean.class);
+        WebsocketSessionBean sessionTokenBean = CDIUtils.lookup(
+                beanManager, WebsocketSessionBean.class);
+
+        // Create channel token 
+        // TODO: Use ResponseStateManager to create the token
+        String scope = component.getScope() == null ? "application" : component.getScope();
+        WebsocketChannelMetadata metadata = new WebsocketChannelMetadata(
+                channel, scope, component.getUser(), component.isConnected());
+
+        String channelToken = null;
+        // Force a new channelToken if "connected" property is set to false, because in that case websocket
+        // creation 
+        if (!component.isConnected())
         {
-            String channel = component.getChannel();
+            channelToken = viewTokenBean.getChannelToken(metadata);
+        }
+        if (channelToken == null)
+        {
+            // No channel token found for that combination, create a new token for this view
+            channelToken = channelTokenBean.createChannelToken(facesContext, channel);
+            
+            // Register channel in view scope to chain discard view algorithm using @PreDestroy
+            viewTokenBean.registerToken(channelToken, metadata);
+            
+            // Register channel in session scope to allow validation on handshake ( WebsocketConfigurator )
+            sessionTokenBean.registerToken(channelToken, metadata);
+        }
 
-            // TODO: use a single bean and entry point for this algorithm.
-            BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
+        // Ask these two scopes 
+        WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(
+                beanManager, WebsocketApplicationBean.class, false);
 
-            WebsocketChannelTokenBuilderBean channelTokenBean = CDIUtils.lookup(
-                    beanManager,
-                    WebsocketChannelTokenBuilderBean.class);
+        // Register token and metadata in the proper bean
+        if (scope.equals("view"))
+        {
+            viewTokenBean.registerWebsocketSession(channelToken, metadata);
+        }
+        else if (scope.equals("session"))
+        {
+            sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.lookup(
+                    CDIUtils.getBeanManager(facesContext.getExternalContext()),
+                    WebsocketSessionBean.class);
 
-            // This bean is required because you always need to register the token, so it can be properly destroyed
-            WebsocketViewBean viewTokenBean = CDIUtils.lookup(
-                    beanManager,
-                    WebsocketViewBean.class);
-            WebsocketSessionBean sessionTokenBean = CDIUtils.lookup(
-                    beanManager, WebsocketSessionBean.class);
+            sessionTokenBean.registerWebsocketSession(channelToken, metadata);
+        }
+        else
+        {
+            //Default application
+            appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.lookup(
+                    CDIUtils.getBeanManager(facesContext.getExternalContext()),
+                    WebsocketApplicationBean.class);
 
-            // Create channel token 
-            // TODO: Use ResponseStateManager to create the token
-            String scope = component.getScope() == null ? "application" : component.getScope();
-            WebsocketChannelMetadata metadata = new WebsocketChannelMetadata(
-                    channel, scope, component.getUser(), component.isConnected());
-
-            String channelToken = null;
-            // Force a new channelToken if "connected" property is set to false, because in that case websocket
-            // creation 
-            if (!component.isConnected())
-            {
-                channelToken = viewTokenBean.getChannelToken(metadata);
-            }
-            if (channelToken == null)
-            {
-                // No channel token found for that combination, create a new token for this view
-                channelToken = channelTokenBean.createChannelToken(facesContext, channel);
-                
-                // Register the channel into the bean that will manage the Session instance used to do the push
-                component.setValue(channelToken);
-                
-                // Register channel in view scope to chain discard view algorithm using @PreDestroy
-                viewTokenBean.registerToken(channelToken, metadata);
-                
-                // Register channel in session scope to allow validation on handshake ( WebsocketConfigurator )
-                sessionTokenBean.registerToken(channelToken, metadata);
-            }
-
-            // Ask these two scopes 
-            WebsocketApplicationBean appTokenBean = CDIUtils.getInstance(
-                    beanManager, WebsocketApplicationBean.class, false);
-
-            // Register token and metadata in the proper bean
-            if (scope.equals("view"))
-            {
-                viewTokenBean.registerWebsocketSession(channelToken, metadata);
-            }
-            else if (scope.equals("session"))
-            {
-                sessionTokenBean = (sessionTokenBean != null) ? sessionTokenBean : CDIUtils.lookup(
-                        CDIUtils.getBeanManager(facesContext.getExternalContext()),
-                        WebsocketSessionBean.class);
-
-                sessionTokenBean.registerWebsocketSession(channelToken, metadata);
-            }
-            else
-            {
-                //Default application
-                appTokenBean = (appTokenBean != null) ? appTokenBean : CDIUtils.lookup(
-                        CDIUtils.getBeanManager(facesContext.getExternalContext()),
-                        WebsocketApplicationBean.class);
-
-                appTokenBean.registerWebsocketSession(channelToken, metadata);
-            }
+            appTokenBean.registerWebsocketSession(channelToken, metadata);
         }
 
         writer.startElement(HTML.SCRIPT_ELEM, component);
@@ -196,7 +189,7 @@ public class WebsocketComponentRenderer extends Renderer implements ComponentSys
         sb.append(",");
         sb.append("'"+facesContext.getExternalContext().encodeWebsocketURL(
                 facesContext.getApplication().getViewHandler().getWebsocketURL(
-                        facesContext, component.getChannel()+"?"+(String) component.getValue()))+"'");
+                        facesContext, component.getChannel()+"?"+channelToken))+"'");
         sb.append(",");
         sb.append("'"+component.getChannel()+"'");
         sb.append(",");

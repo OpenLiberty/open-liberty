@@ -33,7 +33,7 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
  defaultRendererType = "javax.faces.Websocket",
  implementz = "javax.faces.component.behavior.ClientBehaviorHolder",
  bodyContent = "empty")
-abstract class _UIWebsocket extends UIOutput implements ClientBehaviorHolder
+abstract class _UIWebsocket extends UIComponentBase
 {
     
     static public final String COMPONENT_FAMILY = "javax.faces.Script";
@@ -59,90 +59,5 @@ abstract class _UIWebsocket extends UIOutput implements ClientBehaviorHolder
 
     @JSFProperty(defaultValue = "true")
     public abstract boolean isConnected();
-
-    @Override
-    public java.util.Collection<String> getEventNames()
-    {
-        return new java.util.Collection<String>(){
-
-            @Override
-            public int size()
-            {
-                return 0;
-            }
-
-            @Override
-            public boolean isEmpty()
-            {
-                return false;
-            }
-
-            @Override
-            public boolean contains(Object o)
-            {
-                return true;
-            }
-
-            @Override
-            public java.util.Iterator<String> iterator()
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public Object[] toArray()
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public <T> T[] toArray(T[] a)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean add(String e)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean remove(Object o)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean containsAll(java.util.Collection<?> c)
-            {
-                return true;
-            }
-
-            @Override
-            public boolean addAll(java.util.Collection<? extends String> c)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean removeAll(java.util.Collection<?> c)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public boolean retainAll(java.util.Collection<?> c)
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-
-            @Override
-            public void clear()
-            {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
-    }
 
 }
