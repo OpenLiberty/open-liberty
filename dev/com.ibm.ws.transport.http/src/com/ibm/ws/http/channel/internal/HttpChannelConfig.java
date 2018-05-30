@@ -138,7 +138,7 @@ public class HttpChannelConfig {
     /** Set as an attribute to the HttpEndpoint **/
     private Boolean useH2ProtocolAttribute = null;
 
-    private int http2ConnectionIdleTimeout = 30;
+    private int http2ConnectionIdleTimeout = 30000;
     private int http2MaxConcurrentStreams = 200;
     private int http2MaxFrameSize = 57344; //Default to 56kb
 
