@@ -16,11 +16,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -29,6 +31,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * functionality.
  *
  */
+@RunWith(FATRunner.class)
 public class WCGetMappingTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCServerTest.class.getName());

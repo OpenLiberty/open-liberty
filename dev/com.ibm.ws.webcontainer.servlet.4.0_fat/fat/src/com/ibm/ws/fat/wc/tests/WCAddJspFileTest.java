@@ -22,17 +22,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
  */
+@RunWith(FATRunner.class)
 public class WCAddJspFileTest extends LoggingTest {
 
     @SuppressWarnings("unused")

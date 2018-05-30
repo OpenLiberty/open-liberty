@@ -21,6 +21,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
@@ -30,6 +31,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -38,6 +40,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * <request-encoding>UTF-8</request-encoding>
  * <response-encoding>Shift-JIS</response-encoding>
  */
+@RunWith(FATRunner.class)
 public class WCEncodingTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCEncodingTest.class.getName());

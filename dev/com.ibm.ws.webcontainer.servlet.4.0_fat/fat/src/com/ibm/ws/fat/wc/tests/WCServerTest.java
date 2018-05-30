@@ -18,6 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
@@ -25,9 +26,12 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
+
 /**
  * All Servlet 4.0 tests with all applicable server features enabled.
  */
+@RunWith(FATRunner.class)
 public class WCServerTest extends LoggingTest {
 
     @SuppressWarnings("unused")

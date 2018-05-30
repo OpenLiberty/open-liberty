@@ -16,16 +16,20 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
+
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Note this is a basic test to ensure newPushBuilder() returns null for non H2 requests.
  * A comprehensive test of the pushbuilder api is included in the Servlet 4.0 unit tests.
  * A comprehensive test of pushbuilder functionality for H2 requests is included in the transport FAT bucket.
  */
+@RunWith(FATRunner.class)
 public class WCPushBuilderTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCPushBuilderTest.class.getName());
