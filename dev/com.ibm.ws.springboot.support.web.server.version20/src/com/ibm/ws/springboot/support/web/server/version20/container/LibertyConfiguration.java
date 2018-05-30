@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.reactive.server.ReactiveWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,12 +30,17 @@ import org.springframework.core.Ordered;
 @ConditionalOnWebApplication
 @ConditionalOnClass({ ServletWebServerFactory.class })
 @Import(BeanPostProcessorsRegistrar.class)
-public class LibertyServletContainerConfiguration {
+public class LibertyConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(value = ServletWebServerFactory.class, search = SearchStrategy.CURRENT)
-    public LibertyServletContainerFactory libertyEmbeddedServletContainerFactory() {
-        return new LibertyServletContainerFactory();
+    public LibertyServletWebServerFactory libertyEmbeddedServletContainerFactory() {
+        return new LibertyServletWebServerFactory();
     }
 
+    @Bean
+    @ConditionalOnMissingBean(value = ReactiveWebServerFactory.class, search = SearchStrategy.CURRENT)
+    public LibertyReactiveWebServerFactory libertyReactiveWebServerFactory() {
+        return new LibertyReactiveWebServerFactory();
+    }
 }
