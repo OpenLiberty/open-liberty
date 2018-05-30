@@ -175,7 +175,6 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
      * <LI> Verify that the container provided HAM is used.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleModuleWarsOverrideFormHAM() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -223,7 +222,6 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
      * <LI> Verify that the container provided HAM is used.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleModuleWarsOverrideFormHAMNoRootContext() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -270,7 +268,6 @@ public class MultipleModuleGlobalLoginTest extends JavaEESecTestBase {
      * <LI> Verify that the container provided HAM is used.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleModuleWarsOverrideBasicAuthHAM() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

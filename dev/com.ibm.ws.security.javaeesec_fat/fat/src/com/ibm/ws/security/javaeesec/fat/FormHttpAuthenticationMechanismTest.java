@@ -141,7 +141,6 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testJaspiFormLoginValidUserInRole_AllowedAccess() throws Exception {
         myServer.setMarkToEndOfLog();
@@ -165,7 +164,6 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testJaspiFormLoginValidUserInRoleRedirect_AllowedAccess() throws Exception {
         myServer.setMarkToEndOfLog();
@@ -175,7 +173,6 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
         verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testSSOForFormAuthenticationMechanismDefinition() throws Exception {
         String cookieHeaderString = driveResourceFlow(urlHttps + Constants.DEFAULT_REDIRECT_FORM_LOGIN_PAGE);

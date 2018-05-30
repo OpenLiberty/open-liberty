@@ -141,7 +141,6 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
      * <LI> EL is only resolved once even multiple call was made.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testLoginToContinueELImmediate() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -168,7 +167,6 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
      * <LI> EL is resolved every invocations.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testLoginToContinueELDeferredLoginPage() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -198,7 +196,6 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
      * <LI> EL is resolved every invocations.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testLoginToContinueELDeferredErrorPage() throws Exception {

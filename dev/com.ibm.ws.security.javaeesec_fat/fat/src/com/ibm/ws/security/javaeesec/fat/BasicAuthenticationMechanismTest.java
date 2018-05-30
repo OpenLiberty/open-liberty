@@ -113,7 +113,6 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
      * <LI> Verify response contains the appropriate required information.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "com.ibm.ws.security.registry.RegistryException" })
     @Test
     public void testBasicAuthValidUserInRole_AllowedAccess() throws Exception {
@@ -135,7 +134,6 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
      * <LI> Verify response contains the appropriate required information.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "com.ibm.ws.security.registry.RegistryException" })
     @Test
     public void testAnnotatedBasicAuthValidUserInRole_AllowedAccess() throws Exception {
@@ -159,7 +157,6 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
      * <LI> Verify response contains the appropriate required information.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testBasicAuthValidUserInRole_DeniedAccess() throws Exception {
         executeGetRequestBasicAuthCreds(httpclient, urlHttp + queryString, Constants.jaspi_invalidUser, Constants.jaspi_invalidPwd,
@@ -179,14 +176,12 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
      * <LI> Verify response contains the appropriate required information.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testBasicAuthValidUserInRole_DeniedAccess_WrongPassword() throws Exception {
         executeGetRequestBasicAuthCreds(httpclient, urlHttp + queryString, Constants.javaeesec_basicRoleUser, Constants.jaspi_invalidPwd,
                                         HttpServletResponse.SC_FORBIDDEN);
     }
 
-    @Mode(TestMode.LITE)
     @Test
     public void testSSOForBasicAuthenticationMechanismDefinition() throws Exception {
         String cookieHeaderString = driveResourceFlow(urlHttps + "/JavaEESecAnnotatedBasicAuthServlet/JavaEESecAnnotatedBasic");

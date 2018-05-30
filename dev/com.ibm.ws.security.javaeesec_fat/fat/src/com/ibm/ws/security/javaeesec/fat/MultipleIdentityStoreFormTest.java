@@ -135,7 +135,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISFormRedirectWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -169,7 +168,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISFormRedirectWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -203,7 +201,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISFormRedirectWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
@@ -237,7 +234,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISFormRedirectWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -267,7 +263,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISFormRedirectWith1st2ndFail_DeniedAccess() throws Exception {
@@ -299,7 +294,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISFormForwardWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -333,7 +327,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISFormForwardWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -367,7 +360,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISFormForwardWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
@@ -401,7 +393,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISFormForwardWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -431,7 +422,6 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISFormForwardWith1st2ndFail_DeniedAccess() throws Exception {

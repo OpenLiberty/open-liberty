@@ -153,7 +153,6 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testMultipleISCustomFormPostRedirectWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -189,7 +188,6 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     @AllowedFFDC({"javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostRedirectWith2ndISonly_RetryAllowedAccess() throws Exception {
@@ -231,7 +229,6 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISCustomFormPostForwardWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -266,7 +263,6 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC({"javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostForwardWith2ndISonly_RetryAllowedAccess() throws Exception {

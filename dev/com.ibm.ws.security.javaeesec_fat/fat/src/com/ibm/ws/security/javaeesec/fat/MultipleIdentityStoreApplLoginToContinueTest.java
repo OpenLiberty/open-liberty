@@ -136,7 +136,6 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISApplLoginToContinueRedirectWith1stIS_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -170,7 +169,6 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISApplLoginToContinueForwardWith2ndISonly_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -204,7 +202,6 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISApplLoginToContinueRedirectWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
@@ -238,7 +235,6 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the CWWKS9104A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @Test
     public void testMultipleISApplLoginToContinueForwardWith1stISuccess_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -268,7 +264,6 @@ public class MultipleIdentityStoreApplLoginToContinueTest extends JavaEESecTestB
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISApplLoginToContinueRedirectWith1st2ndFail_DeniedAccess() throws Exception {

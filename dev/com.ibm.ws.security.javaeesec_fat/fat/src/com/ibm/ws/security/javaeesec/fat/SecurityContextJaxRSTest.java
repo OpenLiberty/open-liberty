@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class SecurityContextJaxRSTest extends JavaEESecTestBase {
 
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.jaxrs.fat");
@@ -89,7 +90,6 @@ public class SecurityContextJaxRSTest extends JavaEESecTestBase {
      * <LI> The user principal is returned by injected securityContext getCallerPrincipal()
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testSecurityContext_getCallerPrincipal_authenticate() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -111,7 +111,6 @@ public class SecurityContextJaxRSTest extends JavaEESecTestBase {
      * <LI> The user principal is returned by injected securityContext getCallerPrincipal()
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testSecurityContext_getCallerPrincipal() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -133,7 +132,6 @@ public class SecurityContextJaxRSTest extends JavaEESecTestBase {
      * <LI> Return code 403
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testSecurityContext_getCallerPrincipal_noAuth() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -155,7 +153,6 @@ public class SecurityContextJaxRSTest extends JavaEESecTestBase {
      * <LI> The caller is not in the Member role
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testSecurityContext_callerNotInRole() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -178,7 +175,6 @@ public class SecurityContextJaxRSTest extends JavaEESecTestBase {
      * <LI> User is in Employee role
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testSecurityContext_callerInRole() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -201,7 +197,6 @@ public class SecurityContextJaxRSTest extends JavaEESecTestBase {
      * <LI> User is in Employee role
      * </OL>
      */
-    @Mode(TestMode.LITE)
     @Test
     public void testSecurityContext_callerInRole_byGroup() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
