@@ -8,9 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;com.ibm.ws.commons-collections:commons-collections;3.2.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.commons.collections;3.2.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-    @${repo;com.ibm.ws.commons-collections:commons-collections;3.2.1}!/!META-INF/maven/*
+    @${repo;org.apache.commons.collections;3.2.2;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
--buildpath: com.ibm.ws.commons-collections:commons-collections;version=3.2.1
+-buildpath: commons-collections:commons-collections;strategy=exact;version=3.2.2
