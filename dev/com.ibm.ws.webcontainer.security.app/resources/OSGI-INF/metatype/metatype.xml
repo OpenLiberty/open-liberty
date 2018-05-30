@@ -126,7 +126,7 @@
 
         <AD id="jaspicSessionEnabled" name="%jaspicSessionEnabled" description="%jaspicSessionEnabled.desc"
             required="false" type="Boolean"
-            default="false" />
+            default="true" />
 
         <AD id="jaspicSessionCookieName" name="%jaspicSessionCookieName" description="%jaspicSessionCookieName.desc"
             required="false" type="String"

@@ -292,7 +292,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
     public AuthenticationStatus notifyContainerAboutLogin(String callername, Set<String> groups) {
         try {
             this.groups = Collections.unmodifiableSet(groups); // Unmodifiable view to avoid corruption
-            Callback[] callbacks = new Callback[3];
+            Callback[] callbacks = new Callback[2];
             callbacks[0] = new CallerPrincipalCallback(clientSubject, callername);
             callbacks[1] = new GroupPrincipalCallback(clientSubject, groups.toArray(new String[] {}));
             handler.handle(callbacks);
