@@ -664,11 +664,22 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 Tr.exit(this, tc, "createManagedConnection", mc); 
 
             return mc;
-
         } catch (ResourceException resX) {
             if (isAnyTraceOn && tc.isEntryEnabled())
                 Tr.exit(this, tc, "createManagedConnection", resX);
             throw resX;
+        } finally {
+            // Close connections if we failed to create the managed connection
+            if (mc == null && results != null) {
+                if (results.connection != null)
+                    try {
+                        results.connection.close();
+                    } catch (Throwable x) {}
+                if (results.pooledConnection != null)
+                    try {
+                        results.pooledConnection.close();
+                    } catch (Throwable x) {}
+            }
         }
     }
 
