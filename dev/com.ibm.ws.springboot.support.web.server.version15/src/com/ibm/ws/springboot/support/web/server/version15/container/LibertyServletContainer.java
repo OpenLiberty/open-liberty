@@ -12,6 +12,7 @@ package com.ibm.ws.springboot.support.web.server.version15.container;
 
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.ADDRESS;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.LIBERTY_USE_DEFAULT_HOST;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.NEED;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.PORT;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SERVER_HEADER;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_CIPHERS;
@@ -28,6 +29,7 @@ import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigu
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_TRUST_STORE_PASSWORD;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_TRUST_STORE_PROVIDER;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.SSL_TRUST_STORE_TYPE;
+import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.WANT;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -41,6 +43,7 @@ import org.springframework.boot.context.embedded.EmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerException;
 import org.springframework.boot.context.embedded.MimeMappings;
 import org.springframework.boot.context.embedded.Ssl;
+import org.springframework.boot.context.embedded.Ssl.ClientAuth;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.SocketUtils;
@@ -181,7 +184,14 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         Ssl ssl = factory.getSsl();
         if (ssl != null) {
             serverProperties.put(SSL_CIPHERS, ssl.getCiphers());
-            serverProperties.put(SSL_CLIENT_AUTH, ssl.getClientAuth());
+            ClientAuth clientAuth = ssl.getClientAuth();
+            if (clientAuth != null) {
+                if (clientAuth == ClientAuth.NEED) {
+                    serverProperties.put(SSL_CLIENT_AUTH, NEED);
+                } else if (clientAuth == ClientAuth.WANT) {
+                    serverProperties.put(SSL_CLIENT_AUTH, WANT);
+                }
+            }
             serverProperties.put(SSL_ENABLED, ssl.isEnabled());
             serverProperties.put(SSL_KEY_ALIAS, ssl.getKeyAlias());
             serverProperties.put(SSL_KEY_PASSWORD, ssl.getKeyPassword());

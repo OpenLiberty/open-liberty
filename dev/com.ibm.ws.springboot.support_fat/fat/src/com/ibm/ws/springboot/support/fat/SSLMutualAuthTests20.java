@@ -12,14 +12,17 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.net.ssl.SSLException;
+
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -27,41 +30,6 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 @Mode(FULL)
 public class SSLMutualAuthTests20 extends SSLCommonTests {
-
-    @Test
-    public void testSSLMutualAuthSpringBootApplication20() throws Exception {
-        testSSLApplication();
-    }
-
-    @Override
-    public String getKeyStorePath() {
-        try {
-            RemoteFile ksRemoteFile = server.getFileFromLibertyServerRoot("client-keystore.jks");
-            return ksRemoteFile.getAbsolutePath();
-        } catch (Exception e) {
-            throw new IllegalStateException("Key Store file not found", e);
-        }
-    }
-
-    @Override
-    public String getKeyStorePassword() {
-        return "secret";
-    }
-
-    @Override
-    public String getTrustStorePath() {
-        try {
-            RemoteFile tsRemoteFile = server.getFileFromLibertyServerRoot("client-truststore.jks");
-            return tsRemoteFile.getAbsolutePath();
-        } catch (Exception e) {
-            throw new IllegalStateException("Trust Store file not found", e);
-        }
-    }
-
-    @Override
-    public String getTrustStorePassword() {
-        return "secret";
-    }
 
     @Override
     public Set<String> getFeatures() {
@@ -73,4 +41,36 @@ public class SSLMutualAuthTests20 extends SSLCommonTests {
         return SPRING_BOOT_20_APP_BASE;
     }
 
+    @After
+    public void stopTestServer() throws Exception {
+        super.stopServer(true);
+    }
+
+    /* Passes when application property server.ssl.client-auth=NEED and if client side keystore and truststore are provided for authentication. */
+    @Test
+    public void testClientAuthNeedWithClientSideKeyStoreFor20() throws Exception {
+        testSSLApplication();
+    }
+
+    /*
+     * Fails when application property server.ssl.client-auth=NEED and if client side keystore and truststore are not provided for authentication.
+     * This scenario throws a Socket Exception
+     */
+    @Test
+    public void testClientAuthNeedWithoutClientSideKeyStoreFor20() throws Exception {
+        try {
+            testSSLApplication();
+            Assert.fail("The connection should not succeed");
+        } catch (SocketException e) {
+            // we get different exceptions; this is from Oracle VM
+        } catch (SSLException e) {
+            // we get different exceptions; this is from IBM VM
+        }
+    }
+
+    /* Passes when application property server.ssl.client-auth=WANT and even if client side keystore and truststore are not provided for authentication. */
+    @Test
+    public void testClientAuthWantWithoutClientSideKeyStoreFor20() throws Exception {
+        testSSLApplication();
+    }
 }
