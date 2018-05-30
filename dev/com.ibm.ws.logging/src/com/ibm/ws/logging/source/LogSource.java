@@ -134,7 +134,7 @@ public class LogSource implements Source, WsLogHandler {
 
         String messageIdVal = null;
         String messageVal = extractMessage(routedMessage, logRecord);
-        logData.setMessage(messageVal);
+
         if (messageVal != null) {
             messageIdVal = parseMessageId(messageVal);
         }
@@ -192,6 +192,8 @@ public class LogSource implements Source, WsLogHandler {
             logData.setThrowable(null);
             logData.setThrowableLocalized(null);
         }
+
+        logData.setMessage(messageVal);
 
         if (routedMessage.getFormattedMsg() != null) {
             logData.setFormattedMsg(routedMessage.getFormattedMsg());
