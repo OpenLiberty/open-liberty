@@ -87,6 +87,10 @@ public abstract class FlexibleBaseNoJavaEESecServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         handleRequest("GET", req, resp);
+        String op = req.getParameter("logout");
+        if (op != null && "true".equals(op)) {
+            req.logout();
+        }
     }
 
     @Override

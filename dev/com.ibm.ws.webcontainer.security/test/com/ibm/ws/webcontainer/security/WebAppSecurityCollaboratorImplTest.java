@@ -1645,6 +1645,8 @@ public class WebAppSecurityCollaboratorImplTest {
                 allowing(userRegistry).getRealm();
                 one(commongResp).isCommitted();
                 will(returnValue(false));
+                one(commonReq).getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
+                will(returnValue(null));
             }
         });
 

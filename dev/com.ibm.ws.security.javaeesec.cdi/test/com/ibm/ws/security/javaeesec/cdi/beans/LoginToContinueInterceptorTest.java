@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.Principal;
 import java.util.Properties;
 
 import javax.el.ELProcessor;
@@ -25,10 +26,11 @@ import javax.security.auth.message.MessageInfo;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
+import javax.security.enterprise.credential.Credential;
+import javax.servlet.http.Cookie;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -79,6 +81,9 @@ public class LoginToContinueInterceptorTest {
     private RequestDispatcher rd;
     private ELProcessor elp, elpi, elpm;
     private CDI cdi;
+    private Credential cred;
+    private Principal principal;
+    private Cookie sessionCookie, wasReqUrlCookie;
 
     private boolean isInterceptedMethod = false;
     private Class hamClass = null;
@@ -99,7 +104,7 @@ public class LoginToContinueInterceptorTest {
     private final String EL_DEFERRED_ERROR_PAGE = "#{" + EL_ERROR_PAGE + "}";
     private final String EL_DEFERRED_LOGIN_PAGE = "#{" + EL_LOGIN_PAGE + "}";
     private final String EL_DEFERRED_IS_FORWARD = "#{" + EL_IS_FORWARD + "}";
-
+    private final String SESSION_COOKIE = "jaspiSession";
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
 
     @Rule
@@ -143,6 +148,10 @@ public class LoginToContinueInterceptorTest {
         elpi = mockery.mock(ELProcessor.class, "elpi");
         elpm = mockery.mock(ELProcessor.class, "elpm");
         cdi = mockery.mock(CDI.class);
+        cred = mockery.mock(Credential.class, "cred1");
+        principal = mockery.mock(Principal.class, "principal1");
+        sessionCookie = mockery.mock(Cookie.class, "session");
+        wasReqUrlCookie = mockery.mock(Cookie.class, "wasrequrl");
 
         ltci = new LoginToContinueInterceptor() {
             @Override
@@ -310,9 +319,8 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, EL_IMMEDIATE_ERROR_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, EL_IMMEDIATE_IS_FORWARD);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
-        String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(EL_LOGIN_PAGE_RESOLVED).withAuthParams();
+        withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(EL_LOGIN_PAGE_RESOLVED).withAuthParams(null);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(null, null).withProtected(true);
         wlthELBoolean(elpi, EL_IS_FORWARD, Boolean.FALSE).withNoELP(elpm);
         wlthELString(elpi, EL_ERROR_PAGE, EL_ERROR_PAGE_RESOLVED);
         wlthELString(elpi, EL_LOGIN_PAGE, EL_LOGIN_PAGE_RESOLVED);
@@ -335,9 +343,8 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, EL_DEFERRED_ERROR_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, EL_DEFERRED_IS_FORWARD);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
-        String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(EL_LOGIN_PAGE_RESOLVED).withAuthParams();
+        withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(EL_LOGIN_PAGE_RESOLVED).withAuthParams(null);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(null, null).withProtected(true);
         wlthELBoolean(elpm, EL_IS_FORWARD, Boolean.FALSE).withNoELP(elpi);
         wlthELString(elpm, EL_ERROR_PAGE, EL_ERROR_PAGE_RESOLVED);
         wlthELString(elpm, EL_LOGIN_PAGE, EL_LOGIN_PAGE_RESOLVED);
@@ -351,6 +358,7 @@ public class LoginToContinueInterceptorTest {
      */
     @Test
     public void testInterceptContinueFormRedirect() throws Exception {
+        hamClass = FORM_CLASS;
         isInterceptedMethod = true;
         ltci.setMPP(mpp);
         Properties props = new Properties();
@@ -358,9 +366,8 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
-        String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withNoELP().withAuthParams();
+        withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withNoELP().withAuthParams(null);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(null, null).withProtected(true);
 
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -372,6 +379,7 @@ public class LoginToContinueInterceptorTest {
      */
     @Test
     public void testInterceptContinueFormForward() throws Exception {
+        hamClass = CUSTOM_FORM_CLASS;
         isInterceptedMethod = true;
         ltci.setMPP(mpp);
         Properties props = new Properties();
@@ -379,9 +387,8 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.TRUE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
-        String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
+        withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams(null);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(null, null).withProtected(true);
 
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -393,15 +400,15 @@ public class LoginToContinueInterceptorTest {
      */
     @Test
     public void testInterceptContinueFormDefault() throws Exception {
+        hamClass = FORM_CLASS;
         isInterceptedMethod = true;
         ltci.setMPP(mpp);
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
-        String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
+        withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams(null);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(null, null).withProtected(true);
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
     }
@@ -419,7 +426,8 @@ public class LoginToContinueInterceptorTest {
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams();
+        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams(cred);
+        withJSecurityCheck("contextRoot/original.html");
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
@@ -437,10 +445,53 @@ public class LoginToContinueInterceptorTest {
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams();
+        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams(null);
+        withJSecurityCheck("/j_security_check");
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
+
+    /**
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     */
+    @Test
+    public void testInterceptSessionCookieExist() throws Exception {
+        hamClass = FORM_CLASS;
+        isInterceptedMethod = true;
+        ltci.setMPP(mpp);
+        Properties props = new Properties();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
+        final Cookie[] cookies = {sessionCookie};
+        Object expect = AuthenticationStatus.SUCCESS;
+        withProps(props).withParams().withNoELP().withAuthParams(null);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(false).withJaspicSessionEnabled(true);
+        ltci.initialize(ici);
+        assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
+    }
+
+    /**
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     */
+    @Test
+    public void testInterceptSessionCookieExistOnOriginalURLAfterAuthenticate() throws Exception {
+        hamClass = FORM_CLASS;
+        isInterceptedMethod = true;
+        ltci.setMPP(mpp);
+        Properties props = new Properties();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
+        final Cookie[] cookies = {sessionCookie};
+        Object expect = AuthenticationStatus.SUCCESS;
+        withProps(props).withParams().withNoELP().withAuthParams(null).withReferrer();
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(true).withRemoveWasReqUrlCookie();
+
+        ltci.initialize(ici);
+        assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
+    }
+
 
     /**
      * valid method. No ModulePropertiesProvider object.
@@ -577,13 +628,15 @@ public class LoginToContinueInterceptorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private LoginToContinueInterceptorTest withAuthParams() {
+    private LoginToContinueInterceptorTest withAuthParams(final Credential cred) {
         mockery.checking(new Expectations() {
             {
-                one(hmc).getAuthParameters();
+                between(1, 2).of(hmc).getAuthParameters();
                 will(returnValue(ap));
                 one(ap).isNewAuthentication();
                 will(returnValue(false));
+                between(0, 1).of(ap).getCredential();
+                will(returnValue(cred));
             }
         });
         return this;
@@ -607,7 +660,7 @@ public class LoginToContinueInterceptorTest {
             {
                 one(ruh).getReferrerURLFromCookies(req, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
                 will(returnValue(storedReq));
-                one(req).getRequestURL();
+                exactly(2).of(req).getRequestURL();
                 will(returnValue(sb));
                 one(res).encodeURL(storedReq);
                 will(returnValue(storedReq));
@@ -615,16 +668,32 @@ public class LoginToContinueInterceptorTest {
                 one(res).setStatus(HttpServletResponse.SC_FOUND);
                 one(wasc).getWASReqURLRedirectDomainNames();
                 will(returnValue(null));
+                one(req).setAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess", Boolean.TRUE);
             }
         });
-        if (CUSTOM_FORM_CLASS.equals(hamClass)) {
-            mockery.checking(new Expectations() {
-                {
-                    one(ruh).invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
-                }
-            });
-        }
 
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withRemoveWasReqUrlCookie() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(ruh).invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
+            }
+        });
+
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withJSecurityCheck(final String uri) throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(req).getRequestURI();
+                will(returnValue(uri));
+            }
+        });
         return this;
     }
 
@@ -683,4 +752,77 @@ public class LoginToContinueInterceptorTest {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withSessionCookie(final Principal principal, final Cookie[] cookies) throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(hmc).getRequest();
+                will(returnValue(req));
+                one(req).getUserPrincipal();
+                will(returnValue(principal));
+            }
+        });
+        if (principal != null) {
+            mockery.checking(new Expectations() {
+                {
+                    one(wasc).getJaspicSessionCookieName();
+                    will(returnValue(SESSION_COOKIE));
+                    one(req).getCookies();
+                    will(returnValue(cookies));
+                    one(sessionCookie).getName();
+                    will(returnValue(SESSION_COOKIE));
+                    one(sessionCookie).getValue();
+                    will(returnValue("value"));
+                }
+            });
+        }
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withWasReqUrlCookie(boolean isExist) throws Exception {
+        if (isExist) {
+            final Cookie [] cookies = {wasReqUrlCookie};
+            mockery.checking(new Expectations() {
+                {
+                    one(req).getCookies();
+                    will(returnValue(cookies));
+                    one(wasReqUrlCookie).getName();
+                    will(returnValue(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME));
+                    one(wasReqUrlCookie).getValue();
+                    will(returnValue("value"));
+                }
+            });
+        } else {
+            mockery.checking(new Expectations() {
+                {
+                    one(req).getCookies();
+                    will(returnValue(null));
+                }
+            });
+        }
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withProtected(final boolean value) throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(hmc).isProtected();
+                will(returnValue(value));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withJaspicSessionEnabled(final boolean value) throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(wasc).isJaspicSessionEnabled();
+                will(returnValue(value));
+            }
+        });
+        return this;
+    }
 }

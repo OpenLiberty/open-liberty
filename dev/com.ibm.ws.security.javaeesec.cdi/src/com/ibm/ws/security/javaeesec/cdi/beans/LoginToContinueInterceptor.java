@@ -26,22 +26,24 @@ import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
+import javax.security.enterprise.credential.Credential;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.genericbnf.PasswordNullifier;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
+import com.ibm.ws.webcontainer.security.CookieHelper;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
@@ -51,10 +53,7 @@ import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfigurationImpl;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
-import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -63,10 +62,11 @@ import javax.servlet.http.HttpServletResponse;
 @Interceptor
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 220)
 public class LoginToContinueInterceptor {
+    private static final String ATTR_DONE_LOGIN_PROCESS = "com.ibm.ws.security.javaeesec.donePostLoginProcess";
     private static final String METHOD_TO_INTERCEPT = "validateRequest";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
     ModulePropertiesProvider mpp = null;
-    private boolean resolved = false;
+    private final boolean resolved = false;
 
     Properties props = null;
     // the following vaules are set if they are not EL expression, ro resolved immediately.
@@ -75,6 +75,7 @@ public class LoginToContinueInterceptor {
     private Boolean _isForward = null;
     private Boolean _useGlobalLogin = false;
     private String _formLoginContextRoot = null;
+    private boolean isCustomHAM = false;
 
     @SuppressWarnings("rawtypes")
     @PostConstruct
@@ -82,7 +83,7 @@ public class LoginToContinueInterceptor {
         mpp = getModulePropertiesProvider();
         if (mpp != null) {
             Class hamClass = getTargetClass(ic);
-            boolean isCustomHAM = isCustomHAM(hamClass);
+            isCustomHAM = isCustomHAM(hamClass);
             props = mpp.getAuthMechProperties(hamClass);
             _isForward = resolveBoolean((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION),
                                         (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true, isCustomHAM);
@@ -92,6 +93,9 @@ public class LoginToContinueInterceptor {
             _formLoginContextRoot = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT);
             if (_useGlobalLogin == null) {
                 _useGlobalLogin = Boolean.FALSE;
+            }
+            if (_formLoginContextRoot == null) {
+                _formLoginContextRoot = "";
             }
         } else {
             Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST");
@@ -108,26 +112,43 @@ public class LoginToContinueInterceptor {
             //                                    HttpServletResponse response,
             //                                    HttpMessageContext httpMessageContext) throws AuthenticationException {
             if (mpp != null) {
-                result = ic.proceed();
                 Object[] params = ic.getParameters();
                 HttpServletRequest req = (HttpServletRequest) params[0];
                 HttpServletResponse res = (HttpServletResponse) params[1];
                 HttpMessageContext hmc = (HttpMessageContext) params[2];
-                if (!isNewAuth(hmc)) {
-                    Class hamClass = getClass(ic);
-                    if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
-                        // need to redirect.
-                        result = gotoLoginPage(mpp.getAuthMechProperties(hamClass), req, res, hmc);
-                    } else if (result.equals(AuthenticationStatus.SUCCESS)) {
-                        boolean isCustomForm = isCustomForm(hamClass);
-                        // redirect to the original url.
-                        postLoginProcess(req, res, isCustomForm);
-                    } else if (result.equals(AuthenticationStatus.SEND_FAILURE)) {
-                        if (isCustomForm(hamClass)) {
-                            rediectErrorPage(mpp.getAuthMechProperties(hamClass), req, res);
+                if (isNewAuth(hmc)) {
+                    // processCallerInitialtedAuthentication.
+                    return ic.proceed();
+                } else {
+                    // processContainerInitiatedAuthentication.
+                    if (isJSecurityCheck(req) || existCredential(hmc)) {
+                        //OnLoginPostback for form login or custom form login.
+                        result = ic.proceed();
+                        if (AuthenticationStatus.SUCCESS.equals(result)) {
+                            // redirect to the original url.
+                            postLoginProcess(req, res);
+                        } else if (AuthenticationStatus.SEND_FAILURE.equals(result)) {
+                            rediectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, res);
                         }
+                        return result;
+                    } else if (existsSessionCookie(hmc, req)) {
+                        if (existsCookie(req, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME)) {
+                            // OnOriginalURLAfterAuthenticate.
+                            // remove WasReqUrl cookie and return with success.
+                            removeWasReqUrlCookie(req, res);
+                            return AuthenticationStatus.SUCCESS;
+                        } else if (!isCustomHAM && getWebAppSecurityConfig().isJaspicSessionEnabled()) {
+                            // if jaspicSession is enabled and the container provided HAM is used,
+                            // return with success
+                            return AuthenticationStatus.SUCCESS;
+                        } 
+                    }
+                    if (isInitialProtectedUrl(hmc)) {
+                        // need to redirect.
+                        return gotoLoginPage(mpp.getAuthMechProperties(getClass(ic)), req, res, hmc);
                     }
                 }
+                return ic.proceed();
             } else {
                 Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_DOES_NOT_EXIST");
                 result = AuthenticationStatus.SEND_FAILURE;
@@ -137,6 +158,49 @@ public class LoginToContinueInterceptor {
         }
         return result;
     }
+
+    private boolean isJSecurityCheck(HttpServletRequest req) {
+        if (req.getRequestURI().contains("/j_security_check")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean existCredential(HttpMessageContext hmc) {
+        AuthenticationParameters authParams = hmc.getAuthParameters();
+        if (authParams != null) {
+            Credential cred = authParams.getCredential();
+            if (cred != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isInitialProtectedUrl(HttpMessageContext hmc) {
+        if (hmc.isProtected()) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean existsSessionCookie(HttpMessageContext hmc, HttpServletRequest req) {
+        if (hmc.getRequest().getUserPrincipal() != null) {
+            String cookieName = getWebAppSecurityConfig().getJaspicSessionCookieName();
+            return existsCookie(req, cookieName);
+        }
+        return false;
+   }
+
+    private boolean existsCookie(HttpServletRequest req, String cookieName) {
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            if (CookieHelper.getCookieValues(cookies, cookieName) != null) {
+                return true;
+            }
+        }
+        return false;
+   }
 
     protected AuthenticationStatus gotoLoginPage(Properties props, HttpServletRequest req, HttpServletResponse res, HttpMessageContext httpMessageContext) throws IOException {
         String loginPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE), _loginPage);
@@ -180,7 +244,7 @@ public class LoginToContinueInterceptor {
             }
         } else {
             res.setStatus(HttpServletResponse.SC_FOUND);
-            res.sendRedirect(res.encodeURL(getUrl(req, loginPage, _useGlobalLogin)));
+            res.sendRedirect(res.encodeURL(getUrl(req, loginPage, false)));
         }
         return status;
     }
@@ -271,7 +335,7 @@ public class LoginToContinueInterceptor {
         return WebConfigUtils.getSecurityMetadata();
     }
 
-    protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustomForm) throws IOException, RuntimeException {
+    protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res) throws IOException, RuntimeException {
         String storedReq = null;
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
         ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
@@ -281,17 +345,28 @@ public class LoginToContinueInterceptor {
             ReferrerURLCookieHandler.isReferrerHostValid(PasswordNullifier.nullifyParams(req.getRequestURL().toString()), PasswordNullifier.nullifyParams(storedReq),
                                                          webAppSecConfig.getWASReqURLRedirectDomainNames());
         }
-        if (isCustomForm) {
-            // webcontainer.security code will invalidate the WASReqURL cookie for the regular form login.
-            referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
+        // this is for OnLoginPostback, don't redirect if the current URL is the same as original URL.
+        if (!req.getRequestURL().equals(storedReq)) {
+            res.setHeader("Location", res.encodeURL(storedReq));
+            res.setStatus(HttpServletResponse.SC_FOUND);
+        } else {
+            res.setStatus(HttpServletResponse.SC_OK);
         }
-        res.setHeader("Location", res.encodeURL(storedReq));
-        res.setStatus(HttpServletResponse.SC_FOUND);
+        req.setAttribute(ATTR_DONE_LOGIN_PROCESS, Boolean.TRUE);
     }
 
     protected void rediectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
         String errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), _errorPage);
-        res.sendRedirect(res.encodeURL(getUrl(req, errorPage, _useGlobalLogin)));
+        if (errorPage != null) {
+            res.sendRedirect(res.encodeURL(getUrl(req, errorPage, _useGlobalLogin)));
+        }
+        req.setAttribute(ATTR_DONE_LOGIN_PROCESS, Boolean.TRUE);
+    }
+
+    protected void removeWasReqUrlCookie(HttpServletRequest req, HttpServletResponse res) throws IOException, RuntimeException {
+        WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
+        referrerURLHandler.invalidateReferrerURLCookie(req, res, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME);
     }
 
     /**
@@ -334,13 +409,13 @@ public class LoginToContinueInterceptor {
         }
     }
 
-    private String getUrl(HttpServletRequest req, String uri, boolean useGlobalLogin) {
+    private String getUrl(HttpServletRequest req, String uri, boolean appendContextRoot) {
         StringBuilder builder = new StringBuilder(req.getRequestURL());
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getURL : uri : " + uri, ", requestURL : " + builder + ", useGlobalLogin : " + useGlobalLogin);
+            Tr.debug(tc, "getURL : uri : " + uri, ", requestURL : " + builder + ", appendContextRoot : " + appendContextRoot);
         int hostIndex = builder.indexOf("//");
         int contextIndex = builder.indexOf("/", hostIndex + 2);
-        String contextPath = (useGlobalLogin == true) ? "" : req.getContextPath();
+        String contextPath = (appendContextRoot == true) ? _formLoginContextRoot : req.getContextPath();
         builder.replace(contextIndex, builder.length(), normalizeURL(uri, contextPath));
         return builder.toString();
     }
@@ -385,10 +460,6 @@ public class LoginToContinueInterceptor {
         return ic.getTarget().getClass().getSuperclass();
     }
 
-    protected boolean isCustomForm(Class className) {
-        return CustomFormAuthenticationMechanism.class.equals(className);
-    }
-
     protected boolean isCustomHAM(Class className) {
         return !(CustomFormAuthenticationMechanism.class.equals(className) || FormAuthenticationMechanism.class.equals(className));
     }
@@ -429,9 +500,11 @@ public class LoginToContinueInterceptor {
     protected String getErrorPage() {
         return _errorPage;
     }
+
     protected String getLoginPage() {
         return _loginPage;
     }
+
     protected Boolean getIsForward() {
         return _isForward;
     }
