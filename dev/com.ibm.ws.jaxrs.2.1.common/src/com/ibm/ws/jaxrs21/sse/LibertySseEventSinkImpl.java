@@ -18,6 +18,7 @@ import java.util.concurrent.CompletionStage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.MessageBodyWriter;
@@ -90,7 +91,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     /* (non-Javadoc)
      * @see javax.ws.rs.sse.SseEventSink#send(javax.ws.rs.sse.OutboundSseEvent)
      */
-    @FFDCIgnore({WebApplicationException.class, IOException.class})
+    @FFDCIgnore({WebApplicationException.class, IOException.class, InternalServerErrorException.class})
     @Override
     public CompletionStage<?> send(OutboundSseEvent event) {
         final CompletableFuture<?> future = new CompletableFuture<>();
@@ -121,6 +122,9 @@ public class LibertySseEventSinkImpl implements SseEventSink {
                     response.getOutputStream().flush();
 
                     return CompletableFuture.completedFuture(eventContents);
+                } catch (InternalServerErrorException ex) {
+                    handleException(ex, future, event);
+                    throw new IllegalArgumentException("No suitable message body writer for OutboundSseEvent created with data " + event.getData() + " and mediaType " + event.getMediaType() + ". The data contained within the OutboundSseEvent must match the mediaType."); 
                 } catch (WebApplicationException ex) {
                     handleException(ex, future, event);
                 } catch (IOException ex) {

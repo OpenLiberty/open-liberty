@@ -251,6 +251,43 @@ public class BasicSseResource extends Application {
         new Thread(r).start();
     }
 
+    @GET
+    @Path("/error")
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public void sendErrorEvents(@Context SseEventSink eventSink, @Context Sse sse) {
+        Runnable r = new Runnable() {
+
+            @Override
+            public void run() {
+                try (SseEventSink sink = eventSink) {
+
+                    OutboundSseEvent event = sse.newEventBuilder()
+//                                  .mediaType(MediaType.APPLICATION_XML_TYPE)  Cause a IllegalArgumentException
+                                    .data(JaxbObject.class, JAXB_OBJECTS[0])
+                                    .build();
+                    System.out.println("BasicSseResource.sendErrorEvents() sending: " + JAXB_OBJECTS[0]);
+                    try {
+                        sink.send(event);
+                    } catch (IllegalArgumentException ex) {
+                        System.out.println("BasicSseResource.sendErrorEvents() caught IllegalArgumentException: ");
+                        ex.printStackTrace();
+                    }
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        BasicSseTestServlet.resourceFailures.add("InterrupedException while sleeping in BasicSseResource.sendErrorEvents");
+                        ex.printStackTrace();
+                    }
+
+                }
+                if (!eventSink.isClosed()) {
+                    BasicSseTestServlet.resourceFailures.add("AutoClose in BasicSseResource.sendErrorEvents failed for eventSink");
+                }
+            }
+        };
+        new Thread(r).start();
+    }
+
     @POST
     @Path("/postPort")
     public void postPort(String myPort) {
