@@ -84,27 +84,27 @@ public class KeyValuePairList implements KeyValuePair {
 
     @Override
     public String getStringValue() {
-        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueListPair class");
+        throw new UnsupportedOperationException("Cannot call getStringValue method on KeyValueListPairList class");
     }
 
     @Override
     public int getIntValue() {
-        throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueListPair class");
+        throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueListPairList class");
     }
 
     @Override
     public long getLongValue() {
-        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueListPair class");
+        throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueListPairList class");
     }
 
     @Override
     public float getFloatValue() {
-        throw new UnsupportedOperationException("Cannot call getFloatValue method on KeyValueListPair class");
+        throw new UnsupportedOperationException("Cannot call getFloatValue method on KeyValueListPairList class");
     }
 
     @Override
     public boolean getBooleanValue() {
-        throw new UnsupportedOperationException("Cannot call getFloatValue method on KeyValueListPair class");
+        throw new UnsupportedOperationException("Cannot call getFloatValue method on KeyValueListPairList class");
     }
 
     @Override
