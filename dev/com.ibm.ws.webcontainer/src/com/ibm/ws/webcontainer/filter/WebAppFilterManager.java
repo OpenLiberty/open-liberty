@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.websphere.servlet.event.FilterListenerImpl;
+import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.collaborator.CollaboratorMetaDataImpl;
@@ -1167,11 +1168,18 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 upgrade");
                             // Check if this is an HTTP2 upgrade request
-                            if (httpInboundConnection != null && request instanceof HttpServletRequest) {
+                            if (request instanceof HttpServletRequest) {
                                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 handler");
                                 H2Handler h2Handler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getH2Handler();
                                 if (h2Handler != null) {
+                                    if (request instanceof SRTServletRequest) {
+                                        SRTServletRequest srtReq = (SRTServletRequest) request;
+                                        IRequest iReq = srtReq.getIRequest();
+                                        httpInboundConnection = iReq.getHttpInboundConnection();
+                                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                                    }
+
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                         logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at isH2Request");
                                     if (h2Handler.isH2Request(httpInboundConnection, request)) {
@@ -1193,8 +1201,6 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                             IOException ioe = new IOException("Http2 received internal exception while handling request");
                                             throw ioe;
                                         }
-
-                                        webApp.setUpgraded();
                                     }
                                 }
                             }

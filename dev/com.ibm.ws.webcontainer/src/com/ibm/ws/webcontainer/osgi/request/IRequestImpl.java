@@ -807,4 +807,8 @@ public class IRequestImpl implements IRequestExtended
     // function
     return null;
   }
+  
+  public HttpInboundConnection getHttpInboundConnection() {
+      return this.conn;
+  }
 }

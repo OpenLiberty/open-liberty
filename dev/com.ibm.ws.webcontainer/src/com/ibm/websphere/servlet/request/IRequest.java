@@ -19,6 +19,7 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 
 import com.ibm.websphere.servlet.response.IResponse;
+import com.ibm.wsspi.http.HttpInboundConnection;
 
 /**
  * 
@@ -256,6 +257,11 @@ public interface IRequest {
    public void setShouldClose(boolean b);
    
    public void removeHeader(String headerName);
+   
+   /**
+    * @return HttpInboundConnection for this request
+    */
+   public HttpInboundConnection getHttpInboundConnection();
    
 	public void startAsync();
 	

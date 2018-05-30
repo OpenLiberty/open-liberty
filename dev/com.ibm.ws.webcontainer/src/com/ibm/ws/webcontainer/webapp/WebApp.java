@@ -350,14 +350,6 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     
     private final AnnotatedMethods postConstructMethods = new AnnotatedMethods(ANNOT_TYPE.POST_CONSTRUCT);
     private final AnnotatedMethods preDestroyMethods = new AnnotatedMethods(ANNOT_TYPE.PRE_DESTROY);
-    private boolean upgraded = false;
-    
-    public void setUpgraded() {
-        upgraded = true;
-    }
-    public boolean isUpgraded() {
-        return upgraded;
-    }
     
     private static Object[] OBJ_EMPTY = new Object[] {};
     private static Class<?>[] CLASS_EMPTY = new Class<?>[] {};

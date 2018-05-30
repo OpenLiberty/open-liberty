@@ -25,9 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.servlet.error.ServletErrorReport;
+import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.WsocHandler;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
@@ -161,23 +163,29 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                 // Should this be handled as an h2c upgrade request?
                 if (!handled) {
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "### looking at H2 upgrade");
+                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", " looking at H2 upgrade");
                     }
+                    if (request instanceof SRTServletRequest) {
+                        SRTServletRequest srtReq = (SRTServletRequest)request;
+                        IRequest iReq = srtReq.getIRequest();
+                        httpInboundConnection = iReq.getHttpInboundConnection();
+                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                    }
+
                     if (h2Handler != null && httpInboundConnection != null && request instanceof HttpServletRequest) {
                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                            logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "### looking at isH2Request");
+                            logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "looking at isH2Request");
                         }
                         if (h2Handler.isH2Request(httpInboundConnection, request)) {
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                                logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "### upgrading to H2");
+                                logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "upgrading to H2");
                             }
                             h2Handler.handleRequest(httpInboundConnection, httpRequest, httpResponse);
-                            webapp.setUpgraded();
                             this.httpInboundConnection = null;
                         }
                     }
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "### calling requestProcessor.handleRequest");
+                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "calling requestProcessor.handleRequest");
                     }
                     requestProcessor.handleRequest(request, response);
                 }
