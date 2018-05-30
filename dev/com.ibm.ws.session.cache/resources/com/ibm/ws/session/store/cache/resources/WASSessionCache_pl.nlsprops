@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Niepoprawna sk\u0142adnia identyfikatora URI httpSessionCache. Przyczyna: {0}.
 INCORRECT_URI_SYNTAX.explanation=Sk\u0142adnia podanego identyfikatora URI konfiguracji interfejsu JCache pami\u0119ci podr\u0119cznej httpSessionCache jest niepoprawna.
 INCORRECT_URI_SYNTAX.useraction=Popraw sk\u0142adni\u0119 podanego identyfikatora URI konfiguracji httpSessionCache.
+
+ERROR_REMOVING_SESSION=SESN0301E: Wyst\u0105pi\u0142 wyj\u0105tek podczas usuwania sesji z pami\u0119ci podr\u0119cznej. Wyj\u0105tek: {0}.
+ERROR_REMOVING_SESSION.explanation=Operacja dla pami\u0119ci podr\u0119cznej nie powiod\u0142a si\u0119 ze wzgl\u0119du na okre\u015blony wyj\u0105tek.
+ERROR_REMOVING_SESSION.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek. Konieczna mo\u017ce by\u0107 aktualizacja konfiguracji dostawcy JCache.
+
+PROP_HIT_ERROR=SESN0302E: Wyst\u0105pi\u0142 wyj\u0105tek podczas zapisywania zmian danych aplikacji w pami\u0119ci podr\u0119cznej. Wyj\u0105tek: {0}.
+PROP_HIT_ERROR.explanation=Operacja dla pami\u0119ci podr\u0119cznej nie powiod\u0142a si\u0119 ze wzgl\u0119du na okre\u015blony wyj\u0105tek.
+PROP_HIT_ERROR.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek. Konieczna mo\u017ce by\u0107 aktualizacja konfiguracji dostawcy JCache.
+
+STORE_SESS_ERROR=SESN0303E: Wyst\u0105pi\u0142 wyj\u0105tek podczas zapisywania sesji w pami\u0119ci podr\u0119cznej. Wyj\u0105tek: {0}.
+STORE_SESS_ERROR.explanation=Operacja dla pami\u0119ci podr\u0119cznej nie powiod\u0142a si\u0119 ze wzgl\u0119du na okre\u015blony wyj\u0105tek.
+STORE_SESS_ERROR.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek. Konieczna mo\u017ce by\u0107 aktualizacja konfiguracji dostawcy JCache.
+
+LOAD_VALUE_ERROR=SESN0304E: Wyst\u0105pi\u0142 wyj\u0105tek podczas odczytu z pami\u0119ci podr\u0119cznej obiektu danych aplikacji dla sesji. Wyj\u0105tek: {0}.
+LOAD_VALUE_ERROR.explanation=Operacja dla pami\u0119ci podr\u0119cznej nie powiod\u0142a si\u0119 ze wzgl\u0119du na okre\u015blony wyj\u0105tek.
+LOAD_VALUE_ERROR.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek. Konieczna mo\u017ce by\u0107 aktualizacja konfiguracji dostawcy JCache.
+
+ERROR_CACHE_ACCESS=SESN0305E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania dost\u0119pu do pami\u0119ci podr\u0119cznej. Wyj\u0105tek: {0}.
+ERROR_CACHE_ACCESS.explanation=Operacja dla pami\u0119ci podr\u0119cznej nie powiod\u0142a si\u0119 ze wzgl\u0119du na okre\u015blony wyj\u0105tek.
+ERROR_CACHE_ACCESS.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek. Konieczna mo\u017ce by\u0107 aktualizacja konfiguracji dostawcy JCache.
+
+ERROR_SESSION_INVAL=SESN0306E: Wyst\u0105pi\u0142 wyj\u0105tek podczas uniewa\u017cniania sesji w pami\u0119ci podr\u0119cznej. Wyj\u0105tek: {0}.
+ERROR_SESSION_INVAL.explanation=Operacja dla pami\u0119ci podr\u0119cznej nie powiod\u0142a si\u0119 ze wzgl\u0119du na okre\u015blony wyj\u0105tek.
+ERROR_SESSION_INVAL.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek. Konieczna mo\u017ce by\u0107 aktualizacja konfiguracji dostawcy JCache.
+
+ERROR_SESSION_INIT=SESN0307E: Wyst\u0105pi\u0142 wyj\u0105tek podczas inicjowania pami\u0119ci podr\u0119cznej. Wyj\u0105tek: {0}.
+ERROR_SESSION_INIT.explanation=Operacja dla pami\u0119ci podr\u0119cznej nie powiod\u0142a si\u0119 ze wzgl\u0119du na okre\u015blony wyj\u0105tek.
+ERROR_SESSION_INIT.useraction=Wi\u0119cej informacji zawiera wyj\u0105tek. Konieczna mo\u017ce by\u0107 aktualizacja konfiguracji dostawcy JCache.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: Wykryto niepoprawn\u0105 konfiguracj\u0119 httpSessionCache lub jej brak. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=Sk\u0142adnik sessionCache nie m\u00f3g\u0142 zosta\u0107 w pe\u0142ni zainicjowany z powodu brakuj\u0105cej lub niepoprawnej konfiguracji.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Upewnij si\u0119, \u017ce konfiguracja serwera definiuje element httpSessionCache, kt\u00f3ry zawiera atrybut libraryRef.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: Biblioteka pami\u0119ci podr\u0119cznej sesji {0} jest pusta. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=Sk\u0142adnik sessionCache nie mo\u017ce znale\u017a\u0107 dostawcy JCache do za\u0142adowania.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Upewnij si\u0119, \u017ce biblioteka zawiera dostawc\u0119 JCache i \u017ce wszystkie \u015bcie\u017cki s\u0105 okre\u015blone poprawnie.
+
+INTERNAL_SERVER_ERROR=Wewn\u0119trzny b\u0142\u0105d serwera
+
+SESSION_CACHE_CONFIG_MESSAGE=Upewnij si\u0119, \u017ce konfiguracja serwera zawiera poprawn\u0105 konfiguracj\u0119 httpSessionCache. Zapoznaj si\u0119 z przyk\u0142adow\u0105 konfiguracj\u0105. {0}

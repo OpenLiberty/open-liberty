@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Neplatn\u00e1 syntaxe v identifik\u00e1toru httpSessionCache URI. P\u0159\u00ed\u010dina: {0}.
 INCORRECT_URI_SYNTAX.explanation=Syntaxe ur\u010den\u00e9ho identifik\u00e1toru URI konfigurace httpSessionCache JCache je neplatn\u00e1.
 INCORRECT_URI_SYNTAX.useraction=Opravte syntaxi ur\u010den\u00e9ho identifik\u00e1toru URI konfigurace httpSessionCache.
+
+ERROR_REMOVING_SESSION=SESN0301E: Do\u0161lo k v\u00fdjimce p\u0159i odeb\u00edr\u00e1n\u00ed relace z mezipam\u011bti. V\u00fdjimka je: {0}.
+ERROR_REMOVING_SESSION.explanation=Operace proti mezipam\u011bti se nezda\u0159ila kv\u016fli uveden\u00e9 v\u00fdjimce.
+ERROR_REMOVING_SESSION.useraction=Dal\u0161\u00ed podrobnosti naleznete v textu v\u00fdjimky. Konfigurace poskytovatele JCache m\u016f\u017ee vy\u017eadovat aktualizaci.
+
+PROP_HIT_ERROR=SESN0302E: Do\u0161lo k v\u00fdjimce p\u0159i ukl\u00e1d\u00e1n\u00ed dat aplikace do mezipam\u011bti. V\u00fdjimka je: {0}.
+PROP_HIT_ERROR.explanation=Operace proti mezipam\u011bti se nezda\u0159ila kv\u016fli uveden\u00e9 v\u00fdjimce.
+PROP_HIT_ERROR.useraction=Dal\u0161\u00ed podrobnosti naleznete v textu v\u00fdjimky. Konfigurace poskytovatele JCache m\u016f\u017ee vy\u017eadovat aktualizaci.
+
+STORE_SESS_ERROR=SESN0303E: Do\u0161lo k v\u00fdjimce p\u0159i ukl\u00e1d\u00e1n\u00ed relace do mezipam\u011bti. V\u00fdjimka je: {0}.
+STORE_SESS_ERROR.explanation=Operace proti mezipam\u011bti se nezda\u0159ila kv\u016fli uveden\u00e9 v\u00fdjimce.
+STORE_SESS_ERROR.useraction=Dal\u0161\u00ed podrobnosti naleznete v textu v\u00fdjimky. Konfigurace poskytovatele JCache m\u016f\u017ee vy\u017eadovat aktualizaci.
+
+LOAD_VALUE_ERROR=SESN0304E: Do\u0161lo k v\u00fdjimce p\u0159i \u010dten\u00ed v objektu dat aplikace pro relaci z mezipam\u011bti. V\u00fdjimka je: {0}.
+LOAD_VALUE_ERROR.explanation=Operace proti mezipam\u011bti se nezda\u0159ila kv\u016fli uveden\u00e9 v\u00fdjimce.
+LOAD_VALUE_ERROR.useraction=Dal\u0161\u00ed podrobnosti naleznete v textu v\u00fdjimky. Konfigurace poskytovatele JCache m\u016f\u017ee vy\u017eadovat aktualizaci.
+
+ERROR_CACHE_ACCESS=SESN0305E: Do\u0161lo k v\u00fdjimce p\u0159i pokusu o p\u0159\u00edstup k mezipam\u011bti. V\u00fdjimka je: {0}.
+ERROR_CACHE_ACCESS.explanation=Operace proti mezipam\u011bti se nezda\u0159ila kv\u016fli uveden\u00e9 v\u00fdjimce.
+ERROR_CACHE_ACCESS.useraction=Dal\u0161\u00ed podrobnosti naleznete v textu v\u00fdjimky. Konfigurace poskytovatele JCache m\u016f\u017ee vy\u017eadovat aktualizaci.
+
+ERROR_SESSION_INVAL=SESN0306E: Do\u0161lo k v\u00fdjimce p\u0159i zneplat\u0148ov\u00e1n\u00ed relace v mezipam\u011bti. V\u00fdjimka je: {0}.
+ERROR_SESSION_INVAL.explanation=Operace proti mezipam\u011bti se nezda\u0159ila kv\u016fli uveden\u00e9 v\u00fdjimce.
+ERROR_SESSION_INVAL.useraction=Dal\u0161\u00ed podrobnosti naleznete v textu v\u00fdjimky. Konfigurace poskytovatele JCache m\u016f\u017ee vy\u017eadovat aktualizaci.
+
+ERROR_SESSION_INIT=SESN0307E: Do\u0161lo k v\u00fdjimce p\u0159i inicializaci mezipam\u011bti. V\u00fdjimka je: {0}.
+ERROR_SESSION_INIT.explanation=Operace proti mezipam\u011bti se nezda\u0159ila kv\u016fli uveden\u00e9 v\u00fdjimce.
+ERROR_SESSION_INIT.useraction=Dal\u0161\u00ed podrobnosti naleznete v textu v\u00fdjimky. Konfigurace poskytovatele JCache m\u016f\u017ee vy\u017eadovat aktualizaci.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: Byla zji\u0161t\u011bna neplatn\u00e1 nebo chyb\u011bj\u00edc\u00ed konfigurace httpSessionCache. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=Funkci sessionCache nelze \u00fapln\u011b inicializovat kv\u016fli chyb\u011bj\u00edc\u00ed nebo neplatn\u00e9 konfiguraci.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Ov\u011b\u0159te, \u017ee konfigurace serveru definuje prvek httpSessionCache obsahuj\u00edc\u00ed atribut libraryRef.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: Knihovna mezipam\u011bti relace {0} je pr\u00e1zdn\u00e1. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=Funkce sessionCache nem\u016f\u017ee naj\u00edt poskytovatele JCache, kter\u00fd se m\u00e1 na\u010d\u00edst.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Ov\u011b\u0159te, \u017ee knihovna obsahuje poskytovatele JCache a v\u0161echny cesty jsou spr\u00e1vn\u011b ur\u010deny.
+
+INTERNAL_SERVER_ERROR=Intern\u00ed chyba serveru
+
+SESSION_CACHE_CONFIG_MESSAGE=Ov\u011b\u0159te, \u017ee konfigurace serveru obsahuje platnou konfiguraci httpSessionCache. Viz konfigurace uk\u00e1zky. {0}

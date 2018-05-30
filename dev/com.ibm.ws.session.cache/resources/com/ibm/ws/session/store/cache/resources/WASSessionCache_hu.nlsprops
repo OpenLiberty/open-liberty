@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: \u00c9rv\u00e9nytelen szintaxis a httpSessionCache URI azonos\u00edt\u00f3ban.  Ok: {0}.
 INCORRECT_URI_SYNTAX.explanation=A megadott httpSessionCache JCache konfigur\u00e1ci\u00f3s URI szintaxisa \u00e9rv\u00e9nytelen.
 INCORRECT_URI_SYNTAX.useraction=Jav\u00edtsa a megadott httpSessionCache konfigur\u00e1ci\u00f3s URI szintaxis\u00e1t.
+
+ERROR_REMOVING_SESSION=SESN0301E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy munkamenet elt\u00e1vol\u00edt\u00e1sakor a gyors\u00edt\u00f3t\u00e1rb\u00f3l. A kiv\u00e9tel: {0}.
+ERROR_REMOVING_SESSION.explanation=A gyors\u00edt\u00f3t\u00e1rra ir\u00e1nyul\u00f3 m\u0171velet meghi\u00fasult a megadott kiv\u00e9tel k\u00f6vetkezt\u00e9ben.
+ERROR_REMOVING_SESSION.useraction=Tov\u00e1bbi r\u00e9szleteket a kiv\u00e9tel tartalmaz. A JCache szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja lehet, hogy friss\u00edt\u00e9st ig\u00e9nyel.
+
+PROP_HIT_ERROR=SESN0302E: Kiv\u00e9tel t\u00f6rt\u00e9nt az alkalmaz\u00e1s-adatok m\u00f3dos\u00edt\u00e1s\u00e1nak t\u00e1rol\u00e1sakor a gyors\u00edt\u00f3t\u00e1rban. A kiv\u00e9tel: {0}.
+PROP_HIT_ERROR.explanation=A gyors\u00edt\u00f3t\u00e1rra ir\u00e1nyul\u00f3 m\u0171velet meghi\u00fasult a megadott kiv\u00e9tel k\u00f6vetkezt\u00e9ben.
+PROP_HIT_ERROR.useraction=Tov\u00e1bbi r\u00e9szleteket a kiv\u00e9tel tartalmaz. A JCache szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja lehet, hogy friss\u00edt\u00e9st ig\u00e9nyel.
+
+STORE_SESS_ERROR=SESN0303E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy munkamenet elt\u00e1rol\u00e1sakor a gyors\u00edt\u00f3t\u00e1rban. A kiv\u00e9tel: {0}.
+STORE_SESS_ERROR.explanation=A gyors\u00edt\u00f3t\u00e1rra ir\u00e1nyul\u00f3 m\u0171velet meghi\u00fasult a megadott kiv\u00e9tel k\u00f6vetkezt\u00e9ben.
+STORE_SESS_ERROR.useraction=Tov\u00e1bbi r\u00e9szleteket a kiv\u00e9tel tartalmaz. A JCache szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja lehet, hogy friss\u00edt\u00e9st ig\u00e9nyel.
+
+LOAD_VALUE_ERROR=SESN0304E: Kiv\u00e9tel t\u00f6rt\u00e9nt, mikor a rendszer beolvasta egy, a munkamenet alkalmaz\u00e1sadatait tartalmaz\u00f3 objektumot a gyors\u00edt\u00f3t\u00e1rb\u00f3l. A kiv\u00e9tel: {0}.
+LOAD_VALUE_ERROR.explanation=A gyors\u00edt\u00f3t\u00e1rra ir\u00e1nyul\u00f3 m\u0171velet meghi\u00fasult a megadott kiv\u00e9tel k\u00f6vetkezt\u00e9ben.
+LOAD_VALUE_ERROR.useraction=Tov\u00e1bbi r\u00e9szleteket a kiv\u00e9tel tartalmaz. A JCache szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja lehet, hogy friss\u00edt\u00e9st ig\u00e9nyel.
+
+ERROR_CACHE_ACCESS=SESN0305E: Kiv\u00e9tel t\u00f6rt\u00e9nt a gyors\u00edt\u00f3t\u00e1r el\u00e9r\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n. A kiv\u00e9tel: {0}.
+ERROR_CACHE_ACCESS.explanation=A gyors\u00edt\u00f3t\u00e1rra ir\u00e1nyul\u00f3 m\u0171velet meghi\u00fasult a megadott kiv\u00e9tel k\u00f6vetkezt\u00e9ben.
+ERROR_CACHE_ACCESS.useraction=Tov\u00e1bbi r\u00e9szleteket a kiv\u00e9tel tartalmaz. A JCache szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja lehet, hogy friss\u00edt\u00e9st ig\u00e9nyel.
+
+ERROR_SESSION_INVAL=SESN0306E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy munkamenet \u00e9rv\u00e9nytelen\u00edt\u00e9sekor a gyors\u00edt\u00f3t\u00e1rban. A kiv\u00e9tel: {0}.
+ERROR_SESSION_INVAL.explanation=A gyors\u00edt\u00f3t\u00e1rra ir\u00e1nyul\u00f3 m\u0171velet meghi\u00fasult a megadott kiv\u00e9tel k\u00f6vetkezt\u00e9ben.
+ERROR_SESSION_INVAL.useraction=Tov\u00e1bbi r\u00e9szleteket a kiv\u00e9tel tartalmaz. A JCache szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja lehet, hogy friss\u00edt\u00e9st ig\u00e9nyel.
+
+ERROR_SESSION_INIT=SESN0307E: Kiv\u00e9tel t\u00f6rt\u00e9nt a gyors\u00edt\u00f3t\u00e1r inicializ\u00e1l\u00e1sakor. A kiv\u00e9tel: {0}.
+ERROR_SESSION_INIT.explanation=A gyors\u00edt\u00f3t\u00e1rra ir\u00e1nyul\u00f3 m\u0171velet meghi\u00fasult a megadott kiv\u00e9tel k\u00f6vetkezt\u00e9ben.
+ERROR_SESSION_INIT.useraction=Tov\u00e1bbi r\u00e9szleteket a kiv\u00e9tel tartalmaz. A JCache szolg\u00e1ltat\u00f3 konfigur\u00e1ci\u00f3ja lehet, hogy friss\u00edt\u00e9st ig\u00e9nyel.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: \u00c9rv\u00e9nytelen vagy hi\u00e1nyz\u00f3 httpSessionCache konfigur\u00e1ci\u00f3t \u00e9szlelt a rendszer. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=A sessionCache szolg\u00e1ltat\u00e1s nem tudott teljes m\u00e9rt\u00e9kben inicializ\u00e1l\u00f3dni egy hi\u00e1nyz\u00f3 vagy \u00e9rv\u00e9nytelen konfigur\u00e1ci\u00f3 miatt.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 megad-e egy libraryRef attrib\u00fatumot tartalmaz\u00f3 httpSessionCache elemet.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: A(z) {0} munkamenet gyors\u00edt\u00f3t\u00e1r k\u00f6nyvt\u00e1r \u00fcres. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=A sessionCache szolg\u00e1ltat\u00e1s nem tal\u00e1lt bet\u00f6ltend\u0151 JCache szolg\u00e1ltat\u00f3t.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Ellen\u0151rizze, hogy a k\u00f6nyvt\u00e1r tartalmaz-e JCache szolg\u00e1ltat\u00f3t, \u00e9s hogy az \u00f6sszes \u00fatvonal helyesen van-e meghat\u00e1rozva.
+
+INTERNAL_SERVER_ERROR=Bels\u0151 kiszolg\u00e1l\u00f3hiba
+
+SESSION_CACHE_CONFIG_MESSAGE=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmaz-e \u00e9rv\u00e9nyes httpSessionCache konfigur\u00e1ci\u00f3t. Tekintse meg a minta konfigur\u00e1ci\u00f3t. {0}

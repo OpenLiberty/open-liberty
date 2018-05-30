@@ -35,17 +35,17 @@ warning.could.not.thin.application=CWWKC0251W: Aplikaci {0} nelze p\u0159ev\u00e
 warning.could.not.thin.application.explanation=Aplikaci se nepoda\u0159ilo p\u0159ev\u00e9st na tenkou aplikaci. Aplikace bude pokra\u010dovat v b\u011bhu z p\u016fvodn\u00edho souboru JAR. 
 warning.could.not.thin.application.useraction=Pokuste se vy\u0159e\u0161it probl\u00e9m popsan\u00fd v zpr\u00e1v\u011b v\u00fdjimky a restartujte server nebo aktualizujte aplikaci. 
 
-error.need.springboot.version.15=CWWKC0252E: Aplikaci se nepoda\u0159ilo spustit, proto\u017ee v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-1.5.
-error.need.springboot.version.15.explanation=Aplikace vy\u017eaduje verzi Spring Boot 1.5, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
-error.need.springboot.version.15.useraction=V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-1.5.
+error.need.springboot.version.15=CWWKC0252E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee funkce springBoot-2.0 je nakonfigurov\u00e1na v souboru server.xml. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-1.5.
+error.need.springboot.version.15.explanation=Aplikace vy\u017eaduje funkci springBoot-1.5. Zkontrolujte verzi funkce Spring Boot, kter\u00e1 je aktu\u00e1ln\u011b nakonfigurov\u00e1na v souboru server.xml. 
+error.need.springboot.version.15.useraction=Nakonfigurujte funkci springBoot-1.5 v souboru server.xml. Odeberte v\u0161echny ostatn\u00ed funkce Spring Boot.
 
-error.need.springboot.version.20=CWWKC0253E: Aplikaci se nepoda\u0159ilo spustit, proto\u017ee v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-2.0.
-error.need.springboot.version.20.explanation=Aplikace vy\u017eaduje verzi Spring Boot 2.0, ale v souboru server.xml je nakonfigurov\u00e1na chybn\u00e1 verze funkce Spring Boot. 
-error.need.springboot.version.20.useraction=V souboru server.xml mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-2.0.
+error.need.springboot.version.20=CWWKC0253E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee funkce springBoot-1.5 je nakonfigurov\u00e1na v souboru server.xml. Aplikace vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce springBoot-2.0.
+error.need.springboot.version.20.explanation=Aplikace vy\u017eaduje funkci springBoot-2.0. Zkontrolujte verzi funkce Spring Boot, kter\u00e1 je aktu\u00e1ln\u011b nakonfigurov\u00e1na v souboru server.xml. 
+error.need.springboot.version.20.useraction=Nakonfigurujte funkci springBoot-2.0 v souboru server.xml. Odeberte v\u0161echny ostatn\u00ed funkce Spring Boot.
 
-error.missing.servlet=CWWKC0254E: Nelze spustit aplikaci, proto\u017ee vy\u017eaduje funkci servletu, kter\u00fd m\u00e1 b\u00fdt nakonfigurov\u00e1n v souboru server.xml.
+error.missing.servlet=CWWKC0254E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce servletu v souboru server.xml.
 error.missing.servlet.explanation=Aplikace je webov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce servletu v souboru server.xml.
-error.missing.servlet.useraction=Funkce servletu vy\u017eaduje konfiguraci v souboru server.xml.
+error.missing.servlet.useraction=Nakonfigurujte funkci servletu v souboru server.xml.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Aplikaci Spring Boot {0} nelze spustit, proto\u017ee aplikace {1} je ji\u017e aktivn\u00ed. Ve stejn\u00e9 konfiguraci serveru nelze konfigurovat v\u00edce aplikac\u00ed Spring Boot.
 error.multiple.applications.not.allowed.explanation=Konfigurace v\u00edce aplikac\u00ed Spring Boot ve stejn\u00e9 konfiguraci serveru nen\u00ed podporov\u00e1na.
@@ -58,3 +58,11 @@ error.no.manifest.found.useraction=Nakonfigurujte platnou aplikaci Spring Boot, 
 error.no.spring.class.found=CWWKC0257E: Soubor META-INF/MANIFEST.MF aplikace Spring Boot mus\u00ed ur\u010dovat z\u00e1hlav\u00ed Start-Class.
 error.no.spring.class.found.explanation=Aplikace Spring Boot mus\u00ed obsahovat hlav\u00ed t\u0159\u00eddu ur\u010denou z\u00e1hlav\u00edm souboru typu manifest Start-Class.
 error.no.spring.class.found.useraction=Nakonfigurujte platnou aplikaci Spring Boot, kter\u00e1 obsahuje z\u00e1hlav\u00ed souboru typu manifest Start-Class, se serverem.
+
+error.missing.ssl=CWWKC0258E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce SSL v souboru server.xml.
+error.missing.ssl.explanation=Aplikace je zabezpe\u010den\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce SSL v souboru server.xml.
+error.missing.ssl.useraction=Nakonfigurujte funkci transportSecurity-1.0 v souboru server.xml.
+
+error.missing.websocket=CWWKC0259E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce websocket v souboru server.xml.
+error.missing.websocket.explanation=Aplikace je webov\u00e1 soketov\u00e1 aplikace a vy\u017eaduje nakonfigurov\u00e1n\u00ed funkce websocket v souboru server.xml.
+error.missing.websocket.useraction=Nakonfigurujte funkci websocket v souboru server.xml.
