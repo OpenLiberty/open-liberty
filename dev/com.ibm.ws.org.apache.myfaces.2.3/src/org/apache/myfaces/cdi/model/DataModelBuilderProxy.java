@@ -20,7 +20,6 @@
 package org.apache.myfaces.cdi.model;
 
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import org.apache.myfaces.cdi.util.CDIUtils;
@@ -34,7 +33,7 @@ public class DataModelBuilderProxy extends DataModelBuilder
     @Override
     public DataModel createDataModel(FacesContext facesContext, Class<?> forClass, Object value)
     {
-        BeanManager beanManager = CDI.current().getBeanManager();
+        BeanManager beanManager = CDIUtils.getBeanManager(facesContext.getExternalContext());
         FacesDataModelClassBeanHolder holder = CDIUtils.lookup(beanManager, FacesDataModelClassBeanHolder.class);
         return holder.createDataModel(facesContext, forClass, value);
     }
