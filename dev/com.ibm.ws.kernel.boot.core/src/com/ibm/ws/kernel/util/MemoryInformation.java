@@ -60,10 +60,20 @@ public class MemoryInformation {
 
         long result = -1;
 
-        // First we try the JDK since it's probably most efficient, unless
-        // it's Linux, because if we're in a container, memory may be
-        // restricted with cgroups, so we'll check Linux more directly.
-        if (OperatingSystem.instance().getOperatingSystemType() != OperatingSystemType.Linux) {
+        // First we try the JDK since it's probably most efficient.
+        // The exception is that if it's a Linux container with a
+        // non-infinite cgroup memory restriction, then we'll
+        // want to use that rather than the total OS memory.
+        if (OperatingSystem.instance().getOperatingSystemType() == OperatingSystemType.Linux &&
+            FileSystem.fileExists("/sys/fs/cgroup/memory/memory.limit_in_bytes")) {
+            try {
+                result = getTotalMemoryLinuxContainer();
+            } catch (IOException e) {
+                // Fallback to the JDK
+            }
+        }
+
+        if (result == -1) {
             try {
                 result = getTotalMemoryJDK();
             } catch (MemoryInformationException e) {
