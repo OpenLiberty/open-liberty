@@ -2783,7 +2783,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     logger.fine("Next chained JobInstanceEntityV3 persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                     if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")) &&
                         causeMsg != null &&
-                        causeMsg.contains("GROUPASSOCIATION")) {
+                        causeMsg.contains("GROUPASSOCIATION") || causeMsg.contains("GROUPNAMES")) {
                         // The GROUPASSOCIATION support isn't there.
                         logger.fine("The GROUPASSOCIATION table does not exist, job instance table version = 2");
                         instanceVersion = 2;
