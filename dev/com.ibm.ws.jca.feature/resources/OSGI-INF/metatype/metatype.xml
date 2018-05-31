@@ -127,7 +127,7 @@
   <Object ocdref="com.ibm.ws.jca.resourceAdapter" />
  </Designate>
 
- <OCD id="com.ibm.ws.jca.resourceAdapter" ibm:alias="resourceAdapter" ibm:any="1" ibm:extends="com.ibm.ws.jca.resourceAdapter.supertype" ibm:supportHiddenExtensions="true" name="%resourceAdapter" description="%resourceAdapter.desc" ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, com.ibm.ws.javaee.dd.appbnd, suppressUncoveredHttpMethodWarning" ibm:action="generateSchema">
+ <OCD id="com.ibm.ws.jca.resourceAdapter" ibm:alias="resourceAdapter" ibm:any="1" ibm:extends="com.ibm.ws.jca.resourceAdapter.supertype" ibm:supportHiddenExtensions="true" name="%resourceAdapter" description="%resourceAdapter.desc" ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, com.ibm.ws.javaee.dd.appbnd" ibm:action="generateSchema">
   <AD id="location" name="%location" description="%location.desc" type="String" required="true" ibm:type="location"/>
   <AD id="autoStart"                          type="Boolean" required="false" name="%autoStart" description="%autoStart.desc"/>
   <AD id="contextServiceRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.context.service" cardinality="1" name="internal" description="internal use only"/>

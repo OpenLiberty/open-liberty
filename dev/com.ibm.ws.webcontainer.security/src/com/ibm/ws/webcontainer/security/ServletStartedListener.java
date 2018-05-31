@@ -182,13 +182,16 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
                         uncoveredMethodsFoundWithoutDenySet = true;
                     }
 
-                    if (isDenyUncoveredHttpMethodsSet) {
-                        if (uncoveredMethodsFoundWithDenySet) {
-                            Tr.info(tc, "UNCOVERED_HTTP_METHODS_FOUND", uriName, webAppConfig.getApplicationName(), listUncoveredMethodsWithDeny);
-                        }
-                    } else {
-                        if (uncoveredMethodsFoundWithoutDenySet) {
-                            Tr.info(tc, "UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED", uriName, webAppConfig.getApplicationName(), listUncoveredMethodsWithoutDeny);
+                    if (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= 31) {
+                        if (isDenyUncoveredHttpMethodsSet) {
+                            if (uncoveredMethodsFoundWithDenySet) {
+                                Tr.info(tc, "UNCOVERED_HTTP_METHODS_FOUND", uriName, webAppConfig.getApplicationName(), listUncoveredMethodsWithDeny);
+                            }
+                        } else {
+                            if (uncoveredMethodsFoundWithoutDenySet) {
+                                Tr.info(tc, "UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED", uriName, webAppConfig.getApplicationName(), listUncoveredMethodsWithoutDeny);
+                            }
+
                         }
 
                     }
