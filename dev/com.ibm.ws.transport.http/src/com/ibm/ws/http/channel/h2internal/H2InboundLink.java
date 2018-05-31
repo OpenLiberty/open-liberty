@@ -12,8 +12,8 @@ package com.ibm.ws.http.channel.h2internal;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -77,6 +77,7 @@ public class H2InboundLink extends HttpInboundLink {
     private final Object OutstandingWriteCountSync = new Object() {};
     private final int closeWaitForWritesWatchDogTimer = 5000;
     private final int closeWaitForReadWatchDogTimer = 5000;
+    private final int STREAM_CLOSE_DELAY = 5000;
 
     // keep track of the highest IDs processed
     private int highestClientStreamId = 0;
@@ -105,7 +106,7 @@ public class H2InboundLink extends HttpInboundLink {
     WsByteBuffer slicedBuffer = null;
 
     ConcurrentHashMap<Integer, H2StreamProcessor> streamTable = new ConcurrentHashMap<Integer, H2StreamProcessor>();
-    Timer streamCloseTimer;
+    ConcurrentLinkedQueue<H2StreamProcessor> closedStreams = new ConcurrentLinkedQueue<H2StreamProcessor>();
 
     HttpInboundLink initialHttpInboundLink = null;
     VirtualConnection initialVC = null;
@@ -290,7 +291,6 @@ public class H2InboundLink extends HttpInboundLink {
         // create the initial stream processor, add it to the link stream table, and add it to the write queue
         H2StreamProcessor streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.OPEN);
         streamTable.put(streamID, streamProcessor);
-        streamCloseTimer = new Timer();
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
         this.setDeviceLink((ConnectionLink) myTSC);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -346,7 +346,6 @@ public class H2InboundLink extends HttpInboundLink {
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
 
         streamTable.put(streamID, streamProcessor);
-        streamCloseTimer = new Timer();
         highestClientStreamId = streamID;
 
         // add stream 0 to the table, in case we need to write out any control frames prior to initialization completion
@@ -1193,14 +1192,28 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     /**
+     * Removes all streams that are older than STREAM_CLOSE_DELAY from the streamTable
+     *
+     * @param H2StreamProcessor
+     */
+    private void purgeClosedStreams() {
+        long currentTime = System.currentTimeMillis();
+        while (closedStreams.peek() != null &&
+                        currentTime - closedStreams.peek().getCloseTime() > STREAM_CLOSE_DELAY) {
+            streamTable.remove(closedStreams.remove().getId());
+        }
+    }
+
+    /**
      * Remove the stream matching the given ID from the write tree, and decrement the number of open streams.
      *
      * @param int streamID
      */
-    public void closeStream(int streamID) {
-        if (streamID != 0) {
-            writeQ.removeNodeFromQ(streamID);
-            if (streamID % 2 == 0) {
+    public void closeStream(H2StreamProcessor p) {
+        if (p.getId() != 0) {
+            writeQ.removeNodeFromQ(p.getId());
+            this.closedStreams.add(p);
+            if (p.getId() % 2 == 0) {
                 synchronized (pushSync) {
                     this.openPushStreams--;
                 }
@@ -1208,15 +1221,7 @@ public class H2InboundLink extends HttpInboundLink {
                 decrementActiveClientStreams();
             }
         }
-    }
-
-    /**
-     * Set a stream as closed on this link: remove it from the open streams table
-     *
-     * @param H2StreamProcessor
-     */
-    public void closeStreamPostTimeout(H2StreamProcessor streamProcessor) {
-        streamTable.remove(streamProcessor.getId());
+        purgeClosedStreams();
     }
 
     /**
@@ -1264,9 +1269,4 @@ public class H2InboundLink extends HttpInboundLink {
     protected int getconfiguredInactivityTimeout() {
         return configuredInactivityTimeout;
     }
-
-    protected Timer getStreamCloseTimer() {
-        return streamCloseTimer;
-    }
-
 }
