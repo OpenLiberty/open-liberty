@@ -18,13 +18,9 @@
  */
 package org.apache.cxf.jaxrs.client;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseFilter;
@@ -42,17 +38,15 @@ import org.apache.cxf.jaxrs.provider.ProviderFactory;
 import org.apache.cxf.jaxrs.utils.ThreadLocalProxyCopyOnWriteArraySet;
 import org.apache.cxf.message.Message;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 public final class ClientProviderFactory extends ProviderFactory {
-    private static final TraceComponent tc = Tr.register(ClientProviderFactory.class);
-    private List<ProviderInfo<ClientRequestFilter>> clientRequestFilters =
-        new CopyOnWriteArrayList<ProviderInfo<ClientRequestFilter>>();
-    private List<ProviderInfo<ClientResponseFilter>> clientResponseFilters =
-        new CopyOnWriteArrayList<ProviderInfo<ClientResponseFilter>>();
-    private List<ProviderInfo<ResponseExceptionMapper<?>>> responseExceptionMappers =
-        new CopyOnWriteArrayList<ProviderInfo<ResponseExceptionMapper<?>>>();
+    //Liberty code change start
+    private AtomicReferenceProviderList<ClientRequestFilter> clientRequestFilters =
+        new AtomicReferenceProviderList<>();
+    private AtomicReferenceProviderList<ClientResponseFilter> clientResponseFilters =
+        new AtomicReferenceProviderList<>();
+    private AtomicReferenceProviderList<ResponseExceptionMapper<?>> responseExceptionMappers =
+        new AtomicReferenceProviderList<>();
+    //Liberty code change end
 
     private RxInvokerProvider<?> rxInvokerProvider;
 
@@ -84,18 +78,30 @@ public final class ClientProviderFactory extends ProviderFactory {
         List<ProviderInfo<? extends Object>> theProviders = prepareProviders(custom, busGlobal, providers, null);
         super.setCommonProviders(theProviders);
 
+        //Liberty code change start
+        List<ProviderInfo<ClientRequestFilter>> newClientRequestFilters = new ArrayList<>();
+        List<ProviderInfo<ClientResponseFilter>> newClientResponseFilters = new ArrayList<>();
+        List<ProviderInfo<ResponseExceptionMapper<?>>> newResponseExceptionMappers = new ArrayList<>();
+        //Liberty code change end
+
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(getBus(), provider.getProvider());
             if (filterContractSupported(provider, providerCls, ClientRequestFilter.class)) {
-                addProviderToList(clientRequestFilters, provider);
+                //Liberty code change start
+                addProviderToList(newClientRequestFilters, provider);
+                //Liberty code change end
             }
 
             if (filterContractSupported(provider, providerCls, ClientResponseFilter.class)) {
-                addProviderToList(clientResponseFilters, provider);
+                //Liberty code change start
+                addProviderToList(newClientResponseFilters, provider);
+                //Liberty code change end
             }
 
             if (ResponseExceptionMapper.class.isAssignableFrom(providerCls)) {
-                addProviderToList(responseExceptionMappers, provider);
+                //Liberty code change start
+                addProviderToList(newResponseExceptionMappers, provider);
+                //Liberty code change end
             }
 
             if (RxInvokerProvider.class.isAssignableFrom(providerCls)) {
@@ -103,19 +109,30 @@ public final class ClientProviderFactory extends ProviderFactory {
             }
         }
 
-        Collections.sort(clientRequestFilters,
-                         new BindingPriorityComparator(ClientRequestFilter.class, true));
-        Collections.sort(clientResponseFilters,
-                         new BindingPriorityComparator(ClientResponseFilter.class, false));
+        //Liberty code change start
+        if (newClientRequestFilters.size() > 0) {
+            clientRequestFilters.addAndSortProviders(newClientRequestFilters, 
+                       new BindingPriorityComparator<ClientRequestFilter>(ClientRequestFilter.class, true));
+        }
+        if (newClientResponseFilters.size() > 0) {
+            clientResponseFilters.addAndSortProviders(newClientResponseFilters, 
+                       new BindingPriorityComparator<ClientResponseFilter>(ClientResponseFilter.class, false));
+        }
+        if (newResponseExceptionMappers.size() > 0) {
+            responseExceptionMappers.addProviders(newResponseExceptionMappers);
+        }
 
-        injectContextProxies(responseExceptionMappers, clientRequestFilters, clientResponseFilters);
+        injectContextProxies(responseExceptionMappers.get(), clientRequestFilters.get(), clientResponseFilters.get());
+        //Liberty code change start
     }
 
     @SuppressWarnings("unchecked")
     public <T extends Throwable> ResponseExceptionMapper<T> createResponseExceptionMapper(
                                  Message m, Class<?> paramType) {
 
-        return (ResponseExceptionMapper<T>)responseExceptionMappers.stream()
+        //Liberty code change start
+        return (ResponseExceptionMapper<T>)responseExceptionMappers.get().stream()
+        //Liberty code change end
                 .filter(em -> handleMapper(em, paramType, m, ResponseExceptionMapper.class, true))
                 .map(ProviderInfo::getProvider)
                 .sorted(new ProviderFactory.ClassComparator(paramType))
@@ -132,11 +149,15 @@ public final class ClientProviderFactory extends ProviderFactory {
     }
 
     public List<ProviderInfo<ClientRequestFilter>> getClientRequestFilters() {
-        return Collections.unmodifiableList(clientRequestFilters);
+        //Liberty code change start
+        return Collections.unmodifiableList(clientRequestFilters.get());
+        //Liberty code change end
     }
 
     public List<ProviderInfo<ClientResponseFilter>> getClientResponseFilters() {
-        return Collections.unmodifiableList(clientResponseFilters);
+        //Liberty code change start
+        return Collections.unmodifiableList(clientResponseFilters.get());
+        //Liberty code change end
     }
 
     @Override
