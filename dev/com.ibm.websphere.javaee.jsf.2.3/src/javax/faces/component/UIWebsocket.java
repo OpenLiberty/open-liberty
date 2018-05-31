@@ -51,7 +51,7 @@ public class UIWebsocket extends javax.faces.component.UIComponentBase
 
 
 
-    // UIWebSocketGeneration START
+    // Start UIWebsocket getEventNames template
     @Override
     public java.util.Collection<String> getEventNames()
     {
@@ -136,7 +136,7 @@ public class UIWebsocket extends javax.faces.component.UIComponentBase
             }
         };
     }
-    // END UIWebSocket getEventNames template
+    // End UIWebsocket getEventNames template
 
 
     
