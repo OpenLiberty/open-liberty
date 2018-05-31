@@ -94,12 +94,11 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     private String leakDetectionOutput = null;
     private final Object leakDetectionSyncObject = new Object() {};
 
-    protected boolean cleanUpOld = false;
-
     /**
      * Create the one WsByteBufferPool Manager that is to be used.
-     * @param directByteBufferHelper 
-     * 
+     *
+     * @param directByteBufferHelper
+     *
      * @param properties
      * @throws WsBBConfigException
      */
@@ -171,7 +170,6 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
                 }
 
                 if (key.equalsIgnoreCase(CLEAN_UP)) {
-                    cleanUpOld = MetatypeUtils.parseBoolean(CONFIG_ALIAS, CLEAN_UP, value, cleanUpOld);
                     continue;
                 }
 
@@ -180,17 +178,15 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
         } catch (NumberFormatException x) {
             Tr.error(tc, MessageConstants.CONFIG_VALUE_NUMBER_EXCEPTION,
                      new Object[] { key, value });
-            WsBBConfigException e = new WsBBConfigException(
-                            "NumberFormatException processing name: "
-                                            + key + " value: " + value, x);
+            WsBBConfigException e = new WsBBConfigException("NumberFormatException processing name: "
+                                                            + key + " value: " + value, x);
             FFDCFilter.processException(e, getClass().getName(), "102", this);
             throw e;
         }
 
         if (result != VALIDATE_OK) {
             Tr.error(tc, MessageConstants.NOT_VALID_CUSTOM_PROPERTY, new Object[] { key, value });
-            WsBBConfigException e = new WsBBConfigException(
-                            "Property has a value that is not valid, name: " + key + " value: [" + value + "]");
+            WsBBConfigException e = new WsBBConfigException("Property has a value that is not valid, name: " + key + " value: [" + value + "]");
             FFDCFilter.processException(e, getClass().getName(), "103", this);
             throw e;
         }
@@ -202,8 +198,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
                 } catch (IOException x) {
                     Tr.error(tc, MessageConstants.NOT_VALID_CUSTOM_PROPERTY,
                              new Object[] { MEM_LEAK_FILE, leakFile });
-                    WsBBConfigException e = new WsBBConfigException(
-                                    "Error with leak detection file, " + MEM_LEAK_FILE + "=[" + leakFile + "]", x);
+                    WsBBConfigException e = new WsBBConfigException("Error with leak detection file, " + MEM_LEAK_FILE + "=[" + leakFile + "]", x);
                     FFDCFilter.processException(e,
                                                 getClass().getName(), "104", this);
                     throw e;
@@ -211,8 +206,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
             } else {
                 Tr.error(tc, MessageConstants.NOT_VALID_CUSTOM_PROPERTY,
                          new Object[] { MEM_LEAK_FILE, "null" });
-                WsBBConfigException e = new WsBBConfigException(
-                                "Leak interval set without an output file");
+                WsBBConfigException e = new WsBBConfigException("Leak interval set without an output file");
                 FFDCFilter.processException(e, getClass().getName(), "105", this);
                 throw e;
             }
@@ -223,8 +217,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
             initialize(defaultPoolSizes, defaultPoolDepths);
         } else if (sizes.length != depths.length) {
             Tr.error(tc, MessageConstants.POOL_MISMATCH, new Object[] { sizes, depths });
-            WsBBConfigException e = new WsBBConfigException(
-                            "Mismatch in pool sizes (" + sizes.length + ") and depths(" + depths.length + ")");
+            WsBBConfigException e = new WsBBConfigException("Mismatch in pool sizes (" + sizes.length + ") and depths(" + depths.length + ")");
             FFDCFilter.processException(e, getClass().getName(), "106", this);
             throw e;
         } else {
@@ -236,7 +229,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
 
     /**
      * Create a pool manager with the default configuration.
-     * 
+     *
      * @throws WsBBConfigException
      */
     public WsByteBufferPoolManagerImpl(AtomicReference<DirectByteBufferHelper> directByteBufferHelper) throws WsBBConfigException {
@@ -246,7 +239,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     /**
      * This class implements the singleton pattern. This method is provided
      * to return a reference to the single instance of this class in existence.
-     * 
+     *
      * @return WsByteBufferPoolManager
      */
     public static WsByteBufferPoolManager getRef() {
@@ -260,7 +253,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     /**
      * Initialize the pool manager with the number of pools, the entry sizes for each
      * pool, and the maximum depth of the free pool.
-     * 
+     *
      * @param bufferEntrySizes the memory sizes of each entry in the pools
      * @param bufferEntryDepths the maximum number of entries in the free pool
      */
@@ -308,10 +301,8 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
         this.poolSizes = new int[len];
         for (int i = 0; i < len; i++) {
             // make backing pool 10 times larger than local pools
-            this.pools[i] = new WsByteBufferPool(
-                            bSizes[i], bDepths[i], bDepths[i] * 10, tracking, false, cleanUpOld);
-            this.poolsDirect[i] = new WsByteBufferPool(
-                            bSizes[i], bDepths[i], bDepths[i] * 10, tracking, true, cleanUpOld);
+            this.pools[i] = new WsByteBufferPool(bSizes[i], bDepths[i] * 10, tracking, false);
+            this.poolsDirect[i] = new WsByteBufferPool(bSizes[i], bDepths[i] * 10, tracking, true);
             this.poolSizes[i] = bSizes[i];
         }
 
@@ -327,7 +318,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     /**
      * Set the memory leak detection parameters. If the interval is 0 or
      * greater, then the detection code will enabled.
-     * 
+     *
      * @param interval the minimum amount of time between leak detection code
      *            will be ran. Also the minimum amount of time that a buffer can go without
      *            being accessed before it will be flagged as a possible memory leak.
@@ -360,7 +351,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
 
     /**
      * Check whether the buffer leak detection code is enabled or not.
-     * 
+     *
      * @return boolean
      */
     private boolean trackingBuffers() {
@@ -369,7 +360,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
 
     /**
      * Query the interval used for leak detection.
-     * 
+     *
      * @return int
      */
     public int getLeakDetectionInterval() {
@@ -378,7 +369,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
 
     /**
      * Access the sync lock object for the leak detection.
-     * 
+     *
      * @return Object
      */
     public Object getLeakDetectionSyncObject() {
@@ -398,7 +389,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     /**
      * Allocate a buffer which will use tha FileChannel until the buffer needs
      * to be used in a "non-FileChannel" way.
-     * 
+     *
      * @param fc FileChannel to use for this buffer
      * @return FCWsByteBuffer buffer which can now be used.
      */
@@ -413,7 +404,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     /**
      * Allocate a buffer from a buffer pool. Choose the buffer pool which
      * is closest to the desired size, but not less than the desired size.
-     * 
+     *
      * @param entrySize the amount of memory be requested for this allocation
      * @param direct
      * @return WsByteBuffer buffer which can now be used.
@@ -497,7 +488,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
                 pooledWSBB.limit(entrySize);
 
                 if ((TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        || trackingBuffers()) {
+                    || trackingBuffers()) {
 
                     Throwable t = new Throwable();
                     StackTraceElement[] ste = t.getStackTrace();
@@ -551,7 +542,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     /**
      * Allocate the direct ByteBuffer that will be wrapped by the
      * input WsByteBuffer object.
-     * 
+     *
      * @param buffer
      * @param size
      * @param overrideRefCount
@@ -612,19 +603,19 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
 
     /**
      * Release a buffer from being in use.
-     * 
+     *
      * @param buffer
      * @param isDirectPool
      * @param pool
      */
     public void release(PooledWsByteBufferImpl buffer, boolean isDirectPool, WsByteBufferPool pool) {
-        pool.release(buffer, buffer.getID());
+        pool.release(buffer);
     }
 
     /**
      * Method called when a buffer is being destroyed to allow any
      * additional cleanup that might be required.
-     * 
+     *
      * @param buffer
      */
     protected void releasing(ByteBuffer buffer) {
@@ -643,7 +634,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
      * the duplicate() method of the ByteBuffer wrapped by the passed
      * WsByteBuffer
      * 3. Updating variables of the new WsByteBuffer
-     * 
+     *
      * @param buffer to duplicate
      * @return WsByteBuffer duplicated buffer
      */
@@ -685,7 +676,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
         srcBuffer.updateDuplicate(newBuffer);
 
         if ((TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                || (trackingBuffers())) {
+            || (trackingBuffers())) {
 
             Throwable t = new Throwable();
             StackTraceElement[] ste = t.getStackTrace();
@@ -724,7 +715,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
      * WsByteBuffer
      * 3. Updating the control variables of the new WsByteBuffer (such
      * setting the ID to be the same as that of the passed WsByteBuffer)
-     * 
+     *
      * @param buffer to slice
      * @return WsByteBuffer sliced buffer
      */
@@ -766,7 +757,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
         srcBuffer.updateSlice(newBuffer);
 
         if ((TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                || (trackingBuffers())) {
+            || (trackingBuffers())) {
 
             Throwable t = new Throwable();
             StackTraceElement[] ste = t.getStackTrace();
@@ -805,11 +796,11 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
      * out to a file. The name of this file is also configurable. If the
      * force parameter is set, then look for leaks even if less time has
      * elapsed than is specified by the time interval.
-     * 
+     *
      * @param force if this method is to look for leaks without regard to
      *            the last time leaks were looked for, false if leaks are only to be
      *            looked for if a specified (configuable) amount of time has elapsed.
-     * 
+     *
      */
     public void lookForLeaks(boolean force) {
         if (this.leakDetectionInterval < -1) {
@@ -956,7 +947,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
 
     /**
      * Check whether the pool-user trust flag is enabled or not.
-     * 
+     *
      * @return boolean
      */
     protected boolean isTrustedUsers() {
@@ -997,20 +988,5 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
             Tr.exit(tc, methodName, oWsByteBuffer);
         }
         return (oWsByteBuffer);
-    }
-
-    /**
-     * When a thread is being destroyed, this api will trigger each of the
-     * buffer pools to purge their respective threadlocal levels.
-     * 
-     */
-    public void purgeThreadLocals() {
-        for (int i = 0; i < this.poolSizes.length; i++) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Purging the " + this.poolSizes[i] + " sized pools");
-            }
-            this.pools[i].purgeThreadLocal();
-            this.poolsDirect[i].purgeThreadLocal();
-        }
     }
 }
