@@ -258,10 +258,6 @@ public interface IRequest {
    
    public void removeHeader(String headerName);
    
-   /**
-    * @return HttpInboundConnection for this request
-    */
-   public HttpInboundConnection getHttpInboundConnection();
    
 	public void startAsync();
 	

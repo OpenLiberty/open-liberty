@@ -47,6 +47,7 @@ import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.collaborator.CollaboratorMetaDataImpl;
 import com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor;
 import com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor;
+import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.servlet.FileServletWrapper;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
@@ -1175,7 +1176,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                 if (h2Handler != null) {
                                     if (request instanceof SRTServletRequest) {
                                         SRTServletRequest srtReq = (SRTServletRequest) request;
-                                        IRequest iReq = srtReq.getIRequest();
+                                        IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
                                         httpInboundConnection = iReq.getHttpInboundConnection();
                                         logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
                                     }

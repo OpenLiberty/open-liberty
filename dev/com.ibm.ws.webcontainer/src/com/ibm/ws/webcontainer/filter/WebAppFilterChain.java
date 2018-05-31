@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor;
+import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.WsocHandler;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
@@ -167,7 +168,7 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                     }
                     if (request instanceof SRTServletRequest) {
                         SRTServletRequest srtReq = (SRTServletRequest)request;
-                        IRequest iReq = srtReq.getIRequest();
+                        IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
                         httpInboundConnection = iReq.getHttpInboundConnection();
                         logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
                     }
