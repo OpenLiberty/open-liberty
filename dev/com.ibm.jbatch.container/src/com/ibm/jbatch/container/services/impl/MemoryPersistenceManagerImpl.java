@@ -385,8 +385,8 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     }
 
     @Override
-    public JobExecution updateJobExecutionAndInstanceNotSetToServerYet(long jobExecutionId,
-                                                                       Date lastUpdatedTime) throws NoSuchJobExecutionException, ExecutionAssignedToServerException {
+    public JobExecution updateJobExecutionAndInstanceOnStopBeforeServerAssigned(long jobExecutionId,
+                                                                                Date lastUpdatedTime) throws NoSuchJobExecutionException, ExecutionAssignedToServerException {
         JobExecutionEntity exec = getJobExecution(jobExecutionId);
         if (exec.getServerId().equals("")) {
 
