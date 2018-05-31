@@ -157,8 +157,8 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
             if (logger.isLoggable(Level.FINER)) {
                 logger.finer("Do nothing, instance = " + instanceId + " is already in final state: " + currentState);
             }
-        } else if (currentState == InstanceState.JMS_CONSUMED) { 
-            // we want to allow re-processing the same message after a rollback 
+        } else if (currentState == InstanceState.JMS_CONSUMED) {
+            // we want to allow re-processing the same message after a rollback
             if (logger.isLoggable(Level.FINER)) {
                 logger.finer("Ignore, instance = " + instanceId + " already in JMS_CONSUMED state");
             }
@@ -175,7 +175,6 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
 
         return retVal;
     }
-
 
     @Override
     public JobInstanceEntity updateJobInstanceStateOnQueued(long instanceId) throws BatchIllegalJobStatusTransitionException {
@@ -371,12 +370,15 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
         return null;
     }
 
-    /*
+    /**
      * TODO - The 'verify' methods that follow are a basic ground work to guard against the invalid transition of job Batch Status / instance State.
      * For now we are only disallowing updates once batch status or instance state are marked 'COMPLETED'/'ABANDONED'.
-     * These checks could potentially be improved.
-     * E.g. Should an job execution status ever transition from FAILED (except maybe to ABANDONED)?
-     * In contrast a job instance needs to transition out of FAILED status during a RESTART.
+     * <p>These checks could potentially be improved. E.g. <p><ul>
+     * <li>Should an job execution status ever transition from FAILED (except maybe to ABANDONED)?
+     * <li>In contrast a job instance needs to transition out of FAILED status during a RESTART.
+     * </ul><p>
+     * A limitation of this approach is that we're not leveraging DB locking like we do in the DB-based persistence. This is likely to end up
+     * providing just one more check rather than being continually developed as the basis of our status transition validation.
      */
     protected void verifyStatusTransitionIsValid(JobExecutionEntity exec, BatchStatus toStatus) throws BatchIllegalJobStatusTransitionException {
 
@@ -400,6 +402,13 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
 
     }
 
+    /**
+     * See description of: {@link AbstractPersistenceManager#verifyStatusTransitionIsValid(JobExecutionEntity, BatchStatus)
+     *
+     * @param instance
+     * @param toStatus
+     * @throws BatchIllegalJobStatusTransitionException
+     */
     protected void verifyStatusTransitionIsValid(JobInstanceEntity instance, BatchStatus toStatus) throws BatchIllegalJobStatusTransitionException {
 
         switch (instance.getBatchStatus()) {
@@ -422,6 +431,14 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
 
     }
 
+    /**
+     *
+     * See description of: {@link AbstractPersistenceManager#verifyStatusTransitionIsValid(JobExecutionEntity, BatchStatus)
+     *
+     * @param stepExec
+     * @param toStatus
+     * @throws BatchIllegalJobStatusTransitionException
+     */
     protected void verifyThreadStatusTransitionIsValid(StepThreadExecutionEntity stepExec, BatchStatus toStatus) throws BatchIllegalJobStatusTransitionException {
 
         switch (stepExec.getBatchStatus()) {
@@ -444,6 +461,14 @@ public abstract class AbstractPersistenceManager implements IPersistenceManagerS
 
     }
 
+    /**
+     *
+     * See description of: {@link AbstractPersistenceManager#verifyStatusTransitionIsValid(JobExecutionEntity, BatchStatus)
+     *
+     * @param jobInstance
+     * @param toState
+     * @throws BatchIllegalJobStatusTransitionException
+     */
     protected void verifyStateTransitionIsValid(JobInstanceEntity jobInstance, InstanceState toState) throws BatchIllegalJobStatusTransitionException {
 
         switch (jobInstance.getInstanceState()) {

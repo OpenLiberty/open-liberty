@@ -353,10 +353,17 @@ public class WSJobRepositoryImpl implements WSJobRepository {
         return (WSJobExecution) persistenceManagerService.updateJobExecutionAndInstanceOnStatusChange(jobExecutionId, status, date);
     }
 
+    // DELETE ME - rename to better name
     @Override
     public WSJobExecution updateJobExecutionAndInstanceNotSetToServerYet(
                                                                          long jobExecutionId, Date date) throws ExecutionAssignedToServerException {
-        return (WSJobExecution) persistenceManagerService.updateJobExecutionAndInstanceNotSetToServerYet(jobExecutionId, date);
+        return updateJobExecutionAndInstanceOnStopBeforeServerAssigned(jobExecutionId, date);
+    }
+
+    @Override
+    public WSJobExecution updateJobExecutionAndInstanceOnStopBeforeServerAssigned(
+                                                                                  long jobExecutionId, Date date) throws ExecutionAssignedToServerException {
+        return (WSJobExecution) persistenceManagerService.updateJobExecutionAndInstanceOnStopBeforeServerAssigned(jobExecutionId, date);
     }
 
     @Override

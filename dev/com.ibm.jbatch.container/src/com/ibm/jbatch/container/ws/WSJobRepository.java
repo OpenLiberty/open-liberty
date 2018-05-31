@@ -200,6 +200,9 @@ public interface WSJobRepository {
     public abstract WSJobInstance updateJobInstanceAndExecutionWithInstanceStateAndBatchStatus(long instanceId, long executionId, final InstanceState state,
                                                                                                final BatchStatus batchStatus);
 
+    // DELETE once no longer used
+    WSJobExecution updateJobExecutionAndInstanceNotSetToServerYet(long jobExecutionId, Date date) throws ExecutionAssignedToServerException;
+
     /**
      * Update the batch status of this job execution and instance
      *
@@ -208,7 +211,7 @@ public interface WSJobRepository {
      * @return
      * @throws ExecutionAssignedToServerException
      */
-    WSJobExecution updateJobExecutionAndInstanceNotSetToServerYet(long jobExecutionId, Date date) throws ExecutionAssignedToServerException;
+    WSJobExecution updateJobExecutionAndInstanceOnStopBeforeServerAssigned(long jobExecutionId, Date date) throws ExecutionAssignedToServerException;
 
     /**
      * Update the batch status of this job execution and instance

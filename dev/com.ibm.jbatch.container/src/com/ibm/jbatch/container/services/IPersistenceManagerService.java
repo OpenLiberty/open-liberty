@@ -243,7 +243,8 @@ public interface IPersistenceManagerService extends IBatchServiceBase {
      * @throws NoSuchJobExecutionException if the job execution is not located by the find query
      * @throws ExecutionAssignedToServerException if the execution has been assigned to a server/endpoint (serverid set)
      */
-    JobExecution updateJobExecutionAndInstanceNotSetToServerYet(long jobExecutionId, Date updateTime) throws NoSuchJobExecutionException, ExecutionAssignedToServerException;
+    JobExecution updateJobExecutionAndInstanceOnStopBeforeServerAssigned(long jobExecutionId,
+                                                                         Date updateTime) throws NoSuchJobExecutionException, ExecutionAssignedToServerException;
 
     public JobExecution updateJobExecutionAndInstanceOnEnd(long jobExecutionId, BatchStatus finalBatchStatus, String finalExitStatus,
                                                            Date endTime) throws NoSuchJobExecutionException;
