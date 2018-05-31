@@ -83,12 +83,6 @@ public interface WebSphereCDIDeployment extends CDI11Deployment {
     public WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClass(Class<?> clazz);
 
     /**
-     *
-     * @return
-     */
-    public Application getApplication();
-
-    /**
      * Get all BDAs relating only to this application. i.e. not Shared Libs or internal Runtime Extensions
      *
      * @return all application BDAs

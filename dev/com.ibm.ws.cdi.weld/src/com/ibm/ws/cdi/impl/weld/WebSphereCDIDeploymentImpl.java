@@ -174,11 +174,6 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         return deploymentDBAs.get(archiveID);
     }
 
-    @Override
-    public Application getApplication() {
-        return application;
-    }
-
     /**
      * Get all BDAs relating only to this application. i.e. not Shared Libs or internal Runtime Extensions
      *
