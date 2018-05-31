@@ -10,6 +10,8 @@
  -->
 <server>
 
+    <sslDefault sslRef="defaultSSLConfig" />
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultKeyStore" />
     <keyStore id="defaultKeyStore" password="Liberty" />
 
 </server>
