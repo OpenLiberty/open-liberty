@@ -55,8 +55,6 @@ import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIException;
-import com.ibm.ws.cdi.impl.weld.injection.EEValidationUtils;
-import com.ibm.ws.cdi.impl.weld.injection.WebSphereInjectionServicesImpl;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
@@ -138,8 +136,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final CDIArchive archive;
     private ModuleType eeModuleType = null;
 
-    private final EEValidationUtils eeValidationUtils;
-
     //package visibility only ... use factory
     BeanDeploymentArchiveImpl(WebSphereCDIDeployment cdiDeployment,
                               String archiveID,
@@ -186,11 +182,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         }
 
         WebSphereInjectionServices injectionServices = cdiDeployment.getInjectionServices();
-        eeValidationUtils = new EEValidationUtils(injectionServices, cdiRuntime, cdiDeployment, archive, classloader);
-        if (injectionServices instanceof WebSphereInjectionServicesImpl) {
-            ((WebSphereInjectionServicesImpl) injectionServices).setEEValidationUtils(eeValidationUtils);
-        }
-
         EEModuleDescriptor eeModuleDescriptor = new EEModuleDescriptorImpl(this.eeModuleDescptorId, getWeldModuleType());
         this.weldServiceRegistry.add(InjectionServices.class, injectionServices);
         this.weldServiceRegistry.add(ResourceLoader.class, this.resourceLoader);

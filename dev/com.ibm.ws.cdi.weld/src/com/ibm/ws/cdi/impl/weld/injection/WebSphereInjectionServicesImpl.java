@@ -11,8 +11,6 @@
 package com.ibm.ws.cdi.impl.weld.injection;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -26,13 +24,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
@@ -44,7 +40,9 @@ import org.jboss.weld.injection.spi.InjectionServices;
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionTargetListener;
 import com.ibm.wsspi.injectionengine.InjectionException;
@@ -88,11 +86,14 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
 
     private final Map<Object, WebSphereInjectionTargetListener<?>> injectionTargetListeners = new ConcurrentHashMap<>();
 
-    private EEValidationUtils eeValidationUtils;
+    private final WebSphereCDIDeployment deployment;
 
-    public void setEEValidationUtils(EEValidationUtils eeValidationUtils) {
-        this.eeValidationUtils = eeValidationUtils;
-    } 
+    /**
+     * @param webSphereCDIDeployment
+     */
+    public WebSphereInjectionServicesImpl(WebSphereCDIDeployment webSphereCDIDeployment) {
+        this.deployment = webSphereCDIDeployment;
+    }
 
     public void addReferenceContext(ReferenceContext referenceContext) {
         referenceContexts.add(referenceContext);
@@ -205,7 +206,7 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         return getInjectionTargets(clazz, null);
     }
 
-    InjectionTarget[] getInjectionTargets(Class<?> clazz, Object toInject) throws InjectionException {
+    private InjectionTarget[] getInjectionTargets(Class<?> clazz, Object toInject) throws InjectionException {
         // clazz is the class that may receive the injection.
         // mod   is the app stuff that may give injections.
 
@@ -307,46 +308,40 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
      */
     @Override
     public <T> void registerInjectionTarget(javax.enterprise.inject.spi.InjectionTarget<T> injectionTarget, AnnotatedType<T> annotatedType) {
+        Class<?> declaringClass = annotatedType.getJavaClass();
+        CDIArchive cdiArchive = deployment.getBeanDeploymentArchiveFromClass(declaringClass).getArchive();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Injection Target Annotations: " + annotatedType.getAnnotations());
         }
-        //We don't need to worry about constructors because constructors cannot be a producer. 
+        //We don't need to worry about constructors because constructors cannot be a producer.
         for (Annotated annotated : annotatedType.getFields()) {
-            validateAnnotatedMember(annotated, annotatedType.getJavaClass());
+            validateAnnotatedMember(annotated, annotatedType.getJavaClass(), cdiArchive);
         }
-        for (Annotated annotated : annotatedType.getMethods()) {
-            List<AnnotatedParameter<?>> parameters = ((AnnotatedMethod) annotated).getParameters();
-            for (AnnotatedParameter<?> injectedParamater : parameters){
-                validateAnnotatedMember(annotated, annotatedType.getJavaClass());
-            }
+        for (AnnotatedMethod<?> annotatedMethod : annotatedType.getMethods()) {
+            validateAnnotatedMethod(annotatedMethod, declaringClass, cdiArchive);
         }
     }
 
-    private void validateAnnotatedMember(Annotated annotated, Class<?> declaringClass) {
+    private <T> void validateAnnotatedMethod(AnnotatedMethod<T> annotatedMethod, Class<?> declaringClass, CDIArchive cdiArchive) {
+        List<AnnotatedParameter<T>> parameters = annotatedMethod.getParameters();
+        for (AnnotatedParameter<?> injectedParameter : parameters) {
+            validateAnnotatedMember(injectedParameter, declaringClass, cdiArchive);
+        }
+    }
+
+    private void validateAnnotatedMember(Annotated annotated, Class<?> declaringClass, CDIArchive cdiArchive) {
         for (Annotation annotation : annotated.getAnnotations()) {
             if (annotation instanceof EJB) {
-                checkValidationUtils();
-                eeValidationUtils.validateEjb(((EJB) annotation), declaringClass, annotated);
+                EEValidationUtils.validateEjb(((EJB) annotation), declaringClass, annotated, cdiArchive);
             } else if (annotation instanceof Resource) {
-                checkValidationUtils();
-                eeValidationUtils.validateResource(((Resource) annotation), declaringClass, annotated);
+                EEValidationUtils.validateResource(((Resource) annotation), declaringClass, annotated, cdiArchive);
             } else if (annotation instanceof WebServiceRef) {
-                checkValidationUtils();
-                eeValidationUtils.validateWebServiceRef(((WebServiceRef) annotation), declaringClass, annotated);
+                EEValidationUtils.validateWebServiceRef(((WebServiceRef) annotation), declaringClass, annotated);
             } else if (annotation instanceof PersistenceContext) {
-                checkValidationUtils();
-                eeValidationUtils.validatePersistenceContext(((PersistenceContext) annotation), declaringClass, annotated);
+                EEValidationUtils.validatePersistenceContext(((PersistenceContext) annotation), declaringClass, annotated);
             } else if (annotation instanceof PersistenceUnit) {
-                checkValidationUtils();
-                eeValidationUtils.validatePersistenceUnit(((PersistenceUnit) annotation), declaringClass, annotated);
+                EEValidationUtils.validatePersistenceUnit(((PersistenceUnit) annotation), declaringClass, annotated);
             }
-        }
-    }
-
-    private void checkValidationUtils() {
-        //eeValidationUtils are created and registered by BeanDeploymnetArchiveImpl
-        if (eeValidationUtils == null) { 
-            throw new IllegalStateException("An attempt was made to validate a Java EE injection point but the validation utils were not ready");
         }
     }
 

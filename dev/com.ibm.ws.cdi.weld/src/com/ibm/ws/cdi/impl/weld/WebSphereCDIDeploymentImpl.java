@@ -101,7 +101,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         }
 
         //create a resource injection service for this deployment
-        this.injectionServices = new WebSphereInjectionServicesImpl();
+        this.injectionServices = new WebSphereInjectionServicesImpl(this);
         this.cdiRuntime = cdiRuntime;
         this.cdi = new CDIImpl(cdiRuntime);
     }

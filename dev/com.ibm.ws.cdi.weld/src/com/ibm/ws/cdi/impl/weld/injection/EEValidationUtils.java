@@ -11,13 +11,9 @@
 package com.ibm.ws.cdi.impl.weld.injection;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -29,7 +25,6 @@ import javax.enterprise.inject.spi.AnnotatedField;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.DefinitionException;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.naming.InitialContext;
 import javax.naming.Name;
 import javax.naming.NameClassPair;
@@ -43,46 +38,20 @@ import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceRef;
 
-import org.jboss.weld.injection.spi.EjbInjectionServices;
-import org.jboss.weld.injection.spi.JaxwsInjectionServices;
-import org.jboss.weld.injection.spi.JpaInjectionServices;
-import org.jboss.weld.injection.spi.ResourceInjectionServices;
-import org.jboss.weld.injection.spi.ResourceReferenceFactory;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
-import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
-import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
- * Provides utility methods to validate injected EE objects. 
+ * Provides utility methods to validate injected EE objects.
  */
 public class EEValidationUtils {
 
     private static final TraceComponent tc = Tr.register(EEValidationUtils.class);
-
-    private static final WeakHashMap<ClassLoader,WeakReference<CDIArchive>> archives = new WeakHashMap<ClassLoader,WeakReference<CDIArchive>>();
-
-    private final WebSphereInjectionServices webSphereInjectionServices;
-    private final EjbEndpointService ejbEndpointService;
-
-    private final CDIRuntime cdiRuntime;
-
-    public EEValidationUtils(WebSphereInjectionServices webSphereInjectionServices,
-                                    CDIRuntime cdiRuntime,
-                                    WebSphereCDIDeployment cdiDeployment,
-                                    CDIArchive archive,
-                                    ClassLoader cl) {
-        this.webSphereInjectionServices = webSphereInjectionServices;
-        this.ejbEndpointService = cdiRuntime.getEjbEndpointService();
-        archives.put(cl, new WeakReference<CDIArchive>(archive));
-        this.cdiRuntime = cdiRuntime;
-    }
 
     /**
      * Returns whether a given injection point is a producer (i.e. annotated with @Produces)
@@ -101,43 +70,30 @@ public class EEValidationUtils {
         return isProducer;
     }
 
-    /**
-     * Throw a definition exception for a resource producer field where the field type does not match the resource type
-     *
-     * @param injectionPoint the injection point for the resource producer field
-     * @param fieldType the type of the field
-     * @throws DefinitionException always
-     */
-    private static void throwDefinitionException(InjectionPoint injectionPoint, Class<?> fieldType) throws DefinitionException {
-        String producerFieldName = injectionPoint.getMember().getDeclaringClass().getName() + "." + injectionPoint.getMember().getName();
-        String fieldTypeName = fieldType.getName();
-        throw new DefinitionException(Tr.formatMessage(tc, "resource.producer.validation.error.CWOWB1007E", producerFieldName, fieldTypeName));
-    }
-
-    private static void throwDefinitionException(Class declaringClass, String memberName, Class<?> fieldType) throws DefinitionException {
+    private static void throwDefinitionException(Class<?> declaringClass, String memberName, Class<?> fieldType) throws DefinitionException {
         String producerFieldName = declaringClass.getName() + "." + memberName;
         String fieldTypeName = fieldType.getName();
         throw new DefinitionException(Tr.formatMessage(tc, "resource.producer.validation.error.CWOWB1007E", producerFieldName, fieldTypeName));
     }
 
-    private static void throwDefinitionException(Class declaringClass, Annotated annotated) throws DefinitionException {
+    private static void throwDefinitionException(Class<?> declaringClass, Annotated annotated) throws DefinitionException {
         throwDefinitionException(declaringClass, getInjectedMemberName(annotated), getInjectedClass(annotated));
     }
 
     private static Class<?> getInjectedClass(Annotated annotated) {
         if (annotated instanceof AnnotatedField) {
-            return ((AnnotatedField) annotated).getJavaMember().getType();
+            return ((AnnotatedField<?>) annotated).getJavaMember().getType();
         } else if (annotated instanceof AnnotatedParameter) {
-            AnnotatedCallable callable = ((AnnotatedParameter) annotated).getDeclaringCallable();  //In Java 8 we can replace this, AnnotatedParameter lets us get the underlying type directly
+            AnnotatedCallable<?> callable = ((AnnotatedParameter<?>) annotated).getDeclaringCallable(); //In Java 8 we can replace this, AnnotatedParameter lets us get the underlying type directly
             Class<?>[] paramaterTypes = null;
             if (callable instanceof AnnotatedMethod) {
-                Method method = ((AnnotatedMethod) callable).getJavaMember();
+                Method method = ((AnnotatedMethod<?>) callable).getJavaMember();
                 paramaterTypes = method.getParameterTypes();
             } else if (callable instanceof AnnotatedConstructor) {
-                Constructor constructor = ((AnnotatedConstructor) callable).getJavaMember();
+                Constructor<?> constructor = ((AnnotatedConstructor<?>) callable).getJavaMember();
                 paramaterTypes = constructor.getParameterTypes();
             }
-            return paramaterTypes[((AnnotatedParameter) annotated).getPosition()];
+            return paramaterTypes[((AnnotatedParameter<?>) annotated).getPosition()];
         } else {
             throw new UnsupportedOperationException("Only AnnotatedFields or AnnotatedMethods should be here");
         }
@@ -145,20 +101,22 @@ public class EEValidationUtils {
 
     private static String getInjectedMemberName(Annotated annotated) {
         if (annotated instanceof AnnotatedField) {
-            return ((AnnotatedField) annotated).getJavaMember().getName();
+            return ((AnnotatedField<?>) annotated).getJavaMember().getName();
         } else if (annotated instanceof AnnotatedParameter) {
-            return ((AnnotatedParameter) annotated).getDeclaringCallable().getJavaMember().getName();
+            return ((AnnotatedParameter<?>) annotated).getDeclaringCallable().getJavaMember().getName();
         } else {
             throw new UnsupportedOperationException("Only AnnotatedFields or AnnotatedMethods should be here");
         }
     }
 
-
     @FFDCIgnore(ClassCastException.class)
-    public void validateEjb(EJB ejb, Class<?> declaringClass, Annotated annotated) {
+    public static void validateEjb(EJB ejb, Class<?> declaringClass, Annotated annotated, CDIArchive cdiArchive) {
+        CDIRuntime cdiRuntime = cdiArchive.getCDIRuntime();
+        EjbEndpointService ejbEndpointService = cdiRuntime.getEjbEndpointService();
+
         if (ejbEndpointService != null && isProducer(annotated)) {
             try {
-                ejbEndpointService.validateEjbInjection(ejb, archives.get(declaringClass.getClassLoader()).get(), getInjectedClass(annotated));
+                ejbEndpointService.validateEjbInjection(ejb, cdiArchive, getInjectedClass(annotated));
             } catch (CDIException e) {
                 // We were unable to get the EJB endpoints, quietly skip validation
             } catch (ClassCastException e) {
@@ -176,14 +134,15 @@ public class EEValidationUtils {
      *
      * @throws DefinitionException if the object is found and does not have the correct type
      */
-    private void validateJndiLookup(String lookupString, Annotated annotated, Class<?> declaringClass) {
+    private static void validateJndiLookup(String lookupString, Annotated annotated, Class<?> declaringClass, CDIArchive cdiArchive) {
 
         // We need to set a current component before doing anything to do with JNDI
+        CDIRuntime cdiRuntime = cdiArchive.getCDIRuntime();
         try {
-            cdiRuntime.beginContext(archives.get(declaringClass.getClassLoader()).get());
+            cdiRuntime.beginContext(cdiArchive);
             InitialContext c = new InitialContext();
 
-            validateJndiLookup(c, lookupString, annotated, declaringClass);
+            validateJndiLookup(c, lookupString, annotated, declaringClass, cdiArchive);
 
         } catch (NamingException ex) {
             // Failed to look up the object, just return without failing validation
@@ -194,14 +153,15 @@ public class EEValidationUtils {
         }
     }
 
-    private void validateJndiLookup(InitialContext c, String lookupString, Annotated annotated, Class<?> declaringClass) throws NamingException, CDIException {
+    private static void validateJndiLookup(InitialContext c, String lookupString, Annotated annotated, Class<?> declaringClass,
+                                           CDIArchive cdiArchive) throws NamingException, CDIException {
         Name lookupName = c.getNameParser("").parse(lookupString);
 
         // Split the name into the suffix and the parent context
         String name = lookupName.get(lookupName.size() - 1);
         Name prefix = lookupName.getPrefix(lookupName.size() - 1);
 
-        Class injectedClass = getInjectedClass(annotated);
+        Class<?> injectedClass = getInjectedClass(annotated);
 
         if (!(injectedClass instanceof Class)) {
             // Don't validate if we don't know the class we're expecting
@@ -222,7 +182,7 @@ public class EEValidationUtils {
             if (name.equals(pair.getName())) {
                 try {
                     String className = pair.getClassName();
-                    Class<?> jndiClass = archives.get(declaringClass.getClassLoader()).get().getClassLoader().loadClass(className);
+                    Class<?> jndiClass = cdiArchive.getClassLoader().loadClass(className);
                     if ("javax.resource.cci.ConnectionFactory".equals(className)) {
                         try {
                             Object o = c.lookup(lookupName);
@@ -236,7 +196,7 @@ public class EEValidationUtils {
                         }
                     } else {
                         try {
-                            jndiClass = archives.get(declaringClass.getClassLoader()).get().getClassLoader().loadClass(className);
+                            jndiClass = cdiArchive.getClassLoader().loadClass(className);
                         } catch (ClassNotFoundException ex) {
                             // Couldn't load the jndiClass name, can't validate
                         }
@@ -267,7 +227,7 @@ public class EEValidationUtils {
      * @param Annotated the member annotated with this WebServiceRef
      * @param the injection point
      */
-    public void validateWebServiceRef(WebServiceRef wsRef, Class<?> declaringClass, Annotated annotated) {
+    public static void validateWebServiceRef(WebServiceRef wsRef, Class<?> declaringClass, Annotated annotated) {
         Class<?> ipClass = getInjectedClass(annotated);
         /*
          * note: Thorough WebService validation is performed later, by
@@ -335,19 +295,18 @@ public class EEValidationUtils {
         }
     }
 
-    public void validateResource(Resource res, Class declaringClass, Annotated annotated) {
+    public static void validateResource(Resource res, Class<?> declaringClass, Annotated annotated, CDIArchive cdiArchive) {
         // If the injection point is a resource producer, we need to validate it
         if (EEValidationUtils.isProducer(annotated)) {
             if (!res.lookup().isEmpty()) {
-                validateJndiLookup(res.lookup(), annotated, declaringClass);
+                validateJndiLookup(res.lookup(), annotated, declaringClass, cdiArchive);
             } else if (!res.name().isEmpty()) {
-                validateJndiLookup("java:comp/env/" + res.name(), annotated, declaringClass);
+                validateJndiLookup("java:comp/env/" + res.name(), annotated, declaringClass, cdiArchive);
             }
         }
     }
 
-    
-    public void validatePersistenceContext(PersistenceContext persistenceContext, Class declaringClass, Annotated annotated) {
+    public static void validatePersistenceContext(PersistenceContext persistenceContext, Class<?> declaringClass, Annotated annotated) {
         if (EEValidationUtils.isProducer(annotated)) {
             if (getInjectedClass(annotated) instanceof Class<?>) {
                 Class<?> ipClass = getInjectedClass(annotated);
@@ -358,7 +317,7 @@ public class EEValidationUtils {
         }
     }
 
-    public void validatePersistenceUnit(PersistenceUnit PersistenceUnit, Class declaringClass, Annotated annotated) {
+    public static void validatePersistenceUnit(PersistenceUnit PersistenceUnit, Class<?> declaringClass, Annotated annotated) {
         if (EEValidationUtils.isProducer(annotated)) {
             if (getInjectedClass(annotated) instanceof Class<?>) {
                 Class<?> ipClass = getInjectedClass(annotated);
