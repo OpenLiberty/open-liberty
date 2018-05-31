@@ -28,19 +28,11 @@ import com.ibm.ws.microprofile.metrics.classloader.utility.ClassLoaderUtils;
 public class CheckerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
         ClassLoaderUtils classLoaderUtils = ClassLoaderUtils.getInstance();
         Runtime r = Runtime.getRuntime();
-        int[] intArray = new int[5];
-        for (int i = 0; i < 5; i++) {
-            intArray[i] = i;
-        }
-        r.gc();
         PrintWriter pw = new PrintWriter(response.getOutputStream());
         pw.println(classLoaderUtils.resolveClassLoaderState());
         pw.flush();

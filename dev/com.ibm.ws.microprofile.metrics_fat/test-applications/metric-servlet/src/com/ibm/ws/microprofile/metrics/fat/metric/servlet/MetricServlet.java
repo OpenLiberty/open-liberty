@@ -28,27 +28,24 @@ import com.ibm.ws.microprofile.metrics.classloader.utility.ClassLoaderUtils;
 @WebServlet("/metricServlet")
 public class MetricServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private ClassLoader cl;
+    public static ClassLoader cl;
 
     @Inject
     MetricGenerator metricGenerator;
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // TODO Auto-generated method stub
-        ClassLoaderUtils classLoaaderUtils = ClassLoaderUtils.getInstance();
+        ClassLoaderUtils classLoaderUtils = ClassLoaderUtils.getInstance();
         if (cl == null) {
             cl = this.getClass().getClassLoader();
-            classLoaaderUtils.setClassLoaderWeakRef(new WeakReference<ClassLoader>(cl));
+            classLoaderUtils.setClassLoaderWeakRef(new WeakReference<ClassLoader>(cl));
         }
+        classLoaderUtils = null;
         metricGenerator.getTestGaugeOne();
         metricGenerator.doSomething();
         metricGenerator.doSomethingWithTimed();
-
     }
 
 }

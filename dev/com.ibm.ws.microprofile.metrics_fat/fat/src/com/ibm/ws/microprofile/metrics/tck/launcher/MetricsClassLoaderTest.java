@@ -30,6 +30,8 @@ public abstract class MetricsClassLoaderTest {
 
     private final String METRIC_SERVLET = "/metric-servlet/metricServlet";
     private final String CHECK_SERVLET = "/checkerServlet/checkServlet";
+    private final String NULL_STRING = "null";
+    private final String NA_STRING = "n/a";
 
     public abstract LibertyServer getServer();
 
@@ -41,11 +43,11 @@ public abstract class MetricsClassLoaderTest {
         String classLoaderBeforeUpdate = getServlet(CHECK_SERVLET).trim();
 
         /*
-         * checkServlet returns either a classloader's (string) value or "null"
-         * We want it to be not null.
+         * checkServlet returns either a classloader's (string) value or "null" (if set CL was GCed) or "n/a" if no value was set
+         * We want it to be not null and not n/a.
          */
-        Assert.assertFalse("Classloader was not obtained - null", classLoaderBeforeUpdate.equals("null"));
-        Assert.assertFalse("Classloader was not obtained - N/A", classLoaderBeforeUpdate.equals("N/A"));
+        Assert.assertFalse("Classloader was not obtained - null", classLoaderBeforeUpdate.equals(NULL_STRING));
+        Assert.assertFalse("Classloader was not obtained - N/A", classLoaderBeforeUpdate.toLowerCase().equals(NA_STRING));
 
         //update sever.xml to remove metrics app
         String line = setConfig(getAppRemovalConfig());
@@ -54,28 +56,31 @@ public abstract class MetricsClassLoaderTest {
         String classLoaderAfterUpdate = null;
 
         //wait 120 seconds in total if need be
-        for (int i = 0; i < 240; i++) {
+        for (int i = 0; i < 120; i++) {
 
-            //force some gcs
+            //"try" to request some GCs
             System.gc();
             Runtime.getRuntime().gc();
 
             Thread.sleep(1000);
             classLoaderAfterUpdate = getServlet(CHECK_SERVLET).trim();
-            if (classLoaderAfterUpdate.equals("null"))
+            if (classLoaderAfterUpdate.equals(NULL_STRING))
                 break;
         }
         /*
          * checkServlet returns a classloader's (string) value or "null"
          * We want it to be "null" now
          */
-        Assert.assertFalse("var: classLoaderAfterupdate shouldn't be a null", classLoaderAfterUpdate == null);
+        Assert.assertFalse("variable: `classLoaderAfterupdate` shouldn't be a null", classLoaderAfterUpdate == null);
 
+        //In the event of classloader not being unloaded, we will create a javacore, heap dump  and thread dump.
         if (!classLoaderAfterUpdate.equals("null")) {
             getServer().javadumpThreads();
+            getServer().serverDump("heap, system");
         }
-        Assert.assertTrue("ClassLoader still in memory; App not properly unloaded classLoaderAfterupdate = " + classLoaderAfterUpdate, classLoaderAfterUpdate.equals("null"));
 
+        Assert.assertTrue("ClassLoader still in memory; App not properly unloaded variable `classLoaderAfterupdate` = " + classLoaderAfterUpdate,
+                          classLoaderAfterUpdate.equals("null"));
     }
 
     private String getServlet(String servletPath) throws IOException {
