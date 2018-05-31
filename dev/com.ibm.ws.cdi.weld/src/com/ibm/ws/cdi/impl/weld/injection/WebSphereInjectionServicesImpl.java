@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
+import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionTargetListener;
@@ -309,16 +310,20 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
     @Override
     public <T> void registerInjectionTarget(javax.enterprise.inject.spi.InjectionTarget<T> injectionTarget, AnnotatedType<T> annotatedType) {
         Class<?> declaringClass = annotatedType.getJavaClass();
-        CDIArchive cdiArchive = deployment.getBeanDeploymentArchiveFromClass(declaringClass).getArchive();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Injection Target Annotations: " + annotatedType.getAnnotations());
-        }
-        //We don't need to worry about constructors because constructors cannot be a producer.
-        for (Annotated annotated : annotatedType.getFields()) {
-            validateAnnotatedMember(annotated, annotatedType.getJavaClass(), cdiArchive);
-        }
-        for (AnnotatedMethod<?> annotatedMethod : annotatedType.getMethods()) {
-            validateAnnotatedMethod(annotatedMethod, declaringClass, cdiArchive);
+        WebSphereBeanDeploymentArchive wbda = deployment.getBeanDeploymentArchiveFromClass(declaringClass);
+        //If it's not an application class we don't need to validate it
+        if (wbda != null) {
+            CDIArchive cdiArchive = wbda.getArchive();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Injection Target Annotations: " + annotatedType.getAnnotations());
+            }
+            //We don't need to worry about constructors because constructors cannot be a producer.
+            for (Annotated annotated : annotatedType.getFields()) {
+                validateAnnotatedMember(annotated, annotatedType.getJavaClass(), cdiArchive);
+            }
+            for (AnnotatedMethod<?> annotatedMethod : annotatedType.getMethods()) {
+                validateAnnotatedMethod(annotatedMethod, declaringClass, cdiArchive);
+            }
         }
     }
 
