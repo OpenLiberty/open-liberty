@@ -163,7 +163,11 @@ public class LoginToContinueInterceptor {
             RequestDispatcher rd;
             if (_useGlobalLogin) {
                 ServletContext ctx = req.getServletContext().getContext(_formLoginContextRoot);
-                rd = ctx.getRequestDispatcher(loginPage);
+                if (ctx != null) {
+                    rd = ctx.getRequestDispatcher(loginPage);
+                } else {
+                    throw new IllegalArgumentException("The context root " + _formLoginContextRoot + " is not valid. Please make sure that the attribute contextRootForFormAuthenticationMechanism is set properly, and the form login page which is specified by the attribute loginFormURL is valid.");
+                }
             } else {
                 rd = req.getRequestDispatcher(loginPage);
             }
