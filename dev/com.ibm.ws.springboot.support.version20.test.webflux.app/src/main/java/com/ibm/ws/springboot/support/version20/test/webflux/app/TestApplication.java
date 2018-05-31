@@ -27,6 +27,6 @@ public class TestApplication {
 
 	@GetMapping("/")
 	public String welcome() {
-		return "Hello World!";
+		return "HELLO SPRING BOOT!!";
 	}
 }

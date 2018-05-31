@@ -22,6 +22,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 CommonWebServerTests15Servlet40.class,
                 CommonWebServerTests20.class,
                 CommonWebServerTests20Servlet40.class,
+                CommonWebFluxTests20.class,
+                CommonWebFluxTests20Servlet40.class,
                 UnsupportedConfigWarningTest15.class,
                 UnsupportedConfigWarningTest20.class,
                 ConfigDropinRootTests.class,
