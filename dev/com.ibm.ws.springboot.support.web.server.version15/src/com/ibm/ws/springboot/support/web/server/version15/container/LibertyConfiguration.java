@@ -29,12 +29,12 @@ import org.springframework.core.Ordered;
 @ConditionalOnWebApplication
 @ConditionalOnClass({ EmbeddedServletContainerFactory.class })
 @Import(BeanPostProcessorsRegistrar.class)
-public class LibertyServletContainerConfiguration {
+public class LibertyConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(value = EmbeddedServletContainerFactory.class, search = SearchStrategy.CURRENT)
-    public LibertyServletContainerFactory libertyEmbeddedServletContainerFactory() {
-        return new LibertyServletContainerFactory();
+    public LibertyServletWebServerFactory libertyEmbeddedServletContainerFactory() {
+        return new LibertyServletWebServerFactory();
     }
 
 }

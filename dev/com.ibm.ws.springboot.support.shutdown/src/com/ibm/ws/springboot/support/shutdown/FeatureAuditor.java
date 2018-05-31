@@ -37,7 +37,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
         try {
             Class.forName("org.springframework.boot.web.servlet.server.ServletWebServerFactory");
             Class.forName(
-                          "com.ibm.ws.springboot.support.web.server.version15.container.LibertyServletContainerConfiguration");
+                          "com.ibm.ws.springboot.support.web.server.version15.container.LibertyConfiguration");
             checkSpringBootVersion20();
         } catch (ClassNotFoundException e) {
 
@@ -81,7 +81,7 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
     private void checkSpringBootVersion15() {
         try {
             Class.forName(
-                          "com.ibm.ws.springboot.support.web.server.version15.container.LibertyServletContainerConfiguration");
+                          "com.ibm.ws.springboot.support.web.server.version15.container.LibertyConfiguration");
         } catch (ClassNotFoundException e) {
             throw new ApplicationError(Type.NEED_SPRING_BOOT_VERSION_15);
         }

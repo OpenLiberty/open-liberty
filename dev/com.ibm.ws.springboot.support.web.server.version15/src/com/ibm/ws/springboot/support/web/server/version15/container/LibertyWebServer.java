@@ -59,13 +59,13 @@ import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 /**
  *
  */
-public class LibertyServletContainer implements EmbeddedServletContainer {
+public class LibertyWebServer implements EmbeddedServletContainer {
     private static final Object token = new Object() {};
     private final SpringBootConfig springBootConfig;
-    private final LibertyServletContainerFactory factory;
+    private final LibertyServletWebServerFactory factory;
     private final AtomicInteger port = new AtomicInteger();
 
-    public LibertyServletContainer(LibertyServletContainerFactory factory, ServletContextInitializer[] initializers) {
+    public LibertyWebServer(LibertyServletWebServerFactory factory, ServletContextInitializer[] initializers) {
         this.factory = factory;
         port.set(factory.getPort());
         // The Internet Assigned Numbers Authority (IANA) suggests the range 49152 to 65535 (215+214 to 216−1) for dynamic or private ports
@@ -106,7 +106,7 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         }
     }
 
-    private SpringConfiguration collectAdditionalConfig(LibertyServletContainerFactory factory) {
+    private SpringConfiguration collectAdditionalConfig(LibertyServletWebServerFactory factory) {
         final boolean DEFAULT_COMPRESSION_ENABLED_SETTING = false;
         final boolean DEFAULT_SESSION_PERSISTENT_SETTING = false;
         final int DEFAULT_SESSION_TIMEOUT_SECONDS = 30 * 60;
@@ -156,7 +156,7 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         }
     }
 
-    private static ServerConfiguration getServerConfiguration(LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory, LibertyServletContainer container) {
+    private static ServerConfiguration getServerConfiguration(LibertyServletWebServerFactory factory, SpringBootConfigFactory configFactory, LibertyWebServer container) {
         Map<String, Object> serverProperties = getServerProperties(factory, container);
         return ServerConfigurationFactory.createServerConfiguration(serverProperties, configFactory, (s) -> {
             try {
@@ -167,7 +167,7 @@ public class LibertyServletContainer implements EmbeddedServletContainer {
         });
     }
 
-    private static Map<String, Object> getServerProperties(LibertyServletContainerFactory factory, LibertyServletContainer container) {
+    private static Map<String, Object> getServerProperties(LibertyServletWebServerFactory factory, LibertyWebServer container) {
         Map<String, Object> serverProperties = new HashMap<>();
         if (factory.shouldUseDefaultHost(container)) {
             serverProperties.put(LIBERTY_USE_DEFAULT_HOST, Boolean.TRUE);
