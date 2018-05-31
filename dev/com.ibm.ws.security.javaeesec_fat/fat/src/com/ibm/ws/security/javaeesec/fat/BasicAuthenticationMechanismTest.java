@@ -198,12 +198,6 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
         return cookieHeader.toString();
     }
 
-    private void assertCookie(String cookieHeaderString, boolean secure, boolean httpOnly) {
-        assertTrue("The Path parameter must be set.", cookieHeaderString.contains("Path=/"));
-        assertEquals("The Secure parameter must" + (secure == true ? "" : " not" + " be set."), secure, cookieHeaderString.contains("Secure"));
-        assertEquals("The HttpOnly parameter must" + (httpOnly == true ? "" : " not" + " be set."), httpOnly, cookieHeaderString.contains("HttpOnly"));
-    }
-
     private String redriveFlowWithCookieOnly(String resource, int expectedStatusCode) throws Exception {
         httpclient.getCredentialsProvider().clear();
         return executeGetRequestNoAuthCreds(httpclient, resource, expectedStatusCode);
