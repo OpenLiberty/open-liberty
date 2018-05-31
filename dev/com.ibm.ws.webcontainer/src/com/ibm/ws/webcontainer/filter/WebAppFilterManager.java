@@ -1177,13 +1177,15 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                     if (request instanceof SRTServletRequest) {
                                         SRTServletRequest srtReq = (SRTServletRequest) request;
                                         IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
-                                        httpInboundConnection = iReq.getHttpInboundConnection();
-                                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                                        if (iReq != null) {
+                                            httpInboundConnection = iReq.getHttpInboundConnection();
+                                            logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                                        }
                                     }
 
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                         logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at isH2Request");
-                                    if (h2Handler.isH2Request(httpInboundConnection, request)) {
+                                    if (httpInboundConnection != null && h2Handler.isH2Request(httpInboundConnection, request)) {
                                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                             logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "upgrading to H2");
                                         HttpServletRequest httpRequest = (HttpServletRequest) ServletUtil.unwrapRequest(request, HttpServletRequest.class);                                

@@ -169,8 +169,10 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                     if (request instanceof SRTServletRequest) {
                         SRTServletRequest srtReq = (SRTServletRequest)request;
                         IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
-                        httpInboundConnection = iReq.getHttpInboundConnection();
-                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                        if (iReq != null) {
+                            httpInboundConnection = iReq.getHttpInboundConnection();
+                            logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                        }
                     }
 
                     if (h2Handler != null && httpInboundConnection != null && request instanceof HttpServletRequest) {
