@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.servlet.error.ServletErrorReport;
-import com.ibm.websphere.servlet.request.IRequest;
+import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor;
-import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.WsocHandler;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
@@ -159,7 +158,7 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                     HttpInboundConnection httpInboundConnection = null;
                     if (request instanceof SRTServletRequest) {
                         SRTServletRequest srtReq = (SRTServletRequest)request;
-                        IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
+                        IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                         if (iReq != null) {
                             httpInboundConnection = iReq.getHttpInboundConnection();
                             logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
