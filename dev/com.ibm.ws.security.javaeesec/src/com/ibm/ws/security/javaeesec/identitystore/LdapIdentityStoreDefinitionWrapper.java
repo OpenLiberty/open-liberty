@@ -389,15 +389,6 @@ class LdapIdentityStoreDefinitionWrapper {
     private String evaluateGroupSearchFilter(boolean immediateOnly) {
         try {
             final String result = elHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
-            /**
-             * This is for CTS testing only. A default filter is expected, though this violates the spec.
-             */
-            if (result == null || result.isEmpty()) {
-                if (isCTS()) {
-                    Tr.debug(tc, "Setting default groupSearchFilter to (objectClass=groupOfNames)");
-                    return "(objectClass=groupOfNames)";
-                }
-            }
             return result;
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
