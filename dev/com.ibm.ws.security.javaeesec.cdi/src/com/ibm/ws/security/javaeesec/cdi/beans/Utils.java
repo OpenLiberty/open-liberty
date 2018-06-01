@@ -150,6 +150,11 @@ public class Utils {
         setCommonAttributes(subjectHashtable, realm, callerPrincipalName);
         setUniqueId(subjectHashtable, realm, uniqueId);
         setGroups(subjectHashtable, result.getCallerGroups());
+        // set cache key for the hashtable which is constructed by the identity store,
+        // because the output from the id store might be different even if the same users are
+        // validated multiple times. This is because some EL expression would be resolved in every invocation
+        // and which will end up generating differernt ouput.
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(subjectHashtable.hashCode()));
     }
 
     private void setCommonAttributes(Hashtable<String, Object> subjectHashtable, String realm, String callerPrincipalName) {
@@ -252,13 +257,6 @@ public class Utils {
             }
         }
         return false;
-    }
-
-    public void setCacheKey(Subject clientSubject) {
-        Hashtable<String, Object> subjectHashtable = getSubjectExistingHashtable(clientSubject);
-        if (subjectHashtable != null) {
-            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(subjectHashtable.hashCode()));
-        }
     }
 
     private boolean isSupportedCredential(@Sensitive Credential cred) {
