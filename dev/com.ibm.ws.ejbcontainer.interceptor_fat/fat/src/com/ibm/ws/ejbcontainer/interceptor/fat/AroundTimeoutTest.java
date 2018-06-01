@@ -24,6 +24,7 @@ import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeo
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutMixServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AdvancedAroundTimeoutXmlServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AroundInvokeAnnServlet;
+import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.AroundTimeoutExcServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.InheritedAroundTimeoutAnnServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.InheritedTimerCallbackAnnServlet;
 import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.InvocationContextAnnServlet;
@@ -47,6 +48,7 @@ public class AroundTimeoutTest extends FATServletClient {
                     @TestServlet(servlet = AdvancedAroundTimeoutMixServlet.class, contextRoot = "AroundTimeoutWeb"),
                     @TestServlet(servlet = AdvancedAroundTimeoutXmlServlet.class, contextRoot = "AroundTimeoutWeb"),
                     @TestServlet(servlet = AroundInvokeAnnServlet.class, contextRoot = "AroundTimeoutWeb"),
+                    @TestServlet(servlet = AroundTimeoutExcServlet.class, contextRoot = "AroundTimeoutWeb"),
                     @TestServlet(servlet = InheritedAroundTimeoutAnnServlet.class, contextRoot = "AroundTimeoutWeb"),
                     @TestServlet(servlet = InheritedTimerCallbackAnnServlet.class, contextRoot = "AroundTimeoutWeb"),
                     @TestServlet(servlet = InvocationContextAnnServlet.class, contextRoot = "AroundTimeoutWeb"),
@@ -63,11 +65,12 @@ public class AroundTimeoutTest extends FATServletClient {
     public static void setUp() throws Exception {
         // Use ShrinkHelper to build the ears
         JavaArchive AroundTimeoutAnnEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutAnnEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ann.ejb.");
+        JavaArchive AroundTimeoutExcEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutExcEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.");
         JavaArchive AroundTimeoutMixEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutMixEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_mix.ejb.");
         JavaArchive AroundTimeoutXmlEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutXmlEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_xml.ejb.");
         WebArchive AroundTimeoutWeb = ShrinkHelper.buildDefaultApp("AroundTimeoutWeb.war", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web.");
         EnterpriseArchive AroundTimeoutTest = ShrinkWrap.create(EnterpriseArchive.class, "AroundTimeoutTest.ear");
-        AroundTimeoutTest.addAsModule(AroundTimeoutAnnEJB).addAsModule(AroundTimeoutMixEJB).addAsModule(AroundTimeoutXmlEJB).addAsModule(AroundTimeoutWeb);
+        AroundTimeoutTest.addAsModule(AroundTimeoutAnnEJB).addAsModule(AroundTimeoutExcEJB).addAsModule(AroundTimeoutMixEJB).addAsModule(AroundTimeoutXmlEJB).addAsModule(AroundTimeoutWeb);
 
         ShrinkHelper.exportDropinAppToServer(server, AroundTimeoutTest);
 
