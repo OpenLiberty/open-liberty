@@ -40,7 +40,7 @@ import javax.faces.context.FacesContext;
 public abstract class FaceletContext extends ELContext
 {
     // TODO: REPORT this aberration to the EG
-    public static final String FACELET_CONTEXT_KEY = "javax.faces.FACELET_CONTEXT";
+    public static final String FACELET_CONTEXT_KEY = "javax.faces.FACELET_CONTEXT".intern();
     
     /**
      * Generate a unique ID for the passed String
