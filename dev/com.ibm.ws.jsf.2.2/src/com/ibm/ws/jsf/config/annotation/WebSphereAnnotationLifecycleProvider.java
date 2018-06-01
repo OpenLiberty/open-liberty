@@ -10,8 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.config.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
@@ -24,8 +28,10 @@ import javax.servlet.ServletContext;
 
 import org.apache.myfaces.config.annotation.DiscoverableLifecycleProvider;
 import org.apache.myfaces.config.annotation.LifecycleProvider2;
+import org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider;
 import org.apache.myfaces.shared.config.MyfacesConfig;
 import org.apache.myfaces.shared.util.ClassUtils;
+import org.apache.myfaces.util.ExternalSpecifications;
 
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
@@ -38,6 +44,7 @@ public class WebSphereAnnotationLifecycleProvider implements DiscoverableLifecyc
 
     private final AnnotationHelper runtimeAnnotationHelper;
     private final AnnotationHelperManager annotationHelperManager;
+    NoInjectionAnnotationLifecycleProvider nonCDIProvider;
 
     // Liberty 99619 - Changing to a WeakHashMap
     private final Map<Object, ManagedObjectContext> cdiContexts = Collections.synchronizedMap(new WeakHashMap<Object, ManagedObjectContext>());
@@ -45,15 +52,30 @@ public class WebSphereAnnotationLifecycleProvider implements DiscoverableLifecyc
     // PI30335
     private final boolean delayPostConstruct =
                     MyfacesConfig.getCurrentInstance(FacesContext.getCurrentInstance().getExternalContext()).isDelayManagedBeanPostConstruct();
+    
+    // TODO: use configurable property here
+    private final boolean skipCDIFallback = true;
+
+    private List<Class<? extends Annotation>> cdiAnnotationClasses = Arrays.asList(
+                                                                                   javax.inject.Inject.class,
+                                                                                   javax.inject.Named.class,
+                                                                                   javax.inject.Scope.class,
+                                                                                   javax.inject.Qualifier.class,
+                                                                                   javax.inject.Singleton.class
+                                                                               );
+
 
     public WebSphereAnnotationLifecycleProvider(ExternalContext externalContext) {
         annotationHelperManager = AnnotationHelperManager.getInstance((ServletContext) externalContext.getContext());
         runtimeAnnotationHelper = annotationHelperManager.getAnnotationHelper();
+        nonCDIProvider = new NoInjectionAnnotationLifecycleProvider();
+
     }
 
     public WebSphereAnnotationLifecycleProvider(Context context) {
         annotationHelperManager = AnnotationHelperManager.getInstance((ServletContext) context);
         runtimeAnnotationHelper = annotationHelperManager.getAnnotationHelper();
+        nonCDIProvider= new NoInjectionAnnotationLifecycleProvider();
     }
 
     @Override
@@ -61,22 +83,34 @@ public class WebSphereAnnotationLifecycleProvider implements DiscoverableLifecyc
         Class<?> clazz = ClassUtils.classForName(className);
         Object object;
         ManagedObject mo;
-        // PI30335
-        mo = runtimeAnnotationHelper.inject(clazz, delayPostConstruct);
-        object = mo.getObject();
-
-        cdiContexts.put(object, mo.getContext());
-
+        
+        if (!shouldSkipCDIProvider(clazz)) {
+            // PI30335
+            mo = runtimeAnnotationHelper.inject(clazz, delayPostConstruct);
+            object = mo.getObject();
+            cdiContexts.put(object, mo.getContext());
+        } else {
+            object = nonCDIProvider.newInstance(className);
+            if (!delayPostConstruct) {
+                nonCDIProvider.postConstruct(object);                              
+            }
+        }
         return object;
     }
 
     @Override
     public void postConstruct(Object o) throws IllegalAccessException,
                     InvocationTargetException {
+        
         // PI30335
         // doPostConstruct was delayed, so do it now
-        if (delayPostConstruct) {
-            runtimeAnnotationHelper.doDelayedPostConstruct(o);
+        if (!shouldSkipCDIProvider(o.getClass())) {
+            if (delayPostConstruct) {
+                runtimeAnnotationHelper.doDelayedPostConstruct(o);
+            }
+        }
+        else if (delayPostConstruct) {
+            nonCDIProvider.postConstruct(o);
         }
     }
 
@@ -100,6 +134,44 @@ public class WebSphereAnnotationLifecycleProvider implements DiscoverableLifecyc
             return annotationHelperManager != null;
         } catch (Exception e) {
             // ignore
+        }
+        return false;
+    }
+    
+    /**
+     * Given a Class, search for CDI class and method annotations. 
+     * Return true if any of the following annotations are found:
+     *  javax.inject.Inject
+     *  javax.inject.Named
+     *  javax.inject.Scope
+     *  javax.inject.Qualifier
+     *  javax.inject.Singleton
+     *  
+     * @param Class
+     * @return true if no CDI annotations are found and the CDI fallback property is enabled
+     */
+    private boolean shouldSkipCDIProvider(Class<?> annotatedClass) {
+        boolean skipCDIInjection = false;
+        if (skipCDIFallback) {
+            skipCDIInjection = true;
+            if (ExternalSpecifications.isCDIAvailable(FacesContext.getCurrentInstance().getExternalContext())) {
+                while (annotatedClass != null && !skipCDIInjection) {
+                    for (Class<? extends Annotation> c : cdiAnnotationClasses) {
+                        if (annotatedClass.isAnnotationPresent(c)) {
+                            skipCDIInjection = false;
+                            break;
+                        }
+                        for (Method method : annotatedClass.getMethods()) {
+                            if (method.isAnnotationPresent(c)){
+                                skipCDIInjection = false;
+                                break;
+                            }
+                        }
+                    }
+                    annotatedClass = annotatedClass.getSuperclass();
+                }
+            }
+            return skipCDIInjection;
         }
         return false;
     }
