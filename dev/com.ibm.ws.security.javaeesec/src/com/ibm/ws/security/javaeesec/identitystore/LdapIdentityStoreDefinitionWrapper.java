@@ -388,8 +388,7 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupSearchFilter(boolean immediateOnly) {
         try {
-            final String result = elHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
-            return result;
+            return elHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "There was an error resolving the '{1}' configuration object. Ensure any EL expressions are resolveable. The value will be defaulted to '{2}'",
