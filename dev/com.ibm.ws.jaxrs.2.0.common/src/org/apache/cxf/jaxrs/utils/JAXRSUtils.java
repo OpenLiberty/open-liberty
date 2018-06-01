@@ -864,19 +864,21 @@ public final class JAXRSUtils {
                                            Message message,
                                            OperationResourceInfo ori)
         throws IOException, WebApplicationException {
-        InputStream is = message.getContent(InputStream.class);
-        if (is == null) {
-            Reader reader = message.getContent(Reader.class);
-            if (reader != null) {
-                is = new ReaderInputStream(reader);
-            }
-        }
-
         if (parameter.getType() == ParameterType.REQUEST_BODY) {
 
             if (parameterClass == AsyncResponse.class) {
                 return new AsyncResponseImpl(message);
             }
+
+            // Liberty change start
+            InputStream is = message.getContent(InputStream.class);
+            if (is == null) {
+                Reader reader = message.getContent(Reader.class);
+                if (reader != null) {
+                    is = new ReaderInputStream(reader);
+                }
+            }
+            // Liberty change end
 
             String contentType = (String) message.get(Message.CONTENT_TYPE);
 
