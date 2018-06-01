@@ -46,8 +46,6 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
-    private final String jaspicSessionCookieName = "jaspicSession";
-    private final Boolean jaspicSessionEnabled = true;
 
     FeatureWebSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -390,25 +388,5 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getBasicAuthRealmName();
         else
             return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getJaspicSessionCookieName() {
-        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
-        if (globalConfig != null)
-            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getJaspicSessionCookieName();
-        else
-            return jaspicSessionCookieName;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isJaspicSessionEnabled() {
-        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
-        if (globalConfig != null)
-            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().isJaspicSessionEnabled();
-        else
-            return jaspicSessionEnabled;
     }
 }

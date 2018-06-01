@@ -124,15 +124,6 @@
         <AD id="basicAuthenticationMechanismRealmName" name="%basicAuthenticationMechanismRealmName" description="%basicAuthenticationMechanismRealmName.desc"
             required="false" type="String" default="defaultRealm" />
 
-        <AD id="jaspicSessionEnabled" name="%jaspicSessionEnabled" description="%jaspicSessionEnabled.desc"
-            required="false" type="Boolean"
-            default="true" />
-
-        <AD id="jaspicSessionCookieName" name="%jaspicSessionCookieName" description="%jaspicSessionCookieName.desc"
-            required="false" type="String"
-            default="jaspicSession" />
-    </OCD>
-
     <Designate pid="com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl">
         <Object ocdref="com.ibm.ws.webcontainer.security.metatype"/>
     </Designate>

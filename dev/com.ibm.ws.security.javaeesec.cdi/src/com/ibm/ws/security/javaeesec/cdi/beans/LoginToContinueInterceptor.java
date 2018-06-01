@@ -137,9 +137,8 @@ public class LoginToContinueInterceptor {
                             // remove WasReqUrl cookie and return with success.
                             removeWasReqUrlCookie(req, res);
                             return AuthenticationStatus.SUCCESS;
-                        } else if (!isCustomHAM && getWebAppSecurityConfig().isJaspicSessionEnabled()) {
-                            // if jaspicSession is enabled and the container provided HAM is used,
-                            // return with success
+                        } else if (!isCustomHAM) {
+                            // if the container provided HAM is used, return with success.
                             return AuthenticationStatus.SUCCESS;
                         } 
                     }
@@ -186,7 +185,8 @@ public class LoginToContinueInterceptor {
 
     private boolean existsSessionCookie(HttpMessageContext hmc, HttpServletRequest req) {
         if (hmc.getRequest().getUserPrincipal() != null) {
-            String cookieName = getWebAppSecurityConfig().getJaspicSessionCookieName();
+//            String cookieName = getWebAppSecurityConfig().getJaspicSessionCookieName();
+            String cookieName = "jaspicSession";
             return existsCookie(req, cookieName);
         }
         return false;

@@ -104,7 +104,7 @@ public class LoginToContinueInterceptorTest {
     private final String EL_DEFERRED_ERROR_PAGE = "#{" + EL_ERROR_PAGE + "}";
     private final String EL_DEFERRED_LOGIN_PAGE = "#{" + EL_LOGIN_PAGE + "}";
     private final String EL_DEFERRED_IS_FORWARD = "#{" + EL_IS_FORWARD + "}";
-    private final String SESSION_COOKIE = "jaspiSession";
+    private final String SESSION_COOKIE = "jaspicSession";
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
 
     @Rule
@@ -466,7 +466,7 @@ public class LoginToContinueInterceptorTest {
         final Cookie[] cookies = {sessionCookie};
         Object expect = AuthenticationStatus.SUCCESS;
         withProps(props).withParams().withNoELP().withAuthParams(null);
-        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(false).withJaspicSessionEnabled(true);
+        withJSecurityCheck("contextRoot/original.html").withSessionCookie(principal, cookies).withWasReqUrlCookie(false);
         ltci.initialize(ici);
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
@@ -765,8 +765,6 @@ public class LoginToContinueInterceptorTest {
         if (principal != null) {
             mockery.checking(new Expectations() {
                 {
-                    one(wasc).getJaspicSessionCookieName();
-                    will(returnValue(SESSION_COOKIE));
                     one(req).getCookies();
                     will(returnValue(cookies));
                     one(sessionCookie).getName();
@@ -809,17 +807,6 @@ public class LoginToContinueInterceptorTest {
         mockery.checking(new Expectations() {
             {
                 one(hmc).isProtected();
-                will(returnValue(value));
-            }
-        });
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private LoginToContinueInterceptorTest withJaspicSessionEnabled(final boolean value) throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(wasc).isJaspicSessionEnabled();
                 will(returnValue(value));
             }
         });

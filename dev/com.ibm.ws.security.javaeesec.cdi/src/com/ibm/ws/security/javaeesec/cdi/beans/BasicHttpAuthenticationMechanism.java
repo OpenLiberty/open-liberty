@@ -65,7 +65,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
-        if (isJaspicSessionEnabled() && httpMessageContext.getRequest().getUserPrincipal() != null) {
+        if (httpMessageContext.getRequest().getUserPrincipal() != null) {
             httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
             return AuthenticationStatus.SUCCESS;
         }
@@ -146,10 +146,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                 if (status == AuthenticationStatus.SUCCESS) {
                     Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
                     messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
-                    if (isJaspicSessionEnabled()) {
-                        messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
-                        utils.setCacheKey(clientSubject);
-                    }
+                    messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+                    utils.setCacheKey(clientSubject);
                     rspStatus = HttpServletResponse.SC_OK;
                 } else if (status == AuthenticationStatus.NOT_DONE) {
                     // set SC_OK, since if the target is not protected, it'll be processed.
@@ -159,10 +157,6 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         }
         httpMessageContext.getResponse().setStatus(rspStatus);
         return status;
-    }
-
-    private boolean isJaspicSessionEnabled() {
-        return getWebAppSecurityConfig().isJaspicSessionEnabled();
     }
 
     @Sensitive
@@ -192,10 +186,6 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             return modulePropertiesProivderInstance.get();
         }
         return null;
-    }
-
-    protected WebAppSecurityConfig getWebAppSecurityConfig() {
-        return WebConfigUtils.getWebAppSecurityConfig();
     }
 
     // this is for unit test.

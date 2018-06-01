@@ -62,7 +62,6 @@ import com.ibm.ws.security.jaspi.JaspiMessageInfo;
 import com.ibm.ws.security.javaeesec.CDIHelperTestWrapper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
-import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class BasicHttpAuthenticationMechanismTest {
@@ -74,8 +73,6 @@ public class BasicHttpAuthenticationMechanismTest {
     };
 
     private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
-    private static final boolean DOES_NOT_REGISTER_NEW_JASPIC_SESSION = false;
-    private static final boolean REGISTERS_NEW_JASPIC_SESSION = true;
 
     private BasicHttpAuthenticationMechanism mechanism;
     private String realmName;
@@ -103,7 +100,6 @@ public class BasicHttpAuthenticationMechanismTest {
     private BasicAuthenticationCredential baCred;
     private UsernamePasswordCredential upCred, invalidUpCred;
     private boolean isRegistryAvailable = true;
-    private WebAppSecurityConfig webAppSecurityConfig;
 
     @Before
     public void setUp() {
@@ -120,10 +116,6 @@ public class BasicHttpAuthenticationMechanismTest {
             @Override
             protected CDI getCDI() {
                 return cdi;
-            }
-            @Override
-            protected WebAppSecurityConfig getWebAppSecurityConfig() {
-                return webAppSecurityConfig;
             }
         };
         realmName = "My Basic Realm";
@@ -151,7 +143,6 @@ public class BasicHttpAuthenticationMechanismTest {
         cdis = mockery.mock(CDIService.class);
         cdiHelperTestWrapper = new CDIHelperTestWrapper(mockery, null);
         cdiHelperTestWrapper.setCDIService(cdis);
-        webAppSecurityConfig = mockery.mock(WebAppSecurityConfig.class);
     }
 
     @After
@@ -164,7 +155,8 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequest() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
         assertSubjectContents(realmName, principalName);
     }
 
@@ -175,7 +167,8 @@ public class BasicHttpAuthenticationMechanismTest {
         validResult = new CredentialValidationResult(storeId, callerPrincipal, "callerDn", callerUniqueId, groups);
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
         assertSubjectContents(storeId, callerUniqueId);
     }
 
@@ -183,14 +176,16 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAndUnprotectedResource() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestAuthenticatePath() throws Exception {
         authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
         assertSubjectContents(realmName, principalName);
     }
 
@@ -198,13 +193,15 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAuthenticatePathAndUnprotectedResource() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestWithInvalidResult() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -212,6 +209,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithInvalidResultAndUnprotectedResource() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -219,6 +217,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAuthenticatePathWithInvalidResult() throws Exception {
         authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -226,6 +225,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAuthenticatePathWithInvalidResultAndUnprotectedResource() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -234,6 +234,7 @@ public class BasicHttpAuthenticationMechanismTest {
         String badAuthzHeader = "Basic ";
         preInvokePathForProtectedResource(badAuthzHeader);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -242,6 +243,7 @@ public class BasicHttpAuthenticationMechanismTest {
         String badAuthzHeader = "Basic  ";
         preInvokePathForProtectedResource(badAuthzHeader);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -250,6 +252,7 @@ public class BasicHttpAuthenticationMechanismTest {
         String badAuthzHeader = "Basic     ";
         preInvokePathForProtectedResource(badAuthzHeader);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -258,6 +261,7 @@ public class BasicHttpAuthenticationMechanismTest {
         String badAuthzHeader = "Basic " + Base64Coder.base64Encode("headerWithoutColon");
         preInvokePathForProtectedResource(badAuthzHeader);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -266,6 +270,7 @@ public class BasicHttpAuthenticationMechanismTest {
         String badAuthzHeader = "Basic " + Base64Coder.base64Encode(":headerWithoutUser");
         preInvokePathForProtectedResource(badAuthzHeader);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -274,6 +279,7 @@ public class BasicHttpAuthenticationMechanismTest {
         String badAuthzHeader = "Basic " + Base64Coder.base64Encode("headerWithoutPassword:");
         preInvokePathForProtectedResource(badAuthzHeader);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -281,6 +287,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithoutAuthorizationHeader() throws Exception {
         preInvokePathForProtectedResource(null);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertMechanismChallenges();
     }
 
@@ -288,6 +295,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithoutAuthorizationHeaderAndUnprotectedResource() throws Exception {
         preInvokePathForUnprotectedResource(null).doesNotChallengeAuthorizationHeader();
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
 
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.NOT_DONE.", AuthenticationStatus.NOT_DONE, status);
@@ -297,6 +305,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAuthenticatePathWithoutAuthorizationHeader() throws Exception {
         authenticatePathForProtectedResource(null);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertMechanismChallenges();
     }
 
@@ -304,6 +313,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAuthenticatePathWithoutAuthorizationHeaderAndUnprotectedResource() throws Exception {
         authenticatePathForUnprotectedResource(null);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertMechanismChallenges();
     }
 
@@ -317,13 +327,15 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedNoUserRegistry() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestNOTDONE();
     }
 
@@ -332,7 +344,8 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
@@ -340,6 +353,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -348,6 +362,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -356,7 +371,8 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
@@ -364,7 +380,8 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
@@ -372,6 +389,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -380,6 +398,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -388,7 +407,8 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
@@ -396,7 +416,8 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
@@ -404,6 +425,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -412,6 +434,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -420,7 +443,8 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
@@ -428,7 +452,8 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(true);
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        withoutJaspicSessionPrincipal();
+        assertValidateRequestSUCCESS();
     }
 
     @Test
@@ -436,6 +461,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -444,6 +470,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
 
@@ -451,6 +478,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestNewAuthenticateBasicAuthCredSuccess() throws Exception {
         withNewAuthenticate(baCred).withIdentityStoreHandlerResult(validResult);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestSUCCESSwoHttpResponse();
         assertSubjectContents(realmName, principalName);
     }
@@ -459,6 +487,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestNewAuthenticateUsernamePasswordCredSuccess() throws Exception {
         withNewAuthenticate(upCred).withIdentityStoreHandlerResult(validResult);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestSUCCESSwoHttpResponse();
         assertSubjectContents(realmName, principalName);
     }
@@ -467,6 +496,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestNewAuthenticateInvalidUsernamePasswordCredFailure() throws Exception {
         withNewAuthenticate(invalidUpCred).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILUREwoHttpResponse();
     }
 
@@ -474,6 +504,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestNewAuthenticateInvalidCredentialFailure() throws Exception {
         withNewAuthenticate(coCred).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        withoutJaspicSessionPrincipal();
         assertValidateRequestFAILUREwoHttpResponse();
     }
 
@@ -481,18 +512,9 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestRegistersJaspicSession() throws Exception {
         setHttpMessageContextExpectations(true).withAuthParamsExpectations(null).withAuthorizationHeader(authzHeader).withAuthenticationRequest(false);
         withIdentityStoreHandlerResult(validResult);
-        withJaspicSessionEnabled(true);
         withoutJaspicSessionPrincipal();
         setModulePropertiesProvider(realmName);
-        assertValidateRequestSUCCESS(REGISTERS_NEW_JASPIC_SESSION);
-    }
-
-    @Test
-    public void testValidateRequestWithJaspicSessionPrincipal() throws Exception {
-        setHttpMessageContextExpectations(true);
-        withJaspicSessionEnabled(true);
-        withJaspicSessionPrincipal();
-        assertValidateRequestSUCCESS(DOES_NOT_REGISTER_NEW_JASPIC_SESSION);
+        assertValidateRequestSUCCESS();
     }
 
     private void withoutJaspicSessionPrincipal() {
@@ -516,7 +538,6 @@ public class BasicHttpAuthenticationMechanismTest {
 
     private BasicHttpAuthenticationMechanismTest preInvokePathForProtectedResourceWithJaspicSessionEnabled(String authzHeader) {
         setHttpMessageContextExpectations(true).withAuthorizationHeader(authzHeader).withAuthenticationRequest(false);
-        withJaspicSessionEnabled(true);
         return this;
     }
 
@@ -538,31 +559,26 @@ public class BasicHttpAuthenticationMechanismTest {
 
     private BasicHttpAuthenticationMechanismTest preInvokePathForProtectedResource(String authzHeader) {
         setHttpMessageContextExpectations(true).withAuthParamsExpectations(null).withAuthorizationHeader(authzHeader).withAuthenticationRequest(false);
-        withJaspicSessionEnabled(false);
         return this;
     }
 
     private BasicHttpAuthenticationMechanismTest preInvokePathForUnprotectedResource(String authzHeader) {
         setHttpMessageContextExpectations(false).withAuthParamsExpectations(null).withAuthorizationHeader(authzHeader).withAuthenticationRequest(false);
-        withJaspicSessionEnabled(false);
         return this;
     }
 
     private BasicHttpAuthenticationMechanismTest authenticatePathForProtectedResource(String authzHeader) {
         setHttpMessageContextExpectations(true).withAuthParamsExpectations(null).withAuthorizationHeader(authzHeader).withAuthenticationRequest(true);
-        withJaspicSessionEnabled(false);
         return this;
     }
 
     private BasicHttpAuthenticationMechanismTest authenticatePathForUnprotectedResource(String authzHeader) {
         setHttpMessageContextExpectations(false).withAuthParamsExpectations(null).withAuthorizationHeader(authzHeader).withAuthenticationRequest(true);
-        withJaspicSessionEnabled(false);
         return this;
     }
 
     private BasicHttpAuthenticationMechanismTest withNewAuthenticate(Credential cred) {
         setHttpMessageContextExpectations(true).setNewAuthenticateExpectations().withAuthParamsExpectations(ap).withCredentialExpectations(cred);
-        withJaspicSessionEnabled(false);
         return this;
     }
 
@@ -784,31 +800,16 @@ public class BasicHttpAuthenticationMechanismTest {
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SUCCESS.", AuthenticationStatus.SUCCESS, status);
     }
 
-    private void assertValidateRequestSUCCESS(boolean registersNewJaspicSession) throws AuthenticationException {
+    private void assertValidateRequestSUCCESS() throws AuthenticationException {
         withResponseStatus(HttpServletResponse.SC_OK);
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SUCCESS.", AuthenticationStatus.SUCCESS, status);
-        assertRegisterSessionProperty(registersNewJaspicSession);
+        assertRegisterSessionProperty();
     }
 
-    private BasicHttpAuthenticationMechanismTest withJaspicSessionEnabled(final boolean enabled) {
-        mockery.checking(new Expectations() {
-            {
-                allowing(webAppSecurityConfig).isJaspicSessionEnabled();
-                will(returnValue(enabled));
-            }
-        });
-        return this;
-    }
-
-    private void assertRegisterSessionProperty(boolean registersNewJaspicSession) {
-        if (registersNewJaspicSession) {
-            assertTrue("The javax.servlet.http.registerSession property must be set in the MessageInfo's map.",
-                       Boolean.valueOf((String) httpMessageContext.getMessageInfo().getMap().get("javax.servlet.http.registerSession")));
-        } else {
-            assertNull("The javax.servlet.http.registerSession property must not be set in the MessageInfo's map.",
-                       httpMessageContext.getMessageInfo().getMap().get("javax.servlet.http.registerSession"));
-        }
+    private void assertRegisterSessionProperty() {
+        assertTrue("The javax.servlet.http.registerSession property must be set in the MessageInfo's map.",
+                   Boolean.valueOf((String) httpMessageContext.getMessageInfo().getMap().get("javax.servlet.http.registerSession")));
     }
 
     private BasicHttpAuthenticationMechanismTest withResponseStatus(final int responseStatus) {

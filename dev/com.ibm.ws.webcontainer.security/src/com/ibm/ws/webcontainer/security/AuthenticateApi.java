@@ -183,7 +183,7 @@ public class AuthenticateApi {
 
         if (jaspiService != null && existsJaspicSessionCookie(req, config)) {
             // need to clean up jaspiSession.
-            SSOCookieHelper ssoCh = new SSOCookieHelperImpl(config, config.getJaspicSessionCookieName());
+            SSOCookieHelper ssoCh = new SSOCookieHelperImpl(config, "jaspicSession");
             ssoCh.removeSSOCookieFromResponse(res);
             ssoCh.createLogoutCookies(req, res);
         }
@@ -326,7 +326,7 @@ public class AuthenticateApi {
         String ssoCookieName;
         if (getJaspiService() != null && existsJaspicSessionCookie(req, config)) {
             // remove jaspiSession.
-            ssoCookieName = config.getJaspicSessionCookieName();
+            ssoCookieName = "jaspicSession";
         } else {
             ssoCookieName = ssoCookieHelper.getSSOCookiename();
         }
@@ -619,10 +619,9 @@ public class AuthenticateApi {
     }
 
     private boolean existsJaspicSessionCookie(HttpServletRequest req, WebAppSecurityConfig config) {
-        String cookieName = config.getJaspicSessionCookieName();
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
-            if (CookieHelper.getCookieValues(cookies, cookieName) != null) {
+            if (CookieHelper.getCookieValues(cookies, "jaspicSession") != null) {
                 return true;
             }
         }

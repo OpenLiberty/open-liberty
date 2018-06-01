@@ -114,7 +114,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         if (isNewAuth || authResult.getStatus() == AuthResult.CONTINUE) { // no ltpatoken
             // JASPI session requires the subject from the previous invocation
             // to be passed in to the JASPI provider on subsequent calls
-            authResult = handleSSO(webRequest, webAppSecurityConfig.getJaspicSessionCookieName());
+            authResult = handleSSO(webRequest, "jaspicSession");
             if (!isNewAuth && authResult.getStatus() == AuthResult.SUCCESS) {
                 Map<String, Object> requestProps = new HashMap<String, Object>();
                 requestProps.put("javax.servlet.http.registerSession.subject", authResult.getSubject());
@@ -180,7 +180,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             }
         }
         if (registerSession) {
-            final SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, webAppSecurityConfig.getJaspicSessionCookieName());
+            final SSOCookieHelper ssoCh = new SSOCookieHelperImpl(webAppSecurityConfig, "jaspicSession");
             if (System.getSecurityManager() == null) {
                 ssoCh.addSSOCookiesToResponse(authResult.getSubject(), webRequest.getHttpServletRequest(), webRequest.getHttpServletResponse());
             } else {
