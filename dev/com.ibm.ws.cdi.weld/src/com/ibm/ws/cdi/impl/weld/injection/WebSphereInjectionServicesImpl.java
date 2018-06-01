@@ -138,13 +138,29 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
     }
 
     private Boolean inject(final InjectionContext<?> injectionContext) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "inject", new Object[] { Util.identity(injectionContext) });
+        }
+
+        Boolean hasTargets = Boolean.FALSE;
 
         Object toInject = injectionContext.getTarget();
+        if (toInject != null) {
+            hasTargets = inject(toInject, injectionContext);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "inject", hasTargets);
+        }
+        return hasTargets;
+    }
+
+    private Boolean inject(Object toInject, final InjectionContext<?> injectionContext) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "inject", new Object[] { Util.identity(toInject), Util.identity(injectionContext) });
+        }
+
         Class<?> clazz = toInject.getClass();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "inject", new Object[] { Util.identity(injectionContext), Util.identity(toInject) });
-
         Boolean hasTargets = Boolean.FALSE;
 
         InjectionTarget[] targets = getInjectionTargets(clazz, toInject);
