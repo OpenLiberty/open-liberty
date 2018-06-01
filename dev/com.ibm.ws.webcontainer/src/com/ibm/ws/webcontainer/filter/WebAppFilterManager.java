@@ -947,11 +947,6 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
     public void doFilter(ServletRequest request, ServletResponse response, RequestProcessor requestProcessor,
                          WebAppDispatcherContext dispatchContext) throws ServletException, IOException {
-        doFilter(request, response, requestProcessor, dispatchContext, null);
-    }
-
-    private void doFilter(ServletRequest request, ServletResponse response, RequestProcessor requestProcessor,
-                          WebAppDispatcherContext dispatchContext, HttpInboundConnection hic) throws ServletException, IOException {         
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
             logger.entering(CLASS_NAME, "doFilter");
@@ -999,7 +994,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         }
 
         // invoke the first filter
-        fc.doFilter(request, response, hic);
+        fc.doFilter(request, response);
         if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
             logger.exiting(CLASS_NAME, "doFilter");
         }
@@ -1137,7 +1132,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### calling doFilter");
 
-                doFilter(request, response, requestProcessor, dispatchContext, httpInboundConnection);
+                doFilter(request, response, requestProcessor, dispatchContext);
             }
             else {
 

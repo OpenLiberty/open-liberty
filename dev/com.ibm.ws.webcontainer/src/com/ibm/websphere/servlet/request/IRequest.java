@@ -19,7 +19,6 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 
 import com.ibm.websphere.servlet.response.IResponse;
-import com.ibm.wsspi.http.HttpInboundConnection;
 
 /**
  * 

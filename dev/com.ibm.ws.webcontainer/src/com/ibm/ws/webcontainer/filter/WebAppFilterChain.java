@@ -52,8 +52,6 @@ public class WebAppFilterChain implements FilterChain {
 protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.filter");
 	private static final String CLASS_NAME="com.ibm.ws.webcontainer.filter.WebAppFilterChain";
     private WebApp webapp = null; // PK02277: Cache the webapp
-    private HttpInboundConnection httpInboundConnection = null;
-
 
     public WebAppFilterChain() {
     }
@@ -72,21 +70,13 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
      * @return a String containing the filter name
      */
     public void doFilter(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-        doFilter(request, response, null); 
-    }
-
-    protected void doFilter(ServletRequest request, ServletResponse response, HttpInboundConnection hic) throws ServletException, IOException {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
             logger.logp(Level.FINE, CLASS_NAME,"doFilter", "entry");
 
-        if (hic != null) {
-            // keep a reference to this HttpInboundConnection for later in filter execution
-            this.httpInboundConnection = hic;
-        }
         try {
             // if there are no filters, just invoke the requested servlet
             if (!_filtersDefined) {
-                    invokeTarget(request, response, httpInboundConnection);
+                    invokeTarget(request, response);
             }
             else {
                 // increment the filter index
@@ -101,7 +91,7 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                      wrapper.doFilter(request, response, this);
                 }
                 else {
-                    invokeTarget(request, response, httpInboundConnection);
+                    invokeTarget(request, response);
                 }
             }
         }
@@ -144,7 +134,7 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
             logger.logp(Level.FINE, CLASS_NAME,"doFilter", "exit");
     }
 
-    private void invokeTarget(ServletRequest request, ServletResponse response, HttpInboundConnection httpInboundConnection) throws Exception {
+    private void invokeTarget(ServletRequest request, ServletResponse response) throws Exception {
         if (requestProcessor != null) {
             HttpServletRequest httpRequest = (HttpServletRequest) ServletUtil.unwrapRequest(request, HttpServletRequest.class);
             HttpServletResponse httpResponse = (HttpServletResponse) ServletUtil.unwrapResponse(response, HttpServletResponse.class);
@@ -166,6 +156,7 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                         logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", " looking at H2 upgrade");
                     }
+                    HttpInboundConnection httpInboundConnection = null;
                     if (request instanceof SRTServletRequest) {
                         SRTServletRequest srtReq = (SRTServletRequest)request;
                         IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
@@ -184,7 +175,6 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "upgrading to H2");
                             }
                             h2Handler.handleRequest(httpInboundConnection, httpRequest, httpResponse);
-                            this.httpInboundConnection = null;
                         }
                     }
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
