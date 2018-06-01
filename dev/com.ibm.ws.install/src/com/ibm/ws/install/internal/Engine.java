@@ -84,6 +84,27 @@ public class Engine {
     }
 
     /**
+     * Installs Feature while skipping dependency check
+     *
+     * @param installAsset InstallAsset to install
+     * @param filesInstalled List of files to be installed
+     * @param featuresToBeInstalled Collection of feature names to install
+     * @param existsAction Action to take if asset exists
+     * @param executableFiles Set of executable file names
+     * @param extattrFiles Extendible attribute files as a set
+     * @param downloadDependencies If dependencies should be downloaded
+     * @param proxy RestRepositoryConnectionProxy to connect to
+     * @param checksumsManager ChecksumsManager for installed files
+     * @throws IOException
+     * @throws InstallException
+     */
+    public void installFeatureNoDependencyCheck(InstallAsset installAsset, List<File> filesInstalled, Collection<String> featuresToBeInstalled, ExistsAction existsAction,
+                                                Set<String> executableFiles, Map<String, Set<String>> extattrFiles, boolean downloadDependencies,
+                                                RestRepositoryConnectionProxy proxy, ChecksumsManager checksumsManager) throws IOException, InstallException {
+        ESAAdaptor.install(product, (ESAAsset) installAsset, filesInstalled, featuresToBeInstalled, existsAction, executableFiles, extattrFiles, checksumsManager, true);
+    }
+
+    /**
      * Determines which install method to call based on the type of uninstallAsset
      *
      * @param uninstallAsset UninstallAsset to uninstall

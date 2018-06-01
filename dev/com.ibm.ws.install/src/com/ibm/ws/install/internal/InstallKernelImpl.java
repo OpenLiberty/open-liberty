@@ -172,7 +172,7 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
     }
 
     public Collection<String> installLocalFeatureNoResolve(String esaLocation, String toExtension, boolean acceptLicense,
-                                                  ExistsAction existsAction) throws InstallException {
+                                                           ExistsAction existsAction) throws InstallException {
         this.director.log(Level.FINE,
                           Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_INSTALL_FEATURES", esaLocation));
         this.director.fireProgressEvent(InstallProgressEvent.BEGIN, 0,
@@ -181,7 +181,7 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
         try {
             this.director.refresh();
             this.director.installFeatureNoResolve(esaLocation, toExtension, acceptLicense);
-            this.director.install(existsAction, false, false);
+            this.director.install(existsAction, false, false, true);
             installed = this.director.getInstalledFeatureNames();
             this.director.reapplyFixIfNeeded();
         } catch (InstallException e) {

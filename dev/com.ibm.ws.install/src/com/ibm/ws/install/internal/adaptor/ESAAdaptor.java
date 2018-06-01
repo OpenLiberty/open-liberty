@@ -103,12 +103,19 @@ public class ESAAdaptor extends ArchiveAdaptor {
 
     public static void install(Product product, ESAAsset featureAsset, List<File> filesInstalled, Collection<String> featuresToBeInstalled, ExistsAction existsAction,
                                Set<String> executableFiles, Map<String, Set<String>> extattrFiles, ChecksumsManager checksumsManager) throws IOException, InstallException {
+        install(product, featureAsset, filesInstalled, featuresToBeInstalled, existsAction, executableFiles, extattrFiles, checksumsManager, false);
+    }
+
+    public static void install(Product product, ESAAsset featureAsset, List<File> filesInstalled, Collection<String> featuresToBeInstalled, ExistsAction existsAction,
+                               Set<String> executableFiles, Map<String, Set<String>> extattrFiles, ChecksumsManager checksumsManager,
+                               boolean skipFeatureDependencyCheck) throws IOException, InstallException {
         ProvisioningFeatureDefinition featureDefinition = featureAsset.getProvisioningFeatureDefinition();
         if (featureDefinition == null)
             return;
 
         try {
-            install(product, featureAsset, featureDefinition, filesInstalled, featuresToBeInstalled, existsAction, executableFiles, extattrFiles, checksumsManager);
+            install(product, featureAsset, featureDefinition, filesInstalled, featuresToBeInstalled, existsAction, executableFiles, extattrFiles, checksumsManager,
+                    skipFeatureDependencyCheck);
         } catch (IOException e) {
             InstallUtils.delete(filesInstalled);
             throw e;
@@ -120,7 +127,7 @@ public class ESAAdaptor extends ArchiveAdaptor {
 
     private static void install(Product product, ESAAsset featureAsset, ProvisioningFeatureDefinition featureDefinition, List<File> filesInstalled,
                                 Collection<String> featuresToBeInstalled, ExistsAction existsAction, Set<String> executableFiles, Map<String, Set<String>> extattrFiles,
-                                ChecksumsManager checksumsManager) throws IOException, InstallException {
+                                ChecksumsManager checksumsManager, boolean skipFeatureDependencyCheck) throws IOException, InstallException {
         File baseDir;
         String repoType = featureAsset.getRepoType();
         boolean installToCore = ManifestFileProcessor.CORE_PRODUCT_NAME.equals(featureDefinition.getHeader("IBM-InstallTo"));
@@ -197,13 +204,13 @@ public class ESAAdaptor extends ArchiveAdaptor {
                                     featureDefinition, fr, processedEntries, checksumInput, checksumOutput, executableFiles, extattrFiles, checksumsManager);
 
                 }
-            } else if (SubsystemContentType.FEATURE_TYPE == type) {
+            } else if (SubsystemContentType.FEATURE_TYPE == type && !skipFeatureDependencyCheck) {
                 // Look to see if the feature already exists and try to find it in the same place as the current ESA if we don't have it
                 String symName = fr.getSymbolicName();
                 if (!product.containsFeature(symName) && !product.containsFeatureCollection(symName) && !featuresToBeInstalled.contains(symName)) {
                     throw new InstallException(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.missing.feature", featureDefinition.getSymbolicName(), symName));
                 }
-            } else if (ibmFeature) {
+            } else if (ibmFeature && !skipFeatureDependencyCheck) {
                 String resourceLoc = fr.getLocation();
                 if (resourceLoc == null || resourceLoc.contains(",")) {
                     // we can't deal with this because we don't know the location.
