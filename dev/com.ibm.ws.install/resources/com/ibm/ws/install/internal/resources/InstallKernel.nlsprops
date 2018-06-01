@@ -434,7 +434,7 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} is not a feature a
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Only features can be installed on a product extension.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Run the installUtility install command again without specifying the extension.
 
-ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E:The following features could not be obtained: {0}. Ensure that the features are valid for Open Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: The following features could not be obtained: {0}. Ensure that the features are valid for Open Liberty.
 ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=The installer could not retrieve the specified features from the connected repositories.
 ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=If specified features exist, ensure that they are valid for Open Liberty.
 
