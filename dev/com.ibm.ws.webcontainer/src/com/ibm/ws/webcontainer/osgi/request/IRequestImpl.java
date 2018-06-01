@@ -811,6 +811,7 @@ public class IRequestImpl implements IRequestExtended
   /**
    * @return HttpInboundConnection for this request
    */
+  @Override
   public HttpInboundConnection getHttpInboundConnection() {
       return this.conn;
   }
