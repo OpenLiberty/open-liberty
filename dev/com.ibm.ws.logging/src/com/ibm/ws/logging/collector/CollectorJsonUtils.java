@@ -127,7 +127,7 @@ public class CollectorJsonUtils {
         StringBuilder sb = CollectorJsonHelpers.startGCJson(hostName, wlpUserDir, serverName);
         for (KeyValuePair p : pairs) {
 
-            if (!p.isList()) {
+            if (p != null && !p.isList()) {
 
                 kvp = p;
                 key = kvp.getKey();

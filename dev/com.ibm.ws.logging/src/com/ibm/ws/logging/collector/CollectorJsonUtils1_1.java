@@ -119,7 +119,7 @@ public class CollectorJsonUtils1_1 {
 
         for (KeyValuePair p : pairs) {
 
-            if (!p.isList()) {
+            if (p != null && !p.isList()) {
 
                 kvp = p;
                 key = kvp.getKey();

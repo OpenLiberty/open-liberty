@@ -438,7 +438,7 @@ public class BaseTraceFormatter extends Formatter {
         Integer levelValue = null;
         for (KeyValuePair p : pairs) {
 
-            if (!p.isList()) {
+            if (p != null && !p.isList()) {
 
                 kvp = p;
                 if (kvp.getKey().equals(LogFieldConstants.FORMATTEDMSG)) {
@@ -514,7 +514,7 @@ public class BaseTraceFormatter extends Formatter {
         String throwable = null;
         for (KeyValuePair p : pairs) {
 
-            if (!p.isList()) {
+            if (p != null && !p.isList()) {
 
                 kvp = p;
                 if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
@@ -702,7 +702,7 @@ public class BaseTraceFormatter extends Formatter {
         String stackTrace = null;
         for (KeyValuePair p : pairs) {
 
-            if (!p.isList()) {
+            if (p != null && !p.isList()) {
 
                 kvp = p;
                 if (kvp.getKey().equals(LogFieldConstants.MESSAGE)) {
@@ -1078,7 +1078,7 @@ public class BaseTraceFormatter extends Formatter {
         ArrayList<KeyValuePair> pairs = genData.getPairs();
         for (KeyValuePair p : pairs) {
 
-            if (!p.isList()) {
+            if (p != null && !p.isList()) {
 
                 kvp = p;
                 if (kvp.getKey().equals("message")) {

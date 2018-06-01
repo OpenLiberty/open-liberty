@@ -88,7 +88,7 @@ public class GenericData {
         sb.append("GenericData [");
         sb.append("type=" + sourceType);
         for (KeyValuePair p : pairs) {
-            if (!p.isList()) {
+            if (p != null && !p.isList()) {
                 kvp = p;
                 key = kvp.getKey();
                 sb.append(comma);
