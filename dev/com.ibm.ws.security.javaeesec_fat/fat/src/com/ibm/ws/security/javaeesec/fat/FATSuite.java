@@ -49,7 +49,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 SecurityContextJaxRSTest.class,
                 SecurityContextEJBTest.class,
                 DatabaseIdentityStoreDeferredSettingsTest.class,
-//                DatabaseIdentityStoreImmediateSettingsTest.class,
+                DatabaseIdentityStoreImmediateSettingsTest.class,
                 EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
                 MultipleModuleGlobalLoginTest.class,
