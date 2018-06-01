@@ -130,6 +130,7 @@ public class InstallMap implements Map {
     private static final String RUNTIME_INSTALL_DIR = "runtime.install.dir";
     private static final String INSTALL_KERNEL_INIT_CODE = "install.kernel.init.code";
     private static final String INSTALL_KERNEL_JAR = "install.map.jar";
+    private static final String OVERRIDE_JAR_BUNDLES = "override.jar.bundles";
     private static final String INSTALL_KERNEL_INIT_ERROR_MESSAGE = "install.kernel.init.error.message";
     private static final String MESSAGE_LOCALE = "message.locale";
 
@@ -289,6 +290,12 @@ public class InstallMap implements Map {
                 } else {
                     throw new IllegalArgumentException();
                 }
+            } else if (OVERRIDE_JAR_BUNDLES.equals(key)) {
+                if (value instanceof List) {
+                    return data.put(OVERRIDE_JAR_BUNDLES, value);
+                } else {
+                    throw new IllegalArgumentException();
+                }
             } else {
                 data.put(INSTALL_KERNEL_INIT_CODE, ERROR);
                 data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, getMessage("MAPBASED_ERROR_KERNEL_NOT_INIT"));
@@ -409,14 +416,45 @@ public class InstallMap implements Map {
         List<URL> jarURLs = new ArrayList<URL>();
         try {
             installKernelJar = new JarFile(new File(installDir, (String) data.get(INSTALL_KERNEL_JAR)));
+            List<String> overrideList = (List<String>) data.get(OVERRIDE_JAR_BUNDLES);
+            boolean doOverride = overrideList != null;
+            Map<String, File> overrideJarMap = null;
+            if (doOverride) {
+                overrideJarMap = getBundleFileMap(overrideList);
+            }
+            if (overrideJarMap == null) {
+                doOverride = false;
+            }
             Manifest manifest = installKernelJar.getManifest();
             Attributes attributes = manifest.getMainAttributes();
             String[] requireBundles = attributes.getValue("Require-Bundle").split(",");
             for (String requireBundle : requireBundles) {
                 String[] bundle = requireBundle.split(";");
                 URL url = getURL(installDir, bundle);
-                if (url != null)
-                    jarURLs.add(url);
+                if (url != null) {
+                    if (doOverride) {
+                        boolean jarFound = false;
+                        for (String bundleName : overrideJarMap.keySet()) {
+                            if (isBundleInUrl(url.toURI().toURL().toString(), bundleName)) {
+                                jarFound = true;
+                                jarURLs.add(overrideJarMap.get(bundleName).toURI().toURL());
+                                overrideJarMap.put(bundleName, null);
+                            }
+                        }
+                        if (!jarFound) {
+                            jarURLs.add(url);
+                        }
+                    } else {
+                        jarURLs.add(url);
+                    }
+                }
+            }
+            if (doOverride) {
+                for (String remainingBundle : overrideJarMap.keySet()) {
+                    if (overrideJarMap.get(remainingBundle) != null) {
+                        jarURLs.add(overrideJarMap.get(remainingBundle).toURI().toURL());
+                    }
+                }
             }
         } catch (Exception e) {
             data.put(INSTALL_KERNEL_INIT_ERROR_MESSAGE, e.getMessage());
@@ -430,6 +468,44 @@ public class InstallMap implements Map {
             }
         }
         return jarURLs.toArray(new URL[jarURLs.size()]);
+    }
+
+    private boolean isBundleInUrl(String urlPath, String bundleName) {
+        boolean bundleInUrl = false;
+        String[] splitBundlePath = urlPath.split("/");
+
+        for (String item : splitBundlePath) {
+            if (item.endsWith(".jar")) {
+                String[] splitOnUnderscore = item.split("_");
+                for (String str : splitOnUnderscore) {
+                    if (str.equals(bundleName)) {
+                        bundleInUrl = true;
+                    }
+                }
+            }
+        }
+        return bundleInUrl;
+    }
+
+    private Map<String, File> getBundleFileMap(List<String> bundleList) {
+        Map<String, File> bundleNameToFile = new HashMap<String, File>();
+
+        for (String bundle : bundleList) {
+            String[] bundleSplit = bundle.split(";");
+            String bundleName = "";
+            String bundleFilePath = "";
+            for (String item : bundleSplit) {
+                if (item.contains(".jar")) {
+                    bundleFilePath = item;
+                } else {
+                    bundleName = item;
+                }
+            }
+            if (bundleName != "" && bundleFilePath != "") {
+                bundleNameToFile.put(bundleName, new File(bundleFilePath));
+            }
+        }
+        return bundleNameToFile;
     }
 
     @SuppressWarnings("unchecked")

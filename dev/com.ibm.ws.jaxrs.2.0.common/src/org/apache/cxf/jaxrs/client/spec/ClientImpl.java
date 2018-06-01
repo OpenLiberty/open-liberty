@@ -46,6 +46,7 @@ import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.ClientProviderFactory;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.apache.cxf.jaxrs.model.FilterProviderInfo;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.https.SSLUtils;
@@ -502,7 +503,7 @@ public class ClientImpl implements Client {
             return newWebTarget(getUriBuilder().resolveTemplatesFromEncoded(templatesMap));
         }
 
-        private WebTarget newWebTarget(UriBuilder newBuilder) {
+        protected WebTarget newWebTarget(UriBuilder newBuilder) { // Liberty Change
             WebClient newClient;
             if (targetClient != null) {
                 newClient = WebClient.fromClient(targetClient);

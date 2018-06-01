@@ -444,10 +444,14 @@ public class JavaEESecTestBase {
      */
 
     public String executeFormLogin(HttpClient httpclient, String url, String username, String password, boolean redirect) throws Exception {
-        return executeFormLogin(httpclient, url, username, password, redirect, null);
+        return executeFormLogin(httpclient, url, username, password, redirect, null, null);
     }
 
     public String executeFormLogin(HttpClient httpclient, String url, String username, String password, boolean redirect, String description) throws Exception {
+        return executeFormLogin(httpclient, url, username, password, redirect, description, null);
+    }
+
+    public String executeFormLogin(HttpClient httpclient, String url, String username, String password, boolean redirect, String description, String[] cookies) throws Exception {
         String methodName = "executeFormLogin";
         Log.info(logClass, methodName, "Submitting Login form (POST) =  " + url + " username =" + username + " password=" + password + " description=" + description);
 
@@ -477,18 +481,25 @@ public class JavaEESecTestBase {
 
             location = header.getValue();
             Log.info(logClass, methodName, "Redirect location:  " + location);
-
             Log.info(logClass, methodName, "Modified Redirect location:  " + location);
         } else {
             // Verify we got a 200 from the servlet
             int status = response.getStatusLine().getStatusCode();
             assertTrue("Form login did not result in redirect: " + status, status == HttpServletResponse.SC_OK);
         }
-
+        if (cookies != null) {
+            for(String cookie : cookies) {
+                Header cookieHeader = getCookieHeader(response, cookie);
+                assertCookie(cookieHeader.toString(), false, true);
+            }
+        }
         return location;
     }
 
     public String executeCustomFormLogin(HttpClient httpclient, String url, String username, String password, String viewState) throws Exception {
+        return executeCustomFormLogin(httpclient, url, username, password, viewState, null);
+    }
+    public String executeCustomFormLogin(HttpClient httpclient, String url, String username, String password, String viewState, String[] cookies) throws Exception {
         String methodName = "executeCustomFormLogin";
         Log.info(logClass, methodName, "Submitting custom login form (POST) =  " + url + ", username = " + username + ", password = " + password + ", viewState = " + viewState);
 
@@ -518,6 +529,13 @@ public class JavaEESecTestBase {
         Header header = response.getFirstHeader("Location");
         String location = header.getValue();
         Log.info(logClass, methodName, "Redirect location:  " + location);
+
+        if (cookies != null) {
+            for(String cookie : cookies) {
+                Header cookieHeader = getCookieHeader(response, cookie);
+                assertCookie(cookieHeader.toString(), false, true);
+            }
+        }
         return location;
     }
 
@@ -529,6 +547,9 @@ public class JavaEESecTestBase {
      * @return
      */
     protected String accessPageNoChallenge(HttpClient client, String location, int expectedStatusCode, String message) {
+        return accessPageNoChallenge(client, location, expectedStatusCode, message, null);
+    }
+    protected String accessPageNoChallenge(HttpClient client, String location, int expectedStatusCode, String message, String[] cookies) {
         String methodName = "accessPageNoChallenge";
         Log.info(logClass, methodName, "accessPageNoChallenge: location =  " + location + " expectedStatusCode =" + expectedStatusCode);
 
@@ -546,6 +567,13 @@ public class JavaEESecTestBase {
             Log.info(logClass, methodName, "Servlet full response content: \n" + content);
 
             EntityUtils.consume(response.getEntity());
+
+            if (cookies != null) {
+                for(String cookie : cookies) {
+                    Header cookieHeader = getCookieHeader(response, cookie);
+                    assertCookie(cookieHeader.toString(), false, true);
+                }
+            }
 
             // Paranoia check, make sure we hit the right servlet
             if (response.getStatusLine().getStatusCode() == 200) {
@@ -821,5 +849,11 @@ public class JavaEESecTestBase {
             }
             serverConfigurationFile = serverXML;
         }
+    }
+
+    public void assertCookie(String cookieHeaderString, boolean secure, boolean httpOnly) {
+        assertTrue("The Path parameter must be set.", cookieHeaderString.contains("Path=/"));
+        assertEquals("The Secure parameter must" + (secure == true ? "" : " not" + " be set."), secure, cookieHeaderString.contains("Secure"));
+        assertEquals("The HttpOnly parameter must" + (httpOnly == true ? "" : " not" + " be set."), httpOnly, cookieHeaderString.contains("HttpOnly"));
     }
 }

@@ -636,7 +636,7 @@ public class InstallKernelMap implements Map {
                 toExtension = InstallConstants.TO_USER;
             }
             Collection<String> installedAssets = installKernel.installLocalFeatureNoResolve(esaFile.getAbsolutePath(), toExtension, true,
-                                                                                   InstallConstants.ExistsAction.replace);
+                                                                                            InstallConstants.ExistsAction.replace);
             data.put(ACTION_INSTALL_RESULT, installedAssets);
         } catch (InstallException e) {
             data.put(ACTION_RESULT, ERROR);

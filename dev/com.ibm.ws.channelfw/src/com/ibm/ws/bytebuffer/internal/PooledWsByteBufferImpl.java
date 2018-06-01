@@ -44,7 +44,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
     protected int actionState = COPY_ALL_INIT;
     protected final Object actionAccess = new Object();
 
-    private Object identifier = null;
+    private final Object identifier;
     /** number of references to this pool entry */
     transient public int intReferenceCount = 1;
 
@@ -66,6 +66,16 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
     public PooledWsByteBufferImpl() {
         super();
         this.wsBBRoot = this;
+        this.identifier = null;
+        // if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+        // Tr.event(tc, "Created " + this);
+        // }
+    }
+
+    public PooledWsByteBufferImpl(Object id) {
+        super();
+        this.wsBBRoot = this;
+        this.identifier = id;
         // if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
         // Tr.event(tc, "Created " + this);
         // }
@@ -73,7 +83,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
 
     /**
      * Access the ID for this buffer.
-     * 
+     *
      * @return Object
      */
     public Object getID() {
@@ -81,18 +91,9 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
     }
 
     /**
-     * Set the ID of this buffer to the input value.
-     * 
-     * @param id
-     */
-    public void setID(Object id) {
-        this.identifier = id;
-    }
-
-    /**
      * If leak detection is enabled, this is the table that keeps track of
      * buffers related to this one (itself plus dupes and slices).
-     * 
+     *
      * @return Hashtable<WsByteBuffer,WsByteBuffer>
      */
     public Hashtable<WsByteBuffer, WsByteBuffer> getallBuffers() {
@@ -101,7 +102,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
 
     /**
      * Add a related buffer to the stored list for this instance.
-     * 
+     *
      * @param buffer
      */
     public void addWsByteBuffer(WsByteBuffer buffer) {
@@ -113,7 +114,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
 
     /**
      * Remove a buffer from the stored list for this instance.
-     * 
+     *
      * @param buffer
      */
     public void removeWsByteBuffer(WsByteBuffer buffer) {
@@ -122,7 +123,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
 
     /**
      * Add the following owner to the list for this buffer.
-     * 
+     *
      * @param owner
      */
     public void addOwner(String owner) {
@@ -134,7 +135,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
 
     /**
      * Remove the input ID from the stored owners of this buffer.
-     * 
+     *
      * @param owner
      */
     public void removeOwner(String owner) {
@@ -152,7 +153,7 @@ public class PooledWsByteBufferImpl extends WsByteBufferImpl {
     /**
      * Return the debug information for this buffer, as it related to the input
      * owner.
-     * 
+     *
      * @param ownerID
      * @return String
      */

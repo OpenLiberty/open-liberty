@@ -406,7 +406,7 @@ public class Director extends AbstractDirector {
         singleFeatureInstall.add(esa);
         this.installAssets = new ArrayList<List<InstallAsset>>(1);
         this.installAssets.add(singleFeatureInstall);
-}
+    }
 
     /**
      * Installs the features found in the inputed featureIds collection
@@ -820,6 +820,103 @@ public class Director extends AbstractDirector {
                     engine.install(installAsset, filesInstalled, getFeaturesToBeInstalled(), existsAction, executableFiles, extattrFilesMap, downloadDependencies,
                                    getResolveDirector().getProxy(),
                                    checksumsManager);
+                    if (installAsset.isFeature() || installAsset.isAddon()) {
+                        ESAAsset esaa = ((ESAAsset) installAsset);
+                        if (esaa.isPublic()) {
+                            log(Level.FINE, installAsset.installedLogMsg());
+                        }
+                    } else {
+                        log(Level.FINE, installAsset.installedLogMsg());
+                    }
+                } catch (InstallException e) {
+                    log(Level.SEVERE, e.getMessage(), e);
+                    throw e;
+                } catch (IOException e) {
+                    throw ExceptionUtils.create(e);
+                } finally {
+                    installAsset.cleanup();
+                }
+            }
+
+            try {
+                InstallPlatformUtils.setExecutePermissionAccordingToUmask(executableFiles.toArray(new String[executableFiles.size()]));
+            } catch (Exception e) {
+                log(Level.WARNING, e.getMessage());
+                if (null != e.getCause()) {
+                    log(Level.SEVERE, null, e);
+                }
+
+                log(Level.WARNING, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS", executableFiles.toString()));
+            }
+
+            try {
+                InstallPlatformUtils.setExtendedAttributes(extattrFilesMap);
+            } catch (Exception e) {
+                log(Level.WARNING, e.getMessage());
+                if (null != e.getCause()) {
+                    log(Level.SEVERE, null, e);
+                }
+
+                for (Map.Entry<String, Set<String>> entry : extattrFilesMap.entrySet()) {
+                    String attr = entry.getKey();
+
+                    log(Level.WARNING, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_UNABLE_TO_SET_EXT_ATTR", attr, entry.getValue().toString()));
+                }
+            }
+            checkSetScriptsPermission(filesInstalled);
+        }
+        checksumsManager.updateChecksums();
+    }
+
+    /**
+     * Perform the installation of the determined install assets.
+     *
+     * @param existsAction What action should be taken if the asset exists as an ExistsAction object
+     * @param rollbackAll if features should be rolled back
+     * @param downloadDependencies if dependencies for features should be downloaded
+     * @throws InstallException
+     */
+    public void install(ExistsAction existsAction, boolean rollbackAll, boolean downloadDependencies, boolean skipDependencyCheck) throws InstallException {
+        if (installAssets.isEmpty())
+            return;
+        int progress = 50;
+        int interval1 = installAssets.size() == 0 ? 40 : 40 / installAssets.size();
+        List<File> filesInstalled = new ArrayList<File>();
+        ChecksumsManager checksumsManager = new ChecksumsManager();
+        for (List<InstallAsset> iaList : installAssets) {
+            int interval2 = iaList.size() == 0 ? interval1 : interval1 / (iaList.size() * 2);
+            if (!rollbackAll)
+                filesInstalled = new ArrayList<File>();
+            Set<String> executableFiles = new HashSet<String>();
+            Map<String, Set<String>> extattrFilesMap = new HashMap<String, Set<String>>();
+            for (InstallAsset installAsset : iaList) {
+                progress += interval2;
+                try {
+                    download(progress, installAsset);
+                } catch (InstallException e) {
+                    InstallUtils.delete(filesInstalled);
+                    installAsset.cleanup();
+                    throw e;
+                }
+                try {
+                    fireInstallProgressEvent(progress, installAsset);
+                } catch (CancelException e) {
+                    InstallUtils.delete(filesInstalled);
+                    installAsset.cleanup();
+                    throw e;
+                }
+                progress += interval2;
+                try {
+                    if (skipDependencyCheck) {
+                        engine.installFeatureNoDependencyCheck(installAsset, filesInstalled, getFeaturesToBeInstalled(), existsAction, executableFiles, extattrFilesMap,
+                                                               downloadDependencies,
+                                                               getResolveDirector().getProxy(),
+                                                               checksumsManager);
+                    } else {
+                        engine.install(installAsset, filesInstalled, getFeaturesToBeInstalled(), existsAction, executableFiles, extattrFilesMap, downloadDependencies,
+                                       getResolveDirector().getProxy(),
+                                       checksumsManager);
+                    }
                     if (installAsset.isFeature() || installAsset.isAddon()) {
                         ESAAsset esaa = ((ESAAsset) installAsset);
                         if (esaa.isPublic()) {

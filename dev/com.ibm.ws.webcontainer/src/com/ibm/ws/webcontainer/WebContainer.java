@@ -1197,13 +1197,6 @@ public abstract class WebContainer extends BaseContainer {
             }
             return;
         }
-        if (app.isUpgraded()) {
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
-            {
-                logger.logp(Level.FINE, CLASS_NAME, "addToCache", "will not cache upgraded WebApp");
-            }
-            return;
-        }
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
         {

@@ -44,6 +44,8 @@ import org.apache.cxf.jaxrs.model.URITemplate;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 public class UriBuilderImpl extends UriBuilder implements Cloneable {
 
     private String scheme;
@@ -889,6 +891,7 @@ public class UriBuilderImpl extends UriBuilder implements Cloneable {
     }
 
 
+    @FFDCIgnore(Exception.class) // Liberty Change
     public UriBuilder uri(String uriTemplate) throws IllegalArgumentException {
         if (StringUtils.isEmpty(uriTemplate)) {
             throw new IllegalArgumentException();
