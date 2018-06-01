@@ -41,11 +41,13 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.websphere.servlet.event.FilterListenerImpl;
+import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.collaborator.CollaboratorMetaDataImpl;
 import com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor;
 import com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor;
+import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.servlet.FileServletWrapper;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
@@ -945,11 +947,6 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
     public void doFilter(ServletRequest request, ServletResponse response, RequestProcessor requestProcessor,
                          WebAppDispatcherContext dispatchContext) throws ServletException, IOException {
-        doFilter(request, response, requestProcessor, dispatchContext, null);
-    }
-
-    private void doFilter(ServletRequest request, ServletResponse response, RequestProcessor requestProcessor,
-                          WebAppDispatcherContext dispatchContext, HttpInboundConnection hic) throws ServletException, IOException {         
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
             logger.entering(CLASS_NAME, "doFilter");
@@ -997,7 +994,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         }
 
         // invoke the first filter
-        fc.doFilter(request, response, hic);
+        fc.doFilter(request, response);
         if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
             logger.exiting(CLASS_NAME, "doFilter");
         }
@@ -1135,7 +1132,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### calling doFilter");
 
-                doFilter(request, response, requestProcessor, dispatchContext, httpInboundConnection);
+                doFilter(request, response, requestProcessor, dispatchContext);
             }
             else {
 
@@ -1167,14 +1164,23 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 upgrade");
                             // Check if this is an HTTP2 upgrade request
-                            if (httpInboundConnection != null && request instanceof HttpServletRequest) {
+                            if (request instanceof HttpServletRequest) {
                                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 handler");
                                 H2Handler h2Handler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getH2Handler();
                                 if (h2Handler != null) {
+                                    if (request instanceof SRTServletRequest) {
+                                        SRTServletRequest srtReq = (SRTServletRequest) request;
+                                        IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
+                                        if (iReq != null) {
+                                            httpInboundConnection = iReq.getHttpInboundConnection();
+                                            logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);
+                                        }
+                                    }
+
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                         logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at isH2Request");
-                                    if (h2Handler.isH2Request(httpInboundConnection, request)) {
+                                    if (httpInboundConnection != null && h2Handler.isH2Request(httpInboundConnection, request)) {
                                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
                                             logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "upgrading to H2");
                                         HttpServletRequest httpRequest = (HttpServletRequest) ServletUtil.unwrapRequest(request, HttpServletRequest.class);                                
@@ -1193,8 +1199,6 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                             IOException ioe = new IOException("Http2 received internal exception while handling request");
                                             throw ioe;
                                         }
-
-                                        webApp.setUpgraded();
                                     }
                                 }
                             }
