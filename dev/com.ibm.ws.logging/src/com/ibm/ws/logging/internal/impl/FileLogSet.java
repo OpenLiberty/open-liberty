@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class FileLogSet {
 
     /**
      * A pattern that matches a log with date and id.
-     *
+     * 
      * @see LoggingFileUtils#compileLogFileRegex
      */
     private Pattern filePattern;
@@ -116,7 +116,7 @@ public class FileLogSet {
 
     /**
      * Updates the configuration for this set of logs.
-     *
+     * 
      * @param directory the log directory
      * @param fileName the file base name (e.g., "messages")
      * @param fileExtension the file extension (e.g., ".log")
@@ -180,39 +180,25 @@ public class FileLogSet {
      * Creates a new file for this log set. If this is a rolling log, this will
      * rename the existing file and then return it on success. Otherwise, this
      * will return a new unique file.
-     *
+     * 
      * @return the file on success, or null on failure
      * @throws IOException
      */
     public File createNewFile() throws IOException {
-        return createNewFile(true);
-    }
-
-    /**
-     * Creates a new file for this log set. If this is a rolling log, this will
-     * rename the existing file and then return it on success. Otherwise, this
-     * will return a new unique file.
-     *
-     * @param show error message if showError is true
-     * @return the file on success, or null on failure
-     * @throws IOException
-     */
-    public File createNewFile(boolean showError) throws IOException {
-        if (LoggingFileUtils.validateDirectory(directory, showError) == null) {
+        if (LoggingFileUtils.validateDirectory(directory) == null) {
             return null;
         }
 
-        return rolling ? rollFile(showError) : createNewUniqueFile(null, showError);
+        return rolling ? rollFile() : createNewUniqueFile(null);
     }
 
     /**
      * Attempt to rename the base log file to a new log file, and then recreate
      * the base log file.
-     *
-     * @param show error message if showError is true
+     * 
      * @return the base log file
      */
-    private File rollFile(boolean showError) throws IOException {
+    private File rollFile() throws IOException {
         // If the base file exists, rename it and recreate it.
         File file = new File(directory, fileName + fileExtension);
         if (file.isFile()) {
@@ -222,18 +208,18 @@ public class FileLogSet {
             }
 
             if (maxFiles == 1) {
-                if (!LoggingFileUtils.deleteFile(file, showError)) {
+                if (!LoggingFileUtils.deleteFile(file)) {
                     // We failed to delete the file and issued a message.
                     return file;
                 }
-            } else if (createNewUniqueFile(file, showError) == null) {
+            } else if (createNewUniqueFile(file) == null) {
                 // We failed to rename (or copy + delete) the base file to a new
                 // file, and we already issued a message.
                 return file;
             }
         }
 
-        if (!file.createNewFile() && showError) {
+        if (!file.createNewFile()) {
             // Unsafe to use FFDC or ras: log to raw stderr
             String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_CREATE_RESOURCE_NOEX", file);
             BaseTraceService.rawSystemErr.println(msg);
@@ -245,13 +231,12 @@ public class FileLogSet {
     /**
      * Create a new unique file name. If the source file is specified, the new
      * file should be created by renaming the source file as the unique file.
-     *
+     * 
      * @param srcFile the file to rename, or null to create a new file
-     * @param show error message if showError is true
      * @return the newly created file, or null if the could not be created
      * @throws IOException if an unexpected I/O error occurs
      */
-    private File createNewUniqueFile(File srcFile, boolean showError) throws IOException {
+    private File createNewUniqueFile(File srcFile) throws IOException {
         String dateString = getDateString();
         int index = findFileIndexAndUpdateCounter(dateString);
 
@@ -285,14 +270,12 @@ public class FileLogSet {
 
         if (srcFile != null && copyFileTo(srcFile, destFile)) {
             addFile(index, destFileName);
-            return LoggingFileUtils.deleteFile(srcFile, showError) ? destFile : null;
+            return LoggingFileUtils.deleteFile(srcFile) ? destFile : null;
         }
 
         // Unsafe to use FFDC or ras: log to raw stderr
-        if (showError) {
-            String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_CREATE_RESOURCE_NOEX", destFile);
-            BaseTraceService.rawSystemErr.println(msg);
-        }
+        String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_CREATE_RESOURCE_NOEX", destFile);
+        BaseTraceService.rawSystemErr.println(msg);
         return null;
     }
 
@@ -310,7 +293,7 @@ public class FileLogSet {
     /**
      * Find the index in the files list where a new file should be inserted,
      * and ensure {@link #lastDataString} and {@link #lastCounter} are accurate.
-     *
+     * 
      * @param dateString the date string for the new file
      * @return the position in the files list where a new file should be inserted
      */
@@ -380,7 +363,7 @@ public class FileLogSet {
      * this file would cause the number of files to exceed the maximum, remove
      * all files after the specified index, and then remove the oldest files
      * until the number is reduced to the maximum.
-     *
+     * 
      * @param index the index in the files list to insert the file
      * @param file the file name
      */
@@ -412,7 +395,7 @@ public class FileLogSet {
 
     /**
      * Remove and delete a file from the file list.
-     *
+     * 
      * @param index the file index
      */
     private void removeFile(int index) {
