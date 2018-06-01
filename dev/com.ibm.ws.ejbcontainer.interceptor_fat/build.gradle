@@ -31,11 +31,6 @@ task addEJBTools << {
     from configurations.ejbTools
     into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer/lib/global"
   }
-
-  copy {
-    from configurations.ejbTools
-    into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutEE8Server/lib/global"
-  }
 }
 
 addRequiredLibraries {

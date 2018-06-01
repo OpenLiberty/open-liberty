@@ -16,7 +16,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AroundTimeoutTest.class,
-                AroundTimeoutEE8Test.class
+                AroundTimeoutTest.class
 })
 public class FATSuite {}

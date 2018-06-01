@@ -8,18 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb;
 
 import java.util.logging.Logger;
 
 import javax.ejb.Timer;
+import javax.interceptor.AroundTimeout;
 import javax.interceptor.InvocationContext;
 
-public class AppExceptionInterceptor {
-    private static final String CLASS_NAME = AppExceptionInterceptor.class.getName();
+public class NoExceptionInterceptor {
+    private static final String CLASS_NAME = NoExceptionInterceptor.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
 
-    public Object aroundTimeout(InvocationContext invCtx) throws MyException {
+    @AroundTimeout
+    public Object aroundTimeout(InvocationContext invCtx) {
         svLogger.info("--> Entered " + CLASS_NAME + ".aroundTimeout");
         try {
             Timer t = (Timer) invCtx.getTimer();
@@ -32,7 +34,6 @@ public class AppExceptionInterceptor {
             try {
                 o = invCtx.proceed();
             } catch (Exception e) {
-                throw new MyException();
             }
 
             return o;

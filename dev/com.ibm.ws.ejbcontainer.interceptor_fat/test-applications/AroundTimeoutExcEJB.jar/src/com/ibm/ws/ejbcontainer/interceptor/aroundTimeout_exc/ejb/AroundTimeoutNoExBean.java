@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb;
 
-import static com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.ATNoExInterface.AUTO_TIMER_INFO;
+import static com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.ATNoExInterface.AUTO_TIMER_INFO;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;

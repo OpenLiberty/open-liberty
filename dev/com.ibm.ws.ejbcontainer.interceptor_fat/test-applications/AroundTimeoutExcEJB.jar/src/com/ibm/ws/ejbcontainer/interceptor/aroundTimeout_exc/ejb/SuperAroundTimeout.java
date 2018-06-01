@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb;
 
 import java.util.logging.Logger;
 
@@ -16,29 +16,31 @@ import javax.ejb.Timer;
 import javax.interceptor.AroundTimeout;
 import javax.interceptor.InvocationContext;
 
-public class NoExceptionInterceptor {
-    private static final String CLASS_NAME = NoExceptionInterceptor.class.getName();
+public class SuperAroundTimeout {
+    private static final String CLASS_NAME = SuperAroundTimeout.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
 
     @AroundTimeout
-    public Object aroundTimeout(InvocationContext invCtx) {
-        svLogger.info("--> Entered " + CLASS_NAME + ".aroundTimeout");
+    private Object superAroundTimeout(InvocationContext c) throws MyException {
+        svLogger.info("--> Entered " + CLASS_NAME + ".superAroundTimeout");
         try {
-            Timer t = (Timer) invCtx.getTimer();
+            Timer t = (Timer) c.getTimer();
             svLogger.info("--> Timer t = " + t);
-            String eventTag = "::" + this + ".aroundTimeout:" + invCtx.getMethod() + "," + t.getInfo();
+            String eventTag = "::" + this + ".superAroundTimeout:" + c.getMethod() + "," + t.getInfo();
+
             svLogger.info("--> eventTag = " + eventTag);
             TimerData.addIntEvent(t, eventTag);
 
             Object o = null;
             try {
-                o = invCtx.proceed();
+                o = c.proceed();
             } catch (Exception e) {
+                throw new MyException();
             }
 
             return o;
         } finally {
-            svLogger.info("<-- Exiting " + CLASS_NAME + ".aroundTimeout");
+            svLogger.info("<-- Exiting " + CLASS_NAME + ".superAroundTimeout");
         }
     }
 }

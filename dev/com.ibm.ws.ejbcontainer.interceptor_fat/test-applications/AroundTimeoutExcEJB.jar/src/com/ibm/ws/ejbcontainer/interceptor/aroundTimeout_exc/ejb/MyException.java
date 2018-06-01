@@ -8,14 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb;
 
-import java.util.concurrent.CountDownLatch;
-
-public interface ATAppExInterface {
-    public static final String AUTO_TIMER_INFO = "automaticTimerAppEx";
-
-    public CountDownLatch getAutoTimerLatch();
-
-    public CountDownLatch createSingleActionTimer(String info);
+public class MyException extends Exception {
+    private static final long serialVersionUID = 4317816280382559301L;
 }

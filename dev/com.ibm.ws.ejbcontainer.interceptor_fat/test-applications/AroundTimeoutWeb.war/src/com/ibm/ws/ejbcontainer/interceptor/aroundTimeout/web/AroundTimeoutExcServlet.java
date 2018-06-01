@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.ee8.web;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout.web;
 
-import static com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.TimerData.MAX_TIMER_WAIT;
+import static com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.TimerData.MAX_TIMER_WAIT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -25,9 +25,9 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.ATAppExInterface;
-import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.ATNoExInterface;
-import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb.TimerData;
+import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.ATAppExInterface;
+import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.ATNoExInterface;
+import com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.TimerData;
 
 import componenttest.app.FATServlet;
 
@@ -38,18 +38,18 @@ import componenttest.app.FATServlet;
  * executed.
  */
 @SuppressWarnings("serial")
-@WebServlet("/AroundTimeoutEE8Servlet")
-public class AroundTimeoutEE8Servlet extends FATServlet {
-    private final static String CLASS_NAME = AroundTimeoutEE8Servlet.class.getName();
+@WebServlet("/AroundTimeoutExcServlet")
+public class AroundTimeoutExcServlet extends FATServlet {
+    private final static String CLASS_NAME = AroundTimeoutExcServlet.class.getName();
     private final static Logger svLogger = Logger.getLogger(CLASS_NAME);
 
     private static final String SINGLE_ACTION_TIMER_APP_EX_INFO = "SingleActionAppEx";
     private static final String SINGLE_ACTION_TIMER_NO_EX_INFO = "SingleActionNoEx";
 
-    @EJB(beanName = "AroundTimeoutEE8EJB/AroundTimeoutAppExBean")
+    @EJB(beanName = "AroundTimeoutExcEJB/AroundTimeoutAppExBean")
     ATAppExInterface ivAppExBean;
 
-    @EJB(beanName = "AroundTimeoutEE8EJB/AroundTimeoutNoExBean")
+    @EJB(beanName = "AroundTimeoutExcEJB/AroundTimeoutNoExBean")
     ATNoExInterface ivNoExBean;
 
     /**

@@ -2,8 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/AroundTimeoutAnnEJB.jar/src"/>
-	<classpathentry kind="src" path="test-applications/AroundTimeoutEE8EJB.jar/src"/>
-	<classpathentry kind="src" path="test-applications/AroundTimeoutEE8Web.war/src"/>
+	<classpathentry kind="src" path="test-applications/AroundTimeoutExcEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/AroundTimeoutMixEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/AroundTimeoutXmlEJB.jar/src"/>
 	<classpathentry kind="src" path="test-applications/AroundTimeoutWeb.war/src"/>

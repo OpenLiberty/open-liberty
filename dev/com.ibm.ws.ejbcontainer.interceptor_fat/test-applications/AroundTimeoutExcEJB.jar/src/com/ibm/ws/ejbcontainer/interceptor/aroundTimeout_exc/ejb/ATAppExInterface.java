@@ -8,12 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ee8.ejb;
+package com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb;
 
 import java.util.concurrent.CountDownLatch;
 
-public interface ATNoExInterface {
-    public static final String AUTO_TIMER_INFO = "automaticTimerNoEx";
+public interface ATAppExInterface {
+    public static final String AUTO_TIMER_INFO = "automaticTimerAppEx";
 
     public CountDownLatch getAutoTimerLatch();
 
