@@ -19,8 +19,6 @@
 
 package org.apache.cxf.jaxrs.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -92,7 +90,6 @@ import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
-import org.apache.cxf.helpers.IOUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.io.DelegatingInputStream;
 import org.apache.cxf.io.ReaderInputStream;
@@ -835,23 +832,23 @@ public final class JAXRSUtils {
                                            MultivaluedMap<String, String> values,
                                            Message message,
                                            OperationResourceInfo ori) throws IOException, WebApplicationException {
-        InputStream is = message.getContent(InputStream.class);
-        // Liberty change start
-        if (is instanceof DelegatingInputStream) {
-            ((DelegatingInputStream)is).cacheInput();
-        }
-        // Liberty change end
-        if (is == null) {
-            Reader reader = message.getContent(Reader.class);
-            if (reader != null) {
-                is = new ReaderInputStream(reader);
-            }
-        }
         if (parameter.getType() == ParameterType.REQUEST_BODY) {
 
             if (parameterClass == AsyncResponse.class) {
                 return new AsyncResponseImpl(message);
             }
+
+            // Liberty change start
+            InputStream is = message.getContent(InputStream.class);
+            if (is == null) {
+                Reader reader = message.getContent(Reader.class);
+                if (reader != null) {
+                    is = new ReaderInputStream(reader);
+                }
+            } else if (is instanceof DelegatingInputStream) {
+                ((DelegatingInputStream)is).cacheInput();
+            }
+            // Liberty change end
 
             String contentType = (String) message.get(Message.CONTENT_TYPE);
 
