@@ -13,7 +13,6 @@ package com.ibm.ws.http.channel.h2internal;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -121,7 +120,6 @@ public class H2StreamProcessor {
 
     // handle various stream close conditions
     private boolean rstStreamSent = false;
-    private final int STREAM_CLOSE_DELAY = 5000;
 
     /**
      * Create a stream processor initialized in idle state
@@ -601,8 +599,8 @@ public class H2StreamProcessor {
     private void updateStreamState(StreamState state) {
         this.state = state;
         if (StreamState.CLOSED.equals(state)) {
-            muxLink.closeStream(getId());
-            muxLink.getStreamCloseTimer().schedule(new CleanupTask(this), STREAM_CLOSE_DELAY);
+            setCloseTime(System.currentTimeMillis());
+            muxLink.closeStream(this);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current stream state for stream " + this.myID + " : " + this.state);
@@ -1901,26 +1899,5 @@ public class H2StreamProcessor {
 
     public H2HttpInboundLinkWrap getWrappedInboundLink() {
         return h2HttpInboundLinkWrap;
-    }
-
-    /**
-     * After a given delay (default 5s), this task removes this stream from the connection table of active streams
-     */
-    private class CleanupTask extends TimerTask {
-
-        H2StreamProcessor h2sp;
-
-        public CleanupTask(H2StreamProcessor processor) {
-            h2sp = processor;
-        }
-
-        @Override
-        public void run() {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "CleanupTask.run: remove stream-id: " + h2sp.getId()
-                             + " from the active stream table for H2InboundLink hc: " + h2sp.muxLink.hashCode());
-            }
-            muxLink.closeStreamPostTimeout(h2sp);
-        }
     }
 }
