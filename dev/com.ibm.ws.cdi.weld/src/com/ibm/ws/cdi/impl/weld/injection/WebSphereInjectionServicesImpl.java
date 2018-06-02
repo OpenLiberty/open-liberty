@@ -325,6 +325,9 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
      */
     @Override
     public <T> void registerInjectionTarget(javax.enterprise.inject.spi.InjectionTarget<T> injectionTarget, AnnotatedType<T> annotatedType) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "registerInjectionTarget", new Object[] { injectionTarget, Util.identity(annotatedType) });
+        }
         Class<?> declaringClass = annotatedType.getJavaClass();
         WebSphereBeanDeploymentArchive wbda = deployment.getBeanDeploymentArchiveFromClass(declaringClass);
         //If it's not an application class we don't need to validate it
@@ -341,16 +344,29 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
                 validateAnnotatedMethod(annotatedMethod, declaringClass, cdiArchive);
             }
         }
+
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+           Tr.exit(tc, "registerInjectionTarget");
+       }
     }
 
     private <T> void validateAnnotatedMethod(AnnotatedMethod<T> annotatedMethod, Class<?> declaringClass, CDIArchive cdiArchive) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateAnnotatedMethod", new Object[] { Util.identity(annotatedMethod), declaringClass, cdiArchive });
+        }
         List<AnnotatedParameter<T>> parameters = annotatedMethod.getParameters();
         for (AnnotatedParameter<?> injectedParameter : parameters) {
             validateAnnotatedMember(injectedParameter, declaringClass, cdiArchive);
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+           Tr.exit(tc, "validateAnnotatedMethod");
+       }
     }
 
     private void validateAnnotatedMember(Annotated annotated, Class<?> declaringClass, CDIArchive cdiArchive) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateAnnotatedMember", new Object[] { Util.identity(annotated), declaringClass, cdiArchive });
+        }
         for (Annotation annotation : annotated.getAnnotations()) {
             if (annotation instanceof EJB) {
                 EEValidationUtils.validateEjb(((EJB) annotation), declaringClass, annotated, cdiArchive);
@@ -364,6 +380,9 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
                 EEValidationUtils.validatePersistenceUnit(((PersistenceUnit) annotation), declaringClass, annotated);
             }
         }
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+           Tr.exit(tc, "validateAnnotatedMember");
+       }
     }
 
     /**

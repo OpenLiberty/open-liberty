@@ -38,6 +38,7 @@ import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceRef;
 
+import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
@@ -81,6 +82,9 @@ public class EEValidationUtils {
     }
 
     private static Class<?> getInjectedClass(Annotated annotated) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getInjectedClass", new Object[] { Util.identity(annotated) });
+        }
         if (annotated instanceof AnnotatedField) {
             return ((AnnotatedField<?>) annotated).getJavaMember().getType();
         } else if (annotated instanceof AnnotatedParameter) {
@@ -93,6 +97,9 @@ public class EEValidationUtils {
                 Constructor<?> constructor = ((AnnotatedConstructor<?>) callable).getJavaMember();
                 paramaterTypes = constructor.getParameterTypes();
             }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getInjectedClass");
+            }
             return paramaterTypes[((AnnotatedParameter<?>) annotated).getPosition()];
         } else {
             throw new UnsupportedOperationException("Only AnnotatedFields or AnnotatedMethods should be here");
@@ -100,9 +107,18 @@ public class EEValidationUtils {
     }
 
     private static String getInjectedMemberName(Annotated annotated) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getInjectedMemberName", new Object[] { Util.identity(annotated) });
+        }
         if (annotated instanceof AnnotatedField) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getInjectedClass");
+            }
             return ((AnnotatedField<?>) annotated).getJavaMember().getName();
         } else if (annotated instanceof AnnotatedParameter) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getInjectedClass");
+            }
             return ((AnnotatedParameter<?>) annotated).getDeclaringCallable().getJavaMember().getName();
         } else {
             throw new UnsupportedOperationException("Only AnnotatedFields or AnnotatedMethods should be here");
@@ -111,6 +127,9 @@ public class EEValidationUtils {
 
     @FFDCIgnore(ClassCastException.class)
     public static void validateEjb(EJB ejb, Class<?> declaringClass, Annotated annotated, CDIArchive cdiArchive) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateEjb", new Object[] { Util.identity(annotated), cdiArchive });
+        }
         CDIRuntime cdiRuntime = cdiArchive.getCDIRuntime();
         EjbEndpointService ejbEndpointService = cdiRuntime.getEjbEndpointService();
 
@@ -124,7 +143,9 @@ public class EEValidationUtils {
                 EEValidationUtils.throwDefinitionException(declaringClass, annotated);
             }
         }
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validateEjb");
+        }
     }
 
     /**
@@ -135,7 +156,9 @@ public class EEValidationUtils {
      * @throws DefinitionException if the object is found and does not have the correct type
      */
     private static void validateJndiLookup(String lookupString, Annotated annotated, Class<?> declaringClass, CDIArchive cdiArchive) {
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateJndiLookup", new Object[] { Util.identity(annotated), declaringClass, cdiArchive });
+        }
         // We need to set a current component before doing anything to do with JNDI
         CDIRuntime cdiRuntime = cdiArchive.getCDIRuntime();
         try {
@@ -151,10 +174,16 @@ public class EEValidationUtils {
         } finally {
             cdiRuntime.endContext();
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validateJndiLookup", new Object[] { Util.identity(annotated) });
+        }
     }
 
     private static void validateJndiLookup(InitialContext c, String lookupString, Annotated annotated, Class<?> declaringClass,
                                            CDIArchive cdiArchive) throws NamingException, CDIException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateJndiLookup", new Object[] { c, lookupString, Util.identity(annotated), declaringClass });
+        }
         Name lookupName = c.getNameParser("").parse(lookupString);
 
         // Split the name into the suffix and the parent context
@@ -213,6 +242,9 @@ public class EEValidationUtils {
             }
         }
         // We didn't find the class, we can't validate it
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validateJndiLookup", new Object[] { Util.identity(annotated) });
+        }
     }
 
     /**
@@ -228,6 +260,9 @@ public class EEValidationUtils {
      * @param the injection point
      */
     public static void validateWebServiceRef(WebServiceRef wsRef, Class<?> declaringClass, Annotated annotated) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateWebServiceRef", new Object[] { wsRef, declaringClass, Util.identity(annotated) });
+        }
         Class<?> ipClass = getInjectedClass(annotated);
         /*
          * note: Thorough WebService validation is performed later, by
@@ -293,9 +328,15 @@ public class EEValidationUtils {
             }
 
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validateWebServiceRef");
+        }
     }
 
     public static void validateResource(Resource res, Class<?> declaringClass, Annotated annotated, CDIArchive cdiArchive) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateResource", new Object[] { res, declaringClass, Util.identity(annotated), cdiArchive });
+        }
         // If the injection point is a resource producer, we need to validate it
         if (EEValidationUtils.isProducer(annotated)) {
             if (!res.lookup().isEmpty()) {
@@ -304,9 +345,15 @@ public class EEValidationUtils {
                 validateJndiLookup("java:comp/env/" + res.name(), annotated, declaringClass, cdiArchive);
             }
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validateResource" );
+        }
     }
 
     public static void validatePersistenceContext(PersistenceContext persistenceContext, Class<?> declaringClass, Annotated annotated) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validatePersistenceContext", new Object[] { persistenceContext, declaringClass, Util.identity(annotated) });
+        }
         if (EEValidationUtils.isProducer(annotated)) {
             if (getInjectedClass(annotated) instanceof Class<?>) {
                 Class<?> ipClass = getInjectedClass(annotated);
@@ -315,9 +362,15 @@ public class EEValidationUtils {
                 }
             }
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validatePersistenceContext" );
+        }
     }
 
     public static void validatePersistenceUnit(PersistenceUnit PersistenceUnit, Class<?> declaringClass, Annotated annotated) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validatePersistenceUnit", new Object[] { PersistenceUnit, declaringClass, Util.identity(annotated)});
+        }
         if (EEValidationUtils.isProducer(annotated)) {
             if (getInjectedClass(annotated) instanceof Class<?>) {
                 Class<?> ipClass = getInjectedClass(annotated);
@@ -325,6 +378,9 @@ public class EEValidationUtils {
                     EEValidationUtils.throwDefinitionException(declaringClass, annotated);
                 }
             }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validatePersistenceUnit" );
         }
     }
 
