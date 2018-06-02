@@ -13,7 +13,9 @@ package com.ibm.ws.jpa.management;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.util.List;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -33,8 +35,7 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 /**
  * @PersistenceContext injection binding.
  **/
-class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceContext>
-{
+class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceContext> {
     private static final TraceComponent tc = Tr.register(JPAPCtxtInjectionBinding.class,
                                                          JPA_TRACE_GROUP,
                                                          JPA_RESOURCE_BUNDLE_NAME);
@@ -53,36 +54,32 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
 
     /**
      * XML based constructor.
-     * 
+     *
      * @param pCtxtRef XML representation of persistence context metadata.
      * @param compNSConfig component name space configuration metadata.
      */
     // d662814
     public JPAPCtxtInjectionBinding(PersistenceContextRef pCtxtRef,
                                     ComponentNameSpaceConfiguration compNSConfig,
-                                    JPAPCtxtAttributeAccessor attributeAccessor)
-        throws InjectionException
-    {
-        super(null, pCtxtRef.getName(), pCtxtRef.getPersistenceUnitName(), compNSConfig);
+                                    JPAPCtxtAttributeAccessor attributeAccessor) throws InjectionException {
+        super(newPersistenceContext(pCtxtRef.getName(), pCtxtRef.getPersistenceUnitName(), pCtxtRef.getTypeValue(),
+                                    pCtxtRef.getProperties()), pCtxtRef.getName(), pCtxtRef.getPersistenceUnitName(), compNSConfig);
         ivAttributeAccessor = attributeAccessor;
         setInjectionClassType(EntityManager.class);
 
         String pUnitName = pCtxtRef.getPersistenceUnitName();
-        if (pUnitName != null && pUnitName.length() > 0)
-        {
+        if (pUnitName != null && pUnitName.length() > 0) {
             ivPuFromXML = true;
         }
 
         int type = pCtxtRef.getTypeValue();
-        if (type != PersistenceContextRef.TYPE_UNSPECIFIED)
-        {
+        if (type != PersistenceContextRef.TYPE_UNSPECIFIED) {
             ivExtendedType = type == PersistenceContextRef.TYPE_EXTENDED;
             ivTypeFromXML = true;
         }
 
         int synchronization = pCtxtRef.getSynchronizationValue();
-        if (synchronization != PersistenceContextRef.SYNCHRONIZATION_UNSPECIFIED)
-        {
+        if (synchronization != PersistenceContextRef.SYNCHRONIZATION_UNSPECIFIED) {
             ivUnsynchronized = synchronization == PersistenceContextRef.SYNCHRONIZATION_UNSYNCHRONIZED;
             ivSynchronizationFromXML = true;
         }
@@ -92,15 +89,13 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
 
     /**
      * Annotation based constructor.
-     * 
+     *
      * @param pCtxt persistence unit annotation.
      * @param compNSConfig component name space configuration metadata.
      */
     public JPAPCtxtInjectionBinding(PersistenceContext pCtxt,
                                     ComponentNameSpaceConfiguration compNSConfig,
-                                    JPAPCtxtAttributeAccessor attributeAccessor)
-        throws InjectionException
-    {
+                                    JPAPCtxtAttributeAccessor attributeAccessor) throws InjectionException {
         super(pCtxt, pCtxt.name(), pCtxt.unitName(), compNSConfig);
         ivAttributeAccessor = attributeAccessor;
         setInjectionClassType(EntityManager.class);
@@ -125,14 +120,13 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
     /**
      * Extract the fields from the PersistenceContextRef, and verify they match
      * the values in the current binding object and/or annotation exactly.
-     * 
+     *
      * @param pCtxtRef reference with same name to merge
      * @throws InjectionException if the fields of the two references are not
      *             compatible.
      */
     // d658856
-    public void merge(PersistenceContextRef pCtxtRef) throws InjectionException
-    {
+    public void merge(PersistenceContextRef pCtxtRef) throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "merge : " + pCtxtRef);
@@ -151,8 +145,7 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
         }
         Properties mergedProperties = getPersistenceProperties(pCtxtRef);
 
-        if (isTraceOn && tc.isDebugEnabled())
-        {
+        if (isTraceOn && tc.isDebugEnabled()) {
             Tr.debug(tc, "new=" + getJndiName() + ":" + mergedUnitName + ":" +
                          mergedExtendedType + ":" + mergedUnsynchronized + ":" + mergedProperties);
             Tr.debug(tc, "cur=" + getJndiName() + ":" + thisUnitName + ":" +
@@ -161,18 +154,13 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
 
         // Merge the persistence unit name. Either one must be not set or they
         // must match exactly.
-        if (thisUnitName == null || thisUnitName.equals(""))
-        {
-            if (mergedUnitName != null)
-            {
+        if (thisUnitName == null || thisUnitName.equals("")) {
+            if (mergedUnitName != null) {
                 setPuName(mergedUnitName);
                 ivPuFromXML = true; // d662814
             }
-        }
-        else if (mergedUnitName != null && !mergedUnitName.equals(""))
-        {
-            if (!thisUnitName.equals(mergedUnitName))
-            {
+        } else if (mergedUnitName != null && !mergedUnitName.equals("")) {
+            if (!thisUnitName.equals(mergedUnitName)) {
                 Tr.error(tc, "CONFLICTING_XML_VALUES_CWWJP0041E",
                          ivNameSpaceConfig.getModuleName(),
                          ivNameSpaceConfig.getApplicationName(),
@@ -197,18 +185,13 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
 
         // Merge the persistence context type. Either one must be not set or they
         // must match exactly.
-        if (ivExtendedType == null)
-        {
-            if (mergedExtendedType != null)
-            {
+        if (ivExtendedType == null) {
+            if (mergedExtendedType != null) {
                 ivExtendedType = mergedExtendedType;
                 ivTypeFromXML = true; // d662814
             }
-        }
-        else if (mergedExtendedType != null)
-        {
-            if (ivExtendedType.booleanValue() != mergedExtendedType.booleanValue())
-            {
+        } else if (mergedExtendedType != null) {
+            if (ivExtendedType.booleanValue() != mergedExtendedType.booleanValue()) {
                 Tr.error(tc, "CONFLICTING_XML_VALUES_CWWJP0041E",
                          ivNameSpaceConfig.getModuleName(),
                          ivNameSpaceConfig.getApplicationName(),
@@ -232,18 +215,13 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
             }
         }
 
-        if (ivUnsynchronized == null)
-        {
-            if (mergedUnsynchronized != null)
-            {
+        if (ivUnsynchronized == null) {
+            if (mergedUnsynchronized != null) {
                 ivUnsynchronized = mergedUnsynchronized;
                 ivSynchronizationFromXML = true;
             }
-        }
-        else if (mergedUnsynchronized != null)
-        {
-            if (ivUnsynchronized.booleanValue() != mergedUnsynchronized.booleanValue())
-            {
+        } else if (mergedUnsynchronized != null) {
+            if (ivUnsynchronized.booleanValue() != mergedUnsynchronized.booleanValue()) {
                 Tr.error(tc, "CONFLICTING_XML_VALUES_CWWJP0041E",
                          ivNameSpaceConfig.getModuleName(),
                          ivNameSpaceConfig.getApplicationName(),
@@ -252,7 +230,7 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
                          "persistence-context-ref-name",
                          getJndiName(),
                          getSynchronizationName(ivUnsynchronized),
-                         getSynchronizationName(mergedUnsynchronized) );
+                         getSynchronizationName(mergedUnsynchronized));
                 String exMsg = "CWWJP0041E: The " + ivNameSpaceConfig.getModuleName() +
                                " module of the " + ivNameSpaceConfig.getApplicationName() +
                                " application has conflicting configuration data in the XML" +
@@ -269,14 +247,10 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
 
         // Merge the persistence context properties. Either one must be not set or they
         // must match exactly.
-        if (ivProperties.isEmpty())
-        {
+        if (ivProperties.isEmpty()) {
             ivProperties = mergedProperties;
-        }
-        else if (!mergedProperties.isEmpty())
-        {
-            if (!ivProperties.equals(mergedProperties))
-            {
+        } else if (!mergedProperties.isEmpty()) {
+            if (!ivProperties.equals(mergedProperties)) {
                 Tr.error(tc, "CONFLICTING_XML_VALUES_CWWJP0041E",
                          ivNameSpaceConfig.getModuleName(),
                          ivNameSpaceConfig.getApplicationName(),
@@ -306,11 +280,11 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
     /**
      * Merges the configuration information of an annotation with a binding
      * object created from previously processed XML or annotations. <p>
-     * 
+     *
      * The may occur when there is an XML override of an annotation, or
      * there are multiple annotations defined with the same name (i.e.
      * a multiple target injection scenario).
-     * 
+     *
      * This method will implement/enforce the deployment descriptor override
      * rules defined in the EJB Specification:
      * <ul>
@@ -330,16 +304,14 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
      * <li> The injection target, if specified, must name exactly the annotated field
      * or property method.
      * </ul>
-     * 
+     *
      * @param annotation the PersistenceContext annotation to be merged
      * @param member the Field or Method associated with the annotation;
      *            null if a class level annotation.
      **/
     // d432816
     @Override
-    public void merge(PersistenceContext annotation, Class<?> instanceClass, Member member)
-                    throws InjectionException
-    {
+    public void merge(PersistenceContext annotation, Class<?> instanceClass, Member member) throws InjectionException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "merge : " + annotation + ", " + instanceClass + ", " + member);
@@ -347,17 +319,12 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
         String thisUnitName = getPuName();
 
         // Only need to check values if not overridden by XML.             d662814
-        if (!ivPuFromXML)
-        {
+        if (!ivPuFromXML) {
             String mergedUnitName = annotation.unitName();
-            if (mergedUnitName != null && mergedUnitName.length() > 0)
-            {
-                if (!isComplete() && (thisUnitName == null || thisUnitName.length() == 0))
-                {
+            if (mergedUnitName != null && mergedUnitName.length() > 0) {
+                if (!isComplete() && (thisUnitName == null || thisUnitName.length() == 0)) {
                     setPuName(mergedUnitName);
-                }
-                else if (!mergedUnitName.equals(thisUnitName))
-                {
+                } else if (!mergedUnitName.equals(thisUnitName)) {
                     // Error - conflicting persistence unit specified         d662814
                     Tr.error(tc, "CONFLICTING_ANNOTATION_VALUES_CWWJP0042E",
                              ivNameSpaceConfig.getDisplayName(),
@@ -386,15 +353,13 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
         }
 
         // Only need to check values if not overridden by XML.             d662814
-        if (!ivTypeFromXML)
-        {
+        if (!ivTypeFromXML) {
             // If not set from XML, then just use the value from the annotation,
             // note that even if not set in XML, the 'this' value will be the
             // default of 'Transaction'. Also, if multiple annotations are present,
             // then use 'Extended' if any one of them has specified it.
             Boolean mergedExtendedType = annotation.type() == PersistenceContextType.EXTENDED;
-            if (!isComplete() && ivExtendedType == null)
-            {
+            if (!isComplete() && ivExtendedType == null) {
                 ivExtendedType = mergedExtendedType;
             }
         }
@@ -434,8 +399,7 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
         // Merge annotation properties to DD, DD properties override annotation
         // properties and make sure a PersistenceProperty[] object is returned.
         Properties mergedProperties = getPersistenceProperties(annotation);
-        if (!isComplete() && !mergedProperties.isEmpty())
-        {
+        if (!isComplete() && !mergedProperties.isEmpty()) {
             mergedProperties.putAll(ivProperties);
             ivProperties = mergedProperties;
         }
@@ -446,8 +410,7 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
 
     @Override
     public void mergeSaved(InjectionBinding<PersistenceContext> injectionBinding) // d681743
-    throws InjectionException
-    {
+                    throws InjectionException {
         JPAPCtxtInjectionBinding pCtxtBinding = (JPAPCtxtInjectionBinding) injectionBinding;
 
         mergeSavedValue(getPuName(), pCtxtBinding.getPuName(), "persistence-unit-name");
@@ -478,5 +441,76 @@ class JPAPCtxtInjectionBinding extends AbstractJPAInjectionBinding<PersistenceCo
             properties.put(property.getName(), property.getValue());
         }
         return properties;
+    }
+
+    /**
+     * This transient PersistenceContext annotation class has no default value.
+     * i.e. null is a valid value for some fields.
+     */
+    private static PersistenceContext newPersistenceContext(final String fJndiName, final String fUnitName, final int fCtxType,
+                                                            final List<Property> fCtxProperties) {
+        return new PersistenceContext() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return PersistenceContext.class;
+            }
+
+            @Override
+            public String name() {
+                return fJndiName;
+            }
+
+            @Override
+            public PersistenceProperty[] properties() {
+                //TODO not ideal doing this conversion processing here
+                PersistenceProperty[] props = new PersistenceProperty[fCtxProperties.size()];
+                int i = 0;
+                for (Property property : fCtxProperties) {
+                    final String name = property.getName();
+                    final String value = property.getValue();
+                    PersistenceProperty prop = new PersistenceProperty() {
+
+                        @Override
+                        public Class<? extends Annotation> annotationType() {
+                            return PersistenceProperty.class;
+                        }
+
+                        @Override
+                        public String name() {
+                            return name;
+                        }
+
+                        @Override
+                        public String value() {
+                            return value;
+                        }
+
+                    };
+                    props[i++] = prop;
+                }
+                return props;
+            }
+
+            @Override
+            public PersistenceContextType type() {
+                if (fCtxType == PersistenceContextRef.TYPE_TRANSACTION) {
+                    return PersistenceContextType.TRANSACTION;
+                } else {
+                    return PersistenceContextType.EXTENDED;
+                }
+            }
+
+            @Override
+            public String unitName() {
+                return fUnitName;
+            }
+
+            @Override
+            public String toString() {
+                return "JPA.PersistenceContext(name=" + fJndiName +
+                       ", unitName=" + fUnitName + ")";
+            }
+        };
     }
 }

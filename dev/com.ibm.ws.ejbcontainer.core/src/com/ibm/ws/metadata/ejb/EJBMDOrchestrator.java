@@ -3146,6 +3146,7 @@ public abstract class EJBMDOrchestrator {
      */
     // F743-1752.1 added entire method.
     // F743-1752CodRev rewrote to do error checking and validation.
+
     private void processSingletonConcurrencyManagementType(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
@@ -3261,14 +3262,16 @@ public abstract class EJBMDOrchestrator {
             bmd.ivEnterpriseBeanFactory = getEJBManagedObjectFactory(bmd, bmd.enterpriseBeanClass);
         }
         if (bmd.ivEnterpriseBeanFactory == null) {
-            try {
-                bmd.ivEnterpriseBeanClassConstructor = bmd.enterpriseBeanClass.getConstructor((Class<?>[]) null);
-            } catch (NoSuchMethodException e) {
-                Tr.error(tc, "JIT_NO_DEFAULT_CTOR_CNTR5007E",
-                         new Object[] { bmd.enterpriseBeanClassName, bmd.enterpriseBeanName });
-                throw new EJBConfigurationException("CNTR5007E: The " + bmd.enterpriseBeanClassName + " bean class for the " + bmd.enterpriseBeanName +
-                                                    " bean does not have a public constructor that does not take parameters.");
-            }
+//            try {
+//                bmd.ivEnterpriseBeanClassConstructor = bmd.enterpriseBeanClass.getConstructor((Class<?>[]) null);
+//            } catch (NoSuchMethodException e) {
+//                Tr.error(tc, "JIT_NO_DEFAULT_CTOR_CNTR5007E",
+//                         new Object[] { bmd.enterpriseBeanClassName, bmd.enterpriseBeanName });
+//                throw new EJBConfigurationException("CNTR5007E: The " + bmd.enterpriseBeanClassName + " bean class for the " + bmd.enterpriseBeanName +
+//                                                    " bean does not have a public constructor that does not take parameters.");
+//            }
+            //TODO this isn't the right exception since there isn't anything the user can do to fix it
+            throw new EJBConfigurationException("ManagedObjectFactory not found");
         }
         // Removed else clause that calls bmd.ivEnterpriseBeanFactory.getConstructor() because this method
         // is called before cdiMMD.setWebBeansContext(webBeansContext) in LibertySingletonServer. If we call
@@ -3303,20 +3306,17 @@ public abstract class EJBMDOrchestrator {
      * @param klass the ManagedBean class
      */
     protected <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
+        ManagedObjectFactory<T> factory = null;
         ManagedObjectService managedObjectService = getManagedObjectService();
         if (managedObjectService != null) {
             try {
-                ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(bmd._moduleMetaData, klass, true);
-
-                if (factory.isManaged()) {
-                    return factory;
-                }
+                factory = managedObjectService.createManagedObjectFactory(bmd._moduleMetaData, klass, true);
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
         }
 
-        return null;
+        return factory;
     }
 
     /**
@@ -3327,20 +3327,17 @@ public abstract class EJBMDOrchestrator {
      * @param klass the interceptor class
      */
     protected <T> ManagedObjectFactory<T> getInterceptorManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
+        ManagedObjectFactory<T> factory = null;
         ManagedObjectService managedObjectService = getManagedObjectService();
         if (managedObjectService != null) {
             try {
-                ManagedObjectFactory<T> factory = managedObjectService.createInterceptorManagedObjectFactory(bmd._moduleMetaData, klass);
-
-                if (factory.isManaged()) {
-                    return factory;
-                }
+                factory = managedObjectService.createInterceptorManagedObjectFactory(bmd._moduleMetaData, klass);
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
         }
 
-        return null;
+        return factory;
     }
 
     /**
@@ -3356,9 +3353,9 @@ public abstract class EJBMDOrchestrator {
             try {
                 ManagedObjectFactory<T> factory = managedObjectService.createEJBManagedObjectFactory(bmd._moduleMetaData, klass, bmd.j2eeName.getComponent());
 
-                if (factory.isManaged()) {
-                    return factory;
-                }
+//                if (factory.isManaged()) {
+                return factory;
+//                }
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
@@ -4509,6 +4506,7 @@ public abstract class EJBMDOrchestrator {
      * @param method the method to check
      * @return true if the method throws clause is empty
      */
+
     private static boolean hasEmptyThrowsClause(Method method) {
         for (Class<?> klass : method.getExceptionTypes()) {
             // Per CTS, callback methods can declare unchecked exceptions on the

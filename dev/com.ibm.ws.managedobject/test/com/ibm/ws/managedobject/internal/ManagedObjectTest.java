@@ -27,7 +27,8 @@ public class ManagedObjectTest {
 
     @Test(expected = ManagedObjectException.class)
     public void testCreateManagedObjectFactoryNoDefaultConstructor() throws Exception {
-        new ManagedObjectServiceImpl().createManagedObjectFactory(null, NoDefaultConstructor.class, false);
+        ManagedObjectFactory<NoDefaultConstructor> mof = new ManagedObjectServiceImpl().createManagedObjectFactory(null, NoDefaultConstructor.class, false);
+        mof.createManagedObject();
     }
 
     public static class NoDefaultConstructor {

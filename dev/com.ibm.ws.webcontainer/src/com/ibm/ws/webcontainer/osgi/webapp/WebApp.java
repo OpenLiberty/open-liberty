@@ -46,7 +46,6 @@ import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
@@ -56,7 +55,6 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
@@ -85,8 +83,6 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfiguration;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfigurationProvider;
 import com.ibm.wsspi.injectionengine.InjectionException;
-import com.ibm.wsspi.injectionengine.InjectionTarget;
-import com.ibm.wsspi.injectionengine.InjectionTargetContext;
 import com.ibm.wsspi.injectionengine.JNDIEnvironmentRefBindingHelper;
 import com.ibm.wsspi.injectionengine.JNDIEnvironmentRefType;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
@@ -1280,7 +1276,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                   
                }
               r = mo;
-              injectTargets(mo);
+              mo.inject(this.referenceContext);
           }
       } catch (InjectionException iex) {
           throw iex;
@@ -1319,44 +1315,28 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                
                 try {
                     ModuleMetaData moduleMetaData = getModuleMetaData();
-                    mo = managedObjectService.createManagedObject(moduleMetaData, target);
-                } catch (IllegalStateException ise){
+                    ManagedObjectFactory<Object> mof = (ManagedObjectFactory<Object>) managedObjectService.createManagedObjectFactory(moduleMetaData, target.getClass(), false);
+                    mo = mof.createManagedObject(target, null);
+                } catch (ManagedObjectException moe){
                     
                     if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                        logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "IllegalStateException from managed object service:" + ise );
+                        logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "IllegalStateException from managed object service:" + moe );
                      }   
                     
                      mo = new WCManagedObjectImpl(target);
                  }
               
                 r = mo;
-                injectTargets(mo);
+                mo.inject(this.referenceContext);
            }
-        } catch (ManagedObjectException e) {
-            throw new InjectionException(e.getCause());
+        } catch (Exception e) {
+            throw new InjectionException(e);
         }
         
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.exiting(CLASS_NAME, METHOD_NAME, r);
         }
         return r;
-  }
-  
-  private void injectTargets(final ManagedObject<?> mo) throws InjectionException {
-      
-      InjectionTarget[] targets = referenceContext.getInjectionTargets(mo.getObject().getClass());
-
-      if (targets.length > 0) {
-          InjectionTargetContext itc = new InjectionTargetContext() {
-              @Override
-              public <T> T getInjectionTargetContextData(Class<T> data) {
-                  return mo.getContextData(data);
-              }
-          };
-          for (InjectionTarget injectionTarget : targets) {
-              injectionTarget.inject(mo.getObject(), itc);
-          }
-      }
   }
   
   /**

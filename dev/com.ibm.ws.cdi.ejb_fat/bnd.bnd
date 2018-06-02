@@ -43,7 +43,8 @@ tested.features:\
         jpa-2.2,\
         beanValidation-2.0,\
         jaxrs-2.1,\
-        jsf-2.3
+        jsf-2.3, \
+        localconnector-1.0
 	
 test.project: true
 
