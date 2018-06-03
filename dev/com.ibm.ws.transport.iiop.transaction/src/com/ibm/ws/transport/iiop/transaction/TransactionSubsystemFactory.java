@@ -10,12 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.transaction;
 
-import java.util.Map;
-
-import javax.transaction.TransactionManager;
-
-import org.apache.yoko.osgi.locator.BundleProviderLoader;
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxClientTransactionPolicyConfig;
+import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDtxServerTransactionPolicyConfig;
+import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
+import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
 import org.osgi.framework.Bundle;
@@ -26,15 +26,23 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
-import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDTxClientTransactionPolicyConfig;
-import com.ibm.ws.transport.iiop.transaction.nodistributedtransactions.NoDtxServerTransactionPolicyConfig;
+import javax.transaction.TransactionManager;
+import java.util.Map;
 
 @Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.ranking:Integer=2" })
 public class TransactionSubsystemFactory extends SubsystemFactory {
+    private static enum MyLocalFactory implements LocalFactory {
+        INSTANCE;
+        public Class<?> forName(String name) throws ClassNotFoundException {
+            return TransactionInitializer.class;
+        }
+        public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
+            return new TransactionInitializer();
+        }
+    }
 
     private Register providerRegistry;
-    private BundleProviderLoader transactionInitializerClass;
+    private ServiceProvider transactionInitializerClass;
 
     private TransactionManager transactionManager;
 
@@ -50,8 +58,7 @@ public class TransactionSubsystemFactory extends SubsystemFactory {
 
     @Activate
     protected void activate(BundleContext bundleContext) {
-        Bundle bundle = bundleContext.getBundle();
-        transactionInitializerClass = new BundleProviderLoader(TransactionInitializer.class.getName(), TransactionInitializer.class.getName(), bundle, 1);
+        transactionInitializerClass = new ServiceProvider(MyLocalFactory.INSTANCE, TransactionInitializer.class);
         providerRegistry.registerProvider(transactionInitializerClass);
     }
 
