@@ -113,7 +113,7 @@ public class H2StreamProcessor {
     private long streamReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
 
     // a list of buffers to be read in by the WebContainer
-    private final ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
+    private ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
     private int streamReadSize = 0;
     private long actualReadCount = 0;
     private CountDownLatch readLatch = new CountDownLatch(1);
