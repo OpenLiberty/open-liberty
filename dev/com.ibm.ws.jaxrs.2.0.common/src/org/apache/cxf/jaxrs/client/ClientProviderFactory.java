@@ -105,12 +105,12 @@ public final class ClientProviderFactory extends ProviderFactory {
 
         //Liberty code change start
         if (newClientRequestFilters.size() > 0) {
-            clientRequestFilters.addAndSortProviders(newClientRequestFilters, 
-                       new BindingPriorityComparator<ClientRequestFilter>(ClientRequestFilter.class, true));
+            clientRequestFilters.addAndSortProviders(newClientRequestFilters,
+                       new BindingPriorityComparator<ClientRequestFilter>(ClientRequestFilter.class, true), false);
         }
         if (newClientResponseFilters.size() > 0) {
             clientResponseFilters.addAndSortProviders(newClientResponseFilters, 
-                       new BindingPriorityComparator<ClientResponseFilter>(ClientResponseFilter.class, false));
+                       new BindingPriorityComparator<ClientResponseFilter>(ClientResponseFilter.class, false), false);
         }
         if (newResponseExceptionMappers.size() > 0) {
             responseExceptionMappers.addProviders(newResponseExceptionMappers);

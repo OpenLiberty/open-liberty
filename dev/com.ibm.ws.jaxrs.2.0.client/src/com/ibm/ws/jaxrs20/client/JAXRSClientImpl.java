@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client;
 
+import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -48,7 +48,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.bus.LibertyApplicationBus;
-import com.ibm.ws.jaxrs20.client.JAXRSClientImpl.JAXRSWebTargetImpl;
 import com.ibm.ws.jaxrs20.client.bus.LibertyJAXRSClientBusFactory;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientProxyInterceptor;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientTimeOutInterceptor;
@@ -56,7 +55,6 @@ import com.ibm.ws.jaxrs20.client.security.LibertyJaxRsClientSSLOutInterceptor;
 import com.ibm.ws.jaxrs20.client.security.ltpa.LibertyJaxRsClientLtpaInterceptor;
 import com.ibm.ws.jaxrs20.client.security.oauth.LibertyJaxRsClientOAuthInterceptor;
 import com.ibm.ws.jaxrs20.client.security.saml.PropagationHandler;
-import com.ibm.ws.jaxrs20.client.util.JaxRSClientUtil;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -69,7 +67,6 @@ public class JAXRSClientImpl extends ClientImpl {
     private static final TraceComponent tc = Tr.register(JAXRSClientImpl.class);
 
     protected final AtomicBoolean closed = new AtomicBoolean(false);
-    protected Set<WebClient> baseClients = Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
     protected boolean hasSSLConfigInfo = false;
     private TLSConfiguration secConfig = null;
     //Defect 202957 move busCache from ClientMetaData to JAXRSClientImpl
@@ -193,11 +190,6 @@ public class JAXRSClientImpl extends ClientImpl {
     public void close() {
         if (closed.compareAndSet(false, true)) {
             super.close();
-            synchronized (baseClients) {
-                for (WebClient wc : baseClients) {
-                    wc.close();
-                }
-            }
 
             String moduleName = getModuleName();
             synchronized (clientsPerModule) {
@@ -215,8 +207,6 @@ public class JAXRSClientImpl extends ClientImpl {
                     }
                 }
             }
-
-            baseClients = null;
         }
     }
 
@@ -313,7 +303,8 @@ public class JAXRSClientImpl extends ClientImpl {
             //202957 same url use same bus, add a lock to busCache to ensure only one bus will be created in concurrent mode.
             //ConcurrentHashMap can't ensure that.
             String moduleName = getModuleName();
-            String id = moduleName + JaxRSClientUtil.convertURItoBusId(getUri().toString());
+            URI uri = getUri();
+            String id = moduleName + uri.getHost() + "-" + uri.getPort();
             synchronized (busCache) {
                 bus = busCache.get(id);
                 if (bus == null) {

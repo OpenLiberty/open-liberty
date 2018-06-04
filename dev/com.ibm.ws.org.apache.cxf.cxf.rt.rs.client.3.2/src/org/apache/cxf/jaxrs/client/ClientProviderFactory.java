@@ -40,11 +40,11 @@ import org.apache.cxf.message.Message;
 
 public final class ClientProviderFactory extends ProviderFactory {
     //Liberty code change start
-    private AtomicReferenceProviderList<ClientRequestFilter> clientRequestFilters =
+    private final AtomicReferenceProviderList<ClientRequestFilter> clientRequestFilters =
         new AtomicReferenceProviderList<>();
-    private AtomicReferenceProviderList<ClientResponseFilter> clientResponseFilters =
+    private final AtomicReferenceProviderList<ClientResponseFilter> clientResponseFilters =
         new AtomicReferenceProviderList<>();
-    private AtomicReferenceProviderList<ResponseExceptionMapper<?>> responseExceptionMappers =
+    private final AtomicReferenceProviderList<ResponseExceptionMapper<?>> responseExceptionMappers =
         new AtomicReferenceProviderList<>();
     //Liberty code change end
 
@@ -111,12 +111,12 @@ public final class ClientProviderFactory extends ProviderFactory {
 
         //Liberty code change start
         if (newClientRequestFilters.size() > 0) {
-            clientRequestFilters.addAndSortProviders(newClientRequestFilters, 
-                       new BindingPriorityComparator<ClientRequestFilter>(ClientRequestFilter.class, true));
+            clientRequestFilters.addAndSortProviders(newClientRequestFilters,
+                       new BindingPriorityComparator<ClientRequestFilter>(ClientRequestFilter.class, true), false);
         }
         if (newClientResponseFilters.size() > 0) {
             clientResponseFilters.addAndSortProviders(newClientResponseFilters, 
-                       new BindingPriorityComparator<ClientResponseFilter>(ClientResponseFilter.class, false));
+                       new BindingPriorityComparator<ClientResponseFilter>(ClientResponseFilter.class, false), false);
         }
         if (newResponseExceptionMappers.size() > 0) {
             responseExceptionMappers.addProviders(newResponseExceptionMappers);
