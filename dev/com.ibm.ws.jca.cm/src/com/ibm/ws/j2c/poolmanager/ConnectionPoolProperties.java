@@ -188,7 +188,7 @@ public interface ConnectionPoolProperties extends java.io.Serializable {
      * Currently Defined levels are as follows:
      * <ul>
      * <li>0 - information that can be gathered with no performance impact (default).
-     * <li>1 - information that can be gathered with minimun to moderate performance impact.
+     * <li>1 - information that can be gathered with minimum to moderate performance impact.
      * <li>2 - information that can be gather which has a moderate to significant performance impact.
      * </ul>
      */
