@@ -11,7 +11,6 @@
 package com.ibm.ws.kernel.util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,33 +44,5 @@ public class FileSystem {
             }
         }
         return result;
-    }
-
-    /**
-     * Reads first line in the file specified by {@code path}.
-     *
-     * @param path Path to read.
-     * @return First line from the file.
-     * @throws FileNotFoundException File cannot be found.
-     * @throws IOException Error reading the file.
-     */
-    public static String readFirstLine(String path) throws FileNotFoundException, IOException {
-        try (FileInputStream fis = new FileInputStream(path)) {
-            try (InputStreamReader isr = new InputStreamReader(fis)) {
-                try (BufferedReader br = new BufferedReader(isr)) {
-                    return br.readLine();
-                }
-            }
-        }
-    }
-
-    /**
-     * Check if the {@code path} exists.
-     *
-     * @param path Filesystem path.
-     * @return True if the {@code path} exists.
-     */
-    public static boolean fileExists(String path) {
-        return new File(path).exists();
     }
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.util;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -19,7 +18,6 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,25 +58,11 @@ public class MemoryInformation {
 
         long result = -1;
 
-        // First we try the JDK since it's probably most efficient.
-        // The exception is that if it's a Linux container with a
-        // non-infinite cgroup memory restriction, then we'll
-        // want to use that rather than the total OS memory.
-        if (OperatingSystem.instance().getOperatingSystemType() == OperatingSystemType.Linux &&
-            FileSystem.fileExists("/sys/fs/cgroup/memory/memory.limit_in_bytes")) {
-            try {
-                result = getTotalMemoryLinuxContainer();
-            } catch (IOException e) {
-                // Fallback to the JDK
-            }
-        }
-
-        if (result == -1) {
-            try {
-                result = getTotalMemoryJDK();
-            } catch (MemoryInformationException e) {
-                // It's okay that this fails since we'll fall back to the switch below.
-            }
+        // First we try the JDK since it's probably most efficient
+        try {
+            result = getTotalMemoryJDK();
+        } catch (MemoryInformationException e) {
+            // It's okay that this fails since we'll fall back to the switch below.
         }
 
         if (result == -1) {
@@ -296,27 +280,8 @@ public class MemoryInformation {
                                               " (" + System.getProperty("os.name") + ")");
     }
 
-    private long getTotalMemoryLinuxContainer() throws NumberFormatException, FileNotFoundException, IOException {
-        long result = -1;
-        if (FileSystem.fileExists("/sys/fs/cgroup/memory/memory.limit_in_bytes")) {
-            result = Long.parseLong(FileSystem.readFirstLine("/sys/fs/cgroup/memory/memory.limit_in_bytes"));
-            if (result == 0x7FFFFFFFFFFFF000L) {
-                // Unlimited
-                result = -1;
-            }
-        }
-        return result;
-    }
-
     private long getTotalMemoryLinux() throws MemoryInformationException {
         try {
-
-            // First, we check if we're in a container which has a cgroup memory limit.
-            long cgroupLimit = getTotalMemoryLinuxContainer();
-            if (cgroupLimit > 0) {
-                return cgroupLimit;
-            }
-
             // https://www.kernel.org/doc/Documentation/filesystems/proc.txt
             List<String> lines = FileSystem.readAllLines("/proc/meminfo");
             for (String meminfoLine : lines) {
@@ -350,65 +315,6 @@ public class MemoryInformation {
 
     private long getAvailableMemoryLinux() throws MemoryInformationException {
         try {
-
-            // First, we check if we're in a container which has a non-infinite cgroup memory limit.
-            long cgroupLimit = getTotalMemoryLinuxContainer();
-            if (cgroupLimit > 0 && FileSystem.fileExists("/sys/fs/cgroup/memory/memory.stat")) {
-                // We're memory-limited, so now read the stat file and estimate
-                // available memory
-
-                // https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt
-                // https://www.kernel.org/doc/Documentation/cgroup-v2.txt
-
-                List<String> memoryStatLines = FileSystem.readAllLines("/sys/fs/cgroup/memory/memory.stat");
-                long activeFile = -1, selfActiveFile = -1, inactiveFile = -1, selfInactiveFile = -1;
-                long used = -1, selfUsed = -1;
-                for (String memoryStatLine : memoryStatLines) {
-                    if (memoryStatLine.startsWith("total_active_file")) {
-                        activeFile = Long.parseLong(memoryStatLine.substring(memoryStatLine.indexOf(' ') + 1));
-                    } else if (memoryStatLine.startsWith("total_inactive_file")) {
-                        inactiveFile = Long.parseLong(memoryStatLine.substring(memoryStatLine.indexOf(' ') + 1));
-                    } else if (memoryStatLine.startsWith("total_rss")) {
-                        used = Long.parseLong(memoryStatLine.substring(memoryStatLine.indexOf(' ') + 1));
-                    } else if (memoryStatLine.startsWith("active_file")) {
-                        selfActiveFile = Long.parseLong(memoryStatLine.substring(memoryStatLine.indexOf(' ') + 1));
-                    } else if (memoryStatLine.startsWith("inactive_file")) {
-                        selfInactiveFile = Long.parseLong(memoryStatLine.substring(memoryStatLine.indexOf(' ') + 1));
-                    } else if (memoryStatLine.startsWith("rss")) {
-                        selfUsed = Long.parseLong(memoryStatLine.substring(memoryStatLine.indexOf(' ') + 1));
-                    }
-                }
-
-                // total_ are ones for this cgroup and any sub-cgroups. If these
-                // aren't available, fallback to just the self cgroup stats.
-                if (used == -1) {
-                    used = selfUsed;
-                }
-                if (activeFile == -1) {
-                    activeFile = selfActiveFile;
-                }
-                if (inactiveFile == -1) {
-                    inactiveFile = selfInactiveFile;
-                }
-
-                // Calculate depending on what's available
-                if (activeFile != -1 && inactiveFile != -1) {
-
-                    // applySwappiness takes into account cgroup swappiness
-                    long available = cgroupLimit - used + applySwappiness(activeFile + inactiveFile);
-
-                    // Cached pages can be shared across containers, so sometimes we can
-                    // overestimate:
-                    if (available >= cgroupLimit) {
-                        available = cgroupLimit - used;
-                    }
-
-                    return available;
-                } else if (used != -1) {
-                    return cgroupLimit - used;
-                }
-            }
-
             // https://www.kernel.org/doc/Documentation/filesystems/proc.txt
 
             // Newer versions of Linux have a MemAvailable line so we can just
@@ -513,12 +419,13 @@ public class MemoryInformation {
 
     public static synchronized int getSwappiness() throws MemoryInformationException {
         try {
-            // Use cgroup swappiness if available
-            String fileToRead = "/proc/sys/vm/swappiness";
-            if (FileSystem.fileExists("/sys/fs/cgroup/memory/memory.swappiness")) {
-                fileToRead = "/proc/sys/vm/swappiness";
+            List<String> swappinessLines = FileSystem.readAllLines("/proc/sys/vm/swappiness");
+            if (swappinessLines.size() == 1) {
+                return Integer.parseInt(swappinessLines.get(0));
+            } else {
+                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/sys/vm/swappiness",
+                                                                          swappinessLines));
             }
-            return Integer.parseInt(FileSystem.readFirstLine(fileToRead));
         } catch (IOException e) {
             throw new MemoryInformationException(e);
         }
@@ -866,13 +773,11 @@ public class MemoryInformation {
     public static void main(String... args) throws Throwable {
         out(MemoryInformation.class.getName() + " started");
         out("Operating System: " + OperatingSystem.instance().getOperatingSystemType());
-        out("Available memory  : " + commaFormatter.format(instance().getAvailableMemory()));
-        out("Total memory      : " + commaFormatter.format(instance().getTotalMemory()));
-        out("Available memory %: " + percentFormatter.format(instance().getAvailableMemoryRatio() * 100.0));
+        out("Total memory: " + instance().getTotalMemory());
+        out("Available memory: " + instance().getAvailableMemory());
+        out("Available memory %: " + instance().getAvailableMemoryRatio() * 100.0);
     }
 
-    private static final DecimalFormat commaFormatter = new DecimalFormat("#,###");
-    private static final DecimalFormat percentFormatter = new DecimalFormat("#.00");
     private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     private static void out(String message) {
