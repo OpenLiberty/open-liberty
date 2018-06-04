@@ -143,7 +143,7 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
 
             // Now set the MessageDrivenContext and/or do the dependency injection.
             // Note that dependency injection must occur while in PRE_CREATE state.
-            injectInstance(ivManagedObject, this);
+            injectInstance(ivManagedObject, ivEjbInstance, this);
 
             //---------------------------------------------------------
             // Now that the MessageDrivenContext is set and/or dependencies
@@ -260,11 +260,11 @@ public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrive
     }
 
     @Override
-    protected void injectInstance(ManagedObject<?> managedObject, InjectionTargetContext injectionContext) {
+    protected void injectInstance(ManagedObject<?> managedObject, Object instance, InjectionTargetContext injectionContext) {
         if (messageDrivenBean != null) {
             messageDrivenBean.setMessageDrivenContext(this);
         }
-        super.injectInstance(managedObject, injectionContext);
+        super.injectInstance(managedObject, instance, injectionContext);
     }
 
     /**

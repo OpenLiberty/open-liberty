@@ -30,7 +30,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.managedobject.ConstructionCallback;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
-import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
 
 /**
@@ -466,12 +465,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
             throw new IllegalStateException("InvocationContext.setParameter can not be called by lifecycle callback methods");
         }
 
-        Constructor<?> con;
-        try {
-            con = getConstructor();
-        } catch (ManagedObjectException e) {
-            throw new IllegalArgumentException(e);
-        }
+        Constructor<?> con = getConstructor();
         Class<?>[] parmTypes = con != null ? con.getParameterTypes() : ivMethod.getParameterTypes();
 
         String debug = con != null ? "constructor: " + con.getName() : "business method: " + ivMethod.getName();
@@ -650,7 +644,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
         }
     }
 
-    public Constructor<T> getConstructor() throws ManagedObjectException {
+    public Constructor<T> getConstructor() {
         if (ivIsAroundConstruct) {
             return ivConstructCallback.getConstructor();
         }

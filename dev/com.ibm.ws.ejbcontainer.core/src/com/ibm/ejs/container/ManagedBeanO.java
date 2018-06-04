@@ -124,7 +124,7 @@ public final class ManagedBeanO extends ManagedBeanOBase {
             // We need to pass the context so that CDI can inject properly,
             // getInjectionTargetContextData is overridden to only return the managed object context data
             if (!bmd.managedObjectManagesInjectionAndInterceptors) {
-                injectInstance(ivManagedObject, this);
+                injectInstance(ivManagedObject, ivEjbInstance, this);
             }
 
             // --------------------------------------------------------------------

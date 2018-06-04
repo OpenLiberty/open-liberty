@@ -848,7 +848,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     @Override
     public void createInjectionTargetsForJEEComponentClasses() throws CDIException {
-        Set<Class<?>> jeeComponentClasses = new HashSet<>(getJEEComponentClasses());
+        Set<Class<?>> jeeComponentClasses = getJEEComponentClasses();
 
         //jeeComponentClasses is per module but we have multiple bdas per module
         //so if the class is not directly in this bda, check the descendant bdas

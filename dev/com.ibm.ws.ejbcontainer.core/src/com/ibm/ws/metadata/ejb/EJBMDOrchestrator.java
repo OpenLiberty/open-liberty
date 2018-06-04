@@ -3262,16 +3262,14 @@ public abstract class EJBMDOrchestrator {
             bmd.ivEnterpriseBeanFactory = getEJBManagedObjectFactory(bmd, bmd.enterpriseBeanClass);
         }
         if (bmd.ivEnterpriseBeanFactory == null) {
-//            try {
-//                bmd.ivEnterpriseBeanClassConstructor = bmd.enterpriseBeanClass.getConstructor((Class<?>[]) null);
-//            } catch (NoSuchMethodException e) {
-//                Tr.error(tc, "JIT_NO_DEFAULT_CTOR_CNTR5007E",
-//                         new Object[] { bmd.enterpriseBeanClassName, bmd.enterpriseBeanName });
-//                throw new EJBConfigurationException("CNTR5007E: The " + bmd.enterpriseBeanClassName + " bean class for the " + bmd.enterpriseBeanName +
-//                                                    " bean does not have a public constructor that does not take parameters.");
-//            }
-            //TODO this isn't the right exception since there isn't anything the user can do to fix it
-            throw new EJBConfigurationException("ManagedObjectFactory not found");
+            try {
+                bmd.ivEnterpriseBeanClassConstructor = bmd.enterpriseBeanClass.getConstructor((Class<?>[]) null);
+            } catch (NoSuchMethodException e) {
+                Tr.error(tc, "JIT_NO_DEFAULT_CTOR_CNTR5007E",
+                         new Object[] { bmd.enterpriseBeanClassName, bmd.enterpriseBeanName });
+                throw new EJBConfigurationException("CNTR5007E: The " + bmd.enterpriseBeanClassName + " bean class for the " + bmd.enterpriseBeanName +
+                                                    " bean does not have a public constructor that does not take parameters.");
+            }
         }
         // Removed else clause that calls bmd.ivEnterpriseBeanFactory.getConstructor() because this method
         // is called before cdiMMD.setWebBeansContext(webBeansContext) in LibertySingletonServer. If we call
@@ -3311,6 +3309,10 @@ public abstract class EJBMDOrchestrator {
         if (managedObjectService != null) {
             try {
                 factory = managedObjectService.createManagedObjectFactory(bmd._moduleMetaData, klass, true);
+                //TODO the isManaged method could be moved to the ManagedObjectService and then wouldn't need to create the factory
+                if (!factory.isManaged()) {
+                    factory = null;
+                }
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
@@ -3332,6 +3334,10 @@ public abstract class EJBMDOrchestrator {
         if (managedObjectService != null) {
             try {
                 factory = managedObjectService.createInterceptorManagedObjectFactory(bmd._moduleMetaData, klass);
+                //TODO the isManaged method could be moved to the ManagedObjectService and then wouldn't need to create the factory
+                if (!factory.isManaged()) {
+                    factory = null;
+                }
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }

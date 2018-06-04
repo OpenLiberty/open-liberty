@@ -2626,10 +2626,10 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
      * Returns enterprise bean constructor
      * ivEnterpriseBeanClassConstructor for default no-arg constructor
      * ivEnterpriseBeanFactory.getConstructor() for non default
-     * 
+     *
      * @throws ManagedObjectException
      */
-    public Constructor<?> getEnterpriseBeanClassConstructor() throws ManagedObjectException {
+    public Constructor<?> getEnterpriseBeanClassConstructor() {
         Constructor<?> constructor = ivEnterpriseBeanClassConstructor;
         if (constructor == null) {
             constructor = ivEnterpriseBeanFactory.getConstructor();

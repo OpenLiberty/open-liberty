@@ -44,10 +44,10 @@ public interface ManagedObjectFactory<T> {
 
     /**
      * Return the constructor that should be used by the caller with {@link #createArguments} to construct instances of the managed object.
-     * 
+     *
      * @throws ManagedObjectException
      */
-    Constructor<T> getConstructor() throws ManagedObjectException;
+    Constructor<T> getConstructor();
 
     /**
      * Create a context that can be used to construct a new object.
@@ -59,6 +59,8 @@ public interface ManagedObjectFactory<T> {
 
     /**
      * Create a managed object for the class managed by the factory
+     *
+     * @throws ManagedObjectException
      */
     ManagedObject<T> createManagedObject() throws ManagedObjectException;
 
@@ -68,14 +70,17 @@ public interface ManagedObjectFactory<T> {
      *
      * @param invocationContext the @AroundConstruct interceptor invocation context
      * @return the managed object instance
+     * @throws ManagedObjectException
      */
     ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException;
 
     /**
-     * @param existingInstance
-     * @param invocationContext
-     * @return
-     * @throws Exception
+     * Creates a managed object around an existing instance.
+     *
+     * @param existingInstance the existing instance
+     * @param invocationContext the @AroundConstruct interceptor invocation context
+     * @return the managed object
+     * @throws ManagedObjectException
      */
     ManagedObject<T> createManagedObject(T existingInstance, ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException;
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,8 @@ import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
+import com.ibm.wsspi.injectionengine.InjectionEngine;
+import com.ibm.wsspi.injectionengine.InjectionTarget;
 import com.ibm.wsspi.injectionengine.InjectionTargetContext;
 
 /**
@@ -119,11 +121,12 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
      * like processing, such as setting the EJBContext via the 2.x APIs.
      *
      * @param managedObject managed object instance
+     * @param instance ejb object instance
      * @param injectionContext context data associated with the injection
      *
      * @throws EJBException if a failure occurs injecting into the managed object.
      */
-    protected void injectInstance(ManagedObject<?> managedObject, InjectionTargetContext injectionContext) throws EJBException {
+    protected void injectInstance(ManagedObject<?> managedObject, Object instance, InjectionTargetContext injectionContext) throws EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "injectInstance : " + Util.identity(managedObject) + ", " + injectionContext);
@@ -134,7 +137,15 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
         BeanMetaData bmd = home.beanMetaData;
         if (bmd.ivBeanInjectionTargets != null) {
             try {
-                managedObject.inject(bmd.ivBeanInjectionTargets, injectionContext);
+                //if CDI is enabled then there will be a managedObject and it should be used for injection, otherwise go directly to the injection enging
+                if (managedObject != null) {
+                    managedObject.inject(bmd.ivBeanInjectionTargets, injectionContext);
+                } else {
+                    InjectionEngine injectionEngine = getInjectionEngine();
+                    for (InjectionTarget injectionTarget : bmd.ivBeanInjectionTargets) {
+                        injectionEngine.inject(ivEjbInstance, injectionTarget, injectionContext);
+                    }
+                }
             } catch (Throwable t) {
                 FFDCFilter.processException(t, CLASS_NAME + ".injectInstance", "134", this);
                 if (isTraceOn && tc.isEntryEnabled())
@@ -241,7 +252,6 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
         if (ejbManagedObjectFactory != null) {
             createInstanceUsingMOF(ejbManagedObjectFactory);
         } else {
-            //TODO in theory the ManagedObjectFactory should always be present so perhaps we should throw an exception here?!
             createInstanceUsingConstructor();
         }
 
@@ -252,6 +262,7 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
     /**
      * Creates the bean instance using either the ManagedObjectFactory.
      */
+    @SuppressWarnings("unchecked")
     private void createInstanceUsingMOF(ManagedObjectFactory<?> ejbManagedObjectFactory) throws InvocationTargetException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
@@ -259,8 +270,9 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
 
         try {
             if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(tc, "calling ManagedObjectFactory.createManagedObject(null)");
+                Tr.debug(tc, "calling ManagedObjectFactory.createManagedObject(InvocationContext)");
 
+            @SuppressWarnings("rawtypes")
             InvocationContextImpl invCtx = getInvocationContext();
             ivManagedObject = ejbManagedObjectFactory.createManagedObject(invCtx);
 
@@ -371,7 +383,7 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
     }
 
     @Override
-    public Constructor<?> getConstructor() throws ManagedObjectException {
+    public Constructor<?> getConstructor() {
         return home.beanMetaData.getEnterpriseBeanClassConstructor();
     }
 

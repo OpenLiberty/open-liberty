@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -346,7 +346,7 @@ public class EEValidationUtils {
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "validateResource" );
+            Tr.exit(tc, "validateResource");
         }
     }
 
@@ -363,13 +363,13 @@ public class EEValidationUtils {
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "validatePersistenceContext" );
+            Tr.exit(tc, "validatePersistenceContext");
         }
     }
 
     public static void validatePersistenceUnit(PersistenceUnit PersistenceUnit, Class<?> declaringClass, Annotated annotated) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "validatePersistenceUnit", new Object[] { PersistenceUnit, declaringClass, Util.identity(annotated)});
+            Tr.entry(tc, "validatePersistenceUnit", new Object[] { PersistenceUnit, declaringClass, Util.identity(annotated) });
         }
         if (EEValidationUtils.isProducer(annotated)) {
             if (getInjectedClass(annotated) instanceof Class<?>) {
@@ -380,7 +380,7 @@ public class EEValidationUtils {
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "validatePersistenceUnit" );
+            Tr.exit(tc, "validatePersistenceUnit");
         }
     }
 

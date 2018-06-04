@@ -187,38 +187,13 @@ public class InterceptorMetaData {
         }
 
         if (ivInterceptorClasses != null) {
-            @SuppressWarnings("rawtypes")
-            ManagedObjectInvocationContext invocationContext = (ivInterceptorFactories != null) ? invocationContext = new ManagedObjectInvocationContextImpl(managedObjectContext) : null;
 
             int numberOfInterceptors = ivInterceptorClasses.length;
             for (int i = 0; i < numberOfInterceptors; i++) {
                 if (ivInterceptorFactories == null || ivInterceptorFactories[i] == null) {
-//                    interceptors[i] = ivInterceptorClasses[i].newInstance();
-                    //TODO this probably isn't the right exception
-                    throw ExceptionUtil.EJBException("Injection failure: ManagedObjectFactory not found: " + ivInterceptorClasses[i], new NullPointerException());
-                } // else {
-                ManagedObject<?> managedObject = ivInterceptorFactories[i].createManagedObject(invocationContext);
-                interceptors[i] = managedObject.getObject();
-                //}
-
-                // F743-21481
-                // Inject into the class, if needed.
-                // This injection used to be performed in each of the BeanO instances,
-                // but now its been moved into this common location.
-                try {
-                    InjectionTarget[] targetsForClass = ivInterceptorInjectionTargets[i];
-                    managedObject.inject(targetsForClass, targetContext);
-//                    if (targetsForClass.length > 0) {
-//                        for (InjectionTarget oneTarget : targetsForClass) {
-//                            injectionEngine.inject(interceptors[i], oneTarget, targetContext);
-//                        }
-//                    }
-                } catch (Throwable t) {
-                    FFDCFilter.processException(t, CLASS_NAME + "createInterceptorInstances", "229", this);
-                    if (isTraceOn && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Injection failure", t);
-                    }
-                    throw ExceptionUtil.EJBException("Injection failure", t);
+                    interceptors[i] = createInterceptorInstanceUsingConstructor(injectionEngine, ivInterceptorClasses[i], ivInterceptorInjectionTargets[i], targetContext);
+                } else {
+                    interceptors[i] = createInterceptorInstancesUsingMOF(ivInterceptorInjectionTargets[i], managedObjectContext, targetContext, ivInterceptorFactories[i]);
                 }
             }
         }
@@ -226,6 +201,76 @@ public class InterceptorMetaData {
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "createInterceptorInstances");
         }
+    }
+
+    private Object createInterceptorInstanceUsingConstructor(InjectionEngine injectionEngine,
+                                                             Class<?> interceptorClass,
+                                                             InjectionTarget[] targetsForClass,
+                                                             ManagedBeanOBase targetContext) throws Exception {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "createInterceptorInstanceUsingConstructor");
+        }
+
+        Object interceptor = interceptorClass.newInstance();
+
+        // F743-21481
+        // Inject into the class, if needed.
+        // This injection used to be performed in each of the BeanO instances,
+        // but now its been moved into this common location.
+        try {
+            if (targetsForClass.length > 0) {
+                for (InjectionTarget oneTarget : targetsForClass) {
+                    injectionEngine.inject(interceptor, oneTarget, targetContext);
+                }
+            }
+        } catch (Throwable t) {
+            FFDCFilter.processException(t, CLASS_NAME + "createInterceptorInstanceUsingConstructor", "248", this);
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Injection failure", t);
+            }
+            throw ExceptionUtil.EJBException("Injection failure", t);
+        }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "createInterceptorInstanceUsingConstructor", interceptor);
+        }
+        return interceptor;
+    }
+
+    public Object createInterceptorInstancesUsingMOF(InjectionTarget[] targetsForClass,
+                                                     ManagedObjectContext managedObjectContext,
+                                                     ManagedBeanOBase targetContext,
+                                                     ManagedObjectFactory<?> interceptorFactory) throws Exception {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "createInterceptorInstancesUsingMOF");
+        }
+
+        @SuppressWarnings("rawtypes")
+        ManagedObjectInvocationContext invocationContext = new ManagedObjectInvocationContextImpl(managedObjectContext);
+        @SuppressWarnings("unchecked")
+        ManagedObject<?> managedObject = interceptorFactory.createManagedObject(invocationContext);
+        Object interceptor = managedObject.getObject();
+
+        // Inject into the class, if needed.
+        // This injection used to be performed in each of the BeanO instances,
+        // but now its been moved into this common location.
+        try {
+            managedObject.inject(targetsForClass, targetContext);
+        } catch (Throwable t) {
+            FFDCFilter.processException(t, CLASS_NAME + "createInterceptorInstancesUsingMOF", "284", this);
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Injection failure", t);
+            }
+            throw ExceptionUtil.EJBException("Injection failure", t);
+        }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "createInterceptorInstancesUsingMOF", interceptor);
+        }
+
+        return interceptor;
     }
 
     // F743-17630

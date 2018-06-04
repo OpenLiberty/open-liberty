@@ -24,8 +24,13 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
     private Constructor<T> constructor;
     private final Class<T> managedClass;
 
-    public ManagedObjectFactoryImpl(Class<T> klass) {
+    public ManagedObjectFactoryImpl(Class<T> klass) throws ManagedObjectException {
         this.managedClass = klass;
+        try {
+            this.constructor = this.managedClass.getConstructor((Class<?>[]) null);
+        } catch (NoSuchMethodException e) {
+            throw new ManagedObjectException(e);
+        }
     }
 
     @Override
@@ -49,14 +54,7 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
      * @throws ManagedObjectException
      */
     @Override
-    public Constructor<T> getConstructor() throws ManagedObjectException {
-        if (this.constructor == null) {
-            try {
-                this.constructor = this.managedClass.getConstructor((Class<?>[]) null);
-            } catch (NoSuchMethodException e) {
-                throw new ManagedObjectException(e);
-            }
-        }
+    public Constructor<T> getConstructor() {
         return this.constructor;
     }
 
@@ -70,8 +68,6 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
         T instance = null;
         try {
             instance = getConstructor().newInstance(new Object[0]);
-        } catch (ManagedObjectException e) {
-            throw e;
         } catch (Exception e) {
             throw new ManagedObjectException(e);
         }

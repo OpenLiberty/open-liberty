@@ -278,7 +278,7 @@ final public class SingletonBeanO extends SessionBeanO {
             // Singleton do not support 2.1 client view, so we do not need to ever
             // call setSessionContext method, so just perform dependency injection.
             // Note that dependency injection must occur while in PRE_CREATE state.
-            injectInstance(ivManagedObject, this);
+            injectInstance(ivManagedObject, ivEjbInstance, this);
 
         } finally {
             contextHelper.complete(true);

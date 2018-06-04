@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,6 @@ public class InjectInjectionBinding extends InjectionSimpleBinding<Inject> {
 
         if (targetContext == null) {
             if (!(targetObject instanceof Class<?>)) {
-                System.err.println("targetObject=" + targetObject);
                 // Null target context is only valid when we're doing limited injection on an application main class
                 // where we're injecting into the static fields of the class and there is no instance.
                 throw new CDIException(Tr.formatMessage(tc, "no.injection.target.context.CWOWB1006E", targetObject));

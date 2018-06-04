@@ -156,7 +156,7 @@ public class StatelessBeanO extends SessionBeanO {
 
                 // Now set the SessionContext and/or do the dependency injection.
                 // Note that dependency injection must occur while in PRE_CREATE state.
-                injectInstance(ivManagedObject, this);
+                injectInstance(ivManagedObject, ivEjbInstance, this);
             }
 
             //---------------------------------------------------------
@@ -261,7 +261,7 @@ public class StatelessBeanO extends SessionBeanO {
     } // StatelessBeanO
 
     @Override
-    protected void injectInstance(ManagedObject<?> managedObject, InjectionTargetContext injectionContext) throws EJBException {
+    protected void injectInstance(ManagedObject<?> managedObject, Object instance, InjectionTargetContext injectionContext) throws EJBException {
         // If present, setSessionContext should be called before performing injection
         if (sessionBean != null) {
             try {
@@ -272,7 +272,7 @@ public class StatelessBeanO extends SessionBeanO {
                 throw ExceptionUtil.EJBException(rex);
             }
         }
-        super.injectInstance(managedObject, this);
+        super.injectInstance(managedObject, instance, this);
     }
 
     /**

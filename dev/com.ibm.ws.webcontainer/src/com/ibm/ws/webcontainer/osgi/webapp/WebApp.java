@@ -1329,8 +1329,8 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                 r = mo;
                 mo.inject(this.referenceContext);
            }
-        } catch (Exception e) {
-            throw new InjectionException(e);
+        } catch (ManagedObjectException e) {
+            throw new InjectionException(e.getCause());
         }
         
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
