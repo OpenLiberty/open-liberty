@@ -49,7 +49,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
     private String username = null;
     private String urAuthenticatedId = null;
     private String customRealm = null;
-    private String customTokenUsage = null;
+    private String internalTokenUsage = null;
 
     private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
                                                         AttributeNameConstants.WSCREDENTIAL_USERID,
@@ -109,7 +109,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
 
         customCacheKey = getCustomCacheKey(customProperties);
         customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
-        customTokenUsage = (String) customProperties.get(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY);
+        internalTokenUsage = (String) customProperties.get(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY);
 
         String uniqueId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
@@ -325,7 +325,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         if (uniquedIdAndSecurityNameLogin || useIdAndPasswordLogin || userIdNoPasswordLogin) {
             setUpSubject();
         }
-        if (customCacheKey != null || customRealm != null || customTokenUsage != null) {
+        if (customCacheKey != null || customRealm != null || internalTokenUsage != null) {
             addCustomAttributesToSSOToken();
             //Recreate the jwtSSOToken with customAttributes
             JwtSSOTokenHelper.addCustomCacheKeyAndRealmToJwtSSOToken(subject);
@@ -352,11 +352,11 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                 }
                 ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
             }
-            if (customTokenUsage != null) {
+            if (internalTokenUsage != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Add token usage into SSOToken");
                 }
-                ssoToken.addAttribute(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY, customTokenUsage);
+                ssoToken.addAttribute(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY, internalTokenUsage);
             }
         }
     }
