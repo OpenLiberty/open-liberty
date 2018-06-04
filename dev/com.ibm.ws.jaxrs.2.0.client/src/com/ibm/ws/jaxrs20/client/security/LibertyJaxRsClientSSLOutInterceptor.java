@@ -11,6 +11,8 @@
 package com.ibm.ws.jaxrs20.client.security;
 
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -129,7 +131,7 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
 
     private SSLSocketFactory getSocketFactory(String sslRef) {
         try {
-            Class<?> jaxrsSslMgrClass = Class.forName("com.ibm.ws.jaxrs20.appsecurity.security.JaxRsSSLManager");
+            final Class<?> jaxrsSslMgrClass = Class.forName("com.ibm.ws.jaxrs20.appsecurity.security.JaxRsSSLManager");
             if (jaxrsSslMgrClass == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "getSocketFactory could not find JaxRsSSLManager class");
@@ -137,7 +139,13 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
                 return null;
             }
             Object classObject = jaxrsSslMgrClass.newInstance();
-            Method m = jaxrsSslMgrClass.getDeclaredMethod("getSSLSocketFactoryBySSLRef", String.class, Map.class, boolean.class);
+            Method m = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+
+                @Override
+                public Method run() throws NoSuchMethodException, SecurityException {
+                    return jaxrsSslMgrClass.getDeclaredMethod("getSSLSocketFactoryBySSLRef", String.class, Map.class, boolean.class);
+                }
+            });
             Object[] parameters = { sslRef, null, false }; //getSSLSocketFactoryBySSLRef ignores the third (boolean) parameter
             SSLSocketFactory ssLSocketFactory = (SSLSocketFactory) m.invoke(classObject, parameters);
             return ssLSocketFactory;
