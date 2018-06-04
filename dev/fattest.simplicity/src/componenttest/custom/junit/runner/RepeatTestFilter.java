@@ -29,8 +29,6 @@ public class RepeatTestFilter {
         if (anno == null || anno.value().length == 0)
             return true;
 
-        FATRunner.requireFATRunner(method.getMethod().getDeclaringClass().getName());
-
         for (String action : anno.value()) {
             if (CURRENT_REPEAT_ACTION.equals(action)) {
                 log.info("Skipping test method " + method.getName() + " on action " + action);
