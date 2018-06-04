@@ -113,7 +113,7 @@ public class H2StreamProcessor {
     private long streamReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
 
     // a list of buffers to be read in by the WebContainer
-    private ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
+    private final ArrayList<WsByteBuffer> streamReadReady = new ArrayList<WsByteBuffer>();
     private int streamReadSize = 0;
     private long actualReadCount = 0;
     private CountDownLatch readLatch = new CountDownLatch(1);
@@ -601,13 +601,6 @@ public class H2StreamProcessor {
         if (StreamState.CLOSED.equals(state)) {
             setCloseTime(System.currentTimeMillis());
             muxLink.closeStream(this);
-            // null out right away to keep these objects out of the heap's tenure space.
-            // Moving to tenure is bad for performance/GC
-            h2HttpInboundLinkWrap = null;
-            streamReadReady = null;
-            headerBlock = null;
-            dataPayload = null;
-            currentFrame = null;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current stream state for stream " + this.myID + " : " + this.state);
