@@ -160,14 +160,14 @@ public final class FreePool implements JCAPMIHelper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "queueRequest", waitTimeout);
         }
-        if (waitTimeout <= 0) {
+        if (waitTimeout == 0) {
             --pm.waiterCount;
             Tr.error(
                      tc,
                      "POOL_MANAGER_EXCP_CCF2_0001_J2CA0045",
                      new Object[] { "queueRequest", gConfigProps.cfName });
 
-            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting. Negative value used for wait timeout");
+            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting. Zero used for wait timeout");
             com.ibm.ws.ffdc.FFDCFilter.processException(cwte, J2CConstants.DMSID_MAX_CONNECTIONS_REACHED, "192", this.pm);
             pm.activeRequest.decrementAndGet();
 

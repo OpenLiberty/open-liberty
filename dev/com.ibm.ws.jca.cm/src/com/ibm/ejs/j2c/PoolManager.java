@@ -2820,7 +2820,6 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                             aBuffer.append("Connection marked for thread supported cleanup and destroy.  Waiting ");
                             aBuffer.append("for transaction end and connection close - ");
                         } else {
-                            //Changed 0 to -1
                             if (mcw.isStale() || mcw.hasFatalErrorNotificationOccurred(freePool[0].getFatalErrorNotificationTime())
                                 || ((this.agedTimeout != -1)
                                     && (mcw.hasAgedTimedOut(this.agedTimeoutMillis)))) {

@@ -177,7 +177,6 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      * @throws ResourceException if an error occurs
      */
     private void createPoolManager(AbstractConnectionFactoryService svc) throws ResourceException {
-        //change something
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "createPoolManager", svc, properties);
@@ -581,7 +580,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                     throw resX;
             }
 
-        //Check if immediate is supported.  If not default value?
+        //Check if immediate is supported.  If not throw exception
         if (!immediateSupported && val == 0) {
             ResourceException immediateFailure = connectorSvc.ignoreWarnOrFail(tc, null, ResourceException.class, "UNSUPPORTED_VALUE_J2CA8011",
                                                                                val, propName, CONNECTION_MANAGER);
