@@ -131,7 +131,7 @@ public class LoginToContinueInterceptor {
                             rediectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, res);
                         }
                         return result;
-                    } else if (existsSessionCookie(hmc, req)) {
+                    } else if (hmc.getRequest().getUserPrincipal() != null) {
                         if (existsCookie(req, ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME)) {
                             // OnOriginalURLAfterAuthenticate.
                             // remove WasReqUrl cookie and return with success.
@@ -183,14 +183,7 @@ public class LoginToContinueInterceptor {
         return false;
     }
 
-    private boolean existsSessionCookie(HttpMessageContext hmc, HttpServletRequest req) {
-        if (hmc.getRequest().getUserPrincipal() != null) {
-//            String cookieName = getWebAppSecurityConfig().getJaspicSessionCookieName();
-            String cookieName = "jaspicSession";
-            return existsCookie(req, cookieName);
-        }
-        return false;
-   }
+
 
     private boolean existsCookie(HttpServletRequest req, String cookieName) {
         Cookie[] cookies = req.getCookies();

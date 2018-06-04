@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
     private String username = null;
     private String urAuthenticatedId = null;
     private String customRealm = null;
+    private String customTokenUsage = null;
 
     private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
                                                         AttributeNameConstants.WSCREDENTIAL_USERID,
@@ -56,7 +57,8 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                         AttributeNameConstants.WSCREDENTIAL_REALM,
                                                         AttributeNameConstants.WSCREDENTIAL_CACHE_KEY,
                                                         AuthenticationConstants.INTERNAL_ASSERTION_KEY,
-                                                        AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
+                                                        AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN,
+                                                        AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY};
 
     private final String[] userIdOnlyProperties = { AttributeNameConstants.WSCREDENTIAL_USERID,
                                                     AuthenticationConstants.INTERNAL_ASSERTION_KEY };
@@ -107,6 +109,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
 
         customCacheKey = getCustomCacheKey(customProperties);
         customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
+        customTokenUsage = (String) customProperties.get(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY);
 
         String uniqueId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
@@ -322,9 +325,9 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         if (uniquedIdAndSecurityNameLogin || useIdAndPasswordLogin || userIdNoPasswordLogin) {
             setUpSubject();
         }
-        if (customCacheKey != null || customRealm != null) {
-            addCustomCacheKeyAndRealmToSSOToken();
-            //Recreate the jwtSSOToken with customCacheKey and customRealm
+        if (customCacheKey != null || customRealm != null || customTokenUsage != null) {
+            addCustomAttributesToSSOToken();
+            //Recreate the jwtSSOToken with customAttributes
             JwtSSOTokenHelper.addCustomCacheKeyAndRealmToJwtSSOToken(subject);
         }
 
@@ -334,7 +337,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
     /**
      * 
      */
-    private void addCustomCacheKeyAndRealmToSSOToken() {
+    private void addCustomAttributesToSSOToken() {
         SingleSignonToken ssoToken = getSSOToken(subject);
         if (ssoToken != null) {
             if (customCacheKey != null) {
@@ -348,6 +351,12 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                     Tr.debug(tc, "Add custom realm into SSOToken");
                 }
                 ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
+            }
+            if (customTokenUsage != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Add token usage into SSOToken");
+                }
+                ssoToken.addAttribute(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY, customTokenUsage);
             }
         }
     }

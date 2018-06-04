@@ -47,4 +47,32 @@ public interface AuthenticationConstants {
 
     String JASPI_PRINCIPAL = "com.ibm.wsspi.security.cred.jaspi.principal";
 
+    /**
+     * This key indicates the usage purpose of the token. When this property is set, the key
+     * and value will be added in the attribute of SSOToken.
+     */
+    String INTERNAL_TOKEN_USAGE_KEY = "com.ibm.ws.authentication.internal.token.usage";
+
+    /**
+     * This value indicates the INTERNAL_TOKEN_USAGE is set as the jaspic session.
+     */
+    String INTERNAL_TOKEN_USAGE_JAPIC_SESSION = "jaspicSession";
+
+    /**
+     * This value indicates the INTERNAL_TOKEN_USAGE is set as the jaspic form.
+     * If this value is set, when a http request right after form login, the authentication will
+     * be successful without invoking jaspi provider, then cookie will be deleted
+     */
+    String INTERNAL_TOKEN_USAGE_JAPIC_FORM = "jaspicForm";
+
+    /**
+     * This value indicates the INTERNAL_TOKEN_USAGE is set as the jaspic form.
+     * If this value is set, when a http request right after form login, the authentication will
+     * invoke jaspi provider, then cookie will be deleted
+    
+     */
+    String INTERNAL_TOKEN_USAGE_JSR375_FORM = "Jsr375Form";
+
+
+
 }

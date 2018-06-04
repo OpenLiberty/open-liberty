@@ -50,7 +50,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.LITE)
 public class AutoApplySessionTest extends JavaEESecTestBase {
 
-    private static final String COOKIE_NAME = "jaspicSession";
+    private static final String COOKIE_NAME = "LtpaToken2";
 
     protected static Class<?> logClass = AutoApplySessionTest.class;
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");

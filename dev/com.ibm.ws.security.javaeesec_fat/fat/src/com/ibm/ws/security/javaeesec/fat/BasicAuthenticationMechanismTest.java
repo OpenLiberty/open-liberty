@@ -49,7 +49,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
 
-    private static final String COOKIE_NAME = "jaspicSession";
+    private static final String COOKIE_NAME = "LtpaToken2";
     private static final String JAR_NAME = "JavaEESecBase.jar";
     private static final String queryString = "/JavaEESecBasicAuthServlet/JavaEESecBasic";
 
