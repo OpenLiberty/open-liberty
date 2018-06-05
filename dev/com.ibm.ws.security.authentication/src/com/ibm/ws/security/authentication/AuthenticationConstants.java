@@ -73,4 +73,3 @@ public interface AuthenticationConstants {
      */
     String INTERNAL_AUTH_PROVIDER_JSR375_FORM = "jsr375Form";
 
-}

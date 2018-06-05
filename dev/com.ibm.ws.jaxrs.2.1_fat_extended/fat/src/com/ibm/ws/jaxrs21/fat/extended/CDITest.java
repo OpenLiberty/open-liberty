@@ -43,6 +43,6 @@ public class CDITest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKW1001W|CWWKW1002W");
+        server.stopServer();
     }
 }

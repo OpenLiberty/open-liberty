@@ -77,7 +77,9 @@ public class Node {
         // mainline debug in this recursive method is way to verbose, so only debug when we find what we are looking for
 
         if (nodeStreamID == this.streamID) {
-            Tr.debug(tc, "findNode exit: bottom of recursion, found node: " + this);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "findNode exit: bottom of recursion, found node: " + this);
+            }
             return this;
         } else {
             Iterator<Node> iter = dependents.iterator();

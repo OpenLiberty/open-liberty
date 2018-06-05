@@ -77,13 +77,13 @@ public class H2InboundLink extends HttpInboundLink {
     private final Object OutstandingWriteCountSync = new Object() {};
     private final int closeWaitForWritesWatchDogTimer = 5000;
     private final int closeWaitForReadWatchDogTimer = 5000;
-    private final int STREAM_CLOSE_DELAY = 5000;
+    private final int STREAM_CLOSE_DELAY = 2000;
 
     // keep track of the highest IDs processed
     private int highestClientStreamId = 0;
     private int highestLocalStreamId = -1; // this moves to 0 when the connection stream is established
     private int openPushStreams = 0;
-    private final Object pushSync = new Object() {};
+    private final Object streamOpenCloseSync = new Object() {};
     private int activeClientStreams = 0;
     private final Object streamCounterSync = new Object() {};
 
@@ -206,7 +206,7 @@ public class H2InboundLink extends HttpInboundLink {
             Tr.debug(tc, "createNewInboundLink entry: stream-id: " + streamID);
         }
         if ((streamID % 2 == 0) && (streamID != 0)) {
-            synchronized (pushSync) {
+            synchronized (streamOpenCloseSync) {
                 int maxPushStreams = getRemoteConnectionSettings().getMaxConcurrentStreams();
                 // if there are too many locally-open active streams, don't open a new one
                 if (maxPushStreams >= 0 && openPushStreams > maxPushStreams) {
@@ -1192,36 +1192,31 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     /**
-     * Removes all streams that are older than STREAM_CLOSE_DELAY from the streamTable
-     *
-     * @param H2StreamProcessor
-     */
-    private void purgeClosedStreams() {
-        long currentTime = System.currentTimeMillis();
-        while (closedStreams.peek() != null &&
-                        currentTime - closedStreams.peek().getCloseTime() > STREAM_CLOSE_DELAY) {
-            streamTable.remove(closedStreams.remove().getId());
-        }
-    }
-
-    /**
      * Remove the stream matching the given ID from the write tree, and decrement the number of open streams.
      *
      * @param int streamID
      */
     public void closeStream(H2StreamProcessor p) {
-        if (p.getId() != 0) {
-            writeQ.removeNodeFromQ(p.getId());
-            this.closedStreams.add(p);
-            if (p.getId() % 2 == 0) {
-                synchronized (pushSync) {
+        // only place that should be dealing with the closed stream table,
+        // be called by multiple stream objects at the same time, so sync access
+        synchronized (streamOpenCloseSync) {
+            if (p.getId() != 0) {
+                writeQ.removeNodeFromQ(p.getId());
+                this.closedStreams.add(p);
+                if (p.getId() % 2 == 0) {
                     this.openPushStreams--;
+                } else {
+                    decrementActiveClientStreams();
                 }
-            } else {
-                decrementActiveClientStreams();
+            }
+
+            // Removes all streams that are older than STREAM_CLOSE_DELAY from the streamTable
+            long currentTime = System.currentTimeMillis();
+            while (closedStreams.peek() != null &&
+                   currentTime - closedStreams.peek().getCloseTime() > STREAM_CLOSE_DELAY) {
+                streamTable.remove(closedStreams.remove().getId());
             }
         }
-        purgeClosedStreams();
     }
 
     /**

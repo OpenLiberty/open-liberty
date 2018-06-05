@@ -10,13 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
+
 /**
  *
  */
 public interface KeyValuePair {
     public static enum ValueTypes {
-        STRING, INTEGER, LONG, FLOAT, BOOLEAN
+        STRING, INTEGER, LONG, FLOAT, BOOLEAN, LIST
     }
+
+    public boolean isList();
 
     public boolean isInteger();
 
@@ -27,6 +31,8 @@ public interface KeyValuePair {
     public boolean isFloat();
 
     public boolean isBoolean();
+
+    public ArrayList<KeyValuePair> getList();
 
     public int getIntValue();
 

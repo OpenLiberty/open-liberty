@@ -112,7 +112,7 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         for (Object provider : configuration.getInstances()) {
             Class<?> providerCls = ClassHelper.getRealClass(bus, provider);
             if (provider instanceof ClientRequestFilter || provider instanceof ClientResponseFilter) {
-                FilterProviderInfo<Object> filter = new FilterProviderInfo<Object>(//providerCls, providerCls,
+                FilterProviderInfo<Object> filter = new FilterProviderInfo<Object>(providerCls, providerCls,
                         provider, bus, configuration.getContracts(providerCls));
                 providers.add(filter);
             } else {

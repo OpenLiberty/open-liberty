@@ -14,18 +14,18 @@ import java.util.ArrayList;
 
 public class GenericData {
 
-    private final ArrayList<Pair> pairs;
+    private final ArrayList<KeyValuePair> pairs;
 
     private String sourceType;
 
     private String jsonMessage = null;
 
     public GenericData() {
-        pairs = new ArrayList<Pair>();
+        pairs = new ArrayList<KeyValuePair>();
     }
 
     public GenericData(int size) {
-        pairs = new ArrayList<Pair>(size);
+        pairs = new ArrayList<KeyValuePair>(size);
     }
 
     public void setPair(int index, String key, String value) {
@@ -66,7 +66,7 @@ public class GenericData {
         pairs.add(kvps);
     }
 
-    public ArrayList<Pair> getPairs() {
+    public ArrayList<KeyValuePair> getPairs() {
         return pairs;
     }
 
@@ -87,9 +87,9 @@ public class GenericData {
         String comma = ",";
         sb.append("GenericData [");
         sb.append("type=" + sourceType);
-        for (Pair p : pairs) {
-            if (p instanceof KeyValuePair) {
-                kvp = (KeyValuePair) p;
+        for (KeyValuePair p : pairs) {
+            if (p != null && !p.isList()) {
+                kvp = p;
                 key = kvp.getKey();
                 sb.append(comma);
                 if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {

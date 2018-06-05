@@ -18,7 +18,7 @@
          name="%jwtSso" description="%jwtSso.desc">
          
          <AD id="cookieName" name="%cookieName" description="%cookieName.desc" 
-             required="false" type="String" default="MPJWT" />
+             required="false" type="String" default="JWT" />
              
          <!--  These next 3 will be read in from the AppSecurity 3.0 metadata and used intact 
          

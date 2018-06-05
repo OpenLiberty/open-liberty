@@ -187,22 +187,22 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
 
     protected void updateDestination(HttpServletRequest request) {
 
-        String ad = destination.getEndpointInfo().getAddress();
-        String base = getBaseURL(request);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "EndpointInfo address = " + ad);
-            Tr.debug(tc, "Base URL = " + base);
-        }
-
-        if (ad != null && ad.startsWith(HTTP_PREFIX)) {
-            // It is possible that the destination address may have changed from http to https or localhost to some other host.
-            // So we will check if the cached destination address starts with the base for this request.
-            if (ad.startsWith(base)) {
-                return;
+        synchronized (destination) {   //moved up for OLGH3669
+            String ad = destination.getEndpointInfo().getAddress();
+            String base = getBaseURL(request);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "EndpointInfo address = " + ad);
+                Tr.debug(tc, "Base URL = " + base);
             }
-        }
 
-        synchronized (destination) {
+            if (ad != null && ad.startsWith(HTTP_PREFIX)) {
+                // It is possible that the destination address may have changed from http to https or localhost to some other host.
+                // So we will check if the cached destination address starts with the base for this request.
+                if (ad.startsWith(base)) {
+                    return;
+                }
+            }
+
             ad = null;
             if (destination.getAddress() != null
                 && destination.getAddress().getAddress() != null) {
