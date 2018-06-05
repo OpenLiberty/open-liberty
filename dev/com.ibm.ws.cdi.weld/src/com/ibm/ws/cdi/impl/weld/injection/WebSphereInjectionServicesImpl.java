@@ -145,9 +145,8 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         Boolean hasTargets = Boolean.FALSE;
 
         Object toInject = injectionContext.getTarget();
-        if (toInject != null) {
-            hasTargets = inject(toInject, injectionContext);
-        }
+        Class<?> toInjectClass = injectionContext.getAnnotatedType().getJavaClass();
+        hasTargets = inject(toInject, toInjectClass, injectionContext);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "inject", hasTargets);
@@ -155,19 +154,22 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         return hasTargets;
     }
 
-    private Boolean inject(Object toInject, final InjectionContext<?> injectionContext) throws Exception {
+    private Boolean inject(Object toInject, Class<?> toInjectClass, final InjectionContext<?> injectionContext) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "inject", new Object[] { Util.identity(toInject), Util.identity(injectionContext) });
         }
 
-        Class<?> clazz = toInject.getClass();
+        //Class<?> clazz = toInject.getClass();
         Boolean hasTargets = Boolean.FALSE;
 
-        InjectionTarget[] targets = getInjectionTargets(clazz, toInject);
+        InjectionTarget[] targets = getInjectionTargets(toInjectClass, toInject);
         if (null != targets && targets.length > 0) {
             hasTargets = Boolean.TRUE;
 
-            WebSphereInjectionTargetListener<?> listener = injectionTargetListeners.get(toInject);
+            WebSphereInjectionTargetListener<?> listener = null;
+            if (toInject != null) {
+                listener = injectionTargetListeners.get(toInject);
+            }
             for (InjectionTarget target : targets) {
                 // for each possible giveable injection target for this manage bean class, see if the target has a binding. If
                 // it does then inject it into our manage bean object.
@@ -181,7 +183,7 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
                     try {
 
                         InjectionTargetContext ctx;
-                        if (listener != null) { //listener should never be null???
+                        if (listener != null) {
                             ctx = listener.getCurrentInjectionTargetContext();
                         } else {
                             ctx = new InjectionTargetContext() {
@@ -229,9 +231,14 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
 
         Class<?> injectionClass = clazz;
 
-        if (toInject != null && CDIUtils.isWeldProxy(toInject)) {
+        if (toInject == null) {
+            if (CDIUtils.isWeldProxy(clazz)) {
+                injectionClass = clazz.getSuperclass();
+            }
+        } else if (CDIUtils.isWeldProxy(toInject)) {
             injectionClass = clazz.getSuperclass();
         }
+
         ReferenceContext referenceContext = referenceContextMap.get(injectionClass);
 
         if (referenceContext == null) {
@@ -345,9 +352,9 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
             }
         }
 
-       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-           Tr.exit(tc, "registerInjectionTarget");
-       }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "registerInjectionTarget");
+        }
     }
 
     private <T> void validateAnnotatedMethod(AnnotatedMethod<T> annotatedMethod, Class<?> declaringClass, CDIArchive cdiArchive) {
@@ -359,8 +366,8 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
             validateAnnotatedMember(injectedParameter, declaringClass, cdiArchive);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-           Tr.exit(tc, "validateAnnotatedMethod");
-       }
+            Tr.exit(tc, "validateAnnotatedMethod");
+        }
     }
 
     private void validateAnnotatedMember(Annotated annotated, Class<?> declaringClass, CDIArchive cdiArchive) {
@@ -380,9 +387,9 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
                 EEValidationUtils.validatePersistenceUnit(((PersistenceUnit) annotation), declaringClass, annotated);
             }
         }
-       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-           Tr.exit(tc, "validateAnnotatedMember");
-       }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validateAnnotatedMember");
+        }
     }
 
     /**
