@@ -287,6 +287,8 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
         }
         resource.setLicenseId(feature.getHeader("Subsystem-License"));
 
+        resource.setSingleton(Boolean.toString(feature.isSingleton()));
+
         return resource;
     }
 
