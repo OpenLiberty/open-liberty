@@ -45,8 +45,6 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
 
     private static final String HTTP_PREFIX = "http";
 
-    private static final String HTTPS_PREFIX = "https";
-
     private static final String SET_JAXB_VALIDATION_EVENT_HANDLER = "set-jaxb-validation-event-handler";
 
     protected final EndpointInfo endpointInfo;
@@ -189,18 +187,22 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
 
     protected void updateDestination(HttpServletRequest request) {
 
-        String ad = destination.getEndpointInfo().getAddress();
-        String base = getBaseURL(request);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "EndpointInfo address = " + ad);
-            Tr.debug(tc, "EndpointInfo base URL = " + base);
-        }
+        synchronized (destination) {   //moved up for OLGH3669
+            String ad = destination.getEndpointInfo().getAddress();
+            String base = getBaseURL(request);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "EndpointInfo address = " + ad);
+                Tr.debug(tc, "Base URL = " + base);
+            }
 
-        if (ad != null && ad.startsWith(HTTP_PREFIX) && (ad.startsWith(HTTPS_PREFIX) == base.startsWith(HTTPS_PREFIX))) {
-            return;
-        }
+            if (ad != null && ad.startsWith(HTTP_PREFIX)) {
+                // It is possible that the destination address may have changed from http to https or localhost to some other host.
+                // So we will check if the cached destination address starts with the base for this request.
+                if (ad.startsWith(base)) {
+                    return;
+                }
+            }
 
-        synchronized (destination) {
             ad = null;
             if (destination.getAddress() != null
                 && destination.getAddress().getAddress() != null) {
