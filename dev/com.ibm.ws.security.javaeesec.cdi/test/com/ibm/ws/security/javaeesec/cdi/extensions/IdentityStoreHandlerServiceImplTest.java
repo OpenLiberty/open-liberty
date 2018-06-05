@@ -12,6 +12,7 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -130,7 +131,7 @@ public class IdentityStoreHandlerServiceImplTest {
         withIdentityStoreHandlerResult(validResult);
         Subject subject = ishsi.createHashtableInSubject(principalName, password);
         System.out.println("created subject : " + subject);
-        assertSubjectContents(subject, realmName, principalName);
+        assertSubjectContents(subject, realmName, principalName, true);
     }
 
     @Test
@@ -139,7 +140,7 @@ public class IdentityStoreHandlerServiceImplTest {
         withIdentityStoreHandlerResult(validResult);
         Subject subject = ishsi.createHashtableInSubject(principalName);
         System.out.println("created subject : " + subject);
-        assertSubjectContents(subject, realmName, principalName);
+        assertSubjectContents(subject, realmName, principalName, true);
     }
 
     @Test
@@ -349,7 +350,7 @@ public class IdentityStoreHandlerServiceImplTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void assertSubjectContents(Subject subject, String realmName, String uniqueId) {
+    private void assertSubjectContents(Subject subject, String realmName, String uniqueId, boolean existCacheKey) {
         Hashtable<String, ?> customProperties = getSubjectHashtable(subject);
         assertEquals("The assertion key must be set in the subject.", Boolean.TRUE, customProperties.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY));
         assertEquals("The unique id must be set in the subject.", "user:" + realmName + "/" + uniqueId, customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
@@ -358,7 +359,11 @@ public class IdentityStoreHandlerServiceImplTest {
         List<String> subjectGroups = (List<String>) customProperties.get(AttributeNameConstants.WSCREDENTIAL_GROUPS);
         assertTrue("The groups must be set in the subject.", groups.containsAll(subjectGroups) && subjectGroups.containsAll(groups));
         assertEquals("The realm name must be set in the subject.", realmName, customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM));
-        assertNull("The cache key must not be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY));
+        if (existCacheKey) {
+            assertNotNull("The cache key must be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY));
+        } else {
+            assertNull("The cache key must not be set in the subject.", customProperties.get(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY));
+        }
     }
 
     private Hashtable<String, ?> getSubjectHashtable(Subject subject) {

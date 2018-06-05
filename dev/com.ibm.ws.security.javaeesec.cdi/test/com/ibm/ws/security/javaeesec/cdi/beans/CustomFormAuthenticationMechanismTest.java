@@ -340,16 +340,6 @@ public class CustomFormAuthenticationMechanismTest {
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
     }
 
-
-    private void withoutJaspicSessionPrincipal() {
-        mockery.checking(new Expectations() {
-            {
-                one(request).getUserPrincipal();
-                will(returnValue(null));
-            }
-        });
-    }
-
     /*************** support methods **************/
     @SuppressWarnings("unchecked")
     private CustomFormAuthenticationMechanismTest withIDSBeanInstance(final IdentityStore value, final boolean isUnsatisfied, final boolean isAmbiguous) throws Exception {

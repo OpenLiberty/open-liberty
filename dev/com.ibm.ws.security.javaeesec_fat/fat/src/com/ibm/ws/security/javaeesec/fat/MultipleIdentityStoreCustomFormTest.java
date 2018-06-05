@@ -135,7 +135,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the realm name is the same as the IdentityStore ID of the 1st IdentityStore.
      * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
      * <LI> Veirfy the list of groups does not contain the group name of 2nd identitystore.
-     * <LI> Verify jaspicSession is set, and WASReqURL cookie is being removed.
+     * <LI> Verify LtpaToken2 is set, and WASReqURL cookie is being removed.
      * </OL>
      */
     @Test
@@ -146,7 +146,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String [] sessionCookie = {"jaspicSession"};
+        String [] sessionCookie = {"LtpaToken2"};
         String location = executeCustomFormLogin(httpclient, urlBase + redirectLoginUri, LocalLdapServer.USER1, LocalLdapServer.PASSWORD, getViewState(response), sessionCookie);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
