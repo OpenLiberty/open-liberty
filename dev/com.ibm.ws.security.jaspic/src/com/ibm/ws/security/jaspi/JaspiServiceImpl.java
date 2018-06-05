@@ -55,6 +55,7 @@ import com.ibm.websphere.security.auth.WSLoginFailedException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.audit.Audit;
+import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
@@ -319,7 +320,6 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                                              HashMap<String, Object> props) throws Exception {
         WebRequest webRequest = new WebRequestImpl(request, response, ((WebAppConfig) props.get("webAppConfig")).getApplicationName(), null, (SecurityMetadata) props.get("securityMetadata"), null, (WebAppSecurityConfig) props.get("webAppSecurityConfig"));
         JaspiRequest jaspiRequest = new JaspiRequest(webRequest, (WebAppConfig) props.get("webAppConfig"));
-        Subject sessionSubject = getSessionSubject(jaspiRequest);
         AuthenticationResult result = null;
         AuthConfigProvider provider = getAuthConfigProvider(jaspiRequest.getAppContext());
         if (provider != null) {
@@ -379,7 +379,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "******* return from JASPI provider authContext.validateRequest, status: " + status);
             }
-            authResult = createAuthenticationResult(clientSubject, jaspiRequest, status, msgInfo);
+            authResult = createAuthenticationResult(clientSubject, jaspiRequest, status, msgInfo, isJsr375BridgeProvider(provider));
         } catch (AuthException e) {
             AuthenticationException ex = new AuthenticationException("JASPIC Authenticated with status: SEND_FAILURE, exception: " + e);
             ex.initCause(e);
@@ -398,17 +398,17 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     }
 
     private AuthenticationResult createAuthenticationResult(@Sensitive Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
-                                                            MessageInfo msgInfo) throws WSLoginFailedException {
+                                                            MessageInfo msgInfo, boolean isJSR375) throws WSLoginFailedException {
         if (System.getSecurityManager() == null) {
-            return processAuthStatus(clientSubject, jaspiRequest, status, msgInfo);
+            return processAuthStatus(clientSubject, jaspiRequest, status, msgInfo, isJSR375);
         } else {
-            return processAuthStatusWithJava2Security(clientSubject, jaspiRequest, status, msgInfo);
+            return processAuthStatusWithJava2Security(clientSubject, jaspiRequest, status, msgInfo, isJSR375);
         }
     }
 
     @SuppressWarnings("rawtypes")
     private AuthenticationResult processAuthStatus(Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
-                                                   MessageInfo msgInfo) throws WSLoginFailedException {
+                                                   MessageInfo msgInfo, boolean isJSR375) throws WSLoginFailedException {
         AuthenticationResult authResult;
         if (AuthStatus.SUCCESS == status || AuthStatus.SEND_SUCCESS == status) {
             // if the provider asked that the subject be used on subsequent
@@ -417,10 +417,22 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             Map msgInfoMap = msgInfo.getMap();
             if (msgInfoMap != null) {
                 String session = (String) msgInfoMap.get("javax.servlet.http.registerSession");
-                if (Boolean.valueOf(session).booleanValue()) {
+                boolean isJaspiSession = Boolean.valueOf(session).booleanValue();
+                if (isJaspiSession) {
                     Map<String, Object> props = new HashMap<String, Object>();
                     props.put("javax.servlet.http.registerSession", session);
                     jaspiRequest.getWebRequest().setProperties(props);
+                    setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_SESSION);
+                } else if ("FORM".equals(getRequestAuthType(jaspiRequest.getHttpServletRequest(), "AUTH_TYPE"))) {
+                    if (isJSR375) {
+                        // this is for jsr375 form/custom form without setting registerSession. the next call will reach to the provider,
+                        // then the ltpatoken2 cookie will be deleted after successful return.
+                        setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_TOKEN_USAGE_JSR375_FORM);
+                    } else {
+                        // this is for original japsic provider which support the form login. this attribute indicates that LtpaToken2
+                        // cookie can be used for the authentication just one time in the WebProviderAuthenticatorProxy then the cookie will be deleted.
+                        setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_FORM);
+                    }
                 }
             }
             // if the provider gave us an HttServletRequestWrapper (or response) then save it
@@ -448,9 +460,9 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
 
     @FFDCIgnore(java.security.PrivilegedActionException.class)
     private AuthenticationResult processAuthStatusWithJava2Security(@Sensitive Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status,
-                                                                    MessageInfo msgInfo) throws WSLoginFailedException {
+                                                                    MessageInfo msgInfo, boolean isJSR375) throws WSLoginFailedException {
         try {
-            return AccessController.doPrivileged(new ProcessAuthStatusPrivilegedExceptionAction(clientSubject, jaspiRequest, status, msgInfo));
+            return AccessController.doPrivileged(new ProcessAuthStatusPrivilegedExceptionAction(clientSubject, jaspiRequest, status, msgInfo, isJSR375));
         } catch (PrivilegedActionException privException) {
             throw (WSLoginFailedException) privException.getException();
         }
@@ -467,18 +479,20 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         private final JaspiRequest jaspiRequest;
         private final AuthStatus status;
         private final MessageInfo msgInfo;
+        private final boolean isJSR375;
 
         @Trivial
-        public ProcessAuthStatusPrivilegedExceptionAction(Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status, MessageInfo msgInfo) {
+        public ProcessAuthStatusPrivilegedExceptionAction(Subject clientSubject, JaspiRequest jaspiRequest, AuthStatus status, MessageInfo msgInfo, boolean isJSR375) {
             this.clientSubject = clientSubject;
             this.jaspiRequest = jaspiRequest;
             this.status = status;
             this.msgInfo = msgInfo;
+            this.isJSR375 = isJSR375;
         }
 
         @Override
         public AuthenticationResult run() throws Exception {
-            return processAuthStatus(clientSubject, jaspiRequest, status, msgInfo);
+            return processAuthStatus(clientSubject, jaspiRequest, status, msgInfo, isJSR375);
         }
 
     }
@@ -1112,4 +1126,12 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         return false;
     }
 
+    private void setUsageAttribute(Hashtable<String, Object> hashTable, String value) {
+        if (hashTable != null) {
+            hashTable.put(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY, value);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Token Usage is set as " + value);
+            }
+        }
+    }
 }

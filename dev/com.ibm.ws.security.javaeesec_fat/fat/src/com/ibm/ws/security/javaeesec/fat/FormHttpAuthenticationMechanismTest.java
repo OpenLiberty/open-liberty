@@ -63,7 +63,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
 
-    private static final String COOKIE_NAME = "jaspicSession";
     private static final String JAR_NAME = "JavaEESecBase.jar";
 
     private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");

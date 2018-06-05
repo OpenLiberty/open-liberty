@@ -141,9 +141,8 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         status = utils.validateUserAndPassword(getCDI(), JavaEESecConstants.DEFAULT_REALM, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
             Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
-            messageInfoMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+            messageInfoMap.put("javax.servlet.http.authType", "FORM");
             messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
-            utils.setCacheKey(clientSubject);
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
