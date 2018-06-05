@@ -136,7 +136,8 @@ public class BootstrapManifestTest {
         index = (index == -1) ? javaVersion.indexOf('-') : index;
         javaVersion = (index == -1) ? javaVersion : javaVersion.substring(0, index);
 
-        Assume.assumeTrue(!javaVersion.startsWith("9"));
+        // Only continue if JDK 1.7 or 1.8
+        Assume.assumeTrue(javaVersion.startsWith("1."));
 
         //validate the system packages obtained match the running java.version file name
         assertTrue("The system packages being used do not match the running java.version: "
