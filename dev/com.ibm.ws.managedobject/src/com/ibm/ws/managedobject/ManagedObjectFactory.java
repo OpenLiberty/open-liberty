@@ -44,8 +44,6 @@ public interface ManagedObjectFactory<T> {
 
     /**
      * Return the constructor that should be used by the caller with {@link #createArguments} to construct instances of the managed object.
-     *
-     * @throws ManagedObjectException
      */
     Constructor<T> getConstructor();
 

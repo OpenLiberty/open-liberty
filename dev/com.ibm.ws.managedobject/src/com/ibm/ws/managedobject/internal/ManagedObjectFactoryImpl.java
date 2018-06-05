@@ -26,11 +26,6 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
 
     public ManagedObjectFactoryImpl(Class<T> klass) throws ManagedObjectException {
         this.managedClass = klass;
-        try {
-            this.constructor = this.managedClass.getConstructor((Class<?>[]) null);
-        } catch (NoSuchMethodException e) {
-            throw new ManagedObjectException(e);
-        }
     }
 
     @Override
@@ -50,11 +45,16 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
 
     /**
      * Returns the constructor that will be used by this factory to create the managed object.
-     *
-     * @throws ManagedObjectException
      */
     @Override
     public Constructor<T> getConstructor() {
+        if (this.constructor == null) {
+            try {
+                this.constructor = this.managedClass.getConstructor((Class<?>[]) null);
+            } catch (NoSuchMethodException e) {
+                throw new IllegalStateException(e);
+            }
+        }
         return this.constructor;
     }
 
