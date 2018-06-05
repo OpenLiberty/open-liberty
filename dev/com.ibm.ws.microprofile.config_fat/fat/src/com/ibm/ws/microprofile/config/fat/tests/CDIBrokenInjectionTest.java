@@ -50,7 +50,17 @@ public class CDIBrokenInjectionTest extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, war);
 
-        server.startServer();
+        /*
+         * The application will fail to start due to the brokenness of the Config under test.
+         *
+         * Use the LibertyServer startServerAndValidate() method to allow the server to start
+         * without the necessity to validate that the application has started successfully.
+         *
+         * The startServerAndValidate parameters are set, in order, as follows,
+         *
+         * DEFAULT_PRE_CLEAN=true, DEFAULT_CLEANSTART=true, validateApps=false
+         */
+        server.startServerAndValidate(true, true, false);
     }
 
     @AfterClass
