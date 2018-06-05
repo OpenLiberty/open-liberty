@@ -1,0 +1,59 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Filter service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4350 - CWWKS4399
+AUTH_FILTER_INIT_NULL_STRING=CWWKS4350E: Une cha\u00eene vide n'est pas une r\u00e8gle de filtre d'authentification valide.
+AUTH_FILTER_INIT_NULL_STRING.explanation=Une cha\u00eene nulle a \u00e9t\u00e9 sp\u00e9cifi\u00e9e pour le filtre d'authentification dans le fichier server.xml.
+AUTH_FILTER_INIT_NULL_STRING.useraction=Corrigez la r\u00e8gle de filtrage d'authentification.
+
+AUTH_FILTER_MALFORMED_CONDITION=CWWKS4351E: La condition de filtre est construite incorrectement. s1 = {0};  s2 = {1}; s3 = {2}.
+AUTH_FILTER_MALFORMED_CONDITION.explanation=La condition de filtre est incorrectement form\u00e9e, elle ne peut pas comporter plusieurs valeurs.
+AUTH_FILTER_MALFORMED_CONDITION.useraction=V\u00e9rifiez la valeur de filtre dans le fichier server.xml.
+
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE=CWWKS4352E: Le type de correspondance du filtre doit \u00eatre l''un des suivants  : ==, !=, %=, > ou <. Le type de correspondance utilis\u00e9 \u00e9tait {0}.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.explanation=Le type de correspondance du filtre doit \u00eatre l'un des suivants : ==, !=, %=, > ou <.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.useraction=V\u00e9rifiez le type de correspondance du filtre dans le fichier server.xml.
+
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE=CWWKS4353E: Le type de correspondance du filtre doit \u00eatre l''un des suivants : equals, notContain, contains, greaterThan ou lessThan. Le type de correspondance utilis\u00e9 \u00e9tait {0}.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.explanation=Le type de correspondance du filtre doit \u00eatre l'un des suivants : equals, notContain, contains, greaterThan ou lessThan.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.useraction=V\u00e9rifiez le type de correspondance du filtre dans le fichier server.xml.
+
+AUTH_FILTER_MALFORMED_IP_RANGE=CWWKS4354E: Une plage d''adresses IP incorrectement form\u00e9e a \u00e9t\u00e9 sp\u00e9cifi\u00e9e. {0} a \u00e9t\u00e9 d\u00e9tect\u00e9 \u00e0 la place d''un caract\u00e8re g\u00e9n\u00e9rique.
+AUTH_FILTER_MALFORMED_IP_RANGE.explanation=Une plage d'adresses IP incorrecte a \u00e9t\u00e9 sp\u00e9cifi\u00e9e. La plage d'adresses IP doit contenir uniquement des caract\u00e8res g\u00e9n\u00e9riques apr\u00e8s la premi\u00e8re plage.
+AUTH_FILTER_MALFORMED_IP_RANGE.useraction=V\u00e9rifiez que tous les caract\u00e8res situ\u00e9s apr\u00e8s la premi\u00e8re plage sp\u00e9cifi\u00e9e sont des caract\u00e8res g\u00e9n\u00e9riques.
+
+AUTH_FILTER_UNKNOWN_HOST=CWWKS4355E: Une exception d''h\u00f4te inconnu a \u00e9t\u00e9 renvoy\u00e9e pour l''adresse IP {0}.
+AUTH_FILTER_UNKNOWN_HOST.explanation=Un nom d\u2019h\u00f4te n'a pas pu \u00eatre obtenu pour l'adresse IP sp\u00e9cifi\u00e9e.
+AUTH_FILTER_UNKNOWN_HOST.useraction=Validez la plage d'adresses IP sp\u00e9cifi\u00e9e.
+
+AUTH_FILTER_IP_STRING_CONVERT_ERROR=CWWKS4356E: Impossible de convertir la valeur d''attribut IP {0} en adresse IP.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.explanation=Une erreur de conversion s'est produite lors de la conversion de la valeur d'attribut IP en adresse IP.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.useraction=Validez l'attribut IP sp\u00e9cifi\u00e9 dans le fichier server.xml.
+
+AUTH_FILTER_NOT_CONFIG=CWWKS4357I: L'\u00e9l\u00e9ment authFilter n'est pas sp\u00e9cifi\u00e9 dans le fichier server.xml.
+AUTH_FILTER_NOT_CONFIG.explanation=L'\u00e9l\u00e9ment authFilter n'est pas sp\u00e9cifi\u00e9 dans le fichier server.xml.
+AUTH_FILTER_NOT_CONFIG.useraction=Assurez-vous que l'\u00e9l\u00e9ment authFilter est sp\u00e9cifi\u00e9 dans le fichier server.xml.
+
+AUTH_FILTER_CONFIG_PROCESSED=CWWKS4358I: Le traitement de la configuration du filtre d''authentification {0} a abouti.
+AUTH_FILTER_CONFIG_PROCESSED.explanation=La configuration du filtre d'authentification a \u00e9t\u00e9 correctement effectu\u00e9e.
+AUTH_FILTER_CONFIG_PROCESSED.useraction=Aucune action n'est requise.
+
+AUTH_FILTER_CONFIG_MODIFIED=CWWKS4359I: La modification de la configuration du filtre d''authentification {0} a abouti.
+AUTH_FILTER_CONFIG_MODIFIED.explanation=La modification du filtre d'authentification a \u00e9t\u00e9 correctement effectu\u00e9e.
+AUTH_FILTER_CONFIG_MODIFIED.useraction=Aucune action n'est requise.
+
+AUTH_FILTER_MISSING_ID=CWWKS4360E: L''attribut d''ID obligatoire {0} est manquant dans l''\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml.
+AUTH_FILTER_MISSING_ID.explanation=L'attribut d'ID obligatoire est manquant dans l'\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml ; cet \u00e9l\u00e9ment authFilter ne sera pas utilis\u00e9.
+
+AUTH_FILTER_MISSING_ID.useraction=Assurez-vous que l'\u00e9l\u00e9ment authFilter sp\u00e9cifi\u00e9 dans le fichier server.xml comporte l'attribut d'ID.
