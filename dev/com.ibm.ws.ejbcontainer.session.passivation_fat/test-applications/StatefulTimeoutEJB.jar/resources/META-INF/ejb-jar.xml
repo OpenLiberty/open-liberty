@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	metadata-complete="false" version="3.1">
+	<display-name>StatefulTimeoutTestEJB
+	</display-name>
+	<enterprise-beans>
+	   <session id="StatefulTimeoutXMLOnlyBean">
+         <ejb-name>StatefulTimeoutXMLOnlyBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutXMLOnlyBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout>
+            <timeout>15</timeout>
+            <unit>Seconds</unit>
+         </stateful-timeout>
+      </session>
+      <session id="StatefulTimeoutXMLOnlyDefaultUnitBean">
+         <ejb-name>StatefulTimeoutXMLOnlyDefaultUnitBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutXMLOnlyDefaultUnitBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout>
+            <timeout>1</timeout>
+         </stateful-timeout>
+      </session>
+		<session id="StatefulTimeoutNegativeOneXMLBean">
+			<ejb-name>StatefulTimeoutNegativeOneXMLBean
+			</ejb-name>
+			<ejb-class>
+				com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutNegativeOneXMLBean
+			</ejb-class>
+			<session-type>Stateful</session-type>
+			<stateful-timeout>
+				<timeout>-1</timeout>
+				<unit>Minutes</unit>
+			</stateful-timeout>
+		</session>
+		<session id="StatefulTimeoutNegativeTwoXMLBean">
+         <ejb-name>StatefulTimeoutNegativeTwoXMLBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutNegativeTwoXMLBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout>
+            <timeout>-2</timeout>
+            <unit>Minutes</unit>
+         </stateful-timeout>
+      </session>
+		<session id="StatefulTimeoutZeroXMLBean">
+         <ejb-name>StatefulTimeoutZeroXMLBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutZeroXMLBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout>
+            <timeout>0</timeout>
+            <unit>Minutes</unit>
+         </stateful-timeout>
+      </session>
+      <session id="TimeoutInExtFileOnlyBean">
+         <ejb-name>TimeoutInExtFileOnlyBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.TimeoutInExtFileOnlyBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+      </session>
+      <session id="StatefulTimeoutAnnotationOverrideExtFileBean">
+         <ejb-name>StatefulTimeoutAnnotationOverrideExtFileBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutAnnotationOverrideExtFileBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+      </session>
+      <session id="StatefulTimeoutXMLOverrideExtFileBean">
+         <ejb-name>StatefulTimeoutXMLOverrideExtFileBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutXMLOverrideExtFileBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout>
+            <timeout>15</timeout>
+            <unit>Seconds</unit>
+         </stateful-timeout>
+      </session>
+      <session id="StatefulTimeoutXMLNoTimeoutStanzaBean">
+         <ejb-name>StatefulTimeoutXMLNoTimeoutStanzaBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutXMLNoTimeoutStanzaBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout />
+      </session>
+      <session id="StatefulTimeoutXMLUnitButNoTimeoutBean">
+         <ejb-name>StatefulTimeoutXMLUnitButNoTimeoutBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutXMLUnitButNoTimeoutBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout>
+            <unit>Seconds</unit>
+         </stateful-timeout>
+      </session>
+      <session id="StatelessWithStatefulTimeoutXMLBean">
+         <ejb-name>StatelessWithStatefulTimeoutXMLBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatelessWithStatefulTimeoutXMLBean
+         </ejb-class>
+         <session-type>Stateless</session-type>
+         <stateful-timeout>
+            <timeout>5</timeout>
+            <unit>Minutes</unit>
+         </stateful-timeout>
+      </session>
+      <session id="StatefulTimeoutXMLTimeoutOverflowBean">
+         <ejb-name>StatefulTimeoutXMLTimeoutOverflowBean
+         </ejb-name>
+         <ejb-class>
+            com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.StatefulTimeoutXMLTimeoutOverflowBean
+         </ejb-class>
+         <session-type>Stateful</session-type>
+         <stateful-timeout>
+            <timeout>999999999999</timeout>
+            <unit>Days</unit>
+         </stateful-timeout>
+      </session>
+	</enterprise-beans>
+</ejb-jar>
