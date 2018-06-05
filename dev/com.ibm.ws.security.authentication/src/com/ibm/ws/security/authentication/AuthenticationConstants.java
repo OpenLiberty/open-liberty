@@ -72,4 +72,4 @@ public interface AuthenticationConstants {
      * Note: This value should not go to the jwtSSOToken.
      */
     String INTERNAL_AUTH_PROVIDER_JSR375_FORM = "jsr375Form";
-
+}
