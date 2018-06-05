@@ -14,10 +14,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -25,6 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
@@ -73,6 +73,7 @@ public class MemoryInformation {
             }
         }
 
+        // Now try the JDK
         if (result == -1) {
             try {
                 result = getTotalMemoryJDK();
@@ -153,6 +154,44 @@ public class MemoryInformation {
      * straightforward view of just the free RAM, create a new instance
      * of {@link #MemoryInformation(boolean, boolean)} with
      * {@code useLightweightAvailableRam} set to true.
+     *
+     * Note that, as with all caches, there's a tradeoff: If you flush cache
+     * out of RAM to launch additional programs, there's a potential performance
+     * impact if there is a lot of I/O in the future that would have otherwise
+     * used that cache (although if it's that heavy, it's likely to come
+     * back into cache).
+     *
+     * As just one example, below is the output of a run of {@link #main(String...)}
+     * on Linux. Note the big difference between available memory lines:
+     *
+     * <pre>
+     * {@code
+     * Operating System      :           Linux
+     * Available memory      :  10,934,116,352
+     * Available memory (JDK):     700,477,440
+     * Total memory          :  16,430,428,160
+     * }
+     * </pre>
+     *
+     * After flushing the entire cache (generally not recommended other than in
+     * controlled performance tests):
+     *
+     * <pre>
+     * {@code
+     * $ echo 1 | sudo tee /proc/sys/vm/drop_caches
+     * 1
+     * }
+     * </pre>
+     *
+     * And running {@link #main(String...)} again, we get closer:
+     *
+     * <pre>
+     * {@code
+     * Available memory (JDK):   9,126,993,920
+     * }
+     *
+     * The additional difference between that and MemAvailable is that there
+     * are other buffers and caches that may be flushed besides the file cache.
      *
      * @return Bytes of available RAM.
      * @throws MemoryInformationException Error retrieving information.
@@ -813,70 +852,59 @@ public class MemoryInformation {
     }
 
     private static OperatingSystemMXBean osMxBean;
-    private static Method methodGetTotalPhysicalMemorySize;
-    private static Method methodGetFreePhysicalMemorySize;
+    private static MBeanServer mBeanServer;
+    private static ObjectName osObjectName;
+    private static String javaVendor;
 
-    private synchronized long getTotalMemoryJDK() throws MemoryInformationException {
+    private synchronized void ensureInitializedMBean() throws MemoryInformationException {
         if (osMxBean == null) {
             osMxBean = ManagementFactory.getOperatingSystemMXBean();
-        }
-        try {
-            if (methodGetTotalPhysicalMemorySize == null) {
-                try {
-                    methodGetTotalPhysicalMemorySize = osMxBean.getClass().getMethod("getTotalPhysicalMemorySize");
-                } catch (NoSuchMethodException nsme) {
-                    methodGetTotalPhysicalMemorySize = osMxBean.getClass().getMethod("getTotalPhysicalMemory");
-                }
-
-                // This is needed for some JDKs since implementation is private
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    @Override
-                    public Object run() {
-                        methodGetTotalPhysicalMemorySize.setAccessible(true);
-                        return null;
-                    }
-                });
+            mBeanServer = ManagementFactory.getPlatformMBeanServer();
+            javaVendor = System.getProperty("java.vendor");
+            if (javaVendor == null) {
+                javaVendor = "";
+            } else {
+                javaVendor = javaVendor.toLowerCase();
             }
+            try {
+                osObjectName = new ObjectName("java.lang", "type", "OperatingSystem");
+            } catch (MalformedObjectNameException e) {
+                throw new MemoryInformationException(e);
+            }
+        }
+    }
 
-            return (Long) methodGetTotalPhysicalMemorySize.invoke(osMxBean);
+    private synchronized long getTotalMemoryJDK() throws MemoryInformationException {
+        try {
+            ensureInitializedMBean();
 
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                        | SecurityException e) {
+            if (javaVendor.contains("ibm")) {
+                return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemory");
+            } else {
+                return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemorySize");
+            }
+        } catch (Throwable e) {
             throw new MemoryInformationException(e);
         }
     }
 
     private synchronized long getFreeMemoryJDK() throws MemoryInformationException {
-        if (osMxBean == null) {
-            osMxBean = ManagementFactory.getOperatingSystemMXBean();
-        }
         try {
-            if (methodGetFreePhysicalMemorySize == null) {
-                methodGetFreePhysicalMemorySize = osMxBean.getClass().getMethod("getFreePhysicalMemorySize");
+            ensureInitializedMBean();
 
-                AccessController.doPrivileged(new PrivilegedAction<Object>() {
-                    @Override
-                    public Object run() {
-                        methodGetFreePhysicalMemorySize.setAccessible(true);
-                        return null;
-                    }
-                });
-            }
-
-            return (Long) methodGetFreePhysicalMemorySize.invoke(osMxBean);
-
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-                        | SecurityException e) {
+            return (Long) mBeanServer.getAttribute(osObjectName, "FreePhysicalMemorySize");
+        } catch (Throwable e) {
             throw new MemoryInformationException(e);
         }
     }
 
     public static void main(String... args) throws Throwable {
         out(MemoryInformation.class.getName() + " started");
-        out("Operating System: " + OperatingSystem.instance().getOperatingSystemType());
-        out("Available memory  : " + commaFormatter.format(instance().getAvailableMemory()));
-        out("Total memory      : " + commaFormatter.format(instance().getTotalMemory()));
-        out("Available memory %: " + percentFormatter.format(instance().getAvailableMemoryRatio() * 100.0));
+        out("Operating System      : " + String.format("%15s", OperatingSystem.instance().getOperatingSystemType()));
+        out("Available memory      : " + String.format("%15s", commaFormatter.format(instance().getAvailableMemory())));
+        out("Available memory (JDK): " + String.format("%15s", commaFormatter.format(new MemoryInformation(true, true).getAvailableMemory())));
+        out("Total memory          : " + String.format("%15s", commaFormatter.format(instance().getTotalMemory())));
+        out("Available memory %    : " + String.format("%15s", percentFormatter.format(instance().getAvailableMemoryRatio() * 100.0)));
     }
 
     private static final DecimalFormat commaFormatter = new DecimalFormat("#,###");
