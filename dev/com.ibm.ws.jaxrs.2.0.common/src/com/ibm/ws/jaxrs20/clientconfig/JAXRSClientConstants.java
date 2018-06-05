@@ -35,5 +35,6 @@ public class JAXRSClientConstants {
     public static final String MPJWT_HANDLER = "com.ibm.ws.jaxrs.client.mpjwt.sendToken";
     public static final String DISABLE_CN_CHECK = "com.ibm.ws.jaxrs.client.disableCNCheck";
     public final static String SAML_HANDLER = "com.ibm.ws.jaxrs.client.saml.sendToken";
+    public final static String KEEP_ALIVE_CONNECTION = "com.ibm.ws.jaxrs.client.keepalive.connection"; // valid values are "keep-alive" and "close"
 
 }

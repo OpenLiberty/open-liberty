@@ -33,6 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.PathSegment;
 
+import org.apache.cxf.common.util.SystemPropertyAction;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 
@@ -50,7 +51,7 @@ public final class URITemplate {
     private static final String CHARACTERS_TO_ESCAPE = ".*+$()";
     private static final String SLASH = "/";
     private static final String SLASH_QUOTE = "/;";
-    private static final int MAX_URI_TEMPLATE_CACHE_SIZE = Integer.getInteger("org.apache.cxf.jaxrs.max_uri_template_cache_size", 2000);
+    private static final int MAX_URI_TEMPLATE_CACHE_SIZE = Integer.parseInt(SystemPropertyAction.getProperty("org.apache.cxf.jaxrs.max_uri_template_cache_size", "2000"));
     private static final Map<String, URITemplate> URI_TEMPLATE_CACHE = new ConcurrentHashMap<String, URITemplate>();
 
     private final String template;
@@ -362,7 +363,7 @@ public final class URITemplate {
 
         return createTemplate(path == null ? null : path.value(), params, classNameandPath);
     }
-    
+
     public static URITemplate createTemplate(Path path, List<Parameter> params) {
 
         return createTemplate(path == null ? null : path.value(), params);
@@ -372,7 +373,7 @@ public final class URITemplate {
 
         return createTemplate(path == null ? null : path.value(), Collections.<Parameter> emptyList());
     }
-    
+
     public static URITemplate createTemplate(Path path, String classNameandPath) {
 
         return createTemplate(path == null ? null : path.value(), Collections.<Parameter> emptyList(), classNameandPath);
@@ -381,7 +382,7 @@ public final class URITemplate {
     public static URITemplate createTemplate(String pathValue) {
         return createTemplate(pathValue, Collections.<Parameter> emptyList(), pathValue);
     }
-    
+
     public static URITemplate createTemplate(String pathValue, String classNameandPath) {
         return createTemplate(pathValue, Collections.<Parameter> emptyList(), classNameandPath);
     }
@@ -389,7 +390,7 @@ public final class URITemplate {
     public static URITemplate createTemplate(String pathValue, List<Parameter> params) {
         return createExactTemplate(pathValue, params, pathValue);
     }
-    
+
     public static URITemplate createTemplate(String pathValue, List<Parameter> params, String classNameandPath) {
         if (pathValue == null) {
             pathValue = "/";
@@ -403,18 +404,18 @@ public final class URITemplate {
         return createExactTemplate(pathValue, Collections.<Parameter> emptyList());
     }
 
-    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {        
+    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {
          return createExactTemplate(pathValue, params, pathValue);
     }
-    
-    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params, String classNameandPath) {        
+
+    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params, String classNameandPath) {
         URITemplate template = URI_TEMPLATE_CACHE.get(classNameandPath);
         if (template == null) {
             template = new URITemplate(pathValue, params);
             if (URI_TEMPLATE_CACHE.size() >= MAX_URI_TEMPLATE_CACHE_SIZE) {
                 URI_TEMPLATE_CACHE.clear();
             }
-            URI_TEMPLATE_CACHE.put(classNameandPath, template);            
+            URI_TEMPLATE_CACHE.put(classNameandPath, template);
         }
         return template;
     }

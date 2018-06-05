@@ -50,6 +50,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxrs20.client.JAXRSClientImpl.JAXRSWebTargetImpl;
 import com.ibm.ws.jaxrs20.client.bus.LibertyJAXRSClientBusFactory;
+import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientConfigInterceptor;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientProxyInterceptor;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientTimeOutInterceptor;
 import com.ibm.ws.jaxrs20.client.security.LibertyJaxRsClientSSLOutInterceptor;
@@ -286,6 +287,9 @@ public class JAXRSClientImpl extends ClientImpl {
             //add Liberty Jax-RS Client Timeout Interceptor to configure the timeout
             ccfg.getOutInterceptors().add(new LibertyJaxRsClientTimeOutInterceptor(Phase.PRE_LOGICAL));
 
+            //add Liberty Jax-RS Client Config Interceptor to configure things like KeepAlive
+            ccfg.getOutInterceptors().add(new LibertyJaxRsClientConfigInterceptor(Phase.PRE_LOGICAL));
+        
             //add Liberty Jax-RS Client Proxy Interceptor to configure the proxy
             ccfg.getOutInterceptors().add(new LibertyJaxRsClientProxyInterceptor(Phase.PRE_LOGICAL));
 
