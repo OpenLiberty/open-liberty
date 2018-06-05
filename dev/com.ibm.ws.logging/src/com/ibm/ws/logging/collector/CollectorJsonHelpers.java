@@ -439,28 +439,28 @@ public class CollectorJsonHelpers {
         if (extKey.indexOf('_', 4) != -1) {
             if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {
                 try {
-                    extensions.addPair(extKey, Integer.parseInt(extValue));
+                    extensions.addKeyValuePair(extKey, Integer.parseInt(extValue));
                 } catch (NumberFormatException e) {
                 }
             } else if (extKey.endsWith(CollectorJsonHelpers.FLOAT_SUFFIX)) {
                 try {
-                    extensions.addPair(extKey, Float.parseFloat(extValue));
+                    extensions.addKeyValuePair(extKey, Float.parseFloat(extValue));
                 } catch (NumberFormatException e) {
                 }
             } else if (extKey.endsWith(CollectorJsonHelpers.BOOL_SUFFIX)) {
                 if (extValue.toLowerCase().trim().equals(TRUE_BOOL)) {
-                    extensions.addPair(extKey, true);
+                    extensions.addKeyValuePair(extKey, true);
                 } else if (extValue.toLowerCase().trim().equals(FALSE_BOOL)) {
-                    extensions.addPair(extKey, false);
+                    extensions.addKeyValuePair(extKey, false);
                 }
             } else if (extKey.endsWith(CollectorJsonHelpers.LONG_SUFFIX)) {
                 try {
-                    extensions.addPair(extKey, Long.parseLong(extValue));
+                    extensions.addKeyValuePair(extKey, Long.parseLong(extValue));
                 } catch (NumberFormatException e) {
                 }
             }
         } else {
-            extensions.addPair(extKey, extValue);
+            extensions.addKeyValuePair(extKey, extValue);
         }
     }
 }

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
+
 /**
  *
  */
-public class KeyValueLongPair implements Pair, KeyValuePair {
+public class KeyValueLongPair implements KeyValuePair {
 
     private final String key;
     private final long value;
@@ -21,6 +23,11 @@ public class KeyValueLongPair implements Pair, KeyValuePair {
     public KeyValueLongPair(String key, long value) {
         this.key = key;
         this.value = value;
+    }
+
+    @Override
+    public boolean isList() {
+        return false;
     }
 
     @Override
@@ -81,5 +88,10 @@ public class KeyValueLongPair implements Pair, KeyValuePair {
     @Override
     public String getKey() {
         return key;
+    }
+
+    @Override
+    public ArrayList<KeyValuePair> getList() {
+        throw new UnsupportedOperationException("Cannot call getList method on KeyValueLongPair class");
     }
 }
