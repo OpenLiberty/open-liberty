@@ -132,9 +132,10 @@ public abstract class ProviderFactory {
         new AtomicReferenceProviderList<>();
     private final AtomicReferenceProviderList<ContextProvider<?>> contextProviders =
         new AtomicReferenceProviderList<>();
+    private final AtomicReferenceProviderList<ParamConverterProvider> paramConverters =
+                    new AtomicReferenceProviderList<>();
     //Liberty code change end
 
-    private final List<ProviderInfo<ParamConverterProvider>> paramConverters = new ArrayList<ProviderInfo<ParamConverterProvider>>(1);
     private boolean paramConverterContextsAvailable;
     // List of injected providers
     private final Collection<ProviderInfo<?>> injectedProviders = new HashSet<ProviderInfo<?>>();
@@ -740,6 +741,7 @@ public abstract class ProviderFactory {
         List<ProviderInfo<MessageBodyWriter<?>>> newWriters = new ArrayList<ProviderInfo<MessageBodyWriter<?>>>();
         List<ProviderInfo<ContextResolver<?>>> newResolvers = new ArrayList<ProviderInfo<ContextResolver<?>>>();
         List<ProviderInfo<ContextProvider<?>>> newContextProviders = new ArrayList<ProviderInfo<ContextProvider<?>>>();
+        List<ProviderInfo<ParamConverterProvider>> newParamConverters = new ArrayList<ProviderInfo<ParamConverterProvider>>();
         //Liberty code change end
 
         List<ProviderInfo<ReaderInterceptor>> readInts =
@@ -782,7 +784,9 @@ public abstract class ProviderFactory {
             }
 
             if (filterContractSupported(provider, providerCls, ParamConverterProvider.class)) {
-                paramConverters.add((ProviderInfo<ParamConverterProvider>) provider);
+                //Liberty code change start
+                addProviderToList(newParamConverters, provider);
+                //Liberty code change end
             }
         }
         //Liberty code change start
@@ -798,14 +802,16 @@ public abstract class ProviderFactory {
         if (newContextProviders.size() > 0) {
             contextProviders.addProviders(newContextProviders);
         }
+        if (newParamConverters.size() > 0) {
+            addAndSortParamConverters(newParamConverters, false);
+        }
         //Liberty code change end
-        sortParamConverters();
 
         mapInterceptorFilters(readerInterceptors, readInts, ReaderInterceptor.class, true);
         mapInterceptorFilters(writerInterceptors, writeInts, WriterInterceptor.class, true);
 
         //Liberty code change start
-        injectContextProxies(messageReaders.get(), messageWriters.get(), contextResolvers.get(), paramConverters,
+        injectContextProxies(messageReaders.get(), messageWriters.get(), contextResolvers.get(), paramConverters.get(),
         //Liberty code change end
                              readerInterceptors.values(), writerInterceptors.values());
         checkParamConverterContexts();
@@ -969,22 +975,16 @@ public abstract class ProviderFactory {
             referent.set(Collections.emptyList());
         }
     }
-    //Liberty code change end
     
-    private <T> void sortParamConverters() {
+    private void addAndSortParamConverters(List<ProviderInfo<ParamConverterProvider>> newParamConverters, boolean forceSort) {
+        Comparator<ProviderInfo<ParamConverterProvider>> comparator = null;
         if (!customComparatorAvailable(ParamConverter.class)) {
-            paramConverters.sort(new ParamConverterProviderComparator());
-        } else {
-            doCustomSort(paramConverters);
+            comparator = new ParamConverterProviderComparator();
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            StringBuilder msg = new StringBuilder("sortParamConverters - sorted list:");
-            for (int i = 0; i < paramConverters.size(); i++) {
-                msg.append(" (" + i + ") " + paramConverters.get(i).getProvider());
-            }
-            Tr.debug(tc, msg.toString());
-        }
+
+        paramConverters.addAndSortProviders(newParamConverters, comparator, forceSort);
     }
+    //Liberty code change end
 
     private boolean customComparatorAvailable(Class<?> providerClass) {
         if (providerComparator != null) {
@@ -1828,8 +1828,8 @@ public abstract class ProviderFactory {
         //Liberty code change start
         addAndSortReaders(null, true);
         addAndSortWriters(null, true);
+        addAndSortParamConverters(null, true);
         //Liberty code change end
-        sortParamConverters();
     }
 
     //Liberty code change start
