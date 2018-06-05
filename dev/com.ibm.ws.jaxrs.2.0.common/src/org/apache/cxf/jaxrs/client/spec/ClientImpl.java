@@ -46,7 +46,6 @@ import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.ClientProviderFactory;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.cxf.jaxrs.client.spec.ClientImpl.WebTargetImpl;
 import org.apache.cxf.jaxrs.model.FilterProviderInfo;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.https.SSLUtils;
@@ -128,7 +127,21 @@ public class ClientImpl implements Client {
         if (address.isEmpty()) {
             address = "/";
         }
-        return target(UriBuilder.fromUri(address));
+
+        // Liberty change start
+        WebTarget target;
+        int braceIndex = address.indexOf('{');
+        if (braceIndex < 0) {
+            UriBuilder builder = UriBuilder.fromUri(address);
+            target = target(builder);
+        } else {
+            String strippedAddress = address.substring(0, braceIndex);
+            String template = address.substring(braceIndex);
+            target = target(UriBuilder.fromUri(strippedAddress));
+            target = target.path(template);
+        }
+        return target;
+        // Liberty change end
     }
 
     @Override
@@ -503,7 +516,7 @@ public class ClientImpl implements Client {
             return newWebTarget(getUriBuilder().resolveTemplatesFromEncoded(templatesMap));
         }
 
-        protected WebTarget newWebTarget(UriBuilder newBuilder) { // Liberty Change
+        private WebTarget newWebTarget(UriBuilder newBuilder) {
             WebClient newClient;
             if (targetClient != null) {
                 newClient = WebClient.fromClient(targetClient);
