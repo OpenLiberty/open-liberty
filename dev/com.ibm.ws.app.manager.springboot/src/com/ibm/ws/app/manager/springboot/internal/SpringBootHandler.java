@@ -122,17 +122,18 @@ public class SpringBootHandler implements ApplicationHandler<DeployedAppInfo> {
             @Override
             public void successfulCompletion(Future<Boolean> future, Boolean result) {
                 if (!result) {
-                    applicationActivated.set(null);
+                    springBootApplication.uninstallApp();
                 }
             }
 
             @Override
             public void failedCompletion(Future<Boolean> future, Throwable t) {
-                applicationActivated.set(null);
+                springBootApplication.uninstallApp();
             }
         });
 
         if (!springBootApplication.deployApp(result)) {
+            //Setting to false just in case the result wasn't set already
             futureMonitor.setResult(result, false);
         }
         return result;
