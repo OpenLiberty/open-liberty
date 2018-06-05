@@ -14,7 +14,10 @@ import com.ibm.ws.security.fat.common.Constants;
 
 public class JwtFatConstants extends Constants {
 
-    public static final String JWT_COOKIE_NAME = "MPJWT";
+    public static final String JWT_COOKIE_NAME = "JWT";
+    public static final String EXPECTED_COOKIE_NAME = "cookie: " + JWT_COOKIE_NAME;
+    public static final String EXPECTED_COOKIE_2_NAME = "cookie: " + JWT_COOKIE_NAME + "02";
+
     public static final String LTPA_COOKIE_NAME = "LtpaToken2";
 
     public static final String JWT_REGEX = BASE_64_REGEX + "+\\." + BASE_64_REGEX + "+\\." + BASE_64_REGEX + "+";
