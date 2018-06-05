@@ -359,28 +359,28 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     }
 
     private boolean isJaspicSessionOrJsr375Form(List<String> attrs) {
-        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_JASPIC) || attrs.contains(AuthenticationConstants.INTERNAL_JSR375_FORM))) {
+        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JASPIC) || attrs.contains(AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JSR375_FORM))) {
             return true;
         }
         return false;
     }
 
     private boolean isJaspicSession(List<String> attrs) {
-        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_JASPIC)) {
+        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JASPIC)) {
             return true;
         }
         return false;
     }
 
     private boolean isJaspicForm(List<String> attrs) {
-        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_JASPIC_FORM)) {
+        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JASPIC_FORM)) {
             return true;
         }
         return false;
     }
 
     private boolean isJaspicAttribute(List<String> attrs) {
-        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_JASPIC) || attrs.contains(AuthenticationConstants.INTERNAL_JSR375_FORM) || attrs.contains(AuthenticationConstants.INTERNAL_JASPIC_FORM))) {
+        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JASPIC) || attrs.contains(AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JSR375_FORM) || attrs.contains(AuthenticationConstants.INTERNAL_AUTH_PROVIDER_JASPIC_FORM))) {
             return true;
         }
         return false;

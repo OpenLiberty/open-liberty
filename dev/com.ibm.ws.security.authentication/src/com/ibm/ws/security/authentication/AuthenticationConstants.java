@@ -55,7 +55,7 @@ public interface AuthenticationConstants {
     /**
      * This value indicates the internal authentication provider is set as the jaspic provider.
      */
-    String INTERNAL_JASPIC = "jaspic";
+    String INTERNAL_AUTH_PROVIDER_JASPIC = "jaspic";
 
     /**
      * This value indicates the INTERNAL_AUTH_PROVIDER_JASPIC is set as the jaspic form.
@@ -63,7 +63,7 @@ public interface AuthenticationConstants {
      * be successful without invoking jaspi provider, then cookie will be deleted.
      * Note: This value should not go to the jwtSSOToken.
      */
-    String INTERNAL_JASPIC_FORM = "jaspicForm";
+    String INTERNAL_AUTH_PROVIDER_JASPIC_FORM = "jaspicForm";
 
     /**
      * This value indicates the INTERNAL_AUTH_PROVIDER_JASPIC is set as the jsr375form.
@@ -71,6 +71,6 @@ public interface AuthenticationConstants {
      * invoke jaspi provider, then cookie will be deleted.
      * Note: This value should not go to the jwtSSOToken.
      */
-    String INTERNAL_JSR375_FORM = "jsr375Form";
+    String INTERNAL_AUTH_PROVIDER_JSR375_FORM = "jsr375Form";
 
 }
