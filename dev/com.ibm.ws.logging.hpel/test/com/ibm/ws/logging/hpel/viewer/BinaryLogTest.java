@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ public class BinaryLogTest {
         System.out.println(argOutput);
         assertTrue("Output should be multiline", argOutput.size() > 0);
         assertTrue("First line of output should contain a Usage string, Usage: binaryLog view", argOutput.get(0).startsWith("Usage: binaryLog view"));
-        assertTrue("There should be a line contain --isoDateFormat options", argOutput.get(57).contains("--isoDateFormat"));
+        assertTrue("There should be a line contain --isoDateFormat options", argOutput.get(60).contains("--isoDateFormat"));
     }
 
     /*
@@ -147,16 +147,17 @@ public class BinaryLogTest {
                                               "--excludeLogger=exc*",
                                               "--includeThread=2a",
                                               "--locale=es_ES",
-                                              "--includeMessage=*msg*" };
-        String expectedConfig = "latestInstance=false, minLevel=FINE, maxLevel=INFO, startDate=null, stopDate=null, includeLoggers=inc*, excludeLoggers=exc*, hexThreadID=2a, tailInterval=-1, locale=es_es, message=*msg*, extensions=[thread=someThread, requestID=someRequestID], encoding=null, action=view";
+                                              "--includeMessage=*msg*",
+                                              "--excludeMessage=*abcd*" };
+        String expectedConfig = "latestInstance=false, minLevel=FINE, maxLevel=INFO, startDate=null, stopDate=null, includeLoggers=inc*, excludeLoggers=exc*, hexThreadID=2a, tailInterval=-1, locale=es_es, message=*msg*, excludeMessages=*abcd*, extensions=[thread=someThread, requestID=someRequestID], encoding=null, action=view";
         helpTestParseCmdLineArgs(action, commandArgs, repositoryDir, targetDir, expectedConfig);
 
         commandArgs = new String[] { "--monitor" };
-        expectedConfig = "latestInstance=false, minLevel=null, maxLevel=null, startDate=null, stopDate=null, includeLoggers=null, excludeLoggers=null, hexThreadID=null, tailInterval=1, locale=null, message=null, extensions=[], encoding=null, action=view";
+        expectedConfig = "latestInstance=false, minLevel=null, maxLevel=null, startDate=null, stopDate=null, includeLoggers=null, excludeLoggers=null, hexThreadID=null, tailInterval=1, locale=null, message=null, excludeMessages=null, extensions=[], encoding=null, action=view";
         helpTestParseCmdLineArgs(action, commandArgs, repositoryDir, targetDir, expectedConfig);
 
         commandArgs = new String[] { "--isoDateFormat" };
-        expectedConfig = "latestInstance=false, minLevel=null, maxLevel=null, startDate=null, stopDate=null, includeLoggers=null, excludeLoggers=null, hexThreadID=null, tailInterval=-1, locale=null, message=null, extensions=[], encoding=null, action=view";
+        expectedConfig = "latestInstance=false, minLevel=null, maxLevel=null, startDate=null, stopDate=null, includeLoggers=null, excludeLoggers=null, hexThreadID=null, tailInterval=-1, locale=null, message=null, excludeMessages=null, extensions=[], encoding=null, action=view";
         helpTestParseCmdLineArgs(action, commandArgs, repositoryDir, targetDir, expectedConfig);
 
     }
@@ -383,7 +384,7 @@ public class BinaryLogTest {
                                 + expectedMinDate
                                 + ", stopDate="
                                 + expectedMaxDate
-                                + ", includeLoggers=null, excludeLoggers=null, hexThreadID=null, tailInterval=-1, locale=null, message=null, extensions=[], encoding=null, action=view";
+                                + ", includeLoggers=null, excludeLoggers=null, hexThreadID=null, tailInterval=-1, locale=null, message=null, excludeMessages=null, extensions=[], encoding=null, action=view";
         helpTestParseCmdLineArgs(action, commandArgs, repositoryDir, null, expectedConfig, isoDateFormat);
 
     }
@@ -426,8 +427,9 @@ public class BinaryLogTest {
                                      "--excludeLogger=exc*",
                                      "--includeThread=2a",
                                      "--includeMessage=*msg*",
+                                     "--excludeMessage=*abcd*",
                                      "--includeInstance=latest" };
-        expectedConfig = "latestInstance=true, minLevel=FINE, maxLevel=INFO, startDate=null, stopDate=null, includeLoggers=inc*, excludeLoggers=exc*, hexThreadID=2a, tailInterval=-1, locale=null, message=*msg*, extensions=[thread=someThread, requestID=someRequestID], encoding=null, action=copy";
+        expectedConfig = "latestInstance=true, minLevel=FINE, maxLevel=INFO, startDate=null, stopDate=null, includeLoggers=inc*, excludeLoggers=exc*, hexThreadID=2a, tailInterval=-1, locale=null, message=*msg*, excludeMessages=*abcd*, extensions=[thread=someThread, requestID=someRequestID], encoding=null, action=copy";
         helpTestParseCmdLineArgs(action, commandArgs, repositoryDir, targetDir, expectedConfig);
     }
 

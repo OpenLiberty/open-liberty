@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2017 IBM Corporation and others.
+ * Copyright (c) 2002, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -189,12 +189,16 @@ public class BinaryLogExec extends VerboseTestCase {
      * Steps:
      * 1. Create log entries and than use view action to view the contents of log in text format.
      * 2. View the log entries again using --isoDateFormat option
+     * 3. View the log entries again using --excludeMessage option, and hide one of the create log entries.
      *
      * @throws Exception
      */
     public void testbinaryLogViewExecutes() throws Exception {
         // need to have messages for the binaryLog to process.
         CommonTasks.createLogEntries(HpelSetup.getServerUnderTest(), BinaryLogExec.class.getName(), "Some Msg goes here", null, 25, CommonTasks.LOGS, -1);
+
+        // create message to hide
+        CommonTasks.createLogEntries(HpelSetup.getServerUnderTest(), BinaryLogExec.class.getName(), "Some Msg goes here to be excluded.", null, 25, CommonTasks.LOGS, -1);
 
         Node node = HpelSetup.getNodeUnderTest();
         rOutLog = new RemoteFile(node.getMachine(), node.getMachine().getTempDir(), outFileName);
@@ -203,9 +207,11 @@ public class BinaryLogExec extends VerboseTestCase {
 
         String arg1 = "view";
         String arg2 = "--isoDateFormat";
+        String arg3 = "--excludeMessage=*Msg*excluded*";
 
         ProgramOutput lvPrgmOut;
 
+        logMsg("Executing BinaryLog to view log entries with no options");
         lvPrgmOut = exeBinaryLog(new String[] { arg1, CommonTasks.getBinaryLogDir(HpelSetup.getServerUnderTest()).getAbsolutePath() + "/logdata" });
 
         this.logVerificationPoint("Verifying binaryLog std out/err and status return code.");
@@ -229,6 +235,7 @@ public class BinaryLogExec extends VerboseTestCase {
         assertTrue("Failed assertion that binaryLog did produce an output file", lvPrgmOut.getStdout().contains("Some Msg goes here"));
         assertTrue("Failed assertion that binaryLog displayed default date format", m1.find());
 
+        logMsg("Executing BinaryLog to view log entries with --isoDateFormat option");
         lvPrgmOut = exeBinaryLog(new String[] { arg1, CommonTasks.getBinaryLogDir(HpelSetup.getServerUnderTest()).getAbsolutePath() + "/logdata", arg2 });
         logMsg("    === BinaryLog's stdout: === ");
         logMsg(lvPrgmOut.getStdout());
@@ -244,6 +251,24 @@ public class BinaryLogExec extends VerboseTestCase {
         assertTrue("Failed assertion that binaryLog exited with successful return code", (lvPrgmOut.getReturnCode() == 0));
         assertTrue("Failed assertion that binaryLog did produce an output file", lvPrgmOut.getStdout().contains("Some Msg goes here"));
         assertTrue("Failed assertion that binaryLog displayed default date format", m2.find());
+
+        logMsg("Executing BinaryLog to view log entries with --excludeMessage option");
+        lvPrgmOut = exeBinaryLog(new String[] { arg1, CommonTasks.getBinaryLogDir(HpelSetup.getServerUnderTest()).getAbsolutePath() + "/logdata", arg3 });
+        logMsg("    === BinaryLog's stdout: === ");
+        logMsg(lvPrgmOut.getStdout());
+        logMsg(" ");
+        if (lvPrgmOut.getStderr().length() > 0) {
+            // LogViewer reported some errors.
+            logMsg("    === BinaryLog's std.err: ===");
+            logMsg(lvPrgmOut.getStderr());
+        }
+
+        Matcher m3 = p1.matcher(lvPrgmOut.getStdout());
+        assertTrue("Failed assertion that binaryLog exited with successful return code", (lvPrgmOut.getReturnCode() == 0));
+        assertTrue("Failed assertion that binaryLog did produce an output file", lvPrgmOut.getStdout().contains("Some Msg goes here"));
+        assertFalse("Failed assertion that binaryLog contains the excluded the message", lvPrgmOut.getStdout().contains("Some Msg goes here to be excluded."));
+        assertTrue("Failed assertion that binaryLog displayed default date format", m3.find());
+
         this.logVerificationPassed();
         this.logStepCompleted();
 
