@@ -940,7 +940,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     ((Entity) parentDO).getGroups().add((Group) outEntity);
                 } else {
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, METHODNAME + " Expected group entity. Group will excluded from group membership. Entity: " + outEntity);
+                        Tr.debug(tc, METHODNAME + " Expected group entity. Group will excluded from group membership. Entity is " + outEntity, ldapEntry);
                     }
                 }
             } else if (SchemaConstants.DO_MEMBERS.equalsIgnoreCase(propName)) {
