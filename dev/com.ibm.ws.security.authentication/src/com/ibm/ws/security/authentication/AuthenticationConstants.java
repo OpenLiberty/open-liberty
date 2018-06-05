@@ -42,37 +42,35 @@ public interface AuthenticationConstants {
      * This key maps to a JWT Web Token object in a Subject's private credentials
      * hashtable. When the property is set, the JWT Web token will be added in the subject
      */
-
     String INTERNAL_JSON_WEB_TOKEN = "com.ibm.ws.authentication.internal.json.web.token";
 
     String JASPI_PRINCIPAL = "com.ibm.wsspi.security.cred.jaspi.principal";
 
     /**
-     * This key indicates the usage purpose of the token. When this property is set, the key
+     * This key indicates the provider who authenticator and creator of the SSOToken. When this property is set, the key
      * and value will be added in the attribute of SSOToken.
      */
-    String INTERNAL_TOKEN_USAGE_KEY = "com.ibm.ws.authentication.internal.token.usage";
+    String INTERNAL_AUTH_PROVIDER = "com.ibm.ws.authentication.internal.auth.provider";
 
     /**
-     * This value indicates the INTERNAL_TOKEN_USAGE is set as the jaspic session.
+     * This value indicates the internal authentication provider is set as the jaspic provider.
      */
-    String INTERNAL_TOKEN_USAGE_JAPIC_SESSION = "jaspicSession";
+    String INTERNAL_JASPIC = "jaspic";
 
     /**
-     * This value indicates the INTERNAL_TOKEN_USAGE is set as the jaspic form.
+     * This value indicates the INTERNAL_AUTH_PROVIDER_JASPIC is set as the jaspic form.
      * If this value is set, when a http request right after form login, the authentication will
-     * be successful without invoking jaspi provider, then cookie will be deleted
+     * be successful without invoking jaspi provider, then cookie will be deleted.
+     * Note: This value should not go to the jwtSSOToken.
      */
-    String INTERNAL_TOKEN_USAGE_JAPIC_FORM = "jaspicForm";
+    String INTERNAL_JASPIC_FORM = "jaspicForm";
 
     /**
-     * This value indicates the INTERNAL_TOKEN_USAGE is set as the jaspic form.
+     * This value indicates the INTERNAL_AUTH_PROVIDER_JASPIC is set as the jsr375form.
      * If this value is set, when a http request right after form login, the authentication will
-     * invoke jaspi provider, then cookie will be deleted
-    
+     * invoke jaspi provider, then cookie will be deleted.
+     * Note: This value should not go to the jwtSSOToken.
      */
-    String INTERNAL_TOKEN_USAGE_JSR375_FORM = "Jsr375Form";
-
-
+    String INTERNAL_JSR375_FORM = "jsr375Form";
 
 }

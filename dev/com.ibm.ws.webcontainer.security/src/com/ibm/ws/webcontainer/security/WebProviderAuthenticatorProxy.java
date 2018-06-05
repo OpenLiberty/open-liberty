@@ -350,7 +350,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     private List<String> getTokenUsageFromSSOToken(final Subject subject, final SSOCookieHelper ssoCh) {
         SingleSignonToken ssoToken = ssoCh.getDefaultSSOTokenFromSubject(subject);
         if (ssoToken != null) {
-            String[] attrs = ssoToken.getAttributes(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY);
+            String[] attrs = ssoToken.getAttributes(AuthenticationConstants.INTERNAL_AUTH_PROVIDER);
             if (attrs != null) {
                 return Arrays.asList(attrs);
             }
@@ -359,28 +359,28 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     }
 
     private boolean isJaspicSessionOrJsr375Form(List<String> attrs) {
-        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_SESSION) || attrs.contains(AuthenticationConstants.INTERNAL_TOKEN_USAGE_JSR375_FORM))) {
+        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_JASPIC) || attrs.contains(AuthenticationConstants.INTERNAL_JSR375_FORM))) {
             return true;
         }
         return false;
     }
 
     private boolean isJaspicSession(List<String> attrs) {
-        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_SESSION)) {
+        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_JASPIC)) {
             return true;
         }
         return false;
     }
 
     private boolean isJaspicForm(List<String> attrs) {
-        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_FORM)) {
+        if (attrs != null && attrs.contains(AuthenticationConstants.INTERNAL_JASPIC_FORM)) {
             return true;
         }
         return false;
     }
 
     private boolean isJaspicAttribute(List<String> attrs) {
-        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_SESSION) || attrs.contains(AuthenticationConstants.INTERNAL_TOKEN_USAGE_JSR375_FORM) || attrs.contains(AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_FORM))) {
+        if (attrs != null && (attrs.contains(AuthenticationConstants.INTERNAL_JASPIC) || attrs.contains(AuthenticationConstants.INTERNAL_JSR375_FORM) || attrs.contains(AuthenticationConstants.INTERNAL_JASPIC_FORM))) {
             return true;
         }
         return false;

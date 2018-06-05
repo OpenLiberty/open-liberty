@@ -422,16 +422,16 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                     Map<String, Object> props = new HashMap<String, Object>();
                     props.put("javax.servlet.http.registerSession", session);
                     jaspiRequest.getWebRequest().setProperties(props);
-                    setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_SESSION);
+                    setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_JASPIC);
                 } else if ("FORM".equals(getRequestAuthType(jaspiRequest.getHttpServletRequest(), "AUTH_TYPE"))) {
                     if (isJSR375) {
                         // this is for jsr375 form/custom form without setting registerSession. the next call will reach to the provider,
                         // then the ltpatoken2 cookie will be deleted after successful return.
-                        setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_TOKEN_USAGE_JSR375_FORM);
+                        setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_JSR375_FORM);
                     } else {
                         // this is for original japsic provider which support the form login. this attribute indicates that LtpaToken2
                         // cookie can be used for the authentication just one time in the WebProviderAuthenticatorProxy then the cookie will be deleted.
-                        setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_TOKEN_USAGE_JAPIC_FORM);
+                        setUsageAttribute(getCustomCredentials(clientSubject), AuthenticationConstants.INTERNAL_JASPIC_FORM);
                     }
                 }
             }
@@ -1128,7 +1128,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
 
     private void setUsageAttribute(Hashtable<String, Object> hashTable, String value) {
         if (hashTable != null) {
-            hashTable.put(AuthenticationConstants.INTERNAL_TOKEN_USAGE_KEY, value);
+            hashTable.put(AuthenticationConstants.INTERNAL_AUTH_PROVIDER, value);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Token Usage is set as " + value);
             }

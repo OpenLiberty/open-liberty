@@ -369,7 +369,7 @@ public class JwtSSOTokenImplTest {
 		jwtssotokenproxyauth.activate(cc);
 		try {
 			jwtssotokenproxyauth.createJwtSSOToken(subject);
-			jwtssotokenproxyauth.addCustomCacheKeyAndRealmToJwtSSOToken(subject);
+			jwtssotokenproxyauth.addAttributesToJwtSSOToken(subject);
 			assertEquals("One JWT principal should exist.", 1, subject.getPrincipals(JsonWebToken.class).size());
 
 		} catch (WSLoginFailedException e) {
@@ -386,7 +386,7 @@ public class JwtSSOTokenImplTest {
 		jwtssotokenproxyauth.activate(cc);
 		try {
 			jwtssotokenproxyauth.createJwtSSOToken(subject);
-			jwtssotokenproxyauth.addCustomCacheKeyAndRealmToJwtSSOToken(null);
+			jwtssotokenproxyauth.addAttributesToJwtSSOToken(null);
 			assertEquals("One JWT principal should exist.", 1, subject.getPrincipals(JsonWebToken.class).size());
 
 		} catch (WSLoginFailedException e) {
