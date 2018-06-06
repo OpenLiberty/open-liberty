@@ -215,4 +215,8 @@ error.client.not.installed.useraction=Check the location in the application conf
 #{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
 warning.could.not.expand.application=CWWKZ0131W: Could not expand the application {0} because of the exception {1}.
 warning.could.not.expand.application.explanation=The application could not be expanded to a temporary directory. The application will continue to run but behavior of certain methods that access application files may be affected. 
-warning.could.not.expand.application.useraction=Attempt to resolve the issue in the exception message and either restart the server or update the application. 
+warning.could.not.expand.application.useraction=Attempt to resolve the issue in the exception message and either restart the server or update the application.
+
+error.file.outside.archive=CWWKZ0132W: The file {0} in the archive {1} will not be extracted because the path is not contained within the archive.
+error.file.outside.archive.explanation=The file's path specifies a relative directory. Extracting the file would result in the file being located outside of the archive's root directory.
+error.file.outside.archive.useraction=Remove any files with relative paths from the archive.  
