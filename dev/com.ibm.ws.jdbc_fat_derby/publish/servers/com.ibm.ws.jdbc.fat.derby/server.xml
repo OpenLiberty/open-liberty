@@ -15,6 +15,7 @@
       <feature>jdbc-4.1</feature>
       <feature>componenttest-1.0</feature>
       <feature>jndi-1.0</feature>
+      <feature>concurrent-1.0</feature>
     </featureManager>
  
      <library id="DerbyLib" fat.modify="true">
@@ -56,6 +57,12 @@
     <dataSource id="dsfat8" jndiName="jdbc/dsfat8" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
       <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
       <properties.derby.embedded databaseName="memory:ds8" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource id="dsfat9" jndiName="jdbc/dsfat9" type="javax.sql.DataSource" transactional="true">
+    	<jdbcDriver libraryRef="DerbyLib" />
+    	<authentication-alias name="derbyAuth"/>
+      <properties.derby.embedded databaseName="memory:ds9" createDatabase="create" />
     </dataSource>
     
     <!-- During testing dsfatX will permanently have it's isolation level changed.  Do not use in any other tests. -->

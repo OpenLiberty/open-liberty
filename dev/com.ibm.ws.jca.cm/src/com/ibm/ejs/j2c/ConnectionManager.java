@@ -18,6 +18,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.resource.ResourceException;
@@ -33,6 +34,8 @@ import javax.security.auth.login.LoginException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import com.ibm.ejs.j2c.PoolManager.ConnLogic;
+import com.ibm.ejs.j2c.PoolManager.ConnLogic.Trace;
 import com.ibm.ejs.ras.RasHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -71,7 +74,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
  * from the resource-ref, is only available at the time the user does a lookup
  * on the Connection Factory. Therefore a place is needed to store that unique
  * information. Thus for each variation in the combination of these unique
- * attributes there is another instace of a CM to hold the data.
+ * attributes there is another instance of a CM to hold the data.
  *
  * See {@link com.ibm.ejs.j2c.CMConfigDataImpl#getCFDetailsKey}
  */
@@ -85,6 +88,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      */
     private static final TraceComponent tc = Tr.register(ConnectionManager.class, J2CConstants.traceSpec, J2CConstants.messageFile);
     private static final TraceComponent ConnLeakLogic = Tr.register(ConnectionManager.class, "ConnLeakLogic", J2CConstants.messageFile);
+    private static final TraceComponent ConnectionLogic = Tr.register(ConnectionManager.class, "ConnectionLogic", null);
+    final String nl = CommonFunction.nl;
 
     private final AbstractConnectionFactoryService connectionFactorySvc;
 
@@ -344,7 +349,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                  * may only be a logon failure or similar so the MC shouldn't be 'lost'.
                  *
                  * If we are in a transaction, just throw the exception. Assume we will cleanup during
-                 * the aftercompletion call on the tran wrapper.
+                 * the after completion call on the tran wrapper.
                  *
                  * for resource adapter that support NOTXWRAPPER, if an error occurs, we can move them from the inuse
                  * pool, to the free pool, assuming the managed connection is good.
@@ -379,9 +384,9 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                             uowCoord = null;
                             if (mcWrapper.getHandleCount() == 1) {
                                 /*
-                                 * Since the resource adater call connection error event, they should not have returned
+                                 * Since the resource adapter call connection error event, they should not have returned
                                  * a connection handle. Since we are not enlisted or registered, we can decrement the
-                                 * handle count and let the following code cleanup and destory this managed connection.
+                                 * handle count and let the following code cleanup and destroy this managed connection.
                                  */
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(this, tc, "Decrementing the handle count for clean up and destroying the managed connection.");
@@ -422,7 +427,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                  * may only be a logon failure or similar so the MC shouldn't be 'lost'.
                  *
                  * If we are in a transaction, just throw the exception. Assume we will cleanup during
-                 * the aftercompletion call on the tran wrapper.
+                 * the after completion call on the tran wrapper.
                  *
                  * - for resource adapter that support NOTXWRAPPER, if an error occurs, we can move them from the inuse
                  * pool, to the free pool, assuming the managed connection is good.
@@ -454,9 +459,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                     } catch (Exception exp) { // don't rethrow, already on exception path
                         com.ibm.ws.ffdc.FFDCFilter.processException(exp, "com.ibm.ejs.j2c.ConnectionManager.allocateConnection", "392", this);
                         Tr.error(tc, "FAILED_CONNECTION_RELEASE_J2CA0022", new Object[] { exp, _pm.gConfigProps.cfName });
-
                     }
-
                 }
 
                 ResourceException re = new ResourceException("allocateConnection: caught Exception");
@@ -473,22 +476,95 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             }
 
-            if (ConnLeakLogic.isDebugEnabled() || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0)) {
+            /*
+             * AllocateConnection is called whenever we are trying to get a connection.
+             * The ConnectionLogic debug data below will help determine if connections
+             * are being allocated correctly an ensure we are not leaking connections.
+             */
+            if (ConnLeakLogic.isDebugEnabled() || ConnectionLogic.isDebugEnabled() || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0)) {
                 Thread myThread = Thread.currentThread();
+                Throwable t = new Throwable();
 
-                String ivThreadId = RasHelper.getThreadId();
-                mcWrapper.setThreadID(ivThreadId);
+                //Check if this connection is already associated with a ConnectionLogic object.
+                ConnLogic connLogic = _pm.mapMCWtoConnLogic.get(mcWrapper) == null ? new ConnLogic() : _pm.mapMCWtoConnLogic.get(mcWrapper);
+
+                //Unique identifiers.
+                connLogic.rVal = rVal;
+                connLogic.handleId = Integer.toHexString(rVal.hashCode());
+                connLogic.ivThreadId = RasHelper.getThreadId();
+                connLogic.shared = false;
+
+                mcWrapper.setThreadID(connLogic.ivThreadId);
                 mcWrapper.setThreadName(myThread.getName());
                 mcWrapper.setLastAllocationTime(System.currentTimeMillis());
 
+                //Get the stack for this connection request.
                 if (mcWrapper.getInitialRequestStackTrace() == null) {
-                    /*
-                     * Get the stack for this connection request.
-                     */
-                    Throwable t = new Throwable();
                     mcWrapper.setInitialRequestStackTrace(t);
+                } else {
+                    connLogic.shared = true;
                 }
 
+                if (ConnectionLogic.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                    String getConnectionAppClassElement = null;
+                    connLogic.connectionAppClass = new StringBuffer();
+                    StackTraceElement[] ste = t.getStackTrace();
+
+                    //Process stack into one line.
+                    for (int i = 0; i < ste.length; ++i) {
+                        getConnectionAppClassElement = ste[i].toString();
+                        if (getConnectionAppClassElement.contains(".j2c.") ||
+                            getConnectionAppClassElement.contains(".rsadapter.")) {
+                            continue;
+                        } else {
+                            getConnectionAppClassElement = getConnectionAppClassElement.replace("(", " ");
+                            String[] stringKeyTemp = getConnectionAppClassElement.split(" ");
+                            connLogic.connectionAppClass.append(stringKeyTemp[1]);
+                        }
+                    }
+
+                    //Get number of connections made
+                    if (connLogic.connectionOccurrences == null) {
+                        connLogic.connectionOccurrences = new AtomicInteger(1);
+                    } else {
+                        connLogic.connectionOccurrences.getAndIncrement();
+                    }
+
+                    //Get transaction information
+                    switch (mcWrapper.getTranWrapperId()) {
+                        case MCWrapper.NONE:
+                            connLogic.tranString = "No Transaction Support";
+                            break;
+                        case MCWrapper.XATXWRAPPER:
+                            connLogic.tranString = "Running XA Transaction";
+                            break;
+                        case MCWrapper.LOCALTXWRAPPER:
+                            connLogic.tranString = "Running Local Transaction";
+                            break;
+                        case MCWrapper.NOTXWRAPPER:
+                            connLogic.tranString = "Transaction Complete";
+                            break;
+                        case MCWrapper.RRSGLOBALTXWRAPPER:
+                            connLogic.tranString = "Running RRS Global Transaction";
+                            break;
+                        case MCWrapper.RRSLOCALTXWRAPPER:
+                            connLogic.tranString = "Running RRS Local Transaction";
+                            break;
+                    }
+
+                    //Trace debug info
+                    Tr.debug(ConnectionLogic, connLogic.get(Trace.REQUEST_STACK), connLogic.get(Trace.TRANSACTION));
+
+                    //For shared connection debug handle count
+                    if (connLogic.shared && mcWrapper.getHandleCount() > 1) {
+                        connLogic.handleCount = mcWrapper.getHandleCount();
+                        Tr.debug(ConnectionLogic, connLogic.get(Trace.REQUEST_HANDLES));
+                    }
+
+                    //Associate ConnectionLogic with connections mcWrapper
+                    mcWrapper.pm.mapMCWtoConnLogic.put(mcWrapper, connLogic);
+
+                }
             }
 
         } // end try block
@@ -754,11 +830,11 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             /*
              * If this ManagedConnection is not already associated then perform the
-             * enlistment and create necessary associations. No synchronisation is
+             * enlistment and create necessary associations. No synchronization is
              * necessary here because we are in a global transaction context and the
              * ManagedConnection was reserved under this context and the context is
              * thread specific so no ManagedConnection can be being manipulated by
-             * two threads at the saem time.
+             * two threads at the same time.
              */
 
             TranWrapper wrapper = null;
@@ -856,7 +932,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
                         break;
 
-                    // resource adapter supports resource manager local transactios
+                    // resource adapter supports resource manager local transactions
                     case LocalTransaction:
 
                         if (!rrsTransactional) { // No RRS-coordinated transaction support
@@ -895,7 +971,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                                     }
                                     wrapper = mcWrapper.getRRSLocalTransactionWrapper();
                                 }
-                            } // end else (local scopr)
+                            } // end else (local scope)
                         } // end else (RRS-coordinated)
 
                         break;
@@ -961,8 +1037,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
             }
 
             /*
-             * If we experience a problem during the addSync we won't have registered for synchronisation
-             * so we need to tidy up properly here. Once we have registered for synchronisation we can always
+             * If we experience a problem during the addSync we won't have registered for synchronization
+             * so we need to tidy up properly here. Once we have registered for synchronization we can always
              * tidy up at transaction completion.
              */
 
@@ -975,7 +1051,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                 if (mcWrapper.isConnectionSynchronizationProvider()) {
                     /*
                      * If this is a connection synchronization provider, they are
-                     * resposible for all of the remaining transactions work.
+                     * responsible for all of the remaining transactions work.
                      */
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "This managed connection is a synchronization provider.");
@@ -1033,7 +1109,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
                         // delete check for rrsTransactional
                         if (J2CUtilityClass.isContainerAtBoundary(mcWrapper.pm.connectorSvc.transactionManager)) {
-                            // LTC with resolution of ContainerAtBoundary. Agressively enlist in the transaction.
+                            // LTC with resolution of ContainerAtBoundary. Aggressively enlist in the transaction.
                             wrapper.enlist();
                             enlisted = true;
                         }
@@ -1085,7 +1161,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      *
      * This is deferred enlistment for 6.0 and later. If code changes are needed for this
      * method, the same changes may be needed for CEL.interactionPending(). New function type changes should only
-     * be undated in this method.
+     * be updated in this method.
      *
      * We do not want to add new function in CEL.interactionPending(). RAs using CEL.interactionPending(), should move to
      * this method. CEL.interactionPending() is deprecated starting in v6.0.
@@ -1339,9 +1415,98 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         //  be null.
         reassociateConnectionHandle(connection, null, mcWrapper, uowCoord);
 
+        /*
+         * AssociateConnection in called when getting a connection and sharing a connection.
+         * The ConnectionLogic debug data below will help determine if connections
+         * are being associated correctly an ensure we are not leaking connections.
+         */
+        if (ConnLeakLogic.isDebugEnabled() || ConnectionLogic.isDebugEnabled() || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0)) {
+            Thread myThread = Thread.currentThread();
+            Throwable t = new Throwable();
+
+            //Check if this connection is already associated with a ConnectionLogic object.
+            ConnLogic connLogic = _pm.mapMCWtoConnLogic.get(mcWrapper) == null ? new ConnLogic() : _pm.mapMCWtoConnLogic.get(mcWrapper);
+
+            //Unique identifiers.
+            connLogic.rVal = connection;
+            connLogic.handleId = Integer.toHexString(connLogic.rVal.hashCode());
+            connLogic.ivThreadId = RasHelper.getThreadId();
+            connLogic.shared = false;
+
+            mcWrapper.setThreadID(connLogic.ivThreadId);
+            mcWrapper.setThreadName(myThread.getName());
+            mcWrapper.setLastAllocationTime(System.currentTimeMillis());
+
+            //Get the stack for this connection request.
+            if (mcWrapper.getInitialRequestStackTrace() == null) {
+                mcWrapper.setInitialRequestStackTrace(t);
+            } else {
+                connLogic.shared = true;
+            }
+
+            if (ConnectionLogic.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                String getConnectionAppClassElement = null;
+                connLogic.connectionAppClass = new StringBuffer();
+                StackTraceElement[] ste = t.getStackTrace();
+
+                //Process stack into one line.
+                for (int i = 0; i < ste.length; ++i) {
+                    getConnectionAppClassElement = ste[i].toString();
+                    if (getConnectionAppClassElement.contains(".j2c.") ||
+                        getConnectionAppClassElement.contains(".rsadapter.")) {
+                        continue;
+                    } else {
+                        getConnectionAppClassElement = getConnectionAppClassElement.replace("(", " ");
+                        String[] stringKeyTemp = getConnectionAppClassElement.split(" ");
+                        connLogic.connectionAppClass.append(stringKeyTemp[1]);
+                    }
+                }
+
+                //Get number of connections made
+                if (connLogic.connectionOccurrences == null) {
+                    connLogic.connectionOccurrences = new AtomicInteger(1);
+                } else {
+                    connLogic.connectionOccurrences.getAndIncrement();
+                }
+
+                //Get transaction information
+                switch (mcWrapper.getTranWrapperId()) {
+                    case MCWrapper.NONE:
+                        connLogic.tranString = "No Transaction Support";
+                        break;
+                    case MCWrapper.XATXWRAPPER:
+                        connLogic.tranString = "Running XA Transaction";
+                        break;
+                    case MCWrapper.LOCALTXWRAPPER:
+                        connLogic.tranString = "Running Local Transaction";
+                        break;
+                    case MCWrapper.NOTXWRAPPER:
+                        connLogic.tranString = "Transaction Complete";
+                        break;
+                    case MCWrapper.RRSGLOBALTXWRAPPER:
+                        connLogic.tranString = "Running RRS Global Transaction";
+                        break;
+                    case MCWrapper.RRSLOCALTXWRAPPER:
+                        connLogic.tranString = "Running RRS Local Transaction";
+                        break;
+                }
+
+                //Trace debug info
+                Tr.debug(ConnectionLogic, connLogic.get(Trace.REQUEST_STACK), connLogic.get(Trace.ID), connLogic.get(Trace.TRANSACTION));
+
+                //For shared connection debug handle count
+                if (connLogic.shared && mcWrapper.getHandleCount() > 1) {
+                    connLogic.handleCount = mcWrapper.getHandleCount();
+                    Tr.debug(ConnectionLogic, connLogic.get(Trace.REQUEST_HANDLES));
+                }
+
+                //Associate ConnectionLogic with connections mcWrapper
+                mcWrapper.pm.mapMCWtoConnLogic.put(mcWrapper, connLogic);
+            }
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(this, tc, "associateConnection");
-
     }
 
     // This implements the private method with allows reassociates a connection handle
@@ -1366,7 +1531,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
              * may only be a logon failure or similar so the MC shouldn't be 'lost'.
              *
              * If we are in a transaction, just throw the exception. Assume we will cleanup during
-             * the aftercompletion call on the tran wrapper.
+             * the after completion call on the tran wrapper.
              */
 
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.reassociateConnectionHandle", "479", this);
@@ -1396,7 +1561,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
              * may only be a logon failure or similar so the MC shouldn't be 'lost'.
              *
              * If we are in a transaction, just throw the exception. Assume we will cleanup during
-             * the aftercompletion call on the tran wrapper.
+             * the after completion call on the tran wrapper.
              */
 
             if (uowCoord == null && toMCWrapper.getHandleCount() == 0) {
@@ -1675,7 +1840,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         // If possible, filter on the JNDI name because the id field is optional (in which case cfKey defaults to the JNDI name)
         // and any generated unique identifier (config.id) might not be consistent across server restarts.
         // In the case of app-defined resources (@DataSourceDefinition), however, the JNDI name is not guaranteed to be unique,
-        // and so the unique identifer (which for app-defined resources is always specified) must be used instead.
+        // and so the unique identifier (which for app-defined resources is always specified) must be used instead.
         CMConfigDataImpl cmConfigData = (CMConfigDataImpl) (xaResourceInfo != null ? xaResourceInfo.getCmConfig() : this.cmConfig);
         String id = cmConfigData.getCfKey();
         String jndiName = cmConfigData.getJNDIName();

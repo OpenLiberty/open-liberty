@@ -24,6 +24,7 @@ import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
 import javax.security.auth.Subject;
 
+import com.ibm.ejs.j2c.PoolManager.ConnLogic;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.j2c.MCWrapper;
@@ -53,7 +54,7 @@ public final class SharedPool {
     private MCWrapper[] mcWrapperListTemp = null;
     private int mcWrapperListSize = 0;
     /*
-     * _pm - reference to poolmanager
+     * _pm - reference to PoolManager
      */
     private PoolManager _pm = null;
     /*
@@ -132,7 +133,7 @@ public final class SharedPool {
 
         /*
          * Dirty read the size of the mcWrapperList. There are no mcWrappers in the
-         * list if mcWrapperListSize is zero and it is imposible for a matching
+         * list if mcWrapperListSize is zero and it is impossible for a matching
          * mcWrapper and affinity id to be added to this list since this thread has
          * to do the adding.
          */
@@ -230,8 +231,27 @@ public final class SharedPool {
 
                         if (dumpLTCMessage) {
                             if (isTracingEnabled && tc.isDebugEnabled()) {
-                                dumpLTCMessage = false; // only dump this info once for every getSharedConnection
-                                                        // request.
+                                dumpLTCMessage = false; // only dump this info once for every getSharedConnection request.
+
+                                /*
+                                 * When getting a shared connection we will want to track the
+                                 * managed connection as part of ConnectionLogic.
+                                 */
+                                ConnLogic connLogic = _pm.mapMCWtoConnLogic.get(mcWrapperTemp);
+                                if (connLogic != null) {
+                                    connLogic.mc = mcWrapperTemp.getManagedConnectionWithoutStateCheck();
+                                } else {
+                                    connLogic = new ConnLogic();
+                                    connLogic.mc = mcWrapperTemp.getManagedConnectionWithoutStateCheck();
+                                }
+                                _pm.mapMCWtoConnLogic.put(mcWrapperTemp, connLogic);
+
+                                /*
+                                 * NOTES: We only dump the message once per getSharedConnection call. The reason we have the
+                                 * dumpLTCMessage variable is because there is another track further down that also dumps
+                                 * this message if it wasn't already dumped here.
+                                 */
+
                                 Tr.debug(this, tc, "Attempt to share connection within LTC (J2CA0086)");
                                 Tr.debug(this, tc, "mcWrapper = " + mcWrapperTemp);
                                 Tr.debug(this, tc, "pmiName   = " + pmiName);
@@ -356,8 +376,18 @@ public final class SharedPool {
 
                                     if (dumpLTCMessage) {
                                         if (isTracingEnabled && tc.isDebugEnabled()) {
-                                            dumpLTCMessage = false; // only dump this info once for every getSharedConnection
-                                                                    // request.
+                                            dumpLTCMessage = false; // only dump this info once for every getSharedConnection request.
+
+                                            ConnLogic connLogic = _pm.mapMCWtoConnLogic.get(mcWrapperTemp);
+                                            if (connLogic != null) {
+                                                connLogic.mc = mcWrapperTemp.getManagedConnectionWithoutStateCheck();
+                                            } else {
+                                                connLogic = new ConnLogic();
+                                                connLogic.mc = mcWrapperTemp.getManagedConnectionWithoutStateCheck();
+                                            }
+
+                                            _pm.mapMCWtoConnLogic.put(mcWrapperTemp, connLogic);
+
                                             Tr.debug(this, tc, "Attempt to share connection within LTC (J2CA0086)");
                                             Tr.debug(this, tc, "mcWrapper = " + mcWrapperTemp);
                                             Tr.debug(this, tc, "pmiName   = " + pmiName);
@@ -438,7 +468,7 @@ public final class SharedPool {
 
         return mcWrapper;
 
-    }
+    } //End getSharedConnection
 
     private String dumpLTCInformation(MCWrapper mcWrapperTemp, String pmiName, Object affinity) {
         StringBuffer connectionLeakBuffer = new StringBuffer();

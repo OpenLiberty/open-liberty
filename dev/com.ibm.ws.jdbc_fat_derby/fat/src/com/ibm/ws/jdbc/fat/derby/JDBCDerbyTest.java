@@ -10,9 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.derby;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeSet;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -63,7 +65,8 @@ public class JDBCDerbyTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer("CWWKE0701E", //expected by testTransactionalSetting
                           "DSRA4011E", //expected by testTNConfigIsoLvlReverse
-                          "SRVE0319E"); //expected by testTNConfigTnsl
+                          "SRVE0319E", //expected by testTNConfigTnsl
+                          "WTRN0017W"); //expected by testSuspendedUserTran
     }
 
     /**
@@ -154,5 +157,20 @@ public class JDBCDerbyTest extends FATServletClient {
         } catch (Exception e) {
             fail("Exception should not have been thrown when switching isolation level to TRANSACTION_NONE.");
         }
+    }
+
+    /**
+     * Ensure that attempting to get more than one connection per data source
+     * throws the J2CA0086 warning.
+     */
+    @Test
+    public void testMultipleConnections() throws Throwable {
+        List<String> beginResults = server.findStringsInTrace("J2CA0086");
+        runTest(server, jdbcappfat, "testMultipleConnections");
+        List<String> endResults = server.findStringsInTrace("J2CA0086");
+        for (String result : beginResults) {
+            endResults.remove(result);
+        }
+        assertTrue("J2CA0086 Warning should have sounded.", !endResults.isEmpty());
     }
 }

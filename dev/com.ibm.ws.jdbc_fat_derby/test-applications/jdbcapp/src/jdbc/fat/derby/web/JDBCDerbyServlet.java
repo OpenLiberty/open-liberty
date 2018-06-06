@@ -16,10 +16,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 import javax.annotation.sql.DataSourceDefinition;
@@ -90,8 +97,14 @@ public class JDBCDerbyServlet extends FATServlet {
     @Resource(name = "jdbc/dsfat7ref", lookup = "java:module/env/jdbc/dsfat7")
     DataSource dsd7ref; //DataSourceDef(TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE)
 
+    @Resource(lookup = "jdbc/dsfat9", shareable = true)
+    DataSource ds9; //Transactional
+
     @Resource
-    private UserTransaction tran;
+    private UserTransaction tran, extraTran;
+
+    @Resource
+    private ExecutorService executor;
 
     /**
      * Data Source - ds4 = dsConfig (TRAN_NONE) + No Res-ref + Normal JDBC Driver
@@ -205,25 +218,6 @@ public class JDBCDerbyServlet extends FATServlet {
             result.close();
             dropTable(con, CITYTABLE);
             con.close();
-        }
-    }
-
-    /**
-     * Called by testTNConfigTnsl in JDBCDerbyTest
-     * Data Sources - ds8 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
-     *
-     * Data source has been updated to Transactional = true in JDBCDerbyTest
-     * ensure that the configuration of TRANSACTION_NONE prevents the data source
-     * from being created.
-     */
-    public void testTNTransationEnlistmentModified() throws Throwable {
-        InitialContext ctx = new InitialContext();
-        try {
-            @SuppressWarnings("unused")
-            DataSource ds8 = (DataSource) ctx.lookup("jdbc/dsfat8");
-            fail("Creation of data source should have thrown an exception since a config with Isolation Level = TRANSACTION_NONE and Transactional = true should be rejected.");
-        } catch (Exception e) {
-            assertTrue("Exception message should have contained", e.getMessage().contains("CWWKN0008E"));
         }
     }
 
@@ -370,8 +364,180 @@ public class JDBCDerbyServlet extends FATServlet {
         }
     }
 
+    @Test
+    public void testLongRunningConnection() throws Throwable {
+        Connection con1 = null;
+        createTable(ds9, CITYTABLE, CITYSCHEMA);
+        try {
+            executor = Executors.newSingleThreadExecutor();
+            Future<Boolean> future = executor.submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    for (int i = 0; i < 5; i++) {
+                        Connection con = null;
+                        try {
+                            System.out.println("KJA1017LRC GET CONNECTION" + i); //REMOVE
+                            con = ds9.getConnection();
+                            Thread.sleep(5000);
+                            basicQuery(con);
+                        } finally {
+                            if (con != null)
+                                System.out.println("KJA1017LRC CLOSE CONNECTION" + i); //REMOVE
+                            con.close();
+                        }
+                    } //end for-loop
+                    return true;
+                }
+            });
+
+            System.out.println("KJA1017LRC GET NORMAL CONNECTION"); //REMOVE
+            con1 = ds9.getConnection();
+            System.out.println("KJA1017LRC GOT NORMAL CONNECTION"); //REMOVE
+            future.get();
+            basicQuery(con1);
+
+        } finally {
+            dropTable(con1, CITYTABLE);
+            System.out.println("KJA1017LRC CLOSE NORMAL CONNECTION"); //REMOVE
+            con1.close();
+        }
+    }
+
+    //TODO
     /**
-     * Called by testTNConfigIsoLvl in JDBCDerbyTest
+     *
+     */
+    @Test
+    public void testSuspendedLTC() throws Throwable {
+        Connection openConnection = null;
+        createTable(ds9, CITYTABLE, CITYSCHEMA);
+        try {
+            System.out.println("KJA1017LTC get open connection"); //REMOVE
+            openConnection = ds9.getConnection();
+            openConnection.setAutoCommit(false);
+
+            //Start helper servlet
+            URL url = new URL("http://localhost:8010/jdbcapp/JDBCDerbyServlet?testMethod=testSuspendedLTCHelper");
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+            try {
+                httpCon.setDoInput(true);
+                httpCon.setDoOutput(true);
+                httpCon.setUseCaches(false);
+                httpCon.setRequestMethod("POST");
+                System.out.println("KJAPermission + " + httpCon.getPermission());
+                httpCon.getPermission();
+                InputStream is = httpCon.getInputStream();
+//                InputStreamReader isr = new InputStreamReader(is);
+//                BufferedReader br = new BufferedReader(isr);
+//
+//                String sep = System.getProperty("line.separator");
+//                StringBuilder lines = new StringBuilder();
+//
+//                // Send output from servlet to console output
+//                for (String line = br.readLine(); line != null; line = br.readLine()) {
+//                    lines.append(line).append(sep);
+//                }
+//                // Look for success message, otherwise fail test
+//                if (lines.indexOf(FATServletClient.SUCCESS) < 0) {
+//                    fail("Missing success message in output. " + lines);
+//                }
+//                System.out.println(lines);
+            } finally {
+                httpCon.disconnect();
+            }
+
+            basicQuery(openConnection);
+
+        } catch (Exception e) {
+            fail("Exception during testSuspendedLTC. Full Output: " + e.getStackTrace());
+        } finally {
+            dropTable(openConnection, CITYTABLE);
+            openConnection.commit();
+            openConnection.close();
+        }
+    }
+
+    public void testSuspendedLTCHelper() throws Throwable {
+        System.out.println("KJA1017LTC helper method started"); //REMOVE
+        Connection con = ds9.getConnection();
+        try {
+            basicQuery(con);
+        } catch (Exception e) {
+            fail("Exception during testSuspendedLTCHelper. Full Output: " + e.getStackTrace());
+        } finally {
+            con.commit();
+            con.close();
+            System.out.println("KJA1017LTC helper method end"); //REMOVE
+        }
+    }
+
+    //TODO Got expected results.  Probably don't need but keep for now.
+    /**
+     * Begin a user transaction (UT) before closing a previous UT.
+     * Ensure that this results in a suspended UT.
+     */
+    @Test
+    @ExpectedFFDC({ "javax.transaction.NotSupportedException" })
+    public void testSuspendedUserTran() throws Throwable {
+        createTable(ds9, CITYTABLE, CITYSCHEMA);
+        Connection con1 = null, con2 = null;
+
+        try {
+            tran.begin();
+            con1 = ds9.getConnection();
+            con1.setAutoCommit(false);
+            basicQuery(con1);
+
+            extraTran.begin();
+            con2 = ds9.getConnection();
+        } catch (Exception e) {
+            assertTrue("Nested transactions should have thrown a javax.transaction.NotSupportedException exception", e instanceof javax.transaction.NotSupportedException);
+        } finally {
+            if (con2 != null) {
+                fail("Second connection should not have been established.");
+            }
+
+            con1.close();
+            tran.commit();
+        }
+
+        try {
+            con2 = ds9.getConnection();
+            Statement stmt = con2.createStatement();
+            ResultSet result = stmt.executeQuery("select county from cities where name='Rochester'");
+            if (!result.next()) {
+                fail("Rochester should have been added to table");
+            }
+            result.close();
+        } finally {
+            dropTable(con2, CITYTABLE);
+            con2.close();
+        }
+    }
+
+    /*************************************************
+     * Tests that are called from JDBCDerbyTest.java
+     *************************************************/
+
+    /**
+     * Data Sources - ds8 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     *
+     * Data source has been updated to Transactional = true in JDBCDerbyTest
+     * ensure that the configuration of TRANSACTION_NONE prevents the data source
+     * from being created.
+     */
+    public void testTNTransationEnlistmentModified() throws Throwable {
+        InitialContext ctx = new InitialContext();
+        try {
+            @SuppressWarnings("unused")
+            DataSource ds8 = (DataSource) ctx.lookup("jdbc/dsfat8");
+            fail("Creation of data source should have thrown an exception since a config with Isolation Level = TRANSACTION_NONE and Transactional = true should be rejected.");
+        } catch (Exception e) {
+            assertTrue("Exception message should have contained", e.getMessage().contains("CWWKN0008E"));
+        }
+    }
+
+    /**
      * Data Source - dsX = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that the unmodified data source has the expected isolation level.
@@ -392,7 +558,6 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     /**
-     * Called by testTNConfigIsoLvl in JDBCDerbyTest
      * Data Source - dsX = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that the modified data source has the expected isolation level.
@@ -413,7 +578,6 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     /**
-     * Called by testTNConfigIsoLvl in JDBCDerbyTest
      * Data Source - dsX = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that the attempt to switch back to TRANSACTION_NONE results in an error when attempting to get connection.
@@ -427,6 +591,48 @@ public class JDBCDerbyServlet extends FATServlet {
             fail("Connection should have thrown an exception since the JDBC driver does not support setting isolation level to TRANSACTION_NONE.");
         } catch (SQLException sql) {
             assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4011E"));
+        }
+    }
+
+    public void testMultipleConnections() throws Throwable {
+        Connection[] con = new Connection[2];
+        con[0] = ds9.getConnection();
+        try {
+            con[1] = ds9.getConnection();
+            con[1].close();
+        } catch (Exception e) {
+            fail("Multiple connections should have sounded J2CA0086 warning not an exception.");
+        } finally {
+            con[0].close();
+        }
+    }
+
+    /*************************************************
+     * Helper Methods
+     *************************************************/
+    /**
+     * Helper method to perform an simple query
+     *
+     * @param con
+     */
+    private void basicQuery(Connection con) throws Exception {
+        Statement stmt = con.createStatement();
+        try {
+            stmt.executeUpdate("insert into cities values ('Rochester', 106769, 'Olmsted')");
+            ResultSet result = stmt.executeQuery("select county from cities where name='Rochester'");
+            if (!result.next())
+                throw new Exception("Entry missing from database");
+            String value = result.getString(1);
+            if (!"Olmsted".equals(value))
+                throw new Exception("Incorrect value: " + value);
+        } catch (SQLException sql) {
+            stmt.executeUpdate("delete from cities where name='Rochester'");
+            ResultSet result = stmt.executeQuery("select county from cities where name='Rochester'");
+            if (result.next()) {
+                throw new Exception("Entry should not be in database");
+            }
+        } finally {
+            stmt.close();
         }
     }
 }

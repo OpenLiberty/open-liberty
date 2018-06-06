@@ -42,6 +42,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ApplicationServerInternalException;
+import javax.resource.spi.ConnectionEvent;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.resource.spi.ManagedConnection;
 import javax.resource.spi.ManagedConnectionFactory;
@@ -166,7 +167,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
         return maxCapacity;
     }
 
-    public transient ConcurrentHashMap<String, AtomicInteger> getConnectionMap = new ConcurrentHashMap<String, AtomicInteger>();
+    public transient ConcurrentHashMap<MCWrapper, ConnLogic> mapMCWtoConnLogic = new ConcurrentHashMap<MCWrapper, ConnLogic>();
 
     protected final AtomicInteger alarmThreadCounter = new AtomicInteger(0);
 
@@ -334,7 +335,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
 
                         for (int j = 0; j < gConfigProps.getMaxFreePoolHashSize(); ++j) {
 
-                            //  ffdc uses this method ,,, and was locking freepool
+                            //  ffdc uses this method ,,, and was locking FreePool
                             // without locking
                             // waiter pool first, causing a deadlock.
                             synchronized (waiterFreePoolLock) {
@@ -816,6 +817,12 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
          * a free or shared pool is being updated
          */
         requestingAccessToPool();
+
+        if (mcWrapper.hasAgedTimedOut(10000)) {
+            Tr.debug(tc, "Timeout occured dump pool manager to trace " + this.toString()); //includes connection leak logic
+        }
+
+        //There are many if/then statements here.  Do we destroy the mcWrapper no matter what or is there a path where it is not destroyed?
 
         // start  thread local fast path...
         if (localConnection_ != null) {
@@ -1415,7 +1422,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                             synchronized (waiterFreePoolLock) {
                                                 int totalCount = this.totalConnectionCount.decrementAndGet();
                                                 if (isTracingEnabled && tc.isDebugEnabled()) {
-                                                  Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                                    Tr.debug(tc, "Decrement of total connection count " + totalCount);
                                                 }
                                                 if (waiterCount > 0) {
                                                     waiterFreePoolLock.notify();
@@ -1480,7 +1487,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                 synchronized (waiterFreePoolLock) {
                                     int totalCount = this.totalConnectionCount.decrementAndGet();
                                     if (isTracingEnabled && tc.isDebugEnabled()) {
-                                       Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                        Tr.debug(tc, "Decrement of total connection count " + totalCount);
                                     }
                                     if (waiterCount > 0) {
                                         waiterFreePoolLock.notify();
@@ -1541,7 +1548,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                         synchronized (waiterFreePoolLock) {
                             int totalCount = this.totalConnectionCount.decrementAndGet();
                             if (isTracingEnabled && tc.isDebugEnabled()) {
-                               Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                Tr.debug(tc, "Decrement of total connection count " + totalCount);
                             }
                             if (waiterCount > 0) {
                                 waiterFreePoolLock.notify();
@@ -2747,7 +2754,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      *
      * <pre>
      * options:<br>
-     * 0 - default behavior, dump everything avalable.<br>
+     * 0 - default behavior, dump everything available.<br>
      * 1 - dump everything except connection leak information.<br>
      * </pre>
      *
@@ -4760,5 +4767,57 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      */
     protected AtomicInteger getTotalConnectionCount() {
         return totalConnectionCount;
+    }
+
+    /**
+     * Inner class used for debugging connections when getting, associating, allocating, closing, and
+     * when a connection has an error.
+     *
+     * TODO Find a way to determine if a transaction is suspended and include
+     * that data in this class.
+     */
+    static class ConnLogic {
+        public enum Trace {
+            REQUEST_STACK, REQUEST_HANDLES, EVENT_STACK, TRANSACTION, ID, NO_STACK
+        }
+
+        public boolean shared;
+        public int handleCount;
+        public String ivThreadId, handleId, eventStr, tranString;
+        public Object rVal;
+        public AtomicInteger connectionOccurrences;
+        public StringBuffer connectionAppClass;
+        public ConnectionEvent event;
+        public ManagedConnection mc;
+
+        public String get(Trace type) {
+            switch (type) {
+                case REQUEST_STACK:
+                    return "JCA (thread/handle) connection get request stack " +
+                           ivThreadId + "/" + handleId +
+                           (shared ? " shared" : "       ") +
+                           " " + connectionOccurrences.toString() +
+                           " " + connectionAppClass.toString();
+                case EVENT_STACK:
+                    return "JCA (thread/handle) connection" + eventStr + ivThreadId + "/" + handleId +
+                           " " + connectionAppClass.toString();
+                case REQUEST_HANDLES:
+                    return "JCA (thread/handle) connection get request handles " +
+                           handleCount + " " + ivThreadId + "/" + handleId;
+                case TRANSACTION:
+                    return "Transaction Info: " + tranString;
+                case ID:
+                    return "Thread " + ivThreadId + " Connection " + event.getConnectionHandle();
+                case NO_STACK:
+                    return "JCA (thread/handle) - JCA formatted stack event of a connection without a stack.";
+                default:
+                    return this.toString();
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "JCA (thread/handle) " + ivThreadId + "/" + handleId;
+        }
     }
 }

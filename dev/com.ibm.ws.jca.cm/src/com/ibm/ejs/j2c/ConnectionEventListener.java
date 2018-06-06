@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ejs.j2c;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /*
  * Class name   : ConnectionEventListener
  *
@@ -25,6 +27,9 @@ import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionEvent;
 import javax.resource.spi.ManagedConnection;
 
+import com.ibm.ejs.j2c.PoolManager.ConnLogic;
+import com.ibm.ejs.j2c.PoolManager.ConnLogic.Trace;
+import com.ibm.ejs.ras.RasHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
@@ -35,6 +40,8 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     private MCWrapper mcWrapper = null;
 
     private static final TraceComponent tc = Tr.register(ConnectionEventListener.class, J2CConstants.traceSpec, J2CConstants.messageFile);
+    private static final TraceComponent ConnectionLogic = Tr.register(ConnectionEventListener.class, "ConnectionLogic", null);
+    final String nl = CommonFunction.nl;
 
     /**
      * Default constructor provided so that subclasses need not override (implement).
@@ -80,6 +87,9 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                     Tr.debug(this, tc, "***Connection Close Request*** Handle Name: " + event.getConnectionHandle() + "  Connection Pool: "
                                        + mcWrapper.getPoolManager().getGConfigProps().getXpathId() + "  Details: : " + mcWrapper);
 
+                }
+                if (ConnectionLogic.isDebugEnabled()) {
+                    processStackForCallRequest(event);
                 }
 
                 ConnectionManager cm = mcWrapper.getConnectionManagerWithoutStateCheck();
@@ -174,6 +184,117 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     }
 
     /**
+     * @param event
+     */
+    private void processStackForCallRequest(ConnectionEvent event) {
+        final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
+
+        if (isTracingEnabled && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "processStackForCallRequest");
+        }
+
+        Thread myThread = Thread.currentThread();
+
+        //Check if this connection is already associated with a ConnectionLogic object.
+        ConnLogic connLogic = mcWrapper.pm.mapMCWtoConnLogic.get(mcWrapper) == null ? new ConnLogic() : mcWrapper.pm.mapMCWtoConnLogic.get(mcWrapper);
+
+        //Thread and event data.
+        connLogic.ivThreadId = RasHelper.getThreadId();
+        connLogic.event = event;
+        mcWrapper.setThreadID(connLogic.ivThreadId);
+        mcWrapper.setThreadName(myThread.getName());
+        mcWrapper.setLastAllocationTime(System.currentTimeMillis());
+
+        if (mcWrapper.getInitialRequestStackTrace() != null) {
+            //Get the stack for this connection request.
+            Throwable t = new Throwable();
+            mcWrapper.setInitialRequestStackTrace(t);
+
+            /*
+             * ProcessStackForCallRequest is called when a connection is being
+             * closed or a connection has an error. This debug information
+             * will help ensure that connections are closing correctly and when
+             * errors occur that we can debug the cause.
+             *
+             * If ConnectionLogic debug is enabled then collect data,
+             * trace data for debug, and save for future reference.
+             */
+            if (ConnectionLogic.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                String getConnectionAppClassElement = null;
+                connLogic.connectionAppClass = new StringBuffer();
+                StackTraceElement[] ste = t.getStackTrace();
+
+                //Process stack into one line.
+                for (int i = 0; i < ste.length; ++i) {
+                    getConnectionAppClassElement = ste[i].toString();
+                    if (getConnectionAppClassElement.contains(".j2c.") ||
+                        getConnectionAppClassElement.contains(".rsadapter.")) {
+                        continue;
+                    } else {
+                        getConnectionAppClassElement = getConnectionAppClassElement.replace("(", " ");
+                        String[] stringKeyTemp = getConnectionAppClassElement.split(" ");
+                        connLogic.connectionAppClass.append(stringKeyTemp[1]);
+                    }
+                }
+
+                //Get number of connections made
+                if (connLogic.connectionOccurrences == null) {
+                    connLogic.connectionOccurrences = new AtomicInteger(1);
+                } else {
+                    connLogic.connectionOccurrences.getAndIncrement();
+                }
+
+                //Get event information
+                int eventID = event.getId();
+                Object connectionHandle = event.getConnectionHandle();
+                if (connectionHandle != null)
+                    connLogic.handleId = Integer.toHexString(event.getConnectionHandle().hashCode());
+                connLogic.eventStr = " no event stack ";
+                if (eventID == ConnectionEvent.CONNECTION_CLOSED) {
+                    connLogic.eventStr = " close event ";
+                } else if (eventID == ConnectionEvent.CONNECTION_ERROR_OCCURRED) {
+                    connLogic.eventStr = " error event stack ";
+                }
+
+                //Get transaction information
+                switch (mcWrapper.getTranWrapperId()) {
+                    case MCWrapper.NONE:
+                        connLogic.tranString = "No Transaction Support";
+                        break;
+                    case MCWrapper.XATXWRAPPER:
+                        connLogic.tranString = "Running XA Transaction";
+                        break;
+                    case MCWrapper.LOCALTXWRAPPER:
+                        connLogic.tranString = "Running Local Transaction";
+                        break;
+                    case MCWrapper.NOTXWRAPPER:
+                        connLogic.tranString = "Transaction Complete";
+                        break;
+                    case MCWrapper.RRSGLOBALTXWRAPPER:
+                        connLogic.tranString = "Running RRS Global Transaction";
+                        break;
+                    case MCWrapper.RRSLOCALTXWRAPPER:
+                        connLogic.tranString = "Running RRS Local Transaction";
+                        break;
+                }
+
+                //Trace debug info
+                Tr.debug(ConnectionLogic, connLogic.get(Trace.EVENT_STACK), connLogic.get(Trace.ID), connLogic.get(Trace.TRANSACTION));
+
+                //Associate ConnectionLogic with connections mcWrapper
+                mcWrapper.pm.mapMCWtoConnLogic.put(mcWrapper, connLogic);
+
+            } //end if ConnectionLogic Debug
+        } else {
+            //No stack to work with.  Debug information we have.
+            Tr.debug(ConnectionLogic, connLogic.get(Trace.NO_STACK), connLogic.get(Trace.ID));
+        }
+        if (isTracingEnabled && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "processStackForCallRequest");
+        }
+    }
+
+    /**
      * This method is called by a resource adapter when a connection error occurs.
      * This is also called internally by this class when other event handling methods fail
      * and require cleanup.
@@ -197,12 +318,15 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
             else
                 Tr.entry(this, tc, "connectionErrorOccurred", entry.toString(), event.getException());
         }
+        if (ConnectionLogic.isDebugEnabled()) {
+            processStackForCallRequest(event);
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             // (ASSERT: event is not null)
             StringBuffer tsb = new StringBuffer();
             Object connHandle = event.getConnectionHandle();
-            tsb.append("***Connection Error Request*** Handle Name: " + connHandle);
+            tsb.append("***Connection Error Request*** Handle Name:" + connHandle);
             if (mcWrapper != null) {
                 Object poolMgr = mcWrapper.getPoolManager();
                 tsb.append(", Connection Pool: " + poolMgr + ", Details: " + mcWrapper);
@@ -356,7 +480,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                 // if we are not involved in a transaction, then we are likely running with NO transaction
                 //  context on the thread.  This case currently needs to be supported because
                 //  servlets can spin their own threads which would not have context.
-                // Note: it is very rare that users do this.  All other occurances are
+                // Note: it is very rare that users do this.  All other occurrences are
                 //  considered to be an error.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(this, tc, "localTransactionCommitted", "no transaction context, return without delisting");
@@ -377,9 +501,9 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     }
 
     /**
-     * This method is called by a resource adapter when a CCI local transation rollback is called
+     * This method is called by a resource adapter when a CCI local transaction rollback is called
      * by the application on a connection. If the MC is associated with at UOW,
-     * delist its coresponding transaction wrapper.
+     * delist its corresponding transaction wrapper.
      *
      * @param ConnectionEvent
      */
@@ -426,7 +550,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                 // if we are not involved in a transaction, then we are likely running with NO transaction
                 //  context on the thread.  This case currently needs to be supported because
                 //  servlets can spin their own threads which would not have context.
-                // Note: it is very rare that users do this.  All other occurances are
+                // Note: it is very rare that users do this.  All other occurrences are
                 //  considered to be an error.
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                     Tr.exit(this, tc, "localTransactionRolledback", "no transaction context, return without delisting");
@@ -446,7 +570,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     }
 
     /**
-     * This method is called by a resource adapter when a CCI local transation begin is called
+     * This method is called by a resource adapter when a CCI local transaction begin is called
      * by the application on a connection
      *
      * @param ConnectionEvent
@@ -497,7 +621,7 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
             // if the coordinator is still null, then we are running with NO transaction
             //  context on the thread.  This case currently needs to be supported because
             //  servlets can spin their own threads which would not have context.
-            // Note: it is very rare that users do this.  All other occurances are
+            // Note: it is very rare that users do this.  All other occurrences are
             //  considered to be an error.
             if (uowCoordinator == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
