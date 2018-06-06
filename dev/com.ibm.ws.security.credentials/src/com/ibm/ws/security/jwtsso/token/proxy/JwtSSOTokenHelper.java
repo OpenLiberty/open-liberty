@@ -128,9 +128,9 @@ public class JwtSSOTokenHelper {
         return null;
     }
 
-    public static void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws WSLoginFailedException {
+    public static void addAttributesToJwtSSOToken(Subject subject) throws WSLoginFailedException {
         if (jwtSSOTokenProxyRef.getService() != null) {
-            jwtSSOTokenProxyRef.getService().addCustomCacheKeyAndRealmToJwtSSOToken(subject);
+            jwtSSOTokenProxyRef.getService().addAttributesToJwtSSOToken(subject);
         }
     }
 

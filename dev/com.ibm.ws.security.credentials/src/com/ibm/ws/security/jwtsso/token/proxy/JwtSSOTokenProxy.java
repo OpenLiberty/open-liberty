@@ -29,7 +29,7 @@ public interface JwtSSOTokenProxy {
 
     String getCacheKeyForJwtSSOToken(Subject subject, String encodedjwt);
 
-    void addCustomCacheKeyAndRealmToJwtSSOToken(Subject subject) throws WSLoginFailedException;
+    void addAttributesToJwtSSOToken(Subject subject) throws WSLoginFailedException;
 
     boolean isSubjectValid(Subject subject);
 
