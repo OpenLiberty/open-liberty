@@ -1416,8 +1416,13 @@ public class H2StreamProcessor {
             //Decode headers until we reach the end of the buffer
             while (buf.hasRemaining()) {
                 isFirstHeaderBlock = buf.position() < firstBlockLength;
-                current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock,
-                                                  processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings()));
+                try {
+                    current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock,
+                                                      processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings()));
+                } catch (Http2Exception e) {
+                    buf.release();
+                    throw e;
+                }
                 if (current == null) {
                     // processed a dynamic table size update; go to the next header
                     continue;
@@ -1431,6 +1436,7 @@ public class H2StreamProcessor {
                         //exception and invalidate the table.
                         if (pseudoHeaders.get(current.getName()) != null) {
                             this.muxLink.getReadTable().setDynamicTableValidity(false);
+                            buf.release();
                             throw new CompressionException("Invalid pseudo-header for decompression context: " + current.toString());
                         }
                         pseudoHeaders.put(current.getName(), current.getValue());
@@ -1449,6 +1455,7 @@ public class H2StreamProcessor {
                     //If header starts with ':' throw error
                     if (current.getName().startsWith(":")) {
                         this.muxLink.getReadTable().setDynamicTableValidity(false);
+                        buf.release();
                         throw new CompressionException("Invalid pseudo-header decoded: all pseudo-headers must appear " +
                                                        "in the header block before regular header fields.");
                     }
@@ -1458,6 +1465,7 @@ public class H2StreamProcessor {
                     headers.add(current);
                 }
             }
+            buf.release();
             // only set headers on the link once
             if ((isPush || !processTrailerHeaders) && h2HttpInboundLinkWrap.getHeadersLength() == 0) {
                 if (!isValidH2Request(pseudoHeaders)) {
@@ -1776,10 +1784,6 @@ public class H2StreamProcessor {
             } catch (IOException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "writeFrameSync caught an IOException: " + e);
-                }
-                // release buffer used to synchronously write the frame
-                if (writeFrameBuffer != null) {
-                    writeFrameBuffer.release();
                 }
             } catch (InterruptedException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
