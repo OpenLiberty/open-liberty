@@ -57,6 +57,10 @@ public class SseJaxbTestServlet extends FATServlet {
 
     public void testJaxbSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
+        if (System.getSecurityManager() != null) {
+            return; // skip test to avoid Java 2 security issues in JDK XML/JAXB code.
+        }
+
         final List<TestXML> receivedEvents = new ArrayList<TestXML>();
         final CountDownLatch executionLatch = new CountDownLatch(1);
 
