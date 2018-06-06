@@ -63,11 +63,6 @@ public class HpelBaseTraceService extends BaseTraceService {
                 if (!logNormally)
                     return false;
             }
-
-            //If any messages configured to be hidden then those will not be written to console.log and will be redirected to logdata/tracedata
-            if (isMessageHidden(txt)) {
-                return true;
-            }
         }
         return true;
     }
@@ -99,7 +94,14 @@ public class HpelBaseTraceService extends BaseTraceService {
             boolean logNormally = invokeMessageRouters(routedMessage);
             if (!logNormally)
                 return;
+
             trWriter.repositoryPublish(logRecord);
+
+            //If any messages configured to be hidden then those will not be written to console.log and will be redirected to logdata/tracedata
+            if (isMessageHidden(formattedMsg)) {
+                return;
+            }
+
             if (logSource != null) {
                 publishToLogSource(routedMessage);
             }
