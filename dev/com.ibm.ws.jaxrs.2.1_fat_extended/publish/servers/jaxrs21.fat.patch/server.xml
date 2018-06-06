@@ -2,7 +2,15 @@
   <featureManager>
     <feature>componenttest-1.0</feature>
     <feature>jaxrs-2.1</feature>
+    <feature>ssl-1.0</feature>
   </featureManager>
 
-  <include location="../fatTestPorts.xml"/>    
+  <!-- Server SSL configuration -->
+  <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
+  <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
+  <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+
+  <include location="../fatTestPorts.xml"/>
+
+  <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default.secure" actions="read"/>
 </server>
