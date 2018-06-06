@@ -229,14 +229,15 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
         // clazz is the class that may receive the injection.
         // mod   is the app stuff that may give injections.
 
-        Class<?> injectionClass = clazz;
+        Class<?> injectionClass = null;
 
-        if (toInject == null) {
-            if (CDIUtils.isWeldProxy(clazz)) {
-                injectionClass = clazz.getSuperclass();
+        if (toInject != null) {
+            injectionClass = toInject.getClass();
+            if (CDIUtils.isWeldProxy(toInject)) {
+                injectionClass = injectionClass.getSuperclass();
             }
-        } else if (CDIUtils.isWeldProxy(toInject)) {
-            injectionClass = clazz.getSuperclass();
+        } else {
+            injectionClass = clazz;
         }
 
         ReferenceContext referenceContext = referenceContextMap.get(injectionClass);
@@ -256,7 +257,7 @@ public class WebSphereInjectionServicesImpl implements WebSphereInjectionService
 
                 for (InjectionTarget target : targets) {
                     Class<?> declaringClass = target.getMember().getDeclaringClass();
-                    if (declaringClass != clazz && !referenceContextMap.containsKey(declaringClass)) {
+                    if (declaringClass != injectionClass && !referenceContextMap.containsKey(declaringClass)) {
                         referenceContextMap.put(declaringClass, referenceContext);
                     }
                 }
