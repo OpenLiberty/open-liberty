@@ -89,8 +89,6 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     private static final int NOT_PRESENT = -1;
     /** Value used before a search target has been tested */
     private static final int NOT_TESTED = -2;
-    private static final String COOKIE = "cookie";
-    private static final String JSESSIONID = "JSESSIONID";
 
     /** Request method for the message */
     private transient MethodValues myMethod = MethodValues.UNDEF;
@@ -2067,35 +2065,6 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
                 }
             }
 
-            // Encode cookies, if any are present
-            Set<HttpCookie> cookieSet = pushBuilder.getCookies();
-            if (cookieSet != null) {
-                Iterator<HttpCookie> ckit = cookieSet.iterator();
-                HttpCookie ck = null;
-                while (ckit.hasNext()) {
-                    ck = ckit.next();
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "HTTPRequestMessageImpl.getCookies() " + ck.getName() + " " + ck.getValue());
-                    }
-                    ppStream.write(H2Headers.encodeHeader(h2WriteTable, COOKIE, ck.getName() + "=" + ck.getValue(), LiteralIndexType.NOINDEXING));
-                }
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HTTPRequestMessageImpl.getCookies() no cookies");
-                }
-            }
-
-            // Add optional session id
-            if (pushBuilder.getSessionId() != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() " + pushBuilder.getSessionId());
-                }
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, COOKIE, JSESSIONID + "=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() got sessionid");
-            }
         }
         // Either IOException from write, or CompressionException from encodeHeader
         catch (IOException ioe) {
