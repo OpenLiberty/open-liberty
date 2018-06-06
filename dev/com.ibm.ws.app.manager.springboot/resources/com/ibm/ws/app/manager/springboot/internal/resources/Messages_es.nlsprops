@@ -35,17 +35,17 @@ warning.could.not.thin.application=CWWKC0251W: No se ha podido convertir la apli
 warning.could.not.thin.application.explanation=La aplicaci\u00f3n no se ha podido convertir en una aplicaci\u00f3n ligera. La aplicaci\u00f3n seguir\u00e1 ejecut\u00e1ndose desde el JAR original. 
 warning.could.not.thin.application.useraction=Intente resolver el problema en el mensaje de la excepci\u00f3n y reinicie el servidor o actualice la aplicaci\u00f3n. 
 
-error.need.springboot.version.15=CWWKC0252E: No se ha podido ejecutar la aplicaci\u00f3n porque se ha configurado una versi\u00f3n incorrecta de la caracter\u00edstica Spring Boot en server.xml. La aplicaci\u00f3n necesita que se configure la caracter\u00edstica springBoot-1.5.
-error.need.springboot.version.15.explanation=La aplicaci\u00f3n necesita Spring Boot versi\u00f3n 1.5, pero se ha configurado una versi\u00f3n incorrecta de la caracter\u00edstica Spring Boot en server.xml.  
-error.need.springboot.version.15.useraction=En server.xml debe configurarse la caracter\u00edstica springBoot-1.5.
+error.need.springboot.version.15=CWWKC0252E: La aplicaci\u00f3n no ha podido iniciarse porque la caracter\u00edstica springBoot-2.0 est\u00e1 configurada en el archivo server.xml. La aplicaci\u00f3n requiere que est\u00e9 configurada la caracter\u00edstica springBoot-1.5.
+error.need.springboot.version.15.explanation=La aplicaci\u00f3n requiere la caracter\u00edstica springBoot-1.5. Compruebe la versi\u00f3n de la caracter\u00edstica Spring Boot actualmente configurada en el archivo server.xml.  
+error.need.springboot.version.15.useraction=Configure la caracter\u00edstica springBoot-1.5 en el archivo server.xml. Elimine todas las otras caracter\u00edsticas Spring Boot.
 
-error.need.springboot.version.20=CWWKC0253E: No se ha podido ejecutar la aplicaci\u00f3n porque se ha configurado una versi\u00f3n incorrecta de la caracter\u00edstica Spring Boot en server.xml. La aplicaci\u00f3n necesita que se configure la caracter\u00edstica springBoot-2.0.
-error.need.springboot.version.20.explanation=La aplicaci\u00f3n necesita Spring Boot versi\u00f3n 2.0, pero se ha configurado una versi\u00f3n incorrecta de la caracter\u00edstica Spring Boot en server.xml.  
-error.need.springboot.version.20.useraction=En server.xml debe configurarse la caracter\u00edstica springBoot-2.0.
+error.need.springboot.version.20=CWWKC0253E: La aplicaci\u00f3n no ha podido iniciarse porque la caracter\u00edstica springBoot-1.5 est\u00e1 configurada en el archivo server.xml. La aplicaci\u00f3n requiere que est\u00e9 configurada la caracter\u00edstica springBoot-2.0.
+error.need.springboot.version.20.explanation=La aplicaci\u00f3n requiere la caracter\u00edstica springBoot-2.0. Compruebe la versi\u00f3n de la caracter\u00edstica Spring Boot actualmente configurada en el archivo server.xml.  
+error.need.springboot.version.20.useraction=Configure la caracter\u00edstica springBoot-2.0 en el archivo server.xml. Elimine todas las otras caracter\u00edsticas Spring Boot.
 
-error.missing.servlet=CWWKC0254E: No se ha podido ejecutar la aplicaci\u00f3n porque requiere la configuraci\u00f3n de una caracter\u00edstica de Servlet en el archivo server.xml.
-error.missing.servlet.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n web y requiere que se configure una caracter\u00edstica de Servlet en el archivo server.xml.
-error.missing.servlet.useraction=Debe configurarse una caracter\u00edstica de Servlet en server.xml.
+error.missing.servlet=CWWKC0254E: La aplicaci\u00f3n no ha podido iniciarse porque requiere que una caracter\u00edstica de servlet est\u00e9 configurada en el archivo server.xml.
+error.missing.servlet.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n web y necesita que en el archivo server.xml se configure una caracter\u00edstica de servlet.
+error.missing.servlet.useraction=Configure una caracter\u00edstica de servlet en el archivo server.xml.
 
 error.multiple.applications.not.allowed=CWWKC0255E: La aplicaci\u00f3n Spring Boot {0} no puede iniciarse porque la aplicaci\u00f3n {1} ya est\u00e1 activa. No puede configurar varias aplicaciones Spring Boot en la misma configuraci\u00f3n de servidor.
 error.multiple.applications.not.allowed.explanation=No est\u00e1 permitida la configuraci\u00f3n de varias aplicaciones Spring Boot en la misma configuraci\u00f3n del servidor.
@@ -58,3 +58,11 @@ error.no.manifest.found.useraction=Configure una aplicaci\u00f3n Spring Boot v\u
 error.no.spring.class.found=CWWKC0257E: El archivo META-INF/MANIFEST.MF de la aplicaci\u00f3n Spring Boot debe especificar una cabecera Start-Class.
 error.no.spring.class.found.explanation=Las aplicaciones Spring Boot deben contener una clase principal especificada en la cabecera del archivo de manifiesto Start-Class.
 error.no.spring.class.found.useraction=Configure una aplicaci\u00f3n Spring Boot v\u00e1lida, que contenga una cabecera de archivo de manifiesto Start-Class, con el servidor.
+
+error.missing.ssl=CWWKC0258E: La aplicaci\u00f3n no ha podido iniciarse porque requiere que una caracter\u00edstica SSL est\u00e9 configurada en el archivo server.xml.
+error.missing.ssl.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n segura y necesita que en el archivo server.xml se configure una caracter\u00edstica SSL.
+error.missing.ssl.useraction=Configure la caracter\u00edstica transportSecurity-1.0 en el archivo server.xml.
+
+error.missing.websocket=CWWKC0259E: La aplicaci\u00f3n no ha podido iniciarse porque requiere que una caracter\u00edstica websocket est\u00e9 configurada en el archivo server.xml.
+error.missing.websocket.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n de socket web y necesita que en el archivo server.xml se configure una caracter\u00edstica websocket.
+error.missing.websocket.useraction=Configure una caracter\u00edstica websocket en el archivo server.xml.

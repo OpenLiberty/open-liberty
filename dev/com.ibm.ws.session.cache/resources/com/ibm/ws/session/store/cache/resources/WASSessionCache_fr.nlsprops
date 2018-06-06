@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Syntaxe non valide dans l''URL httpSessionCache. Motif : {0}.
 INCORRECT_URI_SYNTAX.explanation=La syntaxe de l'URI de configuration httpSessionCache de JCache sp\u00e9cifi\u00e9 n'est pas valide.
 INCORRECT_URI_SYNTAX.useraction=Corrigez la syntaxe de l'URI de configuration httpSessionCache sp\u00e9cifi\u00e9.
+
+ERROR_REMOVING_SESSION=SESN0301E: Une exception a \u00e9t\u00e9 \u00e9mise lors du retrait d''une session depuis le cache. L''exception est : {0}.
+ERROR_REMOVING_SESSION.explanation=Une op\u00e9ration dans le cache a \u00e9chou\u00e9 en raison de l'exception sp\u00e9cifi\u00e9e.
+ERROR_REMOVING_SESSION.useraction=Consultez l'exception pour plus de d\u00e9tails. La configuration du fournisseur JCache requiert peut-\u00eatre une mise \u00e0 jour.
+
+PROP_HIT_ERROR=SESN0302E: Une exception a \u00e9t\u00e9 \u00e9mise lors du stockage des modifications apport\u00e9es aux donn\u00e9es d''application dans le cache. L''exception est : {0}.
+PROP_HIT_ERROR.explanation=Une op\u00e9ration dans le cache a \u00e9chou\u00e9 en raison de l'exception sp\u00e9cifi\u00e9e.
+PROP_HIT_ERROR.useraction=Consultez l'exception pour plus de d\u00e9tails. La configuration du fournisseur JCache requiert peut-\u00eatre une mise \u00e0 jour.
+
+STORE_SESS_ERROR=SESN0303E: Une exception a \u00e9t\u00e9 \u00e9mise lors du stockage d''une session dans le cache. L''exception est : {0}.
+STORE_SESS_ERROR.explanation=Une op\u00e9ration dans le cache a \u00e9chou\u00e9 en raison de l'exception sp\u00e9cifi\u00e9e.
+STORE_SESS_ERROR.useraction=Consultez l'exception pour plus de d\u00e9tails. La configuration du fournisseur JCache requiert peut-\u00eatre une mise \u00e0 jour.
+
+LOAD_VALUE_ERROR=SESN0304E: Une exception a \u00e9t\u00e9 \u00e9mise lors de la lecture dans un objet des donn\u00e9es d''application pour une session depuis le cache. L''exception est : {0}.
+LOAD_VALUE_ERROR.explanation=Une op\u00e9ration dans le cache a \u00e9chou\u00e9 en raison de l'exception sp\u00e9cifi\u00e9e.
+LOAD_VALUE_ERROR.useraction=Consultez l'exception pour plus de d\u00e9tails. La configuration du fournisseur JCache requiert peut-\u00eatre une mise \u00e0 jour.
+
+ERROR_CACHE_ACCESS=SESN0305E: Une exception a \u00e9t\u00e9 \u00e9mise lors de la tentative d''acc\u00e8s au cache. L''exception est : {0}.
+ERROR_CACHE_ACCESS.explanation=Une op\u00e9ration dans le cache a \u00e9chou\u00e9 en raison de l'exception sp\u00e9cifi\u00e9e.
+ERROR_CACHE_ACCESS.useraction=Consultez l'exception pour plus de d\u00e9tails. La configuration du fournisseur JCache requiert peut-\u00eatre une mise \u00e0 jour.
+
+ERROR_SESSION_INVAL=SESN0306E: Une exception a \u00e9t\u00e9 \u00e9mise lors de l''invalidation d''une session dans le cache. L''exception est : {0}.
+ERROR_SESSION_INVAL.explanation=Une op\u00e9ration dans le cache a \u00e9chou\u00e9 en raison de l'exception sp\u00e9cifi\u00e9e.
+ERROR_SESSION_INVAL.useraction=Consultez l'exception pour plus de d\u00e9tails. La configuration du fournisseur JCache requiert peut-\u00eatre une mise \u00e0 jour.
+
+ERROR_SESSION_INIT=SESN0307E: Une exception a \u00e9t\u00e9 \u00e9mise lors de l''initialisation du cache. L''exception est : {0}.
+ERROR_SESSION_INIT.explanation=Une op\u00e9ration dans le cache a \u00e9chou\u00e9 en raison de l'exception sp\u00e9cifi\u00e9e.
+ERROR_SESSION_INIT.useraction=Consultez l'exception pour plus de d\u00e9tails. La configuration du fournisseur JCache requiert peut-\u00eatre une mise \u00e0 jour.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: Une configuration httpSessionCache non valide ou manquante a \u00e9t\u00e9 d\u00e9tect\u00e9e. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=L'initialisation compl\u00e8te de la fonction sessionCache n'a pas abouti en raison d'une configuration non valide ou manquante.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=V\u00e9rifiez que la configuration du serveur d\u00e9finit un \u00e9l\u00e9ment httpSessionCache qui inclut un attribut libraryRef.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: La biblioth\u00e8que du cache de session {0} est vide. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=La fonction sessionCache n'a pas trouv\u00e9 de fournisseur JCache \u00e0 charger.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=V\u00e9rifiez que la biblioth\u00e8que contient un fournisseur JCache et que tous les chemins ont \u00e9t\u00e9 sp\u00e9cifi\u00e9s correctement.
+
+INTERNAL_SERVER_ERROR=Erreur de serveur interne
+
+SESSION_CACHE_CONFIG_MESSAGE=V\u00e9rifiez que la configuration du serveur contient une configuration httpSessionCache valide. Reportez-vous \u00e0 l''exemple de configuration. {0}

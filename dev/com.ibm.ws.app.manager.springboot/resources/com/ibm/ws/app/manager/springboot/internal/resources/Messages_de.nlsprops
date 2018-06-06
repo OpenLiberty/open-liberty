@@ -35,17 +35,17 @@ warning.could.not.thin.application=CWWKC0251W: Die Anwendung {0} konnte nicht in
 warning.could.not.thin.application.explanation=Die Anwendung konnte nicht in eine Thin-Anwendung konvertiert werden. Die Anwendung wird weiterhin \u00fcber die urspr\u00fcngliche JAR ausgef\u00fchrt. 
 warning.could.not.thin.application.useraction=Versuchen Sie, das in der Ausnahmenachricht angegebene Problem zu beheben, und starten Sie dann den Server erneut oder aktualisieren Sie die Anwendung. 
 
-error.need.springboot.version.15=CWWKC0252E: Die Anwendung konnte nicht ausgef\u00fchrt werden, weil die falsche Version des Features Spring Boot in der Datei server.xml konfiguriert ist. Die Anwendung setzt die Konfiguration des Features springBoot-1.5 voraus.
-error.need.springboot.version.15.explanation=Die Anwendung setzt Spring Boot Version 1.5 voraus, aber es ist eine falsche Version des Features Spring Boot in der Datei server.xml konfiguriert.  
-error.need.springboot.version.15.useraction=Das Feature springBoot-1.5 muss in der Datei server.xml konfiguriert werden.
+error.need.springboot.version.15=CWWKC0252E: Die Anwendung konnte nicht gestartet werden, weil das Feature springBoot-2.0 in der Datei server.xml konfiguriert ist. Die Anwendung setzt die Konfiguration des Features springBoot-1.5 voraus.
+error.need.springboot.version.15.explanation=Die Anwendung setzt das Feature springBoot-1.5 voraus. \u00dcberpr\u00fcfen Sie die Version des Spring Boot-Features, die momentan in der Datei server.xml konfiguriert ist. 
+error.need.springboot.version.15.useraction=Konfigurieren Sie das Feature springBoot-1.5 in der Datei server.xml. Entfernen Sie alle anderen Spring Boot-Features.
 
-error.need.springboot.version.20=CWWKC0253E: Die Anwendung konnte nicht ausgef\u00fchrt werden, weil die falsche Version des Features Spring Boot in der Datei server.xml konfiguriert ist. Die Anwendung setzt die Konfiguration des Features springBoot-2.0 voraus.
-error.need.springboot.version.20.explanation=Die Anwendung setzt Spring Boot Version 2.0 voraus, aber es ist eine falsche Version des Features Spring Boot in der Datei server.xml konfiguriert.  
-error.need.springboot.version.20.useraction=Das Feature springBoot-2.0 muss in der Datei server.xml konfiguriert werden.
+error.need.springboot.version.20=CWWKC0253E: Die Anwendung konnte nicht gestartet werden, weil das Feature springBoot-1.5 in der Datei server.xml konfiguriert ist. Die Anwendung setzt die Konfiguration des Features springBoot-2.0 voraus.
+error.need.springboot.version.20.explanation=Die Anwendung setzt das Feature springBoot-2.0 voraus. \u00dcberpr\u00fcfen Sie die Version des Spring Boot-Features, die momentan in der Datei server.xml konfiguriert ist. 
+error.need.springboot.version.20.useraction=Konfigurieren Sie das Feature springBoot-2.0 in der Datei server.xml. Entfernen Sie alle anderen Spring Boot-Features.
 
-error.missing.servlet=CWWKC0254E: Die Anwendung konnte nicht ausgef\u00fchrt werden, weil die Konfiguration eines Servlet-Features in der Datei server.xml vorausgesetzt wird.
+error.missing.servlet=CWWKC0254E: Die Anwendung konnte nicht gestartet werden, weil sie die Konfiguration eines Servlet-Features in der Datei server.xml voraussetzt.
 error.missing.servlet.explanation=Die Anwendung ist eine Webanwendung, die die Konfiguration eines Servlet-Feature in der Datei server.xml voraussetzt.
-error.missing.servlet.useraction=Das Servlet-Feature muss in der Datei server.xml konfiguriert werden.
+error.missing.servlet.useraction=Konfigurieren Sie ein Servlet-Feature in der Datei server.xml.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Die Spring Boot-Anwendung {0} kann nicht gestartet werden, weil die Anwendung {1} bereits aktiv ist. Es ist nicht m\u00f6glich, mehrere Spring Boot-Anwendungen in derselben Konfiguration zu konfigurieren.
 error.multiple.applications.not.allowed.explanation=Die Konfiguration mehrerer Spring Boot-Anwendungen in derselben Konfiguration wird nicht unterst\u00fctzt.
@@ -58,3 +58,11 @@ error.no.manifest.found.useraction=Konfigurieren Sie eine g\u00fcltige Spring Bo
 error.no.spring.class.found=CWWKC0257E: Die Datei META-INF/MANIFEST.MF der Spring Boot-Anwendung muss einen Header Start-Class angeben.
 error.no.spring.class.found.explanation=Spring Boot-Anwendungen m\u00fcssen eine Hauptklasse (main) enthalten, die im Manifestheader Start-Class angegeben ist.
 error.no.spring.class.found.useraction=Konfigurieren Sie eine g\u00fcltige Spring Boot-Anwendung, die einen Manifestheader Start-Class enth\u00e4lt, f\u00fcr den Server.
+
+error.missing.ssl=CWWKC0258E: Die Anwendung konnte nicht gestartet werden, weil sie die Konfiguration eines SSL-Features in der Datei server.xml voraussetzt.
+error.missing.ssl.explanation=Die Anwendung ist eine sichere Anwendung, die die Konfiguration eines SSL-Features in der Datei server.xml voraussetzt.
+error.missing.ssl.useraction=Konfigurieren Sie das Feature transportSecurity-1.0 in der Datei server.xml.
+
+error.missing.websocket=CWWKC0259E: Die Anwendung konnte nicht gestartet werden, weil sie die Konfiguration eines WebSocket-Features in der Datei server.xml voraussetzt.
+error.missing.websocket.explanation=Die Anwendung ist eine WebSocket-Anwendung, die die Konfiguration eines WebSocket-Features in der Datei server.xml voraussetzt.
+error.missing.websocket.useraction=Konfigurieren Sie ein WebSocket-Feature in der Datei server.xml.

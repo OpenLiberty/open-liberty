@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Sintaxis no v\u00e1lida en el URI de httpSessionCache.  La causa es {0}.
 INCORRECT_URI_SYNTAX.explanation=La sintaxis del URI de configuraci\u00f3n JCache de httpSessionCache especificado no es v\u00e1lido.
 INCORRECT_URI_SYNTAX.useraction=Corrija la sintaxis del URI de configuraci\u00f3n de httpSessionCache especificado.
+
+ERROR_REMOVING_SESSION=SESN0301E: Se ha producido una excepci\u00f3n al eliminar una sesi\u00f3n de la memoria cach\u00e9. La excepci\u00f3n es: {0}.
+ERROR_REMOVING_SESSION.explanation=Se ha producido un error en una operaci\u00f3n contra la memoria cach\u00e9 debido a la excepci\u00f3n especificada.
+ERROR_REMOVING_SESSION.useraction=Consulte la excepci\u00f3n para obtener m\u00e1s detalles. Es posible que deba actualizarse la configuraci\u00f3n del proveedor JCache.
+
+PROP_HIT_ERROR=SESN0302E: Se ha producido una excepci\u00f3n al almacenar en la memoria cach\u00e9 los cambios en los datos de la aplicaci\u00f3n.La excepci\u00f3n es: {0}.
+PROP_HIT_ERROR.explanation=Se ha producido un error en una operaci\u00f3n contra la memoria cach\u00e9 debido a la excepci\u00f3n especificada.
+PROP_HIT_ERROR.useraction=Consulte la excepci\u00f3n para obtener m\u00e1s detalles. Es posible que deba actualizarse la configuraci\u00f3n del proveedor JCache.
+
+STORE_SESS_ERROR=SESN0303E: Se ha producido una excepci\u00f3n al almacenar una sesi\u00f3n de la memoria cach\u00e9. La excepci\u00f3n es: {0}.
+STORE_SESS_ERROR.explanation=Se ha producido un error en una operaci\u00f3n contra la memoria cach\u00e9 debido a la excepci\u00f3n especificada.
+STORE_SESS_ERROR.useraction=Consulte la excepci\u00f3n para obtener m\u00e1s detalles. Es posible que deba actualizarse la configuraci\u00f3n del proveedor JCache.
+
+LOAD_VALUE_ERROR=SESN0304E: Se ha producido una excepci\u00f3n al leer un objeto de los datos de aplicaci\u00f3n para una sesi\u00f3n en la memoria cach\u00e9. La excepci\u00f3n es: {0}.
+LOAD_VALUE_ERROR.explanation=Se ha producido un error en una operaci\u00f3n contra la memoria cach\u00e9 debido a la excepci\u00f3n especificada.
+LOAD_VALUE_ERROR.useraction=Consulte la excepci\u00f3n para obtener m\u00e1s detalles. Es posible que deba actualizarse la configuraci\u00f3n del proveedor JCache.
+
+ERROR_CACHE_ACCESS=SESN0305E: Se ha producido una excepci\u00f3n al intentar acceder a la memoria cach\u00e9. La excepci\u00f3n es: {0}.
+ERROR_CACHE_ACCESS.explanation=Se ha producido un error en una operaci\u00f3n contra la memoria cach\u00e9 debido a la excepci\u00f3n especificada.
+ERROR_CACHE_ACCESS.useraction=Consulte la excepci\u00f3n para obtener m\u00e1s detalles. Es posible que deba actualizarse la configuraci\u00f3n del proveedor JCache.
+
+ERROR_SESSION_INVAL=SESN0306E: Se ha producido una excepci\u00f3n al invalidar una sesi\u00f3n de la memoria cach\u00e9. La excepci\u00f3n es: {0}.
+ERROR_SESSION_INVAL.explanation=Se ha producido un error en una operaci\u00f3n contra la memoria cach\u00e9 debido a la excepci\u00f3n especificada.
+ERROR_SESSION_INVAL.useraction=Consulte la excepci\u00f3n para obtener m\u00e1s detalles. Es posible que deba actualizarse la configuraci\u00f3n del proveedor JCache.
+
+ERROR_SESSION_INIT=SESN0307E: Se ha producido una excepci\u00f3n al inicializar la memoria cach\u00e9. La excepci\u00f3n es: {0}.
+ERROR_SESSION_INIT.explanation=Se ha producido un error en una operaci\u00f3n contra la memoria cach\u00e9 debido a la excepci\u00f3n especificada.
+ERROR_SESSION_INIT.useraction=Consulte la excepci\u00f3n para obtener m\u00e1s detalles. Es posible que deba actualizarse la configuraci\u00f3n del proveedor JCache.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: Se ha detectado que falta una configuraci\u00f3n de httpSessionCache o bien que no es v\u00e1lida. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=La caracter\u00edstica sessionCache no ha podido inicializarse completamente debido a que falta una configuraci\u00f3n o que esta no es v\u00e1lida.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Compruebe que la configuraci\u00f3n de servidor defina un elemento httpSessionCache que incluya un atributo libraryRef.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: La biblioteca de la memoria cach\u00e9 de la sesi\u00f3n {0} est\u00e1 vac\u00eda. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=La caracter\u00edstica sessionCache no ha encontrado ning\u00fan proveedor JCache que cargar.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Compruebe que la biblioteca contenga un proveedor JCache y que todas las v\u00edas de acceso se hayan especificado correctamente.
+
+INTERNAL_SERVER_ERROR=Error interno del servidor
+
+SESSION_CACHE_CONFIG_MESSAGE=Compruebe que la configuraci\u00f3n de servidor contenga una configuraci\u00f3n httpSessionCache v\u00e1lida. Consulte la configuraci\u00f3n de ejemplo. {0}

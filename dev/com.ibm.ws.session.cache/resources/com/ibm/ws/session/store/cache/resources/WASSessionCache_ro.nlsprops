@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Sintax\u0103 invalid\u0103 \u00een URI-ul httpSessionCache.  Cauza este {0}.
 INCORRECT_URI_SYNTAX.explanation=Sintaxa URI-ului de configura\u0163ie httpSessionCache JCache specificat este invalid.
 INCORRECT_URI_SYNTAX.useraction=Corecta\u0163i sintaxa URI-ului de configura\u0163ie httpSessionCache specificat.
+
+ERROR_REMOVING_SESSION=SESN0301E: A ap\u0103rut o excep\u0163ie la \u00eenl\u0103turarea unei sesiuni din cache. Excep\u0163ia este: {0}
+ERROR_REMOVING_SESSION.explanation=O opera\u0163ie asupra cache-ului a e\u015fuat din cauza excep\u0163iei specificate.
+ERROR_REMOVING_SESSION.useraction=Vede\u0163i excep\u0163ia pentru detalii suplimentare. Este posibil s\u0103 nu fie actualizat\u0103 configura\u0163ia furnizorului JCache.
+
+PROP_HIT_ERROR=SESN0302E: A ap\u0103rut o excep\u0163ie la stocarea \u00een cache a modific\u0103rilor datelor aplica\u0163iei. Excep\u0163ia este: {0}
+PROP_HIT_ERROR.explanation=O opera\u0163ie asupra cache-ului a e\u015fuat din cauza excep\u0163iei specificate.
+PROP_HIT_ERROR.useraction=Vede\u0163i excep\u0163ia pentru detalii suplimentare. Este posibil s\u0103 nu fie actualizat\u0103 configura\u0163ia furnizorului JCache.
+
+STORE_SESS_ERROR=SESN0303E: A ap\u0103rut o excep\u0163ie la stocarea unei sesiuni \u00een cache. Excep\u0163ia este: {0}
+STORE_SESS_ERROR.explanation=O opera\u0163ie asupra cache-ului a e\u015fuat din cauza excep\u0163iei specificate.
+STORE_SESS_ERROR.useraction=Vede\u0163i excep\u0163ia pentru detalii suplimentare. Este posibil s\u0103 nu fie actualizat\u0103 configura\u0163ia furnizorului JCache.
+
+LOAD_VALUE_ERROR=SESN0304E: A ap\u0103rut o excep\u0163ie la citirea \u00eentr-un obiect al datelor aplica\u0163iei pentru o sesiune din cache. Excep\u0163ia este: {0}
+LOAD_VALUE_ERROR.explanation=O opera\u0163ie asupra cache-ului a e\u015fuat din cauza excep\u0163iei specificate.
+LOAD_VALUE_ERROR.useraction=Vede\u0163i excep\u0163ia pentru detalii suplimentare. Este posibil s\u0103 nu fie actualizat\u0103 configura\u0163ia furnizorului JCache.
+
+ERROR_CACHE_ACCESS=SESN0305E: A ap\u0103rut o excep\u0163ie la \u00eencercarea de a accesa cache-ul. Excep\u0163ia este: {0}
+ERROR_CACHE_ACCESS.explanation=O opera\u0163ie asupra cache-ului a e\u015fuat din cauza excep\u0163iei specificate.
+ERROR_CACHE_ACCESS.useraction=Vede\u0163i excep\u0163ia pentru detalii suplimentare. Este posibil s\u0103 nu fie actualizat\u0103 configura\u0163ia furnizorului JCache.
+
+ERROR_SESSION_INVAL=SESN0306E: A ap\u0103rut o excep\u0163ie la invalidarea unei sesiuni \u00een cache. Excep\u0163ia este: {0}
+ERROR_SESSION_INVAL.explanation=O opera\u0163ie asupra cache-ului a e\u015fuat din cauza excep\u0163iei specificate.
+ERROR_SESSION_INVAL.useraction=Vede\u0163i excep\u0163ia pentru detalii suplimentare. Este posibil s\u0103 nu fie actualizat\u0103 configura\u0163ia furnizorului JCache.
+
+ERROR_SESSION_INIT=SESN0307E: A ap\u0103rut o excep\u0163ie la ini\u0163ializarea cache-ului. Excep\u0163ia este: {0}
+ERROR_SESSION_INIT.explanation=O opera\u0163ie asupra cache-ului a e\u015fuat din cauza excep\u0163iei specificate.
+ERROR_SESSION_INIT.useraction=Vede\u0163i excep\u0163ia pentru detalii suplimentare. Este posibil s\u0103 nu fie actualizat\u0103 configura\u0163ia furnizorului JCache.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: A fost detectat\u0103 o configura\u0163ie httpSessionCache invalid\u0103 sau lips\u0103. ''{0}''
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=Caracteristica sessionCache nu a reu\u015fit ini\u0163ializarea complet\u0103 din cauz\u0103 c\u0103 configura\u0163ia nu este valid\u0103 sau lipse\u015fte.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Verifica\u0163i dac\u0103 configura\u0163ia de server define\u015fte un element httpSessionCache care include un atribut libraryRef.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: Biblioteca de cache de sesiune {0} este goal\u0103. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=Caracteristica sessionCache nu a putut g\u0103si un furnizor JCache pentru \u00eenc\u0103rcare.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Verifica\u0163i dac\u0103 biblioteca con\u0163ine un furnizor JCache \u015fi toate c\u0103ile sunt specificate corect.
+
+INTERNAL_SERVER_ERROR=Eroare intern\u0103 de server
+
+SESSION_CACHE_CONFIG_MESSAGE=Verifica\u0163i dac\u0103 configura\u0163ia de server con\u0163ine o configura\u0163ie httpSessionCache valid\u0103. Vede\u0163i configura\u0163ia e\u015fantion. ''{0}''
