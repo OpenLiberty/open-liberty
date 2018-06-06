@@ -160,8 +160,10 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.bCheckedAcceptEncoding = false;
         this.bContainsLargeMessage = false;
         this.remoteUser = "";
-        // @311734 - clean the statemap of the final write mark
-        getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
+        if (getHttpConfig().runningOnZOS()) {
+            // @311734 - clean the statemap of the final write mark
+            getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
+        }
     }
 
     /*
