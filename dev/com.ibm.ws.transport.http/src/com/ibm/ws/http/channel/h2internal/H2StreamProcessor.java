@@ -1735,9 +1735,9 @@ public class H2StreamProcessor {
         }
         if (currentFrame.isWriteFrame() && currentFrame.getInitialized()) {
             WsByteBuffer writeFrameBuffer = null;
+            WsByteBuffer[] writeFrameBuffers = null;
             try {
                 if (currentFrame.getFrameType() == FrameTypes.DATA) {
-                    WsByteBuffer[] writeFrameBuffers = null;
                     FrameData data = (FrameData) currentFrame;
                     boolean timedOut = false;
 
@@ -1785,11 +1785,28 @@ public class H2StreamProcessor {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "writeFrameSync caught an IOException: " + e);
                 }
+
             } catch (InterruptedException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "writeFrameSync interrupted: " + e);
                 }
+            } finally {
+                // release buffer used to synchronously write the frame
+                if (writeFrameBuffer != null) {
+                    writeFrameBuffer.release();
+                } else if (writeFrameBuffers != null) {
+                    for (int i = 0; i < writeFrameBuffers.length; i++) {
+                        if (writeFrameBuffers[i] != null) {
+                            // buffer at [1] is allocated by old channel code, it will clean it up
+                            // later move this logic to a frame cleanup method that can take care of releasing
+                            if (i != 1) {
+                                writeFrameBuffers[i].release();
+                            }
+                        }
+                    }
+                }
             }
+
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "writeFrameSync internal flow issue - exiting method ");
