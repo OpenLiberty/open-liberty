@@ -18,6 +18,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.resource.ResourceException;
@@ -85,6 +86,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      */
     private static final TraceComponent tc = Tr.register(ConnectionManager.class, J2CConstants.traceSpec, J2CConstants.messageFile);
     private static final TraceComponent ConnLeakLogic = Tr.register(ConnectionManager.class, "ConnLeakLogic", J2CConstants.messageFile);
+    private static final TraceComponent ConnGetConnectionLogic = Tr.register(ConnectionManager.class, "ConnGetConnectionLogic", null);
+    final String nl = CommonFunction.nl;
 
     private final AbstractConnectionFactoryService connectionFactorySvc;
 
@@ -473,22 +476,55 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             }
 
-            if (ConnLeakLogic.isDebugEnabled() || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0)) {
+            if (ConnLeakLogic.isDebugEnabled() || ConnGetConnectionLogic.isDebugEnabled() || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0)) {
                 Thread myThread = Thread.currentThread();
 
                 String ivThreadId = RasHelper.getThreadId();
                 mcWrapper.setThreadID(ivThreadId);
                 mcWrapper.setThreadName(myThread.getName());
                 mcWrapper.setLastAllocationTime(System.currentTimeMillis());
-
+                Throwable t = new Throwable();
+                boolean shared = false;
                 if (mcWrapper.getInitialRequestStackTrace() == null) {
-                    /*
-                     * Get the stack for this connection request.
-                     */
-                    Throwable t = new Throwable();
                     mcWrapper.setInitialRequestStackTrace(t);
+                } else {
+                    shared = true;
                 }
-
+                if (ConnGetConnectionLogic.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                    String getConnectionAppClassElement = null;
+                    StringBuffer getConnectionAppClass = new StringBuffer();
+                    StackTraceElement[] ste = t.getStackTrace();
+                    for (int i = 0; i < ste.length; ++i) {
+                        getConnectionAppClassElement = ste[i].toString();
+                        if (getConnectionAppClassElement.contains(".j2c.") ||
+                            getConnectionAppClassElement.contains(".rsadapter.")) {
+                            continue;
+                        } else {
+                            getConnectionAppClassElement = getConnectionAppClassElement.replace("(", " ");
+                            String[] stringKeyTemp = getConnectionAppClassElement.split(" ");
+                            getConnectionAppClass.append(stringKeyTemp[1]);
+                        }
+                    }
+                    AtomicInteger getConnectionOccurrences = mcWrapper.pm.getConnectionMap.get(getConnectionAppClass.toString());
+                    if (getConnectionOccurrences == null) {
+                        getConnectionOccurrences = new AtomicInteger(1);
+                        mcWrapper.pm.getConnectionMap.put(getConnectionAppClass.toString(), getConnectionOccurrences);
+                    } else {
+                        getConnectionOccurrences.getAndIncrement();
+                    }
+                    String handleId = Integer.toHexString(rVal.hashCode());
+                    Tr.debug(ConnGetConnectionLogic,
+                             "JCA (thread/handle) connection get request stack " +
+                                                     ivThreadId + "/" + handleId +
+                                                     (shared ? " shared" : "       ") +
+                                                     " " + getConnectionOccurrences.toString() +
+                                                     " " + getConnectionAppClass.toString() + nl +
+                                                     " Thread " + ivThreadId + " Connection " + rVal);
+                    if (shared && mcWrapper.getHandleCount() > 1)
+                        Tr.debug(ConnGetConnectionLogic, "JCA (thread/handle) connection get request handles " +
+                                                         mcWrapper.getHandleCount() +
+                                                         " " + ivThreadId + "/" + handleId);
+                }
             }
 
         } // end try block

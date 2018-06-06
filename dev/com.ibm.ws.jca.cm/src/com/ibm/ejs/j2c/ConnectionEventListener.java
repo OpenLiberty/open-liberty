@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ejs.j2c;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /*
  * Class name   : ConnectionEventListener
  *
@@ -25,6 +27,7 @@ import javax.resource.ResourceException;
 import javax.resource.spi.ConnectionEvent;
 import javax.resource.spi.ManagedConnection;
 
+import com.ibm.ejs.ras.RasHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
@@ -35,6 +38,8 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     private MCWrapper mcWrapper = null;
 
     private static final TraceComponent tc = Tr.register(ConnectionEventListener.class, J2CConstants.traceSpec, J2CConstants.messageFile);
+    private static final TraceComponent ConnGetConnectionLogic = Tr.register(ConnectionEventListener.class, "ConnGetConnectionLogic", null);
+    final String nl = CommonFunction.nl;
 
     /**
      * Default constructor provided so that subclasses need not override (implement).
@@ -80,6 +85,9 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                     Tr.debug(this, tc, "***Connection Close Request*** Handle Name: " + event.getConnectionHandle() + "  Connection Pool: "
                                        + mcWrapper.getPoolManager().getGConfigProps().getXpathId() + "  Details: : " + mcWrapper);
 
+                }
+                if (ConnGetConnectionLogic.isDebugEnabled()) {
+                    processStackForCallRequest(event);
                 }
 
                 ConnectionManager cm = mcWrapper.getConnectionManagerWithoutStateCheck();
@@ -174,6 +182,72 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     }
 
     /**
+     * @param event
+     */
+    private void processStackForCallRequest(ConnectionEvent event) {
+        final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
+        if (isTracingEnabled && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "processStackForCallRequest");
+        }
+        Thread myThread = Thread.currentThread();
+
+        String ivThreadId = RasHelper.getThreadId();
+        mcWrapper.setThreadID(ivThreadId);
+        mcWrapper.setThreadName(myThread.getName());
+        mcWrapper.setLastAllocationTime(System.currentTimeMillis());
+
+        if (mcWrapper.getInitialRequestStackTrace() != null) {
+            /*
+             * Get the stack for this connection request.
+             */
+            Throwable t = new Throwable();
+            mcWrapper.setInitialRequestStackTrace(t);
+            if (ConnGetConnectionLogic.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
+                String getConnectionAppClassElement = null;
+                StringBuffer getConnectionAppClass = new StringBuffer();
+                StackTraceElement[] ste = t.getStackTrace();
+                for (int i = 0; i < ste.length; ++i) {
+                    getConnectionAppClassElement = ste[i].toString();
+                    if (getConnectionAppClassElement.contains(".j2c.") ||
+                        getConnectionAppClassElement.contains(".rsadapter.")) {
+                        continue;
+                    } else {
+                        getConnectionAppClassElement = getConnectionAppClassElement.replace("(", " ");
+                        String[] stringKeyTemp = getConnectionAppClassElement.split(" ");
+                        getConnectionAppClass.append(stringKeyTemp[1]);
+                    }
+                }
+                AtomicInteger getConnectionOccurrences = mcWrapper.pm.getConnectionMap.get(getConnectionAppClass.toString());
+                if (getConnectionOccurrences == null) {
+                    mcWrapper.pm.getConnectionMap.put(getConnectionAppClass.toString(), new AtomicInteger(1));
+                } else {
+                    getConnectionOccurrences.getAndIncrement();
+                }
+                int eventID = event.getId();
+                Object connectionHandle = event.getConnectionHandle();
+                String handleId = null;
+                if (connectionHandle != null)
+                    handleId = Integer.toHexString(event.getConnectionHandle().hashCode());
+                String eventStr = " no event stack ";
+                if (eventID == ConnectionEvent.CONNECTION_CLOSED)
+                    eventStr = " close event ";
+                else if (eventID == ConnectionEvent.CONNECTION_ERROR_OCCURRED)
+                    eventStr = " error event stack ";
+
+                Tr.debug(ConnGetConnectionLogic, "JCA (thread/handle) connection" + eventStr + ivThreadId + "/" + handleId +
+                                                 " " + getConnectionAppClass.toString() + nl +
+                                                 " Thread " + ivThreadId + " Connection " + event.getConnectionHandle());
+
+            }
+        } else {
+            Tr.debug(ConnGetConnectionLogic, "JCA (thread/handle) - JCA formatted stack event of a connection without a stack ", event.getConnectionHandle());
+        }
+        if (isTracingEnabled && tc.isEntryEnabled()) {
+            Tr.exit(this, tc, "processStackForCallRequest");
+        }
+    }
+
+    /**
      * This method is called by a resource adapter when a connection error occurs.
      * This is also called internally by this class when other event handling methods fail
      * and require cleanup.
@@ -196,6 +270,9 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
                 Tr.entry(this, tc, "connectionErrorOccurred", entry.toString());
             else
                 Tr.entry(this, tc, "connectionErrorOccurred", entry.toString(), event.getException());
+        }
+        if (ConnGetConnectionLogic.isDebugEnabled()) {
+            processStackForCallRequest(event);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
