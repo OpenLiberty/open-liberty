@@ -33,15 +33,15 @@ Import-Package: \
  *
  
 Include-Resource:\
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/cxf/**, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.handlers, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.schemas, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/wsdl.plugin.xml, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/schemas/**, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/DEPENDENCIES, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/LICENSE, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/NOTICE, \
- @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/org/apache/cxf/**
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/cxf/**, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/spring.handlers, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/spring.schemas, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/wsdl.plugin.xml, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/schemas/**, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/DEPENDENCIES, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/LICENSE, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/NOTICE, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20180529-1900;EXACT}!/org/apache/cxf/**
  
 # Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
 # As we have no plan to support that, will add these things back with NLS support in the future 
