@@ -43,6 +43,7 @@ public class ManagedObjectServiceImpl implements DefaultManagedObjectService {
         return createManagedObjectFactory(mmd, klass, false);
     }
 
+    //this method will be removed very soon
     @Override
     @SuppressWarnings("unchecked")
     public <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, T instance) throws ManagedObjectException {

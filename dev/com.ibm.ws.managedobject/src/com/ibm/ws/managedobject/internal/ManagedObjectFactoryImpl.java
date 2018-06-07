@@ -98,6 +98,9 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
      */
     @Override
     public ManagedObject<T> createManagedObject(T existingInstance, ManagedObjectInvocationContext<T> invocationContext) {
+        if (existingInstance == null) {
+            throw new IllegalArgumentException("Existing instance must not be null");
+        }
         return new ManagedObjectImpl<T>(existingInstance);
     }
 

@@ -3354,20 +3354,21 @@ public abstract class EJBMDOrchestrator {
      * @param klass the bean implementation class
      */
     protected <T> ManagedObjectFactory<T> getEJBManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
+        ManagedObjectFactory<T> factory = null;
         ManagedObjectService managedObjectService = getManagedObjectService();
         if (managedObjectService != null) {
             try {
-                ManagedObjectFactory<T> factory = managedObjectService.createEJBManagedObjectFactory(bmd._moduleMetaData, klass, bmd.j2eeName.getComponent());
-
-//                if (factory.isManaged()) {
-                return factory;
-//                }
+                factory = managedObjectService.createEJBManagedObjectFactory(bmd._moduleMetaData, klass, bmd.j2eeName.getComponent());
+                //TODO the isManaged method could be moved to the ManagedObjectService and then wouldn't need to create the factory
+                if (!factory.isManaged()) {
+                    factory = null;
+                }
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
         }
 
-        return null;
+        return factory;
     }
 
     /**
