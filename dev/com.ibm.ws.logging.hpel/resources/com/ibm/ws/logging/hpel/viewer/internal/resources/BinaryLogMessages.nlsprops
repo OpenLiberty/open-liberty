@@ -241,7 +241,7 @@ BL_VIEW_USAGE_034=\
 BL_VIEW_USAGE_035=\
 \ \ \ \ --excludeMessage=value[,value]*
 BL_VIEW_USAGE_036=\
-\tExclude records with specified message.  Value may include * or ? as a\n\
+\tExclude records with the specified message. The value can include * or ? as a\n\
 \twildcard.
 #--------------------------------------------------------------------------------------------------
 
