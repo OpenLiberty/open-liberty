@@ -1016,6 +1016,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "checkForH2MagicString: returning " + hasMagicString);
         }
+        buffer.release();
         return hasMagicString;
     }
 }
