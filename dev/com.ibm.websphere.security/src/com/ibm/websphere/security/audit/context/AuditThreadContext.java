@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,63 @@ public class AuditThreadContext {
     private String jmsBusName;
     private String jmsMessagingEngine;
     private String jmsCallType;
+    private String requestType; // type of CRUD request
+    private String credentialType; // credential type of thread's authenticated user
+    private String credentialUser; // thread's authenticated user
+    private String remoteAddr;
+    private String agent;
+    private String localAddr;
+    private String localPort;
+    private String sessionId;
+    private String httpType;
+
+    public String getRemoteAddr() {
+        return remoteAddr;
+    }
+
+    public void setRemoteAddr(String remoteAddr) {
+        this.remoteAddr = remoteAddr;
+    }
+
+    public String getAgent() {
+        return agent;
+    }
+
+    public void setAgent(String agent) {
+        this.agent = agent;
+    }
+
+    public String getLocalAddr() {
+        return localAddr;
+    }
+
+    public void setLocalAddr(String localAddr) {
+        this.localAddr = localAddr;
+    }
+
+    public String getLocalPort() {
+        return localPort;
+    }
+
+    public void setLocalPort(String localPort) {
+        this.localPort = localPort;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getHttpType() {
+        return httpType;
+    }
+
+    public void setHttpType(String httpType) {
+        this.httpType = httpType;
+    }
 
     public void setHttpServletRequest(Object req) {
         auditReq = req;
@@ -130,6 +187,30 @@ public class AuditThreadContext {
 
     public String getRepositoryRealm() {
         return repositoryRealm;
+    }
+
+    public void setRequestType(String request) {
+        requestType = request;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setCredentialType(String cred) {
+        credentialType = cred;
+    }
+
+    public String getCredentialType() {
+        return credentialType;
+    }
+
+    public void setCredentialUser(String cred) {
+        credentialUser = cred;
+    }
+
+    public String getCredentialUser() {
+        return credentialUser;
     }
 
 }

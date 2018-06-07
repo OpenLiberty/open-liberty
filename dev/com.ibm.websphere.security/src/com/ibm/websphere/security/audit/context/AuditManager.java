@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -184,11 +184,155 @@ public class AuditManager {
     }
 
     /**
+     * Sets the CRUD request type on the thread
+     */
+    public void setRequestType(String requestType) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setRequestType(requestType);;
+    }
+
+    /**
+     * Sets the credential type of the user on the thread
+     */
+    public void setCredentialType(String cred) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setCredentialType(cred);
+    }
+
+    /**
+     * Sets the user on the thread
+     */
+    public void setCredentialUser(String cred) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setCredentialUser(cred);
+    }
+
+    /**
+     * Sets the remote address on the thread
+     */
+    public void setRemoteAddr(String addr) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setRemoteAddr(addr);
+    }
+
+    /**
+     * Sets the agent type on the thread
+     */
+    public void setAgent(String agent) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setAgent(agent);
+    }
+
+    /**
+     * Sets the local address requested on the thread
+     */
+    public void setLocalAddr(String addr) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setLocalAddr(addr);
+    }
+
+    /**
+     * Sets the local port requested on the thread
+     */
+    public void setLocalPort(String port) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setLocalPort(port);
+    }
+
+    /**
+     * Sets the sessionId on the thread
+     */
+    public void setSessionId(String id) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setSessionId(id);
+    }
+
+    /**
+     * Sets the http type of the request on the thread
+     */
+    public void setHttpType(String type) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setHttpType(type);
+    }
+
+    /**
      * Gets the repository realm on the thread
      */
     public String getRepositoryRealm() {
         AuditThreadContext auditThreadContext = getAuditThreadContext();
         return auditThreadContext.getRepositoryRealm();
+    }
+
+    /**
+     * Gets the CRUD request type on the thread
+     */
+    public String getRequestType() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getRequestType();
+    }
+
+    /**
+     * Gets the credential type of the authenticated user on this thread
+     */
+    public String getCredentialType() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getCredentialType();
+    }
+
+    /**
+     * Gets the authenticated user on this thread
+     */
+    public String getCredentialUser() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getCredentialUser();
+    }
+
+    /**
+     * Gets the remote address from the request on this thread
+     */
+    public String getRemoteAddr() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getRemoteAddr();
+    }
+
+    /**
+     * Gets the agent type on this thread
+     */
+    public String getAgent() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getAgent();
+    }
+
+    /**
+     * Gets the requested local address on this thread
+     */
+    public String getLocalAddr() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getLocalAddr();
+    }
+
+    /**
+     * Gets the requested local port on this thread
+     */
+    public String getLocalPort() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getLocalPort();
+    }
+
+    /**
+     * Gets the sessionId on this thread
+     */
+    public String getSessionId() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getSessionId();
+    }
+
+    /**
+     * Gets the http type on this thread
+     */
+    public String getHttpType() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getHttpType();
     }
 
     /**
