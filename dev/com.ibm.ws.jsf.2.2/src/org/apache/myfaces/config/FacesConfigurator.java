@@ -529,35 +529,34 @@ public class FacesConfigurator
 
         // Check that we have access to all of the necessary purge methods before purging anything
         //
-        Purgeable<ApplicationFactory> applicationFactory = new Purgeable<>(
-            (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY));
+        ApplicationFactory applicationFactory
+                = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
         //appFactoryPurgeMethod = applicationFactory.getClass().getMethod("purgeApplication", NO_PARAMETER_TYPES);
         appFactoryPurgeMethod = getPurgeMethod(applicationFactory, "purgeApplication", NO_PARAMETER_TYPES);
 
-        Purgeable<RenderKitFactory> renderKitFactory = new Purgeable<>(
-            (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY));
+        RenderKitFactory renderKitFactory
+                = (RenderKitFactory) FactoryFinder.getFactory(FactoryFinder.RENDER_KIT_FACTORY);
         //renderKitPurgeMethod = renderKitFactory.getClass().getMethod("purgeRenderKit", NO_PARAMETER_TYPES);
         renderKitPurgeMethod = getPurgeMethod(renderKitFactory, "purgeRenderKit", NO_PARAMETER_TYPES);
 
-        Purgeable<LifecycleFactory> lifecycleFactory = new Purgeable<>(
-            (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY));
+        LifecycleFactory lifecycleFactory
+                = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
         //lifecyclePurgeMethod = lifecycleFactory.getClass().getMethod("purgeLifecycle", NO_PARAMETER_TYPES);
         lifecyclePurgeMethod = getPurgeMethod(lifecycleFactory, "purgeLifecycle", NO_PARAMETER_TYPES);
 
-        Purgeable<FacesContext> facesContext = new Purgeable<>(getFacesContext());
+        FacesContext facesContext = getFacesContext();
         facesContextPurgeMethod = getPurgeMethod(facesContext, "purgeFacesContext", NO_PARAMETER_TYPES);
         
         // If there was no exception so far, now we can purge
         //
         if (appFactoryPurgeMethod != null && renderKitPurgeMethod != null && lifecyclePurgeMethod != null && 
-            facesContextPurgeMethod != null && applicationFactory.instance != null && renderKitFactory.instance != null &&
-            lifecycleFactory.instance != null && facesContext.instance != null)
+            facesContextPurgeMethod != null)
         {
-            appFactoryPurgeMethod.invoke(applicationFactory.instance, NO_PARAMETERS);
-            renderKitPurgeMethod.invoke(renderKitFactory.instance, NO_PARAMETERS);
+            appFactoryPurgeMethod.invoke(applicationFactory, NO_PARAMETERS);
+            renderKitPurgeMethod.invoke(renderKitFactory, NO_PARAMETERS);
             RuntimeConfig.getCurrentInstance(_externalContext).purge();
-            lifecyclePurgeMethod.invoke(lifecycleFactory.instance, NO_PARAMETERS);
-            facesContextPurgeMethod.invoke(facesContext.instance, NO_PARAMETERS);
+            lifecyclePurgeMethod.invoke(lifecycleFactory, NO_PARAMETERS);
+            facesContextPurgeMethod.invoke(facesContext, NO_PARAMETERS);
 
             // factories and serial factory need not be purged...
 
@@ -567,22 +566,15 @@ public class FacesConfigurator
         }
         return false;
     }
-
-    private static class Purgeable<T> {
-        T instance;
-        Purgeable(T instance) {
-            this.instance = instance;
-        }
-    }
-
-    private Method getPurgeMethod(Purgeable purgeable, String methodName, Class<?>[] parameters)
+    
+    private Method getPurgeMethod(Object instance, String methodName, Class<?>[] parameters)
     {
-        while (purgeable.instance != null)
+        while (instance != null)
         {
             Method purgeMethod = null;
             try
             {
-                purgeMethod = purgeable.instance.getClass().getMethod(methodName, parameters);
+                purgeMethod = instance.getClass().getMethod(methodName, parameters);
             }
             catch (NoSuchMethodException e)
             {
@@ -593,9 +585,9 @@ public class FacesConfigurator
             {
                 return purgeMethod;
             }
-            if (purgeable.instance instanceof FacesWrapper)
+            if (instance instanceof FacesWrapper)
             {
-                purgeable.instance = ((FacesWrapper)purgeable.instance).getWrapped();
+                instance = ((FacesWrapper)instance).getWrapped();
             }
         }
         return null;
