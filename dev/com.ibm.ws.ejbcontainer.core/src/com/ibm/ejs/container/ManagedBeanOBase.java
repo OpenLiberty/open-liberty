@@ -147,10 +147,18 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
                     }
                 }
             } catch (Throwable t) {
-                FFDCFilter.processException(t, CLASS_NAME + ".injectInstance", "134", this);
-                if (isTraceOn && tc.isEntryEnabled())
-                    Tr.exit(tc, "injectInstance : Injection failure", t);
-                throw ExceptionUtil.EJBException("Injection failure", t);
+                if (! (t instanceof ManagedObjectException)) {
+                    FFDCFilter.processException(t, CLASS_NAME + ".injectInstance", "134", this);
+                    if (isTraceOn && tc.isEntryEnabled())
+                        Tr.exit(tc, "injectInstance : Injection failure", t);
+                    throw ExceptionUtil.EJBException("Injection failure", t);
+                } else {
+                    Throwable cause = t.getCause();
+                    FFDCFilter.processException(cause, CLASS_NAME + ".injectInstance", "134", this);
+                    if (isTraceOn && tc.isEntryEnabled())
+                        Tr.exit(tc, "injectInstance : Injection failure", cause);
+                    throw ExceptionUtil.EJBException("Injection failure", cause);
+                }                
             }
         }
         if (isTraceOn && tc.isEntryEnabled())
@@ -279,7 +287,6 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
             ivEjbManagedObjectContext = ivManagedObject.getContext();
             setEnterpriseBean(ivManagedObject.getObject());
         } catch (ManagedObjectException e) {
-            FFDCFilter.processException(e, CLASS_NAME + ".createInstanceUsingMOF", "307", this);
             //the callstack is epecting a InvocationTargetException so unwrap the ManagedObjectException and rewrap as InvocationTargetException
             Throwable cause = e.getCause();
             if (cause != null && cause instanceof Exception) {
@@ -366,13 +373,24 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
 
             return invCtx;
         } catch (Throwable t) {
-            FFDCFilter.processException(t, CLASS_NAME + ".callAroundConstructInterceptors", "240", this);
-            // If a root cause exception was captured, then return the context and let the caller
-            // properly report the failure and cause; otherwise throw generic EJBException.
-            if (invCtx.ivAroundConstructException != null) {
-                return invCtx;
+            if (! (t instanceof ManagedObjectException)) {
+                FFDCFilter.processException(t, CLASS_NAME + ".callAroundConstructInterceptors", "240", this);
+                // If a root cause exception was captured, then return the context and let the caller
+                // properly report the failure and cause; otherwise throw generic EJBException.
+                if (invCtx.ivAroundConstructException != null) {
+                    return invCtx;
+                }
+                throw ExceptionUtil.EJBException("AroundConstruct interceptor failure", t);
+            } else {
+                Throwable cause = t.getCause();
+                FFDCFilter.processException(cause, CLASS_NAME + ".callAroundConstructInterceptors", "240", this);
+                // If a root cause exception was captured, then return the context and let the caller
+                // properly report the failure and cause; otherwise throw generic EJBException.
+                if (invCtx.ivAroundConstructException != null) {
+                    return invCtx;
+                }
+                throw ExceptionUtil.EJBException("AroundConstruct interceptor failure", cause);
             }
-            throw ExceptionUtil.EJBException("AroundConstruct interceptor failure", t);
         } finally {
             if (contextHelper != null) {
                 contextHelper.resetContextData();

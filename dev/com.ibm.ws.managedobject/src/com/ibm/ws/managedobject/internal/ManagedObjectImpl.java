@@ -11,6 +11,7 @@
 package com.ibm.ws.managedobject.internal;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectException;
@@ -67,6 +68,7 @@ public class ManagedObjectImpl<T> implements ManagedObject<T> {
      * @see com.ibm.ws.managedobject.ManagedObject#inject()
      */
     @Override
+    @FFDCIgnore(InjectionException.class)
     public T inject(ReferenceContext referenceContext) throws ManagedObjectException {
         InjectionTarget[] targets;
         try {
@@ -87,6 +89,7 @@ public class ManagedObjectImpl<T> implements ManagedObject<T> {
     }
 
     @Override
+    @FFDCIgnore(InjectionException.class)
     public T inject(InjectionTarget[] targets, InjectionTargetContext injectionContext) throws ManagedObjectException {
         for (InjectionTarget injectionTarget : targets) {
             try {
