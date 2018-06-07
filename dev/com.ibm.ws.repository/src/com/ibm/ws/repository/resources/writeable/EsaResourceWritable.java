@@ -156,4 +156,11 @@ public interface EsaResourceWritable extends WebDisplayable, ApplicableToProduct
      * @param singleton
      */
     public void setSingleton(String singleton);
+
+    /**
+     * Sets the IBM-InstallTo field
+     *
+     * @param ibmInstallTo The value of the IBM-InstallTo field to use
+     */
+    public void setIBMInstallTo(String ibmInstallTo);
 }

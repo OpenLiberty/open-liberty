@@ -68,6 +68,7 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
     private Collection<RequireFeatureWithTolerates> requireFeatureWithTolerates;
     private String mavenCoordinates;
     private String singleton;
+    private String ibmInstallTo;
 
     public String getFeaturedWeight() {
         return featuredWeight;
@@ -426,6 +427,14 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
         this.singleton = singleton;
     }
 
+    public String getIbmInstallTo() {
+        return ibmInstallTo;
+    }
+
+    public void setIbmInstallTo(String ibmInstallTo) {
+        this.ibmInstallTo = ibmInstallTo;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -734,6 +743,12 @@ public class WlpInformation extends AbstractJSON implements VersionableContent, 
             if (other.singleton != null)
                 return false;
         } else if (!singleton.equals(other.singleton))
+            return false;
+
+        if (ibmInstallTo == null) {
+            if (other.ibmInstallTo != null)
+                return false;
+        } else if (!ibmInstallTo.equals(other.ibmInstallTo))
             return false;
 
         return true;

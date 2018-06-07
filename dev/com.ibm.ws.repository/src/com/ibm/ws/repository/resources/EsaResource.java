@@ -115,4 +115,11 @@ public interface EsaResource extends RepositoryResource, ApplicableToProduct {
      * @return true if this feature is a singleton and false otherwise
      */
     public boolean isSingleton();
+
+    /**
+     * Gets the IBM install too property from the feature.
+     *
+     * @return The IBM-InstallTo header property
+     */
+    public String getIBMInstallTo();
 }
