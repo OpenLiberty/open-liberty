@@ -24,6 +24,8 @@ public interface ExecutorBuilder<T, R> {
 
     public ExecutorBuilder<T, R> setTimeoutPolicy(TimeoutPolicy timeout);
 
+    public ExecutorBuilder<T, R> setMetricRecorder(MetricRecorder metricRecorder);
+
     public Executor<R> build();
 
     public Executor<Future<R>> buildAsync();

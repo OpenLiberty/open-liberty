@@ -20,8 +20,10 @@ import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -32,6 +34,7 @@ public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
     private BulkheadPolicy bulkheadPolicy = null;
     private FallbackPolicy fallbackPolicy = null;
     private TimeoutPolicy timeoutPolicy = null;
+    private MetricRecorder metricRecorder = DummyMetricRecorder.get();
     private final WSContextService contextService;
     private final PolicyExecutorProvider policyExecutorProvider;
     private final ScheduledExecutorService scheduledExecutorService;
@@ -79,8 +82,15 @@ public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
 
     /** {@inheritDoc} */
     @Override
+    public ExecutorBuilder<T, R> setMetricRecorder(MetricRecorder metricRecorder) {
+        this.metricRecorder = metricRecorder;
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Executor<R> build() {
-        Executor<R> executor = new SynchronousExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.scheduledExecutorService);
+        Executor<R> executor = new SynchronousExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.scheduledExecutorService, this.metricRecorder);
 
         return executor;
     }
@@ -88,7 +98,7 @@ public class ExecutorBuilderImpl<T, R> implements ExecutorBuilder<T, R> {
     /** {@inheritDoc} */
     @Override
     public Executor<Future<R>> buildAsync() {
-        Executor<Future<R>> executor = new AsyncOuterExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.contextService, this.policyExecutorProvider, this.scheduledExecutorService);
+        Executor<Future<R>> executor = new AsyncOuterExecutorImpl<R>(this.retryPolicy, this.circuitBreakerPolicy, this.timeoutPolicy, this.bulkheadPolicy, this.fallbackPolicy, this.contextService, this.policyExecutorProvider, this.scheduledExecutorService, this.metricRecorder);
 
         return executor;
     }
