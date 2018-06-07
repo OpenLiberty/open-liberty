@@ -73,6 +73,11 @@ public class ExecutionContextImpl implements FTExecutionContext {
      */
     private volatile long queueStartTime;
 
+    /**
+     * Anything thrown by the user's method - used for getFailure()
+     */
+    private volatile Throwable failure = null;
+
     private final String id;
 
     private volatile boolean closed = false;
@@ -105,6 +110,16 @@ public class ExecutionContextImpl implements FTExecutionContext {
     @Override
     public Object[] getParameters() {
         return params;
+    }
+
+    /**
+     * Returns any failure of the method executed or null
+     *
+     * @return Any Throwable thrown from the user's method or null 
+     *         No @Override as not in 1.0
+     */
+    public Throwable getFailure() {
+        return failure;
     }
 
     /**
@@ -200,6 +215,8 @@ public class ExecutionContextImpl implements FTExecutionContext {
                 return;
             }
             mainExecutionComplete = true;
+
+            this.failure = t;
 
             onAttemptComplete(t);
 
