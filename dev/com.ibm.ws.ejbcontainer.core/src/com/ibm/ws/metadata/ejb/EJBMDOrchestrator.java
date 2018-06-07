@@ -3146,6 +3146,7 @@ public abstract class EJBMDOrchestrator {
      */
     // F743-1752.1 added entire method.
     // F743-1752CodRev rewrote to do error checking and validation.
+
     private void processSingletonConcurrencyManagementType(BeanMetaData bmd) throws EJBConfigurationException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
@@ -3303,20 +3304,21 @@ public abstract class EJBMDOrchestrator {
      * @param klass the ManagedBean class
      */
     protected <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
+        ManagedObjectFactory<T> factory = null;
         ManagedObjectService managedObjectService = getManagedObjectService();
         if (managedObjectService != null) {
             try {
-                ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(bmd._moduleMetaData, klass, true);
-
-                if (factory.isManaged()) {
-                    return factory;
+                factory = managedObjectService.createManagedObjectFactory(bmd._moduleMetaData, klass, true);
+                //TODO the isManaged method could be moved to the ManagedObjectService and then wouldn't need to create the factory
+                if (!factory.isManaged()) {
+                    factory = null;
                 }
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
         }
 
-        return null;
+        return factory;
     }
 
     /**
@@ -3327,20 +3329,21 @@ public abstract class EJBMDOrchestrator {
      * @param klass the interceptor class
      */
     protected <T> ManagedObjectFactory<T> getInterceptorManagedObjectFactory(BeanMetaData bmd, Class<T> klass) throws EJBConfigurationException {
+        ManagedObjectFactory<T> factory = null;
         ManagedObjectService managedObjectService = getManagedObjectService();
         if (managedObjectService != null) {
             try {
-                ManagedObjectFactory<T> factory = managedObjectService.createInterceptorManagedObjectFactory(bmd._moduleMetaData, klass);
-
-                if (factory.isManaged()) {
-                    return factory;
+                factory = managedObjectService.createInterceptorManagedObjectFactory(bmd._moduleMetaData, klass);
+                //TODO the isManaged method could be moved to the ManagedObjectService and then wouldn't need to create the factory
+                if (!factory.isManaged()) {
+                    factory = null;
                 }
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
         }
 
-        return null;
+        return factory;
     }
 
     /**
@@ -3356,9 +3359,9 @@ public abstract class EJBMDOrchestrator {
             try {
                 ManagedObjectFactory<T> factory = managedObjectService.createEJBManagedObjectFactory(bmd._moduleMetaData, klass, bmd.j2eeName.getComponent());
 
-                if (factory.isManaged()) {
-                    return factory;
-                }
+//                if (factory.isManaged()) {
+                return factory;
+//                }
             } catch (ManagedObjectException e) {
                 throw new EJBConfigurationException(e);
             }
@@ -4509,6 +4512,7 @@ public abstract class EJBMDOrchestrator {
      * @param method the method to check
      * @return true if the method throws clause is empty
      */
+
     private static boolean hasEmptyThrowsClause(Method method) {
         for (Class<?> klass : method.getExceptionTypes()) {
             // Per CTS, callback methods can declare unchecked exceptions on the

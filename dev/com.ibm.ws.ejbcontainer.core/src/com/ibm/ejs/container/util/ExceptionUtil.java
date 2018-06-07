@@ -35,18 +35,15 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.exception.WsNestedException;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.RecursiveInjectionException;
 
 @SuppressWarnings("deprecation")
-public class ExceptionUtil
-{
-    private static TraceComponent tc = Tr.register(ExceptionUtil.class
-                                                   , "EJBContainer"
-                                                   , "com.ibm.ejs.container.container");
+public class ExceptionUtil {
+    private static TraceComponent tc = Tr.register(ExceptionUtil.class, "EJBContainer", "com.ibm.ejs.container.container");
 
-    public final static String throwableToString(Throwable t)
-    {
+    public final static String throwableToString(Throwable t) {
         //---------------------------------------------------------
         // String rep of a Throwable includes the associated
         // stack trace
@@ -82,56 +79,40 @@ public class ExceptionUtil
     }
 
     //d408351 - added new signature with customizable TraceComponent
-    public final static void logException(TraceComponent compTc, Throwable t, EJBMethodMetaData m, BeanO bean)
-    {
+    public final static void logException(TraceComponent compTc, Throwable t, EJBMethodMetaData m, BeanO bean) {
         //d408351 - only log recursive exceptions if they have not been logged before
         if (hasBeenLogged(t)) {
             return;
         }
 
         BeanId beanId = null;
-        if (bean != null)
-        {
+        if (bean != null) {
             beanId = bean.getId();
         }
 
-        if (m == null)
-        {
-            if (beanId == null)
-            {
+        if (m == null) {
+            if (beanId == null) {
                 Tr.error(compTc, "NON_APPLICATION_EXCEPTION_CNTR0018E", t);
+            } else {
+                Tr.error(compTc, "NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E", new Object[] { t, beanId });
             }
-            else
-            {
-                Tr.error(compTc, "NON_APPLICATION_EXCEPTION_ON_BEAN_CNTR0021E"
-                         , new Object[] { t, beanId });
-            }
-        }
-        else
-        {
+        } else {
             String methodName = m.getMethodName();
-            if (beanId == null)
-            {
-                Tr.error(compTc, "NON_APPLICATION_EXCEPTION_METHOD_CNTR0019E"
-                         , new Object[] { t, methodName });
-            }
-            else
-            {
-                Tr.error(compTc, "NON_APPLICATION_EXCEPTION_METHOD_ON_BEAN_CNTR0020E"
-                         , new Object[] { t, methodName, beanId });
+            if (beanId == null) {
+                Tr.error(compTc, "NON_APPLICATION_EXCEPTION_METHOD_CNTR0019E", new Object[] { t, methodName });
+            } else {
+                Tr.error(compTc, "NON_APPLICATION_EXCEPTION_METHOD_ON_BEAN_CNTR0020E", new Object[] { t, methodName, beanId });
             }
 
         }
 
     }
 
-    public static void logException(Throwable t)
-    {
+    public static void logException(Throwable t) {
         logException(ExceptionUtil.tc, t, null, null);
     }
 
-    private final static void printStackTrace(Throwable t, PrintWriter p)
-    {
+    private final static void printStackTrace(Throwable t, PrintWriter p) {
         t.printStackTrace(p);
     }
 
@@ -143,46 +124,33 @@ public class ExceptionUtil
      * @param throwable must be a non-null reference of a Throwable object
      *            to be processed.
      **/
-    static public Throwable findRootCause(Throwable throwable)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        {
+    static public Throwable findRootCause(Throwable throwable) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "findRootCause: " + throwable);
         }
 
         Throwable root = throwable;
         Throwable next = root;
 
-        while (next != null)
-        {
+        while (next != null) {
             root = next;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "finding cause of: " + root.getClass().getName());
             }
 
-            if (root instanceof java.rmi.RemoteException)
-            {
+            if (root instanceof java.rmi.RemoteException) {
                 next = ((java.rmi.RemoteException) root).detail;
-            }
-            else if (root instanceof WsNestedException) // d162976
+            } else if (root instanceof WsNestedException) // d162976
             {
                 next = ((WsNestedException) root).getCause(); // d162976
-            }
-            else if (root instanceof TransactionRolledbackLocalException) //d180095 begin
+            } else if (root instanceof TransactionRolledbackLocalException) //d180095 begin
             {
                 next = ((TransactionRolledbackLocalException) root).getCause();
-            }
-            else if (root instanceof AccessLocalException)
-            {
+            } else if (root instanceof AccessLocalException) {
                 next = ((AccessLocalException) root).getCause();
-            }
-            else if (root instanceof NoSuchObjectLocalException)
-            {
+            } else if (root instanceof NoSuchObjectLocalException) {
                 next = ((NoSuchObjectLocalException) root).getCause();
-            }
-            else if (root instanceof TransactionRequiredLocalException)
-            {
+            } else if (root instanceof TransactionRequiredLocalException) {
                 next = ((TransactionRequiredLocalException) root).getCause();
             }
             //            else if (root instanceof InvalidActivityLocalException)
@@ -197,24 +165,16 @@ public class ExceptionUtil
 //            {
 //                next = ((ActivityCompletedLocalException) root).getCause(); //d180095 end
 //            }
-            else if (root instanceof NamingException)
-            {
+            else if (root instanceof NamingException) {
                 next = ((NamingException) root).getRootCause();
-            }
-            else if (root instanceof InvocationTargetException)
-            {
+            } else if (root instanceof InvocationTargetException) {
                 next = ((InvocationTargetException) root).getTargetException();
-            }
-            else if (root instanceof org.omg.CORBA.portable.UnknownException)
-            {
+            } else if (root instanceof org.omg.CORBA.portable.UnknownException) {
                 next = ((org.omg.CORBA.portable.UnknownException) root).originalEx;
-            }
-            else if (root instanceof InjectionException) // d436080
+            } else if (root instanceof InjectionException) // d436080
             {
                 next = root.getCause();
-            }
-            else
-            {
+            } else {
                 next = null;
             }
         }
@@ -246,8 +206,7 @@ public class ExceptionUtil
      * @return the 'external' cause of the specified exception, or null.
      **/
     // d366807
-    static public Throwable findCause(Throwable throwable)
-    {
+    static public Throwable findCause(Throwable throwable) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "findCause: " + throwable);
 
@@ -256,8 +215,7 @@ public class ExceptionUtil
         if (cause == null && throwable instanceof EJBException)
             cause = ((EJBException) throwable).getCausedByException();
 
-        if (cause != null)
-        {
+        if (cause != null) {
             // --------------------------------------------------------------------
             // If the cause happens to be a WebSphere specific subclass of
             // EJBException or RemoteException, then convert it to a plain
@@ -273,25 +231,19 @@ public class ExceptionUtil
                    cause instanceof CSIException ||
                    cause instanceof InjectionException || // d436080
                    (cause instanceof EJBException &&
-                   cause instanceof WsNestedException))
-            {
+                    cause instanceof WsNestedException)) {
                 Throwable nextCause = cause.getCause();
-                if (nextCause == null)
-                {
+                if (nextCause == null) {
                     // Nothing was nested in the WebSphere specific exception,
                     // so convert to EJBException, copying the message and stack.
                     StackTraceElement[] stackTrace = cause.getStackTrace();
-                    if (causeMessage == null)
-                    {
+                    if (causeMessage == null) {
                         causeMessage = cause.getMessage();
                     }
                     cause = new EJBException(causeMessage);
                     cause.setStackTrace(stackTrace);
-                }
-                else
-                {
-                    if (cause instanceof InjectionException)
-                    {
+                } else {
+                    if (cause instanceof InjectionException) {
                         causeMessage = cause.getMessage();
                     }
                     cause = nextCause;
@@ -311,10 +263,8 @@ public class ExceptionUtil
      * Exception. <p>
      */
     // F71894.1
-    public static Exception Exception(Throwable cause)
-    {
-        return (cause instanceof Exception) ? (Exception) cause
-                        : new Exception("See nested Throwable", cause);
+    public static Exception Exception(Throwable cause) {
+        return (cause instanceof Exception) ? (Exception) cause : new Exception("See nested Throwable", cause);
     }
 
     /**
@@ -331,8 +281,7 @@ public class ExceptionUtil
      *          and message text.
      **/
     // d259882
-    public static EJBException EJBException(Throwable cause)
-    {
+    public static EJBException EJBException(Throwable cause) {
         return EJBException("See nested exception", cause);
     }
 
@@ -376,16 +325,14 @@ public class ExceptionUtil
      **/
     // d259882
     public static EJBException EJBException(String message,
-                                            Throwable cause)
-    {
+                                            Throwable cause) {
         EJBException ejbex = null;
 
         // -----------------------------------------------------------------------
         // If a cause was not specified, then this method has been called to
         // just create a generic EJBException with the specified message.
         // -----------------------------------------------------------------------
-        if (cause == null)
-        {
+        if (cause == null) {
             ejbex = new EJBException(message);
         }
 
@@ -405,23 +352,20 @@ public class ExceptionUtil
                 cause instanceof CPMIException ||
                 cause instanceof CSIException ||
                 cause instanceof InjectionException || // d436080
-               (cause instanceof EJBException &&
-               cause instanceof WsNestedException)))
-        {
+                cause instanceof ManagedObjectException ||
+                (cause instanceof EJBException &&
+                 cause instanceof WsNestedException))) {
+
             Throwable nextCause = cause.getCause();
-            if (nextCause == null)
-            {
+            if (nextCause == null) {
                 // Nothing was nested in the WebSphere specific exception,
                 // so convert to EJBException, copying the message and stack.
-                if (causeMessage == null)
-                {
+                if (causeMessage == null) {
                     causeMessage = cause.getMessage();
                 }
                 ejbex = new EJBException(causeMessage);
                 ejbex.setStackTrace(cause.getStackTrace());
-            }
-            else if (causeMessage == null && cause instanceof InjectionException)
-            {
+            } else if (causeMessage == null && cause instanceof InjectionException) {
                 causeMessage = cause.getMessage();
             }
             cause = nextCause;
@@ -437,10 +381,8 @@ public class ExceptionUtil
         // wasn't thrown by the customer.... let the cause stack point to
         // the failure.
         // -----------------------------------------------------------------------
-        if (ejbex == null)
-        {
-            if (cause instanceof EJBException)
-            {
+        if (ejbex == null) {
+            if (cause instanceof EJBException) {
                 ejbex = (EJBException) cause;
 
                 // EJBException doesn't normally set the cause on Throwable, so
@@ -450,11 +392,8 @@ public class ExceptionUtil
                 cause = ejbex.getCausedByException();
                 if (cause != null && ejbex.getCause() == null)
                     ejbex.initCause(cause);
-            }
-            else
-            {
-                if (causeMessage == null)
-                {
+            } else {
+                if (causeMessage == null) {
                     causeMessage = message;
                 }
                 ejbex = new EJBException(causeMessage, Exception(cause));
@@ -482,24 +421,16 @@ public class ExceptionUtil
      **/
     // d632115
     public static NoSuchEJBException NoSuchEJBException(String message,
-                                                        Throwable cause)
-    {
+                                                        Throwable cause) {
         NoSuchEJBException nsejb;
 
-        if (cause == null)
-        {
+        if (cause == null) {
             nsejb = new NoSuchEJBException(message);
-        }
-        else
-        {
-            if (cause instanceof Exception)
-            {
+        } else {
+            if (cause instanceof Exception) {
                 nsejb = new NoSuchEJBException(message, (Exception) cause);
-            }
-            else
-            {
-                Exception wrappedCause = new Exception("See nested Throwable",
-                                cause);
+            } else {
+                Exception wrappedCause = new Exception("See nested Throwable", cause);
                 nsejb = new NoSuchEJBException(message, wrappedCause);
                 cause = wrappedCause;
             }
@@ -529,8 +460,7 @@ public class ExceptionUtil
      *          and message text.
      **/
     // d259882
-    public static RemoteException RemoteException(Throwable cause)
-    {
+    public static RemoteException RemoteException(Throwable cause) {
         return RemoteException("See nested exception", cause);
     }
 
@@ -566,16 +496,14 @@ public class ExceptionUtil
      **/
     // d259882
     public static RemoteException RemoteException(String message,
-                                                  Throwable cause)
-    {
+                                                  Throwable cause) {
         RemoteException remote = null;
 
         // -----------------------------------------------------------------------
         // If a cause was not specified, then this method has been called to
         // just create a generic RemoteException with the specified message.
         // -----------------------------------------------------------------------
-        if (cause == null)
-        {
+        if (cause == null) {
             remote = new RemoteException(message);
         }
 
@@ -594,23 +522,18 @@ public class ExceptionUtil
                 cause instanceof CPMIException ||
                 cause instanceof CSIException ||
                 cause instanceof InjectionException || // d436080
-               (cause instanceof EJBException &&
-               cause instanceof WsNestedException)))
-        {
+                (cause instanceof EJBException &&
+                 cause instanceof WsNestedException))) {
             Throwable nextCause = cause.getCause();
-            if (nextCause == null)
-            {
+            if (nextCause == null) {
                 // Nothing was nested in the WebSphere specific exception,
                 // so convert to RemoteException, copying the message and stack.
-                if (causeMessage == null)
-                {
+                if (causeMessage == null) {
                     causeMessage = cause.getMessage();
                 }
                 remote = new RemoteException(causeMessage);
                 remote.setStackTrace(cause.getStackTrace());
-            }
-            else if (causeMessage == null && cause instanceof InjectionException)
-            {
+            } else if (causeMessage == null && cause instanceof InjectionException) {
                 causeMessage = cause.getMessage();
             }
             cause = nextCause;
@@ -621,16 +544,11 @@ public class ExceptionUtil
         // RemoteException and clear the stack ... let the cause stack point to
         // the failure.
         // -----------------------------------------------------------------------
-        if (remote == null)
-        {
-            if (cause instanceof RemoteException)
-            {
+        if (remote == null) {
+            if (cause instanceof RemoteException) {
                 remote = (RemoteException) cause;
-            }
-            else
-            {
-                if (causeMessage == null)
-                {
+            } else {
+                if (causeMessage == null) {
                     causeMessage = message;
                 }
                 remote = new RemoteException(message, cause);
@@ -662,8 +580,7 @@ public class ExceptionUtil
      * for RemoteException and EJBException, as well as any other Exceptions
      * that contain similar formatting. <p>
      **/
-    public static String getBaseMessage(Throwable exception)
-    {
+    public static String getBaseMessage(Throwable exception) {
         String message = null;
 
         // -----------------------------------------------------------------------
@@ -676,8 +593,7 @@ public class ExceptionUtil
         // getMessage() returning only the message text specified when the
         // RemoteException was created.                                    d366807
         // -----------------------------------------------------------------------
-        if (exception instanceof RemoteException)
-        {
+        if (exception instanceof RemoteException) {
             RemoteException rex = (RemoteException) exception;
             Throwable detail = rex.detail;
             rex.detail = null;
@@ -689,8 +605,7 @@ public class ExceptionUtil
             // We frequently create remote exceptions with an empty message
             // to avoid redundant messages being printed in stack traces.  If the
             // remote exception has an empty message, use the detail.       d739198
-            if ("".equals(message) && detail != null)
-            {
+            if ("".equals(message) && detail != null) {
                 message = getBaseMessage(detail);
             }
         }
@@ -701,17 +616,12 @@ public class ExceptionUtil
         // message text is just parsed for the beginning of the nested
         // exceptions... and then truncated.
         // -----------------------------------------------------------------------
-        else if (exception != null)
-        {
+        else if (exception != null) {
             message = exception.getMessage();
-            if (message != null)
-            {
-                if (message.startsWith("nested exception is:"))
-                {
+            if (message != null) {
+                if (message.startsWith("nested exception is:")) {
                     message = null;
-                }
-                else
-                {
+                } else {
                     int nestIndex = message.indexOf("; nested exception is:");
                     if (nestIndex > -1)
                         message = message.substring(0, nestIndex);

@@ -62,8 +62,7 @@ import com.ibm.ws.traceinfo.ejbcontainer.TEBeanLifeCycleInfo;
  * Session Beans Written to the EJB 2.1 Client View API" section of EJB 3.1
  * specification.
  */
-final public class SingletonBeanO extends SessionBeanO
-{
+final public class SingletonBeanO extends SessionBeanO {
     private static final String CLASS_NAME = SingletonBeanO.class.getName();
     private static final TraceComponent tc = Tr.register(SingletonBeanO.class, "EJBContainer", "com.ibm.ejs.container.container");
 
@@ -83,12 +82,11 @@ final public class SingletonBeanO extends SessionBeanO
     /**
      * This table translates state of bean into printable string.
      */
-    static final String StateStrs[] =
-    { "DESTROYED", // 0
-     "PRE_CREATE", // 1
-     "CREATING", // 2
-     "METHOD_READY", // 3
-     "PRE_DESTROY" // 4
+    static final String StateStrs[] = { "DESTROYED", // 0
+                                        "PRE_CREATE", // 1
+                                        "CREATING", // 2
+                                        "METHOD_READY", // 3
+                                        "PRE_DESTROY" // 4
     };
 
     /**
@@ -134,8 +132,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @param h
      *            is the home for this Singleton bean.
      */
-    public SingletonBeanO(EJSContainer c, EJSHome h)
-    {
+    public SingletonBeanO(EJSContainer c, EJSHome h) {
         super(c, h);
 
         // Determine if BMT is used.
@@ -143,14 +140,10 @@ final public class SingletonBeanO extends SessionBeanO
         ivBMT = bmd.usesBeanManagedTx;
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isDebugEnabled())
-        {
-            if (ivBMT)
-            {
+        if (isTraceOn && tc.isDebugEnabled()) {
+            if (ivBMT) {
                 Tr.debug(tc, bmd.j2eeName + " - initialized for bean managed transaction");
-            }
-            else
-            {
+            } else {
                 Tr.debug(tc, bmd.j2eeName + " - initialized for container managed transaction");
             }
         }
@@ -158,10 +151,8 @@ final public class SingletonBeanO extends SessionBeanO
         // If concurrency control is container managed, then create the
         // lock objects needed for concurrency control.
         ivContainerManagedConcurrency = !bmd.ivSingletonUsesBeanManagedConcurrency;
-        if (ivContainerManagedConcurrency)
-        {
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+        if (ivContainerManagedConcurrency) {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, bmd.j2eeName + " - initializing for container managed concurrency control");
             }
 
@@ -173,11 +164,8 @@ final public class SingletonBeanO extends SessionBeanO
             ivLock = new ReentrantReadWriteLock(UseFairSingletonLockingPolicy);
             ivReadLock = ivLock.readLock();
             ivWriteLock = ivLock.writeLock();
-        }
-        else
-        {
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+        } else {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, bmd.j2eeName + " - initializing for bean managed concurrency control");
             }
 
@@ -190,8 +178,7 @@ final public class SingletonBeanO extends SessionBeanO
     }
 
     @Override
-    protected String getStateName(int state)
-    {
+    protected String getStateName(int state) {
         return StateStrs[state];
     }
 
@@ -204,8 +191,7 @@ final public class SingletonBeanO extends SessionBeanO
      *            contains the PostConstruct interceptor methods to invoke.
      * @param methodInfo the method info for transaction and security context
      */
-    private void callTransactionalLifecycleInterceptors(InterceptorProxy[] proxies, int methodId) throws RemoteException
-    {
+    private void callTransactionalLifecycleInterceptors(InterceptorProxy[] proxies, int methodId) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         LifecycleInterceptorWrapper wrapper = new LifecycleInterceptorWrapper(container, this);
@@ -215,8 +201,7 @@ final public class SingletonBeanO extends SessionBeanO
         // throw application exceptions.
         s.ivIgnoreApplicationExceptions = true;
 
-        try
-        {
+        try {
             container.preInvokeForLifecycleInterceptors(wrapper, methodId, s, this);
 
             // F743-1751CodRev - Inline callLifecycleInterceptors.  We need to
@@ -234,13 +219,10 @@ final public class SingletonBeanO extends SessionBeanO
             InvocationContextImpl<?> inv = getInvocationContext();
             BeanMetaData bmd = home.beanMetaData;
             inv.doLifeCycle(proxies, bmd._moduleMetaData); // F743-14982
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             s.setUncheckedLocalException(t);
-        } finally
-        {
-            if (isTraceOn && TEBeanLifeCycleInfo.isTraceEnabled())
-            {
+        } finally {
+            if (isTraceOn && TEBeanLifeCycleInfo.isTraceEnabled()) {
                 TEBeanLifeCycleInfo.traceEJBCallExit(LifecycleInterceptorWrapper.TRACE_NAMES[methodId]);
             }
 
@@ -257,8 +239,7 @@ final public class SingletonBeanO extends SessionBeanO
      * callback methods. <p>
      */
     @Override
-    protected final void initialize(boolean reactivate) throws RemoteException, InvocationTargetException
-    {
+    protected final void initialize(boolean reactivate) throws RemoteException, InvocationTargetException {
         // ---------------------------------------------------------
         // Set state to PRE_CREATE so only methods that we permitted
         // to be called during dependency injection are allowed and
@@ -291,17 +272,15 @@ final public class SingletonBeanO extends SessionBeanO
         CallbackContextHelper contextHelper = new CallbackContextHelper(this);
         contextHelper.begin(CallbackContextHelper.Tx.LTC,
                             CallbackContextHelper.Contexts.CallbackBean);
-        try
-        {
+        try {
             createInterceptorsAndInstance(contextHelper);
 
             // Singleton do not support 2.1 client view, so we do not need to ever
             // call setSessionContext method, so just perform dependency injection.
             // Note that dependency injection must occur while in PRE_CREATE state.
-            injectInstance(ivEjbInstance, this);
+            injectInstance(ivManagedObject, ivEjbInstance, this);
 
-        } finally
-        {
+        } finally {
             contextHelper.complete(true);
         }
 
@@ -324,8 +303,7 @@ final public class SingletonBeanO extends SessionBeanO
             // PostConstruct interceptor.
 
             InterceptorProxy[] proxies = imd.ivPostConstructInterceptors;
-            if (proxies != null)
-            {
+            if (proxies != null) {
                 callTransactionalLifecycleInterceptors(proxies, LifecycleInterceptorWrapper.MID_POST_CONSTRUCT); // F743-1751
             }
         }
@@ -337,17 +315,13 @@ final public class SingletonBeanO extends SessionBeanO
     }
 
     @Override
-    HandleList getHandleList(boolean create)
-    {
+    HandleList getHandleList(boolean create) {
         HandleList hl;
-        if (state == PRE_CREATE || state == CREATING)
-        {
+        if (state == PRE_CREATE || state == CREATING) {
             // We are single-threaded during initialize(), so we can use the
             // per-bean handle list.
             hl = super.getHandleList(create);
-        }
-        else
-        {
+        } else {
             EJSDeployedSupport s = EJSContainer.getMethodContext();
 
             // Singleton bean methods are reentrant and concurrent, so we cannot
@@ -355,8 +329,7 @@ final public class SingletonBeanO extends SessionBeanO
             // method context.  Note that this is also applicable to destroy,
             // which uses a method context as part of pre/post invoke.
             hl = s.ivHandleList;
-            if (hl == null && create)
-            {
+            if (hl == null && create) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "getHandleList: created " + hl);
 
@@ -369,26 +342,20 @@ final public class SingletonBeanO extends SessionBeanO
     }
 
     @Override
-    HandleListInterface reAssociateHandleList()
-    {
+    HandleListInterface reAssociateHandleList() {
         return HandleListProxy.INSTANCE;
     }
 
     @Override
-    void parkHandleList()
-    {
-        if (state == PRE_CREATE || state == CREATING)
-        {
+    void parkHandleList() {
+        if (state == PRE_CREATE || state == CREATING) {
             // The initialize() handle list is single use only.
             destroyHandleList();
-        }
-        else
-        {
+        } else {
             EJSDeployedSupport s = EJSContainer.getMethodContext();
 
             HandleList hl = s.ivHandleList;
-            if (hl != null)
-            {
+            if (hl != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "parkHandleList: closing " + hl);
                 hl.close();
@@ -402,8 +369,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#preInvoke(com.ibm.ejs.container.EJSDeployedSupport, com.ibm.ejs.container.ContainerTx)
      */
     @Override
-    public Object preInvoke(EJSDeployedSupport s, ContainerTx tx) throws RemoteException
-    {
+    public Object preInvoke(EJSDeployedSupport s, ContainerTx tx) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "preInvoke : " + this);
@@ -412,8 +378,7 @@ final public class SingletonBeanO extends SessionBeanO
         // then get the lock specified by the lock type found in the
         // EJB method info object.
         s.ivLockAcquired = false; // d571981
-        if (ivContainerManagedConcurrency)
-        {
+        if (ivContainerManagedConcurrency) {
             // Get the lock type to use for the method being invoked.
             // and AccessTimeout value to use.
             EJBMethodInfoImpl mInfo = s.methodInfo;
@@ -421,14 +386,11 @@ final public class SingletonBeanO extends SessionBeanO
 
             // Ensure we are not trying to upgrade from a READ to a WRITE lock. We
             // must throw an exception if trying to upgrade from READ to WRITE.
-            if (lockType == LockType.WRITE && ivLock.isWriteLockedByCurrentThread() == false)
-            {
+            if (lockType == LockType.WRITE && ivLock.isWriteLockedByCurrentThread() == false) {
                 // Requesting write lock and write lock is not currently held by the
                 // calling thread. So check whether calling thread holds any read locks.
-                if (ivLock.getReadHoldCount() > 0)
-                {
-                    throw new IllegalLoopbackException(
-                                    "A loopback method call is not allowed to upgrade from a READ to a WRITE lock.");
+                if (ivLock.getReadHoldCount() > 0) {
+                    throw new IllegalLoopbackException("A loopback method call is not allowed to upgrade from a READ to a WRITE lock.");
                 }
             }
 
@@ -439,8 +401,7 @@ final public class SingletonBeanO extends SessionBeanO
             long lockStartTime = 0;
             int lockStatType = 0;
 
-            try
-            {
+            try {
                 long timeout = mInfo.ivAccessTimeout;
 
                 // For a persistent timeout callback that will wait a significant amount of
@@ -449,41 +410,30 @@ final public class SingletonBeanO extends SessionBeanO
                 // if there is a concurrent thread calling getTimers().             RTC126471
                 if (s.isPersistentTimeoutGlobalTx &&
                     PersistentTimerSingletonDeadlockTimeout >= 0 &&
-                    (timeout == -1 || timeout > PersistentTimerSingletonDeadlockTimeout))
-                {
-                    if (lockType == LockType.READ)
-                    {
-                        if (pmiBean != null)
-                        {
+                    (timeout == -1 || timeout > PersistentTimerSingletonDeadlockTimeout)) {
+                    if (lockType == LockType.READ) {
+                        if (pmiBean != null) {
                             lockStatType = EJBPMICollaborator.READ_LOCK_TIME;
                             lockStartTime = pmiBean.initialTime(lockStatType);
                         }
                         s.ivLockAcquired = ivReadLock.tryLock(PersistentTimerSingletonDeadlockTimeout, TimeUnit.MILLISECONDS);
-                    }
-                    else
-                    {
-                        if (pmiBean != null)
-                        {
+                    } else {
+                        if (pmiBean != null) {
                             lockStatType = EJBPMICollaborator.WRITE_LOCK_TIME;
                             lockStartTime = pmiBean.initialTime(lockStatType);
                         }
                         s.ivLockAcquired = ivWriteLock.tryLock(PersistentTimerSingletonDeadlockTimeout, TimeUnit.MILLISECONDS);
                     }
 
-                    if (s.ivLockAcquired)
-                    {
+                    if (s.ivLockAcquired) {
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "preInvoke acquired a " + mInfo.ivLockType.name() + " lock. " + ivLock.toString());
-                    }
-                    else
-                    {
+                    } else {
                         // If the lock was not obtained and another thread is in getTimer,
                         // then a deadlock is very likely, so abort the timeout callback
                         // which will free up the database row lock.
-                        if (ivInGetTimers.get() > 0)
-                        {
-                            if (pmiBean != null)
-                            {
+                        if (ivInGetTimers.get() > 0) {
+                            if (pmiBean != null) {
                                 pmiBean.countCancelledLocks();
                             }
                             throw new ConcurrentAccessTimeoutException("preInvoke timed out in attempt to acquire a "
@@ -492,8 +442,7 @@ final public class SingletonBeanO extends SessionBeanO
                         }
 
                         // Otherwise, subtract the time waited, and proceed normally
-                        if (timeout != -1)
-                        {
+                        if (timeout != -1) {
                             timeout = Math.max(0, timeout - PersistentTimerSingletonDeadlockTimeout);
                         }
                     }
@@ -502,21 +451,17 @@ final public class SingletonBeanO extends SessionBeanO
                 // If the lock is not acquired, then either this is not for a persistent
                 // timeout callback, or there is not a concurrent thread in getTimers(),
                 // so just attempt to obtain a lock using the configured access timeout.
-                if (!s.ivLockAcquired)
-                {
+                if (!s.ivLockAcquired) {
                     if (timeout == -1) // -1 means wait forever     F743-21028.5
                     {
-                        if (lockType == LockType.READ)
-                        {
+                        if (lockType == LockType.READ) {
                             if (pmiBean != null && lockStartTime == 0) // F743-9002
                             {
                                 lockStatType = EJBPMICollaborator.READ_LOCK_TIME;
                                 lockStartTime = pmiBean.initialTime(lockStatType);
                             }
                             ivReadLock.lock(); // d571981
-                        }
-                        else
-                        {
+                        } else {
                             if (pmiBean != null && lockStartTime == 0)// F743-9002
                             {
                                 lockStatType = EJBPMICollaborator.WRITE_LOCK_TIME;
@@ -528,20 +473,15 @@ final public class SingletonBeanO extends SessionBeanO
                         s.ivLockAcquired = true;
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "preInvoke acquired a " + mInfo.ivLockType.name() + " lock. " + ivLock.toString());
-                    }
-                    else
-                    {
-                        if (lockType == LockType.READ)
-                        {
+                    } else {
+                        if (lockType == LockType.READ) {
                             if (pmiBean != null && lockStartTime == 0) // F743-9002
                             {
                                 lockStatType = EJBPMICollaborator.READ_LOCK_TIME;
                                 lockStartTime = pmiBean.initialTime(lockStatType);
                             }
                             s.ivLockAcquired = ivReadLock.tryLock(timeout, TimeUnit.MILLISECONDS); // d571981
-                        }
-                        else
-                        {
+                        } else {
                             if (pmiBean != null && lockStartTime == 0) // F743-9002
                             {
                                 lockStatType = EJBPMICollaborator.WRITE_LOCK_TIME;
@@ -550,13 +490,10 @@ final public class SingletonBeanO extends SessionBeanO
                             s.ivLockAcquired = ivWriteLock.tryLock(timeout, TimeUnit.MILLISECONDS); // d571981
                         }
 
-                        if (s.ivLockAcquired)
-                        {
+                        if (s.ivLockAcquired) {
                             if (isTraceOn && tc.isDebugEnabled())
                                 Tr.debug(tc, "preInvoke acquired a " + mInfo.ivLockType.name() + " lock. " + ivLock.toString());
-                        }
-                        else
-                        {
+                        } else {
                             if (pmiBean != null) // F743-9002
                             {
                                 pmiBean.countCancelledLocks();
@@ -568,8 +505,7 @@ final public class SingletonBeanO extends SessionBeanO
                         }
                     }
                 }
-            } catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "InterruptedException prevented lock from being acquired.");
 
@@ -579,17 +515,14 @@ final public class SingletonBeanO extends SessionBeanO
                 }
 
                 throw ExceptionUtil.EJBException("InterruptedException prevented lock from being acquired.", e);
-            } finally
-            {
+            } finally {
                 // F743-9002
                 // Calculate the time to obtain the lock and adjust the pmiCookie
                 // used for methodRT PMI counter to exclude the lock time.
-                if (pmiBean != null)
-                {
+                if (pmiBean != null) {
                     // d648142.2
                     long lockDuration = pmiBean.finalTime(lockStatType, lockStartTime);
-                    if (lockDuration > 0)
-                    {
+                    if (lockDuration > 0) {
                         s.pmiCookie += lockDuration; // d724734
                     }
                 }
@@ -608,43 +541,34 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#postInvoke(int, com.ibm.ejs.container.EJSDeployedSupport)
      */
     @Override
-    public void postInvoke(int id, EJSDeployedSupport s) throws RemoteException
-    {
+    public void postInvoke(int id, EJSDeployedSupport s) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "postInvoke");
         }
 
         // Release lock acquired if container managed concurrency control.
-        if (ivContainerManagedConcurrency && s.ivLockAcquired)
-        {
+        if (ivContainerManagedConcurrency && s.ivLockAcquired) {
             // Get the lock type to use for the method being invoked.
             EJBMethodInfoImpl mInfo = s.methodInfo;
             LockType lockType = mInfo.ivLockType;
 
-            if (lockType == LockType.READ)
-            {
+            if (lockType == LockType.READ) {
                 ivReadLock.unlock();
 
-                if (isTraceOn && tc.isDebugEnabled())
-                {
+                if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "postInvoke released read lock: " + ivLock.toString());
                 }
-            }
-            else
-            {
+            } else {
                 ivWriteLock.unlock();
 
-                if (isTraceOn && tc.isDebugEnabled())
-                {
+                if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "postInvoke released write lock: " + ivLock.toString());
                 }
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "postInvoke");
         }
     }
@@ -657,22 +581,16 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#getRollbackOnly()
      */
     @Override
-    public boolean getRollbackOnly()
-    {
-        if (ivBMT)
-        {
+    public boolean getRollbackOnly() {
+        if (ivBMT) {
             throw new IllegalStateException("getRollbackOnly not allowed for bean managed transaction.");
-        }
-        else if (state > PRE_CREATE)
-        {
+        } else if (state > PRE_CREATE) {
             // We must be in PostConstruct, method ready, or PreDestroy state. Have
             // past dependency injection. Have the super class do thegetRollbackOnly
             // processing. It will throw IllegalStateException if method TX
             // attribute caused method to be invoked without a global TX.
             return super.getRollbackOnly();
-        }
-        else
-        {
+        } else {
             throw new IllegalStateException("setRollbackOnly operation not allowed in current state: " + StateStrs[state]);
         }
     }
@@ -686,22 +604,16 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#setRollbackOnly()
      */
     @Override
-    public void setRollbackOnly()
-    {
-        if (ivBMT)
-        {
+    public void setRollbackOnly() {
+        if (ivBMT) {
             throw new IllegalStateException("getRollbackOnly not allowed for bean managed transaction.");
-        }
-        else if (state > PRE_CREATE)
-        {
+        } else if (state > PRE_CREATE) {
             // We must be in PostConstruct, method ready, or PreDestroy state.
             // Have the super class do the setRollbackOnly processing. It will
             // throw IllegalStateException if method TX attribute
             // caused method to be invoked without a global TX.
             super.setRollbackOnly();
-        }
-        else
-        {
+        } else {
             throw new IllegalStateException("setRollbackOnly operation not allowed in current state: " + StateStrs[state]);
         }
     }
@@ -712,23 +624,17 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.SessionBeanO#getUserTransaction()
      */
     @Override
-    final public UserTransaction getUserTransaction() throws IllegalStateException
-    {
-        if (ivBMT)
-        {
-            if (state <= PRE_CREATE)
-            {
+    final public UserTransaction getUserTransaction() throws IllegalStateException {
+        if (ivBMT) {
+            if (state <= PRE_CREATE) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Incorrect state: " + getStateName(state));
                 throw new IllegalStateException(getStateName(state));
             }
 
             return UserTransactionWrapper.INSTANCE; // d631349
-        }
-        else
-        {
-            throw new IllegalStateException(
-                            "UserTransaction not allowed for Singleton with container managed transactions."); // F743-1751
+        } else {
+            throw new IllegalStateException("UserTransaction not allowed for Singleton with container managed transactions."); // F743-1751
         }
     }
 
@@ -739,8 +645,7 @@ final public class SingletonBeanO extends SessionBeanO
      * com.ibm.ejs.container.ContainerTx)
      */
     @Override
-    final public void activate(BeanId arg0, ContainerTx arg1) throws RemoteException
-    {
+    final public void activate(BeanId arg0, ContainerTx arg1) throws RemoteException {
         // ---------------------------------------------------
         // Activating a Singleton session bean is a no-op
         // ---------------------------------------------------
@@ -768,11 +673,9 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#checkTimerServiceAccess()
      **/
     @Override
-    final public void checkTimerServiceAccess() throws IllegalStateException
-    {
+    final public void checkTimerServiceAccess() throws IllegalStateException {
         // Do not allow if prior to PostConstruct or after PreDestroy.
-        if (state < CREATING)
-        {
+        if (state < CREATING) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Singleton Session Bean: Timer Service " // d571981
@@ -796,11 +699,9 @@ final public class SingletonBeanO extends SessionBeanO
      **/
     // LI2281.07
     @Override
-    final public TimerService getTimerService() throws IllegalStateException
-    {
+    final public TimerService getTimerService() throws IllegalStateException {
         // Do not allow if prior to PostConstruct or after PreDestroy.
-        if (state < CREATING)
-        {
+        if (state < CREATING) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("Singleton: getTimerService not " + "allowed from state = " + getStateName(state));
@@ -815,16 +716,13 @@ final public class SingletonBeanO extends SessionBeanO
     }
 
     @Override
-    public Collection<Timer> getTimers() throws IllegalStateException, EJBException
-    {
+    public Collection<Timer> getTimers() throws IllegalStateException, EJBException {
         // Keep track of when this method is called; to kick out timeout methods
         // that will hold locks on the timer database.                   RTC126471
-        try
-        {
+        try {
             ivInGetTimers.incrementAndGet();
             return super.getTimers();
-        } finally
-        {
+        } finally {
             ivInGetTimers.decrementAndGet();
         }
     }
@@ -835,8 +733,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#commit(com.ibm.ejs.container.ContainerTx)
      */
     @Override
-    final public void commit(ContainerTx arg0) throws RemoteException
-    {
+    final public void commit(ContainerTx arg0) throws RemoteException {
         // ---------------------------------------------------
         // A Singleton session bean must never be committed since not enlisted.
         // ---------------------------------------------------
@@ -852,47 +749,38 @@ final public class SingletonBeanO extends SessionBeanO
      * stopped.
      */
     @Override
-    public final synchronized void destroy()
-    {
+    public final synchronized void destroy() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "destroy");
         }
 
-        if (state == DESTROYED)
-        {
+        if (state == DESTROYED) {
             return;
         }
 
         // For Singleton, 'destroy' is where the bean is removed and destroyed.
         // Remove time should include calling any lifecycle callbacks.   d626533.1
         long removeStartTime = -1;
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             removeStartTime = pmiBean.initialTime(EJBPMICollaborator.REMOVE_RT);
         }
 
         setState(PRE_DESTROY);
 
-        if (ivCallbackKind == CallbackKind.InvocationContext)
-        {
+        if (ivCallbackKind == CallbackKind.InvocationContext) {
             InterceptorMetaData imd = home.beanMetaData.ivInterceptorMetaData;
             InterceptorProxy[] proxies = imd.ivPreDestroyInterceptors;
-            if (proxies != null)
-            {
-                try
-                {
+            if (proxies != null) {
+                try {
                     // There is no need to push/pop CMD because singletons are
                     // always destroyed as part of uninstallBean, which uses
                     // ComponentMetaDataCollaborator.
                     callTransactionalLifecycleInterceptors(proxies, LifecycleInterceptorWrapper.MID_PRE_DESTROY); // F743-1751
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     FFDCFilter.processException(t, CLASS_NAME + ".destroy", "824", this);
 
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "destroy caught exception", new Object[] { this, t });
                     }
                 }
@@ -907,16 +795,14 @@ final public class SingletonBeanO extends SessionBeanO
 
         // For Singleton, 'destroy' is where the bean is removed and destroyed.
         // Update both counters and end remove time.                     d626533.1
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             // TODO : When PMI stops counting beanDestroyed as remove... then add next line
             //         pmiBean.beanRemoved();
             pmiBean.beanDestroyed();
             pmiBean.finalTime(EJBPMICollaborator.REMOVE_RT, removeStartTime);
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "destroy");
         }
     } // destroy
@@ -927,23 +813,20 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#discard()
      */
     @Override
-    public void discard()
-    {
+    public void discard() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "discard: " + getStateName(state));
 
         // d639281 - Singleton instances are never actually discarded unless a
         // failure occurs during initialize().
-        if (state == PRE_CREATE || state == CREATING)
-        {
+        if (state == PRE_CREATE || state == CREATING) {
             setState(DESTROYED);
 
             // Release any JCDI creational contexts that may exist.      F743-29174
             this.releaseManagedObjectContext();
 
-            if (pmiBean != null)
-            {
+            if (pmiBean != null) {
                 pmiBean.discardCount(); // F743-27070
                 pmiBean.beanDestroyed();
             }
@@ -959,8 +842,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#enlist(com.ibm.ejs.container.ContainerTx)
      */
     @Override
-    final public boolean enlist(ContainerTx arg0) throws RemoteException
-    {
+    final public boolean enlist(ContainerTx arg0) throws RemoteException {
         // -----------------------------------------------
         // Singleton is never enlisted in a TX.
         // -----------------------------------------------
@@ -973,8 +855,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#getEnterpriseBean()
      */
     @Override
-    final public EnterpriseBean getEnterpriseBean() throws RemoteException
-    {
+    final public EnterpriseBean getEnterpriseBean() throws RemoteException {
         // --------------------------------------------------------------
         // A Singleton session bean is never a EnterpriseBean,
         // so this method must never be called.
@@ -989,8 +870,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#isDiscarded()
      */
     @Override
-    final public boolean isDiscarded()
-    {
+    final public boolean isDiscarded() {
         // Singleton is never discarded.
         return false;
     }
@@ -1001,8 +881,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#isRemoved()
      */
     @Override
-    final public boolean isRemoved()
-    {
+    final public boolean isRemoved() {
         // ---------------------------------------------------
         // Singleton session beans are never marked removed.
         // ---------------------------------------------------
@@ -1015,8 +894,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#passivate()
      */
     @Override
-    final public void passivate() throws RemoteException
-    {
+    final public void passivate() throws RemoteException {
         // ----------------------------------------------------
         // A Singleton session bean must never be passivated.
         // ----------------------------------------------------
@@ -1030,8 +908,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#remove()
      */
     @Override
-    final public void remove() throws RemoteException, RemoveException
-    {
+    final public void remove() throws RemoteException, RemoveException {
         // ---------------------------------------------------
         // Singleton session beans are never marked removed.
         // ---------------------------------------------------
@@ -1044,8 +921,7 @@ final public class SingletonBeanO extends SessionBeanO
      * com.ibm.ejs.container.BeanO#rollback(com.ibm.ejs.container.ContainerTx)
      */
     @Override
-    final public void rollback(ContainerTx arg0) throws RemoteException
-    {
+    final public void rollback(ContainerTx arg0) throws RemoteException {
         // ---------------------------------------------------
         // A Singleton session bean must never be rolled back since not enlisted.
         // ---------------------------------------------------
@@ -1059,8 +935,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#store()
      */
     @Override
-    final public void store() throws RemoteException
-    {
+    final public void store() throws RemoteException {
         // --------------------------------------------------------------
         // A Singleton session bean never supports EJB 2.1 client view,
         // so this method must never be called.
@@ -1075,8 +950,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#beforeCompletion()
      */
     @Override
-    final public void beforeCompletion() throws RemoteException
-    {
+    final public void beforeCompletion() throws RemoteException {
         // --------------------------------------------------------------
         // A Singleton session bean is never enlisted in a transaction,
         // so this method must never be called.
@@ -1092,8 +966,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#postCreate(boolean)
      */
     @Override
-    final public void postCreate(boolean arg0)
-    {
+    final public void postCreate(boolean arg0) {
         // F743-1751 - This method would only be called via a create method on a
         // generated home, but singletons are always created directly.
         throw new UnsupportedOperationException();
@@ -1108,14 +981,11 @@ final public class SingletonBeanO extends SessionBeanO
      * method
      */
     @Override
-    final public Principal getCallerPrincipal()
-    {
+    final public Principal getCallerPrincipal() {
         if (state == METHOD_READY) // d571981
         {
             return super.getCallerPrincipal();
-        }
-        else
-        {
+        } else {
             throw new IllegalStateException("For Singleton, getCallerPrincipal only allowed while in METHOD_READY state");
         }
     }
@@ -1126,25 +996,20 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#isCallerInRole(java.lang.String)
      */
     @Override
-    final public boolean isCallerInRole(String roleName)
-    {
+    final public boolean isCallerInRole(String roleName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "isCallerInRole, role = " + roleName + ", state = " + StateStrs[state]);
         }
 
         if (state == METHOD_READY) // d571981
         {
             boolean inRole = super.isCallerInRole(roleName, ivEjbInstance);
-            if (isTraceOn && tc.isEntryEnabled())
-            {
+            if (isTraceOn && tc.isEntryEnabled()) {
                 Tr.exit(tc, "isCallerInRole: " + inRole);
             }
             return inRole;
-        }
-        else
-        {
+        } else {
             throw new IllegalStateException("For Singleton, isCallerInRole only allowed while in METHOD_READY state");
         }
     }
@@ -1158,8 +1023,7 @@ final public class SingletonBeanO extends SessionBeanO
      */
     @Override
     @Deprecated
-    final public java.security.Identity getCallerIdentity()
-    {
+    final public java.security.Identity getCallerIdentity() {
         throw new IllegalStateException("getCallerIdentity is deprecated, getCallerPrincipal must be used.");
     }
 
@@ -1172,8 +1036,7 @@ final public class SingletonBeanO extends SessionBeanO
      */
     @Override
     @Deprecated
-    final public boolean isCallerInRole(java.security.Identity id)
-    {
+    final public boolean isCallerInRole(java.security.Identity id) {
         throw new IllegalStateException("isCallerInRole(Identity) is deprecated, isCallerInRole(Strimg) must be used.");
     }
 
@@ -1184,8 +1047,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.SessionBeanO#getEJBLocalObject()
      */
     @Override
-    final public EJBLocalObject getEJBLocalObject() throws IllegalStateException
-    {
+    final public EJBLocalObject getEJBLocalObject() throws IllegalStateException {
         throw new IllegalStateException("getEJBLocalObject not allowed for Singleton.");
     }
 
@@ -1196,8 +1058,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.SessionBeanO#getEJBObject()
      */
     @Override
-    final public EJBObject getEJBObject() throws IllegalStateException
-    {
+    final public EJBObject getEJBObject() throws IllegalStateException {
         throw new IllegalStateException("getEJBObject not allowed for Singleton.");
     }
 
@@ -1208,8 +1069,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#getEJBHome()
      */
     @Override
-    final public EJBHome getEJBHome()
-    {
+    final public EJBHome getEJBHome() {
         throw new IllegalStateException("getEJBHome not allowed for Singleton.");
     }
 
@@ -1220,8 +1080,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#getEJBLocalHome()
      */
     @Override
-    final public EJBLocalHome getEJBLocalHome()
-    {
+    final public EJBLocalHome getEJBLocalHome() {
         throw new IllegalStateException("getEJBLocalHome not allowed for Singleton.");
     }
 
@@ -1233,8 +1092,7 @@ final public class SingletonBeanO extends SessionBeanO
      * @see com.ibm.ejs.container.BeanO#getEnvironment()
      */
     @Override
-    final public Properties getEnvironment()
-    {
+    final public Properties getEnvironment() {
         throw new IllegalStateException("deprecated getEnvironment not allowed for Singleton.");
     }
 
@@ -1248,14 +1106,10 @@ final public class SingletonBeanO extends SessionBeanO
      **/
     // d571981 - added entire method.
     @Override
-    final public Class<?> getInvokedBusinessInterface() throws IllegalStateException
-    {
-        if (state == METHOD_READY)
-        {
+    final public Class<?> getInvokedBusinessInterface() throws IllegalStateException {
+        if (state == METHOD_READY) {
             return super.getInvokedBusinessInterface();
-        }
-        else
-        {
+        } else {
             throw new IllegalStateException("For Singleton, getInvokedBusinessInterface only allowed while in METHOD_READY state");
         }
     }

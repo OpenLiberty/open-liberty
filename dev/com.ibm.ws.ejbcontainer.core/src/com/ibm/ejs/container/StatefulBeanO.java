@@ -42,6 +42,7 @@ import com.ibm.ws.ejbcontainer.CallbackKind;
 import com.ibm.ws.ejbcontainer.EJBPMICollaborator;
 import com.ibm.ws.ejbcontainer.failover.SfFailoverClient;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.traceinfo.ejbcontainer.TEBeanLifeCycleInfo;
 import com.ibm.wsspi.injectionengine.InjectionTargetContext;
@@ -54,9 +55,7 @@ import com.ibm.wsspi.injectionengine.InjectionTargetContext;
  * Separate subclasses handle transaction management for container-
  * and bean-managed transactions.
  */
-public abstract class StatefulBeanO
-                extends SessionBeanO
-{
+public abstract class StatefulBeanO extends SessionBeanO {
     private static final String CLASS_NAME = StatefulBeanO.class.getName();
     private static final TraceComponent tc = Tr.register(StatefulBeanO.class, "EJBContainer", "com.ibm.ejs.container.container"); //d118336
 
@@ -173,8 +172,7 @@ public abstract class StatefulBeanO
     } // StatefulBeanO
 
     @Override
-    protected String getStateName(int state)
-    {
+    protected String getStateName(int state) {
         return StateStrs[state];
     }
 
@@ -188,8 +186,7 @@ public abstract class StatefulBeanO
     //d456222
     @Override
     protected void initialize(boolean reactivate) // d367572
-    throws RemoteException, InvocationTargetException
-    {
+                    throws RemoteException, InvocationTargetException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "initialize");
@@ -204,8 +201,7 @@ public abstract class StatefulBeanO
         EJSDeployedSupport methodContext = null;
 
         // Activating or Creating a new SFSB?
-        if (reactivate)
-        {
+        if (reactivate) {
             if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Initialize called for a passivated SFSB: " + this); // d367572.7
             }
@@ -213,24 +209,19 @@ public abstract class StatefulBeanO
             // Indicate the bean is being activated, not created...
             // i.e. ejbActivate will be called, not ejbCreate.              d159152
             setState(ACTIVATING);
-        }
-        else
-        {
+        } else {
             CallbackContextHelper contextHelper = null;
-            try
-            {
+            try {
                 if (isTraceOn && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Initialize called for a new SFSB: " + this); // d367572.7
                 }
 
                 // d515803
-                if (bmd.ivHasCMExtendedPersistenceContext)
-                {
-                    ivExPcContext = container.getEJBRuntime().getEJBJPAContainer().onCreate
-                                    (bmd.j2eeName.toString(),
-                                     bmd.usesBeanManagedTx,
-                                     bmd.ivExPcPuIds,
-                                     bmd.ivJpaPuIdSTUnsyncSet);
+                if (bmd.ivHasCMExtendedPersistenceContext) {
+                    ivExPcContext = container.getEJBRuntime().getEJBJPAContainer().onCreate(bmd.j2eeName.toString(),
+                                                                                            bmd.usesBeanManagedTx,
+                                                                                            bmd.ivExPcPuIds,
+                                                                                            bmd.ivJpaPuIdSTUnsyncSet);
                 }
 
                 if (isTraceOn && tc.isDebugEnabled())
@@ -260,7 +251,7 @@ public abstract class StatefulBeanO
 
                 // Now set the SessionContext and/or do the dependency injection.
                 // Note that dependency injection must occur while in PRE_CREATE state.
-                injectInstance(ivEjbInstance, this);
+                injectInstance(ivManagedObject, ivEjbInstance, this);
 
                 //------------------------------------------------------------------
                 // Stateful session beans need to have their id's set here so that
@@ -294,8 +285,7 @@ public abstract class StatefulBeanO
                 // for a SFSB 1.x or 2.x bean will make the ejbCreate call and throw
                 // the correct exception when necessary. Therefore, this code does not
                 // need to handle that case.
-                if (imd != null && ivCallbackKind == CallbackKind.InvocationContext)
-                {
+                if (imd != null && ivCallbackKind == CallbackKind.InvocationContext) {
                     boolean globalTx = isLifecycleCallbackGlobalTx(LifecycleInterceptorWrapper.MID_POST_CONSTRUCT);
                     if (globalTx) {
                         // Complete the local transaction used for injection.
@@ -318,8 +308,7 @@ public abstract class StatefulBeanO
                     // methods. Invoke PostContruct interceptors if there is at least 1
                     // PostConstruct interceptor.
                     InterceptorProxy[] proxies = imd.ivPostConstructInterceptors;
-                    if (proxies != null)
-                    {
+                    if (proxies != null) {
                         callLifecycleInterceptors(proxies, LifecycleInterceptorWrapper.MID_POST_CONSTRUCT); // F743-1751
                     }
                 }
@@ -332,8 +321,7 @@ public abstract class StatefulBeanO
                 // the BeanO is Bean-Managed.
 
                 // Clear the create beano if set above                          d515803
-                if (methodContext != null)
-                {
+                if (methodContext != null) {
                     methodContext.ivCreateBeanO = null;
                 }
 
@@ -351,7 +339,7 @@ public abstract class StatefulBeanO
     } // StatefulBeanO
 
     @Override
-    protected void injectInstance(Object managedObject, InjectionTargetContext injectionContext) throws EJBException {
+    protected void injectInstance(ManagedObject<?> managedObject, Object instance, InjectionTargetContext injectionContext) throws EJBException {
         // If present, setSessionContext should be called before performing injection
         if (sessionBean != null) {
             try {
@@ -362,7 +350,7 @@ public abstract class StatefulBeanO
                 throw ExceptionUtil.EJBException(rex);
             }
         }
-        super.injectInstance(managedObject, injectionContext);
+        super.injectInstance(managedObject, instance, injectionContext);
     }
 
     /**
@@ -372,10 +360,8 @@ public abstract class StatefulBeanO
      *            if the bean was newly created
      */
     // F61004.5
-    public void initializeTimeout(TimeoutElement elt)
-    {
-        if (elt == null)
-        {
+    public void initializeTimeout(TimeoutElement elt) {
+        if (elt == null) {
             elt = new TimeoutElement(beanId, getSessionTimeoutInMilliSeconds());
         }
         ivTimeoutElement = elt;
@@ -385,8 +371,7 @@ public abstract class StatefulBeanO
      * Return true iff this <code>BeanO</code> has been removed. <p>
      */
     @Override
-    public final boolean isRemoved()
-    {
+    public final boolean isRemoved() {
         return state == DESTROYED;
     } // isRemoved
 
@@ -394,8 +379,7 @@ public abstract class StatefulBeanO
      * Return true if this <code>BeanO</code> has been discarded. <p>
      */
     @Override
-    public final boolean isDiscarded()
-    {
+    public final boolean isDiscarded() {
         return discarded;
     }
 
@@ -404,11 +388,9 @@ public abstract class StatefulBeanO
      * leaking the BeanO in case user code maintains a reference to the wrapper.
      */
     // F61004.6
-    private void disconnectWrapper()
-    {
+    private void disconnectWrapper() {
         EJSWrapperCommon wc = ivWrapperCommon;
-        if (wc != null)
-        {
+        if (wc != null) {
             wc.ivCachedBeanO = null;
             ivWrapperCommon = null;
         }
@@ -428,8 +410,7 @@ public abstract class StatefulBeanO
      * associated session bean. <p>
      */
     @Override
-    public final synchronized void destroy()
-    {
+    public final synchronized void destroy() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) // d144064
             Tr.entry(tc, "destroy - bean=" + this.toString()); // d161864
@@ -445,8 +426,7 @@ public abstract class StatefulBeanO
             ivSfFailoverClient.removeEntry(beanId); //LIDB2018-1
         }
 
-        if (isZOS)
-        {
+        if (isZOS) {
             removeServantRoutingAffinity(); // d646413.2
         }
         setState(DESTROYED);
@@ -457,17 +437,13 @@ public abstract class StatefulBeanO
 
         String lifeCycle = null; // d367572.4
         CallbackContextHelper contextHelper = null; // d399469, d630940
-        try
-        {
+        try {
             // If the bean has already been removed, or failed to activate, then
             // there is nothing to invoke callbacks on... exit now.         d681978
-            if (removed || ivEjbInstance == null)
-            {
+            if (removed || ivEjbInstance == null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "destroy : already removed or failed to activate");
-            }
-            else
-            {
+            } else {
                 if (ivCallbackKind != CallbackKind.None) {
                     BeanMetaData bmd = home.beanMetaData;
                     contextHelper = new CallbackContextHelper(this); // d399469, d630940
@@ -477,8 +453,7 @@ public abstract class StatefulBeanO
 
                     // d367572.1 start
                     // Invoke the PreDestroy callback if any needs to be called.
-                    if (ivCallbackKind == CallbackKind.SessionBean)
-                    {
+                    if (ivCallbackKind == CallbackKind.SessionBean) {
                         if (isTraceOn && // d527372
                             TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.4
                         {
@@ -486,14 +461,11 @@ public abstract class StatefulBeanO
                             TEBeanLifeCycleInfo.traceEJBCallEntry(lifeCycle); // d161864
                         }
                         sessionBean.ejbRemove();
-                    }
-                    else if (ivCallbackKind == CallbackKind.InvocationContext)
-                    {
+                    } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                         // Invoke the PreDestroy interceptor methods.
                         InterceptorMetaData imd = home.beanMetaData.ivInterceptorMetaData;
                         InterceptorProxy[] proxies = imd.ivPreDestroyInterceptors;
-                        if (proxies != null)
-                        {
+                        if (proxies != null) {
                             if (isTraceOn && // d527372
                                 TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.4
                             {
@@ -510,8 +482,7 @@ public abstract class StatefulBeanO
                     pmiBean.beanRemoved();
                 }
             }
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".destroy", "176", this);
 
             // Just trace this event and continue so that BeanO is transitioned
@@ -522,32 +493,26 @@ public abstract class StatefulBeanO
             {
                 Tr.event(tc, "destroy caught exception:", new Object[] { this, ex }); // d367572.4 // d402681
             }
-        } finally
-        {
+        } finally {
             if (isTraceOn && // d527372
-                TEBeanLifeCycleInfo.isTraceEnabled())
-            {
+                TEBeanLifeCycleInfo.isTraceEnabled()) {
                 if (lifeCycle != null) // d367572.4
                 {
                     TEBeanLifeCycleInfo.traceEJBCallExit(lifeCycle);
                 }
             }
 
-            if (contextHelper != null)
-            {
-                try
-                {
+            if (contextHelper != null) {
+                try {
                     contextHelper.complete(true);
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     FFDCFilter.processException(t, CLASS_NAME + ".destroy", "585", this);
 
                     // Just trace this event and continue so that BeanO is transitioned
                     // to the DESTROYED state.  No other lifecycle callbacks on this bean
                     // instance will occur once in the DESTROYED state, which is the same
                     // affect as if bean was discarded as result of this exception.
-                    if (isTraceOn && tc.isEventEnabled())
-                    {
+                    if (isTraceOn && tc.isEventEnabled()) {
                         Tr.event(tc, "destroy caught exception: ", new Object[] { this, t });
                     }
                 }
@@ -580,8 +545,7 @@ public abstract class StatefulBeanO
      * associated session bean. <p>
      * It however does not remove the Session Bean as done by destroy
      */
-    public final synchronized void destroyNotRemove()
-    {
+    public final synchronized void destroyNotRemove() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) // d144064
             Tr.entry(tc, "destroyNotRemove : " + this);
@@ -594,13 +558,11 @@ public abstract class StatefulBeanO
         // maintains a map of SFSBs that must be cleaned up.  This is
         // especially important if this method is called due to a timeout.
         // PM12927
-        if (ivExPcContext != null)
-        {
+        if (ivExPcContext != null) {
             container.getEJBRuntime().getEJBJPAContainer().onRemoveOrDiscard(ivExPcContext);
         }
 
-        if (isZOS)
-        {
+        if (isZOS) {
             removeServantRoutingAffinity(); // d646413.2
         }
         setState(DESTROYED);
@@ -625,8 +587,7 @@ public abstract class StatefulBeanO
      * in the METHOD_READY state should not be removed.
      */
     // F61004.5
-    public final synchronized boolean isTimedOut()
-    {
+    public final synchronized boolean isTimedOut() {
         return state == METHOD_READY && ivTimeoutElement.isTimedOut();
     }
 
@@ -639,9 +600,7 @@ public abstract class StatefulBeanO
      */
 
     @Override
-    public final EnterpriseBean getEnterpriseBean()
-                    throws RemoteException
-    {
+    public final EnterpriseBean getEnterpriseBean() throws RemoteException {
         assertState(CREATING);
         return sessionBean;
     } // getEnterpriseBean
@@ -663,8 +622,7 @@ public abstract class StatefulBeanO
      *            stateful session bean. Not required to implement
      *            SessionBean starting with EJB 3.0.
      */
-    public void setEnterpriseBean(Object sb, ManagedObjectContext ejbContext)
-    {
+    public void setEnterpriseBean(Object sb, ManagedObjectContext ejbContext) {
         setEnterpriseBean(sb);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -684,8 +642,7 @@ public abstract class StatefulBeanO
     // d367572.7 - added entire method.
     public void setInterceptors(Object[] interceptors) // F87720
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-        {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.debug(tc, "setInterceptors interceptors = " + interceptors + ", for SFSB: " + this);
         }
         ivInterceptors = interceptors;
@@ -696,8 +653,7 @@ public abstract class StatefulBeanO
      * window of time where currentTx==null, but state is METHOD_READY can
      * be closed.
      */
-    public void setCurrentTx(ContainerTx ctx)
-    {
+    public void setCurrentTx(ContainerTx ctx) {
         currentTx = ctx;
     }
 
@@ -722,17 +678,13 @@ public abstract class StatefulBeanO
      * Creates a routing affinity for this bean on the current servant. This
      * method should only be called on z/OS.
      */
-    private void createServantRoutingAffinity()
-                    throws BeanNotReentrantException
-    {
-        if (!ivServantRoutingAffinity && container.ivStatefulBeanEnqDeq != null)
-        {
+    private void createServantRoutingAffinity() throws BeanNotReentrantException {
+        if (!ivServantRoutingAffinity && container.ivStatefulBeanEnqDeq != null) {
             StatefulSessionKey sskey = (StatefulSessionKey) beanId.getPrimaryKey();
             byte[] pKeyBytes = sskey.getBytes();
 
             int retcode = container.ivStatefulBeanEnqDeq.SSBeanEnq(pKeyBytes, !home.beanMetaData.sessionActivateTran, true);
-            if (retcode != 0)
-            {
+            if (retcode != 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                     Tr.event(tc, "Could not ENQ session bean with key = " + sskey);
                 throw new BeanNotReentrantException("Could not ENQ session bean with key = " + sskey);
@@ -748,16 +700,13 @@ public abstract class StatefulBeanO
      *
      * @return <tt>false</tt> if removal fails, or <tt>true</tt> otherwise
      */
-    private boolean removeServantRoutingAffinity()
-    {
-        if (ivServantRoutingAffinity)
-        {
+    private boolean removeServantRoutingAffinity() {
+        if (ivServantRoutingAffinity) {
             StatefulSessionKey sskey = (StatefulSessionKey) beanId.getPrimaryKey();
             byte[] pKeyBytes = sskey.getBytes();
 
             int retcode = container.ivStatefulBeanEnqDeq.SSBeanDeq(pKeyBytes, !home.beanMetaData.sessionActivateTran, true);
-            if (retcode != 0)
-            {
+            if (retcode != 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                     Tr.event(tc, "Could not DEQ session bean with key = " + sskey);
                 return false;
@@ -785,12 +734,8 @@ public abstract class StatefulBeanO
     // d142250
 
     @Override
-    public final void postCreate(boolean supportEJBPostCreateChanges)
-                    throws CreateException,
-                    RemoteException
-    {
-        if (isZOS)
-        {
+    public final void postCreate(boolean supportEJBPostCreateChanges) throws CreateException, RemoteException {
+        if (isZOS) {
             createServantRoutingAffinity(); // d646413.2
         }
 
@@ -811,8 +756,7 @@ public abstract class StatefulBeanO
      */
     @Override
     public final synchronized void activate(BeanId id, ContainerTx tx) // d139352-2
-    throws RemoteException
-    {
+                    throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) // d144064
             Tr.entry(tc, "activate: " + this);
@@ -831,8 +775,7 @@ public abstract class StatefulBeanO
 
         BeanMetaData bmd = home.beanMetaData; // d399469
         CallbackContextHelper contextHelper = null;
-        try
-        {
+        try {
             // passivator needs to be called regardless of the callback kind, as
             // this is what restores the bean from the passivation file.    d427338
             passivator.activate(this, bmd); // d648122
@@ -849,8 +792,7 @@ public abstract class StatefulBeanO
 
                 // d367572.1 start
                 // Invoke the PostActivate callback if any needs to be called.
-                if (ivCallbackKind == CallbackKind.SessionBean)
-                {
+                if (ivCallbackKind == CallbackKind.SessionBean) {
                     if (isTraceOn && // d527372
                         TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.7
                     {
@@ -859,14 +801,11 @@ public abstract class StatefulBeanO
                     }
 
                     sessionBean.ejbActivate();
-                }
-                else if (ivCallbackKind == CallbackKind.InvocationContext)
-                {
+                } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                     // Invoke the PostActivate interceptor methods.
                     InterceptorMetaData imd = bmd.ivInterceptorMetaData;
                     InterceptorProxy[] proxies = imd.ivPostActivateInterceptors;
-                    if (proxies != null)
-                    {
+                    if (proxies != null) {
                         if (isTraceOn && // d527372
                             TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.7
                         {
@@ -879,8 +818,7 @@ public abstract class StatefulBeanO
                     }
                 } // d367572.1 end
             }
-        } finally
-        {
+        } finally {
             if (lifeCycle != null) // d367572.7
             {
                 TEBeanLifeCycleInfo.traceEJBCallExit(lifeCycle); // d367572.7
@@ -895,8 +833,7 @@ public abstract class StatefulBeanO
             }
         }
 
-        if (isZOS)
-        {
+        if (isZOS) {
             createServantRoutingAffinity(); // d646413.2
         }
 
@@ -916,9 +853,7 @@ public abstract class StatefulBeanO
      *                this <code>BeanO</code> instance cannot be activated <p>
      */
     @Override
-    public final synchronized void passivate()
-                    throws RemoteException
-    {
+    public final synchronized void passivate() throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) // d144064
             Tr.entry(tc, "passivate: " + this);
@@ -942,21 +877,18 @@ public abstract class StatefulBeanO
         String lifeCycle = null; // d367572.7
         CallbackContextHelper contextHelper = null; // d399469, d630940
 
-        try
-        {
+        try {
             if (pmiBean != null) { //lidb1117.4
                 pmiCookie = pmiBean.passivationTime();
             }
 
-            if (ivCallbackKind != CallbackKind.None)
-            {
+            if (ivCallbackKind != CallbackKind.None) {
                 contextHelper = new CallbackContextHelper(this);
                 beginLifecycleCallback(LifecycleInterceptorWrapper.MID_PRE_PASSIVATE,
                                        contextHelper, CallbackContextHelper.Contexts.All);
 
                 // Invoke the PrePassivate callback if any needs to be called.
-                if (ivCallbackKind == CallbackKind.SessionBean)
-                {
+                if (ivCallbackKind == CallbackKind.SessionBean) {
                     if (isTraceOn && // d527372
                         TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.7
                     {
@@ -964,15 +896,12 @@ public abstract class StatefulBeanO
                         TEBeanLifeCycleInfo.traceEJBCallEntry(lifeCycle); // d161864
                     }
                     sessionBean.ejbPassivate();
-                }
-                else if (ivCallbackKind == CallbackKind.InvocationContext)
-                {
+                } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                     // Invoke the PrePassivate interceptor methods.
                     BeanMetaData bmd = home.beanMetaData;
                     InterceptorMetaData imd = bmd.ivInterceptorMetaData; //d450431
                     InterceptorProxy[] proxies = imd.ivPrePassivateInterceptors;
-                    if (proxies != null)
-                    {
+                    if (proxies != null) {
                         if (isTraceOn && // d527372
                             TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.7
                         {
@@ -1003,8 +932,7 @@ public abstract class StatefulBeanO
                 TEBeanLifeCycleInfo.traceEJBCallExit(lifeCycle); // d367572.7
             }
 
-            if (contextHelper != null)
-            {
+            if (contextHelper != null) {
                 contextHelper.complete(true);
             }
 
@@ -1041,9 +969,7 @@ public abstract class StatefulBeanO
      * @return true if a reference must be taken on the BeanO, otherwise false.
      */
     // F61004.1
-    public boolean enlist(ContainerTx tx, boolean txEnlist)
-                    throws RemoteException
-    {
+    public boolean enlist(ContainerTx tx, boolean txEnlist) throws RemoteException {
         return enlist(tx);
     }
 
@@ -1065,8 +991,7 @@ public abstract class StatefulBeanO
     @Override
     public final synchronized Object preInvoke(EJSDeployedSupport s,
                                                ContainerTx tx) // d139352-2
-    throws RemoteException
-    {
+                    throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "preInvoke: " + this);
@@ -1082,8 +1007,7 @@ public abstract class StatefulBeanO
                 break;
 
             default:
-                throw new InvalidBeanOStateException(StateStrs[state],
-                                "METHOD_READY | TX_METHOD_READY");
+                throw new InvalidBeanOStateException(StateStrs[state], "METHOD_READY | TX_METHOD_READY");
         }
 
         //------------------------------------------------------------
@@ -1114,8 +1038,7 @@ public abstract class StatefulBeanO
      */
     @Override
     public synchronized void postInvoke(int id, EJSDeployedSupport s) //LIDB2018-1
-    throws RemoteException
-    {
+                    throws RemoteException {
         currentIsolationLevel = s.oldIsolationLevel;
 
         if (removed) {
@@ -1136,9 +1059,8 @@ public abstract class StatefulBeanO
                 return;
 
             default:
-                throw new InvalidBeanOStateException(StateStrs[state],
-                                "IN_METHOD | TX_IN_METHOD " +
-                                                "| DESTROYED");
+                throw new InvalidBeanOStateException(StateStrs[state], "IN_METHOD | TX_IN_METHOD " +
+                                                                       "| DESTROYED");
         }
 
         // If the current method exiting is a Remove method (@Remove) on a
@@ -1148,11 +1070,11 @@ public abstract class StatefulBeanO
         if (s.methodInfo.ivSFSBRemove &&
             (s.ivWrapper.ivInterface == BUSINESS_LOCAL ||
              s.ivWrapper.ivInterface == BUSINESS_REMOTE ||
-            s.ivWrapper.ivInterface == BUSINESS_RMI_REMOTE) &&
+             s.ivWrapper.ivInterface == BUSINESS_RMI_REMOTE)
+            &&
             (s.getExceptionType() == ExceptionType.NO_EXCEPTION ||
-            (!s.methodInfo.ivRetainIfException &&
-            s.getExceptionType() == ExceptionType.CHECKED_EXCEPTION)))
-        {
+             (!s.methodInfo.ivRetainIfException &&
+              s.getExceptionType() == ExceptionType.CHECKED_EXCEPTION))) {
             s.currentTx.ivRemoveBeanO = this;
         }
     } // postInvoke
@@ -1163,9 +1085,7 @@ public abstract class StatefulBeanO
      */
 
     @Override
-    public final void store()
-                    throws RemoteException
-    {
+    public final void store() throws RemoteException {
 
         // This method body intentionally left blank.
 
@@ -1179,8 +1099,7 @@ public abstract class StatefulBeanO
      * by the EJB spec. <p>
      */
     @Override
-    public final synchronized void discard()
-    {
+    public final synchronized void discard() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "discard : " + this);
@@ -1190,8 +1109,7 @@ public abstract class StatefulBeanO
 
         destroyNotRemove();
 
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             pmiBean.beanDiscarded(); // d647928
             pmiBean.discardCount(); // F743-27070
         }
@@ -1206,15 +1124,13 @@ public abstract class StatefulBeanO
      * Completes the removal of the bean after a Remove method has been called.
      */
     protected void completeRemoveMethod(ContainerTx tx) // d647928
-    throws RemoteException
-    {
+                    throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "completeRemoveMethod: " + this);
 
         long pmiCookie = 0;
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             pmiCookie = pmiBean.initialTime(EJBPMICollaborator.REMOVE_RT);
         }
 
@@ -1223,26 +1139,22 @@ public abstract class StatefulBeanO
         // A remove method (@Remove) was called, and now that the method
         // (and transaction) have completed, remove the bean.            390657
         threadData.pushContexts(this);
-        try
-        {
+        try {
             remove();
-        } catch (RemoveException rex)
-        {
+        } catch (RemoveException rex) {
             // This would be an internal EJB Container error, as RemoveException
             // should only be thrown if the bean is in a global tx, and since
             // this is afterCompletion, that cannot be true.  However, since this
             // is on the throws clause, it must be handled.... just wrap it.
             throw ExceptionUtil.EJBException("Remove Failed", rex);
-        } finally
-        {
+        } finally {
             if (tx != null) {
                 tx.ivRemoveBeanO = null;
             }
 
             threadData.popContexts();
 
-            if (pmiBean != null)
-            {
+            if (pmiBean != null) {
                 pmiBean.finalTime(EJBPMICollaborator.REMOVE_RT, pmiCookie);
             }
 
@@ -1255,10 +1167,7 @@ public abstract class StatefulBeanO
      * Remove this <code>SessionBeanO</code> instance. <p>
      */
     @Override
-    public final synchronized void remove()
-                    throws RemoteException,
-                    RemoveException
-    {
+    public final synchronized void remove() throws RemoteException, RemoveException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "remove: " + this);
@@ -1279,8 +1188,7 @@ public abstract class StatefulBeanO
         // d367572.1  start
         String lifeCycle = null; // d367572.4
         CallbackContextHelper contextHelper = null; // d399469
-        try
-        {
+        try {
             BeanMetaData bmd = home.beanMetaData;
 
             if (ivExPcContext != null) // d515803
@@ -1294,8 +1202,7 @@ public abstract class StatefulBeanO
                                        contextHelper, CallbackContextHelper.Contexts.All);
 
                 // Invoke the PreDestroy callback if any needs to be called.
-                if (ivCallbackKind == CallbackKind.SessionBean)
-                {
+                if (ivCallbackKind == CallbackKind.SessionBean) {
                     if (isTraceOn && // d527372
                         TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.4
                     {
@@ -1303,14 +1210,11 @@ public abstract class StatefulBeanO
                         TEBeanLifeCycleInfo.traceEJBCallEntry(lifeCycle); // d161864
                     }
                     sessionBean.ejbRemove();
-                }
-                else if (ivCallbackKind == CallbackKind.InvocationContext)
-                {
+                } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                     // Invoke the PreDestroy interceptor methods.
                     InterceptorMetaData imd = home.beanMetaData.ivInterceptorMetaData;
                     InterceptorProxy[] proxies = imd.ivPreDestroyInterceptors;
-                    if (proxies != null)
-                    {
+                    if (proxies != null) {
                         if (isTraceOn && // d527372
                             TEBeanLifeCycleInfo.isTraceEnabled()) // d367572.4
                         {
@@ -1331,8 +1235,7 @@ public abstract class StatefulBeanO
             }
             removed = true;
             destroy();
-        } catch (RemoteException ex)
-        {
+        } catch (RemoteException ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".remove", "611", this);
             if (isTraceOn && tc.isEventEnabled()) // d144064
             {
@@ -1386,11 +1289,9 @@ public abstract class StatefulBeanO
             // says that we should swallow the exception.
             //
             discard(); // d383586
-        } finally
-        {
+        } finally {
             if (isTraceOn && // d527372
-                TEBeanLifeCycleInfo.isTraceEnabled())
-            {
+                TEBeanLifeCycleInfo.isTraceEnabled()) {
                 if (lifeCycle != null) // d367572.4
                 {
                     TEBeanLifeCycleInfo.traceEJBCallExit(lifeCycle);
@@ -1417,8 +1318,7 @@ public abstract class StatefulBeanO
      * <p>This method is NOT called with thread contexts established.
      **/
     // d112866
-    public final synchronized void uninstall()
-    {
+    public final synchronized void uninstall() {
         // To transition a Stateful bean to the "does not exist" state,
         // either ejbRemove or ejbPassivate must be called.
         // ejbPassivate has been chosen, as it will generally perform
@@ -1430,16 +1330,14 @@ public abstract class StatefulBeanO
         // which may already be disabled/uninstalled.
         // If the bean is not passivation capable, then just call
         // ejbRemove/PreDestroy rather than passivate.
-        try
-        {
+        try {
             if (home.beanMetaData.isPassivationCapable()) {
                 uninstalling = true;
                 passivate();
             } else {
                 completeRemoveMethod(null);
             }
-        } catch (RemoteException rex)
-        {
+        } catch (RemoteException rex) {
             FFDCFilter.processException(rex, CLASS_NAME + ".uninstall", "654", this);
             Tr.warning(tc, "IGNORING_UNEXPECTED_EXCEPTION_CNTR0033E", rex);
         }
@@ -1462,9 +1360,7 @@ public abstract class StatefulBeanO
      **/
     // LI2281.07
     @Override
-    public void checkTimerServiceAccess()
-                    throws IllegalStateException
-    {
+    public void checkTimerServiceAccess() throws IllegalStateException {
         // -----------------------------------------------------------------------
         // EJB Specification 2.1, 7.6.1 - Timer methods are only allowed during
         // business methods, afterBegin and beforeCompletion.
@@ -1477,9 +1373,7 @@ public abstract class StatefulBeanO
         {
             // Timer Service operations are allowed.
             return;
-        }
-        else
-        {
+        } else {
             IllegalStateException ise;
 
             ise = new IllegalStateException("StatefulBean: Timer Service methods " +
@@ -1520,9 +1414,7 @@ public abstract class StatefulBeanO
     protected void beginLifecycleCallback(int methodId,
                                           CallbackContextHelper contextHelper,
                                           CallbackContextHelper.Contexts pushContexts) throws CSIException {
-        CallbackContextHelper.Tx beginTx = isLifecycleCallbackGlobalTx(methodId) ?
-                        CallbackContextHelper.Tx.Global :
-                        CallbackContextHelper.Tx.CompatLTC;
+        CallbackContextHelper.Tx beginTx = isLifecycleCallbackGlobalTx(methodId) ? CallbackContextHelper.Tx.Global : CallbackContextHelper.Tx.CompatLTC;
         contextHelper.begin(beginTx, pushContexts);
     }
 
@@ -1561,10 +1453,8 @@ public abstract class StatefulBeanO
      * as its transaction attribute
      */
     @Override
-    public void setRollbackOnly()
-    {
-        synchronized (this)
-        {
+    public void setRollbackOnly() {
+        synchronized (this) {
             // The EJB Specification does not allow this operation from any
             // of the following states.
             if (!isRollbackOnlyAllowed()) // d159152
@@ -1591,10 +1481,8 @@ public abstract class StatefulBeanO
      * as its transaction attribute
      */
     @Override
-    public boolean getRollbackOnly()
-    {
-        synchronized (this)
-        {
+    public boolean getRollbackOnly() {
+        synchronized (this) {
             // The EJB Specification does not allow this operation from any
             // of the following states.
             if (!isRollbackOnlyAllowed()) // d159152
@@ -1623,13 +1511,11 @@ public abstract class StatefulBeanO
     // d367572.1 added entire method.
 
     @Override
-    public Class<?> getInvokedBusinessInterface() throws IllegalStateException
-    {
+    public Class<?> getInvokedBusinessInterface() throws IllegalStateException {
         // Determine if in valid state for this method.
         boolean validState = false;
         int stateCopy;
-        synchronized (this)
-        {
+        synchronized (this) {
             stateCopy = state;
             validState = (state == METHOD_READY)
                          || (state == IN_METHOD)
@@ -1637,13 +1523,10 @@ public abstract class StatefulBeanO
                          || (state == TX_IN_METHOD);
         }
 
-        if (validState)
-        {
+        if (validState) {
             // Valid state, so perform function.
             return super.getInvokedBusinessInterface();
-        }
-        else
-        {
+        } else {
             // Invalid state, so throw IllegalStateException.
             String stateString = getStateName(stateCopy);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1657,10 +1540,8 @@ public abstract class StatefulBeanO
      * method
      */
     @Override
-    public Principal getCallerPrincipal()
-    {
-        synchronized (this)
-        {
+    public Principal getCallerPrincipal() {
+        synchronized (this) {
             if (state == PRE_CREATE)
                 throw new IllegalStateException();
         }
@@ -1669,18 +1550,15 @@ public abstract class StatefulBeanO
     }
 
     @Override
-    public boolean isCallerInRole(String s)
-    {
+    public boolean isCallerInRole(String s) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "isCallerInRole, role = " + s + ", state = " +
                          StateStrs[state]); //182011
         }
 
         Object bean = null; // LIDB2617.11 d366807.1
-        synchronized (this)
-        {
+        synchronized (this) {
             if (state == PRE_CREATE)
                 throw new IllegalStateException();
 
@@ -1690,8 +1568,7 @@ public abstract class StatefulBeanO
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "isCallerInRole");
         }
 
@@ -1710,9 +1587,7 @@ public abstract class StatefulBeanO
      **/
     // LI2281.07
     @Override
-    public TimerService getTimerService()
-                    throws IllegalStateException
-    {
+    public TimerService getTimerService() throws IllegalStateException {
         IllegalStateException ise;
 
         // Not an allowed method for Stateful beans per EJB Specification.
@@ -1741,9 +1616,7 @@ public abstract class StatefulBeanO
      **/
     // LI2281.07
     @Override
-    public MessageContext getMessageContext()
-                    throws IllegalStateException
-    {
+    public MessageContext getMessageContext() throws IllegalStateException {
         IllegalStateException ise;
 
         // Not an allowed method for Stateful beans per EJB Specification.
@@ -1771,8 +1644,7 @@ public abstract class StatefulBeanO
      */
     // LI3492-2
     @Override
-    public void flushCache()
-    {
+    public void flushCache() {
         // Calling flushCache is not allowed from several states.
         if ((state == PRE_CREATE) || // prevent in setSessionContext
             (state == CREATING) ||
@@ -1780,8 +1652,7 @@ public abstract class StatefulBeanO
             (state == ACTIVATING) ||
             (state == PASSIVATING) ||
             (state == DESTROYED) ||
-            (state == AFTER_COMPLETION))
-        {
+            (state == AFTER_COMPLETION)) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("StatefulBean: flushCache not " +
@@ -1808,13 +1679,11 @@ public abstract class StatefulBeanO
      * during activate and by
      */
 
-    public final long getLastAccessTime()
-    {
+    public final long getLastAccessTime() {
         return ivTimeoutElement.lastAccessTime; // F61004.5
     }
 
-    public final void setLastAccessTime(long lat)
-    {
+    public final void setLastAccessTime(long lat) {
         ivTimeoutElement.lastAccessTime = lat; // F61004.5
     }
 
@@ -1846,17 +1715,14 @@ public abstract class StatefulBeanO
      * @param beanData is the replicated data for this SFSB.
      * @param lastAccessTime is the last access time for this SFSB.
      */
-    public void updateFailoverEntry(byte[] beanData, long lastAccessTime)
-                    throws RemoteException //LIDB2018
+    public void updateFailoverEntry(byte[] beanData, long lastAccessTime) throws RemoteException //LIDB2018
     {
-        try
-        {
+        try {
             // Note, updating failover entry for a SFSB only occurs when
             // the bean is passivated.  Therefore, the updateEntry
             // method implicitly sets the passivated flag in reaper.
             ivSfFailoverClient.passivated(beanId, beanData, lastAccessTime); //d204278.2
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             FFDCFilter.processException(e, CLASS_NAME + ".updateFailoverEntry", "1137", this);
             throw new RemoteException("Could not update SFSB Entry", e);
         }
@@ -1865,16 +1731,12 @@ public abstract class StatefulBeanO
     /**
      * Update the failover entry to indicate the SFSB is now active.
      */
-    public void updateFailoverSetActiveProp()
-    {
-        try
-        {
-            if (ivSfFailoverClient != null)
-            {
+    public void updateFailoverSetActiveProp() {
+        try {
+            if (ivSfFailoverClient != null) {
                 ivSfFailoverClient.activated(beanId, ivTimeoutElement.lastAccessTime); //d204278.2, F61004.5
             }
-        } catch (Throwable e)
-        {
+        } catch (Throwable e) {
             FFDCFilter.processException(e, CLASS_NAME + ".updateFailoverProp", "1158", this);
         }
     }
@@ -1928,8 +1790,7 @@ public abstract class StatefulBeanO
      *         been locked for the current thread; otherwise, false.
      */
     // F743-22462.CR
-    public boolean lock(EJSDeployedSupport methodContext, ContainerTx tx)
-    {
+    public boolean lock(EJSDeployedSupport methodContext, ContainerTx tx) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1970,8 +1831,7 @@ public abstract class StatefulBeanO
         // If the bean is active on a thread and the threads match, then allow
         // the bean to be locked. This is a reentrant call, and transaction
         // enlistment will fail, as required.
-        if (ivActiveOnThread != null)
-        {
+        if (ivActiveOnThread != null) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "eligibleForLock : ActiveOnThread : " + (ivActiveOnThread == Thread.currentThread()));
             return ivActiveOnThread == Thread.currentThread();
@@ -1990,8 +1850,7 @@ public abstract class StatefulBeanO
         // and created a local tran prior to the sticky global being started.
         // For this scenario, don't grant the lock... this thread will wait
         // until the sticky transaction commits.
-        if (currentTx == null || currentTx == tx)
-        {
+        if (currentTx == null || currentTx == tx) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(tc, "eligibleForLock : CurrentTx : true");
             return true;
@@ -2007,10 +1866,8 @@ public abstract class StatefulBeanO
         // bean's transaction was suspended and if so, report eligible. A reentrant
         // failure will be reported during enlistment.                     d704504
         UOWCookie uowCookie = methodContext.uowCookie;
-        if (uowCookie != null)
-        {
-            if (currentTx.ivTxKey.equals(uowCookie.getSuspendedTransactionalUOW()))
-            {
+        if (uowCookie != null) {
+            if (currentTx.ivTxKey.equals(uowCookie.getSuspendedTransactionalUOW())) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "eligibleForLock : SuspendedTx : true");
                 return true;
@@ -2028,8 +1885,7 @@ public abstract class StatefulBeanO
      * use. When {@link #unlock} is called, all waiting threads will be notified
      * and may then attempt to obtain the lock again. <p>
      */
-    public void addLockWaiter()
-    {
+    public void addLockWaiter() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "addLockWaiter : " + this +
                          ", thread=" + Thread.currentThread().getId());
@@ -2055,14 +1911,12 @@ public abstract class StatefulBeanO
      * @param lockObject the bucket lock object.
      */
     // d650932
-    public final void unlock(Object lockObject)
-    {
+    public final void unlock(Object lockObject) {
         // Only unlock the bean instance if it is in a state where it can be
         // made eligible for use on other threads. For example, for CM, this
         // might be when no longer in a transaction; for BM, this might be
         // when not in a method, etc.
-        if (eligibleForUnlock())
-        {
+        if (eligibleForUnlock()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "unlock(" + lockObject + ") : " + this +
                              ":waiters=" + ivThreadsWaiting +
@@ -2072,15 +1926,12 @@ public abstract class StatefulBeanO
             // availability. All threads must be notified since there could
             // be some waiting threads that are looking for a different bean
             // in the same bucket.                                       F743-22462
-            if (ivThreadsWaiting)
-            {
+            if (ivThreadsWaiting) {
                 lockObject.notifyAll();
                 ivThreadsWaiting = false;
             }
             ivActiveOnThread = null; // F743-22462.CR
-        }
-        else
-        {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "unlock(" + lockObject + ") : " + this +
                              " : nothing to do for state " + StateStrs[state]);
@@ -2122,23 +1973,22 @@ public abstract class StatefulBeanO
      */
 
     protected static final String StateStrs[] = {
-                                                 "DESTROYED", // 0
-                                                 "PRE_CREATE", // 1  - setSessoinContext
-                                                 "CREATING", // 2  - ejbCreate
-                                                 "METHOD_READY", // 3
-                                                 "IN_METHOD", // 4
-                                                 "TX_METHOD_READY", // 5
-                                                 "TX_IN_METHOD", // 6
-                                                 "COMMITTING_OUTSIDE_METHOD",// 7  - beforeCompletion
-                                                 "COMMITTING_IN_METHOD", // 8
-                                                 "PASSIVATING", // 9  - ejbPassivate
-                                                 "PASSIVATED", // 10
-                                                 "ACTIVATING", // 11 - ejbActivate
-                                                 "REMOVING", // 12 - ejbRemove               // d159152
-                                                 "AFTER_BEGIN", // 13 - afterBegin              // d159152
-                                                 "AFTER_COMPLETION", // 14 - afterCompletion         // d159152
+                                                  "DESTROYED", // 0
+                                                  "PRE_CREATE", // 1  - setSessoinContext
+                                                  "CREATING", // 2  - ejbCreate
+                                                  "METHOD_READY", // 3
+                                                  "IN_METHOD", // 4
+                                                  "TX_METHOD_READY", // 5
+                                                  "TX_IN_METHOD", // 6
+                                                  "COMMITTING_OUTSIDE_METHOD", // 7  - beforeCompletion
+                                                  "COMMITTING_IN_METHOD", // 8
+                                                  "PASSIVATING", // 9  - ejbPassivate
+                                                  "PASSIVATED", // 10
+                                                  "ACTIVATING", // 11 - ejbActivate
+                                                  "REMOVING", // 12 - ejbRemove               // d159152
+                                                  "AFTER_BEGIN", // 13 - afterBegin              // d159152
+                                                  "AFTER_COMPLETION", // 14 - afterCompletion         // d159152
     };
     // d367572.1 end
 
 } // StatefulBeanO
-

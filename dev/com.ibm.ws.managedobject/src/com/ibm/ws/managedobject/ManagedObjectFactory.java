@@ -18,8 +18,7 @@ import java.lang.reflect.Constructor;
  * implementation might not actually create a new object, or it might associate
  * additional context with the object before returning it.
  */
-public interface ManagedObjectFactory<T>
-{
+public interface ManagedObjectFactory<T> {
     /**
      * Returns true if the factory is doing managed object creation as opposed to
      * being a simple wrapper around {@link Class#newInstance}.
@@ -52,13 +51,16 @@ public interface ManagedObjectFactory<T>
      * Create a context that can be used to construct a new object.
      *
      * @return an object context or null if no context is required
+     * @throws ManagedObjectException
      */
-    ManagedObjectContext createContext();
+    ManagedObjectContext createContext() throws ManagedObjectException;
 
     /**
      * Create a managed object for the class managed by the factory
+     *
+     * @throws ManagedObjectException
      */
-    ManagedObject<T> createManagedObject() throws Exception;
+    ManagedObject<T> createManagedObject() throws ManagedObjectException;
 
     /**
      * Creates an instance of the managed object using an invocation context that
@@ -66,7 +68,18 @@ public interface ManagedObjectFactory<T>
      *
      * @param invocationContext the @AroundConstruct interceptor invocation context
      * @return the managed object instance
+     * @throws ManagedObjectException
      */
-    ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws Exception;
+    ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException;
+
+    /**
+     * Creates a managed object around an existing instance.
+     *
+     * @param existingInstance the existing instance
+     * @param invocationContext the @AroundConstruct interceptor invocation context
+     * @return the managed object
+     * @throws ManagedObjectException
+     */
+    ManagedObject<T> createManagedObject(T existingInstance, ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException;
 
 }

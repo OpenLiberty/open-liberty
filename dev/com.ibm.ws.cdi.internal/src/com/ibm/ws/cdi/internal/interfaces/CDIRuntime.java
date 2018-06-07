@@ -175,4 +175,9 @@ public interface CDIRuntime extends CDIService {
      * @return the cdi container
      */
     public CDIContainer getCDIContainer();
+
+    /**
+     * @return
+     */
+    public WebSphereCDIDeployment getCurrentDeployment();
 }

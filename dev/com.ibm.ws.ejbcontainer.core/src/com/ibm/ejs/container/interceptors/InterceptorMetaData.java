@@ -55,8 +55,7 @@ import com.ibm.wsspi.injectionengine.InjectionTarget;
  * in the order defined by section 12.4.1 Multiple Callback Interceptor Methods for
  * Life Cycle Callback Events if the EJB 3 core specification.
  */
-public class InterceptorMetaData
-{
+public class InterceptorMetaData {
     private static final String CLASS_NAME = InterceptorMetaData.class.getName();
     private static final TraceComponent tc = Tr.register(InterceptorMetaData.class, "EJBContainer", "com.ibm.ejs.container.container");
 
@@ -155,16 +154,9 @@ public class InterceptorMetaData
      * @param beanLifecycleMethods is an array of java reflection Method objects for the
      *            lifecycle interceptor methods declared directly on the bean class.
      */
-    public InterceptorMetaData(Class<?>[] classes
-                               , ManagedObjectFactory<?>[] factories
-                               , InterceptorProxy[] aroundConstruct
-                               , InterceptorProxy[] postConstruct
-                               , InterceptorProxy[] postActivate
-                               , InterceptorProxy[] prePassivate
-                               , InterceptorProxy[] preDestroy
-                               , Method[] beanLifecycleMethods // F743-1751
-    )
-    {
+    public InterceptorMetaData(Class<?>[] classes, ManagedObjectFactory<?>[] factories, InterceptorProxy[] aroundConstruct, InterceptorProxy[] postConstruct,
+                               InterceptorProxy[] postActivate, InterceptorProxy[] prePassivate, InterceptorProxy[] preDestroy, Method[] beanLifecycleMethods // F743-1751
+    ) {
         ivAroundConstructInterceptors = aroundConstruct;
         ivInterceptorClasses = classes;
         ivInterceptorFactories = factories;
@@ -188,66 +180,97 @@ public class InterceptorMetaData
     public void createInterceptorInstances(InjectionEngine injectionEngine,
                                            Object[] interceptors,
                                            ManagedObjectContext managedObjectContext,
-                                           ManagedBeanOBase targetContext)
-                    throws Exception
-    {
+                                           ManagedBeanOBase targetContext) throws Exception {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "createInterceptorInstances");
         }
 
-        if (ivInterceptorClasses != null)
-        {
-            @SuppressWarnings("rawtypes")
-            ManagedObjectInvocationContext invocationContext = (ivInterceptorFactories != null)
-                            ? invocationContext = new ManagedObjectInvocationContextImpl(managedObjectContext)
-                            : null;
+        if (ivInterceptorClasses != null) {
 
             int numberOfInterceptors = ivInterceptorClasses.length;
-            for (int i = 0; i < numberOfInterceptors; i++)
-            {
-                if (ivInterceptorFactories == null || ivInterceptorFactories[i] == null)
-                {
-                    interceptors[i] = ivInterceptorClasses[i].newInstance();
-                }
-                else
-                {
-                    @SuppressWarnings("unchecked")
-                    ManagedObject<?> managedObject = ivInterceptorFactories[i].createManagedObject(invocationContext);
-                    interceptors[i] = managedObject.getObject();
-                }
-
-                // F743-21481
-                // Inject into the class, if needed.
-                // This injection used to be performed in each of the BeanO instances,
-                // but now its been moved into this common location.
-                try
-                {
-                    InjectionTarget[] targetsForClass = ivInterceptorInjectionTargets[i];
-                    if (targetsForClass.length > 0)
-                    {
-                        for (InjectionTarget oneTarget : targetsForClass)
-                        {
-                            injectionEngine.inject(interceptors[i], oneTarget, targetContext);
-                        }
-                    }
-                } catch (Throwable t)
-                {
-                    FFDCFilter.processException(t, CLASS_NAME + "createInterceptorInstances", "229", this);
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
-                        Tr.debug(tc, "Injection failure", t);
-                    }
-                    throw ExceptionUtil.EJBException("Injection failure", t);
+            for (int i = 0; i < numberOfInterceptors; i++) {
+                if (ivInterceptorFactories == null || ivInterceptorFactories[i] == null) {
+                    interceptors[i] = createInterceptorInstanceUsingConstructor(injectionEngine, ivInterceptorClasses[i], ivInterceptorInjectionTargets[i], targetContext);
+                } else {
+                    interceptors[i] = createInterceptorInstancesUsingMOF(ivInterceptorInjectionTargets[i], managedObjectContext, targetContext, ivInterceptorFactories[i]);
                 }
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "createInterceptorInstances");
         }
+    }
+
+    private Object createInterceptorInstanceUsingConstructor(InjectionEngine injectionEngine,
+                                                             Class<?> interceptorClass,
+                                                             InjectionTarget[] targetsForClass,
+                                                             ManagedBeanOBase targetContext) throws Exception {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "createInterceptorInstanceUsingConstructor");
+        }
+
+        Object interceptor = interceptorClass.newInstance();
+
+        // F743-21481
+        // Inject into the class, if needed.
+        // This injection used to be performed in each of the BeanO instances,
+        // but now its been moved into this common location.
+        try {
+            if (targetsForClass.length > 0) {
+                for (InjectionTarget oneTarget : targetsForClass) {
+                    injectionEngine.inject(interceptor, oneTarget, targetContext);
+                }
+            }
+        } catch (Throwable t) {
+            FFDCFilter.processException(t, CLASS_NAME + "createInterceptorInstanceUsingConstructor", "248", this);
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Injection failure", t);
+            }
+            throw ExceptionUtil.EJBException("Injection failure", t);
+        }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "createInterceptorInstanceUsingConstructor", interceptor);
+        }
+        return interceptor;
+    }
+
+    public Object createInterceptorInstancesUsingMOF(InjectionTarget[] targetsForClass,
+                                                     ManagedObjectContext managedObjectContext,
+                                                     ManagedBeanOBase targetContext,
+                                                     ManagedObjectFactory<?> interceptorFactory) throws Exception {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "createInterceptorInstancesUsingMOF");
+        }
+
+        @SuppressWarnings("rawtypes")
+        ManagedObjectInvocationContext invocationContext = new ManagedObjectInvocationContextImpl(managedObjectContext);
+        @SuppressWarnings("unchecked")
+        ManagedObject<?> managedObject = interceptorFactory.createManagedObject(invocationContext);
+        Object interceptor = managedObject.getObject();
+
+        // Inject into the class, if needed.
+        // This injection used to be performed in each of the BeanO instances,
+        // but now its been moved into this common location.
+        try {
+            managedObject.inject(targetsForClass, targetContext);
+        } catch (Throwable t) {
+            FFDCFilter.processException(t, CLASS_NAME + "createInterceptorInstancesUsingMOF", "284", this);
+            if (isTraceOn && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Injection failure", t);
+            }
+            throw ExceptionUtil.EJBException("Injection failure", t);
+        }
+
+        if (isTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "createInterceptorInstancesUsingMOF", interceptor);
+        }
+
+        return interceptor;
     }
 
     // F743-17630
@@ -255,116 +278,82 @@ public class InterceptorMetaData
      * Dumps contents of metadata.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer("Interceptor MetaData:\n");
 
-        if (ivInterceptorClasses != null)
-        {
+        if (ivInterceptorClasses != null) {
             buffer.append("     Interceptor classes:\n");
-            for (Class<?> oneClass : ivInterceptorClasses)
-            {
+            for (Class<?> oneClass : ivInterceptorClasses) {
                 buffer.append("          " + oneClass.getName() + "\n");
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     Interceptor classes: NONE\n");
         }
 
-        if (ivPostConstructInterceptors != null)
-        {
+        if (ivPostConstructInterceptors != null) {
             buffer.append("     PostConstruct interceptor methods:\n");
-            for (InterceptorProxy oneProxy : ivPostConstructInterceptors)
-            {
+            for (InterceptorProxy oneProxy : ivPostConstructInterceptors) {
                 buffer.append("          " + oneProxy.toString() + "\n");
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     PostConstruct interceptor methods: NONE\n");
         }
 
-        if (ivPostActivateInterceptors != null)
-        {
+        if (ivPostActivateInterceptors != null) {
             buffer.append("     PostActivate interceptor methods:\n");
-            for (InterceptorProxy oneProxy : ivPostActivateInterceptors)
-            {
+            for (InterceptorProxy oneProxy : ivPostActivateInterceptors) {
                 buffer.append("          " + oneProxy.toString() + "\n");
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     PostActivate interceptor methods: NONE\n");
         }
 
-        if (ivPrePassivateInterceptors != null)
-        {
+        if (ivPrePassivateInterceptors != null) {
             buffer.append("     PrePassivate interceptor methods:\n");
-            for (InterceptorProxy oneProxy : ivPrePassivateInterceptors)
-            {
+            for (InterceptorProxy oneProxy : ivPrePassivateInterceptors) {
                 buffer.append("          " + oneProxy.toString() + "\n");
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     PrePassivate interceptor methods: NONE\n");
         }
 
-        if (ivPreDestroyInterceptors != null)
-        {
+        if (ivPreDestroyInterceptors != null) {
             buffer.append("     PreDestroy interceptor methods:\n");
-            for (InterceptorProxy oneProxy : ivPreDestroyInterceptors)
-            {
+            for (InterceptorProxy oneProxy : ivPreDestroyInterceptors) {
                 buffer.append("          " + oneProxy.toString() + "\n");
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     PreDestroy interceptor methods: NONE\n");
         }
 
-        if (ivAroundConstructInterceptors != null)
-        {
+        if (ivAroundConstructInterceptors != null) {
             buffer.append("     AroundConstruct interceptor methods:\n");
-            for (InterceptorProxy oneProxy : ivAroundConstructInterceptors)
-            {
+            for (InterceptorProxy oneProxy : ivAroundConstructInterceptors) {
                 buffer.append("          " + oneProxy.toString() + "\n");
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     AroundConstruct interceptor methods: NONE\n");
         }
 
-        if (ivBeanLifecycleMethods != null)
-        {
+        if (ivBeanLifecycleMethods != null) {
             buffer.append("     BeanLifecycle methods:\n");
             for (int i = 0; i < ivBeanLifecycleMethods.length; i++) {
-                buffer.append("          ").append(LifecycleInterceptorWrapper.TRACE_NAMES[i])
-                                .append(": ").append(ivBeanLifecycleMethods[i]).append("\n");
+                buffer.append("          ").append(LifecycleInterceptorWrapper.TRACE_NAMES[i]).append(": ").append(ivBeanLifecycleMethods[i]).append("\n");
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     BeanLifeCycle methods: NONE\n");
         }
 
         // F743-21481
-        if (ivInterceptorInjectionTargets != null)
-        {
+        if (ivInterceptorInjectionTargets != null) {
             buffer.append("     InjectionTargets for interceptor classes:\n");
-            for (int a = 0; a < ivInterceptorInjectionTargets.length; a++)
-            {
+            for (int a = 0; a < ivInterceptorInjectionTargets.length; a++) {
                 buffer.append("          Interceptor class: " + a + "\n");
-                for (int b = 0; b < ivInterceptorInjectionTargets[a].length; b++)
-                {
+                for (int b = 0; b < ivInterceptorInjectionTargets[a].length; b++) {
                     buffer.append("               " + ivInterceptorInjectionTargets[a][b] + "\n");
                 }
             }
-        }
-        else
-        {
+        } else {
             buffer.append("     InjectionTargets for interceptor classes: NONE\n");
         }
 
@@ -385,7 +374,8 @@ public class InterceptorMetaData
 
         @Override
         public Object aroundConstruct(ConstructionCallback constructionCallback, Object[] parameters, Map data) throws Exception {
-            throw new UnsupportedOperationException();
+            //just create the instance ... only used when CDI is not creating the instance
+            return constructionCallback.getConstructor().newInstance(parameters);
         }
 
         @Override
