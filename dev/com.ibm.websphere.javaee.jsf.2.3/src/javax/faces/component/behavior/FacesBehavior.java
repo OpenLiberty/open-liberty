@@ -29,7 +29,7 @@ import javax.inject.Qualifier;
  * @since 2.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Target(ElementType.TYPE)
 @Inherited
 @Qualifier
 public @interface FacesBehavior
