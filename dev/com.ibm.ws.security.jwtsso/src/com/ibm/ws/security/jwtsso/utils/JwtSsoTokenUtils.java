@@ -118,7 +118,12 @@ public class JwtSsoTokenUtils {
 		TokenBuilder tb = new TokenBuilder();
 		SubjectUtil subjectUtil = new SubjectUtil(subject);
 		String customCacheKey = subjectUtil.getCustomCacheKey();
-		String tokenString = tb.createTokenString(builderId, subject, customCacheKey);
+		String customAuthProvider = subjectUtil.getCustomAuthProvider();
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "custom values, cck : ", customCacheKey);
+			Tr.debug(tc, "custom values, amr : ", customAuthProvider);
+		}
+		String tokenString = tb.createTokenString(builderId, subject, customCacheKey, customAuthProvider);
 		if (tokenString == null) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "returning null because tokenString was null, creation failed.");

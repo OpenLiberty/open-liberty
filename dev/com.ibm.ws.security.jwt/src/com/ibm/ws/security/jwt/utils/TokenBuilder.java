@@ -35,6 +35,7 @@ public class TokenBuilder {
 	protected static final String USER_CLAIM = "upn"; // mp-jwt format
 	protected static final String GROUP_CLAIM = "groups"; // mp-jwt format
 	protected static final String CCK_CLAIM = "sid"; // custom cache key
+	protected static final String AMR_CLAIM = "amr"; // custom auth provider
 	protected static final String REALM_CLAIM = "realm"; // realm
 	private final static String GROUP_PREFIX = "group:";
 
@@ -60,7 +61,7 @@ public class TokenBuilder {
 	 */
 	public String createTokenString(String builderConfigId) {
 		try {
-			return createTokenString(builderConfigId, WSSubject.getRunAsSubject(), null);
+			return createTokenString(builderConfigId, WSSubject.getRunAsSubject(), null, null);
 
 			// JwtBuilder builder = JwtBuilder.create(builderConfigId);
 			//
@@ -163,7 +164,8 @@ public class TokenBuilder {
 		return wsCredential;
 	}
 
-	public String createTokenString(String builderId, Subject subject, String customCacheKey) throws Exception {
+	public String createTokenString(String builderId, Subject subject, String customCacheKey, String customAuthProvider)
+			throws Exception {
 		try {
 			JwtBuilder builder = JwtBuilder.create(builderId);
 
@@ -185,6 +187,11 @@ public class TokenBuilder {
 			}
 			if (customCacheKey != null) {
 				builder.claim(CCK_CLAIM, customCacheKey);
+			}
+			if (customAuthProvider != null) {
+				ArrayList<String> amrClaimArray = new ArrayList<String>();
+				amrClaimArray.add(customAuthProvider);
+				builder.claim(AMR_CLAIM, amrClaimArray);
 			}
 
 			return builder.buildJwt().compact();
