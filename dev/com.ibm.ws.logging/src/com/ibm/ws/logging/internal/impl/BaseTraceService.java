@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -185,8 +187,8 @@ public class BaseTraceService implements TrService {
     private volatile Collection<String> hideMessageids;
 
     /** Early msgs issued before MessageRouter is started. */
-    protected final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
-    protected final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
+    protected volatile Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
+    protected volatile Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
 
     protected volatile LogSource logSource = null;
     protected volatile TraceSource traceSource = null;
@@ -219,6 +221,9 @@ public class BaseTraceService implements TrService {
     public BaseTraceService() {
         systemOut = new SystemLogHolder(LoggingConstants.SYSTEM_OUT, System.out);
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
+
+        Timer earlyMessageTraceKiller_Timer = new Timer();
+        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 300000);
     }
 
     /**
@@ -681,10 +686,14 @@ public class BaseTraceService implements TrService {
         }
         if (internalMsgRouter != null) {
             retMe &= internalMsgRouter.route(routedMessage);
-        } else {
-            String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
-            RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
-            earlierMessages.add(specialRoutedMessage);
+        } else if (earlierMessages != null) {
+            synchronized (this) {
+                if (earlierMessages != null) {
+                    String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
+                    RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
+                    earlierMessages.add(specialRoutedMessage);
+                }
+            }
         }
         return retMe;
     }
@@ -713,8 +722,12 @@ public class BaseTraceService implements TrService {
                             WsTraceRouter internalTrRouter = internalTraceRouter.get();
                             if (internalTrRouter != null) {
                                 retMe &= internalTrRouter.route(routedTrace);
-                            } else {
-                                earlierTraces.add(routedTrace);
+                            } else if (earlierTraces != null) {
+                                synchronized (this) {
+                                    if (earlierTraces != null) {
+                                        earlierTraces.add(routedTrace);
+                                    }
+                                }
                             }
                         }
                     }
@@ -894,7 +907,13 @@ public class BaseTraceService implements TrService {
         // NOT add any more messages to the earlierMessages queue.
         // The MessageRouter basically owns the earlierMessages queue
         // from now on.
-        msgRouter.setEarlierMessages(earlierMessages);
+        if (earlierMessages != null) {
+            synchronized (this) {
+                if (earlierMessages != null) {
+                    msgRouter.setEarlierMessages(earlierMessages);
+                }
+            }
+        }
     }
 
     /**
@@ -917,7 +936,13 @@ public class BaseTraceService implements TrService {
         // NOT add any more messages to the earlierMessages queue.
         // The MessageRouter basically owns the earlierMessages queue
         // from now on.
-        traceRouter.setEarlierTraces(earlierTraces);
+        if (earlierTraces != null) {
+            synchronized (this) {
+                if (earlierTraces != null) {
+                    traceRouter.setEarlierTraces(earlierTraces);
+                }
+            }
+        }
     }
 
     /**
@@ -1196,4 +1221,13 @@ public class BaseTraceService implements TrService {
         }
     }
 
+    private class EarlyMessageTraceCleaner extends TimerTask {
+        @Override
+        public void run() {
+            synchronized (BaseTraceService.this) {
+                earlierMessages = null;
+                earlierTraces = null;
+            }
+        }
+    }
 }
