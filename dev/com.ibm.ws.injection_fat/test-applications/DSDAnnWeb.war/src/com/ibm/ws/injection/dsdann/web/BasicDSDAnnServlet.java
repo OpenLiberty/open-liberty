@@ -60,7 +60,7 @@ public class BasicDSDAnnServlet extends FATServlet {
      */
     @Test
     public void testDSDModLevel() throws Exception {
-        getAndVerifyResult("java:module/ann_BasicModLevelDS", 14);
+        getAndVerifyResult("java:module/ann_BasicModLevelDS", 1814);
     }
 
     /**
@@ -73,7 +73,7 @@ public class BasicDSDAnnServlet extends FATServlet {
      */
     @Test
     public void testDSDAppLevel() throws Exception {
-        getAndVerifyResult("java:app/ann_BasicAppLevelDS", 19);
+        getAndVerifyResult("java:app/ann_BasicAppLevelDS", 1819);
     }
 
     /**
@@ -86,7 +86,7 @@ public class BasicDSDAnnServlet extends FATServlet {
      */
     @Test
     public void testDSDGlobalLevel() throws Exception {
-        getAndVerifyResult("java:global/ann_BasicGlobalLevelDS", 6);
+        getAndVerifyResult("java:global/ann_BasicGlobalLevelDS", 1806);
     }
 
     /**
@@ -98,7 +98,7 @@ public class BasicDSDAnnServlet extends FATServlet {
      */
     @Test
     public void testDSDCompLevel() throws Exception {
-        getAndVerifyResult("java:comp/env/ann_BasicCompLevelDS", 15);
+        getAndVerifyResult("java:comp/env/ann_BasicCompLevelDS", 1815);
     }
 
     /**
@@ -118,6 +118,6 @@ public class BasicDSDAnnServlet extends FATServlet {
         svLogger.info("-->The DS defined in the Singleton bean should have been created when the Singleton was looked up (i.e. initialized), just to be sure we call its test()...");
         bean.test();
 
-        getAndVerifyResult("java:module/ann_SingletonModLevelDS", 25);
+        getAndVerifyResult("java:module/ann_SingletonModLevelDS", 1825);
     }
 }

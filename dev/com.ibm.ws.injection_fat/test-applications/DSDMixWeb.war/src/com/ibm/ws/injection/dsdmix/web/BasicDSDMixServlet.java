@@ -61,7 +61,7 @@ public class BasicDSDMixServlet extends FATServlet {
      */
     @Test
     public void testDSDMerge() throws Exception {
-        getAndVerifyResult("java:module/mix_MergeSLSBModLevelDS", 126, 1, "dsdTesterMerge");
+        getAndVerifyResult("java:module/mix_MergeSLSBModLevelDS", 1826, 1, "dsdTesterMerge");
     }
 
     /**
@@ -75,7 +75,7 @@ public class BasicDSDMixServlet extends FATServlet {
      */
     @Test
     public void testDSDOverride() throws Exception {
-        getAndVerifyResult("java:module/mix_XMLOverrideSLSBModLevelDS", 128, 4, "dsdTesterXMLKing");
+        getAndVerifyResult("java:module/mix_XMLOverrideSLSBModLevelDS", 1828, 4, "dsdTesterXMLKing");
     }
 
     /**
@@ -88,7 +88,7 @@ public class BasicDSDMixServlet extends FATServlet {
      */
     @Test
     public void testDSDAnnOnly() throws Exception {
-        getAndVerifyResult("java:module/mix_AnnOnlySLSBModLevelDS", 129, 8, "dsdTesterAnn");
+        getAndVerifyResult("java:module/mix_AnnOnlySLSBModLevelDS", 1829, 8, "dsdTesterAnn");
     }
 
     /**
@@ -101,6 +101,6 @@ public class BasicDSDMixServlet extends FATServlet {
      */
     @Test
     public void testDSDXMLOnly() throws Exception {
-        getAndVerifyResult("java:module/mix_XMLOnlySLSBModLevelDS", 130, 2, "dsdTesterXML");
+        getAndVerifyResult("java:module/mix_XMLOnlySLSBModLevelDS", 1830, 2, "dsdTesterXML");
     }
 }

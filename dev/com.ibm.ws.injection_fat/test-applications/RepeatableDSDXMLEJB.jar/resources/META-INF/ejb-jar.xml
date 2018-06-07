@@ -18,7 +18,7 @@
           <name>createDatabase</name>
           <value>create</value>
         </property>
-        <login-timeout>142</login-timeout>
+        <login-timeout>1842</login-timeout>
         <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
       </data-source>
       <data-source>
@@ -32,7 +32,7 @@
           <name>createDatabase</name>
           <value>create</value>
         </property>
-        <login-timeout>122</login-timeout>
+        <login-timeout>1822</login-timeout>
         <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
       </data-source>
       <data-source>
@@ -46,7 +46,7 @@
           <name>createDatabase</name>
           <value>create</value>
         </property>
-        <login-timeout>132</login-timeout>
+        <login-timeout>1832</login-timeout>
         <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
       </data-source>
       <data-source>
@@ -60,7 +60,7 @@
           <name>createDatabase</name>
           <value>create</value>
         </property>
-        <login-timeout>113</login-timeout>
+        <login-timeout>1813</login-timeout>
         <isolation-level>TRANSACTION_SERIALIZABLE</isolation-level>
       </data-source>
       <data-source>

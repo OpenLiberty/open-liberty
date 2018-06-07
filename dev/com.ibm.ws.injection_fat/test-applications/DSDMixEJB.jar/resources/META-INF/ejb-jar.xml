@@ -17,7 +17,7 @@
         <name>java:module/mix_XMLOverrideSLSBModLevelDS</name>
         <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
         <user>dsdTesterXMLKing</user>
-        <login-timeout>128</login-timeout>
+        <login-timeout>1828</login-timeout>
         <isolation-level>TRANSACTION_REPEATABLE_READ</isolation-level>
       </data-source>
       <data-source>
@@ -31,7 +31,7 @@
           <name>createDatabase</name>
           <value>create</value>
         </property>
-        <login-timeout>130</login-timeout>
+        <login-timeout>1830</login-timeout>
         <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
       </data-source>
     </session>

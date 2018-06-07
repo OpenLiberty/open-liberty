@@ -27,12 +27,12 @@ import javax.sql.DataSource;
 // are ignored.
 @DataSourceDefinition(name = "java:module/MetaDataCompleteValidDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                      loginTimeout = 29,
+                      loginTimeout = 1829,
                       isolationLevel = TRANSACTION_SERIALIZABLE)
 @DataSourceDefinition(name = "java:module/AnnotationOnlyToBeIgnored",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
                       databaseName = "repeatableDsdXMLTestMDCAnnOnly",
-                      loginTimeout = 86,
+                      loginTimeout = 1886,
                       isolationLevel = TRANSACTION_SERIALIZABLE,
                       properties = { "createDatabase=create" })
 public class RepeatableDSDStatelessBean {

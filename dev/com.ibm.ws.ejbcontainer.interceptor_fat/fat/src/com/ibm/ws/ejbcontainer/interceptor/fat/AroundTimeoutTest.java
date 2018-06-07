@@ -38,6 +38,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -63,6 +64,11 @@ public class AroundTimeoutTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        JavaInfo javaInfo = JavaInfo.forServer(server);
+        if (javaInfo.toString().contains("IBM")) {
+            server.copyFileToLibertyServerRoot("jvm.options");
+        }
+
         // Use ShrinkHelper to build the ears
         JavaArchive AroundTimeoutAnnEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutAnnEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_ann.ejb.");
         JavaArchive AroundTimeoutExcEJB = ShrinkHelper.buildJavaArchive("AroundTimeoutExcEJB.jar", "com.ibm.ws.ejbcontainer.interceptor.aroundTimeout_exc.ejb.");
