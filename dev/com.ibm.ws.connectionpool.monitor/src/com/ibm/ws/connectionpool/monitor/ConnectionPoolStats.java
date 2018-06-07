@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.connectionpool.monitor;
 
+import java.util.concurrent.TimeUnit;
+
 import com.ibm.websphere.connectionpool.monitor.ConnectionPoolStatsMXBean;
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Gauge;
 import com.ibm.websphere.monitor.meters.Meter;
-import com.ibm.websphere.monitor.meters.StatisticsMeter;
+import com.ibm.websphere.monitor.meters.TimeWeightedMeter;
 
 /**
  * This class is the actual class where we declare counters using different Meter Objects like Counter,Gauge and handles the increments and decrements of
@@ -25,7 +27,7 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
     private final Counter createCount, destroyCount;
     private final Gauge poolSize, freeConnectionCount;
     private final Gauge managedConnectionCount, connectionHandleCount;
-    private final StatisticsMeter waitTime, inUseTime;
+    private final TimeWeightedMeter waitTime, inUseTime;
 
     public ConnectionPoolStats() {
         createCount = new Counter();
@@ -33,9 +35,9 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
         poolSize = new Gauge();
         managedConnectionCount = new Gauge();
         connectionHandleCount = new Gauge();
-        waitTime = new StatisticsMeter();
+        waitTime = new TimeWeightedMeter();
         freeConnectionCount = new Gauge();
-        inUseTime = new StatisticsMeter();
+        inUseTime = new TimeWeightedMeter();
     }
 
     /**
@@ -79,11 +81,11 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
     }
 
     public void updateWaitTime(long elapsed) {
-        this.waitTime.addDataPoint(elapsed);
+        this.waitTime.update(elapsed, TimeUnit.NANOSECONDS);
     }
 
     public void updateInUseTime(long elapsed) {
-        this.inUseTime.addDataPoint(elapsed);
+        this.inUseTime.update(elapsed, TimeUnit.NANOSECONDS);
     }
 
     public void incFreeConnectionCount() {

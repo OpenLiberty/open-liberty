@@ -12,6 +12,7 @@ package com.ibm.websphere.webcontainer;
 
 import com.ibm.websphere.monitor.jmx.Counter;
 import com.ibm.websphere.monitor.jmx.StatisticsMeter;
+import com.ibm.websphere.monitor.jmx.TimeWeightedMeter;
 
 /**
  * Management interface for MBeans with names of the form "WebSphere:type=ServletStats,name=*"
@@ -51,18 +52,18 @@ public interface ServletStatsMXBean {
     public Counter getRequestCountDetails();
 
     /**
-     * Retrieves the value of the read-only attribute ResponseTime, which is the average (mean) time spent responding to each request for the servlet.
+     * Retrieves the value of the read-only attribute ResponseTime, which is the time weighted average (mean) time spent responding to each request for the servlet.
      * 
      * @return response time
      */
     public double getResponseTime();
-
+    
     /**
      * Retrieves the value of the read-only attribute ResponseCountDetails, which provides statistical details on the response time.
      * 
      * @return response time details
      */
-    public StatisticsMeter getResponseTimeDetails();
+    public TimeWeightedMeter getResponseTimeDetails();
 
     /**
      * Retrieves the value of the read-only attribute AppName, the name of the application of which the servlet is a member.
