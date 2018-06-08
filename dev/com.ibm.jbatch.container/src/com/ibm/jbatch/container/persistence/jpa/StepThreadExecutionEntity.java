@@ -18,7 +18,6 @@ import java.util.Date;
 import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.Metric;
 import javax.batch.runtime.StepExecution;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -31,14 +30,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.UniqueConstraint;
 
 import com.ibm.jbatch.container.context.impl.MetricImpl;
-import com.ibm.jbatch.container.util.TCCLObjectInputStream;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
+import com.ibm.ws.serialization.DeserializationObjectInputStream;
 
 @DiscriminatorColumn(name = "THREADTYPE", discriminatorType = DiscriminatorType.CHAR)
 @DiscriminatorValue("P")
@@ -225,7 +223,7 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
      * @param remotablePartition the remotablePartition to set
      */
     public void setRemotablePartition(RemotablePartitionEntity remotablePartition) {
-        //222050 Backout 205106 
+        //222050 Backout 205106
         //this.remotablePartition = remotablePartition;
     }
 
@@ -387,7 +385,7 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
 
     /**
      * This method is used to de-serialized a table BLOB field to its original object form.
-     * 
+     *
      * @param buffer the byte array save a BLOB
      * @return the object saved as byte array
      * @throws IOException
@@ -396,10 +394,10 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
     private Serializable deserializeObject(byte[] buffer) throws IOException, ClassNotFoundException {
 
         Serializable theObject = null;
-        TCCLObjectInputStream objectIn = null;
+        DeserializationObjectInputStream objectIn = null;
 
         if (buffer != null) {
-            objectIn = new TCCLObjectInputStream(new ByteArrayInputStream(buffer));
+            objectIn = new DeserializationObjectInputStream(new ByteArrayInputStream(buffer), Thread.currentThread().getContextClassLoader());
             theObject = (Serializable) objectIn.readObject();
             objectIn.close();
         }
@@ -422,7 +420,7 @@ public class StepThreadExecutionEntity implements WSPartitionStepThreadExecution
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.batch.runtime.StepExecution#getMetrics()
      */
     @Override

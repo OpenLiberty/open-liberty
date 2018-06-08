@@ -51,7 +51,6 @@ import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceKey;
 import com.ibm.jbatch.container.servicesmanager.ServicesManagerStaticAnchor;
 import com.ibm.jbatch.container.status.ExecutionStatus;
 import com.ibm.jbatch.container.util.BatchPartitionWorkUnit;
-import com.ibm.jbatch.container.util.TCCLObjectInputStream;
 import com.ibm.jbatch.container.validation.ArtifactValidationException;
 import com.ibm.jbatch.container.ws.BatchDispatcher;
 import com.ibm.jbatch.container.ws.JoblogUtil;
@@ -68,6 +67,7 @@ import com.ibm.jbatch.jsl.model.PartitionReducer;
 import com.ibm.jbatch.jsl.model.Property;
 import com.ibm.jbatch.jsl.model.Step;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.serialization.DeserializationObjectInputStream;
 
 /**
  * This is the "top-level" controller, which spawns the "sub-job" partitions
@@ -705,9 +705,9 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
         try {
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-            TCCLObjectInputStream ois = null;
+            DeserializationObjectInputStream ois = null;
             try {
-                ois = new TCCLObjectInputStream(bais);
+                ois = new DeserializationObjectInputStream(bais, Thread.currentThread().getContextClassLoader());
                 retVal = (Serializable) ois.readObject();
             } finally {
                 ois.close();
