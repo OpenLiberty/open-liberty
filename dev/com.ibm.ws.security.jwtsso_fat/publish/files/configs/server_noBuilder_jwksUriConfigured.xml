@@ -18,6 +18,13 @@
 
     <authentication cacheEnabled="false"/>
 
-    <mpJwt id="mpJwt_trustAllIssuers" issuer="ALL_ISSUERS" jwksUri="https://localhost:${bvt.prop.HTTP_default.secure}/jwt/ibm/api/defaultJWT/jwk" />
+    <!-- Configure the mpJwt consumer's sslRef to use a different keystore than the server default. However, configuring the jwksUri
+         attribute should result in the JWK URI being used to validate the JWT cookie instead of the keystore used by the sslRef. -->
+    <mpJwt id="mpJwt_trustAllIssuers" issuer="ALL_ISSUERS" jwksUri="https://localhost:${bvt.prop.HTTP_default.secure}/jwt/ibm/api/defaultJWT/jwk"
+        sslRef="otherSsl" />
+
+    <ssl id="otherSsl" keyStoreRef="separateKeyStore" trustStoreRef="defaultKeyStore" />
+
+    <keyStore id="separateKeyStore" password="Liberty" type="jks" location="${server.config.dir}/separateKeyStore.jks" />/>
 
 </server>

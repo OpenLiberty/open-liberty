@@ -151,7 +151,16 @@
             id="NoCacheCookiesControl" required="false" type="Boolean" default="true" />   
             
         <AD name="%http.autoDecompression" description="%http.autoDecompression.desc"
-            id="AutoDecompression" required="false" type="Boolean" default="true" />    
+            id="AutoDecompression" required="false" type="Boolean" default="true" />
+            
+        <AD name="%http2.connectionIdleTimeout" description="%http2.connectionIdleTimeout.desc"
+			id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
+
+		<AD name="%http2.maxConcurrentStreams" description="%http2.maxConcurrentStreams.desc"
+			id="maxConcurrentStreams" required="false" type="Integer" default="200" />
+
+		<AD name="%http2.maxFrameSize" description="%http2.maxFrameSize.desc"
+			id="maxFrameSize" required="false" type="Integer" min="16384" max="16777215" default="57344" />    
             
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"

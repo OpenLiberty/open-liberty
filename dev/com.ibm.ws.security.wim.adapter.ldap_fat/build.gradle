@@ -72,6 +72,7 @@ autoFVT.doLast {
    */
   def servers = [
     'com.ibm.ws.security.registry.ldap.fat.ad',
+    'com.ibm.ws.security.registry.ldap.fat.ad.wild',
     'com.ibm.ws.security.registry.ldap.fat.ad.noId',
     'com.ibm.ws.security.registry.ldap.fat.ad.ssl',
     'com.ibm.ws.security.registry.ldap.fat.custom',

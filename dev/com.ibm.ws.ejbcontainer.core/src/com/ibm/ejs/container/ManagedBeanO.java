@@ -45,9 +45,7 @@ import com.ibm.ws.traceinfo.ejbcontainer.TEBeanLifeCycleInfo;
  * implementation has been used for consistency with the other
  * bean types in regards to injection and lifecycle callbacks. <p>
  */
-public final class ManagedBeanO
-                extends ManagedBeanOBase
-{
+public final class ManagedBeanO extends ManagedBeanOBase {
     private static final String CLASS_NAME = ManagedBeanO.class.getName();
     private static final TraceComponent tc = Tr.register(ManagedBeanO.class, "EJBContainer", "com.ibm.ejs.container.container");
 
@@ -56,10 +54,10 @@ public final class ManagedBeanO
     public static final int CREATING = 2; // during PostConstruct
     public static final int ACTIVE = 3; // Injection & PostConstruct complete
     private static final String[] StateStrs = {
-                                               "DESTROYED",
-                                               "PRE_CREATE",
-                                               "CREATING",
-                                               "ACTIVE",
+                                                "DESTROYED",
+                                                "PRE_CREATE",
+                                                "CREATING",
+                                                "ACTIVE",
     };
 
     /**
@@ -74,8 +72,7 @@ public final class ManagedBeanO
      * @param c is the EJSContainer instance for this bean.
      * @param h is the home for this bean.
      */
-    public ManagedBeanO(EJSContainer c, EJSHome h)
-    {
+    public ManagedBeanO(EJSContainer c, EJSHome h) {
         super(c, h);
 
         BeanMetaData bmd = home.beanMetaData;
@@ -86,15 +83,13 @@ public final class ManagedBeanO
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         // Managed bean don't have beanId, so include the J2EEName instead.
         return "ManagedBeanO(" + home.getJ2EEName() + ", " + getStateName(state) + ')';
     }
 
     @Override
-    protected String getStateName(int state)
-    {
+    protected String getStateName(int state) {
         return StateStrs[state];
     }
 
@@ -104,8 +99,7 @@ public final class ManagedBeanO
     }
 
     @Override
-    void initialize(boolean reactivate) throws RemoteException, InvocationTargetException
-    {
+    void initialize(boolean reactivate) throws RemoteException, InvocationTargetException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "initialize");
@@ -116,8 +110,7 @@ public final class ManagedBeanO
         // -----------------------------------------------------------------------
         state = PRE_CREATE;
 
-        try
-        {
+        try {
             BeanMetaData bmd = home.beanMetaData;
 
             // Note that the UnspecifiedContextHelper is NOT used here, since
@@ -131,7 +124,7 @@ public final class ManagedBeanO
             // We need to pass the context so that CDI can inject properly,
             // getInjectionTargetContextData is overridden to only return the managed object context data
             if (!bmd.managedObjectManagesInjectionAndInterceptors) {
-                injectInstance(ivEjbInstance, this);
+                injectInstance(ivManagedObject, ivEjbInstance, this);
             }
 
             // --------------------------------------------------------------------
@@ -144,15 +137,12 @@ public final class ManagedBeanO
             // --------------------------------------------------------------------
             // Call PostConstruct interceptor method.
             //-------------------------------------------------------------------
-            if (ivCallbackKind == CallbackKind.InvocationContext)
-            {
+            if (ivCallbackKind == CallbackKind.InvocationContext) {
                 // Invoke PostContruct interceptors if there is at least 1
                 // PostConstruct interceptor.
-                if (imd != null && !bmd.managedObjectManagesInjectionAndInterceptors)
-                {
+                if (imd != null && !bmd.managedObjectManagesInjectionAndInterceptors) {
                     InterceptorProxy[] proxies = imd.ivPostConstructInterceptors;
-                    if (proxies != null)
-                    {
+                    if (proxies != null) {
                         callLifecycleInterceptors(proxies, LifecycleInterceptorWrapper.MID_POST_CONSTRUCT);
                     }
                 }
@@ -164,8 +154,7 @@ public final class ManagedBeanO
             // actively used by the application.
             //---------------------------------------------------------
             setState(ACTIVE);
-        } finally
-        {
+        } finally {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "initialize : " + this);
         }
@@ -180,8 +169,7 @@ public final class ManagedBeanO
      * extra calls. <p>
      */
     @Override
-    public void destroy()
-    {
+    public void destroy() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "destroy : " + this);
@@ -197,8 +185,7 @@ public final class ManagedBeanO
         InterceptorMetaData imd = home.beanMetaData.ivInterceptorMetaData;
         InterceptorProxy[] proxies = (imd == null) ? null : imd.ivPreDestroyInterceptors;
 
-        if (proxies == null)
-        {
+        if (proxies == null) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "destroy : no PreDestroy");
             return;
@@ -206,8 +193,7 @@ public final class ManagedBeanO
 
         BeanMetaData bmd = home.beanMetaData;
         CallbackContextHelper contextHelper = new CallbackContextHelper(this);
-        try
-        {
+        try {
             contextHelper.begin(CallbackContextHelper.Tx.LTC,
                                 CallbackContextHelper.Contexts.CallbackBean);
 
@@ -219,8 +205,7 @@ public final class ManagedBeanO
                 InvocationContextImpl<?> inv = getInvocationContext();
                 inv.doLifeCycle(proxies, bmd._moduleMetaData);
             }
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".destroy", "262", this);
 
             // Just trace this event and continue so that BeanO is transitioned
@@ -229,13 +214,10 @@ public final class ManagedBeanO
             // affect as if bean was discarded as result of this exception.
             if (isTraceOn && tc.isEventEnabled()) // d144064
                 Tr.event(tc, "destroy caught exception:", new Object[] { this, ex });
-        } finally
-        {
-            try
-            {
+        } finally {
+            try {
                 contextHelper.complete(true);
-            } catch (Throwable t)
-            {
+            } catch (Throwable t) {
                 FFDCFilter.processException(t, CLASS_NAME + ".destroy", "279", this);
 
                 // Just trace this event and continue so that BeanO is transitioned
@@ -273,8 +255,7 @@ public final class ManagedBeanO
      *             post construct interceptor method. Use the getCause to get
      *             the original Throwable that had occurred.
      */
-    protected void callLifecycleInterceptors(InterceptorProxy[] proxies, int methodId)
-    {
+    protected void callLifecycleInterceptors(InterceptorProxy[] proxies, int methodId) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
         if (TraceComponent.isAnyTracingEnabled()) // d527372
         {
@@ -285,13 +266,11 @@ public final class ManagedBeanO
                 Tr.debug(tc, "callLifecycleInterceptors");
         }
 
-        try
-        {
+        try {
             InvocationContextImpl<?> inv = getInvocationContext();
             BeanMetaData bmd = home.beanMetaData;
             inv.doLifeCycle(proxies, bmd._moduleMetaData);
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             // FFDCFilter.processException( t, CLASS_NAME + ".ManagedBeanO", "149", this );
 
             // Lifecycle interceptors are allowed to throw system runtime exceptions,
@@ -302,11 +281,9 @@ public final class ManagedBeanO
                 Tr.debug(tc, "ManagedBean PostConstruct failure", t);
 
             throw ExceptionUtil.EJBException("managed bean lifecycle interceptor failure", t);
-        } finally
-        {
+        } finally {
             if (isTraceOn &&
-                TEBeanLifeCycleInfo.isTraceEnabled())
-            {
+                TEBeanLifeCycleInfo.isTraceEnabled()) {
                 TEBeanLifeCycleInfo.traceEJBCallExit(LifecycleInterceptorWrapper.TRACE_NAMES[methodId]);
             }
         }
@@ -316,8 +293,7 @@ public final class ManagedBeanO
      * Return the bean instance associated with this BeanO
      */
     @Override
-    public Object getBeanInstance()
-    {
+    public Object getBeanInstance() {
         return ivEjbInstance;
     }
 
@@ -331,8 +307,7 @@ public final class ManagedBeanO
      **/
     // d630824
     @Override
-    public Object[] getInterceptors()
-    {
+    public Object[] getInterceptors() {
         return ivInterceptors;
     }
 
@@ -342,10 +317,8 @@ public final class ManagedBeanO
      * the cache if there state is destroyed).
      **/
     @Override
-    public boolean isDestroyed()
-    {
-        if (state == DESTROYED)
-        {
+    public boolean isDestroyed() {
+        if (state == DESTROYED) {
             return true;
         }
         return false;
@@ -360,11 +333,9 @@ public final class ManagedBeanO
     public <T> T getInjectionTargetContextData(Class<T> type) {
         // If we have a managed object, then see if the context data type is
         // available from its state.
-        if (ivEjbManagedObjectContext != null)
-        {
+        if (ivEjbManagedObjectContext != null) {
             T data = ivEjbManagedObjectContext.getContextData(type);
-            if (data != null)
-            {
+            if (data != null) {
                 return data;
             }
         }
@@ -380,82 +351,69 @@ public final class ManagedBeanO
     // --------------------------------------------------------------------------
 
     @Override
-    public synchronized UserTransaction getUserTransaction()
-    {
+    public synchronized UserTransaction getUserTransaction() {
         throw new IllegalStateException("Method not supported for ManagedBean.");
     }
 
     @Override
-    public Map<String, Object> getContextData()
-    {
-        throw new IllegalStateException("Method not supported for ManagedBean.");
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public java.security.Identity getCallerIdentity()
-    {
-        throw new IllegalStateException("Method not supported for ManagedBean.");
-    }
-
-    @Override
-    public Principal getCallerPrincipal()
-    {
-        throw new IllegalStateException("Method not supported for ManagedBean.");
-    }
-
-    @Override
-    public EJBHome getEJBHome()
-    {
-        throw new IllegalStateException("Method not supported for ManagedBean.");
-    }
-
-    @Override
-    public EJBLocalHome getEJBLocalHome()
-    {
-        throw new IllegalStateException("Method not supported for ManagedBean.");
-    }
-
-    @Override
-    public Properties getEnvironment()
-    {
-        throw new IllegalStateException("Method not supported for ManagedBean.");
-    }
-
-    @Override
-    public boolean getRollbackOnly()
-    {
-        throw new IllegalStateException("Method not supported for ManagedBean.");
-    }
-
-    @Override
-    public TimerService getTimerService() throws IllegalStateException
-    {
+    public Map<String, Object> getContextData() {
         throw new IllegalStateException("Method not supported for ManagedBean.");
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public boolean isCallerInRole(java.security.Identity id)
-    {
+    public java.security.Identity getCallerIdentity() {
         throw new IllegalStateException("Method not supported for ManagedBean.");
     }
 
     @Override
-    public boolean isCallerInRole(String roleName)
-    {
+    public Principal getCallerPrincipal() {
         throw new IllegalStateException("Method not supported for ManagedBean.");
     }
 
     @Override
-    public void setRollbackOnly()
-    {
+    public EJBHome getEJBHome() {
         throw new IllegalStateException("Method not supported for ManagedBean.");
     }
 
     @Override
-    public Object lookup(String name)
-    {
+    public EJBLocalHome getEJBLocalHome() {
+        throw new IllegalStateException("Method not supported for ManagedBean.");
+    }
+
+    @Override
+    public Properties getEnvironment() {
+        throw new IllegalStateException("Method not supported for ManagedBean.");
+    }
+
+    @Override
+    public boolean getRollbackOnly() {
+        throw new IllegalStateException("Method not supported for ManagedBean.");
+    }
+
+    @Override
+    public TimerService getTimerService() throws IllegalStateException {
+        throw new IllegalStateException("Method not supported for ManagedBean.");
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean isCallerInRole(java.security.Identity id) {
+        throw new IllegalStateException("Method not supported for ManagedBean.");
+    }
+
+    @Override
+    public boolean isCallerInRole(String roleName) {
+        throw new IllegalStateException("Method not supported for ManagedBean.");
+    }
+
+    @Override
+    public void setRollbackOnly() {
+        throw new IllegalStateException("Method not supported for ManagedBean.");
+    }
+
+    @Override
+    public Object lookup(String name) {
         throw new IllegalStateException("Method not supported for ManagedBean.");
     }
 
@@ -466,110 +424,92 @@ public final class ManagedBeanO
     // --------------------------------------------------------------------------
 
     @Override
-    public void activate(BeanId id, ContainerTx tx) throws RemoteException
-    {
+    public void activate(BeanId id, ContainerTx tx) throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void beforeCompletion() throws RemoteException
-    {
+    public void beforeCompletion() throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void checkTimerServiceAccess() throws IllegalStateException
-    {
+    public void checkTimerServiceAccess() throws IllegalStateException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void commit(ContainerTx tx) throws RemoteException
-    {
+    public void commit(ContainerTx tx) throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void discard()
-    {
+    public void discard() {
         // d705480 - Managed beans are never discarded.
     }
 
     @Override
-    public boolean enlist(ContainerTx tx) throws RemoteException
-    {
+    public boolean enlist(ContainerTx tx) throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void ensurePersistentState(ContainerTx tx) throws RemoteException
-    {
+    public void ensurePersistentState(ContainerTx tx) throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public EnterpriseBean getEnterpriseBean() throws RemoteException
-    {
+    public EnterpriseBean getEnterpriseBean() throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void invalidate()
-    {
+    public void invalidate() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isDiscarded()
-    {
+    public boolean isDiscarded() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isRemoved()
-    {
+    public boolean isRemoved() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void passivate() throws RemoteException
-    {
+    public void passivate() throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void postCreate(boolean supportEjbPostCreateChanges) throws CreateException, RemoteException
-    {
+    public void postCreate(boolean supportEjbPostCreateChanges) throws CreateException, RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void postInvoke(int id, EJSDeployedSupport s) throws RemoteException
-    {
+    public void postInvoke(int id, EJSDeployedSupport s) throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object preInvoke(EJSDeployedSupport s, ContainerTx tx) throws RemoteException
-    {
+    public Object preInvoke(EJSDeployedSupport s, ContainerTx tx) throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void remove() throws RemoteException, RemoveException
-    {
+    public void remove() throws RemoteException, RemoveException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void rollback(ContainerTx tx) throws RemoteException
-    {
+    public void rollback(ContainerTx tx) throws RemoteException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void store() throws RemoteException
-    {
+    public void store() throws RemoteException {
         throw new UnsupportedOperationException();
     }
 

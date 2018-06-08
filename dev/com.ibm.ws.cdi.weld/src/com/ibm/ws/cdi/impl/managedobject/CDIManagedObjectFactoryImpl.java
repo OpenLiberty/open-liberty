@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
@@ -39,7 +40,7 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
     }
 
     @Override
-    public ManagedObject<T> existingInstance(T instance) {
+    public ManagedObject<T> existingInstance(T instance) throws ManagedObjectException {
         ManagedObject<T> moi = null;
         BeanManager beanManager = this.getBeanManager();
         if (beanManager != null) {
@@ -47,7 +48,7 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
                 Tr.debug(tc, "existingInstance entered with: " + Util.identity(instance));
             }
             WeldCreationalContext<T> cc = getCreationalContext(null);
-            moi = new CDIManagedObject<T>(instance, cc, null);
+            moi = new CDIManagedObject<T>(instance, cc, null, this.getCDIRuntime().getCurrentDeployment().getInjectionServices());
         }
 
         return moi;
@@ -55,23 +56,27 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
     }
 
     @Override
-    public ManagedObject<T> createManagedObject() throws Exception {
+    public ManagedObject<T> createManagedObject() throws ManagedObjectException {
         return super.createManagedObject(null);
     }
 
     /**
      * Create a new non-Contextual CreationalContext
+     *
+     * @throws ManagedObjectException
      */
     @Override
-    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext) {
+    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
         return getCreationalContext(invocationContext, false);
     }
 
     /**
      * Create a new non-Contextual CreationalContext
+     *
+     * @throws ManagedObjectException
      */
     @Override
-    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext, boolean nonContextual) {
+    protected WeldCreationalContext<T> getCreationalContext(ManagedObjectInvocationContext<T> invocationContext, boolean nonContextual) throws ManagedObjectException {
 
         ManagedObjectContext moc;
         // for managed bean case, if invocation context is not null, use that
@@ -88,11 +93,11 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
     }
 
     @Override
-    public ManagedObjectContext createContext() {
+    public ManagedObjectContext createContext() throws ManagedObjectException {
         return createContext(false);
     }
 
-    public ManagedObjectContext createContext(boolean nonContextual) {
+    public ManagedObjectContext createContext(boolean nonContextual) throws ManagedObjectException {
 
         Bean<T> bean = nonContextual ? null : getBean();
         //A ManagedBean may or may not be a CDI bean.
@@ -109,6 +114,6 @@ public class CDIManagedObjectFactoryImpl<T> extends AbstractManagedObjectFactory
 
     @Override
     public String toString() {
-        return "CDI Managed Object Factory for class: " + _managedClass.getName();
+        return "CDI Managed Object Factory for class: " + getManagedObjectClass().getName();
     }
 }

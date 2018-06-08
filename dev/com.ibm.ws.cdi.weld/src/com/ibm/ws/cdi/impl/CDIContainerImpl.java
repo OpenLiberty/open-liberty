@@ -114,7 +114,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
     public WebSphereCDIDeployment startInitialization(Application application) throws CDIException {
         try {
             //first create the deployment object which has the full structure of BDAs inside
-            WebSphereCDIDeployment webSphereCDIDeployment = createWebSphereCDIDeployment(application, getExtensionArchives(application));
+            WebSphereCDIDeployment webSphereCDIDeployment = createWebSphereCDIDeployment(application, getExtensionArchives());
             currentDeployment.set(webSphereCDIDeployment);
 
             //scan for beans
@@ -135,7 +135,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 // start the bootrapping process...
                 final WeldBootstrap weldBootstrap = webSphereCDIDeployment.getBootstrap();
                 weldBootstrap.startExtensions(webSphereCDIDeployment.getExtensions());
-                weldBootstrap.startContainer(contextID, Environments.EE_INJECT, webSphereCDIDeployment);
+                weldBootstrap.startContainer(contextID, Environments.EE, webSphereCDIDeployment);
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     @Override
                     public Void run() {
@@ -265,7 +265,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
         Set<WebSphereBeanDeploymentArchive> extensionBdas = new HashSet<WebSphereBeanDeploymentArchive>();
 
-        Set<ExtensionArchive> extensions = getExtensionArchives(applicationContext.getApplication());
+        Set<ExtensionArchive> extensions = getExtensionArchives();
 
         if (extensions != null) {
             for (ExtensionArchive extArchive : extensions) {
@@ -544,7 +544,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * @return
      * @throws CDIException
      */
-    private synchronized Set<ExtensionArchive> getExtensionArchives(Application application) throws CDIException {
+    private synchronized Set<ExtensionArchive> getExtensionArchives() throws CDIException {
 
         if (runtimeExtensionSet == null) {
             runtimeExtensionSet = new HashSet<ExtensionArchive>();
@@ -588,12 +588,9 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 String extClassesOnlyStr = (String) sr.getProperty(EXTENSION_CLASSES_ONLY_MODE);
                 boolean extClassesOnly = Boolean.parseBoolean(extClassesOnlyStr);
 
-                ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle,
-                                                                                            extra_classes,
-                                                                                            extraAnnotations,
+                ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
                                                                                             applicationBDAsVisible,
-                                                                                            extClassesOnly,
-                                                                                            application);
+                                                                                            extClassesOnly);
                 runtimeExtensionSet.add(extensionArchive);
 
             }

@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Sintaxe inv\u00e1lida no URI httpSessionCache. O motivo \u00e9 {0}.
 INCORRECT_URI_SYNTAX.explanation=A sintaxe do URI de configura\u00e7\u00e3o de JCache httpSessionCache especificado \u00e9 inv\u00e1lida.
 INCORRECT_URI_SYNTAX.useraction=Corrija a sintaxe do URI de configura\u00e7\u00e3o httpSessionCache especificado.
+
+ERROR_REMOVING_SESSION=SESN0301E: Ocorreu uma exce\u00e7\u00e3o ao remover uma sess\u00e3o do cache. A exce\u00e7\u00e3o \u00e9: {0}.
+ERROR_REMOVING_SESSION.explanation=Uma opera\u00e7\u00e3o com rela\u00e7\u00e3o ao cache falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+ERROR_REMOVING_SESSION.useraction=Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. A configura\u00e7\u00e3o do provedor de JCache pode precisar ser atualizada.
+
+PROP_HIT_ERROR=SESN0302E: Ocorreu uma exce\u00e7\u00e3o ao armazenar mudan\u00e7as de dados do aplicativo no cache. A exce\u00e7\u00e3o \u00e9: {0}.
+PROP_HIT_ERROR.explanation=Uma opera\u00e7\u00e3o com rela\u00e7\u00e3o ao cache falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+PROP_HIT_ERROR.useraction=Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. A configura\u00e7\u00e3o do provedor de JCache pode precisar ser atualizada.
+
+STORE_SESS_ERROR=SESN0303E: Ocorreu uma exce\u00e7\u00e3o ao armazenar uma sess\u00e3o no cache. A exce\u00e7\u00e3o \u00e9: {0}.
+STORE_SESS_ERROR.explanation=Uma opera\u00e7\u00e3o com rela\u00e7\u00e3o ao cache falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+STORE_SESS_ERROR.useraction=Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. A configura\u00e7\u00e3o do provedor de JCache pode precisar ser atualizada.
+
+LOAD_VALUE_ERROR=SESN0304E: Ocorreu uma exce\u00e7\u00e3o ao ler em um objeto dos dados do aplicativo para uma sess\u00e3o do cache. A exce\u00e7\u00e3o \u00e9: {0}.
+LOAD_VALUE_ERROR.explanation=Uma opera\u00e7\u00e3o com rela\u00e7\u00e3o ao cache falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+LOAD_VALUE_ERROR.useraction=Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. A configura\u00e7\u00e3o do provedor de JCache pode precisar ser atualizada.
+
+ERROR_CACHE_ACCESS=SESN0305E: Ocorreu uma exce\u00e7\u00e3o ao tentar acessar o cache. A exce\u00e7\u00e3o \u00e9: {0}.
+ERROR_CACHE_ACCESS.explanation=Uma opera\u00e7\u00e3o com rela\u00e7\u00e3o ao cache falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+ERROR_CACHE_ACCESS.useraction=Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. A configura\u00e7\u00e3o do provedor de JCache pode precisar ser atualizada.
+
+ERROR_SESSION_INVAL=SESN0306E: Ocorreu uma exce\u00e7\u00e3o ao invalidar uma sess\u00e3o no cache. A exce\u00e7\u00e3o \u00e9: {0}.
+ERROR_SESSION_INVAL.explanation=Uma opera\u00e7\u00e3o com rela\u00e7\u00e3o ao cache falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+ERROR_SESSION_INVAL.useraction=Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. A configura\u00e7\u00e3o do provedor de JCache pode precisar ser atualizada.
+
+ERROR_SESSION_INIT=SESN0307E: Ocorreu uma exce\u00e7\u00e3o ao inicializar o cache. A exce\u00e7\u00e3o \u00e9: {0}.
+ERROR_SESSION_INIT.explanation=Uma opera\u00e7\u00e3o com rela\u00e7\u00e3o ao cache falhou devido \u00e0 exce\u00e7\u00e3o especificada.
+ERROR_SESSION_INIT.useraction=Consulte a exce\u00e7\u00e3o para obter detalhes adicionais. A configura\u00e7\u00e3o do provedor de JCache pode precisar ser atualizada.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: Uma configura\u00e7\u00e3o httpSessionCache inv\u00e1lida ou ausente foi detectada. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=O recurso sessionCache n\u00e3o p\u00f4de ser inicializado completamente devido a uma configura\u00e7\u00e3o ausente ou inv\u00e1lida.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Verifique se a configura\u00e7\u00e3o do servidor define um elemento httpSessionCache que inclui um atributo libraryRef.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: O {0} sess\u00e3o cache da biblioteca est\u00e1 vazio. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=O recurso sessionCache n\u00e3o p\u00f4de localizar um provedor de JCache para carregar.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Verifique se a biblioteca cont\u00e9m um provedor de JCache e todos os caminhos est\u00e3o especificados corretamente.
+
+INTERNAL_SERVER_ERROR=Erro interno do servidor
+
+SESSION_CACHE_CONFIG_MESSAGE=Verifique se a configura\u00e7\u00e3o do servidor cont\u00e9m uma configura\u00e7\u00e3o httpSessionCache v\u00e1lida. Consulte a configura\u00e7\u00e3o de amostra. {0}

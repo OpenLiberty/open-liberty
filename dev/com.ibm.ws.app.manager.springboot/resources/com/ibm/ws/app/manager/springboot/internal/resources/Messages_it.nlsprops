@@ -35,17 +35,17 @@ warning.could.not.thin.application=CWWKC0251W: Impossibile convertire l''applica
 warning.could.not.thin.application.explanation=L'applicazione non pu\u00f2 essere convertita in un'applicazione thin. L'applicazione continuer\u00e0 a funzionare dal JAR originale. 
 warning.could.not.thin.application.useraction=Tentare di risolvere il problema nel messaggio di eccezione e riavviare il server o aggiornare l'applicazione. 
 
-error.need.springboot.version.15=CWWKC0252E: Impossibile eseguire l'applicazione perch\u00e9  \u00e8 configurata la versione errata della funzione Spring Boot in server.xml. L'applicazione richiede la configurazione della funzione springBoot-1.5.
-error.need.springboot.version.15.explanation=L'applicazione richiede Spring Boot versione 1.5 ma \u00e8 stata configurata una versione errata della funzione Spring Boot in server.xml.  
-error.need.springboot.version.15.useraction=La funzione springBoot-1.5 deve essere configurata in server.xml.
+error.need.springboot.version.15=CWWKC0252E: L'applicazione non si \u00e8 avviata poich\u00e9 la funzione springBoot-2.0 \u00e8 configurata nel file server.xml. L'applicazione richiede che sia configurata la funzione springBoot-1.5.
+error.need.springboot.version.15.explanation=L'applicazione richiede la funzione springBoot-1.5. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml. 
+error.need.springboot.version.15.useraction=Configurare la funzione springBoot-1.5 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.
 
-error.need.springboot.version.20=CWWKC0253E: Impossibile eseguire l'applicazione perch\u00e9  \u00e8 configurata la versione errata della funzione Spring Boot in server.xml. L'applicazione richiede la configurazione della funzione springBoot-2.0.
-error.need.springboot.version.20.explanation=L'applicazione richiede Spring Boot versione 2.0 ma \u00e8 stata configurata una versione errata della funzione Spring Boot in server.xml.  
-error.need.springboot.version.20.useraction=La funzione springBoot-2.0 deve essere configurata in server.xml.
+error.need.springboot.version.20=CWWKC0253E: L'applicazione non si \u00e8 avviata poich\u00e9 la funzione springBoot-1.5 \u00e8 configurata nel file server.xml. L'applicazione richiede che sia configurata la funzione springBoot-2.0.
+error.need.springboot.version.20.explanation=L'applicazione richiede la funzione springBoot-2.0. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml. 
+error.need.springboot.version.20.useraction=Configurare la funzione springBoot-2.0 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.
 
-error.missing.servlet=CWWKC0254E: Impossibile eseguire l'applicazione perch\u00e9 richiede che una funzione Servlet sia configurata nel file server.xml.
-error.missing.servlet.explanation=L'applicazione \u00e8 un'applicazione Web e richiede che una funzione Servlet sia configurata nel file server.xml.
-error.missing.servlet.useraction=Una funzione servlet deve essere configurata in server.xml.
+error.missing.servlet=CWWKC0254E: L'applicazione non si \u00e8 avviata poich\u00e9 richiede che una funzione servlet sia configurata nel file server.xml.
+error.missing.servlet.explanation=L'applicazione \u00e8 un'applicazione Web e richiede che una funzione servlet sia configurata nel file server.xml.
+error.missing.servlet.useraction=Configurare la funzione servlet nel file server.xml.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Impossibile avviare l''applicazione Spring Boot {0} perch\u00e9 l''applicazione {1} \u00e8 gi\u00e0 attiva. Non \u00e8 possibile configurare pi\u00f9 applicazioni Spring Boot nella stessa configurazione del server.
 error.multiple.applications.not.allowed.explanation=La configurazione di pi\u00f9 applicazioni Spring Boot nella stessa configurazione server non \u00e8 supportata.
@@ -58,3 +58,11 @@ error.no.manifest.found.useraction=Configurare un'applicazione Spring Boot valid
 error.no.spring.class.found=CWWKC0257E: Il file META-INF/MANIFEST.MF dell'applicazione Spring Boot deve specificare un'intestazione Start-Class.
 error.no.spring.class.found.explanation=Le applicazioni Spring Boot devono contenere una classe principale specificata dall'intestazione manifest Start-Class.
 error.no.spring.class.found.useraction=Configurare un'applicazione Spring Boot valida, che contenga un'intestazione manifest Start-Class, con il server.
+
+error.missing.ssl=CWWKC0258E: L'applicazione non si \u00e8 avviata poich\u00e9 richiede che una funzione SSL sia configurata nel file server.xml.
+error.missing.ssl.explanation=L'applicazione \u00e8 un'applicazione sicura e richiede che una funzione SSL sia configurata nel file server.xml.
+error.missing.ssl.useraction=Configurare la funzione transportSecurity-1.0 nel file server.xml.
+
+error.missing.websocket=CWWKC0259E: L'applicazione non si \u00e8 avviata poich\u00e9 richiede che una funzione websocket sia configurata nel file server.xml.
+error.missing.websocket.explanation=L'applicazione \u00e8 un'applicazione websocket e richiede che una funzione websocket sia configurata nel file server.xml.
+error.missing.websocket.useraction=Configurare una funzione websocket nel file server.xml.

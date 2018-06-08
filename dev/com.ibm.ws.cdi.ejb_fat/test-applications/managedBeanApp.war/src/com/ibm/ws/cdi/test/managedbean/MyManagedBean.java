@@ -49,7 +49,6 @@ public class MyManagedBean {
     @SuppressWarnings("unused")
     @PostConstruct
     private void doPostConstruct() {
-
         CounterUtil.addToMsgList(this.getClass().getSuperclass().getSimpleName() + " called postConstruct()");
     }
 

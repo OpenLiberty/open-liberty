@@ -149,4 +149,11 @@ public interface EsaResourceWritable extends WebDisplayable, ApplicableToProduct
      * @param rawBundleRequirements The Require-Capability headers from all the bundles contained in this ESA
      */
     public void setJavaSEVersionRequirements(String minimum, String maximum, Collection<String> rawBundleRequirements);
+
+    /**
+     * Sete whether the feature is a singleton or not
+     *
+     * @param singleton
+     */
+    public void setSingleton(String singleton);
 }

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+                   
+    <OCD id="com.ibm.ws.security.authentication.filter.metatype" name="%authFilter" description="%authFilter.desc" ibm:alias="authFilter">
+        <AD id="webApp" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.webApp" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
+        <AD id="requestUrl"  ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.requestUrl" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
+        <AD id="remoteAddress" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.remoteAddress" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
+        <AD id="host" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.host" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
+        <AD id="userAgent" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter.userAgent" required="false" type="String" ibm:flat="true" cardinality="2147483647" />
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter">
+        <Object ocdref="com.ibm.ws.security.authentication.filter.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.authentication.filter.webApp.metatype" name="%webApp" description="%webApp.desc">
+       <AD id="name" name="%name" description="%name.desc" required="true" type="String"  />
+        <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String"   default="contains" >
+            	<Option label="%equals.desc" value="equals"/>
+            	<Option label="%contains.desc" value="contains"/>
+            	<Option label="%notContain.desc" value="notContain"/>
+          </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter.webApp">
+         <Object ocdref="com.ibm.ws.security.authentication.filter.webApp.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.authentication.filter.requestUrl.metatype" name="%requestUrl" description="%requestUrl.desc">
+        <AD id="urlPattern" name="%urlPattern" description="%urlPattern.desc" required="true" type="String"  />
+        <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String" default="contains" >
+            	<Option label="%equals.desc" value="equals"/>
+            	<Option label="%contains.desc" value="contains"/>
+            	<Option label="%notContain.desc" value="notContain"/>
+          </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter.requestUrl">
+         <Object ocdref="com.ibm.ws.security.authentication.filter.requestUrl.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.authentication.filter.remoteAddress.metatype" name="%remoteAddress" description="%remoteAddress.desc">
+        <AD id="ip" name="%ip" description="%ip.desc" required="false" type="String" />
+        <AD id="matchType" name="%matchType" description="%matchType.desc" required="true" type="String"   default="contains" >
+            	<Option label="%equals.desc" value="equals"/>
+            	<Option label="%contains.desc" value="contains"/>
+            	<Option label="%notContain.desc" value="notContain"/>
+            	<Option label="%greaterThan.desc" value="greaterThan"/>
+            	<Option label="%lessThan.desc" value="lessThan"/>
+          </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter.remoteAddress">
+         <Object ocdref="com.ibm.ws.security.authentication.filter.remoteAddress.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.authentication.filter.host.metatype" name="%host" description="%host.desc">
+       <AD id="name" name="%name" description="%name.desc" required="true" type="String"  />
+        <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String"   default="contains" >
+            	<Option label="%equals.desc" value="equals"/>
+            	<Option label="%contains.desc" value="contains"/>
+            	<Option label="%notContain.desc" value="notContain"/>
+          </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter.host">
+         <Object ocdref="com.ibm.ws.security.authentication.filter.host.metatype" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.authentication.filter.userAgent.metatype" name="%userAgent" description="%userAgent.desc">
+       <AD id="agent" name="%agent" description="%agent.desc" required="true" type="String"  />
+        <AD id="matchType" name="%matchType" description="%matchType.desc" required="false" type="String" default="contains">
+            	<Option label="%equals.desc" value="equals"/>
+            	<Option label="%contains.desc" value="contains"/>
+            	<Option label="%notContain.desc" value="notContain"/>
+          </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.authentication.filter.userAgent">
+         <Object ocdref="com.ibm.ws.security.authentication.filter.userAgent.metatype" />
+    </Designate>
+
+</metatype:MetaData>

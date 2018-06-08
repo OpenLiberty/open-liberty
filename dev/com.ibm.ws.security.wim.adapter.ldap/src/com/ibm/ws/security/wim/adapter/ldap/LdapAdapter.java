@@ -940,7 +940,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     ((Entity) parentDO).getGroups().add((Group) outEntity);
                 } else {
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, METHODNAME + " Expected group entity. Group will excluded from group membership. Entity: " + outEntity);
+                        Tr.debug(tc, METHODNAME + " Expected group entity. Group will excluded from group membership. Entity is " + outEntity, ldapEntry);
                     }
                 }
             } else if (SchemaConstants.DO_MEMBERS.equalsIgnoreCase(propName)) {
@@ -3295,10 +3295,8 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         if (propertyNames != null) {
             for (String propertyName : propertyNames) {
                 if (entity.isMandatory(propertyName) && !entity.isSet(propertyName)) {
-                    Object[] param = new Object[1];
-                    param[0] = propertyName;
                     throw new MissingMandatoryPropertyException(WIMMessageKey.MISSING_MANDATORY_PROPERTY, Tr.formatMessage(tc, WIMMessageKey.MISSING_MANDATORY_PROPERTY,
-                                                                                                                           WIMMessageHelper.generateMsgParms(param)));
+                                                                                                                           WIMMessageHelper.generateMsgParms(propertyName)));
                 }
                 if (entity.isSet(propertyName)) {
                     if (entity.isPersistentProperty(propertyName)) {

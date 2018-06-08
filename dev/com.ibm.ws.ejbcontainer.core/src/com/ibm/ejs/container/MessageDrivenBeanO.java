@@ -36,6 +36,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejbcontainer.CallbackKind;
 import com.ibm.ws.ejbcontainer.EJBPMICollaborator;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.traceinfo.ejbcontainer.TEBeanLifeCycleInfo;
 import com.ibm.wsspi.injectionengine.InjectionTargetContext;
 
@@ -44,12 +45,8 @@ import com.ibm.wsspi.injectionengine.InjectionTargetContext;
  * single MessageDrivenBean instance and provides the
  * MessageDrivenConext implementation for the enterprise bean. <p>
  **/
-public class MessageDrivenBeanO
-                extends ManagedBeanOBase
-                implements MessageDrivenContextExtension, // LI3492-2
-                UserTransactionEnabledContext,
-                Serializable
-{
+public class MessageDrivenBeanO extends ManagedBeanOBase implements MessageDrivenContextExtension, // LI3492-2
+                UserTransactionEnabledContext, Serializable {
     private static final long serialVersionUID = -7199444167428525287L;
     private static final TraceComponent tc = Tr.register(MessageDrivenBeanO.class,
                                                          "EJBContainer",
@@ -85,14 +82,12 @@ public class MessageDrivenBeanO
 
     // d367572 change CTOR signature for EJB3 changes.
     // d399469.2 moved code to initialize method.
-    public MessageDrivenBeanO(EJSContainer c, EJSHome h)
-    {
+    public MessageDrivenBeanO(EJSContainer c, EJSHome h) {
         super(c, h);
     }
 
     @Override
-    public void setEnterpriseBean(Object bean)
-    {
+    public void setEnterpriseBean(Object bean) {
         super.setEnterpriseBean(bean);
         if (bean instanceof MessageDrivenBean) // d367572
         {
@@ -101,8 +96,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    protected String getStateName(int state)
-    {
+    protected String getStateName(int state) {
         return StateStrs[state];
     }
 
@@ -115,12 +109,9 @@ public class MessageDrivenBeanO
      */
     // d399469.2 - added entire method.
     @Override
-    protected void initialize(boolean reactivate)
-                    throws RemoteException, InvocationTargetException
-    {
+    protected void initialize(boolean reactivate) throws RemoteException, InvocationTargetException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "initialize");
         }
 
@@ -130,8 +121,7 @@ public class MessageDrivenBeanO
         state = PRE_CREATE; // d159152
 
         CallbackContextHelper contextHelper = new CallbackContextHelper(this); // d630940
-        try
-        {
+        try {
             // Disallow setRollbackOnly until create is done.
             allowRollbackOnly = false;
 
@@ -153,7 +143,7 @@ public class MessageDrivenBeanO
 
             // Now set the MessageDrivenContext and/or do the dependency injection.
             // Note that dependency injection must occur while in PRE_CREATE state.
-            injectInstance(ivEjbInstance, this);
+            injectInstance(ivManagedObject, ivEjbInstance, this);
 
             //---------------------------------------------------------
             // Now that the MessageDrivenContext is set and/or dependencies
@@ -164,22 +154,18 @@ public class MessageDrivenBeanO
             setState(CREATING); //d399469.2
 
             // Determine of life cycle callback to make if any.
-            if (ivCallbackKind == CallbackKind.MessageDrivenBean)
-            {
+            if (ivCallbackKind == CallbackKind.MessageDrivenBean) {
                 Method m = bmd.ivEjbCreateMethod; //d453778
                 if (m != null) //d453778
                 {
                     // This is a 2.x MDB that has a ejbCreate method in it.
-                    try
-                    {
+                    try {
                         if (isTraceOn && // d527372
-                            TEBeanLifeCycleInfo.isTraceEnabled())
-                        {
+                            TEBeanLifeCycleInfo.isTraceEnabled()) {
                             TEBeanLifeCycleInfo.traceEJBCallEntry("ejbCreate");
                         }
                         m.invoke(ivEjbInstance, new Object[] {});
-                    } catch (InvocationTargetException itex)
-                    {
+                    } catch (InvocationTargetException itex) {
                         //FFDCFilter.processException(itex, CLASS_NAME + ".MessageDrivenBeanO", "96", this);
 
                         // All exceptions returned through a reflect method call
@@ -195,74 +181,60 @@ public class MessageDrivenBeanO
                         // MDB 2.x is allowed to throw application exceptions as well as
                         // javax.ejb.CreateException. Continue to wrap with a CreateFailureException
                         // to ensure no behavior change with prior releases.
-                        if (isTraceOn && tc.isDebugEnabled())
-                        {
+                        if (isTraceOn && tc.isDebugEnabled()) {
                             Tr.debug(tc, "MDB ejbCreate failure", targetEx);
                         }
                         throw new CreateFailureException(targetEx);
-                    } catch (Throwable ex)
-                    {
+                    } catch (Throwable ex) {
                         //FFDCFilter.processException(ex, CLASS_NAME + ".MessageDrivenBeanO", "96", this);
 
                         // MDB 2.x is allowed to throw application exceptions as well as
                         // javax.ejb.CreateException. Continue to wrap with a CreateFailureException
                         // to ensure no behavior change with prior releases.
-                        if (isTraceOn && tc.isDebugEnabled())
-                        {
+                        if (isTraceOn && tc.isDebugEnabled()) {
                             Tr.debug(tc, "MDB ejbCreate failure", ex);
                         }
                         throw new CreateFailureException(ex);
-                    } finally
-                    {
+                    } finally {
                         if (isTraceOn && // d527372
-                            TEBeanLifeCycleInfo.isTraceEnabled())
-                        {
+                            TEBeanLifeCycleInfo.isTraceEnabled()) {
                             TEBeanLifeCycleInfo.traceEJBCallExit("ejbCreate");
                         }
                     }
                 }
-            }
-            else if (ivCallbackKind == CallbackKind.InvocationContext)
-            {
+            } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                 // This is a MDB 3 that may have one or more PostConstruct interceptors
                 // methods. Invoke PostContruct interceptors if there is atleast 1
                 // PostConstruct interceptor.
-                try
-                {
+                try {
                     if (imd != null) // d402681
                     {
                         InterceptorProxy[] proxies = imd.ivPostConstructInterceptors;
-                        if (proxies != null)
-                        {
+                        if (proxies != null) {
                             if (isTraceOn && // d527372
-                                TEBeanLifeCycleInfo.isTraceEnabled())
-                            {
+                                TEBeanLifeCycleInfo.isTraceEnabled()) {
                                 TEBeanLifeCycleInfo.traceEJBCallEntry("PostConstruct");
                             }
                             InvocationContextImpl<?> inv = getInvocationContext();
                             inv.doLifeCycle(proxies, bmd._moduleMetaData); //d450431, F743-14982
                         }
                     }
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     //FFDCFilter.processException(t, CLASS_NAME + ".MessageDrivenBeanO", "281", this);
 
                     // PostConstruct interceptors are allowed to throw system runtime exceptions,
                     // but NOT application exceptions. Therefore, wrap the caught Throwable
                     // in a javax.ejb.EJBException so that it gets handled as an unchecked
                     // exception.
-                    if (isTraceOn && tc.isDebugEnabled())
-                    {
+                    if (isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(tc, "MDB PostConstruct failure", t);
                     }
                     throw ExceptionUtil.EJBException("MDB PostConstruct failure", t);
-                } finally
-                {
+                } finally {
                     if (isTraceOn && // d527372
                         TEBeanLifeCycleInfo.isTraceEnabled() &&
                         imd != null &&
-                        imd.ivPostConstructInterceptors != null)
-                    {
+                        imd.ivPostConstructInterceptors != null) {
                         TEBeanLifeCycleInfo.traceEJBCallExit("PostConstruct");
                     }
                 }
@@ -282,18 +254,17 @@ public class MessageDrivenBeanO
             contextHelper.complete(true);
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "initialize");
         }
     }
 
     @Override
-    protected void injectInstance(Object managedObject, InjectionTargetContext injectionContext) {
+    protected void injectInstance(ManagedObject<?> managedObject, Object instance, InjectionTargetContext injectionContext) {
         if (messageDrivenBean != null) {
             messageDrivenBean.setMessageDrivenContext(this);
         }
-        super.injectInstance(managedObject, injectionContext);
+        super.injectInstance(managedObject, instance, injectionContext);
     }
 
     /**
@@ -309,10 +280,7 @@ public class MessageDrivenBeanO
      */
     // d142250
     @Override
-    public final void postCreate(boolean supportEJBPostCreateChanges)
-                    throws CreateException,
-                    RemoteException
-    {
+    public final void postCreate(boolean supportEJBPostCreateChanges) throws CreateException, RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "postCreate : NotImplementedException");
         throw new UnsupportedOperationException();
@@ -322,8 +290,7 @@ public class MessageDrivenBeanO
      * Return true iff this <code>BeanO</code> has been removed. <p>
      */
     @Override
-    public boolean isRemoved()
-    {
+    public boolean isRemoved() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isRemoved : false");
         return false;
@@ -331,8 +298,7 @@ public class MessageDrivenBeanO
 
     //167937 - rewrote entire method.
     @Override
-    public void discard()
-    {
+    public void discard() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "discard");
@@ -362,8 +328,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public boolean isDiscarded()
-    {
+    public boolean isDiscarded() {
         return discarded;
     }
 
@@ -371,8 +336,7 @@ public class MessageDrivenBeanO
      * Nothing to do in MessageDrivenBeans for invalidate.
      */
     @Override
-    public final void invalidate()
-    {
+    public final void invalidate() {
         //-------------------------------------------
         // This method body intentionally left blank
         //-------------------------------------------
@@ -389,8 +353,7 @@ public class MessageDrivenBeanO
      */
     @Override
     public final void activate(BeanId id, ContainerTx tx) // d114677 d139352-2
-    throws RemoteException
-    {
+                    throws RemoteException {
         //-----------------------------------------------
         // activate on a message driven bean is a no-op
         //-----------------------------------------------
@@ -398,8 +361,7 @@ public class MessageDrivenBeanO
 
     @Override
     public final boolean enlist(ContainerTx tx) // d114677
-    throws RemoteException
-    {
+                    throws RemoteException {
         ivContainerTx = tx; //167937
         //---------------------------------------------------
         // Enlisting message driven beans should be a no-op
@@ -424,8 +386,7 @@ public class MessageDrivenBeanO
     @Override
     public final Object preInvoke(EJSDeployedSupport s,
                                   ContainerTx tx) // d139352-2
-    throws RemoteException
-    {
+                    throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "preInvoke");
@@ -438,9 +399,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public final void postInvoke(int id, EJSDeployedSupport s)
-                    throws RemoteException
-    {
+    public final void postInvoke(int id, EJSDeployedSupport s) throws RemoteException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "postInvoke: " + this);
@@ -450,8 +409,7 @@ public class MessageDrivenBeanO
         }
 
         //167937 - discard bean if BMT was started and is still active.
-        if (ivContainerTx != null && ivContainerTx.isBmtActive(s.methodInfo))
-        {
+        if (ivContainerTx != null && ivContainerTx.isBmtActive(s.methodInfo)) {
             // BMT is still active.  Discard bean and let the BeanManaged.postInvoke
             // do the rollback and throwing of the exception.
             if (isTraceOn && tc.isDebugEnabled())
@@ -465,15 +423,11 @@ public class MessageDrivenBeanO
 
     @Override
     public void returnToPool() // RTC107108
-    throws RemoteException
-    {
-        if (isDestroyed())
-        {
+                    throws RemoteException {
+        if (isDestroyed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "returnToPool: skipped: " + this);
-        }
-        else
-        {
+        } else {
             setState(IN_METHOD, POOLED);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -484,9 +438,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public final void commit(ContainerTx tx)
-                    throws RemoteException
-    {
+    public final void commit(ContainerTx tx) throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "commit");
         throw new InvalidBeanOStateException(StateStrs[state], "NONE" +
@@ -494,9 +446,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public final void rollback(ContainerTx tx)
-                    throws RemoteException
-    {
+    public final void rollback(ContainerTx tx) throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "rollback");
         throw new InvalidBeanOStateException(StateStrs[state], "NONE" +
@@ -504,9 +454,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public final void store()
-                    throws RemoteException
-    {
+    public final void store() throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "store");
         throw new InvalidBeanOStateException(StateStrs[state], "NONE" +
@@ -514,9 +462,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public final void passivate()
-                    throws RemoteException
-    {
+    public final void passivate() throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "passivate");
         throw new InvalidBeanOStateException(StateStrs[state], "NONE" +
@@ -528,9 +474,7 @@ public class MessageDrivenBeanO
      * beans, there is no home interface on which to invoke it.
      */
     @Override
-    public final void remove()
-                    throws RemoteException, RemoveException
-    {
+    public final void remove() throws RemoteException, RemoveException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "remove");
         throw new InvalidBeanOStateException(StateStrs[state], "NONE" +
@@ -538,9 +482,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public final void beforeCompletion()
-                    throws RemoteException
-    {
+    public final void beforeCompletion() throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "beforeCompletion");
         //------------------------------------------------------
@@ -574,8 +516,7 @@ public class MessageDrivenBeanO
      * the cache if there state is destroyed).
      **/
     @Override
-    public boolean isDestroyed()
-    {
+    public boolean isDestroyed() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "isDestroyed");
@@ -600,8 +541,7 @@ public class MessageDrivenBeanO
      * associated MessageDrivenBean bean. <p>
      */
     @Override
-    public final synchronized void destroy()
-    {
+    public final synchronized void destroy() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "destroy");
@@ -612,8 +552,7 @@ public class MessageDrivenBeanO
         // For MessageDriven, 'destroy' is where the bean is removed and destroyed.
         // Remove time should include calling any lifecycle callbacks.   d626533.1
         long removeStartTime = -1;
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             removeStartTime = pmiBean.initialTime(EJBPMICollaborator.REMOVE_RT);
         }
 
@@ -625,8 +564,7 @@ public class MessageDrivenBeanO
             CallbackContextHelper contextHelper = new CallbackContextHelper(this); // d399469.2, d630940
             BeanMetaData bmd = home.beanMetaData;
 
-            try
-            {
+            try {
                 // Pre-Destroy is allowed to access java:comp/env, so all contexts
                 // must be established around the Pre-Destroy calls. This must be done
                 // for MessageDriven beans since they are often destroyed outside the
@@ -635,66 +573,53 @@ public class MessageDrivenBeanO
                                     CallbackContextHelper.Contexts.All); // d630940
 
                 // Determine kind of life cycle callback to make, if any.
-                if (ivCallbackKind == CallbackKind.MessageDrivenBean)
-                {
+                if (ivCallbackKind == CallbackKind.MessageDrivenBean) {
                     // MDB 2.x has a ejbRemove method in it, so it needs to be called.
                     if (isTraceOn && // d527372
-                        TEBeanLifeCycleInfo.isTraceEnabled())
-                    {
+                        TEBeanLifeCycleInfo.isTraceEnabled()) {
                         traceString = "ejbRemove";
                         TEBeanLifeCycleInfo.traceEJBCallEntry(traceString);
                     }
                     messageDrivenBean.ejbRemove();
-                }
-                else if (ivCallbackKind == CallbackKind.InvocationContext)
-                {
+                } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                     // MDB 3 may have one or more PreDestroy interceptor methods.
                     // Invoke PreDestroy if at least 1 PreDestroy interceptor exists.
                     if (isTraceOn && // d527372
-                        TEBeanLifeCycleInfo.isTraceEnabled())
-                    {
+                        TEBeanLifeCycleInfo.isTraceEnabled()) {
                         traceString = "PreDestroy";
                         TEBeanLifeCycleInfo.traceEJBCallEntry(traceString);
                     }
                     InterceptorMetaData imd = bmd.ivInterceptorMetaData; //d450431
                     InterceptorProxy[] proxies = imd.ivPreDestroyInterceptors;
-                    if (proxies != null)
-                    {
+                    if (proxies != null) {
                         InvocationContextImpl<?> inv = getInvocationContext();
                         inv.doLifeCycle(proxies, bmd._moduleMetaData); //d450431, F743-14982
                     }
                 }
-            } catch (Throwable ex)
-            {
+            } catch (Throwable ex) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".destroy", "376", this);
                 if (isTraceOn && tc.isEventEnabled()) // d144064
                 {
                     Tr.event(tc, traceString + " threw and exception:", new Object[] { this, ex });
                 }
-            } finally
-            {
-                try
-                {
+            } finally {
+                try {
                     contextHelper.complete(true);
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     FFDCFilter.processException(t, CLASS_NAME + ".destroy", "848", this);
 
                     // Just trace this event and continue so that BeanO is transitioned
                     // to the DESTROYED state.  No other lifecycle callbacks on this bean
                     // instance will occur once in the DESTROYED state, which is the same
                     // affect as if bean was discarded as result of this exception.
-                    if (isTraceOn && tc.isEventEnabled())
-                    {
+                    if (isTraceOn && tc.isEventEnabled()) {
                         Tr.event(tc, "destroy caught exception: ", new Object[] { this, t });
                     }
                 }
 
                 if (isTraceOn && // d527372
-                    TEBeanLifeCycleInfo.isTraceEnabled())
-                {
-                    if (traceString != null)
-                    {
+                    TEBeanLifeCycleInfo.isTraceEnabled()) {
+                    if (traceString != null) {
                         TEBeanLifeCycleInfo.traceEJBCallExit(traceString);
                     }
                 }
@@ -711,8 +636,7 @@ public class MessageDrivenBeanO
 
         // For MessageDriven, 'destroy' is where the bean is removed and destroyed.
         // Update both counters and end remove time.                     d626533.1
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             pmiBean.beanRemoved();
             pmiBean.beanDestroyed();
             pmiBean.finalTime(EJBPMICollaborator.REMOVE_RT, removeStartTime);
@@ -741,9 +665,7 @@ public class MessageDrivenBeanO
      **/
     // LI2281.07
     @Override
-    public void checkTimerServiceAccess()
-                    throws IllegalStateException
-    {
+    public void checkTimerServiceAccess() throws IllegalStateException {
         // -----------------------------------------------------------------------
         // EJB Specification 2.1, 15.5.1 - Timer service methods are only
         // allowed during business methods and ejbTimeout.
@@ -770,16 +692,14 @@ public class MessageDrivenBeanO
      * Get user transaction object bean can use to demarcate transactions
      */
     @Override
-    public synchronized UserTransaction getUserTransaction()
-    {
+    public synchronized UserTransaction getUserTransaction() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getUserTransaction");
 
         // Calling getUserTransaction is not allowed from setMessageDrivenContext
         // per the EJB Specification.                                      d159152
-        if ((state == PRE_CREATE))
-        {
+        if ((state == PRE_CREATE)) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("MessageDrivenBean: getUserTransaction " +
@@ -805,8 +725,7 @@ public class MessageDrivenBeanO
      * as its transaction attribute
      */
     @Override
-    public void setRollbackOnly()
-    {
+    public void setRollbackOnly() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "setRollbackOnly");
@@ -823,8 +742,7 @@ public class MessageDrivenBeanO
     }
 
     @Override
-    public boolean getRollbackOnly()
-    {
+    public boolean getRollbackOnly() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getRollbackOnly");
@@ -844,8 +762,7 @@ public class MessageDrivenBeanO
      */
     // Chanced EnterpriseBean to Object. d366807.1
     @Override
-    public Object getBeanInstance()
-    {
+    public Object getBeanInstance() {
         return ivEjbInstance;
     } // getBeanInstance()
 
@@ -856,9 +773,7 @@ public class MessageDrivenBeanO
      * are created on demand by the container, not by the client. <p>
      */
     @Override
-    public final EnterpriseBean getEnterpriseBean()
-                    throws RemoteException
-    {
+    public final EnterpriseBean getEnterpriseBean() throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getEnterpriseBean");
 
@@ -875,8 +790,7 @@ public class MessageDrivenBeanO
      **/
     // d630824
     @Override
-    public Object[] getInterceptors()
-    {
+    public Object[] getInterceptors() {
         return ivInterceptors;
     }
 
@@ -886,8 +800,7 @@ public class MessageDrivenBeanO
      */
     // d116376 d178396
     @Override
-    public Principal getCallerPrincipal()
-    {
+    public Principal getCallerPrincipal() {
         // Calling getCallerPrincipal is not allowed from setMessageDrivenContext.
         if ((state == PRE_CREATE)) // prevent in setMessageDrivenContext
         {
@@ -909,8 +822,7 @@ public class MessageDrivenBeanO
     public boolean isCallerInRole(String roleName) // F743-6142
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "isCallerInRole, role = " + roleName + ", state = " + StateStrs[state]);
         }
 
@@ -919,14 +831,12 @@ public class MessageDrivenBeanO
             if ((state == PRE_CREATE || state == CREATING) || (!allowRollbackOnly))
                 throw new IllegalStateException();
 
-            if (state == IN_METHOD)
-            {
+            if (state == IN_METHOD) {
                 bean = ivEjbInstance;
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "isCallerInRole");
         }
 
@@ -974,9 +884,7 @@ public class MessageDrivenBeanO
      **/
     // LI2281.07
     @Override
-    public TimerService getTimerService()
-                    throws IllegalStateException
-    {
+    public TimerService getTimerService() throws IllegalStateException {
         // Calling getTimerService is not allowed from setMessageDrivenContext.
         if ((state == PRE_CREATE)) // prevent in setMessageDrivenContext
         {
@@ -1001,11 +909,9 @@ public class MessageDrivenBeanO
      **/
     // F743-21028
     @Override
-    public Map<String, Object> getContextData()
-    {
+    public Map<String, Object> getContextData() {
         // Calling getContextData is not allowed from setMessageDrivenContext.
-        if (state == PRE_CREATE || state == DESTROYED)
-        {
+        if (state == PRE_CREATE || state == DESTROYED) {
             IllegalStateException ise;
 
             ise = new IllegalStateException("MessageDrivenBean: getContextData " +
@@ -1040,8 +946,7 @@ public class MessageDrivenBeanO
      */
     // LI3492-2
     @Override
-    public void flushCache()
-    {
+    public void flushCache() {
         // Calling flushCache is not allowed from setMessageDrivenContext.
         if ((state == PRE_CREATE)) // prevent in setMessageDrivenContext
         {
@@ -1074,8 +979,7 @@ public class MessageDrivenBeanO
     // d132828
     @Override
     public void ensurePersistentState(ContainerTx tx) // d139352-2
-    throws RemoteException
-    {
+                    throws RemoteException {
         // method intentionally left blank
         // provides implementation for those not implementing (non CMP 1.1)
     }
@@ -1083,8 +987,7 @@ public class MessageDrivenBeanO
     //d140003.20
     // we need the module to tell whether to set isolation level for user transactions
     @Override
-    public int getModuleVersion()
-    {
+    public int getModuleVersion() {
         return home.beanMetaData.ivModuleVersion;
     }
 
@@ -1101,10 +1004,10 @@ public class MessageDrivenBeanO
      * Translation of state into string values
      */
     protected static final String StateStrs[] = {
-                                                 "DESTROYED", // 0
-                                                 "POOLED", // 1
-                                                 "IN_METHOD", // 2
-                                                 "PRE_CREATE", // 3  - setMessageDrivenContext         // d159152
-                                                 "CREATING" // 4                                    // d399469.2
+                                                  "DESTROYED", // 0
+                                                  "POOLED", // 1
+                                                  "IN_METHOD", // 2
+                                                  "PRE_CREATE", // 3  - setMessageDrivenContext         // d159152
+                                                  "CREATING" // 4                                    // d399469.2
     };
 }

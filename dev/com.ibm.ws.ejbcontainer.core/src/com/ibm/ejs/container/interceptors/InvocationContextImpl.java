@@ -52,8 +52,7 @@ import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
  * methods defined for the EJB. Thus the lifetime will be the same as the
  * lifetime of a EJSDeployedSupport object.
  */
-public class InvocationContextImpl<T> implements InvocationContext, ManagedObjectInvocationContext<T>
-{
+public class InvocationContextImpl<T> implements InvocationContext, ManagedObjectInvocationContext<T> {
     private static final TraceComponent tc = Tr.register(InvocationContextImpl.class,
                                                          "EJB3Interceptors",
                                                          "com.ibm.ejs.container.container");
@@ -160,8 +159,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      *            created for the bean.
      */
     public void initialize(T bean, ManagedObjectContext managedObjectContext,
-                           Object[] interceptors)
-    {
+                           Object[] interceptors) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "initialize for bean = " + bean +
                          ", context = " + managedObjectContext +
@@ -195,8 +193,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      *            methods to be invoked.
      */
     public void initializeForAroundConstruct(ManagedObjectContext managedObjectContext,
-                                             Object[] interceptors, InterceptorProxy[] proxies)
-    {
+                                             Object[] interceptors, InterceptorProxy[] proxies) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "initializeForAroundConstruct : context = " + managedObjectContext +
                          " interceptors = " + Arrays.toString(interceptors) + ", proxies = " + Arrays.toString(proxies));
@@ -255,8 +252,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      */
 
     public Object doAroundInvoke(InterceptorProxy[] proxies, Method businessMethod, Object[] parameters, EJSDeployedSupport s) //LIDB3294-41
-    throws Exception
-    {
+                    throws Exception {
         ivMethod = businessMethod;
         ivParameters = parameters;
         ivEJSDeployedSupport = s; //LIDB3294-41
@@ -267,8 +263,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
         {
             Tr.entry(tc, "doAroundInvoke for business method: " + ivMethod.getName());
         }
-        try
-        {
+        try {
             return doAroundInterceptor();
         } finally // d367572.8
         {
@@ -291,9 +286,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      *
      * @throws Exception from around invoke or business method.
      */
-    private Object doAroundInterceptor()
-                    throws Exception
-    {
+    private Object doAroundInterceptor() throws Exception {
         // Note, we do not call setParameters since the assumption is the
         // wrapper code passes an Object array that always contains the
         // correct type.  If we want type checking to ensure wrapper
@@ -327,18 +320,15 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
             Tr.entry(tc, "doLifeCycle, number of interceptors = " + ivNumberOfInterceptors);
         }
 
-        if (ivNumberOfInterceptors > 0)
-        {
+        if (ivNumberOfInterceptors > 0) {
             ivNextIndex = 0;
-            try
-            {
+            try {
                 proceed();
             } catch (Throwable t) // d415968
             {
                 // FFDCFilter.processException( t, CLASS_NAME + ".doLifeCycle", "260", this );
                 lifeCycleExceptionHandler(t, mmd); // d367572.7, F743-14982
-            } finally
-            {
+            } finally {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) // d415968
                 {
                     Tr.exit(tc, "doLifeCycle");
@@ -360,8 +350,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
     // d450431 - ensure runtime exception is not an application exception.
     private void lifeCycleExceptionHandler(Throwable t, EJBModuleMetaDataImpl mmd) // F743-14982
     {
-        if (t instanceof RuntimeException)
-        {
+        if (t instanceof RuntimeException) {
             // Is the RuntimeException an application exception?
             RuntimeException rtex = (RuntimeException) t;
             if (mmd.getApplicationExceptionRollback(rtex) != null) // F743-14982
@@ -372,36 +361,29 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
                 String lifeCycle = w.getMethodGenericString();
                 EJBException ex = ExceptionUtil.EJBException(lifeCycle
                                                              + " is not allowed to throw an application exception", rtex);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "lifeCycleExceptionHandler throwing EJBException", ex);
                 }
                 throw ex;
-            }
-            else
-            {
+            } else {
                 // Not an application exception, so let the mapping
                 // strategy handle this system runtime exception.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "lifeCycleExceptionHandler is rethrowing RuntimeException "
-                                 + "from lifecycle callback method: " + t, t);
+                                 + "from lifecycle callback method: " + t,
+                             t);
                 }
                 throw rtex;
             }
-        }
-        else if (t instanceof Error)
-        {
+        } else if (t instanceof Error) {
             // Let the mapping strategy handle this unchecked exception.
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "lifeCycleExceptionHandler is rethrowing Error from "
-                             + "lifecycle callback method: " + t, t);
+                             + "lifecycle callback method: " + t,
+                         t);
             }
             throw (Error) t;
-        }
-        else
-        {
+        } else {
             // Must be a checked exception, which should never happen since
             // InterceptorMetaDataFactory throws EJBConfigurationException
             // and does a Tr.error using message key of INVALID_LIFECYCLE_SIGNATURE_CNTR0231E
@@ -426,8 +408,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      * @see javax.interceptor.InvocationContext#getTarget()
      */
     @Override
-    public Object getTarget()
-    {
+    public Object getTarget() {
         return ivBean;
     }
 
@@ -437,8 +418,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      * @see javax.interceptor.InvocationContext#getMethod()
      */
     @Override
-    public Method getMethod()
-    {
+    public Method getMethod() {
         return ivMethod;
     }
 
@@ -448,14 +428,12 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      * @see javax.interceptor.InvocationContext#getParameters()
      */
     @Override
-    public Object[] getParameters()
-    {
+    public Object[] getParameters() {
         //d470721 throw IllegalStateException if called from a
         // lifecycle callback interceptor method. ivMethod is only
         // set for AroundInvoke methods, so ivMethod being null
         // indicates a lifecycle callback interceptor method.
-        if (ivMethod == null && !ivIsAroundConstruct)
-        {
+        if (ivMethod == null && !ivIsAroundConstruct) {
             throw new IllegalStateException("InvocationContext.getParameter can not be called by lifecycle callback methods");
         }
         return ivParameters;
@@ -478,14 +456,12 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      * @see javax.interceptor.InvocationContext#setParameters(java.lang.Object[])
      */
     @Override
-    public void setParameters(Object[] args)
-    {
+    public void setParameters(Object[] args) {
         //d470721 throw IllegalStateException if called from a
         // lifecycle callback interceptor method. ivMethod is only
         // set for AroundInvoke methods, so ivMethod being null
         // indicates a lifecycle callback interceptor method.
-        if (ivMethod == null && !ivIsAroundConstruct)
-        {
+        if (ivMethod == null && !ivIsAroundConstruct) {
             throw new IllegalStateException("InvocationContext.setParameter can not be called by lifecycle callback methods");
         }
 
@@ -493,29 +469,21 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
         Class<?>[] parmTypes = con != null ? con.getParameterTypes() : ivMethod.getParameterTypes();
 
         String debug = con != null ? "constructor: " + con.getName() : "business method: " + ivMethod.getName();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setParameters for " + debug);
         }
 
         int n = parmTypes.length;
         if (args == null) // d386227
         {
-            if (n > 0)
-            {
+            if (n > 0) {
                 throw new IllegalArgumentException("null not valid as argument for setParameters method.");
             }
-        }
-        else
-        {
-            if (args.length != n)
-            {
+        } else {
+            if (args.length != n) {
                 throw new IllegalArgumentException("wrong number of parameters for method being invoked.");
-            }
-            else
-            {
-                for (int i = 0; i < n; ++i)
-                {
+            } else {
+                for (int i = 0; i < n; ++i) {
                     Class<?> parmType = parmTypes[i];
                     if (parmType.isPrimitive() == false) // d367572.6
                     {
@@ -524,55 +492,38 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
                         {
                             throw new IllegalArgumentException("wrong data type for parameter " + (i + 1));
                         }
-                    }
-                    else
-                    {
+                    } else {
                         // d367572.6
                         // Verify argument corresponds to correct java primitive type.
-                        if ((parmType == Integer.TYPE) && (!(args[i] instanceof Integer)))
-                        {
+                        if ((parmType == Integer.TYPE) && (!(args[i] instanceof Integer))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Integer");
-                        }
-                        else if ((parmType == Long.TYPE) && (!(args[i] instanceof Long)))
-                        {
+                        } else if ((parmType == Long.TYPE) && (!(args[i] instanceof Long))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Long");
-                        }
-                        else if ((parmType == Short.TYPE) && (!(args[i] instanceof Short)))
-                        {
+                        } else if ((parmType == Short.TYPE) && (!(args[i] instanceof Short))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Short");
-                        }
-                        else if ((parmType == Boolean.TYPE) && (!(args[i] instanceof Boolean)))
-                        {
+                        } else if ((parmType == Boolean.TYPE) && (!(args[i] instanceof Boolean))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Boolean");
-                        }
-                        else if ((parmType == Byte.TYPE) && (!(args[i] instanceof Byte)))
-                        {
+                        } else if ((parmType == Byte.TYPE) && (!(args[i] instanceof Byte))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Byte");
-                        }
-                        else if ((parmType == Character.TYPE) && (!(args[i] instanceof Character)))
-                        {
+                        } else if ((parmType == Character.TYPE) && (!(args[i] instanceof Character))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Character");
-                        }
-                        else if ((parmType == Float.TYPE) && (!(args[i] instanceof Float)))
-                        {
+                        } else if ((parmType == Float.TYPE) && (!(args[i] instanceof Float))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Float");
-                        }
-                        else if ((parmType == Double.TYPE) && (!(args[i] instanceof Double)))
-                        {
+                        } else if ((parmType == Double.TYPE) && (!(args[i] instanceof Double))) {
                             throw new IllegalArgumentException("parameter " + (i + 1) + " is a "
                                                                + args[i].getClass().getName()
                                                                + ", but it is required to be a Double");
@@ -594,8 +545,7 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
      * @see javax.interceptor.InvocationContext#getContextData()
      */
     @Override
-    public Map<String, Object> getContextData()
-    {
+    public Map<String, Object> getContextData() {
         return EJSContainer.getThreadData().getContextData(); // d644886
     }
 
@@ -610,49 +560,37 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
     //           since InvocationContext is not passed to them.
     // d454160 - try/catch InvocationTargetException and unwrapper.
     @Override
-    public Object proceed() throws Exception
-    {
+    public Object proceed() throws Exception {
         Object returnValue = null;
-        try
-        {
-            if (ivNextIndex < ivNumberOfInterceptors)
-            {
+        try {
+            if (ivNextIndex < ivNumberOfInterceptors) {
                 // There is atleast 1 more interceptor method in the
                 // chain to invoke. Determine if method signature is
                 // one that is passed the InvocationContext.
                 InterceptorProxy w = ivInterceptorProxies[ivNextIndex];
-                if (w.ivRequiresInvocationContext)
-                {
+                if (w.ivRequiresInvocationContext) {
                     // Method signature is <METHOD>(InvocationContext).
                     // Therefore, only call this method it will call
                     // InvocationContext.proceed() to continue with
                     // the next method in the chain.
                     ++ivNextIndex;
                     returnValue = w.invokeInterceptor(ivBean, this, ivInterceptors);
-                }
-                else
-                {
+                } else {
                     // Method signature is <METHOD>(), which means it must be
                     // a lifecycle callback method of the bean class or
                     // one of its superclasses.  As required by EJB 3 spec,
                     // call all remaining lifecycle methods in the chain.
-                    while (w != null)
-                    {
+                    while (w != null) {
                         ++ivNextIndex;
                         returnValue = w.invokeInterceptor(ivBean, this, ivInterceptors);
                         w = (ivNextIndex < ivNumberOfInterceptors) ? ivInterceptorProxies[ivNextIndex] : null;
                     }
                 }
-            }
-            else if (ivMethod != null)
-            {
+            } else if (ivMethod != null) {
                 // The last around invoke in the chain has called proceed,
                 // so now we must invoke the business method.
-                returnValue = ivContainer.invokeProceed(ivEJSDeployedSupport
-                                                        , ivMethod, ivBean, ivParameters, ivParametersModified); //LIDB3294-41
-            }
-            else if (ivIsAroundConstruct)
-            {
+                returnValue = ivContainer.invokeProceed(ivEJSDeployedSupport, ivMethod, ivBean, ivParameters, ivParametersModified); //LIDB3294-41
+            } else if (ivIsAroundConstruct) {
                 try {
                     ivBean = ivConstructCallback.proceed(ivParameters, getContextData());
                 } catch (Exception ex) {
@@ -706,10 +644,8 @@ public class InvocationContextImpl<T> implements InvocationContext, ManagedObjec
         }
     }
 
-    public Constructor<T> getConstructor()
-    {
-        if (ivIsAroundConstruct)
-        {
+    public Constructor<T> getConstructor() {
+        if (ivIsAroundConstruct) {
             return ivConstructCallback.getConstructor();
         }
         return null;

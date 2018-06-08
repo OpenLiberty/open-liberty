@@ -744,12 +744,9 @@ public class URBridge implements Repository {
     public Root search(Root root) throws WIMException {
         final String METHODNAME = "search";
         String uniqueName = null;
-        boolean restRequest = true;
         Root returnRoot = new Root();
 
         AuditManager auditManager = new AuditManager();
-        if (auditManager.getRESTRequest() == null)
-            restRequest = false;
 
         List<Entity> entitys = root.getEntities();
         if (entitys != null && !entitys.isEmpty()) {
@@ -773,9 +770,8 @@ public class URBridge implements Repository {
 
             String expression = searchControl.getExpression();
             if (expression == null || expression.length() == 0) {
-                if (restRequest)
-                    Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
-                                Integer.valueOf("217"));
+                Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
+                            Integer.valueOf("217"));
                 throw new SearchControlException(WIMMessageKey.MISSING_SEARCH_EXPRESSION, Tr.formatMessage(tc, WIMMessageKey.MISSING_SEARCH_EXPRESSION));
             }
 
@@ -893,15 +889,14 @@ public class URBridge implements Repository {
         } catch (WIMException we) {
             throw we;
         } catch (Exception e) {
-            if (restRequest)
-                Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
-                            Integer.valueOf("221"));
+            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
+                        Integer.valueOf("221"));
             throw new WIMApplicationException(WIMMessageKey.ENTITY_SEARCH_FAILED, Tr.formatMessage(tc, WIMMessageKey.ENTITY_SEARCH_FAILED,
                                                                                                    WIMMessageHelper.generateMsgParms(e.toString())));
         }
 
         auditManager.setRealm(userRegistry.getRealm());
-        if (isURBridgeResult(returnRoot) && restRequest)
+        if (isURBridgeResult(returnRoot))
             Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
                         Integer.valueOf("200"));
 

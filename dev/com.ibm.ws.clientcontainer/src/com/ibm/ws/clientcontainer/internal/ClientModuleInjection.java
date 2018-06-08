@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,9 @@ import java.util.Map;
 
 import javax.security.auth.callback.CallbackHandler;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.clientcontainer.metadata.ClientModuleMetaData;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
@@ -41,11 +41,10 @@ import com.ibm.ws.javaee.dd.common.ResourceEnvRef;
 import com.ibm.ws.javaee.dd.common.ResourceRef;
 import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 import com.ibm.ws.managedobject.ManagedObject;
-import com.ibm.ws.managedobject.ManagedObjectException;
+import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.resource.ResourceRefConfigList;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfiguration;
 import com.ibm.wsspi.injectionengine.InjectionEngine;
 import com.ibm.wsspi.injectionengine.InjectionEngineAccessor;
@@ -113,8 +112,10 @@ public class ClientModuleInjection {
     }
 
     @SuppressWarnings("rawtypes")
-    private ManagedObject getManagedObject(final Object instance) throws UnableToAdaptException, ManagedObjectException {
-        final ManagedObject mo = managedObjectServiceRef.getServiceWithException().createManagedObject(cmmd, instance);
+    private ManagedObject getManagedObject(final Object instance) throws Exception {
+        ManagedObjectFactory<Object> mof = (ManagedObjectFactory<Object>) managedObjectServiceRef.getServiceWithException().createManagedObjectFactory(cmmd, instance.getClass(),
+                                                                                                                                                       false);
+        final ManagedObject mo = mof.createManagedObject(instance, null);
         return mo;
     }
 
@@ -125,9 +126,7 @@ public class ClientModuleInjection {
             if (mo == null) {
                 return null;
             }
-        } catch (UnableToAdaptException e) {
-            throw new InjectionException(e.getCause());
-        } catch (ManagedObjectException e) {
+        } catch (Exception e) {
             throw new InjectionException(e.getCause());
         }
         InjectionTargetContext itc = new InjectionTargetContext() {
@@ -155,19 +154,31 @@ public class ClientModuleInjection {
 
         // Note that 'obj' is a class.
         if (cookies.containsKey(obj)) { // To prevent NPE from the for loop below
-            for (InjectionTarget cookie : cookies.get(obj)) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "inject", "about to inject resource --> [" + cookie + "]");
 
-                if (instance != null) {
-                    InjectionTargetContext itc = getInjectionTargetContext(instance);
-                    injectionEngine.inject(instance, cookie, itc); // inject callback handler
-                } else {
-                    injectionEngine.inject(obj, cookie, null); // inject main class
+            if (instance != null) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "inject", "about to inject via managed object --> [" + obj + "]");
+
+                final ManagedObject<?> mo;
+                try {
+                    mo = getManagedObject(instance);
+                    mo.inject(cookies.get(obj), null);// inject callback handler
+                } catch (Exception e) {
+                    throw new InjectionException(e.getCause());
                 }
 
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "inject", "injected resource --> [" + cookie + "]");
+                    Tr.debug(tc, "inject", "injected --> [" + obj + "]");
+            } else {
+                for (InjectionTarget cookie : cookies.get(obj)) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "inject", "about to inject resource --> [" + cookie + "]");
+
+                    injectionEngine.inject(obj, cookie, null); // inject main class
+
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "inject", "injected resource --> [" + cookie + "]");
+                }
             }
 
         } else {

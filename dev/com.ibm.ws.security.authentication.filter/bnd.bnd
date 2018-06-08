@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Security Authentication filter
+Bundle-SymbolicName: com.ibm.ws.security.authentication.filter
+Bundle-Description: Security Authentication filter, version=${bVersion}
+
+WS-TraceGroup: Filter
+
+Export-Package: com.ibm.ws.security.authentication.filter;provider:=true
+
+Private-Package: \
+    com.ibm.ws.security.authentication.filter.internal.*,\
+    com.ibm.ws.config.xml.internal.nester
+
+ Include-Resource: OSGI-INF=resources/OSGI-INF
+
+-dsannotations: com.ibm.ws.security.authentication.filter.internal.AuthenticationFilterImpl
+-dsannotations-inherit: true
+
+-buildpath: \
+    com.ibm.websphere.javaee.servlet.3.0;version=latest, \
+    com.ibm.websphere.appserver.spi.logging;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.ws.config;version=latest, \
+    com.ibm.ws.container.service;version=latest, \
+    com.ibm.ws.logging.core;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest, \
+    org.jmock:jmock-legacy;version=2.5.0, \
+    cglib:cglib-nodep;version=2.1.0.3, \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+    org.jmock:jmock;strategy=exact;version=2.5.1, \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+    com.ibm.ws.kernel.boot;version=latest, \
+    com.ibm.ws.logging;version=latest

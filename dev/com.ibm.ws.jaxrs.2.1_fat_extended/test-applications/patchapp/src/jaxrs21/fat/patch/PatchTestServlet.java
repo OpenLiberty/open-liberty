@@ -29,11 +29,16 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/PatchTestServlet")
 public class PatchTestServlet extends FATServlet {
 
+    private static final int HTTPS_PORT = Integer.getInteger("bvt.prop.HTTP_default.secure", 8020);
+
     private Client client;
 
+    
     @Override
     public void init() throws ServletException {
-        client = ClientBuilder.newBuilder().build();
+        client = ClientBuilder.newBuilder()
+                              .property("com.ibm.ws.jaxrs.client.ssl.config", "defaultSSLConfig")
+                              .build();
     }
 
     @Override
@@ -65,8 +70,6 @@ public class PatchTestServlet extends FATServlet {
 
     @Test
     public void testPatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        // TODO use the `patch(...)` isntead if the JAXRS 2.1 EG includes it in spec
-        //      otherwise, continue to use `method("PATCH", ...)`
         String result = target(req, "patchapp/rest/test")
                         .request()
                         .method("PATCH", String.class);
@@ -77,8 +80,6 @@ public class PatchTestServlet extends FATServlet {
     public void testSubResourcePatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         SubResource.resources.put(2, new SubResource("resource 2 data"));
 
-        // TODO use the `patch(...)` isntead if the JAXRS 2.1 EG includes it in spec
-        //      otherwise, continue to use `method("PATCH", ...)`
         String result = target(req, "patchapp/rest/test/SubResource/2")
                         .request()
                         .method("PATCH", String.class);
@@ -86,7 +87,7 @@ public class PatchTestServlet extends FATServlet {
     }
 
     private WebTarget target(HttpServletRequest request, String path) {
-        String base = "http://" + request.getServerName() + ':' + request.getServerPort() + '/';
+        String base = "https://" + request.getServerName() + ':' + HTTPS_PORT + '/';
         return client.target(base + path);
     }
 

@@ -11,10 +11,16 @@
 package com.ibm.ws.cdi.extension.test;
 
 import javax.ejb.Local;
+import javax.enterprise.inject.spi.BeanManager;
 
 @Local
 public interface FactoryLocal {
 
     Car produceCar();
+
+    /**
+     * @return
+     */
+    BeanManager getBeanManager();
 
 }

@@ -20,22 +20,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.jaxrs.client.ClientConfiguration;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.jaxrs.client.spec.ClientImpl;
 import org.apache.cxf.jaxrs.client.spec.TLSConfiguration;
-import org.apache.cxf.jaxrs.impl.UriBuilderImpl;
-import org.apache.cxf.jaxrs.model.URITemplate;
 import org.apache.cxf.phase.Phase;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -46,7 +45,6 @@ import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxrs20.client.bus.LibertyJAXRSClientBusFactory;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientConfigInterceptor;
@@ -68,6 +66,7 @@ public class JAXRSClientImpl extends ClientImpl {
     private static final TraceComponent tc = Tr.register(JAXRSClientImpl.class);
 
     protected final AtomicBoolean closed = new AtomicBoolean(false);
+    protected Set<WebClient> baseClients = Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
     protected boolean hasSSLConfigInfo = false;
     private TLSConfiguration secConfig = null;
     //Defect 202957 move busCache from ClientMetaData to JAXRSClientImpl
@@ -160,28 +159,68 @@ public class JAXRSClientImpl extends ClientImpl {
      */
     @Override
     public WebTarget target(UriBuilder builder) {
-        checkNull(builder);
         checkClosed();
-        return new JAXRSWebTargetImpl(builder, this.getConfiguration());
-    }
+        WebTargetImpl wt = (WebTargetImpl) super.target(builder);
 
-    @FFDCIgnore(IllegalArgumentException.class)
-    @Override
-    public WebTarget target(String address) {
-        checkNull(address);
-        if (address.isEmpty()) {
-            address = "/";
+        //construct our own webclient
+        JAXRSClientFactoryBean bean = new JAXRSClientFactoryBean();
+        URI uri = builder.build();
+        bean.setAddress(uri.toString());
+        WebClient targetClient = bean.createWebClient();
+
+        //get ClientCongfiguration
+        ClientConfiguration ccfg = WebClient.getConfig(targetClient);
+
+        //add Liberty Jax-RS Client Timeout Interceptor to configure the timeout
+        ccfg.getOutInterceptors().add(new LibertyJaxRsClientTimeOutInterceptor(Phase.PRE_LOGICAL));
+
+        //add Liberty Jax-RS Client Config Interceptor to configure things like KeepAlive
+        ccfg.getOutInterceptors().add(new LibertyJaxRsClientConfigInterceptor(Phase.PRE_LOGICAL));
+
+        //add Liberty Jax-RS Client Proxy Interceptor to configure the proxy
+        ccfg.getOutInterceptors().add(new LibertyJaxRsClientProxyInterceptor(Phase.PRE_LOGICAL));
+
+        //add Liberty Ltpa handler Interceptor to check if is using ltpa token for sso
+        ccfg.getOutInterceptors().add(new LibertyJaxRsClientLtpaInterceptor());
+
+        //add Liberty Jax-RS OAuth Interceptor to check whether it has to propagate OAuth/access token
+        ccfg.getOutInterceptors().add(new LibertyJaxRsClientOAuthInterceptor());
+
+        //add  Interceptor to check whether it has to propagate SAML token for sso
+        ccfg.getOutInterceptors().add(new PropagationHandler());
+
+        /**
+         * if no any user programmed SSL context info
+         * put the LibertyJaxRsClientSSLOutInterceptor into client OUT interceptor chain
+         * see if Liberty SSL can help
+         */
+        if (hasSSLConfigInfo == false) {
+            LibertyJaxRsClientSSLOutInterceptor sslOutInterceptor = new LibertyJaxRsClientSSLOutInterceptor(Phase.PRE_LOGICAL);
+            sslOutInterceptor.setTLSConfiguration(secConfig);
+            ccfg.getOutInterceptors().add(sslOutInterceptor);
         }
-
-        try {
-            return target(UriBuilder.fromUri(address));
-        } catch (IllegalArgumentException e) {
-            if (URITemplate.createExactTemplate(address).getVariables().isEmpty()) {
-                throw e;
+        //set bus
+        LibertyApplicationBus bus;
+        //202957 same url use same bus, add a lock to busCache to ensure only one bus will be created in concurrent mode.
+        //ConcurrentHashMap can't ensure that.
+        String moduleName = getModuleName();
+        String id = moduleName + uri.getHost() + "-" + uri.getPort();
+        synchronized (busCache) {
+            bus = busCache.get(id);
+            if (bus == null) {
+                bus = LibertyJAXRSClientBusFactory.getInstance().getClientScopeBus(id);
+                busCache.put(id, bus);
             }
-            UriBuilderImpl builder = new UriBuilderImpl();
-            return target(builder.uriAsTemplate(address));
         }
+
+        ccfg.setBus(bus);
+
+        //add the root WebTarget to managed set so we can close it's associated WebClient
+        synchronized (baseClients) {
+            baseClients.add(targetClient);
+        }
+
+        return new WebTargetImpl(wt.getUriBuilder(), wt.getConfiguration(), targetClient);
     }
 
     /**
@@ -191,6 +230,11 @@ public class JAXRSClientImpl extends ClientImpl {
     public void close() {
         if (closed.compareAndSet(false, true)) {
             super.close();
+            synchronized (baseClients) {
+                for (WebClient wc : baseClients) {
+                    wc.close();
+                }
+            }
 
             String moduleName = getModuleName();
             synchronized (clientsPerModule) {
@@ -208,6 +252,8 @@ public class JAXRSClientImpl extends ClientImpl {
                     }
                 }
             }
+
+            baseClients = null;
         }
     }
 
@@ -243,94 +289,6 @@ public class JAXRSClientImpl extends ClientImpl {
     private void checkClosed() {
         if (closed.get()) {
             throw new IllegalStateException("client is closed");
-        }
-    }
-
-    private void checkNull(Object... target) {
-        for (Object o : target) {
-            if (o == null) {
-                throw new NullPointerException("Value is null");
-            }
-        }
-    }
-
-    public class JAXRSWebTargetImpl extends WebTargetImpl {
-
-        public JAXRSWebTargetImpl(UriBuilder uirBuilder, Configuration config) {
-            super(uirBuilder, config);
-        }
-
-        public JAXRSWebTargetImpl(UriBuilder uriBuilder,
-                                  Configuration config,
-                                  WebClient targetClient) {
-            super(uriBuilder, config, targetClient);
-        }
-
-        @Override
-        public Builder request() {
-
-            Builder builder = super.request();
-
-            //get ClientCongfiguration
-            ClientConfiguration ccfg = WebClient.getConfig(getWebClient());
-
-            //add Liberty Jax-RS Client Timeout Interceptor to configure the timeout
-            ccfg.getOutInterceptors().add(new LibertyJaxRsClientTimeOutInterceptor(Phase.PRE_LOGICAL));
-
-            //add Liberty Jax-RS Client Config Interceptor to configure things like KeepAlive
-            ccfg.getOutInterceptors().add(new LibertyJaxRsClientConfigInterceptor(Phase.PRE_LOGICAL));
-        
-            //add Liberty Jax-RS Client Proxy Interceptor to configure the proxy
-            ccfg.getOutInterceptors().add(new LibertyJaxRsClientProxyInterceptor(Phase.PRE_LOGICAL));
-
-            //add Liberty Ltpa handler Interceptor to check if is using ltpa token for sso
-            ccfg.getOutInterceptors().add(new LibertyJaxRsClientLtpaInterceptor());
-
-            //add Liberty Jax-RS OAuth Interceptor to check whether it has to propagate OAuth/access token
-            ccfg.getOutInterceptors().add(new LibertyJaxRsClientOAuthInterceptor());
-
-            //add  Interceptor to check whether it has to propagate SAML token for sso
-            ccfg.getOutInterceptors().add(new PropagationHandler());
-
-            /**
-             * if no any user programmed SSL context info
-             * put the LibertyJaxRsClientSSLOutInterceptor into client OUT interceptor chain
-             * see if Liberty SSL can help
-             */
-            if (hasSSLConfigInfo == false) {
-                LibertyJaxRsClientSSLOutInterceptor sslOutInterceptor = new LibertyJaxRsClientSSLOutInterceptor(Phase.PRE_LOGICAL);
-                sslOutInterceptor.setTLSConfiguration(secConfig);
-                ccfg.getOutInterceptors().add(sslOutInterceptor);
-            }
-            //set bus
-            LibertyApplicationBus bus;
-            //202957 same url use same bus, add a lock to busCache to ensure only one bus will be created in concurrent mode.
-            //ConcurrentHashMap can't ensure that.
-            String moduleName = getModuleName();
-            URI uri = getUri();
-            String id = moduleName + uri.getHost() + "-" + uri.getPort();
-            synchronized (busCache) {
-                bus = busCache.get(id);
-                if (bus == null) {
-                    bus = LibertyJAXRSClientBusFactory.getInstance().getClientScopeBus(id);
-                    busCache.put(id, bus);
-                }
-            }
-
-            ccfg.setBus(bus);
-
-            return builder;
-        }
-
-        @Override
-        protected WebTarget newWebTarget(UriBuilder newBuilder) {
-            WebClient newClient;
-            if (getWebClient() != null) {
-                newClient = WebClient.fromClient(getWebClient());
-            } else {
-                newClient = null;
-            }
-            return new JAXRSWebTargetImpl(newBuilder, getConfiguration(), newClient);
         }
     }
 }

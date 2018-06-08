@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.managedobject.DefaultManagedObjectService;
@@ -122,18 +121,6 @@ public class CDIManagedObjectService implements ManagedObjectService {
         }
     }
 
-    @Override
-    public <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, @Sensitive T instance) throws ManagedObjectException {
-        if (isCDIEnabled(mmd)) {
-            @SuppressWarnings("unchecked")
-            CDIManagedObjectFactoryImpl<T> cmof = new CDIManagedObjectFactoryImpl<T>((Class<T>) instance.getClass(), getCDIRuntime(), false);
-            return cmof.existingInstance(instance);
-        } else {
-            return getDefaultManagedObjectService().createManagedObject(mmd, instance);
-        }
-
-    }
-
     private boolean isCDIEnabled(ModuleMetaData mmd) {
         return getCDIRuntime() != null && getCDIRuntime().isModuleCDIEnabled(mmd);
     }
@@ -147,5 +134,13 @@ public class CDIManagedObjectService implements ManagedObjectService {
         } else {
             return getDefaultManagedObjectService().createManagedObjectFactory(mmd, klass, requestManagingInjectionAndInterceptors, referenceContext);
         }
+    }
+
+    //this method will be removed very soon
+    @Override
+    public <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, T instance) throws ManagedObjectException {
+        ManagedObjectFactory<T> factory = createManagedObjectFactory(mmd, (Class<T>) instance.getClass(), false);
+        ManagedObject<T> mo = factory.createManagedObject(instance, null);
+        return mo;
     }
 }
