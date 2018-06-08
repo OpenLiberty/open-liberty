@@ -11,7 +11,6 @@
 package com.ibm.ws.webcontainer.monitor;
 
 import com.ibm.websphere.monitor.meters.Counter;
-import com.ibm.websphere.monitor.meters.StatisticsMeter;
 import com.ibm.websphere.monitor.meters.TimeWeightedMeter;
 
 /**
