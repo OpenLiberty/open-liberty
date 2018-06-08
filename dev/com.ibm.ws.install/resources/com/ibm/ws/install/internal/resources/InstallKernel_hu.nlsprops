@@ -434,6 +434,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: A(z) {0} nem egy szolg
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=A term\u00e9kb\u0151v\u00edtm\u00e9nyben csak szolg\u00e1ltat\u00e1sokat lehet telep\u00edteni.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Futtassa \u00fajra az installUtility telep\u00edt\u00e9si parancs\u00e1t a b\u0151v\u00edtm\u00e9ny megad\u00e1sa n\u00e9lk\u00fcl.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok nem szerezhet\u0151k be: {0}. Gy\u0151z\u0151dj\u00f6n meg a szolg\u00e1ltat\u00e1sok \u00e9rv\u00e9nyess\u00e9g\u00e9r\u0151l az Open Liberty eset\u00e9n.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=A telep\u00edt\u0151nek nem siker\u00fclt lek\u00e9rni a megadott szolg\u00e1ltat\u00e1sokat a csatlakoztatott lerakatokb\u00f3l.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Ha a megadott szolg\u00e1ltat\u00e1sok l\u00e9teznek, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyesek az Open Liberty eset\u00e9n.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: A(z) {0} szolg\u00e1ltat\u00e1s nem telep\u00edthet\u0151 IBM WebSphere Application Server Liberty Core kiad\u00e1sra, mert az csak a t\u00f6bbi IBM WebSphere Application Server Liberty kiad\u00e1sra \u00e9s az Open Liberty term\u00e9kre \u00e9rv\u00e9nyes. Haszn\u00e1lja a featureManager parancs "find" m\u0171velet\u00e9t az IBM WebSphere Application Server Liberty Core kiad\u00e1sra alkalmazhat\u00f3 szolg\u00e1ltat\u00e1sok list\u00e1j\u00e1nak lek\u00e9r\u00e9s\u00e9hez.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=A szolg\u00e1ltat\u00e1s nem alkalmazhat\u00f3 a telep\u00edtett term\u00e9k aktu\u00e1lis kiad\u00e1s\u00e1hoz.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Telep\u00edtsen olyan szolg\u00e1ltat\u00e1sokat, melyeket t\u00e1mogat a term\u00e9k aktu\u00e1lis kiad\u00e1sa.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9se: {0}.
 LOG_INSTALL_FEATURES.explanation=A megadott szolg\u00e1ltat\u00e1sok ker\u00fclnek telep\u00edt\u00e9sre.

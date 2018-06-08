@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
 MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: Nu poate fi g\u0103sit\u0103 configura\u0163ia de consumator MicroProfile JSON Web Token (JWT) cu ID-ul [{0}]. Verifica\u0163i dac\u0103 configura\u0163ia mpJwt cu ID-ul specificat se afl\u0103 pe server.
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Nu poate fi g\u0103sit\u0103 configura\u0163ia de consumator MPJWT cu identificatorul specificat \u00een configura\u0163ia de server.
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un element mpJwt configurat cu ID-ul specificat \u015fi c\u0103 este referit de elementul jwtSso din configura\u0163ia de server.

@@ -753,3 +753,7 @@ ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=Examinez la configurat
 ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: Le magasin de cl\u00e9s par d\u00e9faut n'est pas cr\u00e9\u00e9 car un mot de passe n'est pas configur\u00e9 sur l'\u00e9l\u00e9ment <keyStore id="defaultKeyStore"/> et la variable d'environnement 'keystore_password' n'est pas d\u00e9finie. 
 ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=Le magasin de cl\u00e9s par d\u00e9faut n'est pas cr\u00e9\u00e9 car un mot de passe n'est pas configur\u00e9 sur l'\u00e9l\u00e9ment <keyStore id="defaultKeyStore"/> et la variable d'environnement 'keystore_password' n'est pas d\u00e9finie.
 ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Aucune action n'est requise.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Le magasin de cl\u00e9s par d\u00e9faut a \u00e9t\u00e9 cr\u00e9\u00e9 \u00e0 l'aide de la variable d'environnement 'keystore_password'.
+ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Le magasin de cl\u00e9s par d\u00e9faut a \u00e9t\u00e9 cr\u00e9\u00e9 \u00e0 l'aide de la variable d'environnement 'keystore_password'. Il est g\u00e9n\u00e9r\u00e9 dans le fichier server.env au cours de la cr\u00e9ation du serveur, ou remplac\u00e9 dans l'environnement depuis lequel le serveur a \u00e9t\u00e9 lanc\u00e9.
+ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Aucune action n'est requise.

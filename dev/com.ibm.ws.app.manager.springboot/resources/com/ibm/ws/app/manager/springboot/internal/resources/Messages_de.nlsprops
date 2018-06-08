@@ -66,3 +66,15 @@ error.missing.ssl.useraction=Konfigurieren Sie das Feature transportSecurity-1.0
 error.missing.websocket=CWWKC0259E: Die Anwendung konnte nicht gestartet werden, weil sie die Konfiguration eines WebSocket-Features in der Datei server.xml voraussetzt.
 error.missing.websocket.explanation=Die Anwendung ist eine WebSocket-Anwendung, die die Konfiguration eines WebSocket-Features in der Datei server.xml voraussetzt.
 error.missing.websocket.useraction=Konfigurieren Sie ein WebSocket-Feature in der Datei server.xml.
+
+error.webflux.not.supported=CWWKC0260E: Die Anwendung kann nicht gestartet werden, weil Spring WebFlux nicht unterst\u00fctzt wird.
+error.webflux.not.supported.explanation=Die Anwendung ist eine WebFlux-Anwendung. Die von Spring WebFlux bereitgestellte Unterst\u00fctzung f\u00fcr reaktive Programmierung wird nicht unterst\u00fctzt.
+error.webflux.not.supported.useraction=Konfigurieren Sie eine Anwendung, die Spring WebFlux f\u00fcr den Server nicht verwendet.
+
+warning.spring_config.ignored.compression=CWWKC0261W: Die Komprimierung wurde von der Anwendung aktiviert. Die Komprimierung wird nicht unterst\u00fctzt und die Einstellung wird ignoriert.
+warning.spring_config.ignored.compression.explanation=Die Komprimierung wird nicht unterst\u00fctzt und die Einstellung wird ignoriert, aber die Anwendung funktioniert ansonsten weiterhin.
+warning.spring_config.ignored.compression.useraction=Es ist keine Benutzeraktion erforderlich.
+
+warning.spring_config.ignored.session=CWWKC0262W: Es wurde ein Sitzungszeitlimit oder Sitzungspersistenz von der Anwendung konfiguriert. Diese sitz Sitzungseinstellungen m\u00fcssen in der Datei server.xml konfiguriert werden.
+warning.spring_config.ignored.session.explanation=Sitzungszeitlimits und Sitzungspersistenz m\u00fcssen in der Datei server.xml konfiguriert werden. Diese Anwendungssitzungseinstellungen werden ignoriert.
+warning.spring_config.ignored.session.useraction=Konfigurieren Sie das Sitzungszeitlimit und die Sitzungspersistenz in der Datei server.xml.

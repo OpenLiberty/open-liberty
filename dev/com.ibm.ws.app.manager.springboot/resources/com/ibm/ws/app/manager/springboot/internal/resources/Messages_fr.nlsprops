@@ -36,11 +36,11 @@ warning.could.not.thin.application.explanation=L'application n'a pas pu \u00eatr
 warning.could.not.thin.application.useraction=Essayez de r\u00e9soudre le probl\u00e8me dans le message d'exception, puis red\u00e9marrez le serveur ou mettez \u00e0 jour l'application. 
 
 error.need.springboot.version.15=CWWKC0252E: Le d\u00e9marrage de l'application a \u00e9chou\u00e9 car la fonction springBoot-2.0 est configur\u00e9e dans le fichier server.xml. L'application requiert la configuration de la fonction springBoot-1.5.
-error.need.springboot.version.15.explanation=L'application requiert la fonction springBoot-1.5. V\u00e9rifiez la version de la fonction Spring Boot actuellement configur\u00e9e dans le fichier server.xml. 
+error.need.springboot.version.15.explanation=L'application requiert la fonction springBoot-1.5. V\u00e9rifiez la version de la fonction Spring Boot actuellement configur\u00e9e dans le fichier server.xml.  
 error.need.springboot.version.15.useraction=Configurez la fonction springBoot-1.5 dans le fichier server.xml. Retirez toute autre fonction Spring Boot.
 
 error.need.springboot.version.20=CWWKC0253E: Le d\u00e9marrage de l'application a \u00e9chou\u00e9 car la fonction springBoot-1.5 est configur\u00e9e dans le fichier server.xml. L'application requiert la configuration de la fonction springBoot-2.0.
-error.need.springboot.version.20.explanation=L'application requiert la fonction springBoot-2.0. V\u00e9rifiez la version de la fonction Spring Boot actuellement configur\u00e9e dans le fichier server.xml. 
+error.need.springboot.version.20.explanation=L'application requiert la fonction springBoot-2.0. V\u00e9rifiez la version de la fonction Spring Boot actuellement configur\u00e9e dans le fichier server.xml.  
 error.need.springboot.version.20.useraction=Configurez la fonction springBoot-2.0 dans le fichier server.xml. Retirez toute autre fonction Spring Boot.
 
 error.missing.servlet=CWWKC0254E: L'application n'a pas d\u00e9marr\u00e9 car elle requiert la configuration d'une fonction de servlet dans le fichier server.xml.
@@ -66,3 +66,15 @@ error.missing.ssl.useraction=Configurez la fonction transportSecurity-1.0 dans l
 error.missing.websocket=CWWKC0259E: L'application n'a pas d\u00e9marr\u00e9 car elle requiert la configuration d'une fonction de socket Web dans le fichier server.xml.
 error.missing.websocket.explanation=L'application est une application de socket Web et requiert la configuration d'une fonction de socket Web dans le fichier server.xml.
 error.missing.websocket.useraction=Configurez une fonction de socket Web dans le fichier server.xml.
+
+error.webflux.not.supported=CWWKC0260E: Impossible de d\u00e9marrer l'application car Spring WebFlux n'est pas pris en charge.
+error.webflux.not.supported.explanation=L'application est une application WebFlux. Le support de programmation r\u00e9active fournie par Spring WebFlux n'est pas pris en charge.
+error.webflux.not.supported.useraction=Configurez une application qui n'utilise pas Spring WebFlux avec le serveur.
+
+warning.spring_config.ignored.compression=CWWKC0261W: La compression a \u00e9t\u00e9 activ\u00e9e par l'application. Elle n'est pas prise en charge et le param\u00e8tre sera ignor\u00e9.
+warning.spring_config.ignored.compression.explanation=La compression n'est pas prise en charge et le param\u00e8tre sera ignor\u00e9, mais l'application continuera de fonctionner.
+warning.spring_config.ignored.compression.useraction=Aucune action de l'utilisateur n'est requise.
+
+warning.spring_config.ignored.session=CWWKC0262W: Le d\u00e9lai d'attente de session ou la persistance de session a \u00e9t\u00e9 configur\u00e9(e) par l'application. Ces param\u00e8tres de session doivent \u00eatre configur\u00e9s dans le fichier server.xml.
+warning.spring_config.ignored.session.explanation=Le d\u00e9lai d'attente de session ou la persistance de session doit \u00eatre configur\u00e9(e) dans le fichier server.xml. Ces param\u00e8tres de session d'application seront ignor\u00e9s.
+warning.spring_config.ignored.session.useraction=Configurez le d\u00e9lai d'attente de session et la persistance de session dans le fichier server.xml.

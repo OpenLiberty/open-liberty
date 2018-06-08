@@ -66,3 +66,15 @@ error.missing.ssl.useraction=\u00c1ll\u00edtsa be a transportSecurity-1.0 szolg\
 error.missing.websocket=CWWKC0259E: Az alkalmaz\u00e1s nem tudott elindulni, mert websocket szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t ig\u00e9nyli a server.xml f\u00e1jlban.
 error.missing.websocket.explanation=Az alkalmaz\u00e1s egy websocket alkalmaz\u00e1s, \u00e9s megk\u00f6veteli websocket szolg\u00e1ltat\u00e1s be\u00e1ll\u00edt\u00e1s\u00e1t a server.xml f\u00e1jlban.
 error.missing.websocket.useraction=\u00c1ll\u00edtson be egy websocket szolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban.
+
+error.webflux.not.supported=CWWKC0260E: Az alkalmaz\u00e1s nem ind\u00edthat\u00f3 el, mert a Spring WebFlux nem t\u00e1mogatott.
+error.webflux.not.supported.explanation=Az alkalmaz\u00e1s egy WebFlux alkalmaz\u00e1s. A Spring WebFlux \u00e1ltal biztos\u00edtott reakt\u00edv programoz\u00e1si t\u00e1mogat\u00e1s nem t\u00e1mogatott.
+error.webflux.not.supported.useraction=Konfigur\u00e1ljon egy olyan alkalmaz\u00e1st, amely nem haszn\u00e1lja a Spring WebFlux alkalmaz\u00e1st a kiszolg\u00e1l\u00f3val.
+
+warning.spring_config.ignored.compression=CWWKC0261W: Az alkalmaz\u00e1s enged\u00e9lyezte a t\u00f6m\u00f6r\u00edt\u00e9st. A t\u00f6m\u00f6r\u00edt\u00e9s nem t\u00e1mogatott, \u00e9s a be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl fog maradni.
+warning.spring_config.ignored.compression.explanation=A t\u00f6m\u00f6r\u00edt\u00e9s nem t\u00e1mogatott, \u00e9s a be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl fog maradni, de az alkalmaz\u00e1s egy\u00e9bk\u00e9nt tov\u00e1bbra is m\u0171k\u00f6dni fog.
+warning.spring_config.ignored.compression.useraction=Nincs felhaszn\u00e1l\u00f3i teend\u0151.
+
+warning.spring_config.ignored.session=CWWKC0262W: Az alkalmaz\u00e1s be\u00e1ll\u00edtott munkamenet id\u0151korl\u00e1tot vagy munkamenet perzisztenci\u00e1t. Ezeket a munkamenet be\u00e1ll\u00edt\u00e1sokat a server.xml f\u00e1jlban kell konfigur\u00e1lni.
+warning.spring_config.ignored.session.explanation=A munkamenet id\u0151korl\u00e1tot \u00e9s a munkamenet perzisztenci\u00e1t a server.xml f\u00e1jlban kell konfigur\u00e1lni. Ezek az alkalmaz\u00e1s munkamenet be\u00e1ll\u00edt\u00e1sok figyelmen k\u00edv\u00fcl maradnak.
+warning.spring_config.ignored.session.useraction=Konfigur\u00e1lja a munkamenet id\u0151korl\u00e1tot \u00e9s a munkamenet perzisztenci\u00e1t a server.xml f\u00e1jlban.

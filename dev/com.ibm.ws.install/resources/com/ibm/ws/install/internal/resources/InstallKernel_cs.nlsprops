@@ -434,6 +434,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} nen\u00ed funkce, 
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Do roz\u0161\u00ed\u0159en\u00ed produktu lze instalovat pouze funkce.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Znovu spus\u0165te instala\u010dn\u00ed p\u0159\u00edkaz installUtility bez ur\u010den\u00ed roz\u0161\u00ed\u0159en\u00ed.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: Nelze z\u00edskat n\u00e1sleduj\u00edc\u00ed funkce: {0}. Ujist\u011bte se, \u017ee funkce jsou platn\u00e9 pro Open Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=Instala\u010dn\u00ed program nem\u016f\u017ee na\u010d\u00edst ur\u010den\u00e9 funkce z p\u0159ipojen\u00fdch \u00falo\u017ei\u0161\u0165.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Pokud ur\u010den\u00e9 funkce existuj\u00ed, ujist\u011bte se, \u017ee jsou platn\u00e9 pro Open Liberty.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: Funkci {0} nelze nainstalovat do vyd\u00e1n\u00ed IBM WebSphere Application Server Liberty Core Edition, proto\u017ee ji lze pou\u017e\u00edt pouze pro jin\u00e1 vyd\u00e1n\u00ed IBM WebSphere Application Server Liberty Editions a Open Liberty. Pomoc\u00ed akce "find" p\u0159\u00edkazu featureManager na\u010dt\u011bte seznam funkc\u00ed, kter\u00e9 lze pou\u017e\u00edt ve vyd\u00e1n\u00ed IBM WebSphere Application Server Liberty Core Edition.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=Funkce nen\u00ed pro aktu\u00e1ln\u00ed vyd\u00e1n\u00ed instalovan\u00e9ho produktu pou\u017eiteln\u00e1.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Nainstalujte funkce, kter\u00e9 dan\u00e9 vyd\u00e1n\u00ed produktu podporuje.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: Instalace n\u00e1sleduj\u00edc\u00edch funkc\u00ed: {0}.
 LOG_INSTALL_FEATURES.explanation=Ur\u010den\u00e9 funkce budou nainstalov\u00e1ny.

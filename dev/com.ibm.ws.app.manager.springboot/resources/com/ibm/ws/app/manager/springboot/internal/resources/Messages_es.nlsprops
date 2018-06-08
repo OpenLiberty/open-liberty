@@ -66,3 +66,15 @@ error.missing.ssl.useraction=Configure la caracter\u00edstica transportSecurity-
 error.missing.websocket=CWWKC0259E: La aplicaci\u00f3n no ha podido iniciarse porque requiere que una caracter\u00edstica websocket est\u00e9 configurada en el archivo server.xml.
 error.missing.websocket.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n de socket web y necesita que en el archivo server.xml se configure una caracter\u00edstica websocket.
 error.missing.websocket.useraction=Configure una caracter\u00edstica websocket en el archivo server.xml.
+
+error.webflux.not.supported=CWWKC0260E: No se puede iniciar la aplicaci\u00f3n porque Spring WebFlux no es compatible.
+error.webflux.not.supported.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n WebFlux. El soporte de programa reactivo proporcionado por Spring WebFlux no es compatible.
+error.webflux.not.supported.useraction=Configure una aplicaci\u00f3n que no utilice Spring WebFlux con el servidor.
+
+warning.spring_config.ignored.compression=CWWKC0261W: La aplicaci\u00f3n ha aplicaci\u00f3n compresi\u00f3n. No se admite la compresi\u00f3n y el valor se ignora.
+warning.spring_config.ignored.compression.explanation=No se admite la compresi\u00f3n y el valor se ignora, pero la aplicaci\u00f3n continuar\u00e1 funcionando en cualquier caso.
+warning.spring_config.ignored.compression.useraction=No es necesaria ninguna acci\u00f3n del usuario.
+
+warning.spring_config.ignored.session=CWWKC0262W: Se ha configurado tiempo de espera de sesi\u00f3n o persistencia de sesi\u00f3n en la aplicaci\u00f3n. Estos valores de sesi\u00f3n se deben configurar en el archivo server.xml.
+warning.spring_config.ignored.session.explanation=Los valores de tiempo de espera de sesi\u00f3n y persistencia de sesi\u00f3n se deben configurar en el archivo server.xml. Estos valores de sesi\u00f3n de las aplicaciones se ignorar\u00e1n.
+warning.spring_config.ignored.session.useraction=Configure los valores de tiempo de espera de sesi\u00f3n y persistencia de sesi\u00f3n en el archivo server.xml.

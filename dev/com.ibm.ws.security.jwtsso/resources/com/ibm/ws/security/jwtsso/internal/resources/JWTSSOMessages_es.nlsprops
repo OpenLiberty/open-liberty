@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
 MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: No se encuentra la configuraci\u00f3n de consumidor de MicroProfile JSON Web Token (JWT) con un ID de [{0}]. Compruebe que la configuraci\u00f3n mpJwt con el ID especificado se encuentre en el servidor.
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=No se ha encontrado una configuraci\u00f3n de consumidor de MPJWT con el identificador especificado en la configuraci\u00f3n del servidor.
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Aseg\u00farese de que exista un elemento mpJwt configurado con el ID especificado y que est\u00e9 referenciado por el elemento jwSso en la configuraci\u00f3n del servidor.
