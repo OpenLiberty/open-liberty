@@ -84,7 +84,7 @@ public class HPELHideMessagesTest extends VerboseTestCase {
 
     }
 
-    //Check if we have one Error Message for invalid purgeMaxSize property.
+    //Check if the hidden message does not show up in the console.log
     protected void checkIfMessageInConsoleLogExists() throws Exception {
         List<String> lines = appServ.getBackend().findStringsInFileInLibertyServerRoot("CWWKF0012I:", CONSOLE_LOG);
         assertFalse(" Message CWWKF0012I did appear in console.log  ", lines.size() > 0);
