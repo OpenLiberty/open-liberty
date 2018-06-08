@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	metadata-complete="false" version="3.1">
+
+	<module-name>ejbArchiveWithNoAnnotations.jar</module-name>
+	<display-name>ejbArchiveWithNoAnnotations.jar</display-name>
+
+    <enterprise-beans>
+		<session>
+			<ejb-name>EjbBean</ejb-name>
+			<ejb-class>
+				com.ibm.ws.cdi12.test.ejbJarInWarNoAnnotations.SimpleEjbBean
+			</ejb-class>
+			<session-type>Stateless</session-type>
+		</session>
+		<session>
+            <ejb-name>EjbBean2</ejb-name>
+            <ejb-class>
+                    com.ibm.ws.cdi12.test.ejbJarInWarNoAnnotations.SimpleEjbBean2
+            </ejb-class>
+            <session-type>Stateful</session-type>
+        </session>
+    </enterprise-beans>
+
+</ejb-jar>
