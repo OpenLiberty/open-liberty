@@ -35,7 +35,7 @@ public class TokenBuilder {
 	protected static final String USER_CLAIM = "upn"; // mp-jwt format
 	protected static final String GROUP_CLAIM = "groups"; // mp-jwt format
 	protected static final String CCK_CLAIM = "sid"; // custom cache key
-	protected static final String AMR_CLAIM = "amr"; // custom auth provider
+	protected static final String APR_CLAIM = "apr"; // custom auth provider
 	protected static final String REALM_CLAIM = "realm"; // realm
 	private final static String GROUP_PREFIX = "group:";
 
@@ -189,9 +189,7 @@ public class TokenBuilder {
 				builder.claim(CCK_CLAIM, customCacheKey);
 			}
 			if (customAuthProvider != null) {
-				ArrayList<String> amrClaimArray = new ArrayList<String>();
-				amrClaimArray.add(customAuthProvider);
-				builder.claim(AMR_CLAIM, amrClaimArray);
+				builder.claim(APR_CLAIM, customAuthProvider);
 			}
 
 			return builder.buildJwt().compact();

@@ -43,7 +43,7 @@ public class TAIMappingHelper {
     JsonWebToken jwtPrincipal = null;
     Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
     protected static final String CCK_CLAIM = "sid";
-    protected static final String AMR_CLAIM = "amr"; // custom auth provider
+    protected static final String APR_CLAIM = "apr"; // custom auth provider
 
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
     //boolean addJwtPrincipalToSubject = false;
@@ -247,12 +247,12 @@ public class TAIMappingHelper {
         if (cck != null) {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, cck);
         }
-        String amr = getCustomAuthProvider();
-        if (amr != null) {
+        String apr = getCustomAuthProvider();
+        if (apr != null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "amr claim is set in the token : ", amr);
+                Tr.debug(tc, "apr claim is set in the token : ", apr);
             }
-            customProperties.put(AuthenticationConstants.INTERNAL_AUTH_PROVIDER, amr);
+            customProperties.put(AuthenticationConstants.INTERNAL_AUTH_PROVIDER, apr);
         }
     }
 
@@ -261,16 +261,12 @@ public class TAIMappingHelper {
      */
     private String getCustomAuthProvider() {
         if (jwtPrincipal != null) {
-            Object amr = jwtPrincipal.getClaim(AMR_CLAIM);
-            if (amr != null) {
-                if (amr instanceof ArrayList) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "amr claim is set in the token : ", amr);
-                    }
-                    return ((ArrayList<String>) amr).get(0);
-                } else {
-                    return (String) amr;
+            Object apr = jwtPrincipal.getClaim(APR_CLAIM);
+            if (apr != null && apr instanceof String) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "apr claim is set in the token : ", (String) apr);
                 }
+                return (String) apr;
             }
         }
         return null;

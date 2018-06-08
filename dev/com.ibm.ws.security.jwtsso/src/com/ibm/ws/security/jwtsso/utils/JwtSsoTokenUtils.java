@@ -121,7 +121,7 @@ public class JwtSsoTokenUtils {
 		String customAuthProvider = subjectUtil.getCustomAuthProvider();
 		if (tc.isDebugEnabled()) {
 			Tr.debug(tc, "custom values, cck : ", customCacheKey);
-			Tr.debug(tc, "custom values, amr : ", customAuthProvider);
+			Tr.debug(tc, "custom values, apr : ", customAuthProvider);
 		}
 		String tokenString = tb.createTokenString(builderId, subject, customCacheKey, customAuthProvider);
 		if (tokenString == null) {
