@@ -29,9 +29,29 @@ task copyReadmeToBuildImage (type:Copy) {
            tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
 }
 
+task copyLicenseToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp')
+    include 'LICENSE'
+    filter(ReplaceTokens,
+           tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
+}
+
+task copyNoticesToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp')
+    include 'NOTICES'
+    filter(ReplaceTokens,
+           tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
+}
+
 assemble {
     dependsOn copyPropertiesToBuildImage
     dependsOn copyReadmeToBuildImage
+    dependsOn copyLicenseToBuildImage
+    dependsOn copyNoticesToBuildImage
 }
 
 import groovy.json.*
