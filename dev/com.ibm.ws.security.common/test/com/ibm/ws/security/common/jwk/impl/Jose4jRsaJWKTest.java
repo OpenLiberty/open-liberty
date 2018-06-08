@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
+import com.ibm.json.java.JSONObject;
+import java.io.InputStream;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -20,9 +22,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import com.ibm.ws.security.common.jwk.impl.Jose4jRsaJWK;
-
 import test.common.SharedOutputManager;
 
 public class Jose4jRsaJWKTest {
@@ -87,4 +86,17 @@ public class Jose4jRsaJWKTest {
         }
     }
 
+    @Test
+    public void testGetJsonInstance() {
+        try {
+            JSONObject jwkObject;
+            try (InputStream jwkStream = this.getClass().getResourceAsStream("jwk_test.json")) {
+                jwkObject = JSONObject.parse(jwkStream);
+            }
+
+            Jose4jRsaJWK.getInstance(jwkObject);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 }
