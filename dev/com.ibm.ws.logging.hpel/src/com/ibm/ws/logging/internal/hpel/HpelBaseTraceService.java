@@ -119,8 +119,14 @@ public class HpelBaseTraceService extends BaseTraceService {
         //but the results of this call are not actually used anywhere (for traces), so it can be disabled for now
         //String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
         invokeTraceRouters(routedTrace);
-        if (traceSource != null) {
-            traceSource.publish(routedTrace, id);
+        try {
+            if (!(counterForTraceSource.incrementCount() > 2)) {
+                if (traceSource != null) {
+                    traceSource.publish(routedTrace, id);
+                }
+            }
+        } finally {
+            counterForTraceRouter.decrementCount();
         }
         trWriter.repositoryPublish(logRecord);
     }
