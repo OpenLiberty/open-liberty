@@ -58,7 +58,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      */
     @Test
     public void testDSDModLevel() throws Exception {
-        getAndVerifyResult("java:module/BasicModLevelDS", 142, 8);
+        getAndVerifyResult("java:module/BasicModLevelDS", 1842, 8);
     }
 
     /**
@@ -70,7 +70,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      */
     @Test
     public void testDSDAppLevel() throws Exception {
-        getAndVerifyResult("java:app/BasicAppLevelDS", 122, 8);
+        getAndVerifyResult("java:app/BasicAppLevelDS", 1822, 8);
     }
 
     /**
@@ -82,7 +82,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      */
     @Test
     public void testDSDGlobalLevel() throws Exception {
-        getAndVerifyResult("java:global/BasicGlobalLevelDS", 132, 8);
+        getAndVerifyResult("java:global/BasicGlobalLevelDS", 1832, 8);
     }
 
     /**
@@ -93,7 +93,7 @@ public class BasicDSDXMLServlet extends FATServlet {
      */
     @Test
     public void testDSDCompLevel() throws Exception {
-        getAndVerifyResult("java:comp/env/BasicCompLevelDS", 113, 8);
+        getAndVerifyResult("java:comp/env/BasicCompLevelDS", 1813, 8);
     }
 
     /**

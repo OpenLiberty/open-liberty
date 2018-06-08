@@ -27,20 +27,20 @@ import javax.sql.DataSource;
 @DataSourceDefinition(name = "java:module/mix_MergeSLSBModLevelDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
                       databaseName = "repeatableDsdMixTestMerge",
-                      loginTimeout = 126,
+                      loginTimeout = 1826,
                       properties = { "createDatabase=create" },
                       user = "dsdTesterMerge")
 @DataSourceDefinition(name = "java:module/mix_XMLOverrideSLSBModLevelDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
                       databaseName = "repeatableDsdMixTestOverride",
-                      loginTimeout = 127,
+                      loginTimeout = 1827,
                       isolationLevel = TRANSACTION_READ_COMMITTED,
                       properties = { "createDatabase=create" },
                       user = "dsdTesterAnn")
 @DataSourceDefinition(name = "java:module/mix_AnnOnlySLSBModLevelDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
                       databaseName = "repeatableDsdMixTestAnn",
-                      loginTimeout = 129,
+                      loginTimeout = 1829,
                       isolationLevel = TRANSACTION_SERIALIZABLE,
                       properties = { "createDatabase=create" },
                       user = "dsdTesterAnn")
