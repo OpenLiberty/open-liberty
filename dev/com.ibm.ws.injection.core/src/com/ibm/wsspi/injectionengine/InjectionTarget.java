@@ -187,6 +187,14 @@ public abstract class InjectionTarget {
             // so that the client will see it as the cause of the
             // InjectionException.                                        d534353.1
             Throwable targetEx = ex;
+ 
+            //Unwrap ManagedObjectException before checking for InvocationTargetException. Use the class name to avoid a compile time dependency.
+            if (ex.getClass().getName().equals("com.ibm.ws.managedobject.ManagedObjectException")) {
+                Throwable unwrappedEx = ex.getCause();
+                if (unwrappedEx != null)
+                    ex = unwrappedEx;
+            }
+
             if (ex instanceof InvocationTargetException) {
                 targetEx = ex.getCause();
                 if (targetEx == null)

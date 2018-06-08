@@ -148,13 +148,13 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
                 }
             } catch (Throwable t) {
                 if (! (t instanceof ManagedObjectException)) {
-                    FFDCFilter.processException(t, CLASS_NAME + ".injectInstance", "134", this);
+                    FFDCFilter.processException(t, CLASS_NAME + ".injectInstance", "151", this);
                     if (isTraceOn && tc.isEntryEnabled())
                         Tr.exit(tc, "injectInstance : Injection failure", t);
                     throw ExceptionUtil.EJBException("Injection failure", t);
                 } else {
                     Throwable cause = t.getCause();
-                    FFDCFilter.processException(cause, CLASS_NAME + ".injectInstance", "134", this);
+                    FFDCFilter.processException(cause, CLASS_NAME + ".injectInstance", "157", this);
                     if (isTraceOn && tc.isEntryEnabled())
                         Tr.exit(tc, "injectInstance : Injection failure", cause);
                     throw ExceptionUtil.EJBException("Injection failure", cause);
@@ -374,7 +374,7 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
             return invCtx;
         } catch (Throwable t) {
             if (! (t instanceof ManagedObjectException)) {
-                FFDCFilter.processException(t, CLASS_NAME + ".callAroundConstructInterceptors", "240", this);
+                FFDCFilter.processException(t, CLASS_NAME + ".callAroundConstructInterceptors", "377", this);
                 // If a root cause exception was captured, then return the context and let the caller
                 // properly report the failure and cause; otherwise throw generic EJBException.
                 if (invCtx.ivAroundConstructException != null) {
@@ -383,7 +383,7 @@ public abstract class ManagedBeanOBase extends BeanO implements ConstructionCall
                 throw ExceptionUtil.EJBException("AroundConstruct interceptor failure", t);
             } else {
                 Throwable cause = t.getCause();
-                FFDCFilter.processException(cause, CLASS_NAME + ".callAroundConstructInterceptors", "240", this);
+                FFDCFilter.processException(cause, CLASS_NAME + ".callAroundConstructInterceptors", "386", this);
                 // If a root cause exception was captured, then return the context and let the caller
                 // properly report the failure and cause; otherwise throw generic EJBException.
                 if (invCtx.ivAroundConstructException != null) {

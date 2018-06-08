@@ -19,6 +19,7 @@ import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; 
 
 public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, ConstructionCallback<T> {
     private Constructor<T> constructor;
@@ -64,6 +65,7 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
     }
 
     @Override
+    @FFDCIgnore(Exception.class)
     public ManagedObject<T> createManagedObject() throws ManagedObjectException {
         T instance = null;
         try {
@@ -76,6 +78,7 @@ public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, Con
     }
 
     @Override
+    @FFDCIgnore(Exception.class)
     public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
         T managedObject;
         try {
