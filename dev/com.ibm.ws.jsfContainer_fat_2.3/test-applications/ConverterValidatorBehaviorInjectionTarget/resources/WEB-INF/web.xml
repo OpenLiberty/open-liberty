@@ -34,5 +34,10 @@
         <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
         <param-value>/WEB-INF/taglib.xml</param-value>
     </context-param>
+    
+    <context-param>
+    	<param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+    	<param-value>true</param-value>
+	</context-param>
   
 </web-app>
