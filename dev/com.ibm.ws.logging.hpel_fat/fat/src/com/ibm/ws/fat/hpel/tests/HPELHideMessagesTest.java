@@ -62,8 +62,9 @@ public class HPELHideMessagesTest extends VerboseTestCase {
         }
         // Setting the server.xml with the hideMessages logging attribute
         appServ.getBackend().updateServerConfiguration(new File(appServ.getBackend().pathToAutoFVTTestFiles, "server-HPELHideMessagesTest.xml"));
-        if (!appServ.getBackend().isStarted()) {
-            appServ.start();
+        if (appServ.getBackend().isStarted()) {
+            // Restart server
+            appServ.restart();
         }
 
         this.logStepCompleted();
@@ -72,12 +73,12 @@ public class HPELHideMessagesTest extends VerboseTestCase {
 
     /**
      * Test that server hides the messages in the console.log, when binary logging is enabled
-     * Set the hideMessages logging attribute to hide message that start with "CWWKZ0058I" in server.xml, start the server and check the console.log file.
+     * Set the hideMessages logging attribute to hide message that start with "CWWKF0012I" in server.xml, start the server and check the console.log file.
      **/
     public void testHPELHideMessageLoggingAttribute() throws Exception {
 
-        this.logVerificationPoint(" Verifying the console.log should not have the message containing CWWKZ0058I messageID. ");
-        logger.info(" The console.log should not have the message containing CWWKZ0058I messageID");
+        this.logVerificationPoint(" Verifying the console.log should not have the message containing CWWKF0012I messageID. ");
+        logger.info(" The console.log should not have the message containing CWWKF0012I messageID");
         checkIfMessageInConsoleLogExists();
         this.logVerificationPassed();
 
@@ -85,8 +86,8 @@ public class HPELHideMessagesTest extends VerboseTestCase {
 
     //Check if we have one Error Message for invalid purgeMaxSize property.
     protected void checkIfMessageInConsoleLogExists() throws Exception {
-        List<String> lines = appServ.getBackend().findStringsInFileInLibertyServerRoot("CWWKZ0058I", CONSOLE_LOG);
-        assertFalse(" Message CWWKZ0058I did appear in console.log  ", lines.size() > 0);
+        List<String> lines = appServ.getBackend().findStringsInFileInLibertyServerRoot("CWWKF0012I:", CONSOLE_LOG);
+        assertFalse(" Message CWWKF0012I did appear in console.log  ", lines.size() > 0);
     }
 
     @Override

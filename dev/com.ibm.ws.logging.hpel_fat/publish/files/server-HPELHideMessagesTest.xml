@@ -17,5 +17,5 @@
    
 	<include location="../fatTestPorts.xml"/>
 	
-	<logging hideMessage="CWWKZ0058I" />
+	<logging hideMessage="CWWKF0012I" />
 </server>
