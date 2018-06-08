@@ -38,9 +38,13 @@ import componenttest.rules.TestRules;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
 /**
  * Test that wars can be implicit bean archives.
  */
+@Mode(TestMode.FULL)
 public class ImplicitEJBTest {
     private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
 

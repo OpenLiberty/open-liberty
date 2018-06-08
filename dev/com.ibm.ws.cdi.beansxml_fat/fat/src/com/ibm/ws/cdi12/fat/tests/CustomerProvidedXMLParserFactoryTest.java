@@ -33,6 +33,9 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+
 /**
  * Tests the case where a customer provides their own SAX parser factory.
  * It is possible that an application that contains a beans.xml might also
@@ -76,6 +79,7 @@ public class CustomerProvidedXMLParserFactoryTest extends LoggingTest {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testBeansXMLIsParsedWithoutUsingCustomerSAXParserFactory() throws Exception {
         assertTrue("App with custom SAXParserFactory did not start successfully",
                    SHARED_SERVER.getLibertyServer().findStringsInLogs("CWWKZ0001I.*userSAXParserFactory").size() > 0);
