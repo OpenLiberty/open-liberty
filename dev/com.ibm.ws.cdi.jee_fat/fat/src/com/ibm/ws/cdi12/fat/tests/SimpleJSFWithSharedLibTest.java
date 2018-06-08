@@ -61,6 +61,7 @@ public class SimpleJSFWithSharedLibTest extends LoggingTest {
         WebArchive simpleJSFWithSharedLib = ShrinkWrap.create(WebArchive.class, "simpleJSFWithSharedLib.war")
                         .addClass("com.ibm.ws.cdi12.test.jsf.sharelib.SimpleJsfBean")
                         .add(new FileAsset(new File("test-applications/simpleJSFWithSharedLib.war/resources/WEB-INF/faces-config.xml")), "/WEB-INF/faces-config.xml")
+                        .add(new FileAsset(new File("test-applications/simpleJSFWithSharedLib.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .add(new FileAsset(new File("test-applications/simpleJSFWithSharedLib.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
                         .add(new FileAsset(new File("test-applications/simpleJSFWithSharedLib.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
                         .add(new FileAsset(new File("test-applications/simpleJSFWithSharedLib.war/resources/testBasicJsf.xhtml")), "/testBasicJsf.xhtml");
