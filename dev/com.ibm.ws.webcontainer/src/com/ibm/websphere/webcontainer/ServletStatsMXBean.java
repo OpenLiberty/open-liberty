@@ -11,6 +11,7 @@
 package com.ibm.websphere.webcontainer;
 
 import com.ibm.websphere.monitor.jmx.Counter;
+import com.ibm.websphere.monitor.jmx.StatisticsMeter;
 import com.ibm.websphere.monitor.jmx.TimeWeightedMeter;
 
 /**
@@ -62,7 +63,14 @@ public interface ServletStatsMXBean {
      * 
      * @return response time details
      */
-    public TimeWeightedMeter getResponseTimeDetails();
+    public StatisticsMeter getResponseTimeDetails();
+    
+    /**
+     * Retrieves the value of the read-only attribute TimeWeightedResponseCountDetails, which provides time weighted statistical details on the response time.
+     * 
+     * @return time weighed response time details
+     */
+    public TimeWeightedMeter getTimeWeightedResponseTimeDetails();
 
     /**
      * Retrieves the value of the read-only attribute AppName, the name of the application of which the servlet is a member.

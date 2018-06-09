@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.monitor;
 
 import com.ibm.websphere.monitor.meters.Counter;
+import com.ibm.websphere.monitor.meters.StatisticsMeter;
 import com.ibm.websphere.monitor.meters.TimeWeightedMeter;
 
 /**
@@ -23,6 +24,9 @@ public interface ServletStatsMXBean extends com.ibm.websphere.webcontainer.Servl
     public Counter getRequestCountDetails();
 
     @Override
-    public TimeWeightedMeter getResponseTimeDetails();
+    public TimeWeightedMeter getTimeWeightedResponseTimeDetails();
+    
+    @Override
+    public StatisticsMeter getResponseTimeDetails();
     
 }

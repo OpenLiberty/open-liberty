@@ -34,7 +34,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
 
     //Following is the stats we are reporting for Servlets.
     private Counter requestCount;
-    private final TimeWeightedMeter responseTime;
+    private final TimeWeightedMeter responseTimeTW;
     private final StatisticsMeter responseTimeOriginal;
 
     /**
@@ -47,9 +47,9 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
         requestCount = new Counter();
         requestCount.setDescription("This shows number of requests to a servlet");
         requestCount.setUnit("ns");
-        responseTime = new TimeWeightedMeter();
-        responseTime.setDescription("Average Response Time for servlet");
-        responseTime.setUnit("ns");
+        responseTimeTW = new TimeWeightedMeter();
+        responseTimeTW.setDescription("Average Response Time for servlet");
+        responseTimeTW.setUnit("ns");
         responseTimeOriginal = new StatisticsMeter();
         responseTimeOriginal.setDescription("Average Response Time for servlet");
         responseTimeOriginal.setUnit("ns");
@@ -88,7 +88,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
      * */
     @Override
     public double getResponseTime() {
-        return responseTime.getMean();
+        return responseTimeTW.getMean();
     }
 
     /**
@@ -144,7 +144,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
      */
     public void updateRT(long elapsed) {
 	    	System.out.println("Response Time of the servlet is: " + elapsed + " nanosecs"); 
-	    	this.responseTime.update(elapsed, TimeUnit.NANOSECONDS);
+	    	this.responseTimeTW.update(elapsed, TimeUnit.NANOSECONDS);
 	    	this.responseTimeOriginal.addDataPoint(elapsed);
     }
     
@@ -165,11 +165,22 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
      * Type = StatisticMeter.
      * Data: mean, min, max, description, unit
      **/
-
     @Override
-    public TimeWeightedMeter getResponseTimeDetails() {
+    public StatisticsMeter getResponseTimeDetails() {
         // TODO Auto-generated method stub
-        return this.responseTime;
+        return this.responseTimeOriginal;
+    }
+    
+    /**
+     * Method getTimeWeightedResponseTimeDetails()
+     * This is returning the details for responseTime.
+     * Type = StatisticMeter.
+     * Data: mean, min, max, description, unit
+     **/
+    @Override
+    public TimeWeightedMeter getTimeWeightedResponseTimeDetails() {
+        // TODO Auto-generated method stub
+        return this.responseTimeTW;
     }
 
 }
