@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ public class MultipleCriteriaFilter implements LogRecordFilter {
     private Pattern[] excludeLoggers;
     private final int[] threadIDs; // ThreadIds converted from hex string to ints to match record
     private Pattern[] messageContent; // MessageContent is seen as a string that matches some content in the record
+    private Pattern[] excludeMessages;
     private long endDate; // endDate to check if needed
     private long startDate; // startDate to check if needed
 
@@ -47,6 +48,9 @@ public class MultipleCriteriaFilter implements LogRecordFilter {
         }
         if (logQueryBean.getMessageContent() != null) {
             messageContent = compile(logQueryBean.getMessageContent());
+        }
+        if (logQueryBean.getExcludeMessages() != null) {
+            excludeMessages = compile(logQueryBean.getExcludeMessages());
         }
         if (logQueryBean.getIncludeLoggers() != null) {
             includeLoggers = compile(logQueryBean.getIncludeLoggers());
@@ -86,8 +90,8 @@ public class MultipleCriteriaFilter implements LogRecordFilter {
         if (levelFilter != null && !levelFilter.accept(record)) {
             return false;
         }
+        String message = (record.getFormattedMessage() != null) ? record.getFormattedMessage() : record.getRawMessage();
         if (this.messageContent != null) { // If messageContentChecking, get proper field and do contains
-            String message = (record.getFormattedMessage() != null) ? record.getFormattedMessage() : record.getRawMessage();
             boolean match = false;
             for (Pattern pattern : this.messageContent) {
                 if (pattern.matcher(message).find()) {
@@ -96,6 +100,18 @@ public class MultipleCriteriaFilter implements LogRecordFilter {
                 }
             }
             if (!match) {
+                return false;
+            }
+        }
+        if (this.excludeMessages != null) { // If excludeMessages checking, any match means record does not meet criteria and not to include
+            boolean matchExcMessage = false;
+            for (Pattern excMessage : this.excludeMessages) {
+                if (excMessage.matcher(message).find()) {
+                    matchExcMessage = true;
+                    break;
+                }
+            }
+            if (matchExcMessage) {
                 return false;
             }
         }

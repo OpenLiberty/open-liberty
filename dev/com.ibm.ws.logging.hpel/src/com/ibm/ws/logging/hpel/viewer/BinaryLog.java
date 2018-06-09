@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -293,6 +293,11 @@ public class BinaryLog extends LogViewer {
         @Override
         void setValue(String arg) throws IllegalArgumentException {
             setMessage(arg);
+        }
+    }, new OneArgOption("--excludeMessage") {
+        @Override
+        void setValue(String arg) {
+            setExcludeMessages(arg);
         }
     }, new OneArgOption("--includeThread") {
         @Override
@@ -646,6 +651,9 @@ public class BinaryLog extends LogViewer {
         System.out.println(getLocalizedString("BL_VIEW_USAGE_017"));
         System.out.println(getLocalizedString("BL_VIEW_USAGE_018"));
         System.out.println();
+        System.out.println(getLocalizedString("BL_VIEW_USAGE_035"));
+        System.out.println(getLocalizedString("BL_VIEW_USAGE_036"));
+        System.out.println();
         System.out.println(getLocalizedString("BL_VIEW_USAGE_019"));
         System.out.println(getLocalizedString("BL_VIEW_USAGE_020"));
         System.out.println();
@@ -721,6 +729,9 @@ public class BinaryLog extends LogViewer {
         System.out.println();
         System.out.println(getLocalizedString("BL_VIEW_USAGE_017"));
         System.out.println(getLocalizedString("BL_VIEW_USAGE_018"));
+        System.out.println();
+        System.out.println(getLocalizedString("BL_VIEW_USAGE_035"));
+        System.out.println(getLocalizedString("BL_VIEW_USAGE_036"));
         System.out.println();
         System.out.println(getLocalizedString("BL_VIEW_USAGE_019"));
         System.out.println(getLocalizedString("BL_VIEW_USAGE_020"));

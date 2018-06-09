@@ -32,6 +32,7 @@ import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.collector.manager.buffer.SimpleRotatingSoftQueue;
 import com.ibm.ws.kernel.boot.logging.LoggerHandlerManager;
+import com.ibm.ws.kernel.boot.logging.WsLogManager;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
@@ -177,6 +178,9 @@ public class BaseTraceService implements TrService {
     /** True if java.lang.instrument is available for trace. */
     private boolean javaLangInstrument;
 
+    /** Check to see if HPEL is enabled **/
+    private boolean isHpelEnabled;
+
     /** Configured message Ids to be suppressed in console/message.log */
     private volatile Collection<String> hideMessageids;
 
@@ -229,6 +233,9 @@ public class BaseTraceService implements TrService {
      */
     @Override
     public void init(LogProviderConfig config) {
+        // Check to see if the Log provider is Binary Logging
+        isHpelEnabled = WsLogManager.isBinaryLoggingEnabled();
+
         update(config);
 
         registerLoggerHandlerSingleton();
@@ -278,8 +285,9 @@ public class BaseTraceService implements TrService {
         consoleLogLevel = trConfig.getConsoleLogLevel();
         copySystemStreams = trConfig.copySystemStreams();
         hideMessageids = trConfig.getMessagesToHide();
-        //add hideMessageIds to log header. This is printed when its configured in bootstrap.properties
-        if (hideMessageids.size() > 0) {
+        //add hideMessageIds to log header, only for default logging, since for binary logging, the messages will be only hidden in console.log.
+        //This is printed when its configured in bootstrap.properties
+        if (hideMessageids.size() > 0 && !isHpelEnabled) {
             logHeader = logHeader.concat("Suppressed message ids: " + hideMessageids).concat((LoggingConstants.nl));
         }
         if (formatter == null || trConfig.getTraceFormat() != formatter.getTraceFormat()) {
@@ -294,7 +302,8 @@ public class BaseTraceService implements TrService {
 
         initializeWriters(trConfig);
         if (hideMessageids.size() > 0) {
-            Tr.info(TraceSpecification.getTc(), "MESSAGES_CONFIGURED_HIDDEN_2", new Object[] { hideMessageids });
+            String msgKey = isHpelEnabled ? "MESSAGES_CONFIGURED_HIDDEN_HPEL" : "MESSAGES_CONFIGURED_HIDDEN_2";
+            Tr.info(TraceSpecification.getTc(), msgKey, new Object[] { hideMessageids });
         }
 
         /*

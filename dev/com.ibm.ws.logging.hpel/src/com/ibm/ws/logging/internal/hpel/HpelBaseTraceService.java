@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,14 @@ public class HpelBaseTraceService extends BaseTraceService {
             boolean logNormally = invokeMessageRouters(routedMessage);
             if (!logNormally)
                 return;
+
             trWriter.repositoryPublish(logRecord);
+
+            //If any messages configured to be hidden then those will not be written to console.log and will be redirected to logdata/tracedata
+            if (isMessageHidden(formattedMsg)) {
+                return;
+            }
+
             if (logSource != null) {
                 publishToLogSource(routedMessage);
             }
