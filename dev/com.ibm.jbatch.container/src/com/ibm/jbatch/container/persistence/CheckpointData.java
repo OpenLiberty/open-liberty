@@ -1,13 +1,13 @@
 /*
  * Copyright 2012 International Business Machines Corp.
- * 
+ *
  * See the NOTICE file distributed with this work for additional information
- * regarding copyright ownership. Licensed under the Apache License, 
+ * regarding copyright ownership. Licensed under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import com.ibm.jbatch.container.util.TCCLObjectInputStream;
+import com.ibm.ws.serialization.DeserializationObjectInputStream;
 /**
- * Wrapper to avoid having to put 'null', a perfectly valid return value from 
+ * Wrapper to avoid having to put 'null', a perfectly valid return value from
  * checkpointInfo(), into the database.
  */
 public class CheckpointData implements Serializable {
@@ -33,7 +33,7 @@ public class CheckpointData implements Serializable {
 	private Serializable readerRestartToken;
 	private Serializable writerRestartToken;
 
-	public CheckpointData() { 
+	public CheckpointData() {
 		super();
 	}
 
@@ -41,9 +41,9 @@ public class CheckpointData implements Serializable {
 
 		try {
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytesForDB);
-			TCCLObjectInputStream ois = null;
+			DeserializationObjectInputStream ois = null;
 			try {
-				ois = new TCCLObjectInputStream(bais);
+                                ois = new DeserializationObjectInputStream(bais, Thread.currentThread().getContextClassLoader());
 				readerRestartToken = (Serializable) ois.readObject();
 				writerRestartToken = (Serializable) ois.readObject();
 			} finally {
@@ -72,7 +72,8 @@ public class CheckpointData implements Serializable {
 		writerRestartToken = obj;
 	}
 
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuilder restartString = new StringBuilder();
 
 		String readStr = readerRestartToken == null ? "<null>" : readerRestartToken.toString();
