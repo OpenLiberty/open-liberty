@@ -344,7 +344,7 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
     @Override
     public StatisticsReading getReading() {
         StatsData sd = getAggregateStats();
-        return new StatisticsReading(sd.count, sd.min, sd.max, sd.total, twmeter.getMean(), sd.getVariance(), Math.sqrt(sd.getVariance()), getUnit());
+        return new StatisticsReading(sd.count, sd.min, sd.max, sd.total, sd.mean, sd.getVariance(), Math.sqrt(sd.getVariance()), getUnit());
     }
 
     /**
