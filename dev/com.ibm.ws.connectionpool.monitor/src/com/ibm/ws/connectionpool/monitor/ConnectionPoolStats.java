@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.connectionpool.monitor;
 
-import java.util.concurrent.TimeUnit;
-
 import com.ibm.websphere.connectionpool.monitor.ConnectionPoolStatsMXBean;
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Gauge;
 import com.ibm.websphere.monitor.meters.Meter;
-import com.ibm.websphere.monitor.meters.TimeWeightedMeter;
+import com.ibm.websphere.monitor.meters.StatisticsMeter;
 
 /**
  * This class is the actual class where we declare counters using different Meter Objects like Counter,Gauge and handles the increments and decrements of
@@ -27,7 +25,7 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
     private final Counter createCount, destroyCount;
     private final Gauge poolSize, freeConnectionCount;
     private final Gauge managedConnectionCount, connectionHandleCount;
-    private final TimeWeightedMeter waitTime, inUseTime;
+    private final StatisticsMeter waitTime, inUseTime;
 
     public ConnectionPoolStats() {
         createCount = new Counter();
@@ -35,9 +33,9 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
         poolSize = new Gauge();
         managedConnectionCount = new Gauge();
         connectionHandleCount = new Gauge();
-        waitTime = new TimeWeightedMeter();
+        waitTime = new StatisticsMeter();
         freeConnectionCount = new Gauge();
-        inUseTime = new TimeWeightedMeter();
+        inUseTime = new StatisticsMeter();
     }
 
     /**
@@ -81,11 +79,11 @@ public class ConnectionPoolStats extends Meter implements ConnectionPoolStatsMXB
     }
 
     public void updateWaitTime(long elapsed) {
-        this.waitTime.update(elapsed, TimeUnit.NANOSECONDS);
+        this.waitTime.addDataPoint(elapsed);
     }
 
     public void updateInUseTime(long elapsed) {
-        this.inUseTime.update(elapsed, TimeUnit.NANOSECONDS);
+        this.inUseTime.addDataPoint(elapsed);
     }
 
     public void incFreeConnectionCount() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.webcontainer.monitor;
 
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
-import com.ibm.websphere.monitor.meters.TimeWeightedMeter;
 
 /**
  * Servlet Stats MXBean
@@ -22,9 +21,6 @@ public interface ServletStatsMXBean extends com.ibm.websphere.webcontainer.Servl
 
     @Override
     public Counter getRequestCountDetails();
-
-    @Override
-    public TimeWeightedMeter getTimeWeightedResponseTimeDetails();
     
     @Override
     public StatisticsMeter getResponseTimeDetails();

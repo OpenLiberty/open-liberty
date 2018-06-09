@@ -22,7 +22,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
  * wait time and in use time.
  */
 @Trivial
-public class TimeWeightedMeter extends com.ibm.websphere.monitor.jmx.TimeWeightedMeter implements TimeWeightedMXBean {
+public class TimeWeightedMeter {
     private final LongAdderAdapter count = LongAdderProxy.create();
     private final Histogram histogram;
     private long currentTime;
@@ -48,49 +48,41 @@ public class TimeWeightedMeter extends com.ibm.websphere.monitor.jmx.TimeWeighte
         count.add(n);
     }
 
-    @Override
     public long getCount() {
         return histogram.getCount();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      *
-     * @see com.ibm.websphere.monitor.meters.TimeWeightedMXBean#getMean()
+     * @return returns the time weighted average of all the data points in the reservoir
      */
-    @Override
     public double getMean() {
         // TODO Auto-generated method stub
         return getSnapshot().getMean();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
      *
-     * @see com.ibm.websphere.monitor.meters.TimeWeightedMXBean#getCurrent()
+     * @return returns the most recent entry in the reservoir
      */
-    @Override
     public double getCurrent() {
         // TODO Auto-generated method stub
         return currentTime;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Add new data to the reservoir with value and time unit.
      *
-     * @see com.ibm.websphere.monitor.meters.TimeWeightedMXBean#update()
+     * @param duration
+     * @param unit
      */
-    @Override
     public void update(long duration, TimeUnit unit) {
         update(unit.toNanos(duration));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.websphere.monitor.meters.TimeWeightedMXBean#getSnapshot()
+    /**
+     * @return returns the snapshot of the current data in the reservoir
      */
-    @Override
     public Snapshot getSnapshot() {
         return histogram.getSnapshot();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.monitor;
 
-import java.util.concurrent.TimeUnit;
-
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
-import com.ibm.websphere.monitor.meters.TimeWeightedMeter;
 
 /**
  * This is used to report Servlet Related Statistics.
@@ -34,8 +31,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
 
     //Following is the stats we are reporting for Servlets.
     private Counter requestCount;
-    private final TimeWeightedMeter responseTimeTW;
-    private final StatisticsMeter responseTimeOriginal;
+    private final StatisticsMeter responseTime;
 
     /**
      * Constructor.
@@ -47,12 +43,9 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
         requestCount = new Counter();
         requestCount.setDescription("This shows number of requests to a servlet");
         requestCount.setUnit("ns");
-        responseTimeTW = new TimeWeightedMeter();
-        responseTimeTW.setDescription("Average Response Time for servlet");
-        responseTimeTW.setUnit("ns");
-        responseTimeOriginal = new StatisticsMeter();
-        responseTimeOriginal.setDescription("Average Response Time for servlet");
-        responseTimeOriginal.setUnit("ns");
+        responseTime = new StatisticsMeter();
+        responseTime.setDescription("Average Response Time for servlet");
+        responseTime.setUnit("ns");
     }
 
     /**
@@ -88,7 +81,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
      * */
     @Override
     public double getResponseTime() {
-        return responseTimeTW.getMean();
+        return responseTime.getMean();
     }
 
     /**
@@ -143,9 +136,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
      * @param l
      */
     public void updateRT(long elapsed) {
-	    	System.out.println("Response Time of the servlet is: " + elapsed + " nanosecs"); 
-	    	this.responseTimeTW.update(elapsed, TimeUnit.NANOSECONDS);
-	    	this.responseTimeOriginal.addDataPoint(elapsed);
+	    	this.responseTime.addDataPoint(elapsed);
     }
     
     /**
@@ -168,19 +159,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
     @Override
     public StatisticsMeter getResponseTimeDetails() {
         // TODO Auto-generated method stub
-        return this.responseTimeOriginal;
-    }
-    
-    /**
-     * Method getTimeWeightedResponseTimeDetails()
-     * This is returning the details for responseTime.
-     * Type = StatisticMeter.
-     * Data: mean, min, max, description, unit
-     **/
-    @Override
-    public TimeWeightedMeter getTimeWeightedResponseTimeDetails() {
-        // TODO Auto-generated method stub
-        return this.responseTimeTW;
+        return this.responseTime;
     }
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.websphere.webcontainer;
 
 import com.ibm.websphere.monitor.jmx.Counter;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
-import com.ibm.websphere.monitor.meters.TimeWeightedMeter;
 
 /**
  * Management12 interface for MBeans with names of the form "WebSphere:type=ServletStats,name=*"
@@ -65,13 +64,6 @@ public interface ServletStatsMXBean {
      */
     public StatisticsMeter getResponseTimeDetails();
     
-    /**
-     * Retrieves the value of the read-only attribute TimeWeightedResponseCountDetails, which provides time weighted statistical details on the response time.
-     * 
-     * @return time weighed response time details
-     */
-    public TimeWeightedMeter getTimeWeightedResponseTimeDetails();
-
     /**
      * Retrieves the value of the read-only attribute AppName, the name of the application of which the servlet is a member.
      * 

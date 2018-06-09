@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -41,6 +42,9 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
      * function from observing intermediate results. While this adds some
      * overhead, the associated monitor should rarely be contended.
      */
+
+    private final TimeWeightedMeter twmeter;
+
     @Trivial
     final static class StatsData {
         long count;
@@ -54,18 +58,14 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
             return count <= 1 ? 0 : varianceNumeratorSum / (count - 1);
         }
 
-        synchronized void addDataPoint(long value) {
-            if (count == 0) {
-                min = value;
-                max = value;
-            }
-            double delta = value - mean;
-            count++;
-            total += value;
-            mean = mean + delta / count;
-            varianceNumeratorSum += delta * (value - mean);
-            min = Math.min(min, value);
-            max = Math.max(max, value);
+        synchronized void addDataPoint(TimeWeightedMeter twmeter) {
+            double delta = twmeter.getCurrent() - twmeter.getMean();
+            count = twmeter.getCount();
+            total += twmeter.getCurrent();
+            mean = twmeter.getMean();
+            varianceNumeratorSum += delta * (twmeter.getCurrent() - mean);
+            min = twmeter.getSnapshot().getMin();
+            max = twmeter.getSnapshot().getMax();
         }
 
         synchronized StatsData getCopy() {
@@ -175,6 +175,7 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
      */
     public StatisticsMeter() {
         super();
+        twmeter = new TimeWeightedMeter();
     }
 
     /**
@@ -183,7 +184,8 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
      * @param value the value to add
      */
     public void addDataPoint(long value) {
-        threadStats.getStatsData().addDataPoint(value);
+        twmeter.update(value, TimeUnit.NANOSECONDS);
+        threadStats.getStatsData().addDataPoint(twmeter);
     }
 
     /**
@@ -229,7 +231,7 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
      */
     @Override
     public double getMean() {
-        return getAggregateStats().mean;
+        return twmeter.getMean();
     }
 
     /**
@@ -342,7 +344,7 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
     @Override
     public StatisticsReading getReading() {
         StatsData sd = getAggregateStats();
-        return new StatisticsReading(sd.count, sd.min, sd.max, sd.total, sd.mean, sd.getVariance(), Math.sqrt(sd.getVariance()), getUnit());
+        return new StatisticsReading(sd.count, sd.min, sd.max, sd.total, twmeter.getMean(), sd.getVariance(), Math.sqrt(sd.getVariance()), getUnit());
     }
 
     /**
