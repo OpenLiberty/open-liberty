@@ -43,6 +43,7 @@ public class TAIMappingHelper {
     JsonWebToken jwtPrincipal = null;
     Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
     protected static final String CCK_CLAIM = "sid";
+    protected static final String APR_CLAIM = "apr"; // custom auth provider
 
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
     //boolean addJwtPrincipalToSubject = false;
@@ -223,6 +224,12 @@ public class TAIMappingHelper {
         if (!addJwtPrincipal) {
             // add this only in the mpjwt tai flow
             addCustomCacheKey(customProperties);
+        } else {
+            // jwtsso flow
+            // copy cache key and amr claims from the token to the custom properties, so that the new subject
+            // will have these values.
+            // TODO look at realm
+            addCustomClaimsFromToken(customProperties);
         }
 
         if (tc.isDebugEnabled()) {
@@ -230,6 +237,39 @@ public class TAIMappingHelper {
         }
 
         return customProperties;
+    }
+
+    /**
+     * @param customProperties
+     */
+    private void addCustomClaimsFromToken(Hashtable<String, Object> customProperties) {
+        String cck = getCustomCacheKey();
+        if (cck != null) {
+            customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, cck);
+        }
+        String apr = getCustomAuthProvider();
+        if (apr != null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "apr claim is set in the token : ", apr);
+            }
+            customProperties.put(AuthenticationConstants.INTERNAL_AUTH_PROVIDER, apr);
+        }
+    }
+
+    /**
+     * @return
+     */
+    private String getCustomAuthProvider() {
+        if (jwtPrincipal != null) {
+            Object apr = jwtPrincipal.getClaim(APR_CLAIM);
+            if (apr != null && apr instanceof String) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "apr claim is set in the token : ", (String) apr);
+                }
+                return (String) apr;
+            }
+        }
+        return null;
     }
 
     /**
@@ -246,10 +286,13 @@ public class TAIMappingHelper {
     /**
      * @param jwtPrincipal
      */
-    private String getCustomCacheKey(JsonWebToken jwt) {
-        Object cck = jwt.getClaim(CCK_CLAIM);
-        if (cck != null) {
-            return (String) cck;
+    private String getCustomCacheKey() {
+
+        if (jwtPrincipal != null) {
+            Object cck = jwtPrincipal.getClaim(CCK_CLAIM);
+            if (cck != null) {
+                return (String) cck;
+            }
         }
         return null;
     }
