@@ -11,7 +11,7 @@
 package com.ibm.websphere.webcontainer;
 
 import com.ibm.websphere.monitor.jmx.Counter;
-import com.ibm.websphere.monitor.meters.StatisticsMeter;
+import com.ibm.websphere.monitor.jmx.StatisticsMeter;
 
 /**
  * Management12 interface for MBeans with names of the form "WebSphere:type=ServletStats,name=*"
@@ -63,7 +63,7 @@ public interface ServletStatsMXBean {
      * @return response time details
      */
     public StatisticsMeter getResponseTimeDetails();
-    
+
     /**
      * Retrieves the value of the read-only attribute AppName, the name of the application of which the servlet is a member.
      * 
