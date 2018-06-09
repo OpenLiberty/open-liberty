@@ -136,8 +136,8 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
      * @param l
      */
     public void updateRT(long elapsed) {
-	    	this.responseTime.addDataPoint(elapsed);
-	    	
+        this.responseTime.addDataPoint(elapsed);
+
     }
 
     /**
@@ -157,7 +157,7 @@ public class ServletStats extends Meter implements ServletStatsMXBean {
      * Type = StatisticMeter.
      * Data: mean, min, max, description, unit
      **/
-    
+
     @Override
     public StatisticsMeter getResponseTimeDetails() {
         // TODO Auto-generated method stub

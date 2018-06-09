@@ -24,5 +24,4 @@ public interface ServletStatsMXBean extends com.ibm.websphere.webcontainer.Servl
 
     @Override
     public StatisticsMeter getResponseTimeDetails();
-    
 }

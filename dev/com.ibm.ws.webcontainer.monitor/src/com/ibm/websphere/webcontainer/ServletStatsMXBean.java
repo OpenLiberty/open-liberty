@@ -71,5 +71,4 @@ public interface ServletStatsMXBean {
      */
     public String getAppName();
 
-
 }
