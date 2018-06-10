@@ -289,6 +289,8 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
 
         resource.setSingleton(Boolean.toString(feature.isSingleton()));
 
+        resource.setIBMInstallTo(feature.getHeader("IBM-InstallTo"));
+
         return resource;
     }
 
@@ -596,4 +598,5 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
             }
         }
     }
+
 }

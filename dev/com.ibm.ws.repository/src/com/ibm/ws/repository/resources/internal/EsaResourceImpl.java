@@ -392,6 +392,7 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
         setShortName(esaRes.getShortName());
         setVanityURL(esaRes.getVanityURL());
         setSingleton(esaRes.getSingleton());
+        setIBMInstallTo(esaRes.getIBMInstallTo());
     }
 
     @Override
@@ -784,6 +785,18 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
     @Override
     public void setSingleton(String singleton) {
         _asset.getWlpInformation().setSingleton(singleton);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getIBMInstallTo() {
+        return _asset.getWlpInformation().getIbmInstallTo();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIBMInstallTo(String ibmInstallTo) {
+        _asset.getWlpInformation().setIbmInstallTo(ibmInstallTo);
     }
 
 }
