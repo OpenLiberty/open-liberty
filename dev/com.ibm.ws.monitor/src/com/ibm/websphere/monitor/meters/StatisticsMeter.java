@@ -360,4 +360,8 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
         return sb.toString();
     }
 
+    public TimeWeightedMeter getTimeWeightedMeter() {
+        return twmeter;
+    }
+
 }

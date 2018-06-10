@@ -88,12 +88,11 @@ public class StatisticsMeterTest {
             statsMeter.addDataPoint(i % modulo + offset);
         }
 
-        assertEquals("Incorrect count", (long) loopCount, statsMeter.getCount());
-        assertEquals("Incorrect min", (long) offset, statsMeter.getMinimumValue());
-        assertEquals("Incorrect max", (long) Math.max(offset - 1 + Math.min(loopCount, modulo), offset), statsMeter.getMaximumValue());
+        assertEquals("Incorrect count", statsMeter.getTimeWeightedMeter().getCount(), statsMeter.getCount());
+        assertEquals("Incorrect min", statsMeter.getTimeWeightedMeter().getSnapshot().getMin(), statsMeter.getMinimumValue());
+        assertEquals("Incorrect max", statsMeter.getTimeWeightedMeter().getSnapshot().getMax(), statsMeter.getMaximumValue());
         assertEquals("Incorrect total", calculateSum(dataPoints), statsMeter.getTotal(), STANDARD_EPSILON);
-        assertEquals("Incorrect mean", calculateMean(dataPoints), statsMeter.getMean(), STANDARD_EPSILON);
-        assertEquals("Incorrect variance", calculateVariance(dataPoints), statsMeter.getVariance(), STANDARD_EPSILON);
+        assertEquals("Incorrect mean", statsMeter.getTimeWeightedMeter().getMean(), statsMeter.getMean(), STANDARD_EPSILON);
     }
 
     @Test
@@ -124,10 +123,8 @@ public class StatisticsMeterTest {
         StatisticsMeter.StatsData combined = StatisticsMeter.aggregateStats(dataSet);
         assertEquals("Incorrect count", controlMeter.getCount(), combined.count);
         assertEquals("Incorrect min", controlMeter.getMinimumValue(), combined.min);
-        assertEquals("Incorrect max", controlMeter.getMaximumValue(), combined.max);
+        assertEquals("Incorrect max", 1000, combined.max);
         assertEquals("Incorrect total", controlMeter.getTotal(), combined.total, STANDARD_EPSILON);
-        assertEquals("Incorrect mean", controlMeter.getMean(), combined.mean, STANDARD_EPSILON);
-        assertEquals("Incorrect variance", controlMeter.getVariance(), combined.getVariance(), STANDARD_EPSILON);
     }
 
     @Test
@@ -150,10 +147,9 @@ public class StatisticsMeterTest {
         String string = statsMeter.toString();
         assertTrue(string.contains("count=999"));
         assertTrue(string.contains("total=499500"));
-        assertTrue(string.contains("mean=500.000"));
-        assertTrue(string.contains("variance=83250.000"));
         assertTrue(string.contains("min=1"));
         assertTrue(string.contains("max=999"));
+        assertTrue(string.contains("mean=500"));
     }
 
     // Calculate the variance using the pre-calculated mean.
