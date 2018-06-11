@@ -1,0 +1,35 @@
+<server>
+    <featureManager>
+    	<feature>mpMetrics-1.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <quickStartSecurity userName="theUser" userPassword="thePassword"/>
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}" />
+
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+    <applicationMonitor updateTrigger="mbean"/>
+
+	<library id="lib">
+      <fileset dir="${server.config.dir}/libs" includes="*.jar" scanInterval="5s"/>
+    </library>
+
+    <webApplication id="checkerServlet" location="checkerServlet.war" name="checkerServlet">
+    	<classloader commonLibraryRef="lib"/>
+    </webApplication> 
+    
+    <webApplication id="metric-servlet" location="metric-servlet.war" name="metric-servlet">
+    	<classloader commonLibraryRef="lib"/>
+    </webApplication> 
+
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
+</server>
