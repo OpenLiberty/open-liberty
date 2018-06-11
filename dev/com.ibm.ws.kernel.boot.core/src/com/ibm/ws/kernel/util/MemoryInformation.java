@@ -563,7 +563,7 @@ public class MemoryInformation {
             // Use cgroup swappiness if available
             String fileToRead = "/proc/sys/vm/swappiness";
             if (FileSystem.fileExists("/sys/fs/cgroup/memory/memory.swappiness")) {
-                fileToRead = "/proc/sys/vm/swappiness";
+                fileToRead = "/sys/fs/cgroup/memory/memory.swappiness";
             }
             return Integer.parseInt(FileSystem.readFirstLine(fileToRead));
         } catch (IOException e) {
