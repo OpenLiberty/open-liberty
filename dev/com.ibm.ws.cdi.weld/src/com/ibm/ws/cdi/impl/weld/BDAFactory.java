@@ -42,7 +42,7 @@ public class BDAFactory {
                                                            String archiveID,
                                                            CDIArchive archive,
                                                            CDIRuntime cdiRuntime) throws CDIException {
-        //this isn't really part of any EE module but so we just use the archiveID which should be unique
+        //this isn't really part of any EE module so we just use the archiveID which should be unique
         EEModuleDescriptor eeModuleDescriptor = new WebSphereEEModuleDescriptor(archiveID, archive.getType());
         return createBDA(deployment, archiveID, archive, cdiRuntime, eeModuleDescriptor);
     }
@@ -78,7 +78,7 @@ public class BDAFactory {
 
         boolean extClassesOnlyBDA = extensionArchive.isExtClassesOnly();
         String archiveID = deployment.getDeploymentID() + "#" + extensionArchive.getName() + ".additionalClasses";
-        //this isn't really part of any EE module but so we just use the archiveID which should be unique
+        //this isn't really part of any EE module so we just use the archiveID which should be unique
         EEModuleDescriptor eeModuleDescriptor = new WebSphereEEModuleDescriptor(archiveID, extensionArchive.getType());
 
         WebSphereBeanDeploymentArchive bda = createBDA(deployment,

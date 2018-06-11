@@ -21,7 +21,7 @@ public class WebSphereEEModuleDescriptor extends EEModuleDescriptorImpl {
 
     /**
      * @param id
-     * @param moduleType
+     * @param archiveType
      */
     public WebSphereEEModuleDescriptor(String id, ArchiveType archiveType) {
         super(id, getModuleType(archiveType));
