@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -82,17 +83,18 @@ public class StatisticsMeterTest {
         int offset = 0;
         int modulo = 10000;
 
+        TimeWeightedMeter twm = new TimeWeightedMeter();
         List<Long> dataPoints = new ArrayList<Long>(loopCount);
         for (int i = 0; i < loopCount; i++) {
             dataPoints.add(Long.valueOf(i % modulo + offset));
             statsMeter.addDataPoint(i % modulo + offset);
+            twm.update(i % modulo + offset, TimeUnit.NANOSECONDS);
         }
 
-        assertEquals("Incorrect count", statsMeter.getTimeWeightedMeter().getCount(), statsMeter.getCount());
-        assertEquals("Incorrect min", statsMeter.getTimeWeightedMeter().getSnapshot().getMin(), statsMeter.getMinimumValue());
-        assertEquals("Incorrect max", statsMeter.getTimeWeightedMeter().getSnapshot().getMax(), statsMeter.getMaximumValue());
+        assertEquals("Incorrect count", twm.getCount(), statsMeter.getCount());
+        assertEquals("Incorrect min", offset, statsMeter.getMinimumValue());
+        assertEquals("Incorrect max", Math.max(offset - 1 + Math.min(loopCount, modulo), offset), statsMeter.getMaximumValue());
         assertEquals("Incorrect total", calculateSum(dataPoints), statsMeter.getTotal(), STANDARD_EPSILON);
-        assertEquals("Incorrect mean", statsMeter.getTimeWeightedMeter().getMean(), statsMeter.getMean(), STANDARD_EPSILON);
     }
 
     @Test

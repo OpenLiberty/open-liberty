@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2017 IBM Corporation and others.
+ * Copyright (c) 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,13 +59,17 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
         }
 
         synchronized void addDataPoint(TimeWeightedMeter twmeter) {
+            if (count == 0) {
+                min = (long) twmeter.getCurrent();
+                max = (long) twmeter.getCurrent();;
+            }
             double delta = twmeter.getCurrent() - twmeter.getMean();
             count = twmeter.getCount();
             total += twmeter.getCurrent();
             mean = twmeter.getMean();
             varianceNumeratorSum += delta * (twmeter.getCurrent() - mean);
-            min = twmeter.getSnapshot().getMin();
-            max = twmeter.getSnapshot().getMax();
+            min = (long) Math.min(min, twmeter.getCurrent());
+            max = (long) Math.max(max, twmeter.getCurrent());
         }
 
         synchronized StatsData getCopy() {
@@ -312,7 +316,7 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
             }
             combined.total = combined.total + stats.total;
             combined.count = combined.count + stats.count;
-            combined.mean = combined.total / combined.count;
+            combined.mean = ((combined.count - stats.count) * combined.mean + stats.mean * stats.count) / combined.count;
             combined.min = Math.min(combined.min, stats.min);
             combined.max = Math.max(combined.max, stats.max);
 
@@ -358,10 +362,6 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
         StringBuilder sb = new StringBuilder();
         sb.append(terminatedThreadStats == null ? "is not initialized" : getAggregateStats());
         return sb.toString();
-    }
-
-    public TimeWeightedMeter getTimeWeightedMeter() {
-        return twmeter;
     }
 
 }
