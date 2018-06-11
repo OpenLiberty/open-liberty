@@ -67,8 +67,8 @@ public class FTGlobalConfig {
      * Checks if an annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax:
      *
      * <ul>
-     * <li>Disable on the class-level: com.acme.test.MyClient/serviceA/CircuitBreaker/enabled=false</li>
      * <li>Disable at the method-level: com.acme.test.MyClient/serviceA/methodA/CircuitBreaker/enabled=false</li>
+     * <li>Disable on the class-level: com.acme.test.MyClient/serviceA/CircuitBreaker/enabled=false</li>
      * <li>Disable globally: CircuitBreaker/enabled=false</li>
      * </ul>
      *
@@ -85,32 +85,42 @@ public class FTGlobalConfig {
         ClassLoader cl = FTUtils.getClassLoader(clazz);
         Config mpConfig = ConfigProvider.getConfig(cl);
 
+        Boolean enabled = null;
+
         if (method != null) {
             String methodKey = clazz.getCanonicalName() + "/" + method.getName() + "/" + ann.annotationType().getSimpleName() + "/enabled";
             Optional<Boolean> methodEnabled = mpConfig.getOptionalValue(methodKey, Boolean.class);
             if (methodEnabled.isPresent()) {
-                return methodEnabled.get(); //Method scoped properties take precedence. We can return, otherwise move on to class scope.
+                enabled = methodEnabled.get(); //Method scoped properties take precedence. We can return, otherwise move on to class scope.
             }
         }
 
-        String clazzKey = clazz.getCanonicalName() + "/" + ann.annotationType().getSimpleName() + "/enabled";
-        Optional<Boolean> classEnabled = mpConfig.getOptionalValue(clazzKey, Boolean.class);
-        if (classEnabled.isPresent()) {
-            return classEnabled.get();
+        if (enabled == null) {
+            String clazzKey = clazz.getCanonicalName() + "/" + ann.annotationType().getSimpleName() + "/enabled";
+            Optional<Boolean> classEnabled = mpConfig.getOptionalValue(clazzKey, Boolean.class);
+            if (classEnabled.isPresent()) {
+                enabled = classEnabled.get();
+            }
         }
 
-        String annKey = ann.annotationType().getSimpleName() + "/enabled";
-        Optional<Boolean> globalEnabled = mpConfig.getOptionalValue(annKey, Boolean.class);
-        if (globalEnabled.isPresent()) {
-            return globalEnabled.get();
+        if (enabled == null) {
+            String annKey = ann.annotationType().getSimpleName() + "/enabled";
+            Optional<Boolean> globalEnabled = mpConfig.getOptionalValue(annKey, Boolean.class);
+            if (enabled == null && globalEnabled.isPresent()) {
+                enabled = globalEnabled.get();
+            }
         }
 
         //The lowest priority is a global disabling of all fault tolerence annotations. (Only check FT annotations. Fallback is exempt from this global configuration)
-        if (ALL_ANNOTATIONS.contains(ann.annotationType()) && !getActiveAnnotations(clazz).contains(ann.annotationType())){
-            return false;
+        if (enabled == null && ALL_ANNOTATIONS.contains(ann.annotationType()) && !getActiveAnnotations(clazz).contains(ann.annotationType())){
+            enabled = false;
         }
 
-        return true; //The default is enabled.
+        if (enabled == null) {
+            enabled = true; //The default is enabled.
+        }
+
+        return enabled;
     }
 
     public static Set<Class<?>> getActiveAnnotations(Class<?> clazz) {
