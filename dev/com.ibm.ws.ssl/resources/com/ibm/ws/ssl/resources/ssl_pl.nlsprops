@@ -675,3 +675,7 @@ ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=Przejrzyj konfiguracj\
 ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: Domy\u015blny magazyn kluczy nie jest tworzony, poniewa\u017c w elemencie <keyStore id="defaultKeyStore"/> nie zosta\u0142o skonfigurowane has\u0142o i nie zosta\u0142a ustawiona zmienna \u015brodowiskowa 'keystore_password'. 
 ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=Domy\u015blny magazyn kluczy nie jest tworzony, poniewa\u017c w elemencie <keyStore id="defaultKeyStore"/> nie zosta\u0142o skonfigurowane has\u0142o i nie zosta\u0142a ustawiona zmienna \u015brodowiskowa 'keystore_password'.
 ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Utworzono domy\u015blny magazyn kluczy przy u\u017cyciu zmiennej \u015brodowiskowej 'keystore_password'.
+ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Utworzono domy\u015blny magazyn kluczy przy u\u017cyciu zmiennej \u015brodowiskowej 'keystore_password'. Ta warto\u015b\u0107 jest generowana w pliku server.env podczas tworzenia serwera lub nadpisywana w \u015brodowisku, w kt\u00f3rym zosta\u0142 uruchomiony serwer.
+ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

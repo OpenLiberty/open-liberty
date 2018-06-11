@@ -36,11 +36,11 @@ warning.could.not.thin.application.explanation=L'applicazione non pu\u00f2 esser
 warning.could.not.thin.application.useraction=Tentare di risolvere il problema nel messaggio di eccezione e riavviare il server o aggiornare l'applicazione. 
 
 error.need.springboot.version.15=CWWKC0252E: L'applicazione non si \u00e8 avviata poich\u00e9 la funzione springBoot-2.0 \u00e8 configurata nel file server.xml. L'applicazione richiede che sia configurata la funzione springBoot-1.5.
-error.need.springboot.version.15.explanation=L'applicazione richiede la funzione springBoot-1.5. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml. 
+error.need.springboot.version.15.explanation=L'applicazione richiede la funzione springBoot-1.5. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml.  
 error.need.springboot.version.15.useraction=Configurare la funzione springBoot-1.5 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.
 
 error.need.springboot.version.20=CWWKC0253E: L'applicazione non si \u00e8 avviata poich\u00e9 la funzione springBoot-1.5 \u00e8 configurata nel file server.xml. L'applicazione richiede che sia configurata la funzione springBoot-2.0.
-error.need.springboot.version.20.explanation=L'applicazione richiede la funzione springBoot-2.0. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml. 
+error.need.springboot.version.20.explanation=L'applicazione richiede la funzione springBoot-2.0. Controllare la versione della funzione Spring Boot attualmente configurata nel file server.xml.  
 error.need.springboot.version.20.useraction=Configurare la funzione springBoot-2.0 nel file server.xml. Rimuovere ogni altra funzione Spring Boot.
 
 error.missing.servlet=CWWKC0254E: L'applicazione non si \u00e8 avviata poich\u00e9 richiede che una funzione servlet sia configurata nel file server.xml.
@@ -66,3 +66,15 @@ error.missing.ssl.useraction=Configurare la funzione transportSecurity-1.0 nel f
 error.missing.websocket=CWWKC0259E: L'applicazione non si \u00e8 avviata poich\u00e9 richiede che una funzione websocket sia configurata nel file server.xml.
 error.missing.websocket.explanation=L'applicazione \u00e8 un'applicazione websocket e richiede che una funzione websocket sia configurata nel file server.xml.
 error.missing.websocket.useraction=Configurare una funzione websocket nel file server.xml.
+
+error.webflux.not.supported=CWWKC0260E: Impossibile avviare l'applicazione perch\u00e9 Spring WebFlux non \u00e8 supportato.
+error.webflux.not.supported.explanation=L'applicazione \u00e8 un'applicazione WebFlux. Il supporto di programmazione reattivo fornito da Spring WebFlux non \u00e8 supportato.
+error.webflux.not.supported.useraction=Configurare un'applicazione che non utilizzi Spring WebFlux con il server.
+
+warning.spring_config.ignored.compression=CWWKC0261W: La compressione \u00e8 stata abilitata dall'applicazione. La compressione non \u00e8 supportata e l'impostazione verr\u00e0 ignorata.
+warning.spring_config.ignored.compression.explanation=La compressione non \u00e8 supportata e l'impostazione verr\u00e0 ignorata, ma l'applicazione continuer\u00e0 a funzionare.
+warning.spring_config.ignored.compression.useraction=Non \u00e8 necessaria alcuna azione da parte dell'utente.
+
+warning.spring_config.ignored.session=CWWKC0262W: Il timeout o la persistenza della sessione sono stati configurati dall'applicazione. Queste impostazioni di sessione devono essere configurate nel file server.xml.
+warning.spring_config.ignored.session.explanation=Il timeout e la persistenza della sessione devono essere configurate nel file server.xml. Queste impostazioni di sessione dell'applicazione verranno ignorate.
+warning.spring_config.ignored.session.useraction=Configurare il timeout e la persistenza della sessione nel file server.xml.

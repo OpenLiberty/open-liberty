@@ -66,3 +66,15 @@ error.missing.ssl.useraction=Configura\u0163i caracteristica transportSecurity-1
 error.missing.websocket=CWWKC0259E: Pornirea aplica\u0163iei a e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
 error.missing.websocket.explanation=Aplica\u0163ia este o aplica\u0163ie socket web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
 error.missing.websocket.useraction=Configura\u0163i o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+
+error.webflux.not.supported=CWWKC0260E: Nu se poate porni aplica\u0163ia deoarece nu este suportat Spring WebFlux.
+error.webflux.not.supported.explanation=Aplica\u0163ia este o aplica\u0163ie WebFlux. Suportul de programare reactiv\u0103 furnizat de Spring WebFlux nu este suportat.
+error.webflux.not.supported.useraction=Configura\u0163i o aplica\u0163ie care nu utilizeaz\u0103 Spring WebFlux cu serverul.
+
+warning.spring_config.ignored.compression=CWWKC0261W: Comprimarea a fost activat\u0103 de aplica\u0163ie. Comprimarea nu este suportat\u0103 \u015fi setarea va fi ignorat\u0103.
+warning.spring_config.ignored.compression.explanation=Comprimarea nu este suportat\u0103 \u015fi setarea va fi ignorat\u0103, dar aplica\u0163ia va continua s\u0103 func\u0163ioneze altfel.
+warning.spring_config.ignored.compression.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+warning.spring_config.ignored.session=CWWKC0262W: Timeout-ul de sesiune sau persisten\u0163a sesiunii au fost configurate de aplica\u0163ie. Aceste set\u0103ri de sesiune trebuie s\u0103 fie configurate \u00een fi\u015fierul server.xml.
+warning.spring_config.ignored.session.explanation=Timeout-ul de sesiune sau persisten\u0163a sesiunii trebuie s\u0103 fie configurate \u00een fi\u015fierul server.xml. Aceste set\u0103ri de sesiune ale aplica\u0163iei vor fi ignorate.
+warning.spring_config.ignored.session.useraction=Configura\u0163i timeout-ul de sesiune \u015fi persisten\u0163a sesiunii \u00een fi\u015fierul server.xml.

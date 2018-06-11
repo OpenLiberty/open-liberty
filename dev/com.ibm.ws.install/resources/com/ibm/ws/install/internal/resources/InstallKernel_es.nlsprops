@@ -434,6 +434,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} no es una caracter
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=S\u00f3lo se pueden instalar las caracter\u00edsticas en una ampliaci\u00f3n de producto.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Ejecute de nuevo el mandato de instalaci\u00f3n installUtility sin especificar la ampliaci\u00f3n.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: No se han podido obtener las caracter\u00edsticas siguientes: {0}. Aseg\u00farese de que las caracter\u00edsticas sean v\u00e1lidas para Open Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=El instalador no ha podido recuperar las caracter\u00edsticas especificadas de los repositorios conectados.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Si existen caracter\u00edsticas especificadas, compruebe que sean v\u00e1lidas para Open Liberty.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: La caracter\u00edstica {0} no se puede instalar en la edici\u00f3n IBM WebSphere Application Server Liberty Core porque solo se aplica a otras ediciones de IBM WebSphere Application Server Liberty y Open Liberty. Utilice la acci\u00f3n "find" del mandato featureManager para recuperar una lista de caracter\u00edsticas aplicables a la edici\u00f3n IBM WebSphere Application Server Liberty Core.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=La caracter\u00edstica no es aplicable a la edici\u00f3n del producto instalado.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Instale las caracter\u00edsticas soportadas por la edici\u00f3n del producto.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: Instalando las caracter\u00edsticas siguientes: {0}.
 LOG_INSTALL_FEATURES.explanation=Se instalar\u00e1n las caracter\u00edsticas especificadas.

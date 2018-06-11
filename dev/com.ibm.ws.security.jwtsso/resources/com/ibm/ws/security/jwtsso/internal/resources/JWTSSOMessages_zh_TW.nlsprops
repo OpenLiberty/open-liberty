@@ -15,7 +15,7 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
 MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: \u627e\u4e0d\u5230 ID \u70ba [{0}] \u7684 MicroProfile JSON Web Token (JWT) \u53d6\u7528\u8005\u914d\u7f6e\u3002\u8acb\u9a57\u8b49\u5177\u6709\u6307\u5b9a ID \u7684 mpJwt \u914d\u7f6e\u4f4d\u65bc\u4f3a\u670d\u5668\u4e2d\u3002
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=\u5728\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u627e\u4e0d\u5230\u5177\u6709\u6307\u5b9a ID \u7684 MPJWT \u53d6\u7528\u8005\u914d\u7f6e\u3002
 MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d\u6709\u4e00\u500b jwtConsumer \u5143\u7d20\uff0c\u4e14\u8a72\u5143\u7d20\u914d\u7f6e\u4e86\u6307\u5b9a\u7684 ID\uff0c\u4e14 jwtSso \u5143\u7d20\u6703\u53c3\u7167\u5b83\u3002

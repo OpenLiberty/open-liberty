@@ -433,6 +433,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} ist kein Feature u
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=In einer Produkterweiterung k\u00f6nnen nur Features installiert werden.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=F\u00fchren Sie den Installationsbefehl installUtility ohne Angabe der Erweiterung erneut aus.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: Die folgenden Features konnten nicht abgerufen werden: {0}. Stellen Sie sicher, dass die Features f\u00fcr Open Liberty g\u00fcltig sind.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=Das Installationsprogramm konnte die angegebenen Features nicht aus den verbundenen Repositorys abrufen.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Wenn die angegebenen Features vorhanden sind, stellen Sie sicher, dass sie f\u00fcr Open Liberty g\u00fcltig sind.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: Das Feature {0} kann nicht in der Edition IBM WebSphere Application Server Liberty Core installiert werden, weil es nur f\u00fcr andere Editionen von IBM WebSphere Application Server Liberty und Open Liberty gilt. Verwenden Sie die Aktion "find" des Befehls featureManager, um eine Liste von Features abzurufen, die f\u00fcr die Edition IBM WebSphere Application Server Liberty Core g\u00fcltig sind.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=Das Feature ist f\u00fcr die Edition des installierten Produkts nicht g\u00fcltig.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Installieren Sie Features, die von der Produktedition unterst\u00fctzt werden.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: Die folgenden Features werden installiert: {0}.
 LOG_INSTALL_FEATURES.explanation=Die angegebenen Features werden installiert.

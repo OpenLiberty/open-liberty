@@ -619,3 +619,7 @@ ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=Examina\u0163i configu
 ssl.defaultKeyStore.not.created.CWPKI0819I=CWPKI0819I: Depozitul de chei implicit nu a fost creat, deoarece nu este configurat\u0103 o parol\u0103 pentru elementul <keyStore id="defaultKeyStore"/> \u015fi nu este setat\u0103 variabila de mediu 'keystore_password'. 
 ssl.defaultKeyStore.not.created.CWPKI0819I.explanation=Depozitul de chei implicit nu a fost creat, deoarece nu este configurat\u0103 o parol\u0103 pentru elementul <keyStore id="defaultKeyStore"/> \u015fi nu este setat\u0103 variabila de mediu 'keystore_password'.
 ssl.defaultKeyStore.not.created.CWPKI0819I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+#--------------------------------------------------------------------------------------------------
+ssl.defaultKeyStore.env.password.CWPKI0820A=CWPKI0820A: Depozitul de chei implicit a fost creat folosind variabila de mediu 'keystore_password'.
+ssl.defaultKeyStore.env.password.CWPKI0820A.explanation=Depozitul de chei implicit a fost creat folosind variabila de mediu 'keystore_password'. Acesta este generat \u00een fi\u015fierul server.env \u00een timpul cre\u0103rii serverului sau este \u00eenlocuit \u00een mediul din care a fost lansat serverul.
+ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Nici o ac\u0163iune nu este necesar\u0103.
