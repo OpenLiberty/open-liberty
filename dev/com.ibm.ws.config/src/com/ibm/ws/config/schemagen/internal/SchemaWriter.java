@@ -452,7 +452,7 @@ class SchemaWriter {
                 String extension = currOcd.getExtends();
                 // Check that we've got extensions and ensure we're a Factory Pid. If so, add the definition to the list, and get the parent type
                 // to check on the next loop.
-                if (extension != null && currOcdType.getHasFactoryReference()) {
+                if (extension != null && (currOcdType.getHasFactoryReference() || currOcdType.getHasIBMFinalWithDefault())) {
                     ocdDefs.add(0, currOcd);
                     TypeBuilder.OCDTypeReference ocdSuperType = builder.getPidType(extension);
                     if (ocdSuperType != null) {
@@ -1030,6 +1030,7 @@ class SchemaWriter {
         writer.writeEndElement();
 
         if (type.getHasFactoryReference()) {
+            System.out.println("schemaWriter :: " + type.getTypeName());
             writer.writeStartElement(XSD, "complexType");
             writer.writeAttribute("name", type.getTypeName() + "-factory");
             writer.writeStartElement(XSD, "complexContent");
