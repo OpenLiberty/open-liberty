@@ -100,10 +100,26 @@ public class TestServletProcessor {
     private static Method[] getTestServletMethods(TestServlet anno) {
         try {
             return anno.servlet().getMethods();
-        } catch (TypeNotPresentException e) {
-            throw new RuntimeException("The HttpServlet referenced by the @TestServlet(servlet=???, path=" + anno.path() +
-                                       ") annotation imported a class that was not available to the JUnit classpath.", e);
+        } catch (TypeNotPresentException | LinkageError e) {
+            throw new RuntimeException("The HttpServlet referenced by the " + annoToString(anno) +
+                                       " annotation imported a class that was not available to the JUnit classpath. " +
+                                       "Make sure that the missing type is present on the runtime classpath of the FAT " +
+                                       " (i.e. somewhere in autoFVT/lib/ or autoFVT/build/lib/ )", e);
         }
+    }
+
+    private static String annoToString(TestServlet anno) {
+        String servletClass = "???";
+        try {
+            servletClass = anno.servlet().getSimpleName() + ".class";
+        } catch (Throwable ignore) {
+        }
+        StringBuilder s = new StringBuilder("@TestServlet(servlet=" + servletClass);
+        if (!anno.path().isEmpty())
+            s.append(", path=\"" + anno.path() + '"');
+        if (!anno.contextRoot().isEmpty())
+            s.append(", contextRoot=\"" + anno.contextRoot() + '"');
+        return s.append(')').toString();
     }
 
 }
