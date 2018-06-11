@@ -127,6 +127,8 @@ public class BaseTraceService implements TrService {
     protected static RecursionCounter counterForTraceSource = new RecursionCounter();
     protected static RecursionCounter counterForLogSource = new RecursionCounter();
 
+    private static final int MINUTE = 60000;
+
     /**
      * Trivial interface for writing "trace" records (this includes logging to messages.log)
      */
@@ -223,7 +225,7 @@ public class BaseTraceService implements TrService {
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
         Timer earlyMessageTraceKiller_Timer = new Timer();
-        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 300000);
+        earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
     }
 
     /**
