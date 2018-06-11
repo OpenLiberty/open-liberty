@@ -106,13 +106,6 @@ public class HpelBaseTraceService extends BaseTraceService {
                 publishToLogSource(routedMessage);
             }
         }
-        //Route other types of logs (<INFO) to trace (RTC237423)
-        else {
-            if (TraceComponent.isAnyTracingEnabled()) {
-                TraceWriter detailLog = traceLog;
-                publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
-            }
-        }
     }
 
     /** {@inheritDoc} */
@@ -149,7 +142,15 @@ public class HpelBaseTraceService extends BaseTraceService {
         LoggerHandlerManager.setSingleton(new Handler() {
             @Override
             public void publish(LogRecord logRecord) {
-                HpelBaseTraceService.this.publishLogRecord(logRecord);
+                Level level = logRecord.getLevel();
+                int levelValue = level.intValue();
+                if (levelValue >= Level.INFO.intValue()) {
+                    HpelBaseTraceService.this.publishLogRecord(logRecord);
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled()) {
+                        HpelBaseTraceService.this.publishTraceLogRecord(traceLog, logRecord, NULL_ID, null, null);
+                    }
+                }
             }
 
             @Override
