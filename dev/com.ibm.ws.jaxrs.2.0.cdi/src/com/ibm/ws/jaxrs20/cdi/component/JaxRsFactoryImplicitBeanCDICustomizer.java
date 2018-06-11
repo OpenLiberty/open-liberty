@@ -809,7 +809,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             Tr.debug(tc, "CWWKW1001W: The scope " + jaxrsScope + " of JAXRS-2.0 Resource " + clazz.getSimpleName() +
                          " does not match the CDI scope " + cdiScope + ". Liberty gets resource instance from " +
                          lifecycleMgr + ".");
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        } else {
             Tr.warning(tc, "warning.jaxrs.cdi.resource.mismatch", clazz.getSimpleName(), jaxrsScope, cdiScope, lifecycleMgr);
         }
     }
@@ -819,7 +819,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         if (platformVersion.getMajor() > 7) {
             Tr.debug(tc, "CWWKW1002W: The CDI scope of JAXRS-2.0 Provider " + clazz.getSimpleName() + " is " +
                          scopeName + ". Liberty gets the provider instance from " + lifecycleMgr + ".");
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        } else {
             Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
         }
     }
