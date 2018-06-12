@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ClassPath: WEB-INF/classes, WEB-INF/lib/fatclasses.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Name: Mongo WAB test
+Bundle-SymbolicName: mongo.wab.test
+Web-ContextPath: /mongo
+Bundle-Version: 1.0.0
+Import-Package: javax.annotation,
+ javax.naming,
+ javax.servlet,
+ javax.servlet.annotation,
+ javax.servlet.http,
+ com.mongodb
+Bundle-ManifestVersion: 2
+

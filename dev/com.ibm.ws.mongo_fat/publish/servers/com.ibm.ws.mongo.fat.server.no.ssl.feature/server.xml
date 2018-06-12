@@ -1,0 +1,26 @@
+<server>
+	<include location="../fatTestPorts.xml" />
+	<applicationMonitor pollingRate="10s" />
+
+	<featureManager>
+		<feature>mongodb-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>jndi-1.0</feature>
+	</featureManager>
+
+	<library id="mongo-lib">
+        <fileset dir="${shared.resource.dir}/mongo-2.13" />
+    </library>
+
+	<application name="mongo" location="mongo.war">
+		<classloader commonLibraryRef="mongo-lib" />
+	</application>
+	
+    <keyStore password="passw0rd" id="myDefaultTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.jks"></keyStore>
+    <ssl id="mySSLConfig" keyStoreRef="myDefaultTrustStore" />
+
+    <mongo id="mongo-no-ssl-feature" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" sslRef="mySSLConfig"/>
+    <mongoDB jndiName="mongo/testdb-no-ssl-feature" mongoRef="mongo-no-ssl-feature" databaseName="default" />
+
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.security.AllPermission"/>
+</server>
