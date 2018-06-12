@@ -27,14 +27,14 @@ Import-Package: \
  *
  
 Include-Resource:\
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/META-INF/cxf/**, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/META-INF/spring.handlers, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/META-INF/spring.schemas, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/schemas/**, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/META-INF/DEPENDENCIES, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/META-INF/LICENSE, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/META-INF/NOTICE, \
- @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180308-1806;EXACT}!/org/apache/cxf/**
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/cxf/**, \
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/spring.handlers, \
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/spring.schemas, \
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/schemas/**, \
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/DEPENDENCIES, \
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/LICENSE, \
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/META-INF/NOTICE, \
+ @${repo;org.apache.cxf.cxf-rt-ws-policy;2.6.2.ibm-s20180529-1900;EXACT}!/org/apache/cxf/**
  
  
 # Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
