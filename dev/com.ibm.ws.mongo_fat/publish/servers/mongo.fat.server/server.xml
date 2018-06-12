@@ -1,0 +1,23 @@
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>mongodb-2.0</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="mongoApp.war">
+        <classloader commonLibraryRef="mongoLib" />
+    </application>
+    
+    <library id="mongoLib">
+        <fileset dir="${shared.resource.dir}/mongo-2.10.1"/>
+    </library>
+    
+    <mongo id="mongo" libraryRef="mongoLib"/>
+    <mongoDB jndiName="mongo/testdb" mongoRef="mongo" databaseName="db-test" />
+
+</server>
