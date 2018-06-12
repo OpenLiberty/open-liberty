@@ -10,38 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.suite;
 
-import java.nio.file.Files; 
-import java.nio.file.StandardCopyOption; 
-import java.nio.file.attribute.FileAttribute; 
-import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
-
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
-import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import com.ibm.ws.cdi12.fat.tests.AfterTypeDiscoveryTest;
 import com.ibm.ws.cdi12.fat.tests.BeanDiscoveryModeNoneTest;
@@ -52,13 +25,16 @@ import com.ibm.ws.cdi12.fat.tests.EmptyCDITest;
 import com.ibm.ws.cdi12.fat.tests.EnablingBeansXmlValidationTest;
 import com.ibm.ws.cdi12.fat.tests.MultipleBeansXmlTest;
 import com.ibm.ws.cdi12.fat.tests.WebBeansBeansXmlInWeldTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveNoAnnotationsTest; 
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveTest; 
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchivesDisabledTest; 
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveNoAnnotationsTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchivesDisabledTest;
 import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitEJBTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarLibJarsTest; 
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarTest; 
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarLibJarsTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarTest;
 import com.ibm.ws.fat.util.FatLogHandler;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Tests specific to cdi-1.2
@@ -66,7 +42,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AfterTypeDiscoveryTest.class,
-                BeanDiscoveryModeNoneTest.class, 
+                BeanDiscoveryModeNoneTest.class,
                 ClassExclusionTest.class,
                 CustomerProvidedXMLParserFactoryTest.class,
                 DisablingBeansXmlValidationTest.class,
@@ -82,10 +58,9 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 ImplicitWarTest.class,
 })
 public class FATSuite {
-    
+
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
