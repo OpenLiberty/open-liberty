@@ -49,7 +49,7 @@ public class ACEScanner {
     public ACEScanner() {}
 
     public ACEScanner(LibertyServer server) throws Exception {
-        this.INPUT_FILE = server.getConsoleLogFile().getAbsolutePath();
+        this.INPUT_FILE = server.getConsoleLogFile() == null ? null : server.getConsoleLogFile().getAbsolutePath();
     }
 
     public ACEScanner inputFile(String inputFile) {
