@@ -15,6 +15,7 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
@@ -24,10 +25,12 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.mongo.fat.shared.MongoServletAction;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 
 // We know that some FFDCs get emitted late because the mongo client starts a background thread to
 // check the server status.  So this will stop tests AFTER the test that is issuing the FFDC from failing.
 @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "sun.security.validator.ValidatorException" })
+@RunWith(FATRunner.class)
 public class TestMongoDbSSL extends TestMongoDb {
     private static final Class<?> c = TestMongoDbSSL.class;
 
@@ -52,10 +55,12 @@ public class TestMongoDbSSL extends TestMongoDb {
               "CWPKI0023E:.*wibblewibblewibble.*",
               "SRVE0315E:.*com.mongodb.CommandFailureException.*client_not_known.*",
               "CWPKI0022E:.*", // SSL HANDSHAKE FAILURE
-              "SRVE0315E:.*javax.net.ssl.SSLHandshakeException.*");
+              "SRVE0315E:.*javax.net.ssl.SSLHandshakeException.*",
+              "CWWKE0701E" // TODO: Circular reference detected trying to get service {org.osgi.service.cm.ManagedServiceFactory, com.ibm.wsspi.logging.Introspector, com.ibm.ws.runtime.update.RuntimeUpdateListener, com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+        );
     }
 
-    @Test()
+    @Test
     public void testInsertFindNestedSSL() throws Exception {
         final String method = "testInsertFindNestedSSL";
         Log.info(c, method, "entering " + method);
@@ -63,7 +68,7 @@ public class TestMongoDbSSL extends TestMongoDb {
         Log.info(c, method, "exiting " + method);
     }
 
-    @Test()
+    @Test
     public void testInsertFindSSLEnabledFalse() throws Exception {
         final String method = "testInsertFindSSLEnabledFalse";
         Log.info(c, method, "entering " + method);
@@ -71,7 +76,7 @@ public class TestMongoDbSSL extends TestMongoDb {
         Log.info(c, method, "exiting " + method);
     }
 
-    @Test()
+    @Test
     public void testInsertFindSSLEnabledFalseSSLRef() throws Exception {
         final String method = "testInsertFindSSLEnabledFalseSSLRef";
         Log.info(c, method, "entering " + method);
@@ -79,7 +84,7 @@ public class TestMongoDbSSL extends TestMongoDb {
         Log.info(c, method, "exiting " + method);
     }
 
-    @Test()
+    @Test
     public void testInsertFindDifferentSSLRef() throws Exception {
         final String method = "testInsertFindDifferentSSLRef";
         Log.info(c, method, "entering " + method);
@@ -88,8 +93,9 @@ public class TestMongoDbSSL extends TestMongoDb {
         // nor that Mongo is functional, so wait for SSL to report the keystore has been
         // added, then wait for MongoDBService to activate.
         server.resetLogMarks(); // look from start of logs
-        server.waitForStringInTraceUsingMark("Adding keystore: differentTrustStore", 30 * 1000);
-        server.waitForStringInTraceUsingMark("MongoDBService * < activate", 30 * 1000);
+        long waitFor = FATRunner.FAT_TEST_LOCALRUN ? 7000 : 30000;
+        server.waitForStringInTraceUsingMark("Adding keystore: differentTrustStore", waitFor);
+        server.waitForStringInTraceUsingMark("MongoDBService * < activate", waitFor);
 
         insertFindScenario(true, MongoServlet.DIFFERENT_SSLREF);
         Log.info(c, method, "exiting " + method);
@@ -167,7 +173,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     //************* CERTAUTH TESTS *****************************************
 
     @AllowedFFDC({ "java.lang.RuntimeException", "com.ibm.wsspi.injectionengine.InjectionException", "javax.servlet.UnavailableException" })
-    @Test()
+    @Test
     public void testCertAuthPasswordCoded() throws Exception {
         final String method = "testCertAuthPasswordCoded";
         Log.info(c, method, "entering " + method);
@@ -184,7 +190,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     }
 
     @AllowedFFDC({ "java.lang.RuntimeException", "com.ibm.wsspi.injectionengine.InjectionException", "javax.servlet.UnavailableException" })
-    @Test()
+    @Test
     public void testCertAuthUseridCoded() throws Exception {
         final String method = "testCertAuthUseridCoded";
         Log.info(c, method, "entering " + method);
@@ -200,7 +206,7 @@ public class TestMongoDbSSL extends TestMongoDb {
         Log.info(c, method, "exiting " + method);
     }
 
-    @Test()
+    @Test
     public void testCertAuthAliasValid() throws Exception {
         final String method = "testCertAuthAliasValid";
         Log.info(c, method, "entering " + method);
@@ -212,7 +218,7 @@ public class TestMongoDbSSL extends TestMongoDb {
                    "com.ibm.wsspi.injectionengine.InjectionException",
                    "javax.servlet.UnavailableException",
                    "java.lang.IllegalArgumentException" })
-    @Test()
+    @Test
     public void testCertAuthAliasNotInKeystore() throws Exception {
         final String method = "testCertAuthAliasInvalid";
         Log.info(c, method, "entering " + method);
@@ -230,7 +236,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     }
 
     @AllowedFFDC({ "com.mongodb.CommandFailureException" })
-    @Test()
+    @Test
     public void testCertAuthAliasInvalid() throws Exception {
         final String method = "testCertAuthAliasInvalid";
         Log.info(c, method, "entering " + method);
@@ -248,7 +254,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     }
 
     @AllowedFFDC({ "java.lang.RuntimeException", "com.ibm.wsspi.injectionengine.InjectionException", "javax.servlet.UnavailableException" })
-    @Test()
+    @Test
     public void testCertAuthAliasMissing() throws Exception {
         final String method = "testCertAuthAliasMissing";
         Log.info(c, method, "entering " + method);
@@ -267,7 +273,7 @@ public class TestMongoDbSSL extends TestMongoDb {
         Log.info(c, method, "exiting " + method);
     }
 
-    @Test()
+    @Test
     public void testCertAuthAliasNotReqd() throws Exception {
         final String method = "testCertAuthAliasNotReqd";
         Log.info(c, method, "entering " + method);
@@ -277,7 +283,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     }
 
     @AllowedFFDC({ "com.mongodb.MongoTimeoutException" })
-    @Test()
+    @Test
     // Both of the following exceptions are added to the class @AllowedFFDC as they can be returned late
     // and fail other tests.  The error messages produced are the same (both produce CWPKI0022E).
     // IBM JDK: java.security.cert.CertPathBuilderException: PKIXCertPathBuilderImpl could not build a valid CertPath.
@@ -299,7 +305,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     }
 
     @AllowedFFDC({ "java.lang.RuntimeException", "com.ibm.wsspi.injectionengine.InjectionException", "javax.servlet.UnavailableException" })
-    @Test()
+    @Test
     public void testCertAuthSSLEnabledNotSet() throws Exception {
         final String method = "testCertAuthSSLEnabledNotSet";
         Log.info(c, method, "entering " + method);
@@ -317,7 +323,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     }
 
     @AllowedFFDC({ "java.lang.RuntimeException", "com.ibm.wsspi.injectionengine.InjectionException", "javax.servlet.UnavailableException" })
-    @Test()
+    @Test
     public void testCertAuthSSLEnabledFalse() throws Exception {
         final String method = "testCertAuthSSLEnabledFalse";
         Log.info(c, method, "entering " + method);
@@ -335,7 +341,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     }
 
     @AllowedFFDC({ "java.lang.RuntimeException", "com.ibm.wsspi.injectionengine.InjectionException", "javax.servlet.UnavailableException" })
-    @Test()
+    @Test
     public void testCertAuthOldDriver() throws Exception {
         final String method = "testCertAuthOldDriver";
         Log.info(c, method, "entering " + method);
@@ -356,7 +362,7 @@ public class TestMongoDbSSL extends TestMongoDb {
     @Override
     protected void updateApplication(ServerConfiguration sc, String libName) {
         for (Application app : sc.getApplications()) {
-            if ("mongo.war".equals(app.getLocation())) {
+            if ((AbstractMongoTestCase.APP_NAME + ".war").equals(app.getLocation())) {
                 ClassloaderElement cl = app.getClassloader();
                 Set<String> refs = cl.getCommonLibraryRefs();
                 refs.clear();

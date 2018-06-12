@@ -33,8 +33,10 @@ public class TestMongoDbWar extends TestMongoDb {
     @AfterClass
     public static void a() throws Exception {
         after("CWKKD0013E:.*mongo-lib-10",
-              "CWKKD0013E:.*mongo-lib-2-9-3",
-              "SRVE0777E:.*MongoServlet\\.getDB");
+              "CWKKD0013E:.*mongo-lib-293",
+              "SRVE0777E:.*MongoServlet\\.getDB",
+              "CWWKE0701E" // TODO: Circular reference detected trying to get service {org.osgi.service.cm.ManagedServiceFactory, com.ibm.wsspi.logging.Introspector, com.ibm.ws.runtime.update.RuntimeUpdateListener, com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+        );
     }
 
     @Override
