@@ -15,6 +15,7 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.Application;
@@ -24,7 +25,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 
+@RunWith(FATRunner.class)
 public class TestMongoDbNoSSLFeature extends AbstractMongoTestCase {
     private static final Class<?> c = TestMongoDbNoSSLFeature.class;
 
@@ -35,7 +38,9 @@ public class TestMongoDbNoSSLFeature extends AbstractMongoTestCase {
 
     @AfterClass
     public static void a() throws Exception {
-        after("CWKKD0015E:.*");
+        after("CWKKD0015E:.*",
+              "CWWKE0701E" // TODO: Circular reference detected trying to get service {org.osgi.service.cm.ManagedServiceFactory, com.ibm.wsspi.logging.Introspector, com.ibm.ws.runtime.update.RuntimeUpdateListener, com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+        );
     }
 
     @Test
@@ -71,9 +76,10 @@ public class TestMongoDbNoSSLFeature extends AbstractMongoTestCase {
             // with JNDI (the order may vary, so need to watch for both). Note, it is still
             // possible the second and third searches to find something in the logs earlier than
             // the search for "sslRef set", so we may need to start comparing order of lines found.
-            server.waitForStringInTraceUsingMark("MongoService * 3 sslRef set to ssl", 30 * 1000);
-            server.waitForStringInTraceUsingMark("MongoDBService * < activate", 30 * 1000);
-            server.waitForStringInTraceUsingMark("ResourceFactoryTracker * < addingService", 30 * 1000);
+            long waitFor = FATRunner.FAT_TEST_LOCALRUN ? 7000 : 30000;
+            server.waitForStringInTraceUsingMark("MongoService * 3 sslRef set to ssl", waitFor);
+            server.waitForStringInTraceUsingMark("MongoDBService * < activate", waitFor);
+            server.waitForStringInTraceUsingMark("ResourceFactoryTracker * < addingService", waitFor);
 
             try {
                 server.setMarkToEndOfLog();
@@ -90,7 +96,7 @@ public class TestMongoDbNoSSLFeature extends AbstractMongoTestCase {
     @Override
     protected void updateApplication(ServerConfiguration sc, String libName) {
         for (Application app : sc.getApplications()) {
-            if ("mongo.war".equals(app.getLocation())) {
+            if ((AbstractMongoTestCase.APP_NAME + ".war").equals(app.getLocation())) {
                 ClassloaderElement cl = app.getClassloader();
                 Set<String> refs = cl.getCommonLibraryRefs();
                 refs.clear();

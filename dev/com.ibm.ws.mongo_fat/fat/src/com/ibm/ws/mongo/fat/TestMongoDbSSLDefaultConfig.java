@@ -16,6 +16,7 @@ import java.util.Set;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
@@ -25,7 +26,9 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 
+@RunWith(FATRunner.class)
 public class TestMongoDbSSLDefaultConfig extends AbstractMongoTestCase {
     private static final Class<?> c = TestMongoDbSSLDefaultConfig.class;
 
@@ -38,7 +41,9 @@ public class TestMongoDbSSLDefaultConfig extends AbstractMongoTestCase {
     public static void a() throws Exception {
         after("SRVE0777E.*com.mongodb.CommandResult",
               "SRVE0777E.*com.mongodb.CommandFailureException",
-              "SRVE0315E.*com.mongodb.CommandFailureException");
+              "SRVE0315E.*com.mongodb.CommandFailureException",
+              "CWWKE0701E" // TODO: Circular reference detected trying to get service {org.osgi.service.cm.ManagedServiceFactory, com.ibm.wsspi.logging.Introspector, com.ibm.ws.runtime.update.RuntimeUpdateListener, com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+        );
     }
 
     @Test
@@ -83,7 +88,7 @@ public class TestMongoDbSSLDefaultConfig extends AbstractMongoTestCase {
     @Override
     protected void updateApplication(ServerConfiguration sc, String libName) {
         for (Application app : sc.getApplications()) {
-            if ("mongo.war".equals(app.getLocation())) {
+            if ((AbstractMongoTestCase.APP_NAME + ".war").equals(app.getLocation())) {
                 ClassloaderElement cl = app.getClassloader();
                 Set<String> refs = cl.getCommonLibraryRefs();
                 refs.clear();

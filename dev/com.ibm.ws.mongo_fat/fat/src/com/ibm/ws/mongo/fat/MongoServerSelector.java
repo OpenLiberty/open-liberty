@@ -152,7 +152,8 @@ public class MongoServerSelector {
     }
 
     private void extractFile(String keyName, String fileName, String path, ExternalTestService mongoTestService) throws Exception {
-        File tmpFile = new File("lib/LibertyFATTestFiles/" + fileName);
+        File tmpFile = new File("lib/LibertyFATTestFiles/", fileName);
+        tmpFile.getParentFile().mkdirs();
         try {
             mongoTestService.writePropertyAsFile(keyName, tmpFile);
             _server.copyFileToLibertyServerRoot(path, fileName);
