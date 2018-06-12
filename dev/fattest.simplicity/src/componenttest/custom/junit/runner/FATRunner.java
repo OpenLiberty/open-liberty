@@ -196,6 +196,14 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     // any FFDCs were expected
                     Map<String, FFDCInfo> ffdcAfterTest = retrieveFFDCCounts();
 
+                    // grab the ffdcHeaders for every FFDCInfo we're about to filter
+                    for (FFDCInfo ffdcInfo : ffdcBeforeTest.values()) {
+                        ffdcInfo.ffdcHeader = getFFDCHeader(new RemoteFile(ffdcInfo.machine, ffdcInfo.ffdcFile));
+                    }
+                    for (FFDCInfo ffdcInfo : ffdcAfterTest.values()) {
+                        ffdcInfo.ffdcHeader = getFFDCHeader(new RemoteFile(ffdcInfo.machine, ffdcInfo.ffdcFile));
+                    }
+
                     Map<String, FFDCInfo> unexpectedFFDCs = filterOutPreexistingFFDCs(ffdcBeforeTest, ffdcAfterTest);
 
                     ArrayList<String> errors = new ArrayList<String>();
@@ -378,7 +386,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         HashMap<String, FFDCInfo> filtered = new HashMap<String, FFDCInfo>(ffdcAfterTest.size());
         for (Map.Entry<String, FFDCInfo> afterEntry : ffdcAfterTest.entrySet()) {
             FFDCInfo beforeInfo = ffdcBeforeTest.get(afterEntry.getKey());
-            if (beforeInfo != null && beforeInfo.ffdcFile.equals(afterEntry.getValue().ffdcFile)) {
+            if (beforeInfo != null && beforeInfo.ffdcHeader.equals(afterEntry.getValue().ffdcHeader)) {
                 int newVal = afterEntry.getValue().count - beforeInfo.count;
                 if (newVal != 0) {
                     FFDCInfo filteredInfo = new FFDCInfo(afterEntry.getValue(), newVal);
