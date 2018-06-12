@@ -99,10 +99,10 @@ public class StatisticsMeterTest {
 
     @Test
     public void testCombineReadings() {
-        int meterCount = 1000;
-        int loopCount = 1000;
+        int meterCount = 100;
+        int loopCount = 100;
         int offset = 1;
-        int modulo = 1000;
+        int modulo = 100;
 
         StatisticsMeter controlMeter = new StatisticsMeter();
         controlMeter.setDescription("Control meter");
@@ -125,19 +125,19 @@ public class StatisticsMeterTest {
         StatisticsMeter.StatsData combined = StatisticsMeter.aggregateStats(dataSet);
         assertEquals("Incorrect count", controlMeter.getCount(), combined.count);
         assertEquals("Incorrect min", controlMeter.getMinimumValue(), combined.min);
-        assertEquals("Incorrect max", 1000, combined.max);
+        assertEquals("Incorrect max", 100, combined.max);
         assertEquals("Incorrect total", controlMeter.getTotal(), combined.total, STANDARD_EPSILON);
     }
 
     @Test
     public void testToStringNoData() {
         String string = statsMeter.toString();
-        assertTrue(string.contains("count=0"));
-        assertTrue(string.contains("total=0"));
-        assertTrue(string.contains("mean=0.000"));
-        assertTrue(string.contains("variance=0.000"));
-        assertTrue(string.contains("min=0"));
-        assertTrue(string.contains("max=0"));
+        assertContains(string, "count=0");
+        assertContains(string, "total=0");
+        assertContains(string, "mean=0.000");
+        assertContains(string, "variance=0.000");
+        assertContains(string, "min=0");
+        assertContains(string, "max=0");
     }
 
     @Test
@@ -147,11 +147,11 @@ public class StatisticsMeterTest {
         }
 
         String string = statsMeter.toString();
-        assertTrue(string.contains("count=999"));
-        assertTrue(string.contains("total=499500"));
-        assertTrue(string.contains("min=1"));
-        assertTrue(string.contains("max=999"));
-        assertTrue(string.contains("mean=500"));
+        assertContains(string, "count=999");
+        assertContains(string, "total=499500");
+        assertContains(string, "min=1");
+        assertContains(string, "max=999");
+        assertTrue(string, string.contains("mean=49") || string.contains("50")); // expect the mean to be in the range 490-509
     }
 
     // Calculate the variance using the pre-calculated mean.
@@ -179,5 +179,9 @@ public class StatisticsMeterTest {
             sum += dataPoints.get(i);
         }
         return sum;
+    }
+
+    private static void assertContains(String fullString, String substring) {
+        assertTrue("Did not find '" + substring + "' in the string: " + fullString, fullString.contains(substring));
     }
 }
