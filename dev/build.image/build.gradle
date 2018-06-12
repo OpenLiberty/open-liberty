@@ -34,14 +34,6 @@ task copyLicenseToBuildImage (type:Copy) {
     from project.file('publish')
     into project.file('wlp')
     include 'LICENSE'
-    filter(ReplaceTokens,
-           tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
-}
-
-task copyNoticesToBuildImage (type:Copy) {
-    dependsOn jar
-    from project.file('publish')
-    into project.file('wlp')
     include 'NOTICES'
     filter(ReplaceTokens,
            tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
@@ -51,7 +43,6 @@ assemble {
     dependsOn copyPropertiesToBuildImage
     dependsOn copyReadmeToBuildImage
     dependsOn copyLicenseToBuildImage
-    dependsOn copyNoticesToBuildImage
 }
 
 import groovy.json.*
@@ -116,6 +107,15 @@ class PackageLibertyWithFeatures extends DefaultTask {
                 exclude 'wlp/lib/versions/package_*'
                 into outputTo
             }
+
+            //Now add the NOTICES and LICENSE files
+            project.copy {
+                from project.file('publish')
+                include 'LICENSE'
+                include 'NOTICES'
+                into "$outputTo/wlp"
+            }
+
         } catch (all) {
             println "-- EXCEPTION PACKAGING SERVER --"
             println all
