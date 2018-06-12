@@ -204,6 +204,9 @@
 			<!-- add any libs that may have been added to the server -->
 			<fileset dir="${install.location}" includes="publish/servers/**/*.jar"/>
 			
+			<!-- libs that were added to publish/files/ folder -->
+			<fileset dir="${basedir}" includes="publish/files/**/*.jar"/>
+			
 			<!-- Give an opportunity to add API/SPI from the liberty image --> 
 			<fileset dir="${liberty.location}/dev/" includes="${test.classpath.wlp.include}"/>
 		</path>
