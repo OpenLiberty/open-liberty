@@ -13,10 +13,10 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/mongoApp/src
+	test-applications/mongo/src
 
 fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	org.mongodb:mongo-java-driver;version=2.10.1
+	org.mongodb:mongo-java-driver;version=2.13.3

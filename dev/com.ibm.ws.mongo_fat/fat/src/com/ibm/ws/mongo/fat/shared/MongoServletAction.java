@@ -8,17 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.mongo.fat;
+package com.ibm.ws.mongo.fat.shared;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                TestMongoDbWar.class,
-                TestMongoDbSSL.class,
-                TestMongoDbSSLDefaultConfig.class,
-                TestMongoDbNoSSLFeature.class
-})
-public class FATSuite {}
+public enum MongoServletAction {
+    DUMP_CONFIG,
+    INSERT,
+    FIND,
+    DROP,
+    BEFORE_CONFIG_UPDATE,
+    AFTER_CONFIG_UPDATE,
+}
