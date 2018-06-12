@@ -80,6 +80,13 @@ public abstract class BaseServlet extends HttpServlet {
         StringBuffer sb = new StringBuffer();
         try {
             performTask(req, resp, sb);
+            boolean dologout = req.getParameter("logout") != null ? true : false;
+            if (dologout) {
+                System.out.println("Test application class BaseServlet is logging out");
+                req.logout();
+                writeLine(sb, "Test Application class BaseServlet logged out\n");
+                // req.getSession().invalidate();
+            }
         } catch (Throwable t) {
             t.printStackTrace(writer);
         }
