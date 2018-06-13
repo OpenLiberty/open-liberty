@@ -117,12 +117,12 @@ public class DelaySseTestServlet extends FATServlet {
         // we will need to account for.
         long time = Long.valueOf(eventSourceTimes.get(1));
         boolean goodTime = false;
-        if (time >= 9000) {
+        if (time >= 8000) {
             goodTime = true;
         } else {
-            System.out.println("eventSource time was lessa than 9 seconds:  " + time);
+            System.out.println("eventSource time was less than 8 seconds:  " + time);
         }
-        assertTrue("Incorrect Delay time less than 9 seconds", goodTime);
+        assertTrue("Incorrect Delay time less than 8 seconds", goodTime);
         assertEquals("Unexpected time results", "5000", eventSourceTimes.get(2));
         assertEquals("Unexpected time results", "-1", eventSourceTimes.get(3));
     }
