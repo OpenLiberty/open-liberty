@@ -22,22 +22,22 @@ WS-TraceGroup: archive.artifact.zip
 Private-Package: com.ibm.ws.artifact.zip.internal.*,com.ibm.ws.artifact.zip.cache.internal.*
 
 Service-Component: \
-   com.ibm.ws.artifact.zip.service;\
-    implementation:=com.ibm.ws.artifact.zip.internal.ZipFileContainerFactory;\
-    provide:=com.ibm.ws.artifact.contributor.ArtifactContainerFactoryHelper;\
-    configuration-policy:=ignore;\
-    containerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
-    zipCachingService=com.ibm.ws.artifact.zip.cache.ZipCachingService;\
-    globalClassloadingConfiguration=com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;\
-    dynamic:='containerFactory';\
-    properties:="service.vendor=IBM,category=JAR,handlesType=java.io.File|com.ibm.wsspi.artifact.ArtifactEntry,handlesEntries=.zip|.jar|.sar|.war|.ear|.rar|.eba|.esa|.spring",\
-   com.ibm.ws.artifact.zip.cache.service;\
-    implementation:=com.ibm.ws.artifact.zip.cache.internal.ZipCachingServiceImpl;\
-    provide:=com.ibm.ws.artifact.zip.cache.ZipCachingService;\
-    configuration-policy:=ignore;\
-    optional:="globalClassloadingConfiguration"; \
-    greedy:="globalClassloadingConfiguration"; \
-    properties:="service.vendor=IBM
+	com.ibm.ws.artifact.zip.service; \
+		implementation:=com.ibm.ws.artifact.zip.internal.ZipFileContainerFactory; \
+		provide:=com.ibm.ws.artifact.contributor.ArtifactContainerFactoryHelper; \
+		configuration-policy:=ignore; \
+		containerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory; \
+		zipCachingService=com.ibm.ws.artifact.zip.cache.ZipCachingService; \
+		globalClassloadingConfiguration=com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration; \
+		dynamic:='containerFactory'; \
+		properties:="service.vendor=IBM,category=JAR,handlesType=java.io.File|com.ibm.wsspi.artifact.ArtifactEntry,handlesEntries=.zip|.jar|.sar|.war|.ear|.rar|.eba|.esa|.spring", \
+	com.ibm.ws.artifact.zip.cache.service; \
+		implementation:=com.ibm.ws.artifact.zip.cache.internal.ZipCachingServiceImpl; \
+		provide:=com.ibm.ws.artifact.zip.cache.ZipCachingService; \
+		configuration-policy:=ignore; \
+		optional:="globalClassloadingConfiguration"; \
+		greedy:="globalClassloadingConfiguration"; \
+		properties:="service.vendor=IBM"
 
 instrument.classesExcludes: com/ibm/ws/artifact/zip/internal/resources/*.class
 
@@ -46,7 +46,15 @@ instrument.classesExcludes: com/ibm/ws/artifact/zip/internal/resources/*.class
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.kernel.filemonitor,\
 	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.classloading.configuration;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1

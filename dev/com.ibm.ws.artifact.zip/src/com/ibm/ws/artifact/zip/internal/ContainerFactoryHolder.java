@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,41 +16,53 @@ import com.ibm.ws.artifact.zip.cache.ZipCachingService;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 
 /**
- * DS safe way for file artifacts to obtain the container factory
+ * Declarative services safe API for the zip file container factory
+ * to link to the services defined root delegating container factory
+ * and to the bundle context in which the zip file container is active.
  */
 public interface ContainerFactoryHolder {
     /**
-     * Get the ContainerFactory from this holder.<p>
-     * Because the factory is a service, if someone removes the supplying bundle, without
-     * first providing an alternate implementation, then we will explode with an IllegalStateException.<br>
-     * It is not expected that this will happen.
-     * 
-     * @return the containerFactory
-     * @throws IllegalStateException if the ContainerFactory has gone away.
+     * Answer the bundle context in which the zip file container is active.
+     *
+     * This will be null if the zip file container is not active.
+     *
+     * @return The bundle context in which the zip file container is active.
      */
-    public ArtifactContainerFactory getContainerFactory();
+    BundleContext getBundleContext();
 
     /**
-     * Get the zipCachingService from this holder.
-     * Because the factory is a service, if someone removes the supplying bundle, without
-     * first providing an alternate implementation, then we will explode with an IllegalStateException.<br>
-     * It is not expected that this will happen. (esp as this bundle also supplies the zipCachingService)
-     * 
-     * @return the containerFactory
-     * @throws IllegalStateException if the zipCachingService has gone away.
+     * Answer the root delegating container factory which is to be used by
+     * the zip file container to convert entries to non-enclosed containers.
+     *
+     * An {@link IllegalStateException} is thrown if an attempt is made to
+     * retrieve the root delegating container factory when the factory is unset.
+     *
+     * @return The root delegating container factory used by the zip file
+     *     container.
+     *
+     * TODO: Want to rename this to 'getRootDelegatingContainerFactory',
+     *       but cannot because of the dependency from the artifact tests
+     *       in WS-CD-Open.
      */
-    public ZipCachingService getZipCachingService();
+    ArtifactContainerFactory getContainerFactory();
 
     /**
-     * Get the BundleContext from this holder.<p>
-     * 
-     * @return the containerFactory
-     * @throws IllegalStateException if the FileContainerFactory component has been deactivated by DS.
+     * Answer the zip caching service used by the zip file container.
+     *
+     * An {@link IllegalStateException} is thrown if an attempt is made to
+     * retrieve the zip caching service while the service is unset.
+     *
+     * @return The zip caching service used by the zip file container.
      */
-    public BundleContext getBundleContext();
+    ZipCachingService getZipCachingService();
 
     /**
-     * Determines whether jar: or wsjar: URLs should be used
+     * Answer true or false telling if the "jar" protocol is to be used in
+     * archive URLs.  Normally, this should answer false, in which case the
+     * "wsjar" protocol will be used.
+     *
+     * @return True or false telling if the "jar" protocol is to be used
+     *     instead of the more usual "wsjar" protocol.
      */
-    public boolean useJarUrls();
+    boolean useJarUrls();
 }
