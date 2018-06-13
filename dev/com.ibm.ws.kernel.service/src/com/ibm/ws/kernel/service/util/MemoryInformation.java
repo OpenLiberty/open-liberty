@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.util;
+package com.ibm.ws.kernel.service.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -29,13 +28,19 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 
 /**
- * Provides information about the underlying operating system. This class might
- * be used in things like FAT suites, so avoid using Tr.
+ * Provides information about the memory of the underlying operating system.
+ * Use the {@link #instance()} method for access to the key methods.
  */
 public class MemoryInformation {
+
+    private static final TraceComponent tc = Tr.register(MemoryInformation.class);
+
     /**
      * Get the singleton for the API.
      * By default:
@@ -358,6 +363,7 @@ public class MemoryInformation {
         return result;
     }
 
+    @FFDCIgnore({ IOException.class })
     private long getTotalMemoryLinux() throws MemoryInformationException {
         try {
 
@@ -376,7 +382,7 @@ public class MemoryInformation {
                     return parseLinuxMeminfoLine(meminfoLine);
                 }
             }
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/meminfo", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "/proc/meminfo", lines));
         } catch (IOException e) {
             throw new MemoryInformationException(e);
         }
@@ -392,12 +398,13 @@ public class MemoryInformation {
             if (modifierString.equals("kB")) {
                 modifier = 1024;
             } else {
-                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/meminfo", modifierString));
+                throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "/proc/meminfo", modifierString));
             }
         }
         return Long.parseLong(line) * modifier;
     }
 
+    @FFDCIgnore({ IOException.class, OperatingSystemException.class })
     private long getAvailableMemoryLinux() throws MemoryInformationException {
         try {
 
@@ -529,8 +536,10 @@ public class MemoryInformation {
                 return availableFallback;
             }
 
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/proc/meminfo", lines));
-        } catch (IOException | OperatingSystemException e) {
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "/proc/meminfo", lines));
+        } catch (IOException e) {
+            throw new MemoryInformationException(e);
+        } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
     }
@@ -561,6 +570,7 @@ public class MemoryInformation {
         return cached;
     }
 
+    @FFDCIgnore({ IOException.class })
     public static synchronized int getSwappiness() throws MemoryInformationException {
         try {
             // Use cgroup swappiness if available
@@ -574,6 +584,7 @@ public class MemoryInformation {
         }
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getTotalMemoryMac() throws MemoryInformationException {
         try {
             List<String> lines = OperatingSystem.executeProgram("/usr/sbin/sysctl", "hw.memsize");
@@ -583,16 +594,17 @@ public class MemoryInformation {
                 if (i != -1) {
                     return Long.parseLong(line.substring(i + 2));
                 } else {
-                    throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/usr/sbin/sysctl", lines));
+                    throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "/usr/sbin/sysctl", lines));
                 }
             } else {
-                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "/usr/sbin/sysctl", lines));
+                throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "/usr/sbin/sysctl", lines));
             }
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getAvailableMemoryMac() throws MemoryInformationException {
         try {
             long available = 0;
@@ -619,7 +631,7 @@ public class MemoryInformation {
             }
 
             if (available <= 0) {
-                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vm_stat", vmstatLines));
+                throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "vm_stat", vmstatLines));
             }
 
             available *= OperatingSystem.getPageSize();
@@ -636,6 +648,7 @@ public class MemoryInformation {
         return Long.parseLong(line);
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getTotalMemoryWindows() throws MemoryInformationException {
         try {
             List<String> lines = OperatingSystem.executeProgram("wmic", "os", "get", "totalvisiblememorysize", "/format:list");
@@ -645,7 +658,7 @@ public class MemoryInformation {
                     return processWmicLine(line) * 1024;
                 }
             }
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "wmic", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "wmic", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -655,6 +668,7 @@ public class MemoryInformation {
         return Long.parseLong(line.substring(line.indexOf('=') + 1));
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getAvailableMemoryWindows() throws MemoryInformationException {
         try {
             long available = 0;
@@ -672,7 +686,7 @@ public class MemoryInformation {
             }
 
             if (available <= 0) {
-                throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "wmic", lines));
+                throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "wmic", lines));
             }
 
             return available;
@@ -681,6 +695,7 @@ public class MemoryInformation {
         }
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getTotalMemoryAix() throws MemoryInformationException {
         try {
             List<String> lines = OperatingSystem.executeProgram("/usr/sbin/lsattr", "-El", "sys0");
@@ -694,12 +709,13 @@ public class MemoryInformation {
                     return Long.parseLong(line) * 1024;
                 }
             }
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "lsattr", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "lsattr", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getAvailableMemoryAix() throws MemoryInformationException {
         try {
             List<String> lines = OperatingSystem.executeProgram("/usr/bin/svmon", "-O", "summary=basic,unit=KB");
@@ -712,17 +728,18 @@ public class MemoryInformation {
                     if (pieces.length >= 7) {
                         return Long.parseLong(pieces[6]) * 1024;
                     } else {
-                        throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "svmon", lines));
+                        throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "svmon", lines));
                     }
                 }
             }
 
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "svmon", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "svmon", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getTotalMemoryHp() throws MemoryInformationException {
 
         // adb requires root and dmesg rolls, so we can't use either. Approximate
@@ -739,12 +756,13 @@ public class MemoryInformation {
                 }
             }
 
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vmstat", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "vmstat", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getAvailableMemoryHp() throws MemoryInformationException {
         // See getTotalMemoryHp
         try {
@@ -756,7 +774,7 @@ public class MemoryInformation {
                 }
             }
 
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vmstat", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "vmstat", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -774,6 +792,7 @@ public class MemoryInformation {
         return getFreeMemoryJDK();
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getTotalMemorySolaris() throws MemoryInformationException {
 
         // "To find how much physical memory is installed on the system, use the prtconf
@@ -792,12 +811,13 @@ public class MemoryInformation {
                     return inferBytes(line);
                 }
             }
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "prtdiag", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "prtdiag", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
     }
 
+    @FFDCIgnore({ OperatingSystemException.class })
     private long getAvailableMemorySolaris() throws MemoryInformationException {
         // "Look at the free column (the unit is KB). [...] on Solaris 8 or later, the
         // free memory shown in the vmstat output includes the free list and the cache
@@ -818,7 +838,7 @@ public class MemoryInformation {
                 }
             }
 
-            throw new MemoryInformationException(MessageFormat.format(BootstrapConstants.messages.getString("memory.information.unexpected"), "vmstat", lines));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "vmstat", lines));
         } catch (OperatingSystemException e) {
             throw new MemoryInformationException(e);
         }
@@ -848,7 +868,7 @@ public class MemoryInformation {
 
         // Testing has shown that IBM Java returns -1
         if (result <= 0) {
-            throw new MemoryInformationException(BootstrapConstants.messages.getString("memory.information.unavailable"));
+            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unavailable"));
         }
 
         return result;
@@ -857,18 +877,12 @@ public class MemoryInformation {
     private static OperatingSystemMXBean osMxBean;
     private static MBeanServer mBeanServer;
     private static ObjectName osObjectName;
-    private static String javaVendor;
 
+    @FFDCIgnore({ MalformedObjectNameException.class })
     private synchronized void ensureInitializedMBean() throws MemoryInformationException {
         if (osMxBean == null) {
             osMxBean = ManagementFactory.getOperatingSystemMXBean();
             mBeanServer = ManagementFactory.getPlatformMBeanServer();
-            javaVendor = System.getProperty("java.vendor");
-            if (javaVendor == null) {
-                javaVendor = "";
-            } else {
-                javaVendor = javaVendor.toLowerCase();
-            }
             try {
                 osObjectName = new ObjectName("java.lang", "type", "OperatingSystem");
             } catch (MalformedObjectNameException e) {
@@ -877,11 +891,12 @@ public class MemoryInformation {
         }
     }
 
+    @FFDCIgnore({ Throwable.class })
     private synchronized long getTotalMemoryJDK() throws MemoryInformationException {
         try {
             ensureInitializedMBean();
 
-            if (javaVendor.contains("ibm")) {
+            if (JavaInfo.vendor() == Vendor.IBM) {
                 return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemory");
             } else {
                 return (Long) mBeanServer.getAttribute(osObjectName, "TotalPhysicalMemorySize");
@@ -891,6 +906,7 @@ public class MemoryInformation {
         }
     }
 
+    @FFDCIgnore({ Throwable.class })
     private synchronized long getFreeMemoryJDK() throws MemoryInformationException {
         try {
             ensureInitializedMBean();
