@@ -29,7 +29,7 @@ import com.ibm.ws.microprofile.faulttolerance.test.util.TestFunction;
 /**
  *
  */
-public class TimeoutTest {
+public class TimeoutTest extends AbstractFTTest {
 
     @Test
     public void testTimeout() {

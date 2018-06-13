@@ -18,7 +18,9 @@ Bundle-Name: com.ibm.ws.microprofile.faulttolerance.spi
 Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.spi
 Bundle-Description: MicroProfile Fault Tolerance SPI, version ${bVersion}
 
-Import-Package: *
+Import-Package: \
+  org.eclipse.microprofile.faulttolerance; version="[1.0,1.2)",\
+  *
 
 Export-Package:\
     com.ibm.ws.microprofile.faulttolerance.spi,\
