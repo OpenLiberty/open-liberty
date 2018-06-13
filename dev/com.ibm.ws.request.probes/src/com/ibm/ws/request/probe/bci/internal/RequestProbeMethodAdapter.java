@@ -72,11 +72,11 @@ public class RequestProbeMethodAdapter extends AdviceAdapter {
         return methodInfo.getSignature();
     }
 
-    protected Type[] getArgumentTypes() {
+    public Type[] getArgumentTypes() {
         return Type.getArgumentTypes(getDescriptor());
     }
 
-    protected Type getReturnType() {
+    public Type getReturnType() {
         return Type.getReturnType(getDescriptor());
     }
 
