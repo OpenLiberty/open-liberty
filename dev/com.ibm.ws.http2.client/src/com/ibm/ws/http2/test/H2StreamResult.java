@@ -34,6 +34,7 @@ public class H2StreamResult {
     private boolean endOfHeadersFlagReceived = false;
     private boolean frameHasEndOfStreamFlag = false;
     private boolean rstStreamReceived = false;
+    private boolean goawayReceived = false;
     private final boolean removalOfEmptyDataFrameNeeded = true;
     private final FrameData eosDataFrame;
     private final FrameSettings ackSettingsFrame;
@@ -78,6 +79,12 @@ public class H2StreamResult {
         return this.continuationExpected;
     }
 
+    private boolean goawayExpected = false;
+
+    protected boolean isgoawayExpected() {
+        return this.goawayExpected;
+    }
+
     public void addActualRespone(Frame frame) throws ReceivedFrameAfterEndOfStream, ReceivedHeadersFrameAfterEndOfHeaders {
 
         //TODO: Process RST_STREAM (once sent, the server should close such stream). However,
@@ -114,6 +121,11 @@ public class H2StreamResult {
                 LOGGER.logp(Level.INFO, CLASS_NAME, "addActualRespone", "Received RST_FRAME on streamID: " + streamId);
             rstStreamReceived = true;
         }
+        if (frame.getFrameType() == FrameTypes.GOAWAY) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.logp(Level.INFO, CLASS_NAME, "addActualRespone", "Received GOAWAY on streamID: " + streamId);
+            goawayReceived = true;
+        }
 
         if (frame.getFrameType() == FrameTypes.SETTINGS && frame.flagAckSet())
             this.expectedResponse.add(ackSettingsFrame);
@@ -140,6 +152,9 @@ public class H2StreamResult {
             frameHasEndOfStreamFlag = true;
         this.expectedResponse.add(frame);
         this.expectedResponseTypes.add(frame.getFrameType());
+        if (frame.getFrameType().equals(FrameTypes.GOAWAY)) {
+            this.goawayExpected = true;
+        }
     }
 
     /**
@@ -212,6 +227,14 @@ public class H2StreamResult {
      */
     public boolean receivedEndOfStreamOrRstStream() {
         return endOfStreamFlagReceived || rstStreamReceived;
+    }
+
+    /**
+     *
+     * @return True if a goaway frame was received.
+     */
+    public boolean goawayReceived() {
+        return goawayReceived;
     }
 
     /*

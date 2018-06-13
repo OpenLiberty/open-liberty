@@ -194,7 +194,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
      */
     public void testDataOnStreamZero(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testUnknownFrameType";
+        String testName = "testDataOnStreamZero";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
         FrameHeaders headers = setupDefaultPreface(h2Client);
 
