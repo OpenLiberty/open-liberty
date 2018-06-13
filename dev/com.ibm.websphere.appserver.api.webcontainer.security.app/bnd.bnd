@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.1
+bVersion: 1.2
 
 Bundle-Name: WebSphere WebContainer Application Security API
 Bundle-Description: WebSphere WebContainer Application Security API, version ${bVersion}
