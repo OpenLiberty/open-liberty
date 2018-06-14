@@ -29,3 +29,22 @@ dependencies {
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0'
 }
+
+autoFVT.doLast {
+
+  def servers = [
+	'com.ibm.ws.security.jwtsso.fat'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/formlogin.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+}
