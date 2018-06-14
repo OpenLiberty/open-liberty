@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -75,6 +76,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -906,8 +908,10 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * @param className name of the class.
      * @return the class.
      * @throws ClassNotFoundException
+     * @throws UnableToAdaptException
+     * @throws MalformedURLException
      */
-    public Class<?> loadClass(final String className) throws ClassNotFoundException {
+    public Class<?> loadClass(final String className) throws ClassNotFoundException, UnableToAdaptException, MalformedURLException {
         ClassLoader raClassLoader = resourceAdapterSvc.getClassLoader();
         if (raClassLoader != null) {
             return Utils.priv.loadClass(raClassLoader, className);

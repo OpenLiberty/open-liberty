@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -413,10 +413,6 @@ public class MetatypeGenerator {
                 ad.setDescription("internal use only");
                 ocd.addMetatypeAd(ad);
             }
-        }
-
-        if (!adapter.getSecurityPermissions().isEmpty()) {
-            Tr.info(tc, "J2CA9935.secperm.not.supported", instance.adapterName);
         }
 
         RaOutboundResourceAdapter outbound = adapter.getOutboundResourceAdapter();

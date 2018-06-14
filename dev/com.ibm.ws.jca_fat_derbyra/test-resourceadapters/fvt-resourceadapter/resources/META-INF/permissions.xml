@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+    version="7">
+
+   <permission>  
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>createClassLoader</name>  
+   </permission>
+   
+   <permission>  
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>getProtectionDomain</name>  
+   </permission>
+   
+   <permission>  
+      <class-name>java.lang.RuntimePermission</class-name>
+      <name>setContextClassLoader</name>  
+   </permission>
+   
+   <permission>  
+      <class-name>java.io.FilePermission</class-name>
+      <name>derby.properties</name>
+      <actions>read</actions>
+   </permission>
+   
+   <permission>  
+      <class-name>java.io.FilePermission</class-name>
+      <name>derby.log</name>
+      <actions>read,write</actions>
+   </permission>
+   
+   <permission>
+      <class-name>javax.management.MBeanTrustPermission</class-name>
+      <name>register</name>
+   </permission>   
+   
+</permissions>
