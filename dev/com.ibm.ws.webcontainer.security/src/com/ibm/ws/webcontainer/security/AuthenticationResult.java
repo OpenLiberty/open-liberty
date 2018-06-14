@@ -40,6 +40,41 @@ public class AuthenticationResult {
     private Subject subject = null;
     private String targetRealm = null;
 
+    public boolean passwordExpired = false;
+    /**
+     * @return the passwordExpired
+     */
+    @Trivial
+    public boolean getPasswordExpired() {
+        return passwordExpired;
+    }
+
+    /**
+     * @param passwordExpired the passwordExpired to set
+     */
+    @Trivial
+    public void setPasswordExpired(boolean passwordExpired) {
+        this.passwordExpired = passwordExpired;
+    }
+
+    /**
+     * @return the userRevoked
+     */
+    @Trivial
+    public boolean getUserRevoked() {
+        return userRevoked;
+    }
+
+    /**
+     * @param userRevoked the userRevoked to set
+     */
+    @Trivial
+    public void setUserRevoked(boolean userRevoked) {
+        this.userRevoked = userRevoked;
+    }
+
+    public boolean userRevoked = false;
+
     // Credentials-related variables
     private String reason;
     private String redirectURL;

@@ -28,6 +28,7 @@ import org.junit.Test;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
+import com.ibm.ws.security.authentication.PasswordExpiredException;
 import com.ibm.ws.security.authentication.WSAuthenticationData;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.registry.UserRegistry;
@@ -113,6 +114,7 @@ public class BasicAuthAuthenticatorTest {
         assertEquals("Status should be SUCCESS.", AuthResult.SUCCESS, authResult.getStatus());
         assertEquals("Subject sould be the authenticated subject.", authSubject, authResult.getSubject());
     }
+
 
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator#authenticate(com.ibm.ws.webcontainer.security.WebRequest)} .
@@ -219,6 +221,7 @@ public class BasicAuthAuthenticatorTest {
      */
     @Test
     public void testAuthenticate_authnFailure() {
+        
         authData.set(AuthenticationData.USERNAME, user);
         authData.set(AuthenticationData.PASSWORD, password.toCharArray());
         try {
@@ -240,7 +243,60 @@ public class BasicAuthAuthenticatorTest {
         AuthenticationResult authResult = basicAuthenticator.authenticate(webRequest);
         assertEquals("Status should be SEND_401.", AuthResult.SEND_401, authResult.getStatus());
     }
+    @Test
+    public void testAuthenticate_passwordExpired() throws Exception {
+        final Subject authSubject = new Subject();
+        final AuthenticationData authData = new WSAuthenticationData();
+        authData.set(AuthenticationData.USERNAME, user);
+        authData.set(AuthenticationData.PASSWORD, password.toCharArray());
 
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
+                will(returnValue("Basic dXNlcjE6dXNlcjFwd2Q="));
+                allowing(req).getHeader("Authorization-Encoding");
+                will(returnValue(null));
+                allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
+                                                    with(equal((Subject) null)));
+                will(throwException(new com.ibm.ws.security.authentication.PasswordExpiredException("authn failed")));
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                allowing(webRequest).getSecurityMetadata();
+                allowing(loginConfiguration).getRealmName();
+                allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
+                will(returnValue(true));
+
+            }
+        });
+        AuthenticationResult authResult = basicAuthenticator.authenticate(webRequest);
+        assertEquals("PasswordExpired", true, authResult.getPasswordExpired());
+    }
+    @Test
+    public void testAuthenticate_userRevoked() throws Exception {
+        final Subject authSubject = new Subject();
+        final AuthenticationData authData = new WSAuthenticationData();
+        authData.set(AuthenticationData.USERNAME, user);
+        authData.set(AuthenticationData.PASSWORD, password.toCharArray());
+
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
+                will(returnValue("Basic dXNlcjE6dXNlcjFwd2Q="));
+                allowing(req).getHeader("Authorization-Encoding");
+                will(returnValue(null));
+                allowing(authnService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(matchingAuthenticationData(authData)),
+                                                    with(equal((Subject) null)));
+                will(throwException(new com.ibm.ws.security.authentication.UserRevokedException("authn failed")));
+                one(ssoCookieHelper).addSSOCookiesToResponse(authSubject, req, rsp);
+                allowing(webRequest).getSecurityMetadata();
+                allowing(loginConfiguration).getRealmName();
+                allowing(webAppSecurityConfig).getDisplayAuthenticationRealm();
+                will(returnValue(true));
+
+            }
+        });
+        AuthenticationResult authResult = basicAuthenticator.authenticate(webRequest);
+        assertEquals("PasswordExpired", true, authResult.getUserRevoked());
+    }
     /**
      * Test for null request
      */
