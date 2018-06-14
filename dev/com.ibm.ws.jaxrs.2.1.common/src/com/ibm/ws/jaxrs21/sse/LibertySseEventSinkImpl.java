@@ -26,6 +26,7 @@ import javax.ws.rs.sse.OutboundSseEvent;
 import javax.ws.rs.sse.SseEventSink;
 
 import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
+import org.apache.cxf.jaxrs.sse.NoSuitableMessageBodyWriterException;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
@@ -122,7 +123,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
                     response.getOutputStream().flush();
 
                     return CompletableFuture.completedFuture(eventContents);
-                } catch (InternalServerErrorException ex) {
+                } catch (NoSuitableMessageBodyWriterException ex) {
                     handleException(ex, future, event);
                     throw new IllegalArgumentException("No suitable message body writer for OutboundSseEvent created with data " + event.getData() + " and mediaType " + event.getMediaType() + ". The data contained within the OutboundSseEvent must match the mediaType."); 
                 } catch (WebApplicationException ex) {
