@@ -133,7 +133,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
      */
     public void handleRequest(ServletRequest req, ServletResponse res)
                     throws Exception
-                    {
+    {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
             logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "should not enter invoker extension processor to handle request");
         }
@@ -147,15 +147,16 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
         }
 
         return;
-                    }
+    }
 
 
 
     public IServletWrapper getServletWrapper(ServletRequest req,
                                              ServletResponse resp, boolean handleFailure) throws Exception{
+        String methodName = "getServletWrapper";
         //PK16467
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-            logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "InvokerExtensionProcessor handling request");
+            logger.entering(CLASS_NAME, methodName);
         }
         //PK16467
 
@@ -181,7 +182,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             {
                 //PK16467
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "InvokerExtensionProcessor is called from include so use request attributes");
+                    logger.logp(Level.FINE, CLASS_NAME,methodName, "InvokerExtensionProcessor is called from include so use request attributes");
                 }
                 //PK16467
                 invokePath = (String)request.getAttribute("javax.servlet.include.servlet_path");
@@ -192,7 +193,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             {
                 //PK16467
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "InvokerExtensionProcessor called directly or from forward.");
+                    logger.logp(Level.FINE, CLASS_NAME,methodName, "InvokerExtensionProcessor called directly or from forward.");
                 }
                 //PK16467
                 invokePath = request.getServletPath();  
@@ -202,7 +203,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
 
             //PK16467
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "before stripping /servlet/, servletName-->["+servletName+ "], reqURI-->["+reqURI+"]");
+                logger.logp(Level.FINE, CLASS_NAME,methodName, "before stripping /servlet/, servletName-->["+servletName+ "], reqURI-->["+reqURI+"]");
             }
             //PK16467
             servletName = getServletName(pathInfo);
@@ -213,7 +214,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             }
             //PK16467
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "after stripping /servlet/, servletName-->["+servletName+ "]");
+                logger.logp(Level.FINE, CLASS_NAME,methodName, "after stripping /servlet/, servletName-->["+servletName+ "]");
             }
             //PK16467
 
@@ -221,10 +222,10 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             if (doNotServeByClassName)
             {
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "Checking if " + servletName + " is on the blockedClassesList");
+                    logger.logp(Level.FINE, CLASS_NAME, methodName, "Checking if " + servletName + " is on the blockedClassesList");
                 }
                 if(blockedClassesList.contains(servletName)){
-                    logger.logp(Level.WARNING, CLASS_NAME,"handleRequest",MessageFormat.format(nls.getString("servlet.on.blocked.list.{0}","Servlet on the blocked list: {0}"), new Object[]{servletName}));
+                    logger.logp(Level.WARNING, CLASS_NAME,methodName,MessageFormat.format(nls.getString("servlet.on.blocked.list.{0}","Servlet on the blocked list: {0}"), new Object[]{servletName}));
                     if (handleFailure)
                         errorString = "/servlet/"+servletName;
                     return null;
@@ -242,7 +243,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             }
             //PK16467
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "after parsing servletName from request elements, invokePath -->["+invokePath+"], pathInfo-->["+pathInfo+"]");
+                logger.logp(Level.FINE, CLASS_NAME,methodName, "after parsing servletName from request elements, invokePath -->["+invokePath+"], pathInfo-->["+pathInfo+"]");
             }
             //PK16467
 
@@ -258,7 +259,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             {
                 //PK16467
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "InvokerExtensionProcessor found cacheServletWrapper");
+                    logger.logp(Level.FINE, CLASS_NAME,methodName, "InvokerExtensionProcessor found cacheServletWrapper");
                 }
                 //PK16467
                 return cWrapper.getCacheTarget();
@@ -276,7 +277,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             {
                 //PK16467
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "found servletWrapper already in the webApp for -->["+servletName+"]");
+                    logger.logp(Level.FINE, CLASS_NAME,methodName, "found servletWrapper already in the webApp for -->["+servletName+"]");
                 }
                 //PK16467
                 return s;
@@ -285,7 +286,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
             {
                 //PK16467
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "Couldn't find servletWrapper, traverse servletInfos or create servletWrapper");
+                    logger.logp(Level.FINE, CLASS_NAME,methodName, "Couldn't find servletWrapper, traverse servletInfos or create servletWrapper");
                 }
                 synchronized (getSyncObject(invokePath)){
                     
@@ -294,7 +295,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
                     {
                         //PK16467
                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                            logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "found servletWrapper already in the webApp for -->["+servletName+"]");
+                            logger.logp(Level.FINE, CLASS_NAME,methodName, "found servletWrapper already in the webApp for -->["+servletName+"]");
                         }
                         //PK16467
                         return s;
@@ -313,7 +314,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
                             {
                                 //PK16467
                                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "className for current ServletConfig is ["+className+"]");
+                                    logger.logp(Level.FINE, CLASS_NAME,methodName, "className for current ServletConfig is ["+className+"]");
                                 }
                                 //PK16467
                                 String realName = sc.getServletName();
@@ -322,7 +323,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
                                 {
                                     //PK16467
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                                        logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "found servletWrapper for real servlet name -->["+realName+"], handle the request");
+                                        logger.logp(Level.FINE, CLASS_NAME,methodName, "found servletWrapper for real servlet name -->["+realName+"], handle the request");
                                     }
                                     return s;
                                 }
@@ -330,7 +331,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
                                 {
                                     //PK16467
                                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                                        logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "unable to retrieve a servlet wrapper even though the class names matched");
+                                        logger.logp(Level.FINE, CLASS_NAME,methodName, "unable to retrieve a servlet wrapper even though the class names matched");
                                     }
                                     //PK16467
                                     return null;
@@ -361,7 +362,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
                         {
                             //PK16467
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                                logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "InvokerExtensionProcessor will create a servlet wrapper");
+                                logger.logp(Level.FINE, CLASS_NAME,methodName, "InvokerExtensionProcessor will create a servlet wrapper");
                             }
                             //PK16467
 
@@ -382,7 +383,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
                             catch (Exception e2){
                                 failedAddMappingTarget=true;
                                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-                                    logger.logp(Level.FINE, CLASS_NAME,"handleRequest","Error adding mapping Target",e2);
+                                    logger.logp(Level.FINE, CLASS_NAME,methodName,"Error adding mapping Target",e2);
 
                             }
                             //PK16467
@@ -391,7 +392,7 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
                         {
                             //PK16467
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                                logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "exception caught creating servlet wrapper or adding mapping",t);
+                                logger.logp(Level.FINE, CLASS_NAME,methodName, "exception caught creating servlet wrapper or adding mapping",t);
                             }
                             //PK16467
                             if (handleFailure)
@@ -408,22 +409,9 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
         {
             if (s==null&&handleFailure)
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, MessageFormat.format(nls.getString("Servlet.Not.Found.{0}","Servlet Not Found: {0}"), new Object[]{errorString}));
-            //PK16467
+            
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
-                logger.logp(Level.FINE, CLASS_NAME,"handleRequest", "About to add to cache, servletWrapper-->["+s);
-            }
-            //PK16467
-
-            if (dispatchContext.getDispatcherType()==DispatcherType.REQUEST) {
-                /*
-                 * TODO: Figure out a way to remove this limitation?
-                 * Don't add it to the cache if it is a forward or an include...
-                 */
-
-                if (s != null && invokePath != null && !failedAddMappingTarget)
-                {
-                    WebContainer.addToCache(request, s, (WebApp) extensionContext);
-                }
+                logger.exiting(CLASS_NAME, methodName);
             }
         }
         return s;
