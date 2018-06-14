@@ -138,13 +138,13 @@ public class HpelBaseTraceServiceTest {
             int count = 0;
             for (RepositoryLogRecord record : reader.getLogListForCurrentServerInstance()) {
                 String formattedMessage = record.getFormattedMessage();
+                if (formattedMessage.contains("TRAS3005E") || formattedMessage.contains("messages.log file."))
+                    continue;
                 if (count >= msgs.length) {
                     fail("Unexpected message: " + formattedMessage);
                 }
-                if (!formattedMessage.contains("TRAS3005E") && !formattedMessage.contains("messages.log file.")) {
-                    assertEquals("Record has incorrect formatted message", msgs[count], formattedMessage);
-                    count++;
-                }
+                assertEquals("Record has incorrect formatted message", msgs[count], formattedMessage);
+                count++;
             }
 
             // Verify that System.out has AUDIT messages and whatever what directly sent to System.out
