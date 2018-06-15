@@ -25,7 +25,7 @@ Export-Package: \
   org.eclipse.microprofile.faulttolerance.exceptions;version=1.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api;1.0.0}
+  @${repo;org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api;1.0;EXACT}
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 

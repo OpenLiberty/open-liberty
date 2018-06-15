@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ public interface ExecutorBuilder<T, R> {
     public ExecutorBuilder<T, R> setFallbackPolicy(FallbackPolicy fallback);
 
     public ExecutorBuilder<T, R> setTimeoutPolicy(TimeoutPolicy timeout);
+
+    public ExecutorBuilder<T, R> setMetricRecorder(MetricRecorder metricRecorder);
 
     public Executor<R> build();
 

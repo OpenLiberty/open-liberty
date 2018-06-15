@@ -33,8 +33,8 @@ public class CDIAsyncTest extends LoggingTest {
 
     //run against both EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()))
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SHARED_SERVER.getServerName()));
 
     @Test
     public void testAsync() throws Exception {

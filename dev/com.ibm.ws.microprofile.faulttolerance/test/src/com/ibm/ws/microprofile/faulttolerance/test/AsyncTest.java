@@ -33,7 +33,7 @@ import com.ibm.ws.microprofile.faulttolerance.test.util.AsyncTestFunction;
 /**
  *
  */
-public class AsyncTest {
+public class AsyncTest extends AbstractFTTest {
 
     private static final int TASKS = 5;
     private static final long DURATION_UNIT = 1000;

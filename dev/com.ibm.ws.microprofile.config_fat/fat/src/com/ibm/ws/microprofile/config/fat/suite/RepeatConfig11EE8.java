@@ -20,6 +20,7 @@ public class RepeatConfig11EE8 extends EE8FeatureReplacementAction {
     public RepeatConfig11EE8(String server) {
         super();
         removeFeature("mpConfig-1.2");
+        removeFeature("mpConfig-1.3");
         addFeature("mpConfig-1.1");
         forServers(server);
     }

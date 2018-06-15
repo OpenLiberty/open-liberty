@@ -35,7 +35,7 @@ import com.ibm.ws.microprofile.faulttolerance.test.util.TestFunction;
 /**
  *
  */
-public class RetryTest {
+public class RetryTest extends AbstractFTTest {
 
     @Test
     public void testRetry() {

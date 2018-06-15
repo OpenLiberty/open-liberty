@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -18,7 +18,9 @@ Bundle-Name: com.ibm.ws.microprofile.faulttolerance.spi
 Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.spi
 Bundle-Description: MicroProfile Fault Tolerance SPI, version ${bVersion}
 
-Import-Package: *
+Import-Package: \
+  org.eclipse.microprofile.faulttolerance; version="[1.0,1.2)",\
+  *
 
 Export-Package:\
     com.ibm.ws.microprofile.faulttolerance.spi,\
@@ -39,18 +41,18 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 testsrc: test/src
 
 -buildpath: \
-	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-        com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-        com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-        com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-        com.ibm.websphere.org.osgi.core;version=latest,\
-        com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.logging.core;version=latest,\
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.ws.cdi.interfaces;version=latest,\
+    com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
