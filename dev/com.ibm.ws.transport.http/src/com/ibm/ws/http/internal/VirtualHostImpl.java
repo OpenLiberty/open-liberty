@@ -670,7 +670,7 @@ public class VirtualHostImpl implements VirtualHost {
                 }
 
                 // only notify this kind of addition if ports are listening
-                if (contextRoot != null && numPorts > 0) {
+                if (contextRoot != null) {
                     String urlString = owner.getUrlString(contextRoot, false);
                     notifyContextRoot(true, urlString, contextRoot);
 
@@ -697,7 +697,7 @@ public class VirtualHostImpl implements VirtualHost {
                 }
 
                 // only notify this kind of removal if ports are listening
-                if (contextRoot != null && numPorts > 0) {
+                if (contextRoot != null) {
                     notifyContextRoot(false, urlString, contextRoot);
                 }
                 return true;
@@ -800,16 +800,16 @@ public class VirtualHostImpl implements VirtualHost {
          * @param contextRoot context root for VirtualHostListener notification
          */
         private void notifyContextRoot(boolean added, String urlString, String contextRoot) {
-            int last = urlString.length() - 1;
-            if (urlString.charAt(last) == '*')
-                urlString = urlString.substring(0, last);
-
-            if (added) {
-                Tr.audit(tc, "context.root.added", owner.name, urlString);
-            } else {
-                Tr.audit(tc, "context.root.removed", owner.name, urlString);
+            if (urlString != null && !urlString.isEmpty()) {
+                int last = urlString.length() - 1;
+                if (urlString.charAt(last) == '*')
+                    urlString = urlString.substring(0, last);
+                if (added) {
+                    Tr.audit(tc, "context.root.added", owner.name, urlString);
+                } else {
+                    Tr.audit(tc, "context.root.removed", owner.name, urlString);
+                }
             }
-
             for (VirtualHostListener l : owner._listeners.services()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Notifying listener: context root " + (added ? "added" : "removed"), l, contextRoot);
