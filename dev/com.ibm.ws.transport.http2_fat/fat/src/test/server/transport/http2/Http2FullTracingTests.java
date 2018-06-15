@@ -91,4 +91,17 @@ public class Http2FullTracingTests extends FATServletClient {
         runTest(dataServletPath, testName.getMethodName());
     }
 
+    /**
+     * Test Coverage: Send a SETTINGS frame of the wrong size (other than a multiple of 6 octets)
+     * Test Outcome: Return a connection error of type FRAME_SIZE_ERROR and close the connection.
+     * Spec Section: 6.5
+     *
+     * @throws Exception
+     */
+    // moved for debug - build break 255616
+    @Test
+    public void testSettingFrameBadSize() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
 }
