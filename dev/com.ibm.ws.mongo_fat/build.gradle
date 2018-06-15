@@ -43,6 +43,10 @@ task addMongoDriver {
       into "${buildDir}/autoFVT/publish/shared/resources/mongo-2.13"
     }
     copy {
+      from configurations.mongo213
+      into "${buildDir}/autoFVT/publish/shared/resources/mongo-2.13-updated"
+    }
+    copy {
       from configurations.mongo29
       into "${buildDir}/autoFVT/publish/shared/resources/mongo-2.9"
     }
