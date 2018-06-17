@@ -670,7 +670,7 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
         if (roleList != null)
             SibTr.debug(tc,  "roles: " + roleList.toArray().toString());
         else 
-            SibTr.debut(tc, "no roles identified for user " + user);
+            SibTr.debug(tc, "no roles identified for user " + user);
         
         Object[] roleListAsObjectArray = roleList.toArray();
         String[] roleListAsStrArray = Arrays.copyOf(roleListAsObjectArray, roleListAsObjectArray.length, String[].class);
