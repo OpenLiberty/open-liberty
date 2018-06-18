@@ -4995,10 +4995,18 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             if (logStack) {
                 if (th instanceof WebAppErrorReport) {
                     logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Original Exception", new Object[] { th });
-                    logger.logp(Level.SEVERE, CLASS_NAME, "handleRequest", "Exception", new Object[] { new Throwable(((WebAppErrorReport) th).getUnencodedMessage(),th.getCause()) });
+                    if(!getDestroyed()) {
+                        logger.logp(Level.SEVERE, CLASS_NAME, "handleRequest", "Exception", new Object[] { new Throwable(((WebAppErrorReport) th).getUnencodedMessage(),th.getCause()) });
+                    } else {
+                        logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Exception", new Object[] { new Throwable(((WebAppErrorReport) th).getUnencodedMessage(),th.getCause()) });
+                    }
                 }
                 else {
-                logger.logp(Level.SEVERE, CLASS_NAME, "handleRequest", "Exception", new Object[] { th });
+                    if(!getDestroyed()) {
+                        logger.logp(Level.SEVERE, CLASS_NAME, "handleRequest", "Exception", new Object[] { new Throwable(((WebAppErrorReport) th).getUnencodedMessage(),th.getCause()) });
+                    } else {
+                        logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Exception", new Object[] { new Throwable(((WebAppErrorReport) th).getUnencodedMessage(),th.getCause()) });
+                    }
                 }
             }
             else {
@@ -5006,7 +5014,9 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             }
             //160973 End
             if(!donothandleexception) {
-                handleException(th, req, res, requestProcessor);
+                if(!getDestroyed()) {
+                    handleException(th, req, res, requestProcessor);
+                }
             }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
