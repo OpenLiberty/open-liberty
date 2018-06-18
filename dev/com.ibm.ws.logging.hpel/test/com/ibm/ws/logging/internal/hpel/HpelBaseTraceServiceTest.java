@@ -71,7 +71,6 @@ public class HpelBaseTraceServiceTest {
 
     @Test
     public void testWritingMessages() throws Exception {
-
         HpelBaseTraceService service = new HpelBaseTraceService();
         try {
             // Do stuff here. The outputMgr catches all output issued to stdout or stderr
@@ -138,8 +137,6 @@ public class HpelBaseTraceServiceTest {
             int count = 0;
             for (RepositoryLogRecord record : reader.getLogListForCurrentServerInstance()) {
                 String formattedMessage = record.getFormattedMessage();
-                if (formattedMessage.contains("TRAS3005E") || formattedMessage.contains("messages.log file."))
-                    continue;
                 if (count >= msgs.length) {
                     fail("Unexpected message: " + formattedMessage);
                 }

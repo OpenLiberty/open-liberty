@@ -240,8 +240,11 @@ public class FileLogHolder implements TraceWriter {
         ps.println(record);
         if (ps.checkError()) {
             setStreamStatus(StreamStatus.CLOSED, null, null, DummyOutputStream.psInstance);
-            File exf = new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
-            System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { exf.getAbsolutePath() }));
+            // to avoid junit test to print an error message
+            if (System.getProperty("test.classesDir") == null && System.getProperty("test.buildDir") == null) {
+                File exf = new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
+                System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { exf.getAbsolutePath() }));
+            }
         }
     }
 

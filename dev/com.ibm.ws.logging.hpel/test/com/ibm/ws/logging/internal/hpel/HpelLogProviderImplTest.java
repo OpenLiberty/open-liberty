@@ -106,8 +106,6 @@ public class HpelLogProviderImplTest {
         int count = 0;
         for (RepositoryLogRecord record : reader.getLogListForCurrentServerInstance()) {
             String formattedMessage = record.getFormattedMessage();
-            if (formattedMessage.contains("TRAS3005E") || formattedMessage.contains("messages.log file."))
-                continue;
             if (count > 0) { // First one is a message about trace specification change.
                 if (count > msgs.length) {
                     fail("Unexpected message: " + formattedMessage);
