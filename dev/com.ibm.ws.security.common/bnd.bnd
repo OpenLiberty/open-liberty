@@ -18,24 +18,15 @@ Bundle-Description: Common code for security bundles; version=${bVersion}
 WS-TraceGroup: SecurityCommon
 
 Export-Package: \
-    com.ibm.ws.security.common, \
-    com.ibm.ws.security.common.config, \
-    com.ibm.ws.security.common.crypto, \
-    com.ibm.ws.security.common.encoding, \
-    com.ibm.ws.security.common.jwk.impl, \
-    com.ibm.ws.security.common.jwk.interfaces, \
-    com.ibm.ws.security.common.jwk.subject.mapping, \
-    com.ibm.ws.security.common.jwk.utils, \
-    com.ibm.ws.security.common.random, \
-    com.ibm.ws.security.common.structures, \
-    com.ibm.ws.security.common.time, \
-    com.ibm.ws.security.common.token.propagation, \
-    com.ibm.ws.security.common.web
+    !com.ibm.ws.security.common.internal.*, \
+    !com.ibm.ws.security.common.*.internal.*, \
+    com.ibm.ws.security.common.*
     
 # 238871
 Import-Package: \
     !*.internal.*, \
     !com.ibm.ws.kernel.boot.cmdline, \
+    org.apache.http.*;resolution:=optional, \
     *
  
 Private-Package: \
@@ -49,7 +40,7 @@ Private-Package: \
 instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.class
 
 -buildpath: \
-	com.ibm.ws.kernel.service;version=latest, \
+    com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.logging;version=latest, \
     com.ibm.ws.logging.core;version=latest, \
     com.ibm.websphere.org.osgi.core;version=latest, \
@@ -66,7 +57,9 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     com.ibm.ws.webcontainer;version=latest, \
     com.ibm.ws.security.authentication;version=latest, \
     com.ibm.json4j;version=latest, \
-    com.ibm.ws.webcontainer.security;version=latest
+    com.ibm.ws.webcontainer.security;version=latest, \
+    org.apache.httpcomponents:httpclient;version=4.3.1, \
+    org.apache.httpcomponents:httpcore;version=4.3
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -78,4 +71,6 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.security.test.common;version=latest
+    com.ibm.ws.security.test.common;version=latest, \
+    commons-logging:commons-logging;version=1.1.3
+
