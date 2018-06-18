@@ -48,17 +48,18 @@ assemble {
 import groovy.json.*
 import org.gradle.internal.os.OperatingSystem
 
-
+// Set the generated zip version to the buildID.
+// tasks.gradle file where this task is defined
+// can't see the bnd property because it isn't
+// a bundle.
+def releaseVersion = bnd.buildID
+if (releaseVersionOverride != null) {
+    releaseVersion = releaseVersionOverride
+}
 
 File packageDir = new File(project.buildDir, 'openliberty')
 def props = new Properties()
 rootProject.file('generated.properties').withInputStream { props.load(it) }
-
-// Set the generated zip version to the
-// version qualifier to be consistent
-// with what is use for the individual Bundle-Versions
-// as well as the server version output.
-def releaseVersion = props.getProperty("version.qualifier")
 
 class PackageLibertyWithFeatures extends DefaultTask {
     Closure withFeatures
