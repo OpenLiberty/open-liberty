@@ -92,7 +92,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     /* (non-Javadoc)
      * @see javax.ws.rs.sse.SseEventSink#send(javax.ws.rs.sse.OutboundSseEvent)
      */
-    @FFDCIgnore({WebApplicationException.class, IOException.class, InternalServerErrorException.class})
+    @FFDCIgnore({WebApplicationException.class, IOException.class, NoSuitableMessageBodyWriterException.class})
     @Override
     public CompletionStage<?> send(OutboundSseEvent event) {
         final CompletableFuture<?> future = new CompletableFuture<>();
