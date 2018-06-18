@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -83,26 +82,26 @@ public class StatisticsMeterTest {
         int offset = 0;
         int modulo = 10000;
 
-        TimeWeightedMeter twm = new TimeWeightedMeter();
         List<Long> dataPoints = new ArrayList<Long>(loopCount);
         for (int i = 0; i < loopCount; i++) {
             dataPoints.add(Long.valueOf(i % modulo + offset));
             statsMeter.addDataPoint(i % modulo + offset);
-            twm.update(i % modulo + offset, TimeUnit.NANOSECONDS);
         }
 
-        assertEquals("Incorrect count", twm.getCount(), statsMeter.getCount());
-        assertEquals("Incorrect min", offset, statsMeter.getMinimumValue());
-        assertEquals("Incorrect max", Math.max(offset - 1 + Math.min(loopCount, modulo), offset), statsMeter.getMaximumValue());
+        assertEquals("Incorrect count", (long) loopCount, statsMeter.getCount());
+        assertEquals("Incorrect min", (long) offset, statsMeter.getMinimumValue());
+        assertEquals("Incorrect max", (long) Math.max(offset - 1 + Math.min(loopCount, modulo), offset), statsMeter.getMaximumValue());
         assertEquals("Incorrect total", calculateSum(dataPoints), statsMeter.getTotal(), STANDARD_EPSILON);
+        assertEquals("Incorrect mean", calculateMean(dataPoints), statsMeter.getMean(), STANDARD_EPSILON);
+        assertEquals("Incorrect variance", calculateVariance(dataPoints), statsMeter.getVariance(), STANDARD_EPSILON);
     }
 
     @Test
     public void testCombineReadings() {
-        int meterCount = 100;
-        int loopCount = 100;
+        int meterCount = 1000;
+        int loopCount = 1000;
         int offset = 1;
-        int modulo = 100;
+        int modulo = 1000;
 
         StatisticsMeter controlMeter = new StatisticsMeter();
         controlMeter.setDescription("Control meter");
@@ -125,19 +124,21 @@ public class StatisticsMeterTest {
         StatisticsMeter.StatsData combined = StatisticsMeter.aggregateStats(dataSet);
         assertEquals("Incorrect count", controlMeter.getCount(), combined.count);
         assertEquals("Incorrect min", controlMeter.getMinimumValue(), combined.min);
-        assertEquals("Incorrect max", 100, combined.max);
+        assertEquals("Incorrect max", controlMeter.getMaximumValue(), combined.max);
         assertEquals("Incorrect total", controlMeter.getTotal(), combined.total, STANDARD_EPSILON);
+        assertEquals("Incorrect mean", controlMeter.getMean(), combined.mean, STANDARD_EPSILON);
+        assertEquals("Incorrect variance", controlMeter.getVariance(), combined.getVariance(), STANDARD_EPSILON);
     }
 
     @Test
     public void testToStringNoData() {
         String string = statsMeter.toString();
-        assertContains(string, "count=0");
-        assertContains(string, "total=0");
-        assertContains(string, "mean=0.000");
-        assertContains(string, "variance=0.000");
-        assertContains(string, "min=0");
-        assertContains(string, "max=0");
+        assertTrue(string.contains("count=0"));
+        assertTrue(string.contains("total=0"));
+        assertTrue(string.contains("mean=0.000"));
+        assertTrue(string.contains("variance=0.000"));
+        assertTrue(string.contains("min=0"));
+        assertTrue(string.contains("max=0"));
     }
 
     @Test
@@ -147,11 +148,12 @@ public class StatisticsMeterTest {
         }
 
         String string = statsMeter.toString();
-        assertContains(string, "count=999");
-        assertContains(string, "total=499500");
-        assertContains(string, "min=1");
-        assertContains(string, "max=999");
-        assertTrue(string, string.contains("mean=49") || string.contains("50")); // expect the mean to be in the range 490-509
+        assertTrue(string.contains("count=999"));
+        assertTrue(string.contains("total=499500"));
+        assertTrue(string.contains("mean=500.000"));
+        assertTrue(string.contains("variance=83250.000"));
+        assertTrue(string.contains("min=1"));
+        assertTrue(string.contains("max=999"));
     }
 
     // Calculate the variance using the pre-calculated mean.
@@ -179,9 +181,5 @@ public class StatisticsMeterTest {
             sum += dataPoints.get(i);
         }
         return sum;
-    }
-
-    private static void assertContains(String fullString, String substring) {
-        assertTrue("Did not find '" + substring + "' in the string: " + fullString, fullString.contains(substring));
     }
 }
