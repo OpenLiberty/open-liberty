@@ -56,14 +56,14 @@ public interface ServletStatsMXBean {
      * @return response time
      */
     public double getResponseTime();
-    
+
     /**
      * Retrieves the value of the read-only attribute ResponseCountDetails, which provides statistical details on the response time.
      * 
      * @return response time details
      */
     public StatisticsMeter getResponseTimeDetails();
-    
+
     /**
      * Retrieves the value of the read-only attribute AppName, the name of the application of which the servlet is a member.
      * 
