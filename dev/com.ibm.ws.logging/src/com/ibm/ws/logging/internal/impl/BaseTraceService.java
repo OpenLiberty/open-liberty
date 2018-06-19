@@ -1239,8 +1239,10 @@ public class BaseTraceService implements TrService {
 
                 isHaveEarlyMessagesTraces = false;
 
-                BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
-                BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
+                if (internalMessageRouter.get() != null)
+                    BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
+                if (internalTraceRouter.get() != null)
+                    BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
             }
         }
     }
