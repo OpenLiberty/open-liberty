@@ -53,7 +53,12 @@ public class WsTraceRouterImpl implements WsTraceRouter {
      */
     @Override
     public void setEarlierTraces(Queue<RoutedMessage> earlierTraces) {
-        this.earlierTraces = earlierTraces;
+    	RERWLOCK.writeLock().lock();
+        try {
+        	this.earlierTraces = earlierTraces;
+        } finally {
+        	RERWLOCK.writeLock().unlock();
+        }
     }
 
     /**

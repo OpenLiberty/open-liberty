@@ -154,6 +154,8 @@ public class BaseTraceService implements TrService {
     protected final AtomicReference<WsMessageRouter> internalMessageRouter = new AtomicReference<WsMessageRouter>();
     protected final AtomicReference<WsTraceRouter> internalTraceRouter = new AtomicReference<WsTraceRouter>();
 
+    protected volatile boolean isHaveEarlyMessagesTraces = true;
+
     /** This is the filter for which messages go to "the console". One of INFO, AUDIT, WARNING, ERROR */
     protected volatile Level consoleLogLevel = WsLevel.AUDIT;
 
@@ -909,12 +911,15 @@ public class BaseTraceService implements TrService {
         // NOT add any more messages to the earlierMessages queue.
         // The MessageRouter basically owns the earlierMessages queue
         // from now on.
-        if (earlierMessages != null) {
+
+        if (isHaveEarlyMessagesTraces && earlierMessages != null) {
             synchronized (this) {
                 if (earlierMessages != null) {
                     msgRouter.setEarlierMessages(earlierMessages);
                 }
             }
+        } else {
+            msgRouter.setEarlierMessages(null);
         }
     }
 
@@ -938,12 +943,14 @@ public class BaseTraceService implements TrService {
         // NOT add any more messages to the earlierMessages queue.
         // The MessageRouter basically owns the earlierMessages queue
         // from now on.
-        if (earlierTraces != null) {
+        if (isHaveEarlyMessagesTraces && earlierTraces != null) {
             synchronized (this) {
                 if (earlierTraces != null) {
                     traceRouter.setEarlierTraces(earlierTraces);
                 }
             }
+        } else {
+            traceRouter.setEarlierTraces(null);
         }
     }
 
@@ -1229,6 +1236,11 @@ public class BaseTraceService implements TrService {
             synchronized (BaseTraceService.this) {
                 earlierMessages = null;
                 earlierTraces = null;
+
+                isHaveEarlyMessagesTraces = false;
+
+                BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
+                BaseTraceService.this.setTraceRouter(internalTraceRouter.get());
             }
         }
     }
