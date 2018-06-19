@@ -66,6 +66,7 @@ public class FATSuite {
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"));
 
         ShrinkHelper.exportArtifact(CDIFaultTolerance_war, "publish/servers/CDIFaultTolerance/dropins/");
+        ShrinkHelper.exportArtifact(CDIFaultTolerance_war, "publish/servers/FTFallback/dropins/");
 
         String TX_APP_NAME = "TxFaultTolerance";
 

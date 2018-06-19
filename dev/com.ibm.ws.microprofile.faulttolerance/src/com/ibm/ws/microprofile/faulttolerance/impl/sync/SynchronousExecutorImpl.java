@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenException;
 import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.impl.CircuitBreakerImpl;
 import com.ibm.ws.microprofile.faulttolerance.impl.ExecutionContextImpl;
@@ -31,16 +33,20 @@ import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.SyncFailsafe;
+import net.jodah.failsafe.function.CheckedFunction;
 
 /**
  *
  */
 public class SynchronousExecutorImpl<R> implements Executor<R> {
+
+    private static final TraceComponent tc = Tr.register(SynchronousExecutorImpl.class);
 
     private TaskRunner<R> taskRunner;
 
@@ -49,6 +55,7 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
     private CircuitBreakerImpl circuitBreaker;
     private FallbackPolicy fallbackPolicy;
     private RetryPolicy retryPolicy;
+    protected MetricRecorder metricRecorder;
 
     //Standard constructor for a synchronous execution
     public SynchronousExecutorImpl(RetryPolicy retryPolicy,
@@ -56,10 +63,12 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
                                    TimeoutPolicy timeoutPolicy,
                                    BulkheadPolicy bulkheadPolicy,
                                    FallbackPolicy fallbackPolicy,
-                                   ScheduledExecutorService scheduledExecutorService) {
+                                   ScheduledExecutorService scheduledExecutorService,
+                                   MetricRecorder metricRecorder) {
 
         this.timeoutPolicy = timeoutPolicy;
         this.scheduledExecutorService = scheduledExecutorService;
+        this.metricRecorder = metricRecorder;
 
         if (circuitBreakerPolicy != null) {
             this.circuitBreaker = new CircuitBreakerImpl(circuitBreakerPolicy);
@@ -71,7 +80,13 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
         if (bulkheadPolicy == null) {
             this.taskRunner = new SimpleTaskRunner<R>();
         } else {
-            this.taskRunner = new SemaphoreTaskRunner<R>(bulkheadPolicy);
+            this.taskRunner = new SemaphoreTaskRunner<R>(bulkheadPolicy, metricRecorder);
+        }
+
+        if (circuitBreaker != null) {
+            circuitBreaker.onOpen(metricRecorder::reportCircuitOpen);
+            circuitBreaker.onHalfOpen(metricRecorder::reportCircuitHalfOpen);
+            circuitBreaker.onClose(metricRecorder::reportCircuitClosed);
         }
 
     }
@@ -90,7 +105,7 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
 
         RetryImpl retry = new RetryImpl(this.retryPolicy);
 
-        FTExecutionContext executionContext = new ExecutionContextImpl(id, method, params, timeout, this.circuitBreaker, this.fallbackPolicy, retry);
+        FTExecutionContext executionContext = new ExecutionContextImpl(id, method, params, timeout, this.circuitBreaker, this.fallbackPolicy, retry, metricRecorder);
         return executionContext;
     }
 
@@ -106,56 +121,92 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
         executionContext.start();
     }
 
-    protected boolean enableCircuitBreaker() {
-        return true;
+    /**
+     * Run after execution is complete (including all fault tolerance processing)
+     * <p>
+     * Subclasses can override this if they require different end of execution behaviour
+     *
+     * @param executionContext the execution context
+     * @param t the exception thrown, or {@code null} if no exception was thrown
+     */
+    protected void executionComplete(ExecutionContextImpl executionContext, Throwable t) {
+        executionContext.onFullExecutionComplete(t);
     }
 
-    protected boolean enableFallback() {
-        return true;
+    /**
+     * Configure the failsafe executor
+     * <p>
+     * Configure any parameters and add any required callbacks.
+     * <p>
+     * Subclasses can override this if they require different behaviour
+     *
+     * @param failsafe the failsafe executor to configure
+     * @param executionContextImpl the execution context
+     */
+    protected void configureFailsafe(SyncFailsafe<R> failsafe, ExecutionContextImpl executionContextImpl) {
+        failsafe.onRetry((t) -> {
+            executionContextImpl.onRetry(t);
+        });
+
+        failsafe.onComplete((r, t) -> {
+            executionContextImpl.onMainExecutionComplete(t);
+        });
+
+        if (executionContextImpl.getCircuitBreaker() != null) {
+            failsafe = failsafe.with(executionContextImpl.getCircuitBreaker());
+        }
+
+        if (executionContextImpl.getFallbackPolicy() != null) {
+            @SuppressWarnings("unchecked")
+            CheckedFunction<Throwable, R> fallback = (t) -> {
+                executionContextImpl.onMainExecutionComplete(t);
+                executionContextImpl.onFallback();
+                return (R) executionContextImpl.getFallbackPolicy().getFallbackFunction().execute(executionContextImpl);
+            };
+            failsafe = failsafe.withFallback(fallback);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({ net.jodah.failsafe.CircuitBreakerOpenException.class, net.jodah.failsafe.FailsafeException.class })
+    @FFDCIgnore({ net.jodah.failsafe.CircuitBreakerOpenException.class, net.jodah.failsafe.FailsafeException.class, java.lang.Throwable.class })
     public R execute(Callable<R> callable, ExecutionContext executionContext) {
 
         ExecutionContextImpl executionContextImpl = (ExecutionContextImpl) executionContext;
 
         SyncFailsafe<R> failsafe = Failsafe.with(executionContextImpl.getRetry());
 
-        failsafe.onRetry((t) -> {
-            executionContextImpl.onRetry();
-        });
+        configureFailsafe(failsafe, executionContextImpl);
 
-        if (executionContextImpl.getCircuitBreaker() != null && enableCircuitBreaker()) {
-            failsafe = failsafe.with(executionContextImpl.getCircuitBreaker());
-        }
-
-        if (executionContextImpl.getFallbackPolicy() != null && enableFallback()) {
-            @SuppressWarnings("unchecked")
-            Callable<R> fallback = () -> {
-                return (R) executionContextImpl.getFallbackPolicy().getFallbackFunction().execute(executionContext);
-            };
-            failsafe = failsafe.withFallback(fallback);
-        }
         Callable<R> task = createTask(callable, executionContextImpl);
 
         preRun(executionContextImpl);
 
         R result = null;
+        Throwable failure = null;
         try {
             result = failsafe.get(task);
         } catch (net.jodah.failsafe.CircuitBreakerOpenException e) {
-            // Task was not run at all, make sure we end the execution context
-            executionContextImpl.close();
+            failure = e;
+            // Task was not run at all, make sure we run end of execution processing
+            executionContextImpl.onMainExecutionComplete(e);
             throw new CircuitBreakerOpenException(e);
         } catch (net.jodah.failsafe.FailsafeException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Fault tolerance execution ended in failure: {0} - {1}", executionContextImpl.getMethod(), e);
+            }
+            failure = e;
             Throwable cause = e.getCause();
             if (cause instanceof FaultToleranceException) {
                 throw (FaultToleranceException) cause;
             } else {
                 throw new ExecutionException(cause);
             }
+        } catch (Throwable t) {
+            failure = t;
+            throw t;
+        } finally {
+            executionComplete(executionContextImpl, failure);
         }
 
         return result;

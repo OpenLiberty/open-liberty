@@ -14,3 +14,31 @@ dependencies {
   requiredLibs 'commons-logging:commons-logging:1.1.3'
 }
 
+apply plugin: 'war'
+
+/* build testmarker war for all FATs to use (this is a small test app that 
+     records testcase start/end message in the server side logs.
+*/
+war {
+  from "test-applications/testmarker/resources"
+  archiveName "test-application/testmarker.war"
+
+  /*
+   * Don't include the dependency JARs in the testmarker WAR.
+   */
+  classpath = classpath.filter{ file -> !file.name.endsWith('jar') }
+}
+ 
+/* build formlogin war for all FATs to use (this is a test app that 
+     prints credentials/subject/... .
+*/
+war {
+  from "test-applications/formlogin/resources"
+  archiveName "test-application/formlogin.war"
+
+  /*
+   * Don't include the dependency JARs in the formlogin WAR.
+   */
+  classpath = classpath.filter{ file -> !file.name.endsWith('jar') }
+}
+

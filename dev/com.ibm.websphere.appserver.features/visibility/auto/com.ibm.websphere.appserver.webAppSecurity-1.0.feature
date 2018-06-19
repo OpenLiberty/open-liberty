@@ -13,6 +13,6 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.security.appbnd, \
  com.ibm.ws.security.authentication.tai
 -jars=com.ibm.websphere.appserver.api.webcontainer.security.app; location:=dev/api/ibm/
--files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.webcontainer.security.app_1.1-javadoc.zip
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.webcontainer.security.app_1.2-javadoc.zip
 kind=ga
 edition=core

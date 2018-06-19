@@ -15,25 +15,26 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile13;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile20;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @Mode(TestMode.LITE)
 public class CDIFallbackTest extends LoggingTest {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("CDIFaultTolerance");
+    public static SharedServer SHARED_SERVER = new SharedServer("FTFallback");
 
     //run against both EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()));
+    public static RepeatTests r = RepeatTests.with(new RepeatMicroProfile13(SHARED_SERVER.getServerName()))
+                    .andWith(new RepeatMicroProfile20(SHARED_SERVER.getServerName()));
 
     @Test
     public void testFallback() throws Exception {

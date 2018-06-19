@@ -13,8 +13,6 @@ bVersion=1.0
 
 src: \
     fat/src, \
-    test-applications/testmarker/src, \
-    test-applications/formlogin/src, \
     test-applications/jwtbuilder/src
 
 test.project: true
