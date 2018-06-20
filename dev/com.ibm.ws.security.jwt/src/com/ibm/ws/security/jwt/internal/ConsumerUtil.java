@@ -38,6 +38,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.websphere.security.jwt.KeyStoreServiceException;
+import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.Constants;
@@ -197,7 +198,7 @@ public class ConsumerUtil {
     protected Key getJwksKey(JwtConsumerConfig config, JwtContext jwtContext) throws Exception {
         JsonWebStructure jwtHeader = getJwtHeader(jwtContext);
         String kid = jwtHeader.getKeyIdHeaderValue();
-        JwKRetriever jwkRetriever = new JwKRetriever(config);
+        JwKRetriever jwkRetriever = new JwKRetriever(config.getId(), config.getSslRef(), config.getJwkEndpointUrl(), config.getJwkSet(), JwtUtils.getSSLSupportService());
         Key signingKey = jwkRetriever.getPublicKeyFromJwk(kid, null); // only kid or x5t will work but not both
 
         return signingKey;
