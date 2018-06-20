@@ -66,13 +66,13 @@ public class DelaySseTestServlet extends FATServlet {
         WebTarget target = client.target("http://localhost:" + port + "/DelaySseApp/delay/retry3");
 
         try (SseEventSource source = SseEventSource.target(target).build()) {
-            System.out.println("client invoking server SSE resource on: " + source);
+            System.out.println("DelaySseTestServlet:  client invoking server SSE resource on: " + source);
             source.register(
                             new Consumer<InboundSseEvent>() { // event
 
                                 @Override
                                 public void accept(InboundSseEvent t) {
-                                    System.out.println("new delay event: " + t.getId() + " " + t.getName() + " " + t.getReconnectDelay() + " " + t.readData());
+                                    System.out.println("DelaySseResource:  new delay event: " + t.getId() + " " + t.getName() + " " + t.getReconnectDelay() + " " + t.readData());
                                     receivedEvents.add(t.readData(String.class));
                                 }
                             },
@@ -100,9 +100,22 @@ public class DelaySseTestServlet extends FATServlet {
                             });
 
             source.open();
-            System.out.println("client source open");
+            System.out.println("DelaySseTestServlet:  client source open");
 
-            assertTrue("Completion listener runnable was not executed", executionLatch.await(300, TimeUnit.SECONDS));
+            boolean success = executionLatch.await(300, TimeUnit.SECONDS);
+            if (!success) {
+                for (String re : receivedEvents) {
+                    int i = 0;
+                    System.out.println("receivedEvent " + i + " : " + re);
+                    i++;
+                }
+                for (String et : eventSourceTimes) {
+                    int i = 0;
+                    System.out.println("eventSourceTime " + i + " : " + et);
+                    i++;
+                }
+            }
+            assertTrue("Completion listener runnable was not executed", success);
 
         } catch (InterruptedException e) {
             // falls through
@@ -120,7 +133,7 @@ public class DelaySseTestServlet extends FATServlet {
         if (time >= 8000) {
             goodTime = true;
         } else {
-            System.out.println("eventSource time was less than 8 seconds:  " + time);
+            System.out.println("DelaySseTestServlet:  eventSource time was less than 8 seconds:  " + time);
         }
         assertTrue("Incorrect Delay time less than 8 seconds", goodTime);
         assertEquals("Unexpected time results", "5000", eventSourceTimes.get(2));
