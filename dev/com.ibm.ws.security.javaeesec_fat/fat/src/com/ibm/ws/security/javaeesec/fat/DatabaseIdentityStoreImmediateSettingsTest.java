@@ -53,7 +53,7 @@ import web.war.database.deferred.DatabaseSettingsBean;
 /**
  * Test for {@link DatabaseIdentityStore} configured with immediate EL expressions.
  */
-@MinimumJavaLevel(javaLevel = 1.7)
+@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBase {

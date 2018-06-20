@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,15 +17,11 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for expressing tests should only run when the java level is at or below the given level.
- * The argument is a double, such as 1.6 or 1.7.
- * Example:
- * 
- * @MaximumJavaLevel(javaLevel=1.7)
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MaximumJavaLevel {
 
-    double javaLevel();
+    int javaLevel();
 
 }

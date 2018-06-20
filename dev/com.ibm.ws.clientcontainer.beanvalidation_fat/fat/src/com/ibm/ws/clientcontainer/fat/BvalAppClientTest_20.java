@@ -20,7 +20,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyClientFactory;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class BvalAppClientTest_20 extends AbstractAppClientTest {
 	
 	@Test

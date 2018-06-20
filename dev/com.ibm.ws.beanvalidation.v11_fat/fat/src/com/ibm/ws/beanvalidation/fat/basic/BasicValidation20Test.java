@@ -23,7 +23,7 @@ import componenttest.topology.impl.LibertyServer;
  * All Bean Validation tests for the 2.0 feature level.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class BasicValidation20Test extends BasicValidation_Common {
 
     @Server("com.ibm.ws.beanvalidation_2.0.fat")

@@ -47,7 +47,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description:
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {

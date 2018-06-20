@@ -42,7 +42,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Test with a custom hash implementation that uses an annotation to discover the hash class.
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBHashTest extends JavaEESecTestBase {

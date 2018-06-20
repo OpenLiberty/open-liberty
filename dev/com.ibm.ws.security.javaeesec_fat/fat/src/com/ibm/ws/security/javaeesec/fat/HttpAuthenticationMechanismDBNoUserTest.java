@@ -43,7 +43,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Check that no user/group defined in the access-id works.
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBNoUserTest extends JavaEESecTestBase {

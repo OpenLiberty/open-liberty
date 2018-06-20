@@ -40,7 +40,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description:
  */
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class ProgrammaticTest extends JavaEESecTestBase {

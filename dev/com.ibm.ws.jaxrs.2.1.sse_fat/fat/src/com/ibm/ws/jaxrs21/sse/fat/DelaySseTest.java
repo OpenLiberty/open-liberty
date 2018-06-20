@@ -35,7 +35,7 @@ import jaxrs21sse.delay.DelaySseTestServlet;
  * 4. The SSE event flows resetting the reconnect delay.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class DelaySseTest extends FATServletClient {
     private static final String SERVLET_PATH = "DelaySseApp/DelaySseTestServlet";
 

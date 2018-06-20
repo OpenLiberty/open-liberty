@@ -43,7 +43,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Test that looking up a user fails because the custom hash class is not discovered
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBHashNoConfigTest extends JavaEESecTestBase {

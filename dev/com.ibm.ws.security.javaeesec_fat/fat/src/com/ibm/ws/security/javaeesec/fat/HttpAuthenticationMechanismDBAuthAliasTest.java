@@ -43,7 +43,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Test with a containerAuthData defined in the server.xml.
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBAuthAliasTest extends JavaEESecTestBase {
