@@ -11,6 +11,13 @@
 package com.ibm.ws.install.internal;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +29,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
+
+import org.apache.tools.ant.BuildException;
 
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
@@ -48,7 +57,9 @@ import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
 import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
+import com.ibm.ws.repository.exceptions.RepositoryBackendException;
 import com.ibm.ws.repository.exceptions.RepositoryException;
+import com.ibm.ws.repository.parsers.internal.CreateJsonRepositoryFiles;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
@@ -88,6 +99,8 @@ public class InstallKernelMap implements Map {
     private static final String FEATURES_TO_RESOLVE = "features.to.resolve";
     private static final String SINGLE_JSON_FILE = "single.json.file";
     private static final String MESSAGE_LOCALE = "message.locale";
+    private static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
+    private static final String INDIVIDUAL_ESAS = "individual.esas";
 
     // Return code
     private static final Integer OK = Integer.valueOf(0);
@@ -365,9 +378,20 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+
         } else if (DIRECTORY_BASED_REPOSITORY.equals(key)) {
             if (value instanceof File) {
                 data.put(DIRECTORY_BASED_REPOSITORY, value);
+            }
+        } else if (INDIVIDUAL_ESAS.equals(key)) {
+            if (value instanceof List) {
+                data.put(INDIVIDUAL_ESAS, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (INSTALL_INDIVIDUAL_ESAS.equals(key)) {
+            if (value instanceof Boolean) {
+                data.put(INSTALL_INDIVIDUAL_ESAS, value);
             } else {
                 throw new IllegalArgumentException();
             }
@@ -513,6 +537,13 @@ public class InstallKernelMap implements Map {
             for (File jsonRepo : singleJsonRepos) {
                 RepositoryConnection repo = new SingleFileRepositoryConnection(jsonRepo);
                 repoList.add(repo);
+            }
+            //TODO
+            //check if we do the deleteOnExit or not
+            if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
+                Path tempDir = Files.createTempDirectory("individualEsas");
+                tempDir.toFile().deleteOnExit();
+                repoList.add(individualESAInstall(tempDir));
             }
 
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
@@ -708,4 +739,55 @@ public class InstallKernelMap implements Map {
         }
         return OK;
     }
+
+    //accept List of Files
+    private DirectoryRepositoryConnection individualESAInstall(Path individualEsas) throws RepositoryBackendException, IOException, BuildException {
+
+        String dir = individualEsas.toString();
+        List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
+
+        //copy esas to temp folder
+        for (File esa : esas) {
+            InputStream is = null;
+            OutputStream os = null;
+            File dest = new File(dir + "/" + esa.getName());
+            try {
+                is = new FileInputStream(esa);
+                os = new FileOutputStream(dest);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+            } finally {
+                is.close();
+                os.close();
+            }
+
+            //generate json file using given code
+            CreateJsonRepositoryFiles jsonCreator = new CreateJsonRepositoryFiles();
+            jsonCreator.setAssetFile(dest);
+            jsonCreator.setAssetType("FEATURE");
+            jsonCreator.setOutputLocation(dir);
+            jsonCreator.execute();
+
+        }
+
+        //use temp directory as DirectoryRepositoryConnection
+        DirectoryRepositoryConnection conn = new DirectoryRepositoryConnection(new File(dir));
+
+        //TODO
+        //remove after testing
+        for (RepositoryResource res : conn.getAllResources()) {
+            res.dump(System.out);
+        }
+
+        //add connection to list of connected repos ( Include the ESA feature names in the list of features to install )
+        //  RepositoryConnectionList repoList = new RepositoryConnectionList();
+        //  repoList.add(conn);
+
+        return conn;
+
+    }
+
 }
