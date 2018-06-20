@@ -40,7 +40,6 @@ public class HttpMethodTests extends H2FATDriverServlet {
         String testName = "testInvalidPaddingValue";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        setupDefaultPreface(h2Client);
 
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
@@ -48,6 +47,8 @@ public class HttpMethodTests extends H2FATDriverServlet {
         FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
+
+        setupDefaultPreface(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "CONNECT"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -82,6 +83,10 @@ public class HttpMethodTests extends H2FATDriverServlet {
         String testName = "testInvalidPaddingValue";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+        h2Client.addExpectedFrame(errorFrame);
+
         setupDefaultPreface(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -97,9 +102,6 @@ public class HttpMethodTests extends H2FATDriverServlet {
         FrameData dataFrame2 = new FrameData(3, dataString.getBytes(), 0, false, false, false);
         FrameData dataFrame3 = new FrameData(3, dataString.getBytes(), 0, false, false, false);
         FrameData dataFrame4 = new FrameData(3, dataString.getBytes(), 0, true, false, false);
-
-        FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
-        h2Client.addExpectedFrame(errorFrame);
 
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(dataFrame1);
@@ -119,14 +121,6 @@ public class HttpMethodTests extends H2FATDriverServlet {
         String testName = "testInvalidPaddingValue";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        setupDefaultPreface(h2Client);
-
-        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "HEAD"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
-        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
@@ -135,6 +129,15 @@ public class HttpMethodTests extends H2FATDriverServlet {
         FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
+
+        setupDefaultPreface(h2Client);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "HEAD"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
         h2Client.sendFrame(frameHeadersToSend);
         blockUntilConnectionIsDone.await();
@@ -149,14 +152,6 @@ public class HttpMethodTests extends H2FATDriverServlet {
         String testName = "testInvalidPaddingValue";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        setupDefaultPreface(h2Client);
-
-        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "OPTIONS"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
-        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
@@ -166,6 +161,15 @@ public class HttpMethodTests extends H2FATDriverServlet {
         FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
+
+        setupDefaultPreface(h2Client);
+
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "OPTIONS"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
         h2Client.sendFrame(frameHeadersToSend);
         blockUntilConnectionIsDone.await();
@@ -181,6 +185,10 @@ public class HttpMethodTests extends H2FATDriverServlet {
         String testName = "testInvalidPaddingValue";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
+        h2Client.addExpectedFrame(errorFrame);
+
         setupDefaultPreface(h2Client);
 
         // set up the first headers to send out
@@ -190,9 +198,6 @@ public class HttpMethodTests extends H2FATDriverServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-        FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
-        h2Client.addExpectedFrame(errorFrame);
 
         h2Client.sendFrame(frameHeadersToSend);
         blockUntilConnectionIsDone.await();
@@ -208,6 +213,14 @@ public class HttpMethodTests extends H2FATDriverServlet {
         String testName = "testInvalidPaddingValue";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // set up the header we expect to receive
+        List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
+        secondHeadersReceived.add(new H2HeaderField(":status", "404"));
+        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        secondFrameHeaders.setHeaderFields(secondHeadersReceived);
+        h2Client.addExpectedFrame(secondFrameHeaders);
+
         setupDefaultPreface(h2Client);
 
         // set up the first headers to send out
@@ -217,13 +230,6 @@ public class HttpMethodTests extends H2FATDriverServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-        // set up the header we expect to receive
-        List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
-        secondHeadersReceived.add(new H2HeaderField(":status", "404"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
-        secondFrameHeaders.setHeaderFields(secondHeadersReceived);
-        h2Client.addExpectedFrame(secondFrameHeaders);
 
         h2Client.sendFrame(frameHeadersToSend);
         blockUntilConnectionIsDone.await();

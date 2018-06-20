@@ -47,6 +47,12 @@ public class GenericFrameTests extends H2FATDriverServlet {
         String testName = "testInvalidStreamIdSequence";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // add the GOAWAY / error code that the server should emit following an illegal stream ID order
+        byte[] debugData = "received a new stream with a lower ID than previous; current stream-id: 5 highest stream-id: 7".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 7, false);
+        h2Client.addExpectedFrame(errorFrame);
+
         setupDefaultPreface(h2Client);
 
         //Expected headers for stream 7 request
@@ -70,11 +76,6 @@ public class GenericFrameTests extends H2FATDriverServlet {
 
         h2Client.addExpectedFrame(secondFrameHeaders.clone());
         h2Client.addExpectedFrame(new FrameData(7, dataString.getBytes(), 0, false, false, false));
-
-        // add the GOAWAY / error code that the server should emit following an illegal stream ID order
-        byte[] debugData = "received a new stream with a lower ID than previous; current stream-id: 5 highest stream-id: 7".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 7, false);
-        h2Client.addExpectedFrame(errorFrame);
 
         // Skip over stream IDs 3 and 5 create a stream with ID 7
         h2Client.sendFrame(frameHeadersToSend.clone());
@@ -102,7 +103,14 @@ public class GenericFrameTests extends H2FATDriverServlet {
         String testName = "testInterleavedHeaderBlocks";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // add the GOAWAY / error code that the server should emit following an illegal stream ID order
+        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
         FrameHeaders headers = setupDefaultPreface(h2Client);
+        h2Client.addExpectedFrame(headers);
 
         //Headers frame to send for "second" request
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -111,11 +119,6 @@ public class GenericFrameTests extends H2FATDriverServlet {
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-        // add the GOAWAY / error code that the server should emit following an illegal stream ID order
-        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
 
         h2Client.waitFor(headers);
 
@@ -139,13 +142,15 @@ public class GenericFrameTests extends H2FATDriverServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testSetReservedHeaderField";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        FrameHeaders headers = setupDefaultPreface(h2Client);
 
         // add the expected PING frame
         byte[] pingData = "aaaaaaaa".getBytes();
         FramePing pingFrame = new FramePing(0, pingData, false);
         pingFrame.setAckFlag();
         h2Client.addExpectedFrame(pingFrame);
+
+        FrameHeaders headers = setupDefaultPreface(h2Client);
+        h2Client.addExpectedFrame(headers);
 
         // allow first stream to process before sending Ping and ending the test
         h2Client.waitFor(headers);
@@ -167,13 +172,14 @@ public class GenericFrameTests extends H2FATDriverServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testUnknownFrameType";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        setupDefaultPreface(h2Client);
 
         // create a PING frame to send to the server
         byte[] pingData = "aaaaaaaa".getBytes();
         FramePing pingFrame = new FramePing(0, pingData, false);
         pingFrame.setAckFlag();
         h2Client.addExpectedFrame(pingFrame);
+
+        setupDefaultPreface(h2Client);
 
         // send over a PING frame and expect a response
         pingFrame = new FramePing(0, pingData, false);
@@ -196,12 +202,15 @@ public class GenericFrameTests extends H2FATDriverServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testDataOnStreamZero";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-        FrameHeaders headers = setupDefaultPreface(h2Client);
 
         // add the expected error frame
         byte[] debugData = "DATA frame stream ID cannot be 0x0".getBytes();
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
+
+        FrameHeaders headers = setupDefaultPreface(h2Client);
+        h2Client.addExpectedFrame(headers);
+
         // send a DATA frame with an ID of 0, for which we'll expect the error frame back from the server
         FrameData invalid = new FrameData(0, "test".getBytes(), 0, false, false, false);
 

@@ -44,7 +44,14 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testContinuationFrameAfterEndHeadersSet";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // add the GOAWAY we expect after sending a continuation incorrectly
+        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
         FrameHeaders headers = setupDefaultPreface(h2Client);
+        h2Client.addExpectedFrame(headers);
 
         // create headers to send over to the server; note that the end headers flag IS set
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -59,11 +66,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         continuationHeadersToSend.add(new H2HeaderField("harold", "padilla"));
         FrameContinuationClient continuationHeaders = new FrameContinuationClient(3, null, true, true, false);
         continuationHeaders.setHeaderFields(continuationHeadersToSend);
-
-        // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
 
         // send over the header frames followed by the continuation frames
         h2Client.sendFrame(frameHeadersToSend);
@@ -82,7 +84,14 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testContFrameAfterContEndHeadersSet";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // add the GOAWAY we expect after sending a continuation incorrectly
+        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
         FrameHeaders headers = setupDefaultPreface(h2Client);
+        h2Client.addExpectedFrame(headers);
 
         // create headers to send over to the server; note that the end headers flag IS NOT set
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -104,11 +113,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         FrameContinuationClient lastContinuationHeaders = new FrameContinuationClient(3, null, true, true, false);
         lastContinuationHeaders.setHeaderFields(lastContinuationHeadersToSend);
 
-        // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
-
         // send over the header frames followed by the continuation frames
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
@@ -127,7 +131,14 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testContFrameAfterDataSent";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        // add the GOAWAY we expect after sending a continuation incorrectly
+        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
         FrameHeaders headers = setupDefaultPreface(h2Client);
+        h2Client.addExpectedFrame(headers);
 
         // create headers to send over to the server; note that end_headers IS set
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -142,11 +153,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         firstContinuationHeadersToSend.add(new H2HeaderField(":path", HEADERS_AND_BODY_URI));
         FrameContinuationClient firstContinuationHeaders = new FrameContinuationClient(3, null, true, true, false);
         firstContinuationHeaders.setHeaderFields(firstContinuationHeadersToSend);
-
-        // add the GOAWAY we expect after sending a continuation incorrectly
-        byte[] debugData = "CONTINUATION Frame Received when not in a Continuation State".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
-        h2Client.addExpectedFrame(errorFrame);
 
         // send over the header frames followed by the data and continuation frames
         h2Client.sendFrame(frameHeadersToSend);
