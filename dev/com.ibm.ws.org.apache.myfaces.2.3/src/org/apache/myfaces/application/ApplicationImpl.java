@@ -2322,14 +2322,19 @@ public class ApplicationImpl extends Application
         List<ListenerFor> listenerForList = null;
         boolean isCachedList = false;
         
-        if(isProduction && (listenerForList = _classToListenerForMap.get(inspectedClass)) != null)
+        if(isProduction)
         {
-            if (listenerForList.isEmpty())
+            listenerForList = _classToListenerForMap.get(inspectedClass);
+
+            if (listenerForList != null)
             {
-                return; //class has been inspected and did not contain any listener annotations
+                if (listenerForList.isEmpty())
+                {
+                    return; //class has been inspected and did not contain any listener annotations
+                }
+                
+                isCachedList = true;    // else annotations were found in the cache
             }
-            
-            isCachedList = true;    // else annotations were found in the cache
         }
 
         if(listenerForList == null) //not in production or the class hasn't been inspected yet
@@ -2460,14 +2465,19 @@ public class ApplicationImpl extends Application
         List<ResourceDependency> dependencyList = null;
         boolean isCachedList = false;
         
-        if(isProduction && (dependencyList = _classToResourceDependencyMap.get(inspectedClass)) != null)
+        if(isProduction)
         {
-            if (dependencyList.isEmpty())
+            dependencyList = _classToResourceDependencyMap.get(inspectedClass);
+
+            if (dependencyList != null)
             {
-                return; //class has been inspected and did not contain any resource dependency annotations
+                if (dependencyList.isEmpty())
+                {
+                    return; //class has been inspected and did not contain any resource dependency annotations
+                }
+                
+                isCachedList = true;    // else annotations were found in the cache
             }
-            
-            isCachedList = true;    // else annotations were found in the cache
         }
         
         if(dependencyList == null)  //not in production or the class hasn't been inspected yet
