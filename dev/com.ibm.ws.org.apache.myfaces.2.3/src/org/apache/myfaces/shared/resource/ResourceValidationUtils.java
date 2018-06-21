@@ -39,8 +39,8 @@ public class ResourceValidationUtils
     {
         // Follow the same rules as for resourceName, but check resourceId does not
         // start with '/'
-        return validateResourceName(resourceId, true) && 
-            resourceId.length() > 0 && resourceId.charAt(0) != '/';
+        return resourceId.length() > 0 && resourceId.charAt(0) != '/' && 
+            validateResourceName(resourceId, true); 
     }
     
     public static boolean isValidViewResource(String resourceId)
@@ -57,7 +57,7 @@ public class ResourceValidationUtils
     
     public static boolean isValidLocalePrefix(String localePrefix)
     {
-        for (int i = 0; i < localePrefix.length(); i++)
+        for (int i = 0, length = localePrefix.length(); i < length; i++)
         {
             char c = localePrefix.charAt(i);
             if ( (c >='A' && c <='Z') || c == '_' || (c >='a' && c <='z') || (c >='0' && c <='9') )
@@ -79,13 +79,14 @@ public class ResourceValidationUtils
     
     private static boolean validate(String expression, boolean allowSlash)
     {
-        if (expression.length() == 2 && 
+        int length = expression.length();
+        if (length == 2 && 
             expression.charAt(0) == '.' &&
             expression.charAt(1) == '.')
         {
             return false;
         }
-        for (int i = 0; i < expression.length(); i++)
+        for (int i = 0; i < length; i++)
         {
             char c = expression.charAt(i);
 
@@ -113,7 +114,7 @@ public class ResourceValidationUtils
             }
             else if (c == '.')
             {
-                if (i+2 < expression.length())
+                if (i+2 < length)
                 {
                     char c1 = expression.charAt(i+1);
                     char c2 = expression.charAt(i+2);
@@ -129,9 +130,8 @@ public class ResourceValidationUtils
                 return false;
             }
         }
-        if (expression.length() >= 3)
+        if (length >= 3)
         {
-            int length = expression.length();
             if ( (expression.charAt(length-3) == '/' || expression.charAt(length-3) == '\\' ) && 
                   expression.charAt(length-2) == '.' &&
                   expression.charAt(length-1) == '.' )
@@ -144,13 +144,14 @@ public class ResourceValidationUtils
     
     private static boolean validateResourceName(String expression, boolean allowSlash)
     {
-        if (expression.length() == 2 && 
+        int length = expression.length();
+        if (length == 2 && 
             expression.charAt(0) == '.' &&
             expression.charAt(1) == '.')
         {
             return false;
         }
-        for (int i = 0; i < expression.length(); i++)
+        for (int i = 0; i < length; i++)
         {
             char c = expression.charAt(i);
 
@@ -193,7 +194,7 @@ public class ResourceValidationUtils
             }
             else if (c == '.')
             {
-                if (i+2 < expression.length())
+                if (i+2 < length)
                 {
                     char c1 = expression.charAt(i+1);
                     char c2 = expression.charAt(i+2);
@@ -209,9 +210,8 @@ public class ResourceValidationUtils
                 return false;
             }
         }
-        if (expression.length() >= 3)
+        if (length >= 3)
         {
-            int length = expression.length();
             if ( (expression.charAt(length-3) == '/' || expression.charAt(length-3) == '\\' ) && 
                   expression.charAt(length-2) == '.' &&
                   expression.charAt(length-1) == '.' )
