@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- /******************************************************************************* 
+	* Copyright (c) 2018 IBM Corporation and others. * All rights reserved. This 
+	program and the accompanying materials * are made available under the terms 
+	of the Eclipse Public License v1.0 * which accompanies this distribution, 
+	and is available at * http://www.eclipse.org/legal/epl-v10.html * * Contributors: 
+	* IBM Corporation - initial API and implementation *******************************************************************************/ -->
+<job id="ArrayUserDataDeserialize" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/jobXML_1_0.xsd"
+	version="1.0">
+	
+	<properties>
+		<property name="chunkSize" value="#{jobParameters['chunkSize']}?:5;" />
+	</properties>
+
+	<step id="partitionDeserialize">
+		<chunk item-count="#{jobProperties['chunkSize']}">
+			<reader ref="app.deserialize.ArrayCheckpointReader">
+				<properties>
+					<property name="maxRecordsToValidate" value="#{partitionPlan['partitionSize']}" />
+					<property name="startAtIndex" value="#{partitionPlan['startAtIndex']}" />
+				</properties>
+			</reader>
+			<writer ref="app.deserialize.NoOpItemWriter" />
+		</chunk>
+		<partition>
+			<mapper	ref="app.deserialize.SimplePartitionMapper" />
+			<collector ref="app.deserialize.DeserializePartitionCollector" />
+			<analyzer ref="app.deserialize.DeserializePartitionAnalyzer">
+				<properties>
+					<property name="startAtIndex" value="#{partitionPlan['startAtIndex']}" />
+				</properties>
+			</analyzer>
+				
+			<!--  reducer
+				ref="com.ibm.websphere.samples.batch.artifacts.ValidationPartitionReducer" /-->
+		</partition>
+	</step>
+</job>
