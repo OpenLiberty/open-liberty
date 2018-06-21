@@ -1030,7 +1030,6 @@ class SchemaWriter {
         writer.writeEndElement();
 
         if (type.getHasFactoryReference()) {
-            System.out.println("schemaWriter :: " + type.getTypeName());
             writer.writeStartElement(XSD, "complexType");
             writer.writeAttribute("name", type.getTypeName() + "-factory");
             writer.writeStartElement(XSD, "complexContent");
