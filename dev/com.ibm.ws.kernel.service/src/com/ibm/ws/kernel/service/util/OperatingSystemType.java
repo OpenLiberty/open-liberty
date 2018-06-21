@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.util;
+package com.ibm.ws.kernel.service.util;
 
 /**
  * Describes an operating system type.

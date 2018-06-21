@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.util;
+package com.ibm.ws.kernel.service.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,17 +17,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
- * Various operating system utilities. This class might be used in things like
- * FAT suites, so avoid using Tr.
+ * Various operating system utilities. Use the {@link #instance()} method
+ * for access to the key methods.
  */
 public class OperatingSystem {
+    private static final TraceComponent tc = Tr.register(OperatingSystem.class);
+
     /**
      * Get the singleton for the API. By default, this caches the first total RAM
      * calculation.
@@ -99,7 +102,7 @@ public class OperatingSystem {
                     cachedPageSize = getPageSizePOSIX();
                     break;
                 default:
-                    throw new OperatingSystemException(BootstrapConstants.messages.getString("os.pagesize.unavailable"));
+                    throw new OperatingSystemException(Tr.formatMessage(tc, "os.pagesize.unavailable"));
             }
         }
         return cachedPageSize;
@@ -136,6 +139,7 @@ public class OperatingSystem {
      * @throws OperatingSystemException
      *             If return code is not 0.
      */
+    @FFDCIgnore({ IOException.class, InterruptedException.class })
     public static List<String> executeProgramWithInput(String input, String... commandLine) throws OperatingSystemException {
         try {
             ProcessBuilder builder = new ProcessBuilder();
@@ -167,17 +171,15 @@ public class OperatingSystem {
                 }
             }
 
-            try {
-                int returnCode = process.waitFor();
-                if (returnCode != 0) {
-                    throw new OperatingSystemException(MessageFormat.format(BootstrapConstants.messages.getString("os.execute.error"), commandLine, returnCode, lines));
-                }
-                return lines;
-            } catch (InterruptedException e) {
-                throw new OperatingSystemException(e);
+            int returnCode = process.waitFor();
+            if (returnCode != 0) {
+                throw new OperatingSystemException(Tr.formatMessage(tc, "os.execute.error", commandLine, returnCode, lines));
             }
-        } catch (IOException e1) {
-            throw new OperatingSystemException(e1);
+            return lines;
+        } catch (IOException e) {
+            throw new OperatingSystemException(e);
+        } catch (InterruptedException e) {
+            throw new OperatingSystemException(e);
         }
     }
 }

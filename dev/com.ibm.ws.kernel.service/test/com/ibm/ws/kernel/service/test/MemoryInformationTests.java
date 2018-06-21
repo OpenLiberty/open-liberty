@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.util.test;
+package com.ibm.ws.kernel.service.test;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ibm.ws.kernel.util.MemoryInformation;
-import com.ibm.ws.kernel.util.OperatingSystem;
-import com.ibm.ws.kernel.util.OperatingSystemType;
+import com.ibm.ws.kernel.service.util.MemoryInformation;
+import com.ibm.ws.kernel.service.util.OperatingSystem;
+import com.ibm.ws.kernel.service.util.OperatingSystemType;
 
 /**
  * Various unit tests.

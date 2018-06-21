@@ -8,48 +8,47 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.util;
+package com.ibm.ws.kernel.service.util;
 
 /**
- * Exception while performing operating system action.
+ * Exception while processing memory information.
  */
-public class OperatingSystemException extends Exception {
-
-    private static final long serialVersionUID = 6990206095591336940L;
+public class MemoryInformationException extends Exception {
+    private static final long serialVersionUID = -2279626416148709559L;
 
     /**
      * {@inheritDoc}
      */
-    public OperatingSystemException() {
+    public MemoryInformationException() {
         super();
     }
 
     /**
      * {@inheritDoc}
      */
-    public OperatingSystemException(String message) {
+    public MemoryInformationException(String message) {
         super(message);
     }
 
     /**
      * {@inheritDoc}
      */
-    public OperatingSystemException(Throwable cause) {
+    public MemoryInformationException(Throwable cause) {
         super(cause);
     }
 
     /**
      * {@inheritDoc}
      */
-    public OperatingSystemException(String message, Throwable cause) {
+    public MemoryInformationException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
      * {@inheritDoc}
      */
-    public OperatingSystemException(String message, Throwable cause, boolean enableSuppression,
-                                    boolean writableStackTrace) {
+    public MemoryInformationException(String message, Throwable cause, boolean enableSuppression,
+                                      boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

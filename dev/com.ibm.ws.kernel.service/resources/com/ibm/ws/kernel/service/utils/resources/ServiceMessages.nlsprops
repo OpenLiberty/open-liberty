@@ -59,3 +59,19 @@ invalidDuration.useraction=Ensure that the value specified in the server configu
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Unexpected operating system memory information was encountered in {0}: {1}
+memory.information.unexpected.explanation=Some operating system memory information was not in the expected format. The product could be reading a file or running a program when it encounters the unexpected format. The message text provides either the name of an operating system file and the contents of the file or the name of a program and the output of the program. You can use this information to troubleshoot the problem.
+memory.information.unexpected.useraction=Review the information in the message text. Correct any issues to ensure that the operating system is behaving correctly and that no unexpected operating system memory information is encountered.
+
+memory.information.unavailable=CWWKE0948E: Available memory information is not implemented on this operating system.
+memory.information.unavailable.explanation=This function has not been implemented for this operating system.
+memory.information.unavailable.useraction=Use the OperatingSystem API to get the type of operating system and avoid calling this function for this type of operating system.
+
+os.pagesize.unavailable=CWWKE0949E: Page size information is not implemented on this operating system.
+os.pagesize.unavailable.explanation=This function has not been implemented for this operating system.
+os.pagesize.unavailable.useraction=Use the OperatingSystem API to get the type of operating system and avoid calling this function for this type of operating system.
+
+os.execute.error=CWWKE0950E: The {0} program failed to run. The return code is {1}. The output is {2}
+os.execute.error.explanation=A variety of situations can cause the failure. For example, the program failed due to an error condition that it reports in the return code and output.
+os.execute.error.useraction=Ensure that the command exists and that it is in one of the directories in the PATH environment variable.
