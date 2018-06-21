@@ -632,6 +632,14 @@ public class FrameworkManager {
             readyServiceRefs = systemBundleCtx.getServiceReferences(FrameworkReady.class, null);
         } catch (InvalidSyntaxException e) {
             throw new IllegalStateException(e); // unlikely.
+        } catch (IllegalStateException ex) {
+            // The framework might have been stopped before we finished starting
+            if (framework.getState() != Bundle.ACTIVE) {
+                waitForFrameworkStop();
+                return false;
+            } else {
+                throw ex;
+            }
         }
 
         // If we have any, we will wait for them...
