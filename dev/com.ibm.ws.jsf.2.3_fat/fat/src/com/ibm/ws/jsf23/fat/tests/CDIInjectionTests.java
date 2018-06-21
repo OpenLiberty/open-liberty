@@ -40,7 +40,7 @@ import junit.framework.Assert;
  *
  * We're extending CDITestBase, which has common test code.
  */
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class CDIInjectionTests extends CDITestBase {
     private static final Logger LOG = Logger.getLogger(CDIInjectionTests.class.getName());

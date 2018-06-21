@@ -28,7 +28,7 @@ import componenttest.topology.impl.LibertyServer;
  * container and provider and needs to be common between bval-1.0 and bval-1.1.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class EJBModule20Test extends EJBModule_Common {
 
     @Server("com.ibm.ws.beanvalidation.ejb_2.0.fat")

@@ -27,7 +27,7 @@ import componenttest.topology.utils.FATServletClient;
 import web.JSONP11Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class JSONP11Test extends FATServletClient {
 
     private static final String appName = "JSONP11fat";

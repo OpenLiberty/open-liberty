@@ -29,7 +29,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Tests what can and cannot be loaded by the server's JVM classpath.
  */
-@MinimumJavaLevel(javaLevel = 1.7)
+@MinimumJavaLevel(javaLevel = 7)
 public class ServerClasspathTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.boot.classpath.fat";

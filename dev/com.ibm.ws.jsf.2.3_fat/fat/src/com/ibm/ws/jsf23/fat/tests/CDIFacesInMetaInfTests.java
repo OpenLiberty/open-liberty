@@ -32,7 +32,7 @@ import componenttest.topology.impl.LibertyServer;
  * We're extending CDITestBase, which has common test code.
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 public class CDIFacesInMetaInfTests extends CDITestBase {
 

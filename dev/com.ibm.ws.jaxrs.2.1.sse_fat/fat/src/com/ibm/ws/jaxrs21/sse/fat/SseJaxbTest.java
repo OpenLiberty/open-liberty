@@ -31,7 +31,7 @@ import jaxrs21sse.jaxb.SseJaxbTestServlet;
  * This test of jaxb SSE function.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class SseJaxbTest extends FATServletClient {
     private static final String SERVLET_PATH = "SseJaxbApp/SseJaxbTestServlet";
 

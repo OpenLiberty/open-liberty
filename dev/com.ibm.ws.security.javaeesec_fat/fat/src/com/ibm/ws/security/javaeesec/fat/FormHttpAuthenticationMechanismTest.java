@@ -58,7 +58,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * values for getAuthType, getUserPrincipal and getRemoteUser after JASPI authentication.
  *
  */
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {

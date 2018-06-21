@@ -38,7 +38,7 @@ import junit.framework.Assert;
  * </ul>
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class FATMPOpenTracing {
     /**
      * For tracing.
