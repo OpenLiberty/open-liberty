@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.container.eclipselink.logging;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.persistence.logging.SessionLog;
 import org.eclipse.persistence.logging.SessionLogEntry;
@@ -25,26 +25,30 @@ import com.ibm.ws.jpa.management.JPAConstants;
 /**
  * This class is wired in when the eclipselink.target-server property is specified
  * as WebSphere_7.
- * 
+ *
  * Commented out till we break EclipseLink / OpenJPA dependencies out of the container.
  */
 public class EclipseLinkLogger extends ServerLog {
 
     private final static String ECLIPSELINK_STRING = "eclipselink";
     private final static String EMPTY_CHANNEL = ECLIPSELINK_STRING;
+    private final static LogChannel EMPTY_LOG_CHANNEL = new LogChannel(EMPTY_CHANNEL);
 
     private static final TraceComponent _tc = Tr.register(EclipseLinkLogger.class, JPAConstants.JPA_TRACE_GROUP, JPAConstants.JPA_RESOURCE_BUNDLE_NAME);
 
-    private final Map<String, LogChannel> _channels;
+    private static final Map<String, LogChannel> _channels = new HashMap<String, LogChannel>();
 
-    public EclipseLinkLogger() {
-        _channels = new ConcurrentHashMap<String, LogChannel>();
+    static {
 
         // Register each category with eclipselink prefix as a WebSphere log channel
         for (String category : SessionLog.loggerCatagories) {
             _channels.put(category, new LogChannel(ECLIPSELINK_STRING + "." + category));
         }
-        _channels.put(EMPTY_CHANNEL, new LogChannel(EMPTY_CHANNEL));
+        _channels.put(EMPTY_CHANNEL, EMPTY_LOG_CHANNEL);
+    }
+
+    public EclipseLinkLogger() {
+        // nothing to do.
     }
 
     @Override
@@ -68,16 +72,15 @@ public class EclipseLinkLogger extends ServerLog {
     @Trivial
     private LogChannel getLogChannel(String category) {
         if (category == null) {
-            category = EMPTY_CHANNEL;
+            return EMPTY_LOG_CHANNEL;
         }
         LogChannel channel = _channels.get(category);
         if (channel == null) {
             if (_tc.isDebugEnabled()) {
                 Tr.debug(_tc, "Found an unmapped logging channel (" + category
                               + ") in log(...). Possibly something wrong in EclipseLink, remapping to base channel.");
-                channel = _channels.get(EMPTY_CHANNEL);
             }
-            channel = _channels.get(EMPTY_CHANNEL);
+            channel = EMPTY_LOG_CHANNEL;
         }
         return channel;
     }
