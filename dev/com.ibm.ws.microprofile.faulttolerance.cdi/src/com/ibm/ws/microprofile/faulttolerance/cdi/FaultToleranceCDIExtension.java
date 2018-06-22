@@ -59,9 +59,9 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         AnnotatedType<FaultTolerance> bindingType = beanManager.createAnnotatedType(FaultTolerance.class);
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<FaultToleranceInterceptor> interceptorType = beanManager.createAnnotatedType(FaultToleranceInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(interceptorType);
+        beforeBeanDiscovery.addAnnotatedType(interceptorType, (interceptorType != null) ? interceptorType.getClass().getName() + ": " + interceptorType.getClass().hashCode() : "");
         AnnotatedType<FaultToleranceInterceptor.ExecutorCleanup> executorCleanup = beanManager.createAnnotatedType(FaultToleranceInterceptor.ExecutorCleanup.class);
-        beforeBeanDiscovery.addAnnotatedType(executorCleanup);
+        beforeBeanDiscovery.addAnnotatedType(executorCleanup, (executorCleanup != null) ? executorCleanup.getClass().getName() + ": " + executorCleanup.getClass().hashCode() : "");
     }
 
     public <T> void processAnnotatedType(@Observes @WithAnnotations({ Asynchronous.class, Fallback.class, Timeout.class, CircuitBreaker.class, Retry.class,
@@ -101,7 +101,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                     BulkheadConfig bulkhead = new BulkheadConfig(clazz, (Bulkhead) annotation);
                     bulkhead.validate();
                 }
-            } else { 
+            } else {
                 if (tc.isWarningEnabled())
                     Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
             }
@@ -173,8 +173,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                     BulkheadConfig bulkhead = new BulkheadConfig(javaMethod, clazz, (Bulkhead) annotation);
                     bulkhead.validate();
                 }
-            }
-            else { 
+            } else {
                 if (tc.isWarningEnabled())
                     Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(),
                                clazz.getCanonicalName() + "." + method.getJavaMember().getName());
