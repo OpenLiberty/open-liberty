@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.httpcommons-1.0
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install
--bundles=com.ibm.ws.org.apache.httpcomponents.4.3, \
+-bundles=com.ibm.ws.org.apache.httpcomponents.4.3.1, \
  com.ibm.ws.org.apache.httpcomponents
 kind=ga
 edition=core
