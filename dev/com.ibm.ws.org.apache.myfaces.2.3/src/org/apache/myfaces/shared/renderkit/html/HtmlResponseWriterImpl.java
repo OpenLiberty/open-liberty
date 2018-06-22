@@ -320,7 +320,6 @@ public class HtmlResponseWriterImpl
         }
 
         closeStartTagIfNecessary();
-        _currentWriter.write('<');
 
         resetStartedElement();
 
@@ -328,7 +327,9 @@ public class HtmlResponseWriterImpl
         _startElementUIComponent = uiComponent;
         _startTagOpen = true;
         _passThroughAttributesMap = (_startElementUIComponent != null) ?
-            _startElementUIComponent.getPassThroughAttributes(false) : null;
+        _startElementUIComponent.getPassThroughAttributes(false) : null;
+
+        String startElementNameToWrite = name;    
 
         if (_passThroughAttributesMap != null)
         {
@@ -349,17 +350,15 @@ public class HtmlResponseWriterImpl
                     _startedChangedElements.add(elementName);
                     _startedElementsCount.add(0);
                 }
-                _currentWriter.write((String) elementName);
-            }
-            else
-            {
-                _currentWriter.write(name);
+                startElementNameToWrite = elementName;
             }
         }
-        else
-        {
-            _currentWriter.write(name);
-        }
+
+        StringBuilder sb = new StringBuilder(startElementNameToWrite.length() + 1);
+        sb.append('<');
+        sb.append(startElementNameToWrite);
+
+        _currentWriter.write(sb.toString());
 
         if (!_startedElementsCount.isEmpty())
         {

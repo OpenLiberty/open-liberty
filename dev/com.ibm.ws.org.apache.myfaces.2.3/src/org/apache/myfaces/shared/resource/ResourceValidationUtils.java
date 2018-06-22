@@ -72,6 +72,11 @@ public class ResourceValidationUtils
         return true;
     }
     
+    public static boolean isValidPath(String path)
+    {
+        return validate(path, true);
+    }
+    
     private static boolean validate(String expression, boolean allowSlash)
     {
         int length = expression.length();
