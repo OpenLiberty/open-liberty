@@ -48,7 +48,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
