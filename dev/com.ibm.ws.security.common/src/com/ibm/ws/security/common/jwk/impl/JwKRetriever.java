@@ -75,13 +75,15 @@ public class JwKRetriever {
 	 *            jwksUri
 	 * @param jwkSet
 	 *            using the jwkSet from the config
+	 * @param hnvEnabled 
 	 */
-	public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport) {
+	public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled) {
 		this.configId = configId;
 		this.sslConfigurationName = sslConfigurationName;
 		this.jwkEndpointUrl = jwkEndpointUrl;
 		this.jwkSet = jwkSet; // get the JWKSet from the Config
 		this.sslSupport = sslSupport;
+		this.hostNameVerificationEnabled = hnvEnabled;
 	}
 
 //	public JwKRetriever(JwtConsumerConfig config) {
