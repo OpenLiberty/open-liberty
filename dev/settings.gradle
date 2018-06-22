@@ -123,15 +123,15 @@ buildscript {
     isAutomatedBuild = (props.getProperty("buildResultUUID") != null)
 
     if (props.getProperty('is.continuous.build') != null) {
-      isContinuousBuild = parseBoolean(props.getProperty('is.continuous.build'))
+      isContinuousBuild = 'on'.equalsIgnoreCase(props.getProperty('is.continuous.build')) || 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
     }
 
     if (props.getProperty('is.release') != null) {
-      isRelease = parseBoolean(props.getProperty('is.release'))
+      isRelease = 'on'.equalsIgnoreCase(props.getProperty('is.release')) || 'true'.equalsIgnoreCase(props.getProperty('is.release'))
     }
 
     if (props.getProperty('is.public.publishing') != null) {
-      isPublicPublishing = parseBoolean(props.getProperty('is.public.publishing'))
+      isPublicPublishing = 'on'.equalsIgnoreCase(props.getProperty('is.public.publishing')) || 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
     }
 
     props.setProperty('javac.bootclasspath.1.4', '${internaljavac.bootclasspath.1.4}')
