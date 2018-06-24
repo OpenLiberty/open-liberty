@@ -313,25 +313,31 @@ task runfat(type: Exec) {
   }
 }
 
-// Building a FAT is disabled by default, and enabled only when the gradle command contains "fat"
+// Building a FAT is disabled by default, and enabled only when the gradle command contains "fat" or "release"
 // For example './gradlew buildfat' (to build all FATs) or './gradlew build.example_fat:buildandrun'
 def buildFatEnabled = false;
 if(gradle.startParameter.getCurrentDir().getAbsolutePath().contains("_fat")) {
   buildFatEnabled = true;
 } else {
   gradle.startParameter.taskNames.each {
-    if(it.contains("fat")) {
+    if(it.contains("fat") || it.contains("release")) {
       buildFatEnabled = true;
     }
   }
 }
 
 assemble {
-  // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
+  // Skip out on 'assemble' unless top-level gradle invocation contains "fat" or "release"
   if(!buildFatEnabled) {
     enabled = false;
     dependsOn = [];
   }
+}
+
+task assemblefat {
+  dependsOn cleanFat
+  dependsOn assemble
+  dependsOn zipProjectFVT
 }
 
 ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com', org = 'eclipse' ->
@@ -398,7 +404,7 @@ def ebcClone(String url, String branch, String repoPath){
 }
 
 build {
-  // Skip out on 'build' unless top-level gradle invocation contains "fat"
+  // Skip out on 'build' unless top-level gradle invocation contains "fat" or "release"
   if(!buildFatEnabled) {
     enabled = false;
     dependsOn = [];
@@ -406,12 +412,15 @@ build {
 }
 
 buildfat {
-  dependsOn cleanFat
+  dependsOn assemblefat
   dependsOn build
-  dependsOn zipProjectFVT
 }
 
 task buildandrun {
   dependsOn buildfat
   dependsOn runfat
+}
+
+release {
+  dependsOn assemblefat
 }
