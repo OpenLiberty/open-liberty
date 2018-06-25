@@ -875,10 +875,10 @@ public class GenericUtils {
     static public byte[] getBytes(String input) {
 
         if (null != input) {
-            char[] chars = input.toCharArray();
-            byte[] output = new byte[chars.length];
-            for (int i = 0; i < chars.length; i++) {
-                output[i] = (byte) chars[i];
+            int length = input.length();
+            byte[] output = new byte[length];
+            for (int i = 0; i < length; i++) {
+                output[i] = (byte) input.charAt(i);
             }
             return output;
         }
