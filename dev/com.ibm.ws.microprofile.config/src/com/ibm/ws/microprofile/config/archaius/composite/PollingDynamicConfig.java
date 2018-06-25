@@ -183,8 +183,18 @@ public class PollingDynamicConfig implements Closeable {
             if (future != null) {
                 if (!(future.isDone() || future.isCancelled())) {
                     boolean cancelled = future.cancel(true);
-                    if (!cancelled && tc.isWarningEnabled()) {
-                        Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                    if (!cancelled) {
+                        // On shutdown these threads are getting closed down from elsewhere
+                        if (future.isDone() || future.isCancelled()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "PollingDynamicConfig lost race in future cancel: {0}", this);
+                            }
+                            // Something 'odd' happened
+                        } else {
+                            if (tc.isWarningEnabled()) {
+                                Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                            }
+                        }
                     }
                 }
                 future = null;
