@@ -105,7 +105,7 @@ public class RecLogServiceImpl {
 
         if (director != null && _isPeerRecoverySupported) // used to test _recoveryGroup != null
         {
-            if (!doNotCheckPeersAtStartup()) {
+            if (checkPeersAtStartup()) {
                 try {
                     if (director instanceof LibertyRecoveryDirectorImpl) {
                         ((LibertyRecoveryDirectorImpl) director).drivePeerRecovery();
@@ -160,42 +160,34 @@ public class RecLogServiceImpl {
     }
 
     /**
-     * This method retrieves a system property named com.ibm.ws.recoverylog.spi.DoNotCheckPeersAtStartup
+     * This method retrieves a system property named com.ibm.ws.recoverylog.spi.CheckPeersAtStartup
      * which allows the check to see if peer servers are stale to be bypassed at server startup. The checks
      * will subsequently be performed through the spun-off timer thread.
      *
      * @return
      */
-    private boolean doNotCheckPeersAtStartup() {
+    private boolean checkPeersAtStartup() {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "doNotCheckPeersAtStartup");
+            Tr.entry(tc, "checkPeersAtStartup");
 
-        boolean doCheck = true;
-        Boolean doNotPeerCheckAtStartup = null;
+        boolean checkAtStartup;
 
         try {
-            doNotPeerCheckAtStartup = AccessController.doPrivileged(
-                                                                    new PrivilegedExceptionAction<Boolean>() {
-                                                                        @Override
-                                                                        public Boolean run() {
-                                                                            Boolean theResult = Boolean.getBoolean("com.ibm.ws.recoverylog.spi.DoNotCheckPeersAtStartup");
-                                                                            if (tc.isDebugEnabled())
-                                                                                Tr.debug(tc, "Have retrieved jvm property with result, " + theResult.booleanValue());
-                                                                            return theResult;
-                                                                        }
-                                                                    });
+            checkAtStartup = AccessController.doPrivileged(
+                                                           new PrivilegedExceptionAction<Boolean>() {
+                                                               @Override
+                                                               public Boolean run() {
+                                                                   return Boolean.getBoolean("com.ibm.ws.recoverylog.spi.CheckPeersAtStartup");
+                                                               }
+                                                           });
         } catch (PrivilegedActionException e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception setting Peer Lease-Check Interval", e);
-            doNotPeerCheckAtStartup = null;
+                Tr.debug(tc, "checkPeersAtStartup", e);
+            checkAtStartup = false;
         }
 
-        if (doNotPeerCheckAtStartup == null)
-            doNotPeerCheckAtStartup = Boolean.TRUE;
-
-        doCheck = doNotPeerCheckAtStartup.booleanValue();
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "doNotCheckPeersAtStartup", doCheck);
-        return doCheck;
+            Tr.exit(tc, "checkPeersAtStartup", checkAtStartup);
+        return checkAtStartup;
     }
 }

@@ -16,8 +16,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import javax.transaction.SystemException;
 import javax.transaction.xa.Xid;
+
+import javax.transaction.SystemException;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
@@ -632,6 +633,7 @@ public class RecoveryManager implements Runnable {
 
                 try {
                     if (_leaseLog != null) {
+                        _leaseLog.releasePeerLease(_failureScopeController.serverName());
                         _leaseLog.deleteServerLease(_failureScopeController.serverName());
                     }
                 } catch (Exception e) {
@@ -1170,7 +1172,7 @@ public class RecoveryManager implements Runnable {
     /**
      * Blocks the current thread until initial recovery has completed.
      */
-    private void waitForRecoveryCompletion() {
+    public void waitForRecoveryCompletion() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "waitForRecoveryCompletion");
 
