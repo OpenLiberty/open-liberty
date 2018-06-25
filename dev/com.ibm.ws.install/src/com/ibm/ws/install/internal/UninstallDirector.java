@@ -171,7 +171,7 @@ class UninstallDirector extends AbstractDirector {
         uninstallAssets = new ArrayList<UninstallAsset>();
         for (ProvisioningFeatureDefinition targetPd : installedFeatures.values()) {
             String pid = targetPd.getHeader("IBM-ProductID");
-            if (pid != null && pid.equals(productId))
+            if (pid != null && (pid.equals(productId) || pid.contains("io.openliberty")))
                 uninstallAssets.add(new UninstallAsset(targetPd));
         }
     }
