@@ -240,7 +240,7 @@ public class LinkWrite {
             for (Object t : ta) {
 
                 Class<?> clazz = Utils.getCodingClass((Type) t);
-                if (clazz != null) {
+                if ((clazz != null) && (clazzToWrite != null)) {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "encoding looking at clazz: " + clazz);
                         Tr.debug(tc, "with clazzToWrite: " + clazzToWrite);
