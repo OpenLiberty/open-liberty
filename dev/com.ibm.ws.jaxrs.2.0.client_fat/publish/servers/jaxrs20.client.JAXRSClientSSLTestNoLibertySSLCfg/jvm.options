@@ -1,0 +1,3 @@
+-Djavax.net.ssl.trustStore=trust.jks
+-Djavax.net.ssl.trustStorePassword=passw0rd
+-Djavax.net.ssl.trustStoreType=JKS

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="HelloworldServlet" version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<display-name>JAX-RS Hello World Sample</display-name>
+	<description>Server-side application to test Hello world client .</description>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>BasicRegistry</realm-name>
+		<form-login-config>
+			<form-login-page>/login.html</form-login-page>
+			<form-error-page>/loginError.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-constraint>
+		<display-name>FormLogin</display-name>
+		<web-resource-collection>
+			<web-resource-name>FormLogin</web-resource-name>
+			<url-pattern>/ClientTestServlet</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>BasicLogin_WebUsers</role-name>
+		</auth-constraint>
+	</security-constraint>
+</web-app>
