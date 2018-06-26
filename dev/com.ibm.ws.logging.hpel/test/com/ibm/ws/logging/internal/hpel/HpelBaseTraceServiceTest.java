@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,11 +27,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.logging.hpel.reader.RepositoryLogRecord;
 import com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl;
 import com.ibm.websphere.ras.TraceComponent;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -45,7 +45,7 @@ public class HpelBaseTraceServiceTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -71,7 +71,6 @@ public class HpelBaseTraceServiceTest {
 
     @Test
     public void testWritingMessages() throws Exception {
-
         HpelBaseTraceService service = new HpelBaseTraceService();
         try {
             // Do stuff here. The outputMgr catches all output issued to stdout or stderr
@@ -107,19 +106,19 @@ public class HpelBaseTraceServiceTest {
             assertEquals("Unexpectedly found WBL files before recording any record", 0, CommonUtils.listWbls(CommonUtils.LOG_DIR, null));
 
             String[] msgs = {
-                             "audit message",
-                             "debug message",
-                             "Dump: dump message",
-                             "Entry ",
-                             "error message",
-                             "event message",
-                             "Exit ",
-                             "fatal message",
-                             "info message",
-                             "System.out message",
-                             "System.err message",
-                             "Not-copied System.out",
-                             "Not-copied System.err"
+                              "audit message",
+                              "debug message",
+                              "Dump: dump message",
+                              "Entry ",
+                              "error message",
+                              "event message",
+                              "Exit ",
+                              "fatal message",
+                              "info message",
+                              "System.out message",
+                              "System.err message",
+                              "Not-copied System.out",
+                              "Not-copied System.err"
             };
             service.audit(tc, msgs[0]);
             service.debug(tc, msgs[1]);
@@ -137,10 +136,11 @@ public class HpelBaseTraceServiceTest {
             RepositoryReaderImpl reader = new RepositoryReaderImpl(CommonUtils.LOG_DIR);
             int count = 0;
             for (RepositoryLogRecord record : reader.getLogListForCurrentServerInstance()) {
+                String formattedMessage = record.getFormattedMessage();
                 if (count >= msgs.length) {
-                    fail("Unexpected message: " + record.getFormattedMessage());
+                    fail("Unexpected message: " + formattedMessage);
                 }
-                assertEquals("Record has incorrect formatted message", msgs[count], record.getFormattedMessage());
+                assertEquals("Record has incorrect formatted message", msgs[count], formattedMessage);
                 count++;
             }
 
