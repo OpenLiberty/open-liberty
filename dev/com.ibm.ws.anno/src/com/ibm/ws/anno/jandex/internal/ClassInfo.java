@@ -30,15 +30,20 @@ import java.util.LinkedList;
 public final class ClassInfo{
 
     private final DotName name;
-    private  short flags;
+    private short flags;
     private DotName[] interfaces;
     private DotName superClass;
     private final List<DotName> fields;
     private final List<DotName> methods;
     private final List<LimitedAnnotation> fieldAnnotations;
     private final List<LimitedAnnotation> methodAnnotations;
+    //have a method to add and remove inside this class
     private List<DotName> classAnnotations;
 
+
+    //add in functions to add to list inside the class info class
+    //addField() etc.
+    //addAll etc.
     
 
     ClassInfo(DotName name, DotName superClass, short flags, DotName[] interfaces){
@@ -57,6 +62,9 @@ public final class ClassInfo{
         return name.toString();
     }
 
+    //pull out the final from the method signatures
+
+
     /**
      * Returns the name of the class
      *
@@ -69,23 +77,13 @@ public final class ClassInfo{
     /**
      * Returns the access flags for this class. The standard {@link java.lang.reflect.Modifier}
      * can be used to decode the value.
-     *
-     * @return the access flags
      */
     public final short flags() {
         return flags;
     }
 
-    /**
-     * Returns the name of the super class declared by the extends clause of this class. This
-     * information is also available from the {@link #superClassType} method. For all classes,
-     * with the one exception of <code>java.lang.Object</code>, which is the one class in the
-     * Java language without a super-type, this method will always return a non-null value.
-     *
-     * @return the name of the super class of this class, or null if this class is <code>java.lang.Object</code>
-     */
     public final DotName superName() {
-        return superClass == null ? null : superClass;
+        return superClass;
     }
 
 

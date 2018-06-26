@@ -110,6 +110,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
             
             return readClasses( annotationsSize, implementorsSize, subclassesSize);
         } finally {
+            //get rid of the finally
             byteTable = null;
             stringTable = null;
             nameTable = null;
@@ -583,7 +584,6 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
             input.readPackedU32();
             //parameters
             input.readPackedU32();
-
         }
     }
 
