@@ -1749,7 +1749,10 @@ public class DatabaseHashMap extends BackedHashMap {
      */
     protected int overQualLastAccessTimeUpdate(BackedSession sess, long nowTime) {
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
-            LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[OVERQUAL_LAST_ACCESS_TIME_UPDATE]);
+            StringBuffer sb = new StringBuffer(" lastAccessTime= ");
+            sb.append(sess.getCurrentAccessTime());
+            sb.append("; nowTime= ").append(nowTime);
+            LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[OVERQUAL_LAST_ACCESS_TIME_UPDATE], sb);
         }
         Connection con = null;
         PreparedStatement s = null;
