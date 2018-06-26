@@ -14,6 +14,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * All modifications made by IBM from initial source -
+ * https://github.com/wildfly/jandex/blob/master/src/main/java/org/jboss/jandex/ClassInfo.java
+ * commit - 07cbcd56c0e282bc550c327e1ce28c798f628a21
  */
 
 package com.ibm.ws.anno.jandex.internal;

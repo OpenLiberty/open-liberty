@@ -14,6 +14,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * All modifications made by IBM from initial source -
+ * https://github.com/wildfly/jandex/blob/master/src/main/java/org/jboss/jandex/IndexReaderV1.java
+ * commit - 36c2b049b7858205c6504308a5e162a4e943ff21
  */
 
 package com.ibm.ws.anno.jandex.internal;
