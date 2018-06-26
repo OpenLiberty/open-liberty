@@ -22,17 +22,9 @@
 
 package com.ibm.ws.anno.jandex.internal;
 
-import java.lang.annotation.Annotation;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Set;
+
 
 
 public final class ClassInfo{

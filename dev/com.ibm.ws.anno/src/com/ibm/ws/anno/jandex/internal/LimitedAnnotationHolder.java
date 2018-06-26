@@ -1,4 +1,5 @@
 package com.ibm.ws.anno.jandex.internal;
+
 public class LimitedAnnotationHolder{
 
     private final DotName name;
