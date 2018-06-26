@@ -64,7 +64,7 @@ public class DynamicSourcesTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMCG0016E"); //On shutdown allow "The server is unable to cancel the asynchronous update thread."
     }
 
     @ClassRule
