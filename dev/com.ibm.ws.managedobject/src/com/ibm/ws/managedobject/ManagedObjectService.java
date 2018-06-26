@@ -66,22 +66,6 @@ public interface ManagedObjectService {
     <T> ManagedObjectFactory<T> createEJBManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, String ejbName) throws ManagedObjectException;
 
     /**
-     * Creates a managed object from a specific instance. When using this
-     * method, the caller is responsible for constructor injection.
-     *
-     * @param <T> the type of object being managed
-     *
-     * @param mmd the ModuleMetaData for the module which contains the managed object
-     * @param instance the object being managed
-     * @return the managed object
-     * @throws ManagedObjectException if an exception occurs creating the managed object
-     *
-     *             ***DEPRECATED*** Will be removed very soon
-     *
-     */
-    <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, T instance) throws ManagedObjectException;
-
-    /**
      * Creates a factory for a specified interceptor class.
      *
      * @param <T> the type of object being managed

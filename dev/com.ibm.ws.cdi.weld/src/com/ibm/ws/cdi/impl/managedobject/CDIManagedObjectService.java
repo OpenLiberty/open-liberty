@@ -25,7 +25,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.managedobject.DefaultManagedObjectService;
-import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -134,13 +133,5 @@ public class CDIManagedObjectService implements ManagedObjectService {
         } else {
             return getDefaultManagedObjectService().createManagedObjectFactory(mmd, klass, requestManagingInjectionAndInterceptors, referenceContext);
         }
-    }
-
-    //this method will be removed very soon
-    @Override
-    public <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, T instance) throws ManagedObjectException {
-        ManagedObjectFactory<T> factory = createManagedObjectFactory(mmd, (Class<T>) instance.getClass(), false);
-        ManagedObject<T> mo = factory.createManagedObject(instance, null);
-        return mo;
     }
 }
