@@ -33,23 +33,7 @@ import java.util.Map;
 
 
 
-/**
- * Reads a Jandex index file and returns the saved index. See {@link Indexer}
- * for a thorough description of how the Index data is produced.
- *
- * <p>
- * An IndexReader loads the stream passed to it's constructor and applies the
- * appropriate buffering. The Jandex index format is designed for efficient
- * reading and low final memory storage.
- *
- * <p>
- * <b>Thread-Safety</b>
- * </p>
- * IndexReader is not thread-safe and can not be shared between concurrent
- * threads. The resulting index, however, is.
- *
- * @author Jason T. Greene
- */
+
 final class LimitedIndexReaderV2 extends IndexReaderImpl {
     static final int MIN_VERSION = 6;
     static final int MAX_VERSION = 6;
@@ -79,7 +63,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private static final int AVALUE_ARRAY = 12;
     private static final int AVALUE_NESTED = 13;
     private static final int HAS_ENCLOSING_METHOD = 1;
-    private final static byte[] INIT_METHOD_NAME = Utils.toUTF8("<init>");
+    //private final static byte[] INIT_METHOD_NAME = Utils.toUTF8("<init>");
 
     private PackedDataInputStream input;
     private byte[][] byteTable;
@@ -579,8 +563,8 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         //read in the enclosing class and simple name codes then retrieve it from the tables
         //DotName enclosingClass = nameTable[stream.readPackedU32()];
         //String simpleName = stringTable[stream.readPackedU32()];
-        DotName enclosingClass = null;
-        String simpleName = null;
+        //DotName enclosingClass = null;
+        //String simpleName = null;
         stream.readPackedU32();
         stream.readPackedU32();
 

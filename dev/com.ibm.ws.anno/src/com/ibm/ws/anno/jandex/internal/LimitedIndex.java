@@ -31,21 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * An index useful for quickly processing annotations. The index is read-only and supports
- * concurrent access. Also the index is optimized for memory efficiency by using componentized
- * DotName values.
- *
- * <p>It contains the following information:
- * <ol>
- * <li>All annotations and a collection of targets they refer to </li>
- * <li>All classes (including methodParameters) scanned during the indexing process (typical all classes in a jar)</li>
- * <li>All subclasses indexed by super class known to this index</li>
- * </ol>
- *
- * @author Jason T. Greene
- *
- */
 
 public final class LimitedIndex{
 

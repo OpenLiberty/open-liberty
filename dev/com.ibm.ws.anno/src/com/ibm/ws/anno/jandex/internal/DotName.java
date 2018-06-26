@@ -24,29 +24,7 @@ package com.ibm.ws.anno.jandex.internal;
 
 import java.util.ArrayDeque;
 
-/**
- * A DotName represents a dot separated name, typically a Java package or a Java class.
- * It has two possible variants. A simple wrapper based variant allows for fast construction
- * (it simply wraps the specified name string). Whereas, a componentized variant represents
- * one or more String methodInternal that when combined with a dot character, assemble the full
- * name. The intention of the componentized variant is that the String methodInternal can be reused
- * to offer memory efficiency. This reuse is common in Java where packages and classes follow
- * a tree structure.
- *
- * <p>Both the simple and componentized variants are considered semantically equivalent if they
- * refer to the same logical name. More specifically the equals and hashCode methods return the
- * same values for the same semantic name regardless of the variant used. Which variant to use
- * when depends on the specific performance and overhead objectives of the specific use pattern.
- *
- * <p>Simple names are cheap to construct (just a an additional wrapper object), so are ideal for
- * temporary use, like looking for an entry in a Map. Componentized names however require that
- * they be split in advance, and so require some additional time to construct. However the memory
- * benefits of reusing component strings make them desirable when stored in a longer term area
- * such as in a Java data structure.
- *
- * @author Jason T. Greene
- *
- */
+
 public final class DotName implements Comparable<DotName> {
 
     static final DotName PLACEHOLDER = DotName.createSimple("");

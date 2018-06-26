@@ -27,23 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-/**
- * Reads a Jandex index file and returns the saved index. See {@link Indexer}
- * for a thorough description of how the Index data is produced.
- *
- * <p>
- * An IndexReader loads the stream passed to it's constructor and applies the
- * appropriate buffering. The Jandex index format is designed for efficient
- * reading and low final memory storage.
- *
- * <p>
- * <b>Thread-Safety</b>
- * </p>
- * IndexReader is not thread-safe and can not be shared between concurrent
- * threads. The resulting index, however, is.
- *
- * @author Jason T. Greene
- */
+
 public final class LimitedIndexReader {
 
     /**

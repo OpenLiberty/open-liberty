@@ -34,26 +34,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
-/**
- * Represents a class entry in an index. A ClassInfo is only a partial view of a
- * Java class, it is not intended as a complete replacement for Java reflection.
- * Only the methods and fields which are references by an annotation are stored.
- *
- * <p>Global information including the parent class, implemented methodParameters, and
- * access flags are also provided since this information is often necessary.
- *
- * <p>Note that a parent class and interface may exist outside of the scope of the
- * index (e.g. classes in a different jar) so the references are stored as names
- * instead of direct references. It is expected that multiple indexes may need
- * to be queried to assemble a full hierarchy in a complex multi-jar environment
- * (e.g. an application server).
- *
- * <p><b>Thread-Safety</b></p>
- * This class is immutable and can be shared between threads without safe publication.
- *
- * @author Jason T. Greene
- *
- */
+
 public final class ClassInfo{
 
     private final DotName name;

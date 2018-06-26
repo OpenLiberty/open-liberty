@@ -32,25 +32,6 @@ import java.util.Map;
 
 
 
-
-
-/**
- * Reads a Jandex index file and returns the saved index. See {@link org.jboss.jandex.Indexer}
- * for a thorough description of how the Index data is produced.
- *
- * <p>
- * An IndexReader loads the stream passed to it's constructor and applies the
- * appropriate buffering. The Jandex index format is designed for efficient
- * reading and low final memory storage.
- *
- * <p>
- * <b>Thread-Safety</b>
- * </p>
- * IndexReader is not thread-safe and can not be shared between concurrent
- * threads. The resulting index, however, is.
- *
- * @author Jason T. Greene
- */
 final class LimitedIndexReaderV1 extends IndexReaderImpl {
     
     static final int MIN_VERSION = 2;
@@ -159,22 +140,13 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
             classes.put(name, clazz);
 
             //add this class in the subclasses map under the name of the super
-            //addClassToMap(subclasses, superName, clazz);
 
             //Add the current class to the implementors map under the name of the implementor
-            /*
-            for (Type interfaceName : interfaces) {
-                addClassToMap(implementors, interfaceName.name(), clazz);
-            }
-            */
 
-            /*
-                After the properties of a class in an entry there are the annotations that belong to that class
-            */
             readAnnotations(stream, clazz);
         }
 
-        //TODO REMOVE THE EXTRA PARAMETER FROM THE INDEX.CREATE() METHOD
+        
         return new LimitedIndex(classes);
     }
 
@@ -189,7 +161,7 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
             //also like the type of annotation, @Override etc.
             DotName annotationName = classTable[stream.readPackedU32()];
 
-            //read in the number of targets and iterate over each target
+
             int numTargets = stream.readPackedU32();
             for (int k = 0; k < numTargets; k++) {
 
@@ -206,34 +178,25 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
                             which is the current Class Entry
                 */
                 int tag = stream.readPackedU32();
-                //AnnotationTarget target;
+
                 switch (tag) {
                     
                     case FIELD_TAG: {
-                        //read in the information about the field, only the name is really needed
 
-                        //String name = stringTable[stream.readPackedU32()];
                         DotName name = DotName.createSimple(stringTable[stream.readPackedU32()]);
                         
-                        //read in the type, this is needed to store the name of the field
-                        //Type type = readType(stream);
                         movePastReadType(stream);
 
-                        //read in the flag but it doesn't need to be stored
-                        //short flags = stream.readShort();
                         stream.readShort();
                         
-                        //TODO GET RID OF THE PARAMETER THAT ISN'T NEEDED FROM FIELDINFO CONSTRUCTOR
-                        //target = new FieldInfo(clazz, Utils.toUTF8(name), type, (short)0);
+
                         clazz.fieldAnnotations().add(new LimitedAnnotation(annotationName, name));
                         clazz.fields().add(name);
                         break;
                     }
                     case METHOD_TAG: {
 
-                        //read the method and generate the Annotation target
-                        //target = readMethod(clazz, stream);
-                        //String name = movePastReadMethod(stream);
+
                         DotName name = DotName.createSimple(movePastReadMethod(stream));
 
                         clazz.methodAnnotations().add(new LimitedAnnotation(annotationName,name));
@@ -243,15 +206,10 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
                     }
                     case METHOD_PARAMATER_TAG: {
 
-                        //create method parameter info target,, this isn't needed
-                        //MethodInfo method = readMethod(clazz, stream);
 
-                        //move the stream up past the method parameter information from the readMethod method
                         movePastReadMethod(stream);
 
 
-                        //since method parameterinfo isn't needed just set the target to null
-                        //target = new MethodParameterInfo(method, (short)stream.readPackedU32());
                         stream.readPackedU32();
 
                         break;
@@ -264,22 +222,9 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
                     default:
                         throw new UnsupportedOperationException();
                 }
-
-                //read in the values of the annotations
-                //values not needed from annotations, just the names
-                //AnnotationValue[] values = readAnnotationValues(stream);
                 movePastReadAnnotationValues(stream);
 
-                //create the final Annotation instance with the target and value
-                //values and targets not needed
-                //TODO remove the parameters not needed from the constructor
-                //AnnotationInstance instance = new AnnotationInstance(annotationName, null, null);
 
-                //add the annotation instance to the masterAnnotations map under the name of the annotation
-                //recordAnnotation(masterAnnotations, annotationName, instance);
-
-                //add the annotationInstance to the list of Annotations fora a class
-                //recordAnnotation(annotations, annotationName, instance);
 
             }
         }

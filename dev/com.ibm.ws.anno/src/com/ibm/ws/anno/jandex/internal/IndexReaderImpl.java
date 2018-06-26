@@ -23,11 +23,7 @@ package com.ibm.ws.anno.jandex.internal;
 
 import java.io.IOException;
 
-/**
- * A common base class for index reader implementations.
- *
- * @author Jason T. Greene
- */
+
 abstract class IndexReaderImpl {
     abstract LimitedIndex read(int version) throws IOException;
 
