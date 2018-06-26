@@ -19,11 +19,9 @@ ext {
   buildImage = project(':build.image')
 }
 
-
 subprojects {
   plugins.apply 'java'
   def bndProject = bndWorkspace.getProject(name)
-
   if (bndProject != null) {
     plugins.apply 'biz.aQute.bnd'
   } else {
