@@ -13,6 +13,8 @@ package com.ibm.ws.microprofile.config.sources;
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
 
 /**
  *
@@ -37,8 +39,16 @@ public abstract class InternalConfigSource implements ConfigSource {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore({ ConfigStartException.class })
     public String getValue(String propertyName) {
-        return getProperties().get(propertyName);
+        String theValue = null;
+        try {
+            theValue = getProperties().get(propertyName);
+        } catch (ConfigStartException cse) {
+            // Swallow this exception
+        }
+
+        return theValue;
     }
 
     /** {@inheritDoc} */
