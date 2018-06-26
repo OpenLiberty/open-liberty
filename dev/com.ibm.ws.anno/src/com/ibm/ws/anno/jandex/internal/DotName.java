@@ -56,46 +56,6 @@ public final class DotName implements Comparable<DotName> {
        return new DotName(null, name, false, false);
     }
 
-    /**
-     * Constructs a componentized DotName. Each DotName refers to a parent
-     * prefix (or null if there is no further prefix) in addition to a local
-     * name that has no dot separator. The fully qualified name this DotName
-     * represents is consructed by recursing all parent prefixes and joining all
-     * local name values with the '.' character.
-     *
-     * @param prefix Another DotName that is the portion to the left of
-     *        localName, this may be null if there is not one
-     * @param localName the local non-null portion of this name, which does not contain
-     *        '.'
-     * @return a componentized DotName.
-     */
-    public static DotName createComponentized(DotName prefix, String localName) {
-        if (localName.indexOf('.') != -1)
-            throw new IllegalArgumentException("A componentized DotName can not contain '.' characters in a local name");
-
-        return new DotName(prefix, localName, true, false);
-    }
-
-    /**
-     * Constructs a componentized DotName. Each DotName refers to a parent
-     * prefix (or null if there is no further prefix) in addition to a local
-     * name that has no dot separator. The fully qualified name this DotName
-     * represents is consructed by recursing all parent prefixes and joining all
-     * local name values with the '.' character.
-     *
-     * @param prefix Another DotName that is the portion to the left of
-     *        localName, this may be null if there is not one
-     * @param localName the local non-null portion of this name, which does not contain
-     *        '.'
-     * @param innerClass whether or not this localName is an inner class name, requiring '$' vs '.'
-     * @return a componentized DotName.
-     */
-    public static DotName createComponentized(DotName prefix, String localName, boolean innerClass) {
-        if (localName.indexOf('.') != -1)
-            throw new IllegalArgumentException("A componentized DotName can not contain '.' characters in a local name");
-
-        return new DotName(prefix, localName, true, innerClass);
-    }
 
     DotName(DotName prefix, String local, boolean noDots, boolean innerClass) {
         if (local == null) {
