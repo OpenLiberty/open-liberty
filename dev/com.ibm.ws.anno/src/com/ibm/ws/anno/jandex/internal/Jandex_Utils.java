@@ -54,6 +54,11 @@ public class Jandex_Utils {
         return indexReader.read(); // throws IOException
     }
 
+    public static LimitedIndex basicReadLimitedIndex(InputStream input) throws IOException{
+        LimitedIndexReader index = new LimitedIndexReader(input);
+        return index.read();
+    }
+
     public static void writeIndex(String jarPath, Index index) {
         // TODO:  should this be a warning/error message?
         try {
@@ -86,7 +91,9 @@ public class Jandex_Utils {
     public static Index createIndex(String path) {
      // TODO:  should these warning/error messages?
         
+        
         File pathFile = new File(path);
+        //throw exception if the path given is invalid or a directory
         if ( !pathFile.exists() ) {
             throw new IllegalArgumentException("Target [ " + path + " ] does not exist");
         } else if ( pathFile.isDirectory() ) {
@@ -106,6 +113,8 @@ public class Jandex_Utils {
             ZipInputStream zipInputStream = new ZipInputStream(pathInputStream);
 
             ZipEntry zipEntry;
+
+            //iterate over the entries in the compressed JAR
             while ( (zipEntry = zipInputStream.getNextEntry()) != null ) {
                 if ( zipEntry.isDirectory() ) {
                     continue;
@@ -124,6 +133,7 @@ public class Jandex_Utils {
 
         } finally {
             try {
+                //close the input stream of the compressed 
                 pathInputStream.close();
             } catch ( IOException e ) {
                 throw new RuntimeException("Failed to open [ " + path + " ]", e);
