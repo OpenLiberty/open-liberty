@@ -110,6 +110,9 @@ public class PollingDynamicConfig implements Closeable {
         try {
             update();
         } catch (ConfigStartException cse) {
+            //Swallow the exception, don't FFDC
+            //At the moment this exception means that we could not properly query the config source
+            //It was introduced as a quick fix for issue #3997 but we might reconsider the design at some point
             startUpFailure = true;
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -118,6 +121,7 @@ public class PollingDynamicConfig implements Closeable {
             future = Futures.immediateFailure(e);
         }
 
+        //if there was an initial startup failure, don't start the polling thread
         if (!startUpFailure && future == null && interval > 0) {
             future = executor.scheduleWithFixedDelay(new Runnable() {
                 @Override
@@ -173,7 +177,9 @@ public class PollingDynamicConfig implements Closeable {
                     }
                 }
             } catch (ConfigStartException cse) {
-                // Re-throw the ConfigStartException
+                //Just Re-throw the ConfigStartException, don't FFDC
+                //At the moment this exception means that we could not properly query the config source
+                //It was introduced as a quick fix for issue #3997 but we might reconsider the design at some point
                 throw cse;
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

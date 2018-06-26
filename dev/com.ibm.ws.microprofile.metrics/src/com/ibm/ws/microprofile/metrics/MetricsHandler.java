@@ -17,14 +17,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -74,11 +72,6 @@ public class MetricsHandler implements RESTHandler {
 
     @Deactivate
     protected void deactivate(ComponentContext context, int reason) {}
-
-    @Reference(service = ConfigProviderResolver.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setConfigProvider(ConfigProviderResolver configResolver) {
-        //makes sure config provider resolver is started
-    }
 
     @Override
     @FFDCIgnore({ EmptyRegistryException.class, NoSuchMetricException.class, NoSuchRegistryException.class, HTTPNotAcceptableException.class, HTTPMethodNotAllowedException.class })

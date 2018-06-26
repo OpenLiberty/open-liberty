@@ -45,7 +45,9 @@ public abstract class InternalConfigSource implements ConfigSource {
         try {
             theValue = getProperties().get(propertyName);
         } catch (ConfigStartException cse) {
-            // Swallow this exception
+            //Swallow the exception, don't FFDC
+            //At the moment this exception means that we could not properly query the config source
+            //It was introduced as a quick fix for issue #3997 but we might reconsider the design at some point
         }
 
         return theValue;

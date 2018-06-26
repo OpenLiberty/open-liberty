@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corp. and others
+ * Copyright (c) 2018 IBM Corp. and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
  * limitations under the License.
  *
  *******************************************************************************/
-/**
- * Thrown to indicate that converting to a specified type is unsuccessful.
- * @author <a href="mailto:emijiang@uk.ibm.com">Emily Jiang</a>
- */
-
 package com.ibm.ws.microprofile.config.interfaces;
 
 /**
  * A very specific exception to support the mp config 1.3 and mpMetrics/mpOpenAPI issue #3997
+ * Thrown to indicate that there was a problem starting an internal config process
  */
 public class ConfigStartException extends RuntimeException {
 
