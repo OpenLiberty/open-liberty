@@ -30,11 +30,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
-
-
-
-
-
 final class LimitedIndexReaderV2 extends IndexReaderImpl {
     static final int MIN_VERSION = 6;
     static final int MAX_VERSION = 6;
