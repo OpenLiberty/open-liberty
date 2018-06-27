@@ -12,7 +12,7 @@
 /**
  * @version 1.0.16
  */
-@org.osgi.annotation.versioning.Version("1.0.16")
+@org.osgi.annotation.versioning.Version("1.0.17")
 @TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 package com.ibm.ws.security.wim.util;
 
