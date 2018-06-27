@@ -71,7 +71,6 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private LimitedAnnotationHolder[] fieldTable;
 
 
-
     LimitedIndexReaderV2(PackedDataInputStream input) {
         this.input = input;
     }
