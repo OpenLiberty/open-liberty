@@ -82,28 +82,22 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     }
 
     LimitedIndex read(int version) throws IOException {
-
             input.readPackedU32(); //annotationSize
             input.readPackedU32(); //implementorSize
             input.readPackedU32(); //subclassesSize 
-
-
             readByteTable();
             readStringTable();
             readNameTable();
-
 
             typeTable = new DotName[input.readPackedU32() + 1];
             typeListTable = new DotName[input.readPackedU32() + 1][];
             annotationTable = new LimitedAnnotation[input.readPackedU32() + 1];
 
-
             readTypeTable();
             readTypeListTable();
             readMethodTable();
             readFieldTable();
-            
-            
+                      
             return readClasses();
     }
 
@@ -134,15 +128,14 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         int entries = input.readPackedU32() + 1;
         int lastDepth = -1;
         DotName curr = null;
-
         nameTable = new DotName[entries];
+
         for (int i = 1; i < entries; i++) {
             int depth = input.readPackedU32();
             boolean inner = (depth & 1) == 1;
-            depth >>= 1;
-
             String local = stringTable[input.readPackedU32()];
 
+            depth >>= 1;
             if (depth <= lastDepth) {
                 while (lastDepth-- >= depth) {
                     assert curr != null;
@@ -176,6 +169,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private void readTypeListTable() throws IOException {
         // Null is the implicit first entry
         DotName[][] typeListTable = this.typeListTable;
+
         // Already emitted entries are omitted as gaps in the table portion
         for (int i = findNextNull(typeListTable, 1); i < typeListTable.length; i = findNextNull(typeListTable, i)) {
             typeListTable[i] = readTypeListEntry();
@@ -184,12 +178,14 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
     private LimitedAnnotation[] readAnnotations( DotName target) throws IOException {
         int numberOfAnnotations = input.readPackedU32();
+        
         if (numberOfAnnotations == 0) {
             return LimitedAnnotation.EMPTY_ARRAY;
         }
+        
         LimitedAnnotation[] annotations = new LimitedAnnotation[numberOfAnnotations];
+        
         for (int i = 0; i < numberOfAnnotations; i++) {
-
             int reference = input.readPackedU32();
 
             if (annotationTable[reference] == null) {
@@ -198,14 +194,14 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
             annotations[i] = annotationTable[reference];
         }
+
         return annotations;
     }
 
     private void movePastAnnotationValues() throws IOException {
         int numValues = input.readPackedU32();
+        
         for (int i = 0; i < numValues; i++) {
-
-            //String name = stringTable[input.readPackedU32()];
             input.readPackedU32();
 
             int tag = input.readByte();
@@ -251,17 +247,15 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
                 case AVALUE_NESTED: {
                     int reference = input.readPackedU32();
                     LimitedAnnotation nestedInstance = annotationTable[reference];
+                    
                     if (nestedInstance == null) {
                         nestedInstance = annotationTable[reference] = readAnnotationEntry( null);
                     }
-
                     break;
                 }
                 default:
                     throw new IllegalStateException("Invalid annotation value tag:" + tag);
             }
-
-
         }
     }
 
@@ -277,6 +271,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private DotName[] readTypeListReference() throws IOException {
         int reference = input.readPackedU32();
         DotName[] types = typeListTable[reference];
+        
         if (types != null) {
             return types;
         }
@@ -287,11 +282,13 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
     private DotName[] readTypeListEntry() throws IOException {
         int size = input.readPackedU32();
+        
         if (size == 0) {
             return DotName.PLACEHOLDER_ARRAY;
         }
 
         DotName[] types = new DotName[size];
+        
         for (int i = 0; i < size; i++) {
             types[i] = typeTable[input.readPackedU32()];
         }
@@ -301,12 +298,12 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
 
     private DotName movePastReadTypeEntry() throws IOException{
-
         int kind = (int) input.readUnsignedByte();
 
         switch (kind) {
             case 0: { //class
                 DotName name = nameTable[input.readPackedU32()];
+
                 readAnnotations(null);
                 return name;
             }
@@ -346,19 +343,19 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
             }
             case 7: { //parametrized type
                 DotName name = nameTable[input.readPackedU32()];
+                
                 input.readPackedU32();
                 readTypeListReference();
                 readAnnotations( null);
                 return name;
-
             }
-
         }
     }
 
 
     private void movePastAnnotationTarget() throws IOException {
         byte tag = input.readByte();
+
         switch(tag){
             case NULL_TARGET_TAG:
                 return;
@@ -408,16 +405,17 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         // Null holds the first slot
         int size = input.readPackedU32() + 1;
         methodTable = new LimitedAnnotationHolder[size];
+
         for (int i = 1; i < size; i++) {
             methodTable[i] = readMethodEntry();
         }
-
     }
 
     private void readFieldTable() throws IOException {
         // Null holds the first slot
         int size = input.readPackedU32() + 1;
         fieldTable = new LimitedAnnotationHolder[size];
+
         for (int i = 1; i < size; i++) {
             fieldTable[i] = readFieldEntry();
         }
@@ -434,6 +432,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         input.readPackedU32();
 
         LimitedAnnotation[] annotations = readAnnotations( DotName.createSimple(Utils.fromUTF8(name)));
+
         return new LimitedAnnotationHolder(DotName.createSimple(Utils.fromUTF8(name)), annotations);
     }
 
@@ -443,15 +442,12 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         input.readPackedU32();
         input.readPackedU32();
 
-
         LimitedAnnotation[] annotations = readAnnotations( DotName.createSimple(Utils.fromUTF8(name)));
 
         return new LimitedAnnotationHolder(DotName.createSimple(Utils.fromUTF8(name)), annotations);
     }
 
     private ClassInfo readClassEntry() throws IOException {
-        
-
         DotName name  = nameTable[input.readPackedU32()];
         short flags = (short) input.readPackedU32();
         DotName superType = typeTable[input.readPackedU32()];
@@ -463,7 +459,6 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
         input.readPackedU32();
         input.readPackedU32();
-
         readPastEnclosingMethod();
 
         int numberOfAnnotations = input.readPackedU32();
@@ -472,7 +467,6 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         readClassMethods(currentClassInformation);
 
         for (int currentAnnotation = 0; currentAnnotation < numberOfAnnotations; currentAnnotation++) {
-
             LimitedAnnotation[] annotationInstances = readAnnotations(currentClassInformation.name());
 
             if (annotationInstances.length > 0) {
@@ -485,7 +479,6 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
     //Only adds annotaions from the array that targets the class given by currentClass parameter
     private void processClassAnnotations(LimitedAnnotation[] allAnnotationsInClass, ClassInfo currentClass){
-        
         for(int annotationCounter = 0; annotationCounter < allAnnotationsInClass.length; annotationCounter++){
             DotName targetName = allAnnotationsInClass[annotationCounter].getTargetName();
             
@@ -513,14 +506,10 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
             currentClass.recordMethodEntry(currentMethod);
         }
-       
     }
 
     private void readPastEnclosingMethod() throws IOException{
-        if (input.readUnsignedByte() != HAS_ENCLOSING_METHOD) {
-            return;
-        }
-        else{
+        if (input.readUnsignedByte() == HAS_ENCLOSING_METHOD) {
             input.readPackedU32(); //eName
             input.readPackedU32(); //eClass
             input.readPackedU32(); //returnType
@@ -529,21 +518,20 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     }
 
     private LimitedIndex readClasses() throws IOException {
-
         int classesSize = input.readPackedU32();
         Map<DotName, ClassInfo> classes = new HashMap<DotName, ClassInfo>(classesSize);
 
         for (int currentEntry = 0; currentEntry < classesSize; currentEntry++) {
-
             ClassInfo currentClassEntry = readClassEntry();
-            classes.put(currentClassEntry.name(), currentClassEntry);
 
+            classes.put(currentClassEntry.name(), currentClassEntry);
         }
 
         return new LimitedIndex(classes);
     }
 
     int toDataVersion(int version) {
+
         return MAX_DATA_VERSION;
     }
 }
