@@ -190,7 +190,11 @@ public final class FreePool implements JCAPMIHelper {
                 pm.displayInfiniteWaitMessage = false; // only display this message once per PM.
             }
             pm.activeRequest.decrementAndGet();
-            pm.waiterFreePoolLock.wait(waitTimeout);
+            if (waitTimeout < 0) {
+                pm.waiterFreePoolLock.wait(0); //wait an infinite amount of time
+            } else {
+                pm.waiterFreePoolLock.wait(waitTimeout); //wait the specified amount of time
+            }
             pm.requestingAccessToPool();
         } catch (InterruptedException ie) {
             if (tc.isDebugEnabled()) {
