@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,14 @@
 package com.ibm.ws.managedobject.internal;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
+import com.ibm.wsspi.injectionengine.InjectionException;
+import com.ibm.wsspi.injectionengine.InjectionTarget;
+import com.ibm.wsspi.injectionengine.InjectionTargetContext;
+import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 public class ManagedObjectImpl<T> implements ManagedObject<T> {
     @Sensitive
@@ -54,5 +60,44 @@ public class ManagedObjectImpl<T> implements ManagedObject<T> {
     @Override
     public String getBeanScope() {
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.managedobject.ManagedObject#inject()
+     */
+    @Override
+    @FFDCIgnore(InjectionException.class)
+    public T inject(ReferenceContext referenceContext) throws ManagedObjectException {
+        InjectionTarget[] targets;
+        try {
+            targets = referenceContext.getInjectionTargets(object.getClass());
+        } catch (InjectionException e) {
+            throw new ManagedObjectException(e);
+        }
+
+        InjectionTargetContext injectionContext = new InjectionTargetContext() {
+            @Override
+            public <S> S getInjectionTargetContextData(Class<S> data) {
+                return getContextData(data);
+            }
+        };
+
+        T object = inject(targets, injectionContext);
+        return object;
+    }
+
+    @Override
+    @FFDCIgnore(InjectionException.class)
+    public T inject(InjectionTarget[] targets, InjectionTargetContext injectionContext) throws ManagedObjectException {
+        for (InjectionTarget injectionTarget : targets) {
+            try {
+                injectionTarget.inject(object, injectionContext);
+            } catch (InjectionException e) {
+                throw new ManagedObjectException(e);
+            }
+        }
+        return object;
     }
 }

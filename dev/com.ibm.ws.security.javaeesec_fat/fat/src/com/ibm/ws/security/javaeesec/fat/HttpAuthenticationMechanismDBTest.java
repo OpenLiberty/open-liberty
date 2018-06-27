@@ -47,7 +47,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description:
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
@@ -97,6 +97,11 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
     @After
     public void cleanupConnection() {
         httpclient.getConnectionManager().shutdown();
+    }
+
+    public void resetConnection() {
+        cleanupConnection();
+        setupConnection();
     }
 
     @Override
@@ -152,6 +157,14 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
     public void testJaspiAnnotatedDBMultiAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
+        for (int i = 0; i < 10; i++) {
+            String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
+                                                              Constants.DB_USER1_PWD,
+                                                              HttpServletResponse.SC_OK);
+            verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, Constants.getRemoteUserFound + Constants.DB_USER1);
+            resetConnection();
+        }
+
         String msg = "DataSource is stored for "; // trace
         List<String> foundResults = myServer.findStringsInLogsAndTrace(msg);
         assertEquals("Expected saving the datasource once: " + msg, 1, foundResults.size());
@@ -159,16 +172,6 @@ public class HttpAuthenticationMechanismDBTest extends JavaEESecTestBase {
         String msg2 = "Always evaluate Datasource: false"; //trace
         foundResults = myServer.findStringsInLogsAndTrace(msg2);
         assertEquals("Expected datasource to be evaluated: " + msg2, 1, foundResults.size());
-
-        for (int i = 0; i < 10; i++) {
-            String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.DB_USER1,
-                                                              Constants.DB_USER1_PWD,
-                                                              HttpServletResponse.SC_OK);
-            verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.DB_USER1, Constants.getRemoteUserFound + Constants.DB_USER1);
-        }
-
-        foundResults = myServer.findStringsInLogsAndTrace(msg);
-        assertEquals("Should not have saved the datasource again.", 1, foundResults.size());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }

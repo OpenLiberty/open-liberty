@@ -2364,7 +2364,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             if (isTracingEnabled && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "hasAgedTimedOut is " + booleanValue);
                 Tr.debug(this, tc, "The created time was " + new Date(createdTimeStamp) + " and the current time is " + new Date(currentTime));
-                Tr.debug(this, tc, "Time difference " + timeDifference + " is greate then the aged timeout " + timeoutValue);
+                Tr.debug(this, tc, "Time difference " + timeDifference + " is greater then the aged timeout " + timeoutValue);
             }
 
         }

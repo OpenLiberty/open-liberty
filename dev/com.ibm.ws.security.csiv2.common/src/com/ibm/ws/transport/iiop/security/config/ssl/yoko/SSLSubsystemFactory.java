@@ -10,19 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security.config.ssl.yoko;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 import org.apache.yoko.orb.OB.ZERO_PORT_POLICY_ID;
-import org.apache.yoko.osgi.locator.BundleProviderLoader;
+import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
+import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
 import org.omg.CORBA.PolicyError;
 import org.omg.CSIIOP.TransportAddress;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -30,14 +27,25 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
 public class SSLSubsystemFactory extends SubsystemFactory {
+    private static enum MyLocalFactory implements LocalFactory {
+        INSTANCE;
+        public Class<?> forName(String name) throws ClassNotFoundException {
+            return Class.forName(name);
+        }
+        public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
+            return null;
+        }
+    }
 
     private static final String ADDR_KEY = "com.ibm.ws.transport.iiop.server.security.CSIv2SubsystemFactory"; //CSIv2SubsystemFactory.class.getName();
     private Register providerRegistry;
-    private BundleProviderLoader sslInitializerClass;
+    private ServiceProvider sslInitializerClass;
 
     @Reference
     protected void setRegister(Register providerRegistry) {
@@ -46,8 +54,7 @@ public class SSLSubsystemFactory extends SubsystemFactory {
 
     @Activate
     protected void activate(BundleContext bundleContext) {
-        Bundle bundle = bundleContext.getBundle();
-        sslInitializerClass = new BundleProviderLoader(ORBInitializer.class.getName(), ORBInitializer.class.getName(), bundle, 1);
+        sslInitializerClass = new ServiceProvider(MyLocalFactory.INSTANCE, ORBInitializer.class);
         providerRegistry.registerProvider(sslInitializerClass);
     }
 

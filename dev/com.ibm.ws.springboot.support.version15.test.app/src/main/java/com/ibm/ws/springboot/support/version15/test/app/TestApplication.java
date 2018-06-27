@@ -34,6 +34,11 @@ public class TestApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TestApplication.class, args);
+		for(String arg: args) {
+			if("--throw.application.exception=true".equals(arg)) {
+				throw new RuntimeException("APPLICATION EXCEPTION");
+			}
+		}	
 	}
 
 	@RequestMapping("/")

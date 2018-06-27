@@ -38,6 +38,7 @@ import org.apache.cxf.jaxrs.lifecycle.PerRequestResourceProvider;
 import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 import org.apache.cxf.message.Message;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,11 +47,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.jaxrs20.JaxRsConstants;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.cdi.JAXRSCDIConstants;
@@ -93,6 +96,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     private final Map<ComponentMetaData, BeanManager> beanManagers = new WeakHashMap<ComponentMetaData, BeanManager>();
 
     private final ConcurrentHashMap<ModuleMetaData, Map<Class<?>, ManagedObjectFactory<?>>> managedObjectFactoryCache = new ConcurrentHashMap<>();
+
+    private ServiceReference<JavaEEVersion> versionRef;
+    private volatile Version platformVersion = JavaEEVersion.VERSION_7_0;
 
     /*
      * (non-Javadoc)
@@ -404,17 +410,17 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                 if (p.isJaxRsProvider()) {
                     //if CDI Scope is APPLICATION_SCOPE or DEPENDENT_SCOPE, report warning and no action: get provider from CDI
                     if (validSingletonScopeList.contains(scopeName)) {
-                        Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, "CDI");
+                        logProviderMismatch(clazz, scopeName, "CDI");
                     }
                     //else report warning, keep using provider from rs: change to use RuntimeType.POJO
                     else {
                         p.setRuntimeType(RuntimeType.POJO);
                         resourcesManagedbyCDI.remove(p.getProviderResourceClass());
-                        Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, "JAXRS");
+                        logProviderMismatch(clazz, scopeName, "JAXRS");
                     }
                 } else {
                     if (!validRequestScopeList.contains(scopeName)) { //means this is @ApplicationScoped in CDI
-                        Tr.warning(tc, "warning.jaxrs.cdi.resource.mismatch", clazz.getSimpleName(), "PerRequest", scopeName, "CDI");
+                        logResourceMismatch(clazz, "PerRequest", scopeName, "CDI");
                     }
 
                 }
@@ -460,13 +466,13 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                 resourcesManagedbyCDI.put(o.getProviderResourceClass(), null);
                 if (o.isJaxRsProvider()) {
                     if (validSingletonScopeList.contains(scopeName)) {
-                        Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, "CDI");
+                        logProviderMismatch(clazz, scopeName, "CDI");
                     }
                     //else report warning, keep using provider from rs: change to use RuntimeType.POJO
                     else {
                         o.setRuntimeType(RuntimeType.POJO);
                         resourcesManagedbyCDI.remove(clazz);
-                        Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, "JAXRS");
+                        logProviderMismatch(clazz, scopeName, "JAXRS");
                     }
 
                     //Old check is this, need verify by using FAT:
@@ -477,7 +483,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
                     if (!validSingletonScopeList.contains(scopeName)) { // means CDI is per-request, then modify cxfPRHolder to per-request as well.
                         cxfPRHolder.removeResouceProvider(clazz);//remove from original ResourceProvider map and re-add the new one.
                         cxfPRHolder.addResouceProvider(clazz, new PerRequestResourceProvider(clazz));
-                        Tr.warning(tc, "warning.jaxrs.cdi.resource.mismatch", clazz.getSimpleName(), "Singleton", scopeName, "CDI");
+                        logResourceMismatch(clazz, "Singleton", scopeName, "CDI");
                     }
 
                 }
@@ -687,6 +693,19 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         this.cdiService = null;
     }
 
+    @Reference(service = JavaEEVersion.class)
+    protected synchronized void setVersion(ServiceReference<JavaEEVersion> reference) {
+        versionRef = reference;
+        platformVersion = Version.parseVersion((String) reference.getProperty("version"));
+    }
+
+    protected synchronized void unsetVersion(ServiceReference<JavaEEVersion> reference) {
+        if (reference == this.versionRef) {
+            versionRef = null;
+            platformVersion = JavaEEVersion.VERSION_7_0;
+        }
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -782,5 +801,26 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         // clear out bean managers cache on app shutdown to avoid memory leak
         beanManagers.clear();
 
+    }
+
+    @Trivial
+    private void logResourceMismatch(Class<?> clazz, String jaxrsScope, String cdiScope, String lifecycleMgr) {
+        if (platformVersion.getMajor() > 7) {
+            Tr.debug(tc, "CWWKW1001W: The scope " + jaxrsScope + " of JAXRS-2.0 Resource " + clazz.getSimpleName() +
+                         " does not match the CDI scope " + cdiScope + ". Liberty gets resource instance from " +
+                         lifecycleMgr + ".");
+        } else {
+            Tr.warning(tc, "warning.jaxrs.cdi.resource.mismatch", clazz.getSimpleName(), jaxrsScope, cdiScope, lifecycleMgr);
+        }
+    }
+
+    @Trivial
+    private void logProviderMismatch(Class<?> clazz, String scopeName, String lifecycleMgr) {
+        if (platformVersion.getMajor() > 7) {
+            Tr.debug(tc, "CWWKW1002W: The CDI scope of JAXRS-2.0 Provider " + clazz.getSimpleName() + " is " +
+                         scopeName + ". Liberty gets the provider instance from " + lifecycleMgr + ".");
+        } else {
+            Tr.warning(tc, "warning.jaxrs.cdi.provider.mismatch", clazz.getSimpleName(), scopeName, lifecycleMgr);
+        }
     }
 }

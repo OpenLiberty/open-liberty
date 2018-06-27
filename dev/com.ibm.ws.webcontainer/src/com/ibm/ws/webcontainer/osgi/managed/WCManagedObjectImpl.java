@@ -13,6 +13,11 @@ package com.ibm.ws.webcontainer.osgi.managed;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
+import com.ibm.wsspi.injectionengine.InjectionException;
+import com.ibm.wsspi.injectionengine.InjectionTarget;
+import com.ibm.wsspi.injectionengine.InjectionTargetContext;
+import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 /**
  *
@@ -62,5 +67,42 @@ public class WCManagedObjectImpl<T> implements ManagedObject<T> {
     public String getBeanScope() {
        
         return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.managedobject.ManagedObject#inject()
+     */
+    @Override
+    public T inject(ReferenceContext referenceContext) throws ManagedObjectException {
+        InjectionTarget[] targets;
+        try {
+            targets = referenceContext.getInjectionTargets(object.getClass());
+        } catch (InjectionException e) {
+            throw new ManagedObjectException(e);
+        }
+
+        InjectionTargetContext injectionContext = new InjectionTargetContext() {
+            @Override
+            public <S> S getInjectionTargetContextData(Class<S> data) {
+                return getContextData(data);
+            }
+        };
+
+        T object = inject(targets, injectionContext);
+        return object;
+    }
+
+    @Override
+    public T inject(InjectionTarget[] targets, InjectionTargetContext injectionContext) throws ManagedObjectException {
+        for (InjectionTarget injectionTarget : targets) {
+            try {
+                injectionTarget.inject(object, injectionContext);
+            } catch (InjectionException e) {
+                throw new ManagedObjectException(e);
+            }
+        }
+        return object;
     }
 }

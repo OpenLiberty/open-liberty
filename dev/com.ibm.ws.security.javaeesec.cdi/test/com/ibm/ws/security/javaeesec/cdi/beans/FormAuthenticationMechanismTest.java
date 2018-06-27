@@ -511,7 +511,6 @@ public class FormAuthenticationMechanismTest {
 
     private FormAuthenticationMechanismTest withNewAuthenticate(Credential cred) throws Exception {
         withMessageContext().setNewAuthenticateExpectations().withAuthParamsExpectations(ap).withCredentialExpectations(cred);
-        withJaspicSessionEnabled(false);
         return this;
     }
 
@@ -539,16 +538,6 @@ public class FormAuthenticationMechanismTest {
             {
                 allowing(ap).getCredential();
                 will(returnValue(cred));
-            }
-        });
-        return this;
-    }
-
-    private FormAuthenticationMechanismTest withJaspicSessionEnabled(final boolean enabled) {
-        mockery.checking(new Expectations() {
-            {
-                allowing(webAppSecurityConfig).isJaspicSessionEnabled();
-                will(returnValue(enabled));
             }
         });
         return this;

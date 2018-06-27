@@ -10,9 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.internal;
 
-import org.apache.yoko.osgi.locator.BundleProviderLoader;
+import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
-import org.osgi.framework.Bundle;
+import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -22,9 +22,18 @@ import org.osgi.service.component.annotations.Reference;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
 public class WSClassRegistration {
+    private enum MyLocalFactory implements LocalFactory {
+        INSTANCE;
+        public Class<?> forName(String name) throws ClassNotFoundException {
+            return Class.forName(name);
+        }
+        public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
+            return cls.newInstance();
+        }
+    }
     private Register providerRegistry;
-    private BundleProviderLoader proClass;
-    private BundleProviderLoader utilClass;
+    private ServiceProvider proClass;
+    private ServiceProvider utilClass;
 
     @Reference
     protected void setRegister(Register providerRegistry) {
@@ -33,12 +42,10 @@ public class WSClassRegistration {
 
     @Activate
     protected void activate(BundleContext bundleContext) {
-        Bundle bundle = bundleContext.getBundle();
-
-        proClass = new BundleProviderLoader("javax.rmi.CORBA.PortableRemoteObjectClass", WSPortableRemoteObjectImpl.class.getName(), bundle, 2);
+        proClass = new ServiceProvider(MyLocalFactory.INSTANCE,"javax.rmi.CORBA.PortableRemoteObjectClass", WSPortableRemoteObjectImpl.class, 2);
         providerRegistry.registerService(proClass);
 
-        utilClass = new BundleProviderLoader("javax.rmi.CORBA.UtilClass", WSUtilImpl.class.getName(), bundle, 2);
+        utilClass = new ServiceProvider(MyLocalFactory.INSTANCE,"javax.rmi.CORBA.UtilClass", WSUtilImpl.class, 2);
         providerRegistry.registerService(utilClass);
     }
 

@@ -48,6 +48,9 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
 /**
  * Handles token based authentication, such as Single Sign-on.
  */
+/**
+ *
+ */
 public class TokenLoginModule extends ServerCommonLoginModule implements LoginModule {
 
     private static final TraceComponent tc = Tr.register(TokenLoginModule.class);
@@ -56,6 +59,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
     private String accessId = null;
     private Token recreatedToken;
     private String customRealm = null;
+    private String authProvider = null;
 
     private final String[] hashtableLoginProperties = { AttributeNameConstants.WSCREDENTIAL_UNIQUEID,
                                                         AttributeNameConstants.WSCREDENTIAL_USERID,
@@ -63,7 +67,8 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
                                                         AttributeNameConstants.WSCREDENTIAL_REALM,
                                                         AttributeNameConstants.WSCREDENTIAL_CACHE_KEY,
                                                         AuthenticationConstants.INTERNAL_ASSERTION_KEY,
-                                                        AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
+                                                        AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN,
+                                                        AuthenticationConstants.INTERNAL_AUTH_PROVIDER };
 
     /** {@inheritDoc} */
     @Override
@@ -177,6 +182,7 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
         accessId = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
         String securityName = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
         customRealm = (String) customProperties.get(AttributeNameConstants.WSCREDENTIAL_REALM);
+        authProvider = (String) customProperties.get(AuthenticationConstants.INTERNAL_AUTH_PROVIDER);
 
         setWSPrincipal(temporarySubject, securityName, accessId, WSPrincipal.AUTH_METHOD_JWT_SSO_TOKEN);
         setCredentials(temporarySubject, securityName, securityName);
@@ -192,13 +198,16 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
             return false;
         }
         setUpSubject();
-        if (customRealm != null) {
-            addCustomRealmToSSOToken();
+        if (customRealm != null || authProvider != null && !authProvider.endsWith("Form")) {
+            addCustomAttributesToSSOToken();
         }
         return true;
     }
 
-    private void addCustomRealmToSSOToken() {
+    /*
+     * Add custom realm and authProvider attributes to the ssoToken
+     */
+    private void addCustomAttributesToSSOToken() {
         SingleSignonToken ssoToken = getSSOToken(subject);
         if (ssoToken != null) {
             if (customRealm != null) {
@@ -206,6 +215,9 @@ public class TokenLoginModule extends ServerCommonLoginModule implements LoginMo
                     Tr.debug(tc, "Add custom realm into SSOToken");
                 }
                 ssoToken.addAttribute(AttributeNameConstants.WSCREDENTIAL_REALM, customRealm);
+            }
+            if (authProvider != null && !authProvider.endsWith("Form")) {
+                ssoToken.addAttribute(AuthenticationConstants.INTERNAL_AUTH_PROVIDER, authProvider);
             }
         }
     }

@@ -434,6 +434,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: Element {0} nie jest s
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=W rozszerzeniu produktu mo\u017cna zainstalowa\u0107 tylko sk\u0142adniki.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Uruchom ponownie komend\u0119 installUtility install bez okre\u015blania sk\u0142adnika.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: Nie mo\u017cna pobra\u0107 nast\u0119puj\u0105cych sk\u0142adnik\u00f3w: {0}. Sprawd\u017a, czy te sk\u0142adniki s\u0105 poprawne dla biblioteki Open Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=Instalator nie m\u00f3g\u0142 pobra\u0107 okre\u015blonych sk\u0142adnik\u00f3w z po\u0142\u0105czonych repozytori\u00f3w.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Je\u015bli okre\u015blony sk\u0142adnik istnieje, sprawd\u017a czy jest on przeznaczony dla biblioteki Open Liberty.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: Sk\u0142adnika {0} nie mo\u017cna zainstalowa\u0107 w wersji IBM WebSphere Application Server Liberty Core, poniewa\u017c ma on zastosowanie do innych wersji produktu IBM WebSphere Application Server Liberty i biblioteki Open Liberty. U\u017cyj dzia\u0142ania find komendy featureManager, aby pobra\u0107 list\u0119 sk\u0142adnik\u00f3w maj\u0105cych zastosowanie do wersji IBM WebSphere Application Server Liberty Core.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=Sk\u0142adnik nie ma zastosowania do edycji zainstalowanego produktu.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Zainstaluj sk\u0142adniki, kt\u00f3re s\u0105 obs\u0142ugiwane przez edycj\u0119 produktu.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: Instalowanie nast\u0119puj\u0105cych sk\u0142adnik\u00f3w: {0}.
 LOG_INSTALL_FEATURES.explanation=Podane sk\u0142adniki zostan\u0105 zainstalowane.

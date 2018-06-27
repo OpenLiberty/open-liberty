@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.servlet.ServletContext;
+import javax.servlet.SessionTrackingMode;
 import javax.servlet.http.Cookie;
 
 import org.jmock.Expectations;
@@ -34,9 +36,12 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 import com.ibm.websphere.servlet40.IRequest40;
+import com.ibm.ws.session.SessionManagerConfig;
+import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
+import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
+import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.genericbnf.HeaderField;
-import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
@@ -55,12 +60,26 @@ public class HttpPushBuilderTest {
     final private IRequest40 IReq40 = context.mock(IRequest40.class);
     final private SRTServletRequest40 srtReq = context.mock(SRTServletRequest40.class);
     final private Http2Request hReq = context.mock(Http2Request.class);
+    final private ServletContext servletContext = context.mock(ServletContext.class);
+    final private WebAppDispatcherContext webAppDispatcherContext = context.mock(WebAppDispatcherContext.class);
+    final private WebApp webApp = context.mock(WebApp.class);
+    final private IHttpSessionContext httpSessionContext = context.mock(IHttpSessionContext.class);
 
     @Test
     public void testAPI_method() {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -124,6 +143,16 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -160,6 +189,26 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -188,6 +237,16 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -226,6 +285,16 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -309,6 +378,16 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -408,6 +487,29 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
+                // Used to get the Session Manager Config
+                oneOf(srtReq).getWebAppDispatcherContext();
+                will(returnValue(webAppDispatcherContext));
+
+                allowing(webAppDispatcherContext).getWebApp();
+                will(returnValue(webApp));
+
+                oneOf(webApp).getSessionContext();
+                will(returnValue(httpSessionContext));
+
+                oneOf(httpSessionContext).getWASSessionConfig();
+                will(returnValue(new SessionManagerConfig()));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -493,21 +595,28 @@ public class HttpPushBuilderTest {
     }
 
     @Test
-    public void test_pushBuilderCookies() {
+    public void test_pushBuilderGoodCookie() {
 
         Cookie goodCookie = new Cookie("CookieGood", "CookieGoodValue");
         goodCookie.setMaxAge(10);
         goodCookie.setComment("Test Cookie");
 
-        Cookie agedCookie = new Cookie("CookieAged", "CookieAgedValue");
-        agedCookie.setMaxAge(0);
-
-        Cookie[] cookies = { goodCookie, agedCookie };
-        assertTrue(cookies.length == 2);
+        Cookie[] cookies = { goodCookie };
+        assertTrue(cookies.length == 1);
         assertTrue(goodCookie.getMaxAge() > 0);
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {
@@ -533,19 +642,62 @@ public class HttpPushBuilderTest {
 
         HttpPushBuilder pb = new HttpPushBuilder(srtReq, null, null, cookies);
 
-        Set<HttpCookie> httpCookies = pb.getCookies();
+        String cookie = pb.getHeader("Cookie");
 
-        assertTrue(httpCookies.size() == 1);
+        assertTrue(cookie.equals(goodCookie.getName() + "=" + goodCookie.getValue()));
 
-        Iterator<HttpCookie> hCs = httpCookies.iterator();
+    }
 
-        while (hCs.hasNext()) {
-            HttpCookie hC = hCs.next();
-            assertTrue(hC.getName().equals("CookieGood"));
-            assertTrue(hC.getValue().equals("CookieGoodValue"));
-            assertTrue(hC.getComment().equals("Test Cookie"));
-            assertTrue(hC.getMaxAge() == 10);
-        }
+    @Test
+    public void test_pushBuilderAgedCookie() {
+
+        Cookie agedCookie = new Cookie("CookieAged", "CookieAgedValue");
+        agedCookie.setMaxAge(0);
+
+        Cookie[] cookies = { agedCookie };
+        assertTrue(cookies.length == 1);
+        assertTrue(agedCookie.getMaxAge() == 0);
+
+        context.checking(new Expectations() {
+            {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getUserPrincipal();
+                will(returnValue(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "user1";
+                    }
+                }));
+
+                // Used to construct the Authorization header when the PushBuilder is initialized
+                oneOf(srtReq).getHeader(HttpHeaderKeys.HDR_AUTHORIZATION.getName());
+                will(returnValue("Basic xyz"));
+
+                // Used to construct the Referer header when the PushBuilder is initialized.
+                oneOf(srtReq).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/UnitTest/testAPI_pushBuilderCookies")));
+
+                // Used to construct the Referer header when the PushBuilder is initialized.
+                oneOf(srtReq).getQueryString();
+                will(returnValue("test=queryStringFromRequest"));
+            }
+        });
+
+        HttpPushBuilder pb = new HttpPushBuilder(srtReq, null, null, cookies);
+
+        String cookie = pb.getHeader("Cookie");
+
+        assertNull(cookie);
 
     }
 
@@ -590,6 +742,29 @@ public class HttpPushBuilderTest {
 
         context.checking(new Expectations() {
             {
+                // Used to get the effective session tracking modes
+                oneOf(srtReq).getServletContext();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(srtReq).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
+                // Used to get the Session Manager Config
+                oneOf(srtReq).getWebAppDispatcherContext();
+                will(returnValue(webAppDispatcherContext));
+
+                allowing(webAppDispatcherContext).getWebApp();
+                will(returnValue(webApp));
+
+                oneOf(webApp).getSessionContext();
+                will(returnValue(httpSessionContext));
+
+                oneOf(httpSessionContext).getWASSessionConfig();
+                will(returnValue(new SessionManagerConfig()));
+
                 // Used to construct the Authorization header when the PushBuilder is initialized
                 oneOf(srtReq).getUserPrincipal();
                 will(returnValue(new Principal() {

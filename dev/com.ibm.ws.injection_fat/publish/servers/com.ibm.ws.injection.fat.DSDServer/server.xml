@@ -23,5 +23,8 @@
         <classloader commonLibraryRef="DerbyLib,global"/>
     </application>
 	
+	<!-- Increased due to filesystem access on our poor build/test infrastructure taking more than the default 2 minutes -->
+  	<transaction totalTranLifetimeTimeout="30m"/>
+	
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 </server>

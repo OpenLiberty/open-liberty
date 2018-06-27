@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
@@ -40,14 +42,16 @@ public class BDAFactory {
                                                            String archiveID,
                                                            CDIArchive archive,
                                                            CDIRuntime cdiRuntime) throws CDIException {
-        return createBDA(deployment, archiveID, archive, cdiRuntime, null);
+        //this isn't really part of any EE module so we just use the archiveID which should be unique
+        EEModuleDescriptor eeModuleDescriptor = new WebSphereEEModuleDescriptor(archiveID, archive.getType());
+        return createBDA(deployment, archiveID, archive, cdiRuntime, eeModuleDescriptor);
     }
 
     public static WebSphereBeanDeploymentArchive createBDA(WebSphereCDIDeployment deployment,
                                                            String archiveID,
                                                            CDIArchive archive,
                                                            CDIRuntime cdiRuntime,
-                                                           String eEModuleDescriptorId) throws CDIException {
+                                                           EEModuleDescriptor eEModuleDescriptor) throws CDIException {
         Set<String> additionalClasses = Collections.<String> emptySet();
         Set<String> additionalAnnotations = Collections.<String> emptySet();
 
@@ -59,10 +63,11 @@ public class BDAFactory {
                                                        additionalAnnotations,
                                                        false,
                                                        false,
-                                                       eEModuleDescriptorId);
+                                                       eEModuleDescriptor);
         return bda;
     }
 
+    //only for extensions
     public static WebSphereBeanDeploymentArchive createBDA(WebSphereCDIDeployment deployment,
                                                            ExtensionArchive extensionArchive,
                                                            CDIRuntime cdiRuntime) throws CDIException {
@@ -73,6 +78,8 @@ public class BDAFactory {
 
         boolean extClassesOnlyBDA = extensionArchive.isExtClassesOnly();
         String archiveID = deployment.getDeploymentID() + "#" + extensionArchive.getName() + ".additionalClasses";
+        //this isn't really part of any EE module so we just use the archiveID which should be unique
+        EEModuleDescriptor eeModuleDescriptor = new WebSphereEEModuleDescriptor(archiveID, extensionArchive.getType());
 
         WebSphereBeanDeploymentArchive bda = createBDA(deployment,
                                                        archiveID,
@@ -82,7 +89,7 @@ public class BDAFactory {
                                                        additionalAnnotations,
                                                        extensionCanSeeApplicationBDAs,
                                                        extClassesOnlyBDA,
-                                                       null);
+                                                       eeModuleDescriptor);
         return bda;
     }
 
@@ -100,7 +107,7 @@ public class BDAFactory {
                                                             Set<String> additionalBeanDefiningAnnotations,
                                                             boolean extensionCanSeeApplicationBDAs,
                                                             boolean extensionClassesOnlyBDA,
-                                                            String eEModuleDescriptorId) throws CDIException {
+                                                            EEModuleDescriptor eEModuleDescriptor) throws CDIException {
         Set<String> extensionClassNames = archive.getExtensionClasses();
         Set<String> allClassNames = new HashSet<String>();
         if (archive.getType() == ArchiveType.RUNTIME_EXTENSION) {
@@ -127,6 +134,6 @@ public class BDAFactory {
 
         }
 
-        return new BeanDeploymentArchiveImpl(deployment, archiveID, archive, cdiRuntime, allClassNames, additionalClasses, additionalBeanDefiningAnnotations, extensionCanSeeApplicationBDAs, extensionClassNames, eEModuleDescriptorId);
+        return new BeanDeploymentArchiveImpl(deployment, archiveID, archive, cdiRuntime, allClassNames, additionalClasses, additionalBeanDefiningAnnotations, extensionCanSeeApplicationBDAs, extensionClassNames, eEModuleDescriptor);
     }
 }

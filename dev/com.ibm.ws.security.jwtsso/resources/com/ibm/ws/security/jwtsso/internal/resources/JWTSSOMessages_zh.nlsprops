@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: \u627e\u4e0d\u5230\u6807\u8bc6\u4e3a [{0}] \u7684 MicroProfile JSON Web \u4ee4\u724c (JWT) \u4f7f\u7528\u8005\u914d\u7f6e\u3002\u8bf7\u9a8c\u8bc1\u670d\u52a1\u5668\u4e2d\u662f\u5426\u5b58\u5728\u5177\u6709\u6240\u6307\u5b9a\u6807\u8bc6\u7684 mpJwt \u914d\u7f6e\u3002
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=\u5728\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u627e\u4e0d\u5230\u5177\u6709\u6240\u6307\u5b9a\u6807\u8bc6\u7684 MPJWT \u4f7f\u7528\u8005\u914d\u7f6e\u3002
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=\u8bf7\u786e\u4fdd\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u5b58\u5728\u4f7f\u7528\u6240\u6307\u5b9a\u6807\u8bc6\u914d\u7f6e\u7684 mpJwt \u5143\u7d20\uff0c\u5e76\u4e14 jwtSso \u5143\u7d20\u5f15\u7528\u4e86\u8be5 mpJwt \u5143\u7d20\u3002
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: \u6709\u592a\u591a MicroProfile JWT \u670d\u52a1 [{0}] \u6709\u8d44\u683c\u5904\u7406\u8bf7\u6c42\u3002
+TOO_MANY_MP_JWT_PROVIDERS.explanation=\u5f53\u591a\u9879\u670d\u52a1\u6709\u8d44\u683c\u5904\u7406\u8bf7\u6c42\u65f6\uff0cJWTSSO JWT \u529f\u80fd\u90e8\u4ef6\u65e0\u6cd5\u9009\u62e9 MicroProfile JWT \u670d\u52a1\u6765\u5904\u7406\u8bf7\u6c42\u3002
+TOO_MANY_MP_JWT_PROVIDERS.useraction=\u8bf7\u786e\u4fdd\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u6700\u591a\u53ea\u6709\u4e00\u9879 MicroProfile JWT \u670d\u52a1\u914d\u7f6e\u4e3a\u5904\u7406\u8bf7\u6c42\u3002
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: JwtSso cookieName \u5c5e\u6027\u7684\u503c\u4e0d\u5f97\u4e3a null \u6216\u8005\u4e3a\u7a7a\u3002\u5c06\u4f7f\u7528\u7f3a\u7701 cookieName \u503c\u3002
+COOKIE_NAME_CANT_BE_EMPTY.explanation=cookieName \u5c5e\u6027\u9700\u8981\u662f\u6709\u6548 cookie \u540d\u79f0\u3002
+COOKIE_NAME_CANT_BE_EMPTY.useraction=\u79fb\u9664 cookieName \u5c5e\u6027\uff0c\u6216\u8005\u66f4\u6b63\u503c\u3002
+
+COOKIE_NAME_INVALID=CWWKS6303E: jwtSso cookieName \u5c5e\u6027 [{0}] \u7684\u503c\u5305\u542b\u65e0\u6548\u5b57\u7b26 [{1}]\u3002\u5c06\u6539\u4e3a\u4f7f\u7528\u7f3a\u7701 cookieName \u503c\u3002
+COOKIE_NAME_INVALID.explanation=cookieName \u5c5e\u6027\u9700\u8981\u662f\u6709\u6548 cookie \u540d\u79f0\u3002
+COOKIE_NAME_INVALID.useraction=\u79fb\u9664 cookieName \u5c5e\u6027\uff0c\u6216\u8005\u66f4\u6b63\u503c\u3002
+
 

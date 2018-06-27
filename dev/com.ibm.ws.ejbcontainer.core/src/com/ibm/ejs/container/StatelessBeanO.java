@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejbcontainer.CallbackKind;
 import com.ibm.ws.ejbcontainer.EJBPMICollaborator;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.traceinfo.ejbcontainer.TEBeanLifeCycleInfo;
 import com.ibm.wsspi.injectionengine.InjectionTargetContext;
 
@@ -39,9 +40,7 @@ import com.ibm.wsspi.injectionengine.InjectionTargetContext;
  * session context implementation for the enterprise bean. <p>
  */
 
-public class StatelessBeanO
-                extends SessionBeanO
-{
+public class StatelessBeanO extends SessionBeanO {
     private static final String CLASS_NAME = StatelessBeanO.class.getName();
     private static final TraceComponent tc = Tr.register(StatelessBeanO.class, "EJBContainer", "com.ibm.ejs.container.container");
 
@@ -75,8 +74,7 @@ public class StatelessBeanO
     // PK20648
     transient protected boolean ivNumberOfBeansLimited;
 
-    StatelessBeanO()
-    {
+    StatelessBeanO() {
         // A no-param constructor must exist for deserialization.       d724504
         super(null, null);
     }
@@ -97,8 +95,7 @@ public class StatelessBeanO
     } // StatelessBeanO
 
     @Override
-    protected String getStateName(int state)
-    {
+    protected String getStateName(int state) {
         return StateStrs[state];
     }
 
@@ -111,9 +108,7 @@ public class StatelessBeanO
      */
     //456222
     @Override
-    protected void initialize(boolean reactivate)
-                    throws RemoteException, InvocationTargetException
-    {
+    protected void initialize(boolean reactivate) throws RemoteException, InvocationTargetException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "initialize");
@@ -136,15 +131,12 @@ public class StatelessBeanO
             // Create the interceptor instances if there are interceptor
             // classes for this bean instance.
             BeanMetaData bmd = null;
-            if (home == null)
-            {
+            if (home == null) {
                 // This SLSB must a home bean, so there is no InterceptorMetaData
                 // to process.  Also, no need to ensure unspecified TX context since
                 // a home is not required to be a EJB by EJB specs. Thus, we can
                 // implement it however we desire to implement it.
-            }
-            else
-            {
+            } else {
                 // Note that the local transaction surrounds injection methods
                 // and PostConstruct lifecycle callbacks.
                 bmd = home.beanMetaData;
@@ -156,8 +148,7 @@ public class StatelessBeanO
                 setId(home.ivStatelessId); // d140003.12
 
                 // Cache whether or not the number of beans are limited.   PK20648
-                if (home.beanMetaData.ivMaxCreation > 0)
-                {
+                if (home.beanMetaData.ivMaxCreation > 0) {
                     ivNumberOfBeansLimited = true;
                 }
 
@@ -165,7 +156,7 @@ public class StatelessBeanO
 
                 // Now set the SessionContext and/or do the dependency injection.
                 // Note that dependency injection must occur while in PRE_CREATE state.
-                injectInstance(ivEjbInstance, this);
+                injectInstance(ivManagedObject, ivEjbInstance, this);
             }
 
             //---------------------------------------------------------
@@ -186,24 +177,20 @@ public class StatelessBeanO
             //-------------------------------------------------------------------
 
             // Determine of life cycle callback to make if any.
-            if (ivCallbackKind == CallbackKind.SessionBean)
-            {
+            if (ivCallbackKind == CallbackKind.SessionBean) {
                 // This is not a home bean since CallbackKind would be NONE for homes.
                 // Therefore, the bmd variables should be set.
                 Method m = bmd.ivEjbCreateMethod; //d453778
                 if (m != null) //d453778
                 {
                     // This is a 1.x/2.x SLSB that has a ejbCreate method in it.
-                    try
-                    {
+                    try {
                         if (isTraceOn && // d527372
-                            TEBeanLifeCycleInfo.isTraceEnabled())
-                        {
+                            TEBeanLifeCycleInfo.isTraceEnabled()) {
                             TEBeanLifeCycleInfo.traceEJBCallEntry("ejbCreate"); // d161864
                         }
                         m.invoke(ivEjbInstance, new Object[] {});
-                    } catch (InvocationTargetException itex)
-                    {
+                    } catch (InvocationTargetException itex) {
                         FFDCFilter.processException(itex, CLASS_NAME + ".StatelessBeanO",
                                                     "110", this);
 
@@ -222,25 +209,20 @@ public class StatelessBeanO
                         // Continue to wrap with a CreateFailureException
                         // to ensure no behavior change with prior releases.
                         throw new CreateFailureException(targetEx);
-                    } catch (Throwable ex)
-                    {
+                    } catch (Throwable ex) {
                         // This kind of SLSB is allowed to throw application exceptions as well as
                         // javax.ejb.CreateException. Continue to wrap with a CreateFailureException
                         // to ensure no behavior change with prior releases.
                         FFDCFilter.processException(ex, CLASS_NAME + ".StatelessBeanO", "401", this);
                         throw new CreateFailureException(ex);
-                    } finally
-                    {
+                    } finally {
                         if (isTraceOn && // d527372
-                            TEBeanLifeCycleInfo.isTraceEnabled())
-                        {
+                            TEBeanLifeCycleInfo.isTraceEnabled()) {
                             TEBeanLifeCycleInfo.traceEJBCallExit("ejbCreate"); // d161864
                         }
                     }
                 }
-            }
-            else if (ivCallbackKind == CallbackKind.InvocationContext)
-            {
+            } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                 // This is a 3.x SLSB that may have one or more PostConstruct interceptors
                 // methods. Invoke PostContruct interceptors if there is atleast 1
                 // PostConstruct interceptor.
@@ -250,8 +232,7 @@ public class StatelessBeanO
                 if (imd != null) // d402681
                 {
                     InterceptorProxy[] proxies = imd.ivPostConstructInterceptors;
-                    if (proxies != null)
-                    {
+                    if (proxies != null) {
                         callLifecycleInterceptors(proxies, LifecycleInterceptorWrapper.MID_POST_CONSTRUCT); // F743-1751
                     }
                 }
@@ -280,7 +261,7 @@ public class StatelessBeanO
     } // StatelessBeanO
 
     @Override
-    protected void injectInstance(Object managedObject, InjectionTargetContext injectionContext) throws EJBException {
+    protected void injectInstance(ManagedObject<?> managedObject, Object instance, InjectionTargetContext injectionContext) throws EJBException {
         // If present, setSessionContext should be called before performing injection
         if (sessionBean != null) {
             try {
@@ -291,7 +272,7 @@ public class StatelessBeanO
                 throw ExceptionUtil.EJBException(rex);
             }
         }
-        super.injectInstance(managedObject, this);
+        super.injectInstance(managedObject, instance, this);
     }
 
     /**
@@ -336,8 +317,7 @@ public class StatelessBeanO
      * associated session bean. <p>
      */
     @Override
-    public final synchronized void destroy()
-    {
+    public final synchronized void destroy() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) // d367572.4
         {
@@ -351,8 +331,7 @@ public class StatelessBeanO
         // For Stateless, 'destroy' is where the bean is removed and destroyed.
         // Remove time should include calling any lifecycle callbacks.   d626533.1
         long removeStartTime = -1;
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             removeStartTime = pmiBean.initialTime(EJBPMICollaborator.REMOVE_RT);
         }
 
@@ -364,8 +343,7 @@ public class StatelessBeanO
             CallbackContextHelper contextHelper = new CallbackContextHelper(this); // d399469, d630940
             BeanMetaData bmd = home.beanMetaData;
 
-            try
-            {
+            try {
                 // Suspend UOW to ensure everything in this method runs
                 // in a unspecified TX context if this bean is in a EJB 3.0
                 // module.  We are not doing for older modules to ensure we do
@@ -380,75 +358,60 @@ public class StatelessBeanO
 
                 // d367572.1 start
                 // Invoke either ejbRemove or PreDestroy lifecycle callback if necessary.
-                if (ivCallbackKind == CallbackKind.SessionBean)
-                {
+                if (ivCallbackKind == CallbackKind.SessionBean) {
                     if (isTraceOn && // d527372
-                        TEBeanLifeCycleInfo.isTraceEnabled())
-                    {
+                        TEBeanLifeCycleInfo.isTraceEnabled()) {
                         lifeCycle = "ejbRemove";
                         TEBeanLifeCycleInfo.traceEJBCallEntry(lifeCycle); // d161864
                     }
 
                     // pre-EJB3 SLSB, so invoke ejbRemove.
                     sessionBean.ejbRemove();
-                }
-                else if (ivCallbackKind == CallbackKind.InvocationContext)
-                {
+                } else if (ivCallbackKind == CallbackKind.InvocationContext) {
                     // Invoke the PreDestroy interceptor methods.
                     if (isTraceOn && // d527372
-                        TEBeanLifeCycleInfo.isTraceEnabled())
-                    {
+                        TEBeanLifeCycleInfo.isTraceEnabled()) {
                         lifeCycle = "preDestroy";
                         TEBeanLifeCycleInfo.traceEJBCallEntry(lifeCycle); // d161864
                     }
                     InterceptorMetaData imd = home.beanMetaData.ivInterceptorMetaData;
                     InterceptorProxy[] proxies = imd.ivPreDestroyInterceptors;
-                    if (proxies != null)
-                    {
-                        if (isTraceOn && tc.isDebugEnabled())
-                        {
+                    if (proxies != null) {
+                        if (isTraceOn && tc.isDebugEnabled()) {
                             Tr.debug(tc, "invoking PreDestroy interceptors");
                         }
                         InvocationContextImpl<?> inv = getInvocationContext();
                         inv.doLifeCycle(proxies, bmd._moduleMetaData); //d450431, F743-14982
                     }
                 } // d367572.1 end
-            } catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 FFDCFilter.processException(ex, CLASS_NAME + ".destroy", "164", this);
 
                 // Just trace this event and continue so that BeanO is transitioned
                 // to the DESTROYED state.  No other lifecycle callbacks on this bean
                 // instance will occur once in the DESTROYED state, which is the same
                 // affect as if bean was discarded as result of this exception.
-                if (isTraceOn && tc.isEventEnabled())
-                {
+                if (isTraceOn && tc.isEventEnabled()) {
                     Tr.event(tc, "destroy caught exception: ", new Object[] { this, ex }); // d402681
                 }
-            } finally
-            {
+            } finally {
                 if (isTraceOn && // d527372
-                    TEBeanLifeCycleInfo.isTraceEnabled())
-                {
-                    if (lifeCycle != null)
-                    {
+                    TEBeanLifeCycleInfo.isTraceEnabled()) {
+                    if (lifeCycle != null) {
                         TEBeanLifeCycleInfo.traceEJBCallExit(lifeCycle); // d161864
                     }
                 }
 
-                try
-                {
+                try {
                     contextHelper.complete(true);
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     FFDCFilter.processException(t, CLASS_NAME + ".destroy", "505", this);
 
                     // Just trace this event and continue so that BeanO is transitioned
                     // to the DESTROYED state.  No other lifecycle callbacks on this bean
                     // instance will occur once in the DESTROYED state, which is the same
                     // affect as if bean was discarded as result of this exception.
-                    if (isTraceOn && tc.isEventEnabled())
-                    {
+                    if (isTraceOn && tc.isEventEnabled()) {
                         Tr.event(tc, "destroy caught exception: ", new Object[] { this, t });
                     }
                 }
@@ -464,8 +427,7 @@ public class StatelessBeanO
 
         // For Stateless, 'destroy' is where the bean is removed and destroyed.
         // Update both counters and end remove time.                     d626533.1
-        if (pmiBean != null)
-        {
+        if (pmiBean != null) {
             pmiBean.beanRemoved(); // d647928.4
             pmiBean.beanDestroyed();
             pmiBean.finalTime(EJBPMICollaborator.REMOVE_RT, removeStartTime);
@@ -475,10 +437,8 @@ public class StatelessBeanO
         // of created instances needs to be decremented when an instance is
         // destroyed, and the next thread that may be waiting for an instance
         // must be notified.                                               PK20648
-        if (ivNumberOfBeansLimited)
-        {
-            synchronized (beanPool)
-            {
+        if (ivNumberOfBeansLimited) {
+            synchronized (beanPool) {
                 --home.ivNumberBeansCreated;
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "destroy: BeanPool(" + home.ivNumberBeansCreated +
@@ -503,9 +463,7 @@ public class StatelessBeanO
      */
 
     @Override
-    public final EnterpriseBean getEnterpriseBean()
-                    throws RemoteException
-    {
+    public final EnterpriseBean getEnterpriseBean() throws RemoteException {
         throw new UnsupportedOperationException(); // OK
 
     } // getEnterpriseBean
@@ -519,24 +477,19 @@ public class StatelessBeanO
      **/
     // d367572.1 added entire method.
     @Override
-    public Class<?> getInvokedBusinessInterface() throws IllegalStateException
-    {
+    public Class<?> getInvokedBusinessInterface() throws IllegalStateException {
         // Determine if in valid state for this method.
         boolean validState = false;
         int stateCopy;
-        synchronized (this)
-        {
+        synchronized (this) {
             stateCopy = state;
             validState = (state == POOLED) || (state == IN_METHOD);
         }
 
-        if (validState)
-        {
+        if (validState) {
             // Valid state, so perform function.
             return super.getInvokedBusinessInterface();
-        }
-        else
-        {
+        } else {
             // Invalid state, so throw IllegalStateException.
             String stateString = getStateName(stateCopy);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -558,10 +511,7 @@ public class StatelessBeanO
      */
     // d142250
     @Override
-    public final void postCreate(boolean supportEJBPostCreateChanges)
-                    throws CreateException,
-                    RemoteException
-    {
+    public final void postCreate(boolean supportEJBPostCreateChanges) throws CreateException, RemoteException {
         throw new UnsupportedOperationException(); // OK
 
     } // postCreate
@@ -580,8 +530,7 @@ public class StatelessBeanO
      */
     @Override
     public final void activate(BeanId id, ContainerTx tx) // d114677 d139352-2
-    throws RemoteException
-    {
+                    throws RemoteException {
         //---------------------------------------------------
         // Activating a stateless session bean is a no-op
         //---------------------------------------------------
@@ -597,8 +546,7 @@ public class StatelessBeanO
 
     @Override
     public final boolean enlist(ContainerTx tx) // d14677
-    throws RemoteException
-    {
+                    throws RemoteException {
         if (!reentrant) {//this is not a home bean //d170394
             ivContainerTx = tx;
         }
@@ -627,8 +575,7 @@ public class StatelessBeanO
     @Override
     public final Object preInvoke(EJSDeployedSupport s,
                                   ContainerTx tx) // d139352-2
-    throws RemoteException
-    {
+                    throws RemoteException {
         //---------------------------------------------------------
         // If this bean is reentrant then its state is meaningless
         // since methods will be entering and exiting in no strict
@@ -661,31 +608,24 @@ public class StatelessBeanO
      */
     @Override
     public void postInvoke(int id, EJSDeployedSupport s) // d170394
-    throws RemoteException
-    {
+                    throws RemoteException {
         ivContainerTx = null;//d170394
     }
 
     @Override
     public void returnToPool() // RTC107108
-    throws RemoteException
-    {
-        if (isDestroyed())
-        {
+                    throws RemoteException {
+        if (isDestroyed()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "returnToPool: skipped: " + this);
-        }
-        else
-        {
+        } else {
             setState(IN_METHOD, POOLED);
 
             // If the number of allowed bean instances is limited, then the
             // next thread waiting for a bean instance needs to be notified
             // when one is returned to the pool.                            PK20648
-            if (ivNumberOfBeansLimited)
-            {
-                synchronized (beanPool)
-                {
+            if (ivNumberOfBeansLimited) {
+                synchronized (beanPool) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "returnToPool: " + this + ": " +
                                      home.ivNumberBeansCreated + "/" +
@@ -694,9 +634,7 @@ public class StatelessBeanO
                     beanPool.put(this);
                     beanPool.notify();
                 }
-            }
-            else
-            {
+            } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "returnToPool: " + this);
 
@@ -711,9 +649,7 @@ public class StatelessBeanO
      */
 
     @Override
-    public final void commit(ContainerTx tx)
-                    throws RemoteException
-    {
+    public final void commit(ContainerTx tx) throws RemoteException {
         //---------------------------------------------------
         // A stateless session bean must never be committed.
         //---------------------------------------------------
@@ -729,9 +665,7 @@ public class StatelessBeanO
      */
 
     @Override
-    public final void rollback(ContainerTx tx)
-                    throws RemoteException
-    {
+    public final void rollback(ContainerTx tx) throws RemoteException {
         //-----------------------------------------------------
         // A stateless session bean must never be rolled back.
         //-----------------------------------------------------
@@ -747,9 +681,7 @@ public class StatelessBeanO
      */
 
     @Override
-    public final void store()
-                    throws RemoteException
-    {
+    public final void store() throws RemoteException {
         //------------------------------------------------
         // A stateless session bean must never be stored.
         //------------------------------------------------
@@ -765,9 +697,7 @@ public class StatelessBeanO
      */
 
     @Override
-    public final void passivate()
-                    throws RemoteException
-    {
+    public final void passivate() throws RemoteException {
         //----------------------------------------------------
         // A stateless session bean must never be passivated.
         //----------------------------------------------------
@@ -782,10 +712,7 @@ public class StatelessBeanO
      */
 
     @Override
-    public final void remove()
-                    throws RemoteException,
-                    RemoveException
-    {
+    public final void remove() throws RemoteException, RemoveException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "remove");
@@ -821,8 +748,7 @@ public class StatelessBeanO
         // that a system exception from a home method does not cause the
         // home to be discarded. And, since the BeanO is not transitioned
         // to the 'destroyed' state, normal postInvoke will run.           d661866
-        if (home == null)
-        {
+        if (home == null) {
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "discard : Home beans are never discarded");
             return;
@@ -852,10 +778,8 @@ public class StatelessBeanO
         // of created instances needs to be decremented when an instance is
         // discarded, and the next thread that may be waiting for an instance
         // must be notified.                                               PK20648
-        if (ivNumberOfBeansLimited)
-        {
-            synchronized (beanPool)
-            {
+        if (ivNumberOfBeansLimited) {
+            synchronized (beanPool) {
                 --home.ivNumberBeansCreated;
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "discard: BeanPool(" + home.ivNumberBeansCreated +
@@ -876,9 +800,7 @@ public class StatelessBeanO
      */
 
     @Override
-    public final void beforeCompletion()
-                    throws RemoteException
-    {
+    public final void beforeCompletion() throws RemoteException {
         //--------------------------------------------------------------
         // A stateless session bean is never enlisted in a transaction,
         // so this method must never be called.
@@ -906,9 +828,7 @@ public class StatelessBeanO
      **/
     // LI2281.07
     @Override
-    public void checkTimerServiceAccess()
-                    throws IllegalStateException
-    {
+    public void checkTimerServiceAccess() throws IllegalStateException {
         // -----------------------------------------------------------------------
         // EJB Specification 2.1, 7.8.2 - Timer service methods are only
         // allowed during business methods and ejbTimeout.
@@ -961,8 +881,7 @@ public class StatelessBeanO
      * method
      */
     @Override
-    public Principal getCallerPrincipal()
-    {
+    public Principal getCallerPrincipal() {
         synchronized (this) {
             if ((state == PRE_CREATE) || (state == CREATING) || (!allowRollbackOnly))
                 throw new IllegalStateException();
@@ -973,11 +892,9 @@ public class StatelessBeanO
     }
 
     @Override
-    public boolean isCallerInRole(String roleName)
-    {
+    public boolean isCallerInRole(String roleName) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "isCallerInRole, role = " + roleName + ", state = " + StateStrs[state]); //182011
         }
 
@@ -992,8 +909,7 @@ public class StatelessBeanO
             }
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-        {
+        if (isTraceOn && tc.isEntryEnabled()) {
             Tr.exit(tc, "isCallerInRole");
         }
 
@@ -1011,9 +927,7 @@ public class StatelessBeanO
      **/
     // LI2281.07
     @Override
-    public TimerService getTimerService()
-                    throws IllegalStateException
-    {
+    public TimerService getTimerService() throws IllegalStateException {
         // Calling getTimerService is not allowed from setSessionContext.
         if ((state == PRE_CREATE)) // prevent in setSessionContext
         {
@@ -1047,8 +961,7 @@ public class StatelessBeanO
      */
     // LI3492-2
     @Override
-    public void flushCache()
-    {
+    public void flushCache() {
         // Calling flushCache is not allowed from setSessionContext.
         if ((state == PRE_CREATE || state == CREATING)) // d367572.1 prevent in setSessionContext
         {
@@ -1088,13 +1001,12 @@ public class StatelessBeanO
      */
 
     protected static final String StateStrs[] = {
-                                                 "DESTROYED", // 0
-                                                 "PRE_CREATE", // 1
-                                                 "CREATING", // 2
-                                                 "POOLED", // 3
-                                                 "IN_METHOD" // 4
+                                                  "DESTROYED", // 0
+                                                  "PRE_CREATE", // 1
+                                                  "CREATING", // 2
+                                                  "POOLED", // 3
+                                                  "IN_METHOD" // 4
     };
     // d367572.1 end
 
 } // StatelessBeanO
-

@@ -406,6 +406,7 @@ public class ServerConfigTest {
         try {
             // Start out with bad include and onError=FAIL
             server.startServerExpectFailure("include-error.log", true, true);
+            server.postStopServerArchive();
 
             // Now swap in a valid server.xml to test dynamic config update with onError=FAIL
             server.setServerConfigurationFile("import.error/server.xml");

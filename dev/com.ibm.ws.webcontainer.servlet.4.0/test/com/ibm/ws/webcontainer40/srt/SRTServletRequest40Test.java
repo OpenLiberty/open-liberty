@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.servlet.ServletContext;
+import javax.servlet.SessionTrackingMode;
 import javax.servlet.http.PushBuilder;
 
 import org.jmock.Expectations;
@@ -30,8 +32,10 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Test;
 
 import com.ibm.websphere.servlet40.IRequest40;
+import com.ibm.ws.session.SessionManagerConfig;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
+import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee8.Http2Request;
@@ -58,6 +62,8 @@ public class SRTServletRequest40Test {
     final private WebApp webApp = context.mock(WebApp.class);
     final private ICollaboratorHelper collabHelper = context.mock(ICollaboratorHelper.class);
     final private IWebAppSecurityCollaborator webAppSecCollab = context.mock(IWebAppSecurityCollaborator.class);
+    final private ServletContext servletContext = context.mock(ServletContext.class);
+    final private IHttpSessionContext httpSessionContext = context.mock(IHttpSessionContext.class);
 
     @Test
     public void test_PushBuilderHeaders() throws IOException {
@@ -105,6 +111,23 @@ public class SRTServletRequest40Test {
 
                 oneOf(collabHelper).getSecurityCollaborator();
                 will(returnValue(webAppSecCollab));
+
+                // Used to get the effective session tracking modes
+                oneOf(webApp).getFacade();
+                will(returnValue(servletContext));
+
+                oneOf(servletContext).getEffectiveSessionTrackingModes();
+                will(returnValue(Collections.singleton(SessionTrackingMode.COOKIE)));
+
+                oneOf(dispContext).isRequestedSessionIdFromCookie();
+                will(returnValue(true));
+
+                // Used to get the Session Manager Config
+                oneOf(webApp).getSessionContext();
+                will(returnValue(httpSessionContext));
+
+                oneOf(httpSessionContext).getWASSessionConfig();
+                will(returnValue(new SessionManagerConfig()));
 
                 oneOf(webAppSecCollab).getUserPrincipal();
                 will(returnValue(new Principal() {

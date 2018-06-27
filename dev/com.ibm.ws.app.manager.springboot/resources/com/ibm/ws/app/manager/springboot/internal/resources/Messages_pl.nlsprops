@@ -35,17 +35,17 @@ warning.could.not.thin.application=CWWKC0251W: Nie mo\u017cna przekszta\u0142ci\
 warning.could.not.thin.application.explanation=Nie mo\u017cna przekszta\u0142ci\u0107 aplikacji w aplikacj\u0119 uproszczon\u0105. Aplikacja b\u0119dzie kontynuowa\u0107 dzia\u0142anie z oryginalnego pliku JAR. 
 warning.could.not.thin.application.useraction=Spr\u00f3buj rozwi\u0105za\u0107 problem zg\u0142oszony w komunikacie o wyj\u0105tku i zrestartuj serwer lub zaktualizuj aplikacj\u0119. 
 
-error.need.springboot.version.15=CWWKC0252E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. Aplikacja wymaga skonfigurowania sk\u0142adnika springBoot-1.5.
-error.need.springboot.version.15.explanation=Aplikacja wymaga sk\u0142adnika Spring Boot 1.5, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot.  
-error.need.springboot.version.15.useraction=W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-1.5.
+error.need.springboot.version.15=CWWKC0252E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c sk\u0142adnik springBoot-2.0 zosta\u0142 skonfigurowany w pliku server.xml. Aplikacja wymaga, aby sk\u0142adnik springBoot-1.5 by\u0142 skonfigurowany.
+error.need.springboot.version.15.explanation=Aplikacja wymaga sk\u0142adnika springBoot-1.5. Sprawd\u017a wersj\u0119 sk\u0142adnika Spring Boot, kt\u00f3ry jest aktualnie skonfigurowany w pliku server.xml.  
+error.need.springboot.version.15.useraction=Skonfiguruj sk\u0142adnik springBoot-1.5 w pliku server.xml. Usu\u0144 wszystkie inne sk\u0142adniki Spring Boot.
 
-error.need.springboot.version.20=CWWKC0253E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot. Aplikacja wymaga skonfigurowania sk\u0142adnika springBoot-2.0.
-error.need.springboot.version.20.explanation=Aplikacja wymaga sk\u0142adnika Spring Boot 2.0, ale w pliku server.xml jest skonfigurowana niew\u0142a\u015bciwa wersja sk\u0142adnika Spring Boot.  
-error.need.springboot.version.20.useraction=W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik springBoot-2.0.
+error.need.springboot.version.20=CWWKC0253E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c sk\u0142adnik springBoot-1.5 jest skonfigurowany w pliku server.xml. Aplikacja wymaga, aby sk\u0142adnik springBoot-2.0 by\u0142 skonfigurowany.
+error.need.springboot.version.20.explanation=Aplikacja wymaga sk\u0142adnika springBoot-2.0. Sprawd\u017a wersj\u0119 sk\u0142adnika Spring Boot, kt\u00f3ry jest aktualnie skonfigurowany w pliku server.xml.  
+error.need.springboot.version.20.useraction=Skonfiguruj sk\u0142adnik springBoot-2.0 w pliku server.xml. Usu\u0144 wszystkie inne sk\u0142adniki Spring Boot.
 
-error.missing.servlet=CWWKC0254E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c wymaga ona skonfigurowania sk\u0142adnika Servlet w pliku server.xml.
-error.missing.servlet.explanation=Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika Servlet w pliku server.xml.
-error.missing.servlet.useraction=W pliku server.xml nale\u017cy skonfigurowa\u0107 sk\u0142adnik Servlet.
+error.missing.servlet=CWWKC0254E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c wymaga ona skonfigurowania sk\u0142adnika servlet w pliku server.xml.
+error.missing.servlet.explanation=Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika servlet w pliku server.xml.
+error.missing.servlet.useraction=Skonfiguruj sk\u0142adnik servlet w pliku server.xml.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Nie mo\u017cna uruchomi\u0107 aplikacji Spring Boot {0}, poniewa\u017c jest ju\u017c aktywna aplikacja {1}. W tej samej konfiguracji serwera nie mo\u017cna skonfigurowa\u0107 wielu aplikacji Spring Boot.
 error.multiple.applications.not.allowed.explanation=Konfigurowanie wielu aplikacji Spring Boot w tej samej konfiguracji serwera nie jest obs\u0142ugiwane.
@@ -58,3 +58,23 @@ error.no.manifest.found.useraction=Skonfiguruj z serwerem poprawn\u0105 aplikacj
 error.no.spring.class.found=CWWKC0257E: W pliku META-INF/MANIFEST.MF aplikacji Spring Boot musi by\u0107 podany nag\u0142\u00f3wek Start-Class.
 error.no.spring.class.found.explanation=Aplikacja Spring Boot musi zawiera\u0107 klas\u0119 main wskazan\u0105 przez nag\u0142\u00f3wek manifestu Start-Class.
 error.no.spring.class.found.useraction=Skonfiguruj z serwerem poprawn\u0105 aplikacj\u0119 Spring Boot, kt\u00f3ra zawiera nag\u0142\u00f3wek manifestu Start-Class.
+
+error.missing.ssl=CWWKC0258E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c wymaga ona skonfigurowania sk\u0142adnika SSL w pliku server.xml.
+error.missing.ssl.explanation=Aplikacja jest aplikacj\u0105 zabezpieczon\u0105 i wymaga skonfigurowania sk\u0142adnika SSL w pliku server.xml.
+error.missing.ssl.useraction=Skonfiguruj sk\u0142adnik transportSecurity-1.0 w pliku server.xml.
+
+error.missing.websocket=CWWKC0259E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c wymaga ona skonfigurowania sk\u0142adnika websocket w pliku server.xml.
+error.missing.websocket.explanation=Aplikacja jest aplikacj\u0105 WWW i wymaga skonfigurowania sk\u0142adnika websocket w pliku server.xml.
+error.missing.websocket.useraction=Skonfiguruj sk\u0142adnik websocket w pliku server.xml.
+
+error.webflux.not.supported=CWWKC0260E: Nie mo\u017cna uruchomi\u0107 aplikacji, poniewa\u017c sk\u0142adnik Spring WebFlux nie jest obs\u0142ugiwany.
+error.webflux.not.supported.explanation=Ta aplikacja jest aplikacj\u0105 WebFlux. Funkcja programowania reaktywnego udost\u0119pniana przez sk\u0142adnik Spring WebFlux nie jest obs\u0142ugiwana.
+error.webflux.not.supported.useraction=Skonfiguruj aplikacj\u0119, kt\u00f3ra nie u\u017cywa sk\u0142adnika Spring WebFlux z tym serwerem.
+
+warning.spring_config.ignored.compression=CWWKC0261W: Kompresja zosta\u0142a w\u0142\u0105czona przez aplikacj\u0119. Kompresja nie jest obs\u0142ugiwana, a to ustawienie zostanie zignorowane.
+warning.spring_config.ignored.compression.explanation=Kompresja nie jest obs\u0142ugiwana, a to ustawienie zostanie zignorowane, ale aplikacja b\u0119dzie nadal dzia\u0142a\u0107.
+warning.spring_config.ignored.compression.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+warning.spring_config.ignored.session=CWWKC0262W: Aplikacja skonfigurowa\u0142a limit czasu sesji lub utrwalanie sesji. Te ustawienia sesji musz\u0105 by\u0107 skonfigurowane w pliku server.xml.
+warning.spring_config.ignored.session.explanation=Ustawienia limitu czasu sesji i utrwalania sesji musz\u0105 by\u0107 skonfigurowane w pliku server.xml. Te ustawienia aplikacji zostan\u0105 zignorowane.
+warning.spring_config.ignored.session.useraction=Skonfiguruj ustawienia limitu czasu sesji i utrwalania sesji w pliku server.xml.

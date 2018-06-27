@@ -739,6 +739,11 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
+        byte[] emptyBytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+        FramePing expectedPing = new FramePing(0, emptyBytes, false);
+        expectedPing.setAckFlag();
+        h2Client.addExpectedFrame(expectedPing);
+
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         FrameHeaders frameHeaders = addFirstExpectedHeaders(h2Client);
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
@@ -749,11 +754,6 @@ public class H2FATDriverServlet extends FATServlet {
 
         FramePriority priorityFrame = new FramePriority(streamId, 0, 0, false, false);
         h2Client.sendFrame(priorityFrame);
-
-        byte[] emptyBytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-        FramePing expectedPing = new FramePing(0, emptyBytes, false);
-        expectedPing.setAckFlag();
-        h2Client.addExpectedFrame(expectedPing);
 
         //send a ping and expect a ping back
         FramePing ping = new FramePing(0, emptyBytes, false);

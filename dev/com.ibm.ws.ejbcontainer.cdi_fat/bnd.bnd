@@ -21,7 +21,7 @@ src: \
 fat.project: true
 
 tested.features: \
-	servlet-4.0, cdi-2.0
+	servlet-4.0, cdi-2.0, localconnector-1.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\

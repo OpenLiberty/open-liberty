@@ -149,4 +149,18 @@ public interface EsaResourceWritable extends WebDisplayable, ApplicableToProduct
      * @param rawBundleRequirements The Require-Capability headers from all the bundles contained in this ESA
      */
     public void setJavaSEVersionRequirements(String minimum, String maximum, Collection<String> rawBundleRequirements);
+
+    /**
+     * Sete whether the feature is a singleton or not
+     *
+     * @param singleton
+     */
+    public void setSingleton(String singleton);
+
+    /**
+     * Sets the IBM-InstallTo field
+     *
+     * @param ibmInstallTo The value of the IBM-InstallTo field to use
+     */
+    public void setIBMInstallTo(String ibmInstallTo);
 }

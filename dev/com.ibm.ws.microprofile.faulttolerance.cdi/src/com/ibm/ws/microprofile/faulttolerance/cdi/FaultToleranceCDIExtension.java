@@ -59,9 +59,9 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         AnnotatedType<FaultTolerance> bindingType = beanManager.createAnnotatedType(FaultTolerance.class);
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<FaultToleranceInterceptor> interceptorType = beanManager.createAnnotatedType(FaultToleranceInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(interceptorType);
+        beforeBeanDiscovery.addAnnotatedType(interceptorType, (interceptorType != null) ? interceptorType.getClass().getName() + ": " + interceptorType.getClass().hashCode() : "");
         AnnotatedType<FaultToleranceInterceptor.ExecutorCleanup> executorCleanup = beanManager.createAnnotatedType(FaultToleranceInterceptor.ExecutorCleanup.class);
-        beforeBeanDiscovery.addAnnotatedType(executorCleanup);
+        beforeBeanDiscovery.addAnnotatedType(executorCleanup, (executorCleanup != null) ? executorCleanup.getClass().getName() + ": " + executorCleanup.getClass().hashCode() : "");
     }
 
     public <T> void processAnnotatedType(@Observes @WithAnnotations({ Asynchronous.class, Fallback.class, Timeout.class, CircuitBreaker.class, Retry.class,
@@ -82,7 +82,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         Set<Annotation> annotations = annotatedType.getAnnotations();
         for (Annotation annotation : annotations) {
             //if we find any of the fault tolerance annotations on the class then we will add the intereceptor binding to the class
-            if (FTGlobalConfig.getActiveAnnotations(clazz).contains(annotation.annotationType())) {
+            if (FTGlobalConfig.isAnnotationEnabled(annotation, clazz)) {
                 interceptedClass = true;
                 if (annotation.annotationType() == Asynchronous.class) {
                     AsynchronousConfig asynchronousConfig = new AsynchronousConfig(clazz, (Asynchronous) annotation);
@@ -101,6 +101,9 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                     BulkheadConfig bulkhead = new BulkheadConfig(clazz, (Bulkhead) annotation);
                     bulkhead.validate();
                 }
+            } else {
+                if (tc.isWarningEnabled())
+                    Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
             }
         }
 
@@ -111,8 +114,11 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
 
             annotations = method.getAnnotations();
             for (Annotation annotation : annotations) {
-                if (FTGlobalConfig.getActiveAnnotations(clazz).contains(annotation.annotationType())) {
+                if (FTGlobalConfig.isAnnotationEnabled(annotation, clazz)) {
                     interceptedMethods.add(method);
+                } else {
+                    if (tc.isWarningEnabled())
+                        Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
                 }
             }
         }
@@ -147,7 +153,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
 
         Set<Annotation> annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
-            if (FTGlobalConfig.getActiveAnnotations(clazz).contains(annotation.annotationType())) {
+            if (FTGlobalConfig.isAnnotationEnabled(annotation, clazz, method.getJavaMember())) {
                 if (annotation.annotationType() == Asynchronous.class) {
                     AsynchronousConfig asynchronous = new AsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
                     asynchronous.validate();
@@ -167,6 +173,10 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                     BulkheadConfig bulkhead = new BulkheadConfig(javaMethod, clazz, (Bulkhead) annotation);
                     bulkhead.validate();
                 }
+            } else {
+                if (tc.isWarningEnabled())
+                    Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(),
+                               clazz.getCanonicalName() + "." + method.getJavaMember().getName());
             }
         }
     }

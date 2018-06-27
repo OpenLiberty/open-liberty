@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
 
@@ -35,33 +36,36 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
 
     private static final TraceComponent tc = Tr.register(CDIEJBManagedObjectFactoryImpl.class);
 
-    private String _ejbName = null;
+    private String ejbName = null;
     private ManagedObjectFactory<T> defaultEJBManagedObjectFactory = null;
-
-    private EjbDescriptor<T> _ejbDescriptor;
+    private EjbDescriptor<T> ejbDescriptor;
+    private Bean<T> ejbBean;
+    private WebSphereBeanDeploymentArchive ejbBDA;
+    private WeldManager ejbBeanManager;
+    private boolean ejbBeanLookupComplete;
 
     public CDIEJBManagedObjectFactoryImpl(Class<T> classToManage, String ejbName, CDIRuntime cdiRuntime, ManagedObjectFactory<T> defaultEJBManagedObjectFactory) {
         super(classToManage, cdiRuntime, false);
-        _ejbName = ejbName;
+        this.ejbName = ejbName;
         this.defaultEJBManagedObjectFactory = defaultEJBManagedObjectFactory;
     }
 
     @Override
     protected synchronized WeldManager getBeanManager() {
-        if (this._beanManager == null) {
+        if (this.ejbBeanManager == null) {
             //getEjbDescriptor will initialize the bean manager with the one which really contains the ejbDescriptor
             getEjbDescriptor();
         }
-        return this._beanManager;
+        return this.ejbBeanManager;
     }
 
     @Override
     protected synchronized WebSphereBeanDeploymentArchive getCurrentBeanDeploymentArchive() {
-        if (this._bda == null) {
+        if (this.ejbBDA == null) {
             //getEjbDescriptor will initialize the bda with the one which really contains the ejbDescriptor
             getEjbDescriptor();
         }
-        return this._bda;
+        return this.ejbBDA;
     }
 
     /**
@@ -88,56 +92,56 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
     @SuppressWarnings("unchecked")
     @Override
     protected synchronized Bean<T> getBean() {
-        if (!_beanLookupComplete) {
+        if (!this.ejbBeanLookupComplete) {
 
             WeldManager beanManager = getBeanManager();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Looking for EJB Bean: " + _ejbName);
+                Tr.debug(tc, "Looking for EJB Bean: " + this.ejbName);
             }
 
             EjbDescriptor<?> ejbDescriptor = getEjbDescriptor();
             if (ejbDescriptor != null) {
-                _bean = (Bean<T>) beanManager.getBean(ejbDescriptor);
+                this.ejbBean = (Bean<T>) beanManager.getBean(ejbDescriptor);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    if (_bean != null) {
-                        Tr.debug(tc, "Found EJB Bean: " + _bean);
+                    if (this.ejbBean != null) {
+                        Tr.debug(tc, "Found EJB Bean: " + this.ejbBean);
                     }
                 }
             }
 
-            _beanLookupComplete = true;
+            this.ejbBeanLookupComplete = true;
 
-            if (_bean != null) {
+            if (this.ejbBean != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Found a bean of class : " + _bean.getBeanClass());
+                    Tr.debug(tc, "Found a bean of class : " + this.ejbBean.getBeanClass());
                 }
-                if (!_bean.getBeanClass().equals(getManagedObjectClass())) {
+                if (!this.ejbBean.getBeanClass().equals(getManagedObjectClass())) {
                     //this exception should never happen
                     throw new IllegalStateException("Managed Class {" + getManagedObjectClass().getName() + "} does not match Bean Class {"
-                                                    + _bean.getBeanClass().getName() + "}");
+                                                    + this.ejbBean.getBeanClass().getName() + "}");
                 }
             }
 
         }
-        return _bean;
+        return this.ejbBean;
     }
 
     private synchronized EjbDescriptor<T> getEjbDescriptor() {
-        if (_ejbDescriptor == null) {
+        if (this.ejbDescriptor == null) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Looking for EJB Bean: " + _ejbName);
+                Tr.debug(tc, "Looking for EJB Bean: " + this.ejbName);
             }
             WebSphereBeanDeploymentArchive bda = super.getCurrentBeanDeploymentArchive();
             WeldManager beanManager = null;
             if (bda != null) {
                 beanManager = (WeldManager) bda.getBeanManager();
             } else {
-                beanManager = (WeldManager) cdiRuntime.getCurrentBeanManager();
+                beanManager = (WeldManager) getCDIRuntime().getCurrentBeanManager();
             }
 
-            EjbDescriptor<T> ejbDescriptor = beanManager.getEjbDescriptor(_ejbName);
+            EjbDescriptor<T> ejbDescriptor = beanManager.getEjbDescriptor(this.ejbName);
 
             if (ejbDescriptor == null) {
                 Set<WebSphereBeanDeploymentArchive> children = bda.getDescendantBdas();
@@ -145,7 +149,7 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
                 while (ejbDescriptor == null && itr.hasNext()) {
                     bda = itr.next();
                     beanManager = (WeldManager) bda.getBeanManager();
-                    ejbDescriptor = beanManager.getEjbDescriptor(_ejbName);
+                    ejbDescriptor = beanManager.getEjbDescriptor(this.ejbName);
                 }
                 // check all accessible BDAs if we haven't found the ejbDescriptor in descendant BDAs
                 if (ejbDescriptor == null) {
@@ -154,33 +158,33 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
                     while (ejbDescriptor == null && itr.hasNext()) {
                         bda = itr.next();
                         beanManager = (WeldManager) bda.getBeanManager();
-                        ejbDescriptor = beanManager.getEjbDescriptor(_ejbName);
+                        ejbDescriptor = beanManager.getEjbDescriptor(this.ejbName);
                     }
                 }
             }
 
             if (ejbDescriptor != null) {
-                _ejbDescriptor = ejbDescriptor;
-                _beanManager = beanManager;
-                _bda = bda;
+                this.ejbDescriptor = ejbDescriptor;
+                this.ejbBeanManager = beanManager;
+                this.ejbBDA = bda;
             }
 
         }
 
-        if (_ejbDescriptor == null) {
-            Tr.error(tc, "Could not find an EjbDescriptor for : " + _ejbName);
+        if (this.ejbDescriptor == null) {
+            Tr.error(tc, "Could not find an EjbDescriptor for : " + this.ejbName);
         }
 
-        return _ejbDescriptor;
+        return this.ejbDescriptor;
     }
 
     @Override
-    public ManagedObject<T> createManagedObject() throws Exception {
+    public ManagedObject<T> createManagedObject() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws Exception {
+    public ManagedObject<T> createManagedObject(ManagedObjectInvocationContext<T> invocationContext) throws ManagedObjectException {
         if (getBean() == null) {
             return defaultEJBManagedObjectFactory.createManagedObject(invocationContext);
         } else {
@@ -222,6 +226,6 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
 
     @Override
     public String toString() {
-        return "CDI EJB Managed Object Factory for class: " + _managedClass.getName();
+        return "CDI EJB Managed Object Factory for class: " + getManagedObjectClass().getName();
     }
 }

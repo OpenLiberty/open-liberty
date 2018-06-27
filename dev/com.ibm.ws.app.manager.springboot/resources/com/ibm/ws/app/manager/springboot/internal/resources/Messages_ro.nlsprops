@@ -35,17 +35,17 @@ warning.could.not.thin.application=CWWKC0251W: Nu s-a putut converti aplica\u016
 warning.could.not.thin.application.explanation=Aplica\u0163ia nu a putut fi convertit\u0103 la o aplica\u0163ie sub\u0163ire. Aplica\u0163ia va continua s\u0103 ruleze din JAR-ul original. 
 warning.could.not.thin.application.useraction=\u00cencerca\u0163i s\u0103 rezolva\u0163i problema din mesajul excep\u0163iei \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia. 
 
-error.need.springboot.version.15=CWWKC0252E: Nu s-a putut rula aplica\u0163ia deoarece este configurat\u0103 versiunea gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml. Aplica\u0163ia cere s\u0103 fie configurat\u0103 caracteristica springBoot-1.5.
-error.need.springboot.version.15.explanation=Aplica\u0163ia necesit\u0103 Spring Boot versiunea 1.5 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
-error.need.springboot.version.15.useraction=Caracteristica springBoot-1.5 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
+error.need.springboot.version.15=CWWKC0252E: Pornirea aplica\u0163iei a e\u015fuat, deoarece \u00een fi\u015fierul server.xml este configurat\u0103 caracteristica springBoot-2.0. Pentru a fi configurat\u0103, aplica\u0163ia necesit\u0103 caracteristica springBoot-1.5.
+error.need.springboot.version.15.explanation=Aplica\u0163ia necesit\u0103 caracteristica springBoot-1.5. Verifica\u0163i versiunea caracteristicii Spring Boot care este configurat\u0103 \u00een fi\u015fierul server.xml.  
+error.need.springboot.version.15.useraction=Configura\u0163i caracteristica springBoot-1.5 \u00een fi\u015fierul server.xml. \u00cenl\u0103tura\u0163i orice alte caracteristici Spring Boot.
 
-error.need.springboot.version.20=CWWKC0253E: Nu s-a putut rula aplica\u0163ia deoarece este configurat\u0103 versiunea gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml. Aplica\u0163ia cere s\u0103 fie configurat\u0103 caracteristica springBoot-2.0.
-error.need.springboot.version.20.explanation=Aplica\u0163ia necesit\u0103 Spring Boot versiunea 2.0 dar este configurat\u0103 o versiune gre\u015fit\u0103 a caracteristicii Spring Boot \u00een server.xml.  
-error.need.springboot.version.20.useraction=Caracteristica springBoot-2.0 trebuie s\u0103 fie configurat\u0103 \u00een server.xml.
+error.need.springboot.version.20=CWWKC0253E: Pornirea aplica\u0163iei a e\u015fuat, deoarece \u00een fi\u015fierul server.xml este configurat\u0103 caracteristica springBoot-1.5. Pentru a fi configurat\u0103, aplica\u0163ia necesit\u0103 caracteristica springBoot-2.0.
+error.need.springboot.version.20.explanation=Aplica\u0163ia necesit\u0103 caracteristica springBoot-2.0. Verifica\u0163i versiunea caracteristicii Spring Boot care este configurat\u0103 \u00een fi\u015fierul server.xml.  
+error.need.springboot.version.20.useraction=Configura\u0163i caracteristica springBoot-2.0 \u00een fi\u015fierul server.xml. \u00cenl\u0103tura\u0163i orice alte caracteristici Spring Boot.
 
-error.missing.servlet=CWWKC0254E: Nu s-a putut rula aplica\u0163ia deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
-error.missing.servlet.explanation=Aplica\u0163ia este o aplica\u0163ie web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
-error.missing.servlet.useraction=Trebuie s\u0103 fie configurat\u0103 o caracteristic\u0103 Servlet \u00een server.xml.
+error.missing.servlet=CWWKC0254E: Pornirea aplica\u0163iei a e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
+error.missing.servlet.explanation=Aplica\u0163ia este o aplica\u0163ie web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
+error.missing.servlet.useraction=Configura\u0163i o caracteristic\u0103 servlet \u00een fi\u015fierul server.xml.
 
 error.multiple.applications.not.allowed=CWWKC0255E: Aplica\u0163ia Spring Boot {0} nu poate fi pornit\u0103 deoarece aplica\u0163ia {1} este deja activ\u0103. Nu pute\u0163i configura mai multe aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server.
 error.multiple.applications.not.allowed.explanation=Configurarea mai multor aplica\u0163ii Spring Boot \u00een aceea\u015fi configura\u0163ie de server nu este suportat\u0103.
@@ -58,3 +58,23 @@ error.no.manifest.found.useraction=Configura\u0163i o aplica\u0163ie Spring Boot
 error.no.spring.class.found=CWWKC0257E: Fi\u015fierul META-INF/MANIFEST.MF al aplica\u0163iei Spring Boot trebuie s\u0103 specifice un antet Start-Class.
 error.no.spring.class.found.explanation=Aplica\u0163iile Boot Spring trebuie s\u0103 con\u0163in\u0103 o clas\u0103 principal\u0103 specificat\u0103 de antetul de manifest Start-Class.
 error.no.spring.class.found.useraction=Configura\u0163i o aplica\u0163ie Spring Boot valid\u0103, care s\u0103 con\u0163in\u0103 un antet de manifest Start-Class, cu serverul.
+
+error.missing.ssl=CWWKC0258E: Pornirea aplica\u0163iei an e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 SSL \u00een fi\u015fierul server.xml.
+error.missing.ssl.explanation=Aplica\u0163ia este o aplica\u0163ie securizat\u0103 \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 SSL \u00een fi\u015fierul server.xml.
+error.missing.ssl.useraction=Configura\u0163i caracteristica transportSecurity-1.0 \u00een fi\u015fierul server.xml.
+
+error.missing.websocket=CWWKC0259E: Pornirea aplica\u0163iei a e\u015fuat, deoarece aceasta necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+error.missing.websocket.explanation=Aplica\u0163ia este o aplica\u0163ie socket web \u015fi necesit\u0103 s\u0103 fie configurat\u0103 o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+error.missing.websocket.useraction=Configura\u0163i o caracteristic\u0103 websocket \u00een fi\u015fierul server.xml.
+
+error.webflux.not.supported=CWWKC0260E: Nu se poate porni aplica\u0163ia deoarece nu este suportat Spring WebFlux.
+error.webflux.not.supported.explanation=Aplica\u0163ia este o aplica\u0163ie WebFlux. Suportul de programare reactiv\u0103 furnizat de Spring WebFlux nu este suportat.
+error.webflux.not.supported.useraction=Configura\u0163i o aplica\u0163ie care nu utilizeaz\u0103 Spring WebFlux cu serverul.
+
+warning.spring_config.ignored.compression=CWWKC0261W: Comprimarea a fost activat\u0103 de aplica\u0163ie. Comprimarea nu este suportat\u0103 \u015fi setarea va fi ignorat\u0103.
+warning.spring_config.ignored.compression.explanation=Comprimarea nu este suportat\u0103 \u015fi setarea va fi ignorat\u0103, dar aplica\u0163ia va continua s\u0103 func\u0163ioneze altfel.
+warning.spring_config.ignored.compression.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului.
+
+warning.spring_config.ignored.session=CWWKC0262W: Timeout-ul de sesiune sau persisten\u0163a sesiunii au fost configurate de aplica\u0163ie. Aceste set\u0103ri de sesiune trebuie s\u0103 fie configurate \u00een fi\u015fierul server.xml.
+warning.spring_config.ignored.session.explanation=Timeout-ul de sesiune sau persisten\u0163a sesiunii trebuie s\u0103 fie configurate \u00een fi\u015fierul server.xml. Aceste set\u0103ri de sesiune ale aplica\u0163iei vor fi ignorate.
+warning.spring_config.ignored.session.useraction=Configura\u0163i timeout-ul de sesiune \u015fi persisten\u0163a sesiunii \u00een fi\u015fierul server.xml.

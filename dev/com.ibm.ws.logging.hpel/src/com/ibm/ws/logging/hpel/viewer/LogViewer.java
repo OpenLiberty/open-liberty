@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2017 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,7 @@ public class LogViewer {
     private Locale locale = null;
     private HPELRepositoryExporter outputRepository = null; // the file path to where to write new repository if requested.
     private String message;
+    private String excludeMessages = null;
     private final ArrayList<LogViewerFilter.Extension> extensions = new ArrayList<LogViewerFilter.Extension>();
     private String encoding = null;
     private boolean isSystemOut = false;
@@ -317,7 +318,7 @@ public class LogViewer {
              * Create a filter object with our search criteria, passing null for startDate and stopDate as we will
              * be using the API to search by date for efficiency.
              */
-            LogViewerFilter searchCriteria = new LogViewerFilter(startDate, stopDate, minLevel, maxLevel, includeLoggers, excludeLoggers, hexThreadID, message, extensions);
+            LogViewerFilter searchCriteria = new LogViewerFilter(startDate, stopDate, minLevel, maxLevel, includeLoggers, excludeLoggers, hexThreadID, message, excludeMessages, extensions);
 
             //Determine if we just display instances or start displaying records based on the -listInstances option
             if (listInstances) {
@@ -1304,6 +1305,10 @@ public class LogViewer {
         this.message = message;
     }
 
+    void setExcludeMessages(String messages) {
+        excludeMessages = messages;
+    }
+
     void setExtensions(String extensions) {
 
         this.extensions.clear();
@@ -1607,6 +1612,11 @@ public class LogViewer {
         @Override
         void setValue(String arg) throws IllegalArgumentException {
             setMessage(arg);
+        }
+    }, new OneArgOption("-excludeMessages") {
+        @Override
+        void setValue(String arg) {
+            excludeMessages = arg;
         }
     }, new OneArgOption("-includeExtensions") {
         @Override
@@ -1971,6 +1981,7 @@ public class LogViewer {
                ", tailInterval=" + Integer.toString(tailInterval) +
                ", locale=" + ((locale != null) ? locale.toString() : "null") +
                ", message=" + message +
+               ", excludeMessages=" + excludeMessages +
                ", extensions=" + ((extensions != null) ? extensions.toString() : "null") +
                ", encoding=" + encoding;
 

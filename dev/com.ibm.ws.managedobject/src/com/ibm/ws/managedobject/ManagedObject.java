@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.managedobject;
 
+import com.ibm.wsspi.injectionengine.InjectionException;
+import com.ibm.wsspi.injectionengine.InjectionTarget;
+import com.ibm.wsspi.injectionengine.InjectionTargetContext;
+import com.ibm.wsspi.injectionengine.ReferenceContext;
+
 /**
  * A convenience wrapper around an object and its context. Instances are created
  * using {@link ManagedObjectFactory#create} and are disposed using {@link #release}.
  */
-public interface ManagedObject<T>
-{
+public interface ManagedObject<T> {
     /**
      * Return the object being managed.
      */
@@ -52,4 +56,25 @@ public interface ManagedObject<T>
      * @return the Bean's scope, null if it is not bean
      */
     String getBeanScope();
+
+    /**
+     * Perform injection on the object being managed
+     *
+     * @param referenceContext
+     *
+     * @return the object being managed
+     * @throws InjectionException
+     */
+    T inject(ReferenceContext referenceContext) throws ManagedObjectException;
+
+    /**
+     * Perform injection on the object being managed
+     *
+     * @param targets
+     * @param injectionContext
+     *
+     * @return the object being managed
+     * @throws InjectionException
+     */
+    T inject(InjectionTarget[] targets, InjectionTargetContext injectionContext) throws ManagedObjectException;
 }

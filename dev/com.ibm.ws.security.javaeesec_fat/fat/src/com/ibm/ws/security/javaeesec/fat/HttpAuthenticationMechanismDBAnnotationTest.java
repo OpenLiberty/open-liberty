@@ -43,7 +43,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Test with a datasource configured as an annotation
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBAnnotationTest extends JavaEESecTestBase {

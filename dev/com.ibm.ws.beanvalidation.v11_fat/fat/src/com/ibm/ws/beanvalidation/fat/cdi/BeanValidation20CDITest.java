@@ -31,7 +31,7 @@ import componenttest.topology.impl.LibertyServer;
  * that everything that worked without CDI works with it as well.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class BeanValidation20CDITest extends BeanValidationCDI_Common {
 
     @Server("com.ibm.ws.beanvalidation.cdi_2.0.fat")

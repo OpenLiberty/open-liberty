@@ -35,7 +35,9 @@ import com.ibm.jbatch.container.annotation.TCKExperimentProperty;
 import com.ibm.jbatch.container.context.impl.MetricImpl;
 import com.ibm.jbatch.container.context.impl.StepContextImpl;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity;
-import com.ibm.jbatch.container.util.TCCLObjectInputStream;
+
+import com.ibm.ws.serialization.DeserializationObjectInputStream;
+
 
 public class RuntimeStepExecution implements StepContextDelegate {
 
@@ -257,9 +259,9 @@ public class RuntimeStepExecution implements StepContextDelegate {
 			if (bytesFromDB != null) {
 				try {
 					ByteArrayInputStream bais = new ByteArrayInputStream(bytesFromDB);
-					TCCLObjectInputStream ois = null;
+					DeserializationObjectInputStream ois = null;
 					try {
-						ois = new TCCLObjectInputStream(bais);
+						ois = new DeserializationObjectInputStream(bais, Thread.currentThread().getContextClassLoader());
 						retVal = (Serializable) ois.readObject();
 					} finally {
 						ois.close();

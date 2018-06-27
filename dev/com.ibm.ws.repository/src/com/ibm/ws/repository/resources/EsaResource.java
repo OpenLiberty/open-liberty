@@ -100,4 +100,26 @@ public interface EsaResource extends RepositoryResource, ApplicableToProduct {
      */
     public Visibility getVisibility();
 
+    /**
+     * Checks if this feature is a singleton
+     *
+     * @return the singleton value (which can be "true", "false" or null)
+     */
+    public String getSingleton();
+
+    /**
+     * Checks if this feature is a singleton. This is a helper function
+     * that calls getSingleton and converts it from a String value to
+     * a boolean
+     *
+     * @return true if this feature is a singleton and false otherwise
+     */
+    public boolean isSingleton();
+
+    /**
+     * Gets the IBM install too property from the feature.
+     *
+     * @return The IBM-InstallTo header property
+     */
+    public String getIBMInstallTo();
 }

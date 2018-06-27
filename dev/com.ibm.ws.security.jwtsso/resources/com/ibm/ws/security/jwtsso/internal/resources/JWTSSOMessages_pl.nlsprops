@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: Nie mo\u017cna znale\u017a\u0107 konfiguracji konsumenta znacznika MicroProfile JSON Web Token (JWT) o identyfikatorze [{0}]. Upewnij si\u0119, \u017ce konfiguracja mpJwt o podanym identyfikatorze znajduje si\u0119 na serwerze.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=W konfiguracji serwera nie mo\u017cna znale\u017a\u0107 konfiguracji konsumenta MPJWT o okre\u015blonym identyfikatorze.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce istnieje element mpJwt skonfigurowany z okre\u015blonym identyfikatorem i \u017ce jest on przywo\u0142ywany przez element jwtSso w konfiguracji serwera.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Zbyt wiele us\u0142ug JWT MicroProfile [{0}] zosta\u0142o zakwalifikowanych do obs\u0142ugi \u017c\u0105dania.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=Funkcja JWTSSO nie mo\u017ce wybra\u0107 us\u0142ugi JWT MicProfile do obs\u0142ugi \u017c\u0105dania, gdy wi\u0119cej ni\u017c jedna us\u0142uga zosta\u0142a zakwalifikowana do obs\u0142ugi \u017c\u0105dania.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Upewnij si\u0119, \u017ce do obs\u0142ugi tego \u017c\u0105dania w konfiguracji serwera zosta\u0142a skonfigurowana nie wi\u0119cej ni\u017c jedna us\u0142uga JWT MicroProfile.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: Warto\u015b\u0107 atrybutu cookieName JwtSso nie mo\u017ce by\u0107 r\u00f3wna NULL ani pusta. Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna atrybutu cookieName.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=Warto\u015bci\u0105 atrybutu cookieName musi by\u0107 poprawna nazwa informacji cookie.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Usu\u0144 atrybut cookieName lub popraw jego warto\u015b\u0107.
+
+COOKIE_NAME_INVALID=CWWKS6303E: Warto\u015b\u0107 atrybutu jwtSso cookieName [{0}] zawiera niepoprawny znak [{1}]. Zamiast niej zostanie u\u017cyta warto\u015b\u0107 domy\u015blna atrybutu cookieName.
+COOKIE_NAME_INVALID.explanation=Warto\u015bci\u0105 atrybutu cookieName musi by\u0107 poprawna nazwa informacji cookie.
+COOKIE_NAME_INVALID.useraction=Usu\u0144 atrybut cookieName lub popraw jego warto\u015b\u0107.
+
 

@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2013 IBM Corporation and others.
+ * Copyright (c) 2002, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,12 +66,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
     // In the special case where we are operating in the cloud, we'll also work with a "lease" log
-    SharedServerLeaseLog _leaseLog = null;
-    private String _recoveryGroup = null;
-    private boolean _isPeerRecoverySupported = false;
+    SharedServerLeaseLog _leaseLog;
+    private String _recoveryGroup;
+    private boolean _isPeerRecoverySupported;
 
-    private final LeaseTimeoutManager _leaseTimeoutManager = null;
-    protected String localRecoveryIdentity = null;
+    protected String localRecoveryIdentity;
 
     protected TxRecoveryAgentImpl() {}
 
@@ -298,12 +297,13 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // just absorb resource.
 
             final RecoveryManager rm = fsc.getRecoveryManager();
+            final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
 
             // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
             if (_leaseLog != null) {
                 // If this is the local server and we're operating with lightweight peer recovery, we need to
                 // acquire a lock against the lease log.
-                if (recoveredServerIdentity.equals(localRecoveryIdentity)) {
+                if (localRecovery) {
                     if (!_leaseLog.lockLocalLease(localRecoveryIdentity)) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Cannot lock server's own logs");
@@ -338,7 +338,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 rm.setLocalRecoveryIdentity(localRecoveryIdentity);
             }
 
-            Thread t = (Thread) AccessController.doPrivileged(new PrivilegedAction() {
+            Thread t = (Thread) AccessController.doPrivileged(new PrivilegedAction<Object>() {
                 @Override
                 public Object run() {
                     Thread temp = new Thread(rm, "Recovery Thread");
@@ -351,14 +351,18 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // essentially means that other components can have a got at recovery now.
             _recoveryDirector.serialRecoveryComplete(this, fs);
 
+            //RTC170534 - wait for Replay Completion before spawning the timout manager to monitor leases.
             fsc.getRecoveryManager().waitForReplayCompletion();
 
-            //RTC170534 - wait for Replay Completion before spawning the timout manager to monitor leases.
+            if (!localRecovery) {
+                fsc.getRecoveryManager().waitForRecoveryCompletion();
+            }
+
             // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
             if (_leaseLog != null) {
                 // Release the lock on the lease log. This could be the local server or a peer.
                 try {
-                    if (recoveredServerIdentity.equals(localRecoveryIdentity)) {
+                    if (localRecovery) {
                         if (_leaseLog.releaseLocalLease(recoveredServerIdentity)) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Have released locallease lock");
@@ -381,7 +385,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     // Check the system property but by default we want the server to be shutdown if we, the server
                     // that owns the logs is not able to recover them. The System Property supports the tWAS style
                     // of processing.
-                    if (!doNotShutdownOnRecoveryFailure()) {
+                    if (localRecovery && !doNotShutdownOnRecoveryFailure()) {
                         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
                         cp.shutDownFramework();
                     }
@@ -395,7 +399,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 }
 
                 // Only spawn timeout manager if this is the local server and recovery succeeded
-                if (recoveredServerIdentity.equals(localRecoveryIdentity)) {
+                if (localRecovery) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Local server recovery identity so spawn lease timeout manager");
 
@@ -516,11 +520,11 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // The entire server is shutting down. All recovery/peer recovery processing must be stopped. Sping
         // through all known failure scope controllers (which includes the local failure scope if we started
         // processing recovery for it) and tell them to shutdown.
-        final Collection failureScopeControllerTableValues = failureScopeControllerTable.values();
-        final Iterator failureScopeControllerTableValuesIterator = failureScopeControllerTableValues.iterator();
+        final Collection<FailureScopeController> failureScopeControllerTableValues = failureScopeControllerTable.values();
+        final Iterator<FailureScopeController> failureScopeControllerTableValuesIterator = failureScopeControllerTableValues.iterator();
 
         while (failureScopeControllerTableValuesIterator.hasNext()) {
-            final FailureScopeController fsc = (FailureScopeController) failureScopeControllerTableValuesIterator.next();
+            final FailureScopeController fsc = failureScopeControllerTableValuesIterator.next();
             fsc.shutdown(immediate);
         }
     }

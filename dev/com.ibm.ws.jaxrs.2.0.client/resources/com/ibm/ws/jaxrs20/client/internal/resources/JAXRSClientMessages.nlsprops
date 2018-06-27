@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Check the user action for any prior errors t
 warn_mpjwt_prop_service_notavail=CWWKW0708W: The MicroProfile JWT Propagation service is not available. The runtime cannot access the token to include it in the Authorization header.
 warn_mpjwt_prop_service_notavail.explanation=The MicroProfile JWT Propagation service requires the mpJwt-1.0 feature. 
 warn_mpjwt_prop_service_notavail.useraction=Make sure that the server is running with the required feature.
+
+warn_unknown_keepalive_setting=CWWKW0709W: The connection keep alive property value {0} is not a valid option. This property must be set to one of: {1}. The default value of keep-alive will be used.
+warn_unknown_keepalive_setting.explanation=The application code has set the property com.ibm.ws.jaxrs.client.keepalive.connection in a JAX-RS client to an incorrect value.
+warn_unknown_keepalive_setting.useraction=Modify the code to use a valid property value such as keep-alive or close.

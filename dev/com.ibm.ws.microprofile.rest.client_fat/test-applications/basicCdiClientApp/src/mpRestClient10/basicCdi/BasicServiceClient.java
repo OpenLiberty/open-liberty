@@ -29,6 +29,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @Produces(MediaType.APPLICATION_JSON)
 @RegisterProvider(DuplicateWidgetExceptionMapper.class)
 @RegisterProvider(UnknownWidgetExceptionMapper.class)
+@RegisterProvider(MyFilter.class)
 @RegisterRestClient
 @Path("/")
 public interface BasicServiceClient {

@@ -196,8 +196,10 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
         this.bTempResponsesUsed = false;
         this.bEarlyReads = false;
         this.numResponsesReceived = 0;
-        // @LIDB3187-27.1 clean the statemap of the final write mark
-        getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
+        if (getHttpConfig().runningOnZOS()) {
+            // @LIDB3187-27.1 clean the statemap of the final write mark
+            getVC().getStateMap().remove(HttpConstants.FINAL_WRITE_MARK);
+        }
     }
 
     /**

@@ -99,7 +99,7 @@ public class Jose4jRsaJWK extends RsaJsonWebKey implements JWK {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Entry key:" + entry.getKey() + " value:" + entry.getValue().toString());
             }
-            params.put(entry.getKey(), entry.getValue().toString());
+            params.put(entry.getKey(), entry.getValue());
         }
 
         Jose4jRsaJWK jwk = null;

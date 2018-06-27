@@ -39,7 +39,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-@MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
@@ -166,7 +166,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the realm name is the same as the IdentityStore ID of the 2nd IdentityStore.
      * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
-     * <LI> Verify jaspicSession is set, and WASReqURL cookie is being removed.
+     * <LI> Verify LtpaToken2 is set, and WASReqURL cookie is being removed.
      * </OL>
      */
     @Test
@@ -176,7 +176,7 @@ public class MultipleIdentityStoreFormTest extends JavaEESecTestBase {
         String response = getFormLoginPage(httpclient, urlBase + redirectQueryString, REDIRECT, urlBase + redirectLoginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String [] sessionCookie = {"jaspicSession"};
+        String [] sessionCookie = {"LtpaToken2"};
         String location = executeFormLogin(httpclient, urlBase + redirectLoginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true, null, sessionCookie);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.

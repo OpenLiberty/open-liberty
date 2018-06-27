@@ -105,8 +105,8 @@ public class CookieProcessingTests extends CommonJwtFat {
         doHappyPath();
         // The test app logs the cookies,  check them that way.  Or we could look at the response headers.
         String responseStr = response.getWebResponse().getContentAsString();
-        assertTrue("expected cookie MPJWT    not found in cookies", responseStr.contains("cookie: MPJWT"));
-        assertTrue("expected cookie MPJWT02  not found in cookies", responseStr.contains("cookie: MPJWT02"));
+        assertTrue("expected cookie MPJWT    not found in cookies", responseStr.contains(JwtFatConstants.EXPECTED_COOKIE_NAME));
+        assertTrue("expected cookie MPJWT02  not found in cookies", responseStr.contains(JwtFatConstants.EXPECTED_COOKIE_2_NAME));
 
         // now access resource a second time, force cookies to be rejoined into a single token
         response = actions.invokeUrl(testName.getMethodName(), wc, protectedUrl);
@@ -136,11 +136,11 @@ public class CookieProcessingTests extends CommonJwtFat {
         //String cookie = response.getWebResponse().getResponseHeaderValue("Set-Cookie");
         Log.info(thisClass, "", "value of combined cookie header values: " + combinedCookieValues);
         assertTrue("did not find expected  cookie", combinedCookieValues != null);
-        assertTrue("cookie name is wrong", combinedCookieValues.contains("MPJWT"));
+        assertTrue("cookie name is wrong", combinedCookieValues.contains(JwtFatConstants.JWT_COOKIE_NAME));
 
-        assertTrue("cookie MPJWT is not cleared", combinedCookieValues.contains("MPJWT=\"\";"));
+        assertTrue("cookie MPJWT is not cleared", combinedCookieValues.contains(JwtFatConstants.JWT_COOKIE_NAME + "=\"\";"));
         if (lookForSecondCookie) {
-            assertTrue("cookie MPJWT02 is not cleared", combinedCookieValues.contains("MPJWT02=\"\";"));
+            assertTrue("cookie MPJWT02 is not cleared", combinedCookieValues.contains(JwtFatConstants.JWT_COOKIE_NAME + "02=\"\";"));
         }
     }
 
@@ -201,7 +201,7 @@ public class CookieProcessingTests extends CommonJwtFat {
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
         doHappyPath();
         String responseStr = response.getWebResponse().getContentAsString();
-        String beginStr = "cookie: MPJWT value: ";
+        String beginStr = "cookie: " + JwtFatConstants.JWT_COOKIE_NAME + " value: ";
         int begin = responseStr.indexOf(beginStr) + beginStr.length();
         int end = responseStr.indexOf("\n", begin);
         String token = responseStr.substring(begin, end);
@@ -221,7 +221,7 @@ public class CookieProcessingTests extends CommonJwtFat {
 
         WebRequest request = new WebRequest(new URL(protectedUrl), HttpMethod.GET);
         Log.info(thisClass, "", "setting cookie for replay:" + token);
-        request.setAdditionalHeader("Cookie", "MPJWT=" + token);
+        request.setAdditionalHeader("Cookie", JwtFatConstants.JWT_COOKIE_NAME + "=" + token);
         loggingUtils.printRequestParts(wc, request, testName.getMethodName());
 
         Page response = wc.getPage(request); // should get bounced to login page

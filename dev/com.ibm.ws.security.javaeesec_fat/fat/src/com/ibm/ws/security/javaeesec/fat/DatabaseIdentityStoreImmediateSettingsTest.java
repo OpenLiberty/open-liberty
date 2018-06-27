@@ -53,7 +53,7 @@ import web.war.database.deferred.DatabaseSettingsBean;
 /**
  * Test for {@link DatabaseIdentityStore} configured with immediate EL expressions.
  */
-@MinimumJavaLevel(javaLevel = 1.7)
+@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBase {
@@ -102,6 +102,11 @@ public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBas
         httpclient.getConnectionManager().shutdown();
     }
 
+    public void resetConnection() {
+        cleanupConnection();
+        setupConnection();
+    }
+
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
@@ -124,12 +129,16 @@ public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBas
         }
         passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER1_PWD);
 
+        resetConnection();
+
         /* DB_USER2 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER2, Constants.DB_USER2_PWD, code2);
         if (code2 == SC_OK) {
             verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER2, getRemoteUserFound + Constants.DB_USER2);
         }
         passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER2_PWD);
+
+        resetConnection();
 
         /* DB_USER3 */
         response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER3, Constants.DB_USER3_PWD, code3);

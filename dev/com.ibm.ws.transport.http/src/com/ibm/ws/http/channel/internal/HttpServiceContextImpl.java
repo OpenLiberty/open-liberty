@@ -2007,7 +2007,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         // get marshalled header buffers
-        WsByteBuffer[] headerBuffers;
+        WsByteBuffer[] headerBuffers = null;
         try {
             // Contingent on the type of message, call the appropriate
             // marshalling method
@@ -2060,6 +2060,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
                 framesToWrite.addAll(headerFrames);
+
+                // the code that allocated headerBuffers, should ensure they get released, we will not do that here
             }
 
         } catch (Throwable t) {
@@ -2096,7 +2098,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         // add them to list
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "formatHeaders: Adding " + headerBuffers.length + " buffers to be written");
+            if (headerBuffers != null) {
+                Tr.debug(tc, "formatHeaders: Adding " + headerBuffers.length + " buffers to be written");
+            } else {
+                Tr.debug(tc, "formatHeaders: headerBuffers is null");
+            }
         }
 
         this.writingHeaders = true;

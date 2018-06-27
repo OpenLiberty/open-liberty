@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,36 @@ package com.ibm.ws.microprofile.faulttolerance.impl;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.impl.async.QueuedFuture;
+import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
+import net.jodah.failsafe.CircuitBreakerOpenException;
+
+/**
+ * Holds the data relating to a single execution of a FaultTolerance annotated method.
+ * <p>
+ * This class includes lots of lifecycle callback methods which are called from the Executor or from Failsafe:
+ * <ul>
+ * <li>{@link #start()} called right at the start before we do any processing</li>
+ * <li>{@link #end()} called right after the user's method returns, before we do any processing on the returned value or exception</li>
+ * <li>{@link #onRetry(Throwable)} called when we've determined that a method is going to be retried</li>
+ * <li>{@link #onMainExecutionComplete(Throwable)} called when all processing apart from fallback is complete</li>
+ * <li>{@link #onFullExecutionComplete(Throwable)} called when all processing including fallback is complete</li>
+ * <li>{@link #onQueued()} called when the execution task is added to the queue of an async bulkhead</li>
+ * <li>{@link #onUnqueued()} called when the execution task is removed from the queue of an async bulkhead</li>
+ * </ul>
+ * <p>
+ * Contrast this class with subclasses of {@link Executor} which hold data relating to an annotated method which is valid for all executions of that method.
+ */
 public class ExecutionContextImpl implements FTExecutionContext {
 
     private static final TraceComponent tc = Tr.register(ExecutionContextImpl.class);
@@ -32,15 +54,38 @@ public class ExecutionContextImpl implements FTExecutionContext {
 
     private final CircuitBreakerImpl circuitBreaker;
     private final FallbackPolicy fallbackPolicy;
+    private final MetricRecorder metricRecorder;
 
     private volatile int retries = 0;
+
+    /**
+     * The time that we started fault tolerance processing for this execution
+     */
     private volatile long startTime;
+
+    /**
+     * The time that we started the current retry attempt
+     */
+    private volatile long attemptStartTime;
+
+    /**
+     * The time that the execution task was added to the bulkhead queue
+     */
+    private volatile long queueStartTime;
+
+    /**
+     * Anything thrown by the user's method - used for getFailure()
+     */
+    private volatile Throwable failure = null;
 
     private final String id;
 
     private volatile boolean closed = false;
 
-    public ExecutionContextImpl(String id, Method method, Object[] params, TimeoutImpl timeout, CircuitBreakerImpl circuitBreaker, FallbackPolicy fallbackPolicy, RetryImpl retry) {
+    private boolean mainExecutionComplete = false;
+
+    public ExecutionContextImpl(String id, Method method, Object[] params, TimeoutImpl timeout, CircuitBreakerImpl circuitBreaker, FallbackPolicy fallbackPolicy, RetryImpl retry,
+                                MetricRecorder metricRecorder) {
         this.id = id;
         this.method = method;
         this.params = new Object[params.length];
@@ -51,6 +96,8 @@ public class ExecutionContextImpl implements FTExecutionContext {
         this.circuitBreaker = circuitBreaker;
         this.fallbackPolicy = fallbackPolicy;
         this.retry = retry;
+        this.metricRecorder = metricRecorder;
+
     }
 
     /** {@inheritDoc} */
@@ -66,6 +113,16 @@ public class ExecutionContextImpl implements FTExecutionContext {
     }
 
     /**
+     * Returns any failure of the method executed or null
+     *
+     * @return Any Throwable thrown from the user's method or null 
+     *         No @Override as not in 1.0
+     */
+    public Throwable getFailure() {
+        return failure;
+    }
+
+    /**
     *
     */
     public void start() {
@@ -73,6 +130,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
             throw new IllegalStateException();
         }
         this.startTime = System.nanoTime();
+        this.attemptStartTime = this.startTime;
         debugRelativeTime("start");
         if (timeout != null) {
             timeout.start(Thread.currentThread());
@@ -84,6 +142,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
             throw new IllegalStateException();
         }
         this.startTime = System.nanoTime();
+        this.attemptStartTime = this.startTime;
         debugRelativeTime("start");
         if (timeout != null) {
             timeout.start(future);
@@ -95,8 +154,13 @@ public class ExecutionContextImpl implements FTExecutionContext {
     */
     public void end() {
         debugRelativeTime("end");
+
         if (timeout != null) {
-            timeout.stop(true);
+            timeout.stop();
+
+            metricRecorder.recordTimeoutExecutionTime(System.nanoTime() - attemptStartTime);
+
+            timeout.check();
         }
     }
 
@@ -115,12 +179,115 @@ public class ExecutionContextImpl implements FTExecutionContext {
         return remaining;
     }
 
-    public void onRetry() {
-        this.retries++;
-        debugRelativeTime("onRetry: " + this.retries);
-        if (timeout != null) {
-            timeout.restart();
+    /**
+     * Called when we have determined that this execution is going to be retried
+     *
+     * @param t the Throwable that prompted the retry
+     */
+    public void onRetry(Throwable t) {
+        try {
+            this.retries++;
+            debugRelativeTime("onRetry: " + this.retries);
+            metricRecorder.incrementRetriesCount();
+            if (timeout != null) {
+                timeout.restart();
+                attemptStartTime = System.nanoTime();
+            }
+            onAttemptComplete(t);
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
         }
+    }
+
+    /**
+     * Called when all processing except fallback has occurred
+     * <p>
+     * May be called twice (before fallback and after fallback) but will only process the event the first time
+     *
+     * @param t the exception thrown, or {@code null} if no exception thrown
+     */
+    public void onMainExecutionComplete(Throwable t) {
+        try {
+            // May be called twice, don't do anything the second time
+            if (mainExecutionComplete) {
+                return;
+            }
+            mainExecutionComplete = true;
+
+            this.failure = t;
+
+            onAttemptComplete(t);
+
+            if (t instanceof CircuitBreakerOpenException) {
+                // We didn't run anything, execution context needs closing
+                close();
+            }
+
+            if (retry != null) {
+                if (retry.canRetryFor(null, t)) {
+                    // This is a retryable failure
+                    metricRecorder.incrementRetryCallsFailureCount();
+                } else {
+                    // Not a retryable failure
+                    if (retries > 0) {
+                        metricRecorder.incrementRetryCallsSuccessRetriesCount();
+                    } else {
+                        metricRecorder.incrementRetryCallsSuccessImmediateCount();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+
+    }
+
+    /**
+     * Called when all processing (including fallback) has occurred
+     */
+    public void onFullExecutionComplete(Throwable t) {
+        metricRecorder.incrementInvocationCount();
+        if (t != null) {
+            metricRecorder.incrementInvocationFailedCount();
+        }
+    }
+
+    /**
+     * Called at the end of each retry attempt
+     */
+    private void onAttemptComplete(Throwable t) {
+        try {
+            if (circuitBreaker != null) {
+                if (t instanceof CircuitBreakerOpenException) {
+                    metricRecorder.incrementCircuitBreakerCallsCircuitOpenCount();
+                } else if (circuitBreaker.isFailure(null, t)) {
+                    metricRecorder.incrementCircuitBreakerCallsFailureCount();
+                } else {
+                    metricRecorder.incrementCircuitBreakerCallsSuccessCount();
+                }
+            }
+
+            if (t instanceof TimeoutException) {
+                metricRecorder.incrementTimeoutTrueCount();
+            } else {
+                metricRecorder.incrementTimeoutFalseCount();
+            }
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+    }
+
+    /**
+     * Called just before the fallback method or handler is run
+     */
+    public void onFallback() {
+        metricRecorder.incrementFallbackCalls();
     }
 
     public RetryImpl getRetry() {
@@ -169,6 +336,32 @@ public class ExecutionContextImpl implements FTExecutionContext {
         return this.timeout;
     }
 
+    /**
+     * Called when an execution task enqueued on the bulkhead
+     */
+    public void onQueued() {
+        try {
+            queueStartTime = System.nanoTime();
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+    }
+
+    /**
+     * Called when a previously queued execution task starts executing
+     */
+    public void onUnqueued() {
+        try {
+            metricRecorder.reportQueueWaitTime(System.nanoTime() - queueStartTime);
+        } catch (RuntimeException e) {
+            // Unchecked exceptions thrown here can be swallowed by Failsafe
+            // This catch ensures we at least get an FFDC
+            throw e;
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     public void close() {
@@ -178,6 +371,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
         if (this.timeout != null) {
             this.timeout.stop();
         }
+        metricRecorder.recordTimeoutExecutionTime(System.nanoTime() - startTime);
         this.closed = true;
     }
 

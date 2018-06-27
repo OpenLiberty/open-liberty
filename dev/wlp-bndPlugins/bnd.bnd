@@ -32,5 +32,5 @@ tool.project: true
 generate.replacement: false
 
 -buildpath: \
-	biz.aQute.bnd:biz.aQute.bnd;version=3.5.0,\
+	biz.aQute.bnd:biz.aQute.bnd;version=4.0.0,\
 	org.apache.aries:org.apache.aries.util;version=1.1.3

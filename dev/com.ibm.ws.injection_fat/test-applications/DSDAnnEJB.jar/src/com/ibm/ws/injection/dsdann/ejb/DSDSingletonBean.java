@@ -18,7 +18,7 @@ import javax.ejb.Singleton;
 @DataSourceDefinition(name = "java:module/ann_SingletonModLevelDS",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
                       databaseName = "dsdAnnTest",
-                      loginTimeout = 25,
+                      loginTimeout = 1825,
                       properties = { "createDatabase=create" })
 @Singleton
 public class DSDSingletonBean {

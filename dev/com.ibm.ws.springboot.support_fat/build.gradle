@@ -13,7 +13,7 @@
   requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23',
       'net.sourceforge.htmlunit:htmlunit:2.27',
       'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
-      'org.apache.commons:commons-lang3:3.5',
+      'org.apache.commons:commons-lang3:3.7',
       'org.apache.httpcomponents:httpclient:4.5.4',
       'org.apache.httpcomponents:httpcore:4.4.9',
       'org.apache.httpcomponents:httpmime:4.3.1',

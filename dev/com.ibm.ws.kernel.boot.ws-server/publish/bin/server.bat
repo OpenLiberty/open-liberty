@@ -358,6 +358,8 @@ goto:eof
     )
   ) else (
      "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //ES//%SERVER_NAME%
+      call:serverRunning
+      call:javaCmdResult
   )   
 goto:eof
 

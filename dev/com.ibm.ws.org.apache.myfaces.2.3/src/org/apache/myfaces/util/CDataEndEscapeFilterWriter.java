@@ -65,8 +65,9 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
             char c = cbuf[off+i];
             if (c1 == ']' && c2 == ']' && c == '>')
             {
-                if (sb == null) {
-                    sb = new StringBuilder();
+                if (sb == null)
+                {
+                    sb = new StringBuilder(len + 16);
                 }
                 sb.append(cbuf, index, i+1 - ( index - off ));
                 index = off+i+1;
@@ -78,11 +79,14 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
         }
         if (sb != null)
         {
-            if (index < off+len) {
+            if (index < off+len)
+            {
                 sb.append(cbuf, index, off+len-index);
             }
             out.write(sb.toString());
-        } else {
+        }
+        else
+        {
             out.write(cbuf, off, len);
         }
     }
@@ -97,10 +101,11 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
             char c = str.charAt(off+i);
             if (c1 == ']' && c2 == ']' && c == '>')
             {
-                if (sb == null) {
-                    sb = new StringBuilder();
+                if (sb == null)
+                {
+                    sb = new StringBuilder(len + 16);
                 }
-                sb.append(str, index, i+1 - ( index - off ) );
+                sb.append(str, index, off+i+1);
                 index = off+i+1;
                 sb.append("<![CDATA[]]]]><![CDATA[>");
             }
@@ -110,11 +115,14 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
         }
         if (sb != null)
         {
-            if (index < off+len) {
-                sb.append(str, index, off+len-index);
+            if (index < off+len)
+            {
+                sb.append(str, index, off+len);
             }
             out.write(sb.toString());
-        } else {
+        }
+        else
+        {
             out.write(str, off, len);
         }
     }

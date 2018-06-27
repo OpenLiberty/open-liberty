@@ -40,7 +40,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description:
  */
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class ProgrammaticTest extends JavaEESecTestBase {
@@ -105,7 +105,7 @@ public class ProgrammaticTest extends JavaEESecTestBase {
         verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
         response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString + "?method=authenticate", Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
                                                    HttpServletResponse.SC_OK);
-        verifyAuthenticatedResponse(response, Constants.getAuthTypeJaspi, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser,
+        verifyAuthenticatedResponse(response, Constants.getAuthTypeJSR375Basic, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser,
                                     Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
     }
 

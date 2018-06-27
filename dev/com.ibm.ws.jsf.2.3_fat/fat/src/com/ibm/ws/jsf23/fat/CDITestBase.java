@@ -296,10 +296,21 @@ public abstract class CDITestBase {
      *
      * @throws Exception
      */
-    protected void testCustomStateManagerInjectionsByApp(String app, LibertyServer server) throws Exception {
+    protected void testCustomStateManagerInjectionsByApp(String contextRoot, LibertyServer server) throws Exception {
 
+        WebClient webClient = new WebClient();
+
+        // Construct the URL for the test
+        URL url = JSFUtils.createHttpUrl(server, contextRoot, "NavigationHandler.jsf");
+        HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+        if (page == null) {
+            Assert.fail("NavigationHandler.jsf did not render properly.");
+        }
+
+        // The above request should cause the message below to be output in the log
         String msg = "JSF23: CustomStateManager isSavingStateInClient called: result- class com.ibm.ws.jsf23.fat.cdi.common.beans.injected.MethodBean::class com.ibm.ws.jsf23.fat.cdi.common.beans.injected.ManagedBeanFieldBean::PostConstructCalled:/"
-                     + app;
+                     + contextRoot;
 
         // Check the trace.log to see if the proper InjectionProvider is being used.
         String isStateManagerMessage = server.waitForStringInLog(msg);

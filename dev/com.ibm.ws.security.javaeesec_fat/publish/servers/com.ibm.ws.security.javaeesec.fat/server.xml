@@ -8,8 +8,6 @@
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
 
-    <webAppSecurity jaspicSessionEnabled="true" />
-
  	<application type="war" id="JavaEESecBasicAuthServlet" name="JavaEESecBasicAuthServlet" location="JavaEESecBasicAuthServlet.war">
  		<application-bnd>
 			<security-role name="javaeesec_basic">

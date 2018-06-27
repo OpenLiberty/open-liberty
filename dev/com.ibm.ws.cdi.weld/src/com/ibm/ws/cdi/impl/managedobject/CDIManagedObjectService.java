@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,11 +22,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.managedobject.DefaultManagedObjectService;
-import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -120,18 +118,6 @@ public class CDIManagedObjectService implements ManagedObjectService {
         } else {
             return getDefaultManagedObjectService().createInterceptorManagedObjectFactory(mmd, klass);
         }
-    }
-
-    @Override
-    public <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, @Sensitive T instance) throws ManagedObjectException {
-        if (isCDIEnabled(mmd)) {
-            @SuppressWarnings("unchecked")
-            CDIManagedObjectFactoryImpl<T> cmof = new CDIManagedObjectFactoryImpl<T>((Class<T>) instance.getClass(), getCDIRuntime(), false);
-            return cmof.existingInstance(instance);
-        } else {
-            return getDefaultManagedObjectService().createManagedObject(mmd, instance);
-        }
-
     }
 
     private boolean isCDIEnabled(ModuleMetaData mmd) {

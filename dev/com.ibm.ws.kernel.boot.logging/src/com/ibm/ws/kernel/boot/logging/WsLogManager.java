@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2008 IBM Corporation and others.
+ * Copyright (c) 1998, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,8 @@ public class WsLogManager extends LogManager {
      * disableReset() method, to prevent losing logging during JVM shutdown.
      */
     private boolean resetEnabled = true;
+    
+	private static boolean svBinaryLoggingEnable = false ;
 
     /**
      * Default constructor.
@@ -211,6 +213,24 @@ public class WsLogManager extends LogManager {
     public static boolean isConfiguredByLoggingProperties() {
         return configureByLoggingProperties;
     }
+    
+	/**
+	 * Get the boolean to determine if binary logging is enabled
+	 * 
+	 * @return boolean value for this environment variable
+	 */
+	public static boolean isBinaryLoggingEnabled() { 
+		return svBinaryLoggingEnable; 
+	}
+	
+	/**
+	 * set the value for binary logging if pulled from elsewhere
+	 * 
+	 * @param binaryLogEnable the value indicating if binary logging is enabled or disabled
+	 */
+	public static void setBinaryLoggingEnabled(boolean binaryLogEnable) {
+		svBinaryLoggingEnable = binaryLogEnable ;
+	}
 
     /**
      * Called by TrLoggerHelper#setTrLogger. The WsLogger class is part of the

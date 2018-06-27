@@ -434,6 +434,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} nu este o caracter
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Numai caracteristici pot fi instalate pe o extensie de produs.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Rula\u0163i din nou comanda installUtility f\u0103r\u0103 s\u0103 specifica\u0163i extensia de produs.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: Urm\u0103toarele caracteristici nu au putut fi ob\u0163inute: {0}. Asigura\u0163i-v\u0103 c\u0103 sunt valide caracteristicile pentru Open Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=Programul de instalare nu a putut extrage caracteristicile specificate din magaziile conectate.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Dac\u0103 exist\u0103 caracteristicile specificate, asigura\u0163i-v\u0103 c\u0103 acestea sunt valide pentru Open Liberty.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: Caracteristica {0} nu poate fi instalat\u0103 pentru edi\u0163ia IBM WebSphere Application Server Liberty Core pentru c\u0103 se aplic\u0103 doar altor edi\u0163ii de IBM WebSphere Application Server Liberty \u015fi de Open Liberty. Utiliza\u0163i ac\u0163iunea "find" din comanda featureManager pentru a extrage o list\u0103 de caracteristici ce sunt aplicabile pentru edi\u0163ia IBM WebSphere Application Server Liberty Core.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=Caracteristica nu este aplicabil\u0103 pentru edi\u0163ia produsului instalat.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Instala\u0163i caracteristici ce sunt suportate de edi\u0163ia produsului.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: Se instaleaz\u0103 urm\u0103toarele caracteristici: {0}.
 LOG_INSTALL_FEATURES.explanation=Caracteristicile specificate vor fi instalate.

@@ -18,7 +18,7 @@ IBM-RequiredExtensions: ws-dummy, ws-dummy2, ws-dummy3
 Main-Class: com.ibm.ws.kernel.boot.cmdline.Main
 Require-Bundle: com.ibm.ws.security.utility; version="[1,1.0.100)", co
  m.ibm.ws.crypto.passwordutil; version="[1,1.0.100)", com.ibm.ws.org.a
- pache.commons.io.1.4; version="[1,1.0.100)", com.ibm.ws.crypto.certif
+ pache.commons.io; version="[1,1.0.100)", com.ibm.ws.crypto.certif
  icateutil; version="[1,1.0.100)", com.ibm.ws.kernel.service; version=
  "[1.3,1.3.100)", com.ibm.ws.logging; version="[1,1.0.100)", com.ibm.j
  son4j; version="[1,1.0.100)"

@@ -61,8 +61,11 @@ public abstract class RepositoryFixture implements TestRule {
             public void evaluate() throws Throwable {
                 assumeFatFilterMatches(description);
                 createCleanRepository();
-                base.evaluate();
-                cleanupRepository();
+                try {
+                    base.evaluate();
+                } finally {
+                    cleanupRepository();
+                }
             }
         };
     }
@@ -121,7 +124,7 @@ public abstract class RepositoryFixture implements TestRule {
 
     /**
      * Returns true if this repository supports attachments
-     * 
+     *
      * @return
      */
     public boolean isAttachmentSupported() {

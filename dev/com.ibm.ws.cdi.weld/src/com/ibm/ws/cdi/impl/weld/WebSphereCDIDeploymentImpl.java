@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.Extension;
@@ -39,8 +38,6 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.executor.ExecutorServicesImpl;
@@ -81,10 +78,8 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     private final CDIRuntime cdiRuntime;
     private final CDIImpl cdi;
 
-    private static final TraceComponent tc = Tr.register(WebSphereCDIDeploymentImpl.class);
-
     public WebSphereCDIDeploymentImpl(Application application, CDIRuntime cdiRuntime) {
-        bootstrap = new WeldBootstrap();
+        this.bootstrap = new WeldBootstrap();
 
         this.id = application.getJ2EEName().toString();
         this.application = application;
@@ -95,9 +90,9 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         if (wsTransactionService != null) {
             transactionServices = new TransactionServicesImpl(wsTransactionService);
         }
-        serviceRegistry.add(TransactionServices.class, transactionServices);
-        serviceRegistry.add(SecurityServices.class, cdiRuntime.getSecurityServices());
-        serviceRegistry.add(ProxyServices.class, cdiRuntime.getProxyServices());
+        this.serviceRegistry.add(TransactionServices.class, transactionServices);
+        this.serviceRegistry.add(SecurityServices.class, cdiRuntime.getSecurityServices());
+        this.serviceRegistry.add(ProxyServices.class, cdiRuntime.getProxyServices());
 
         ExecutorService executorService = cdiRuntime.getExecutorService();
         if (executorService != null) {
@@ -106,7 +101,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         }
 
         //create a resource injection service for this deployment
-        injectionServices = new WebSphereInjectionServicesImpl(cdiRuntime);
+        this.injectionServices = new WebSphereInjectionServicesImpl(this);
         this.cdiRuntime = cdiRuntime;
         this.cdi = new CDIImpl(cdiRuntime);
     }
@@ -118,7 +113,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
      */
     @Override
     public WebSphereInjectionServicesImpl getInjectionServices() {
-        return injectionServices;
+        return this.injectionServices;
     }
 
     /**
@@ -130,7 +125,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     @Override
     public void setClassLoader(ClassLoader classloader) {
         this.classloader = classloader;
-        extensionClassLoaders.add(classloader);
+        this.extensionClassLoaders.add(classloader);
     }
 
     /**
@@ -172,11 +167,6 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     @Override
     public WebSphereBeanDeploymentArchive getBeanDeploymentArchive(String archiveID) {
         return deploymentDBAs.get(archiveID);
-    }
-
-    @Override
-    public Application getApplication() {
-        return application;
     }
 
     /**

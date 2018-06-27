@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: A(z) [{0}] azonos\u00edt\u00f3j\u00fa MicroProfile JSON Web Token (JWT) fogyaszt\u00f3i konfigur\u00e1ci\u00f3 nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa mpJwr konfigur\u00e1ci\u00f3 l\u00e9tezik a kiszolg\u00e1l\u00f3n.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nem tal\u00e1lhat\u00f3 MPJWT fogyaszt\u00f3i konfigur\u00e1ci\u00f3 a megadott azonos\u00edt\u00f3val.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3val be\u00e1ll\u00edtott mpJwt elem l\u00e9tezik, \u00e9s hivatkozik r\u00e1 egy jwtSso elem a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: T\u00fal sok MicroProfile JWT szolg\u00e1ltat\u00e1s [{0}] alkalmas a k\u00e9r\u00e9s kezel\u00e9s\u00e9re.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=A JWTSSO \u00f6sszetev\u0151 nem tud MicroProfile JWT szolg\u00e1ltat\u00e1st kiv\u00e1lasztani a k\u00e9r\u00e9s kezel\u00e9s\u00e9hez, ha t\u00f6bb szolg\u00e1ltat\u00e1s is alkalmas a k\u00e9r\u00e9s kezel\u00e9s\u00e9re.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban nincs t\u00f6bb MicroProfile JWT szolg\u00e1ltat\u00e1s be\u00e1ll\u00edtva a k\u00e9r\u00e9s kezel\u00e9s\u00e9hez.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: A JwtSso cookieName attrib\u00fatuma nem lehet null\u00e9rt\u00e9k vagy \u00fcres. Az alap\u00e9rtelmezett cookieName \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=A cookieName attrib\u00fatumnak \u00e9rv\u00e9nyes cookie n\u00e9vnek kell lennie.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=T\u00e1vol\u00edtsa el a cookieName attrib\u00fatumot, vagy jav\u00edtsa ki az \u00e9rt\u00e9k\u00e9t.
+
+COOKIE_NAME_INVALID=CWWKS6303E: A jwtSso cookieName [{0}] attrib\u00fatum\u00e9rt\u00e9ke \u00e9rv\u00e9nytelen karaktert tartalmaz [{1}]. Helyette az alap\u00e9rtelmezett cookieName \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
+COOKIE_NAME_INVALID.explanation=A cookieName attrib\u00fatumnak \u00e9rv\u00e9nyes cookie n\u00e9vnek kell lennie.
+COOKIE_NAME_INVALID.useraction=T\u00e1vol\u00edtsa el a cookieName attrib\u00fatumot, vagy jav\u00edtsa ki az \u00e9rt\u00e9k\u00e9t.
+
 

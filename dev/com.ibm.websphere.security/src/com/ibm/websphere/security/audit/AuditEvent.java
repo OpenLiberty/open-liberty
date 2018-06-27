@@ -152,7 +152,7 @@ public class AuditEvent {
     public static final String REASON_TYPE_MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION = "Repository for groups is missing or indicates groups are in cross repositories"; // 207
     public static final String REASON_TYPE_ENTITY_TYPE_NOT_SUPPORTED = "Entity type not supported"; // 208
     public static final String REASON_TYPE_CANNOT_WRITE_TO_READ_ONLY_REPOSITORY = "Cannot write to read only repository"; // 209
-    public static final String REASON_TYPE_EXTERNAL_NAME_CONTROL_NOT_FOUND = ""; // 210
+    public static final String REASON_TYPE_EXTERNAL_NAME_CONTROL_NOT_FOUND = "External name control not found"; // 210
     public static final String REASON_TYPE_INVALID_IDENTIFIER = "Invalid identifier"; // 211
     public static final String REASON_TYPE_ENTITY_NOT_FOUND = "Entity not found"; // 212
     public static final String REASON_TYPE_MISSING_SORT_KEY = "Missing sort key"; // 213

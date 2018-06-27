@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,13 +41,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.websphere.servlet.event.FilterListenerImpl;
-import com.ibm.websphere.servlet.request.IRequest;
+import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.collaborator.CollaboratorMetaDataImpl;
 import com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor;
 import com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor;
-import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.servlet.FileServletWrapper;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
@@ -1171,7 +1170,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                 if (h2Handler != null) {
                                     if (request instanceof SRTServletRequest) {
                                         SRTServletRequest srtReq = (SRTServletRequest) request;
-                                        IRequestImpl iReq = (IRequestImpl)srtReq.getIRequest();
+                                        IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                                         if (iReq != null) {
                                             httpInboundConnection = iReq.getHttpInboundConnection();
                                             logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "HttpInboundConnection: " + httpInboundConnection);

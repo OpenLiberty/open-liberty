@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@ import com.ibm.websphere.logging.hpel.reader.RepositoryLogRecord;
 /**
  * Implementation of the {@link LogRecordFilter} interface using multiple
  * parameters to filter log records.
- * 
+ *
  * @ibm-api
  */
 public class LogViewerFilter implements LogRecordFilter {
@@ -43,6 +43,9 @@ public class LogViewerFilter implements LogRecordFilter {
     private String[] exLoggers = null;
     private int intThreadID = 0;
     private Pattern messageRegExp;
+    private String excludeMessages = null; // a comma separated list of messages
+    // to exclude
+    private final List<Pattern> excludeMessagesRegExpPatterns = new ArrayList<Pattern>();
     private final List<String> includeExtensionRegExpKeys = new ArrayList<String>();
     private final List<Pattern> includeExtensionRegExpPatterns = new ArrayList<Pattern>();
 
@@ -82,10 +85,10 @@ public class LogViewerFilter implements LogRecordFilter {
 
     /**
      * Creates instance to filter on time range, level range, lists of
-     * included/excluded loggers, and thread ID. A <code>null</code> value
-     * can be supplied for any of the parameters that you do not wish to filter
-     * on.
-     * 
+     * included/excluded loggers, list of excluded messages, and thread ID. A
+     * <code>null</code> value can be supplied for any of the parameters that
+     * you do not wish to filter on.
+     *
      * @param startDate minimum {@link Date} value that will be accepted by
      *            the filter
      * @param stopDate maximum {@link Date} value that will be accepted by
@@ -99,10 +102,16 @@ public class LogViewerFilter implements LogRecordFilter {
      * @param excludeLoggers comma separated list of loggers that will be
      *            rejected by the filter. The wildcard character '*' may be used.
      * @param threadID ID of the thread that will be accepted by the filter
-     * @param message message string to match in the message of a record
+     * @param message message string to match in the message of a record. The
+     *            wildcard character '*' may be used.
+     * @param excludeMessages comma separated list of messages that will be
+     *            rejected by the filter. The wildcard character '*' may be used.
+     * @param extensions comma separated list of records with specified extension
+     *            name and value that will be accepted by the filter. The wildcard
+     *            characters '*' or '?' may be used.
      */
     public LogViewerFilter(Date startDate, Date stopDate, Level minLevel, Level maxLevel, String includeLoggers,
-                           String excludeLoggers, String threadID, String message, List<Extension> extensions) {
+                           String excludeLoggers, String threadID, String message, String excludeMessages, List<Extension> extensions) {
         String methodName = "<init>";
         if ((startDate != null) || (stopDate != null)) {
             if (startDate != null) {
@@ -160,6 +169,15 @@ public class LogViewerFilter implements LogRecordFilter {
                 }
             }
         }
+        if (excludeMessages != null) {
+            this.excludeMessages = excludeMessages;
+            String[] exMessages = excludeMessages.split(",");
+            for (int i = 0; i < exMessages.length; i++) {
+                exMessages[i] = exMessages[i].trim();
+                this.excludeMessagesRegExpPatterns.add(getRegularExpression(exMessages[i]));
+            }
+            filterMessage = true;
+        }
         if (extensions != null && extensions.size() > 0) {
             this.extensions = extensions.toArray(new Extension[extensions.size()]);
             for (Extension ext : this.extensions) {
@@ -174,7 +192,7 @@ public class LogViewerFilter implements LogRecordFilter {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.logging.hpel.reader.api.LogRecordFilter#accept(com.ibm.ws.
      * logging.hpel.reader.api.RepositoryLogRecord)
      */
@@ -282,9 +300,21 @@ public class LogViewerFilter implements LogRecordFilter {
 
             recordMessage = recordMessage.replace("\n", "").replace("\r", "");
 
-            boolean foundmessagekey = messageRegExp.matcher(recordMessage).find();
-            if (!foundmessagekey) {
-                return false;
+            if (messageRegExp != null) {
+                boolean foundmessagekey = messageRegExp.matcher(recordMessage).find();
+                if (!foundmessagekey) {
+                    return false;
+                }
+            }
+
+            if (excludeMessages != null) {
+                for (Pattern p : excludeMessagesRegExpPatterns) {
+                    boolean excludeMsg = p.matcher(recordMessage).find();
+                    if (excludeMsg) {
+                        // The Log record message will be excluded from the Log viewer.
+                        return false;
+                    }
+                }
             }
 
         }

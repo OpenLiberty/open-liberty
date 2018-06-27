@@ -22,7 +22,6 @@ import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
-import com.ibm.ws.logging.data.Pair;
 
 /*
  * Utility class for converting events into JSON strings
@@ -121,16 +120,16 @@ public class CollectorJsonUtils {
     private static String jsonifyGCEvent(int maxFieldLength, String wlpUserDir,
                                          String serverName, String hostName, String eventType, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
-        ArrayList<Pair> pairs = genData.getPairs();
+        ArrayList<KeyValuePair> pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String key = null;
 
         StringBuilder sb = CollectorJsonHelpers.startGCJson(hostName, wlpUserDir, serverName);
-        for (Pair p : pairs) {
+        for (KeyValuePair p : pairs) {
 
-            if (p instanceof KeyValuePair) {
+            if (p != null && !p.isList()) {
 
-                kvp = (KeyValuePair) p;
+                kvp = p;
                 key = kvp.getKey();
 
                 if (key.equals(LogFieldConstants.IBM_DURATION)) {
@@ -189,9 +188,14 @@ public class CollectorJsonUtils {
                 message = CollectorJsonHelpers.jsonRemoveSpace(message);
             }
         }
-        String formattedValue = CollectorJsonHelpers.formatMessage(logData.getMessage(), maxFieldLength);
-        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey(), formattedValue, false, true, false, false);
 
+        StringBuilder formattedValue = new StringBuilder(CollectorJsonHelpers.formatMessage(message, maxFieldLength));
+        String throwable = logData.getThrowable();
+        if (throwable != null) {
+            formattedValue.append(CollectorJsonHelpers.LINE_SEPARATOR).append(throwable);
+        }
+
+        CollectorJsonHelpers.addToJSON(sb, logData.getMessageKey(), formattedValue.toString(), false, true, false, false);
         CollectorJsonHelpers.addToJSON(sb, logData.getThreadIdKey(), DataFormatHelper.padHexString(logData.getThreadId(), 8), false, true, false, false);
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(logData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, logData.getDatetimeKey(), datetime, false, true, false, false);
@@ -203,8 +207,8 @@ public class CollectorJsonUtils {
         CollectorJsonHelpers.addToJSON(sb, logData.getSequenceKey(), logData.getSequence(), false, true, false, false);
         KeyValuePairList kvpl = logData.getExtensions();
         if (kvpl != null) {
-            if (kvpl.getName().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
-                ArrayList<KeyValuePair> extensions = kvpl.getKeyValuePairs();
+            if (kvpl.getKey().equals(LogFieldConstants.EXTENSIONS_KVPL)) {
+                ArrayList<KeyValuePair> extensions = kvpl.getList();
                 for (KeyValuePair k : extensions) {
                     String extKey = k.getKey();
                     if (extKey.endsWith(CollectorJsonHelpers.INT_SUFFIX)) {

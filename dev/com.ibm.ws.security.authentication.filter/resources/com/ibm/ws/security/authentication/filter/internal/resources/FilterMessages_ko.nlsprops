@@ -1,0 +1,56 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.authentication.filter/resources/com/ibm/ws/security/authentication/filter/internal/resources/FilterMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Filter service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+#Message prefix block: CWWKS4350 - CWWKS4399
+AUTH_FILTER_INIT_NULL_STRING=CWWKS4350E: \ub110 \ubb38\uc790\uc5f4\uc740 \uc62c\ubc14\ub978 \uc778\uc99d \ud544\ud130 \uaddc\uce59\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+AUTH_FILTER_INIT_NULL_STRING.explanation=server.xml \ud30c\uc77c\uc5d0\uc11c \uc778\uc99d \ud544\ud130\uc5d0 \ub110 \ubb38\uc790\uc5f4\uc774 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_INIT_NULL_STRING.useraction=\uc778\uc99d \ud544\ud130\ub9c1 \uaddc\uce59\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_MALFORMED_CONDITION=CWWKS4351E: \ud544\ud130 \uc870\uac74\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. s1 = {0};  s2 = {1}; s3 = {2}.
+AUTH_FILTER_MALFORMED_CONDITION.explanation=\ud544\ud130 \uc870\uac74\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub458 \uc774\uc0c1\uc758 \uac12\uc744 \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_MALFORMED_CONDITION.useraction=server.xml \ud30c\uc77c\uc5d0\uc11c \ud544\ud130 \uac12\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE=CWWKS4352E: \ud544\ud130 \uc77c\uce58 \uc720\ud615\uc740 ==, !=, %=, > \ub610\ub294 < \uc911 \ud558\ub098\uc5ec\uc57c \ud569\ub2c8\ub2e4. \uc0ac\uc6a9\ub41c \uc77c\uce58 \uc720\ud615\uc740 {0}\uc785\ub2c8\ub2e4.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.explanation=\ud544\ud130 \uc77c\uce58 \uc720\ud615\uc740 ==, !=, %=, > \ub610\ub294 < \uc911 \ud558\ub098\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+AUTH_FILTER_MALFORMED_SYMBOL_MATCH_TYPE.useraction=server.xml \ud30c\uc77c\uc5d0\uc11c \ud544\ud130 \uc77c\uce58 \uc720\ud615\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE=CWWKS4353E: \ud544\ud130 \uc77c\uce58 \uc720\ud615\uc740 equals, notContain, contains, greaterThan \ub610\ub294 lessThan \uc911 \ud558\ub098\uc5ec\uc57c \ud569\ub2c8\ub2e4. \uc0ac\uc6a9\ub41c \uc77c\uce58 \uc720\ud615\uc740 {0}\uc785\ub2c8\ub2e4.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.explanation=\ud544\ud130 \uc77c\uce58 \uc720\ud615\uc740 equals, notContain, contains, greaterThan \ub610\ub294 lessThan \uc911 \ud558\ub098\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+AUTH_FILTER_MALFORMED_WORD_MATCH_TYPE.useraction=server.xml \ud30c\uc77c\uc5d0\uc11c \ud544\ud130 \uc77c\uce58 \uc720\ud615\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_MALFORMED_IP_RANGE=CWWKS4354E: \uc798\ubabb\ub41c IP \uc8fc\uc18c \ubc94\uc704\uac00 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc640\uc77c\ub4dc\uce74\ub4dc\uac00 \uc544\ub2cc {0}\uc774(\uac00) \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_MALFORMED_IP_RANGE.explanation=\uc798\ubabb\ub41c IP \uc8fc\uc18c \ubc94\uc704\uac00 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. IP \uc8fc\uc18c \ubc94\uc704\uc5d0\uc11c \uccab \ubc88\uc9f8 \ubc94\uc704 \ub4a4\uc5d0\ub294 \uc640\uc77c\ub4dc\uce74\ub4dc\ub9cc \ud3ec\ud568\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_MALFORMED_IP_RANGE.useraction=\uc9c0\uc815\ub41c \uccab \ubc88\uc9f8 \ubc94\uc704 \ub4a4\uc5d0 \uc640\uc77c\ub4dc\uce74\ub4dc\ub9cc \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_UNKNOWN_HOST=CWWKS4355E: IP \uc8fc\uc18c {0}\uc5d0 \ub300\ud574 \uc54c \uc218 \uc5c6\ub294 \ud638\uc2a4\ud2b8 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_UNKNOWN_HOST.explanation=\uc9c0\uc815\ub41c IP \uc8fc\uc18c\uc758 \ud638\uc2a4\ud2b8 \uc774\ub984\uc744 \uc5bb\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_UNKNOWN_HOST.useraction=\uc9c0\uc815\ub41c IP \uc8fc\uc18c \ubc94\uc704\ub97c \uc720\ud6a8\uc131 \uac80\uc99d\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_IP_STRING_CONVERT_ERROR=CWWKS4356E: IP \uc18d\uc131 \uac12 {0}\uc744(\ub97c) IP \uc8fc\uc18c\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.explanation=IP \uc18d\uc131 \uac12\uc744 IP \uc8fc\uc18c\ub85c \ubcc0\ud658\ud558\ub294 \uc911\uc5d0 \ubcc0\ud658 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_IP_STRING_CONVERT_ERROR.useraction=server.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c IP \uc18d\uc131\uc758 \uc720\ud6a8\uc131\uc744 \uac80\uc99d\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_NOT_CONFIG=CWWKS4357I: server.xml \ud30c\uc77c\uc5d0 authFilter \uc694\uc18c\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_NOT_CONFIG.explanation=server.xml \ud30c\uc77c\uc5d0 authFilter \uc694\uc18c\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_NOT_CONFIG.useraction=server.xml \ud30c\uc77c\uc5d0 authFilter \uc694\uc18c\uac00 \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+AUTH_FILTER_CONFIG_PROCESSED=CWWKS4358I: \uc778\uc99d \ud544\ud130 {0} \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_CONFIG_PROCESSED.explanation=\uc778\uc99d \ud544\ud130 \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_CONFIG_PROCESSED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_CONFIG_MODIFIED=CWWKS4359I: \uc778\uc99d \ud544\ud130 {0} \uad6c\uc131\uc774 \uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_CONFIG_MODIFIED.explanation=\uc778\uc99d \ud544\ud130 \uad6c\uc131\uc774 \uc218\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_CONFIG_MODIFIED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_MISSING_ID=CWWKS4360E: server.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c authFilter \uc694\uc18c\uc5d0\uc11c \ud544\uc218 ID \uc18d\uc131 {0}\uc774(\uac00) \ub204\ub77d\ub428
+AUTH_FILTER_MISSING_ID.explanation=server.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c authFilter \uc694\uc18c\uc5d0\uc11c \ud544\uc218 ID \uc18d\uc131\uc774 \ub204\ub77d\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \uc774 authFilter \uc694\uc18c\ub294 \uc0ac\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+AUTH_FILTER_MISSING_ID.useraction=server.xml \ud30c\uc77c\uc5d0 \uc9c0\uc815\ub41c authFilter \uc694\uc18c\uc5d0 ID \uc18d\uc131\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

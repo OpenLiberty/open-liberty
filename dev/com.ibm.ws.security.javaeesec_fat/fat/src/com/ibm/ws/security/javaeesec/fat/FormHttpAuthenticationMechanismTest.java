@@ -58,12 +58,11 @@ import componenttest.topology.impl.LibertyServerFactory;
  * values for getAuthType, getUserPrincipal and getRemoteUser after JASPI authentication.
  *
  */
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
 
-    private static final String COOKIE_NAME = "jaspicSession";
     private static final String JAR_NAME = "JavaEESecBase.jar";
 
     private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");

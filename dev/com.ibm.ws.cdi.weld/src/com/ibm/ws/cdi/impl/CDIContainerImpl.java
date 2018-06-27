@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 import org.jboss.weld.config.ConfigurationKey;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceReference;
@@ -36,6 +37,7 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
 import com.ibm.ws.cdi.impl.weld.ProbeExtensionArchive;
 import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
+import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
 import com.ibm.ws.cdi.internal.interfaces.Application;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
@@ -114,7 +116,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
     public WebSphereCDIDeployment startInitialization(Application application) throws CDIException {
         try {
             //first create the deployment object which has the full structure of BDAs inside
-            WebSphereCDIDeployment webSphereCDIDeployment = createWebSphereCDIDeployment(application, getExtensionArchives(application));
+            WebSphereCDIDeployment webSphereCDIDeployment = createWebSphereCDIDeployment(application, getExtensionArchives());
             currentDeployment.set(webSphereCDIDeployment);
 
             //scan for beans
@@ -135,7 +137,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 // start the bootrapping process...
                 final WeldBootstrap weldBootstrap = webSphereCDIDeployment.getBootstrap();
                 weldBootstrap.startExtensions(webSphereCDIDeployment.getExtensions());
-                weldBootstrap.startContainer(contextID, Environments.EE_INJECT, webSphereCDIDeployment);
+                weldBootstrap.startContainer(contextID, Environments.EE, webSphereCDIDeployment);
                 AccessController.doPrivileged(new PrivilegedAction<Void>() {
                     @Override
                     public Void run() {
@@ -265,7 +267,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
         Set<WebSphereBeanDeploymentArchive> extensionBdas = new HashSet<WebSphereBeanDeploymentArchive>();
 
-        Set<ExtensionArchive> extensions = getExtensionArchives(applicationContext.getApplication());
+        Set<ExtensionArchive> extensions = getExtensionArchives();
 
         if (extensions != null) {
             for (ExtensionArchive extArchive : extensions) {
@@ -370,14 +372,15 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
             ArchiveType childType = child.getType();
             String archiveID = null;
-            String eeModuleDescriptorID = null;
+            EEModuleDescriptor eeModuleDescriptor = null;
             if (childType == ArchiveType.WEB_INF_LIB ||
                 childType == ArchiveType.MANIFEST_CLASSPATH ||
                 childType == ArchiveType.JAR_MODULE ||
                 childType == ArchiveType.SHARED_LIB) {
 
                 archiveID = parentModule.getId() + "#" + childType + "#" + child.getName();
-                eeModuleDescriptorID = parentModule.getEEModuleDescriptorId();
+                //a module library uses the same descriptor ID as it's parent module
+                eeModuleDescriptor = new WebSphereEEModuleDescriptor(parentModule.getEEModuleDescriptorId(), childType);
 
             } else {
                 // This isn't the right type to be a child library, skip it
@@ -400,7 +403,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                                                                               archiveID,
                                                                               child,
                                                                               cdiRuntime,
-                                                                              eeModuleDescriptorID);
+                                                                              eeModuleDescriptor);
 
             discoveredBdas.addDiscoveredBda(parentType, newChildBda);
             moduleArchivePaths.add(childPath);
@@ -544,7 +547,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * @return
      * @throws CDIException
      */
-    private synchronized Set<ExtensionArchive> getExtensionArchives(Application application) throws CDIException {
+    private synchronized Set<ExtensionArchive> getExtensionArchives() throws CDIException {
 
         if (runtimeExtensionSet == null) {
             runtimeExtensionSet = new HashSet<ExtensionArchive>();
@@ -588,12 +591,9 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 String extClassesOnlyStr = (String) sr.getProperty(EXTENSION_CLASSES_ONLY_MODE);
                 boolean extClassesOnly = Boolean.parseBoolean(extClassesOnlyStr);
 
-                ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle,
-                                                                                            extra_classes,
-                                                                                            extraAnnotations,
+                ExtensionArchive extensionArchive = cdiRuntime.getExtensionArchiveForBundle(bundle, extra_classes, extraAnnotations,
                                                                                             applicationBDAsVisible,
-                                                                                            extClassesOnly,
-                                                                                            application);
+                                                                                            extClassesOnly);
                 runtimeExtensionSet.add(extensionArchive);
 
             }

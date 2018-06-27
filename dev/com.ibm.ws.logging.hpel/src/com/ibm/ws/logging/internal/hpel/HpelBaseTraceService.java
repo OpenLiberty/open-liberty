@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,16 +94,16 @@ public class HpelBaseTraceService extends BaseTraceService {
             boolean logNormally = invokeMessageRouters(routedMessage);
             if (!logNormally)
                 return;
+
             trWriter.repositoryPublish(logRecord);
+
+            //If any messages configured to be hidden then those will not be written to console.log and will be redirected to logdata/tracedata
+            if (isMessageHidden(formattedMsg)) {
+                return;
+            }
+
             if (logSource != null) {
                 publishToLogSource(routedMessage);
-            }
-        }
-        //Route other types of logs (<INFO) to trace (RTC237423)
-        else {
-            if (TraceComponent.isAnyTracingEnabled()) {
-                TraceWriter detailLog = traceLog;
-                publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
             }
         }
     }
@@ -119,8 +119,14 @@ public class HpelBaseTraceService extends BaseTraceService {
         //but the results of this call are not actually used anywhere (for traces), so it can be disabled for now
         //String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
         invokeTraceRouters(routedTrace);
-        if (traceSource != null) {
-            traceSource.publish(routedTrace, id);
+        try {
+            if (!(counterForTraceSource.incrementCount() > 2)) {
+                if (traceSource != null) {
+                    traceSource.publish(routedTrace, id);
+                }
+            }
+        } finally {
+            counterForTraceRouter.decrementCount();
         }
         trWriter.repositoryPublish(logRecord);
     }
@@ -136,7 +142,15 @@ public class HpelBaseTraceService extends BaseTraceService {
         LoggerHandlerManager.setSingleton(new Handler() {
             @Override
             public void publish(LogRecord logRecord) {
-                HpelBaseTraceService.this.publishLogRecord(logRecord);
+                Level level = logRecord.getLevel();
+                int levelValue = level.intValue();
+                if (levelValue >= Level.INFO.intValue()) {
+                    HpelBaseTraceService.this.publishLogRecord(logRecord);
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled()) {
+                        HpelBaseTraceService.this.publishTraceLogRecord(traceLog, logRecord, NULL_ID, null, null);
+                    }
+                }
             }
 
             @Override

@@ -10,13 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.yoko;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.yoko.osgi.locator.BundleProviderLoader;
+import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import org.apache.yoko.osgi.locator.LocalFactory;
 import org.apache.yoko.osgi.locator.Register;
-import org.osgi.framework.Bundle;
+import org.apache.yoko.osgi.locator.ServiceProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -24,20 +22,26 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
-/**
- *
- */
 @Component(service = SubsystemFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
 public class DefaultSocketFactorySubsystemFactory extends SubsystemFactory {
+    private static enum MyLocalFactory implements LocalFactory {
+        INSTANCE;
+        public Class<?> forName(String name) throws ClassNotFoundException {
+            return Class.forName(name);
+        }
+        public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
+            return null;
+        }
+    }
 
-    /**  */
     private static final String IIOP_CONNECTION_HELPER = "-IIOPconnectionHelper";
 
     private Register providerRegistry;
-    private BundleProviderLoader connectionHelperClass;
+    private ServiceProvider connectionHelperClass;
 
     @Reference
     protected void setRegister(Register providerRegistry) {
@@ -46,8 +50,7 @@ public class DefaultSocketFactorySubsystemFactory extends SubsystemFactory {
 
     @Activate
     protected void activate(BundleContext bundleContext) {
-        Bundle bundle = bundleContext.getBundle();
-        connectionHelperClass = new BundleProviderLoader(DefaultSocketFactory.class.getName(), DefaultSocketFactory.class.getName(), bundle, 1);
+        connectionHelperClass = new ServiceProvider(MyLocalFactory.INSTANCE, DefaultSocketFactory.class);
         providerRegistry.registerProvider(connectionHelperClass);
     }
 
@@ -74,5 +77,4 @@ public class DefaultSocketFactorySubsystemFactory extends SubsystemFactory {
             args.add(DefaultSocketFactory.class.getName());
         }
     }
-
 }

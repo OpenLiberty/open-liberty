@@ -47,6 +47,7 @@ import com.ibm.ws.ejbcontainer.diagnostics.IntrospectionWriter;
 import com.ibm.ws.ejbcontainer.diagnostics.TrDumpWriter;
 import com.ibm.ws.ejbcontainer.failover.SfFailoverClient;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
+import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.metadata.ejb.BeanInitData;
 import com.ibm.ws.metadata.ejb.WCCMMetaData;
@@ -78,9 +79,7 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
  * A metadata instance is immutable. <p>
  */
 
-public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
-                implements EJBComponentMetaData
-{
+public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl implements EJBComponentMetaData {
     private static final TraceComponent tc = Tr.register(BeanMetaData.class,
                                                          "EJBContainer",
                                                          "com.ibm.ejs.container.container");
@@ -1213,8 +1212,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * Do as little as possible in ctor, but run superclass ctor to
      * setup the BMD instance as ComponentMetaData on thread slot.
      */
-    public BeanMetaData(int slotSize)
-    {
+    public BeanMetaData(int slotSize) {
         super(slotSize);
     }
 
@@ -1268,8 +1266,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
 
     public int getEJBTransactionPolicy() // d126512
     {
-        return usesBeanManagedTx ? InternalConstants.TX_POLICY_BEAN_MANAGED :
-                        InternalConstants.TX_POLICY_CONTAINER_MANAGED;
+        return usesBeanManagedTx ? InternalConstants.TX_POLICY_BEAN_MANAGED : InternalConstants.TX_POLICY_CONTAINER_MANAGED;
     }
 
     /**
@@ -1278,15 +1275,11 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @param interfaceName the interface to find the index of
      * @return the index of the interface passed in
      */
-    public int getLocalBusinessInterfaceIndex(String interfaceName)
-    {
-        if (ivBusinessLocalInterfaceClasses != null)
-        {
-            for (int i = 0; i < ivBusinessLocalInterfaceClasses.length; i++)
-            {
+    public int getLocalBusinessInterfaceIndex(String interfaceName) {
+        if (ivBusinessLocalInterfaceClasses != null) {
+            for (int i = 0; i < ivBusinessLocalInterfaceClasses.length; i++) {
                 String bInterfaceName = ivBusinessLocalInterfaceClasses[i].getName();
-                if (bInterfaceName.equals(interfaceName))
-                {
+                if (bInterfaceName.equals(interfaceName)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "getLocalBusinessInterfaceIndex : " +
                                      bInterfaceName + " at index " + i);
@@ -1310,15 +1303,11 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @param target the class that needs to be matched to an interface
      * @return the index of the found matching interface
      */
-    public int getAssignableLocalBusinessInterfaceIndex(Class<?> target)
-    {
-        if (ivBusinessLocalInterfaceClasses != null)
-        {
-            for (int i = 0; i < ivBusinessLocalInterfaceClasses.length; i++)
-            {
+    public int getAssignableLocalBusinessInterfaceIndex(Class<?> target) {
+        if (ivBusinessLocalInterfaceClasses != null) {
+            for (int i = 0; i < ivBusinessLocalInterfaceClasses.length; i++) {
                 Class<?> bInterface = ivBusinessLocalInterfaceClasses[i];
-                if (target.isAssignableFrom(bInterface))
-                {
+                if (target.isAssignableFrom(bInterface)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "getAssignableLocalBusinessInterfaceIndex : " +
                                      bInterface.getName() + " at index " + i);
@@ -1341,13 +1330,10 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      *
      * @throws IllegalStateException if the business interface cannot be found
      */
-    public int getRequiredLocalBusinessInterfaceIndex(String interfaceName)
-                    throws IllegalStateException
-    {
+    public int getRequiredLocalBusinessInterfaceIndex(String interfaceName) throws IllegalStateException {
         int interfaceIndex = getLocalBusinessInterfaceIndex(interfaceName);
 
-        if (interfaceIndex == -1)
-        {
+        if (interfaceIndex == -1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getRequiredLocalBusinessInterfaceIndex : IllegalStateException : " +
                              "Requested business interface not found : " +
@@ -1381,26 +1367,20 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      *             not be loaded
      **/
     // d449434
-    public int getSupportingLocalBusinessInterfaceIndex(String interfaceName)
-                    throws ClassNotFoundException,
-                    EJBConfigurationException
-    {
+    public int getSupportingLocalBusinessInterfaceIndex(String interfaceName) throws ClassNotFoundException, EJBConfigurationException {
         int interfaceIndex = getLocalBusinessInterfaceIndex(interfaceName);
 
-        if (interfaceIndex == -1)
-        {
+        if (interfaceIndex == -1) {
             Class<?> target = classLoader.loadClass(interfaceName);
             interfaceIndex = getAssignableLocalBusinessInterfaceIndex(target);
 
-            if (interfaceIndex == -1)
-            {
+            if (interfaceIndex == -1) {
                 Tr.error(tc, "ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E",
                          new Object[] { enterpriseBeanName,
-                                       _moduleMetaData.ivName,
-                                       interfaceName });
-                EJBConfigurationException ejbex = new EJBConfigurationException
-                                ("Another component is attempting to reference local interface: " + interfaceName +
-                                 " which is not implemented by bean: " + j2eeName);
+                                        _moduleMetaData.ivName,
+                                        interfaceName });
+                EJBConfigurationException ejbex = new EJBConfigurationException("Another component is attempting to reference local interface: " + interfaceName +
+                                                                                " which is not implemented by bean: " + j2eeName);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "getSupportingLocalBusinessInterfaceIndex : " + ejbex);
 
@@ -1417,15 +1397,11 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @param interfaceName the interface to find the index of
      * @return the index of the interface passed in
      */
-    public int getRemoteBusinessInterfaceIndex(String interfaceName)
-    {
-        if (ivBusinessRemoteInterfaceClasses != null)
-        {
-            for (int i = 0; i < ivBusinessRemoteInterfaceClasses.length; i++)
-            {
+    public int getRemoteBusinessInterfaceIndex(String interfaceName) {
+        if (ivBusinessRemoteInterfaceClasses != null) {
+            for (int i = 0; i < ivBusinessRemoteInterfaceClasses.length; i++) {
                 String bInterface = ivBusinessRemoteInterfaceClasses[i].getName();
-                if (bInterface.equals(interfaceName))
-                {
+                if (bInterface.equals(interfaceName)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "getRemoteBusinessInterfaceIndex : " +
                                      bInterface + " at index " + i);
@@ -1449,15 +1425,11 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @param target the class that needs to be matched to an interface
      * @return the index of the found matching interface
      */
-    public int getAssignableRemoteBusinessInterfaceIndex(Class<?> target)
-    {
-        if (ivBusinessRemoteInterfaceClasses != null)
-        {
-            for (int i = 0; i < ivBusinessRemoteInterfaceClasses.length; i++)
-            {
+    public int getAssignableRemoteBusinessInterfaceIndex(Class<?> target) {
+        if (ivBusinessRemoteInterfaceClasses != null) {
+            for (int i = 0; i < ivBusinessRemoteInterfaceClasses.length; i++) {
                 Class<?> bInterface = ivBusinessRemoteInterfaceClasses[i];
-                if (target.isAssignableFrom(bInterface))
-                {
+                if (target.isAssignableFrom(bInterface)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "getAssignableRemoteBusinessInterfaceIndex : " +
                                      bInterface.getName() + " at index " + i);
@@ -1480,13 +1452,10 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      *
      * @throws IllegalStateException if the requested business interface cannot be found.
      */
-    public int getRequiredRemoteBusinessInterfaceIndex(String interfaceName)
-                    throws IllegalStateException
-    {
+    public int getRequiredRemoteBusinessInterfaceIndex(String interfaceName) throws IllegalStateException {
         int interfaceIndex = getRemoteBusinessInterfaceIndex(interfaceName);
 
-        if (interfaceIndex == -1)
-        {
+        if (interfaceIndex == -1) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getRequiredRemoteBusinessInterfaceIndex : IllegalStateException : " +
                              "Requested business interface not found : " +
@@ -1520,26 +1489,20 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      *             not be loaded
      **/
     // d449434
-    public int getSupportingRemoteBusinessInterfaceIndex(String interfaceName)
-                    throws ClassNotFoundException,
-                    EJBConfigurationException
-    {
+    public int getSupportingRemoteBusinessInterfaceIndex(String interfaceName) throws ClassNotFoundException, EJBConfigurationException {
         int interfaceIndex = getRemoteBusinessInterfaceIndex(interfaceName);
 
-        if (interfaceIndex == -1)
-        {
+        if (interfaceIndex == -1) {
             Class<?> target = classLoader.loadClass(interfaceName);
             interfaceIndex = getAssignableRemoteBusinessInterfaceIndex(target);
 
-            if (interfaceIndex == -1)
-            {
+            if (interfaceIndex == -1) {
                 Tr.error(tc, "ATTEMPT_TO_REFERENCE_MISSING_INTERFACE_CNTR0154E",
                          new Object[] { enterpriseBeanName,
-                                       _moduleMetaData.ivName,
-                                       interfaceName });
-                EJBConfigurationException ejbex = new EJBConfigurationException
-                                ("Another component is attempting to reference local interface: " + interfaceName +
-                                 " which is not implemented by bean: " + j2eeName);
+                                        _moduleMetaData.ivName,
+                                        interfaceName });
+                EJBConfigurationException ejbex = new EJBConfigurationException("Another component is attempting to reference local interface: " + interfaceName +
+                                                                                " which is not implemented by bean: " + j2eeName);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "getSupportingRemoteBusinessInterfaceIndex : " + ejbex);
 
@@ -1554,8 +1517,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * Format a representation of this <code>BeanMetaData</code>
      * instance to the trace stream. <p>
      */
-    public void dump()
-    {
+    public void dump() {
         /*
          * Defect 88284
          * Performance hit of creating data structure, which occupies memory
@@ -1563,8 +1525,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
          * by checking trace and debug flags.
          */
         if (!TraceComponent.isAnyTracingEnabled() || !(tc.isDumpEnabled() ||
-            tc.isDebugEnabled()))
-        {
+                                                       tc.isDebugEnabled())) {
             return;
         }
 
@@ -1578,95 +1539,89 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @param writer output resource for the introspection data
      */
     // F86406
-    public void introspect(IntrospectionWriter writer)
-    {
+    public void introspect(IntrospectionWriter writer) {
         // If BMD is fully initialized dump out everything, otherwise just dump
         // out the subset we have filled in (ie. before deferred initialization
         // takes place
 
-        if (fullyInitialized)
-        {
+        if (fullyInitialized) {
             //F743-1752CodRev start
             String singletonConcurrency = "not applicable";
-            if (isSingletonSessionBean())
-            {
-                if (ivSingletonUsesBeanManagedConcurrency)
-                {
+            if (isSingletonSessionBean()) {
+                if (ivSingletonUsesBeanManagedConcurrency) {
                     singletonConcurrency = "bean managed";
-                }
-                else
-                {
+                } else {
                     singletonConcurrency = "container managed";
                 }
             } //F743-1752CodRev end
 
             String allData[] = new String[] {
-                                             this.toIntrospectString(),
-                                             "Application version         = " + ivApplicationVersionId,
-                                             "CMP version                 = " + cmpVersion,
-                                             "SupportsFluffOnFind         = " + supportsFluffOnFind, //F001925
-                                             "SimpleBindingName           = " + simpleJndiBindingName,
-                                             "LocalHomeBindingName        = " + localHomeJndiBindingName,
-                                             "RemoteHomeBindingName       = " + remoteHomeJndiBindingName,
-                                             "BusinessIntfBindingNames    = " + businessInterfaceJndiBindingNames,
-                                             "HomeInterfaceClassName      = " + homeInterfaceClassName,
-                                             "HomeInterfaceClass          = " + homeInterfaceClass,
-                                             "RemoteInterfaceClass        = " + remoteInterfaceClass,
-                                             "RemoteImplClass             = " + remoteImplClass,
-                                             "HomeRemoteImplClass         = " + homeRemoteImplClass,
-                                             "LocalHomeInterfaceClass     = " + localHomeInterfaceClass, // f111627
-                                             "LocalInterfaceClass         = " + localInterfaceClass, // f111627
-                                             "LocalImplClass              = " + localImplClass, // f111627
-                                             "HomeLocalImplClass          = " + homeLocalImplClass, // f111627
-                                             "HasWebServiceEndpoint       = " + ivHasWebServiceEndpoint,
-                                             "WebService Endpoint Class   = " + webserviceEndpointInterfaceClass, // LI2281.24
-                                             "WebService Endpoint Proxy   = " + ivWebServiceEndpointProxyClass, // d497921
-                                             "BusinessRemoteInterfaceClass= " + Arrays.toString(ivBusinessRemoteInterfaceClasses),
-                                             "BusinessRemoteImplClass     = " + Arrays.toString(ivBusinessRemoteImplClasses),
-                                             "No-Interface View           = " + ivLocalBean,
-                                             "BusinessLocalInterfaceClass = " + Arrays.toString(ivBusinessLocalInterfaceClasses),
-                                             "BusinessLocalImplClass      = " + Arrays.toString(ivBusinessLocalImplClasses),
-                                             "EnterpriseBeanClass         = " + enterpriseBeanClass, // LI2281.07
-                                             "EnterpriseBeanAbstractClass = " + enterpriseBeanAbstractClass, // d174057.3
-                                             "pKeyClass                   = " + pKeyClass,
-                                             "J2EE Name                   = " + j2eeName,
-                                             "Unversioned J2EE Name       = " + ivUnversionedJ2eeName, // F54184
-                                             "Cluster Identity            = " + ivCluster, // LI2401-11
-                                             "ActivationSpecJndiName      = " + ivActivationSpecJndiName, // d174057.3
-                                             "MessageDestinationJndiName  = " + ivMessageDestinationJndiName, //LI2110-46
-                                             "Connection factory name     = " + connFactoryName,
-                                             "Pool Size (min,max)         = (" + minPoolSize + "," + maxPoolSize + ")",
-                                             "Initial Pool Size           = " + ivInitialPoolSize,
-                                             "Max Beans Created           = " + ivMaxCreation,
-                                             "Max Beans Created Timeout   = " + ivMaxCreationTimeout,
-                                             "TimedObject                 = " + isTimedObject, // LI2281.07
-                                             "Reentrant                   = " + reentrant,
-                                             "Passivation Capable         = " + passivationCapable,
-                                             "Session Timeout             = " + sessionTimeout, // d140886.1
-                                             "PreFindFlush                = " + isPreFindFlushEnabled,
-                                             "Commit Option               = " + getCommitOptionString(),
-                                             "Cache Reload Interval       = " + getCacheReloadIntervalString(),
-                                             "LightweightLocal            = " + isLightweight,
-                                             "AllowCachedTimerDataFor     = " + allowCachedTimerDataForMethods, //F001419
-                                             "DeferredInit                = " + ivDeferEJBInitialization,
-                                             "Security RunAs              = " + ivRunAs,
-                                             "Interceptor CallbackKind    = " + ivCallbackKind,
-                                             "InjectionTargets            = " + Arrays.toString(ivBeanInjectionTargets), // F743-21481
-                                             "Component Id                = " + ivComponent_Id,
-                                             "Metadata Complete           = " + metadataComplete,
-                                             "Has Ext CM Persist. Cntx.   = " + ivHasCMExtendedPersistenceContext,
-                                             "Has App Man Persit. Cntx.   = " + ivHasAppManagedPersistenceContext,
-                                             "Persistence Ref Names       = " + ivPersistenceRefNames, // F743-30682
-                                             "ExPC Ids                    = " + Arrays.toString(ivExPcPuIds), // F743-30682
-                                             "WebService Endpoint Created = " + ivWebServiceEndpointCreated, // d497921
-                                             "Component NameSpace :  nsid = " + getJavaNameSpaceID(), // d508455
-                                             "Has aysnchronous method(s)  = " + ivHasAsynchMethod,
-                                             "Singleton Concurrency Type  = " + singletonConcurrency, //F743-1752CodRev
-                                             "Synch AfterBegin            = " + ivAfterBegin, // F743-25855
-                                             "Synch BeforeCompletion      = " + ivBeforeCompletion, // F743-25855
-                                             "Synch AfterCompletion       = " + ivAfterCompletion, // F743-25855
-                                             "Application Classloader     = " + classLoader,
-                                             "Context class loader        = " + (classLoader == ivContextClassLoader ? "(same)" : ivContextClassLoader)
+                                              this.toIntrospectString(),
+                                              "Application version         = " + ivApplicationVersionId,
+                                              "CMP version                 = " + cmpVersion,
+                                              "SupportsFluffOnFind         = " + supportsFluffOnFind, //F001925
+                                              "SimpleBindingName           = " + simpleJndiBindingName,
+                                              "LocalHomeBindingName        = " + localHomeJndiBindingName,
+                                              "RemoteHomeBindingName       = " + remoteHomeJndiBindingName,
+                                              "BusinessIntfBindingNames    = " + businessInterfaceJndiBindingNames,
+                                              "HomeInterfaceClassName      = " + homeInterfaceClassName,
+                                              "HomeInterfaceClass          = " + homeInterfaceClass,
+                                              "RemoteInterfaceClass        = " + remoteInterfaceClass,
+                                              "RemoteImplClass             = " + remoteImplClass,
+                                              "HomeRemoteImplClass         = " + homeRemoteImplClass,
+                                              "LocalHomeInterfaceClass     = " + localHomeInterfaceClass, // f111627
+                                              "LocalInterfaceClass         = " + localInterfaceClass, // f111627
+                                              "LocalImplClass              = " + localImplClass, // f111627
+                                              "HomeLocalImplClass          = " + homeLocalImplClass, // f111627
+                                              "HasWebServiceEndpoint       = " + ivHasWebServiceEndpoint,
+                                              "WebService Endpoint Class   = " + webserviceEndpointInterfaceClass, // LI2281.24
+                                              "WebService Endpoint Proxy   = " + ivWebServiceEndpointProxyClass, // d497921
+                                              "BusinessRemoteInterfaceClass= " + Arrays.toString(ivBusinessRemoteInterfaceClasses),
+                                              "BusinessRemoteImplClass     = " + Arrays.toString(ivBusinessRemoteImplClasses),
+                                              "No-Interface View           = " + ivLocalBean,
+                                              "BusinessLocalInterfaceClass = " + Arrays.toString(ivBusinessLocalInterfaceClasses),
+                                              "BusinessLocalImplClass      = " + Arrays.toString(ivBusinessLocalImplClasses),
+                                              "EnterpriseBeanClass         = " + enterpriseBeanClass, // LI2281.07
+                                              "EnterpriseBeanAbstractClass = " + enterpriseBeanAbstractClass, // d174057.3
+                                              "pKeyClass                   = " + pKeyClass,
+                                              "J2EE Name                   = " + j2eeName,
+                                              "Unversioned J2EE Name       = " + ivUnversionedJ2eeName, // F54184
+                                              "Cluster Identity            = " + ivCluster, // LI2401-11
+                                              "ActivationSpecJndiName      = " + ivActivationSpecJndiName, // d174057.3
+                                              "MessageDestinationJndiName  = " + ivMessageDestinationJndiName, //LI2110-46
+                                              "Connection factory name     = " + connFactoryName,
+                                              "Pool Size (min,max)         = (" + minPoolSize + "," + maxPoolSize + ")",
+                                              "Initial Pool Size           = " + ivInitialPoolSize,
+                                              "Max Beans Created           = " + ivMaxCreation,
+                                              "Max Beans Created Timeout   = " + ivMaxCreationTimeout,
+                                              "TimedObject                 = " + isTimedObject, // LI2281.07
+                                              "Reentrant                   = " + reentrant,
+                                              "Passivation Capable         = " + passivationCapable,
+                                              "Session Timeout             = " + sessionTimeout, // d140886.1
+                                              "PreFindFlush                = " + isPreFindFlushEnabled,
+                                              "Commit Option               = " + getCommitOptionString(),
+                                              "Cache Reload Interval       = " + getCacheReloadIntervalString(),
+                                              "LightweightLocal            = " + isLightweight,
+                                              "AllowCachedTimerDataFor     = " + allowCachedTimerDataForMethods, //F001419
+                                              "DeferredInit                = " + ivDeferEJBInitialization,
+                                              "Security RunAs              = " + ivRunAs,
+                                              "Interceptor CallbackKind    = " + ivCallbackKind,
+                                              "InjectionTargets            = " + Arrays.toString(ivBeanInjectionTargets), // F743-21481
+                                              "Component Id                = " + ivComponent_Id,
+                                              "Metadata Complete           = " + metadataComplete,
+                                              "Has Ext CM Persist. Cntx.   = " + ivHasCMExtendedPersistenceContext,
+                                              "Has App Man Persit. Cntx.   = " + ivHasAppManagedPersistenceContext,
+                                              "Persistence Ref Names       = " + ivPersistenceRefNames, // F743-30682
+                                              "ExPC Ids                    = " + Arrays.toString(ivExPcPuIds), // F743-30682
+                                              "WebService Endpoint Created = " + ivWebServiceEndpointCreated, // d497921
+                                              "Component NameSpace :  nsid = " + getJavaNameSpaceID(), // d508455
+                                              "Has aysnchronous method(s)  = " + ivHasAsynchMethod,
+                                              "Singleton Concurrency Type  = " + singletonConcurrency, //F743-1752CodRev
+                                              "Synch AfterBegin            = " + ivAfterBegin, // F743-25855
+                                              "Synch BeforeCompletion      = " + ivBeforeCompletion, // F743-25855
+                                              "Synch AfterCompletion       = " + ivAfterCompletion, // F743-25855
+                                              "Application Classloader     = " + classLoader,
+                                              "Context class loader        = " + (classLoader == ivContextClassLoader ? "(same)" : ivContextClassLoader)
             };
 
             writer.begin("BeanMetaData Dump");
@@ -1676,41 +1631,33 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             // Now dump per-method info
             //--------------------------
             // PK31372 start
-            if (methodInfos != null)
-            {
+            if (methodInfos != null) {
                 writer.begin("Remote Methods : " + methodInfos.length);
-                for (int i = 0; i < methodInfos.length; i++)
-                {
+                for (int i = 0; i < methodInfos.length; i++) {
                     methodInfos[i].introspect(writer, "Remote", i, true);
                 }
                 writer.end();
             }
 
-            if (homeMethodInfos != null)
-            {
+            if (homeMethodInfos != null) {
                 writer.begin("Home Methods : " + homeMethodInfos.length);
-                for (int i = 0; i < homeMethodInfos.length; i++)
-                {
+                for (int i = 0; i < homeMethodInfos.length; i++) {
                     homeMethodInfos[i].introspect(writer, "Remote Home", i, true);
                 }
                 writer.end();
             }
 
-            if (localMethodInfos != null)
-            {
+            if (localMethodInfos != null) {
                 writer.begin("Local Methods : " + localMethodInfos.length);
-                for (int i = 0; i < localMethodInfos.length; i++)
-                {
+                for (int i = 0; i < localMethodInfos.length; i++) {
                     localMethodInfos[i].introspect(writer, "Local", i, true);
                 }
                 writer.end();
             }
 
-            if (localHomeMethodInfos != null)
-            {
+            if (localHomeMethodInfos != null) {
                 writer.begin("Local Home Methods : " + localHomeMethodInfos.length);
-                for (int i = 0; i < localHomeMethodInfos.length; i++)
-                {
+                for (int i = 0; i < localHomeMethodInfos.length; i++) {
                     localHomeMethodInfos[i].introspect(writer, "Local Home", i, true);
                 }
                 writer.end();
@@ -1718,21 +1665,18 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
 
             if (wsEndpointMethodInfos != null &&
                 (webserviceEndpointInterfaceClass != null ||
-                ivWebServiceEndpointCreated)) // d497921
+                 ivWebServiceEndpointCreated)) // d497921
             {
                 writer.begin("WebService Endpoint Methods : " + wsEndpointMethodInfos.length);
-                for (int i = 0; i < wsEndpointMethodInfos.length; i++)
-                {
+                for (int i = 0; i < wsEndpointMethodInfos.length; i++) {
                     wsEndpointMethodInfos[i].introspect(writer, "Service Endpoint", i, true);
                 }
                 writer.end();
             }
 
-            if (timedMethodInfos != null)
-            { // LI2281.07
+            if (timedMethodInfos != null) { // LI2281.07
                 writer.begin("Timer Methods : " + timedMethodInfos.length);
-                for (int i = 0; i < timedMethodInfos.length; i++)
-                {
+                for (int i = 0; i < timedMethodInfos.length; i++) {
                     timedMethodInfos[i].introspect(writer, "Timer", i, true);
                 }
                 writer.end();
@@ -1741,8 +1685,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             if (lifecycleInterceptorMethodInfos != null) // F743-1751
             {
                 writer.begin("Lifecycle Interceptor Methods : " + lifecycleInterceptorMethodInfos.length);
-                for (int i = 0; i < lifecycleInterceptorMethodInfos.length; i++)
-                {
+                for (int i = 0; i < lifecycleInterceptorMethodInfos.length; i++) {
                     lifecycleInterceptorMethodInfos[i].introspect(writer, "Lifecycle", i, true);
                 }
                 writer.end();
@@ -1764,27 +1707,25 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             // we have so far.  The finished metadata object will be dumped
             // once deferred init processing happens later
 
-        }
-        else
-        {
+        } else {
             String partialData[] = new String[] {
-                                                 this.toIntrospectString(),
-                                                 "Application version         = " + ivApplicationVersionId,
-                                                 "CMP version                 = " + cmpVersion,
-                                                 "SimpleBindingName           = " + simpleJndiBindingName,
-                                                 "LocalHomeBindingName        = " + localHomeJndiBindingName,
-                                                 "RemoteHomeBindingName       = " + remoteHomeJndiBindingName,
-                                                 "BusinessIntfBindingNames    = " + businessInterfaceJndiBindingNames,
-                                                 "HomeInterfaceClassName      = " + homeInterfaceClassName,
-                                                 "HasWebServiceEndpoint       = " + ivHasWebServiceEndpoint,
-                                                 "No-Interface View           = " + ivLocalBean,
-                                                 "J2EE Name                   = " + j2eeName,
-                                                 "Unversioned J2EE Name       = " + ivUnversionedJ2eeName, // F54184
-                                                 "Connection factory name     = " + connFactoryName,
-                                                 "DeferredInit                = " + ivDeferEJBInitialization,
-                                                 "Metadata Complete           = " + metadataComplete,
-                                                 "Component Id                = " + ivComponent_Id,
-                                                 "Application Classloader     = " + classLoader
+                                                  this.toIntrospectString(),
+                                                  "Application version         = " + ivApplicationVersionId,
+                                                  "CMP version                 = " + cmpVersion,
+                                                  "SimpleBindingName           = " + simpleJndiBindingName,
+                                                  "LocalHomeBindingName        = " + localHomeJndiBindingName,
+                                                  "RemoteHomeBindingName       = " + remoteHomeJndiBindingName,
+                                                  "BusinessIntfBindingNames    = " + businessInterfaceJndiBindingNames,
+                                                  "HomeInterfaceClassName      = " + homeInterfaceClassName,
+                                                  "HasWebServiceEndpoint       = " + ivHasWebServiceEndpoint,
+                                                  "No-Interface View           = " + ivLocalBean,
+                                                  "J2EE Name                   = " + j2eeName,
+                                                  "Unversioned J2EE Name       = " + ivUnversionedJ2eeName, // F54184
+                                                  "Connection factory name     = " + connFactoryName,
+                                                  "DeferredInit                = " + ivDeferEJBInitialization,
+                                                  "Metadata Complete           = " + metadataComplete,
+                                                  "Component Id                = " + ivComponent_Id,
+                                                  "Application Classloader     = " + classLoader
             };
 
             writer.begin("Partial BeanMetaData Dump");
@@ -1803,12 +1744,10 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * like "Entity Option A". <p>
      **/
     // LI3408
-    private String getCommitOptionString()
-    {
+    private String getCommitOptionString() {
         int strategy;
 
-        switch (type)
-        {
+        switch (type) {
             case InternalConstants.TYPE_SINGLETON_SESSION:
             case InternalConstants.TYPE_STATELESS_SESSION:
             case InternalConstants.TYPE_MESSAGE_DRIVEN:
@@ -1816,40 +1755,26 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
                 break;
 
             case InternalConstants.TYPE_STATEFUL_SESSION:
-                if (sessionActivateTran)
-                {
+                if (sessionActivateTran) {
                     strategy = Activator.STATEFUL_ACTIVATE_TRAN_ACTIVATION_STRATEGY;
-                }
-                else if (sessionActivateSession)
-                {
+                } else if (sessionActivateSession) {
                     strategy = Activator.STATEFUL_ACTIVATE_SESSION_ACTIVATION_STRATEGY;
-                }
-                else
-                {
+                } else {
                     strategy = Activator.STATEFUL_ACTIVATE_ONCE_ACTIVATION_STRATEGY;
                 }
                 break;
 
             case InternalConstants.TYPE_BEAN_MANAGED_ENTITY:
             case InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY:
-                if (optionACommitOption)
-                {
+                if (optionACommitOption) {
                     strategy = Activator.OPTA_ENTITY_ACTIVATION_STRATEGY;
-                }
-                else if (optionBCommitOption)
-                {
+                } else if (optionBCommitOption) {
                     strategy = Activator.OPTB_ENTITY_ACTIVATION_STRATEGY;
-                }
-                else if (entitySessionalTranOption)
-                {
+                } else if (entitySessionalTranOption) {
                     strategy = Activator.ENTITY_SESSIONAL_TRAN_ACTIVATION_STRATEGY;
-                }
-                else if (ivReadOnlyCommitOption)
-                {
+                } else if (ivReadOnlyCommitOption) {
                     strategy = Activator.READONLY_ENTITY_ACTIVATION_STRATEGY;
-                }
-                else
-                {
+                } else {
                     strategy = Activator.OPTC_ENTITY_ACTIVATION_STRATEGY;
                 }
                 break;
@@ -1871,12 +1796,10 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * like "INTERVAL (1200000)" for a 20 minute interval. <p>
      **/
     // LI3408
-    private String getCacheReloadIntervalString()
-    {
+    private String getCacheReloadIntervalString() {
         String reload;
 
-        switch (ivCacheReloadType)
-        {
+        switch (ivCacheReloadType) {
             case CACHE_RELOAD_NONE:
                 reload = "N/A";
                 break;
@@ -1913,25 +1836,21 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      **/
     // LI3408
     public static long convertDDAbsoluteReloadToMillis(int ddInterval,
-                                                       int reloadType)
-    {
+                                                       int reloadType) {
         long millis = 0;
 
-        if (ddInterval >= 0)
-        {
-            switch (reloadType)
-            {
+        if (ddInterval >= 0) {
+            switch (reloadType) {
                 case CACHE_RELOAD_WEEKLY:
-                    if (ddInterval >= 10000)
-                    {
+                    if (ddInterval >= 10000) {
                         millis = millis + ((ddInterval / 10000) - 1) * 24 * 60 * 60 * 1000;
                         ddInterval = ddInterval % 10000;
                     }
                 case CACHE_RELOAD_DAILY:
-                    if (ddInterval <= 2359)
-                    {
+                    if (ddInterval <= 2359) {
                         millis = millis + (((ddInterval / 100) * 60) +
-                                 (ddInterval % 100)) * 60 * 1000;
+                                           (ddInterval % 100))
+                                          * 60 * 1000;
                     }
                     break;
                 default:
@@ -1958,19 +1877,17 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @return EJSHome
      */
     //d345616
-    public EJSHome getHome()
-    {
+    public EJSHome getHome() {
         return this.homeRecord.getHome();
     }
-    
+
     /**
      *
      * @return J2EEName
      * @see com.ibm.ws.runtime.metadata.ComponentMetaData
      */
     @Override
-    public J2EEName getJ2EEName()
-    {
+    public J2EEName getJ2EEName() {
         return j2eeName;
     }
 
@@ -1980,8 +1897,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @see com.ibm.ws.runtime.metadata.ComponentMetaData
      */
     @Override
-    public ModuleMetaData getModuleMetaData()
-    {
+    public ModuleMetaData getModuleMetaData() {
         return _moduleMetaData;
     }
 
@@ -1991,8 +1907,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @see com.ibm.ws.runtime.metadata.MetaData
      */
     @Override
-    public String getName()
-    {
+    public String getName() {
         return j2eeName.getComponent();
     }
 
@@ -2001,8 +1916,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @see com.ibm.ws.runtime.metadata.MetaData
      */
     @Override
-    public void release()
-    {
+    public void release() {
         // null out any wccm stuff no longer needed
     }
 
@@ -2011,8 +1925,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @return Context
      * @see com.ibm.ws.runtime.metadata.ComponentMetaData
      */
-    public Context getJavaNameSpaceContext()
-    {
+    public Context getJavaNameSpaceContext() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             // F743-506 - jns can be null if BeanMetaData is used by scheduler
             // during automatic timer creation.
@@ -2022,19 +1935,16 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         return _javaNameSpaceContext;
     }
 
-    public void setJavaNameSpace(Object jns)
-    {
+    public void setJavaNameSpace(Object jns) {
         // Nothing.
     }
 
-    protected int getJavaNameSpaceID()
-    {
+    protected int getJavaNameSpaceID() {
         return -1;
     }
 
     @Override
-    public String getBeanClassName()
-    {
+    public String getBeanClassName() {
         return enterpriseBeanClassName;
     }
 
@@ -2051,8 +1961,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * @return String - represents the unique jndi name of the home.
      */
     //d512996 d513978
-    public String getJndiName()
-    {
+    public String getJndiName() {
         String returnValue = simpleJndiBindingName;
         if ((returnValue == null) || (returnValue.equals(""))) {
             returnValue = ivRemoteHomeJndiName;
@@ -2063,19 +1972,16 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         return returnValue;
     }
 
-    public int getEJBComponentType()
-    {
+    public int getEJBComponentType() {
         return type;
     }
 
     @Override
-    public EJBType getEJBType()
-    {
+    public EJBType getEJBType() {
         return EJBType.forValue(type);
     }
 
-    public EJBMethodInfoImpl createEJBMethodInfoImpl(int slotSize)
-    {
+    public EJBMethodInfoImpl createEJBMethodInfoImpl(int slotSize) {
         return new EJBMethodInfoImpl(slotSize);
     }
 
@@ -2093,61 +1999,38 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      **/
     // d162441
     @Override
-    public List<EJBMethodMetaData> getEJBMethodMetaData(EJBMethodInterface methodInterface)
-    {
+    public List<EJBMethodMetaData> getEJBMethodMetaData(EJBMethodInterface methodInterface) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getEJBMethodMetaData: " + methodInterface);
 
         EJBMethodMetaData[] methodMetaDatas = null;
 
-        if (methodInterface == EJBMethodInterface.REMOTE)
-        {
+        if (methodInterface == EJBMethodInterface.REMOTE) {
             methodMetaDatas = methodInfos;
-        }
-        else if (methodInterface == EJBMethodInterface.HOME)
-        {
+        } else if (methodInterface == EJBMethodInterface.HOME) {
             methodMetaDatas = homeMethodInfos;
-        }
-        else if (methodInterface == EJBMethodInterface.LOCAL)
-        {
-            if (type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-            {
+        } else if (methodInterface == EJBMethodInterface.LOCAL) {
+            if (type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
                 methodMetaDatas = null;
-            }
-            else
-            {
+            } else {
                 methodMetaDatas = localMethodInfos;
             }
-        }
-        else if (methodInterface == EJBMethodInterface.LOCAL_HOME)
-        {
+        } else if (methodInterface == EJBMethodInterface.LOCAL_HOME) {
             methodMetaDatas = localHomeMethodInfos;
-        }
-        else if (methodInterface == EJBMethodInterface.SERVICE_ENDPOINT)
-        {
+        } else if (methodInterface == EJBMethodInterface.SERVICE_ENDPOINT) {
             methodMetaDatas = wsEndpointMethodInfos; // LI2281.24
-        }
-        else if (methodInterface == EJBMethodInterface.MESSAGE_ENDPOINT)
-        {
-            if (type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-            {
+        } else if (methodInterface == EJBMethodInterface.MESSAGE_ENDPOINT) {
+            if (type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
                 methodMetaDatas = localMethodInfos;
-            }
-            else
-            {
+            } else {
                 methodMetaDatas = null;
             }
-        }
-        else if (methodInterface == EJBMethodInterface.TIMER)
-        {
+        } else if (methodInterface == EJBMethodInterface.TIMER) {
             methodMetaDatas = timedMethodInfos; // LI2281.07
-        }
-        else if (methodInterface == EJBMethodInterface.LIFECYCLE_INTERCEPTOR) // F743-1751
+        } else if (methodInterface == EJBMethodInterface.LIFECYCLE_INTERCEPTOR) // F743-1751
         {
             methodMetaDatas = lifecycleInterceptorMethodInfos;
-        }
-        else
-        {
+        } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "getEJBMethodMetaData: Invalid MethodInterface");
             throw new IllegalArgumentException("Invalid MethodInterface");
@@ -2162,8 +2045,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
     }
 
     @Override
-    public boolean isReentrant()
-    {
+    public boolean isReentrant() {
         return reentrant;
     }
 
@@ -2215,8 +2097,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      *         </ul>
      */
     //LI2110.41 - new method.
-    public int getApplicationVersionId()
-    {
+    public int getApplicationVersionId() {
         return ivApplicationVersionId;
     }
 
@@ -2269,19 +2150,16 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * Test configuration errors for beans with asynchronous methods (ie. new in EJB 3.1).
      *
      */
-    public void validate() throws EJBConfigurationException
-    {
+    public void validate() throws EJBConfigurationException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "validate " + j2eeName);
 
         boolean asAttributesDefined = false;
 
-        if (ivModuleVersion <= J2EE_EJB_VERSION_1_1)
-        {
+        if (ivModuleVersion <= J2EE_EJB_VERSION_1_1) {
             // it is an EJB Module version 1.1
             // 1.a
-            if (ACTIVATION_POLICY_ACTIVITY_SESSION == activationPolicy)
-            {
+            if (ACTIVATION_POLICY_ACTIVITY_SESSION == activationPolicy) {
                 Tr.error(tc, "INVALID_ACTIVITY_SESSION_POLICY_CNTR0069E", enterpriseBeanName);
                 throw new EJBConfigurationException("CNTR0069E: Bean \"" + enterpriseBeanName +
                                                     "\" in an EJB 1.1 module attempted to use an invalid \"Activate at\" policy of \"Activity Session\".");
@@ -2289,16 +2167,14 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             }
 
             // 1.b
-            if (LocalTransactionSettings.BOUNDARY_ACTIVITY_SESSION == _localTran.getBoundary())
-            {
+            if (LocalTransactionSettings.BOUNDARY_ACTIVITY_SESSION == _localTran.getBoundary()) {
                 Tr.error(tc, "INVALID_ACTIVITY_SESSION_POLICY_CNTR0070E", enterpriseBeanName);
                 throw new EJBConfigurationException("CNTR0070E: Bean \"" + enterpriseBeanName +
                                                     "\" in an EJB 1.1 module attempted to use an invalid Local Transactions Boundary of \"Activity Session\".");
             }
             // 1.c
             if (LocalTransactionSettings.RESOLVER_CONTAINER_AT_BOUNDARY == _localTran.getResolver() &&
-                type != InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY)
-            { //d138543
+                type != InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY) { //d138543
                 Tr.error(tc, "INVALID_LOCAL_TRANSACTION_RESOLVER_CNTR0071E", enterpriseBeanName);
                 throw new EJBConfigurationException("CNTR0071E: Bean \"" + enterpriseBeanName +
                                                     "\" in an EJB 1.1 module attempted to use an invalid Local Transactions Resolution control of \"ContainerAtBoundary\".");
@@ -2310,28 +2186,23 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             // EJB Module version 2.x
             // 2.a if ejb2.0 module + CMAS, then only supported ActivateAt policy
             //   is Activity Session or ReadOnly
-            if (isEntityBean() || isStatefulSessionBean())
-            {
+            if (isEntityBean() || isStatefulSessionBean()) {
                 // This is an Entity Bean or a Stateful Session bean
-                if (!usesBeanManagedTx)
-                {
+                if (!usesBeanManagedTx) {
                     String temp_method_name = null;
 
                     // for these CMAS/TX, check if method have AS Attributes defined
                     // Need to check all methods on all interfaces....        d174057
                     EJBMethodInterface[] mtypes = EJBMethodInterface.values();
-                    for (int j = 0; j < mtypes.length && !asAttributesDefined; ++j)
-                    {
+                    for (int j = 0; j < mtypes.length && !asAttributesDefined; ++j) {
                         List<EJBMethodMetaData> emi = getEJBMethodMetaData(mtypes[j]);
                         int length = 0;
                         if (emi != null) // PK31372
                         {
                             length = emi.size() - 1;
-                            for (int i = 0; i < length && !asAttributesDefined; ++i)
-                            {
+                            for (int i = 0; i < length && !asAttributesDefined; ++i) {
                                 ActivitySessionAttribute asa = ((EJBMethodInfoImpl) emi.get(i)).getActivitySessionAttribute();
-                                switch (asa.getValue())
-                                {
+                                switch (asa.getValue()) {
                                     case ActivitySessionAttribute.BEAN_MANAGED:
                                     case ActivitySessionAttribute.REQUIRED:
                                     case ActivitySessionAttribute.SUPPORTS:
@@ -2365,12 +2236,10 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
              * Already taken care of in method setActivationLoadPolicy. Throws CNTR0044W exception
              */
             //2.c
-            if (usesBeanManagedTx)
-            { //flags usesBeanManagedTx and usesBeanManagedAS are same. They are set if bean is BMT
-              //It is a BMT
-              //LTC must NOT be ContainerAtBoundary
-                if (_localTran.getResolver() == LocalTransactionSettings.RESOLVER_CONTAINER_AT_BOUNDARY)
-                {
+            if (usesBeanManagedTx) { //flags usesBeanManagedTx and usesBeanManagedAS are same. They are set if bean is BMT
+                                     //It is a BMT
+                                     //LTC must NOT be ContainerAtBoundary
+                if (_localTran.getResolver() == LocalTransactionSettings.RESOLVER_CONTAINER_AT_BOUNDARY) {
                     Tr.error(tc, "INVALID_LOCAL_TRANSACTION_RESOLVER_CNTR0073E", j2eeName);
                     throw new EJBConfigurationException("Unsupported Local Transaction resolution control for BeanManaged .");
                 }
@@ -2380,18 +2249,13 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
           // First, check for invalid resolver configuration
           // and then check for invalid boundary.
           // 130016 and 132312 - start
-        if (type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY)
-        { //2.d
-            if (_localTran.getResolver() == LocalTransactionSettings.RESOLVER_APPLICATION)
-            {
+        if (type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY) { //2.d
+            if (_localTran.getResolver() == LocalTransactionSettings.RESOLVER_APPLICATION) {
                 Tr.error(tc, "INVALID_CONFIGURATION_CMP_RESOLVER_APPLICATION_CNTR0065E", j2eeName);
                 throw new EJBConfigurationException("Unsupported Local Transaction resolution control for CMP Beans.");
             }
-        }
-        else if (/* type == STATELESS_SESSION || */type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-        { //2.e//d180809
-            if (_localTran.getBoundary() == LocalTransactionSettings.BOUNDARY_ACTIVITY_SESSION)
-            {
+        } else if (/* type == STATELESS_SESSION || */type == InternalConstants.TYPE_MESSAGE_DRIVEN) { //2.e//d180809
+            if (_localTran.getBoundary() == LocalTransactionSettings.BOUNDARY_ACTIVITY_SESSION) {
                 Tr.error(tc, "LOCAL_TRAN_BOUNDARY_ACTIVITY_INVALID_CNTR0066E", j2eeName);
                 throw new EJBConfigurationException("Local Transaction Boundary of activity session is invalid for Message Driven Beans.");
             }
@@ -2403,15 +2267,13 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         // -----------------------------------------------------------------------
         // Perform EJB Specification validation for MessageDriven beans. LI2281.07
         // -----------------------------------------------------------------------
-        if (type == InternalConstants.TYPE_MESSAGE_DRIVEN)
-        {
+        if (type == InternalConstants.TYPE_MESSAGE_DRIVEN) {
             // MDBs may only implement some Tx Atributes...
             for (int i = 0; i < localMethodInfos.length; i++) // LIDB2110.41
             {
                 txAttr = localMethodInfos[i].getTransactionAttribute();
                 if (!(txAttr == TransactionAttribute.TX_REQUIRED ||
-                      txAttr == TransactionAttribute.TX_NOT_SUPPORTED || txAttr == TransactionAttribute.TX_BEAN_MANAGED))
-                {
+                      txAttr == TransactionAttribute.TX_NOT_SUPPORTED || txAttr == TransactionAttribute.TX_BEAN_MANAGED)) {
                     String method = localMethodInfos[i].getMethodName();
                     Tr.error(tc, "INVALID_TX_ATTR_CNTR0089E", // d170741
                              new Object[] { txAttr.toString(), method, j2eeName });
@@ -2435,8 +2297,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             if (ivModuleVersion < J2EE_EJB_VERSION_2_0 ||
                 cmpVersion == InternalConstants.CMP_VERSION_1_X ||
                 type == InternalConstants.TYPE_STATEFUL_SESSION ||
-                type == InternalConstants.TYPE_MANAGED_BEAN)
-            {
+                type == InternalConstants.TYPE_MANAGED_BEAN) {
                 Tr.error(tc, "INVALID_TIMEDOBJECT_IMPL_CNTR0088E", j2eeName); // d170741
                 throw new EJBConfigurationException("EJB 1.x, 2.0, and Stateful Session " +
                                                     "beans may not implement the " +
@@ -2445,8 +2306,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             }
 
             // F743-506 - Validate all timer methods
-            for (int i = 0; i < timedMethodInfos.length; i++)
-            {
+            for (int i = 0; i < timedMethodInfos.length; i++) {
                 // Per the Spec. TimedObject.ejbTimeout may only implement some Tx Atributes...
                 // Note:  In the 2.X specifications TX_REQUIRED was not specified as a valid
                 // transaction attribute for TimedObjects.   This did not make much sense and
@@ -2455,8 +2315,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
                 txAttr = timedMethodInfos[i].getTransactionAttribute();
                 if (!(txAttr == TransactionAttribute.TX_REQUIRED ||
                       txAttr == TransactionAttribute.TX_REQUIRES_NEW ||
-                      txAttr == TransactionAttribute.TX_NOT_SUPPORTED || txAttr == TransactionAttribute.TX_BEAN_MANAGED))
-                {
+                      txAttr == TransactionAttribute.TX_NOT_SUPPORTED || txAttr == TransactionAttribute.TX_BEAN_MANAGED)) {
                     String method = timedMethodInfos[i].getMethodName();
                     Tr.error(tc, "INVALID_TX_ATTR_CNTR0089E", // d170741
                              new Object[] { txAttr.toString(), method, j2eeName });
@@ -2470,14 +2329,12 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
 
         if (lifecycleInterceptorMethodInfos != null) // F743-1751
         {
-            for (EJBMethodInfoImpl methodInfo : lifecycleInterceptorMethodInfos)
-            {
+            for (EJBMethodInfoImpl methodInfo : lifecycleInterceptorMethodInfos) {
                 txAttr = methodInfo.getTransactionAttribute();
                 // REQUIRED must have already been translated to REQUIRES_NEW.
                 if (txAttr != TransactionAttribute.TX_REQUIRES_NEW &&
                     txAttr != TransactionAttribute.TX_NOT_SUPPORTED &&
-                    txAttr != TransactionAttribute.TX_BEAN_MANAGED)
-                {
+                    txAttr != TransactionAttribute.TX_BEAN_MANAGED) {
                     String method = methodInfo.getMethodName();
                     Tr.error(tc, "INVALID_TX_ATTR_CNTR0089E",
                              new Object[] { txAttr.toString(), method, j2eeName });
@@ -2492,10 +2349,8 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         // ReadOnly / Interval caching option beans must be CMP 2.x or later,
         // since that is the only way to insure the state of the bean is not
         // changed/updated.                                                 LI3408
-        if (ivCacheReloadType != CACHE_RELOAD_NONE)
-        {
-            if (cmpVersion < InternalConstants.CMP_VERSION_2_X)
-            {
+        if (ivCacheReloadType != CACHE_RELOAD_NONE) {
+            if (cmpVersion < InternalConstants.CMP_VERSION_2_X) {
                 Tr.error(tc, "INVALID_CACHE_RELOAD_POLICY_CNTR0094E",
                          enterpriseBeanClassName);
 
@@ -2512,8 +2367,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         // Perform validation for beans that implement the LightweightLocal
         // interface.                                                    LI3795-56
         // -----------------------------------------------------------------------
-        if (isLightweight)
-        {
+        if (isLightweight) {
 
             // -------------------------------------------------------------------------
             // A special check for temporary WPS hack, allowing SLSBs to be Lightweight.
@@ -2525,8 +2379,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             //                                                                   PK21246
             // -------------------------------------------------------------------------
             if (type == InternalConstants.TYPE_STATELESS_SESSION &&
-                (LightweightLocal.class).isAssignableFrom(enterpriseBeanAbstractClass))
-            {
+                (LightweightLocal.class).isAssignableFrom(enterpriseBeanAbstractClass)) {
                 Tr.error(tc, "INVALID_LIGHTWEIGHT_IMPL_CNTR0119E",
                          new Object[] { j2eeName, "1" });
                 throw new EJBConfigurationException("Only Entity EJBs may implement " +
@@ -2541,8 +2394,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             //  - might be a WPS hacked SLSB (ie. see above check)   PK21246
             else if (type != InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY &&
                      type != InternalConstants.TYPE_BEAN_MANAGED_ENTITY &&
-                     type != InternalConstants.TYPE_STATELESS_SESSION)
-            {
+                     type != InternalConstants.TYPE_STATELESS_SESSION) {
                 Tr.error(tc, "INVALID_LIGHTWEIGHT_IMPL_CNTR0119E",
                          new Object[] { j2eeName, "1" });
                 throw new EJBConfigurationException("Only Entity EJBs may implement " +
@@ -2551,8 +2403,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             }
 
             if (ivModuleVersion < J2EE_EJB_VERSION_2_0 ||
-                cmpVersion == InternalConstants.CMP_VERSION_1_X)
-            {
+                cmpVersion == InternalConstants.CMP_VERSION_1_X) {
                 Tr.error(tc, "INVALID_LIGHTWEIGHT_IMPL_CNTR0119E",
                          new Object[] { j2eeName, "2" });
                 throw new EJBConfigurationException("EJB 1.x and CMP 1.x beans may not " +
@@ -2560,8 +2411,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
                                                     "interface : " + j2eeName);
             }
 
-            if (localHomeInterfaceClassName == null)
-            {
+            if (localHomeInterfaceClassName == null) {
                 Tr.error(tc, "INVALID_LIGHTWEIGHT_IMPL_CNTR0119E",
                          new Object[] { j2eeName, "3" });
                 throw new EJBConfigurationException("EJBs that implement the " +
@@ -2576,8 +2426,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         // -----------------------------------------------------------------------
         if (ivInitialPoolSize > 0 &&
             (type != InternalConstants.TYPE_STATELESS_SESSION ||
-            ivModuleVersion <= J2EE_EJB_VERSION_1_1))
-        {
+             ivModuleVersion <= J2EE_EJB_VERSION_1_1)) {
             Tr.warning(tc, "INVALID_MIN_POOLSIZE_CNTR0057W", new Object[] { j2eeName.toString(), "H" + Integer.toString(minPoolSize) });
             throw new EJBConfigurationException("A hard (H) minimum pool size may only be " +
                                                 "specified for EJB 2.x Stateless Session " +
@@ -2585,8 +2434,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         }
         if (ivMaxCreation > 0 &&
             (type != InternalConstants.TYPE_STATELESS_SESSION ||
-            ivModuleVersion <= J2EE_EJB_VERSION_1_1))
-        {
+             ivModuleVersion <= J2EE_EJB_VERSION_1_1)) {
             Tr.warning(tc, "INVALID_MAX_POOLSIZE_CNTR0058W", new Object[] { j2eeName.toString(), "H" + Integer.toString(maxPoolSize) });
             throw new EJBConfigurationException("A hard (H) maximum pool size may only be " +
                                                 "specified for EJB 2.x Stateless Session " +
@@ -2624,8 +2472,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             Tr.exit(tc, "validate");
     }
 
-    private String toIntrospectString()
-    {
+    private String toIntrospectString() {
         // Get the New Line separator from the Java system property.
         String separator = ContainerProperties.LineSeparator; // 391302
         StringBuilder sb = new StringBuilder(toString());
@@ -2658,8 +2505,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
 
         sb.append(separator + sep + "Module Version = " + ivModuleVersion);
 
-        if (type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY)
-        {
+        if (type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY) {
             if (cmpVersion == InternalConstants.CMP_VERSION_1_X)
                 sb.append(separator + sep + "CMP Version    = 1.x");
             else if (cmpVersion == InternalConstants.CMP_VERSION_2_X)
@@ -2679,8 +2525,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
 
     // d112604.1
 
-    public String[][] getMethodLevelCustomFinderMethodSignatures(String cfprocessstring)
-    {
+    public String[][] getMethodLevelCustomFinderMethodSignatures(String cfprocessstring) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getMethodLevelCustomFinderMethodSignatures:" + cfprocessstring);
 
@@ -2692,8 +2537,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
         String cfMethodSignatureArray[][] = new String[st.countTokens()][2];
         int methodCounter = 0;
 
-        while (st.hasMoreTokens())
-        {
+        while (st.hasMoreTokens()) {
             String methodSignature = st.nextToken();
 
             StringTokenizer methodSignaturest = new StringTokenizer(methodSignature, "()");
@@ -2701,20 +2545,15 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
             // format exepected, first attribute method name (can't be nul)
             //                   second are the signatures parms, in order
 
-            try
-            {
+            try {
                 cfMethodSignatureArray[methodCounter][CF_METHOD_NAME_OFFSET] = methodSignaturest.nextToken();
 
-                if (methodSignature.equals("()"))
-                {
+                if (methodSignature.equals("()")) {
                     cfMethodSignatureArray[methodCounter][CF_METHOD_SIG_OFFSET] = null; // no signature given, but followed expected format
-                }
-                else
-                {
+                } else {
                     cfMethodSignatureArray[methodCounter][CF_METHOD_SIG_OFFSET] = methodSignaturest.nextToken();
                 }
-            } catch (java.util.NoSuchElementException ex)
-            {
+            } catch (java.util.NoSuchElementException ex) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()
                     && methodSignature != null)
                     Tr.debug(tc, "Processing offset [" + methodCounter + "] " + methodSignature + " failed, incorrect format");
@@ -2732,25 +2571,19 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
 
     public boolean cfMethodSignatureEqual(String homeMethodName,
                                           String homeMethodSignature,
-                                          String[][] cfMethodSignatures)
-    {
-        for (int lcv = 0; lcv < cfMethodSignatures.length; lcv++)
-        {
+                                          String[][] cfMethodSignatures) {
+        for (int lcv = 0; lcv < cfMethodSignatures.length; lcv++) {
             // check if method name is the same...
-            if ((cfMethodSignatures[lcv][CF_METHOD_NAME_OFFSET] != null) && homeMethodName.equals(cfMethodSignatures[lcv][CF_METHOD_NAME_OFFSET]))
-            {
+            if ((cfMethodSignatures[lcv][CF_METHOD_NAME_OFFSET] != null) && homeMethodName.equals(cfMethodSignatures[lcv][CF_METHOD_NAME_OFFSET])) {
                 // method name matches, now have to verify signature as well...
-                if ((homeMethodSignature == null) && (cfMethodSignatures[lcv][CF_METHOD_SIG_OFFSET] == null))
-                {
+                if ((homeMethodSignature == null) && (cfMethodSignatures[lcv][CF_METHOD_SIG_OFFSET] == null)) {
                     return true; // two method with same name, no parms, thus equal
                 }
-                if ((homeMethodSignature == null) || (cfMethodSignatures[lcv][CF_METHOD_SIG_OFFSET] == null))
-                {
+                if ((homeMethodSignature == null) || (cfMethodSignatures[lcv][CF_METHOD_SIG_OFFSET] == null)) {
                     return false; // two method with same name, one's is not null (passed first check) and one is (passed this check) thus not equal
                 }
                 // know both not null, and now need to string check
-                if (homeMethodSignature.equals(cfMethodSignatures[lcv][CF_METHOD_SIG_OFFSET]))
-                {
+                if (homeMethodSignature.equals(cfMethodSignatures[lcv][CF_METHOD_SIG_OFFSET])) {
                     return true;
                 } // if method signature parameter lists match
             } // if method names match
@@ -2761,8 +2594,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
     // d112604.1
 
     // LI2775-107.2 Begins WS18354.02A
-    public boolean isApplicationSyncToOSThreadEnabled()
-    {
+    public boolean isApplicationSyncToOSThreadEnabled() {
         return m_syncToOSThreadValue;
     }
 
@@ -2776,18 +2608,16 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * This method returns an application custom property.
      */
     // F743-33178
-    public boolean isCheckConfig()
-    {
+    public boolean isCheckConfig() {
         return _moduleMetaData.getEJBApplicationMetaData().isCheckConfig();
     }
 
     /**
      * Returns true if this stateful session EJB can be passivated.
      */
-    public boolean isPassivationCapable()
-    {
+    public boolean isPassivationCapable() {
         return passivationCapable &&
-               // Passivation of SFSB with extended persistence context is problematic. d465813
+        // Passivation of SFSB with extended persistence context is problematic. d465813
                !ivHasAppManagedPersistenceContext &&
                !ivHasCMExtendedPersistenceContext;
     }
@@ -2796,6 +2626,8 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl
      * Returns enterprise bean constructor
      * ivEnterpriseBeanClassConstructor for default no-arg constructor
      * ivEnterpriseBeanFactory.getConstructor() for non default
+     *
+     * @throws ManagedObjectException
      */
     public Constructor<?> getEnterpriseBeanClassConstructor() {
         Constructor<?> constructor = ivEnterpriseBeanClassConstructor;

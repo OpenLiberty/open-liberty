@@ -17,7 +17,8 @@
 /* Construct a properties file to store build-time variables. generated.properties is used to pass information from
  * Gradle during initialization into bnd during configuration for use in cnf/build.bnd.
  */
-def loadBuildProps() {
+buildscript {
+  
   Properties props = new Properties()
 
   // Properties for automated-build relevant tasks. These assignments below are defaults for when building locally
@@ -97,7 +98,14 @@ def loadBuildProps() {
   props.setProperty('javac.bootclasspath.1.8', jdkLibString)
 
   // Property for Artifactory matrix parameters
-  def branchName = gitBranch()
+  def branch = ""
+  def proc = "git rev-parse --abbrev-ref HEAD".execute()
+  proc.in.eachLine { line -> branch = line }
+  proc.err.eachLine { line -> println line }
+  proc.waitFor()
+  branch
+
+  def branchName = branch
   def matrixParams = ";GIT_BRANCH=master;GIT_FEATURE_BRANCH=${branchName}"
 
   def artifactoryExists = false
@@ -115,15 +123,15 @@ def loadBuildProps() {
     isAutomatedBuild = (props.getProperty("buildResultUUID") != null)
 
     if (props.getProperty('is.continuous.build') != null) {
-      isContinuousBuild = parseBoolean(props.getProperty('is.continuous.build'))
+      isContinuousBuild = 'on'.equalsIgnoreCase(props.getProperty('is.continuous.build')) || 'true'.equalsIgnoreCase(props.getProperty('is.continuous.build'))
     }
 
     if (props.getProperty('is.release') != null) {
-      isRelease = parseBoolean(props.getProperty('is.release'))
+      isRelease = 'on'.equalsIgnoreCase(props.getProperty('is.release')) || 'true'.equalsIgnoreCase(props.getProperty('is.release'))
     }
 
     if (props.getProperty('is.public.publishing') != null) {
-      isPublicPublishing = parseBoolean(props.getProperty('is.public.publishing'))
+      isPublicPublishing = 'on'.equalsIgnoreCase(props.getProperty('is.public.publishing')) || 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
     }
 
     props.setProperty('javac.bootclasspath.1.4', '${internaljavac.bootclasspath.1.4}')
@@ -166,16 +174,17 @@ def loadBuildProps() {
   File propsFile = new File('generated.properties')
   props.store(propsFile.newWriter(), null)
 
+
   // Set extra properties extension
   gradle.rootProject { rootProject ->
     rootProject.ext.qualifier = props.getProperty("version.qualifier")
     rootProject.ext.matrixParams = props.getProperty("artifactory.matrix.parameters")
-    rootProject.ext.isAutomatedBuild = parseBoolean(props.getProperty("is.automated.build"))
-    rootProject.ext.isContinuousBuild = parseBoolean(props.getProperty("is.continuous.build"))
-    rootProject.ext.isRelease = parseBoolean(props.getProperty('is.release'))
+    rootProject.ext.isAutomatedBuild = 'on'.equalsIgnoreCase(props.getProperty("is.automated.build")) || 'true'.equalsIgnoreCase(props.getProperty("is.automated.build"))
+    rootProject.ext.isContinuousBuild = 'on'.equalsIgnoreCase(props.getProperty("is.continuous.build")) || 'true'.equalsIgnoreCase(props.getProperty("is.continuous.build"))
+    rootProject.ext.isRelease = 'on'.equalsIgnoreCase(props.getProperty('is.release')) || 'true'.equalsIgnoreCase(props.getProperty('is.release'))
     rootProject.ext.artifactoryExists = artifactoryExists
-    rootProject.ext.isRemotePublishing = parseBoolean(props.getProperty('is.remote.publishing'))
-    rootProject.ext.isPublicPublishing = parseBoolean(props.getProperty('is.public.publishing'))
+    rootProject.ext.isRemotePublishing = 'on'.equalsIgnoreCase(props.getProperty('is.remote.publishing')) || 'true'.equalsIgnoreCase(props.getProperty('is.remote.publishing'))
+    rootProject.ext.isPublicPublishing = 'on'.equalsIgnoreCase(props.getProperty('is.public.publishing')) || 'true'.equalsIgnoreCase(props.getProperty('is.public.publishing'))
     rootProject.ext.releaseVersionOverride = props.getProperty('release.version.override')
     rootProject.ext.usrHomeProps = usrHomeProps
     rootProject.ext.generatedProps = props
@@ -186,29 +195,20 @@ def loadBuildProps() {
     rootProject.ext.failedTestCountTotal = 0
     rootProject.ext.skippedTestCountTotal = 0
   }
-}
 
-def gitBranch() {
-  def branch = ""
-  def proc = "git rev-parse --abbrev-ref HEAD".execute()
-  proc.in.eachLine { line -> branch = line }
-  proc.err.eachLine { line -> println line }
-  proc.waitFor()
-  branch
-}
-
-private boolean parseBoolean(String value) {
-  return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
-}
-
-loadBuildProps()
-
-/* Add bnd gradle plugin as a script dependency */
-buildscript {
-  repositories {
-    maven {
-      url uri(bnd_repourl)
-    }
+ 
+ repositories {
+  if ((props.getProperty("artifactory.download.server") != null) && !props.getProperty('artifactory.force.external.repo')) {
+      maven {
+           credentials {
+               username props.getProperty("artifactory.download.user")
+               password props.getProperty("artifactory.download.token")
+           }
+      url ("https://" + props.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+      }
+   } else {
+        maven { url uri(bnd_repourl) }
+   }
   }
 
   dependencies {
@@ -240,7 +240,19 @@ buildscript {
       }
     }
   }
+
 }
+
+
+
+private boolean parseBoolean(String value) {
+  return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
+}
+
+
+/* Add bnd gradle plugin as a script dependency */
+
+
 
 /* Initialize the bnd workspace */
 import aQute.bnd.build.Workspace

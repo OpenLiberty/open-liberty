@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: Nu poate fi g\u0103sit\u0103 configura\u0163ia de consumator MicroProfile JSON Web Token (JWT) cu ID-ul [{0}]. Verifica\u0163i dac\u0103 configura\u0163ia mpJwt cu ID-ul specificat se afl\u0103 pe server.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Nu poate fi g\u0103sit\u0103 configura\u0163ia de consumator MPJWT cu identificatorul specificat \u00een configura\u0163ia de server.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 un element mpJwt configurat cu ID-ul specificat \u015fi c\u0103 este referit de elementul jwtSso din configura\u0163ia de server.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Sunt calificate prea multe servicii MicroProfile JWT [{0}] pentru tratarea cererii.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=Caracteristica JWTSSO nu poate selecta un serviciu MicroProfile JWT pentru a trata cererea atunci c\u00e2nd sunt calificate mai multe servicii pentru tratarea cererii.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Asigura\u0163i-v\u0103 c\u0103 un singur serviciu MicroProfile JWT din configura\u0163ia de server este configurat pentru tratarea cererii.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: Valoarea atributului JwtSso cookieName nu poate fi nul\u0103 sau necompletat\u0103. Va fi utilizat\u0103 valoarea cookieName implicit\u0103.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=Atributul cookieName trebuie s\u0103 fie un nume de cookie valid.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=\u00cenl\u0103tura\u0163i atributul cookieName sau corecta\u0163i valoarea.
+
+COOKIE_NAME_INVALID=CWWKS6303E: Valoarea atributului jwtSso cookieName [{0}] con\u0163ine un caracter invalid [{1}]. \u00cen locul acesteia, va fi utilizat\u0103 valoarea cookieName implicit\u0103.
+COOKIE_NAME_INVALID.explanation=Atributul cookieName trebuie s\u0103 fie un nume de cookie valid.
+COOKIE_NAME_INVALID.useraction=\u00cenl\u0103tura\u0163i atributul cookieName sau corecta\u0163i valoarea.
+
 

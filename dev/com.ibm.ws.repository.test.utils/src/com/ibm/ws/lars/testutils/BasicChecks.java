@@ -43,11 +43,9 @@ public class BasicChecks {
      * @throws RepositoryBackendException
      * @throws RepositoryResourceException
      */
-    public void checkAttachment(RepositoryResource res)
-            throws RepositoryBackendException, RepositoryResourceException {
+    public void checkAttachment(RepositoryResource res) throws RepositoryBackendException, RepositoryResourceException {
         assertNotNull("No main attachment", res.getMainAttachment());
-        assertEquals("Wrong file size", res.getMainAttachmentSize(), res
-                .getMainAttachment().getSize());
+        assertEquals("Wrong file size", res.getMainAttachmentSize(), res.getMainAttachment().getSize());
     }
 
     /**
@@ -60,7 +58,7 @@ public class BasicChecks {
         while ((length = is.read(buffer)) != -1) {
             baos.write(buffer, 0, length);
         }
-    
+
         return baos.toByteArray();
     }
 
@@ -81,8 +79,8 @@ public class BasicChecks {
      * @throws SecurityException
      * @throws InvocationTargetException
      */
-    public static void checkCopyFields(RepositoryResourceImpl left, RepositoryResourceImpl right)
-            throws IllegalArgumentException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, SecurityException, InvocationTargetException {
+    public static void checkCopyFields(RepositoryResourceImpl left,
+                                       RepositoryResourceImpl right) throws IllegalArgumentException, IllegalAccessException, InstantiationException, IOException, NoSuchMethodException, SecurityException, InvocationTargetException {
 
         ArrayList<String> methodsToIgnore = new ArrayList<String>();
         methodsToIgnore.add("setState");
@@ -129,10 +127,8 @@ public class BasicChecks {
             m = left.getClass().getDeclaredMethod("copyFieldsFrom",
                                                   RepositoryResourceImpl.class, boolean.class);
         } catch (Exception e) {
-            m = left.getClass()
-                    .getSuperclass()
-                    .getDeclaredMethod("copyFieldsFrom", RepositoryResourceImpl.class,
-                                       boolean.class);
+            m = left.getClass().getSuperclass().getDeclaredMethod("copyFieldsFrom", RepositoryResourceImpl.class,
+                                                                  boolean.class);
         }
         m.setAccessible(true);
         m.invoke(right, left, true);

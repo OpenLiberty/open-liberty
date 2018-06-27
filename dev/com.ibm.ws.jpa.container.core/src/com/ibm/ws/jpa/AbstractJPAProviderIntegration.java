@@ -146,16 +146,22 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
             if (puInfo instanceof com.ibm.ws.jpa.management.JPAPUnitInfo)
                 props.put("eclipselink.application-id", ((com.ibm.ws.jpa.management.JPAPUnitInfo) puInfo).getApplName());
         } else if (PROVIDER_HIBERNATE.equals(providerName)) {
-            try {
-                // Hibernate has vastly outdated built-in knowledge of WebSphere API, so tell Hibernate to use
-                // a proxy implementation of JtaPlatform that we will provide based on the WAS transaction manager
-                ClassLoader loader = puInfo.getClassLoader();
-                Class<?> JtaPlatform = loadClass(loader, "org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform");
-                Object libertyJtaPlatform = Proxy.newProxyInstance(loader, new Class[] { JtaPlatform }, new LibertyJtaPlatform());
-                props.put("hibernate.transaction.jta.platform", libertyJtaPlatform);
-            } catch (ClassNotFoundException x) {
+            // Hibernate had vastly outdated built-in knowledge of WebSphere API, until version 5.2.13+ and 5.3+.
+            // If the version of Hibernate has the Liberty JtaPlatform, use it
+            // otherwise, tell Hibernate to use a proxy implementation of JtaPlatform that we will provide based on the WAS transaction manager
+            ClassLoader loader = puInfo.getClassLoader();
+            if (isWebSphereLibertyJtaPlatformAvailable(loader)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "Unable to provide JtaPlatform for Liberty TransactionManager to Hibernate", x);
+                    Tr.debug(this, tc, "Detected WebSphereLibertyJtaPlatform, not applying dynamic proxy JtaPlatform.");
+            } else {
+                try {
+                    Class<?> JtaPlatform = loadClass(loader, "org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform");
+                    Object libertyJtaPlatform = Proxy.newProxyInstance(loader, new Class[] { JtaPlatform }, new LibertyJtaPlatform());
+                    props.put("hibernate.transaction.jta.platform", libertyJtaPlatform);
+                } catch (ClassNotFoundException x) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Unable to provide JtaPlatform for Liberty TransactionManager to Hibernate", x);
+                }
             }
         }
 
@@ -169,4 +175,19 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
      */
     @Override
     public void updatePersistenceUnitProperties(String providerClassName, Properties props) {}
+
+    /**
+     * As of Hibernate 5.2.13+ and 5.3+ built-in knowledge of Liberty's transaction integration was delivered as:
+     * org.hibernate.engine.transaction.jta.platform.internal.WebSphereLibertyJtaPlatform
+     * If this class is available, we do not need to set our dynamic proxy instance.
+     */
+    @FFDCIgnore(ClassNotFoundException.class)
+    private boolean isWebSphereLibertyJtaPlatformAvailable(ClassLoader loader) {
+        try {
+            loadClass(loader, "org.hibernate.engine.transaction.jta.platform.internal.WebSphereLibertyJtaPlatform");
+            return true;
+        } catch (ClassNotFoundException notFound) {
+            return false;
+        }
+    }
 }

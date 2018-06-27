@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Map;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.ffdc.FFDCConfigurator;
+import com.ibm.ws.kernel.boot.logging.WsLogManager;
 import com.ibm.ws.logging.hpel.config.HpelConfigurator;
 import com.ibm.ws.logging.internal.impl.LoggingConstants;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
@@ -34,6 +35,10 @@ public class HpelLogProviderImpl implements LogProvider {
         if (!config.containsKey(config.get(LoggingConstants.PROP_TRACE_DELEGATE))) {
             config.put(LoggingConstants.PROP_TRACE_DELEGATE, HpelBaseTraceService.class.getName());
         }
+
+        // Set boolean to enable HPEL, for the WsLogManager
+        WsLogManager.setBinaryLoggingEnabled(true);
+
         HpelTraceServiceConfig loggingConfig = new HpelTraceServiceConfig(config, logLocation, factory);
 
         TrConfigurator.init(loggingConfig);

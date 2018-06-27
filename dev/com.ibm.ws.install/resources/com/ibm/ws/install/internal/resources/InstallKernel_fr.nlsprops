@@ -434,6 +434,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0} n''est pas une fon
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=Seules les fonctions peuvent \u00eatre install\u00e9es sur une extension de produit.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Ex\u00e9cutez de nouveau la commande d'installation installUtility sans indiquer l'extension.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: Les fonctions suivantes n''ont pas pu \u00eatre obtenues : {0}. Assurez-vous que les fonctions sont valides pour Open Liberty.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=Le programme d'installation n'est pas parvenu \u00e0 extraire les fonctions sp\u00e9cifi\u00e9es des r\u00e9f\u00e9rentiels connect\u00e9s.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Si les fonctions sp\u00e9cifi\u00e9es existent, assurez-vous qu'elles sont valides pour Open Liberty.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: La fonction {0} ne peut pas \u00eatre install\u00e9e dans l''\u00e9dition IBM WebSphere Application Server Liberty Core car elle s''applique uniquement aux autres \u00e9ditions d''IBM WebSphere Application Server Liberty et \u00e0 Open Liberty. Utilisez l''action "find" de la commande featureManager pour extraire la liste des fonctions applicables \u00e0 l''\u00e9dition IBM WebSphere Application Server Liberty Core.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=La fonction ne s'applique pas \u00e0 l'\u00e9dition du produit install\u00e9.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Installez des fonctions prises en charge par votre \u00e9dition du produit.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: Installation des fonctions suivantes : {0}.
 LOG_INSTALL_FEATURES.explanation=Les fonctions sp\u00e9cifi\u00e9es vont \u00eatre install\u00e9es.

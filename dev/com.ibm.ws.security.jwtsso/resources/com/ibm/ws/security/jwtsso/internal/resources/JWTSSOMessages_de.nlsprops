@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: Die MPJWT-Konsumentenkonfiguration (MicroProfile JSON Web Token) mit der ID [{0}] wurde nicht gefunden. Vergewissern Sie sich, dass die MPJWT-Konfiguration mit der angegebenen ID im Server vorhanden ist.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Es wurde keine MPJWT-Konsumentenkonfiguration mit der angegebenen ID in der Serverkonfiguration gefunden.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Stellen Sie sicher, dass ein Element mpJwt mit der angegebenen ID in der Serverkonfiguration konfiguriert ist und vom Element jwtSso in der Serverkonfiguration referenziert wird.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Es sind zu viele MicroProfile-JWT-Services [{0}] f\u00fcr die Verarbeitung der Anforderung qualifiziert.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=Das Feature JWTSSO kann keinen MicroProfile-JWT-Service ausw\u00e4hlen, um die Anforderung zu verarbeiten, wenn mehr als ein Service f\u00fcr die Verarbeitung der Anforderung qualifiziert ist.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Stellen Sie sicher, dass nur ein einziger MicroProfile-JWT-Service in der Serverkonfiguration f\u00fcr die Verarbeitung der Anforderung konfiguriert ist.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: Der Wert des JwtSso-Attributs cookieName darf weder null noch leer sein. Es wird der cookieName-Standardwert verwendet.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=Das Attribut CookieName muss einen g\u00fcltigen Cookienamen angeben.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Entfernen Sie das Attribut cookieName oder korrigieren Sie den Wert.
+
+COOKIE_NAME_INVALID=CWWKS6303E: Der Wert des jwtSso-Attributs cookieName [{0}] enth\u00e4lt ein ung\u00fcltiges Zeichen [{1}]. Es wird stattdessen der cookieName-Standardwert verwendet.
+COOKIE_NAME_INVALID.explanation=Das Attribut CookieName muss einen g\u00fcltigen Cookienamen angeben.
+COOKIE_NAME_INVALID.useraction=Entfernen Sie das Attribut cookieName oder korrigieren Sie den Wert.
+
 

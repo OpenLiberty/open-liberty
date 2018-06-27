@@ -28,7 +28,7 @@ import com.ibm.ws.microprofile.faulttolerance.test.util.TestFunction;
 /**
  *
  */
-public class FallbackTest {
+public class FallbackTest extends AbstractFTTest {
 
     @Test
     public void testFallbackFunction() {

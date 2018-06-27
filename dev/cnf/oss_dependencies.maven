@@ -2,9 +2,9 @@
 #javax.inject:javax.inject:1.0.0
 #org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.2
 #org.apache.geronimo.specs:geronimo-validation_1.1_spec:1.0
-biz.aQute.bnd:biz.aQute.bnd:3.5.0
-biz.aQute.bnd:biz.aQute.bnd.annotation:3.5.0
-biz.aQute.bnd:org.osgi.impl.bundle.repoindex.cli:3.5.0
+biz.aQute.bnd:biz.aQute.bnd:4.0.0
+biz.aQute.bnd:biz.aQute.bnd.annotation:4.0.0
+biz.aQute.bnd:biz.aQute.bnd.gradle:4.0.0
 com.fasterxml:classmate:1.3.1
 com.fasterxml.jackson.core:jackson-annotations:2.2.3
 com.fasterxml.jackson.core:jackson-annotations:2.9.1
@@ -52,7 +52,6 @@ commons-digester:commons-digester:1.8
 commons-discovery:commons-discovery:0.2
 commons-fileupload:commons-fileupload:1.3.3
 commons-httpclient:commons-httpclient:3.1
-commons-io:commons-io:2.4
 commons-io:commons-io:2.6
 commons-lang:commons-lang:2.4
 commons-logging:commons-logging:1.1.1
@@ -111,6 +110,7 @@ org.apache.aries.jndi:org.apache.aries.jndi.api:1.1.0
 org.apache.aries:org.apache.aries.util:1.1.3
 org.apache.commons:commons-compress:1.10
 org.apache.commons:commons-lang3:3.5
+org.apache.commons:commons-lang3:3.7
 org.apache.commons:commons-math:2.2
 org.apache.commons:commons-weaver-privilizer:1.1
 org.apache.commons:commons-weaver-processor:1.1
@@ -149,6 +149,7 @@ org.apache.httpcomponents.core5:httpcore5:5.0-alpha4
 org.apache.httpcomponents:httpclient:4.1.2
 org.apache.httpcomponents:httpclient:4.3.1
 org.apache.httpcomponents:httpclient:4.5.4
+org.apache.httpcomponents:httpclient:4.5.5
 org.apache.httpcomponents:httpclient-cache:4.1.2
 org.apache.httpcomponents:httpclient-cache:4.3.1
 org.apache.httpcomponents:httpcore:4.1.2
@@ -181,7 +182,9 @@ org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502
 org.eclipse.jetty.websocket:websocket-common:9.4.7.RC0
 org.eclipse.microprofile.config:microprofile-config-api:1.1
 org.eclipse.microprofile.config:microprofile-config-api:1.2.1
+org.eclipse.microprofile.config:microprofile-config-api:1.3
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
+org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.0.1
@@ -199,6 +202,7 @@ org.glassfish.jersey.core:jersey-client:2.26
 org.glassfish.jersey.core:jersey-common:2.26
 org.glassfish.jersey.inject:jersey-hk2:2.26
 org.hamcrest:hamcrest-all:1.3
+org.hibernate:hibernate-core:5.2.17.Final
 org.hibernate.validator:hibernate-validator:6.0.9.Final
 org.hibernate.validator:hibernate-validator-cdi:6.0.9.Final
 org.jacoco:org.jacoco.agent:0.7.9
@@ -219,6 +223,10 @@ org.jmock:jmock:2.5.1
 org.jmock:jmock-junit4:2.5.1
 org.jsoup:jsoup:1.7.2
 org.jvnet.staxex:stax-ex:1.7.7
+org.mongodb:mongo-java-driver:1.0
+org.mongodb:mongo-java-driver:2.9.3
+org.mongodb:mongo-java-driver:2.10.1
+org.mongodb:mongo-java-driver:2.13.3
 org.objenesis:objenesis:1.0
 org.osgi:osgi.core:5.0.0
 org.osgi:org.osgi.annotation.versioning:1.0.0
@@ -240,12 +248,12 @@ org.osgi:org.osgi.service.subsystem:1.1.0
 org.osgi:osgi.core:5.0.0
 org.ow2.asm:asm-all:5.0.3
 org.ow2.asm:asm-all:5.2
-org.ow2.asm:asm:6.0
-org.ow2.asm:asm-analysis:6.0
-org.ow2.asm:asm-commons:6.0
-org.ow2.asm:asm-tree:6.0
-org.ow2.asm:asm-util:6.0
-org.ow2.asm:asm-xml:6.0
+org.ow2.asm:asm:6.1.1
+org.ow2.asm:asm-analysis:6.1.1
+org.ow2.asm:asm-commons:6.1.1
+org.ow2.asm:asm-tree:6.1.1
+org.ow2.asm:asm-util:6.1.1
+org.ow2.asm:asm-xml:6.1.1
 org.powermock:powermock-core:1.5
 org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-jdk14:1.7.7

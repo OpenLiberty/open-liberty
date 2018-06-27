@@ -84,4 +84,20 @@ public class BasicClientTestServlet extends FATServlet {
         }
     }
 
+    @Test
+    public void testFiltersInvoked(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        try {
+            MyFilter.requestFilterInvoked = false;
+            MyFilter.responseFilterInvoked = false;
+
+            client.createNewWidget(new Widget("Erasers", 10, 0.8));
+            assertTrue("Request filter was not invoked", MyFilter.requestFilterInvoked);
+            assertTrue("Response filter was not invoked", MyFilter.responseFilterInvoked);
+            assertTrue("POSTed widget does not show up in query", client.getWidgetNames().contains("Erasers"));
+
+        } finally {
+            //ensure we delete so as to not throw off other tests
+            client.removeWidget("Erasers");
+        }
+    }
 }

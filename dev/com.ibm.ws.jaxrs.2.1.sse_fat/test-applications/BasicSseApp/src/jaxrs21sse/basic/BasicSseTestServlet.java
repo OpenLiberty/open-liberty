@@ -357,4 +357,65 @@ public class BasicSseTestServlet extends FATServlet {
         assertEquals("Received an unexpected number of events", nameData.length, receivedEvents.size());
         System.out.println("testSseWithRX: " + receivedEvents + " that's my name too");
     }
+
+    public void testErrorSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        final List<JaxbObject> receivedEvents = new ArrayList<JaxbObject>();
+        final CountDownLatch executionLatch = new CountDownLatch(1);
+
+        Client client = ClientBuilder.newClient();
+        int port = req.getServerPort();
+        System.out.println("port = " + port);
+        WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/error");
+
+        SseEventSource source = SseEventSource.target(target).build();
+        try {
+            System.out.println("client invoking server SSE resource on: " + source);
+            source.register(
+                            new Consumer<InboundSseEvent>() { // event
+
+                                @Override
+                                public void accept(InboundSseEvent t) {
+                                    JaxbObject o = t.readData(JaxbObject.class, MediaType.APPLICATION_XML_TYPE);
+                                    System.out.println("new error event: " + o);
+                                    receivedEvents.add(o);
+                                }
+                            },
+                            new Consumer<Throwable>() {
+
+                                @Override
+                                public void accept(Throwable t) {
+                                    t.printStackTrace();
+                                    fail("Caught unexpected exception: " + t);
+                                }
+                            },
+                            new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    System.out.println("completion runnable executed");
+                                    executionLatch.countDown();
+                                }
+                            });
+
+            try {
+                source.open();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                source.close();
+                source = SseEventSource.target(target).build();
+            }
+
+            System.out.println("client source open");
+            assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
+
+        } catch (InterruptedException e) {
+            // falls through
+            e.printStackTrace();
+        } finally {
+            source.close();
+        }
+
+        assertEquals("Received an unexpected number of events", 0, receivedEvents.size());
+    }
 }

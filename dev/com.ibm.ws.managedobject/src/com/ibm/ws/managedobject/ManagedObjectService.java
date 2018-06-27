@@ -13,8 +13,7 @@ package com.ibm.ws.managedobject;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
-public interface ManagedObjectService
-{
+public interface ManagedObjectService {
     /**
      * Creates a factory for a specified class.
      *
@@ -31,9 +30,8 @@ public interface ManagedObjectService
      * @return the managed object factory
      * @throws ManagedObjectException if an exception occurs creating the factory
      */
-    <T> ManagedObjectFactory<T> createManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, boolean requestManagingInjectionAndInterceptors)
-                    throws ManagedObjectException;
-    
+    <T> ManagedObjectFactory<T> createManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, boolean requestManagingInjectionAndInterceptors) throws ManagedObjectException;
+
     /**
      * Creates a factory for a specified class.
      *
@@ -47,12 +45,12 @@ public interface ManagedObjectService
      * @param requestManagingInjectionAndInterceptors true requests that the returned ManagedObjectFactory
      *            will perform dependency injection when creating an instance of the managed object and
      *            the instance will handle interceptors, including around construct.
-     * @param referenceContext the referenecContext which will be used for dependancy injection. If null, the WeldCreationalContext will be used.           
+     * @param referenceContext the referenecContext which will be used for dependancy injection. If null, the WeldCreationalContext will be used.
      * @return the managed object factory
      * @throws ManagedObjectException if an exception occurs creating the factory
      */
-    <T> ManagedObjectFactory<T> createManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, boolean requestManagingInjectionAndInterceptors,ReferenceContext referenceContext)
-                    throws ManagedObjectException;
+    <T> ManagedObjectFactory<T> createManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, boolean requestManagingInjectionAndInterceptors,
+                                                           ReferenceContext referenceContext) throws ManagedObjectException;
 
     /**
      * Creates a factory for a specified ejb class.
@@ -65,22 +63,7 @@ public interface ManagedObjectService
      * @return the managed object factory
      * @throws ManagedObjectException if an exception occurs creating the factory
      */
-    <T> ManagedObjectFactory<T> createEJBManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, String ejbName)
-                    throws ManagedObjectException;
-
-    /**
-     * Creates a managed object from a specific instance. When using this
-     * method, the caller is responsible for constructor injection.
-     *
-     * @param <T> the type of object being managed
-     *
-     * @param mmd the ModuleMetaData for the module which contains the managed object
-     * @param instance the object being managed
-     * @return the managed object
-     * @throws ManagedObjectException if an exception occurs creating the managed object
-     */
-    <T> ManagedObject<T> createManagedObject(ModuleMetaData mmd, T instance)
-                    throws ManagedObjectException;
+    <T> ManagedObjectFactory<T> createEJBManagedObjectFactory(ModuleMetaData mmd, Class<T> klass, String ejbName) throws ManagedObjectException;
 
     /**
      * Creates a factory for a specified interceptor class.
@@ -92,7 +75,6 @@ public interface ManagedObjectService
      * @return the managed object factory
      * @throws ManagedObjectException if an exception occurs creating the factory
      */
-    <T> ManagedObjectFactory<T> createInterceptorManagedObjectFactory(ModuleMetaData mmd, Class<T> klass)
-                    throws ManagedObjectException;
+    <T> ManagedObjectFactory<T> createInterceptorManagedObjectFactory(ModuleMetaData mmd, Class<T> klass) throws ManagedObjectException;
 
 }

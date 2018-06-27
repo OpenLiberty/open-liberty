@@ -45,7 +45,7 @@ public class ZipUtils {
 
     /**
      * Unzip utility. Assumes that the source zip and target directory are valid.
-     * 
+     *
      * @param sourceZip
      * @param targetDir
      * @return
@@ -68,10 +68,18 @@ public class ZipUtils {
                 String fileName = ze.getName();
                 if (fileName.endsWith(WAR_EXTENSION)) {
                     File warFile = new File(targetDir, fileName);
+                    if (!validateFile(targetDir, warFile)) {
+                        Tr.error(tc, "error.file.outside.archive", fileName, sourceZip.getName());
+                        continue;
+                    }
                     warFiles.add(warFile);
                     fileName = fileName + ".tmp";
                 }
                 File targetFile = new File(targetDir, fileName);
+                if (!validateFile(targetDir, targetFile)) {
+                    Tr.error(tc, "error.file.outside.archive", fileName, sourceZip.getName());
+                    continue;
+                }
                 if (ze.isDirectory()) {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Creating directory: " + targetFile);
@@ -141,6 +149,14 @@ public class ZipUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Validates that a WAR file does not point to files outside the archive (eg ../../../someFile.txt)
+     * Return true if valid, false if not
+     */
+    private boolean validateFile(File targetDirectory, File targetFile) throws IOException, ZipException {
+        return targetFile.getCanonicalPath().startsWith(targetDirectory.getCanonicalPath() + File.separator);
     }
 
 }

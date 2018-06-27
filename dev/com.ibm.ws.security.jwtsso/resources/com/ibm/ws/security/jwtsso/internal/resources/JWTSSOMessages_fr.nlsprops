@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: La configuration de consommateur MicroProfile JWT (JSON Web Token) dont l''ID est [{0}] est introuvable. V\u00e9rifiez que la configuration mpJwt associ\u00e9e \u00e0 l''ID sp\u00e9cifi\u00e9 se trouve sur le serveur.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Aucune configuration de consommateur MPJWT associ\u00e9e \u00e0 l'ID sp\u00e9cifi\u00e9 n'a \u00e9t\u00e9 trouv\u00e9e dans la configuration du serveur.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Assurez-vous qu'un \u00e9l\u00e9ment mpJwt est configur\u00e9 avec l'ID sp\u00e9cifi\u00e9 et est r\u00e9f\u00e9renc\u00e9 par l'\u00e9l\u00e9ment jwtSso dans la configuration du serveur.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Trop de services MicroProfile JWT [{0}] sont qualifi\u00e9s pour traiter la demande.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=La fonction de connexion unique par JWT ne peut pas s\u00e9lectionner de service MicroProfile JWT pour traiter la demande si plusieurs services sont qualifi\u00e9s pour traiter la demande.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Assurez-vous qu'un seul service MicroProfile JWT est configur\u00e9 dans la configuration du serveur pour traiter la demande.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: La valeur de l'attribut cookieName dans l'\u00e9l\u00e9ment JwtSso ne peut pas \u00eatre null ou vide. La valeur par d\u00e9faut de cookieName sera utilis\u00e9e.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=L'attribut cookieName doit correspondre \u00e0 un nom de cookie valide.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Retirez l'attribut cookieName ou corrigez sa valeur.
+
+COOKIE_NAME_INVALID=CWWKS6303E: La valeur de l''attribut cookieName [{0}] dans l''\u00e9l\u00e9ment jwtSso contient un caract\u00e8re non valide [{1}]. La valeur par d\u00e9faut de cookieName sera utilis\u00e9e \u00e0 la place.
+COOKIE_NAME_INVALID.explanation=L'attribut cookieName doit correspondre \u00e0 un nom de cookie valide.
+COOKIE_NAME_INVALID.useraction=Retirez l'attribut cookieName ou corrigez sa valeur.
+
 

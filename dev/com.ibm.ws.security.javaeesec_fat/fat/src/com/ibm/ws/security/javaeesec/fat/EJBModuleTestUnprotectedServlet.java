@@ -41,7 +41,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-@MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 

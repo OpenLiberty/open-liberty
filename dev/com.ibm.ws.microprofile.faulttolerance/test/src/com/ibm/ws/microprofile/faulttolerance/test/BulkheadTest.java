@@ -40,7 +40,7 @@ import com.ibm.ws.microprofile.faulttolerance.test.util.TestTask;
 /**
  *
  */
-public class BulkheadTest {
+public class BulkheadTest extends AbstractFTTest {
 
     @Test
     public void testBulkhead() throws InterruptedException, ExecutionException, TimeoutException {

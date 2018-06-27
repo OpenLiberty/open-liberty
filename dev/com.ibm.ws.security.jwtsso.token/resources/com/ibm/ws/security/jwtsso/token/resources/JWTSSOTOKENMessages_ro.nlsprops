@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwtsso/token/resources/JWTSSOTOKENMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server JWTSSOTOKEN
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS6351 - CWWKS6399
+
+JWTSSO_CONFIG_INVALID=CWWKS6351E: Configura\u0163ia caracteristicii JWTSSO nu este valid\u0103. Verifica\u0163i configura\u0163ia caracteristicii JWTSSO. Verifica\u0163i mesajele de eroare anterioare \u00een istoric.
+JWTSSO_CONFIG_INVALID.explanation=Nu a putut fi ob\u0163inut\u0103 o configura\u0163ie valid\u0103 a caracteristicii JWTSSO.
+JWTSSO_CONFIG_INVALID.useraction=Verifica\u0163i configura\u0163ia caracteristicii JWTSSO. Verifica\u0163i mesajele de eroare anterioare \u00een istoric.
+
+JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID=CWWKS6352E: Nu a reu\u0163it validarea jetonului JWTSSO. Verifica\u0163i configura\u0163ia caracteristicii JWTSSO. Verifica\u0163i mesajele de eroare anterioare \u00een istoric.
+JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID.explanation=Validarea jetonului web JSON furnizat nu a reu\u015fit. Este posibil ca jetonul configura\u0163iei caracteristicii s\u0103 nu fie valid.
+JWTSSO_CONFIG_INVALID_OR_TOKEN_INVALID.useraction=Verifica\u0163i configura\u0163ia caracteristicii JWTSSO. Verifica\u0163i mesajele de eroare anterioare \u00een istoric.

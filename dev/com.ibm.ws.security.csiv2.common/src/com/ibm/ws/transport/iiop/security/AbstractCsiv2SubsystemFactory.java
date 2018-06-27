@@ -10,6 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.csiv2.config.ssl.SSLConfig;
+import com.ibm.ws.security.csiv2.util.SecurityServices;
+import com.ibm.ws.ssl.optional.SSLSupportOptional;
+import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
+import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
+import com.ibm.ws.transport.iiop.spi.ReadyListener;
+import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.wsspi.ssl.SSLSupport;
+import org.apache.yoko.osgi.locator.LocalFactory;
+import org.apache.yoko.osgi.locator.Register;
+import org.apache.yoko.osgi.locator.ServiceProvider;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,25 +41,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.yoko.osgi.locator.BundleProviderLoader;
-import org.apache.yoko.osgi.locator.Register;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.csiv2.config.ssl.SSLConfig;
-import com.ibm.ws.security.csiv2.util.SecurityServices;
-import com.ibm.ws.ssl.optional.SSLSupportOptional;
-import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
-import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
-import com.ibm.ws.transport.iiop.spi.ReadyListener;
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
-import com.ibm.wsspi.ssl.SSLSupport;
-
 /**
  *
  */
@@ -48,9 +48,22 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     private static final TraceComponent tc = Tr.register(AbstractCsiv2SubsystemFactory.class);
     protected static final long TIMEOUT_SECONDS = 10;
 
+    private enum MyLocalFactory implements LocalFactory {
+        INSTANCE;
+        @Override
+        public Class<?> forName(String clsName) throws ClassNotFoundException {
+            return Class.forName(clsName);
+        }
+
+        @Override
+        public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
+            return cls.newInstance();
+        }
+    }
+
     private Register providerRegistry;
-    private BundleProviderLoader securityInitializerClass;
-    private BundleProviderLoader connectionHelperClass;
+    private ServiceProvider securityInitializerClass;
+    private ServiceProvider connectionHelperClass;
     private SSLSupport sslSupport;
     private ScheduledExecutorService executor;
     protected String defaultAlias;
@@ -95,9 +108,8 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
 
     @Activate
     protected void activate(BundleContext bundleContext) {
-        Bundle bundle = bundleContext.getBundle();
-        securityInitializerClass = new BundleProviderLoader(SecurityInitializer.class.getName(), SecurityInitializer.class.getName(), bundle, 1);
-        connectionHelperClass = new BundleProviderLoader(SocketFactory.class.getName(), SocketFactory.class.getName(), bundle, 1);
+        securityInitializerClass = new ServiceProvider(MyLocalFactory.INSTANCE, SecurityInitializer.class);
+        connectionHelperClass = new ServiceProvider(MyLocalFactory.INSTANCE, SocketFactory.class);
         providerRegistry.registerProvider(securityInitializerClass);
         providerRegistry.registerProvider(connectionHelperClass);
         SecurityServices.setupSSLConfig(new SSLConfig(sslSupport.getJSSEHelper()));

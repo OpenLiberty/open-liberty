@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: Konfigurace odb\u011bratele MicroProfile JSON Web Token (JWT) s ID [{0}] nelze nal\u00e9zt. Ov\u011b\u0159te, \u017ee konfigurace mpJwt s ur\u010den\u00fdm ID je na serveru.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Konfiguraci odb\u011bratele MPJWT s ur\u010den\u00fdm identifik\u00e1torem nelze v konfiguraci serveru nal\u00e9zt.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee v konfiguraci serveru existuje prvek mpJwt nakonfigurovan\u00fd s ur\u010den\u00fdm ID a \u017ee je odkazov\u00e1n prvkem jwtSso.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Ke zpracov\u00e1n\u00ed \u017e\u00e1dosti je kvalifikov\u00e1no p\u0159\u00edli\u0161 mnoho slu\u017eeb MicroProfile JWT [{0}].
+TOO_MANY_MP_JWT_PROVIDERS.explanation=Funkce JWTSSO nem\u016f\u017ee vybrat slu\u017ebu MicroProfile JWT ke zpracov\u00e1n\u00ed po\u017eadavku, kdy\u017e je ke zpracov\u00e1n\u00ed \u017e\u00e1dosti kvalifikov\u00e1no v\u00edce slu\u017eeb.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Ujist\u011bte se, \u017ee ke zpracov\u00e1n\u00ed \u017e\u00e1dosti nen\u00ed v konfiguraci serveru nakonfigurov\u00e1no v\u00edce slu\u017eeb MicroProfile JWT.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: Hodnota atributu JwtSso cookieName nem\u016f\u017ee b\u00fdt null nebo pr\u00e1zdn\u00e1. Pou\u017eije se v\u00fdchoz\u00ed hodnota cookieName.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=Atribut cookieName vy\u017eaduje platnost n\u00e1zvu souboru cookie.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Odeberte atribut cookieName nebo opravte hodnotu.
+
+COOKIE_NAME_INVALID=CWWKS6303E: Hodnota atributu jwtSso cookieName [{0}] obsahuje neplatn\u00fd znak [{1}]. M\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed hodnota cookieName.
+COOKIE_NAME_INVALID.explanation=Atribut cookieName vy\u017eaduje platnost n\u00e1zvu souboru cookie.
+COOKIE_NAME_INVALID.useraction=Odeberte atribut cookieName nebo opravte hodnotu.
+
 

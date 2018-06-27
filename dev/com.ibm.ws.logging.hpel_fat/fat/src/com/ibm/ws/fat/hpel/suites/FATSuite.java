@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,19 +31,21 @@
  * F1344-49496     8.0     10/29/2011   belyi        Add TestLogRecordContextSSFAT test
  * F1344-56880     8.5     01/14/2012   belyi        Add VerifyJmxLogNotification test
  * 95518           8.5.5   03/07/2012   dbourne      remove text log tests
+ * GH 2025      18.0.0.2   06/04/2018   pgunapal     Add HPELHideMessage test case.
  */
 package com.ibm.ws.fat.hpel.suites;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 import com.ibm.ws.fat.hpel.setup.HpelSetup;
 import com.ibm.ws.fat.hpel.tests.BinaryLogExec;
 import com.ibm.ws.fat.hpel.tests.BinaryLogRecordContextTest;
 import com.ibm.ws.fat.hpel.tests.ConcurrentLoggingAccuracyTest;
+import com.ibm.ws.fat.hpel.tests.HPELHideMessagesTest;
 import com.ibm.ws.fat.hpel.tests.HpelDeleteEmptyDirectories;
 import com.ibm.ws.fat.hpel.tests.TraceSpecificationSetToAllTest;
 import com.ibm.ws.fat.hpel.tests.VerifyRepositoryAccuracy;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * Packages all our HPEL FAT tests
@@ -52,7 +54,7 @@ public class FATSuite {
 
     /**
      * Builds a TestSuite of HPEL Functional Acceptance tests
-     * 
+     *
      * @return a JUnit TestSuite
      */
     public static Test suite() {
@@ -66,13 +68,13 @@ public class FATSuite {
  */
         // server side ras legacy test suite
 //		suite.addTest(RasServerSideUnitTestSuite.suite());
-//		
+//
 //		// ========== RAS FAT test cases ========
 //		suite.addTestSuite(com.ibm.ws.fat.ras.tests.AttributeSetTestingByWsadmin.class);
 //		suite.addTestSuite(com.ibm.ws.fat.ras.tests.TraceServiceTestingByWsAdmin.class);
 //		suite.addTestSuite(MBeanOpTest.class);
 //		suite.addTestSuite(VerifyServiceLogConfig.class);
-//		
+//
 //		// ========== FAT test cases ============
 //		suite.addTestSuite(EnableHPELByWsadmin.class);
         suite.addTestSuite(BinaryLogRecordContextTest.class);
@@ -93,7 +95,8 @@ public class FATSuite {
 //		suite.addTestSuite(RawTraceSpecVerifier.class);
         suite.addTestSuite(HpelDeleteEmptyDirectories.class);
 //        suite.addTestSuite(HpelTextLogRetention.class);
-//		
+        suite.addTestSuite(HPELHideMessagesTest.class);
+//
 //		// =========== FAT Server Side test cases ==========
 //		suite.addTestSuite(HpelMBeanOpSSFAT.class);
 //		suite.addTestSuite(HpelLogEventNotificationsSSFAT.class);

@@ -434,6 +434,15 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION=CWWKF1298E: {0}\uc774(\uac00) \uae
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.explanation=\uae30\ub2a5\ub9cc \uc81c\ud488 \ud655\uc7a5\uc5d0 \uc124\uce58\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
 ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=\ud655\uc7a5\uc744 \uc9c0\uc815\ud558\uc9c0 \ub9d0\uace0 installUtility \uc124\uce58 \uba85\ub839\uc744 \ub2e4\uc2dc \uc2e4\ud589\ud558\uc2ed\uc2dc\uc624.
 
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: \ub2e4\uc74c \uae30\ub2a5\uc744 \uac00\uc838\uc62c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}. \uae30\ub2a5\uc774 Open Liberty\uc5d0 \ub300\ud574 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=\uc124\uce58 \ud504\ub85c\uadf8\ub7a8\uc774 \uc5f0\uacb0\ub41c \uc800\uc7a5\uc18c\uc5d0\uc11c \uc9c0\uc815\ub41c \uae30\ub2a5\uc744 \uac80\uc0c9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=\uc9c0\uc815\ub41c \uae30\ub2a5\uc774 \uc874\uc7ac\ud558\uba74 \uc774 \uae30\ub2a5\uc774 Open Liberty\uc5d0 \ub300\ud574 \uc720\ud6a8\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: {0} \uae30\ub2a5\uc774 \uae30\ud0c0 IBM WebSphere Application Server Liberty \uc5d0\ub514\uc158 \ubc0f Open Liberty\uc5d0\ub9cc \uc801\uc6a9\ub418\ubbc0\ub85c, \uc774\ub97c IBM WebSphere Application Server Liberty Core \uc5d0\ub514\uc158\uc5d0 \uc124\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. IBM WebSphere Application Server Liberty Core \uc5d0\ub514\uc158\uc5d0 \uc801\uc6a9\ud560 \uc218 \uc788\ub294 \uae30\ub2a5\uc758 \ubaa9\ub85d\uc744 \uac80\uc0c9\ud558\ub824\uba74 featureManager \uba85\ub839\uc758 "find" \uc870\uce58\ub97c \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=\uc774 \uae30\ub2a5\uc740 \uc124\uce58\ub41c \uc81c\ud488\uc758 \uc5d0\ub514\uc158\uc5d0\ub294 \uc801\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=\uc81c\ud488 \uc5d0\ub514\uc158\uc5d0\uc11c \uc9c0\uc6d0\ud558\ub294 \uae30\ub2a5\uc744 \uc124\uce58\ud558\uc2ed\uc2dc\uc624.
+
+
 # Following messages for info logging purpose
 LOG_INSTALL_FEATURES=CWWKF1300I: {0} \uae30\ub2a5\uc744 \uc124\uce58\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
 LOG_INSTALL_FEATURES.explanation=\uc9c0\uc815\ub41c \uae30\ub2a5\uc774 \uc124\uce58\ub429\ub2c8\ub2e4.

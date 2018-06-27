@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=No action is required.
 CONSOLE_FORMAT_UPDATED=TRAS3003I: The console output format has now been updated to '{0}'.
 CONSOLE_FORMAT_UPDATED.explanation=The output format for console has now been updated.
 CONSOLE_FORMAT_UPDATED.useraction=No action is required.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: The following messages are hidden from the console.log file: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Messages that are configured to be hidden are not written to the console.log file. They are written to the log and trace data repositories in the binary logging. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=No action is required
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Failed to write messages to the {0} file.
+FAILED_TO_WRITE_LOG.explanation=An error occurred when trying to write message to the file. 
+FAILED_TO_WRITE_LOG.useraction=Ensure that the directory exists, is writable, and has sufficient disk space.
+
+LOG_FILE_RESUMED=TRAS3006I: Logging messages to the {0} file has resumed.
+LOG_FILE_RESUMED.explanation=Messages can be written to the file.
+LOG_FILE_RESUMED.useraction=No action is required.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

@@ -70,42 +70,41 @@ public final class ApplicationConfig {
         displayJandexMessages();
     }
 
-    private static boolean ONE_TIME_MSGS_DISPLAYED = false;
+    private static boolean ONE_TIME_JANDEX_MSGS_DISPLAYED = false;
 
     private void displayJandexMessages() {
 
-        boolean useJandexForAll = _applicationManager.getUseJandex();
+        boolean appMgr_useJandex = _applicationManager.getUseJandex();
 
-        if (!ONE_TIME_MSGS_DISPLAYED) {
-            if (useJandexForAll) {
+        // Display a message once if useJandex is set to true on the applicationManager.
+        // This causes the default useJandex setting for each application to be set to true.
+        if (!ONE_TIME_JANDEX_MSGS_DISPLAYED) {
+            if (appMgr_useJandex) {
                 Tr.info(tc, "APPLICATION_JANDEX_ENABLED_ALL");
             }
-            ONE_TIME_MSGS_DISPLAYED = true;
+            ONE_TIME_JANDEX_MSGS_DISPLAYED = true;
         }
 
-        boolean useJandexForApplication = false;
-        boolean useJandexForApplicationIsSet = false;
-
+        // The application setting overrides the applicationManager setting.
         if (_config != null) {
-            Object useJandex = _config.get(AppManagerConstants.USE_JANDEX);
-            if (useJandex instanceof Boolean) {
-                useJandexForApplicationIsSet = true;
+            Object application_useJandex = _config.get(AppManagerConstants.USE_JANDEX);
+            if (application_useJandex instanceof Boolean) {
 
-                if ((Boolean) useJandex) {
-                    useJandexForApplication = true;
-
+                if ((Boolean) application_useJandex) {
+                    Tr.info(tc, "APPLICATION_JANDEX_ENABLED", _name);
                 } else {
                     Tr.info(tc, "APPLICATION_JANDEX_DISABLED", _name);
                 }
+                return;
             }
         }
 
-        if (useJandexForAll) {
-            if (useJandexForApplicationIsSet && useJandexForApplication) {
-                Tr.info(tc, "APPLICATION_JANDEX_DISABLED", _name);
-            }
-        } else {
+        // Apparently, useJandex not set on the application.  So default to the appMgr setting.
+        if (appMgr_useJandex) {
             Tr.info(tc, "APPLICATION_JANDEX_ENABLED", _name);
+
+        } else {
+            // Display nothing.  Since they are taking the defaults.
         }
     }
 

@@ -20,3 +20,43 @@
 INCORRECT_URI_SYNTAX=SESN0300E: Sintassi non valida nell''URI httpSessionCache.  La causa \u00e8 {0}.
 INCORRECT_URI_SYNTAX.explanation=La sintassi dell'URI di configurazione httpSessionCache JCache specificato non \u00e8 valida.
 INCORRECT_URI_SYNTAX.useraction=Correggere la sintassi dell'URI di configurazione httpSessionCache specificato.
+
+ERROR_REMOVING_SESSION=SESN0301E: Si \u00e8 verificata un''eccezione durante la rimozione di una sessione dalla cache. L''eccezione \u00e8:  {0}.
+ERROR_REMOVING_SESSION.explanation=Un'operazione sulla cache non \u00e8 riuscita a causa dell'eccezione specificata.
+ERROR_REMOVING_SESSION.useraction=Per ulteriori dettagli consultare l'eccezione. La configurazione del provider JCache potrebbe dover essere aggiornata.
+
+PROP_HIT_ERROR=SESN0302E: Si \u00e8 verificata un''eccezione durante la memorizzazione delle modifiche dei dati dell''applicazione nella cache. L''eccezione \u00e8:  {0}.
+PROP_HIT_ERROR.explanation=Un'operazione sulla cache non \u00e8 riuscita a causa dell'eccezione specificata.
+PROP_HIT_ERROR.useraction=Per ulteriori dettagli consultare l'eccezione. La configurazione del provider JCache potrebbe dover essere aggiornata.
+
+STORE_SESS_ERROR=SESN0303E: Si \u00e8 verificata un''eccezione durante la memorizzazione di una sessione nella cache. L''eccezione \u00e8:  {0}.
+STORE_SESS_ERROR.explanation=Un'operazione sulla cache non \u00e8 riuscita a causa dell'eccezione specificata.
+STORE_SESS_ERROR.useraction=Per ulteriori dettagli consultare l'eccezione. La configurazione del provider JCache potrebbe dover essere aggiornata.
+
+LOAD_VALUE_ERROR=SESN0304E: Si \u00e8 verificata un''eccezione durante la lettura in un oggetto dei dati dell''applicazione per una sessione dalla cache. L''eccezione \u00e8:  {0}.
+LOAD_VALUE_ERROR.explanation=Un'operazione sulla cache non \u00e8 riuscita a causa dell'eccezione specificata.
+LOAD_VALUE_ERROR.useraction=Per ulteriori dettagli consultare l'eccezione. La configurazione del provider JCache potrebbe dover essere aggiornata.
+
+ERROR_CACHE_ACCESS=SESN0305E: Si \u00e8 verificata un''eccezione durante il tentativo di accedere alla cache. L''eccezione \u00e8:  {0}.
+ERROR_CACHE_ACCESS.explanation=Un'operazione sulla cache non \u00e8 riuscita a causa dell'eccezione specificata.
+ERROR_CACHE_ACCESS.useraction=Per ulteriori dettagli consultare l'eccezione. La configurazione del provider JCache potrebbe dover essere aggiornata.
+
+ERROR_SESSION_INVAL=SESN0306E: Si \u00e8 verificata un''eccezione durante l''invalidazione di una sessione nella cache. L''eccezione \u00e8:  {0}.
+ERROR_SESSION_INVAL.explanation=Un'operazione sulla cache non \u00e8 riuscita a causa dell'eccezione specificata.
+ERROR_SESSION_INVAL.useraction=Per ulteriori dettagli consultare l'eccezione. La configurazione del provider JCache potrebbe dover essere aggiornata.
+
+ERROR_SESSION_INIT=SESN0307E: Si \u00e8 verificata un''eccezione durante l''inizializzazione della cache. L''eccezione \u00e8:  {0}.
+ERROR_SESSION_INIT.explanation=Un'operazione sulla cache non \u00e8 riuscita a causa dell'eccezione specificata.
+ERROR_SESSION_INIT.useraction=Per ulteriori dettagli consultare l'eccezione. La configurazione del provider JCache potrebbe dover essere aggiornata.
+
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE=SESN0308E: \u00c8 stata rilevata una configurazione httpSessionCache non valida o mancante. {0}
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.explanation=La funzione sessionCache non \u00e8 stata completamente inizializzata a causa di configurazione mancante o non valida.
+ERROR_CONFIG_INVALID_HTTPSESSIONCACHE.useraction=Verificare che la configurazione del server definisca un elemento httpSessionCache che include un attributo libraryRef.
+
+ERROR_CONFIG_EMPTY_LIBRARY=SESN0309E: La libreria cache sessione {0} \u00e8 vuota. {1}
+ERROR_CONFIG_EMPTY_LIBRARY.explanation=La funzione sessionCache non pu\u00f2 trovare un provider JCache da caricare.
+ERROR_CONFIG_EMPTY_LIBRARY.useraction=Verificare che la libreria contenga un provider JCache e che tutti i percorsi siano specificati correttamente.
+
+INTERNAL_SERVER_ERROR=Errore interno al server
+
+SESSION_CACHE_CONFIG_MESSAGE=Verificare che la configurazione del server contenga una configurazione httpSessionCache valida. Vedere la configurazione di esempio. {0}

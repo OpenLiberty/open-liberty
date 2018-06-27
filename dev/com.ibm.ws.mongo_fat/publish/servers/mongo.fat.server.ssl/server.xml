@@ -1,0 +1,111 @@
+<server>
+    <include location="../fatTestPorts.xml" />
+    <applicationMonitor pollingRate="10s" />
+
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>mongodb-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jndi-1.0</feature>
+        <feature>ssl-1.0</feature>
+    </featureManager>
+
+    <library id="mongo-lib">
+        <fileset dir="${shared.resource.dir}/mongo-2.13" />
+    </library>
+    <library id="mongo-lib-210">
+        <fileset dir="${shared.resource.dir}/mongo-2.10" />
+    </library>
+
+    <application name="mongo" location="mongo.war">
+        <classloader commonLibraryRef="mongo-lib" />
+    </application>
+    
+    <keyStore password="passw0rd" id="myTrustStore" location="${server.output.dir}/resources/mongo-encrypted/security/truststore.jks"></keyStore>
+    <ssl id="mySSLConfig" keyStoreRef="myTrustStore" />
+    
+    <mongoDB jndiName="mongo/testdb" databaseName="default" >
+        <mongo libraryRef="mongo-lib" hostNames="mongo-encrypted" ports="0" sslEnabled="true" sslRef="mySSLConfig"/>
+    </mongoDB>
+
+    <mongo id="mongo-encrypted" libraryRef="mongo-lib" hostNames="mongo-encrypted" ports="0" sslEnabled="true" sslRef="mySSLConfig"/>
+    <mongoDB jndiName="mongo/testdb-jndi" mongoRef="mongo-encrypted" databaseName="default" />
+    <mongoDB jndiName="mongo/testdb-jndi-resource-env-ref" mongoRef="mongo-encrypted" databaseName="default" />
+
+    <mongo id="mongo-auth-encrypted" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" sslRef="mySSLConfig"/>
+    <mongoDB jndiName="mongo/testdb-auth" mongoRef="mongo-auth-encrypted" databaseName="default" />
+    <mongoDB jndiName="mongo/testdb-auth-jndi" mongoRef="mongo-auth-encrypted" databaseName="default" />
+  
+    <mongo id="mongo-nested-ssl" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true">
+        <ssl keyStoreRef="myTrustStore" />
+    </mongo>
+    <mongoDB jndiName="mongo/testdb-nested-ssl" mongoRef="mongo-nested-ssl" databaseName="default" />
+  
+    <mongo id="mongo-sslEnabled-false" libraryRef="mongo-lib" hostNames="mongo-auth" ports="0" user="user" password="password" sslEnabled="false"/>
+    <mongoDB jndiName="mongo/testdb-sslEnabled-false" mongoRef="mongo-sslEnabled-false" databaseName="default" />
+    
+    <mongo id="mongo-sslEnabled-false-sslref" libraryRef="mongo-lib" hostNames="mongo-auth" ports="0" user="user" password="password" sslEnabled="false" sslRef="mySSLConfig"/>
+    <mongoDB jndiName="mongo/testdb-sslEnabled-false-sslref" mongoRef="mongo-sslEnabled-false-sslref" databaseName="default" />
+    
+    <keyStore password="passw0rd" id="differentTrustStore" location="${server.output.dir}/resources/mongo-different-ssl/security/truststore.jks"></keyStore>
+    <ssl id="differentSSLConfig" keyStoreRef="differentTrustStore" />
+    <mongo id="mongo-different-sslref" libraryRef="mongo-lib" hostNames="mongo-different-ssl" ports="0" user="user" password="password" sslEnabled="true" sslRef="differentSSLConfig"/>
+    <mongoDB jndiName="mongo/testdb-different-sslref" mongoRef="mongo-different-sslref" databaseName="default" />
+
+    <ssl id="noTruststoreSSLConfig" keyStoreRef="defaultTrustStore" />
+    <mongo id="mongo-invalid-truststore" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" sslRef="noTruststoreSSLConfig"/>
+    <mongoDB jndiName="mongo/testdb-invalid-truststore" mongoRef="mongo-invalid-truststore" databaseName="default" />
+
+    <!-- Certificate authentication tests below -->
+
+    <keyStore password="passw0rd" id="validCertAuthMultiKeyKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_all_keystore.jks"></keyStore>
+    <keyStore password="passw0rd" id="validCertAuthSingleKeyKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_good_keystore.jks"></keyStore>
+    
+    <keyStore password="passw0rd" id="validCertAuthTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.jks"></keyStore>
+    <keyStore password="passw0rd" id="invalidCertAuthTrustStore" location="${server.output.dir}/resources/security/invalidCertAuthTrustStore.jks"></keyStore>
+    
+    <ssl id="validCertAuthNoAliasReqd" keyStoreRef="validCertAuthSingleKeyKeyStore" trustStoreRef="validCertAuthTrustStore"></ssl>
+    <ssl id="validCertAuthValidAlias" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="validCertAuthTrustStore" clientKeyAlias="client_good"></ssl>
+    <ssl id="validCertAuthInvalidAlias" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="validCertAuthTrustStore" clientKeyAlias="client_not_known"></ssl>
+    <ssl id="validCertAuthAliasNotInKeystore" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="validCertAuthTrustStore" clientKeyAlias="wibblewibblewibble"></ssl>
+    <ssl id="validCertAuthNoAliasButOneReqd" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="validCertAuthTrustStore"></ssl>
+    <ssl id="validCertInvalidTrustore" keyStoreRef="validCertAuthMultiKeyKeyStore" trustStoreRef="invalidCertAuthTrustStore" clientKeyAlias="client_good"></ssl>
+    
+    <mongo id="mongo-valid-certificate-no-alias-reqd" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthNoAliasReqd" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-valid-certificate-no-alias-reqd" mongoRef="mongo-valid-certificate-no-alias-reqd" databaseName="default" />
+    
+    <mongo id="mongo-valid-certificate-valid-alias" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthValidAlias" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-valid-certificate-valid-alias" mongoRef="mongo-valid-certificate-valid-alias" databaseName="default" />
+
+    <mongo id="mongo-valid-certificate-invalid-alias" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthInvalidAlias" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-valid-certificate-invalid-alias" mongoRef="mongo-valid-certificate-invalid-alias" databaseName="default" />
+    
+    <!-- mongo/testdb-valid-certificate-alias-not-in-keystore -->
+    <mongo id="mongo-valid-certificate-alias-not-in-keystore" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthAliasNotInKeystore" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-valid-certificate-alias-not-in-keystore" mongoRef="mongo-valid-certificate-alias-not-in-keystore" databaseName="default" />
+    
+    
+    <mongo id="mongo-valid-certificate-no-alias-but-reqd" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthNoAliasButOneReqd" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-valid-certificate-no-alias-but-reqd" mongoRef="mongo-valid-certificate-no-alias-but-reqd" databaseName="default" />
+
+    <mongo id="mongo-invalid-certificate-no-trust" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertInvalidTrustore" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-invalid-certificate-trust" mongoRef="mongo-invalid-certificate-no-trust" databaseName="default" />
+    
+    <mongo id="mongo-invalid-certauth-no-sslenabled" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslRef="validCertAuthValidAlias" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-invalid-certauth-no-sslenabled" mongoRef="mongo-invalid-certauth-no-sslenabled" databaseName="default" /> 
+    
+    <mongo id="mongo-invalid-certauth-sslenabled-false" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="false" sslRef="validCertAuthValidAlias" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-invalid-certauth-sslenabled-false" mongoRef="mongo-invalid-certauth-sslenabled-false" databaseName="default" />
+    
+    <mongo id="mongo-invalid-certauth-parms-userid" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthNoAliasReqd" useCertificateAuthentication="true" user="user"/>
+    <mongoDB jndiName="mongo/testdb-invalid-certauth-parms-userid" mongoRef="mongo-invalid-certauth-parms-userid" databaseName="default" />
+
+    <mongo id="mongo-invalid-certauth-parms-password" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthNoAliasReqd" useCertificateAuthentication="true" password="password"/>
+    <mongoDB jndiName="mongo/testdb-invalid-certauth-parms-password" mongoRef="mongo-invalid-certauth-parms-password" databaseName="default" />
+
+    <mongo id="mongo-invalid-certauth-driver-level" libraryRef="mongo-lib-210" hostNames="mongo-auth-encrypted" ports="0" sslEnabled="true" sslRef="validCertAuthValidAlias" useCertificateAuthentication="true"/>
+    <mongoDB jndiName="mongo/testdb-invalid-certauth-driver-level" mongoRef="mongo-invalid-certauth-driver-level" databaseName="default" />
+
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.10/mongo-java-driver-2.10.1.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.security.AllPermission"/>
+</server>

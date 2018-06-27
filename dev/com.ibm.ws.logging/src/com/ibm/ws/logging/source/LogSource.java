@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.logging.source;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.logging.LogRecord;
 import java.util.regex.Matcher;
@@ -42,17 +40,9 @@ public class LogSource implements Source {
     private BufferManager bufferMgr = null;
     static Pattern messagePattern;
     private final SequenceNumber sequenceNumber = new SequenceNumber();
-    public static final String LINE_SEPARATOR;
 
     static {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
-
-        LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty("line.separator");
-            }
-        });
     }
 
     //private final AtomicLong seq = new AtomicLong();
@@ -142,6 +132,7 @@ public class LogSource implements Source {
 
         String messageIdVal = null;
         String messageVal = extractMessage(routedMessage, logRecord);
+
         if (messageVal != null) {
             messageIdVal = parseMessageId(messageVal);
         }
@@ -200,15 +191,7 @@ public class LogSource implements Source {
             logData.setThrowableLocalized(null);
         }
 
-        StringBuilder msgBldr = new StringBuilder();
-        msgBldr.append(messageVal);
-        if (thrown != null) {
-            String stackTrace = DataFormatHelper.throwableToString(thrown);
-            if (stackTrace != null) {
-                msgBldr.append(LINE_SEPARATOR).append(stackTrace);
-            }
-        }
-        logData.setMessage(msgBldr.toString());
+        logData.setMessage(messageVal);
 
         if (routedMessage.getFormattedMsg() != null) {
             logData.setFormattedMsg(routedMessage.getFormattedMsg());

@@ -157,7 +157,7 @@ Import-Package: !com.google.inject, \
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.jsp;version=latest,\
-	com.ibm.ws.org.apache.commons.collections.3.2.1;version=latest,\
+	com.ibm.ws.org.apache.commons.collections;version=latest,\
 	com.ibm.ws.beanvalidation.core;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\

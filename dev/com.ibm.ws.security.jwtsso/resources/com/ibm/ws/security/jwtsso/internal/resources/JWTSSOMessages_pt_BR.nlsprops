@@ -15,5 +15,22 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS6300 - CWWKS6399
+# Message prefix block: CWWKS6300 - CWWKS6350
+MPJWT_CONSUMER_CONFIG_NOT_FOUND=CWWKS6300E: A configura\u00e7\u00e3o do consumidor do MicroProfile JSON Web Token (JWT) com um ID de [{0}] n\u00e3o pode ser localizada. Verifique se a configura\u00e7\u00e3o mpJwt com o ID especificado est\u00e1 no servidor.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.explanation=Uma configura\u00e7\u00e3o do consumidor MPJWT com o identificador especificado n\u00e3o pode ser localizada na configura\u00e7\u00e3o do servidor.
+MPJWT_CONSUMER_CONFIG_NOT_FOUND.useraction=Certifique-se de que haja um elemento mpJwt configurado com o ID especificado e seja referenciado pelo elemento jwtSso na configura\u00e7\u00e3o do servidor.
+
+# 0=List of configuration IDs
+TOO_MANY_MP_JWT_PROVIDERS=CWWKS6301E: Servi\u00e7os MicroProfile JWT demais [{0}] s\u00e3o qualificados para manipular a solicita\u00e7\u00e3o.
+TOO_MANY_MP_JWT_PROVIDERS.explanation=O recurso JWTSSO n\u00e3o pode selecionar um servi\u00e7o MicroProfile JWT para manipular a solicita\u00e7\u00e3o quando mais de um servi\u00e7o est\u00e1 qualificado para manipular a solicita\u00e7\u00e3o.
+TOO_MANY_MP_JWT_PROVIDERS.useraction=Certifique-se de que n\u00e3o mais de um servi\u00e7o MicroProfile JWT na configura\u00e7\u00e3o do servidor esteja configurado para manipular a solicita\u00e7\u00e3o.
+
+COOKIE_NAME_CANT_BE_EMPTY=CWWKS6302E: O valor do atributo cookieName do JwtSso n\u00e3o pode ser nulo ou vazio. O valor do cookieName padr\u00e3o ser\u00e1 usado.
+COOKIE_NAME_CANT_BE_EMPTY.explanation=O atributo cookieName precisa ser um nome de cookie v\u00e1lido.
+COOKIE_NAME_CANT_BE_EMPTY.useraction=Remova o atributo cookieName ou corrija o valor.
+
+COOKIE_NAME_INVALID=CWWKS6303E: O valor do atributo cookieName do jwtSso [{0}] cont\u00e9m um caractere inv\u00e1lido [{1}]. O valor do cookieName padr\u00e3o ser\u00e1 usado no lugar.
+COOKIE_NAME_INVALID.explanation=O atributo cookieName precisa ser um nome de cookie v\u00e1lido.
+COOKIE_NAME_INVALID.useraction=Remova o atributo cookieName ou corrija o valor.
+
 
