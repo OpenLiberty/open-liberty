@@ -154,8 +154,6 @@ public class BaseTraceService implements TrService {
     protected final AtomicReference<WsMessageRouter> internalMessageRouter = new AtomicReference<WsMessageRouter>();
     protected final AtomicReference<WsTraceRouter> internalTraceRouter = new AtomicReference<WsTraceRouter>();
 
-    protected volatile boolean isHaveEarlyMessagesTraces = true;
-
     /** This is the filter for which messages go to "the console". One of INFO, AUDIT, WARNING, ERROR */
     protected volatile Level consoleLogLevel = WsLevel.AUDIT;
 
@@ -912,7 +910,7 @@ public class BaseTraceService implements TrService {
         // The MessageRouter basically owns the earlierMessages queue
         // from now on.
 
-        if (isHaveEarlyMessagesTraces && earlierMessages != null) {
+        if (earlierMessages != null) {
             synchronized (this) {
                 if (earlierMessages != null) {
                     msgRouter.setEarlierMessages(earlierMessages);
@@ -943,7 +941,7 @@ public class BaseTraceService implements TrService {
         // NOT add any more messages to the earlierMessages queue.
         // The MessageRouter basically owns the earlierMessages queue
         // from now on.
-        if (isHaveEarlyMessagesTraces && earlierTraces != null) {
+        if (earlierTraces != null) {
             synchronized (this) {
                 if (earlierTraces != null) {
                     traceRouter.setEarlierTraces(earlierTraces);
@@ -1236,8 +1234,6 @@ public class BaseTraceService implements TrService {
             synchronized (BaseTraceService.this) {
                 earlierMessages = null;
                 earlierTraces = null;
-
-                isHaveEarlyMessagesTraces = false;
 
                 if (internalMessageRouter.get() != null)
                     BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
