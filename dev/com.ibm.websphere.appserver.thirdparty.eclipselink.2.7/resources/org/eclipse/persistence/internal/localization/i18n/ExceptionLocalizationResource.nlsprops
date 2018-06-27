@@ -433,6 +433,8 @@ unknown_bean_class=Unknown Entity bean class: {0}, please verify that this class
 
 unknown_entitybean_name=Unknown Entity Bean name: {0}
 
+unsupported_classfile_version=The {0} class was compiled with an unsupported JDK. Report this error to the EclipseLink open source project.
+
 wrap_convert_exception=An exception occurred while calling {0} on converter class {1} with value {2}
 
 wrap_ejbql_exception=An exception occurred while creating a query in EntityManager
