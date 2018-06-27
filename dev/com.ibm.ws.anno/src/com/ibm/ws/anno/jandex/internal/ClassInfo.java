@@ -70,7 +70,7 @@ public final class ClassInfo{
      *
      * @return the name of the class
      */
-    public final DotName name() {
+    public DotName name() {
         return name;
     }
 
@@ -78,11 +78,11 @@ public final class ClassInfo{
      * Returns the access flags for this class. The standard {@link java.lang.reflect.Modifier}
      * can be used to decode the value.
      */
-    public final short flags() {
+    public short flags() {
         return flags;
     }
 
-    public final DotName superName() {
+    public DotName superName() {
         return superClass;
     }
 
@@ -93,29 +93,52 @@ public final class ClassInfo{
      *
      * @return the list of annotations declared on this class
      */
-    public final List<DotName> classAnnotations() {
+    public List<DotName> classAnnotations() {
         return classAnnotations;
     }
 
 
-    public final List<DotName> methods(){
+    public List<DotName> methods(){
         return methods;
     }
 
-    public final List<LimitedAnnotation> methodAnnotations(){
+    public List<LimitedAnnotation> methodAnnotations(){
         return methodAnnotations;
     }
-    public final List<DotName> fields(){
+    public List<DotName> fields(){
         return fields;
     }
 
 
-    public final List<LimitedAnnotation> fieldAnnotations(){
+    public List<LimitedAnnotation> fieldAnnotations(){
         return fieldAnnotations;
     }
 
-    public final DotName[] interfaceNames(){
+    public DotName[] interfaceNames(){
         return interfaces;
     }
+
+    public void addField(DotName field){
+        this.fields().add(field);
+    }
+
+    public void addMethod(DotName method){
+        this.methods().add(method);
+    }
+
+    public void addClassAnnotation(DotName annotation){
+        this.classAnnotations().add(annotation);
+    }
+
+    public void addFieldAnnotation(LimitedAnnotation annotation){
+        this.fieldAnnotations().add(annotation);
+    }
+
+    public void addMethodAnnotation(LimitedAnnotation annotation){
+        this.methodAnnotations().add(annotation);
+    }
+
+
+
 
 }
