@@ -35,7 +35,7 @@ public final class LimitedIndex{
 
 
     LimitedIndex(Map<DotName,ClassInfo> classes){
-        this.classes = Collections.unmodifiableMap(classes);
+        this.classes = classes;
     }
 
     public Set<DotName> classNames(){
@@ -44,6 +44,10 @@ public final class LimitedIndex{
 
     public Collection<ClassInfo> classes(){
         return classes.values();
+    }
+
+    public ClassInfo getClass(DotName className){
+        return classes.get(className);
     }
     
 }

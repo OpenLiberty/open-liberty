@@ -63,7 +63,6 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private static final int AVALUE_ARRAY = 12;
     private static final int AVALUE_NESTED = 13;
     private static final int HAS_ENCLOSING_METHOD = 1;
-    //private final static byte[] INIT_METHOD_NAME = Utils.toUTF8("<init>");
 
     private final PackedDataInputStream input;
     private byte[][] byteTable;
@@ -82,44 +81,29 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     }
 
     LimitedIndex read(int version) throws IOException {
-        try {
 
-            //read in the sizes for the implementors, masterannotations, and subclasses structures 
-            int annotationsSize = input.readPackedU32();
-            int implementorsSize = input.readPackedU32();
-            int subclassesSize = input.readPackedU32();
+            input.readPackedU32(); //annotationSize
+            input.readPackedU32(); //implementorSize
+            input.readPackedU32(); //subclassesSize 
 
 
-
-            //read in the byte table, string table, and name table to be used by the reader
             readByteTable();
             readStringTable();
             readNameTable();
 
-            //read in the sizes of the type table, type list table, and the annotations table
+
             typeTable = new DotName[input.readPackedU32() + 1];
             typeListTable = new DotName[input.readPackedU32() + 1][];
             annotationTable = new LimitedAnnotation[input.readPackedU32() + 1];
 
-            //fill in the class variables for the type table, typelist table, method table, and field table
+
             readTypeTable();
             readTypeListTable();
             readMethodTable();
             readFieldTable();
             
             
-            return readClasses( annotationsSize, implementorsSize, subclassesSize);
-        } finally {
-            //get rid of the finally
-            byteTable = null;
-            stringTable = null;
-            nameTable = null;
-            typeTable = null;
-            typeListTable = null;
-            annotationTable = null;
-            methodTable = null;
-            fieldTable = null;
-        }
+            return readClasses();
     }
 
     private void readByteTable() throws IOException {
@@ -587,29 +571,18 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         }
     }
 
-    private LimitedIndex readClasses(
-                              int annotationsSize, int implementorsSize, int subclassesSize) throws IOException {
-        //read in the amount of classes and initialize the master structures
+    private LimitedIndex readClasses() throws IOException {
+
         int classesSize = input.readPackedU32();
-        HashMap<DotName, ClassInfo> classes = new HashMap<DotName, ClassInfo>(classesSize);
+        Map<DotName, ClassInfo> classes = new HashMap<DotName, ClassInfo>(classesSize);
 
-        //iterate over each class entry
-        for (int i = 0; i < classesSize; i++) {
-            
-            //read the entry and generate the ClassInfo object
-            ClassInfo clazz = readClassEntry();
-            
-            //add the current class to the subclasses master structure
+        for (int currentEntry = 0; currentEntry < classesSize; currentEntry++) {
 
-            //Iterate over all the interfaces the current class implements and add the current class to the master list
-            //under the name of the interface
+            ClassInfo currentClassEntry = readClassEntry();
+            classes.put(currentClassEntry.name(), currentClassEntry);
 
-
-            //store the current class into the master classes list for the index
-            classes.put(clazz.name(), clazz);
         }
 
-        //create then intex with the master lists for annotations, subclasses, implementors, and classes
         return new LimitedIndex(classes);
     }
 
