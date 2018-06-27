@@ -107,9 +107,8 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
             DotName superName = classTable[stream.readPackedU32()];
 
             //read in the short flag
-            //short flags = stream.readShort();
-            stream.readShort();
-
+            short flags = stream.readShort();
+            
             //read depricated NoArgsConstructor flag
             // No copyParameters supported in version 3+
             //boolean hasNoArgsConstructor = version >= 3 && stream.readBoolean();
@@ -134,7 +133,7 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
             //Type superClassType = superName == null ? null : new ClassType(superName);
 
             //create a new ClassInfo object for the current entry
-            ClassInfo clazz = new ClassInfo(name, superName, (short) 0 ,interfaces.toArray(new DotName[numIntfs]));
+            ClassInfo clazz = new ClassInfo(name, superName, flags ,interfaces.toArray(new DotName[numIntfs]));
 
             //add it to the master list of classes for the index
             classes.put(name, clazz);
