@@ -459,16 +459,15 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         input.readPackedU32();
 
         DotName[] interfaceTypes = typeListTable[input.readPackedU32()];
+        ClassInfo currentClassInformation = new ClassInfo(name, superType, flags, interfaceTypes);
 
         input.readPackedU32();
         input.readPackedU32();
 
         readPastEnclosingMethod();
 
-
         int numberOfAnnotations = input.readPackedU32();
 
-        ClassInfo currentClassInformation = new ClassInfo(name, superType, flags, interfaceTypes);
         readClassFields(currentClassInformation);
         readClassMethods(currentClassInformation);
 
@@ -477,78 +476,55 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
             LimitedAnnotation[] annotationInstances = readAnnotations(currentClassInformation.name());
 
             if (annotationInstances.length > 0) {
-                recordClassAnnotations(annotationInstances, currentClassInformation);
+                processClassAnnotations(annotationInstances, currentClassInformation);
             }
         }
 
         return currentClassInformation;
     }
 
-    private void recordClassAnnotations(LimitedAnnotation[] allAnnotationsInClass, ClassInfo currentClass){
+    //Only adds annotaions from the array that targets the class given by currentClass parameter
+    private void processClassAnnotations(LimitedAnnotation[] allAnnotationsInClass, ClassInfo currentClass){
         
         for(int annotationCounter = 0; annotationCounter < allAnnotationsInClass.length; annotationCounter++){
-            
             DotName targetName = allAnnotationsInClass[annotationCounter].getTargetName();
+            
             if(targetName.equals(currentClass.name())){
                 currentClass.addClassAnnotation(allAnnotationsInClass[annotationCounter].getName());
             }
         }
     }
 
-    private void readClassFields( ClassInfo clazz) throws IOException {
-        //read in the number of fields
-        int len = input.readPackedU32();
+    private void readClassFields( ClassInfo currentClass) throws IOException {
+        int numOfFields = input.readPackedU32();
 
-        
-        for (int i = 0; i < len; i++) {
-            //pull the field object from the table in order to assign it to current classinfo
-            LimitedAnnotationHolder field = fieldTable[input.readPackedU32()];
-            clazz.fields().add(field.getName());
-            for(LimitedAnnotation temp: field.getAnnotations()){
-                clazz.fieldAnnotations().add(temp);
-            }
-            //iterate over all the annotations in the current field and update the annotations taget class info
-
-
-
+        for (int i = 0; i < numOfFields; i++) {
+            LimitedAnnotationHolder currentField = fieldTable[input.readPackedU32()];
+            
+            currentClass.recordFieldEntry(currentField);
         }
     }
 
-    private void readClassMethods( ClassInfo clazz) throws IOException {
+    private void readClassMethods( ClassInfo currentClass) throws IOException {
         int len = input.readPackedU32();
         
         for (int i = 0; i < len; i++) {
-            
-            //retrieve method information from table to assign to current ClassInfo
-            LimitedAnnotationHolder method = methodTable[input.readPackedU32()];
+            LimitedAnnotationHolder currentMethod = methodTable[input.readPackedU32()];
 
-            //update the annotations target class to the current ClassInfo
-
-            clazz.methods().add(method.getName());
-            for(LimitedAnnotation temp: clazz.methodAnnotations()){
-                clazz.methodAnnotations().add(temp);
-            }
-
-            //if the method has no parameters and it is a constructor set the flag to true
-
+            currentClass.recordMethodEntry(currentMethod);
         }
        
     }
 
     private void readPastEnclosingMethod() throws IOException{
-        //check if there is an enclosing method
         if (input.readUnsignedByte() != HAS_ENCLOSING_METHOD) {
             return;
         }
         else{
-            //eName
-            input.readPackedU32();
-            //eClass
-            input.readPackedU32();
-            //returnType
-            input.readPackedU32();
-            //parameters
-            input.readPackedU32();
+            input.readPackedU32(); //eName
+            input.readPackedU32(); //eClass
+            input.readPackedU32(); //returnType
+            input.readPackedU32(); //parameters
         }
     }
 

@@ -144,5 +144,21 @@ public final class ClassInfo{
         }
     }
 
+    public void addAllAnnotations(LimitedAnnotation[] annotations, List<LimitedAnnotation> recievingList){
+        for(int annotationCounter = 0; annotationCounter < annotations.length; annotationCounter++){
+            recievingList.add(annotations[annotationCounter]);
+        }
+    }
+
+    public void recordFieldEntry(LimitedAnnotationHolder fieldEntry){
+        this.addField(fieldEntry.getName());
+        this.addAllAnnotations(fieldEntry.getAnnotations(),this.fieldAnnotations);
+    }
+
+    public void recordMethodEntry(LimitedAnnotationHolder methodEntry){
+        this.addMethod(methodEntry.getName());
+        this.addAllAnnotations(methodEntry.getAnnotations(), this.methodAnnotations);
+
+    }
 
 }
