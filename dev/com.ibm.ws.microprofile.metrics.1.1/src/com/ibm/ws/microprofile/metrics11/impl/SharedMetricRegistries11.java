@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics11.impl;
 
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
@@ -21,11 +24,13 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 @Component(service = SharedMetricRegistries.class, immediate = true)
 public class SharedMetricRegistries11 extends SharedMetricRegistries {
 
+    private ConfigProviderResolver configResolver;
+
     @Override
     public MetricRegistry getOrCreate(String name) {
         final MetricRegistry existing = SharedMetricRegistries.REGISTRIES.get(name);
         if (existing == null) {
-            final MetricRegistry created = new MetricRegistry11Impl();
+            final MetricRegistry created = new MetricRegistry11Impl(configResolver);
             final MetricRegistry raced = add(name, created);
             if (raced == null) {
                 return created;
@@ -33,6 +38,11 @@ public class SharedMetricRegistries11 extends SharedMetricRegistries {
             return raced;
         }
         return existing;
+    }
+
+    @Reference(service = ConfigProviderResolver.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setConfigProvider(ConfigProviderResolver configResolver) {
+        this.configResolver = configResolver;
     }
 
 }

@@ -29,11 +29,16 @@ import com.ibm.ws.microprofile.metrics.impl.MetricRegistryImpl;
 @Vetoed
 public class MetricRegistry11Impl extends MetricRegistryImpl {
 
+    private final ConfigProviderResolver configResolver;
+
     /**
      * Creates a new {@link MetricRegistry}.
+     * 
+     * @param configResolver
      */
-    public MetricRegistry11Impl() {
+    public MetricRegistry11Impl(ConfigProviderResolver configResolver) {
         super();
+        this.configResolver = configResolver;
     }
 
     @Override
@@ -59,7 +64,7 @@ public class MetricRegistry11Impl extends MetricRegistryImpl {
         metadataCopy.setReusable(metadata.isReusable());
 
         //Append global tags to the metric
-        Config config = ConfigProviderResolver.instance().getConfig(Thread.currentThread().getContextClassLoader());
+        Config config = configResolver.getConfig(Thread.currentThread().getContextClassLoader());
         try {
             String[] globaltags = config.getValue("MP_METRICS_TAGS", String.class).split(",");
             String currentTags = metadataCopy.getTagsAsString();
