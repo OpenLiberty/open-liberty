@@ -76,9 +76,9 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     }
 
     LimitedIndex read(int version) throws IOException {
-            input.readPackedU32(); //annotationSize
-            input.readPackedU32(); //implementorSize
-            input.readPackedU32(); //subclassesSize 
+            input.seekPackedU32(); //annotationSize
+            input.seekPackedU32(); //implementorSize
+            input.seekPackedU32(); //subclassesSize 
             readByteTable();
             readStringTable();
             readNameTable();
@@ -196,7 +196,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         int numValues = input.readPackedU32();
         
         for (int i = 0; i < numValues; i++) {
-            input.readPackedU32();
+            input.seekPackedU32();
 
             int tag = input.readByte();
 
@@ -205,13 +205,13 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
                     input.readByte();
                     break;
                 case AVALUE_SHORT:
-                    input.readPackedU32();
+                    input.seekPackedU32();
                     break;
                 case AVALUE_INT:
-                    input.readPackedU32();
+                    input.seekPackedU32();
                     break;
                 case AVALUE_CHAR:
-                    input.readPackedU32();
+                    input.seekPackedU32();
                     break;
                 case AVALUE_FLOAT:
                     input.readFloat();
@@ -226,14 +226,14 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
                     input.readBoolean();
                     break;
                 case AVALUE_STRING:
-                    input.readPackedU32();
+                    input.seekPackedU32();
                     break;
                 case AVALUE_CLASS:
-                    input.readPackedU32();
+                    input.seekPackedU32();
                     break;
                 case AVALUE_ENUM:
-                    input.readPackedU32();
-                    input.readPackedU32();
+                    input.seekPackedU32();
+                    input.seekPackedU32();
                     break;
                 case AVALUE_ARRAY:
                     movePastAnnotationValues();
@@ -302,8 +302,8 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
                 return name;
             }
             case 1: { //Array
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
@@ -319,26 +319,26 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
             }
             case 4: { //type_variable
 
-                input.readPackedU32();
+                input.seekPackedU32();
                 readTypeListReference();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
             case 5: { //unresolved_typevariable
-                input.readPackedU32();
+                input.seekPackedU32();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
             case 6: { //wildcard type
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
             case 7: { //parametrized type
                 DotName name = nameTable[input.readPackedU32()];
                 
-                input.readPackedU32();
+                input.seekPackedU32();
                 readTypeListReference();
                 readAnnotations( null);
                 return name;
@@ -358,38 +358,38 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
             case METHOD_TAG:
                 return;
             case METHOD_PARAMATER_TAG: {
-                input.readPackedU32();
+                input.seekPackedU32();
                 return;
             }
             case EMPTY_TYPE_TAG: {
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 return;
             }
             case CLASS_EXTENDS_TYPE_TAG: {
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 return;
             }
             case TYPE_PARAMETER_TAG: {
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 return;
             }
             case TYPE_PARAMETER_BOUND_TAG: {
-                input.readPackedU32();
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 return;
             }
             case METHOD_PARAMETER_TYPE_TAG: {
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 return;
             }
             case THROWS_TYPE_TAG: {
-                input.readPackedU32();
-                input.readPackedU32();
+                input.seekPackedU32();
+                input.seekPackedU32();
                 return;
             }
         }
@@ -418,12 +418,12 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private LimitedAnnotationHolder readMethodEntry() throws IOException {
         byte[] name = byteTable[input.readPackedU32()];
 
-        input.readPackedU32();
-        input.readPackedU32();
-        input.readPackedU32();
-        input.readPackedU32();
-        input.readPackedU32();
-        input.readPackedU32();
+        input.seekPackedU32();
+        input.seekPackedU32();
+        input.seekPackedU32();
+        input.seekPackedU32();
+        input.seekPackedU32();
+        input.seekPackedU32();
 
         LimitedAnnotation[] annotations = readAnnotations( DotName.createSimple(Utils.fromUTF8(name)));
 
@@ -433,8 +433,8 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private LimitedAnnotationHolder readFieldEntry() throws IOException {
         byte[] name = byteTable[input.readPackedU32()];
 
-        input.readPackedU32();
-        input.readPackedU32();
+        input.seekPackedU32();
+        input.seekPackedU32();
 
         LimitedAnnotation[] annotations = readAnnotations( DotName.createSimple(Utils.fromUTF8(name)));
 
@@ -446,13 +446,13 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         short flags = (short) input.readPackedU32();
         DotName superType = typeTable[input.readPackedU32()];
         
-        input.readPackedU32();
+        input.seekPackedU32();
 
         DotName[] interfaceTypes = typeListTable[input.readPackedU32()];
         ClassInfo currentClassInformation = new ClassInfo(name, superType, flags, interfaceTypes);
 
-        input.readPackedU32();
-        input.readPackedU32();
+        input.seekPackedU32();
+        input.seekPackedU32();
         readPastEnclosingMethod();
 
         int numberOfAnnotations = input.readPackedU32();
@@ -504,10 +504,10 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
     private void readPastEnclosingMethod() throws IOException{
         if (input.readUnsignedByte() == HAS_ENCLOSING_METHOD) {
-            input.readPackedU32(); //eName
-            input.readPackedU32(); //eClass
-            input.readPackedU32(); //returnType
-            input.readPackedU32(); //parameters
+            input.seekPackedU32(); //eName
+            input.seekPackedU32(); //eClass
+            input.seekPackedU32(); //returnType
+            input.seekPackedU32(); //parameters
         }
     }
 

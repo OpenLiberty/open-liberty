@@ -65,5 +65,14 @@ class PackedDataInputStream extends DataInputStream {
 
         return i;
     }
+
+    public void seekPackedU32() throws IOException {
+        byte b;
+
+        do{
+            b = readByte();
+        } while( (b & 0x80) == 0x80 );
+    }
+
 }
 
