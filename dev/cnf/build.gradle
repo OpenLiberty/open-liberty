@@ -32,7 +32,6 @@ dependencies {
     binaries "org.jmockit:jmockit:1.25"
     binaries "biz.aQute.bnd:biz.aQute.bnd:4.0.0"
     binaries "biz.aQute.bnd:biz.aQute.bnd.annotation:4.0.0"
-    binaries "biz.aQute.bnd:biz.aQute.bnd.gradle:4.0.0"
     binaries "org.apache.maven:maven-model:3.5.0"
     binaries "javax.json:javax.json-api:1.1.2"
     binaries "org.glassfish:javax.json:1.1.2"
@@ -257,7 +256,7 @@ import aQute.bnd.gradle.Index
 task ('index', type: Index) {
     description 'Index the release repository. (Does not depend on releaseNeeded)'
     group 'release'
-    repositoryName = "Bnd ${version}"
+    repositoryName = "OpenLiberty ${version}"
     destinationDir = releaserepo
     gzip = true
     /* Bundles to index. */
