@@ -138,7 +138,11 @@ public final class ClassInfo{
         this.methodAnnotations().add(annotation);
     }
 
-
+    public void addAllToClassAnnotations(DotName[] classAnnotationAdditions){
+        for(DotName annotationName: classAnnotationAdditions){
+            addClassAnnotation(annotationName);
+        }
+    }
 
 
 }

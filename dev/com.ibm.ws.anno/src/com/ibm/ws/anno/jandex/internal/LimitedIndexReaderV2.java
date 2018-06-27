@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
@@ -110,6 +111,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         // Null is the implicit first entry
         int size = input.readPackedU32() + 1;
         byte[][] byteTable = this.byteTable = new byte[size][];
+
         for (int i = 1; i < size; i++) {
             int len = input.readPackedU32();
             byteTable[i] = new byte[len];
@@ -121,6 +123,7 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
         // Null is the implicit first entry
         int size = input.readPackedU32() + 1;
         String[] stringTable = this.stringTable = new String[size];
+
         for (int i = 1; i < size; i++) {
             stringTable[i] = input.readUTF();
         }
@@ -180,17 +183,15 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     }
 
     private LimitedAnnotation[] readAnnotations( DotName target) throws IOException {
-        int size = input.readPackedU32();
-        if (size == 0) {
+        int numberOfAnnotations = input.readPackedU32();
+        if (numberOfAnnotations == 0) {
             return LimitedAnnotation.EMPTY_ARRAY;
         }
-        LimitedAnnotation[] annotations = new LimitedAnnotation[size];
-        for (int i = 0; i < size; i++) {
-            //read in the reference number from the annotationTable
+        LimitedAnnotation[] annotations = new LimitedAnnotation[numberOfAnnotations];
+        for (int i = 0; i < numberOfAnnotations; i++) {
+
             int reference = input.readPackedU32();
 
-            //if the current annotation hasn't been read before then read it in from the input
-            //and add it to the annotation table under reference
             if (annotationTable[reference] == null) {
                 annotationTable[reference] = readAnnotationEntry( target);
             }
@@ -302,57 +303,48 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
     private DotName movePastReadTypeEntry() throws IOException{
 
         int kind = (int) input.readUnsignedByte();
-        //0 - class
-        //1 - Array
-        //2 - Primitive
-        //3 - void
-        //4 - Type_variable
-        //5 - Unresolved_TypeVariable
-        //6 - WildCard Type
-        //7 - Parametrized Type
-        //default - 3
 
         switch (kind) {
-            case 0: {
+            case 0: { //class
                 DotName name = nameTable[input.readPackedU32()];
                 readAnnotations(null);
                 return name;
             }
-            case 1: {
+            case 1: { //Array
                 input.readPackedU32();
                 input.readPackedU32();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
-            case 2: {
+            case 2: { //primitive
                 input.readUnsignedByte();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
             default:
-            case 3: {
+            case 3: { //void
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
-            case 4: {
+            case 4: { //type_variable
 
                 input.readPackedU32();
                 readTypeListReference();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
-            case 5: {
+            case 5: { //unresolved_typevariable
                 input.readPackedU32();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
-            case 6: {
+            case 6: { //wildcard type
                 input.readPackedU32();
                 input.readPackedU32();
                 readAnnotations( null);
                 return DotName.PLACEHOLDER;
             }
-            case 7: {
+            case 7: { //parametrized type
                 DotName name = nameTable[input.readPackedU32()];
                 input.readPackedU32();
                 readTypeListReference();
@@ -459,59 +451,48 @@ final class LimitedIndexReaderV2 extends IndexReaderImpl {
 
     private ClassInfo readClassEntry() throws IOException {
         
-        //read in the code for the current class and pull it from the nameTable
+
         DotName name  = nameTable[input.readPackedU32()];
-
-        //read in the flags for the class
         short flags = (short) input.readPackedU32();
-
-
-        //read in the codes for the super type, parameter types, and interface types and retieve them from the tables
         DotName superType = typeTable[input.readPackedU32()];
         
-
         input.readPackedU32();
 
-        
         DotName[] interfaceTypes = typeListTable[input.readPackedU32()];
 
         input.readPackedU32();
         input.readPackedU32();
 
-
         readPastEnclosingMethod();
 
 
-        int size = input.readPackedU32();
-        //create the ClassInfo object for the current entry
-        ClassInfo clazz = new ClassInfo(name, superType, flags, interfaceTypes);
+        int numberOfAnnotations = input.readPackedU32();
 
+        ClassInfo currentClassInformation = new ClassInfo(name, superType, flags, interfaceTypes);
+        readClassFields(currentClassInformation);
+        readClassMethods(currentClassInformation);
 
-        //get the fieldinternal array and set that as the fields in the class
-        readClassFields(clazz);
+        for (int currentAnnotation = 0; currentAnnotation < numberOfAnnotations; currentAnnotation++) {
 
-        //get the method internal array and set that as the methods associated with the current class
+            LimitedAnnotation[] annotationInstances = readAnnotations(currentClassInformation.name());
 
-        readClassMethods(clazz);
-        //iterate over all the annotations
-        for (int i = 0; i < size; i++) {
-            //read in the annotations and create instances
-
-            List<LimitedAnnotation> instances = Arrays.asList(readAnnotations(clazz.name()));
-
-            //if there are annotations instances for this class then add the list to the master maps and the class map
-            if (instances.size() > 0) {
-                for(LimitedAnnotation temp: instances){
-                    if(temp.getTargetName().equals(clazz.name())){
-                        clazz.classAnnotations().add(temp.getName());
-                    }
-                }
+            if (annotationInstances.length > 0) {
+                recordClassAnnotations(annotationInstances, currentClassInformation);
             }
         }
 
+        return currentClassInformation;
+    }
 
-
-        return clazz;
+    private void recordClassAnnotations(LimitedAnnotation[] allAnnotationsInClass, ClassInfo currentClass){
+        
+        for(int annotationCounter = 0; annotationCounter < allAnnotationsInClass.length; annotationCounter++){
+            
+            DotName targetName = allAnnotationsInClass[annotationCounter].getTargetName();
+            if(targetName.equals(currentClass.name())){
+                currentClass.addClassAnnotation(allAnnotationsInClass[annotationCounter].getName());
+            }
+        }
     }
 
     private void readClassFields( ClassInfo clazz) throws IOException {

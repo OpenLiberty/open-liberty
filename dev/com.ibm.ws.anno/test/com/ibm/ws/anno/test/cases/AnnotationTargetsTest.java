@@ -127,7 +127,7 @@ public class AnnotationTargetsTest {
         String resourceAnno = Resource.class.getName();
 
         Set<String> classes = targets.getClassesWithMethodAnnotation(testAnno);
-        Assert.assertEquals(toString(classes), 31, classes.size());
+        Assert.assertEquals(toString(classes), 32, classes.size());
         Assert.assertTrue(classes.contains(subClassName));
 
         classes = targets.getClassesWithMethodAnnotation(resourceAnno);
