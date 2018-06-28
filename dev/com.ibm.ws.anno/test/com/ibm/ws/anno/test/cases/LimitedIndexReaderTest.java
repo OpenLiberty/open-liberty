@@ -29,7 +29,7 @@ public class LimitedIndexReaderTest{
     static InputStream connection;
     static org.jboss.jandex.Index fullIndex;
     static LimitedIndex smallIndex;
-    static Collection<org.jboss.jandex.ClassInfo> originalClasses;
+    static Collection<org.jboss.jandex.ClassInfo> fullClasses;
     static Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses;
     
 
@@ -62,53 +62,48 @@ public class LimitedIndexReaderTest{
         connection.close();
 
         //retrieve the classes from both indicies
-        originalClasses = fullIndex.getKnownClasses();
+        fullClasses = fullIndex.getKnownClasses();
         limitedClasses = smallIndex.classes();
 
     }
 
     @Test
     public void testSameNumberOfClasses(){
-        Assert.assertTrue(originalClasses.size() == limitedClasses.size());
-        
+        Assert.assertTrue("The number of classes do not match between indicies",fullClasses.size() == limitedClasses.size());
     }
 
     @Test
     public void testSameFlags(){
         HashMap<String, Short> flags = new HashMap<String,Short>();
-        for(org.jboss.jandex.ClassInfo temp : originalClasses){
-            flags.put(temp.name().toString(), temp.flags());
+        for(org.jboss.jandex.ClassInfo fullClass : fullClasses){
+            flags.put(fullClass.name().toString(), fullClass.flags());
         }
 
-        Short placeholder;
+        Short flagPlaceholder;
 
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            placeholder = flags.get(temp.name().toString());
-            if(placeholder == null){
-                Assert.fail(temp.name().toString() + " is missing from the full index");
-            }
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            flagPlaceholder = flags.remove(limitedClass.name().toString());
 
-            Assert.assertTrue("The flags are not the same for class " + temp.name().toString(), placeholder.shortValue() == temp.flags());
+            Assert.assertNotNull(limitedClass.name().toString() + " is missing from the full index",flagPlaceholder);
+            Assert.assertTrue("The flags are not the same for class " + limitedClass.name().toString(), flagPlaceholder.shortValue() == limitedClass.flags());
         }
+
+        Assert.assertEquals("There are more flags in the full index than the limited index", 0, flags.size());
     }
 
     
     @Test
     public void testSameNamesofClasses(){
-        HashSet<String> names = new LinkedHashSet<>(originalClasses.size());
+        HashSet<String> names = new LinkedHashSet<>(fullClasses.size());
 
         //add the names from one of the indicies into a hashset
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            if(names.add(temp.name().toString()) == false){
-                Assert.fail("Duplicate Class Names in full Index");
-            }
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            Assert.assertTrue("Duplicate Class Names in full Index - " + fullClass.name().toString(), names.add(fullClass.name().toString()));
         }
 
         //check the names from the other index against the hashset previously made
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            if(names.add(temp.name().toString()) != false){
-                Assert.fail(temp.name().toString() + " - is not in both the full and small Index");
-            }
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            Assert.assertFalse(limitedClass.name().toString() + " - is not in both the full and small Index",names.add(limitedClass.name().toString()));
         }
     }
 
@@ -116,53 +111,46 @@ public class LimitedIndexReaderTest{
     @Test
     public void testNumberOfFields(){
         HashMap<String, Integer> classesToFieldSize = new HashMap<String, Integer>();
-        Integer size;
-        int counter = 0;
+        Integer numOfFields;
+        int matchingCounter = 0;
 
         //store the size of the fields list for each class under the DotName.toString()
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            classesToFieldSize.put(temp.name().toString(), temp.fields().size());
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            classesToFieldSize.put(fullClass.name().toString(), fullClass.fields().size());
         }
 
         //iterate over the classes in limited classes
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            size = classesToFieldSize.get(temp.name().toString());
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            numOfFields = classesToFieldSize.remove(limitedClass.name().toString());
 
             //check each class in the small index has a fields list and that the sizes match
-            if(size == null)
-                Assert.fail(temp.name().toString() + " - does not have a field size in full Index");
-            else if(size.intValue() != temp.fields().size())
-                Assert.fail(temp.name().toString() + " - does not have matching field sizes between small and full Index");
-            else{
-                counter++;
-            }
-
-            
+            Assert.assertNotNull(limitedClass.name().toString() + " - does not have a field size in full Index",numOfFields);
+            Assert.assertTrue(limitedClass.name().toString() + " - does not have matching field sizes between small and full Index",numOfFields.intValue() == limitedClass.fields().size());
+            matchingCounter++;
         }
-        //make sure the amount of correct class comparisons match the size of the classes
-        Assert.assertTrue("The amount of field sizes matching should be the same as the number of classes", counter == originalClasses.size() && counter == limitedClasses.size());
 
+        Assert.assertEquals("There are more classes in the full index than the limited index",0,classesToFieldSize.size());
+        Assert.assertEquals("There are less matching fields than there are classes in full index",matchingCounter, fullClasses.size());
+        Assert.assertEquals("There are less matching fields than there are classes in limited index",matchingCounter,  limitedClasses.size());
     }
     
     @Test
     public void testSameNamesOfFields(){
         HashMap<String,List<String>> namesToClasses = new HashMap<String,List<String>>();
-        List<String> placeholder;
-        //List<com.ibm.ws.anno.jandex.internal.DotName> placeholder;
+        List<String> fieldNameHolder;
 
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp : limitedClasses){
-            placeholder = new LinkedList<String>();
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass : limitedClasses){
+            fieldNameHolder = new LinkedList<String>();
             
-            for(com.ibm.ws.anno.jandex.internal.DotName fieldNames : temp.fields()){
-                placeholder.add(fieldNames.toString());
+            for(com.ibm.ws.anno.jandex.internal.DotName fieldName : limitedClass.fields()){
+                fieldNameHolder.add(fieldName.toString());
             }
-
-            namesToClasses.put(temp.name().toString(), placeholder);
+            namesToClasses.put(limitedClass.name().toString(), fieldNameHolder);
         }
 
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            for(org.jboss.jandex.FieldInfo fields: temp.fields()){
-                Assert.assertTrue("Limited List class " + temp.name().toString() + "does not have field " + fields.name() ,namesToClasses.get(temp.name().toString()).contains(fields.name()));
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            for(org.jboss.jandex.FieldInfo fields: fullClass.fields()){
+                Assert.assertTrue("Limited List class " + fullClass.name().toString() + "does not have field " + fields.name() ,namesToClasses.get(fullClass.name().toString()).contains(fields.name()));
             }
         }
     }
@@ -170,23 +158,18 @@ public class LimitedIndexReaderTest{
     @Test
     public void testNumberOfClassAnnotation(){
         HashMap<String, Integer> classToAnnoSize = new HashMap<String, Integer>();
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            classToAnnoSize.put(temp.name().toString(), temp.classAnnotations().size());
+
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            classToAnnoSize.put(fullClass.name().toString(), fullClass.classAnnotations().size());
         }
 
-        Integer value;
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            value = classToAnnoSize.get(temp.name().toString());
-            if(value == null){
-                Assert.fail(temp.name().toString() + " class is missing from the full sized index");
-            }
-            else{
-                if(value.intValue() != temp.classAnnotations().size()){
-                    Assert.fail("Class Annotation sizes don't match for class - " + temp.name().toString()); //+ " ("+value.intValue()+","+temp.classAnnotations().size()+")" + "\n"+temp.classAnnotations().get(0).toString()
-                    //+ "\n"+temp.getTest().getName().toString() + "\n"+temp.getTest().getTargetName().toString());
-                }
-            }
-            
+        Integer numOfClassAnno;
+
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            numOfClassAnno = classToAnnoSize.get(limitedClass.name().toString());
+            Assert.assertNotNull(limitedClass.name().toString() + " class is missing from the full sized index",numOfClassAnno);
+            Assert.assertTrue("Class Annotation sizes don't match for class - " + limitedClass.name().toString(),numOfClassAnno.intValue() == limitedClass.classAnnotations().size());
+
         }
 
     }
@@ -194,50 +177,38 @@ public class LimitedIndexReaderTest{
     @Test
     public void testSameClassAnnotations(){
         HashMap<String, List<String>> classToAnno = new HashMap<String, List<String>>();
-        List<String> placeholder;
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            placeholder = new LinkedList<String>();
-            for(org.jboss.jandex.AnnotationInstance temp2: temp.classAnnotations()){
-                placeholder.add(temp2.name().toString());
+        List<String> classAnnoHolder;
+
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            classAnnoHolder = new LinkedList<String>();
+            for(org.jboss.jandex.AnnotationInstance classAnnotation: fullClass.classAnnotations()){
+                classAnnoHolder.add(classAnnotation.name().toString());
             }
-            classToAnno.put(temp.name().toString(),placeholder);
+            classToAnno.put(fullClass.name().toString(),classAnnoHolder);
         }
 
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            placeholder = classToAnno.get(temp.name().toString());
-            if(placeholder == null){
-                Assert.fail(temp.name().toString() + " class is missing from the full sized index");
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            classAnnoHolder = classToAnno.get(limitedClass.name().toString());
+
+            Assert.assertNotNull(limitedClass.name().toString() + " class is missing from the full sized index",classAnnoHolder);
+            for(DotName classAnnoName: limitedClass.classAnnotations()){
+                Assert.assertTrue(limitedClass.name().toString()+" class does not have annotation " + classAnnoName.toString()+" in the full index",classAnnoHolder.contains(classAnnoName.toString()));
             }
-            else{
-                for(DotName temp2 : temp.classAnnotations()){
-                    if(placeholder.contains(temp2.toString()) == false){
-                        Assert.fail(temp.name().toString()+" class does not have annotation " + temp2.toString()+" in the full index");
-                    }
-                }
-            }
-            
-            
         }
     }
 
     @Test
     public void testNumberOfMethods(){
         HashMap<String, Integer> classMethodSize = new HashMap<String,Integer>();
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            classMethodSize.put(temp.name().toString(), temp.methods().size());
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            classMethodSize.put(fullClass.name().toString(), fullClass.methods().size());
         }
 
-        Integer value;
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            value = classMethodSize.get(temp.name().toString());
-            if(value == null){
-                Assert.fail(temp.name().toString() + " class is missing from the full sized index");
-            }
-            else{
-                if(value.intValue() != temp.methods().size()){
-                    Assert.fail("Method Size is different for class " + temp.name().toString());
-                }
-            }
+        Integer numOfMethods;
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            numOfMethods = classMethodSize.get(limitedClass.name().toString());
+            Assert.assertNotNull(limitedClass.name().toString() + " class is missing from the full sized index",numOfMethods);
+            Assert.assertTrue("Method Size is different for class " + limitedClass.name().toString(),numOfMethods.intValue() == limitedClass.methods().size());
             
         }
     }
@@ -245,26 +216,20 @@ public class LimitedIndexReaderTest{
     @Test
     public void testSameNamesOfMethods(){
         HashMap<String, List<String>> classToMethods = new HashMap<String, List<String>>();
-        List<String> placeholder;
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            placeholder = new LinkedList<String>();
-            for(org.jboss.jandex.MethodInfo temp2: temp.methods()){
-                placeholder.add(temp2.name());
+        List<String> methodNameHolder;
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            methodNameHolder = new LinkedList<String>();
+            for(org.jboss.jandex.MethodInfo method: fullClass.methods()){
+                methodNameHolder.add(method.name());
             }
-            classToMethods.put(temp.name().toString(), placeholder);
+            classToMethods.put(fullClass.name().toString(), methodNameHolder);
         }
 
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            placeholder = classToMethods.get(temp.name().toString());
-            if(placeholder == null){
-                Assert.fail(temp.name().toString() + " class is missing from the full sized index");
-            }
-            else{
-                for(DotName temp2: temp.methods()){
-                    if(placeholder.contains(temp2.toString()) == false){
-                        Assert.fail("Full Index doesn't have method " + temp2.toString() + " in class "+temp.name().toString());
-                    }
-                }
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            methodNameHolder = classToMethods.get(limitedClass.name().toString());
+            Assert.assertNotNull(limitedClass.name().toString() + " class is missing from the full sized index",methodNameHolder);
+            for(DotName methodName: limitedClass.methods()){
+                Assert.assertTrue("Full Index doesn't have method " + methodName.toString() + " in class "+limitedClass.name().toString(),methodNameHolder.contains(methodName.toString()));
             }
         }
     }
@@ -272,19 +237,15 @@ public class LimitedIndexReaderTest{
     @Test
     public void testSuperNamesAlign(){
         HashMap<String, String> classToSuper = new HashMap<String,String>();
-        String placeholder;
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            classToSuper.put(temp.name().toString(), temp.superName().toString());
+        String nameOfSuper;
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            classToSuper.put(fullClass.name().toString(), fullClass.superName().toString());
         }
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            placeholder = classToSuper.get(temp.name().toString());
-            if(placeholder == null){
-                Assert.fail(temp.name().toString() + " class is missing from the full sized index");
-            }
-            else{
-                Assert.assertTrue("Super names don't match up for class " + temp.name().toString()
-                                  ,placeholder.equals(temp.superName().toString()));
-            }
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            nameOfSuper = classToSuper.get(limitedClass.name().toString());
+            Assert.assertNotNull(limitedClass.name().toString() + " class is missing from the full sized index",nameOfSuper);
+            Assert.assertTrue("Super names don't match up for class " + limitedClass.name().toString(),nameOfSuper.equals(limitedClass.superName().toString()));
+
         }
 
     }
@@ -292,46 +253,40 @@ public class LimitedIndexReaderTest{
     @Test
     public void testNumberOfInterfaces(){
         HashMap<String, Integer> classToInterfaceSize = new HashMap<String,Integer>();
-        Integer placeholder;
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            classToInterfaceSize.put(temp.name().toString(), temp.interfaceNames().size());
+        Integer numOfInterfaces;
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            classToInterfaceSize.put(fullClass.name().toString(), fullClass.interfaceNames().size());
         }
 
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            placeholder = classToInterfaceSize.get(temp.name().toString());
-            if(placeholder == null){
-                Assert.fail(temp.name().toString() + " class is missing from the full sized index");
-            }
-            else{
-                Assert.assertTrue("Interface Sizes for class "+temp.name().toString() +" do not match", temp.interfaceNames().length == placeholder.intValue());
-            }
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            numOfInterfaces = classToInterfaceSize.get(limitedClass.name().toString());
+            Assert.assertNotNull(limitedClass.name().toString() + " class is missing from the full sized index",numOfInterfaces);
+            Assert.assertTrue("Interface Sizes for class "+limitedClass.name().toString() +" do not match", limitedClass.interfaceNames().length == numOfInterfaces.intValue());
+            
         }
     }
 
     @Test
     public void testInterfacesHaveSameNames(){
-        HashMap<String,List<String>> classToInterfaceName = new HashMap<String,List<String>>();
-        List<String> placeholder;
-        for(org.jboss.jandex.ClassInfo temp: originalClasses){
-            placeholder = new LinkedList<String>();
-            for(org.jboss.jandex.DotName temp2 : temp.interfaceNames()){
-                placeholder.add(temp2.toString());
+        HashMap<String,List<String>> classToInterfaceNames = new HashMap<String,List<String>>();
+        List<String> nameHolder;
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            nameHolder = new LinkedList<String>();
+            for(org.jboss.jandex.DotName interfaceName : fullClass.interfaceNames()){
+                nameHolder.add(interfaceName.toString());
             }
-            classToInterfaceName.put(temp.name().toString(), placeholder);
+            classToInterfaceNames.put(fullClass.name().toString(), nameHolder);
         }
 
-        for(com.ibm.ws.anno.jandex.internal.ClassInfo temp: limitedClasses){
-            placeholder = classToInterfaceName.get(temp.name().toString());
-            if(placeholder == null){
-                Assert.fail(temp.name().toString() + " class is missing from the full sized index");
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            nameHolder = classToInterfaceNames.get(limitedClass.name().toString());
+            Assert.assertNotNull(limitedClass.name().toString() + " class is missing from the full sized index",nameHolder);
+            for(com.ibm.ws.anno.jandex.internal.DotName interfaceName: limitedClass.interfaceNames()){
+                Assert.assertTrue(nameHolder.remove(interfaceName.toString()));
             }
-            else{
-                for(com.ibm.ws.anno.jandex.internal.DotName temp2: temp.interfaceNames()){
-                    Assert.assertTrue(placeholder.remove(temp2.toString()));
-                }
 
-                Assert.assertTrue("There are more interfaces in full index for class" + temp.name().toString(), placeholder.size() == 0);
-            }
+            Assert.assertTrue("There are more interfaces in full index for class" + limitedClass.name().toString(), nameHolder.size() == 0);
+
         }
     }
 
