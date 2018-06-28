@@ -4,6 +4,7 @@ import org.junit.*;
 import java.beans.Transient;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.ArrayList;
