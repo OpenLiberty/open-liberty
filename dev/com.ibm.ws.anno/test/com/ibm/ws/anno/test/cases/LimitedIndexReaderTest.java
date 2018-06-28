@@ -48,20 +48,15 @@ public class LimitedIndexReaderTest{
             "com.ibm.websphere.org.osgi.core-jar.idx" //V1
         };
 
-        
-        
-        //open a stream to index and read in full index
-        //connection = testIndex.openStream();
+
         connection = new FileInputStream(testIndiciesNames[indexToUse]);
         fullIndex = Jandex_Utils.basicReadIndex(connection);
         connection.close();
-        
-        //open a stream to index and read in index using the limited reader
+
         connection = new FileInputStream(testIndiciesNames[indexToUse]);
         smallIndex = Jandex_Utils.basicReadLimitedIndex(connection);
         connection.close();
 
-        //retrieve the classes from both indicies
         fullClasses = fullIndex.getKnownClasses();
         limitedClasses = smallIndex.classes();
 
@@ -233,6 +228,40 @@ public class LimitedIndexReaderTest{
             }
         }
     }
+
+    @Test
+    public void testNumberOfFieldAnnotations(){
+        HashMap<String, HashMap<String,Integer>> classToMapOfFieldAnno = new HashMap<String,HashMap<String,Integer>>();
+        HashMap<String,Integer> fieldToAnno;
+        Integer numOfAnnoHolder;
+        
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            fieldToAnno = new HashMap<String,Integer>();
+            for(org.jboss.jandex.FieldInfo field: fullClass.fields()){
+                fieldToAnno.put(field.name(), field.annotations().size());
+            }
+            classToMapOfFieldAnno.put(fullClass.name().toString(),fieldToAnno);
+        }
+
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            fieldToAnno = classToMapOfFieldAnno.remove(limitedClass.name().toString());
+            Assert.assertNotNull("Full index is missing class " + limitedClass.name().toString(),fieldToAnno);
+            for(com.ibm.ws.anno.jandex.internal.DotName fieldName: limitedClass.fields()){
+                numOfAnnoHolder = fieldToAnno.remove(fieldName.name().toString());
+                Assert.assertNotNull("Full Index Class " + limitedClass.name().toString() + "is missing field " + fieldName.toString(), numOfAnnoHolder);
+                
+            }
+        }
+    }
+
+    @Test
+    public void testNumberOfMethodAnnotations(){}
+
+    @Test
+    public void testNamesOfFieldAnnotations(){}
+
+    @Test
+    public void testNamesOfMethodAnnotations(){}
 
     @Test
     public void testSuperNamesAlign(){
