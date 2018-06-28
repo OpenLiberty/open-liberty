@@ -162,7 +162,7 @@ public final class ClassInfo{
     }
 
     public List<LimitedAnnotation> methodAnnotations(String name){
-        List<LimitedAnnotation> returnList = new List<LimitedAnnotation>();
+        List<LimitedAnnotation> returnList = new LinkedList<LimitedAnnotation>();
         for(LimitedAnnotation anno: methodAnnotations){
             if(anno.getTargetName().toString().equals(name)){
                 returnList.add(anno);
@@ -173,7 +173,7 @@ public final class ClassInfo{
     }
 
     public List<LimitedAnnotation> fieldAnnotations(String name){
-        List<LimitedAnnotation> returnList = new List<LimitedAnnotation>();
+        List<LimitedAnnotation> returnList = new LinkedList<LimitedAnnotation>();
         for(LimitedAnnotation anno: fieldAnnotations){
             if(anno.getTargetName().toString().equals(name)){
                 returnList.add(anno);

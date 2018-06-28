@@ -247,7 +247,7 @@ public class LimitedIndexReaderTest{
             fieldToAnno = classToMapOfFieldAnno.remove(limitedClass.name().toString());
             Assert.assertNotNull("Full index is missing class " + limitedClass.name().toString(),fieldToAnno);
             for(com.ibm.ws.anno.jandex.internal.DotName fieldName: limitedClass.fields()){
-                numOfAnnoHolder = fieldToAnno.remove(fieldName.name().toString());
+                numOfAnnoHolder = fieldToAnno.remove(fieldName.toString());
                 Assert.assertNotNull("Full Index Class " + limitedClass.name().toString() + "is missing field " + fieldName.toString(), numOfAnnoHolder);
                 
             }
