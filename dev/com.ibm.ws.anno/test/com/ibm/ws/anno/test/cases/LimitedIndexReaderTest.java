@@ -40,7 +40,9 @@ public class LimitedIndexReaderTest{
         //https://github.com/bberry1675/jandex/blob/master/jandex-2.0.6.Final-SNAPSHOT-jar.idx?raw=true
         //https://github.com/bberry1675/jandex/blob/master/com.ibm.websphere.appserver.api.basics-jar.idx?raw=true
         //https://github.com/bberry1675/jandex/blob/master/jandex-1.2.6.Final-SNAPSHOT-jar.idx?raw=true
-        testIndex = new URL("https://github.com/bberry1675/jandex/blob/master/jandex-1.2.6.Final-SNAPSHOT-jar.idx?raw=true");
+        //https://github.com/bberry1675/jandex/blob/master/com.ibm.ws.anno-jar.idx?raw=true
+        //https://github.com/bberry1675/jandex/blob/master/com.ibm.websphere.org.osgi.core-jar.idx?raw=true
+        testIndex = new URL("https://github.com/bberry1675/jandex/blob/master/com.ibm.websphere.org.osgi.core-jar.idx?raw=true");
         
         //open a stream to index and read in full index
         connection = testIndex.openStream();
