@@ -964,12 +964,15 @@ public class PluginGenerator {
         // by the user for the default_host, it will function as the catch-all, and
         // we can generate a simplified plugin-cfg.cml file.
         if ( vhostConfigRefs.size() == 1 && defaultHostIsCatchAll) {
+            Iterator<DynamicVirtualHost> vHosts = vhostMgr.getVirtualHosts();
+            DynamicVirtualHost vh = vHosts.hasNext() ? vHosts.next() : null;
+            
             // Now check for an endpoint restriction. 
             if ( blockedByRestrictions(defaultHost.getProperty(HTTP_ALLOWED_ENDPOINT)) ) {
                 // There is only one virtual host, and the endpoint that the plugin is configured
                 // to use can't talk to it. We're DOA. A comment is added down below because 
                 // the virtual host set will be empty.. 
-            } else if (!vhostMgr.getVirtualHosts().hasNext()) {
+            } else if (vh == null) {
                 // This can happen when no applications are defined. 
                 if (!utilityRequest) 
                     Tr.warning(tc, "warn.check.applications");  
@@ -982,7 +985,6 @@ public class PluginGenerator {
                 // either there were no restrictions defined, or the configured endpoint is in the list
                 findVirtualHosts = false;
 
-                DynamicVirtualHost vh = vhostMgr.getVirtualHosts().next();
                 virtualHostSet.add(vh);
 
                 // We can produce a simplified configuration. The default virtual host is the 
