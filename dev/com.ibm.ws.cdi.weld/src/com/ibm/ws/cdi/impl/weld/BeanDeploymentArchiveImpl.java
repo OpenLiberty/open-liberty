@@ -111,6 +111,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Map<Class<?>, Set<EjbDescriptor<?>>> ejbDescriptorMap = new HashMap<Class<?>, Set<EjbDescriptor<?>>>();
     private boolean scanned = false;
     private boolean hasBeans = false;
+    private Boolean hasInject = null;
     private boolean endpointsScanned = false;
 
     private final Set<Class<?>> nonCDIInterceptors = new HashSet<Class<?>>();
@@ -545,6 +546,20 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Override
     public boolean hasBeans() {
         return hasBeans;
+    }
+
+    @Override
+    public boolean hasInject() {
+
+        if (hasInject == null) {
+            try {
+                hasInject = archive.isInjectAnnotationPresent();
+            } catch (CDIException e) { 
+                return false; 
+            }
+        }
+
+        return hasInject;
     }
 
     @Override

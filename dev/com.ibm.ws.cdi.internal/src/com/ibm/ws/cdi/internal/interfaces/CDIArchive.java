@@ -188,6 +188,13 @@ public interface CDIArchive {
     CDIRuntime getCDIRuntime();
 
     /**
+     * Is the Inject annotation used in this archive.
+     *
+     * @return true if any field or method inside the archive is annotated with @Inject, false if this archive is not a CDIArchiveImpl
+     */
+    public boolean isInjectAnnotationPresent() throws CDIException;
+
+    /**
      * Return the reference context for this archive
      *
      * @return

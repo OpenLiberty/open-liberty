@@ -133,6 +133,32 @@ public class ContainerAnnotationsAdapter implements ContainerAdapter<ContainerAn
             return false;
         }
 
+        @Override
+        public boolean hasSpecifiedAnnotationsInFieldOrMethod(List<String> annotationTypeNames, boolean useJandex) {
+            try {
+                ClassSource_Aggregate useClassSource = getClassSource(useJandex);
+                AnnotationTargets_Targets useTargets = getAnnotationTargets();
+                useTargets.scan(useClassSource);
+
+                for (String annotationTypeName : annotationTypeNames) {
+                    // d95160: The prior implementation obtained classes from the SEED location.
+                    //         That implementation is not changed by d95160.
+
+                    Set<String> classesWithAnno = useTargets.getClassesWithFieldAnnotation(annotationTypeName, AnnotationTargets_Targets.POLICY_SEED);
+                    if (!classesWithAnno.isEmpty()) {
+                        return true;
+                    }
+                    classesWithAnno = useTargets.getClassesWithMethodAnnotation(annotationTypeName, AnnotationTargets_Targets.POLICY_SEED);
+                    if (!classesWithAnno.isEmpty()) {
+                        return true;
+                    }
+                }
+            } catch (AnnotationTargets_Exception e) {
+                e.getClass();
+            }
+            return false;
+        }
+
         @Deprecated
         @Override
         public Set<String> getClassesWithSpecifiedInheritedAnnotations(List<String> annotationTypeNames) {

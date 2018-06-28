@@ -223,20 +223,23 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
      * @return true if the specified BDA, or any of BDAs accessible by it, have any beans
      */
     private boolean isCDIEnabled(WebSphereBeanDeploymentArchive bda) {
-        Boolean hasBeans = cdiStatusMap.get(bda.getId());
-        if (hasBeans == null) {
+        Boolean isEnabled = cdiStatusMap.get(bda.getId());
+        if (isEnabled == null) {
             //it's enabled if it has beans or it is an extension which could add beans
-            hasBeans = bda.hasBeans() || bda.isExtension();
+            isEnabled = bda.hasBeans() || bda.isExtension();
             //setting this now should prevent loops when checking children in the next step
-            cdiStatusMap.put(bda.getId(), hasBeans);
+            cdiStatusMap.put(bda.getId(), isEnabled);
+
+            //it's also enabled if @Inject is present and it's a CDIArchiveImpl (the archive part is handled by overiding the method).
+            isEnabled = isEnabled || bda.hasInject();
 
             //it's also enabled if any of it's children are enabled (but not including runtime extensions)
-            hasBeans = hasBeans || isCDIEnabled(bda.getWebSphereBeanDeploymentArchives());
+            isEnabled = isEnabled || isCDIEnabled(bda.getWebSphereBeanDeploymentArchives());
             //remember the result
-            cdiStatusMap.put(bda.getId(), hasBeans);
+            cdiStatusMap.put(bda.getId(), isEnabled);
         }
 
-        return hasBeans;
+        return isEnabled;
     }
 
     /**

@@ -432,4 +432,22 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         Set<String> annotatedClasses = containerAnnotations.getClassesWithSpecifiedInheritedAnnotations(new ArrayList<String>(annotations), useJandex);
         return annotatedClasses;
     }
+
+    @Override
+    public boolean isInjectAnnotationPresent() throws CDIException {
+        ContainerAnnotations containerAnnotations;
+        try {
+            containerAnnotations = getContainer().adapt(ContainerAnnotations.class);
+        } catch (UnableToAdaptException e) {
+            throw new CDIException(e);
+        }
+
+        boolean useJandex = false;
+        if (application != null) {
+            useJandex = application.getUseJandex();
+        }
+        Set<String> injectionAnnotationName = new HashSet<String>();
+        injectionAnnotationName.add(javax.inject.Inject.class.getName());
+        return containerAnnotations.hasSpecifiedAnnotationsInFieldOrMethod(new ArrayList<String>(injectionAnnotationName), useJandex);
+    }
 }

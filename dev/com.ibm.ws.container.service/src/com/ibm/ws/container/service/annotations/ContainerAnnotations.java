@@ -31,6 +31,17 @@ public interface ContainerAnnotations {
     public boolean hasSpecifiedAnnotations(List<String> annotationTypeNames, boolean useJandex);
 
     /**
+     * Returns true if the container has any classes that contain the specified annotations.
+     * It includes field and method annotations. 
+     * Uses a scan policy of {@link ClassSource_Aggregate.ScanPolicy.SEED}.
+     * Inherited annotations are <b>NOT</b> included in the scan results.
+     *
+     * @param annotationTypeNames the annotation type names
+     * @return true if the container has any classes with the specified annotations
+     */
+    public boolean hasSpecifiedAnnotationsInFieldOrMethod(List<String> annotationTypeNames, boolean useJandex);
+
+    /**
      * Returns the names of any classes in the container which have any of the specified annotations.
      * Uses a scan policy of {@link ClassSource_Aggregate.ScanPolicy.SEED}.
      * Inherited annotations are included in the scan results.

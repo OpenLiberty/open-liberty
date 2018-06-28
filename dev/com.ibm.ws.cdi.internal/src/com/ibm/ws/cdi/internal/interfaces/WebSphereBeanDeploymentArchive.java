@@ -133,6 +133,14 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
     public boolean hasBeans();
 
     /**
+     * Does this BDA have any classes with @Inject on a field or method. This does not include accessible BDAs.
+     * It should only be called after scanForBeans().
+     *
+     * @return true if this BDA has at least one bean. Returns false if the archive is not a CDIArchiveImpl.
+     */
+    public boolean hasInject();
+
+    /**
      * Initialize the WebSphere Injection Services with the bean classes known about by this BDA (see getInjectionClasses).
      * This should only be called after scan().
      *

@@ -286,6 +286,13 @@ public abstract class AbstractCDIArchive implements CDIArchive {
         return annotationNames;
     }
 
+    //This method is used to enable CDI on an application if @Inject is present in an application class. E.G. @Inject Config config without any CDI beans. 
+    //The default is to return false as not all extensions of this class are customer code. 
+    @Override
+    public boolean isInjectAnnotationPresent() throws CDIException {
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
