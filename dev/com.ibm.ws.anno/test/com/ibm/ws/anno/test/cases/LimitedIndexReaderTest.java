@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.lang.model.util.ElementScanner6;
+//import javax.lang.model.util.ElementScanner6;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -36,22 +36,28 @@ public class LimitedIndexReaderTest{
 
     @BeforeClass
     public static void readInIndicies() throws IOException{
-        //set the file location as the index uploaded from repository
-        //https://github.com/bberry1675/jandex/blob/master/target/com.ibm.ws.anno-jar.idx?raw=true
-        //https://github.com/bberry1675/jandex/blob/master/jandex-2.0.6.Final-SNAPSHOT-jar.idx?raw=true
-        //https://github.com/bberry1675/jandex/blob/master/com.ibm.websphere.appserver.api.basics-jar.idx?raw=true
-        //https://github.com/bberry1675/jandex/blob/master/jandex-1.2.6.Final-SNAPSHOT-jar.idx?raw=true
-        //https://github.com/bberry1675/jandex/blob/master/com.ibm.ws.anno-jar.idx?raw=true
-        //https://github.com/bberry1675/jandex/blob/master/com.ibm.websphere.org.osgi.core-jar.idx?raw=true
-        testIndex = new URL("https://github.com/bberry1675/jandex/blob/master/com.ibm.websphere.org.osgi.core-jar.idx?raw=true");
+
+        int indexToUse = 5;
+
+        String[] testIndiciesNames = {
+            "com.ibm.ws.anno-jarV2.idx", //V2
+            "jandex-2.0.6.Final-SNAPSHOT-jar.idx", //V2
+            "com.ibm.websphere.appserver.api.basics-jar.idx", //V2
+            "jandex-1.2.6.Final-SNAPSHOT-jar.idx", //V1
+            "com.ibm.ws.anno-jarV1.idx", //V1
+            "com.ibm.websphere.org.osgi.core-jar.idx" //V1
+        };
+
+        
         
         //open a stream to index and read in full index
-        connection = testIndex.openStream();
+        //connection = testIndex.openStream();
+        connection = new FileInputStream(testIndiciesNames[indexToUse]);
         fullIndex = Jandex_Utils.basicReadIndex(connection);
         connection.close();
         
         //open a stream to index and read in index using the limited reader
-        connection = testIndex.openStream();
+        connection = new FileInputStream(testIndiciesNames[indexToUse]);
         smallIndex = Jandex_Utils.basicReadLimitedIndex(connection);
         connection.close();
 
@@ -254,9 +260,9 @@ public class LimitedIndexReaderTest{
                 Assert.fail(temp.name().toString() + " class is missing from the full sized index");
             }
             else{
-                for(LimitedAnnotation temp2: temp.methodAnnotations()){
-                    if(placeholder.contains(temp2.getName().toString()) == false){
-                        Assert.fail("Full Index doesn't have method " + temp2.getName().toString() + " in class "+temp.name().toString());
+                for(DotName temp2: temp.methods()){
+                    if(placeholder.contains(temp2.toString()) == false){
+                        Assert.fail("Full Index doesn't have method " + temp2.toString() + " in class "+temp.name().toString());
                     }
                 }
             }
