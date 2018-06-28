@@ -132,7 +132,7 @@ public class AsyncWriteCallback implements InterChannelCallback {
                     _hout.setWriteReady(true);
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-                    Tr.debug(tc, "WriteListener enabled: " + this._wl + " ,status_not_ready_checked -->" + _hout.status_not_ready_checked);
+                    Tr.debug(tc, "WriteListener enabled: " + this._wl + " , status_not_ready_checked -->" + _hout.status_not_ready_checked);
                 }
                 if( _hout.status_not_ready_checked) {                                       
                     try{
@@ -143,12 +143,14 @@ public class AsyncWriteCallback implements InterChannelCallback {
                         //Push the original thread's context onto the current thread, also save off the current thread's context
                         tcm.pushContextData();
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-                            Tr.debug(tc, "WriteListener enabled: " + this._wl + " call onWritePossible.");
+                            Tr.debug(tc, "WriteListener enabled: " + this._wl + " , call onWritePossible.");
                         }
                         //Call into the user's WriteListener to indicate more data cane be written
                         _wl.onWritePossible();
 
-
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+                            Tr.debug(tc, "WriteListener enabled: " + this._wl + " , returned from onWritePossible.");
+                        }
                     } catch (Exception ex) {
                         //Print exception
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
@@ -163,7 +165,7 @@ public class AsyncWriteCallback implements InterChannelCallback {
                 }
                 else{
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-                        Tr.debug(tc, "WriteListener enabled: " + this._wl + " onWritePossible will be skipped as isReady has not been checked since write has gone async");
+                        Tr.debug(tc, "WriteListener enabled: " + this._wl + " , onWritePossible will be skipped as isReady has not been checked since write has gone async");
                     }
                 }
             }
@@ -199,13 +201,17 @@ public class AsyncWriteCallback implements InterChannelCallback {
         tcm.pushContextData();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-            Tr.debug(tc, "WriteListener enabled: " + this._wl +", calling onError : " + vc );            
+            Tr.debug(tc, "WriteListener enabled: " + this._wl +" , calling user's onError : " + vc );            
         }       
         try{  
             synchronized(_hout) {
                 //An error occurred. Issue the onError call on the user's WriteListener
                 _wl.onError(t);
             }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+                Tr.debug(tc, "WriteListener enabled: " + this._wl +" , returned from user's onError : " + vc );            
+            }  
         } catch (Exception e) {
              
             Tr.error(tc, "writeListener.onError.failed", new Object[] {this._wl, e.toString()});

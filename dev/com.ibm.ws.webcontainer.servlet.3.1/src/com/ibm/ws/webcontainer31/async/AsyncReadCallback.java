@@ -100,6 +100,10 @@ public class AsyncReadCallback implements InterChannelCallback {
                 // Call into the user's ReadListener to indicate there is data available
                 try{
                     this.in.getReadListener().onDataAvailable();
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Returned from user's ReadListener onDataAvailable : " + this.in.getReadListener());
+                    } 
                 } catch (Throwable onDataAvailableException){
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Exception occurred during ReadListener.onDataAvailable : " + onDataAvailableException + ", " + this.in.getReadListener());
@@ -122,6 +126,9 @@ public class AsyncReadCallback implements InterChannelCallback {
                         }
                         try{
                             this.in.getReadListener().onAllDataRead();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Returned from user's ReadListener onAllDataRead : " + this.in.getReadListener());
+                            } 
                         } catch (Throwable onAllDataReadException){
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Exception occurred during ReadListener.onAllDataRead : " + onAllDataReadException + ", " + this.in.getReadListener());
@@ -192,6 +199,10 @@ public class AsyncReadCallback implements InterChannelCallback {
                     try {
                         //An error occurred. Issue the onError call on the user's ReadListener
                         this.in.getReadListener().onError(t);
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Returned from user's ReadListener onError : " + this.in.getReadListener());
+                        }
                     } catch (Exception onErrorException) {
                         e = onErrorException;
                     }
