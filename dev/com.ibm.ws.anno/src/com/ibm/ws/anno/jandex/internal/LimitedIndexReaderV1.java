@@ -25,7 +25,6 @@ package com.ibm.ws.anno.jandex.internal;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -229,52 +228,34 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
     /*
         moves the stream past the information about the current method and returns the name as a string
     */
-    private String movePastReadMethod(){
-        String name = null;
-        try{
-        //String name
-        name = stringTable[input.readPackedU32()];
-
-        //get the number of args to know how many to skip
+    private String movePastReadMethod() throws IOException{
+        String name = stringTable[input.readPackedU32()];
         int numArgs = input.readPackedU32();
 
-        //skip the readType() call in readMethod()
-        for(int i = 0 ; i < numArgs; i++){
-            //Type.Kind kind
+        for(int argsCounter = 0 ; argsCounter < numArgs; argsCounter++){
             input.readByte();
-            //DotName name
             input.seekPackedU32();
         }
-
-        //Type returnType = readType()
         input.readByte();
         input.seekPackedU32();
-
-        //short flags
         input.readShort();
-
-        
-        }catch(IOException e){e.printStackTrace();}
 
         return name;
     }
 
 
-
-    private void movePastReadType(){
-        try{
+    private void movePastReadType() throws IOException{
         input.readByte();
         input.seekPackedU32();
-        }catch(IOException e){e.printStackTrace();}
     }
 
 
     private void readStringTable() throws IOException {
-        int entries = input.readPackedU32();
-        stringTable = new String[entries];
+        int numOfEntries = input.readPackedU32();
+        stringTable = new String[numOfEntries];
 
-        for (int i = 0; i < entries; i++) {
-            stringTable[i] = input.readUTF();
+        for (int entryCounter = 0; entryCounter < numOfEntries; entryCounter++) {
+            stringTable[entryCounter] = input.readUTF();
         }
     }
 
@@ -283,10 +264,9 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
         int entries = input.readPackedU32();
         int lastDepth = -1;
         DotName curr = null;
+        classTable = new DotName[++entries]; //null is the first entry in the class table
 
-        // Null is the implicit first entry
-        classTable = new DotName[++entries];
-        for (int i = 1; i < entries; i++) {
+        for (int entryCounter = 1; entryCounter < entries; entryCounter++) {
             int depth = input.readPackedU32();
             String local = input.readUTF();
 
@@ -294,15 +274,12 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
                 while (lastDepth-- >= depth)
                     curr = curr.prefix();
             }
-
-            classTable[i] = curr = new DotName(curr, local, true, false);
+            classTable[entryCounter] = curr = new DotName(curr, local, true, false);
             lastDepth = depth;
         }
     }
 
     int toDataVersion(int version) {
-        // From 1 to 3, every version changed the available data
-
         return version;
     }
 }
