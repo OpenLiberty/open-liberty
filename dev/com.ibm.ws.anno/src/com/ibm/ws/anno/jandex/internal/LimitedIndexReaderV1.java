@@ -91,7 +91,7 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
 
         HashMap<DotName, ClassInfo> classes = new HashMap<DotName, ClassInfo>();
 
-        for (int i = 0; i < numOfClasses; i++) {
+        for (int classesCounter = 0; classesCounter < numOfClasses; classesCounter++) {
             DotName name = classTable[input.readPackedU32()];
             DotName superName = classTable[input.readPackedU32()];
             short flags = input.readShort();
@@ -115,8 +115,10 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
         return new LimitedIndex(classes);
     }
 
-
-    private void readAnnotations( ClassInfo clazz) throws IOException {
+    /*
+        Will read and add the name of a field or method and moves the stream past everything elses
+    */
+    private void readAnnotations( ClassInfo currentClass) throws IOException {
         int numAnnotations = input.readPackedU32();
 
         for (int annotationCounter = 0; annotationCounter < numAnnotations; annotationCounter++) {
@@ -132,18 +134,18 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
                         
                         movePastReadType();
                         input.readShort();
-                        if(targetName.equals(clazz.name())){
-                            clazz.addFieldAnnotation(new LimitedAnnotation(annotationName, targetName));
-                            clazz.addField(targetName);
+                        if(targetName.equals(currentClass.name())){
+                            currentClass.addFieldAnnotation(new LimitedAnnotation(annotationName, targetName));
+                            currentClass.addField(targetName);
                         }
                         break;
                     }
                     case METHOD_TAG: {
                         DotName targetName = DotName.createSimple(movePastReadMethod());
 
-                        if(targetName.equals(clazz.name())){
-                            clazz.methodAnnotations().add(new LimitedAnnotation(annotationName,targetName));
-                            clazz.methods().add(targetName);
+                        if(targetName.equals(currentClass.name())){
+                            currentClass.methodAnnotations().add(new LimitedAnnotation(annotationName,targetName));
+                            currentClass.methods().add(targetName);
                         }
                         break;
                     }
@@ -153,7 +155,7 @@ final class LimitedIndexReaderV1 extends IndexReaderImpl {
                         break;
                     }
                     case CLASS_TAG: {
-                        clazz.classAnnotations().add(annotationName);
+                        currentClass.classAnnotations().add(annotationName);
                         break;
                     }
                     default:
