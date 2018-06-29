@@ -194,12 +194,13 @@ option-desc.javadump.include=\
 \tthread.
 option-desc.package.include=\
 \tA comma-delimited list of values. The valid values are: all*, usr,   \n\
-\tminify, runnable. If you specify runnable the resulting package will \n\
-\tbe an executable jar that runs the server. The minify option produces\n\
-\tthe smallest image possible for the server. The usr option creates a \n\
-\tpackage that contains the server and application, but not the        \n\
-\truntime. The default all option produces a server package that       \n\
-\tcontains everything.
+\tminify, runnable, wlp. If you specify runnable the resulting package \n\
+\twill be an executable jar that runs the server. The minify option    \n\
+\tproduces the smallest image possible for the server. The usr option  \n\
+\tcreates a package that contains the server and application, but not  \n\
+\tthe runtime. The wlp option produces a runtime that does not contain \n\
+\tthe server configuration. The default all option produces a server   \n\
+\tpackage that contains everything.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\
 \ \ \ \ --template="templateName"
