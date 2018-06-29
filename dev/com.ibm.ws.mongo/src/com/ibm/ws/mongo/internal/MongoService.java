@@ -58,54 +58,27 @@ import com.ibm.wsspi.library.LibraryChangeListener;
 public class MongoService implements LibraryChangeListener, MongoChangeListener {
     private static final TraceComponent tc = Tr.register(MongoService.class);
 
-    private static int MIN_MAJOR = 2;
-    private static int MIN_MINOR = 10;
-    private static int SSL_MIN_MINOR = 11;
-    private static int CERT_AUTH_MIN_MINOR = 12;
-
-    private static final String MONGO_CLIENT_CLS_STR = "com.mongodb.MongoClient";
-    private static final String MONGO_CLIENT_OPTIONS_CLS_STR = "com.mongodb.MongoClientOptions";
-    private static final String MONGO_CLIENT_OPTIONS_BUILDER_CLS_STR = "com.mongodb.MongoClientOptions$Builder";
-    private static final String MONGO_CLIENT_URI_CLS_STR = "com.mongodb.MongoClientURI";
-    private static final String MONGO_CREDENTIAL_CLS = "com.mongodb.MongoCredential";
-    private static final String MONGO_READPREFERENCE_CLS_STR = "com.mongodb.ReadPreference";
-    private static final String MONGO_WRITECONCERN_CLS_STR = "com.mongodb.WriteConcern";
-    private static final String READ_PREFERENCE_METHOD_NAME = "readPreference";
-    private static final String WRITE_CONCERN_METHOD_NAME = "writeConcern";
-    private static final String SOCKET_FACTORY_METHOD_NAME = "socketFactory";
-    private static final String MONGO_MAJOR_VERSION_METHOD_NAME = "getMajorVersion";
-    private static final String MONGO_MINOR_VERSION_METHOD_NAME = "getMinorVersion";
-
-    // Version 1.0 of the monogo driver used these static variables, but were deprecated in a subsequent release.
-    // If getMajor/MinorVersion doesn't exist, will check for these fields.
-    private static final String MONGO_MAJOR_VERSION_STATIC_VAR_NAME = "MAJOR_VERSION";
-    private static final String MONGO_MINOR_VERSION_STATIC_VAR_NAME = "MINOR_VERSION";
-    private static final String MONGO_CLS_STR = "com.mongodb.Mongo";
-
-    /**  */
-    private static final String LIBRARY_KEY = "library";
+    private static final String com_mongodb_MongoClient = "com.mongodb.MongoClient";
 
     /**
      * Reference to the shared library that contains the MongoDB Java driver.
      */
-    private final AtomicServiceReference<Library> libraryRef = new AtomicServiceReference<Library>(LIBRARY_KEY);
+    private final AtomicServiceReference<Library> libraryRef = new AtomicServiceReference<Library>("library");
 
-    private static final String SSL_KEY = "ssl";
     /**
      * Reference to the SSL configuration (if any)
      */
-    private final AtomicServiceReference<Object> sslConfigurationRef = new AtomicServiceReference<Object>(SSL_KEY);
+    private final AtomicServiceReference<Object> sslConfigurationRef = new AtomicServiceReference<Object>("ssl");
 
     /**
      * Reference to the KeyStoreService
      */
-    private final AtomicServiceReference<Object> keyStoreServiceRef = new AtomicServiceReference<Object>(KEY_KEYSTORE_SERVICE_REF);
-    private static final String KEY_KEYSTORE_SERVICE_REF = "keyStoreService";
+    private final AtomicServiceReference<Object> keyStoreServiceRef = new AtomicServiceReference<Object>("keyStoreService");
 
     /**
      * Name of the unique identifier property
      */
-    static final String CONFIG_ID = "config.displayId";
+    static final String CONFIG_DISPLAY_ID = "config.displayId";
 
     /**
      * Name of property that specifies the list of host names.
@@ -216,12 +189,12 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
     /**
      * com.mongodb.MongoClient instance
      */
-    private Object mongo;
+    private Object mongoClient;
 
     /**
      * Method that creates DB instances.
      */
-    private Method Mongo_getDB;
+    private Method MongoClient_getDB;
 
     /**
      * Config properties.
@@ -257,7 +230,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         sslConfigurationRef.activate(context);
         this.props = props;
         keyStoreServiceRef.activate(context);
-        id = (String) props.get(CONFIG_ID);
+        id = (String) props.get(CONFIG_DISPLAY_ID);
     }
 
     /**
@@ -273,7 +246,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         }
 
         try {
-            closeMongoConnection();
+            closeMongoClient();
             if (sslHelper != null) {
                 sslHelper.removeChangeListener(this);
             }
@@ -297,12 +270,12 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
 
         lock.readLock().lock();
         try {
-            if (mongo == null) {
+            if (mongoClient == null) {
                 // Switch to write lock for lazy initialization
                 lock.readLock().unlock();
                 lock.writeLock().lock();
                 try {
-                    if (mongo == null)
+                    if (mongoClient == null)
                         init();
                 } finally {
                     // Downgrade to read lock for rest of method
@@ -311,7 +284,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
                 }
             }
 
-            Object db = Mongo_getDB.invoke(mongo, databaseName);
+            Object db = MongoClient_getDB.invoke(mongoClient, databaseName);
 
             // authentication
             String user = (String) props.get(USER);
@@ -332,7 +305,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(this, tc, "another thread must have authenticated first");
                             } else
-                                throw new IllegalArgumentException(Utils.getMessage("CWKKD0012.authentication.error", MONGO, id, databaseName));
+                                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWKKD0012.authentication.error", MONGO, id, databaseName));
                     } catch (InvocationTargetException x) {
                         // If already authenticated, Mongo raises:
                         // IllegalStateException: can't authenticate twice on the same database
@@ -394,7 +367,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
                         return exceptionClassToRaise.cast(throwable);
 
                     Constructor<T> con = exceptionClassToRaise.getConstructor(String.class);
-                    String message = msgKey == null ? throwable.getMessage() : Utils.getMessage(msgKey, objs);
+                    String message = msgKey == null ? throwable.getMessage() : Tr.formatMessage(tc, msgKey, objs);
                     T failure = con.newInstance(message);
                     failure.initCause(throwable);
                     return failure;
@@ -428,7 +401,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
 
         // Initialize List<ServerAddress>
         List<Object> serverAddresses = new LinkedList<Object>();
-        Constructor<?> constructor = loader.loadClass("com.mongodb.ServerAddress").getConstructor(String.class, int.class);
+        Constructor<?> ServerAddress_constructor = loader.loadClass("com.mongodb.ServerAddress").getConstructor(String.class, int.class);
         String[] hosts = (String[]) props.get(HOST_NAMES);
         int[] ports = (int[]) props.get(PORTS);
         int numServerAddresses = hosts.length;
@@ -444,7 +417,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         StringBuilder uriBuilder = new StringBuilder();
         uriBuilder.append(uri);
         for (int i = 0; i < numServerAddresses; i++) {
-            serverAddresses.add(constructor.newInstance(hosts[i], ports[i]));
+            serverAddresses.add(ServerAddress_constructor.newInstance(hosts[i], ports[i]));
             //Add server addresses to URI
             uriBuilder.append(hosts[i] + ":" + ports[i]);
             if (i != numServerAddresses - 1) {
@@ -453,24 +426,24 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         }
 
         // Initialize MongoOptions
-        Class<?> mongoClientOptionsCls = loader.loadClass(MONGO_CLIENT_OPTIONS_CLS_STR);
-        Class<?> mongoClientOptionsBuilderCls = loader.loadClass(MONGO_CLIENT_OPTIONS_BUILDER_CLS_STR);
+        Class<?> MongoClientOptions = loader.loadClass("com.mongodb.MongoClientOptions");
+        Class<?> MongoClientOptions_Builder = loader.loadClass("com.mongodb.MongoClientOptions$Builder");
 
-        Object builderInstance = mongoClientOptionsBuilderCls.newInstance();
+        Object optionsBuilder = MongoClientOptions_Builder.newInstance();
         for (Map.Entry<String, Object> prop : props.entrySet()) {
             String name = prop.getKey();
             Object value = prop.getValue();
             if (value != null && name.indexOf('.') < 0 && !NOT_MONGO_CLIENT_OPTIONS.contains(name))
-                set(mongoClientOptionsBuilderCls, builderInstance, name, value);
+                set(MongoClientOptions_Builder, optionsBuilder, name, value);
         }
 
         String value = (String) props.get(READ_PREFERENCE);
         if (value != null) {
-            setReadPreference(mongoClientOptionsBuilderCls, builderInstance, value);
+            setReadPreference(MongoClientOptions_Builder, optionsBuilder, value);
         }
         value = (String) props.get(WRITE_CONCERN);
         if (value != null) {
-            setWriteConcern(mongoClientOptionsBuilderCls, builderInstance, value);
+            setWriteConcern(MongoClientOptions_Builder, optionsBuilder, value);
         }
 
         //SSL setup
@@ -478,44 +451,42 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         Properties sslProperties = null;
         if (sslEnabled) {
             Map<String, Object> connectionInfo = getConnectionInfo();
-            setSocketFactory(mongoClientOptionsBuilderCls, builderInstance, connectionInfo);
+            setSocketFactory(MongoClientOptions_Builder, optionsBuilder, connectionInfo);
             sslProperties = sslHelper.getSSLProperties(sslConfigurationRef.getService(), connectionInfo, this);
         }
         // Initialize the Mongo instance
-        Class<?> mongoClientCls = loader.loadClass(MONGO_CLIENT_CLS_STR);
-        Class<?> mongoClientUriCls = loader.loadClass(MONGO_CLIENT_URI_CLS_STR);
+        Class<?> MongoClient = loader.loadClass(com_mongodb_MongoClient);
+        Class<?> MongoClientURI = loader.loadClass("com.mongodb.MongoClientURI");
         if (sslEnabled && !sslRefExists && !useCertAuth) {
             // TODO check if this is still needed as we are setting the socket factory above
             uriBuilder.append("/?ssl=true");
             uri = uriBuilder.toString();
-            constructor = mongoClientUriCls.getConstructor(String.class, mongoClientOptionsBuilderCls);
-            Object uriObject = constructor.newInstance(uri, builderInstance);
-            constructor = mongoClientCls.getConstructor(mongoClientUriCls);
-            mongo = constructor.newInstance(uriObject);
+            Constructor<?> MongoClientURI_constructor = MongoClientURI.getConstructor(String.class, MongoClientOptions_Builder);
+            Object uriObject = MongoClientURI_constructor.newInstance(uri, optionsBuilder);
+            Constructor<?> MongoClient_constructor = MongoClient.getConstructor(MongoClientURI);
+            mongoClient = MongoClient_constructor.newInstance(uriObject);
 
         } else if (sslEnabled && useCertAuth) {
             // get the name from the certificate and handle exceptions / null
             String certificateDN = getCerticateSubject(keyStoreServiceRef, sslProperties);
 
             // Create an x509 credential calling the MongoCredential class reflectively passing the DN
-            Class<?> mongoCredentialCls = loader.loadClass(MONGO_CREDENTIAL_CLS);
-            Method createCertificateMethod = mongoCredentialCls.getMethod("createMongoX509Credential", String.class);
-            Object credential = createCertificateMethod.invoke(null, certificateDN);
+            Class<?> MongoCredential = loader.loadClass("com.mongodb.MongoCredential");
+            Method MongoCredential_createCertificate = MongoCredential.getMethod("createMongoX509Credential", String.class);
+            Object credential = MongoCredential_createCertificate.invoke(null, certificateDN);
 
             // create a client authenticated using this credential
-            constructor = mongoClientCls.getConstructor(List.class, List.class, mongoClientOptionsCls);
-            Method builderBuildMethod = mongoClientOptionsBuilderCls.getMethod("build");
-            mongo = constructor.newInstance(serverAddresses, Arrays.asList(credential), builderBuildMethod.invoke(builderInstance));
-
+            Constructor<?> MongoClient_constructor = MongoClient.getConstructor(List.class, List.class, MongoClientOptions);
+            Object mongoClientOptions = MongoClientOptions_Builder.getMethod("build").invoke(optionsBuilder);
+            mongoClient = MongoClient_constructor.newInstance(serverAddresses, Arrays.asList(credential), mongoClientOptions);
         } else {
-            constructor = mongoClientCls.getConstructor(List.class, mongoClientOptionsCls);
-            // need to call MongoClientOptions.Builder.build();
-            Method builderBuildMethod = mongoClientOptionsBuilderCls.getMethod("build");
-            mongo = constructor.newInstance(serverAddresses, builderBuildMethod.invoke(builderInstance));
+            Constructor<?> MongoClient_constructor = MongoClient.getConstructor(List.class, MongoClientOptions);
+            Object mongoClientOptions = MongoClientOptions_Builder.getMethod("build").invoke(optionsBuilder);
+            mongoClient = MongoClient_constructor.newInstance(serverAddresses, mongoClientOptions);
         }
 
         // Methods that we need each each time a DB instance is created
-        Mongo_getDB = mongoClientCls.getMethod("getDB", String.class);
+        MongoClient_getDB = MongoClient.getMethod("getDB", String.class);
         Class<?> DB = loader.loadClass("com.mongodb.DB");
         DB_authenticate = DB.getMethod("authenticate", String.class, char[].class);
         DB_isAuthenticated = DB.getMethod("isAuthenticated");
@@ -536,12 +507,12 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.error(tc, "CWKKD0020.ssl.get.certificate.user", MONGO, id, ke);
             }
-            throw new RuntimeException(Utils.getMessage("CWKKD0020.ssl.get.certificate.user", MONGO, id, ke));
+            throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0020.ssl.get.certificate.user", MONGO, id, ke));
         } catch (CertificateException ce) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.error(tc, "CWKKD0020.ssl.get.certificate.user", MONGO, id, ce);
             }
-            throw new RuntimeException(Utils.getMessage("CWKKD0020.ssl.get.certificate.user", MONGO, id, ce));
+            throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0020.ssl.get.certificate.user", MONGO, id, ce));
         }
 
         // handle null .... cannot find the client key
@@ -549,7 +520,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.error(tc, "CWKKD0026.ssl.certificate.exception", MONGO, id);
             }
-            throw new RuntimeException(Utils.getMessage("CWKKD0026.ssl.certificate.exception", MONGO, id));
+            throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0026.ssl.certificate.exception", MONGO, id));
         }
 
         return certificateDN;
@@ -577,12 +548,12 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
      */
     @Override
     public void libraryNotification() {
-        closeMongoConnection();
+        closeMongoClient();
     }
 
     @Override
     public void changeOccurred() {
-        closeMongoConnection();
+        closeMongoClient();
 
         // We also no longer care about changes to SSL config mongo was using
         if (sslHelper != null) {
@@ -597,18 +568,18 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         }
     }
 
-    private void closeMongoConnection() {
+    private void closeMongoClient() {
         lock.writeLock().lock();
         try {
-            if (mongo != null)
+            if (mongoClient != null)
                 try {
-                    mongo.getClass().getMethod("close").invoke(mongo);
+                    mongoClient.getClass().getMethod("close").invoke(mongoClient);
                 } catch (Exception x) {
                     // FindBugs complains if we don't put anything in this catch block and just rely on the generated FFDC.
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "unable to close mongo", x);
                 } finally {
-                    mongo = null;
+                    mongoClient = null;
                 }
         } finally {
             lock.writeLock().unlock();
@@ -619,27 +590,28 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
     /**
      * Configure a mongo option.
      *
-     * @param builder com.mongodb.MongoClientOptions.Builder
+     * @param MongoClientOptions_Builder builder class
+     * @param optionsBuilder builder instance
      * @param propName name of the config property.
      * @param type type of the config property.
      */
     @FFDCIgnore(Throwable.class)
     @Trivial
-    private void set(Class<?> builderCls, Object builder, String propName,
+    private void set(Class<?> MongoClientOptions_Builder, Object optionsBuilder, String propName,
                      Object value) throws IntrospectionException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, propName + '=' + value);
 
-            Class<?> cls = MONGO_CLIENT_OPTIONS_TYPES.get(propName);
+            Class<?> type = MONGO_CLIENT_OPTIONS_TYPES.get(propName);
             // setter methods are just propName, no setPropName.
-            Method method = builderCls.getMethod(propName, cls);
+            Method method = MongoClientOptions_Builder.getMethod(propName, type);
             // even though we told the config service that some of these props are Integers, they get converted to longs. Need
             // to convert them back to int so that our .invoke(..) method doesn't blow up.
-            if (cls.equals(int.class) && value instanceof Long) {
+            if (type.equals(int.class) && value instanceof Long) {
                 value = ((Long) value).intValue();
             }
-            method.invoke(builder, value);
+            method.invoke(optionsBuilder, value);
             return;
 
         } catch (Throwable x) {
@@ -656,24 +628,24 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
     /**
      * Configure the "readPreference" mongo option, which is a special case.
      *
-     * @param options com.mongodb.MongoOptions
-     * @param propName name of the config property.
-     * @param type type of the config property.
+     * @param MongoClientOptions_Builder builder class
+     * @param optionsBuilder builder instance
+     * @param creatorMethod name of a static method of ReadPreference that creates an instance.
      */
     @FFDCIgnore(Throwable.class)
     @Trivial
-    private void setReadPreference(Class<?> mongoClientOptionsBuilderCls, Object builder,
-                                   Object value) throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void setReadPreference(Class<?> MongoClientOptions_Builder, Object optionsBuilder,
+                                   String creatorMethod) throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, READ_PREFERENCE + '=' + value);
+                Tr.debug(this, tc, READ_PREFERENCE + '=' + creatorMethod);
 
-            Class<?> readPreferenceCls = mongoClientOptionsBuilderCls.getClassLoader().loadClass(MONGO_READPREFERENCE_CLS_STR);
+            Class<?> ReadPreference = MongoClientOptions_Builder.getClassLoader().loadClass("com.mongodb.ReadPreference");
             // Calls static ReadPreference.nearest() (or whatever conf is set to) to get a ReadPreference object
-            value = readPreferenceCls.getMethod((String) value).invoke(readPreferenceCls);
+            Object readPreference = ReadPreference.getMethod(creatorMethod).invoke(ReadPreference);
 
             // Set static ReadPreference on Builder.
-            mongoClientOptionsBuilderCls.getMethod(READ_PREFERENCE_METHOD_NAME, readPreferenceCls).invoke(builder, value);
+            MongoClientOptions_Builder.getMethod("readPreference", ReadPreference).invoke(optionsBuilder, readPreference);
         } catch (Throwable x) {
             if (x instanceof InvocationTargetException)
                 x = x.getCause();
@@ -688,23 +660,23 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
     /**
      * Configure the "writeConcern" mongo option, which is a special case.
      *
-     * @param options com.mongodb.MongoOptions
-     * @param propName name of the config property.
-     * @param type type of the config property.
+     * @param MongoClientOptions_Builder builder class
+     * @param optionsBuilder builder instance
+     * @param fieldName name of a static field of WriteConcern which is of the type WriteConcern.
      */
     @FFDCIgnore(Throwable.class)
     @Trivial
-    private void setWriteConcern(Class<?> mongoClientOptionsBuilderCls, Object builder,
-                                 Object value) throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void setWriteConcern(Class<?> MongoClientOptions_Builder, Object optionsBuilder,
+                                 String fieldName) throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, WRITE_CONCERN + '=' + value);
+                Tr.debug(this, tc, WRITE_CONCERN + '=' + fieldName);
 
-            Class<?> writeConcernCls = mongoClientOptionsBuilderCls.getClassLoader().loadClass(MONGO_WRITECONCERN_CLS_STR);
+            Class<?> WriteConcern = MongoClientOptions_Builder.getClassLoader().loadClass("com.mongodb.WriteConcern");
             // Set value to the static class value
-            value = writeConcernCls.getField((String) value).get(null);
+            Object writeConcern = WriteConcern.getField(fieldName).get(null);
 
-            mongoClientOptionsBuilderCls.getMethod(WRITE_CONCERN_METHOD_NAME, writeConcernCls).invoke(builder, value);
+            MongoClientOptions_Builder.getMethod("writeConcern", WriteConcern).invoke(optionsBuilder, writeConcern);
         } catch (Throwable x) {
             if (x instanceof InvocationTargetException)
                 x = x.getCause();
@@ -716,15 +688,15 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         }
     }
 
-    private void setSocketFactory(Class<?> mongoClientOptionsBuilderCls, Object builder, Map<String, Object> connectionInfo) throws Exception {
+    private void setSocketFactory(Class<?> MongoClientOptions_Builder, Object optionsBuilder, Map<String, Object> connectionInfo) throws Exception {
         SSLSocketFactory sslSocketFactory = null;
         Object sslService = sslConfigurationRef.getService();
 
         sslSocketFactory = sslHelper.getSSLSocketFactory(sslService, connectionInfo);
 
         // Create a mongo client with this socket factory
-        Method socketFactoryMethod = mongoClientOptionsBuilderCls.getMethod(SOCKET_FACTORY_METHOD_NAME, SocketFactory.class);
-        socketFactoryMethod.invoke(builder, sslSocketFactory);
+        Method socketFactoryMethod = MongoClientOptions_Builder.getMethod("socketFactory", SocketFactory.class);
+        socketFactoryMethod.invoke(optionsBuilder, sslSocketFactory);
     }
 
     /**
@@ -753,7 +725,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
     protected void setSsl(ServiceReference<Object> reference) {
         sslConfigurationRef.setReference(reference);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "sslRef set to " + reference.getProperty("config.displayId"));
+            Tr.debug(this, tc, "sslRef set to " + reference.getProperty(CONFIG_DISPLAY_ID));
         }
     }
 
@@ -817,24 +789,24 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
                 // sslRef property set in the server.xml but sslEnabled not set to true.
                 Tr.error(tc, "CWKKD0024.ssl.sslref.no.ssl", MONGO, id);
             }
-            throw new RuntimeException(Utils.getMessage("CWKKD0024.ssl.sslref.no.ssl", MONGO, id));
+            throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0024.ssl.sslref.no.ssl", MONGO, id));
         }
 
         if (sslEnabled) {
             // we should have the ssl-1.0 feature selected
             if (sslHelper == null) {
-                throw new RuntimeException(Utils.getMessage("CWKKD0015.ssl.feature.missing", MONGO, id));
+                throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0015.ssl.feature.missing", MONGO, id));
             }
 
             if (useCertAuth) {
 
                 if (!sslEnabled) {
                     // SSL not enabled, so shouldn't be using certificate authentication
-                    throw new RuntimeException(Utils.getMessage("CWKKD0019.ssl.certificate.no.ssl", MONGO, id));
+                    throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0019.ssl.certificate.no.ssl", MONGO, id));
                 }
                 if (props.get(USER) != null || props.get(PASSWORD) != null) {
                     // shouldn't be using userid and pasword with certificate authentication
-                    throw new RuntimeException(Utils.getMessage("CWKKD0018.ssl.user.pswd.certificate", MONGO, id));
+                    throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0018.ssl.user.pswd.certificate", MONGO, id));
                 }
             }
         }
@@ -847,33 +819,40 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
      * <li> if the configured library is less than the min supported level
      */
     private void assertLibrary(ClassLoader loader, boolean sslEnabled) {
-        Class<?> mongoClientCls = loadClass(loader, MONGO_CLIENT_CLS_STR);
+        Class<?> MongoClient = loadClass(loader, com_mongodb_MongoClient);
         int minor = -1, major = -1;
-        if (mongoClientCls == null) {
-            Class<?> mongoCls = loadClass(loader, MONGO_CLS_STR);
+        if (MongoClient == null) {
+            // Version 1.0 of the mongo driver used these static variables, but were deprecated in a subsequent release.
+            // If getMajor/MinorVersion doesn't exist, will check for these fields.
+            Class<?> Mongo = loadClass(loader, "com.mongodb.Mongo");
             // If we can't find either class, die
-            if (mongoCls == null) {
+            if (Mongo == null) {
                 // CWKKD0014.missing.driver=CWKKD0014E: The {0} service was unable to locate the required MongoDB driver classes at shared library {1}.
-                throw new RuntimeException(Utils.getMessage("CWKKD0014.missing.driver", MONGO, libraryRef.getService().id()));
+                throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0014.missing.driver", MONGO, libraryRef.getService().id()));
             }
-            major = getVersionFromMongo(mongoCls, MONGO_MAJOR_VERSION_STATIC_VAR_NAME);
-            minor = getVersionFromMongo(mongoCls, MONGO_MINOR_VERSION_STATIC_VAR_NAME);
+            major = getVersionFromMongo(Mongo, "MAJOR_VERSION");
+            minor = getVersionFromMongo(Mongo, "MINOR_VERSION");
         } else {
-            major = getVersionFromMongoClient(mongoClientCls, MONGO_MAJOR_VERSION_METHOD_NAME);
-            minor = getVersionFromMongoClient(mongoClientCls, MONGO_MINOR_VERSION_METHOD_NAME);
+            major = getVersionFromMongoClient(MongoClient, "getMajorVersion");
+            minor = getVersionFromMongoClient(MongoClient, "getMinorVersion");
         }
+
+        final int MIN_MAJOR = 2;
+        final int MIN_MINOR = 10;
+        final int SSL_MIN_MINOR = 11;
+        final int CERT_AUTH_MIN_MINOR = 12;
 
         if (useCertAuth && ((major < MIN_MAJOR) || (major == MIN_MAJOR && minor < CERT_AUTH_MIN_MINOR))) {
             Tr.error(tc, "CWKKD0023.ssl.certauth.incompatible.driver", MONGO, id, libraryRef.getService().id(),
                      MIN_MAJOR + "." + CERT_AUTH_MIN_MINOR, major + "." + minor);
-            throw new RuntimeException(Utils.getMessage("CWKKD0023.ssl.certauth.incompatible.driver", MONGO, id, libraryRef.getService().id(),
+            throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0023.ssl.certauth.incompatible.driver", MONGO, id, libraryRef.getService().id(),
                                                         MIN_MAJOR + "." + CERT_AUTH_MIN_MINOR, major + "." + minor));
         }
 
         if (sslEnabled && ((major < MIN_MAJOR) || (major == MIN_MAJOR && minor < SSL_MIN_MINOR))) {
             Tr.error(tc, "CWKKD0017.ssl.incompatible.driver", MONGO, id, libraryRef.getService().id(),
                      MIN_MAJOR + "." + SSL_MIN_MINOR, major + "." + minor);
-            throw new RuntimeException(Utils.getMessage("CWKKD0017.ssl.incompatible.driver", MONGO, id, libraryRef.getService().id(),
+            throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0017.ssl.incompatible.driver", MONGO, id, libraryRef.getService().id(),
                                                         MIN_MAJOR + "." + SSL_MIN_MINOR, major + "." + minor));
         }
 
@@ -884,7 +863,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         //      driver at shared library {1}. Expected a minimum level of {2}, but found {3}.
         Tr.error(tc, "CWKKD0013.unsupported.driver", MONGO, libraryRef.getService().id(),
                  MIN_MAJOR + "." + MIN_MINOR, major + "." + minor);
-        throw new RuntimeException(Utils.getMessage("CWKKD0013.unsupported.driver", MONGO, libraryRef.getService().id(),
+        throw new RuntimeException(Tr.formatMessage(tc, "CWKKD0013.unsupported.driver", MONGO, libraryRef.getService().id(),
                                                     MIN_MAJOR + "." + MIN_MINOR, major + "." + minor));
 
     }
