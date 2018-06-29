@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.rest.client.fat;
+package mpRestClient10.headerPropagation;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                BasicTest.class,
-                BasicCdiTest.class,
-                BasicCdiInEE8Test.class,
-                HeaderPropagationTest.class,
-                MultiClientCdiTest.class
-})
-public class FATSuite {}
+@Path("/resource")
+public interface RestClient {
+
+    @GET
+    @Path("/auth")
+    String useAuthorization();
+
+    @GET
+    @Path("/normal")
+    String normalMethod();
+}
