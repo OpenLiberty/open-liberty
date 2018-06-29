@@ -75,6 +75,7 @@ import com.ibm.ejs.container.EJSWrapperBase;
 import com.ibm.ejs.container.HomeOfHomes;
 import com.ibm.ejs.container.HomeRecord;
 import com.ibm.ejs.container.MDBInternalHome;
+import com.ibm.ejs.container.MessageEndpointCollaborator;
 import com.ibm.ejs.container.PersistentTimer;
 import com.ibm.ejs.container.PersistentTimerTaskHandler;
 import com.ibm.ejs.container.TimerNpImpl;
@@ -1565,6 +1566,15 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             return mdbRuntime.getMessageEndpointImplClass(bmd);
         }
         return super.getMessageEndpointImplClass(bmd);
+    }
+
+    @Override
+    public MessageEndpointCollaborator getMessageEndpointCollaborator(BeanMetaData bmd) {
+        MDBRuntime mdbRuntime = getOSGiBeanMetaData(bmd).getMDBRuntime();
+        if (mdbRuntime != null) {
+            return mdbRuntime.getMessageEndpointCollaborator();
+        }
+        return null;
     }
 
     @Override
