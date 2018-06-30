@@ -517,7 +517,7 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
     }
 
     /**
-     * Lazy initialization for version 2.x of the Mongo Java driver.
+     * Lazy initialization for version 3.x+ of the Mongo Async driver and Mongo Java driver.
      * Precondition: invoker must have write lock on this MongoService instance
      *
      * @param loader class loader for Mongo Java driver classes
