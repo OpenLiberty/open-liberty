@@ -39,6 +39,8 @@ public interface AuditService {
 
     void unRegisterEvents(String handlerName);
 
+    void emitSavedEvents();
+
     /**
      * Get the unique identifier String of this server. The format is:
      * "websphere: hostName:userDir:serverName"
