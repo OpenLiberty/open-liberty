@@ -281,11 +281,11 @@ public class LimitedIndexReaderTest{
             for(com.ibm.ws.anno.jandex.internal.DotName methodName: limitedClass.methods()){
                 numOfAnnoHolder = methodToAnno.remove(methodName.toString());
 
-                Assert.assertNotNull("Full Index Class " + limitedClass.name().toString() + "is missing field " + methodName.toString(), numOfAnnoHolder);
-                Assert.assertEquals("The amount of annotations for field " + methodName + "do not match",numOfAnnoHolder.intValue(),limitedClass.fieldAnnotations(methodName).size());
+                Assert.assertNotNull("Full Index Class " + limitedClass.name().toString() + "is missing method " + methodName.toString(), numOfAnnoHolder);
+                Assert.assertEquals("The amount of annotations for method " + methodName + "do not match",numOfAnnoHolder.intValue(),limitedClass.fieldAnnotations(methodName).size());
             }
 
-            Assert.assertTrue("There are more fields in full index than limited",methodToAnno.size() == 0);
+            Assert.assertTrue("There are more methods in full index than limited",methodToAnno.size() == 0);
         }
 
     }
@@ -330,7 +330,44 @@ public class LimitedIndexReaderTest{
     }
 
     @Test
-    public void testNamesOfMethodAnnotations(){}
+    public void testNamesOfMethodAnnotations(){
+        HashMap<String, HashMap<String,List<String>>> classToMethod = new HashMap<String,HashMap<String,List<String>>>();
+        HashMap<String,List<String>> methodToAnno;
+        List<String> annotationNames;
+
+        
+        for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
+            methodToAnno = new HashMap<String,List<String>>();
+            
+            for(org.jboss.jandex.MethodInfo method: fullClass.methods()){
+                annotationNames = new LinkedList<String>();
+
+                for(org.jboss.jandex.AnnotationInstance methodAnno: method.annotations()){
+                    annotationNames.add(methodAnno.name().toString());
+                }
+                methodToAnno.put(method.name(), annotationNames);
+            }
+            classToMethod.put(fullClass.name().toString(),methodToAnno);
+        }
+
+        for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
+            methodToAnno = classToMethod.remove(limitedClass.name().toString());
+
+            Assert.assertNotNull("Full index is missing class " + limitedClass.name().toString(),methodToAnno);
+            for(com.ibm.ws.anno.jandex.internal.DotName methodName: limitedClass.methods()){
+                annotationNames = methodToAnno.remove(methodName.toString());
+
+                Assert.assertNotNull("Full Index Class " + limitedClass.name().toString() + " is missing method " + methodName.toString(), annotationNames);
+                for(com.ibm.ws.anno.jandex.internal.LimitedAnnotation methodAnno: limitedClass.fieldAnnotations(methodName)){
+                    Assert.assertTrue("Method" + methodName.toString()+" is missing "+methodAnno.getName().toString()+" annotation in class " + limitedClass.name().toString(),annotationNames.remove(methodAnno.getName().toString()));
+                }
+                Assert.assertTrue("There are more annotations for method "+methodName.toString()+" in the full index in class "+limitedClass.name().toString(),annotationNames.size() == 0);
+            }
+
+            Assert.assertTrue("There are more methods for class  "+ limitedClass.name().toString()+" in the full index",methodToAnno.size() == 0);
+        }
+    }
+
 
     @Test
     public void testSuperNamesAlign(){
