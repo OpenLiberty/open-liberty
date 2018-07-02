@@ -22,7 +22,8 @@ src: \
 	test-applications/applicationExtension.war/src,\
 	test-applications/cdiCurrentTest.jar/src,\
 	test-applications/cdiCurrentTest.war/src,\
-        test-applications/injectInjectionPoint.war/src
+        test-applications/injectInjectionPoint.war/src,\
+        test-applications/injectInjectionPointAsParam.war/src
 	
 tested.features:\
 	cdi-2.0,\

@@ -166,6 +166,13 @@ public class InjectInjectionObjectFactory {
                     }
                     Object ref = null;
                     if ((injectionPoint.getAnnotated() instanceof AnnotatedParameter<?>)
+                            && injectionPoint.getAnnotated().getBaseType().equals(InjectionPoint.class)){
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Creating an InjectionPoint for {0}", injectionPoint);
+                        }
+                        ref = localBeanManager.createInjectionPoint((AnnotatedParameter<?>) injectionPoint.getAnnotated());
+                    }
+                    else if ((injectionPoint.getAnnotated() instanceof AnnotatedParameter<?>)
                             && (((AnnotatedParameter<?>) injectionPoint.getAnnotated()).isAnnotationPresent(TransientReference.class))) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Getting an injectable ref from the bean manager with {0}, {1}", injectionPoint, Util.identity(methodInvocactionContext));

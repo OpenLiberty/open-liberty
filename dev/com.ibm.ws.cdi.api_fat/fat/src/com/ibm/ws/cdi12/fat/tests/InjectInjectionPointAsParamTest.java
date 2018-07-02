@@ -52,7 +52,7 @@ public class InjectInjectionPointAsParamTest extends LoggingTest {
     public static Archive buildShrinkWrap() {
 
           return ShrinkWrap.create(WebArchive.class, "injectInjectionPointAsParam.war")
-                        .addClass("com.ibm.ws.fat.cdi.injectInjectionPointParam.InjectInjectionPointServlet")
+                        .addPackage("com.ibm.ws.fat.cdi.injectInjectionPointParam")
                         .add(new FileAsset(new File("test-applications/injectInjectionPointAsParam.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
     }
 

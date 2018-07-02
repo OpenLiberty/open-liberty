@@ -10,11 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.fat.cdi.injectInjectionPointParam;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-@RequestScoped
+@Dependent
 public class TestBean {
 
     private BeanManager bm;
