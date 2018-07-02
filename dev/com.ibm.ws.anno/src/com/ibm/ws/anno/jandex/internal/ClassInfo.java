@@ -161,10 +161,10 @@ public final class ClassInfo{
 
     }
 
-    public List<LimitedAnnotation> methodAnnotations(String name){
+    public List<LimitedAnnotation> methodAnnotations(String methodName){
         List<LimitedAnnotation> returnList = new LinkedList<LimitedAnnotation>();
         for(LimitedAnnotation anno: methodAnnotations){
-            if(anno.getTargetName().toString().equals(name)){
+            if(anno.getTargetName().toString().equals(methodName)){
                 returnList.add(anno);
             }
         }
@@ -172,10 +172,10 @@ public final class ClassInfo{
         return returnList;
     }
 
-    public List<LimitedAnnotation> fieldAnnotations(String name){
+    public List<LimitedAnnotation> fieldAnnotations(String fieldName){
         List<LimitedAnnotation> returnList = new LinkedList<LimitedAnnotation>();
         for(LimitedAnnotation anno: fieldAnnotations){
-            if(anno.getTargetName().toString().equals(name)){
+            if(anno.getTargetName().toString().equals(fieldName)){
                 returnList.add(anno);
             }
         }
@@ -183,12 +183,12 @@ public final class ClassInfo{
         return returnList;
     }
 
-    public List<LimitedAnnotation> fieldAnnotations(DotName name){
-        return this.fieldAnnotations(name.toString());
+    public List<LimitedAnnotation> fieldAnnotations(DotName fieldName){
+        return this.fieldAnnotations(fieldName.toString());
     }
 
-    public List<LimitedAnnotation> methodAnnotations(DotName name){
-        return this.methodAnnotations(name.toString());
+    public List<LimitedAnnotation> methodAnnotations(DotName methodName){
+        return this.methodAnnotations(methodName.toString());
     }
 
 }
