@@ -1,0 +1,2 @@
+# Set a system property.
+-Dcom.ibm.ws.webbeans.crossEjbModuleBindings=true
