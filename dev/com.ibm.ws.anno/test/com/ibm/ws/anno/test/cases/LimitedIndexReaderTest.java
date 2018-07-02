@@ -10,13 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Map;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -41,15 +42,16 @@ public class LimitedIndexReaderTest{
         return Arrays.asList(testIndicies);
     }
 
-    static URL testIndex;
-    static InputStream connection;
-    static org.jboss.jandex.Index fullIndex;
-    static LimitedIndex smallIndex;
-    static Collection<org.jboss.jandex.ClassInfo> fullClasses;
-    static Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses;
+    Collection<org.jboss.jandex.ClassInfo> fullClasses;
+    Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses;
+    
+    String indexFileName;
+
     
     public LimitedIndexReaderTest(Object indexName){   
-        
+        InputStream connection;
+        org.jboss.jandex.Index fullIndex;
+        LimitedIndex smallIndex;
         try{
             connection = new FileInputStream( (String) indexName);
             fullIndex = Jandex_Utils.basicReadIndex(connection);
@@ -61,6 +63,7 @@ public class LimitedIndexReaderTest{
 
             fullClasses = fullIndex.getKnownClasses();
             limitedClasses = smallIndex.classes();
+            indexFileName = (String) indexName;
         }
         catch(FileNotFoundException e){
             Assert.fail("Cannot find index " + indexName);
@@ -74,32 +77,31 @@ public class LimitedIndexReaderTest{
 
     @Test
     public void testSameNumberOfClasses(){
-        Assert.assertTrue("The number of classes do not match between indicies",fullClasses.size() == limitedClasses.size());
+        Assert.assertEquals("The number of Classes do not match between the indicies",fullClasses.size(),limitedClasses.size());
     }
 
     @Test
     public void testSameFlags(){
         HashMap<String, Short> flags = new HashMap<String,Short>();
+        Short flagPlaceholder;
+
         for(org.jboss.jandex.ClassInfo fullClass : fullClasses){
             flags.put(fullClass.name().toString(), fullClass.flags());
         }
-
-        Short flagPlaceholder;
-
         for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
             flagPlaceholder = flags.remove(limitedClass.name().toString());
 
             Assert.assertNotNull(limitedClass.name().toString() + " is missing from the full index",flagPlaceholder);
-            Assert.assertTrue("The flags are not the same for class " + limitedClass.name().toString(), flagPlaceholder.shortValue() == limitedClass.flags());
+            Assert.assertEquals("The flags are not the same for class " + limitedClass.name().toString(), flagPlaceholder.shortValue() , limitedClass.flags());
         }
 
-        Assert.assertEquals("There are more flags in the full index than the limited index", 0, flags.size());
+        Assert.assertEquals("There are more classes in the full Index", 0, flags.size());
     }
 
     
     @Test
     public void testSameNamesofClasses(){
-        HashSet<String> names = new LinkedHashSet<>(fullClasses.size());
+        Set<String> names = new LinkedHashSet<>(fullClasses.size());
 
         //add the names from one of the indicies into a hashset
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
@@ -115,28 +117,22 @@ public class LimitedIndexReaderTest{
     
     @Test
     public void testNumberOfFields(){
-        HashMap<String, Integer> classesToFieldSize = new HashMap<String, Integer>();
+        Map<String, Integer> classesToFieldSize = new HashMap<String, Integer>();
         Integer numOfFields;
-        int matchingCounter = 0;
 
-        //store the size of the fields list for each class under the DotName.toString()
+
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
             classesToFieldSize.put(fullClass.name().toString(), fullClass.fields().size());
         }
 
-        //iterate over the classes in limited classes
         for(com.ibm.ws.anno.jandex.internal.ClassInfo limitedClass: limitedClasses){
             numOfFields = classesToFieldSize.remove(limitedClass.name().toString());
 
-            //check each class in the small index has a fields list and that the sizes match
-            Assert.assertNotNull(limitedClass.name().toString() + " - does not have a field size in full Index",numOfFields);
-            Assert.assertTrue(limitedClass.name().toString() + " - does not have matching field sizes between small and full Index",numOfFields.intValue() == limitedClass.fields().size());
-            matchingCounter++;
+            Assert.assertNotNull(limitedClass.name().toString() + " is missing in full Index",numOfFields);
+            Assert.assertEquals(limitedClass.name().toString() + " does not have matching number of fields",numOfFields.intValue(), limitedClass.fields().size());
         }
 
         Assert.assertEquals("There are more classes in the full index than the limited index",0,classesToFieldSize.size());
-        Assert.assertEquals("There are less matching fields than there are classes in full index",matchingCounter, fullClasses.size());
-        Assert.assertEquals("There are less matching fields than there are classes in limited index",matchingCounter,  limitedClasses.size());
     }
     
     @Test
