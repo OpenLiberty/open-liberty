@@ -26,6 +26,7 @@ public class LimitedIndexReaderTest{
     static URL testIndex;
     static InputStream connection;
     static org.jboss.jandex.Index fullIndex;
+<<<<<<< HEAD
     static LimitedIndex limitedIndex;
     private String[] testIndiciesNames = {
         "com.ibm.ws.anno-jarV2.idx", //V2
@@ -71,6 +72,39 @@ public class LimitedIndexReaderTest{
             testNumberOfInterfaces(fullClasses,limitedClasses);
             testInterfacesHaveSameNames(fullClasses,limitedClasses);
         }
+=======
+    static LimitedIndex smallIndex;
+    static Collection<org.jboss.jandex.ClassInfo> fullClasses;
+    static Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses;
+    
+
+
+    @BeforeClass
+    public static void readInIndicies() throws IOException{
+
+        int indexToUse = 0;
+
+        String[] testIndiciesNames = {
+            "com.ibm.ws.anno-jarV2.idx", //V2
+            "jandex-2.0.6.Final-SNAPSHOT-jar.idx", //V2
+            "com.ibm.websphere.appserver.api.basics-jar.idx", //V2
+            "jandex-1.2.6.Final-SNAPSHOT-jar.idx", //V1
+            "com.ibm.ws.anno-jarV1.idx", //V1
+            "com.ibm.websphere.org.osgi.core-jar.idx" //V1
+        };
+
+
+        connection = new FileInputStream(testIndiciesNames[indexToUse]);
+        fullIndex = Jandex_Utils.basicReadIndex(connection);
+        connection.close();
+
+        connection = new FileInputStream(testIndiciesNames[indexToUse]);
+        smallIndex = Jandex_Utils.basicReadLimitedIndex(connection);
+        connection.close();
+
+        fullClasses = fullIndex.getKnownClasses();
+        limitedClasses = smallIndex.classes();
+>>>>>>> parent of 0b9b23857... saved before modifications
 
     }
 
