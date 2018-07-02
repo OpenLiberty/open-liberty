@@ -169,7 +169,7 @@ public final class ClassInfo{
             }
         }
 
-        return returnList.size() == 0 ? null : returnList;
+        return returnList;
     }
 
     public List<LimitedAnnotation> fieldAnnotations(String name){
@@ -180,7 +180,7 @@ public final class ClassInfo{
             }
         }
 
-        return returnList.size() == 0 ? null : returnList;
+        return returnList;
     }
 
     public List<LimitedAnnotation> fieldAnnotations(DotName name){
