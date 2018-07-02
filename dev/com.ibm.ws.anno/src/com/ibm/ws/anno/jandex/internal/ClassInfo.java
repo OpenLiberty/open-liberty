@@ -183,4 +183,12 @@ public final class ClassInfo{
         return returnList.size() == 0 ? null : returnList;
     }
 
+    public List<LimitedAnnotation> fieldAnnotations(DotName name){
+        return this.fieldAnnotations(name.toString());
+    }
+
+    public List<LimitedAnnotation> methodAnnotations(DotName name){
+        return this.methodAnnotations(name.toString());
+    }
+
 }
