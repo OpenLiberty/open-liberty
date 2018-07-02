@@ -75,12 +75,12 @@ public class LimitedIndexReaderTest{
     }
 
 
-    public void testSameNumberOfClasses(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testSameNumberOfClasses(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         Assert.assertTrue("The number of classes do not match between indicies",fullClasses.size() == limitedClasses.size());
     }
 
     
-    public void testSameFlags(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testSameFlags(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, Short> flags = new HashMap<String,Short>();
         for(org.jboss.jandex.ClassInfo fullClass : fullClasses){
             flags.put(fullClass.name().toString(), fullClass.flags());
@@ -100,7 +100,7 @@ public class LimitedIndexReaderTest{
 
     
     
-    public void testSameNamesofClasses(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testSameNamesofClasses(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashSet<String> names = new LinkedHashSet<>(fullClasses.size());
 
         //add the names from one of the indicies into a hashset
@@ -116,7 +116,7 @@ public class LimitedIndexReaderTest{
 
     
     
-    public void testNumberOfFields(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNumberOfFields(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, Integer> classesToFieldSize = new HashMap<String, Integer>();
         Integer numOfFields;
         int matchingCounter = 0;
@@ -142,7 +142,7 @@ public class LimitedIndexReaderTest{
     }
     
     
-    public void testSameNamesOfFields(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testSameNamesOfFields(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String,List<String>> namesToClasses = new HashMap<String,List<String>>();
         List<String> fieldNameHolder;
 
@@ -163,7 +163,7 @@ public class LimitedIndexReaderTest{
     }
 
     
-    public void testNumberOfClassAnnotation(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNumberOfClassAnnotation(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, Integer> classToAnnoSize = new HashMap<String, Integer>();
 
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
@@ -182,7 +182,7 @@ public class LimitedIndexReaderTest{
     }
 
     
-    public void testSameClassAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testSameClassAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, List<String>> classToAnno = new HashMap<String, List<String>>();
         List<String> classAnnoHolder;
 
@@ -205,7 +205,7 @@ public class LimitedIndexReaderTest{
     }
 
     
-    public void testNumberOfMethods(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNumberOfMethods(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, Integer> classMethodSize = new HashMap<String,Integer>();
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
             classMethodSize.put(fullClass.name().toString(), fullClass.methods().size());
@@ -221,7 +221,7 @@ public class LimitedIndexReaderTest{
     }
 
     
-    public void testSameNamesOfMethods(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testSameNamesOfMethods(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, List<String>> classToMethods = new HashMap<String, List<String>>();
         List<String> methodNameHolder;
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
@@ -242,7 +242,7 @@ public class LimitedIndexReaderTest{
     }
 
     
-    public void testNumberOfFieldAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNumberOfFieldAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, HashMap<String,Integer>> classToField = new HashMap<String,HashMap<String,Integer>>();
         HashMap<String,Integer> fieldToNumOfAnno;
         Integer numOfAnnoWrapper;
@@ -274,7 +274,7 @@ public class LimitedIndexReaderTest{
     /*
     *   Annotations are relative to the name of the method and not the signature
     */  
-    public void testNumberOfMethodAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNumberOfMethodAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, HashMap<String,Integer>> classToMethod = new HashMap<String,HashMap<String,Integer>>();
         HashMap<String,Integer> methodToNumOfAnno;
         List<String> checkedMethods = new LinkedList<String>();
@@ -319,7 +319,7 @@ public class LimitedIndexReaderTest{
 
 
     
-    public void testNamesOfFieldAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNamesOfFieldAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, HashMap<String,List<String>>> classToField = new HashMap<String,HashMap<String,List<String>>>();
         HashMap<String,List<String>> fieldToAnnosMap;
         
@@ -362,7 +362,7 @@ public class LimitedIndexReaderTest{
     /*
     *   Annotations are relative to the name of the method and not the signature
     */ 
-    public void testNamesOfMethodAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNamesOfMethodAnnotations(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, HashMap<String,List<String>>> classToMethod = new HashMap<String,HashMap<String,List<String>>>();
         HashMap<String,List<String>> methodToAnnosMap;
         List<String> checkedMethods = new LinkedList<String>();
@@ -412,7 +412,7 @@ public class LimitedIndexReaderTest{
 
 
     
-    public void testSuperNamesAlign(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testSuperNamesAlign(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, String> classToSuper = new HashMap<String,String>();
         String nameOfSuper;
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
@@ -428,7 +428,7 @@ public class LimitedIndexReaderTest{
     }
 
     
-    public void testNumberOfInterfaces(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testNumberOfInterfaces(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String, Integer> classToInterfaceSize = new HashMap<String,Integer>();
         Integer numOfInterfaces;
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
@@ -444,7 +444,7 @@ public class LimitedIndexReaderTest{
     }
 
     
-    public void testInterfacesHaveSameNames(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
+    private void testInterfacesHaveSameNames(Collection<org.jboss.jandex.ClassInfo> fullClasses, Collection<com.ibm.ws.anno.jandex.internal.ClassInfo> limitedClasses){
         HashMap<String,List<String>> classToInterfaceNames = new HashMap<String,List<String>>();
         List<String> nameHolder;
         for(org.jboss.jandex.ClassInfo fullClass: fullClasses){
