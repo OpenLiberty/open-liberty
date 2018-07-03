@@ -37,14 +37,8 @@ public final class ClassInfo{
     private final List<DotName> methods;
     private final List<LimitedAnnotation> fieldAnnotations;
     private final List<LimitedAnnotation> methodAnnotations;
-    //have a method to add and remove inside this class
     private List<DotName> classAnnotations;
 
-
-    //add in functions to add to list inside the class info class
-    //addField() etc.
-    //addAll etc.
-    
 
     ClassInfo(DotName name, DotName superClass, short flags, DotName[] interfaces){
         this.name = name;
@@ -62,8 +56,6 @@ public final class ClassInfo{
         return name.toString();
     }
 
-    //pull out the final from the method signatures
-
 
     /**
      * Returns the name of the class
@@ -77,11 +69,19 @@ public final class ClassInfo{
     /**
      * Returns the access flags for this class. The standard {@link java.lang.reflect.Modifier}
      * can be used to decode the value.
+     * 
+     * @return the flags of the class
      */
     public short flags() {
         return flags;
     }
 
+
+    /**
+     * Returns the DotName name representation of the class's super class
+     * 
+     * @return DotName of the super class
+     */
     public DotName superName() {
         return superClass;
     }
@@ -89,9 +89,9 @@ public final class ClassInfo{
 
 
     /**
-     * Returns a list of all annotations directly declared on this class.
+     * Returns a list of all the annotation names directed at this class
      *
-     * @return the list of annotations declared on this class
+     * @return the list of annotations declared on this class wrapped in DotName objects
      */
     public List<DotName> classAnnotations() {
         return classAnnotations;

@@ -1,4 +1,4 @@
-package com.ibm.ws.anno.test.cases;
+package com.ibm.ws.anno.test.jandex;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -29,6 +29,8 @@ import com.ibm.ws.anno.test.data.*;
 @RunWith(Parameterized.class)
 public class LimitedIndexReaderTest{
 
+    static final String indexDirectoryPath = "./publish/files/data/anno_tests/";
+
     @Parameters
     public static Collection data(){
         String[][] testIndicies = {
@@ -39,6 +41,10 @@ public class LimitedIndexReaderTest{
             {"com.ibm.ws.anno-jarV1.idx"}, //V1
             {"com.ibm.websphere.org.osgi.core-jar.idx"} //V1
         };
+
+        for(String[] indexName: testIndicies){
+            indexName[0] = indexDirectoryPath + indexName[0];
+        }
         return Arrays.asList(testIndicies);
     }
 
@@ -65,7 +71,7 @@ public class LimitedIndexReaderTest{
             indexFileName = (String) indexName;
         }
         catch(FileNotFoundException e){
-            Assert.fail("Cannot find index " + indexName);
+            Assert.fail("Cannot find index " + System.getProperty("user.dir")+ "/" + indexName);
         }
         catch(IOException e){
             e.printStackTrace();
