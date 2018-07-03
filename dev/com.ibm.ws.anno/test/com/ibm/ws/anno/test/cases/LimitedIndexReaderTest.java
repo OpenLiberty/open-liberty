@@ -47,7 +47,6 @@ public class LimitedIndexReaderTest{
     
     String indexFileName;
 
-    
     public LimitedIndexReaderTest(Object indexName){   
         InputStream connection;
         org.jboss.jandex.Index fullIndex;
