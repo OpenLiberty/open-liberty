@@ -120,19 +120,19 @@ public enum JavaSEPlatform implements Comparable<JavaSEPlatform> {
             }
         }
     }
-
-    /** GlassFish Java SE platform enumeration length. */
-    public static final int LENGTH = JavaSEPlatform.values().length;
-
-    /** Current Java SE platform. */
-    public static final JavaSEPlatform CURRENT
-            = JavaVersion.vmVersion().toPlatform();
-
+    
     /** Lowest supported Java SE platform. Currently it's Java SE 1.8. */
     public static final JavaSEPlatform MIN_SUPPORTED = v1_8;
 
     /** Latest Java SE platform. This value is used when Java SE platform detection fails. */
     static final JavaSEPlatform LATEST = JavaSEPlatform.v18_9;
+
+    /** GlassFish Java SE platform enumeration length. */
+    public static final int LENGTH = JavaSEPlatform.values().length;
+    
+    /** Current Java SE platform. */
+    public static final JavaSEPlatform CURRENT
+            = JavaVersion.vmVersion().toPlatform();
 
     /**
      * Check whether current Java SE is exactly matching provided platform.
