@@ -11,11 +11,8 @@
 package com.ibm.ws.install.internal;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,6 +29,7 @@ import java.util.logging.Level;
 
 import org.apache.tools.ant.BuildException;
 
+import com.ibm.ws.filetransfer.util.FileServiceUtil;
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallEventListener;
@@ -51,18 +49,19 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
-import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
 import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
 import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
-import com.ibm.ws.repository.exceptions.RepositoryBackendException;
 import com.ibm.ws.repository.exceptions.RepositoryException;
-import com.ibm.ws.repository.parsers.internal.CreateJsonRepositoryFiles;
+import com.ibm.ws.repository.parsers.EsaParser;
+import com.ibm.ws.repository.parsers.Parser;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
+import com.ibm.ws.repository.resources.writeable.RepositoryResourceWritable;
+import com.ibm.ws.repository.strategies.writeable.AddThenDeleteStrategy;
 
 /**
  *
@@ -541,9 +540,16 @@ public class InstallKernelMap implements Map {
             //TODO
             //check if we do the deleteOnExit or not
             if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
-                Path tempDir = Files.createTempDirectory("individualEsas");
+                Path tempDir = Files.createTempDirectory("generatedJson");
                 tempDir.toFile().deleteOnExit();
-                repoList.add(individualESAInstall(tempDir));
+                //String jsonDir = "/Users/ramyaprasad/Documents/Demo/Individual/json";
+                //new File(jsonDir).mkdirs();
+                //File jsonDirectory = new File (jsonDir);
+                File individualEsaJson = individualESAInstall(tempDir);
+                //File individualEsaJson = individualESAInstall(jsonDir);
+                RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
+                repoList.add(repo);
+                //repoList.add(individualESAInstall(tempDir));
             }
 
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
@@ -741,52 +747,108 @@ public class InstallKernelMap implements Map {
     }
 
     //accept List of Files
-    private DirectoryRepositoryConnection individualESAInstall(Path individualEsas) throws RepositoryBackendException, IOException, BuildException {
+    private File individualESAInstall(Path generatedJson) throws IOException, BuildException, RepositoryException {
 
-        String dir = individualEsas.toString();
+        String dir = generatedJson.toString();
+        // String dir = generatedJson;
+        System.out.println("This is the directory " + dir);
+        System.out.println("Individual esas list " + data.get(INDIVIDUAL_ESAS));
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
 
-        //copy esas to temp folder
+        //copy esas to temp folder - don't
+        //only generate json in separate folder
+        //generate single json
+        File singleJson = new File(dir + "/SingleJson.json");
+        /*
+         * SingleFileRepositoryConnection mySingleFileRepo = null;
+         * try {
+         * mySingleFileRepo = SingleFileRepositoryConnection.createEmptyRepository(singleJson);
+         * } catch (IOException e) {
+         * e.printStackTrace();
+         * }
+         */
+
         for (File esa : esas) {
-            InputStream is = null;
-            OutputStream os = null;
-            File dest = new File(dir + "/" + esa.getName());
-            try {
-                is = new FileInputStream(esa);
-                os = new FileOutputStream(dest);
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = is.read(buffer)) > 0) {
-                    os.write(buffer, 0, length);
+            /*
+             * InputStream is = null;
+             * OutputStream os = null;
+             * File dest = new File(dir + "/" + esa.getName());
+             * try {
+             * is = new FileInputStream(esa);
+             * os = new FileOutputStream(dest);
+             * byte[] buffer = new byte[1024];
+             * int length;
+             * while ((length = is.read(buffer)) > 0) {
+             * os.write(buffer, 0, length);
+             * }
+             * } finally {
+             * is.close();
+             * os.close();
+             * }
+             */
+            //generate json file using given code
+
+            // CreateJsonRepositoryFiles jsonCreator = new CreateJsonRepositoryFiles();
+            //jsonCreator.setAssetFile(esa);
+            // jsonCreator.setAssetType("FEATURE");
+            // jsonCreator.setOutputLocation(dir);
+            //jsonCreator.execute();
+
+            //  File esa = new File(name);
+            SingleFileRepositoryConnection mySingleFileRepo = null;
+            if (singleJson.exists()) {
+                mySingleFileRepo = new SingleFileRepositoryConnection(singleJson);
+            } else {
+                try {
+                    mySingleFileRepo = SingleFileRepositoryConnection.createEmptyRepository(singleJson);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } finally {
-                is.close();
-                os.close();
+            }
+            System.out.println("Esa name: " + esa.getName());
+            Parser<? extends RepositoryResourceWritable> parser = new EsaParser();
+            File metadataDirectory = new File(esa.getParent() + "/" + esa.getName() + ".metadata.zip");
+            // File metadataDirectory = new File(esa.getParent() + "/com.ibm.websphere.appclient.appClient-1.0.esa.metadata.zip");
+
+            if (!metadataDirectory.exists()) {
+                String metadataDir = dir + "/" + esa.getName() + ".metadata";
+                new File(metadataDir).mkdirs();
+                metadataDirectory = new File(metadataDir);
+                String data = "licenseType=UNSPECIFIED";
+                FileOutputStream out = new FileOutputStream(metadataDir + "/assetInfo.properties");
+                out.write(data.getBytes());
+                out.close();
+                FileServiceUtil.createArchive(metadataDir, esa.getParent() + "/" + esa.getName() + ".metadata.zip");
+                File metadataDirectory2 = new File(esa.getParent() + "/" + esa.getName() + ".metadata.zip");
+                RepositoryResourceWritable resource = parser.parseFileToResource(esa, metadataDirectory2, null);
+
             }
 
-            //generate json file using given code
-            CreateJsonRepositoryFiles jsonCreator = new CreateJsonRepositoryFiles();
-            jsonCreator.setAssetFile(dest);
-            jsonCreator.setAssetType("FEATURE");
-            jsonCreator.setOutputLocation(dir);
-            jsonCreator.execute();
+            RepositoryResourceWritable resource = parser.parseFileToResource(esa, metadataDirectory, null);
+            resource.updateGeneratedFields(true);
+            resource.setRepositoryConnection(mySingleFileRepo);
+            resource.uploadToMassive(new AddThenDeleteStrategy());
 
         }
 
         //use temp directory as DirectoryRepositoryConnection
-        DirectoryRepositoryConnection conn = new DirectoryRepositoryConnection(new File(dir));
+
+        //replace with SingleFileRepositoryConnection for each Json
+
+        return singleJson;
+        //  DirectoryRepositoryConnection conn = new DirectoryRepositoryConnection(new File(dir));
 
         //TODO
         //remove after testing
-        for (RepositoryResource res : conn.getAllResources()) {
-            res.dump(System.out);
-        }
+        //   for (RepositoryResource res : conn.getAllResources()) {
+        //      res.dump(System.out);
+        //   }
 
         //add connection to list of connected repos ( Include the ESA feature names in the list of features to install )
         //  RepositoryConnectionList repoList = new RepositoryConnectionList();
         //  repoList.add(conn);
 
-        return conn;
+        //  return conn;
 
     }
 
