@@ -107,6 +107,7 @@ Include-Resource: \
   @${repo;org.eclipse.persistence.jpa.jpql;2.6.7.WAS;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa.modelgen;2.6.7.WAS-v20180619-9501750;EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence.jpa;2.6.7.WAS;EXACT}!/!META-INF/maven/*
+  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
 
 
 publish.wlp.jar.suffix: dev/api/third-party
