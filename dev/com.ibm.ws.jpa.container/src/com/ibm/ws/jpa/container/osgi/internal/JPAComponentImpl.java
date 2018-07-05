@@ -13,12 +13,15 @@ package com.ibm.ws.jpa.container.osgi.internal;
 import static com.ibm.ws.jpa.management.JPAConstants.PERSISTENCE_XML_RESOURCE_NAME;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -80,16 +83,17 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
+import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.resource.ResourceBindingListener;
 
 @Component(configurationPid = "com.ibm.ws.jpacomponent",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { JPAComponent.class, ApplicationStateListener.class, ModuleStateListener.class },
+           service = { JPAComponent.class, ApplicationStateListener.class, ModuleStateListener.class, Introspector.class },
            // Use a higher service.ranking to ensure app/module listeners can
            // register class transformers before other components attempt to
            // load classes.
            property = { "service.vendor=IBM", "service.ranking:Integer=1000" })
-public class JPAComponentImpl extends AbstractJPAComponent implements ApplicationStateListener, ModuleStateListener {
+public class JPAComponentImpl extends AbstractJPAComponent implements ApplicationStateListener, ModuleStateListener, Introspector {
     private static final TraceComponent tc = Tr.register(JPAComponentImpl.class);
     final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
@@ -836,5 +840,79 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
             Tr.debug(tc, "Recycling JPA applications", appsToRestart);
         ApplicationRecycleCoordinator appCoord = (ApplicationRecycleCoordinator) priv.locateService(context, REFERENCE_APP_COORD);
         appCoord.recycleApplications(appsToRestart);
+    }
+
+    /*
+     * com.ibm.wsspi.logging.Introspector implementation
+     *
+     */
+    @Override
+    public String getIntrospectorName() {
+        return "JPARuntimeInspector";
+    }
+
+    @Override
+    public String getIntrospectorDescription() {
+        return "JPA Runtime Internal State Information";
+    }
+
+    @Override
+    public void introspect(PrintWriter out) throws Exception {
+        out.println("JPA Component State:");
+        out.println();
+
+        out.println("Service Properties:");
+        Enumeration<String> keysEnum = props.keys();
+        while (keysEnum.hasMoreElements()) {
+            String key = keysEnum.nextElement();
+            Object o = props.get(key);
+            if (o != null && o.getClass().isArray()) {
+                out.print("  " + key + " = [ ");
+                Object[] objArr = (Object[]) o;
+                if (objArr.length != 0) {
+                    boolean first = true;
+                    for (Object obj : objArr) {
+                        if (first) {
+                            first = false;
+                        } else {
+                            out.print(", ");
+                        }
+                        out.print(obj);
+                    }
+                }
+                out.println(" ]");
+            } else {
+                out.println("  " + key + " = " + o);
+            }
+
+        }
+        out.println();
+
+        out.println("jpaRuntime = " + jpaRuntime.getService());
+        out.println("Provider Runtime Integration Service = " + providerIntegrationSR.getService());
+
+        out.println("Registered JPAEMFPropertyProvider Services:");
+        Iterator<JPAEMFPropertyProvider> servicesIter = propProviderSRs.getServices();
+        while (servicesIter.hasNext()) {
+            out.println("   " + servicesIter.next());
+        }
+        out.println();
+
+        out.println("Applications with JPA: ");
+        final Map<String, JPAApplInfo> appMap = new HashMap<String, JPAApplInfo>();
+        synchronized (applList) {
+            appMap.putAll(applList);
+        }
+
+        for (Map.Entry<String, JPAApplInfo> entry : appMap.entrySet()) {
+            final String appName = entry.getKey();
+            final OSGiJPAApplInfo appl = (OSGiJPAApplInfo) entry.getValue();
+
+            out.println();
+            out.println("################################################################################");
+            out.println();
+            out.println("Application \"" + appName + "\":");
+            appl.introspect(out);
+        }
     }
 }
