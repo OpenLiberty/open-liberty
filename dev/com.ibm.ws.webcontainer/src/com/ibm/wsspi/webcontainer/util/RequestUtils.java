@@ -226,7 +226,7 @@ public class RequestUtils {
             }
             // 724365(PM53930) Start
             totalSize++;
-            if (totalSize >= maxParamPerRequest) {
+            if (maxParamPerRequest != -1 && totalSize >= maxParamPerRequest) {
                 // possibly 10000 big enough, will never be here 
                 logger.logp(Level.SEVERE, CLASS_NAME, "parseQueryString",
                             MessageFormat.format(nls.getString("Exceeding.maximum.parameters"), new Object[] { maxParamPerRequest, totalSize }));
