@@ -28,7 +28,7 @@ fat.project: true
 tested.features: opentracing-1.0
 
 -buildpath: \
-	com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0.1;version=latest,\
 	com.ibm.ws.opentracing;version=latest, \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
