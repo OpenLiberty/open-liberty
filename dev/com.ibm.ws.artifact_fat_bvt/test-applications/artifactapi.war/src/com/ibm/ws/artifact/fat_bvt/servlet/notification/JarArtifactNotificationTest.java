@@ -160,12 +160,20 @@ public class JarArtifactNotificationTest extends ArtifactNotificationTestImpl {
             println("Waited for zip to release; requested [ " + Long.valueOf(maxInterval * 2) + " ] ms;" +
                     " actual [ " + Long.valueOf(endMs - startMs) + " ] ms");
 
-            if ( !removeFile(testJar) ) {
-                println("FAIL: Delayed remove failed [ " + testJarPath + " ]");
-                return false;
-            } else {
-                println("Delayed remove [ " + testJarPath + " ]");
-            }
+            // Loop through a few times. Some external file scanner may have obtained a file handle temporarily
+            boolean removed = false;
+        	for ( int i = 1; (!removed && i < 5); i++) {
+        		if ( !removeFile(testJar) ) {            
+        			println("FAIL: Delayed remove " + i + " failed [ " + testJarPath + " ]");        		               
+        		} else {
+        			println("Delayed remove [ " + testJarPath + " ]");
+        			removed = true;
+        		}
+        	}
+        	if ( !removed ) {
+        		println("FAIL: Tried to delete [ " + testJarPath + " ] 5 times but failed.");
+        		return false;
+        	}
 
         } else {
             println("Initial remove [ " + testJarPath + " ]");
