@@ -652,8 +652,18 @@ public class MvnUtils {
      * @param repo
      * @return
      */
-    public static String getApiSpecVersionAfterClone(File repo) {
+    public static String getSpecVersionAfterClone(File repo) {
         return getPomVersionInDir(repo, "spec");
+    }
+
+    /**
+     * Return the version from the <repo>/api/pom.xml
+     *
+     * @param repo
+     * @return
+     */
+    public static String getApiVersionAfterClone(File repo) {
+        return getPomVersionInDir(repo, "api");
     }
 
     /**
@@ -663,7 +673,12 @@ public class MvnUtils {
      * @return
      */
     public static String getTckVersionAfterClone(File repo) {
-        return getPomVersionInDir(repo, "tck");
+        File tckDir = new File(repo, "tck");
+        if (tckDir.exists()) {
+            return getPomVersionInDir(repo, "tck");
+        } else {
+            return getPomVersionInDir(repo, ".");
+        }
     }
 
     /**

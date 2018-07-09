@@ -119,7 +119,7 @@ public class FaultToleranceGitTckLauncher {
 
         HashMap<String, String> addedProps = new HashMap<String, String>();
 
-        String apiVersion = MvnUtils.getApiSpecVersionAfterClone(repo);
+        String apiVersion = MvnUtils.getSpecVersionAfterClone(repo);
         System.out.println("Queried api.version is : " + apiVersion);
         addedProps.put("api.version", apiVersion);
 

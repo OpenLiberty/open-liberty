@@ -8,13 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config.tck;
+package com.ibm.ws.cdi.cts.tck;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -33,20 +32,22 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
 /**
- * This is a test class that runs the whole Config TCK from a git branch. The TCK results
+ * This is a test class that runs the whole CDI CTS. The results
  * are copied in the results/junit directory before the Simplicity FAT framework
  * generates the html report - so there is detailed information on individual
  * tests as if they were running as simplicity junit FAT tests in the standard
  * location.
  */
 @RunWith(FATRunner.class)
-public class ConfigGitTckLauncher {
+public class CdiCtsTckLauncher {
 
     /**  */
     private static String GIT_REPO_PARENT_DIR = "publish/gitRepos/";
-    private static final String GIT_REPO_NAME = "microprofile-config";
+    private static final String CDI_TCK_REPO_NAME = "cdi-tck";
+    // Weld Porting Package
+    private static final String WAS_CTS_REPO_NAME = "liberty-cdi-tck-runner";
 
-    @Server("ConfigGitTCKServer")
+    @Server("CdiCtsTCKServer")
     public static LibertyServer server;
 
     @BeforeClass
@@ -64,7 +65,7 @@ public class ConfigGitTckLauncher {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E");
+        server.stopServer();
     }
 
     /**
@@ -78,31 +79,36 @@ public class ConfigGitTckLauncher {
     public void runFreshMasterBranchTck() throws Exception {
 
         File repoParent = new File(GIT_REPO_PARENT_DIR);
-        File repo = new File(repoParent, GIT_REPO_NAME);
 
+        //Build and install locally the actual latest master branch CDI TCK
+        File repo = new File(repoParent, CDI_TCK_REPO_NAME);
         MvnUtils.mvnCleanInstall(repo);
 
         HashMap<String, String> addedProps = new HashMap<String, String>();
 
-        String apiVersion = MvnUtils.getSpecVersionAfterClone(repo);
+        // Fetch the API version to inject into the runner pom.xml via a property
+        String apiVersion = MvnUtils.getApiVersionAfterClone(repo);
         System.out.println("Queried api.version is : " + apiVersion);
         addedProps.put("api.version", apiVersion);
 
+        // Fetch the TCK version to inject into the runner pom.xml via a property
         String tckVersion = MvnUtils.getTckVersionAfterClone(repo);
         System.out.println("Queried tck.version is : " + tckVersion);
         addedProps.put("tck.version", tckVersion);
 
-        // A command line -Dprop=value actually gets to here as a environment variable...
+        // A command line -Dprop=value is transformed to a ENV variable
+        // by the Simplicity framework
+        //
+        // Allow the impl version to be overridden
         String implVersion = System.getenv("impl.version");
         System.out.println("Passed in impl.version is : " + implVersion);
         addedProps.put("impl.version", implVersion);
 
-        // We store a set of keys that we want the system to add "1.1" or "1.2" etc to
-        // depending on the pom.xml contents.
-        HashSet<String> versionedLibraries = new HashSet<>(Arrays.asList("com.ibm.websphere.org.eclipse.microprofile.config"));
-        String backStopImpl = "1.3"; // Used if there is no impl matching the spec/pom.xml <version> AND impl.version is not set
+        // See other *TckLauncher classes for examples of how to use the below:
+        HashSet<String> versionedLibraries = null;
+        String backStopImpl = null;
 
-        MvnUtils.runTCKMvnCmdWithProps(server, "com.ibm.ws.microprofile.config_fat_tck", this.getClass() + ":launchConfigTCK",
+        MvnUtils.runTCKMvnCmdWithProps(server, "com.ibm.ws.cdi.cts_fat_tck", this.getClass() + ":launchCdiCtsTck",
                                        addedProps, versionedLibraries, backStopImpl);
     }
 
