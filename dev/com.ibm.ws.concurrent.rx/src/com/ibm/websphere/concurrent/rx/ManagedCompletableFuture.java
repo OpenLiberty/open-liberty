@@ -43,6 +43,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -84,7 +85,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * The Java SE 8 CompletableFuture lacks certain important methods, namely defaultExecutor and newIncompleteFuture,
      * without which it is difficult to extend Java's built-in implementation.
      */
-    private static final boolean JAVA8 = true; // TODO detect version correctly once ready to experiment with Java 9+ methods.
+    private static final boolean JAVA8 = true; // TODO use JavaInfo detect version correctly once ready to experiment with Java 9+ methods.
 
     /**
      * Execution property that indicates a task should run with any previous transaction suspended.
@@ -254,7 +255,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
                             null);
         } else {
             ManagedCompletableFuture<U> completableFuture = new ManagedCompletableFuture<U>(defaultExecutor, null);
-            completableFuture.complete(value);
+            completableFuture.super_complete(value);
             return completableFuture;
         }
     }
@@ -842,10 +843,14 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public void obtrudeException(Throwable x) {
-        // disallow the possibility of concurrent obtrudes so as to keep the values consistent
-        synchronized (completableFuture) {
+        if (JAVA8) {
+            // disallow the possibility of concurrent obtrudes so as to keep the values consistent
+            synchronized (completableFuture) {
+                super.obtrudeException(x);
+                completableFuture.obtrudeException(x);
+            }
+        } else {
             super.obtrudeException(x);
-            completableFuture.obtrudeException(x);
         }
 
         // If corresponding task has been submitted to an executor, attempt to cancel it
@@ -861,10 +866,14 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     @Override
     public void obtrudeValue(T value) {
-        // disallow the possibility of concurrent obtrudes so as to keep the values consistent
-        synchronized (completableFuture) {
+        if (JAVA8) {
+            // disallow the possibility of concurrent obtrudes so as to keep the values consistent
+            synchronized (completableFuture) {
+                super.obtrudeValue(value);
+                completableFuture.obtrudeValue(value);
+            }
+        } else {
             super.obtrudeValue(value);
-            completableFuture.obtrudeValue(value);
         }
 
         // If corresponding task has been submitted to an executor, attempt to cancel it
@@ -1029,6 +1038,24 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
                 futureRefLocal.remove();
             }
         }
+    }
+
+    /**
+     * Invokes complete on the superclass.
+     *
+     * @see java.util.concurrent.CompletableFuture#complete(T)
+     */
+    private final boolean super_complete(T value) {
+        return super.complete(value);
+    }
+
+    /**
+     * Invokes completeExceptionally on the superclass.
+     *
+     * @see java.util.concurrent.CompletableFuture#completeExceptionally(java.lang.Throwable)
+     */
+    private final boolean super_completeExceptionally(Throwable x) {
+        return super.completeExceptionally(x);
     }
 
     /**
@@ -1468,8 +1495,12 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     }
 
     /**
-     * Example output:
-     * ManagedCompletableFuture@11111111[22222222 Not completed] via PolicyTaskFuture@33333333 for
+     * Example output for post Java SE 8:
+     * ManagedCompletableFuture@11111111[Not completed, 2 dependents] via PolicyTaskFuture@33333333 for
+     * java.util.concurrent.CompletableFuture$AsyncRun@44444444 RUNNING on concurrencyPolicy[defaultConcurrencyPolicy]
+     *
+     * Example output for Java SE 8:
+     * ManagedCompletableFuture@11111111[22222222 Not completed, 2 dependents] via PolicyTaskFuture@33333333 for
      * java.util.concurrent.CompletableFuture$AsyncRun@44444444 RUNNING on concurrencyPolicy[defaultConcurrencyPolicy]
      *
      * @see java.util.concurrent.CompletableFuture#toString()
@@ -1477,19 +1508,20 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder s = new StringBuilder(250).append("ManagedCompletableFuture@").append(Integer.toHexString(System.identityHashCode(this))) //
-                        .append('[').append(Integer.toHexString(completableFuture.hashCode()));
-        if (completableFuture.isDone())
-            if (completableFuture.isCompletedExceptionally())
-                s.append(" Completed exceptionally]");
+        StringBuilder s = new StringBuilder(250).append("ManagedCompletableFuture@").append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        if (JAVA8)
+            s.append(Integer.toHexString(completableFuture.hashCode())).append(' ');
+        if (JAVA8 ? completableFuture.isDone() : super.isDone())
+            if (JAVA8 ? completableFuture.isCompletedExceptionally() : super.isCompletedExceptionally())
+                s.append("Completed exceptionally]");
             else
-                s.append(" Completed normally]");
+                s.append("Completed normally]");
         else {
-            s.append(" Not completed");
-            // Subtract out the extra dependent stage that we use internally to be notified of completion.
-            int d = completableFuture.getNumberOfDependents();
-            if (d > 1)
-                s.append(", ").append(d - 1).append(" dependents]");
+            s.append("Not completed");
+            // For Java SE 8, subtract out the extra dependent stage that we use internally to be notified of completion.
+            int d = JAVA8 ? completableFuture.getNumberOfDependents() - 1 : super.getNumberOfDependents();
+            if (d > 0)
+                s.append(", ").append(d).append(" dependents]");
             else
                 s.append(']');
         }
@@ -1574,22 +1606,26 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     private static class AsyncRunnable implements Runnable {
         private final Runnable action;
-        private final CompletableFuture<Void> completableFuture; // Null if Java SE 8
+        private final ManagedCompletableFuture<Void> completableFuture; // Null if Java SE 8
         private final ThreadContextDescriptor threadContextDescriptor;
 
-        private AsyncRunnable(ThreadContextDescriptor threadContextDescriptor, Runnable action, CompletableFuture<Void> completableFuture) {
+        private AsyncRunnable(ThreadContextDescriptor threadContextDescriptor, Runnable action, ManagedCompletableFuture<Void> completableFuture) {
             this.action = action;
             this.completableFuture = completableFuture;
             this.threadContextDescriptor = threadContextDescriptor;
         }
 
+        @FFDCIgnore({ Error.class, RuntimeException.class })
         @Override
         public void run() {
             Throwable failure = null;
             ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
             try {
                 action.run();
-            } catch (Error | RuntimeException x) {
+            } catch (Error x) {
+                failure = x;
+                throw x;
+            } catch (RuntimeException x) {
                 failure = x;
                 throw x;
             } finally {
@@ -1598,9 +1634,9 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
                 } finally {
                     if (!JAVA8)
                         if (failure == null)
-                            completableFuture.complete(null);
+                            completableFuture.super_complete(null);
                         else
-                            completableFuture.completeExceptionally(failure);
+                            completableFuture.super_completeExceptionally(failure);
                 }
             }
         }
@@ -1614,15 +1650,16 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      */
     private static class AsyncSupplier<T> implements Runnable {
         private final Supplier<T> action;
-        private final CompletableFuture<T> completableFuture;
+        private final ManagedCompletableFuture<T> completableFuture;
         private final ThreadContextDescriptor threadContextDescriptor;
 
-        private AsyncSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action, CompletableFuture<T> completableFuture) {
+        private AsyncSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action, ManagedCompletableFuture<T> completableFuture) {
             this.action = action;
             this.completableFuture = completableFuture;
             this.threadContextDescriptor = threadContextDescriptor;
         }
 
+        @FFDCIgnore({ Error.class, RuntimeException.class })
         @Override
         public void run() {
             T result = null;
@@ -1630,7 +1667,10 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             ArrayList<ThreadContext> contextApplied = threadContextDescriptor.taskStarting();
             try {
                 result = action.get();
-            } catch (Error | RuntimeException x) {
+            } catch (Error x) {
+                failure = x;
+                throw x;
+            } catch (RuntimeException x) {
                 failure = x;
                 throw x;
             } finally {
@@ -1638,9 +1678,9 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
                     threadContextDescriptor.taskStopping(contextApplied);
                 } finally {
                     if (failure == null)
-                        completableFuture.complete(result);
+                        completableFuture.super_complete(result);
                     else
-                        completableFuture.completeExceptionally(failure);
+                        completableFuture.super_completeExceptionally(failure);
                 }
             }
         }
