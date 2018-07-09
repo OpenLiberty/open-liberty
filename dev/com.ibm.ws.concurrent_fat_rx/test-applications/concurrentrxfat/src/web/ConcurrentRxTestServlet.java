@@ -66,6 +66,18 @@ public class ConcurrentRxTestServlet extends FATServlet {
     // Maximum number of nanoseconds to wait for a task to complete
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    static final boolean AT_LEAST_JAVA_9;
+    static {
+        boolean atLeastJava9;
+        try {
+            CompletableFuture.class.getMethod("copy");
+            atLeastJava9 = true;
+        } catch (NoSuchMethodException x) {
+            atLeastJava9 = false;
+        }
+        AT_LEAST_JAVA_9 = atLeastJava9;
+    }
+
     @Resource(name = "java:comp/env/executorRef")
     private ManagedExecutorService defaultManagedExecutor;
 
@@ -1047,6 +1059,58 @@ public class ConcurrentRxTestServlet extends FATServlet {
             // in case the test fails, unblock the thread that is running the supplier
             continueLatch.countDown();
         }
+    }
+
+    /**
+     * Verify that copied stages do not impact the stage from which they are copied.
+     */
+    @Test
+    public void testCopy() throws Exception {
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        BlockableSupplier<Long> blocker = new BlockableSupplier<Long>(100l, null, continueLatch);
+
+        ManagedCompletableFuture<Long> cf0 = (ManagedCompletableFuture<Long>) ManagedCompletableFuture.supplyAsync(blocker);
+
+        if (!AT_LEAST_JAVA_9)
+            try {
+                fail("Should not be able to copy in Java SE 8. " + cf0.copy());
+            } catch (UnsupportedOperationException x) {
+                return; // method unavailable for Java SE 8
+            } finally {
+                continueLatch.countDown();
+            }
+
+        CompletableFuture<Long> cf1 = cf0.copy();
+        CompletableFuture<Long> cf2 = cf0.copy();
+        CompletableFuture<Long> cf3 = cf0.copy();
+
+        assertTrue(cf1 instanceof ManagedCompletableFuture);
+        assertTrue(cf2 instanceof ManagedCompletableFuture);
+        assertTrue(cf3 instanceof ManagedCompletableFuture);
+
+        assertTrue(cf1.complete(200l));
+        assertTrue(cf2.completeExceptionally(new ArithmeticException("Intentional failure")));
+        assertFalse(cf0.isDone());
+        assertFalse(cf3.isDone());
+
+        continueLatch.countDown();
+
+        assertEquals(Long.valueOf(100), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf3.isDone());
+        assertFalse(cf3.isCompletedExceptionally());
+
+        assertEquals(Long.valueOf(200), cf1.getNow(-1l));
+        try {
+            Long result = cf2.getNow(-1l);
+            fail("Unexpected result for copied CompletableFuture: " + result);
+        } catch (CompletionException x) {
+            if (!(x.getCause() instanceof ArithmeticException))
+                throw x;
+        }
+
+        assertEquals(Long.valueOf(100), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf0.isDone());
+        assertFalse(cf0.isCompletedExceptionally());
     }
 
     /**

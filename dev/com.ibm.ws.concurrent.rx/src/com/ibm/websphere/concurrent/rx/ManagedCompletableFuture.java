@@ -602,9 +602,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * @see java.util.concurrent.CompletableFuture#copy()
      */
-    // TODO Java 9 @Override
-    public CompletableFuture<T> copy​() {
-        throw new UnsupportedOperationException();
+    public CompletableFuture<T> copy() {
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+        else
+            return super.thenApply(Function.identity());
     }
 
     /**
