@@ -1616,6 +1616,145 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that for post Java SE 8, a minimal completion stage can be obtained and restricts operations
+     * such that the stage only completes naturally.
+     */
+    @Test
+    public void testMinimalCompletionStage() throws Exception {
+        CompletionStage<Short> cs1, cs2, cs4, cs5;
+        final String[] threadNames = new String[6];
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        ManagedCompletableFuture<Short> cf0 = (ManagedCompletableFuture<Short>) ManagedCompletableFuture //
+                        .supplyAsync(new BlockableSupplier<Short>((short) 85, new CountDownLatch(1), blocker));
+        try {
+            try {
+                cs1 = cf0.minimalCompletionStage();
+            } catch (UnsupportedOperationException x) {
+                if (AT_LEAST_JAVA_9)
+                    throw x;
+                else
+                    return; // method not available for Java SE 8
+            }
+
+            assertTrue(cs1 instanceof ManagedCompletableFuture);
+
+            cs2 = cs1.thenApplyAsync(a -> {
+                threadNames[2] = Thread.currentThread().getName();
+                return (short) (a + 1);
+            });
+
+            assertTrue(cs2 instanceof ManagedCompletableFuture);
+
+            CompletableFuture<Short> cf3 = cs2.toCompletableFuture();
+            assertFalse(cf3.isDone());
+            assertTrue(cf3.complete((short) 3));
+            assertEquals(Short.valueOf((short) 3), cf3.getNow((short) 4));
+            assertTrue(cf3.isDone());
+
+            cs4 = cs2.thenApplyAsync(a -> {
+                threadNames[4] = Thread.currentThread().getName();
+                return (short) (a + 10);
+            }, testThreads);
+
+            assertTrue(cs4 instanceof ManagedCompletableFuture);
+
+            cs5 = cs4.thenApply(a -> {
+                threadNames[5] = Thread.currentThread().getName();
+                try {
+                    // require context of thread that creates this stage, not of the thread running the prior stage
+                    InitialContext.doLookup("java:comp/env/executorRef");
+                } catch (NamingException x) {
+                    throw new CompletionException(x);
+                }
+                return (short) (a + 100);
+            });
+
+            ManagedCompletableFuture<Short> cf5 = (ManagedCompletableFuture<Short>) cs5;
+
+            try {
+                fail("cancel must not be permitted on minimal stage: " + cf5.cancel(false));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("complete must not be permitted on minimal stage: " + cf5.complete((short) 5));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("completeAsync must not be permitted on minimal stage: " + cf5.completeAsync(() -> (short) 15));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("completeAsync(executor) must not be permitted on minimal stage: " + cf5.completeAsync(() -> (short) 25, testThreads));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("completeExceptionally must not be permitted on minimal stage: " + cf5.completeExceptionally(new IllegalStateException("test")));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("completeOnTimeout​ must not be permitted on minimal stage: " + cf5.completeOnTimeout((short) 35, 350, TimeUnit.MILLISECONDS));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("get must not be permitted on minimal stage: " + cf5.get());
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("get(timeout) must not be permitted on minimal stage: " + cf5.get(5, TimeUnit.SECONDS));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("join must not be permitted on minimal stage: " + cf5.join());
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                cf5.obtrudeException(new ClassCastException("test"));
+                fail("obtrudeException must not be permitted on minimal stage: ");
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                cf5.obtrudeValue((short) 5);
+                fail("obtrudeValue must not be permitted on minimal stage: ");
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            try {
+                fail("orTimeout must not be permitted on minimal stage: " + cf5.orTimeout(5, TimeUnit.MINUTES));
+            } catch (UnsupportedOperationException x) {
+            } // pass
+
+            assertFalse(cf0.isDone());
+        } finally {
+            blocker.countDown();
+        }
+
+        assertEquals(Short.valueOf((short) 85), cf0.join());
+        assertTrue(cf0.isDone());
+        assertFalse(cf0.isCancelled());
+        assertFalse(cf0.isCompletedExceptionally());
+
+        CompletableFuture<Short> cf5 = cs5.toCompletableFuture();
+        assertEquals(Short.valueOf((short) 196), cf5.join());
+
+        String currentThreadName = Thread.currentThread().getName();
+        assertTrue(threadNames[2], threadNames[2].startsWith("Default Executor-thread-")); // must run on Liberty global thread pool
+        assertTrue(threadNames[2], !currentThreadName.equals(threadNames[2])); // must not run on servlet thread
+        assertTrue(threadNames[4], !threadNames[4].startsWith("Default Executor-thread-")); // must not run on Liberty global thread pool
+        assertTrue(threadNames[4], !currentThreadName.equals(threadNames[4])); // must not run on servlet thread
+    }
+
+    /**
      * General test of obtruding values and exceptions.
      */
     @Test
