@@ -13,8 +13,13 @@
 	</featureManager>
 
 	<application location="serverXMLApp.war">
-	       <appProperties serverXMLKey1="serverXMLValue1"/>
-	       <appProperties serverXMLKey1="serverXMLValue1a" serverXMLKey2="serverXMLValue2" serverXMLKey3="serverXMLValue3"/>
-	       <appProperties serverXMLKey1="serverXMLValue1b" serverXMLKey4="serverXMLValue4"/>
+   		<appProperties>
+   		       <property name="serverXMLKey1" value="serverXMLValue1"/>
+   		       <property name="serverXMLKey1" value="serverXMLValue1a"/>
+   		       <property name="serverXMLKey2" value="serverXMLValue2"/>
+   		       <property name="serverXMLKey3" value="serverXMLValue3"/>
+   		       <property name="serverXMLKey1" value="serverXMLValue1b"/>
+   		       <property name="serverXMLKey4" value="serverXMLValue4"/>
+   		</appProperties>
 	</application>
 </server>
