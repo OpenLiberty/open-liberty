@@ -72,7 +72,7 @@ com.ibm.ws.jsf.23.dd; \
 
 instrument.ffdc: false
 instrument.classesExcludes: \
-    **/org/**
+    org/**/*.class
 
 Include-Resource: \
   @${repo;org.apache.myfaces.core.impl;2.3.1;EXACT}!/META-INF/**, \
