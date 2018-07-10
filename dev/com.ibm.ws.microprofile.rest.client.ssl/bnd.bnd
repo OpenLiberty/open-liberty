@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: com.ibm.ws.microprofile.rest.client.ssl
+Bundle-SymbolicName: com.ibm.ws.microprofile.rest.client.ssl
+Bundle-Description: Microprofile Rest Client SSL Support, version ${bVersion}
+
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Private-Package:\
+  com.ibm.ws.microprofile.rest.client.ssl
+
+-dsannotations: com.ibm.ws.microprofile.rest.client.ssl.LibertyRestClientSSLListener
+
+-buildpath: \
+  com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2;version=latest,\
+  com.ibm.ws.jaxrs.2.0.common;version=latest,\
+  com.ibm.ws.jaxrs.2.0.client;version=latest,\
+  com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+  com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.logging.core;version=latest
+

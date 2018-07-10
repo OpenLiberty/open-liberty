@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.container.BeanOFactory;
 import com.ibm.ejs.container.BeanOFactory.BeanOFactoryType;
+import com.ibm.ejs.container.MessageEndpointCollaborator;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -77,6 +78,11 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
 
     // id unique per activation spec configuration
     private static final String ACT_SPEC_CFG_ID = "id";
+
+    /** 
+     * Use the AtomicServiceReference class to the MessageEndpointCollaborator 
+     */
+    private final AtomicServiceReference<MessageEndpointCollaborator> messageEndpointCollaboratorRef = new AtomicServiceReference<MessageEndpointCollaborator>("messageEndpointCollaborator");
 
     /**
      * ActivationSpec metatype constant for maxEndpoints
@@ -336,6 +342,29 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
         ejbContainerSR.unsetReference(reference);
     }
 
+    /**
+     * Sets the MessageEndpointCollaborator reference.
+     *
+     * @param reference The MessageEndpointCollaborator reference to set.
+     */
+    @Reference(name = "messageEndpointCollaborator",
+               service = MessageEndpointCollaborator.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setMessageEndpointCollaborator(ServiceReference<MessageEndpointCollaborator> reference) {
+        messageEndpointCollaboratorRef.setReference(reference);
+    }
+
+    /**
+     * Unsets the message endpoint collaborator reference.
+     *
+     * @param reference The MessageEndpointCollaborator reference to unset.
+     */
+    protected void unsetMessageEndpointCollaborator(ServiceReference<MessageEndpointCollaborator> reference) {
+        messageEndpointCollaboratorRef.unsetReference(reference);
+    }
+    
     @Trivial
     public static MDBRuntimeImpl instance() {
         return instance;
@@ -657,11 +686,13 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
         context = cc;
         ejbContainerSR.activate(cc);
         rrsXAResFactorySvcRef.activate(cc);
+        messageEndpointCollaboratorRef.activate(cc);
     }
 
     protected void deactivate(ComponentContext cc) {
         ejbContainerSR.deactivate(cc);
         rrsXAResFactorySvcRef.deactivate(cc);
+        messageEndpointCollaboratorRef.deactivate(cc);
     }
 
     @Override
@@ -706,6 +737,11 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener {
         return null;
     }
 
+    @Override
+    public MessageEndpointCollaborator getMessageEndpointCollaborator() {
+        return messageEndpointCollaboratorRef.getService();
+    }
+    
     // declarative service
     @Reference(name = "metaDataSlotService", service = MetaDataSlotService.class)
     protected void setMetaDataSlotService(MetaDataSlotService slotService) {

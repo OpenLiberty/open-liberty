@@ -16,35 +16,15 @@ bVersion=1.0
 src: \
 	fat/src,\
         test-applications/afterTypeDiscoveryApp.war/src,\
-        test-applications/archiveWithAnnotatedModeBeansXML.jar/src,\
-        test-applications/archiveWithBeansXML.jar/src,\
-        test-applications/archiveWithImplicitBeans.jar/src,\
-        test-applications/archiveWithNoBeansXml.war/src,\
-        test-applications/archiveWithNoScanBeansXML.jar/src,\
-        test-applications/archiveWithNoImplicitBeans.jar/src,\
         test-applications/aroundConstructApp.war/src,\
         test-applications/beanDiscoveryModeNone.war/src,\
         test-applications/classExclusion.war/src,\
-        test-applications/ejbArchiveWithNoAnnotations.jar/src,\
-        test-applications/ejbArchiveWithNoAnnotations.war/src,\
         test-applications/ejbConstructorInjection.war/src,\
         test-applications/ejbDiscovery.war/src,\
         test-applications/ejbMisc.war/src,\
-        test-applications/ejbJarInWarNoAnnotations.jar/src,\
-        test-applications/ejbJarInWarNoAnnotations.war/src,\
         test-applications/ejbScope.war/src,\
         test-applications/ejbTimer.war/src,\
-        test-applications/explicitBeanArchive.jar/src,\
         test-applications/multipleBeansXml.war/src,\
-        test-applications/implicitBeanAnnotatedMode.jar/src,\
-        test-applications/implicitBeanArchiveDisabled.jar/src,\
-        test-applications/implicitBeanArchiveDisabled.war/src,\
-        test-applications/implicitBeanArchive.war/src,\
-        test-applications/implicitBeanDiscovery.war/src,\
-        test-applications/implicitBeanExplicitArchive.jar/src,\
-        test-applications/implicitBeanNoBeansXml.jar/src,\
-        test-applications/implicitEJBInWar.war/src,\
-        test-applications/implicitWarApp.war/src,\
         test-applications/invalidBeansXml.war/src,\
         test-applications/multipleEJBsSingleClass.war/src,\
         test-applications/multipleWar1.war/src,\

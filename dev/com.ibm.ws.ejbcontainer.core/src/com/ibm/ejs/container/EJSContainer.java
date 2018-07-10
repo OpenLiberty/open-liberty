@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +45,7 @@ import com.ibm.ejs.container.activator.ActivationStrategy;
 import com.ibm.ejs.container.activator.Activator;
 import com.ibm.ejs.container.interceptors.InvocationContextImpl;
 import com.ibm.ejs.container.lock.LockManager;
+import com.ibm.ejs.container.MessageEndpointCollaborator;
 import com.ibm.ejs.container.passivator.StatefulPassivator;
 import com.ibm.ejs.container.util.EJSPlatformHelper;
 import com.ibm.ejs.container.util.ExceptionUtil;
@@ -2575,6 +2577,20 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         // Now perform preinvoke processing that must occur after
         // the bean is activated.
         preInvokeAfterActivate(wrapper, eb, s, args);
+
+        // If there is a registered message endpoint collaborator, call it for preInvoke processing.
+        MessageEndpointCollaborator meCollaborator = getEJBRuntime().getMessageEndpointCollaborator(wrapper.bmd);
+        if (meCollaborator != null) {
+            HashMap<String, Object> contextData = new HashMap<String, Object>();
+            contextData.put(MessageEndpointCollaborator.KEY_ACTIVATION_SPEC_ID, wrapper.bmd.ivActivationSpecJndiName);
+            contextData.put(MessageEndpointCollaborator.KEY_J2EE_NAME, wrapper.bmd.j2eeName);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Invoking MECollaborator " + meCollaborator + " for preInvoke processing with the following context data: " + contextData);
+            }
+            
+            s.messageEndpointContext = meCollaborator.preInvoke(contextData);
+        }
 
         // Normal path exit.
         if (TraceComponent.isAnyTracingEnabled()) {

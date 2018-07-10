@@ -15,9 +15,9 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import com.ibm.websphere.ras.DataFormatHelper;
-import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.FFDCData;
+import com.ibm.ws.logging.data.GCData;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
 import com.ibm.ws.logging.data.KeyValuePairList;
@@ -51,13 +51,13 @@ public class CollectorJsonUtils1_1 {
 
         if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
 
-            if (event instanceof GenericData) {
+            if (event instanceof GCData) {
 
-                return jsonifyGCEvent(-1, wlpUserDir, serverName, serverHostName, CollectorConstants.GC_EVENT_TYPE, event, tags);
+                return jsonifyGCEvent(wlpUserDir, serverName, serverHostName, event, tags);
 
             } else {
 
-                return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, tags);
+                return jsonifyGCEvent(-1, wlpUserDir, serverName, serverHostName, CollectorConstants.GC_EVENT_TYPE, event, tags);
 
             }
 
@@ -71,41 +71,15 @@ public class CollectorJsonUtils1_1 {
 
         } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
 
-            return jsonifyFFDC(maxFieldLength, wlpUserDir, serverName, serverHostName, CollectorConstants.FFDC_EVENT_TYPE, event, tags);
+            return jsonifyFFDC(maxFieldLength, wlpUserDir, serverName, serverHostName, event, tags);
 
         } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
 
-            return jsonifyAccess(-1, wlpUserDir, serverName, serverHostName, CollectorConstants.ACCESS_LOG_EVENT_TYPE, event, tags);
+            return jsonifyAccess(wlpUserDir, serverName, serverHostName, event, tags);
 
         }
         return "";
 
-    }
-
-    private static String jsonifyGCEvent(String hostName, String wlpUserDir, String serverName, HCGCData hcGCData, String[] tags) {
-        String sequenceNum = hcGCData.getSequence();
-
-        //                                           name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
-        /* Common fields for all event types */
-        StringBuilder sb = CollectorJsonHelpers.startGCJson1_1(hostName, wlpUserDir, serverName);
-        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(hcGCData.getTime());
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_DATETIME, datetime, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_SEQUENCE, sequenceNum, false, false, false, false);
-        /* GC specific fields */
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_HEAP, String.valueOf((long) hcGCData.getHeap()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_USED_HEAP, String.valueOf((long) hcGCData.getUsage()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_MAX_HEAP, String.valueOf(hcGCData.getMaxHeap()), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_DURATION, String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_GC_TYPE, hcGCData.getType(), false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_REASON, hcGCData.getReason(), false, false, false, false);
-
-        if (tags != null) {
-            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
-        }
-
-        sb.append("}");
-
-        return sb.toString();
     }
 
     private static String jsonifyGCEvent(int maxFieldLength, String wlpUserDir,
@@ -159,8 +133,37 @@ public class CollectorJsonUtils1_1 {
         return sb.toString();
     }
 
+    private static String jsonifyGCEvent(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
+        GCData gcData = (GCData) event;
+
+        StringBuilder sb = CollectorJsonHelpers.startGCJson1_1(hostName, wlpUserDir, serverName);
+
+        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey1_1(), Long.toString(gcData.getHeap()), false, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey1_1(), Long.toString(gcData.getUsedHeap()), false, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey1_1(), Long.toString(gcData.getMaxHeap()), false, false, false, false, false);
+
+        long duration = gcData.getDuration() * 1000;
+        CollectorJsonHelpers.addToJSON(sb, gcData.getDurationKey1_1(), Long.toString(duration), false, false, false, false, true);
+
+        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey1_1(), gcData.getGcType(), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey1_1(), gcData.getReason(), false, false, false, false, true);
+
+        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(gcData.getDatetime());
+        CollectorJsonHelpers.addToJSON(sb, gcData.getDatetimeKey1_1(), datetime, false, false, false, false, false);
+
+        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey1_1(), gcData.getSequence(), false, false, false, false, true);
+
+        if (tags != null) {
+            addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
+        }
+
+        sb.append("}");
+
+        return sb.toString();
+    }
+
     private static String jsonifyFFDC(int maxFieldLength, String wlpUserDir,
-                                      String serverName, String hostName, String eventType, Object event, String[] tags) {
+                                      String serverName, String hostName, Object event, String[] tags) {
 
         FFDCData ffdcData = (FFDCData) event;
         StringBuilder sb = CollectorJsonHelpers.startFFDCJson1_1(hostName, wlpUserDir, serverName);
@@ -189,8 +192,7 @@ public class CollectorJsonUtils1_1 {
         return sb.toString();
     }
 
-    public static String jsonifyAccess(int maxFieldLength, String wlpUserDir,
-                                       String serverName, String hostName, String eventType, Object event, String[] tags) {
+    public static String jsonifyAccess(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
 
         AccessLogData accessLogData = (AccessLogData) event;
 

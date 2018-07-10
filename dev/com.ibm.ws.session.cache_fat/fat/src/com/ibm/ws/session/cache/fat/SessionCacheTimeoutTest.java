@@ -164,9 +164,10 @@ public class SessionCacheTimeoutTest extends FATServletClient {
 
             // Read the session attribute every 3 seconds, looping several times.  Reading the session attribute will
             // prevent the session from becoming invalid after 5 seconds because it refreshes the timer on each access.
-            long start = 0;
+            long start = 0, prevStart = 0;
             try {
                 for (int i = 0; i < refreshes; i++) {
+                    prevStart = start;
                     start = System.nanoTime();
                     TimeUnit.SECONDS.sleep(3);
                     app.sessionGet("testRefreshInvalidation-foo", "bar", session);
@@ -174,7 +175,8 @@ public class SessionCacheTimeoutTest extends FATServletClient {
                 return; // test successful
             } catch (AssertionError e) {
                 long elapsed = System.nanoTime() - start;
-                if (TimeUnit.NANOSECONDS.toMillis(elapsed) > 4500) {
+                if (TimeUnit.NANOSECONDS.toMillis(elapsed) > 4500
+                    || prevStart > 0 && start - prevStart > TimeUnit.SECONDS.toNanos(4)) {
                     Log.info(c, testName.getMethodName(), "Ignoring failure because too much time has elapsed (slow sytem)");
                     continue;
                 } else {

@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
+import java.util.Map;
 
 import javax.ejb.EJBException;
 import javax.resource.ResourceException;
@@ -30,6 +31,7 @@ import com.ibm.ejs.container.EJBMethodInfoImpl;
 import com.ibm.ejs.container.EJSContainer;
 import com.ibm.ejs.container.EJSDeployedSupport;
 import com.ibm.ejs.container.EJSWrapperBase;
+import com.ibm.ejs.container.MessageEndpointCollaborator;
 import com.ibm.ejs.container.WrapperInterface;
 import com.ibm.ejs.container.WrapperManager;
 import com.ibm.ejs.container.util.MethodAttribUtils;
@@ -862,6 +864,23 @@ public class MessageEndpointBase extends EJSWrapperBase implements MessageEndpoi
      */
     public void mdbMethodPostInvoke() throws Throwable
     {
+        // If there is a registered message endpoint collaborator, call it for postInvoke processing.
+        Map<String, Object> meContext = ivEJSDeployedSupport.getMessageEndpointContext();
+        if (meContext != null) {
+            MessageEndpointCollaborator meCollaborator = container.getEJBRuntime().getMessageEndpointCollaborator(this.bmd);
+            if (meCollaborator != null) {
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Invoking MECollaborator " + meCollaborator + " for postInvoke processing with the following context data: " + meContext);
+                    }
+
+                    meCollaborator.postInvoke(meContext);
+                } finally {
+                    ivEJSDeployedSupport.setMessageEndpointContext(null);
+                }
+            }
+        }
+
         // Since checkState method in this class preceeded the call
         // to this method, we know we are running in the correct
         // thread and the correct Proxy instance is using this

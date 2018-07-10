@@ -29,6 +29,8 @@ import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Configuration;
 
+import com.ibm.ws.microprofile.rest.client.component.RestClientNotifier;
+
 import org.apache.cxf.common.util.ClassHelper;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.jaxrs.client.AbstractClient;
@@ -40,6 +42,7 @@ import org.apache.cxf.jaxrs.model.FilterProviderInfo;
 import org.apache.cxf.jaxrs.model.ProviderInfo;
 import org.apache.cxf.jaxrs.provider.ProviderFactory;
 import org.apache.cxf.microprofile.client.proxy.MicroProfileClientProxyImpl;
+import org.apache.cxf.phase.Phase;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
@@ -94,13 +97,19 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
     @Override
     protected ClientProxyImpl createClientProxy(ClassResourceInfo cri, boolean isRoot,
                                                 ClientState actualState, Object[] varValues) {
+        MicroProfileClientProxyImpl clientProxy;
         if (actualState == null) {
-            return new MicroProfileClientProxyImpl(URI.create(getAddress()), proxyLoader, cri, isRoot,
+            clientProxy = new MicroProfileClientProxyImpl(URI.create(getAddress()), proxyLoader, cri, isRoot,
                     inheritHeaders, varValues);
         } else {
-            return new MicroProfileClientProxyImpl(actualState, proxyLoader, cri, isRoot,
+            clientProxy = new MicroProfileClientProxyImpl(actualState, proxyLoader, cri, isRoot,
                     inheritHeaders, varValues);
         }
+        RestClientNotifier notifier = RestClientNotifier.getInstance();
+        if (notifier != null) {
+            notifier.newRestClientProxy(clientProxy);
+        }
+        return clientProxy;
     }
 
     Configuration getConfiguration() {

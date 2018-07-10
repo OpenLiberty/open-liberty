@@ -1,0 +1,12 @@
+<server description="server-01.xml">
+	<featureManager>
+		<feature>feature01</feature>
+	</featureManager>
+
+	<element1 attribute1="value1">element1</element1>
+
+	<include location="test-files/imports/server-02.xml" />
+	<include location="test-files/imports/server-03.xml" />
+
+	<element1 attribute1="value2">element1</element1>
+</server>
