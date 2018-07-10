@@ -25,6 +25,7 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
@@ -34,11 +35,16 @@ import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 
 import test.common.junit.matchers.RegexMatcher;
+import test.common.junit.rules.MaximumJavaLevelRule;
 
 /**
  *
  */
 public class CreateSSLCertificateTaskTest {
+
+    @ClassRule
+    public static MaximumJavaLevelRule maxLevel = new MaximumJavaLevelRule(8);
+
     private static final String NL = "\n";
     private static final String SERVER_NAME = "myServer";
     private static final String CLIENT_NAME = "myClient";

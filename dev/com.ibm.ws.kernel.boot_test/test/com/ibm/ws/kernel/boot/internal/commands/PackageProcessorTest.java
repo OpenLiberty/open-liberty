@@ -25,11 +25,13 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
+import test.common.junit.rules.MaximumJavaLevelRule;
 import test.shared.Constants;
 import test.shared.TestUtils;
 
@@ -37,6 +39,9 @@ import test.shared.TestUtils;
  *
  */
 public class PackageProcessorTest {
+
+    @ClassRule
+    public static MaximumJavaLevelRule rule = new MaximumJavaLevelRule(8);
 
     /**
      * Mock environment.

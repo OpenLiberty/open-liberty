@@ -79,8 +79,12 @@ public class JAASLoginModuleConfigImplTestWithMock {
         outputMgr.assertContextStatisfied(mockery);
     }
 
-    //@Test
+    @Test
     public void activate_noOptions() throws Exception {
+        // Skip test on Java 11 because even the latest version of CGLib has issues when running on Hotspot JVM
+        if (!System.getProperty("java.version").startsWith("1."))
+            return;
+
         ModuleConfig moduleConfig = moduleConfig();
         jaasLoginModuleConfig.setClassLoadingSvc(classLoadingService);
         jaasLoginModuleConfig.setSharedLib(sharedLibrary);
@@ -153,8 +157,11 @@ public class JAASLoginModuleConfigImplTestWithMock {
         return moduleConfig;
     }
 
-    //@Test
+    @Test
     public void activate_withOptions() throws Exception {
+        // Skip test on Java 11 because even the latest version of CGLib has issues when running on Hotspot JVM
+        if (!System.getProperty("java.version").startsWith("1."))
+            return;
 
         final Map<String, Object> orops = new HashMap<String, Object>();
         orops.put("options.0.option1", "value1");
