@@ -44,7 +44,6 @@ Import-Package: \
 WS-TraceGroup: APPCONFIG
 
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF,\
   @${repo;com.ibm.ws.microprofile.config.1.2}!/!(OSGI-INF)/*
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
@@ -64,8 +63,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.app.manager;version=latest,\
-	com.ibm.ws.config;version=latest
+	com.ibm.ws.app.manager;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

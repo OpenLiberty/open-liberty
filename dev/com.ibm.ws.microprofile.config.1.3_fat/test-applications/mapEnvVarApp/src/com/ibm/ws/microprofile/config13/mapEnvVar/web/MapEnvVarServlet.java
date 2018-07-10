@@ -30,7 +30,7 @@ public class MapEnvVarServlet extends FATServlet {
     private Config config = null;
 
     @Test
-    public void mapEnvVarTest() throws Exception {
+    public void appPropertiesTest() throws Exception {
 
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
         builder.addDefaultSources();
