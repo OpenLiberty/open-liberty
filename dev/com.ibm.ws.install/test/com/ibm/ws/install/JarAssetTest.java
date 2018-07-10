@@ -20,12 +20,12 @@ import java.net.MalformedURLException;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.install.internal.InstallUtils.InputStreamFileWriter;
 import com.ibm.ws.install.internal.asset.JarAsset;
 import com.ibm.ws.install.internal.asset.OpenSourceAsset;
 import com.ibm.ws.install.internal.asset.SampleAsset;
+
+import test.common.SharedOutputManager;
 
 public class JarAssetTest {
     @Rule
@@ -35,7 +35,9 @@ public class JarAssetTest {
     public void testSampleAsset() throws MalformedURLException, IOException {
         final String m = "testSampleAsset";
         File srcFile = new File("publish/massiveRepo/samples/SampleX.jar");
+        srcFile.getParentFile().mkdirs();
         File jarFile = new File("build/unittest/tmp/SampleX.jar");
+        jarFile.getParentFile().mkdirs();
         new InputStreamFileWriter(srcFile.getCanonicalFile().toURI().toURL().openConnection().getInputStream()).writeToFile(jarFile);
         try {
             SampleAsset sampleAsset = new SampleAsset("SampleX", "SampleX", jarFile, true);
@@ -70,7 +72,9 @@ public class JarAssetTest {
     public void testOpenSourceAsset() throws MalformedURLException, IOException {
         final String m = "testOpenSourceAsset";
         File srcFile = new File("publish/massiveRepo/samples/SampleX.jar");
+        srcFile.getParentFile().mkdirs();
         File jarFile = new File("build/unittest/tmp/SampleX.jar");
+        jarFile.getParentFile().mkdirs();
         new InputStreamFileWriter(srcFile.getCanonicalFile().toURI().toURL().openConnection().getInputStream()).writeToFile(jarFile);
         try {
             OpenSourceAsset openSourceAsset = new OpenSourceAsset("SampleX", "SampleX", jarFile, true);

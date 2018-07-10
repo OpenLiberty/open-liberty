@@ -35,3 +35,7 @@ rmic.iiop.classes: javax.management.j2ee.Management, javax.management.j2ee.Manag
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file
+
