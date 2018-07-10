@@ -29,11 +29,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.authentication.jaas.modules.WSLoginModuleImpl;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -79,7 +79,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
         outputMgr.assertContextStatisfied(mockery);
     }
 
-    @Test
+    //@Test
     public void activate_noOptions() throws Exception {
         ModuleConfig moduleConfig = moduleConfig();
         jaasLoginModuleConfig.setClassLoadingSvc(classLoadingService);
@@ -153,7 +153,7 @@ public class JAASLoginModuleConfigImplTestWithMock {
         return moduleConfig;
     }
 
-    @Test
+    //@Test
     public void activate_withOptions() throws Exception {
 
         final Map<String, Object> orops = new HashMap<String, Object>();
