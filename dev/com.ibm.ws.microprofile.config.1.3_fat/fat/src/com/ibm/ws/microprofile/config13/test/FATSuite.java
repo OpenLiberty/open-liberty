@@ -17,8 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 ServerXMLTest.class,
-                MapEnvVarTest.class,
-                VariableServerXMLTest.class
+                MapEnvVarTest.class
 })
 public class FATSuite {
 

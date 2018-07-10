@@ -31,14 +31,9 @@ import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
  * A ConfigSource which returns values from appProperties elements in the server.xml file e.g.
  *
  * <application location="serverXMLApp.war">
- * <appProperties>
- * <property name="serverXMLKey1" value="serverXMLValue1"/>
- * <property name="serverXMLKey1" value="serverXMLValue1a"/>
- * <property name="serverXMLKey2" value="serverXMLValue2"/>
- * <property name="serverXMLKey3" value="serverXMLValue3"/>
- * <property name="serverXMLKey1" value="serverXMLValue1b"/>
- * <property name="serverXMLKey4" value="serverXMLValue4"/>
- * </appProperties>
+ * <appProperties serverXMLKey1="serverXMLValue1"/>
+ * <appProperties serverXMLKey1="serverXMLValue1a" serverXMLKey2="serverXMLValue2" serverXMLKey3="serverXMLValue3"/>
+ * <appProperties serverXMLKey1="serverXMLValue1b" serverXMLKey4="serverXMLValue4"/>
  * </application>
  *
  * Result should be
@@ -68,25 +63,18 @@ public class AppPropertyConfigSource extends InternalConfigSource implements Dyn
 
         SortedSet<Configuration> osgiConfigs = getOSGiConfigurations();
         for (Configuration osgiConfig : osgiConfigs) {
-            // Locate name/value pairs in the config objects and place them in the map.
-            Dictionary<String, Object> dict = osgiConfig.getProperties();
-            Enumeration<String> keys = dict.keys();
 
-            Object myKey = null;
-            Object myValue = null;
+            Dictionary<String, Object> dict = osgiConfig.getProperties();
+
+            Enumeration<String> keys = dict.keys();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
-
-                if (key.equals("name"))
-                    myKey = dict.get(key);
-                if (key.equals("value"))
-                    myValue = dict.get(key);
-                if (myKey != null && myValue != null) {
-                    props.put(myKey.toString(), myValue.toString());
+                if (!OSGiConfigUtils.isSystemKey(key)) {
+                    Object value = dict.get(key);
+                    props.put(key, value.toString());
                 }
             }
         }
-
         return props;
     }
 
