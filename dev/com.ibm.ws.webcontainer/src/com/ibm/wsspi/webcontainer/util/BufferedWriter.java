@@ -342,6 +342,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
      *          the number of chars to write
      * @exception IOException
      *              if an I/O error has occurred
+     * @Override
      */
     public void write(@Sensitive String str, int off, int len) throws IOException {
         if (len < 0) { throw new IndexOutOfBoundsException(); }
@@ -413,6 +414,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
      *          the number of chars to write
      * @exception IOException
      *              if an I/O error has occurred
+     * @Override
      */
     public void write(@Sensitive char[] b, int off, int len) throws IOException
     {
