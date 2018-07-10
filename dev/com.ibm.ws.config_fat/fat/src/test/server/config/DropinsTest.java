@@ -67,7 +67,9 @@ public class DropinsTest extends ServletRunner {
         try {
             server.setMarkToEndOfLog();
             server.addDropinOverrideConfiguration("dropins/simple.xml");
+            server.waitForConfigUpdateInLogUsingMark(null);
             server.addDropinDefaultConfiguration("dropins/aBrokenFile.xml");
+            server.waitForConfigUpdateInLogUsingMark(null);
             server.addDropinOverrideConfiguration("dropins/aBrokenFile.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
             assertEquals("There should be two CWWKG0014E errors", 2, server.waitForMultipleStringsInLog(2, "CWWKG0014E"));
@@ -76,7 +78,9 @@ public class DropinsTest extends ServletRunner {
         } finally {
             server.setMarkToEndOfLog();
             server.deleteDropinOverrideConfiguration("simple.xml");
+            server.waitForConfigUpdateInLogUsingMark(null);
             server.deleteDropinDefaultConfiguration("aBrokenFile.xml");
+            server.waitForConfigUpdateInLogUsingMark(null);
             server.deleteDropinOverrideConfiguration("aBrokenFile.xml");
             server.waitForConfigUpdateInLogUsingMark(null);
         }
