@@ -1385,6 +1385,9 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         ManagedCompletableFuture<Integer> cf = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.supplyAsync(() -> 0, max1strictExecutor);
 
+        // Ensure that the above task has been removed from the executor's queue so that it does not interfere with subsequent test logic
+        assertEquals(new Integer(0), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
         CountDownLatch beginLatch = new CountDownLatch(1);
         CountDownLatch continueLatch = new CountDownLatch(1);
         CompletableFuture<Integer> cf0, cf1, cf2, cf3, cf4;
