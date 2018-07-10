@@ -46,6 +46,10 @@ public final class LimitedIndex{
         return classes.values();
     }
 
+    public Collection<ClassInfo> getKnownClasses(){
+        return classes();
+    }
+
     public ClassInfo getClass(DotName className){
         return classes.get(className);
     }

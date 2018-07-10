@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 

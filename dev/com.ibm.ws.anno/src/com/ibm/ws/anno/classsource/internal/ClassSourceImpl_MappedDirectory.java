@@ -18,6 +18,9 @@ import java.text.MessageFormat;
 import java.util.Set;
 
 import org.jboss.jandex.Index;
+import com.ibm.ws.anno.jandex.internal.DotName;
+import com.ibm.ws.anno.jandex.internal.ClassInfo;
+import com.ibm.ws.anno.jandex.internal.LimitedIndex;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -342,6 +345,47 @@ public class ClassSourceImpl_MappedDirectory
         }
     }
     
+    ///////////////////////////
+    //protected LimitedIndex basicGetSparseJandexIndex() {}
+    @Override
+    protected LimitedIndex basicGetSparseJandexIndex() {
+        String useJandexPath = getJandexIndexPath();
+        String fullJandexPath = getFilePath(useJandexPath);
+        InputStream jandexStream;
+
+        try {
+            jandexStream = openResourceStream(null, useJandexPath, fullJandexPath);
+        } catch ( ClassSource_Exception e ) {
+            String errorMessage = "Failed to read [ " + fullJandexPath + " ] as JANDEX index";
+            Tr.error(tc, errorMessage);
+            return null;
+        }
+
+        if(jandexStream == null) {
+            return null;
+        }
+
+        try {
+            LimitedIndex jandexIndex = Jandex_Utils.basicReadLimitedIndex(jandexStream); // throws IOException
+
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
+                         new Object[] { getHashText(), fullJandexPath, getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+            }            
+            return jandexIndex;
+
+        } catch ( Exception e ) {
+            // TODO:
+            String errorMessage = "Failed to read [ " + fullJandexPath + " ] as JANDEX index";
+            Tr.error(tc, errorMessage);
+            return null;
+
+        } finally {
+            closeResourceStream(null, useJandexPath, fullJandexPath, jandexStream);
+        }
+
+    }
+
     @Override
     protected Index basicGetJandexIndex() {
         String useJandexPath = getJandexIndexPath();

@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 import java.util.Set;
 
 import org.jboss.jandex.Index;
+import com.ibm.ws.anno.jandex.internal.*;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -417,6 +418,61 @@ public class ClassSourceImpl_MappedContainer
     @Override
     protected boolean basicHasJandexIndex() {
     	return ( getContainer().getEntry( getJandexIndexPath() ) != null );
+    }
+
+    ///////////////////////////
+    //protected LimitedIndex basicGetSparseJandexIndex() {}
+    @Override
+    protected LimitedIndex basicGetSparseJandexIndex() {
+        String useJandexIndexPath = getJandexIndexPath();
+        InputStream jandexStream;
+
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
+                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } ));
+        }
+
+        try {
+            jandexStream = openResourceStream(null, useJandexIndexPath); // throws ClassSource_Exception
+        } catch ( ClassSource_Exception e ) {
+            // CWWKC0066E: An exception occurred while attempting to open Jandex index file [ {0} ] The identifier for the class source is [ {1} ].
+            Tr.error(tc, "JANDEX_INDEX_OPEN_EXCEPTION", useJandexIndexPath, getCanonicalName());
+            return null;
+        }
+
+        if ( jandexStream == null ) {
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] No JANDEX index was found", getHashText()));
+            }
+            return null;
+        }
+
+        if ( tc.isDebugEnabled() ) {
+            Tr.debug(tc, MessageFormat.format("[ {0} ] Located JANDEX index", getHashText()));
+        }
+
+        long startJandexTime = getTime();
+
+        try {
+            LimitedIndex jandexIndex = Jandex_Utils.basicReadLimitedIndex(jandexStream); // throws IOException
+            if ( tc.isDebugEnabled() ) {
+                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]",
+                        new Object[] {  getHashText(), useJandexIndexPath,  getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+            }
+            return jandexIndex;
+
+        } catch ( Exception e ) {
+
+            // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
+            Tr.error(tc, "JANDEX_INDEX_READ_EXCEPTION", useJandexIndexPath, getCanonicalName());
+            return null;
+
+        } finally {
+            closeResourceStream(null,  useJandexIndexPath, jandexStream);
+
+            long endJandexTime = getTime();
+            addJandexTime(endJandexTime - startJandexTime);
+        }
     }
 
     @SuppressWarnings("deprecation")

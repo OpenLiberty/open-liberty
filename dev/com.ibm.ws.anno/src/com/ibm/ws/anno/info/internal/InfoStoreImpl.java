@@ -12,6 +12,7 @@ package com.ibm.ws.anno.info.internal;
 
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
