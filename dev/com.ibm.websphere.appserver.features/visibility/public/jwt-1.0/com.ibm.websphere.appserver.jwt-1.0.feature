@@ -11,6 +11,7 @@ Subsystem-Name: Json Web Token
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jwt_1.1-javadoc.zip
 -bundles=com.ibm.ws.security.jwt, \
   com.ibm.ws.security.common, \
+  com.ibm.ws.security.common.jsonwebkey, \
   com.ibm.ws.org.apache.commons.codec.1.4, \
   com.ibm.ws.org.jose4j.0.5.1, \
   com.ibm.ws.com.google.gson.2.2.4, \
