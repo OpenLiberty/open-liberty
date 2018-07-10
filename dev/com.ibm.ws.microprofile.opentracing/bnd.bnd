@@ -47,7 +47,7 @@ Include-Resource: \
 	com.ibm.wsspi.org.osgi.core;version=latest, \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.websphere.org.osgi.service.cm;version=latest, \
-	com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0;version=latest, \
+	com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0.1;version=latest, \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
 	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest, \
