@@ -266,7 +266,7 @@ org.jmock:jmock-junit4:2.6.0
 org.jmock:jmock-legacy:2.5.0
 org.jmockit:jmockit:1.25
 org.yaml:snakeyaml:1.18
-cglib:cglib-nodep:3.2.6
+cglib:cglib-nodep:3.2.7
 io.opentracing:opentracing-api:0.30.0
 io.opentracing:opentracing-util:0.30.0
 io.opentracing:opentracing-mock:0.30.0
