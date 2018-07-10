@@ -129,6 +129,8 @@ org.apache.cxf:cxf-rt-rs-sse:3.2.4
 org.apache.cxf:cxf-rt-transports-http:3.2.4
 org.apache.cxf:cxf-tools-common:3.2.4
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.2.4
+org.apache.cxf:cxf-rt-rs-extension-reactivestreams:3.2.4
+org.apache.cxf:cxf-rt-rs-extension-rx2:3.2.4
 org.apache.derby:derby:10.11.1.1
 org.apache.derby:derbynet:10.11.1.1
 org.apache.directory.server:apacheds-service:2.0.0-M15
@@ -270,6 +272,7 @@ cglib:cglib-nodep:3.2.6
 io.opentracing:opentracing-api:0.30.0
 io.opentracing:opentracing-util:0.30.0
 io.opentracing:opentracing-mock:0.30.0
+io.reactivex.rxjava2:rxjava:2.1.16
 org.quartz-scheduler:quartz:2.2.1
 org.apache.deltaspike.core:deltaspike-core-api:1.5.0
 org.apache.deltaspike.core:deltaspike-core-impl:1.5.0
@@ -301,6 +304,7 @@ org.springframework.security:spring-security-web:4.2.3.RELEASE
 org.springframework.security:spring-security-config:4.2.3.RELEASE
 org.springframework.security:spring-security-core:4.2.3.RELEASE
 org.springframework:spring-webmvc:4.3.13.RELEASE
+org.reactivestreams:reactive-streams:1.0.2
 xalan:xalan:2.7.1
 xerces:xercesImpl:2.11.0
 commons-collections:commons-collections:3.2.2
