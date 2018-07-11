@@ -113,7 +113,7 @@ public class ClientBootstrapConfig extends BootstrapConfig {
      * No need to generate server.env/client.env in the client process.
      */
     @Override
-    protected ReturnCode generateServerEnv() {
+    protected ReturnCode generateServerEnv(boolean generatePassword) {
         return ReturnCode.OK;
     }
 }
