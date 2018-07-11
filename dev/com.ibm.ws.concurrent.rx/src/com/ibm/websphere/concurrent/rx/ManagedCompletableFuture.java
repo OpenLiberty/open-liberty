@@ -237,7 +237,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
      */
     public static <U> CompletionStage<U> completedStage(U value) {
-        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+
+        ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
+        ManagedCompletionStage<U> stage = new ManagedCompletionStage<U>(defaultExecutor);
+        stage.super_complete(value);
+        return stage;
     }
 
     public static Executor delayedExecutor(long delay, TimeUnit unit) {
@@ -256,7 +262,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return completed completable future where the default managed executor is the default asynchronous execution facility.
      */
     public static <U> CompletableFuture<U> failedFuture(Throwable x) {
-        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+
+        ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
+        ManagedCompletableFuture<U> completableFuture = new ManagedCompletableFuture<U>(defaultExecutor, null);
+        completableFuture.super_completeExceptionally(x);
+        return completableFuture;
     }
 
     /**
@@ -267,7 +279,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @return completed completion stage where the default managed executor is the default asynchronous execution facility.
      */
     public static <U> CompletionStage<U> failedStage(Throwable x) {
-        throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+
+        ManagedExecutorService defaultExecutor = AccessController.doPrivileged(getDefaultManagedExecutorAction);
+        ManagedCompletionStage<U> stage = new ManagedCompletionStage<U>(defaultExecutor);
+        stage.super_completeExceptionally(x);
+        return stage;
     }
 
     /**
