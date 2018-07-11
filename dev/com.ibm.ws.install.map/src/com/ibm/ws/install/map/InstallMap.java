@@ -532,7 +532,7 @@ public class InstallMap implements Map {
                 @Override
                 public Map<String, Object> run() throws Exception {
                     @SuppressWarnings("resource")
-                    ClassLoader loader = new URLClassLoader(jars, null);
+                    ClassLoader loader = new URLClassLoader(jars, getClass().getClassLoader());
                     Class<Map<String, Object>> clazz;
                     clazz = (Class<Map<String, Object>>) loader.loadClass("com.ibm.ws.install.internal.InstallKernelMap");
                     return clazz.newInstance();
