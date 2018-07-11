@@ -66,6 +66,18 @@ public class ConcurrentRxTestServlet extends FATServlet {
     // Maximum number of nanoseconds to wait for a task to complete
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    static final boolean AT_LEAST_JAVA_9;
+    static {
+        boolean atLeastJava9;
+        try {
+            CompletableFuture.class.getMethod("copy");
+            atLeastJava9 = true;
+        } catch (NoSuchMethodException x) {
+            atLeastJava9 = false;
+        }
+        AT_LEAST_JAVA_9 = atLeastJava9;
+    }
+
     @Resource(name = "java:comp/env/executorRef")
     private ManagedExecutorService defaultManagedExecutor;
 
@@ -103,7 +115,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CountDownLatch blocker2 = new CountDownLatch(1);
 
         try {
-            ManagedCompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
+            CompletableFuture<Boolean> cf1 = ManagedCompletableFuture.supplyAsync(() -> {
                 System.out.println("> supplyAsync[1] from testAcceptEither");
                 try {
                     boolean result = blocker1.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
@@ -128,7 +140,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
             });
 
             LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<Object>();
-            ManagedCompletableFuture<Void> cf3 = cf1.acceptEither(cf2, (b) -> {
+            CompletableFuture<Void> cf3 = cf1.acceptEither(cf2, (b) -> {
                 System.out.println("> lookup from testAcceptEither");
                 results.add(b);
                 results.add(Thread.currentThread().getName());
@@ -362,14 +374,15 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
-     * Test the constructor for managed completable future that has no underlying action, backed by the DefaultManagedExecutorService
+     * Test the newIncompleteFuture method that has no underlying action, backed by the DefaultManagedExecutorService
      * as its default asynchronous execution facility. Use the complete method to manually supply a value, and verify that dependent
      * stage(s) execute on the managed executor.
      */
     @Test
     public void testActionlessFutureWithDefaultManagedExecutor() throws Exception {
+        ManagedCompletableFuture<Integer> cf = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(0);
         BlockableIncrementFunction increment = new BlockableIncrementFunction("testActionlessFutureWithDefaultManagedExecutor", null, null, false);
-        CompletableFuture<Integer> cf1 = new ManagedCompletableFuture<Integer>();
+        CompletableFuture<Integer> cf1 = cf.newIncompleteFuture();
         CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment);
 
         assertEquals(Integer.valueOf(177), cf1.getNow(177));
@@ -393,17 +406,18 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
-     * Test the constructor for managed completable future that has no underlying action, backed by the specified executor
+     * Test the newIncompleteFuture method that has no underlying action, backed by the specified executor
      * as its default asynchronous execution facility. This test specifies an unmanaged executor to validate that
      * managed completable future can tolerate other executors.
      */
     @Test
     public void testActionlessFutureWithSpecifiedExecutor() throws Exception {
+        ManagedCompletableFuture<Integer> cf = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.supplyAsync(() -> 0, sameThreadExecutor);
         BlockableIncrementFunction increment1 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor1", null, null, false);
         BlockableIncrementFunction increment2 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor2", null, null, false);
         BlockableIncrementFunction increment3 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor3", null, null, false);
         BlockableIncrementFunction increment4 = new BlockableIncrementFunction("testActionlessFutureWithSpecifiedExecutor4", null, null, false);
-        CompletableFuture<Integer> cf0 = new ManagedCompletableFuture<Integer>(sameThreadExecutor);
+        CompletableFuture<Integer> cf0 = cf.newIncompleteFuture();
         CompletableFuture<Integer> cf1 = cf0.thenApplyAsync(increment1);
         CompletableFuture<Integer> cf2 = cf1.thenApplyAsync(increment2);
         CompletableFuture<Integer> cf3 = cf2.thenApplyAsync(increment3, noContextExecutor);
@@ -1048,6 +1062,58 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that copied stages do not impact the stage from which they are copied.
+     */
+    @Test
+    public void testCopy() throws Exception {
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        BlockableSupplier<Long> blocker = new BlockableSupplier<Long>(100l, null, continueLatch);
+
+        ManagedCompletableFuture<Long> cf0 = (ManagedCompletableFuture<Long>) ManagedCompletableFuture.supplyAsync(blocker);
+
+        if (!AT_LEAST_JAVA_9)
+            try {
+                fail("Should not be able to copy in Java SE 8. " + cf0.copy());
+            } catch (UnsupportedOperationException x) {
+                return; // method unavailable for Java SE 8
+            } finally {
+                continueLatch.countDown();
+            }
+
+        CompletableFuture<Long> cf1 = cf0.copy();
+        CompletableFuture<Long> cf2 = cf0.copy();
+        CompletableFuture<Long> cf3 = cf0.copy();
+
+        assertTrue(cf1 instanceof ManagedCompletableFuture);
+        assertTrue(cf2 instanceof ManagedCompletableFuture);
+        assertTrue(cf3 instanceof ManagedCompletableFuture);
+
+        assertTrue(cf1.complete(200l));
+        assertTrue(cf2.completeExceptionally(new ArithmeticException("Intentional failure")));
+        assertFalse(cf0.isDone());
+        assertFalse(cf3.isDone());
+
+        continueLatch.countDown();
+
+        assertEquals(Long.valueOf(100), cf3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf3.isDone());
+        assertFalse(cf3.isCompletedExceptionally());
+
+        assertEquals(Long.valueOf(200), cf1.getNow(-1l));
+        try {
+            Long result = cf2.getNow(-1l);
+            fail("Unexpected result for copied CompletableFuture: " + result);
+        } catch (CompletionException x) {
+            if (!(x.getCause() instanceof ArithmeticException))
+                throw x;
+        }
+
+        assertEquals(Long.valueOf(100), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf0.isDone());
+        assertFalse(cf0.isCompletedExceptionally());
+    }
+
+    /**
      * Verify that dependent stage for exceptionally is invoked in the event of an exception during the prior stage
      * and runs with context captured from the thread that creates the dependent stage.
      * Verify that dependent stage for exceptionally is not invoked when prior stage is successful.
@@ -1317,11 +1383,16 @@ public class ConcurrentRxTestServlet extends FATServlet {
         // max concurrency: 1, max queue size: 1, runIfQueueFull: true, policy: strict
         Executor max1strictExecutor = InitialContext.doLookup("java:comp/DefaultManagedScheduledExecutorService");
 
+        ManagedCompletableFuture<Integer> cf = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.supplyAsync(() -> 0, max1strictExecutor);
+
+        // Ensure that the above task has been removed from the executor's queue so that it does not interfere with subsequent test logic
+        assertEquals(new Integer(0), cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
         CountDownLatch beginLatch = new CountDownLatch(1);
         CountDownLatch continueLatch = new CountDownLatch(1);
         CompletableFuture<Integer> cf0, cf1, cf2, cf3, cf4;
         try {
-            cf0 = new ManagedCompletableFuture<Integer>(max1strictExecutor);
+            cf0 = cf.newIncompleteFuture();
 
             // Use up the single max concurrency permit with an async action that blocks
             cf1 = cf0.thenApplyAsync(new BlockableIncrementFunction("testMaxPolicyStrict1", beginLatch, continueLatch, false));
@@ -2532,7 +2603,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testThenComposeManagedCompletableFuture() throws Exception {
-        ManagedCompletableFuture<String> cf = ManagedCompletableFuture
+        CompletableFuture<String> cf = ManagedCompletableFuture
                         .supplyAsync(() -> 100)
                         .thenCompose(t -> {
                             return ManagedCompletableFuture.supplyAsync(() -> {
