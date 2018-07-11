@@ -28,8 +28,8 @@
 </Designate>
  
  <OCD id="com.ibm.ws.appconfig.appProperties.property" name="%property"  ibm:supportHiddenExtensions="true" description="%property.desc" >
-   <AD id="name"  required="false" type="String" default="" name="%name" description="%name.desc"/>
-   <AD id="value"  required="false" type="String" default="" name="%value" description="%value.desc"/>
+   <AD id="name" required="false" type="String" default="" name="%name" description="%name.desc"/>
+   <AD id="value" required="false" type="String" default="" name="%value" description="%value.desc"/>
  </OCD>
 
 </metatype:MetaData>
