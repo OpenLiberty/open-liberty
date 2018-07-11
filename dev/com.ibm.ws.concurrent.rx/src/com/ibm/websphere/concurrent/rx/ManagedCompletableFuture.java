@@ -65,7 +65,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * Post Java SE 8, the code path uses the ManagedCompletableFuture subclass as both, relying on the
  * plugin points defaultExecutor() and newIncompleteFuture() which are invoked by the post Java SE 8 CompletableFuture.
  *
- * @param <T>
+ * @param <T> type of result
  */
 public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     private static final TraceComponent tc = Tr.register(ManagedCompletableFuture.class);
@@ -110,7 +110,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Typically, this is a managed executor, but it is possible to use any executor.
      * (For example, the Liberty global thread pool)
      */
-    private final Executor defaultExecutor;
+    final Executor defaultExecutor;
 
     /**
      * Reference to the policy executor Future (if any) upon which the action runs.
@@ -199,7 +199,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @param managedExecutor managed executor service
      * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
-    private ManagedCompletableFuture(Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
+    ManagedCompletableFuture(Executor managedExecutor, AtomicReference<Future<?>> futureRef) {
         super();
 
         this.completableFuture = null;
@@ -240,11 +240,11 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
         throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
     }
 
-    public static Executor delayedExecutor​(long delay, TimeUnit unit) {
+    public static Executor delayedExecutor(long delay, TimeUnit unit) {
         throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
     }
 
-    public static Executor delayedExecutor​(long delay, TimeUnit unit, Executor executor) {
+    public static Executor delayedExecutor(long delay, TimeUnit unit, Executor executor) {
         throw new UnsupportedOperationException(); // TODO implement when rebasing on Java 9
     }
 
@@ -560,7 +560,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletableFuture#completeAsync(Supplier)
      */
     // TODO Java 9 @Override
-    public CompletableFuture<T> completeAsync​(Supplier<? extends T> supplier) {
+    public CompletableFuture<T> completeAsync(Supplier<? extends T> supplier) {
         throw new UnsupportedOperationException();
     }
 
@@ -568,7 +568,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletableFuture#completeAsync(Supplier, Executor)
      */
     // TODO Java 9 @Override
-    public CompletableFuture<T> completeAsync​(Supplier<? extends T> supplier, Executor executor) {
+    public CompletableFuture<T> completeAsync(Supplier<? extends T> supplier, Executor executor) {
         throw new UnsupportedOperationException();
     }
 
@@ -595,7 +595,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * @see java.util.concurrent.CompletableFuture#completeOnTimeout(Object, long, TimeUnit)
      */
     // TODO Java 9 @Override
-    public CompletableFuture<T> completeOnTimeout​(T value, long timeout, TimeUnit unit) {
+    public CompletableFuture<T> completeOnTimeout(T value, long timeout, TimeUnit unit) {
         throw new UnsupportedOperationException();
     }
 
@@ -612,7 +612,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * @see java.util.concurrent.CompletableFuture#defaultExecutor()
      */
-    public Executor defaultExecutor​() {
+    public Executor defaultExecutor() {
         if (JAVA8)
             throw new UnsupportedOperationException();
         else
@@ -792,15 +792,26 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * @see java.util.concurrent.CompletableFuture#minimalCompletionStage()
      */
-    // TODO Java 9 @Override
     public CompletionStage<T> minimalCompletionStage() {
-        throw new UnsupportedOperationException();
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+        else {
+            final ManagedCompletionStage<T> minimalStage = new ManagedCompletionStage<T>(defaultExecutor);
+            super.whenComplete((result, failure) -> {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "whenComplete", result, failure);
+                if (failure == null)
+                    minimalStage.super_complete(result);
+                else
+                    minimalStage.super_completeExceptionally(failure);
+            });
+            return minimalStage;
+        }
     }
 
     /**
      * @see java.util.concurrent.CompletableFuture#newIncompleteFuture()
      */
-    // TODO Java 9 @Override
     public CompletableFuture<T> newIncompleteFuture() {
         if (JAVA8)
             return new ManagedCompletableFuture<T>(new CompletableFuture<T>(), defaultExecutor, null);
@@ -1015,7 +1026,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      *
      * @see java.util.concurrent.CompletableFuture#complete(T)
      */
-    private final boolean super_complete(T value) {
+    final boolean super_complete(T value) {
         return super.complete(value);
     }
 
@@ -1024,7 +1035,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      *
      * @see java.util.concurrent.CompletableFuture#completeExceptionally(java.lang.Throwable)
      */
-    private final boolean super_completeExceptionally(Throwable x) {
+    final boolean super_completeExceptionally(Throwable x) {
         return super.completeExceptionally(x);
     }
 
@@ -1478,7 +1489,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     @Override
     @Trivial
     public String toString() {
-        StringBuilder s = new StringBuilder(250).append("ManagedCompletableFuture@").append(Integer.toHexString(System.identityHashCode(this))).append('[');
+        StringBuilder s = new StringBuilder(250).append(getClass().getSimpleName()) //
+                        .append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
         if (JAVA8)
             s.append(Integer.toHexString(completableFuture.hashCode())).append(' ');
         if (JAVA8 ? completableFuture.isDone() : super.isDone())
