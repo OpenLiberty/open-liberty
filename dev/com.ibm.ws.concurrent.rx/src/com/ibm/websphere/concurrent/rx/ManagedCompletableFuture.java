@@ -380,7 +380,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
             return new ManagedCompletableFuture<U>(completableFuture, executor, futureExecutor);
         } else {
             ManagedCompletableFuture<U> completableFuture = new ManagedCompletableFuture<U>(executor, futureExecutor);
-            Runnable task = new AsyncSupplier<U>(contextDescriptor, action, completableFuture);
+            Runnable task = new AsyncSupplier<U>(contextDescriptor, action, completableFuture, true);
             (futureExecutor == null ? executor : futureExecutor).execute(task);
             return completableFuture;
         }
@@ -577,17 +577,44 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     /**
      * @see java.util.concurrent.CompletableFuture#completeAsync(Supplier)
      */
-    // TODO Java 9 @Override
-    public CompletableFuture<T> completeAsync(Supplier<? extends T> supplier) {
-        throw new UnsupportedOperationException();
+    @Trivial
+    public CompletableFuture<T> completeAsync(Supplier<? extends T> action) {
+        return completeAsync(action, defaultExecutor);
     }
 
     /**
      * @see java.util.concurrent.CompletableFuture#completeAsync(Supplier, Executor)
      */
-    // TODO Java 9 @Override
-    public CompletableFuture<T> completeAsync(Supplier<? extends T> supplier, Executor executor) {
-        throw new UnsupportedOperationException();
+    public CompletableFuture<T> completeAsync(Supplier<? extends T> action, Executor executor) {
+        if (JAVA8)
+            throw new UnsupportedOperationException();
+
+        if (!super.isDone()) {
+            ThreadContextDescriptor contextDescriptor;
+            if (executor instanceof ManagedExecutorService) { // the only type of managed executor implementation allowed here is the built-in one
+                // Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
+                if (action instanceof ManagedTask)
+                    throw new IllegalArgumentException(ManagedTask.class.getName());
+
+                WSManagedExecutorService managedExecutor = (WSManagedExecutorService) executor;
+                contextDescriptor = managedExecutor.getContextService().captureThreadContext(XPROPS_SUSPEND_TRAN);
+            } else {
+                contextDescriptor = null;
+            }
+
+            if (!super.isDone()) {
+                @SuppressWarnings({ "rawtypes", "unchecked" })
+                Runnable task = new AsyncSupplier(contextDescriptor, action, this, false);
+                executor.execute(task);
+                // The existence of completeAsync means that any number of tasks could be submitted to complete a
+                // single ManagedCompletableFuture instance.  We are deciding that it is not worth it to track the
+                // Futures for all of these, which means there will be no way to cancel them upon seeing that the
+                // CompletableFuture has completed by some other means.  This can be revisited later if it turns
+                // out to be a problem.
+            }
+        }
+
+        return this;
     }
 
     /**
@@ -1652,11 +1679,13 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
     private static class AsyncSupplier<T> implements Runnable {
         private final Supplier<T> action;
         private final ManagedCompletableFuture<T> completableFuture;
+        private final boolean superComplete;
         private final ThreadContextDescriptor threadContextDescriptor;
 
-        private AsyncSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action, ManagedCompletableFuture<T> completableFuture) {
+        private AsyncSupplier(ThreadContextDescriptor threadContextDescriptor, Supplier<T> action, ManagedCompletableFuture<T> completableFuture, boolean superComplete) {
             this.action = action;
             this.completableFuture = completableFuture;
+            this.superComplete = superComplete;
             this.threadContextDescriptor = threadContextDescriptor;
         }
 
@@ -1680,9 +1709,14 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
                         threadContextDescriptor.taskStopping(contextApplied);
                 } finally {
                     if (failure == null)
-                        completableFuture.super_complete(result);
-                    else
+                        if (superComplete)
+                            completableFuture.super_complete(result);
+                        else
+                            completableFuture.complete(result);
+                    else if (superComplete)
                         completableFuture.super_completeExceptionally(failure);
+                    else
+                        completableFuture.completeExceptionally(failure);
                 }
             }
         }
