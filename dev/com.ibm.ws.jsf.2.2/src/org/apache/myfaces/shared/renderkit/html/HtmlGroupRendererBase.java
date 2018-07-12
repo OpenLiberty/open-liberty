@@ -99,7 +99,7 @@ public class HtmlGroupRendererBase
             {
                 commonPropertiesMarked = CommonPropertyUtils.getCommonPropertiesMarked(component);
                 CommonPropertyUtils.renderCommonPassthroughPropertiesWithoutEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(component), component);
+                        commonPropertiesMarked, component);
             }
             else
             {
