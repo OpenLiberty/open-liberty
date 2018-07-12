@@ -57,7 +57,29 @@ class UninstallDirector extends AbstractDirector {
         uninstallAssets = null;
     }
 
+    /**
+     * Creates array and calls method below
+     *
+     * @param checkDependency if uninstall should check for dependencies
+     * @param productId product id to uninstall
+     * @param toBeDeleted Collection of files to uninstall
+     * @throws InstallException
+     */
     void uninstall(boolean checkDependency, String productId, Collection<File> toBeDeleted) throws InstallException {
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstall(checkDependency, productIds, toBeDeleted);
+    }
+
+    /**
+     * Uninstalls products depending on dependencies
+     *
+     * @param checkDependency if uninstall should check for dependencies
+     * @param productIds product ids to uninstall
+     * @param toBeDeleted Collection of files to uninstall
+     * @throws InstallException
+     */
+    void uninstall(boolean checkDependency, String[] productIds, Collection<File> toBeDeleted) throws InstallException {
         if (uninstallAssets.isEmpty())
             return;
 
@@ -68,7 +90,10 @@ class UninstallDirector extends AbstractDirector {
         }
         if (toBeDeleted != null) {
             for (File f : toBeDeleted) {
-                InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", productId, f);
+                for (String productId : productIds) {
+                    InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", productId, f);
+                }
+
             }
         }
 
@@ -117,9 +142,9 @@ class UninstallDirector extends AbstractDirector {
         }
         featureNames.addAll(installFeatureRequiredFeatures);
         uninstallFeatures(featureNames, getInstallFeatures(ids), force);
-        uninstall(true, null, null);
+        uninstall(true, (String) null, null);
         uninstallInternalAndAutoFeatures(featureNames, installedFeatureDefinitions, null);
-        uninstall(true, null, null);
+        uninstall(true, (String) null, null);
     }
 
     /**
@@ -165,14 +190,38 @@ class UninstallDirector extends AbstractDirector {
         return false;
     }
 
+    /**
+     * Creates array and calls method below
+     *
+     * @param productId product id to uninstall
+     * @param exceptPlatfromFeatuers If platform features should be ignored
+     * @throws InstallException
+     */
     void uninstallFeaturesByProductId(String productId, boolean exceptPlatfromFeatuers) throws InstallException {
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstallFeaturesByProductId(productIds, exceptPlatfromFeatuers);
+    }
+
+    /**
+     * Uninstalls features by product ids
+     *
+     * @param productIds product id to uninstall
+     * @param exceptPlatfromFeatuers If platform features should be ignored
+     * @throws InstallException
+     */
+    void uninstallFeaturesByProductId(String[] productIds, boolean exceptPlatfromFeatuers) throws InstallException {
         fireProgressEvent(InstallProgressEvent.CHECK, 1, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CHECKING"));
         Map<String, ProvisioningFeatureDefinition> installedFeatures = exceptPlatfromFeatuers ? product.getAllCoreFeatureDefinitionsExceptPlatform() : product.getAllCoreFeatureDefinitions();
         uninstallAssets = new ArrayList<UninstallAsset>();
         for (ProvisioningFeatureDefinition targetPd : installedFeatures.values()) {
             String pid = targetPd.getHeader("IBM-ProductID");
-            if (pid != null && pid.equals(productId))
-                uninstallAssets.add(new UninstallAsset(targetPd));
+            if (pid != null) {
+                for (String productId : productIds) {
+                    if (pid.equals(productId))
+                        uninstallAssets.add(new UninstallAsset(targetPd));
+                }
+            }
         }
     }
 
