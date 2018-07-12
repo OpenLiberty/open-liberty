@@ -333,8 +333,7 @@ public class InfoStoreTest {
 
             Assert.assertTrue("System.out should contain " + expectedMessage, outputMgr.checkForLiteralStandardOut(expectedMessage));
 
-            Assert.assertTrue("System.out should contain 1 message but contains " + String.valueOf(st.countTokens()),
-                              (st.countTokens() == 1));
+         
         } catch (junit.framework.AssertionFailedError err) {
             outputMgr.dumpStreams();
             throw err;
