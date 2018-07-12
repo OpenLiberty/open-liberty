@@ -18,6 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jpa.JPAFATServletClient;
 
 import cdi.web.ELIServlet;
 import componenttest.annotation.Server;
@@ -31,7 +32,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  */
 @RunWith(FATRunner.class)
-public class JPACDIIntegrationTest {
+public class JPACDIIntegrationTest extends JPAFATServletClient {
     public static final String APP_NAME = "cdi";
     public static final String SERVLET = "eli";
 
@@ -49,6 +50,8 @@ public class JPACDIIntegrationTest {
         ShrinkHelper.addDirectory(app, resPath);
         ShrinkHelper.exportAppToServer(server1, app);
         server1.addInstalledAppForValidation(APP_NAME);
+
+        handleJava2SecurityWorkaround(server1);
 
         server1.startServer();
     }
