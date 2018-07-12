@@ -129,7 +129,8 @@ public class InstallMap implements Map {
     // Keys
     private static final String RUNTIME_INSTALL_DIR = "runtime.install.dir";
     private static final String INSTALL_KERNEL_INIT_CODE = "install.kernel.init.code";
-    private static final String INSTALL_KERNEL_JAR = "install.map.jar";
+    private static final String INSTALL_MAP_JAR = "install.map.jar";
+    private static final String INSTALL_MAP_JAR_FILE = "install.map.jar.file";
     private static final String OVERRIDE_JAR_BUNDLES = "override.jar.bundles";
     private static final String INSTALL_KERNEL_INIT_ERROR_MESSAGE = "install.kernel.init.error.message";
     private static final String MESSAGE_LOCALE = "message.locale";
@@ -284,9 +285,15 @@ public class InstallMap implements Map {
                 } else {
                     throw new IllegalArgumentException();
                 }
-            } else if (INSTALL_KERNEL_JAR.equals(key)) {
+            } else if (INSTALL_MAP_JAR.equals(key)) {
                 if (value instanceof String) {
-                    return data.put(INSTALL_KERNEL_JAR, value);
+                    return data.put(INSTALL_MAP_JAR, value);
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            } else if (INSTALL_MAP_JAR_FILE.equals(key)) {
+                if (value instanceof File) {
+                    return data.put(INSTALL_MAP_JAR_FILE, value);
                 } else {
                     throw new IllegalArgumentException();
                 }
@@ -415,7 +422,8 @@ public class InstallMap implements Map {
         JarFile installKernelJar = null;
         List<URL> jarURLs = new ArrayList<URL>();
         try {
-            installKernelJar = new JarFile(new File(installDir, (String) data.get(INSTALL_KERNEL_JAR)));
+            File installKernelJarFile = (File) data.get(INSTALL_MAP_JAR_FILE);
+            installKernelJar = new JarFile(installKernelJarFile != null ? installKernelJarFile : new File(installDir, (String) data.get(INSTALL_MAP_JAR)));
             List<String> overrideList = (List<String>) data.get(OVERRIDE_JAR_BUNDLES);
             boolean doOverride = overrideList != null;
             Map<String, File> overrideJarMap = null;
