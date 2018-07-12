@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -990,6 +991,59 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that completedStage returns an instance that is completed with the specified value,
+     * is only accessible as a CompletionStage such that methods like obtrude are disallowed,
+     * and that creates dependent stages with the default managed executor and with the same stipulations
+     * on methods.
+     */
+    @Test
+    public void testCompletedStage() throws Exception {
+        CompletionStage<Integer> cs0;
+        try {
+            cs0 = ManagedCompletableFuture.completedStage(86);
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+
+        // Disallow CompletableFuture methods:
+        CompletableFuture<Integer> cf0 = (CompletableFuture<Integer>) cs0;
+        try {
+            cf0.obtrudeValue(860);
+            fail("obtrudeValue must not be permitted on minimal stage: ");
+        } catch (UnsupportedOperationException x) {
+        } // pass
+
+        try {
+            fail("cancel must not be permitted on minimal stage: " + cf0.cancel(true));
+        } catch (UnsupportedOperationException x) {
+        } // pass
+
+        // Verify the value, and the thread of dependent stage:
+        final CompletableFuture<String> cf = new CompletableFuture<String>();
+        CompletionStage<Void> cs1 = cs0.thenAcceptAsync(value -> cf.complete(Thread.currentThread().getName() + ":" + value));
+        String result = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result, result.endsWith(":86"));
+        assertTrue(result, result.startsWith("Default Executor-thread-"));
+        assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
+
+        // Disallow CompletableFuture methods on dependent stage:
+        CompletableFuture<Void> cf1 = (CompletableFuture<Void>) cs1;
+        try {
+            fail("get must not be permitted on minimal stage: " + cf1.get());
+        } catch (UnsupportedOperationException x) {
+        } // pass
+
+        try {
+            cf1.obtrudeException(new ArithmeticException("test"));
+            fail("obtrudeException must not be permitted on minimal stage: ");
+        } catch (UnsupportedOperationException x) {
+        } // pass
+    }
+
+    /**
      * Verify that the completeExceptionally operation can be used to complete a running action prematurely,
      * and that the corresponding task submitted to the policy executor is canceled.
      */
@@ -1189,6 +1243,110 @@ public class ConcurrentRxTestServlet extends FATServlet {
 
         assertEquals(defaultManagedExecutor, cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(3, count.get()); // two additional executions of the lookup function
+    }
+
+    /**
+     * Verify that failedFuture returns an instance that is completed with the specified exception
+     * and creates dependent stages with the default managed executor.
+     */
+    @Test
+    public void testFailedFuture() throws Exception {
+        CompletableFuture<String> cf0;
+        try {
+            cf0 = ManagedCompletableFuture.failedFuture(new AssertionError("intentionally failed"));
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+
+        try {
+            fail("join must not succeed on failed future: " + cf0.join());
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof AssertionError && "intentionally failed".equals(x.getCause().getMessage()))
+                ; // expected
+            else
+                throw x;
+        }
+
+        CompletableFuture<Object[]> cf1 = cf0.handleAsync((unused, x) -> new Object[] { unused, x, Thread.currentThread().getName() });
+
+        Object[] results = cf1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        assertNull(results[0]); // null result must be supplied to handleAsync
+        assertTrue(results[1] instanceof AssertionError); // exception must be supplied to handleAysnc
+        assertEquals("intentionally failed", ((AssertionError) results[1]).getMessage());
+        assertTrue(results[2].toString().startsWith("Default Executor-thread-")); // must run on Liberty thread pool
+        assertTrue(!Thread.currentThread().getName().equals(results[2].toString())); // must not run on servlet thread
+
+        cf0.obtrudeValue("not failing anymore!");
+        assertEquals("not failing anymore!", cf0.join());
+
+        Object[] results2 = cf1.join();
+        assertSame("results of completed future do not get recomputed after value of prior stage is obtruded", results, results2);
+    }
+
+    /**
+     * Verify that failedStage returns an instance that is completed with the specified exception,
+     * is only accessible as a CompletionStage such that methods like obtrude are disallowed,
+     * and that creates dependent stages with the default managed executor and with the same stipulations
+     * on methods.
+     */
+    @Test
+    public void testFailedStage() throws Exception {
+        CompletionStage<String> cs0;
+        try {
+            cs0 = ManagedCompletableFuture.failedStage(new NumberFormatException("5f"));
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+
+        // Disallow CompletableFuture methods:
+        CompletableFuture<String> cf0 = (CompletableFuture<String>) cs0;
+        try {
+            cf0.obtrudeException(new NumberFormatException("87"));
+            fail("obtrudeException must not be permitted on minimal stage: ");
+        } catch (UnsupportedOperationException x) {
+        } // pass
+
+        try {
+            fail("join must not be permitted on minimal stage: " + cf0.join());
+        } catch (UnsupportedOperationException x) {
+        } // pass
+
+        CompletionStage<String> cs1 = cs0.handleAsync((unused, x) -> Thread.currentThread().getName() + ':' + x.getMessage());
+
+        // Disallow CompletableFuture methods on dependent stage:
+        CompletableFuture<String> cf1 = (CompletableFuture<String>) cs1;
+        try {
+            fail("get must not be permitted on minimal stage: " + cf1.get(87, TimeUnit.SECONDS));
+        } catch (UnsupportedOperationException x) {
+        } // pass
+
+        try {
+            cf1.obtrudeValue("eighty-seven");
+            fail("obtrudeValue must not be permitted on minimal stage: ");
+        } catch (UnsupportedOperationException x) {
+        } // pass
+
+        // Verify the value, and the thread:
+        CompletableFuture<String> cf2 = cs1.toCompletableFuture();
+        String result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result, result.endsWith(":5f"));
+        assertTrue(result, result.startsWith("Default Executor-thread-"));
+        assertTrue(result, !result.startsWith(Thread.currentThread().getName()));
+
+        // obtrude and the get operation above are possible having obtained a CompletableFuture
+        cf2.obtrudeValue("95");
+        assertEquals("95", cf2.getNow("ninety-five"));
+
+        // the prior obtrude impacts only the CompletableFuture instance obtained previously
+        String result2 = cs1.toCompletableFuture().getNow("fifty-f");
+        assertEquals(result, result2);
     }
 
     /**
