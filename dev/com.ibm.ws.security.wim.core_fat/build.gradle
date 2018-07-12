@@ -32,8 +32,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.core.fat.invalidBaseEntryInRealm',
     'com.ibm.ws.security.wim.core.fat.maxSearchResult',
     'com.ibm.ws.security.wim.core.fat.searchTimeOut',
-    'com.ibm.ws.security.wim.core.fat.dynamic',
-    'com.ibm.ws.security.wim.core.fat.noreg'
+    'com.ibm.ws.security.wim.core.fat.dynamic'
   ]
   servers.each { server ->
     copy {

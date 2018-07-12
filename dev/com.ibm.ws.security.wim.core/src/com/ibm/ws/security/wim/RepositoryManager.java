@@ -49,8 +49,6 @@ public class RepositoryManager {
 
     private final VMMService vmmService;
 
-    private volatile int numRepos = 0; // short cut for error checking on how many repos we have
-
     private final Map<String, RepositoryWrapper> repositories = new ConcurrentHashMap<String, RepositoryWrapper>();
 
     public RepositoryManager(VMMService service) {
@@ -59,34 +57,18 @@ public class RepositoryManager {
 
     void addConfiguredRepository(String repositoryId, ConfiguredRepository configuredRepository) {
         RepositoryWrapper repositoryHolder = new ConfiguredRepositoryWrapper(repositoryId, configuredRepository);
-        addRepository(repositoryId, repositoryHolder);
+        repositories.put(repositoryId, repositoryHolder);
     }
 
     void addCustomRepository(String repositoryId, CustomRepository customRepository) {
         RepositoryWrapper repositoryHolder = new CustomRepositoryWrapper(repositoryId, customRepository);
-        addRepository(repositoryId, repositoryHolder);
-    }
-
-    /**
-     * Pair adding to the repositories map and resetting the numRepos int.
-     *
-     * @param repositoryId
-     * @param repositoryHolder
-     */
-    private void addRepository(String repositoryId, RepositoryWrapper repositoryHolder) {
         repositories.put(repositoryId, repositoryHolder);
-        try {
-            numRepos = getNumberOfRepositories();
-        } catch (WIMException e) {
-            // okay
-        }
     }
 
     void addUserRegistry(UserRegistry userRegistry) {
         try {
             UserRegistryWrapper repositoryHolder = new UserRegistryWrapper(userRegistry, vmmService.getConfigManager());
-            addRepository(userRegistry.getRealm(), repositoryHolder);
-
+            repositories.put(userRegistry.getRealm(), repositoryHolder);
         } catch (InitializationException e) {
             //TODO will occur on lookup when this is made lazy.
         }
@@ -96,11 +78,6 @@ public class RepositoryManager {
         RepositoryWrapper repositoryHolder = repositories.remove(id);
         if (repositoryHolder != null) {
             repositoryHolder.clear();
-        }
-        try {
-            numRepos = getNumberOfRepositories();
-        } catch (WIMException e) {
-            // okay
         }
     }
 
@@ -188,17 +165,6 @@ public class RepositoryManager {
 
     public int getNumberOfRepositories() throws WIMException {
         return getRepoIds().size();
-    }
-
-    /**
-     * Gets the shortcut number of repositories, to do a quick check on the number of repos.
-     * To get the actual map size, call getNumberOfRepositories().
-     *
-     * @return
-     * @throws WIMException
-     */
-    public int getNumberOfRepositoriesVolatile() throws WIMException {
-        return numRepos;
     }
 
     /**

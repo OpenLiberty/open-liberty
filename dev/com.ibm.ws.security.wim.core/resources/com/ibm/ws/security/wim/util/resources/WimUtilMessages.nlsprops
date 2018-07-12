@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2018 IBM Corporation and others.
+# Copyright (c) 2012, 2013 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,10 +67,6 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=No action is required.
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: The user registry federation service is stopped.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=This message is for informational purposes only.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=No action is required.
-
-MISSING_REGISTRY_DEFINITION=CWIMK0011E: The user registry operation could not be completed. A valid user registry was not found. Add or correct the registry definition in the server.xml file.
-MISSING_REGISTRY_DEFINITION.explanation=A user registry was not defined or could not be initialized due to a configuration error. A valid user registry includes an LDAP registry or other supported registries or repositories.
-MISSING_REGISTRY_DEFINITION.useraction=If a user registry was defined in the configuration file, review the logs for configuration errors during server start up. Add or correct the user registry definition in the server.xml file.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: The user registry operation could not be completed. The identifier of the entity was not found. Specify the correct identifier as the input parameter. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=The identifier of the entity was not specified. The system cannot find the entity. The user registry operation cannot continue without finding this entity. 
