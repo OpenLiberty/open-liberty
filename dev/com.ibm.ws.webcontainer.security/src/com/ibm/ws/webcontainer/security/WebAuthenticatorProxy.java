@@ -63,33 +63,40 @@ public class WebAuthenticatorProxy implements WebAuthenticator {
         authResult.setTargetRealm(authResult.realm);
         String authType = webRequest.getLoginConfig().getAuthenticationMethod();
 
-        if (authResult.getStatus() == AuthResult.CONTINUE) {
-            WebAuthenticator authenticator = getWebAuthenticator(webRequest);
-            if (authenticator == null) {
-                return new AuthenticationResult(AuthResult.FAILURE, "Unable to get the appropriate WebAuthenticator. Unable to get the appropriate WebAuthenticator.");
-            }
-
-            authResult = authenticator.authenticate(webRequest);
-            if (authenticator instanceof CertificateLoginAuthenticator &&
-                authResult != null && authResult.getStatus() != AuthResult.SUCCESS &&
-                webAppSecurityConfig.allowFailOver() && !webRequest.isDisableClientCertFailOver()) {
-                extraAuditData.put(AuditConstants.ORIGINAL_AUTH_TYPE, authType);
-                authType = getFailOverToAuthType(webRequest);
-                extraAuditData.put(AuditConstants.FAILOVER_AUTH_TYPE, authType);
-                authenticator = getAuthenticatorForFailOver(authType, webRequest);
-                WebReply reply = new DenyReply("AuthenticationFailed");
-                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(reply.getStatusCode()));
+        if (webRequest.getContinueAuthWithTai()) {
+  	        if (authResult.getStatus() == AuthResult.CONTINUE) {
+		        WebAuthenticator authenticator = getWebAuthenticator(webRequest);
                 if (authenticator == null) {
-                    return new AuthenticationResult(AuthResult.FAILURE, "Unable to get the failover WebAuthenticator. Unable to authenticate request.");
-                } else {
-                    authResult = authenticator.authenticate(webRequest);
-                    if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_FAILOVER_01, webRequest, authResult, extraAuditData, Integer.valueOf(HttpServletResponse.SC_OK));
-                    } else {
-                        Audit.audit(Audit.EventID.SECURITY_AUTHN_FAILOVER_01, webRequest, authResult, extraAuditData, Integer.valueOf(reply.getStatusCode()));
-                    }
-                }
+	  	           return new AuthenticationResult(AuthResult.FAILURE, "Unable to get the appropriate WebAuthenticator. Unable to get the appropriate WebAuthenticator.");
+		        }
+	 	        authResult = authenticator.authenticate(webRequest);
+		        if (authenticator instanceof CertificateLoginAuthenticator &&
+		            authResult != null && authResult.getStatus() != AuthResult.SUCCESS &&
+		            webAppSecurityConfig.allowFailOver()) {
+		            extraAuditData.put(AuditConstants.ORIGINAL_AUTH_TYPE, authType);
+		            authType = getFailOverToAuthType(webRequest);
+		            extraAuditData.put(AuditConstants.FAILOVER_AUTH_TYPE, authType);
+		            authenticator = getAuthenticatorForFailOver(authType, webRequest);
+		            WebReply reply = new DenyReply("AuthenticationFailed");
+		            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(reply.getStatusCode()));
+		            if (authenticator == null) {
+		    	         return new AuthenticationResult(AuthResult.FAILURE, "Unable to get the failover WebAuthenticator. Unable to authenticate request.");
+		            } else {
+			             authResult = authenticator.authenticate(webRequest);
+			             if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
+			                Audit.audit(Audit.EventID.SECURITY_AUTHN_FAILOVER_01, webRequest, authResult, extraAuditData, Integer.valueOf(HttpServletResponse.SC_OK));
+			             } else {
+			                 Audit.audit(Audit.EventID.SECURITY_AUTHN_FAILOVER_01, webRequest, authResult, extraAuditData, Integer.valueOf(reply.getStatusCode()));
+			             }
+		            }
+		        }
+	        }
+	    }
+	    else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Not continue with TAI authentication. Setting SUCCESS");
             }
+	        authResult = new AuthenticationResult(AuthResult.SUCCESS, "TAI authentication for Unprotected URI");
         }
 
         if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {

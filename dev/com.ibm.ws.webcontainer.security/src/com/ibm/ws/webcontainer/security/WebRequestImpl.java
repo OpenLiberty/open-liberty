@@ -42,6 +42,7 @@ public class WebRequestImpl implements WebRequest {
     private boolean callAfterSSO = true;
     private boolean unprotectedURI = false;
     private boolean specialUnprotectedURI = false;
+    private boolean continueAuthWithTai = true; 
     private Map<String, Object> propMap = null;
     private boolean requestAuthenticate = false;
     private boolean disableClientCertFailOver = false;
@@ -227,6 +228,17 @@ public class WebRequestImpl implements WebRequest {
     public boolean isCallAfterSSO() {
         return callAfterSSO;
     }
+
+    @Override
+    public void setContinueAuthWithTai(boolean continueAuthWithTai) {
+        this.continueAuthWithTai = continueAuthWithTai;
+    }
+
+    @Override
+    public boolean getContinueAuthWithTai() {
+        return continueAuthWithTai;
+    }
+
 
     /*
      * (non-Javadoc)
