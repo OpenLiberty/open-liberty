@@ -104,7 +104,7 @@ public class CDIManagedBeanInterceptorTest extends LoggingTest {
             //We wont hit the pre-destroy if we don't trigger the servlet.
             HttpUtils.findStringInUrl(server, "/managedBeanApp", "Begin output");
             server.setMarkToEndOfLog();
-            server.restartDropinsApplication("managedBeanApp.war");
+            Assert.assertTrue("Failed to restart the app. This was probably a hicup in the test environment.", server.restartDropinsApplication("managedBeanApp.war"));
             List<String> lines = server.findStringsInLogs("PreDestory");
             Assert.assertEquals("Unexpected number of lines: " + lines.toString(), 3, lines.size());
 
