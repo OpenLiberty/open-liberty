@@ -9,13 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 repositories {
-
    ivy {
-
        url "../cnf/local"
-
    }
-
 }
 
 configurations {
@@ -28,6 +24,7 @@ dependencies {
 
 
 task addEJBTools(type: Copy) {
+  dependsOn ':com.ibm.ws.ejbcontainer.fat_tools:release'
   from configurations.ejbTools
   into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server/lib/global"
 }
