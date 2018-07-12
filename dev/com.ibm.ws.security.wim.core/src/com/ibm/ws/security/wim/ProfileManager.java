@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,6 @@ import com.ibm.wsspi.security.wim.exception.InvalidIdentifierException;
 import com.ibm.wsspi.security.wim.exception.InvalidUniqueIdException;
 import com.ibm.wsspi.security.wim.exception.MaxResultsExceededException;
 import com.ibm.wsspi.security.wim.exception.MissingSearchControlException;
-import com.ibm.wsspi.security.wim.exception.NoUserRepositoriesFoundException;
 import com.ibm.wsspi.security.wim.exception.OperationNotSupportedException;
 import com.ibm.wsspi.security.wim.exception.PasswordCheckFailedException;
 import com.ibm.wsspi.security.wim.exception.SearchControlException;
@@ -225,16 +224,6 @@ public class ProfileManager implements ProfileServiceLite {
     @Trivial
     @FFDCIgnore(WIMException.class)
     private Root genericProfileManagerMethod(String METHODNAME, char METHODTYPE, Root root) throws WIMException {
-
-        if (repositoryManager != null && repositoryManager.getNumberOfRepositoriesVolatile() < 1) {
-            if (repositoryManager.getNumberOfRepositories() < 1) { // double check that we're at 0 repos
-                throw new NoUserRepositoriesFoundException(WIMMessageKey.MISSING_REGISTRY_DEFINITION, Tr.formatMessage(
-                                                                                                                       tc,
-                                                                                                                       WIMMessageKey.MISSING_REGISTRY_DEFINITION,
-                                                                                                                       null));
-            }
-        }
-
         // Please DONOT UPDATE or CHANGE this wrapper.
         // If a need arises, please updated the required method call.
 
