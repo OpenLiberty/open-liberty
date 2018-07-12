@@ -89,12 +89,14 @@ public final class FastWriter extends Writer
 
     public void write(String str, int off, int len) throws IOException
     {
-        this.write(str.toCharArray(), off, len);
+        overflow(len);
+        str.getChars(off, off+len, this.buff, size);
+        this.size += len;
     }
 
     public void write(String str) throws IOException
     {
-        this.write(str.toCharArray(), 0, str.length());
+        this.write(str, 0, str.length());
     }
 
     public void reset()

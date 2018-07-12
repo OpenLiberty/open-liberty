@@ -143,7 +143,7 @@ public class HtmlLabelRenderer extends HtmlRenderer
             if (isCommonPropertiesOptimizationEnabled(facesContext))
             {
                 CommonPropertyUtils.renderLabelPassthroughPropertiesWithoutEvents(writer, 
-                        CommonPropertyUtils.getCommonPropertiesMarked(uiComponent), uiComponent);
+                        commonPropertiesMarked, uiComponent);
             }
             else
             {
