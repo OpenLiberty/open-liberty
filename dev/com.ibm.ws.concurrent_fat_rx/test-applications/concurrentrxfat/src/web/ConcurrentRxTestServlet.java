@@ -995,17 +995,17 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testCompleteAsyncOfCompletedStage() throws Exception {
-        ManagedCompletableFuture<Integer> cf0;
+        ManagedCompletableFuture<Integer> cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(90);
+
+        CompletableFuture<Integer> cf1;
         try {
-            cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(90);
+            cf1 = cf0.completeAsync(() -> 900);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
             else
                 return; // expected for Java SE 8
         }
-
-        CompletableFuture<Integer> cf1 = cf0.completeAsync(() -> 900);
 
         assertSame(cf0, cf1);
 
@@ -1017,27 +1017,27 @@ public class ConcurrentRxTestServlet extends FATServlet {
      */
     @Test
     public void testCompleteAsyncOfIncompleteStage() throws Exception {
-        ManagedCompletableFuture<String> cf0;
+        ManagedCompletableFuture<String> cf0 = (ManagedCompletableFuture<String>) ManagedCompletableFuture.completedFuture("89");
+
+        ManagedCompletableFuture<String> cf1 = (ManagedCompletableFuture<String>) cf0.newIncompleteFuture();
+
+        CompletableFuture<String> cf2;
         try {
-            cf0 = (ManagedCompletableFuture<String>) ManagedCompletableFuture.completedFuture("89");
+            cf2 = cf1.completeAsync(() -> {
+                StringBuilder s = new StringBuilder(Thread.currentThread().getName()).append(':');
+                try {
+                    s.append(InitialContext.doLookup("java:comp/env/executorRef").toString());
+                } catch (NamingException x) {
+                    s.append("NamingException");
+                }
+                return s.toString();
+            }, noContextExecutor);
         } catch (UnsupportedOperationException x) {
             if (AT_LEAST_JAVA_9)
                 throw x;
             else
                 return; // expected for Java SE 8
         }
-
-        ManagedCompletableFuture<String> cf1 = (ManagedCompletableFuture<String>) cf0.newIncompleteFuture();
-
-        CompletableFuture<String> cf2 = cf1.completeAsync(() -> {
-            StringBuilder s = new StringBuilder(Thread.currentThread().getName()).append(':');
-            try {
-                s.append(InitialContext.doLookup("java:comp/env/executorRef").toString());
-            } catch (NamingException x) {
-                s.append("NamingException");
-            }
-            return s.toString();
-        }, noContextExecutor);
 
         assertSame(cf1, cf2);
 
@@ -1060,21 +1060,22 @@ public class ConcurrentRxTestServlet extends FATServlet {
         CountDownLatch beginLatch = new CountDownLatch(1);
         CountDownLatch continueLatch = new CountDownLatch(1);
         BlockableSupplier<String> blockingSupplier = new BlockableSupplier<String>("88", beginLatch, continueLatch);
-        ManagedCompletableFuture<String> cf0;
+        ManagedCompletableFuture<String> cf0 = (ManagedCompletableFuture<String>) ManagedCompletableFuture.supplyAsync(blockingSupplier);
 
+        // wait for it to start
+        assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        CompletableFuture<String> cf1;
         try {
-            cf0 = (ManagedCompletableFuture<String>) ManagedCompletableFuture.supplyAsync(blockingSupplier);
+            cf1 = cf0.completeAsync(() -> Thread.currentThread().getName());
         } catch (UnsupportedOperationException x) {
+            continueLatch.countDown();
             if (AT_LEAST_JAVA_9)
                 throw x;
             else
                 return; // expected for Java SE 8
         }
 
-        // wait for it to start
-        assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
-
-        CompletableFuture<String> cf1 = cf0.completeAsync(() -> Thread.currentThread().getName());
         assertSame("completeAsync must return same instance", cf0, cf1);
 
         String result = cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
