@@ -31,4 +31,6 @@ public interface AnnotationService_Service {
     AnnotationTargets_Factory getAnnotationTargetsFactory();
 
     InfoStoreFactory getInfoStoreFactory();
+    
+    String getAnnotationCacheDirectoryName();
 }
