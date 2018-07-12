@@ -10,9 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.osgi.framework.VersionRange;
+
 import com.ibm.ws.repository.resolver.internal.LibertyVersionRange;
+
+import wlp.lib.extract.ProductMatch;
+import wlp.lib.extract.SelfExtractor;
 
 /**
  * Contains information about a product requirement that could not be resolved.
@@ -100,6 +107,45 @@ public class ProductRequirementInformation {
     public String toString() {
         return "ProductInformation [versionRange=" + versionRange + ", productId=" + productId + ", installType=" + installType + ", licenseType=" + licenseType + ", editions="
                + editions + "]";
+    }
+
+    /**
+     * Parse an appliesTo string to produce a list of product requirements
+     *
+     * @param appliesTo the appliesTo string
+     * @return the product requirements information
+     */
+    @SuppressWarnings("unchecked") // SelfExtractor has no generics
+    public static List<ProductRequirementInformation> createFromAppliesTo(String appliesTo) {
+        if (appliesTo == null || appliesTo.isEmpty()) {
+            throw new InvalidParameterException("Applies to must be set to a valid value but is " + appliesTo);
+        }
+        List<ProductRequirementInformation> products = new ArrayList<ProductRequirementInformation>();
+        List<ProductMatch> matchers = SelfExtractor.parseAppliesTo(appliesTo);
+        for (ProductMatch match : matchers) {
+            // All product must have their ID set so this should always produce a valid filter string
+            String productId = match.getProductId();
+            String version = match.getVersion();
+            final String versionRange;
+            if (version != null && version.endsWith("+")) {
+                versionRange = version.substring(0, version.length() - 1);
+            } else {
+                if (version != null) {
+                    versionRange = Character.toString(VersionRange.LEFT_CLOSED) + version + ", " + version + Character.toString(VersionRange.RIGHT_CLOSED);
+                } else {
+                    versionRange = null;
+                }
+            }
+            String installType = match.getInstallType();
+            String licenseType = match.getLicenseType();
+
+            // The editions is a list of strings
+            List<String> editions = match.getEditions();
+
+            products.add(new ProductRequirementInformation(versionRange, productId, installType, licenseType, editions));
+        }
+
+        return products;
     }
 
 }

@@ -50,7 +50,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * Returns a collection of top level feature names that were not resolved.
-     * 
+     *
      * @return
      */
     public Collection<String> getTopLevelFeaturesNotResolved() {
@@ -59,7 +59,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * Returns a collection of requirements that were not found during the resolution process.
-     * 
+     *
      * @return
      * @deprecated use {@link #getAllRequirementsResourcesNotFound()} instead as this includes information about the resource that is held the requirement
      */
@@ -70,7 +70,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * Returns a collection of requirements that were not found during the resolution process including the resource that owns the requirement.
-     * 
+     *
      * @return the resulting collection
      */
     public Collection<MissingRequirement> getAllRequirementsResourcesNotFound() {
@@ -79,7 +79,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.repository.exceptions.RepositoryException#getCause()
      */
     @Override
@@ -92,7 +92,7 @@ public class RepositoryResolutionException extends RepositoryException {
      * This will iterate through the products that couldn't be found as supplied by {@link #getMissingProducts()} and look for the minimum version that was searched for. It will
      * limit it to products that match the supplied <code>productId</code>, major, minor and micro <code>version</code>, and <code>edition</code>. Note that if the minimum version
      * on a {@link ProductRequirementInformation} is not in the form digit.digit.digit.digit then it will be ignored.
-     * 
+     *
      * @param productId The product ID to find the minimum missing version for or <code>null</code> to match to all products
      * @param version The version to find the minimum missing version for by matching the first three parts so if you supply "9.0.0.0" and this item applies to version "8.5.5.3"
      *            and "9.0.0.1" then "9.0.0.1" will be returned. Supply <code>null</code> to match all versions
@@ -117,7 +117,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * This will filter the supplied versions to make sure they all have the same major, minor and micro parts as the supplied version. This may return the original collection.
-     * 
+     *
      * @param minimumVersions
      * @param version
      * @return The filtered versions, may be empty but won't be <code>null</code>
@@ -138,10 +138,10 @@ public class RepositoryResolutionException extends RepositoryException {
 
     /**
      * This method will iterate through the missingProductInformation and returned a filtered collection of all the {@link ProductRequirementInformation#versionRange}s.
-     * 
+     *
      * @param productId The product ID to find the version for or <code>null</code> to match to all products
      * @param edition The edition to find the version for or <code>null</code> to match to all editions
-     * 
+     *
      * @return
      */
     private Collection<LibertyVersionRange> filterVersionRanges(String productId, String edition) {
@@ -164,14 +164,14 @@ public class RepositoryResolutionException extends RepositoryException {
      * digit.digit.digit.digit then it will be ignored. Also, if the maximum version is unbounded then this method will return <code>null</code>, this means that
      * {@link #getMinimumVersionForMissingProduct(String)} may return a non-null value at the same time as this method returning <code>null</code>. It is possible for a strange
      * quirk in that if the repository had the following versions in it:</p>
-     * 
+     *
      * <ul><li>8.5.5.2</li>
      * <li>8.5.5.4+</li></ul>
-     * 
+     *
      * <p>The {@link #getMinimumVersionForMissingProduct(String)} would return "8.5.5.2" and this method would return <code>null</code> implying a range from 8.5.5.2 to infinity
      * even though 8.5.5.3 is not supported, therefore {@link #getMissingProducts()} should be relied on for the most accurate information although in reality this situation would
      * indicate a fairly odd repository setup.</p>
-     * 
+     *
      * @param productId The product ID to find the maximum missing version for or <code>null</code> to match to all products
      * @param version The version to find the maximum missing version for by matching the first three parts so if you supply "8.5.5.2" and this item applies to version "8.5.5.3"
      *            and "9.0.0.1" then "8.5.5.3" will be returned. Supply <code>null</code> to match all versions
@@ -202,7 +202,7 @@ public class RepositoryResolutionException extends RepositoryException {
     /**
      * <p>This method will return a collection of {@link ProductRequirementInformation} objects that contain all of the products that we attempted to resolve but couldn't. This can
      * be taken
-     * as a list of all of the products for which we have an instance of a required feature/sample/iFix but could not resolve the dependency on the product. There are some
+     * as a list of all of the products for which we have an instance of a required feature/sample but could not resolve the dependency on the product. There are some
      * nuances in displaying this information to a user:</p>
      * <ul>
      * <li>The product version could contain a range in the form 8.5.5.4+. It may be possible to have overlapping ranges so for instance there could be one entry at version
@@ -218,11 +218,20 @@ public class RepositoryResolutionException extends RepositoryException {
      * </table>
      * </li>
      * </ul>
-     * 
+     *
      * @return The collection of missing products, may be empty but will not be <code>null</code>
      */
     public Collection<ProductRequirementInformation> getMissingProducts() {
         return this.missingProductInformation;
+    }
+
+    @Override
+    public String getMessage() {
+        StringBuilder sb = new StringBuilder();
+        for (String missing : getTopLevelFeaturesNotResolved()) {
+            sb.append("Requirement not met: resource=").append(missing).append("\n");
+        }
+        return sb.toString();
     }
 
     /**
@@ -238,7 +247,7 @@ public class RepositoryResolutionException extends RepositoryException {
          * @param requirementName
          * @param owningResource
          */
-        /* package-protected */MissingRequirement(String requirementName, RepositoryResource owningResource) {
+        /* package-protected */ MissingRequirement(String requirementName, RepositoryResource owningResource) {
             super();
             this.requirementName = requirementName;
             this.owningResource = owningResource;
@@ -252,7 +261,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
         /**
          * Gets the requirement name
-         * 
+         *
          * @return the requirementName
          */
         public String getRequirementName() {
@@ -261,7 +270,7 @@ public class RepositoryResolutionException extends RepositoryException {
 
         /**
          * Gets the owning resource
-         * 
+         *
          * @return the owningResource
          */
         public RepositoryResource getOwningResource() {
