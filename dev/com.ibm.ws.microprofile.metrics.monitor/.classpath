@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="/build.image/wlp/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.metrics.1.1.1_1.0.21.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.microprofile.metrics"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.microprofile.metrics.1.1"/>
+	<classpathentry kind="lib" path="/build.image/wlp/dev/spi/spec/com.ibm.wsspi.org.osgi.service.component.annotations_1.0.21.jar"/>
+	<classpathentry kind="lib" path="/build.image/wlp/lib/com.ibm.ws.org.apache.felix.scr_1.0.21.jar"/>
+	<classpathentry kind="lib" path="/build.image/wlp/lib/com.ibm.ws.logging_1.0.21.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.org.osgi.annotation.versioning/build/libs/com.ibm.ws.org.osgi.annotation.versioning.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
