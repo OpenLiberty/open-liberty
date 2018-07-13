@@ -47,6 +47,7 @@ import com.ibm.ws.security.wim.registry.util.SearchBridge;
 import com.ibm.ws.security.wim.registry.util.SecurityNameBridge;
 import com.ibm.ws.security.wim.registry.util.UniqueIdBridge;
 import com.ibm.ws.security.wim.registry.util.ValidBridge;
+import com.ibm.wsspi.security.wim.exception.NoUserRepositoriesFoundException;
 
 @ObjectClassDefinition(pid = "com.ibm.ws.security.wim.registry.WIMUserRegistry", name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, localization = Ext.LOCALIZATION)
 @Ext.ObjectClassClass(FederationRegistry.class)
@@ -171,6 +172,15 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
             return returnValue;
         } catch (Exception excp) {
             if (excp instanceof RegistryException) {
+                Throwable t = excp.getCause();
+                if (t != null && t instanceof NoUserRepositoriesFoundException) {
+                    /**
+                     * Throw the original exception back to the user. Otherwise, they receive a misleading
+                     * message that their user was not found instead of the root of the problem (no registries
+                     * to search).
+                     */
+                    throw excp;
+                }
                 // New:: Change in Input/Output mapping
                 // throw (RegistryException) excp;
                 return null;
