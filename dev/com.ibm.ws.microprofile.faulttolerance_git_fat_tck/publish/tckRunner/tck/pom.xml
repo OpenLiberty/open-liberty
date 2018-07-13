@@ -105,9 +105,9 @@
             <version>1.1.14.Final</version>
         </dependency>
         <dependency>
-            <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
+            <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>999.0.20180329212918</version> 
+            <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

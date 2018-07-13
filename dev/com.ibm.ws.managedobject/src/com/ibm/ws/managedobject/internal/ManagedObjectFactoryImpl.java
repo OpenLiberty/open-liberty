@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,13 @@ package com.ibm.ws.managedobject.internal;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.managedobject.ConstructionCallback;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.managedobject.ManagedObjectInvocationContext;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore; 
 
 public class ManagedObjectFactoryImpl<T> implements ManagedObjectFactory<T>, ConstructionCallback<T> {
     private Constructor<T> constructor;

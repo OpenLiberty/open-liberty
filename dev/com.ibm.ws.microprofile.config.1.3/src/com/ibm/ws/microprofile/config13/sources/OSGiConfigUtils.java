@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
 import com.ibm.ws.microprofile.config13.interfaces.Config13Constants;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -50,6 +51,7 @@ public class OSGiConfigUtils {
     public static String getApplicationName(BundleContext bundleContext) {
         String applicationName = null;
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+
         if (cmd == null) {
             //if the component metadata is null then we're probably running in the CDI startup sequence so try asking CDI for the application
             applicationName = getCDIAppName(bundleContext);
@@ -58,9 +60,15 @@ public class OSGiConfigUtils {
         }
 
         if (applicationName == null) {
-            throw new ConfigException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
+            if (cmd == null) {
+                throw new ConfigStartException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
+            } else {
+                throw new ConfigException(Tr.formatMessage(tc, "no.application.name.CWMCG0201E"));
+            }
         }
+
         return applicationName;
+
     }
 
     /**

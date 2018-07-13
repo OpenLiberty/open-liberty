@@ -65,7 +65,6 @@
     permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect";
     -->
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-    <javaPermission codebase="${server.config.dir}/connectors/DerbyRA.rar" className="java.security.AllPermission"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>

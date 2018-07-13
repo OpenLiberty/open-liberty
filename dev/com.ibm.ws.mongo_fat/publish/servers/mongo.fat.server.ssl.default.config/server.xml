@@ -1,0 +1,30 @@
+<server>
+    <include location="../fatTestPorts.xml" />
+    <applicationMonitor pollingRate="10s" />
+
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>mongodb-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jndi-1.0</feature>
+        <feature>ssl-1.0</feature>
+    </featureManager>
+
+    <library id="mongo-lib">
+        <fileset dir="${shared.resource.dir}/mongo-2.13" />
+    </library>
+
+    <application name="mongo" location="mongo.war">
+        <classloader commonLibraryRef="mongo-lib" />
+    </application>
+    
+    <!-- Default SSL config is valid for both password and certificate authentication -->
+    <keyStore password="passw0rd" id="myDefaultKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_good_keystore.jks"></keyStore>
+    <keyStore password="passw0rd" id="myDefaultTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.jks"></keyStore>
+    <ssl id="defaultSSLConfig" keyStoreRef="myDefaultKeyStore" trustStoreRef="myDefaultTrustStore" />
+
+    <mongo id="mongo-no-sslRef" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true"/>
+    <mongoDB jndiName="mongo/testdb-no-sslRef" mongoRef="mongo-no-sslRef" databaseName="default" />
+    
+    <javaPermission codebase="${shared.resource.dir}/mongo-2.13/mongo-java-driver-2.13.3.jar" className="java.security.AllPermission"/>
+</server>

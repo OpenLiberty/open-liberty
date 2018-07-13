@@ -160,15 +160,14 @@ public final class FreePool implements JCAPMIHelper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "queueRequest", waitTimeout);
         }
-
-        if (waitTimeout < 0) {
+        if (waitTimeout == 0) {
             --pm.waiterCount;
             Tr.error(
                      tc,
                      "POOL_MANAGER_EXCP_CCF2_0001_J2CA0045",
                      new Object[] { "queueRequest", gConfigProps.cfName });
 
-            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting. 0 used for wait timeout");
+            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available, Timed out waiting. Zero used for wait timeout");
             com.ibm.ws.ffdc.FFDCFilter.processException(cwte, J2CConstants.DMSID_MAX_CONNECTIONS_REACHED, "192", this.pm);
             pm.activeRequest.decrementAndGet();
 
@@ -191,7 +190,11 @@ public final class FreePool implements JCAPMIHelper {
                 pm.displayInfiniteWaitMessage = false; // only display this message once per PM.
             }
             pm.activeRequest.decrementAndGet();
-            pm.waiterFreePoolLock.wait(waitTimeout);
+            if (waitTimeout < 0) {
+                pm.waiterFreePoolLock.wait(0); //wait an infinite amount of time
+            } else {
+                pm.waiterFreePoolLock.wait(waitTimeout); //wait the specified amount of time
+            }
             pm.requestingAccessToPool();
         } catch (InterruptedException ie) {
             if (tc.isDebugEnabled()) {
@@ -209,7 +212,7 @@ public final class FreePool implements JCAPMIHelper {
                     Tr.debug(this, tc, "Waiters: total time waiter were in queue: " + (pm.waitersEndedTime - pm.waitersStartedTime));
                 }
             }
-            ResourceAllocationException throwMe = new ResourceAllocationException(ie.getMessage()); 
+            ResourceAllocationException throwMe = new ResourceAllocationException(ie.getMessage());
             throwMe.initCause(ie);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(this, tc, "queueRequest", throwMe);
@@ -231,7 +234,7 @@ public final class FreePool implements JCAPMIHelper {
             Tr.entry(this, tc, "returnToFreePool", gConfigProps.cfName);
         }
         if (mcWrapper.shouldBeDestroyed() || mcWrapper.hasFatalErrorNotificationOccurred(fatalErrorNotificationTime)
-            || ((pm.agedTimeout != 0)
+            || ((pm.agedTimeout != -1)
                 && (mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis)))) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (mcWrapper.shouldBeDestroyed()) {
@@ -240,7 +243,7 @@ public final class FreePool implements JCAPMIHelper {
                 if (mcWrapper.hasFatalErrorNotificationOccurred(fatalErrorNotificationTime)) {
                     Tr.debug(this, tc, "Fatal error occurred, removing connection " + mcWrapper);
                 }
-                if (((pm.agedTimeout != 0) && (mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis)))) {
+                if (((pm.agedTimeout != -1) && (mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis)))) {
                     Tr.debug(this, tc, "Aged timeout exceeded, removing connection " + mcWrapper);
                 }
                 if (mcWrapper.isDestroyState()) {
@@ -894,7 +897,7 @@ public final class FreePool implements JCAPMIHelper {
                          * will break out of the while(true)). For case 4, mcWrapperTemp is null and we will check for a tls matching connection.
                          */
                         if (mcWrapperTemp == null) {
-                            if (pm.isThreadLocalConnectionEnabled && waitTimeout >= 0) {
+                            if (pm.isThreadLocalConnectionEnabled && waitTimeout != 0) {
                                 mcWrapper = pm.searchTLSForMatchingConnection(managedConnectionFactory, subject, cri);
                                 if (mcWrapper != null)
                                     break;
@@ -927,7 +930,7 @@ public final class FreePool implements JCAPMIHelper {
                         }
                     } // end if (waitStartTime == 0)
 
-                    // NOTE:  When we get here, we either timedout or got notified.
+                    // NOTE:  When we get here, we either timed-out or got notified.
 
                     /*
                      * Look for a connection in the mcWrapperWaiterList
@@ -1110,7 +1113,7 @@ public final class FreePool implements JCAPMIHelper {
                     //      so we need to throw a connection waitTimeoutException
                     // b) This is the first waiter, in which case we need to wait and try again
                     // if there are not waiters, then we might have found a connection to return
-                    // or found a spot to create one.  This is the thrid way into this branch.
+                    // or found a spot to create one.  This is the third way into this branch.
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "We didn't find or are not going to create a connection.");
@@ -1150,7 +1153,7 @@ public final class FreePool implements JCAPMIHelper {
                                          " waitTimeout is " + waitTimeout + " total time waited is " + totalTimeWaited);
                         }
 
-                        // handle both waiting slighlty less than waitTimeout or waiting longer
+                        // handle both waiting slightly less than waitTimeout or waiting longer
                         //  than waitTimeout
 
                         if ((waitTimeout - timeWaited) <= kludge) {
@@ -1912,7 +1915,7 @@ public final class FreePool implements JCAPMIHelper {
         }
     }
 
-    //The Below two  methods are added to support PMI data for connection pools.This can be avoid if we expose com.ibm.ejs.jca,but currently as per JIM
+    //The Below two methods are added to support PMI data for connection pools.This can be avoid if we expose com.ibm.ejs.jca,but currently as per JIM
     //it should not be done as j2c code is partial implementation only for JDBC and JMS.In future when j2c code is fully implemented its better to
     //remove the interface JCAPMIHelper and implemented methods and update ConnectionPoolMonitor.java to use the exposed j2c code.
     @Override

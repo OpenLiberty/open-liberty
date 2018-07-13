@@ -49,7 +49,6 @@ public class ConfigBean extends AbstractConfigBean<Config> implements Bean<Confi
     /** {@inheritDoc} */
     @Override
     public void destroy(Config config, CreationalContext<Config> creationalContext) {
-        ConfigProviderResolver.instance().releaseConfig(config);
         creationalContext.release();
     }
 

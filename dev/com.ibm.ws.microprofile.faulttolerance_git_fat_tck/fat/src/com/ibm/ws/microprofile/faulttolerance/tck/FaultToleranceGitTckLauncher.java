@@ -95,6 +95,7 @@ public class FaultToleranceGitTckLauncher {
                           // org.eclipse.microprofile.fault.tolerance.tck.invalidParameters.RetryClientForValidationDelayDuration.serviceA
                           // target is not valid as it must be greater than the delay duration of 1,000
                           // Millis.
+                          "CWMFT5019W", //CWMFT5019W: The Retry policy jitter delay of 200 Millis for the
                           "CWWKZ0002E");// CWWKZ0002E: An exception occurred while starting the application
                                         // ftInvalidCB5. The exception message was:
                                         // com.ibm.ws.container.service.state.StateChangeException:

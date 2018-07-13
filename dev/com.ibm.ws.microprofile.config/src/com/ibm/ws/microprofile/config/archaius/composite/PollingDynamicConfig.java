@@ -33,6 +33,8 @@ import org.eclipse.microprofile.config.spi.ConfigSource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
 
 public class PollingDynamicConfig implements Closeable {
 
@@ -101,17 +103,26 @@ public class PollingDynamicConfig implements Closeable {
      *
      * @return a Future<?> executor.scheduleWithFixedDelay on update()
      */
+    @FFDCIgnore({ ConfigStartException.class })
     private Future<?> start() {
         Future<?> future = null;
+        boolean startUpFailure = false;
         try {
             update();
+        } catch (ConfigStartException cse) {
+            //Swallow the exception, don't FFDC
+            //At the moment this exception means that we could not properly query the config source
+            //It was introduced as a quick fix for issue #3997 but we might reconsider the design at some point
+            startUpFailure = true;
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "start: Initial Update failed: {0}. Exception: {1}", this, e);
             }
             future = Futures.immediateFailure(e);
         }
-        if (future == null && interval > 0) {
+
+        //if there was an initial startup failure, don't start the polling thread
+        if (!startUpFailure && future == null && interval > 0) {
             future = executor.scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
@@ -142,6 +153,7 @@ public class PollingDynamicConfig implements Closeable {
      *
      * @throws Exception
      */
+    @FFDCIgnore({ ConfigStartException.class })
     private void update() throws Exception {
         // OK to ignore calls to update() if already busy updating
         if (busy.compareAndSet(false, true)) {
@@ -164,6 +176,11 @@ public class PollingDynamicConfig implements Closeable {
                         Tr.debug(tc, "update: Contents of ConfigSource {0} has NOT changed.", this);
                     }
                 }
+            } catch (ConfigStartException cse) {
+                //Just Re-throw the ConfigStartException, don't FFDC
+                //At the moment this exception means that we could not properly query the config source
+                //It was introduced as a quick fix for issue #3997 but we might reconsider the design at some point
+                throw cse;
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "update: Exception updating dynamic source: {0}. Exception: {1}", this, e);
@@ -174,6 +191,7 @@ public class PollingDynamicConfig implements Closeable {
                 busy.set(false);
             }
         }
+
     }
 
     /** {@inheritDoc} */
@@ -183,8 +201,18 @@ public class PollingDynamicConfig implements Closeable {
             if (future != null) {
                 if (!(future.isDone() || future.isCancelled())) {
                     boolean cancelled = future.cancel(true);
-                    if (!cancelled && tc.isWarningEnabled()) {
-                        Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                    if (!cancelled) {
+                        // On shutdown these threads are getting closed down from elsewhere
+                        if (future.isDone() || future.isCancelled()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "PollingDynamicConfig lost race in future cancel: {0}", this);
+                            }
+                            // Something 'odd' happened
+                        } else {
+                            if (tc.isWarningEnabled()) {
+                                Tr.warning(tc, "future.update.not.cancelled.CWMCG0016E", this);
+                            }
+                        }
                     }
                 }
                 future = null;

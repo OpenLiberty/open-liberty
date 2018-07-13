@@ -32,7 +32,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * </ul>
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class FATOpentracingHelloWorld extends FATTestBase {
     /**
      * Set to the generated server before any tests are run.

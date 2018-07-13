@@ -20,10 +20,11 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import javax.servlet.http.Cookie;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -51,6 +52,9 @@ import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
+
+import com.ibm.websphere.security.web.PasswordExpiredException;
+import com.ibm.websphere.security.web.UserRevokedException;
 
 public class AuthenticateApi {
     private static final TraceComponent tc = Tr.register(AuthenticateApi.class);
@@ -139,8 +143,17 @@ public class AuthenticateApi {
             reply = createReplyForAuthnFailure(authResult, realm);
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(reply.getStatusCode()));
-
-            throw new ServletException(authResult.getReason());
+            
+            if (authResult.passwordExpired == true) {
+                throw new PasswordExpiredException(authResult.getReason());
+            }
+            else if (authResult.userRevoked == true) {
+                throw new UserRevokedException(authResult.getReason());
+            }
+            else {
+                throw new ServletException(authResult.getReason());
+            }
+            
         } else {
 
             Audit.audit(Audit.EventID.SECURITY_API_AUTHN_01, req, authResult, Integer.valueOf(HttpServletResponse.SC_OK));

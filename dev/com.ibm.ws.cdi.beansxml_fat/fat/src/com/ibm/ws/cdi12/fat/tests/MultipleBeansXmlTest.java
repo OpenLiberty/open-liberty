@@ -35,6 +35,7 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+@Mode(TestMode.FULL)
 public class MultipleBeansXmlTest extends LoggingTest {
 
     /*
@@ -65,7 +66,6 @@ public class MultipleBeansXmlTest extends LoggingTest {
     }
 
     @Test
-    @Mode(TestMode.FULL)
     public void testMultipleBeansXml() throws Exception {
         //part of multiModuleApp1
         this.verifyResponse(

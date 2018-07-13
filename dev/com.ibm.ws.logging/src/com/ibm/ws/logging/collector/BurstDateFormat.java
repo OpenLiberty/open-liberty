@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.logging.collector;
 import java.text.DateFormat.Field;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Formats dates that are relatively close to one another.
@@ -66,12 +67,18 @@ public class BurstDateFormat {
     private boolean reset = false;
 
     /**
+     * Tracks whether the format is not valid. If true, the underlying SimpleDateFormat is used
+     */
+    protected boolean invalidFormat = false;
+
+    /**
      * Constructs a BurstDateFormat
-     * 
+     *
      * @param formatter
      */
     public BurstDateFormat(SimpleDateFormat formatter) {
         this.formatter = formatter;
+        setup();
     }
 
     /**
@@ -83,6 +90,41 @@ public class BurstDateFormat {
         if (!formatter.toPattern().equals(pattern)) {
             formatter.applyPattern(pattern);
             reset = true;
+            invalidFormat = false;
+            setup();
+        }
+    }
+
+    /**
+     * Setup the date formatter, determine if the format is valid
+     */
+    protected void setup() {
+        try {
+            StringBuffer refTime = new StringBuffer();
+
+            // Get the positions of the millisecond digits
+            String pattern = formatter.toLocalizedPattern();
+            if (pattern.lastIndexOf('S') - pattern.indexOf('S') != 2) {
+                invalidFormat = true;
+            }
+            formatter.format(new Date().getTime(), refTime, position);
+
+            // Should be redundant check with above but check again
+            // just in case some locale expands the milliseconds field
+            if (position.getEndIndex() - position.getBeginIndex() != 3) {
+                invalidFormat = true;
+            }
+            String str = refTime.substring(position.getBeginIndex(), position.getEndIndex());
+
+            // Make sure we are using ascii digits (The loop could be unwrapped)
+            for (char a : str.toCharArray()) {
+                if (a < 48 || a > 57) {
+                    invalidFormat = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            invalidFormat = true;
         }
     }
 
@@ -93,33 +135,51 @@ public class BurstDateFormat {
      * @return
      */
     public String format(long timestamp) {
-        long delta = timestamp - refTimestamp;
 
-        // If we need to reformat
-        if (delta >= pdiff || delta < ndiff || reset) {
-            reset = false;
-            StringBuffer refTime = new StringBuffer();
-            refTimestamp = timestamp;
-            formatter.format(timestamp, refTime, position);
-
-            refMilli = Long.parseLong(refTime.substring(position.getBeginIndex(), position.getEndIndex()));
-            refBeginning = refTime.substring(0, position.getBeginIndex());
-            refEnding = refTime.substring(position.getEndIndex());
-
-            pdiff = 1000 - refMilli;
-            ndiff = -refMilli;
-            return refTime.toString();
-        } else {
-            StringBuffer sb = new StringBuffer();
-            long newMilli = delta + refMilli;
-            if (newMilli >= 100)
-                sb.append(refBeginning).append(newMilli).append(refEnding);
-            else if (newMilli >= 10)
-                sb.append(refBeginning).append('0').append(newMilli).append(refEnding);
-            else
-                sb.append(refBeginning).append("00").append(newMilli).append(refEnding);
-            return sb.toString();
-
+        // If the format is unknown, use the default formatter.
+        if (invalidFormat) {
+            return formatter.format(timestamp);
         }
+
+        try {
+            long delta = timestamp - refTimestamp;
+
+            // If we need to reformat
+            if (delta >= pdiff || delta < ndiff || reset) {
+                reset = false;
+                StringBuffer refTime = new StringBuffer();
+                refTimestamp = timestamp;
+                formatter.format(timestamp, refTime, position);
+
+                refMilli = Long.parseLong(refTime.substring(position.getBeginIndex(), position.getEndIndex()));
+
+                refBeginning = refTime.substring(0, position.getBeginIndex());
+                refEnding = refTime.substring(position.getEndIndex());
+
+                pdiff = 1000 - refMilli;
+                ndiff = -refMilli;
+                return refTime.toString();
+            } else {
+                StringBuffer sb = new StringBuffer();
+                long newMilli = delta + refMilli;
+                if (newMilli >= 100)
+                    sb.append(refBeginning).append(newMilli).append(refEnding);
+                else if (newMilli >= 10)
+                    sb.append(refBeginning).append('0').append(newMilli).append(refEnding);
+                else
+                    sb.append(refBeginning).append("00").append(newMilli).append(refEnding);
+                return sb.toString();
+
+            }
+        } catch (Exception e) {
+            // Throw FFDC in case anything goes wrong
+            // Still generate the date via the SimpleDateFormat
+            invalidFormat = true;
+            return formatter.format(timestamp);
+        }
+    }
+
+    public SimpleDateFormat getSimpleDateFormat() {
+        return formatter;
     }
 }

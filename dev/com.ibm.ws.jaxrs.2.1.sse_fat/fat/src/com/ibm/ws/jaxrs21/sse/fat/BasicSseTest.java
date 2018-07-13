@@ -31,7 +31,7 @@ import jaxrs21sse.basic.BasicSseTestServlet;
  * This test of basic SSE function.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class BasicSseTest extends FATServletClient {
     private static final String SERVLET_PATH = "BasicSseApp/BasicSseTestServlet";
 
@@ -81,4 +81,8 @@ public class BasicSseTest extends FATServletClient {
         runTest(server, SERVLET_PATH, "testSseWithRX");
     }
 
+    @Test
+    public void testErrorSse() throws Exception {
+        runTest(server, SERVLET_PATH, "testErrorSse");
+    }
 }

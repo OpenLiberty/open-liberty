@@ -3467,10 +3467,17 @@ public class PolicyExecutorServlet extends FATServlet {
 
         Future<List<Runnable>> shutdownFuture = testThreads.submit(new ShutdownTask(executor, true, new CountDownLatch(0), noQueueCapacityRemains, TIMEOUT_NS));
 
+        int expectedCancels = 0;
+
         long start = System.nanoTime();
         try {
             fail("Should not succeed after shutdownNow: " + executor.invokeAny(tasks));
         } catch (CancellationException x) { // pass
+            expectedCancels = 2; // ShutdownTask triggered by queue size callback runs after invokeAny's second enqueue returns, so there are 2 queued tasks to cancel
+        } catch (RejectedExecutionException x) { // pass
+            if (!x.getMessage().startsWith("CWWKE1202E")) // submit rejected due to shutdown
+                throw x;
+            expectedCancels = 1; // ShutdownTask triggered by queue size callback runs before invokeAny's second enqueue returns, so there is 1 queued task to cancel. The other was rejected.
         }
         long duration = System.nanoTime() - start;
 
@@ -3478,7 +3485,7 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(duration + "ns", duration < TIMEOUT_NS);
 
         List<Runnable> canceledFromQueue = shutdownFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        assertEquals(2, canceledFromQueue.size());
+        assertEquals(expectedCancels, canceledFromQueue.size());
     }
 
     // Submit a group of tasks via untimed invokeAny. Have all of the tasks block and then invoke shutdownNow on the executor.
@@ -3762,10 +3769,17 @@ public class PolicyExecutorServlet extends FATServlet {
 
         Future<List<Runnable>> shutdownFuture = testThreads.submit(new ShutdownTask(executor, true, new CountDownLatch(0), noQueueCapacityRemains, TIMEOUT_NS));
 
+        int expectedCancels = 0;
+
         long start = System.nanoTime();
         try {
             fail("Should not succeed after shutdownNow: " + executor.invokeAny(tasks, TIMEOUT_NS * 3, TimeUnit.NANOSECONDS));
         } catch (CancellationException x) { // pass
+            expectedCancels = 2; // ShutdownTask triggered by queue size callback runs after invokeAny's second enqueue returns, so there are 2 queued tasks to cancel
+        } catch (RejectedExecutionException x) { // pass
+            if (!x.getMessage().startsWith("CWWKE1202E")) // submit rejected due to shutdown
+                throw x;
+            expectedCancels = 1; // ShutdownTask triggered by queue size callback runs before invokeAny's second enqueue returns, so there is 1 queued task to cancel. The other was rejected.
         }
         long duration = System.nanoTime() - start;
 
@@ -3773,7 +3787,7 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(duration + "ns", duration < TIMEOUT_NS);
 
         List<Runnable> canceledFromQueue = shutdownFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        assertEquals(2, canceledFromQueue.size());
+        assertEquals(expectedCancels, canceledFromQueue.size());
     }
 
     // Submit a group of tasks via timed invokeAny. Have all of the tasks block and then invoke shutdownNow on the executor.

@@ -63,7 +63,7 @@ import web.war.database.deferred.DatabaseSettingsBean;
 /**
  * Test for {@link LdapIdentityStore} configured with deferred EL expressions.
  */
-@MinimumJavaLevel(javaLevel = 1.7)
+@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {

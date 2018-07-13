@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,16 +15,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Calendar;
 
+import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
-import com.ibm.ws.logging.internal.impl.BaseTraceService;
+import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.ws.logging.internal.impl.CountingOutputStream;
 import com.ibm.ws.logging.internal.impl.FileLogHeader;
 import com.ibm.ws.logging.internal.impl.FileLogSet;
 import com.ibm.ws.logging.internal.impl.LoggingConstants;
 import com.ibm.ws.logging.internal.impl.LoggingFileUtils;
-import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 
 /**
@@ -37,6 +39,8 @@ import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
  * a non-unique name. It will be renamed when the log is rolled.
  */
 public class FileLogHolder implements TraceWriter {
+
+    private static TraceComponent tc = null;
 
     enum StreamStatus {
         INIT, ACTIVE, CLOSED
@@ -75,9 +79,31 @@ public class FileLogHolder implements TraceWriter {
     protected long maxFileSizeBytes;
 
     /**
+     * Capture when checked the existence of the log directory
+     */
+    private Long checkTime = null;
+
+    /**
+     * Capture when tempted to check the existence of the log directory
+     */
+    private Long retryTime = null;
+
+    /**
+     * This method will get an instance of TraceComponent
+     *
+     * @return
+     */
+    private static TraceComponent getTc() {
+        if (tc == null) {
+            tc = Tr.register(FileLogHolder.class, null, "com.ibm.ws.logging.internal.resources.LoggingMessages");
+        }
+        return tc;
+    }
+
+    /**
      * This method will check to see if the supplied parameters match the settings on the <code>oldLog</code>,
      * if they do then the <code>oldLog</code> is returned, otherwise a new FileLogHolder will be created.
-     * 
+     *
      * @param oldLog The previous FileLogHolder that may or may not be replaced by a new one, may
      *            be <code>null</code> (will cause a new instance to be created)
      * @param logHeader
@@ -98,7 +124,7 @@ public class FileLogHolder implements TraceWriter {
 
         final FileLogHolder logHolder;
 
-        // We're only supporting names in the log directory 
+        // We're only supporting names in the log directory
         // Our configurations encourage use of forward slash on all platforms
         int lio = newFileName.lastIndexOf("/");
         if (lio > 0) {
@@ -125,7 +151,7 @@ public class FileLogHolder implements TraceWriter {
             fileExtension = "";
         }
 
-        // IF there are changes to the rolling behavior, it will show up in a change to either 
+        // IF there are changes to the rolling behavior, it will show up in a change to either
         // maxFiles or maxBytes
         if (oldLog != null && oldLog instanceof FileLogHolder) {
             logHolder = (FileLogHolder) oldLog;
@@ -147,7 +173,7 @@ public class FileLogHolder implements TraceWriter {
 
     /**
      * Private constructor for this class as a lot of conversion needs to take place on the parameters prior to the object being constructed.
-     * 
+     *
      * @param logHeader The header to write at the beginning of all new log files
      * @param dirName The fully qualified name of the directory to put the logs into
      * @param fileName The name of the file without an extension to put the logs into
@@ -174,7 +200,7 @@ public class FileLogHolder implements TraceWriter {
         }
 
         if (updateLocation) {
-            // If the file name/extension/directory has changed, 
+            // If the file name/extension/directory has changed,
             // change status to "INIT" to force it to be replaced
             setStreamStatus(StreamStatus.INIT, currentFileStream, currentCountingStream, currentPrintStream);
         }
@@ -204,7 +230,7 @@ public class FileLogHolder implements TraceWriter {
 
     /**
      * Write a pre-formated record
-     * 
+     *
      * @param record
      */
     @Override
@@ -212,18 +238,26 @@ public class FileLogHolder implements TraceWriter {
         long length = record.length() + LoggingConstants.nlen;
         PrintStream ps = getPrintStream(length);
         ps.println(record);
+        if (ps.checkError()) {
+            setStreamStatus(StreamStatus.CLOSED, null, null, DummyOutputStream.psInstance);
+            // to avoid junit test to print an error message
+            if (System.getProperty("test.classesDir") == null && System.getProperty("test.buildDir") == null) {
+                File exf = new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
+                System.err.println(Tr.formatMessage(getTc(), "FAILED_TO_WRITE_LOG", new Object[] { exf.getAbsolutePath() }));
+            }
+        }
     }
 
     /**
      * Obtain the current printstream: called from synchronized methods
-     * 
+     *
      * @param requiredLength
      * @return
      */
     private synchronized PrintStream getPrintStream(long numNewChars) {
         switch (currentStatus) {
             case INIT:
-                return createStream();
+                return createStream(true);
             case ACTIVE:
                 if (maxFileSizeBytes > 0) {
                     long bytesWritten = currentCountingStream.count();
@@ -235,9 +269,32 @@ public class FileLogHolder implements TraceWriter {
                     // we underestimate the number of bytes that will be
                     // written, we'll roll the log next time.
                     if (bytesWritten + numNewChars > maxFileSizeBytes)
-                        return createStream();
+                        return createStream(true);
                 }
                 break;
+            case CLOSED:
+                if (checkTime == null) {
+                    checkTime = Long.valueOf(Calendar.getInstance().getTimeInMillis());
+                } else {
+                    long currentTime = Calendar.getInstance().getTimeInMillis();
+                    // try to create stream again for every 5 seconds
+                    if (currentTime - checkTime.longValue() > 5000L) {
+                        checkTime = Long.valueOf(currentTime);
+                        // show error for every 10 minutes
+                        boolean showError = (retryTime == null) || (currentTime - retryTime.longValue() > 600000L);
+                        if (showError)
+                            retryTime = Long.valueOf(currentTime);
+                        PrintStream ps = createStream(showError);
+                        if (this.currentStatus == StreamStatus.ACTIVE) {
+                            // stream successfully created
+                            File exf = new File(this.fileLogSet.getDirectory(), this.fileLogSet.getFileName() + this.fileLogSet.getFileExtension());
+                            Tr.audit(getTc(), "LOG_FILE_RESUMED", new Object[] { exf.getAbsolutePath() });
+                            this.checkTime = null;
+                            this.retryTime = null;
+                        }
+                        return ps;
+                    }
+                }
         }
 
         return currentPrintStream;
@@ -246,7 +303,7 @@ public class FileLogHolder implements TraceWriter {
     /**
      * @return a new print stream
      */
-    private synchronized PrintStream createStream() {
+    private synchronized PrintStream createStream(boolean showError) {
         FileOutputStream newFileStream = null;
         CountingOutputStream newCountingStream = null;
         PrintStream newPrintStream = null;
@@ -255,20 +312,20 @@ public class FileLogHolder implements TraceWriter {
         long realMaxFileSizeBytes = maxFileSizeBytes;
 
         // Store the value, and temporarily "disable" log rolling to avoid
-        // re-trying to roll the log if the ThreadIdentityManager creates 
+        // re-trying to roll the log if the ThreadIdentityManager creates
         // log or trace records. This value is reset in the finally block
         maxFileSizeBytes = 0;
 
         Object token = ThreadIdentityManager.runAsServer();
         try {
-            // Close the existing file  
+            // Close the existing file
             currentPrintStream.flush();
             if (currentFileStream != null) {
                 LoggingFileUtils.tryToClose(currentFileStream);
             }
 
             // Get the non-unique file (e.g. trace.log)
-            targetLogFile = LoggingFileUtils.createNewFile(fileLogSet);
+            targetLogFile = LoggingFileUtils.createNewFile(fileLogSet, showError);
 
             if (targetLogFile != null) {
                 try {

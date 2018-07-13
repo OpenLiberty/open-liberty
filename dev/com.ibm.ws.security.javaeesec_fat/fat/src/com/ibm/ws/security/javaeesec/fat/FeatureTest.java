@@ -46,7 +46,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  *
  */
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class FeatureTest extends JavaEESecTestBase {

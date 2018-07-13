@@ -21,7 +21,6 @@ import org.osgi.framework.FrameworkUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 

@@ -23,6 +23,7 @@ import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.application.ApplicationFactoryImpl;
 import org.apache.myfaces.cdi.util.CDIUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jsf.extprocessor.JSFExtensionFactory;
 
 /**
@@ -45,6 +46,7 @@ public class WASApplicationImpl extends ApplicationWrapper
     }
     
     @Override
+    @Trivial
     public Application getWrapped()
     {
         return application;

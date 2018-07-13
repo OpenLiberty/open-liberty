@@ -9,14 +9,28 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+// This task no longer runs as part of the build, since rmic -iiop was removed in JDK 11 we now check in the generate java stubs
 task rmic(type: Exec, dependsOn: compileJava) {
     String rmicClasspath = sourceSets.main.runtimeClasspath.asPath
     inputs.files(sourceSets.main.runtimeClasspath)
     outputs.dir(new File(compileJava.destinationDir, 'org/omg/stub'))
     executable 'rmic'
-    args '-iiop', '-d', compileJava.destinationDir, '-classpath', rmicClasspath, 'javax.management.j2ee.Management', 'javax.management.j2ee.ManagementHome'
+    args '-iiop', '-keep', '-d', compileJava.destinationDir, '-classpath', rmicClasspath, 'javax.management.j2ee.Management', 'javax.management.j2ee.ManagementHome'
 }
 
-jar {
-    dependsOn rmic
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
+  }
+}
+
+apply plugin: "net.ossindex.audit"
+
+audit {
+    failOnError = false
 }

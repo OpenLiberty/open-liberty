@@ -28,7 +28,7 @@ import junit.framework.Assert;
  * Various utility methods.
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class FATTestBase {
     /**
      * Deploy jaxrsHelloWorld.war.

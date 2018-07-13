@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2011, 2017
+ * Copyright IBM Corp. 2011, 2018
  *
  * The source code for this program is not published or otherwise divested 
  * of its trade secrets, irrespective of what has been deposited with the 
@@ -60,7 +60,7 @@ import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.FileSystemUtils;
 import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.JarFileSystem;
 import com.ibm.ws.artifact.fat_bvt.servlet.filesystem.LooseFileSystem;
 import com.ibm.ws.artifact.fat_bvt.servlet.notification.NotificationTestRunner;
-// import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
+import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipCachingService;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
@@ -412,6 +412,7 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("unused")
     private void dumpRecursive(int depth, FileSystem f, PrintWriter out) {
         String pad = "";
         for (int i = 0; i < depth; i++) {
@@ -425,8 +426,7 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
     }
 
-    // private static final String ZFH_OPEN_COUNT_FIELD_NAME = "openCount"; // TFB: When ZipReaper is installed, this field name changes.
-    private static final String ZFH_OPEN_COUNT_FIELD_NAME = "refs";
+    private static final String ZFH_OPEN_COUNT_FIELD_NAME = "openCount";
     private static final int ERROR_OPEN_COUNT = -1;
 
     private int getOpenCount(ZipFileHandle zfh) {
@@ -528,28 +528,21 @@ public class ArtifactAPIServlet extends HttpServlet {
 
         writer.println(methodName);
 
-        // TFB: These parameters are only available when ZipReaper code is installed.
-        //
-        // writer.println("ZipCache Service Parameters:");
-        //
-        // int handleCacheSize = ZipCachingProperties.ZIP_CACHE_HANDLE_MAX;
-        // writer.println("  Max Zip Handles [ " + Integer.valueOf(handleCacheSize) + " ]");
-        //
-        // int entryCacheSize = ZipCachingProperties.ZIP_CACHE_ENTRY_MAX;
-        // writer.println("  Max Entry Cache Entry Size Limit [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) + " ]");
-        // writer.println("  Max Entry Cache Size [ " + Integer.valueOf(entryCacheSize) + " ]");
-        //
-        // writer.println("  Max Pending Zip Closes [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING) + " ]");
-        //
-        // writer.println("  Min Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SHORT_INTERVAL) + " ]");
-        // writer.println("  Max Zip Close Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL) + " ]");
+        writer.println("ZipCache Service Parameters:");
+        
+        int handleCacheSize = ZipCachingProperties.ZIP_CACHE_HANDLE_MAX;
+        writer.println("  Max Zip Handles [ " + Integer.valueOf(handleCacheSize) + " ]");
 
-        // TFB: When ZipReaper code is not installed, the handle and entry cache
-        //      sizes are per fixed constants of open-liberty/dev/com.ibm.ws.artifact.zip,
-        //      package com.ibm.ws.artifact.zip.cache.internal:
+        int entryCacheSize = ZipCachingProperties.ZIP_CACHE_ENTRY_MAX;
+        writer.println("  Max Entry Cache Entry Size Limit [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_ENTRY_LIMIT) + " ]");
+        writer.println("  Max Entry Cache Size [ " + Integer.valueOf(entryCacheSize) + " ]");
 
-        int handleCacheSize = 250; // ZipCachingServiceImpl.MAXCACHE
-        int entryCacheSize = 16; // ZipFileHandleImpl.MAX_CACHE_ENTRIES
+        writer.println("  Max Pending Zip Closes [ " + Integer.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_MAX_PENDING) + " ]");
+
+        writer.println("  Zip Close Min Quick Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MIN) + " ]");
+        writer.println("  Zip Close Max Quick Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_QUICK_PEND_MAX) + " ]");        
+        writer.println("  Zip Close Min Slow Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MIN) + " ]");
+        writer.println("  Zip Close Max Slow  Pend [ " + Long.valueOf(ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX) + " ]");                
 
         boolean pass = true;
 
@@ -1918,7 +1911,6 @@ public class ArtifactAPIServlet extends HttpServlet {
         boolean passed = true;
 
         // First need a ArtifactContainer
-        File dirFile = new File(dir);
         ArtifactContainer ArtifactContainer = getContainerForDirectory();
 
         // Test a sub-dir
@@ -3040,7 +3032,6 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
 
         /** {@inheritDoc} */
-        @SuppressWarnings("deprecation")
         @Override
         public String getPhysicalPath() {
             return null;
@@ -3080,6 +3071,7 @@ public class ArtifactAPIServlet extends HttpServlet {
             writer.println("FAIL: unable to obtain /a/aa/aa.txt from overlay");
             return false;
         }
+
         //overlaid retrieval
         ArtifactEntry acTxt = oc.getEntry("/a/ac/aa.txt");
         if (acTxt == null) {
@@ -3151,14 +3143,16 @@ public class ArtifactAPIServlet extends HttpServlet {
             writer.println("FAIL: unable to locate /c/b.jar in the overlay");
             return false;
         }
-        ArtifactContainer nestedNestedOpened = null;
+
         ArtifactContainer nestedOpened = nestedUnderOverlay.convertToContainer();
+        if (nestedOpened == null) {
+            writer.println("FAIL: unable to open /c/b.jar in the overlay as a ArtifactContainer");
+            return false;
+        }
+
         nestedOpened.useFastMode();
+
         try {
-            if (nestedOpened == null) {
-                writer.println("FAIL: unable to open /c/b.jar in the overlay as a ArtifactContainer");
-                return false;
-            }
             if (nestedOpened.getEnclosingContainer().getEntry("b.jar") == null) {
                 writer.println("FAIL: couldn't find self in parent for nested fs under overlay");
                 return false;
@@ -3170,23 +3164,27 @@ public class ArtifactAPIServlet extends HttpServlet {
                 writer.println("FAIL: unable to locate /bb/a.jar in nested b.jar in the overlay");
                 return false;
             }
-            nestedNestedOpened = nestedNestedUnderOverlay.convertToContainer();
-            nestedNestedOpened.useFastMode();
+
+            ArtifactContainer nestedNestedOpened = nestedNestedUnderOverlay.convertToContainer();
             if (nestedNestedOpened == null) {
                 writer.println("FAIL: unable to open /bb/a.jar in nested b.jar in the overlay as a ArtifactContainer");
                 return false;
             }
-            if (nestedNestedOpened.getEnclosingContainer().getEntry("a.jar") == null) {
-                writer.println("FAIL: couldn't find self in parent for nested nested fs under overlay");
-                return false;
-            }
-        } finally {
-            if (nestedOpened != null) {
-                nestedOpened.stopUsingFastMode();
-            }
-            if (nestedNestedOpened != null) {
+
+            nestedNestedOpened.useFastMode();
+
+            try {
+                if (nestedNestedOpened.getEnclosingContainer().getEntry("a.jar") == null) {
+                    writer.println("FAIL: couldn't find self in parent for nested nested fs under overlay");
+                    return false;
+                }
+
+            } finally {
                 nestedNestedOpened.stopUsingFastMode();
             }
+
+        } finally {
+            nestedOpened.stopUsingFastMode();
         }
 
         return true;
@@ -4586,6 +4584,7 @@ public class ArtifactAPIServlet extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("unused")
     private void dumpContainerRecursive2(int depth, ArtifactContainer zc, String root, PrintWriter out) {
         out.println("Processing ArtifactContainer of class " + zc.getClass().getName());
         out.println("Container has path " + zc.getPath());
@@ -4596,12 +4595,10 @@ public class ArtifactAPIServlet extends HttpServlet {
             ArtifactContainer zc1 = e.convertToContainer();
             out.format("c?%7s %3d: %30s %s\n", Boolean.valueOf(zc1 != null).toString(), depth, root, e.getPath());
 
-            if (e.getPath().equals("/b/bb/a.jar")) {
-                //System.out.println("problem #1");
-                Iterator<ArtifactEntry> ei = zc1.iterator();
-            }
-
             if (zc1 != null) {
+                if (e.getPath().equals("/b/bb/a.jar")) {
+                    Iterator<ArtifactEntry> ei = zc1.iterator();
+                }
                 out.println("container class: " + e.getClass());
                 dumpContainerRecursive2(depth + 1, zc1, zc1.isRoot() ? e.getName() : root, out);
             }

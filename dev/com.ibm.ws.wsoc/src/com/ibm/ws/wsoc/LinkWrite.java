@@ -240,8 +240,13 @@ public class LinkWrite {
             for (Object t : ta) {
 
                 Class<?> clazz = Utils.getCodingClass((Type) t);
-                if (clazz != null)
-                    if (clazz.equals(clazzToWrite)) {
+                if ((clazz != null) && (clazzToWrite != null)) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "encoding looking at clazz: " + clazz);
+                        Tr.debug(tc, "with clazzToWrite: " + clazzToWrite);
+                    }
+
+                    if (clazz.isAssignableFrom(clazzToWrite)) {
 
                         encoderUsed = writeUsingEncoderFromCache(objectToWrite, clazz, writeType);
 
@@ -269,6 +274,7 @@ public class LinkWrite {
                             }
                         }
                     }
+                }
             }
 
         }

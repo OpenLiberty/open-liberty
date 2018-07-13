@@ -654,6 +654,7 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
                 Map<String, Set<String>> userRoles = permission.getRoleToUserMap();
                 Set<String> uRoles = userRoles.keySet();
                 for (String role : uRoles) {
+                    SibTr.debug(tc, " role: " + role);
                     SibTr.debug(tc, "    users: " + userRoles.get(role));
                     Set<String> rs = userRoles.get(role);
                     for (String r : rs) {
@@ -668,6 +669,8 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
         }
         if (roleList != null)
             SibTr.debug(tc,  "roles: " + roleList.toArray().toString());
+        else 
+            SibTr.debug(tc, "no roles identified for user " + user);
         
         Object[] roleListAsObjectArray = roleList.toArray();
         String[] roleListAsStrArray = Arrays.copyOf(roleListAsObjectArray, roleListAsObjectArray.length, String[].class);

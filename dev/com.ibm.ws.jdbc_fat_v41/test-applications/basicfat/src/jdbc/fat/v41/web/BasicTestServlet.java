@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
@@ -49,6 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.RollbackException;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -67,6 +69,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
     private static final String MBEAN_TYPE = "com.ibm.ws.jca.cm.mbean.ConnectionManagerMBean";
     private static final String colorTable = "JDBC_FAT_v41_COLORS";
     private static final String userTable = "JDBC_FAT_v41_USERS";
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
     private List<String> globalSchemaList = null;
     private boolean isGetColorRegistered = false;
     private boolean isGetUserRegistered = false;
@@ -1116,7 +1119,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     // Ensure that we preserve the behavior that DatabaseMetaData.supportsRefCursors always returns false prior to jdbc-4.1 feature
     @Test
-    @MinimumJavaLevel(javaLevel = 1.8) // supportsRefCursor only available in Java 8 or higher
+    @MinimumJavaLevel(javaLevel = 8) // supportsRefCursor only available in Java 8 or higher
     public void testSupportsRefCursors() throws Exception {
         Connection con = xads.getConnection();
         try {
@@ -1144,10 +1147,14 @@ public class BasicTestServlet extends FATDatabaseServlet {
         stmt.execute("select * from " + colorTable);
         stmt.close();
 
-        System.out.println("About to wait for 5s");
-        Thread.sleep(5 * 1000);
+        System.out.println("Wait up to 2 minutes for transaction to be marked for rollback");
+        for (long start = System.nanoTime(); //
+                        tran.getStatus() != Status.STATUS_MARKED_ROLLBACK && System.nanoTime() - start < TIMEOUT_NS; //
+                        TimeUnit.MILLISECONDS.sleep(200))
+            System.out.println("Transaction status: " + tran.getStatus());
+
         // Connection should now be aborted due to timeout
-        System.out.println("Done waiting for 5s");
+        System.out.println("Done waiting");
 
         try {
             tran.commit();
@@ -1172,7 +1179,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
 
     // Ensure that we preserve the behavior that DatabaseMetaData.getMaxLogicalLobSize always returns 0 prior to jdbc-4.2 feature
     @Test
-    @MinimumJavaLevel(javaLevel = 1.8) // getMaxLogicalLobSize only available in Java 8 or higher
+    @MinimumJavaLevel(javaLevel = 8) // getMaxLogicalLobSize only available in Java 8 or higher
     public void testGetMaxLogicalLobSize() throws Exception {
         Connection con = xads.getConnection();
         try {

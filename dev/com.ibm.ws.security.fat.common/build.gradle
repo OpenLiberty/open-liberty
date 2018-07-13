@@ -14,3 +14,41 @@ dependencies {
   requiredLibs 'commons-logging:commons-logging:1.1.3'
 }
 
+/*
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+task formlogin(type: War, dependsOn: classes) {
+  def appName = "formlogin"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from("test-applications/${appName}/resources") {
+    include "**/*"
+  }
+  from ("build/classes/java/main") {
+    include "com/ibm/ws/security/fat/common/apps/${appName}/**/*.class"
+    into "WEB-INF/classes"
+  }
+}
+
+task testmarker(type: War, dependsOn: classes) {
+  def appName = "testmarker"
+  destinationDir file("${appBuildDir}")
+  archiveName "${appName}.war"
+
+  from("test-applications/${appName}/resources") {
+    include "**/*"
+  }
+  from ('build/classes/java/main') {
+    include "com/ibm/ws/security/fat/common/apps/${appName}/**/*.class"
+    into "WEB-INF/classes"
+  }
+}
+
+assemble {
+  dependsOn \
+    formlogin,
+    testmarker
+}

@@ -9,8 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.0.0
+ * @version 2.0.0
  */
-@org.osgi.annotation.versioning.Version("1.0.0")
+@org.osgi.annotation.versioning.Version("2.0.0")
+@TraceOptions(messageBundle = "com.ibm.ws.kernel.service.utils.resources.ServiceMessages")
 package com.ibm.ws.kernel.service.util;
 
+import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -30,7 +30,7 @@ public class RequestProbeMethodAdapter extends AdviceAdapter {
     private final MethodInfo methodInfo;
     private final String _type;
     private final String _classname;
-    private int tdHelper = newLocal(Type.getType("com/ibm/wsspi/request/probe/bci/TransformDescriptorHelper"));
+    private int tdHelper = newLocal(Type.getType("Lcom/ibm/wsspi/request/probe/bci/TransformDescriptorHelper"));
     
     private final String td;
 
@@ -72,11 +72,11 @@ public class RequestProbeMethodAdapter extends AdviceAdapter {
         return methodInfo.getSignature();
     }
 
-    protected Type[] getArgumentTypes() {
+    public Type[] getArgumentTypes() {
         return Type.getArgumentTypes(getDescriptor());
     }
 
-    protected Type getReturnType() {
+    public Type getReturnType() {
         return Type.getReturnType(getDescriptor());
     }
 

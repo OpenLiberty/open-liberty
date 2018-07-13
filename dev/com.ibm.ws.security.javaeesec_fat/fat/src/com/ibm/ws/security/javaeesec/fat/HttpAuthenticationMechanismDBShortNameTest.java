@@ -43,7 +43,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  * Test Description: Check that only a short name defined in the access-id works.
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
+@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBase {

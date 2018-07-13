@@ -261,8 +261,12 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
         @Override
         public void switchApplicationState(ApplicationConfig appConfig, ApplicationState newAppState) {
+
             if (appStateRef.compareAndSet(null, ApplicationState.INSTALLED)) {
-                register(appConfig);
+                if (appConfig != null) {
+                    // appConfig == null here can only mean that we are removing an application that never got beyond INITIAL state
+                    register(appConfig);
+                }
             }
 
             ApplicationState oldAppState = appStateRef.getAndSet(newAppState);
@@ -1344,7 +1348,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
         UpdateEpisodeState() throws IllegalStateException {
             appsStoppedNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_STOPPED);
-            appsStartingNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_STARTING);
+            appsStartingNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_STARTING, true);
             appsInstallCalledNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_INSTALL_CALLED, true);
             //appsStartedNotification = _runtimeUpdateManager.createNotification(RuntimeUpdateNotification.APPLICATIONS_STARTED);
             if (appsStoppedNotification == null || appsStartingNotification == null ||

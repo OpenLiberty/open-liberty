@@ -329,9 +329,83 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     }
 
     /**
+     * Writes a String. This method will block until the String
+     * is actually written.
+     * 
+     * Any changes to this method should also be made to the write(char[], int, int) method
+     * 
+     * @param str
+     *          the data to be written
+     * @param off
+     *          the start offset of the data
+     * @param len
+     *          the number of chars to write
+     * @exception IOException
+     *              if an I/O error has occurred
+     * @Override
+     */
+    public void write(@Sensitive String str, int off, int len) throws IOException {
+        if (len < 0) { throw new IndexOutOfBoundsException(); }
+        synchronized (lock) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            { // 306998.15
+                Tr.debug(tc, "write(String) total: " + total + " len: " + len + " limit: " + limit + " buf.length: " + buf.length + " count: " + count);
+            }
+            if (!_hasWritten && obs != null)
+            {
+                _hasWritten = true;
+                obs.alertFirstWrite();
+            }
+
+            if (limit > -1)
+            {
+                if (total + len > limit)
+                {
+                    len = (int)(limit - total);
+                    except = new WriteBeyondContentLengthException();
+                }
+            }
+
+            if (len >= buf.length)
+            {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                { // 306998.15
+                    Tr.debug(tc, "write(String), len >= buf.length");
+                }
+                response.setFlushMode(false);
+                flushChars();
+                total += len;
+                writeOut(str, off, len);
+                // out.flush(); moved to writeOut 277717 SVT:Mixed information shown on
+                // the Admin Console WAS.webcontainer
+                response.setFlushMode(true);
+                check();
+                return;
+            }
+            int avail = buf.length - count;
+            if (len > avail)
+            {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                { // 306998.15
+                    Tr.debug(tc, "write(String), len >= avail");
+                }
+                response.setFlushMode(false);
+                flushChars();
+                response.setFlushMode(true);
+            }
+            str.getChars(off, off+len, buf, count);
+            count += len;
+            total += len;
+            check();
+        }
+    }
+
+    /**
      * Writes an array of chars. This method will block until all the chars
      * are actually written.
      * 
+     * Any changes to this method should also be made to the write(String, int, int) method
+     *
      * @param b
      *          the data to be written
      * @param off
@@ -340,12 +414,13 @@ public class BufferedWriter extends Writer implements ResponseBuffer
      *          the number of chars to write
      * @exception IOException
      *              if an I/O error has occurred
+     * @Override
      */
     public void write(@Sensitive char[] b, int off, int len) throws IOException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         { // 306998.15
-            Tr.debug(tc, "write total: " + total + " len: " + len + " limit: " + limit + " buf.length: " + buf.length + " count: " + count);
+            Tr.debug(tc, "write(char[]) total: " + total + " len: " + len + " limit: " + limit + " buf.length: " + buf.length + " count: " + count);
         }
         if (len < 0)
         {
@@ -373,7 +448,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
         {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             { // 306998.15
-                Tr.debug(tc, "write, len >= buf.length");
+                Tr.debug(tc, "write(char[]), len >= buf.length");
             }
             response.setFlushMode(false);
             flushChars();
@@ -390,7 +465,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
         {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             { // 306998.15
-                Tr.debug(tc, "write, len >= avail");
+                Tr.debug(tc, "write(char[]), len >= avail");
             }
             response.setFlushMode(false);
             flushChars();
@@ -566,12 +641,54 @@ public class BufferedWriter extends Writer implements ResponseBuffer
 
     /*
      * Writes to the underlying stream
+     * 
+     * Any changes to this method should also be made to the writeOut(char[], int, int) method
+     */
+    protected void writeOut(String str, int offset, int len) throws IOException
+    {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        { // 306998.15
+            Tr.debug(tc, "writeOut(String) --> " + len);
+        }
+        try
+        {
+            out.write(str, offset, len);
+            out.flush(); // 277717 SVT:Mixed information shown on the Admin Console
+            // WAS.webcontainer
+        }
+        catch (IOException ioe)
+        {
+            // No FFDC -- promote debug to event
+            //com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(ioe, "com.ibm.ws.webcontainer.srt.BufferedWriter.writeOut", "416", this);
+            count = 0;
+
+            // begin pq54943
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            { // 306998.15
+                Tr.event(tc, "IOException occurred in writeOut(String) method, observer alerting close.", ioe);
+            }
+            // IOException occurred possibly due to SocketError from early browser
+            // closure...alert observer to close writer
+            obs.alertClose();
+            // end pq54943
+
+            // let the observer know that an exception has occurred...
+            obs.alertException();
+
+            throw ioe;
+        }
+    }
+
+    /*
+     * Writes to the underlying stream
+     * 
+     * Any changes to this method should also be made to the writeOut(String, int, int) method
      */
     protected void writeOut(char[] buf, int offset, int len) throws IOException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         { // 306998.15
-            Tr.debug(tc, "writeOut --> " + len);
+            Tr.debug(tc, "writeOut(char[]) --> " + len);
         }
         try
         {
@@ -588,7 +705,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
             // begin pq54943
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
             { // 306998.15
-                Tr.event(tc, "IOException occurred in writeOut method, observer alerting close.", ioe);
+                Tr.event(tc, "IOException occurred in writeOut(char[]) method, observer alerting close.", ioe);
             }
             // IOException occurred possibly due to SocketError from early browser
             // closure...alert observer to close writer

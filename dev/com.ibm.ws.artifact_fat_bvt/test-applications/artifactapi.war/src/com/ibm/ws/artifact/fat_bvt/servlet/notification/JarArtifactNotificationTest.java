@@ -3,7 +3,7 @@
  *
  * OCO Source Materials
  *
- * Copyright IBM Corp. 2012, 2017
+ * Copyright IBM Corp. 2012, 2018
  *
  * The source code for this program is not published or otherwise divested 
  * of its trade secrets, irrespective of what has been deposited with the 
@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
+import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
@@ -136,49 +136,48 @@ public class JarArtifactNotificationTest extends ArtifactNotificationTestImpl {
 
         rootNotifier.registerForNotifications(wanted, listener);
 
-        // TFB: The following applies only when ZipReaper code is installed:
+        // Because closes will be delayed, the initial close on the test JAR
+        // may not work.
         //
-        // // Because closes will be delayed, the initial close on the test JAR
-        // // may not work.
-        // //
-        // // Put in a delay of twice the maximum reap interval to make sure any
-        // // pending closes are processed.
+        // Put in a delay of twice the maximum reap interval to make sure any
+        // pending closes are processed.
 
         if ( !removeFile(testJar) ) {
-            // TFB: The contents of this block are replaced when ZipReaper code is installed.
-            //      When ZipReaper is installed, use the code in the immediately following
-            //      comment.
-            println("FAIL: Delayed remove failed [ " + testJarPath + " ]");
-            return false;
+            println("Initial remove failed [ " + testJarPath + " ]");
+
+            long maxInterval = ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX / ZipCachingProperties.ONE_MILLI_SEC_IN_NANO_SEC;
+
+            println("Zip Cache Long Interval [ " + Long.valueOf(maxInterval) + " ] ms");
+
+            long startMs = System.currentTimeMillis();
+            try {
+                Thread.sleep(maxInterval * 2);
+            } catch ( InterruptedException e ) {
+                // Ignore
+            }
+            long endMs = System.currentTimeMillis();
+
+            println("Waited for zip to release; requested [ " + Long.valueOf(maxInterval * 2) + " ] ms;" +
+                    " actual [ " + Long.valueOf(endMs - startMs) + " ] ms");
+
+            // Loop through a few times. Some external file scanner may have obtained a file handle temporarily
+            boolean removed = false;
+        	for ( int i = 1; (!removed && i < 5); i++) {
+        		if ( !removeFile(testJar) ) {            
+        			println("FAIL: Delayed remove " + i + " failed [ " + testJarPath + " ]");        		               
+        		} else {
+        			println("Delayed remove [ " + testJarPath + " ]");
+        			removed = true;
+        		}
+        	}
+        	if ( !removed ) {
+        		println("FAIL: Tried to delete [ " + testJarPath + " ] 5 times but failed.");
+        		return false;
+        	}
+
         } else {
             println("Initial remove [ " + testJarPath + " ]");
         }
-
-        // TFB: The following should be placed within the block for the first failure of 'removeFile':
-        //
-        //            println("Initial remove failed [ " + testJarPath + " ]");
-        //
-        //            long maxInterval = ZipCachingProperties.ZIP_CACHE_REAPER_LONG_INTERVAL / ZipCachingProperties.ONE_MILLI_SEC_IN_NANO_SEC;
-        //
-        //            println("Zip Cache Long Interval [ " + Long.valueOf(maxInterval) + " ] ms");
-        //
-        //            long startMs = System.currentTimeMillis();
-        //            try {
-        //                Thread.sleep(maxInterval * 2);
-        //            } catch ( InterruptedException e ) {
-        //                // Ignore
-        //            }
-        //            long endMs = System.currentTimeMillis();
-        //
-        //            println("Waited for zip to release; requested [ " + Long.valueOf(maxInterval * 2) + " ] ms;" +
-        //                    " actual [ " + Long.valueOf(endMs - startMs) + " ] ms");
-        //
-        //            if ( !removeFile(testJar) ) {
-        //                println("FAIL: Delayed remove failed [ " + testJarPath + " ]");
-        //                return false;
-        //            } else {
-        //                println("Delayed remove [ " + testJarPath + " ]");
-        //            }
 
         boolean pass = true;
 

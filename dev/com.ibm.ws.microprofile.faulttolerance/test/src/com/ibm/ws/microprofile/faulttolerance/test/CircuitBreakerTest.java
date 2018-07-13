@@ -31,7 +31,7 @@ import com.ibm.ws.microprofile.faulttolerance.test.util.TestFunction;
 /**
  *
  */
-public class CircuitBreakerTest {
+public class CircuitBreakerTest extends AbstractFTTest {
 
     @Test
     public void testCircuitBreaker() {

@@ -12,7 +12,6 @@ package com.ibm.ws.microprofile.config.impl;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
@@ -37,7 +36,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
 
     private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
 
-    private final WeakHashMap<ClassLoader, WeakReference<Config>> configCache = new WeakHashMap<>();
+    private final WeakHashMap<ClassLoader, Config> configCache = new WeakHashMap<>();
 
     /**
      * Save the new ref into the AtomicServiceReference. See {@link AtomicServiceReference}
@@ -84,13 +83,10 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
      */
     public void shutdown() {
         synchronized (configCache) {
-            for (Map.Entry<ClassLoader, WeakReference<Config>> entry : configCache.entrySet()) {
-                WeakReference<Config> configRef = entry.getValue();
-                if (configRef != null) {
-                    Config config = configRef.get();
-                    if (config != null) {
-                        closeConfig(config);
-                    }
+            for (Map.Entry<ClassLoader, Config> entry : configCache.entrySet()) {
+                Config config = entry.getValue();
+                if (config != null) {
+                    closeConfig(config);
                 }
             }
             configCache.clear();
@@ -132,8 +128,7 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
 
         Config config = null;
         synchronized (configCache) {
-            WeakReference<Config> ref = configCache.get(loader);
-            config = ref == null ? null : ref.get();
+            config = configCache.get(loader);
             if (config == null) {
                 AbstractConfigBuilder builder = newBuilder(loader);
                 //add all default and discovered sources and converters
@@ -154,15 +149,13 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
     @Override
     public void registerConfig(Config config, ClassLoader classLoader) {
         synchronized (configCache) {
-            WeakReference<Config> previous = configCache.get(classLoader);
+            Config previous = configCache.get(classLoader);
             if (previous != null) {
-                if (previous.get() != null) {
-                    throw new IllegalStateException(Tr.formatMessage(tc, "config.already.exists.CWMCG0003E"));
-                } else {
-                    configCache.remove(classLoader);
-                }
+                throw new IllegalStateException(Tr.formatMessage(tc, "config.already.exists.CWMCG0003E"));
+            } else {
+                configCache.remove(classLoader);
             }
-            configCache.put(classLoader, new WeakReference<Config>(config));
+            configCache.put(classLoader, config);
         }
     }
 
@@ -170,11 +163,11 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver {
     @Override
     public void releaseConfig(Config config) {
         synchronized (configCache) {
-            for (Map.Entry<ClassLoader, WeakReference<Config>> entry : configCache.entrySet()) {
+            for (Map.Entry<ClassLoader, Config> entry : configCache.entrySet()) {
                 ClassLoader classLoader = entry.getKey();
-                WeakReference<Config> configRef = entry.getValue();
+                Config configRef = entry.getValue();
                 if (configRef != null) {
-                    Config cachedConfig = configRef.get();
+                    Config cachedConfig = configRef;
                     if (cachedConfig != null && config == cachedConfig) {
                         configCache.remove(classLoader);
                         break;

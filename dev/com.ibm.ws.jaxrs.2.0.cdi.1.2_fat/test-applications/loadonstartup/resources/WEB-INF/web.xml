@@ -1,0 +1,77 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+    version="3.1"
+    metadata-complete="true">
+
+    <servlet>
+        <servlet-name>Application1Servlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.cdi12.fat.loadonstartup.StartupApplication1</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>application1</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Application1Servlet</servlet-name>
+        <url-pattern>/startup1/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Application2Servlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.cdi12.fat.loadonstartup.StartupApplication2</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>application2</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Application2Servlet</servlet-name>
+        <url-pattern>/startup2/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Application3Servlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.cdi12.fat.loadonstartup.StartupApplication3</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>application3</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Application3Servlet</servlet-name>
+        <url-pattern>/startup3/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>Application4Servlet</servlet-name>
+        <servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>com.ibm.ws.jaxrs20.cdi12.fat.loadonstartup.StartupApplication4</param-value>
+        </init-param>
+        <init-param>
+            <param-name>requestProcessorAttribute</param-name>
+            <param-value>application4</param-value>
+        </init-param>
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Application4Servlet</servlet-name>
+        <url-pattern>/startup4/*</url-pattern>
+    </servlet-mapping>
+</web-app>

@@ -91,6 +91,8 @@ public class FormLoginServletTest extends CommonTestClass {
                     will(returnValue(new Cookie[] { cookie }));
                     one(cookie).getName();
                     one(cookie).getValue();
+                    one(request).getParameter("logout");
+                    one(request).logout();
                     one(writer).write(with(any(String.class)));
                     one(writer).flush();
                     one(writer).close();

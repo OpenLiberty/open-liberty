@@ -18,7 +18,7 @@ dependencies {
       'net.sourceforge.htmlunit:htmlunit:2.27',
       'net.sourceforge.htmlunit:htmlunit-core-js:2.27',
       'net.sourceforge.cssparser:cssparser:0.9.23',
-      'org.apache.commons:commons-lang3:3.5',
+      'org.apache.commons:commons-lang3:3.7',
       'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
       'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
       'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
@@ -28,4 +28,23 @@ dependencies {
       'commons-codec:commons-codec:1.6',
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0'
+}
+
+autoFVT.doLast {
+
+  def servers = [
+	'com.ibm.ws.security.jwtsso.fat'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/formlogin.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
 }

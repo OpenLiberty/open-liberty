@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -130,6 +130,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=Assign unique identifiers to o
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: The id attribute of the resourceAdapter element for {0} resource adapter module cannot be one of the reserved identifiers {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=The id specified in the configuration or derived from the module name is a reserved identifier. Reserved identifiers are for internal use only.
 J2CA8816.reserved.resource.adapter.id.useraction=Provide an unreserved value for the id attribute of the resourceAdapter element or for the module name in the server configuration.
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: The {0} resource adapter encountered a parse error when it processed the deployment descriptor in the {1} path: {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=An error occurred while the resource adapter parsed the deployment descriptor. The resource adapter will not be available.
+J2CA8817.parse.deployment.descriptor.failed.useraction=See the exception information for additional details. Review the contents of the deployment descriptor to ensure that the contents are valid as XML data. If necessary, work with the resource adapter vendor to resolve the invalid XML data.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"

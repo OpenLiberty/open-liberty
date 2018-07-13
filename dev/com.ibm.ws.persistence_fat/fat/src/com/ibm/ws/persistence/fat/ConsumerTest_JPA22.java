@@ -27,7 +27,7 @@ import componenttest.topology.utils.FATServletClient;
 import persistence_fat.consumer.web.ConsumerServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class ConsumerTest_JPA22 extends FATServletClient {
     private static final String APP_NAME = "consumer";
 

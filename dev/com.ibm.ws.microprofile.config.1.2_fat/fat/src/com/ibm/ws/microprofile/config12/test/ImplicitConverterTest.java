@@ -21,7 +21,6 @@ import com.ibm.ws.microprofile.config12.converter.implicit.web.ImplicitConverter
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -51,8 +50,9 @@ public class ImplicitConverterTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .with(FeatureReplacementAction.EE7_FEATURES().forServers(SERVER_NAME))
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SERVER_NAME));
+                    .with(new RepeatConfig12EE7(SERVER_NAME))
+                    .andWith(new RepeatConfig12EE8(SERVER_NAME))
+                    .andWith(new RepeatConfig13EE8(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {

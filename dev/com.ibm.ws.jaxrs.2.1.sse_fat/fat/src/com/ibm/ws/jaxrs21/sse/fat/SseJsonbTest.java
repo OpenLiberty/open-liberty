@@ -31,7 +31,7 @@ import jaxrs21sse.jsonb.SseJsonbTestServlet;
  * This test of jsonb SSE function.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
+@MinimumJavaLevel(javaLevel = 8)
 public class SseJsonbTest extends FATServletClient {
     private static final String SERVLET_PATH = "SseJsonbApp/SseJsonbTestServlet";
 

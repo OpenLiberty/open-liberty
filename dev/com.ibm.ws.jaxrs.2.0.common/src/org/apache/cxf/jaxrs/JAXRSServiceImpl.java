@@ -99,7 +99,7 @@ public class JAXRSServiceImpl extends AbstractAttributedInterceptorProvider impl
         if (serviceName != null) {
             return serviceName;
         }
-        if (address == null) {
+        if (address == null && !classResourceInfos.isEmpty()) { //Liberty check for isEmpty
             Class<?> primaryClass = classResourceInfos.get(0).getServiceClass();
             String ns = PackageUtils.getNamespace(PackageUtils.getPackageName(primaryClass));
             return new QName(ns, primaryClass.getSimpleName());
@@ -159,7 +159,7 @@ public class JAXRSServiceImpl extends AbstractAttributedInterceptorProvider impl
         if (InjectionUtils.isPrimitive(type) || Response.class == type) {
             return;
         }
-        QName mName = new QName(qname.getNamespaceURI(), 
+        QName mName = new QName(qname.getNamespaceURI(),
                                 (input ? "in" : "out") + m.getName());
         MessageInfo ms = oi.createMessage(mName,
                                           input ? MessageInfo.Type.INPUT : MessageInfo.Type.OUTPUT);

@@ -1,5 +1,3 @@
---add-modules
-java.se.ee
 ### Exports
 # JMX Agent in LocalConnectorActivator
 --add-exports
@@ -37,9 +35,6 @@ java.rmi/java.rmi=ALL-UNNAMED
 # for ejbcontainer.ejb2x_fat/S[FL]RemoteTest (yoko setAccessible calls)
 --add-opens
 java.sql/java.sql=ALL-UNNAMED
-# for jpa.container_fat to use MOXy and JPARS
---add-opens
-java.xml.bind/javax.xml.bind=ALL-UNNAMED
 # for com.ibm.ws.management.j2ee.client_fat_java7:TestMEJBqueryNames/TestMEJBgetAttribute (yoko setAccessible calls)
 --add-opens
 java.management/javax.management=ALL-UNNAMED

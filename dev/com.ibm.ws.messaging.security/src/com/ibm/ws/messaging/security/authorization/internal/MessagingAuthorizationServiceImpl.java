@@ -12,6 +12,7 @@
 package com.ibm.ws.messaging.security.authorization.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -111,6 +112,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
         
         Map<String, QueuePermission> mq = messagingSecurityService.getQueuePermissions();
         roles = messagingSecurityService.getDestinationRoles(mq, destination, user);
+        SibTr.debug(tc, "checkQueueAccess, roles: " + Arrays.toString(roles));
 
         try {
             userName = MessagingSecurityUtility.getUniqueUserName(authenticatedSubject);
@@ -221,6 +223,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
         
         Map<String, TemporaryDestinationPermission> mq = messagingSecurityService.getTemporaryDestinationPermissions();
         roles = messagingSecurityService.getDestinationRoles(mq, destinationName, user);
+        SibTr.debug(tc, "checkQueueAccess, roles: " + Arrays.toString(roles));
 
         boolean result = false;
         try {
@@ -327,6 +330,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
         
         Map<String, TopicPermission> mq = messagingSecurityService.getTopicPermissions();
         roles = messagingSecurityService.getDestinationRoles(mq, destinationName, user);
+        SibTr.debug(tc, "checkQueueAccess, roles: " + Arrays.toString(roles));
 
         try {
             userName = MessagingSecurityUtility.getUniqueUserName(authenticatedSubject);

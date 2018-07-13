@@ -1047,18 +1047,6 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
-     * Test Coverage: Send a SETTINGS frame of the wrong size (other than a multiple of 6 octets)
-     * Test Outcome: Return a connection error of type FRAME_SIZE_ERROR and close the connection.
-     * Spec Section: 6.5
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testSettingFrameBadSize() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
-
-    /**
      * Test Coverage: Send a PING frame with ACK set
      * Test Outcome: Verify that a PING response is not returned.
      * Spec Section: 6.7

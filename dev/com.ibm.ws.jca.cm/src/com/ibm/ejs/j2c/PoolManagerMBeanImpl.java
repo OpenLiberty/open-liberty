@@ -256,7 +256,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
                             if (mcw.isDestroyState()
                                 || mcw.isStale()
                                 || mcw.hasFatalErrorNotificationOccurred(_pm.freePool[0].getFatalErrorNotificationTime())
-                                || ((_pm.agedTimeout != 0) && (mcw.hasAgedTimedOut(_pm.agedTimeoutMillis)))) {
+                                || ((_pm.agedTimeout != -1) && (mcw.hasAgedTimedOut(_pm.agedTimeoutMillis)))) {
                                 sharedBuf.append("ToBePurged");
                             }
                             sharedBuf.append(" thread=");
@@ -276,7 +276,7 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
                             // Check if connection is about to be purged
                             if (mcw.isStale()
                                 || mcw.hasFatalErrorNotificationOccurred(_pm.freePool[0].getFatalErrorNotificationTime())
-                                || ((_pm.agedTimeout != 0) && (mcw.hasAgedTimedOut(_pm.agedTimeoutMillis)))) {
+                                || ((_pm.agedTimeout != -1) && (mcw.hasAgedTimedOut(_pm.agedTimeoutMillis)))) {
                                 unsharedBuf.append("ToBePurged");
                             }
                             unsharedBuf.append(" thread=");

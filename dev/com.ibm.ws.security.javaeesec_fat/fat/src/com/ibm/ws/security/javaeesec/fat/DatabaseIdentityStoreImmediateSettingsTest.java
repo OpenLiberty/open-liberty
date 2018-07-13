@@ -24,7 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -53,7 +56,7 @@ import web.war.database.deferred.DatabaseSettingsBean;
 /**
  * Test for {@link DatabaseIdentityStore} configured with immediate EL expressions.
  */
-@MinimumJavaLevel(javaLevel = 1.7)
+@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBase {
@@ -94,7 +97,11 @@ public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBas
 
     @Before
     public void setupConnection() {
-        httpclient = new DefaultHttpClient();
+        // disable auto redirect.
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+
+        httpclient = new DefaultHttpClient(httpParams);
     }
 
     @After
@@ -193,12 +200,12 @@ public class DatabaseIdentityStoreImmediateSettingsTest extends JavaEESecTestBas
 
         String msg = "DataSource is stored "; // will only be in trace.log
         String msg2 = "returns: java:comp/InvalidDataSource"; // will be in trace.log and messages.log
-
         String msg3 = "Always evaluate Datasource: false"; //trace
-        List<String> foundResults = myServer.findStringsInLogsAndTrace(msg3);
-        assertEquals("Expected datasource to not be evaluated: " + msg3, 1, foundResults.size());
 
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
+
+        List<String> foundResults = myServer.findStringsInLogsAndTrace(msg3);
+        assertEquals("Expected datasource to not be evaluated: " + msg3, 1, foundResults.size());
 
         foundResults = myServer.findStringsInLogsAndTrace(msg);
         assertFalse("Should save the datasource: " + msg, foundResults.isEmpty());

@@ -39,7 +39,7 @@ import com.ibm.ws.jca.cm.AppDefinedResource;
  * the code can have fast (performance wise) access to them.
  * <li> <B>Immediately Dynamically Updateable properties </B> - those which can have
  * their values changed from the outside at any time without the need for
- * sychronization and without causeing errors to the running code.
+ * Synchronization and without causing errors to the running code.
  * <li> <B>Dynamically Updateable - requires Property Change processing. </B>
  * </ul>
  *
@@ -50,7 +50,6 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     private static final TraceComponent tc = Tr.register(J2CGlobalConfigProperties.class, J2CConstants.traceSpec, J2CConstants.messageFile);
 
     // TODO: consider if this class really needs to be serializable
-    //
     private static final long serialVersionUID = 3666445884103132373L;
 
     // The following group of properties are read only and can only be set via
@@ -157,7 +156,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      * ConnectionWaitTimeoutException is thrown. The wait may be necessary if
      * the maximum value of connections to a particular connection pool has been
      * reached (Max Connections) . This value has no meaning if Max Connections
-     * is set to 0 (infinite number of ManagedConnections). If Connection
+     * is set to -1 (infinite number of ManagedConnections). If Connection
      * Timeout is set to 0 or a negative number the Pool Manager waits until a
      * connection can be allocated (which happens when the number of connections
      * falls below Max Connections). The default value is 180.
@@ -201,7 +200,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     private int maxConnections = 0;
     /**
      * Min Connections is the minimum number of ManagedConnections that should
-     * be maintained. Until this number is reached, the pool maintenence thread
+     * be maintained. Until this number is reached, the pool maintenance thread
      * will not discard any ManagedConnections. However no attempt will be made
      * to bring the number of connections up to this number. For example if Min
      * Connections is 3, and one managed connection has been created, that
@@ -231,21 +230,21 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     /**
      * Reap Time (seconds - converted to milliseconds in TaskTimer)
      * <p><p> Reap time is
-     * the interval, in seconds, between runs of the pool maintenence thread.
-     * The default value is 0 which will disable the pool maintenence thread.
-     * Another way to disable the pool maintenence thread is to set Unused
-     * Timeout to 0 and Aged Timeout to 0.
+     * the interval, in seconds, between runs of the pool maintenance thread.
+     * The default value is -1 which will disable the pool maintenance thread.
+     * Another way to disable the pool maintenance thread is to set Unused
+     * Timeout to -1 and Aged Timeout to -1.
      * <p><p>
-     * When the pool maintenence thread runs
+     * When the pool maintenance thread runs
      * it discards any connections that have been unused longer than Unused
      * Timeout, down to Min Connections, and any connections that have been
-     * active longer than Aged Timeout. If pool maintenence is enabled, Reap Time
+     * active longer than Aged Timeout. If pool maintenance is enabled, Reap Time
      * should be less than Aged Timeout and Unused Timeout. For example if Reap
-     * Time is set to 60, the pool maintenence thread will run every minute. The
+     * Time is set to 60, the pool maintenance thread will run every minute. The
      * Reap Time interval will affect the accuracy of the Unused Timeout and
      * Aged Timeout. The smaller the interval, the greater the accuracy. The
      * Reap Time interval will also affect performance. Smaller intervals mean
-     * that the pool maintenence thread will run more often and degrade
+     * that the pool maintenance thread will run more often and degrade
      * performance.
      * <p><p>
      * MBeans: The reap time interval will be changed to the new value at the
@@ -259,16 +258,16 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      * <p><p>
      * Unused Timeout is the approximate interval in
      * seconds after which an unused, or idle, connection is discarded. The
-     * default value is 1800. The recommended way to disable the pool maintenence
-     * thread is to set Reap Time to 0, in which case Unused Timeout and Aged
+     * default value is 1800. The recommended way to disable the pool maintenance
+     * thread is to set Reap Time to -1, in which case Unused Timeout and Aged
      * Timeout will be ignored. However if Unused Timeout and Aged Timeout are
-     * set to 0, the pool maintenence thread will run, but only
+     * set to -1, the pool maintenance thread will run, but only
      * ManagedConnections which timeout due to non-zero timeout values will be
      * discarded. Unused Timeout should be set higher than Reap Timeout for
      * optimal performance. In addition, unused ManagedConnections will only be
      * discarded if the current number of connection not in use exceeds the Min
      * Connections setting. For example if unused timeout is set to 120, and the
-     * pool maintenence thread is enabled (Reap Time is not 0), any managed
+     * pool maintenance thread is enabled (Reap Time is not -1), any managed
      * connection that has been unused for two minutes will be discarded
      * <p><p>
      * Note that accuracy of this timeout, as well as performance, is affect by
@@ -283,15 +282,15 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      * <p><p>
      * Aged Timeout is the approximate interval (or age
      * of a ManagedConnection), in seconds, before a ManagedConnection is
-     * discarded. The default value is 0 which will allow active
+     * discarded. The default value is -1 which will allow active
      * ManagedConnections to remain in the pool indefinitely. The recommended
-     * way to disable the pool maintenence thread is to set Reap Time to 0, in
+     * way to disable the pool maintenance thread is to set Reap Time to -1, in
      * which case Aged Timeout and Unused Timeout will be ignored. However if
-     * Aged Timeout or Unused Timeout are set to 0, the pool maintenence thread
+     * Aged Timeout or Unused Timeout are set to -1, the pool maintenance thread
      * will run, but only ManagedConnections which timeout due to non-zero
      * Connection Timeout values will be discarded. Aged Timeout should be set
      * higher than Reap Timeout for optimal performance. For example if Aged
-     * Timeout is set to 1200, and Reap Time is not 0, any ManagedConnection
+     * Timeout is set to 1200, and Reap Time is not -1, any ManagedConnection
      * that has been in use for 20 minutes will be discarded from the pool.
      * <p><p>
      * Note that accuracy of this timeout, as well as performance, is affect by

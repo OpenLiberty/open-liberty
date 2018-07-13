@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,18 @@ public class LoggingFileUtils {
      * @return A valid/accessible/created directory or null
      */
     static File validateDirectory(final File directory) {
+        return validateDirectory(directory, true);
+    }
+
+    /**
+     * This method will create the directory if it does not exist,
+     * ensuring the specified location is writable.
+     *
+     * @param The new directory location
+     * @param show error message if showError is true
+     * @return A valid/accessible/created directory or null
+     */
+    static File validateDirectory(final File directory, final boolean showError) {
 
         File newDirectory = null;
 
@@ -94,8 +106,7 @@ public class LoggingFileUtils {
 
                     if (!ok) {
                         // Unsafe to use FFDC or ras: log to raw stderr
-                        String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_CREATE_RESOURCE_NOEX", directory.getAbsolutePath());
-                        BaseTraceService.rawSystemErr.println(msg);
+                        showErrorMsg(showError, "UNABLE_TO_CREATE_RESOURCE_NOEX", new Object[] { directory.getAbsolutePath() });
                         return null;
                     }
                     return directory;
@@ -103,11 +114,24 @@ public class LoggingFileUtils {
             });
         } catch (PrivilegedActionException e) {
             // Unsafe to use FFDC or ras: log to raw stderr
-            String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_CREATE_RESOURCE", directory.getAbsolutePath(), e);
-            BaseTraceService.rawSystemErr.println(msg);
+            showErrorMsg(showError, "UNABLE_TO_CREATE_RESOURCE", new Object[] { directory.getAbsolutePath(), e });
         }
 
         return newDirectory;
+    }
+
+    /**
+     * Show the error message if showError is true
+     *
+     * @param showError
+     * @param msgKey
+     * @param objs
+     */
+    private static void showErrorMsg(boolean showError, String msgKey, Object[] objs) {
+        if (showError) {
+            String msg = Tr.formatMessage(TraceSpecification.getTc(), msgKey, objs);
+            BaseTraceService.rawSystemErr.println(msg);
+        }
     }
 
     /**
@@ -118,6 +142,17 @@ public class LoggingFileUtils {
      * @see #getUniqueFile(File, String, String)
      */
     public static File createNewFile(final FileLogSet fileLogSet) {
+        return createNewFile(fileLogSet, true);
+    }
+
+    /**
+     * This method will create a new file with the specified name and extension in the specified directory. If a unique file is required then it will add a timestamp to the file
+     * and if necessary a unqiue identifier to the file name.
+     *
+     * @return The file or <code>null</code> if an error occurs
+     * @see #getUniqueFile(File, String, String)
+     */
+    public static File createNewFile(final FileLogSet fileLogSet, final boolean showError) {
         final File directory = fileLogSet.getDirectory();
         final String fileName = fileLogSet.getFileName();
         final String fileExtension = fileLogSet.getFileExtension();
@@ -127,15 +162,14 @@ public class LoggingFileUtils {
             f = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<File>() {
                 @Override
                 public File run() throws Exception {
-                    return fileLogSet.createNewFile();
+                    return fileLogSet.createNewFile(showError);
                 }
             });
         } catch (PrivilegedActionException e) {
             File exf = new File(directory, fileName + fileExtension);
 
             // Unsafe to use FFDC or ras: log to raw stderr
-            String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_CREATE_RESOURCE", exf.getAbsolutePath(), e);
-            BaseTraceService.rawSystemErr.println(msg);
+            showErrorMsg(showError, "UNABLE_TO_CREATE_RESOURCE", new Object[] { exf.getAbsolutePath(), e });
         }
 
         return f;
@@ -183,14 +217,21 @@ public class LoggingFileUtils {
      * @param file
      */
     public static boolean deleteFile(final File f) {
+        return deleteFile(f, true);
+    }
+
+    /**
+     * @param file
+     * @param show error message if showError is true
+     */
+    public static boolean deleteFile(final File f, final boolean showError) {
         try {
             return AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Boolean>() {
                 @Override
                 public Boolean run() {
                     if (!f.delete()) {
                         // Unsafe to use FFDC or ras: log to raw stderr
-                        String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_DELETE_RESOURCE_NOEX", f);
-                        BaseTraceService.rawSystemErr.println(msg);
+                        showErrorMsg(showError, "UNABLE_TO_DELETE_RESOURCE_NOEX", new Object[] { f });
                         return false;
                     }
 
@@ -199,8 +240,7 @@ public class LoggingFileUtils {
             });
         } catch (PrivilegedActionException e) {
             // Unsafe to use FFDC or ras: log to raw stderr
-            String msg = Tr.formatMessage(TraceSpecification.getTc(), "UNABLE_TO_DELETE_RESOURCE", f, e);
-            BaseTraceService.rawSystemErr.println(msg);
+            showErrorMsg(showError, "UNABLE_TO_DELETE_RESOURCE", new Object[] { f, e });
             return false;
         }
     }

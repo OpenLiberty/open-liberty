@@ -42,7 +42,6 @@ import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
 import com.ibm.ws.jdbc.internal.JDBCDriverService;
 import com.ibm.ws.jdbc.internal.PropertyService;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.rsadapter.AdapterUtil;

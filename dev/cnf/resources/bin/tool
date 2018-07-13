@@ -243,7 +243,7 @@ fi
 
 # If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
 if [ -f "${JAVA_HOME}/lib/modules" ]; then
-  JVM_ARGS="--add-modules java.se.ee --add-opens java.base/java.lang=ALL-UNNAMED --add-exports java.base/sun.security.action=ALL-UNNAMED ${JVM_ARGS}"
+  JVM_ARGS="--add-opens java.base/java.lang=ALL-UNNAMED --add-exports java.base/sun.security.action=ALL-UNNAMED ${JVM_ARGS}"
 fi
 
 # Prevent the Java invocation appearing as an application on a mac

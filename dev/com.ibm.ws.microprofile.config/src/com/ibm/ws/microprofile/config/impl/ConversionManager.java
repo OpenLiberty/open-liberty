@@ -17,6 +17,7 @@
 
 package com.ibm.ws.microprofile.config.impl;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
@@ -38,7 +39,7 @@ public class ConversionManager {
 
     private final PriorityConverterMap converters;
 
-    private final ClassLoader classLoader;
+    private final WeakReference<ClassLoader> classLoader;
 
     /**
      * @param converters all these are stored in the instance
@@ -46,7 +47,7 @@ public class ConversionManager {
     public ConversionManager(PriorityConverterMap converters, ClassLoader classLoader) {
         this.converters = converters;
         this.converters.setUnmodifiable(); //probably already done but make sure
-        this.classLoader = classLoader;
+        this.classLoader = new WeakReference<ClassLoader>(classLoader);
     }
 
     protected ConversionStatus simpleConversion(String rawString, Type type, Class<?> genericSubType) {
@@ -58,7 +59,7 @@ public class ConversionManager {
                 Object converted = null;
                 try {
                     if (converter instanceof ExtendedGenericConverter) {
-                        converted = ((ExtendedGenericConverter) converter).convert(rawString, genericSubType, this, this.classLoader);
+                        converted = ((ExtendedGenericConverter) converter).convert(rawString, genericSubType, this, this.classLoader.get());
                     } else {
                         converted = converter.convert(rawString);
                     }
