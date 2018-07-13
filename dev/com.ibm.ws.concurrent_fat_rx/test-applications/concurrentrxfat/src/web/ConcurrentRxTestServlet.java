@@ -991,6 +991,103 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that completeAsync is a no-op on an already-completed stage
+     */
+    @Test
+    public void testCompleteAsyncOfCompletedStage() throws Exception {
+        ManagedCompletableFuture<Integer> cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(90);
+
+        CompletableFuture<Integer> cf1;
+        try {
+            cf1 = cf0.completeAsync(() -> 900);
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+
+        assertSame(cf0, cf1);
+
+        assertEquals(Integer.valueOf(90), cf0.join());
+    }
+
+    /**
+     * Verify that completeAsync can be used on an incomplete stage to cause it to complete.
+     */
+    @Test
+    public void testCompleteAsyncOfIncompleteStage() throws Exception {
+        ManagedCompletableFuture<String> cf0 = (ManagedCompletableFuture<String>) ManagedCompletableFuture.completedFuture("89");
+
+        ManagedCompletableFuture<String> cf1 = (ManagedCompletableFuture<String>) cf0.newIncompleteFuture();
+
+        CompletableFuture<String> cf2;
+        try {
+            cf2 = cf1.completeAsync(() -> {
+                StringBuilder s = new StringBuilder(Thread.currentThread().getName()).append(':');
+                try {
+                    s.append(InitialContext.doLookup("java:comp/env/executorRef").toString());
+                } catch (NamingException x) {
+                    s.append("NamingException");
+                }
+                return s.toString();
+            }, noContextExecutor);
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+
+        assertSame(cf1, cf2);
+
+        String result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result, result.startsWith("Default Executor-thread-")); // runs on Liberty thread pool
+        assertTrue(result, !Thread.currentThread().getName().equals(result)); // does not run on servlet thread
+        assertTrue(result, result.endsWith(":NamingException")); // namespace context not available to thread
+
+        assertTrue(cf2.isDone());
+        assertFalse(cf2.isCancelled());
+        assertFalse(cf2.isCompletedExceptionally());
+    }
+
+    /**
+     * Use the completeAsync method to complete a stage that is already running.
+     */
+    @Test
+    public void testCompleteAsyncWhileRunning() throws Exception {
+        // supplier that is blocked
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        BlockableSupplier<String> blockingSupplier = new BlockableSupplier<String>("88", beginLatch, continueLatch);
+        ManagedCompletableFuture<String> cf0 = (ManagedCompletableFuture<String>) ManagedCompletableFuture.supplyAsync(blockingSupplier);
+
+        // wait for it to start
+        assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        CompletableFuture<String> cf1;
+        try {
+            cf1 = cf0.completeAsync(() -> Thread.currentThread().getName());
+        } catch (UnsupportedOperationException x) {
+            continueLatch.countDown();
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+
+        assertSame("completeAsync must return same instance", cf0, cf1);
+
+        String result = cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result, result.startsWith("Default Executor-thread-")); // runs on Liberty thread pool
+        assertTrue(result, !Thread.currentThread().getName().equals(result)); // does not run on servlet thread
+
+        // supplier from completeAsync causes in-progress blocking supplier to be canceled & stop running
+        for (long start = System.nanoTime(); blockingSupplier.executionThread != null && System.nanoTime() - start <= TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+        assertNull(blockingSupplier.executionThread);
+    }
+
+    /**
      * Verify that completedStage returns an instance that is completed with the specified value,
      * is only accessible as a CompletionStage such that methods like obtrude are disallowed,
      * and that creates dependent stages with the default managed executor and with the same stipulations
