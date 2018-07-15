@@ -689,10 +689,10 @@ public class BaseTraceService implements TrService {
         if (internalMsgRouter != null) {
             retMe &= internalMsgRouter.route(routedMessage);
         } else if (earlierMessages != null) {
+            String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
+            RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
             synchronized (this) {
                 if (earlierMessages != null) {
-                    String message = formatter.messageLogFormat(routedMessage.getLogRecord(), routedMessage.getFormattedVerboseMsg());
-                    RoutedMessage specialRoutedMessage = new RoutedMessageImpl(routedMessage.getFormattedMsg(), routedMessage.getFormattedVerboseMsg(), message, routedMessage.getLogRecord());
                     earlierMessages.add(specialRoutedMessage);
                 }
             }
@@ -1235,6 +1235,12 @@ public class BaseTraceService implements TrService {
                 earlierMessages = null;
                 earlierTraces = null;
 
+                /*
+                 * With earlierMessages and earlierTraces set to null now,
+                 * calling setWsMessageRouter and setTraceRouter will
+                 * subsequently null out the earlyMessageQueue and earlyTraceQueue
+                 * in their respective routers
+                 */
                 if (internalMessageRouter.get() != null)
                     BaseTraceService.this.setWsMessageRouter(internalMessageRouter.get());
                 if (internalTraceRouter.get() != null)
