@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2350,27 +2350,18 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      */
     @Override
     public boolean hasAgedTimedOut(long timeoutValue) {
-
-        final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
-
-        boolean booleanValue = false;
         long currentTime = java.lang.System.currentTimeMillis();
         long timeDifference = currentTime - createdTimeStamp;
-        if (timeDifference > timeoutValue) {
-            booleanValue = true;
-        }
-        if (booleanValue) {
-
-            if (isTracingEnabled && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "hasAgedTimedOut is " + booleanValue);
+        if (timeDifference >= timeoutValue) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "hasAgedTimedOut is true");
                 Tr.debug(this, tc, "The created time was " + new Date(createdTimeStamp) + " and the current time is " + new Date(currentTime));
-                Tr.debug(this, tc, "Time difference " + timeDifference + " is greater then the aged timeout " + timeoutValue);
+                Tr.debug(this, tc, "Time difference " + timeDifference + " is greater than or equal to the aged timeout " + timeoutValue);
             }
-
+            return true;
+        } else {
+            return false;
         }
-
-        return booleanValue;
-
     }
 
     /*
