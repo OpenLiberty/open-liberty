@@ -1084,7 +1084,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.event(tc, "Has HTTP/2 been enabled on this port: " + isHTTP2Enabled);
+                    Tr.debug(tc, "Has HTTP/2 been enabled on this port: " + isHTTP2Enabled);
 
                 }
 
