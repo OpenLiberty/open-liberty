@@ -7,6 +7,7 @@
 #
 # Contributors:
 # IBM Corporation - initial API and implementation
+#  org.reactivestreams; version="[1.0.2,1.1)",\
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.2
@@ -17,24 +18,22 @@ javac.target: 1.8
 Bundle-SymbolicName: com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2; singleton:=true
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-# We are implementing this API so you might think we would have [1.0.2,1.1) 
-# The 1.0.2 version number is not necessarily a OSGi semantic versioning number though.
 Import-Package: \
-  org.reactivestreams; version="[1.0.2,1.1)",\
+  org.reactivestreams; version=1.0.2,\
   *
 
 Export-Package: \
-  org.reactivestreams;version=1.0.2
+  org.reactivestreams; version=1.0.2
 
 Include-Resource: \
-  @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT}!/META-INF/NOTICE
+  @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT}
 
 WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
 
 -buildpath: \
-	org.reactivestreams:reactive-streams;version=1.0.2
+  org.reactivestreams:reactive-streams; version=1.0.2
 
 publish.wlp.jar.suffix: dev/api/stable
 
