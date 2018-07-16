@@ -13,6 +13,7 @@ package com.ibm.ws.anno.targets.internal;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.Arrays;
 
 import com.ibm.ws.anno.jandex.internal.ClassInfo;
 import com.ibm.ws.anno.jandex.internal.DotName;
@@ -35,7 +36,7 @@ import com.ibm.wsspi.anno.util.Util_InternMap;
  * See {@link #AnnotationTargetsImpl_JandexConverter(AnnotationTargetsImpl_Targets)}
  * and {@link #convertIndex(String, Index, ScanPolicy)}.
  */
-public class AnnotationTargetsImpl_JandexConverter {
+public class AnnotationTargetsImpl_SparseJandexConverter {
     public static final TraceComponent tc = Tr.register(AnnotationTargetsImpl_JandexConverter.class);
     
     /** Name of package classes.*/
@@ -65,7 +66,7 @@ public class AnnotationTargetsImpl_JandexConverter {
     //
     protected final String hashText;
     
-    public AnnotationTargetsImpl_JandexConverter(AnnotationTargetsImpl_Targets annotationTargets) {
+    public AnnotationTargetsImpl_SparseJandexConverter(AnnotationTargetsImpl_Targets annotationTargets) {
         this.annotationTargets = annotationTargets;
         this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
     }

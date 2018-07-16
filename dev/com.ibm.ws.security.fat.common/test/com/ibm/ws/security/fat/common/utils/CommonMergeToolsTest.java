@@ -33,6 +33,11 @@ public class CommonMergeToolsTest {
      */
     @Test
     public void successfulMerge() throws Exception {
+        //work around for issue
+        System.setProperty("javax.xml.transform.TransformerFactory",
+                "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+        
+        
         assertTrue(new CommonMergeTools().mergeFile("test-files/imports/server-01.xml", ".", "."));
 
         List<String> expected = new ArrayList<String>();
