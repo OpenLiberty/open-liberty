@@ -30,8 +30,8 @@ class AutoStopRule extends ExternalResource {
             try {
                 server.stopServer();
             } catch (final Exception e) {
-                // not much we can do?
-                e.printStackTrace();
+                // Throw this exception so it won't be eaten, but wrap in a RuntimeException to match the interface.
+                throw new RuntimeException(e);
             }
         }
     }
