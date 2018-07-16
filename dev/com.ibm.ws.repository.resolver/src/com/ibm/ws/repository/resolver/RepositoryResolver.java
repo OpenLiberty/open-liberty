@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,28 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.ws.repository.resolver;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.felix.resolver.ResolverImpl;
-import org.osgi.resource.Requirement;
-import org.osgi.resource.Resource;
-import org.osgi.resource.Wire;
-import org.osgi.service.resolver.ResolutionException;
-import org.osgi.service.resolver.Resolver;
-
-import com.ibm.ws.kernel.feature.internal.generator.ManifestFileProcessor;
+import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
+import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.product.utility.extension.IFixUtils;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
@@ -38,39 +34,80 @@ import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
-import com.ibm.ws.repository.resolver.internal.FixFeatureComparator;
-import com.ibm.ws.repository.resolver.internal.RepositoryResolveContext;
-import com.ibm.ws.repository.resolver.internal.StopAutoFeaturesInstallingTheirRequiredCapabilities;
-import com.ibm.ws.repository.resolver.internal.namespace.InstallableEntityIdentityConstants;
-import com.ibm.ws.repository.resolver.internal.namespace.InstallableEntityIdentityConstants.NameAttributes;
-import com.ibm.ws.repository.resolver.internal.resource.FeatureResource;
-import com.ibm.ws.repository.resolver.internal.resource.IFixResource;
-import com.ibm.ws.repository.resolver.internal.resource.LpmResource;
-import com.ibm.ws.repository.resolver.internal.resource.ProductRequirement;
-import com.ibm.ws.repository.resolver.internal.resource.ProductResource;
-import com.ibm.ws.repository.resolver.internal.resource.RequirementImpl;
-import com.ibm.ws.repository.resolver.internal.resource.ResourceImpl;
-import com.ibm.ws.repository.resolver.internal.resource.SampleResource;
+import com.ibm.ws.repository.resolver.RepositoryResolver.ResolvedFeatureSearchResult.ResultCategory;
+import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsa;
+import com.ibm.ws.repository.resolver.internal.kernel.KernelResolverRepository;
+import com.ibm.ws.repository.resources.ApplicableToProduct;
 import com.ibm.ws.repository.resources.EsaResource;
-import com.ibm.ws.repository.resources.IfixResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
+import com.ibm.ws.repository.resources.SampleResource;
 
 /**
- * <p>This class contains methods for resolving resources from Massive. As it is expensive to construct instances of this class it is recommended that instances of this class are
- * cached and re-used if the user of the API requires multiple resolve calls to be made. As the object will load the resources from the Massive repository when it is loaded then a
- * very long lived instance of this class could risk becoming stale if the repository was updated between construction time and resolving time so if this is the case then the user
- * of the API may consider refreshing their cache but this should not be an issue for relatively short lived objects.</p>
- * <p>If a client installs content after calling resolve then the instance should be discarded and recreated to reflect the new state of the installed resources.<p/>
+ * Resolves a list of names into lists of {@link RepositoryResource} to be installed
+ * <p>
+ * Note: Some methods have package visibility to allow unit testing
  */
 public class RepositoryResolver {
 
-    private final RepositoryConnectionList loginInfo;
-    private final List<Resource> installedProductResources;
-    private final List<Resource> installedEntities;
-    private final List<Resource> repoResources;
-    private final List<Resource> repoIFixResources;
-    private final Collection<Resource> autoFeatures;
-    private final static FixFeatureComparator FIX_FEATURE_COMPARATOR = new FixFeatureComparator();
+    // ---
+    // Static data which won't change after initialization
+    KernelResolverRepository resolverRepository;
+    Collection<ProvisioningFeatureDefinition> installedFeatures;
+    Map<String, SampleResource> sampleIndex;
+    Collection<EsaResource> repoFeatures;
+    Collection<SampleResource> repoSamples;
+    RepositoryConnectionList repoConnections;
+
+    // ---
+    // Fields computed during resolution
+    /**
+     * The feature names we will pass to the kernel resolver
+     */
+    Set<String> featureNamesToResolve;
+
+    /**
+     * The names passed to {@link #resolve(Collection)} which we think are features (rather than samples)
+     */
+    Set<String> requestedFeatureNames;
+
+    /**
+     * The list of samples the user has requested to install
+     */
+    List<SampleResource> samplesToInstall;
+
+    /**
+     * Map from symbolic name to feature for all features returned as resolved by the kernel resolver
+     */
+    Map<String, ProvisioningFeatureDefinition> resolvedFeatures;
+
+    /**
+     * List of requested features that were reported missing by the kernel resolver and weren't found in the repository applicable to another product.
+     * <p>
+     * May include sample names if they were missing
+     */
+    List<String> featuresMissing;
+
+    /**
+     * List of resources which would have resolved a failed dependency but they apply to the wrong product
+     */
+    List<ApplicableToProduct> resourcesWrongProduct;
+
+    /**
+     * List of requirements which couldn't be resolved but for which we found a solution that applied to the wrong product
+     * <p>
+     * Each requirement will be a symbolic name, feature name or sample name
+     */
+    Set<String> requirementsFoundForOtherProducts;
+
+    /**
+     * Subset of the requirements that the user gave us which we couldn't resolve
+     */
+    List<String> missingTopLevelRequirements;
+
+    /**
+     * List of all the missing requirements we've found so far
+     */
+    List<MissingRequirement> missingRequirements;
 
     /**
      * <p>
@@ -99,99 +136,93 @@ public class RepositoryResolver {
      * MassiveResolver resolver = MassiveResolver.resolve(installedProductDefinitions,</br>
      * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;installedFeatures, installedFixes, loginInfo);</br>
      * </code>
-     * 
+     *
      * @param installDefinition Information about the product(s) installed such as ID and edition. Must not be <code>null</code>.
      * @param installedFeatures The features that are installed. Must not be <code>null</code>.
-     * @param installedIFixes The iFixes that are installed. Must not be <code>null</code>.
+     * @param installedIFixes No longer used, parameter retained for backwards compatibility
      * @param massiveUserId The user ID to use when logging into Massive. Must not be <code>null</code>.
      * @param massivePassword The password to use when logging into Massive. Must not be <code>null</code>.
      * @param massiveApiKey The API key to use when logging into Massive. Must not be <code>null</code>.
      * @throws RepositoryException If there is a connection error with the Massive repository
      * @see ProductInfo#getAllProductInfo()
-     * @see ManifestFileProcessor#getFeatureDefinitions()
      * @see IFixUtils#getInstalledIFixes(java.io.File, com.ibm.ws.product.utility.CommandConsole)
      */
     public RepositoryResolver(Collection<ProductDefinition> installDefinition,
                               Collection<ProvisioningFeatureDefinition> installedFeatures,
                               Collection<IFixInfo> installedIFixes,
                               RepositoryConnectionList repoConnections) throws RepositoryException {
-        this.loginInfo = repoConnections;
-        // Process all of the product infos and turn them into OSGi resources
-        this.installedProductResources = new ArrayList<Resource>();
-        this.installedProductResources.add(ProductResource.createInstance(installDefinition));
 
-        // Process all of the installed features and iFixes and turn them into OSGi resources
-        this.installedEntities = new ArrayList<Resource>();
-        Collection<String> installedFeaturesSymbolicNames = new HashSet<String>();
-        for (ProvisioningFeatureDefinition featureDefinition : installedFeatures) {
-            this.installedEntities.add(FeatureResource.createInstance(featureDefinition));
-            installedFeaturesSymbolicNames.add(featureDefinition.getSymbolicName());
-        }
-        for (IFixInfo iFixInfo : installedIFixes) {
-            this.installedEntities.add(IFixResource.createInstance(iFixInfo));
-        }
+        this.repoConnections = repoConnections;
+        fetchFromRepository(installDefinition);
+        initializeResolverRepository(installedFeatures, installDefinition);
+        this.installedFeatures = installedFeatures;
+        indexSamples();
+    }
 
-        // Get all of the resources we are interested in out of massive
+    /**
+     * Package constructor for unit tests
+     * <p>
+     * Allows resolution to be tested without connecting to a repository
+     */
+    RepositoryResolver(Collection<ProvisioningFeatureDefinition> installedFeatures,
+                       Collection<? extends EsaResource> repoFeatures,
+                       Collection<? extends SampleResource> repoSamples) {
+        this.repoFeatures = new ArrayList<>(repoFeatures);
+        this.repoSamples = new ArrayList<>(repoSamples);
+        this.installedFeatures = installedFeatures;
+
+        initializeResolverRepository(installedFeatures, Collections.<ProductDefinition> emptySet());
+        indexSamples();
+    }
+
+    /**
+     * Populates {@link #repoFeatures} and {@link #repoSamples} with resources from the repository which apply to the install definition.
+     *
+     * @throws RepositoryException if there's a problem connecting to the repository
+     */
+    @SuppressWarnings("unchecked")
+    void fetchFromRepository(Collection<ProductDefinition> installDefinition) throws RepositoryException {
         Collection<ResourceType> interestingTypes = new HashSet<ResourceType>();
         interestingTypes.add(ResourceType.FEATURE);
-        interestingTypes.add(ResourceType.IFIX);
         interestingTypes.add(ResourceType.OPENSOURCE);
         interestingTypes.add(ResourceType.PRODUCTSAMPLE);
         Map<ResourceType, Collection<? extends RepositoryResource>> resources = repoConnections.getResources(installDefinition, interestingTypes, null);
-        @SuppressWarnings("unchecked")
-        Collection<EsaResource> esaMassiveResources = (Collection<EsaResource>) resources.get(ResourceType.FEATURE);
-        List<FeatureResource> featureResources = new ArrayList<FeatureResource>();
-        this.autoFeatures = new HashSet<Resource>();
-        if (esaMassiveResources != null) {
-            for (EsaResource esaMassiveResource : esaMassiveResources) {
-                FeatureResource featureResource = FeatureResource.createInstance(esaMassiveResource);
-                featureResources.add(featureResource);
 
-                /*
-                 * If this is an auto feature we want to see if it is satisfied by the set of features that will be installed after this resolution and return it if it is,
-                 * therefore add it to a set of optional resources to resolve
-                 */
-                if (featureResource.isAutoFeatureThatShouldBeInstalledWhenSatisfied()
-                    && !installedFeaturesSymbolicNames.contains(esaMassiveResource.getProvideFeature())) {
-                    this.autoFeatures.add(featureResource);
-                }
+        Collection<EsaResource> features = (Collection<EsaResource>) resources.get(ResourceType.FEATURE);
+        if (features != null) {
+            repoFeatures = features;
+        } else {
+            repoFeatures = Collections.emptySet();
+        }
+
+        repoSamples = new ArrayList<>();
+        Collection<SampleResource> samples = (Collection<SampleResource>) resources.get(ResourceType.PRODUCTSAMPLE);
+        if (samples != null) {
+            repoSamples.addAll(samples);
+        }
+
+        Collection<SampleResource> osiSamples = (Collection<SampleResource>) resources.get(ResourceType.OPENSOURCE);
+        if (osiSamples != null) {
+            repoSamples.addAll(osiSamples);
+        }
+    }
+
+    void initializeResolverRepository(Collection<ProvisioningFeatureDefinition> installedFeatures, Collection<ProductDefinition> installDefintion) {
+        resolverRepository = new KernelResolverRepository(installDefintion, repoConnections);
+        resolverRepository.addInstalledFeatures(installedFeatures);
+        resolverRepository.addFeatures(repoFeatures);
+    }
+
+    /**
+     * Populates {@link #sampleIndex}
+     */
+    void indexSamples() {
+        sampleIndex = new HashMap<>();
+        for (SampleResource sample : repoSamples) {
+            if (sample.getShortName() != null) {
+                sampleIndex.put(sample.getShortName().toLowerCase(), sample);
             }
         }
-        Collections.sort(featureResources);
-
-        @SuppressWarnings("unchecked")
-        Collection<com.ibm.ws.repository.resources.SampleResource> sampleMassiveResources = (Collection<com.ibm.ws.repository.resources.SampleResource>) resources.get(ResourceType.OPENSOURCE);
-        @SuppressWarnings("unchecked")
-        Collection<com.ibm.ws.repository.resources.SampleResource> productMassiveResources = (Collection<com.ibm.ws.repository.resources.SampleResource>) resources.get(ResourceType.PRODUCTSAMPLE);
-        if (sampleMassiveResources == null) {
-            sampleMassiveResources = productMassiveResources;
-        } else if (productMassiveResources != null) {
-            sampleMassiveResources.addAll(productMassiveResources);
-        }
-        List<SampleResource> sampleResources = new ArrayList<SampleResource>();
-        if (sampleMassiveResources != null) {
-            for (com.ibm.ws.repository.resources.SampleResource sampleMassiveResource : sampleMassiveResources) {
-                SampleResource sampleResource = SampleResource.createInstance(sampleMassiveResource);
-                sampleResources.add(sampleResource);
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        Collection<IfixResource> ifixMassiveResources = (Collection<IfixResource>) resources.get(ResourceType.IFIX);
-        List<IFixResource> sortableRepoIFixResources = new ArrayList<IFixResource>();
-        if (ifixMassiveResources != null) {
-            for (IfixResource ifixMassiveResource : ifixMassiveResources) {
-                sortableRepoIFixResources.add(IFixResource.createInstance(ifixMassiveResource));
-            }
-        }
-        Collections.sort(sortableRepoIFixResources);
-
-        // Sortable lists need to be typed to instances of comparable but interface for MassiveResolveContext is typed to Resource so need to make a copy to keep Java compiler happy
-        this.repoIFixResources = new ArrayList<Resource>(sortableRepoIFixResources);
-
-        this.repoResources = new ArrayList<Resource>(featureResources);
-        this.repoResources.addAll(sampleResources);
-        this.repoResources.addAll(repoIFixResources);
     }
 
     /**
@@ -202,7 +233,9 @@ public class RepositoryResolver {
      * <p>This will also return a list of resources for any auto features that have their required provision capabilities satisfied either by what is already installed, the new
      * features being installed or a combination of the two. Note that this means auto features that are in no way related to what you have asked to resolve could be returned by
      * this method if they are satisfied by the current installation.</p>
-     * 
+     * <p>This method may return conflicting versions of singleton features (it's valid to have conflicting versions installed but they can't be started together). If you don't
+     * want that, you may want to use {@link #resolveAsSet(Collection)} instead.</p>
+     *
      * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
      *            <code>{name}/{version}</code></br>
      *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is optional. The
@@ -223,331 +256,574 @@ public class RepositoryResolver {
      *         <code>
      *         [[A],[B],[A,B,C]]
      *         </code>
-     * 
+     *
      * @throws RepositoryResolutionException If the resource cannot be resolved
      */
     public Collection<List<RepositoryResource>> resolve(Collection<String> toResolve) throws RepositoryResolutionException {
-        // Create the resolve context
-        Map<Resource, List<Wire>> wirings = null;
-        // Use a null executor to avoid multi-threaded (see task 200860)
-        Resolver resolver = new ResolverImpl(null, null);
+        return resolve(toResolve, ResolutionMode.IGNORE_CONFLICTS);
+    }
 
-        /*
-         * There are lots of ways that we could look for the asset: by symbolic name, short name or a case insensitive short name and this varies according to the type (feature vs.
-         * sample). For each name to resolve, iterate through these
-         * possibilities in preferential order, until we find a matching resource. Note that we're not trying to resolve the resource at this point, just check if we can find it.
-         * 
-         * Once we've turned the list of names into a list of resources, we attempt to resolve that set of resources and report any failures with a helpful error message.
-         * 
-         * Use a linked hash map to search in the best order, feature first then samples.
-         */
-        Map<String, Collection<NameAttributes>> typesAndAttributesToSearch = new LinkedHashMap<String, Collection<NameAttributes>>();
-        typesAndAttributesToSearch.put(InstallableEntityIdentityConstants.TYPE_FEATURE, Arrays.asList(NameAttributes.values()));
-        typesAndAttributesToSearch.put(InstallableEntityIdentityConstants.TYPE_SAMPLE, InstallableEntityIdentityConstants.SAMPLES_NAME_ATTRIBUTES);
-        RepositoryResolveContext existingResolveContext = new RepositoryResolveContext(Collections.<Resource> emptySet(), Collections.<Resource> emptySet(), this.installedProductResources, this.installedEntities, this.repoResources, this.loginInfo);
-        Collection<Resource> resourcesToResolve = new HashSet<Resource>();
+    /**
+     * Resolve a single name
+     * <p>
+     * Identical to {@code resolve(Collections.singleton(toResolve))}.
+     */
+    public Collection<List<RepositoryResource>> resolve(String toResolve) throws RepositoryResolutionException {
+        return resolve(Collections.singleton(toResolve));
+    }
 
-        for (String toResolveString : toResolve) {
-            Resource toResolveResource = null;
+    /**
+     * As {@link #resolve(Collection)} except this method assumes that all the resources should start together on one server.
+     * <p>
+     * The resolution result will not include more than one version of a singleton feature.
+     * <p>
+     * This method of resolution can be used when you want to install all the features necessary to start a server.
+     * <p>
+     * Note that to use this method, you must provide the full set of features from the server.xml, including those that are already installed. Failure to do this may result in
+     * an incorrect set of features being installed.
+     * <p>
+     * Also note that this method will fail if there's no valid set of dependencies for the required features that doesn't include conflicting versions of singleton features.
+     * <p>
+     * For example, {@code resolve(Arrays.asList("javaee-7.0", "javaee-8.0"))} would work but {@code resolveAsSet(Arrays.asList("javaee-7.0", "javaee-8.0"))} would fail because
+     * javaee-7.0 and javaee-8.0 contain features which conflict with each other (and other versions are not tolerated).
+     *
+     * @param toResolve A collection of the identifiers of the resources to resolve. It should be in the form:</br>
+     *            <code>{name}/{version}</code></br>
+     *            <p>Where the <code>{name}</code> can be either the symbolic name, short name or lower case short name of the resource and <code>/{version}</code> is optional. The
+     *            collection may contain a mixture of symbolic names and short names. Must not be <code>null</code> or empty.</p>
+     * @return <p>A collection of ordered lists of {@link RepositoryResource}s to install. Each list represents a collection of resources that must be installed together or not
+     *         at
+     *         all. They should be installed in the iteration order of the list(s). Note that if a resource is required by multiple different resources then it will appear in
+     *         multiple lists. For instance if you have requested to install A and B and A requires N which requires M and O whereas B requires Z that requires O then the returned
+     *         collection will be (represented in JSON):</p>
+     *         <code>
+     *         [[M, O, N, A],[O, Z, B]]
+     *         </code>
+     *         <p>This will not return <code>null</code> although it may return an empty collection if there isn't anything to install (i.e. it resolves to resources that are
+     *         already installed)</p>
+     *         <p>Every auto-feature will have it's own list in the collection, this is to stop the failure to install either an auto feature or one of it's dependencies from
+     *         stopping everything from installing. Therefore if you have features A and B that are required to provision auto feature C and you ask to resolve A and B then this
+     *         method will return:</p>
+     *         <code>
+     *         [[A],[B],[A,B,C]]
+     *         </code>
+     *
+     * @throws RepositoryResolutionException If the resource cannot be resolved
+     */
+    public Collection<List<RepositoryResource>> resolveAsSet(Collection<String> toResolve) throws RepositoryResolutionException {
+        return resolve(toResolve, ResolutionMode.DETECT_CONFLICTS);
+    }
 
-            typeAndAttributeLoop: for (Map.Entry<String, Collection<NameAttributes>> typesAndAttributesEntry : typesAndAttributesToSearch.entrySet()) {
-                String type = typesAndAttributesEntry.getKey();
-                Collection<NameAttributes> attributesToMatch = typesAndAttributesEntry.getValue();
-                for (NameAttributes attributeToMatch : attributesToMatch) {
-                    toResolveResource = LpmResource.createInstance(toResolveString, attributeToMatch, type);
+    Collection<List<RepositoryResource>> resolve(Collection<String> toResolve, ResolutionMode resolutionMode) throws RepositoryResolutionException {
+        initResolve();
 
-                    boolean allRequirementsCanBeMet = true;
-                    for (Requirement requirement : toResolveResource.getRequirements(null)) {
-                        if (existingResolveContext.findProviders(requirement).isEmpty()) {
-                            allRequirementsCanBeMet = false;
-                            break;
-                        }
-                    }
+        processNames(toResolve);
+        findAutofeatureDependencies();
+        if (resolutionMode == ResolutionMode.IGNORE_CONFLICTS) {
+            requireInstalledFeaturesWhenResolving();
+        }
 
-                    if (allRequirementsCanBeMet) {
-                        // We can find the current resource within the set of available resources
-                        // the current toResolveResource should be valid so stop looking
-                        break typeAndAttributeLoop;
-                    }
+        resolveFeatures(resolutionMode);
+        Collection<List<RepositoryResource>> installLists = createInstallLists();
+
+        reportErrors();
+        return installLists;
+
+    }
+
+    /**
+     * Initialize all the fields used for a resolution
+     */
+    void initResolve() {
+        featureNamesToResolve = new HashSet<>();
+        samplesToInstall = new ArrayList<>();
+        resolvedFeatures = new HashMap<>();
+        requestedFeatureNames = new HashSet<>();
+        featuresMissing = new ArrayList<>();
+        resourcesWrongProduct = new ArrayList<>();
+        requirementsFoundForOtherProducts = new HashSet<>();
+        missingTopLevelRequirements = new ArrayList<>();
+        missingRequirements = new ArrayList<>();
+        resolverRepository.clearPreferredVersions();
+    }
+
+    /**
+     * Populates {@link #samplesToInstall} and {@link #featureNamesToResolve} by processing the list of names to resolve and identifying which are samples.
+     */
+    void processNames(Collection<String> namesToResolve) {
+        for (String name : namesToResolve) {
+            SampleResource sample = sampleIndex.get(name.toLowerCase());
+            if (sample != null) {
+                // Found a sample, add it and any required features
+                samplesToInstall.add(sample);
+                if (sample.getRequireFeature() != null) {
+                    featureNamesToResolve.addAll(sample.getRequireFeature());
+                }
+            } else {
+                // Name didn't match any samples, assume it's a feature name
+                NameAndVersion nameAndVersion = splitRequestedNameAndVersion(name);
+                if (nameAndVersion.version != null) {
+                    resolverRepository.setPreferredVersion(nameAndVersion.name, nameAndVersion.version);
+                }
+
+                featureNamesToResolve.add(nameAndVersion.name);
+                requestedFeatureNames.add(nameAndVersion.name);
+            }
+        }
+    }
+
+    /**
+     * Users can request a specific version to be installed using the format {@code myFeature/1.2.0}.
+     * <p>
+     * This method splits the string around the first slash character and returns the results.
+     *
+     * @param nameAndVersion the feature name, as passed into {@link #resolve(Collection)}
+     * @return the split name and version. The version component may be null.
+     */
+    private NameAndVersion splitRequestedNameAndVersion(String nameAndVersion) {
+        String[] parts = nameAndVersion.split("/");
+        if (parts.length > 2) {
+            throw new IllegalArgumentException("Only one \"/\" symbol is allowed in the resourceString but it was " + nameAndVersion);
+        }
+
+        if (parts.length == 2) {
+            return new NameAndVersion(parts[0], parts[1]);
+        } else {
+            return new NameAndVersion(nameAndVersion, null);
+        }
+    }
+
+    /**
+     * If any of the requested features are auto-features, find the set of features that satisfy their provisionCapability header and add those to the list of feature names to
+     * resolve.
+     * <p>
+     * This is necessary because the kernel resolver will ignore the provision capability header if the feature has been specifically requested, but that's not usually helpful at
+     * install time.
+     */
+    void findAutofeatureDependencies() {
+        // If the user has requested an autofeature to be resolved, we want to treat the features mentioned in its provisionCapability header as dependencies
+        ArrayList<String> autofeatureDependencies = new ArrayList<>();
+        for (String featureName : featureNamesToResolve) {
+            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
+            if (feature != null && feature.isAutoFeature() && feature instanceof KernelResolverEsa) {
+                Collection<ProvisioningFeatureDefinition> dependencies = ((KernelResolverEsa) feature).findFeaturesSatisfyingCapability(resolverRepository.getAllFeatures());
+                for (ProvisioningFeatureDefinition dependency : dependencies) {
+                    autofeatureDependencies.add(dependency.getSymbolicName());
                 }
             }
-
-            // Finally, add our resource to the list of resources to resolve
-            // It's important to add it, even if we know it can't resolved. When resolution fails, we'll gather up all the problems to return to the user.
-            resourcesToResolve.add(toResolveResource);
         }
 
-        RepositoryResolveContext resolveContext = new RepositoryResolveContext(resourcesToResolve, Collections.<Resource> emptySet(), this.installedProductResources, this.installedEntities, this.repoResources, this.loginInfo);
-        try {
-            wirings = resolver.resolve(resolveContext);
-        } catch (ResolutionException e) {
-            // Create our own exception from this resolution failure with slightly more information on it
-            Collection<String> missingTopLevelFeatures = this.getNamesOfRequirements(e.getUnresolvedRequirements());
-            Collection<String> requirementsNotFound = this.getNamesOfRequirements(resolveContext.getRequirementsNotFound());
-            Collection<MissingRequirement> requirementResourcesNotFound = this.getNamesAndResourcesOfRequirements(resolveContext.getRequirementsNotFound());
-            Collection<ProductRequirementInformation> productsNotFound = this.getProductsNotFoundFromRequirements(resolveContext.getRequirementsNotFound());
-            throw new RepositoryResolutionException(e, missingTopLevelFeatures, requirementsNotFound, productsNotFound, requirementResourcesNotFound);
+        featureNamesToResolve.addAll(autofeatureDependencies);
+    }
+
+    /**
+     * Uses the kernel resolver to resolve {@link #featureNamesToResolve} and populates {@link #resolvedFeatures} with the result.
+     */
+    void resolveFeatures(ResolutionMode mode) {
+        boolean allowMultipleVersions = mode == ResolutionMode.IGNORE_CONFLICTS ? true : false;
+        FeatureResolver resolver = new FeatureResolverImpl();
+        Result result = resolver.resolveFeatures(resolverRepository, featureNamesToResolve, Collections.<String> emptySet(), allowMultipleVersions);
+        for (String name : result.getResolvedFeatures()) {
+            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
+            resolvedFeatures.put(feature.getSymbolicName(), feature);
         }
 
-        /*
-         * Now wire up all of the auto features as well. We do this in a second resolve call so that we can limit the available resources to those that are either already
-         * installed or those that are about to be installed after this resolution. This is because otherwise the requirements from the auto features would pull in their
-         * dependencies from the repository and always install itself and their dependencies. This way they will only be installed if everything they need is already there rather
-         * than just available in the repo. Note that we pass the auto features in as an optional dependency, if it can't be resolved that is fine we just won't install it.
-         */
-        if (this.autoFeatures != null && !this.autoFeatures.isEmpty()) {
-            List<Resource> resolvedAndInstalledResources = new ArrayList<Resource>(installedEntities);
-            for (Resource resource : wirings.keySet()) {
-                if (!resolvedAndInstalledResources.contains(resource)) {
-                    resolvedAndInstalledResources.add(resource);
+        for (String missingFeature : result.getMissing()) {
+            Collection<ApplicableToProduct> featureOtherProducts = resolverRepository.getNonApplicableResourcesForName(missingFeature);
+            if (featureOtherProducts.isEmpty()) {
+                featuresMissing.add(missingFeature);
+            } else {
+                requirementsFoundForOtherProducts.add(missingFeature);
+                for (ApplicableToProduct feature : featureOtherProducts) {
+                    resourcesWrongProduct.add(feature);
                 }
             }
+        }
+    }
 
-            RepositoryResolveContext autoFeatureResolveContext = new RepositoryResolveContext(Collections.<Resource> emptySet(), this.autoFeatures, this.installedProductResources, resolvedAndInstalledResources, this.repoResources, this.loginInfo);
-            // We don't want an auto feature pulling in all of it's required features into the install list but do allow it to pull in other ifixes from the repo
-            autoFeatureResolveContext.addFilter(new StopAutoFeaturesInstallingTheirRequiredCapabilities());
+    /**
+     * Require that all installed features are included in the resolution result
+     * <p>
+     * This allows autofeatures which depend on an already installed feature to be resolved.
+     * <p>
+     * This method can't be used when detecting conflicts between singleton features, as we might already have conflicting features installed (which is fine, as long as they're not
+     * started together in a running server).
+     */
+    void requireInstalledFeaturesWhenResolving() {
+        // We need to include installed features in the resolution to allow all autofeatures to resolve
+        for (ProvisioningFeatureDefinition installedFeature : installedFeatures) {
+            featureNamesToResolve.add(installedFeature.getSymbolicName());
+        }
+    }
 
-            try {
-                Map<Resource, List<Wire>> autoFeatureWirings = resolver.resolve(autoFeatureResolveContext);
-                wirings.putAll(autoFeatureWirings);
-            } catch (ResolutionException e) {
-                /*
-                 * I don't think this can happen as we don't have any mandatory resources. Also, we were just trying to sort out the auto wiring features not the ones the user
-                 * actually asked for so just ignore this as we have resolved everything the user asked us to resolve by the time we get here.
-                 */
+    /**
+     * Create the install lists for the resources which we were asked to resolve
+     *
+     * @return the install lists
+     */
+    List<List<RepositoryResource>> createInstallLists() {
+        List<List<RepositoryResource>> installLists = new ArrayList<>();
+
+        // Create install list for each sample
+        for (SampleResource sample : samplesToInstall) {
+            installLists.add(createInstallList(sample));
+        }
+
+        // Create install list for each requested feature
+        for (String featureName : requestedFeatureNames) {
+            List<RepositoryResource> installList = createInstallList(featureName);
+            // May get an empty list if the requested feature is already installed
+            if (!installList.isEmpty()) {
+                installLists.add(installList);
             }
         }
 
-        Collection<List<RepositoryResource>> installLists = this.convertWiringsToInstallLists(wirings, resourcesToResolve);
+        // Create install list for each autofeature which wasn't explicitly requested (otherwise we'd have covered it above) and isn't already installed
+        for (ProvisioningFeatureDefinition feature : resolvedFeatures.values()) {
+            if (feature.isAutoFeature() && !requestedFeatureNames.contains(feature.getSymbolicName()) && feature instanceof KernelResolverEsa) {
+                installLists.add(createInstallList(feature.getSymbolicName()));
+            }
+        }
+
         return installLists;
     }
 
     /**
-     * Convert a map of wirings into a collection of lists for what to install. You get one list per thing that the user asked to resolve (assuming there are resources to install
-     * for it) and one per auto feature that resolved.
-     * 
-     * @param wirings The wirings containing relationships between features
-     * @param resourcesAskedFor The resources the user of the API asked to resolve
-     * @return A collection of ordered lists stating what needs installing
+     * Create a list of resources which should be installed in order to install the given sample.
+     * <p>
+     * The install list consists of all the dependencies which are needed by {@code resource}, ordered so that each resource in the list comes after its dependencies.
+     *
+     * @param resource the resource which is to be installed
+     * @return the ordered list of resources to install
      */
-    private Collection<List<RepositoryResource>> convertWiringsToInstallLists(Map<Resource, List<Wire>> wirings, Collection<Resource> resourcesAskedFor) {
-        /*
-         * Convert the map of wirings into an ordered list for the installer to install the resource in. They want to have a list for each thing being installed, i.e. if you ask to
-         * install A and B which both rely on C then they want two lists, one with C and A in and one with C and B in and in that order as the dependencies need to be installed
-         * first.
-         * 
-         * As we know what the user asked to install we start at the top and work down the list of dependencies that it has. Care is taken to make sure if there are two paths to a
-         * resource then it is only added to the list once. We also need to have a list for each auto feature that is being installed but it would be nicer to merge these with the
-         * top level resources if they correspond.
-         * 
-         * Things are slightly complicated by the fact the list will contain features and fixes. If we imagine a situation where you have feature A requiring feature B and fix Z,
-         * in order to be useful to A Z must be fixing B but there is no knowledge of this in Z (fixes never say what features they fix) so all we have to go on is that we need to
-         * install Z before A. To make sure we get the install order right for each dependency install features first then fixes.
-         */
-        Collection<List<RepositoryResource>> resourcesToInstall = new HashSet<List<RepositoryResource>>();
+    List<RepositoryResource> createInstallList(SampleResource resource) {
+        Map<String, Integer> maxDistanceMap = new HashMap<>();
+        List<MissingRequirement> missingRequirements = new ArrayList<>();
 
-        /*
-         * Start at the top with the resources the user asked for, this should be a LPMResource that should only ever have one wiring from it, we need to recursively go down
-         * its requirements (through it's wires) until we have added all it's requirements to a list.
-         */
-        for (Resource resourceAskedFor : resourcesAskedFor) {
-            List<RepositoryResource> installList = new ArrayList<RepositoryResource>();
-            this.addRequiredDependenciesToInstallList(wirings, resourceAskedFor, installList, new HashSet<Resource>());
-            this.addResourceList(installList, resourcesToInstall);
-        }
+        boolean allDependenciesResolved = true;
+        if (resource.getRequireFeature() != null) {
+            for (String featureName : resource.getRequireFeature()) {
 
-        /*
-         * Repeat for the auto features, these get their own list as per the JavaDoc of the resolve method. Note that not all of the auto features will of been satisified but this
-         * will be caught by the addInstallListForResources as there will be no wirings to a resource with a MassiveResource attached to it.
-         * 
-         * Auto features are slightly different to the ones that the user asked for as we first load them from the repo so they are FeatureResources with a MassiveResource attached
-         * (that needs to be installed if it resolved) whereas the ones the user asks for are LpmResources where you have to go one down the tree before you install, unfortunately
-         * this difference means it's hard to common up the first level of code so duplicate very similar code.
-         */
-        for (Resource autoFeature : this.autoFeatures) {
-            // Check it resolved first!
-            if (wirings.containsKey(autoFeature)) {
-                List<RepositoryResource> installList = new ArrayList<RepositoryResource>();
-                if (autoFeature instanceof ResourceImpl) {
-                    RepositoryResource autoFeatureMassiveResource = ((ResourceImpl) autoFeature).getResource();
-                    if (autoFeatureMassiveResource != null) {
-                        installList.add(autoFeatureMassiveResource);
+                // Check that the sample actually exists
+                ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
+                if (feature == null) {
+                    allDependenciesResolved = false;
+                    // Unless we know it exists but applies to another product, note the missing requirement as well
+                    if (!requirementsFoundForOtherProducts.contains(featureName)) {
+                        missingRequirements.add(new MissingRequirement(featureName, resource));
                     }
                 }
-                this.addRequiredDependenciesToInstallList(wirings, autoFeature, installList, new HashSet<Resource>());
-                this.addResourceList(installList, resourcesToInstall);
+
+                // Build distance map and check dependencies
+                allDependenciesResolved &= populateMaxDistanceMap(maxDistanceMap, featureName, 1, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
             }
         }
 
-        return resourcesToInstall;
+        if (!allDependenciesResolved) {
+            missingTopLevelRequirements.add(resource.getShortName());
+            this.missingRequirements.addAll(missingRequirements);
+        }
+
+        ArrayList<RepositoryResource> installList = new ArrayList<>();
+
+        installList.addAll(convertFeatureNamesToResources(maxDistanceMap.keySet()));
+        Collections.sort(installList, byMaxDistance(maxDistanceMap));
+
+        installList.add(resource);
+
+        return installList;
     }
 
     /**
-     * If the new install list is not empty this will remove any duplicates from it and add it to the resources to install set.
-     * 
-     * @param installList A list of resources to install
-     * @param resourcesToInstall A collection of all of the lists of resources to install
+     * Create a list of resources which should be installed in order to install the given featutre.
+     * <p>
+     * The install list consists of all the dependencies which are needed by {@code esa}, ordered so that each resource in the list comes after its dependencies.
+     *
+     * @param featureName the feature name (as provided to {@link #resolve(Collection)}) for which to create an install list
+     * @return the ordered list of resources to install, will be empty if the feature cannot be found or is already installed
      */
-    private void addResourceList(List<RepositoryResource> installList, Collection<List<RepositoryResource>> resourcesToInstall) {
-        if (!installList.isEmpty()) {
-            /*
-             * Remove duplicates, easier doing this in a copy of the list so that we can make sure we always keep the first time something appears and don't have to worry
-             * about ConcurrentModificationExceptions
-             */
-            List<RepositoryResource> installListCopy = new ArrayList<RepositoryResource>(installList.size());
-            for (RepositoryResource massiveResource : installList) {
-                if (!installListCopy.contains(massiveResource)) {
-                    installListCopy.add(massiveResource);
+    List<RepositoryResource> createInstallList(String featureName) {
+        ProvisioningFeatureDefinition feature = resolverRepository.getFeature(featureName);
+        if (feature == null) {
+            // Feature missing
+            missingTopLevelRequirements.add(featureName);
+            // If we didn't find this feature in another product, we need to record it as missing
+            if (!requirementsFoundForOtherProducts.contains(featureName)) {
+                missingRequirements.add(new MissingRequirement(featureName, null));
+            }
+            return Collections.emptyList();
+        }
+
+        if (!(feature instanceof KernelResolverEsa)) {
+            // Feature already installed
+            return Collections.emptyList();
+        }
+
+        EsaResource esa = ((KernelResolverEsa) feature).getResource();
+
+        Map<String, Integer> maxDistanceMap = new HashMap<>();
+        List<MissingRequirement> missingRequirements = new ArrayList<>();
+        boolean foundAllDependencies = populateMaxDistanceMap(maxDistanceMap, esa.getProvideFeature(), 0, new HashSet<ProvisioningFeatureDefinition>(), missingRequirements);
+
+        if (!foundAllDependencies) {
+            missingTopLevelRequirements.add(featureName);
+            this.missingRequirements.addAll(missingRequirements);
+        }
+
+        ArrayList<RepositoryResource> installList = new ArrayList<>();
+
+        installList.addAll(convertFeatureNamesToResources(maxDistanceMap.keySet()));
+        Collections.sort(installList, byMaxDistance(maxDistanceMap));
+
+        return installList;
+    }
+
+    /**
+     * Returns a comparator which sorts EsaResources by their values from {@code maxDistanceMap} from greatest to smallest
+     * <p>
+     * Resources whose symbolic names do not appear in the map or which are not EsaResources are assigned a value of zero meaning that they will appear last in a sorted list.
+     *
+     * @param maxDistanceMap map from symbolic name to the length of the longest dependency chain from a specific point
+     * @return compariator which sorts based on the maxDistance of resources
+     */
+    static Comparator<RepositoryResource> byMaxDistance(final Map<String, Integer> maxDistanceMap) {
+        return new Comparator<RepositoryResource>() {
+
+            @Override
+            public int compare(RepositoryResource o1, RepositoryResource o2) {
+                return Integer.compare(getDistance(o2), getDistance(o1));
+            }
+
+            private int getDistance(RepositoryResource res) {
+                if (res.getType() == ResourceType.FEATURE) {
+                    Integer distance = maxDistanceMap.get(((EsaResource) res).getProvideFeature());
+                    return distance == null ? 0 : distance;
+                } else {
+                    return 0;
                 }
             }
-            resourcesToInstall.add(installListCopy);
-        }
+
+        };
     }
 
     /**
-     * Add the dependencies from the supplied resource to the list of things to install. Features at any level are added before any fixes at that level and it is recursive so any
-     * recursive dependencies will be added to the start of the list. This may add entries more than once to the list.
-     * 
-     * @param wirings The wirings containing relationships between features
-     * @param resource The resource to find the things to install for
-     * @param installList The list of resources that need installing
-     * @param resourcesProcessedInThisStack This is a set of the resources that have been processed in the stack of recursive calls to this method. It is used for cirle checking
-     *            but note that it is ok to have forks so a resource can be processed twice by this method, just not in the same stack of recursive calls. Must not be
-     *            <code>null</code>.
-     * @param object
-     */
-    private void addRequiredDependenciesToInstallList(Map<Resource, List<Wire>> wirings, Resource resource, List<RepositoryResource> installList,
-                                                      Set<Resource> resourcesProcessedInThisStack) {
-        resourcesProcessedInThisStack.add(resource);
-        List<Wire> wires = wirings.get(resource);
-        List<ResourceImpl> thingsToInstall = new ArrayList<ResourceImpl>();
-        for (Wire wire : wires) {
-            /*
-             * We need to make sure that iFixes are installed after all of the features at the same level as them so do a first pass through to get everything from this level we
-             * need to install
-             */
-            Resource wireProvider = wire.getProvider();
-
-            // If we hit an installed resource (i.e. not a ResourceImpl with a massive resource) then we can stop iterating down the tree as everything it needs must be installed.
-            if (wireProvider instanceof ResourceImpl) {
-                ResourceImpl wireProviderResourceImpl = ((ResourceImpl) wireProvider);
-                RepositoryResource massiveResource = wireProviderResourceImpl.getResource();
-                if (massiveResource != null && !resourcesProcessedInThisStack.contains(wireProviderResourceImpl)) {
-                    /*
-                     * Only add it if this is hasn't been done in this recursive call yet - we clone the set with each recursive call as forks are ok but circles aren't so a
-                     * resource can be added twice. We need to add it twice as we need to make sure that it is installed after all the things that depend on it, see test
-                     * testOrderingOnMultipleLongPaths.
-                     * is ok.
-                     */
-                    thingsToInstall.add(wireProviderResourceImpl);
-                }
-            }
-        }
-        // Now sort so that the fixes are in the list first
-        Collections.sort(thingsToInstall, FIX_FEATURE_COMPARATOR);
-
-        /*
-         * Add all of these resources to the start of the install list we add fixes to the start first then we add features to the start of the install list so the features will be
-         * installed before the fixes (as the fixes might fix the features).
-         */
-        for (ResourceImpl resourceImpl : thingsToInstall) {
-            installList.add(0, resourceImpl.getResource());
-        }
-
-        /*
-         * Now add their dependencies do this in a separate iterator as if you have a forked path you want to do it after everything at this level has been added. For example:
-         * 
-         * A requires B and C
-         * B requires D
-         * C requires D
-         * 
-         * If we just had one for loop to add the resource to the install list then add its dependencies then when we added B we would then also add D in the recursive call
-         * before then adding C. We therefore need two for loops, first to add B and C, then another to make the recursive call to add the dependency to D. If that makes as much
-         * sense to read as it did to write then you can always check out the testChainedFeatureDependenciesWithMultipleRoutes test in the JUnit which requires this to be done in
-         * two goes round the thingsToInstallList.
-         */
-        for (ResourceImpl resourceImpl : thingsToInstall) {
-            // Clone the resourcesProcessedInThisStack for each dependency as forks are ok but circles aren't
-            this.addRequiredDependenciesToInstallList(wirings, resourceImpl, installList, new HashSet<Resource>(resourcesProcessedInThisStack));
-        }
-    }
-
-    /**
-     * This method will get the names of all of the requirements. If a requirement is a {@link RequirementImpl} then it will use {@link RequirementImpl#getName()} otherwise it will
-     * call {@link Requirement#toString()}.
-     * 
-     * @param requirements The list of requirements to search
-     * @return The collection of requirement names
-     */
-    private Collection<String> getNamesOfRequirements(Collection<Requirement> requirements) {
-        Collection<String> requirementNames = new HashSet<String>();
-        for (Requirement requirement : requirements) {
-            // Can only get a nice name out of one of our requirements
-            if (requirement instanceof RequirementImpl) {
-                requirementNames.add(((RequirementImpl) requirement).getName());
-            } else {
-                // Not sure this can ever happen but still record it was missing if it does!
-                requirementNames.add(requirement.toString());
-            }
-        }
-        return requirementNames;
-    }
-
-    /**
-     * This method will get the names and owning resources of all of the requirements. If a requirement is a {@link RequirementImpl} then it will use
-     * {@link RequirementImpl#getName()} for the name and if {@link RequirementImpl#getResource()} returns a {@link ResourceImpl} then it will set
-     * {@link ResourceImpl#getResource()} for the resource otherwise it will call {@link Requirement#toString()} for the name
-     * and use <code>null</code> for the resource.
-     * 
-     * @param requirements The list of requirements to search
-     * @return The collection of requirement names
-     */
-    private Collection<MissingRequirement> getNamesAndResourcesOfRequirements(Collection<Requirement> requirements) {
-        Collection<MissingRequirement> requirementResources = new HashSet<MissingRequirement>();
-        for (Requirement requirement : requirements) {
-            // Can only get a nice name out of one of our requirements
-            if (requirement instanceof RequirementImpl) {
-                RequirementImpl requirementImpl = (RequirementImpl) requirement;
-                Resource owningResource = requirementImpl.getResource();
-                RepositoryResource owningMassiveResource = null;
-                if (owningResource instanceof ResourceImpl) {
-                    owningMassiveResource = ((ResourceImpl) owningResource).getResource();
-                }
-                requirementResources.add(new MissingRequirement(requirementImpl.getName(), owningMassiveResource));
-            } else {
-                // Not sure this can ever happen but still record it was missing if it does!
-                requirementResources.add(new MissingRequirement(requirement.toString(), null));
-            }
-        }
-        return requirementResources;
-    }
-
-    /**
-     * This will search the supplied collection of requirements looking for instances of {@link ProductRequirement} and when found will append the list of products to the return
-     * value.
-     * 
-     * @param requirements The list of requirements to search
-     * @return The collection of products, may be empty but will not be <code>null</code>
-     */
-    private Collection<ProductRequirementInformation> getProductsNotFoundFromRequirements(Collection<Requirement> requirements) {
-        Collection<ProductRequirementInformation> products = new HashSet<ProductRequirementInformation>();
-        for (Requirement requirement : requirements) {
-            if (requirement instanceof ProductRequirement) {
-                products.addAll(((ProductRequirement) requirement).getProductInformation());
-            }
-        }
-        return products;
-    }
-
-    /**
-     * <p>Fully equivalent to calling:</p>
-     * <code>MassiveResolver.resolve(Collections.singleton(toResolve));</br>
+     * Build a map which maps feature symbolic names to the length of the longest dependency chain from the starting point to that feature
+     * <p>
+     * This method adds {@code featureName} to the map with {@code currentDistance} and then recurses through its dependencies, repeating this operation. It will stop if it
+     * encounters a feature which is already installed or if it encounters a dependency loop.
+     * <p>
+     * The result of this operation is useful for building install lists as the features to be installed can be sorted by the longest dependency chain in descending order to ensure
+     * that the dependencies of a feature are installed before the feature itself.
+     * <p>
+     * Example. To find the longest dependency chain for all dependent features of com.example.featureA, the following code can be used:
+     * <p>
+     * <code>
+     *
+     * <pre>
+     * Map<String, Integer> distanceMap = new HashMap<>();
+     * populateMaxDistanceMap(distanceMap, "com.example.featureA", 0, new HashSet&lt;ProvisioningFeatureDefinition&gt;());
+     * </pre>
+     *
      * </code>
-     * 
-     * @see #resolve(Collection)
+     * <p>
+     * Having done this, {@code distanceMap.keySet()} gives the set of all the dependencies of com.example.featureA. {@code distanceMap.get("com.example.featureB")} gives
+     * the length of the longest dependency chain from featureA to featureB.
+     *
+     * @param maxDistanceMap the map to be populated
+     * @param featureName the current feature
+     * @param currentDistance the distance to use for the current feature
+     * @param currentStack the set of feature names already in the current dependency chain (used to detect loops)
+     * @return true if all requirements were found, false otherwise
      */
-    public Collection<List<RepositoryResource>> resolve(String toResolve) throws RepositoryException, RepositoryResolutionException {
-        return this.resolve(Collections.singleton(toResolve));
+    boolean populateMaxDistanceMap(Map<String, Integer> maxDistanceMap, String featureName, int currentDistance, Set<ProvisioningFeatureDefinition> currentStack,
+                                   List<MissingRequirement> missingRequirements) {
+        ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureName);
+        if (!(feature instanceof KernelResolverEsa)) {
+            // Feature is already installed
+            return true;
+        }
+
+        if (currentStack.contains(feature)) {
+            // We've hit a dependency loop
+            return true;
+        }
+
+        boolean result = true;
+
+        currentStack.add(feature);
+
+        KernelResolverEsa featureEsa = (KernelResolverEsa) feature;
+
+        Integer oldDistance = maxDistanceMap.get(feature.getSymbolicName());
+        if (oldDistance == null || oldDistance < currentDistance) {
+            maxDistanceMap.put(feature.getSymbolicName(), currentDistance);
+        }
+
+        for (FeatureResource dependency : feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+            ResolvedFeatureSearchResult searchResult = findResolvedDependency(dependency);
+
+            if (searchResult.category == ResultCategory.FOUND) {
+                // We found the dependency, continue populating the distance map
+                result &= populateMaxDistanceMap(maxDistanceMap, searchResult.symbolicName, currentDistance + 1, currentStack, missingRequirements);
+            } else if (searchResult.category == ResultCategory.MISSING) {
+                // The dependency was totally missing, add it to the list of missing requirements
+                missingRequirements.add(new MissingRequirement(dependency.getSymbolicName(), featureEsa.getResource()));
+                result = false;
+            } else {
+                // The dependency was found for another product. That missing requirement is already recorded elsewhere.
+                result = false;
+            }
+        }
+
+        // Find autofeature dependencies
+        for (ProvisioningFeatureDefinition dependency : featureEsa.findFeaturesSatisfyingCapability(resolvedFeatures.values())) {
+            result &= populateMaxDistanceMap(maxDistanceMap, dependency.getSymbolicName(), currentDistance + 1, currentStack, missingRequirements);
+        }
+
+        currentStack.remove(feature);
+
+        return result;
+    }
+
+    /**
+     * Find the actual resolved feature from a dependency with tolerates
+     * <p>
+     * Tries each of the tolerated versions in order until it finds one that exists in the set of resolved features.
+     * <p>
+     * Three types of results are possible:
+     * <ul>
+     * <li><b>FOUND</b>: We found the required feature</li>
+     * <li><b>FOUND_WRONG_PRODUCT</b>: We found the required feature, but it was for the wrong product</li>
+     * <li><b>MISSING</b>: We did not find the required feature. The {@code symbolicName} field of the result will be {@code null}</li>
+     * </ul>
+     *
+     * @param featureResource the dependency definition to resolve
+     * @return the result of the search
+     */
+    ResolvedFeatureSearchResult findResolvedDependency(FeatureResource featureResource) {
+        ProvisioningFeatureDefinition feature = resolvedFeatures.get(featureResource.getSymbolicName());
+        if (feature != null) {
+            return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
+        }
+
+        if (requirementsFoundForOtherProducts.contains(featureResource.getSymbolicName())) {
+            return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureResource.getSymbolicName());
+        }
+
+        String baseName = getFeatureBaseName(featureResource.getSymbolicName());
+        for (String toleratedVersion : featureResource.getTolerates()) {
+            String featureName = baseName + toleratedVersion;
+
+            feature = resolvedFeatures.get(featureName);
+            if (feature != null) {
+                return new ResolvedFeatureSearchResult(ResultCategory.FOUND, feature.getSymbolicName());
+            }
+
+            if (requirementsFoundForOtherProducts.contains(featureName)) {
+                return new ResolvedFeatureSearchResult(ResultCategory.FOUND_WRONG_PRODUCT, featureName);
+            }
+        }
+
+        return new ResolvedFeatureSearchResult(ResultCategory.MISSING, null);
+    }
+
+    /**
+     * Removes the version from the end of a feature symbolic name
+     * <p>
+     * The version is presumed to start after the last dash character in the name.
+     * <p>
+     * E.g. {@code getFeatureBaseName("com.example.featureA-1.0")} returns {@code "com.example.featureA-"}
+     *
+     * @param nameAndVersion the feature symbolic name
+     * @return the feature symbolic name with any version stripped
+     */
+    String getFeatureBaseName(String nameAndVersion) {
+        int dashPosition = nameAndVersion.lastIndexOf('-');
+        if (dashPosition != -1) {
+            return nameAndVersion.substring(0, dashPosition + 1);
+        } else {
+            return nameAndVersion;
+        }
+    }
+
+    /**
+     * Convert a collection of feature names into a list of EsaResources
+     * <p>
+     * If a feature with the given name is not found, or if it corresponds to a feature which is already installed, it is ignored. Therefore, this method can be used to convert a
+     * list of names from the kernel resolver into a list of esas which need to be installed.
+     *
+     * @param names the feature names to find
+     * @return a list comprised of the corresponding EsaResource for each name in {@code names}, if one exists
+     */
+    List<EsaResource> convertFeatureNamesToResources(Collection<String> names) {
+        List<EsaResource> results = new ArrayList<>();
+
+        for (String name : names) {
+            ProvisioningFeatureDefinition feature = resolverRepository.getFeature(name);
+            if (feature instanceof KernelResolverEsa) {
+                results.add(((KernelResolverEsa) feature).getResource());
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * If any errors occurred during resolution, throw a {@link RepositoryResolutionException}
+     */
+    private void reportErrors() throws RepositoryResolutionException {
+        if (resourcesWrongProduct.isEmpty() && missingTopLevelRequirements.isEmpty() && missingRequirements.isEmpty()) {
+            // Everything went fine!
+            return;
+        }
+
+        Set<ProductRequirementInformation> missingProductInformation = new HashSet<>();
+
+        for (ApplicableToProduct esa : resourcesWrongProduct) {
+            missingRequirements.add(new MissingRequirement(esa.getAppliesTo(), (RepositoryResource) esa));
+            missingProductInformation.addAll(ProductRequirementInformation.createFromAppliesTo(esa.getAppliesTo()));
+        }
+
+        List<String> missingRequirementNames = new ArrayList<>();
+        for (MissingRequirement req : missingRequirements) {
+            missingRequirementNames.add(req.getRequirementName());
+        }
+
+        throw new RepositoryResolutionException(null, missingTopLevelRequirements, missingRequirementNames, missingProductInformation, missingRequirements);
+    }
+
+    enum ResolutionMode {
+        DETECT_CONFLICTS,
+        IGNORE_CONFLICTS,
+    }
+
+    static class ResolvedFeatureSearchResult {
+
+        public ResolvedFeatureSearchResult(ResultCategory category, String symbolicName) {
+            this.category = category;
+            this.symbolicName = symbolicName;
+        }
+
+        enum ResultCategory {
+            FOUND,
+            FOUND_WRONG_PRODUCT,
+            MISSING
+        }
+
+        ResultCategory category;
+        String symbolicName;
+    }
+
+    static class NameAndVersion {
+
+        public NameAndVersion(String name, String version) {
+            super();
+            this.name = name;
+            this.version = version;
+        }
+
+        private final String name;
+        private final String version;
     }
 
 }

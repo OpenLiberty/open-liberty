@@ -19,12 +19,12 @@ public class KeyMatcher {
     /** Is this matcher case-sensitive */
     private boolean isCaseSensitive = false;
     /** List of buckets, one per allowed leading character */
-    private KeyBucket[] buckets = new KeyBucket[255];
+    private final KeyBucket[] buckets = new KeyBucket[255];
 
     /**
      * Constructor for a key matcher that uses the input case-sensitive flag
      * for comparisons.
-     * 
+     *
      * @param caseSensitive
      */
     public KeyMatcher(boolean caseSensitive) {
@@ -36,7 +36,7 @@ public class KeyMatcher {
 
     /**
      * Access the bucket for this specific character.
-     * 
+     *
      * @param c
      * @return HeaderBucket
      */
@@ -55,7 +55,7 @@ public class KeyMatcher {
 
     /**
      * Access the bucket for this specific character.
-     * 
+     *
      * @param c
      * @return HeaderBucket
      */
@@ -77,7 +77,7 @@ public class KeyMatcher {
 
     /**
      * Query whether this matcher is case-sensitive during comparisons.
-     * 
+     *
      * @return boolean
      */
     protected boolean isCaseSensitive() {
@@ -86,7 +86,7 @@ public class KeyMatcher {
 
     /**
      * Add a new enumerated object to the matcher.
-     * 
+     *
      * @param key
      */
     public synchronized void add(GenericKeys key) {
@@ -99,7 +99,7 @@ public class KeyMatcher {
     /**
      * Compare the input value against the stored list of objects and return a
      * match if found.
-     * 
+     *
      * @param name
      * @param start
      * @param length
@@ -111,7 +111,7 @@ public class KeyMatcher {
         }
         KeyBucket bucket = getBucket(name.charAt(start));
         if (null != bucket) {
-            return bucket.match(name.toCharArray(), start, length);
+            return bucket.match(name, start, length);
         }
         return null;
     }
@@ -119,7 +119,7 @@ public class KeyMatcher {
     /**
      * Compare the input value against the stored list of objects and return a
      * match if found.
-     * 
+     *
      * @param name
      * @param start
      * @param length
@@ -158,7 +158,7 @@ public class KeyMatcher {
 
         /**
          * Add the input key to this bucket.
-         * 
+         *
          * @param key
          */
         protected void add(GenericKeys key) {
@@ -180,7 +180,7 @@ public class KeyMatcher {
         /**
          * Compare the input value against the stored list of objects and return a
          * match if found.
-         * 
+         *
          * @param data
          * @param start
          * @param length
@@ -215,13 +215,13 @@ public class KeyMatcher {
         /**
          * Compare the input value against the stored list of objects and return a
          * match if found.
-         * 
+         *
          * @param data
          * @param start
          * @param length
          * @return GenericKeys, null if not found
          */
-        protected GenericKeys match(char[] data, int start, int length) {
+        protected GenericKeys match(String data, int start, int length) {
             int end = start + length - 1;
             int x, y;
             // save local refs to avoid problems with concurrent add() calls
@@ -234,7 +234,7 @@ public class KeyMatcher {
                     // potential match, scan backwards because most things vary
                     // later on... Content-Length vs Content-Language for example
                     for (x = end, y = temp.length - 1; x >= start; x--, y--) {
-                        if (!isEqual(data[x], temp[y])) {
+                        if (!isEqual(data.charAt(x), temp[y])) {
                             break; // out of the inner for loop
                         }
                     }
@@ -249,7 +249,7 @@ public class KeyMatcher {
 
         /**
          * Query whether these two characters are equal.
-         * 
+         *
          * @param c1
          * @param c2
          * @return true if equal, false otherwise

@@ -15,8 +15,7 @@ src: \
 	fat/src,\
 	test-applications/serverXMLApp/src,\
 	test-applications/serverXMLApp/resources,\
-	test-applications/mapEnvVarApp/src,\
-	test-applications/variableServerXMLApp/src,\
+	test-applications/mapEnvVarApp/src
 
 javac.source: 1.8
 javac.target: 1.8
