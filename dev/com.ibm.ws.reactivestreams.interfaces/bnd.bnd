@@ -18,4 +18,4 @@ Bundle-Description: Bundle for exposing the org.reactivestreams interfaces to Li
 Export-Package: org.reactivestreams
 
 -buildpath: \
-    com.ibm.websphere.org.reactivestreams.reactive-streams.1.0
+    com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2
