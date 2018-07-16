@@ -19,8 +19,10 @@
 package org.apache.myfaces.renderkit.html;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +31,8 @@ import javax.faces.component.ValueHolder;
 import javax.faces.component.behavior.ClientBehavior;
 import javax.faces.component.behavior.ClientBehaviorHolder;
 import javax.faces.component.html.HtmlOutputLabel;
+import javax.faces.component.search.SearchExpressionContext;
+import javax.faces.component.search.SearchExpressionHint;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 
@@ -45,15 +49,14 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 
 /**
  * 
- * @author Thomas Spiegl (latest modification by $Author: lu4242 $)
+ * @author Thomas Spiegl (latest modification by $Author: tandraschko $)
  * @author Anton Koinov
  * @author Martin Marinschek
- * @version $Revision: 1542428 $ $Date: 2013-11-15 23:06:36 +0000 (Fri, 15 Nov 2013) $
+ * @version $Revision: 1817806 $ $Date: 2017-12-11 13:36:06 -0500 (Mon, 11 Dec 2017) $
  */
 @JSFRenderer(renderKitId = "HTML_BASIC", family = "javax.faces.Output", type = "javax.faces.Label")
 public class HtmlLabelRenderer extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlLabelRenderer.class);
     private static final Logger log = Logger.getLogger(HtmlLabelRenderer.class.getName());
 
     @Override
@@ -238,9 +241,16 @@ public class HtmlLabelRenderer extends HtmlRenderer
 
     }
 
+    private static final Set<SearchExpressionHint> EXPRESSION_HINTS =
+            EnumSet.of(SearchExpressionHint.RESOLVE_SINGLE_COMPONENT, SearchExpressionHint.IGNORE_NO_RESULT);
+    
     protected String getClientId(FacesContext facesContext, UIComponent uiComponent, String forAttr)
     {
-        return RendererUtils.getClientId(facesContext, uiComponent, forAttr);
+        SearchExpressionContext searchExpressionContext = SearchExpressionContext.createSearchExpressionContext(
+                facesContext, uiComponent, EXPRESSION_HINTS, null);
+
+        return facesContext.getApplication().getSearchExpressionHandler().resolveClientId(
+                searchExpressionContext, forAttr);
     }
 
     @Override
