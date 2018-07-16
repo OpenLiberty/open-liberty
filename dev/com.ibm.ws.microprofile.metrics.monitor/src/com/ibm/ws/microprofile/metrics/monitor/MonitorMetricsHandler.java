@@ -115,7 +115,7 @@ public class MonitorMetricsHandler {
     		if (mm.objectName.equals(objectName)) {
     			removeSet.add(mm);
     			mm.unregisterMetrics(sharedMetricRegistry);
-    			Tr.info(tc, "UNREGISTERED_CONNECTIONPOOL_STATS", objectName);
+    			Tr.info(tc, "UNREGISTERED_STATS", objectName);
     		}
     	}
     	metricsSet.removeAll(removeSet);
@@ -149,7 +149,7 @@ public class MonitorMetricsHandler {
 			metrics = new MonitorMetrics(objectName);
 			metrics.createMetrics(sharedMetricRegistry, data);
         	metricsSet.add(metrics);
-        	Tr.info(tc, "REGISTERED_SERVLET_STATS", objectName);
+        	Tr.info(tc, "REGISTERED_STATS", objectName);
         } else {
         	Tr.debug(tc, objectName + " is already registered.");
         }

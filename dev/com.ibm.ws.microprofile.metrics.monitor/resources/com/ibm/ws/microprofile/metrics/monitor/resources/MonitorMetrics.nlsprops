@@ -18,18 +18,11 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by MonitorMetrics Impl -  range is 2000-3999
 #-----------------------------------------------------------------------------------------------------------------------------
-REGISTERED_SERVLET_STATS=CWPMI2000I: ServletStats {0} is registered to mpMetrics.
-REGISTERED_SERVLET_STATS.explanation=A ServletStats is available and registered to mpMetrics.
-REGISTERED_SERVLET_STATS.useraction=No user action is required.
+REGISTERED_STATS=CWPMI2000I: Monitoring MXBean {0} is registered to mpMetrics.
+# e.g. Monitoring MXBean WebSphere:type=ConnectionPoolStats,name=jdbc/exampleDS1 is registered to mpMetrics.
+REGISTERED_STATS.explanation=A monitoring MXBean is available and registered to mpMetrics.
+REGISTERED_STATS.useraction=No user action is required.
 
-UNREGISTERED_SERVLET_STATS=CWPMI2001I: ServletStats {0} was unregistered from mpMetrics.
-UNREGISTERED_SERVLET_STATS.explanation=A ServletStats is unavailable and unregistered from mpMetrics.
-UNREGISTERED_SERVLET_STATS.useraction=No user action is required.
-
-REGISTERED_CONNECTIONPOOL_STATS=CWPMI2002I: ConnectionPoolStats {0} is registered to mpMetrics.
-REGISTERED_CONNECTIONPOOL_STATS.explanation=A ConnectionPoolStats is available and registered to mpMetrics.
-REGISTERED_CONNECTIONPOOL_STATS.useraction=No user action is required.
-
-UNREGISTERED_CONNECTIONPOOL_STATS=CWPMI2003I: ConnectionPoolStats {0} was unregistered from mpMetrics.
-UNREGISTERED_CONNECTIONPOOL_STATS.explanation=A ConnectionPoolStats is unavailable and unregistered from mpMetrics.
-UNREGISTERED_CONNECTIONPOOL_STATS.useraction=No user action is required.
+UNREGISTERED_STATS=CWPMI2001I: Monitoring MXBean {0} was unregistered from mpMetrics.
+UNREGISTERED_STATS.explanation=A monitoring MXBean was removed and unregistered from mpMetrics.
+UNREGISTERED_STATS.useraction=No user action is required.

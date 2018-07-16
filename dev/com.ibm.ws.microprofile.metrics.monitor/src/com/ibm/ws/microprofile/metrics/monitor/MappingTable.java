@@ -34,8 +34,8 @@ public class MappingTable {
 	
 	public MappingTable() {
 		String[][] threadPoolTable = new String[][] {
-			{ "threadpool.%s.activeThreads", "Active Threads", "threadpool.defaultExecutor.activeThreads.description", GAUGE, MetricUnits.NONE, "ActiveThreads", null },
-			{ "threadpool.%s.size", "Thread Pool Size", "threadpool.defaultExecutor.size.description", GAUGE, MetricUnits.NONE, "PoolSize", null }
+			{ "threadpool.%s.activeThreads", "Active Threads", "threadpool.activeThreads.description", GAUGE, MetricUnits.NONE, "ActiveThreads", null },
+			{ "threadpool.%s.size", "Thread Pool Size", "threadpool.size.description", GAUGE, MetricUnits.NONE, "PoolSize", null }
 		};
 		mappingTable.put("WebSphere:type=ThreadPoolStats,name=*", threadPoolTable);
 
@@ -48,11 +48,20 @@ public class MappingTable {
 		String[][] connectionPoolTable = new String[][]{
 			{ "connectionpool.%s.create.total", "Create Count", "connectionpool.create.total.description", COUNTER, MetricUnits.NONE, "CreateCount", null },
 			{ "connectionpool.%s.destroy.total", "Destory Count", "connectionpool.destroy.total.description", COUNTER, MetricUnits.NONE, "DestroyCount", null },
-			{ "connectionpool.%s.managedConnections", "Managed Connection Count", "connectionpool.managedConnections.description", GAUGE, MetricUnits.NONE, "ManagedConnectionCount", null },
-			{ "connectionpool.%s.connectionHandles", "Connection Handle Count", "connectionpool.connectionHandles.description", GAUGE, MetricUnits.NONE, "ConnectionHandleCount", null },
-			{ "connectionpool.%s.freeConnections", "Free Connection Count", "connectionpool.freeConnections.description", GAUGE, MetricUnits.NONE,  "FreeConnectionCount", null }
+			{ "connectionpool.%s.managedConnections", "Managed Connections Count", "connectionpool.managedConnections.description", GAUGE, MetricUnits.NONE, "ManagedConnectionCount", null },
+			{ "connectionpool.%s.connectionHandles", "Connection Handles Count", "connectionpool.connectionHandles.description", GAUGE, MetricUnits.NONE, "ConnectionHandleCount", null },
+			{ "connectionpool.%s.freeConnections", "Free Connections Count", "connectionpool.freeConnections.description", GAUGE, MetricUnits.NONE,  "FreeConnectionCount", null }
 		};
 		mappingTable.put("WebSphere:type=ConnectionPoolStats,name=*", connectionPoolTable);
+		
+		String[][] sessionTable = new String[][]{
+        	{ "session.%s.create.total", "Total Create Count", "session.create.total.description", GAUGE, MetricUnits.NONE, "CreateCount", null },
+        	{ "session.%s.liveSessions", "Live Sessions Count", "session.liveSessions.description", GAUGE, MetricUnits.NONE, "LiveCount", null },
+        	{ "session.%s.activeSessions", "Active Sessions Count", "session.activeSessions.description", GAUGE, MetricUnits.NONE, "ActiveCount", null },
+        	{ "session.%s.invalidated.total", "Total Invalidated Sessions Count", "session.invalidated.total.description", COUNTER, MetricUnits.NONE, "InvalidatedCount", null },
+        	{ "session.%s.invalidatedbyTimeout.total", "Total Invalidated Sessions by Timeout Count", "session.invalidatedbyTimeout.total.description", COUNTER, MetricUnits.NONE, "InvalidatedCountbyTimeout", null }
+		};
+		mappingTable.put("WebSphere:type=SessionStats,name=*", sessionTable);
 	}
 	
 	private String getType(String objectName) {

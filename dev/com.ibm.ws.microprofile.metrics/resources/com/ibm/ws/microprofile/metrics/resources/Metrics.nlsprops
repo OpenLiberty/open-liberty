@@ -107,11 +107,11 @@ garbageCollectionTime.description=Displays the approximate accumulated collectio
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------
-threadpool.defaultExecutor.activeThreads.description=Number of active threads that belong to the default thread pool.
-threadpool.defaultExecutor.size.description=The size of the default thread pool.
+threadpool.activeThreads.description=The number of threads that are actively executing tasks.
+threadpool.size.description=The size of the thread pool.
 
-servlet.request.total.description=Number of visits to this servlet since the start of the server.
-servlet.responseTime.total.description=Total response time of this servlet since the start of the server.
+servlet.request.total.description=The number of visits to this servlet since the start of the server.
+servlet.responseTime.total.description=The total response time of this servlet since the start of the server.
 
 connectionpool.create.total.description=The total number of managed connections that have been created since the pool creation.
 connectionpool.destroy.total.description=The total number of managed connections that have been destroyed since the pool creation.
