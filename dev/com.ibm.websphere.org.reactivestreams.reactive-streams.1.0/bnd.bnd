@@ -14,9 +14,7 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-# Although we are referencing mvn:org.reactivestreams:reactive-streams:1.0.2 we only use
-# one decimal place in the bundle name we make from it
-Bundle-SymbolicName: com.ibm.websphere.org.reactivestreams.reactive-streams.1.0; singleton:=true
+Bundle-SymbolicName: com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2; singleton:=true
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 # We are implementing this API so you might think we would have [1.0.2,1.1) 
@@ -26,7 +24,7 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.reactivestreams;version=1.0 
+  org.reactivestreams;version=1.0.2
 
 Include-Resource: \
   @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT}!/META-INF/NOTICE
