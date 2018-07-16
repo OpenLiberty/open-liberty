@@ -34,30 +34,40 @@ public class MappingTable {
 	
 	public MappingTable() {
 		String[][] threadPoolTable = new String[][] {
-			{ "connectionpool.%s.create.total", "Create Count", "connectionpool.create.total.description", COUNTER, MetricUnits.NONE, "CreateCount" },
-			{ "connectionpool.%s.destroy.total", "Destory Count", "connectionpool.destroy.total.description", COUNTER, MetricUnits.NONE, "DestroyCount"},
-			{ "connectionpool.%s.managedConnections", "Managed Connection Count", "connectionpool.managedConnections.description", GAUGE, MetricUnits.NONE, "ManagedConnectionCount"},
-			{ "connectionpool.%s.connectionHandles", "Connection Handle Count", "connectionpool.connectionHandles.description", GAUGE, MetricUnits.NONE, "ConnectionHandleCount" },
-			{ "connectionpool.%s.freeConnections", "Free Connection Count", "connectionpool.freeConnections.description", GAUGE, MetricUnits.NONE,  "FreeConnectionCount" }
+			{ "threadpool.%s.activeThreads", "Active Threads", "threadpool.defaultExecutor.activeThreads.description", GAUGE, MetricUnits.NONE, "ActiveThreads", null },
+			{ "threadpool.%s.size", "Thread Pool Size", "threadpool.defaultExecutor.size.description", GAUGE, MetricUnits.NONE, "PoolSize", null }
 		};
 		mappingTable.put("WebSphere:type=ThreadPoolStats,name=*", threadPoolTable);
 
 		String[][] servletTable = new String[][] {
         	{ "servlet.%s.request.total", "Total Request", "servlet.request.total.description", COUNTER, MetricUnits.NONE, "RequestCount", null },
-        	{ "servlet.%s.responseTime.total", "Total Response Time", "servlet.responseTime.total.description", GAUGE, MetricUnits.NANOSECONDS, "ResponseTimeDetails", "total"}
+        	{ "servlet.%s.responseTime.total", "Total Response Time", "servlet.responseTime.total.description", GAUGE, MetricUnits.NANOSECONDS, "ResponseTimeDetails", "total" }
         };
 		mappingTable.put("WebSphere:type=ServletStats,name=*", servletTable);
 		
 		String[][] connectionPoolTable = new String[][]{
-			{ "threadpool.%s.activeThreads", "Active Threads", "threadpool.defaultExecutor.activeThreads.description", GAUGE, MetricUnits.NONE, "ActiveThreads" },
-			{ "threadpool.%s.size", "Thread Pool Size", "threadpool.defaultExecutor.size.description", GAUGE, MetricUnits.NONE, "PoolSize"}
+			{ "connectionpool.%s.create.total", "Create Count", "connectionpool.create.total.description", COUNTER, MetricUnits.NONE, "CreateCount", null },
+			{ "connectionpool.%s.destroy.total", "Destory Count", "connectionpool.destroy.total.description", COUNTER, MetricUnits.NONE, "DestroyCount", null },
+			{ "connectionpool.%s.managedConnections", "Managed Connection Count", "connectionpool.managedConnections.description", GAUGE, MetricUnits.NONE, "ManagedConnectionCount", null },
+			{ "connectionpool.%s.connectionHandles", "Connection Handle Count", "connectionpool.connectionHandles.description", GAUGE, MetricUnits.NONE, "ConnectionHandleCount", null },
+			{ "connectionpool.%s.freeConnections", "Free Connection Count", "connectionpool.freeConnections.description", GAUGE, MetricUnits.NONE,  "FreeConnectionCount", null }
 		};
 		mappingTable.put("WebSphere:type=ConnectionPoolStats,name=*", connectionPoolTable);
 	}
 	
+	private String getType(String objectName) {
+        for (String subString : objectName.split(",")) {
+            subString = subString.trim();
+            if (subString.contains("type=")) {
+            	return subString.split("=")[1];
+            }
+        }
+		return "notype";
+	}
+	
 	public String[][] getData(String objectName) {
 		for (String k : mappingTable.keySet()) {
-			if (objectName.contains(k))
+			if (objectName.contains(getType(k)))
 				return mappingTable.get(k);
 		}
 		return null;
@@ -65,7 +75,7 @@ public class MappingTable {
 	
 	public boolean contains(String objectName) {
 		for (String k : mappingTable.keySet()) {
-			if (objectName.contains(k))
+			if (objectName.contains(getType(k)))
 				return true;
 		}
 		return false;
