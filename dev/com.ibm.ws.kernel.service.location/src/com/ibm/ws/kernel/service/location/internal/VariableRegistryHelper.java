@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.service.location.internal;
 
+import com.ibm.ws.kernal.service.location.SymbolResolver;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 
 /**
@@ -54,5 +55,35 @@ public class VariableRegistryHelper implements VariableRegistry {
     public void removeVariable(String symbol) {
         registry.removeSymbol(symbol);
     }
+    
+    /** 
+     * Helper method to add SymbolResolver to SymbolRegistry from Activator 
+     * @param resolver
+     */
+    protected void addSymbolResolver(SymbolResolver resolver) {
+    	if (resolver != null) {
+    		registry.addSymbolResolver(resolver);
+    	}
+    }
+    
+    /** 
+     * Helper method to remover specific SymbolResolver from SymbolRegistry.
+     * Used in Activator class. 
+     * @param resolver
+     */
+    protected void removeSymbolResolver(SymbolResolver resolver) {
+    	if (resolver != null) {
+    		registry.removeSymbolResolver(resolver);
+    	}
+    }
+    
+    /**
+     * Method to remove all SymbolResolver objects from SymbolRegistry. Called from 
+     * Activator class when SymbolResolverServiceTracker is closed.
+     */
+    protected void removeAllSymbolResolvers() {
+    	registry.clearAllResolverList();
+    }
+    	
 
 }

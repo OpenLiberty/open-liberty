@@ -50,3 +50,4 @@ instrument.classesExcludes: com/ibm/ws/kernel/**/internal/resources/*.class
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging;version=latest
+Export-Package: com.ibm.ws.kernal.service.location

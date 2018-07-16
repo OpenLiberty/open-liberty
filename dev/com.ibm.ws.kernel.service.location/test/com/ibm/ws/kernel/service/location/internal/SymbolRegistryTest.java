@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.junit.Test;
 import test.common.SharedOutputManager;
 import test.utils.Utils;
 
+import com.ibm.ws.kernal.service.location.SymbolResolver;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.location.WsResource.Type;
@@ -176,9 +177,11 @@ public class SymbolRegistryTest {
     public void testResolveEnvStrings() {
         Map<String, String> env = System.getenv();
         Map.Entry<String, String> entry = env.entrySet().iterator().next();
-
         SymbolRegistry sr = SymbolRegistry.getRegistry();
-
+        
+        SymbolResolver symResolver = new EnvVariableSymbolResolver();
+        sr.addSymbolResolver(symResolver);
+        
         String value = sr.resolveSymbolicString("${env." + entry.getKey() + "}");
         String expectedValue = PathUtils.normalize(entry.getValue());
 
