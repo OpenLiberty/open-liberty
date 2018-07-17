@@ -17,32 +17,35 @@ import java.util.List;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLParameters;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 /**
- * This class enables the use of the ALPN SSL protocol extension, on JDK8. Since there is no defined ALPN support
- * in JDK8 - that will come in JDK9 - users must either override JSSE classes - or use an IBM JDK bundled with a
- * new ALPN extension - in order to use ALPN and by extension secure HTTP/2 (h2).
+ * This class enables the use of the ALPN SSL protocol extension, and by extension secure HTTP/2.
  *
- * This class interfaces with the ALPN JSSE override provided by the Grizzly project, as well as the one provided
- * by the Jetty project. It also provides support for the ALPN extension provided in newer (1.8.5.15+) JDKs. No
- * additional configuration is required by the user if the IBM JDK is used.
+ * Users have four options to get ALPN support:
+ * 1. JDK9 has native support for ALPN in javax.net.ssl
+ * 2. IBM JDK8 sr5 fp15+ provides ALPN support via com.ibm.jsse2.ext.ALPNJSSEExt
+ * 3. jetty-alpn can be put on the bootclasspath - alpn-boot-*.jar
+ * 4. grizzly-npn can be put on the bootclasspath - grizzly-npn-bootstrap-1.*.jar
+ *
+ * Preference is given in the order of the list: native JDK9, IBM JDK8, grizzly-npn, then jetty-alpn.
  *
  * The Grizzly and Jetty extensions require users to configure a bootclasspath jar: either
  * grizzly-npn-bootstrap-1.*.jar or alpn-boot-*.jar. To use either of those jars, the server muse be running on
  * a JDK 8 provided by either Oracle or OpenJDK.
  *
- * On instantiation, the class tries to load classes from the IBM JDK; if those are not found, it attempts to load
- * jetty extension classes, and then grizzly-npn classes. If ant set of classes are found then this class is used
- * to interface via reflection with the ALPN APIs provided by each project.
+ * On instantiation, the class tries to load the new JDK9 ALPN APIs. If those aren't found, it tries classes from the IBM JDK;
+ * and if those are not found, it attempts to load jetty extension classes, and then grizzly-npn classes. If any set of classes
+ * are found then this class is used to interface via reflection with the ALPN APIs provided by each project.
  *
  * @author wtlucy
  */
-public class SSLAlpnNegotiatorJdk8 {
+public class SSLAlpnNegotiator {
 
-    private static final TraceComponent tc = Tr.register(SSLAlpnNegotiatorJdk8.class,
+    private static final TraceComponent tc = Tr.register(SSLAlpnNegotiator.class,
                                                          SSLChannelConstants.SSL_TRACE_NAME,
                                                          SSLChannelConstants.SSL_BUNDLE);
 
@@ -52,6 +55,30 @@ public class SSLAlpnNegotiatorJdk8 {
     private static boolean grizzlyAlpnPresent = false;
     private static boolean jettyAlpnPresent = false;
     private static boolean ibmAlpnPresent = false;
+    private static boolean nativeAlpnPresent = false;
+
+    /** Java 9+ ALPN API methods */
+    private static Method nativeAlpnGet;
+    private static Method nativeAlpnGetHandshake;
+    private static Method nativeAlpnPut;
+
+    static {
+        try {
+            nativeAlpnGet = SSLEngine.class.getMethod("getApplicationProtocol");
+            nativeAlpnPut = SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
+            nativeAlpnGetHandshake = SSLEngine.class.getMethod("getHandshakeApplicationProtocol");
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "java 9+ methods found; ALPN is available");
+            }
+            nativeAlpnPresent = true;
+
+        } catch (Throwable t) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "problem encountered initializing native java 9+ alpn provider: " + t);
+            }
+        }
+    }
 
     /** IBM JSSE classes to find via reflection */
     private static Class<?> ibmAlpn;
@@ -60,22 +87,24 @@ public class SSLAlpnNegotiatorJdk8 {
     private static Method ibmAlpnDelete;
 
     static {
-        try {
-            ibmAlpn = ClassLoader.getSystemClassLoader().loadClass("com.ibm.jsse2.ext.ALPNJSSEExt");
-            ibmAlpnPresent = true;
+        if (!nativeAlpnPresent) {
+            try {
+                ibmAlpn = ClassLoader.getSystemClassLoader().loadClass("com.ibm.jsse2.ext.ALPNJSSEExt");
+                ibmAlpnPresent = true;
 
-            // invoke ALPNJSSEExt.init()
-            ibmAlpn.getMethod("init").invoke(null);
-            ibmAlpnGet = ibmAlpn.getMethod("get", SSLEngine.class);
-            ibmAlpnPut = ibmAlpn.getMethod("put", SSLEngine.class, String[].class);
-            ibmAlpnDelete = ibmAlpn.getMethod("delete", SSLEngine.class);
+                // invoke ALPNJSSEExt.init()
+                ibmAlpn.getMethod("init").invoke(null);
+                ibmAlpnGet = ibmAlpn.getMethod("get", SSLEngine.class);
+                ibmAlpnPut = ibmAlpn.getMethod("put", SSLEngine.class, String[].class);
+                ibmAlpnDelete = ibmAlpn.getMethod("delete", SSLEngine.class);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "com.ibm.jsse2.ext.ALPNJSSEExt was found on the classpath; ALPN is available");
-            }
-        } catch (Throwable t) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "problem encountered initializing IBM alpn provider: " + t);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "com.ibm.jsse2.ext.ALPNJSSEExt was found on the classpath; ALPN is available");
+                }
+            } catch (Throwable t) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "problem encountered initializing IBM alpn provider: " + t);
+                }
             }
         }
     }
@@ -86,7 +115,7 @@ public class SSLAlpnNegotiatorJdk8 {
     private static Class<?> jettyProviderInterface;
 
     static {
-        if (!ibmAlpnPresent) {
+        if (!nativeAlpnPresent && !ibmAlpnPresent) {
             try {
                 jettyAlpn = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN");
                 jettyServerProviderInterface = ClassLoader.getSystemClassLoader().loadClass("org.eclipse.jetty.alpn.ALPN$ServerProvider");
@@ -110,7 +139,7 @@ public class SSLAlpnNegotiatorJdk8 {
     private static Object grizzlyNegotiationSupportObject;
 
     static {
-        if (!jettyAlpnPresent && !ibmAlpnPresent) {
+        if (!nativeAlpnPresent && !jettyAlpnPresent && !ibmAlpnPresent) {
             try {
                 grizzlyNegotiationSupport = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.NegotiationSupport");
                 grizzlyAlpnServerNegotiator = ClassLoader.getSystemClassLoader().loadClass("org.glassfish.grizzly.npn.AlpnServerNegotiator");
@@ -128,8 +157,15 @@ public class SSLAlpnNegotiatorJdk8 {
         }
     }
 
-    public SSLAlpnNegotiatorJdk8() {
+    public SSLAlpnNegotiator() {
         // no-op
+    }
+
+    /**
+     * @return true if the Java 9 ALPN API is available
+     */
+    protected boolean isNativeAlpnActive() {
+        return nativeAlpnPresent;
     }
 
     /**
@@ -154,17 +190,21 @@ public class SSLAlpnNegotiatorJdk8 {
     }
 
     /**
-     * Check for IBM's ALPNJSSEExt, jetty-alpn, and grizzly-npn; if any are present, set up a connection for ALPN.
-     * Order of preference is IBM's ALPNJSSEExt, jetty-alpn, then grizzly-npn.
+     * Check for the Java 9 ALPN API, IBM's ALPNJSSEExt, jetty-alpn, and grizzly-npn; if any are present, set up the connection for ALPN.
+     * Order of preference is Java 9 ALPN API, IBM's ALPNJSSEExt, jetty-alpn, then grizzly-npn.
      *
      * @param SSLEngine
      * @param SSLConnectionLink
      * @param useAlpn true if alpn should be used
      * @return ThirdPartyAlpnNegotiator used for this connection,
-     *         or null if ALPN is not available or the IBM provider was used
+     *         or null if ALPN is not available or the Java 9 / IBM provider was used
      */
     protected ThirdPartyAlpnNegotiator tryToRegisterAlpnNegotiator(SSLEngine engine, SSLConnectionLink link, boolean useAlpn) {
-        if (isIbmAlpnActive()) {
+        if (isNativeAlpnActive()) {
+            if (useAlpn) {
+                registerNativeAlpn(engine);
+            }
+        } else if (isIbmAlpnActive()) {
             registerIbmAlpn(engine, useAlpn);
         } else if (this.isJettyAlpnActive() && useAlpn) {
             return registerJettyAlpn(engine, link);
@@ -182,13 +222,82 @@ public class SSLAlpnNegotiatorJdk8 {
      * @param SSLConnectionLink
      */
     protected void tryToRemoveAlpnNegotiator(ThirdPartyAlpnNegotiator negotiator, SSLEngine engine, SSLConnectionLink link) {
-        // the IBM JSSE ALPN implementation does not use a negotiator object
-        if (negotiator == null && isIbmAlpnActive()) {
+        // the Java 9 and IBM JSSE ALPN implementations don't use a negotiator object
+        if (negotiator == null && isNativeAlpnActive()) {
+            getNativeAlpnChoice(engine, link);
+        } else if (negotiator == null && isIbmAlpnActive()) {
             getAndRemoveIbmAlpnChoice(engine, link);
         } else if (negotiator != null && isJettyAlpnActive() && negotiator instanceof JettyServerNegotiator) {
             ((JettyServerNegotiator) negotiator).removeEngine();
         } else if (negotiator != null && isGrizzlyAlpnActive() && negotiator instanceof GrizzlyAlpnNegotiator) {
             ((GrizzlyAlpnNegotiator) negotiator).removeServerNegotiatorEngine();
+        }
+    }
+
+    /**
+     * Register {h2, http/1.1} via the Java 9 ALPN API: SSLEngine.setApplicationProtocols(String[] protocols)
+     *
+     * @param SSLEngine
+     */
+    protected void registerNativeAlpn(SSLEngine engine) {
+        if (isNativeAlpnActive()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "registerNativeAlpn entry " + engine);
+            }
+            try {
+                String[] protocols = new String[] { h2, h1 };
+                SSLParameters params = engine.getSSLParameters();
+                nativeAlpnPut.invoke(params, (Object) protocols);
+                engine.setSSLParameters(params);
+                Method m = SSLParameters.class.getMethod("getApplicationProtocols");
+
+            } catch (InvocationTargetException ie) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "registerNativeAlpn exception: " + ie.getTargetException());
+                }
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "registerNativeAlpn exception: " + e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Invoke SSLEngine.getApplicationProtocol() - Get the selected ALPN protocol, and set that protocol on the link.
+     *
+     * @param SSLEngine
+     * @param SSLConnectionLink
+     */
+    protected void getNativeAlpnChoice(SSLEngine engine, SSLConnectionLink link) {
+        if (isNativeAlpnActive()) {
+            try {
+                String alpnResult = (String) nativeAlpnGet.invoke(engine);
+                if (alpnResult == null || alpnResult.isEmpty()) {
+                    alpnResult = (String) nativeAlpnGetHandshake.invoke(engine);
+                }
+
+                if (alpnResult == null) {
+                    Tr.debug(tc, "getNativeAlpnChoice: protocol not yet determined " + engine);
+                } else if (alpnResult.isEmpty()) {
+                    Tr.debug(tc, "getNativeAlpnChoice: ALPN will not be used " + engine);
+                } else if (h2.equals(alpnResult)) {
+                    // a protocol was selected
+                    if (link.getAlpnProtocol() == null) {
+                        Tr.debug(tc, "getNativeAlpnChoice: h2 protocol selected " + engine);
+                        link.setAlpnProtocol(h2);
+                    }
+                }
+
+            } catch (InvocationTargetException ie) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getNativeAlpnChoice exception: " + ie.getTargetException());
+                }
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getNativeAlpnChoice exception: " + e);
+                }
+            }
         }
     }
 
