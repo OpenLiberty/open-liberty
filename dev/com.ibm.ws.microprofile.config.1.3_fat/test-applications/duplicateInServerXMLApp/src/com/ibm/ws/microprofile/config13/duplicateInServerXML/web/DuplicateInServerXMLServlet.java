@@ -8,19 +8,27 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.config13.test;
+package com.ibm.ws.microprofile.config13.duplicateInServerXML.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                ServerXMLTest.class,
-                MapEnvVarTest.class,
-                VariableServerXMLTest.class,
-                DuplicateInServerXMLTest.class
-})
-public class FATSuite {
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
+
+/**
+ *
+ */
+@WebServlet("/DuplicateInServerXMLServlet")
+public class DuplicateInServerXMLServlet extends FATServlet {
+
+    @Inject
+    DuplicateInServerXMLBean bean;
+
+    @Test
+    public void duplicateAppPropertiesTest() throws Exception {
+        bean.duplicateAppPropertiesTest();
+    }
 
 }

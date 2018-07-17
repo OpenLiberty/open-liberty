@@ -105,10 +105,9 @@ public class VariableServerXMLTest extends FATServletClient {
         // switch to new configuration
         server.copyFileToLibertyServerRoot("refreshAppProperties/server.xml");
 
-        // Wait for message: "the server configuration was successfully updated"
-        assertNotNull("The server.xml was not updated",
-                      server.waitForStringInLog("CWWKG0017I"));
-        Thread.sleep(1000); // We need this pause so that the config change is picked up through the polling mechanism,
+        // The message: "the server configuration was successfully updated" is already in the log,
+        // sleep for a couple of seconds to be confident that the update has taken effect.
+        Thread.sleep(2000); // We need this pause so that the config change is picked up through the polling mechanism,
                             // Something more deterministic would be better.
 
         // run the "after" test to check the value of the variable after the server.xml is updated
