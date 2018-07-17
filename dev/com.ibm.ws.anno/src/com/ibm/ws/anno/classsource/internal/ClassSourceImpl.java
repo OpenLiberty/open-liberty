@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 
-import com.ibm.ws.anno.jandex.internal.DotName;
 import com.ibm.ws.anno.jandex.internal.ClassInfo;
 import com.ibm.ws.anno.jandex.internal.LimitedIndex;
 
@@ -752,19 +751,36 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     public static final boolean JANDEX_ENABLE_FULL_DEFAULT_VALUE = false;
     public static final String JANDEX_ENABLE_FULL_PROPERTY_NAME = "com.ibm.ws.jandex.enable.full";
-    private static final boolean JANDEX_ENABLE_FULL_OVERRIDE =  false;
-    /*    
-        AnnotationServiceImpl_Logging.getProperty(
-                AnnotationServiceImpl_Logging.ANNO_LOGGER, 
-                CLASS_NAME, 
-                "<static init>",
-                JANDEX_ENABLE_FULL_PROPERTY_NAME,
-                JANDEX_ENABLE_FULL_DEFAULT_VALUE
-        );
-    */
+
+    private static final boolean HAS_JANDEX_ENABLE_OVERRIDE =
+       AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_PROPERTY_NAME);
+    private static final boolean JANDEX_ENABLE_OVERRIDE =
+       AnnotationServiceImpl_Logging.getProperty(
+           AnnotationServiceImpl_Logging.ANNO_LOGGER,
+           CLASS_NAME, "<static init>",
+           JANDEX_ENABLE_PROPERTY_NAME, JANDEX_ENABLE_DEFAULT_VALUE);
+
     private static final boolean HAS_JANDEX_ENABLE_FULL_OVERRIDE =
        AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_FULL_PROPERTY_NAME);
 
+    private static final boolean JANDEX_ENABLE_FULL_OVERRIDE =
+       AnnotationServiceImpl_Logging.getProperty(
+           AnnotationServiceImpl_Logging.ANNO_LOGGER,
+           CLASS_NAME, "<static init>",
+           JANDEX_ENABLE_FULL_PROPERTY_NAME, JANDEX_ENABLE_FULL_DEFAULT_VALUE);   
+
+    
+
+    @Trivial
+    public static boolean getHasJandexEnableOverride() {
+       return HAS_JANDEX_ENABLE_OVERRIDE;
+    }
+
+    @Trivial
+    public static boolean getJandexEnableOverride() {
+       return JANDEX_ENABLE_OVERRIDE;
+    }
+    
     @Trivial
     public static boolean getHasJandexEnableFullOverride() {
        return HAS_JANDEX_ENABLE_FULL_OVERRIDE;
