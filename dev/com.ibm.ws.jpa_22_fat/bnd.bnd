@@ -16,6 +16,7 @@ javac.source: 1.8
 
 src: \
 	fat/src,\
+	test-applications/helpers/DatabaseManagement/src,\
 	test-applications/appclient/src,\
 	test-applications/jpabootstrap/src,\
 	test-applications/jpa10/callback/src,\
