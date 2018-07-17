@@ -60,19 +60,13 @@ Import-Package: \
  javax.persistence.criteria;version="[1.1.0, 2.3.0)", \
  javax.persistence.metamodel;version="[1.1.0, 2.3.0)", \
  javax.persistence.spi;version="[1.1.0, 2.3.0)", \
- !javax.xml.bind.*, \
+ javax.xml.bind;version="[2.2, 3.0)", \
+ javax.xml.bind.annotation;version="[2.2, 3.0)", \
+ javax.xml.bind.annotation.adapters;version="[2.2, 3.0)", \
+ javax.xml.bind.attachment;version="[2.2, 3.0)", \
+ javax.xml.bind.helpers;version="[2.2, 3.0)", \
+ javax.xml.bind.util;version="[2.2, 3.0)", \
  *
- 
-# Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
-# those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
-# bundle will be always used due to JAXB 2.2 API is not resolved
-DynamicImport-Package: \
- javax.xml.bind, \
- javax.xml.bind.annotation, \
- javax.xml.bind.annotation.adapters, \
- javax.xml.bind.attachment, \
- javax.xml.bind.helpers, \
- javax.xml.bind.util
 
 instrument.classesIncludes: com/ibm/ws/jpa/container/osgi/**/*.class
 instrument.classesExcludes: com/ibm/ws/jpa/container/osgi/internal/url/FilterZipFileInputStream*.class
