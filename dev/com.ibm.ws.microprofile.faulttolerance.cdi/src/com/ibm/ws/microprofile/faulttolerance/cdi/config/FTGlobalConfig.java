@@ -42,8 +42,8 @@ public class FTGlobalConfig {
     private final static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private final static Set<Class<?>> ONLY_FALLBACK = Collections.singleton(Fallback.class);
-    private final static Set<Class<?>> ALL_ANNOTATIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Asynchronous.class, CircuitBreaker.class,
-                                                                                                                 Retry.class, Timeout.class, Bulkhead.class, Fallback.class)));
+    public final static Set<Class<?>> ALL_ANNOTATIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Asynchronous.class, CircuitBreaker.class,
+                                                                                                                Retry.class, Timeout.class, Bulkhead.class, Fallback.class)));
     private final static String CONFIG_NONFALLBACK_ENABLED = "MP_Fault_Tolerance_NonFallback_Enabled";
 
     /**
@@ -112,7 +112,7 @@ public class FTGlobalConfig {
         }
 
         //The lowest priority is a global disabling of all fault tolerence annotations. (Only check FT annotations. Fallback is exempt from this global configuration)
-        if (enabled == null && ALL_ANNOTATIONS.contains(ann.annotationType()) && !getActiveAnnotations(clazz).contains(ann.annotationType())){
+        if (enabled == null && !getActiveAnnotations(clazz).contains(ann.annotationType())) {
             enabled = false;
         }
 
