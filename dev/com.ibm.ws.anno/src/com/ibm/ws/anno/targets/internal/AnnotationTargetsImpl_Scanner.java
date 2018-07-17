@@ -13,7 +13,6 @@ package com.ibm.ws.anno.targets.internal;
 
 import java.text.MessageFormat;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;

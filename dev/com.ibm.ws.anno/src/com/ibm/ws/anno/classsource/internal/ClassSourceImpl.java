@@ -19,7 +19,9 @@ import java.util.logging.Logger;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 
-import com.ibm.ws.anno.jandex.internal.*;
+import com.ibm.ws.anno.jandex.internal.DotName;
+import com.ibm.ws.anno.jandex.internal.ClassInfo;
+import com.ibm.ws.anno.jandex.internal.LimitedIndex;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -32,7 +34,6 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
-import com.sun.xml.internal.fastinfoset.stax.events.ProcessingInstructionEvent;
 
 public abstract class ClassSourceImpl implements ClassSource {
     private static final TraceComponent tc = Tr.register(ClassSourceImpl.class);

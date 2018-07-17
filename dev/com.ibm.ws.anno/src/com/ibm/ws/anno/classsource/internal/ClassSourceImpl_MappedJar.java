@@ -20,7 +20,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.jandex.Index;
-import com.ibm.ws.anno.jandex.internal.*;
+import com.ibm.ws.anno.jandex.internal.ClassInfo;
+import com.ibm.ws.anno.jandex.internal.DotName;
+import com.ibm.ws.anno.janded.internal.LimitedIndex;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
