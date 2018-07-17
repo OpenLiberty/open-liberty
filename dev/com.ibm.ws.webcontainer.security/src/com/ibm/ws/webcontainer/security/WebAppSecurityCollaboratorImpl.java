@@ -653,7 +653,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
         if (webReply.getStatusCode() == HttpServletResponse.SC_OK && byPassedAuthRequest) {
             AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_SUCCESS);
-            Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+            //Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
         }
 
         webReply.writeResponse(resp);
@@ -1680,7 +1680,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     }
 
     private boolean isPostLoginProcessDone(HttpServletRequest req) {
-        Boolean result = (Boolean)req.getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
+        Boolean result = (Boolean) req.getAttribute("com.ibm.ws.security.javaeesec.donePostLoginProcess");
         if (result != null && result) {
             return true;
         }
