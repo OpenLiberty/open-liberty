@@ -6,8 +6,10 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-# IBM Corporation - initial API and implementation
-#  org.reactivestreams; version="[1.0.2,1.1)",\
+#    IBM Corporation 
+# This wraps the external JAR. From this we consume both the API and TCK
+#
+# Use com.ibm.ws.org.reactivestreams.interfaces bundle for API
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.2
@@ -19,8 +21,6 @@ Bundle-SymbolicName: com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
-  org.reactivestreams; version=1.0.2,\
-  *
 
 Export-Package: \
   org.reactivestreams; version=1.0.2
@@ -33,7 +33,6 @@ WS-TraceGroup: REACTIVESTREAMS
 instrument.disabled: true
 
 -buildpath: \
-  org.reactivestreams:reactive-streams; version=1.0.2
 
 publish.wlp.jar.suffix: dev/api/stable
 

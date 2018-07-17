@@ -15,6 +15,7 @@
 # com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2;version=latest
 # from Export-package to remove the org reactive streams classes from the
 # jar
+# com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2;version=latest
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -37,7 +38,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 WS-TraceGroup: FAULTTOLERANCE
 
 -buildpath: \
-        com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2;version=latest
+	com.ibm.ws.org.reactivestreams.interfaces
 
 instrument.disabled: true
 
