@@ -358,8 +358,11 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
             }
         }
         if (tc.isDebugEnabled()) {
+            SibTr.debug(tc, CLASS_NAME + " ***** Queue Permissions *****");
             printDestinationPermissions(queuePermissions);
+            SibTr.debug(tc, CLASS_NAME + " ***** Topic Permissions *****");
             printDestinationPermissions(topicPermissions);
+            SibTr.debug(tc, CLASS_NAME + " ***** Temporary DestinationPermissions *****");
             printDestinationPermissions(temporaryDestinationPermissions);
         }
 
@@ -621,7 +624,7 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
     private void printDestinationPermissions(Map<String, ?> destinationPermissions) {
         Set<String> destinations = destinationPermissions.keySet();
         for (String destination : destinations) {
-            SibTr.debug(tc, "Destination: " + destination);
+            SibTr.debug(tc, CLASS_NAME + " Destination: " + destination);
             Permission permission = (Permission) destinationPermissions.get(destination);
             SibTr.debug(tc, "  Users having permissions!!!");
             Map<String, Set<String>> userRoles = permission.getRoleToUserMap();
@@ -647,34 +650,65 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
         ArrayList<String> roleList = new ArrayList();
         int element = 0;
         Set<String> destinations = destinationPermissions.keySet();
+        
+        if (dest.indexOf("/") != -1) {
+            dest = dest.substring(0,  dest.indexOf("/"));
+        }
+
         for (String destination : destinations) {
-            SibTr.debug(tc, "Destination: " + destination);
+            SibTr.debug(tc, CLASS_NAME + " Destination: " + destination + " dest: " + dest);
             if (destination.equals(dest)) {
                 Permission permission = (Permission) destinationPermissions.get(destination);
                 Map<String, Set<String>> userRoles = permission.getRoleToUserMap();
                 Set<String> uRoles = userRoles.keySet();
                 for (String role : uRoles) {
-                    SibTr.debug(tc, " role: " + role);
-                    SibTr.debug(tc, "    users: " + userRoles.get(role));
+                    SibTr.debug(tc, CLASS_NAME + " role: " + role);
+                    SibTr.debug(tc, CLASS_NAME + "    users: " + userRoles.get(role));
                     Set<String> rs = userRoles.get(role);
                     for (String r : rs) {
-                        SibTr.debug(tc,  "     user: " + r);
+                        SibTr.debug(tc, CLASS_NAME + "     user: " + r);
                         if (r.equals(user)) {
                             roleList.add(role);
                         }
                      }
                 }
- 
+                
+                Map<String, Set<String>> groupRoles = permission.getRoleToGroupMap();
+                Set<String> gRoles = groupRoles.keySet();
+                for (String role : gRoles) {
+                    SibTr.debug(tc, CLASS_NAME + " role: " + role);
+                    SibTr.debug(tc, CLASS_NAME + "    groups: " + groupRoles.get(role));
+                   
+                    Set <String> rs = groupRoles.get(role);
+                    
+                    if (rs != null) {
+                        List<String> groups = MessagingSecurityUtility
+                                        .getGroupsAssociatedToUser(user,
+                                                                   this);
+                        if (groups != null) {
+                            for (String g : groups) {
+                                if (rs.contains(g)) {
+                                    if (!roleList.contains(role)) {
+                                        roleList.add(role);
+                                    }
+                                }
+                            }
+                        }
+                       
+                    }
+                }                
+                               
             }
         }
         if (roleList != null)
-            SibTr.debug(tc,  "roles: " + roleList.toArray().toString());
+            SibTr.debug(tc,  CLASS_NAME + " roles: " + roleList.toArray().toString());
         else 
-            SibTr.debug(tc, "no roles identified for user " + user);
+            SibTr.debug(tc, CLASS_NAME + " no roles identified for user " + user);
         
         Object[] roleListAsObjectArray = roleList.toArray();
         String[] roleListAsStrArray = Arrays.copyOf(roleListAsObjectArray, roleListAsObjectArray.length, String[].class);
         
+        SibTr.exit(tc, CLASS_NAME);
         return (roleListAsStrArray);
     }
 
