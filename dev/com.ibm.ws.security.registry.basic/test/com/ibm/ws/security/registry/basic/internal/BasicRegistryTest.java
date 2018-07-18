@@ -277,6 +277,71 @@ public class BasicRegistryTest {
         return reg;
     }
 
+    private BasicRegistry ignoreCaseBasicRegistry() {
+
+//        Set<BasicUser> users = new HashSet<BasicUser>();
+//        users.add(new BasicUser("user1", "pass1"));
+//        users.add(new BasicUser("USER2", "PASS2"));
+        BasicRegistryConfig brc = new BasicRegistryConfig() {
+            @Override
+            public String realm() {
+                return "ignoreCase";
+            }
+            @Override
+            public boolean ignoreCaseForAuthentication() {
+                return true;
+            }
+            @Override
+            public User[] user() {
+                return new User[] {
+                                    new User() {
+                                        @Override
+                                        public String name() {
+                                            return "user1";
+                                        }
+                                        @Override
+                                        public SerializableProtectedString password() {
+                                            return new SerializableProtectedString("pass1".toCharArray());
+                                        }
+                                    },
+                                    new User() {
+                                        @Override
+                                        public String name() {
+                                            return "USER2";
+                                        }
+                                        @Override
+                                        public SerializableProtectedString password() {
+                                            return new SerializableProtectedString("pass2".toCharArray());
+                                        }
+                                    }
+                };
+            }
+            @Override
+            public Group[] group() {
+                return new Group[] {};
+            }
+            @Override
+            public String config_id() {
+                return "configId";
+            }
+            @Override
+            public String certificateMapMode() {
+                return null;
+            }
+            @Override
+            public String certificateMapperId() {
+                return null;
+            }
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
+        };
+        BasicRegistry reg = new BasicRegistry();
+        reg.activate(brc);
+        return reg;
+    }
+
     /**
      * Constructor can support a null realm value.
      */
@@ -585,6 +650,29 @@ public class BasicRegistryTest {
         assertTrue("Should contain user1", result.getList().contains("user1"));
         assertTrue("Should contain user 2", result.getList().contains("user 2"));
         assertTrue("Should contain CN=dnUser", result.getList().contains("CN=dnUser"));
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.registry.basic.internal.BasicRegistry#getUsers(String, int)}.
+     */
+    @Test
+    public void getUsers_noResultCaseMismatch() throws Exception {
+        SearchResult result = fullBasicRegistry().getUsers("USER.*", 3);
+        assertNotNull("SearchResult must not be NULL", result);
+        assertEquals(0, result.getList().size());
+    }
+
+    /**
+     * Test method for {@link com.ibm.ws.security.registry.basic.internal.BasicRegistry#getUsers(String, int)}.
+     */
+    @Test
+    public void getUsers_ignoreCaseUnbounded() throws Exception {
+        SearchResult result = ignoreCaseBasicRegistry().getUsers("user.*", 0);
+        assertNotNull("SearchResult must never be NULL", result);
+        assertEquals("Should be 2 entries", 2, result.getList().size());
+        assertFalse("Should not think there are more results", result.hasMore());
+        assertTrue("Should contain user1", result.getList().contains("user1"));
+        assertTrue("Should contain USER2", result.getList().contains("USER2"));
     }
 
     /**
