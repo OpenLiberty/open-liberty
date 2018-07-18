@@ -11,13 +11,13 @@
 package com.ibm.ws.install.internal;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,11 +25,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import org.apache.aries.util.manifest.ManifestProcessor;
 import org.apache.tools.ant.BuildException;
 
-import com.ibm.ws.filetransfer.util.FileServiceUtil;
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallEventListener;
@@ -100,6 +104,9 @@ public class InstallKernelMap implements Map {
     private static final String MESSAGE_LOCALE = "message.locale";
     private static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
     private static final String INDIVIDUAL_ESAS = "individual.esas";
+
+    //Headers in Manifest File
+    private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
 
     // Return code
     private static final Integer OK = Integer.valueOf(0);
@@ -537,26 +544,38 @@ public class InstallKernelMap implements Map {
                 RepositoryConnection repo = new SingleFileRepositoryConnection(jsonRepo);
                 repoList.add(repo);
             }
-            //TODO
-            //check if we do the deleteOnExit or not
-            if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
-                Path tempDir = Files.createTempDirectory("generatedJson");
-                tempDir.toFile().deleteOnExit();
-                //String jsonDir = "/Users/ramyaprasad/Documents/Demo/Individual/json";
-                //new File(jsonDir).mkdirs();
-                //File jsonDirectory = new File (jsonDir);
-                File individualEsaJson = individualESAInstall(tempDir);
-                //File individualEsaJson = individualESAInstall(jsonDir);
-                RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
-                repoList.add(repo);
-                //repoList.add(individualESAInstall(tempDir));
-            }
 
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
             Collection<ProvisioningFeatureDefinition> installedFeatures = m_ManifestFileProcessor.getFeatureDefinitions().values();
 
             int alreadyInstalled = 0;
             Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
+
+//TODO
+            if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
+                Path tempDir = Files.createTempDirectory("generatedJson");
+                tempDir.toFile().deleteOnExit();
+                Map<String, String> shortNameMap = new HashMap<String, String>();
+                File individualEsaJson = individualESAInstall(tempDir, shortNameMap);
+                RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
+                repoList.add(repo);
+
+                for (String feature : featureToInstall) {
+                    if (feature.endsWith(".esa")) {
+                        if (shortNameMap.containsKey(feature)) {
+                            String shortName = shortNameMap.get(feature);
+                            featureToInstall.remove(feature);
+                            featureToInstall.add(shortName);
+                        } else {
+                            //TODO
+                            //throw warning???
+
+                        }
+                    }
+                }
+
+            }
+
             Collection<String> featuresAlreadyPresent = new ArrayList<String>();
             for (ProvisioningFeatureDefinition feature : installedFeatures) {
                 if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
@@ -746,55 +765,48 @@ public class InstallKernelMap implements Map {
         return OK;
     }
 
+    private static void getShortNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
+        String esaLocation = esa.getAbsolutePath();
+        ZipFile zip = null;
+        try {
+            zip = new ZipFile(esaLocation);
+            Enumeration<? extends ZipEntry> zipEntries = zip.entries();
+            ZipEntry subsystemEntry = null;
+            while (zipEntries.hasMoreElements()) {
+                ZipEntry nextEntry = zipEntries.nextElement();
+                if ("OSGI-INF/SUBSYSTEM.MF".equalsIgnoreCase(nextEntry.getName())) {
+                    subsystemEntry = nextEntry;
+                    break;
+                }
+            }
+            if (subsystemEntry == null) {
+                ;
+            } else {
+                Manifest m = ManifestProcessor.parseManifest(zip.getInputStream(subsystemEntry));
+                Attributes manifestAttrs = m.getMainAttributes();
+                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
+                shortNameMap.put(esa.getAbsolutePath(), shortNameAttr);
+            }
+        } finally {
+            if (zip != null) {
+                zip.close();
+            }
+        }
+    }
+
     //accept List of Files
-    private File individualESAInstall(Path generatedJson) throws IOException, BuildException, RepositoryException {
+    private File individualESAInstall(Path generatedJson, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException {
 
         String dir = generatedJson.toString();
-        // String dir = generatedJson;
         System.out.println("This is the directory " + dir);
         System.out.println("Individual esas list " + data.get(INDIVIDUAL_ESAS));
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
-
-        //copy esas to temp folder - don't
-        //only generate json in separate folder
-        //generate single json
         File singleJson = new File(dir + "/SingleJson.json");
-        /*
-         * SingleFileRepositoryConnection mySingleFileRepo = null;
-         * try {
-         * mySingleFileRepo = SingleFileRepositoryConnection.createEmptyRepository(singleJson);
-         * } catch (IOException e) {
-         * e.printStackTrace();
-         * }
-         */
 
         for (File esa : esas) {
-            /*
-             * InputStream is = null;
-             * OutputStream os = null;
-             * File dest = new File(dir + "/" + esa.getName());
-             * try {
-             * is = new FileInputStream(esa);
-             * os = new FileOutputStream(dest);
-             * byte[] buffer = new byte[1024];
-             * int length;
-             * while ((length = is.read(buffer)) > 0) {
-             * os.write(buffer, 0, length);
-             * }
-             * } finally {
-             * is.close();
-             * os.close();
-             * }
-             */
-            //generate json file using given code
 
-            // CreateJsonRepositoryFiles jsonCreator = new CreateJsonRepositoryFiles();
-            //jsonCreator.setAssetFile(esa);
-            // jsonCreator.setAssetType("FEATURE");
-            // jsonCreator.setOutputLocation(dir);
-            //jsonCreator.execute();
+            getShortNameFromManifest(esa, shortNameMap);
 
-            //  File esa = new File(name);
             SingleFileRepositoryConnection mySingleFileRepo = null;
             if (singleJson.exists()) {
                 mySingleFileRepo = new SingleFileRepositoryConnection(singleJson);
@@ -806,49 +818,15 @@ public class InstallKernelMap implements Map {
                 }
             }
             System.out.println("Esa name: " + esa.getName());
-            Parser<? extends RepositoryResourceWritable> parser = new EsaParser();
-            File metadataDirectory = new File(esa.getParent() + "/" + esa.getName() + ".metadata.zip");
-            // File metadataDirectory = new File(esa.getParent() + "/com.ibm.websphere.appclient.appClient-1.0.esa.metadata.zip");
-
-            if (!metadataDirectory.exists()) {
-                String metadataDir = dir + "/" + esa.getName() + ".metadata";
-                new File(metadataDir).mkdirs();
-                metadataDirectory = new File(metadataDir);
-                String data = "licenseType=UNSPECIFIED";
-                FileOutputStream out = new FileOutputStream(metadataDir + "/assetInfo.properties");
-                out.write(data.getBytes());
-                out.close();
-                FileServiceUtil.createArchive(metadataDir, esa.getParent() + "/" + esa.getName() + ".metadata.zip");
-                File metadataDirectory2 = new File(esa.getParent() + "/" + esa.getName() + ".metadata.zip");
-                RepositoryResourceWritable resource = parser.parseFileToResource(esa, metadataDirectory2, null);
-
-            }
-
-            RepositoryResourceWritable resource = parser.parseFileToResource(esa, metadataDirectory, null);
+            Parser<? extends RepositoryResourceWritable> parser = new EsaParser(true);
+            RepositoryResourceWritable resource = parser.parseFileToResource(esa, null, null);
             resource.updateGeneratedFields(true);
             resource.setRepositoryConnection(mySingleFileRepo);
             resource.uploadToMassive(new AddThenDeleteStrategy());
 
         }
 
-        //use temp directory as DirectoryRepositoryConnection
-
-        //replace with SingleFileRepositoryConnection for each Json
-
         return singleJson;
-        //  DirectoryRepositoryConnection conn = new DirectoryRepositoryConnection(new File(dir));
-
-        //TODO
-        //remove after testing
-        //   for (RepositoryResource res : conn.getAllResources()) {
-        //      res.dump(System.out);
-        //   }
-
-        //add connection to list of connected repos ( Include the ESA feature names in the list of features to install )
-        //  RepositoryConnectionList repoList = new RepositoryConnectionList();
-        //  repoList.add(conn);
-
-        //  return conn;
 
     }
 

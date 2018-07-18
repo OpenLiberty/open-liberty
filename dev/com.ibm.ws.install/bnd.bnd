@@ -43,9 +43,7 @@ instrument.disabled: true
 	com.ibm.ws.kernel.feature.cmdline;version=latest,\
 	com.ibm.ws.kernel.feature.core;version=latest,\
 	wlp.lib.extract;version=latest,\
-    com.ibm.ws.org.apache.ant;version=latest,\
-    com.ibm.ws.filetransfer.util;version=latest
-	
+    com.ibm.ws.org.apache.ant;version=latest	
 
 -testpath: \
     javax.activation:activation;version=1.1,\
