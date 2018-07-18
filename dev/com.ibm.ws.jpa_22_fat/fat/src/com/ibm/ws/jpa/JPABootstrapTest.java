@@ -35,7 +35,7 @@ import jpabootstrap.web.TestJPABootstrapServlet;
  *
  */
 @RunWith(FATRunner.class)
-public class JPABootstrapTest extends FATServletClient {
+public class JPABootstrapTest extends JPAFATServletClient {
     public static final String APP_NAME = "jpabootstrap";
     public static final String SERVLET = "TestJPABootstrap";
 
@@ -54,6 +54,8 @@ public class JPABootstrapTest extends FATServletClient {
         createApplication("2.0");
         createApplication("2.1");
         createApplication("2.2");
+
+        handleJava2SecurityWorkaround(server1);
 
         server1.startServer();
     }

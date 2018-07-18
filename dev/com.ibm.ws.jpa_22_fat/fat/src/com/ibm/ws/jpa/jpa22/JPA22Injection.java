@@ -18,12 +18,12 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jpa.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 import jpa22injection.web.JPAInjectionTestServlet;
 
 /**
@@ -31,7 +31,7 @@ import jpa22injection.web.JPAInjectionTestServlet;
  *
  */
 @RunWith(FATRunner.class)
-public class JPA22Injection extends FATServletClient {
+public class JPA22Injection extends JPAFATServletClient {
     public static final String APP_NAME = "jpa22injection";
     public static final String SERVLET = "TestJPA22Injection";
 
@@ -49,6 +49,8 @@ public class JPA22Injection extends FATServletClient {
         ShrinkHelper.addDirectory(app, resPath);
         ShrinkHelper.exportAppToServer(server1, app);
         server1.addInstalledAppForValidation(APP_NAME);
+
+        handleJava2SecurityWorkaround(server1);
 
         server1.startServer();
     }

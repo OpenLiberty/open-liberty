@@ -18,16 +18,16 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.jpa.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 import jpa22bval.web.JPABeanValTestServlet;
 
 @RunWith(FATRunner.class)
-public class JPA22BeanValidation extends FATServletClient {
+public class JPA22BeanValidation extends JPAFATServletClient {
     public static final String APP_NAME = "bval";
     public static final String SERVLET = "TestJPA22BeanValidation";
 
@@ -45,6 +45,8 @@ public class JPA22BeanValidation extends FATServletClient {
         ShrinkHelper.addDirectory(app, resPath);
         ShrinkHelper.exportAppToServer(server1, app);
         server1.addInstalledAppForValidation(APP_NAME);
+
+        handleJava2SecurityWorkaround(server1);
 
         server1.startServer();
     }

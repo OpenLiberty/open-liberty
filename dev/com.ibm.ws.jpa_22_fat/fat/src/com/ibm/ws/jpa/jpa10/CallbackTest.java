@@ -24,13 +24,13 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.jpa.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 import jpa10callback.web.CallbackOrderOfInvocationTestServlet;
 import jpa10callback.web.CallbackRuntimeExceptionTestServlet;
 import jpa10callback.web.CallbackTestServlet;
@@ -38,7 +38,7 @@ import jpa10callback.web.DefaultListenerCallbackRuntimeExceptionTestServlet;
 import jpa10callback.web.DefaultListenerCallbackTestServlet;
 
 @RunWith(FATRunner.class)
-public class CallbackTest extends FATServletClient {
+public class CallbackTest extends JPAFATServletClient {
     public static final String APP_NAME = "callback";
     public static final String SERVLET = "TestCallback";
     public static final String SERVLET2 = "DefaultTestCallback";
@@ -84,6 +84,8 @@ public class CallbackTest extends FATServletClient {
         sc.getApplications().add(appRecord);
         server1.updateServerConfiguration(sc);
         server1.saveServerConfiguration();
+
+        handleJava2SecurityWorkaround(server1);
 
         server1.startServer();
     }
