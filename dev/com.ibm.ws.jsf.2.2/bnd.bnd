@@ -137,7 +137,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 instrument.ffdc: false
 instrument.classesExcludes: \
     com/ibm/ws/jsf/resources/*.class, \
-    **/org/**
+    org/**/*.class
 
 -buildpath: \
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\

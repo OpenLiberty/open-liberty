@@ -11,13 +11,12 @@
 package com.ibm.ws.config.xml.internal;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileFilter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
@@ -170,26 +169,30 @@ class ServerXMLConfiguration {
         }
 
         if (configDropinDefaults != null) {
-            Iterator<String> defaults = configDropinDefaults.getChildren();
-            while (defaults.hasNext()) {
-                String name = defaults.next();
-                WsResource resource = configDropinDefaults.getChild(name);
-                long modified = resource.getLastModified();
-                if (modified > lastModified) {
-                    lastModified = modified;
+            File[] defaultFiles = getChildXMLFiles(configDropinDefaults);
+            if (defaultFiles != null) {
+                for (File f : defaultFiles) {
+                    String name = f.getName();
+                    WsResource resource = configDropinDefaults.resolveRelative(name);
+                    long modified = resource.getLastModified();
+                    if (modified > lastModified) {
+                        lastModified = modified;
+                    }
                 }
             }
 
         }
 
         if (configDropinOverrides != null) {
-            Iterator<String> defaults = configDropinOverrides.getChildren();
-            while (defaults.hasNext()) {
-                String name = defaults.next();
-                WsResource resource = configDropinOverrides.getChild(name);
-                long modified = resource.getLastModified();
-                if (modified > lastModified) {
-                    lastModified = modified;
+            File[] overrideFiles = getChildXMLFiles(configDropinOverrides);
+            if (overrideFiles != null) {
+                for (File f : overrideFiles) {
+                    String name = f.getName();
+                    WsResource resource = configDropinOverrides.resolveRelative(name);
+                    long modified = resource.getLastModified();
+                    if (modified > lastModified) {
+                        lastModified = modified;
+                    }
                 }
             }
 
@@ -317,31 +320,42 @@ class ServerXMLConfiguration {
         return configuration;
     }
 
+    private File[] getChildXMLFiles(WsResource directory) {
+        File defaultsDir = directory.asFile();
+        if (defaultsDir == null || !defaultsDir.exists())
+            return null;
+
+        File[] defaultFiles = defaultsDir.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File file) {
+                if (file != null && file.isFile()) {
+                    String name = file.getName().toLowerCase();
+                    return name.endsWith(".xml");
+                }
+                return false;
+            }
+        });
+        return defaultFiles;
+    }
+
     /**
      * Parse all of the config files in a directory in platform insensitive alphabetical order
      */
     private void parseDirectoryFiles(WsResource directory, ServerConfiguration configuration) throws ConfigParserException, ConfigValidationException {
         if (directory != null) {
-            File defaultsDir = directory.asFile();
-            if (defaultsDir == null || !defaultsDir.exists())
+            File[] defaultFiles = getChildXMLFiles(directory);
+            if (defaultFiles == null)
                 return;
 
-            File[] defaultFiles = defaultsDir.listFiles(new FilenameFilter() {
-
-                @Override
-                public boolean accept(File dir, String name) {
-                    if (name != null) {
-                        name = name.toLowerCase();
-                        return name.endsWith(".xml");
-                    }
-                    return false;
-                }
-            });
             Arrays.sort(defaultFiles, new AlphaComparator());
 
             for (int i = 0; i < defaultFiles.length; i++) {
                 File file = defaultFiles[i];
-                WsResource defaultFile = directory.getChild(file.getName());
+                if (!file.isFile())
+                    continue;
+
+                WsResource defaultFile = directory.resolveRelative(file.getName());
                 if (defaultFile == null) {
                     // This should never happen, but it's conceivable that someone could remove a file
                     // after listFiles and before getChild

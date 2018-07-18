@@ -33,6 +33,7 @@ import com.ibm.ws.cdi12.fat.tests.AlterableContextTest;
 import com.ibm.ws.cdi12.fat.tests.CDICurrentTest;
 import com.ibm.ws.cdi12.fat.tests.ConversationFilterTest;
 import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointTest;
+import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointAsParamTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -44,6 +45,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
              CDICurrentTest.class,
              ConversationFilterTest.class,
              InjectInjectionPointTest.class,
+             InjectInjectionPointAsParamTest.class,
 })
 public class FATSuite {
     

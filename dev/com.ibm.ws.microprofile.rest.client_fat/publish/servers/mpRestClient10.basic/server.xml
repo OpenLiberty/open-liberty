@@ -2,9 +2,17 @@
   <featureManager>
     <feature>componenttest-1.0</feature>
     <feature>mpRestClient-1.0</feature>
+    <feature>ssl-1.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml"/>
+
+  <keyStore id="defaultKeyStore" password="passw0rd" />
+
+  <!--  the self-signed cert from the server should only be available in the client keystore -->
+  <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
+  <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
+  <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
 
   <!--  Required to read the remote server's port system property -->
   <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />

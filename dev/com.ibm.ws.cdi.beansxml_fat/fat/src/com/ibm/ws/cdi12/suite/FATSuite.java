@@ -25,12 +25,6 @@ import com.ibm.ws.cdi12.fat.tests.EmptyCDITest;
 import com.ibm.ws.cdi12.fat.tests.EnablingBeansXmlValidationTest;
 import com.ibm.ws.cdi12.fat.tests.MultipleBeansXmlTest;
 import com.ibm.ws.cdi12.fat.tests.WebBeansBeansXmlInWeldTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveNoAnnotationsTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchivesDisabledTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitEJBTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarLibJarsTest;
-import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -50,12 +44,6 @@ import componenttest.rules.repeater.RepeatTests;
                 EnablingBeansXmlValidationTest.class,
                 MultipleBeansXmlTest.class,
                 WebBeansBeansXmlInWeldTest.class,
-                ImplicitBeanArchiveNoAnnotationsTest.class,
-                ImplicitBeanArchivesDisabledTest.class,
-                ImplicitEJBTest.class,
-                ImplicitBeanArchiveTest.class,
-                ImplicitWarLibJarsTest.class,
-                ImplicitWarTest.class,
 })
 public class FATSuite {
 

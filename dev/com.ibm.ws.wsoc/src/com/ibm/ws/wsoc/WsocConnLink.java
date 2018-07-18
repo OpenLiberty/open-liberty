@@ -896,7 +896,7 @@ public class WsocConnLink {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "outgoingCloseConnection :closeframe: sending close frame. readLinkStatus: " + readLinkStatus);
                     }
-                    linkWrite.writeBuffer(getBufferManager().wrap(closeData), OpcodeType.CONNECTION_CLOSE, WRITE_TYPE.SYNC, null, 0);
+                    linkWrite.writeBuffer(getBufferManager().wrap(closeData), OpcodeType.CONNECTION_CLOSE, WRITE_TYPE.SYNC, null, WAIT_ON_WRITE_TO_CLOSE);
                     signalNotWriting();
                 } catch (IOException x) {
                     //just log the message in FFDC and trace. Nothing else can be done at this point since onClose() is already called

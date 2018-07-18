@@ -102,8 +102,9 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         assertEquals(0, output.getReturnCode());
         assertEquals("", output.getStderr());
 
-        // Parse standard output. Example:
+        // Parse standard output. Examples:
         // Server sessionCacheServer dump complete in /Users/user/lgit/open-liberty/dev/build.image/wlp/usr/servers/sessionCacheServer/sessionCacheServer.dump-18.04.11_14.30.55.zip.
+        // Server sessionCacheServer dump complete in C:\\jazz-build-engines\\wasrtc-proxy.hursley.ibm.com\\EBC.PROD.WASRTC\\build\\dev\\image\\output\\wlp\\usr\\servers\\sessionCacheServer\\sessionCacheServer.dump-18.06.10_00.16.59.zip.
 
         String out = output.getStdout();
         int end = out.lastIndexOf('.');
@@ -117,7 +118,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         // dump_18.04.11_14.30.55/introspections/SessionCacheIntrospector.txt
 
         end = dumpFileName.indexOf(".zip");
-        begin = dumpFileName.lastIndexOf("/sessionCacheServer.dump-", end) + 25;
+        begin = dumpFileName.lastIndexOf("sessionCacheServer.dump-", end) + 24;
 
         String introspectorFileName = "dump_" + dumpFileName.substring(begin, end) + "/introspections/SessionCacheIntrospector.txt";
 

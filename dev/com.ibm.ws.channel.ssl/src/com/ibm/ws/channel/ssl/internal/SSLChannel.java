@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2009 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -806,7 +806,8 @@ public class SSLChannel implements InboundChannel, OutboundChannel, Discriminato
                 vcSSLContext = getSSLContextForInboundLink(null, vc);
                 // This is the first call to discriminate. Build a new SSL engine for this connection.
                 sslEngine = SSLUtils.getSSLEngine(vcSSLContext, FlowType.INBOUND,
-                                                  (SSLLinkConfig) vc.getStateMap().get(SSLConnectionLink.LINKCONFIG));
+                                                  (SSLLinkConfig) vc.getStateMap().get(SSLConnectionLink.LINKCONFIG),
+                                                  (SSLConnectionLink) getConnectionLink(vc));
                 // Line up all the buffers needed for a call to unwrap.
                 decryptedNetBuffer = SSLUtils.allocateByteBuffer(sslEngine.getSession().getApplicationBufferSize(),
                                                                  getConfig().getDecryptBuffersDirect());

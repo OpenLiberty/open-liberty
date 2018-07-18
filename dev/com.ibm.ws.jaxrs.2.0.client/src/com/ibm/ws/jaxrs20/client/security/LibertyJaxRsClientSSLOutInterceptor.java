@@ -54,9 +54,10 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
 
         //SSL check
         //see if HTTPS is used
-        boolean isSecured = false;
         String address = (String) message.get(Message.ENDPOINT_ADDRESS);
-        isSecured = address == null ? false : address.startsWith(HTTPS_SCHEMA);
+        if (!address.startsWith(HTTPS_SCHEMA)) {
+            return; // only process HTTPS requests
+        } ;
 
         //see if SSL Ref id is used
         Object sslRefObj = message.get(JAXRSClientConstants.SSL_REFKEY);
@@ -70,7 +71,7 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         // getSocketFactory will return null if either the ssl feature is not enabled
         // or if it is enabled but there is no SSL configuration defined.  A null here
         // means to use the JDK's SSL implementation.
-        if (isSecured && getSocketFactory(sslRef) != null) {
+        if (getSocketFactory(sslRef) != null) {
             Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
             Conduit cd = message.getExchange().getConduit(message);
             configClientSSL(cd, sslRef, PropertyUtils.isTrue(disableCNCheckObj));

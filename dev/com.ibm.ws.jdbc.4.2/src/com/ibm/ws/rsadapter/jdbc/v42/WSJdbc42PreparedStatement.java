@@ -52,7 +52,7 @@ public class WSJdbc42PreparedStatement extends WSJdbc41PreparedStatement impleme
         if (mcf.jdbcDriverSpecVersion >= 42 && mcf.supportsGetLargeUpdateCount) {
             try {
                 return stmtImpl.getLargeUpdateCount();
-            } catch (SQLFeatureNotSupportedException notSupp) {
+            } catch (SQLFeatureNotSupportedException | UnsupportedOperationException notSupp) {
                 mcf.supportsGetLargeUpdateCount = false;
             }
         }

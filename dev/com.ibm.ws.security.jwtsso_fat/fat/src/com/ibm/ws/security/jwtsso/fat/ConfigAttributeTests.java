@@ -530,4 +530,34 @@ public class ConfigAttributeTests extends CommonJwtFat {
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
+    /**
+     * Tests:
+     * - An SSL port is not opened by the server configuration
+     * - Access the protected resource over HTTP
+     * Expects:
+     * - Issuer in the JWT SSO token should use the HTTP scheme, not HTTPS
+     */
+    @Test
+    public void test_sslPortNotDefined() throws Exception {
+        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noSslPort.xml");
+
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
+
+        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        validationUtils.validateResult(response, currentAction, expectations);
+
+        currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
+
+        // Ensure that the issuer value does NOT use the HTTPS scheme
+        String issuerRegex = "http://[^/]+/jwt/defaultJwtSso";
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser, issuerRegex));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+
 }

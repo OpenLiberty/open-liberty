@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NavigableMap;
 import java.util.Properties;
 import java.util.Set;
 
@@ -70,7 +69,6 @@ import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;

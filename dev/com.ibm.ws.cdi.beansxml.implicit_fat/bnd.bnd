@@ -1,0 +1,74 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# Define the bundle for this FAT
+
+src: \
+	fat/src,\
+        test-applications/archiveWithBeansXML.jar/src,\
+        test-applications/archiveWithNoBeansXML.war/src,\
+        test-applications/archiveWithAnnotatedModeBeansXML.jar/src,\
+        test-applications/archiveWithImplicitBeans.jar/src,\
+        test-applications/archiveWithNoImplicitBeans.jar/src,\
+        test-applications/archiveWithNoScanBeansXML.jar/src,\
+        test-applications/ejbJarInWarNoAnnotations.jar/src,\
+        test-applications/ejbJarInWarNoAnnotations.war/src,\
+        test-applications/ejbArchiveWithNoAnnotations.jar/src,\
+        test-applications/ejbArchiveWithNoAnnotations.war/src,\
+        test-applications/explicitBeanArchive.jar/src,\
+        test-applications/implicitBeanAnnotatedMode.jar/src,\
+        test-applications/implicitBeanArchiveDisabled.jar/src,\
+        test-applications/implicitBeanArchiveDisabled.war/src,\
+        test-applications/implicitBeanArchive.war/src,\
+        test-applications/implicitBeanDiscovery.war/src,\
+        test-applications/implicitBeanExplicitArchive.jar/src,\
+        test-applications/implicitBeanNoBeansXml.jar/src,\
+        test-applications/implicitEJBInWar.war/src,\
+        test-applications/implicitWarApp.war/src,\
+        test-applications/utilLib.jar/src
+	
+javac.source: 1.7
+javac.target: 1.7
+
+tested.features:\
+	cdi-2.0,\
+        servlet-4.0,\
+        jdbc-4.2,\
+        jpa-2.2,\
+        beanValidation-2.0,\
+        jaxrs-2.1,\
+        jsf-2.3
+	
+test.project: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
+	com.ibm.websphere.javaee.connector.1.7;version=latest,\
+	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest

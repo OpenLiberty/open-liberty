@@ -38,7 +38,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.injection.ApplicationInjectionProxy;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
 import com.ibm.ws.jaxrs20.injection.metadata.InjectionRuntimeContext;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.kernel.service.util.SecureAction;
 
 /**

@@ -43,6 +43,7 @@ import com.ibm.ejs.container.EJSHome;
 import com.ibm.ejs.container.EJSRemoteWrapper;
 import com.ibm.ejs.container.EJSWrapperBase;
 import com.ibm.ejs.container.HomeRecord;
+import com.ibm.ejs.container.MessageEndpointCollaborator;
 import com.ibm.ejs.container.PersistentTimer;
 import com.ibm.ejs.container.PersistentTimerTaskHandler;
 import com.ibm.ejs.container.TimerNpImpl;
@@ -450,6 +451,16 @@ public interface EJBRuntime
      */
     // F88119
     Class<?> getMessageEndpointImplClass(BeanMetaData bmd) throws ClassNotFoundException;
+
+    /**
+     * Retrieves the MessageEndpointCollaborator instance.
+     *
+     * @param bmd The bean metadata that is used to determine if the MDB uses the
+     *            older style MessageListener or newer JCA MessageEndpoint.
+     *
+     * @return The MessageEndpointCollaborator instance.
+     */
+    public MessageEndpointCollaborator getMessageEndpointCollaborator(BeanMetaData bmd);
 
     /**
      * Determines the message destination JNDI name based on information from

@@ -43,7 +43,13 @@ public class SSLMutualAuthTests20 extends SSLCommonTests {
 
     @After
     public void stopTestServer() throws Exception {
-        super.stopServer(true);
+        String methodName = testName.getMethodName();
+
+        if ("testClientAuthNeedWithoutClientSideKeyStoreFor20".equals(methodName)) {
+            super.stopServer(true, "CWWKO0801E");
+        } else {
+            super.stopServer(true);
+        }
     }
 
     /* Passes when application property server.ssl.client-auth=NEED and if client side keystore and truststore are provided for authentication. */

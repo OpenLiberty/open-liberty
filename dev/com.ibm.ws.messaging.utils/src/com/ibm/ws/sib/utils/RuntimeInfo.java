@@ -14,7 +14,6 @@ package com.ibm.ws.sib.utils;
 import java.security.AccessController;
 
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.sib.utils.ras.SibTr;
 

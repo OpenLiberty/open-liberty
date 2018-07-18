@@ -44,7 +44,6 @@ import javax.sql.XADataSource;
 import javax.transaction.xa.XAResource;
 
 import com.ibm.ejs.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.PrivHelper;
 
 /**
  * This class provides generic JDBC method level tracing for JDBC drivers (like the

@@ -66,9 +66,9 @@
 			<scope>provided</scope>
 		</dependency>
         <dependency>
-            <groupId>com.ibm.ws.org.jboss.arquillian.container</groupId>
-            <artifactId>arquillian-wlp-managed-8.5</artifactId>
-            <version>1.0.0.Final-SNAPSHOT</version>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed</artifactId>
+            <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>

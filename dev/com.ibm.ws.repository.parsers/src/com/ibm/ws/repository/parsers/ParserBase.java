@@ -125,6 +125,8 @@ public abstract class ParserBase {
     final private static Set<String> languages = new HashSet<String>(Arrays.asList(Locale.getISOLanguages()));
     final private static Set<String> countries = new HashSet<String>(Arrays.asList(Locale.getISOCountries()));
 
+    protected boolean overrideLicenseToNonSpecified = false;
+
     /**
      * The constructor used for any Parser ... a RepositoryConnection is not needed
      */
@@ -570,7 +572,7 @@ public abstract class ParserBase {
         // order to work around a restriction in the self-unzipping installer.
         // Once we have fixed the self-unzip installer (work item 163695), we
         // need to revert the code to its state before this temporary fix.
-        if (resource.getLicenseType() == LicenseType.UNSPECIFIED) {
+        if (resource.getLicenseType() == LicenseType.UNSPECIFIED || overrideLicenseToNonSpecified) {
             if (LAHeader == null) {
                 throw new RepositoryException("New licenseTerms require LA. "
                                               + archive.getCanonicalPath());

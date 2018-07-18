@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -200,6 +200,11 @@ public class JDBCDrivers {
                                  "org.postgresql.ds.PGConnectionPoolDataSource", 
                                  "org.postgresql.xa.PGXADataSource" };
         classNamesByKey.put("POSTGRESQL", classes);
+        
+        // H2 Database JDBC driver
+        className = "org.h2.jdbcx.JdbcDataSource";
+        classes = new String[] { className, className, className };
+        classNamesByKey.put("H2-", classes);
     }
 
     /**

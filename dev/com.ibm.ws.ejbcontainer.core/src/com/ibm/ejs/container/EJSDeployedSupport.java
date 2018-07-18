@@ -324,6 +324,11 @@ public class EJSDeployedSupport implements EJBRequestData, InvocationToken {
     boolean isPersistentTimeoutGlobalTx;
 
     /**
+     * Messsage endpoint context. Set during MessageEndpointCollaborator processing.
+     */
+    Map<String, Object> messageEndpointContext;
+
+    /**
      * Create a new instance.
      *
      * <p>NOTE: This constructor must exist to support ejbdeploy wrappers.
@@ -770,4 +775,22 @@ public class EJSDeployedSupport implements EJBRequestData, InvocationToken {
         return uowCtrlPreInvoked;
     }
 
+    /**
+     * Returns the messsage endpoint context set during MessageEndpointCollaborator processing.
+     * 
+     * @return The message endpoint context map.
+     */
+    public Map<String, Object> getMessageEndpointContext() {
+        return messageEndpointContext;
+    }
+    
+    /**
+     * Sets the messsage endpoint context. Set during MessageEndpointCollaborator processing.
+     * 
+     * @return The message endpoint context map.
+     */
+    public void setMessageEndpointContext(Map<String, Object> meContext) {
+         messageEndpointContext = meContext;
+    }
+    
 } // EJSDeployedSupport

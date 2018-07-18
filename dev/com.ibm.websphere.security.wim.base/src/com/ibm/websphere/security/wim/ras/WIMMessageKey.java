@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1619,4 +1619,9 @@ public interface WIMMessageKey {
      * The custom X.509 certificate mapper implementation returned an invalid mapping value.
      */
     String LDAP_REGISTRY_INVALID_MAPPING = "LDAP_REGISTRY_INVALID_MAPPING";
+
+    /**
+     * CWIMK0011E: The user registry operation could not be completed. A valid user registry or repository was not found.
+     */
+    String MISSING_REGISTRY_DEFINITION = "MISSING_REGISTRY_DEFINITION";
 }

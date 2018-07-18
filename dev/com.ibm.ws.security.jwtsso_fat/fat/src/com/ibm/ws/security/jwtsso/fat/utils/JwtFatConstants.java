@@ -24,7 +24,7 @@ public class JwtFatConstants extends Constants {
     public static final String TOKEN_TYPE_BEARER = "Bearer";
 
     public static final String DEFAULT_ISS_CONTEXT = "/jwt/defaultJwtSso";
-    public static final String DEFAULT_ISS_REGEX = "https?://" + "[^/]+" + JwtFatConstants.DEFAULT_ISS_CONTEXT;
+    public static final String DEFAULT_ISS_REGEX = "https://" + "[^/]+" + JwtFatConstants.DEFAULT_ISS_CONTEXT;
 
     public static final String FORMLOGIN_CONTEXT_ROOT = "/formlogin";
     public static final String JWT_BUILDER_CONTEXT_ROOT = "/jwtbuilder";

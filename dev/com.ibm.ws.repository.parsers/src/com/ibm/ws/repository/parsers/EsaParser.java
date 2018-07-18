@@ -84,6 +84,14 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
     private static final VersionRange JAVA_7_RANGE = new VersionRange("[1.2,1.7]");
     private static final VersionRange JAVA_6_RANGE = new VersionRange("[1.2,1.6]");
 
+    public EsaParser() {
+
+    }
+
+    public EsaParser(boolean overrideLicenseToNonSpecified) {
+        this.overrideLicenseToNonSpecified = overrideLicenseToNonSpecified;
+    }
+
     /** {@inheritDoc} */
     @Override
     public EsaResourceWritable parseFileToResource(File assetFile, File metadataFile, String contentUrl) throws RepositoryException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,10 @@ import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 import javax.net.ssl.SSLException;
 
 import com.ibm.websphere.channelfw.FlowType;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.channel.ssl.internal.SSLAlpnNegotiator.ThirdPartyAlpnNegotiator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -94,7 +96,10 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
     private TCPConnectRequestContext targetAddress = null;
     /** ALPN protocol negotiated for this link */
     private String alpnProtocol;
-
+    /** Keep track of HTTP/2 support on this link */
+    private boolean http2Enabled = false;
+    /** The third party ALPN negotiator used for this link */
+    private ThirdPartyAlpnNegotiator alpnNegotiator = null;
 
     private final Lock cleanupLock = new ReentrantLock();
 
@@ -125,6 +130,19 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         initInterfaces(new SSLConnectionContextImpl(this, !isInbound),
                        new SSLReadServiceContext(this),
                        new SSLWriteServiceContext(this));
+
+        // Check to see if http/2 is enabled for this connection and save the result
+        if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
+            if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                if (getChannel().getUseH2ProtocolAttribute() != null && getChannel().getUseH2ProtocolAttribute()) {
+                    http2Enabled = true;
+                }
+            } else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+                if (getChannel().getUseH2ProtocolAttribute() == null || getChannel().getUseH2ProtocolAttribute()) {
+                    http2Enabled = true;
+                }
+            }
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "init");
@@ -287,7 +305,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
                         // Discrimination has not happened yet. Create new SSL engine.
                         sslEngine = SSLUtils.getSSLEngine(sslContext,
                                                           sslChannel.getConfig().getFlowType(),
-                                                          getLinkConfig());
+                                                          getLinkConfig(),
+                                                          this);
                     }
                 } else {
                     // Outbound connect is ready. Ensure we have an sslContext and sslEngine.
@@ -298,7 +317,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
                         sslEngine = SSLUtils.getOutboundSSLEngine(
                                                                   sslContext, getLinkConfig(),
                                                                   targetAddress.getRemoteAddress().getHostName(),
-                                                                  targetAddress.getRemoteAddress().getPort());
+                                                                  targetAddress.getRemoteAddress().getPort(),
+                                                                  this);
                     }
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -674,6 +694,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         encryptedAppBuffer.release();
 
         if (hsStatus == HandshakeStatus.FINISHED) {
+            AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
+
             // PK16095 - take certain actions when the handshake completes
             getChannel().onHandshakeFinish(getSSLEngine());
 
@@ -834,6 +856,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             }
             exception = new IOException("Unexpected results of handshake after connect, " + hsStatus);
         }
+        AlpnSupportUtils.getAlpnResult(getSSLEngine(), this);
 
         // PK16095 - take certain actions when the handshake completes
         getChannel().onHandshakeFinish(getSSLEngine());
@@ -904,7 +927,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         sslEngine = SSLUtils.getOutboundSSLEngine(
                                                   sslContext, getLinkConfig(),
                                                   targetAddress.getRemoteAddress().getHostName(),
-                                                  targetAddress.getRemoteAddress().getPort());
+                                                  targetAddress.getRemoteAddress().getPort(),
+                                                  this);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New SSL engine=" + getSSLEngine().hashCode() + " for vc=" + getVCHash());
         }
@@ -960,7 +984,8 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // PK46069 - use engine that allows session id re-use
             this.sslEngine = SSLUtils.getOutboundSSLEngine(sslContext, getLinkConfig(),
                                                            targetAddress.getRemoteAddress().getHostName(),
-                                                           targetAddress.getRemoteAddress().getPort());
+                                                           targetAddress.getRemoteAddress().getPort(),
+                                                           this);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "SSL engine hc=" + getSSLEngine().hashCode() + " associated with vc=" + getVCHash());
@@ -1222,7 +1247,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
     protected int getVCHash() {
         return this.vcHashCode;
     }
-    
+
     /**
      * Set the ALPN protocol negotiated for this link
      *
@@ -1235,7 +1260,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         this.alpnProtocol = protocol;
         this.sslConnectionContext.setAlpnProtocol(protocol);
     }
-    
+
     /**
      * The ALPN protocol negotiated for this link
      *
@@ -1243,5 +1268,28 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      */
     public String getAlpnProtocol() {
         return this.alpnProtocol;
+    }
+
+    /**
+     * @return true if http/2 and ALPN are enabled
+     */
+    protected boolean isAlpnEnabled() {
+        return this.http2Enabled;
+    }
+
+    /**
+     * Set the negotiator object that will be used during protocol negotiation. Only needed for grizzly-npn and jetty-alpn
+     *
+     * @param ThirdPartyAlpnNegotiator to use for this connection
+     */
+    protected void setAlpnNegotiator(ThirdPartyAlpnNegotiator negotiator) {
+        this.alpnNegotiator = negotiator;
+    }
+
+    /**
+     * @return ThirdPartyAlpnNegotiator used for this connection
+     */
+    protected ThirdPartyAlpnNegotiator getAlpnNegotiator() {
+        return this.alpnNegotiator;
     }
 }

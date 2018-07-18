@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.boot.cmdline;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -40,6 +41,9 @@ public class PackageDelegateClassLoaderTest {
 
     @Test
     public void testLoadClass() throws Exception {
+        // Only run this test for JDK 8 or lower.  As of JDK 9 the JAX-WS API was moved out of the JDK
+        assumeTrue(System.getProperty("java.specification.version").startsWith("1."));
+
         assertTrue("The classpath for tested javax.xml.ws.WebFault does not exists.", packageFile.exists());
         assertTrue("The classpath for tested javax.xml.ws.WebFault is not a directory.", packageFile.isDirectory());
 
