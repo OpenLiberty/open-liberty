@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi;
 
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static com.ibm.ws.microprofile.faulttolerance.cdi.config.FTGlobalConfig.ALL_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
@@ -105,8 +106,8 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                         bulkhead.validate();
                     }
                 } else {
-                    if (tc.isWarningEnabled()) {
-                        Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
+                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
                     }
                 }
             }
@@ -183,9 +184,9 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                         bulkhead.validate();
                     }
                 } else {
-                    if (tc.isWarningEnabled()) {
-                        Tr.warning(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(),
-                                   clazz.getCanonicalName() + "." + method.getJavaMember().getName());
+                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(),
+                                 clazz.getCanonicalName() + "." + method.getJavaMember().getName());
                     }
                 }
             }
