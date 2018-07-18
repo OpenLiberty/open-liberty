@@ -14,12 +14,23 @@
                    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
- <!-- Application scoped config properties -->
- <Designate factoryPid="com.ibm.ws.appconfig.appProperties">
-  <Object ocdref="com.ibm.ws.appconfig.appProperties" />
- </Designate>
- <OCD id="com.ibm.ws.appconfig.appProperties" ibm:childAlias="appProperties" ibm:any="1" ibm:parentPid="com.ibm.ws.app.manager" ibm:supportHiddenExtensions="true" name="%appProperties" description="%appProperties.desc" ibm:action="generateSchema">
- <!-- all properties are custom -->
+<!-- Application scoped config properties -->
+<Designate factoryPid="com.ibm.ws.appconfig.appProperties">
+ <Object ocdref="com.ibm.ws.appconfig.appProperties" />
+</Designate>
+
+<OCD id="com.ibm.ws.appconfig.appProperties" ibm:childAlias="appProperties"  ibm:parentPid="com.ibm.ws.app.manager" ibm:supportHiddenExtensions="true" name="%appProperties" description="%appProperties.desc" >
+    <AD id="property" name="%property" ibm:type="pid" ibm:reference="com.ibm.ws.appconfig.appProperties.property" required="false" type="String" cardinality="2147483647" default="" description="%property.desc"/>
+    <AD id="id" type="String" default="appProperties" ibm:final="true" name="internal" description="internal use only"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.appconfig.appProperties.property">
+ <Object ocdref="com.ibm.ws.appconfig.appProperties.property"/>
+</Designate>
+ 
+ <OCD id="com.ibm.ws.appconfig.appProperties.property" name="%property"  ibm:supportHiddenExtensions="true" description="%property.desc" >
+   <AD id="name" required="false" type="String" default="" name="%name" description="%name.desc"/>
+   <AD id="value" required="false" type="String" default="" name="%value" description="%value.desc"/>
  </OCD>
 
 </metatype:MetaData>

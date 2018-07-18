@@ -33,6 +33,7 @@ public class Config13DefaultSources extends DefaultSources {
         sources.add(new SystemConfigSource());
         sources.add(new EnvConfig13Source());
         sources.add(new AppPropertyConfigSource());
+        sources.add(new ServerXMLVariableConfigSource());
 
         sources.addAll(getPropertiesFileConfigSources(classloader));
 
