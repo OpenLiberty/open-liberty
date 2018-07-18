@@ -38,6 +38,7 @@ public class AuditConstants {
     static public final String AUDIT_DATA = "auditData";
     static public final String OUTCOME = "outcome";
     static public final String EVENT_SEQUENCE_NUMBER = "eventSequenceNumber";
+    static public final String LOGGING_SEQUENCE_NUMBER = "loggingSequenceNumber";
 
     static public final String CONFIG_SNAPSHOT = "CONFIG_SNAPSHOT";
     static public final String SECURITY_AUDIT_MGMT = "SECURITY_AUDIT_MGMT";

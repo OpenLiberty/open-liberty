@@ -34,6 +34,7 @@ public class AuditEvent {
     public final static String EVENTNAME = "eventName";
     public final static String EVENTTYPE = "eventType";
     public final static String EVENTTIME = "eventTime";
+    public final static String LOGGING_EVENTTIME = "loggingEventTime";
     public final static String WASEVENTTYPE = "wasEventType";
     public final static String HASHTAG = "hashTag";
 
@@ -231,7 +232,7 @@ public class AuditEvent {
      * @return current time in yyyy-MM-dd HH:mm:ss.SSS format
      */
     public String getCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
         String strDate = sdf.format(new Date());
         return strDate;
     }
