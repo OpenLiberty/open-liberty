@@ -647,6 +647,10 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
      */
     public String[] getDestinationRoles(Map<String, ?> destinationPermissions, String dest, String user) {
         SibTr.debug(tc,  " dest: " + dest + " user: " + user);
+        if (user.startsWith("cn=")) {
+            user = user.substring(3, user.indexOf(","));
+            SibTr.debug(tc, CLASS_NAME + " user truncated to: " + user);
+        }
         ArrayList<String> roleList = new ArrayList();
         int element = 0;
         Set<String> destinations = destinationPermissions.keySet();
