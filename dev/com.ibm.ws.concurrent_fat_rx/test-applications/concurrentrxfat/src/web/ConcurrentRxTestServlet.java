@@ -86,7 +86,7 @@ public class ConcurrentRxTestServlet extends FATServlet {
     private ManagedScheduledExecutorService noContextExecutor;
 
     @Resource(name = "java:app/oneContextExecutorRef", lookup = "concurrent/oneContextExecutor")
-    private ManagedExecutorService oneContextExecutor;
+    private ManagedExecutorService oneContextExecutor; // the single enabled context is jeeMetadataContext
 
     // Executor that runs everything on the invoker's thread instead of submitting tasks to run asynchronously.
     private Executor sameThreadExecutor = runnable -> {
@@ -1186,6 +1186,52 @@ public class ConcurrentRxTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that a CompletableFuture can be completed prematurely after a timeout.
+     */
+    @Test
+    public void testCompleteOnTimeout() throws Exception {
+        // completeOnTimeout not allowed on Java SE 8, but is otherwise a no-op on an already-completed future
+        ManagedCompletableFuture<Integer> cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(95);
+        CompletableFuture<Integer> cf1;
+        try {
+            cf1 = cf0.completeOnTimeout(195, 295, TimeUnit.SECONDS);
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+        assertSame(cf0, cf1);
+        assertEquals(Integer.valueOf(95), cf1.join());
+
+        // time out a blocked completable future
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(96, beginLatch, continueLatch);
+            ManagedCompletableFuture<Integer> cf2 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.supplyAsync(supplier);
+
+            CompletableFuture<Integer> cf3 = cf2.completeOnTimeout(396, 96, TimeUnit.MINUTES);
+            CompletableFuture<Integer> cf4 = cf2.completeOnTimeout(496, 96, TimeUnit.MICROSECONDS);
+
+            assertSame(cf2, cf3);
+            assertSame(cf2, cf4);
+
+            assertEquals(Integer.valueOf(496), cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertTrue(cf2.isDone());
+            assertFalse(cf2.isCompletedExceptionally());
+            assertFalse(cf2.isCancelled());
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            continueLatch.countDown(); // unblock
+        }
+    }
+
+    /**
      * Complete a future while the operation is still running. Verify that the value specified to the complete method is used, not the result of the operation.
      */
     @Test
@@ -1262,6 +1308,90 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertEquals(Long.valueOf(100), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(cf0.isDone());
         assertFalse(cf0.isCompletedExceptionally());
+    }
+
+    /**
+     * Verify that tasks submitted to a delayed executor (100ms) do run, and that they run with the context of the submitter.
+     * Verify that tasks submitted to a delayed executor (1 hour) do not run during the duration of this test.
+     */
+    @Test
+    public void testDelayedExecutor() throws Exception {
+        Executor delay1hour;
+        try {
+            delay1hour = ManagedCompletableFuture.delayedExecutor(1, TimeUnit.HOURS);
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else // method unavailable for Java SE 8
+                return;
+        }
+        CountDownLatch latch1 = new CountDownLatch(1);
+        delay1hour.execute(() -> latch1.countDown());
+
+        Executor delay100ms = ManagedCompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS);
+        CountDownLatch latch3 = new CountDownLatch(3);
+        delay100ms.execute(() -> latch3.countDown());
+        delay100ms.execute(() -> {
+            System.out.println("testDelayedExecutor expects to successfully look up from java:comp");
+            try {
+                InitialContext.doLookup("java:comp/env/executorRef"); // requires context of the web module
+                latch3.countDown();
+            } catch (NamingException x) {
+                fail("Unable to look up java:comp on task submitted to delayed executor: " + x);
+            }
+        });
+        // Request from unmanaged thread in order to lack the context of the web module,
+        testThreads.submit(() -> delay100ms.execute(() -> {
+            try {
+                System.out.println("testDelayedExecutor expects to fail look up from java:comp");
+                Object result = InitialContext.doLookup("java:comp/env/executorRef");
+                fail("Should not be able to look up " + result + " without web module's context");
+            } catch (NamingException x) { // expected when lacking web module's context
+                latch3.countDown();
+            }
+        }));
+        assertTrue(latch3.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // First delayed task (1 hour) didn't run yet
+        assertEquals(1, latch1.getCount());
+
+        // There is no way to cancel the task that is delayed for submit in 1 hour.
+        // Expect the server to shut down with this task still queued up to the scheduled executor.
+    }
+
+    /**
+     * Verify the delayed executor runs tasks on the supplied executor, and that thread context capture
+     * settings of the supplied executor are used when invoking ManagedCompletableFuture *async methods.
+     */
+    @Test
+    public void testDelayedExecutorViaSuppliedExecutor() throws Exception {
+        Executor delay97ms;
+        try {
+            delay97ms = ManagedCompletableFuture.delayedExecutor(97, TimeUnit.MILLISECONDS, oneContextExecutor);
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else // method unavailable for Java SE 8
+                return;
+        }
+
+        Executor delay397msNoContext = ManagedCompletableFuture.delayedExecutor(397, TimeUnit.MILLISECONDS, noContextExecutor);
+
+        CompletableFuture<Integer> cf0 = ManagedCompletableFuture
+                        .supplyAsync(() -> 97, delay397msNoContext)
+                        .thenApplyAsync(i -> {
+                            try {
+                                InitialContext.doLookup("java:comp/env/executorRef"); // require web component's namespace
+                            } catch (NamingException x) {
+                                throw new RuntimeException(x);
+                            }
+                            return i + 1;
+                        }, delay97ms);
+
+        assertEquals(Integer.valueOf(98), cf0.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(cf0.isDone());
+        assertFalse(cf0.isCompletedExceptionally());
+        assertFalse(cf0.isCancelled());
     }
 
     /**
@@ -2163,6 +2293,60 @@ public class ConcurrentRxTestServlet extends FATServlet {
         } finally {
             // in case the test fails, unblock the thread that is running the supplier
             continueLatch.countDown();
+        }
+    }
+
+    /**
+     * Verify that a CompletableFuture can be completed prematurely with a TimeoutException after a timeout.
+     */
+    @Test
+    public void testOrTimeout() throws Exception {
+        // orTimeout not allowed on Java SE 8, but is otherwise a no-op on an already-completed future
+        ManagedCompletableFuture<Integer> cf0 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.completedFuture(92);
+        CompletableFuture<Integer> cf1;
+        try {
+            cf1 = cf0.orTimeout(192, TimeUnit.MINUTES);
+        } catch (UnsupportedOperationException x) {
+            if (AT_LEAST_JAVA_9)
+                throw x;
+            else
+                return; // expected for Java SE 8
+        }
+        assertSame(cf0, cf1);
+        assertEquals(Integer.valueOf(92), cf1.join());
+
+        // time out a blocked completable future
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+        try {
+            BlockableSupplier<Integer> supplier = new BlockableSupplier<Integer>(93, beginLatch, continueLatch);
+            ManagedCompletableFuture<Integer> cf2 = (ManagedCompletableFuture<Integer>) ManagedCompletableFuture.supplyAsync(supplier);
+
+            CompletableFuture<Integer> cf3 = cf2.orTimeout(93, TimeUnit.MINUTES);
+            CompletableFuture<Integer> cf4 = cf2.orTimeout(94, TimeUnit.MICROSECONDS);
+
+            assertSame(cf2, cf3);
+            assertSame(cf2, cf4);
+
+            try {
+                Integer result = cf2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                fail("Value unexpected for blocked action: " + result);
+            } catch (ExecutionException x) {
+                if (x.getCause() instanceof TimeoutException)
+                    ; // pass
+                else
+                    throw x;
+            }
+
+            assertTrue(cf2.isDone());
+            assertTrue(cf2.isCompletedExceptionally());
+            assertFalse(cf2.isCancelled());
+
+            // Expect supplier thread to be interrupted due to premature completion
+            for (long start = System.nanoTime(); supplier.executionThread != null && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(200));
+            assertNull(supplier.executionThread);
+        } finally {
+            continueLatch.countDown(); // unblock
         }
     }
 
