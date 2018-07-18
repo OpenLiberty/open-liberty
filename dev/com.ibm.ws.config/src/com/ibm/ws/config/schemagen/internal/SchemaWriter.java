@@ -452,7 +452,7 @@ class SchemaWriter {
                 String extension = currOcd.getExtends();
                 // Check that we've got extensions and ensure we're a Factory Pid. If so, add the definition to the list, and get the parent type
                 // to check on the next loop.
-                if (extension != null && (currOcdType.getHasFactoryReference() || currOcdType.getHasIBMFinalWithDefault())) {
+                if (extension != null && currOcdType.getHasFactoryReference()) {
                     ocdDefs.add(0, currOcd);
                     TypeBuilder.OCDTypeReference ocdSuperType = builder.getPidType(extension);
                     if (ocdSuperType != null) {
@@ -804,7 +804,7 @@ class SchemaWriter {
 
     private void buildRefElement(TypeBuilder.OCDType ocdType, List<TypeMember> xmlElements, ExtendedAttributeDefinition attributeDef, boolean requiredForThisAttribute,
                                  String baseId, OCDType ocdReference, boolean topLevel) {
-        if (generateNested(attributeDef) && !!!ocdReference.isInternal() && (topLevel || (ocdReference.getExtendsAlias() != null))
+        if (generateNested(attributeDef) && !!!ocdReference.isInternal() && ocdType.getHasIBMFinalWithDefault() && (topLevel || (ocdReference.getExtendsAlias() != null))
             && !(topLevel && !shouldAddAttribute(attributeDef))) {
             TypeMember refElement = new TypeMember(attributeDef);
             if (topLevel) {
@@ -993,7 +993,11 @@ class SchemaWriter {
                 }
 
                 for (TypeBuilder.OCDType child : children) {
-                    writeNestedElement(child, singleton);
+                    if (child.getHasIBMFinalWithDefault() == true) {
+                    } else {
+                        writeNestedElement(child, singleton);
+                    }
+
                 }
             }
 
