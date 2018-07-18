@@ -31,7 +31,6 @@ import componenttest.app.FATServlet;
 @WebServlet("/XAServlet")
 public class XAServlet extends FATServlet {
 
-    @Test
     public void testSetTransactionTimeoutReturnsTrue(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
@@ -43,7 +42,6 @@ public class XAServlet extends FATServlet {
         tm.commit();
     }
 
-    @Test
     public void testSetTransactionTimeoutReturnsFalse(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
@@ -55,7 +53,6 @@ public class XAServlet extends FATServlet {
         tm.commit();
     }
 
-    @Test
     public void testSetTransactionTimeoutThrowsException(HttpServletRequest request, HttpServletResponse response) throws Exception {
         final TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 

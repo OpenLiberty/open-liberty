@@ -10,14 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static org.junit.Assert.fail;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.web.XAServlet;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -61,6 +67,37 @@ public class XATest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+    }
+
+    @Test
+    @SkipForRepeat(componenttest.annotation.SkipForRepeat.EE8_FEATURES)
+    public void testSetTransactionTimeoutReturnsTrue() throws Exception {
+        server.setMarkToEndOfLog();
+        runTest(server, SERVLET_NAME, testName.getMethodName());
+        if (null == server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): TRUE")) {
+            fail("setTransactionTimeout() does not seem to have been called");
+        }
+    }
+
+    @Test
+    @SkipForRepeat(componenttest.annotation.SkipForRepeat.EE8_FEATURES)
+    public void testSetTransactionTimeoutReturnsFalse() throws Exception {
+        server.setMarkToEndOfLog();
+        runTest(server, SERVLET_NAME, testName.getMethodName());
+        if (null == server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): FALSE")) {
+            fail("setTransactionTimeout() does not seem to have been called");
+        }
+    }
+
+    @Test
+    @SkipForRepeat(componenttest.annotation.SkipForRepeat.EE8_FEATURES)
+    @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
+    public void testSetTransactionTimeoutThrowsException() throws Exception {
+        server.setMarkToEndOfLog();
+        runTest(server, SERVLET_NAME, testName.getMethodName());
+        if (null == server.waitForStringInLogUsingMark(XAResourceImpl.class.getCanonicalName() + ".setTransactionTimeout\\([0-9]*\\): javax.transaction.xa.XAException")) {
+            fail("setTransactionTimeout() does not seem to have been called");
+        }
     }
 
 }
