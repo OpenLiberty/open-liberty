@@ -752,34 +752,13 @@ public abstract class ClassSourceImpl implements ClassSource {
     public static final boolean JANDEX_ENABLE_FULL_DEFAULT_VALUE = false;
     public static final String JANDEX_ENABLE_FULL_PROPERTY_NAME = "com.ibm.ws.jandex.enable.full";
 
-    private static final boolean HAS_JANDEX_ENABLE_OVERRIDE =
-       AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_PROPERTY_NAME);
-    private static final boolean JANDEX_ENABLE_OVERRIDE =
-       AnnotationServiceImpl_Logging.getProperty(
-           AnnotationServiceImpl_Logging.ANNO_LOGGER,
-           CLASS_NAME, "<static init>",
-           JANDEX_ENABLE_PROPERTY_NAME, JANDEX_ENABLE_DEFAULT_VALUE);
 
-    private static final boolean HAS_JANDEX_ENABLE_FULL_OVERRIDE =
-       AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_FULL_PROPERTY_NAME);
+    private static final boolean HAS_JANDEX_ENABLE_FULL_OVERRIDE = false;
 
-    private static final boolean JANDEX_ENABLE_FULL_OVERRIDE =
-       AnnotationServiceImpl_Logging.getProperty(
-           AnnotationServiceImpl_Logging.ANNO_LOGGER,
-           CLASS_NAME, "<static init>",
-           JANDEX_ENABLE_FULL_PROPERTY_NAME, JANDEX_ENABLE_FULL_DEFAULT_VALUE);   
+    private static final boolean JANDEX_ENABLE_FULL_OVERRIDE = false;
 
     
 
-    @Trivial
-    public static boolean getHasJandexEnableOverride() {
-       return HAS_JANDEX_ENABLE_OVERRIDE;
-    }
-
-    @Trivial
-    public static boolean getJandexEnableOverride() {
-       return JANDEX_ENABLE_OVERRIDE;
-    }
     
     @Trivial
     public static boolean getHasJandexEnableFullOverride() {
@@ -792,7 +771,29 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     protected boolean getUseFullIndex() { 
-        return getHasJandexEnableFullOverride() && getJandexEnableFullOverride();
+        try{
+            if(AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_FULL_PROPERTY_NAME)) {
+                return Boolean.valueOf(AnnotationServiceImpl_Logging.getProperty(JANDEX_ENABLE_FULL_PROPERTY_NAME));
+            }
+            else{
+                if ( tc.isDebugEnabled() ) {
+                    String msg = MessageFormat.format(
+                        "AnnotationServiceImpl_Logging Does not have property [ {0} ]",
+                        JANDEX_ENABLE_FULL_PROPERTY_NAME);
+                    Tr.debug(tc, msg);
+                }
+                return false;
+            }
+        } catch(Exception e) {
+            if ( tc.isDebugEnabled() ) {
+                String msg = MessageFormat.format(
+                    "Unexpected Error Retrieving property [ {0} ]",
+                    JANDEX_ENABLE_FULL_PROPERTY_NAME);
+                Tr.debug(tc, msg);
+            }
+            return false;
+        }
+        //return getHasJandexEnableFullOverride() && getJandexEnableFullOverride();
     }
 
     /**
