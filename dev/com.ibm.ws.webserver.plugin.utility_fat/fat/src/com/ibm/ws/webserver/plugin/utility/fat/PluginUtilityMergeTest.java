@@ -328,7 +328,7 @@ public class PluginUtilityMergeTest {
 
         assertEquals("pluginUtility task should complete with return code as 0.", 0, po.getReturnCode());
         assertTrue("An error message should have been printed if only one file was in the directory and the merge action was invoked." ,
-                po.getStdout().contains("Provide at least two plug-in configuration files to do the merge."));
+                po.getStdout().contains("Provide at least one plug-in configuration file to do the merge."));
         
         Log.exiting(c,methodName);
     }
