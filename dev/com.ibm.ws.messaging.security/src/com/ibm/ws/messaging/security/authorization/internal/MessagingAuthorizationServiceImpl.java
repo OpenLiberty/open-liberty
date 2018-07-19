@@ -165,6 +165,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
         return result;
     }
 
+
     private boolean checkPermission(Permission permission, String operationType, String userName) {
         SibTr.entry(tc, CLASS_NAME + "checkPermission", new Object[] { permission, operationType, userName });
         if (permission != null) {
@@ -223,7 +224,7 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
         
         Map<String, TemporaryDestinationPermission> mq = messagingSecurityService.getTemporaryDestinationPermissions();
         roles = messagingSecurityService.getDestinationRoles(mq, destinationName, user);
-        SibTr.debug(tc, "checkQueueAccess, roles: " + Arrays.toString(roles));
+        SibTr.debug(tc, "checkTemporaryDestinationAccess, roles: " + Arrays.toString(roles));
 
         boolean result = false;
         try {
@@ -330,8 +331,8 @@ public class MessagingAuthorizationServiceImpl implements MessagingAuthorization
         
         Map<String, TopicPermission> mq = messagingSecurityService.getTopicPermissions();
         roles = messagingSecurityService.getDestinationRoles(mq, destinationName, user);
-        SibTr.debug(tc, "checkQueueAccess, roles: " + Arrays.toString(roles));
-
+        SibTr.debug(tc, "checkTopicAccess, roles: " + Arrays.toString(roles));
+        
         try {
             userName = MessagingSecurityUtility.getUniqueUserName(authenticatedSubject);
         } catch (MessagingSecurityException e) {
