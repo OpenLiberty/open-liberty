@@ -51,8 +51,6 @@
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-tck</artifactId>
             <version>${microprofile.rest.client.version}</version>
-            <!-- <scope>system</scope>
-            <systemPath>${basedir}/../../servers/FATServer/microprofile-rest-client-tck-1.1-SNAPSHOT.jar</systemPath> -->
         </dependency>
 
         <dependency>
@@ -66,20 +64,44 @@
         <dependency>
             <groupId>com.ibm.ws.org.apache.cxf</groupId>
             <artifactId>cxf.rt.rs.mp.client</artifactId>
-            <version>3.2.6.20180717</version>
+            <version>3.2.6.20180718</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath>
         </dependency>
 
         <dependency>
-            <groupId>com.ibm.ws</groupId>
-            <artifactId>jaxrs20.common</artifactId>
-            <version>1.0</version>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.rt.rs.client</artifactId>
+            <version>3.2.6.20180718</version>
             <scope>system</scope>
-            <systemPath>${com.ibm.ws.jaxrs.2.0.common_}</systemPath>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2_}</systemPath>
         </dependency>
 
-        <!-- <dependency>
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.rt.frontend.jaxrs</artifactId>
+            <version>3.2.6.20180718</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.rt.transports.http</artifactId>
+            <version>3.2.4</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.apache.cxf</groupId>
+            <artifactId>cxf.core</artifactId>
+            <version>3.2.4</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.cxf.cxf.core.3.2_}</systemPath>
+        </dependency>
+<!-- 
+        <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>jaxrs20.client</artifactId>
             <version>1.0</version>
@@ -104,6 +126,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.2</version>
+            <!-- <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.jsonp.1.1_}</systemPath> -->
+        </dependency>
+
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
             <version>1.2</version>
@@ -114,29 +144,36 @@
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0</version>
+            <version>2.1</version>
             <!--  <scope>provided</scope> -->
             <scope>system</scope>
-            <systemPath>${com.ibm.websphere.javaee.jaxrs.2.0_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.jaxrs.2.0_1.0.19.jar</systemPath> -->
+            <systemPath>${com.ibm.websphere.javaee.jaxrs.2.1_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <version>1.2</version>
+            <version>2.0</version>
             <!-- <scope>provided</scope> -->
             <scope>system</scope>
-            <systemPath>${com.ibm.websphere.javaee.cdi.1.2_}</systemPath>
+            <systemPath>${com.ibm.websphere.javaee.cdi.2.0_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <!-- <scope>provided</scope> -->
             <scope>system</scope>
-            <systemPath>${com.ibm.websphere.javaee.jsonp.1.0_}</systemPath>
+            <systemPath>${com.ibm.websphere.javaee.jsonp.1.1_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.json.bind</groupId>
+            <artifactId>javax.json.bind-api</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.javaee.jsonb.1.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -225,6 +262,7 @@
                         <!-- <tck_port>${tck_port}</tck_port>  -->
                         <tck_port>8010</tck_port>
                         <!-- <wiremock.server.port>8765</wiremock.server.port> -->
+                        <com.ibm.ws.jaxrs.testing>true</com.ibm.ws.jaxrs.testing>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>

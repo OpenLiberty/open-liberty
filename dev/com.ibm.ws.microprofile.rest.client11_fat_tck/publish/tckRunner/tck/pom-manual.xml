@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2017 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2018 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
     and is available at 
@@ -15,7 +15,7 @@
     <groupId>com.ibm.ws.microprofile.rest.client</groupId>
     <artifactId>tck.runner.tck</artifactId>
     <version>1.1-SNAPSHOT</version>
-    <name>MicroProfile RestClient TCK Runner TCK Module</name>
+    <name>MicroProfile RestClient 1.1 TCK Runner TCK Module</name>
 
     <properties>
         <microprofile.rest.client.version>1.1</microprofile.rest.client.version>
@@ -58,7 +58,6 @@
             <artifactId>microprofile-rest-client-api</artifactId>
             <version>${microprofile.rest.client.version}</version>
             <scope>system</scope>
-            <!-- <systemPath>${wlp}/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_1.0.21.jar</systemPath> -->
             <!-- <systemPath>${com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0_}</systemPath> -->
             <systemPath>${wlp}/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1_1.0.21.jar</systemPath>
         </dependency>
@@ -66,7 +65,7 @@
         <dependency>
             <groupId>com.ibm.ws.org.apache.cxf</groupId>
             <artifactId>cxf.rt.rs.mp.client</artifactId>
-            <version>3.2.6.20180717</version>
+            <version>3.2.6.20180718</version>
             <scope>system</scope>
             <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath> -->
             <systemPath>${wlp}/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_1.0.21.jar</systemPath>
@@ -75,18 +74,18 @@
         <dependency>
             <groupId>com.ibm.ws.org.apache.cxf</groupId>
             <artifactId>cxf.rt.rs.client</artifactId>
-            <version>3.2.6.20180717</version>
+            <version>3.2.6.20180718</version>
             <scope>system</scope>
-            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath> -->
+            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2_}</systemPath> -->
             <systemPath>${wlp}/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2_1.0.21.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.ibm.ws.org.apache.cxf</groupId>
             <artifactId>cxf.rt.frontend.jaxrs</artifactId>
-            <version>3.2.6.20180717</version>
+            <version>3.2.6.20180718</version>
             <scope>system</scope>
-            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath> -->
+            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2_}</systemPath> -->
             <systemPath>${wlp}/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2_1.0.21.jar</systemPath>
         </dependency>
 
@@ -95,7 +94,7 @@
             <artifactId>cxf.rt.transports.http</artifactId>
             <version>3.2.4</version>
             <scope>system</scope>
-            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath> -->
+            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2_}</systemPath> -->
             <systemPath>${wlp}/lib/com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2_1.0.21.jar</systemPath>
         </dependency>
 
@@ -104,19 +103,18 @@
             <artifactId>cxf.core</artifactId>
             <version>3.2.4</version>
             <scope>system</scope>
-            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath> -->
+            <!-- <systemPath>${com.ibm.ws.org.apache.cxf.cxf.core.3.2_}</systemPath> -->
             <systemPath>${wlp}/lib/com.ibm.ws.org.apache.cxf.cxf.core.3.2_1.0.21.jar</systemPath>
         </dependency>
-
+<!-- 
         <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>jaxrs20.client</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <!-- <systemPath>${com.ibm.ws.jaxrs.2.0.client_}</systemPath> -->
             <systemPath>${wlp}/lib/com.ibm.ws.jaxrs.2.0.client_1.0.21.jar</systemPath>
         </dependency>
-
+-->
         <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>jaxrs20.cdi</artifactId>
@@ -140,6 +138,7 @@
             <artifactId>javax.json</artifactId>
             <version>1.1.2</version>
         </dependency>
+
         <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
