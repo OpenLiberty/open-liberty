@@ -75,6 +75,7 @@ import org.apache.cxf.transport.AbstractConduit;
 import org.apache.cxf.transport.Assertor;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.transport.MessageObserver;
+import org.apache.cxf.transport.http.auth.CustomAuthSupplier;
 import org.apache.cxf.transport.http.auth.DefaultBasicAuthSupplier;
 import org.apache.cxf.transport.http.auth.DigestAuthSupplier;
 import org.apache.cxf.transport.http.auth.HttpAuthHeader;
@@ -189,7 +190,7 @@ public abstract class HTTPConduit
     private static final String HTTP_POST_METHOD = "POST";
     private static final String HTTP_GET_METHOD = "GET";
     private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_CONTENT =
-        new HashSet<String>(Arrays.asList(new String[]{"GET", "HEAD", "OPTIONS", "TRACE"}));
+        new HashSet<>(Arrays.asList(new String[]{"GET", "HEAD", "OPTIONS", "TRACE"}));
     /**
      * This constant is the Message(Map) key for a list of visited URLs that
      * is used in redirect loop protection.
@@ -523,11 +524,11 @@ public abstract class HTTPConduit
         int chunkThreshold = 0;
         final AuthorizationPolicy effectiveAuthPolicy = getEffectiveAuthPolicy(message);
         if (this.authSupplier == null) {
-            this.authSupplier = createAuthSupplier(effectiveAuthPolicy.getAuthorizationType());
+            this.authSupplier = createAuthSupplier(effectiveAuthPolicy);
         }
 
         if (this.proxyAuthSupplier == null) {
-            this.proxyAuthSupplier = createAuthSupplier(proxyAuthorizationPolicy.getAuthorizationType());
+            this.proxyAuthSupplier = createAuthSupplier(proxyAuthorizationPolicy);
         }
 
         if (this.authSupplier.requiresRequestCaching()) {
@@ -570,15 +571,14 @@ public abstract class HTTPConduit
 
         setHeadersByAuthorizationPolicy(message, currentAddress.getURI());
         new Headers(message).setFromClientPolicy(getClient(message));
-        // Liberty change start
+
         // set the OutputStream on the ProxyOutputStream
         ProxyOutputStream pos = message.getContent(ProxyOutputStream.class);
         if (pos != null && message.getContent(OutputStream.class) != null) {
-            OutputStream nos = createOutputStream(message,
-                                                  needToCacheRequest,
-                                                  isChunking,
-                                                  chunkThreshold);
-            pos.setWrappedOutputStream(nos);
+            pos.setWrappedOutputStream(createOutputStream(message,
+                                                          needToCacheRequest,
+                                                          isChunking,
+                                                          chunkThreshold));
         } else {
             message.setContent(OutputStream.class,
                                createOutputStream(message,
@@ -586,7 +586,6 @@ public abstract class HTTPConduit
                                                   isChunking,
                                                   chunkThreshold));
         }
-        // Liberty change end
         // We are now "ready" to "send" the message.
     }
 
@@ -595,7 +594,7 @@ public abstract class HTTPConduit
             return true;
         } else if (!HTTP_GET_METHOD.equals(httpMethod)) {
             MessageContentsList objs = MessageContentsList.getContentsList(message);
-            if (objs != null && objs.size() > 0) {
+            if (objs != null && !objs.isEmpty()) {
                 Object obj = objs.get(0);
                 if (obj.getClass() != String.class
                     || (obj.getClass() == String.class && ((String)obj).length() > 0)) {
@@ -611,11 +610,15 @@ public abstract class HTTPConduit
                                                        boolean isChunking,
                                                        int chunkThreshold) throws IOException;
 
-    private HttpAuthSupplier createAuthSupplier(String authType) {
+    private HttpAuthSupplier createAuthSupplier(AuthorizationPolicy authzPolicy) {
+        String authType = authzPolicy.getAuthorizationType();
         if (HttpAuthHeader.AUTH_TYPE_NEGOTIATE.equals(authType)) {
             return new SpnegoAuthSupplier();
         } else if (HttpAuthHeader.AUTH_TYPE_DIGEST.equals(authType)) {
             return new DigestAuthSupplier();
+        } else if (authType != null && !HttpAuthHeader.AUTH_TYPE_BASIC.equals(authType)
+            && authzPolicy.getAuthorization() != null) {
+            return new CustomAuthSupplier();
         } else {
             return new DefaultBasicAuthSupplier();
         }
@@ -735,9 +738,8 @@ public abstract class HTTPConduit
         }
         if (defaultAddress == null) {
             return setAndGetDefaultAddress(result);
-        } else {
-            return result.equals(defaultAddress.getString()) ? defaultAddress : new Address(result);
         }
+        return result.equals(defaultAddress.getString()) ? defaultAddress : new Address(result);
     }
 
     /**
@@ -1046,13 +1048,12 @@ public abstract class HTTPConduit
         for (Map.Entry<String, List<String>> head : headers.entrySet()) {
             if ("Location".equalsIgnoreCase(head.getKey())) {
                 List<String> locs = head.getValue();
-                if (locs != null && locs.size() > 0) {
+                if (locs != null && !locs.isEmpty()) {
                     String location = locs.get(0);
                     if (location != null) {
                         return location;
-                    } else {
-                        return null;
                     }
+                    return null;
                 }
             }
         }
@@ -1118,7 +1119,7 @@ public abstract class HTTPConduit
 
     @Override
     public boolean canAssert(QName type) {
-        return new ClientPolicyCalculator().equals(type);
+        return type.equals(new QName("http://cxf.apache.org/transports/http/configuration", "client"));
     }
 
     @Override
@@ -1352,9 +1353,8 @@ public abstract class HTTPConduit
                         + "Make sure server certificate is correct, or to disable this check "
                         + "(NOT recommended for production) set the CXF client TLS "
                         + "configuration property \"disableCNCheck\" to true.");
-                } else {
-                    throw e;
                 }
+                throw e;
             }
         }
         protected String getMethod() {
@@ -1662,9 +1662,8 @@ public abstract class HTTPConduit
             // soap fault because of a HTTP 400 should be returned back to the client (SOAP 1.2 spec)
 
             if (rc >= 400 && rc != 500
-                && !MessageUtils.isTrue(outMessage.getContextualProperty(NO_IO_EXCEPTIONS))
-                && (rc > 400 || !MessageUtils.isTrue(outMessage
-                    .getContextualProperty(PROCESS_FAULT_ON_HTTP_400)))) {
+                && !MessageUtils.getContextualBoolean(outMessage, NO_IO_EXCEPTIONS)
+                && (rc > 400 || !MessageUtils.getContextualBoolean(outMessage, PROCESS_FAULT_ON_HTTP_400))) {
 
                 throw new HTTPException(rc, getResponseMessage(), url.toURL());
             }
@@ -1878,7 +1877,7 @@ public abstract class HTTPConduit
         if (newURL != null) {
             URI newUri = URI.create(newURL);
 
-            if (MessageUtils.isTrue(message.getContextualProperty(AUTO_REDIRECT_SAME_HOST_ONLY))) {
+            if (MessageUtils.getContextualBoolean(message, AUTO_REDIRECT_SAME_HOST_ONLY)) {
 
                 URI lastUri = URI.create(lastURL);
 
@@ -1912,17 +1911,15 @@ public abstract class HTTPConduit
                                                        Message message) throws IOException {
         if (newURL != null && !newURL.startsWith("http")) {
 
-            if (MessageUtils.isTrue(message.getContextualProperty(AUTO_REDIRECT_ALLOW_REL_URI))) {
+            if (MessageUtils.getContextualBoolean(message, AUTO_REDIRECT_ALLOW_REL_URI)) {
                 return URI.create(lastURL).resolve(newURL).toString();
-            } else {
-                String msg = "Relative Redirect detected on Conduit '"
-                    + conduitName + "' on '" + newURL + "'";
-                LOG.log(Level.INFO, msg);
-                throw new IOException(msg);
             }
-        } else {
-            return newURL;
+            String msg = "Relative Redirect detected on Conduit '"
+                + conduitName + "' on '" + newURL + "'";
+            LOG.log(Level.INFO, msg);
+            throw new IOException(msg);
         }
+        return newURL;
 
     }
 
@@ -1932,7 +1929,7 @@ public abstract class HTTPConduit
                                            Message message) throws IOException {
         Map<String, Integer> visitedURLs = CastUtils.cast((Map<?, ?>)message.get(KEY_VISITED_URLS));
         if (visitedURLs == null) {
-            visitedURLs = new HashMap<String, Integer>();
+            visitedURLs = new HashMap<>();
             message.put(KEY_VISITED_URLS, visitedURLs);
         }
         Integer visitCount = visitedURLs.get(lastURL);
@@ -1978,7 +1975,7 @@ public abstract class HTTPConduit
         @SuppressWarnings("unchecked")
         Set<String> authURLs = (Set<String>) message.get(KEY_AUTH_URLS);
         if (authURLs == null) {
-            authURLs = new HashSet<String>();
+            authURLs = new HashSet<>();
             message.put(KEY_AUTH_URLS, authURLs);
         }
         // If we have been here (URL & Realm) before for this particular message
