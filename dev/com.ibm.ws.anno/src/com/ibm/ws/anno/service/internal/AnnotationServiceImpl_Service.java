@@ -11,6 +11,8 @@
 
 package com.ibm.ws.anno.service.internal;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ import com.ibm.wsspi.anno.service.AnnotationService_Service;
 public class AnnotationServiceImpl_Service implements AnnotationService_Service {
     public static final TraceComponent tc = Tr.register(AnnotationServiceImpl_Service.class);
     public static final String CLASS_NAME = AnnotationServiceImpl_Service.class.getName();
+    private String annotationCacheDirectoryName;
 
     //
 
@@ -51,6 +54,8 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
             Tr.entry(tc, methodName, getHashText());
         }
         bundleContext = componentContext.getBundleContext();
+        
+        annotationCacheDirectoryName = getOsgiWorkAreaPath();
 
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, getHashText());
@@ -174,5 +179,55 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
             Tr.debug(tc, MessageFormat.format(" {0} ] Set info store factory [ {1} ]",
                                               this.hashText, this.infoStoreFactory.getHashText()));
         }
+    }
+    
+    /**
+     * Returns the persistent storage area provided for the bundle by the Framework.
+     *
+     * Uses the getDataFile call to create a file object in the
+     * persistent storage area provided for the bundle by the Framework.
+     *
+     * If the file creation is successful, the canonical path is retrieved from the
+     * File object. Then the file is deleted.
+     *
+     * @return The canonical path to the annoCache file
+     */
+    private String getOsgiWorkAreaPath() {
+        
+        // This seems to only create a File object. It doesn't create a file on disk.
+        File annoCacheTempFile = bundleContext.getDataFile("annoCacheTemp");
+
+        try {
+
+            String filePath = annoCacheTempFile.getCanonicalPath();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, MessageFormat.format(" [ {0} ] OSGI work area - temp file [ {1} ]",
+                                                  this.hashText, filePath));
+            }            
+
+            // Strip off the file name to get the path of the directory
+            int indexOfLastSlash = filePath.lastIndexOf(File.separatorChar);
+            if (indexOfLastSlash == -1) {
+                Tr.debug(tc, MessageFormat.format(" [ {0} ] Should not occur.  Path to file does not contain [ {1} ]",
+                                                     this.hashText, File.separatorChar));
+                return null;
+            }
+            
+            String directoryPath = filePath.substring(0, indexOfLastSlash);
+
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, MessageFormat.format(" [ {0} ] OSGI work area [ {1} ]",
+                                                  this.hashText, directoryPath));
+            }
+            return directoryPath;
+
+        } catch (IOException ioe) {
+            return null;
+        } 
+    }
+    
+    @Override
+    public String getAnnotationCacheDirectoryName() {
+        return annotationCacheDirectoryName;
     }
 }
