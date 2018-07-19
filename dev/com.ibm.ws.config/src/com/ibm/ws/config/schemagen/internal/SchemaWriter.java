@@ -804,7 +804,7 @@ class SchemaWriter {
 
     private void buildRefElement(TypeBuilder.OCDType ocdType, List<TypeMember> xmlElements, ExtendedAttributeDefinition attributeDef, boolean requiredForThisAttribute,
                                  String baseId, OCDType ocdReference, boolean topLevel) {
-        if (generateNested(attributeDef) && !!!ocdReference.isInternal() && ocdType.getHasIBMFinalWithDefault() && (topLevel || (ocdReference.getExtendsAlias() != null))
+        if (generateNested(attributeDef) && !!!ocdReference.isInternal() && (topLevel || (ocdReference.getExtendsAlias() != null))
             && !(topLevel && !shouldAddAttribute(attributeDef))) {
             TypeMember refElement = new TypeMember(attributeDef);
             if (topLevel) {
@@ -819,7 +819,14 @@ class SchemaWriter {
             }
             refElement.setType((Type) null);
             refElement.setCardinality(attributeDef.getCardinality() == 0 ? 1 : attributeDef.getCardinality());
-            String typeName = refElement.getCardinality() == 1 ? ocdReference.getTypeName() : ocdReference.getTypeName() + "-factory";
+            String typeName = null;
+
+            if (ocdReference.getHasIBMFinalWithDefault() == false) {
+                typeName = refElement.getCardinality() == 1 ? ocdReference.getTypeName() : ocdReference.getTypeName() + "-factory";
+            } else {
+                typeName = refElement.getCardinality() == 1 ? ocdReference.getTypeName() : ocdReference.getTypeName();
+            }
+
             refElement.setType(typeName);
             refElement.setRequired(requiredForThisAttribute);
             xmlElements.add(refElement);
