@@ -440,7 +440,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     Tr.debug(this, tc, "create new data source", id, jndiName, type);
 
                 CommonDataSource ds;
-                Class<? extends CommonDataSource> ifc;
+                Class<?> ifc;
 
                 if (type == null){
                     ds = id != null && id.contains("dataSource[DefaultDataSource]") ? jdbcDriverSvc.createDefaultDataSource(vProps)
@@ -585,7 +585,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             jdbcDriverSvc.addObserver(this);
 
             CommonDataSource ds;
-            Class<? extends CommonDataSource> ifc;
+            Class<?> ifc;
 
             if(type == null){
                 ds = id != null && id.contains("dataSource[DefaultDataSource]") ? jdbcDriverSvc.createDefaultDataSource(vProps)

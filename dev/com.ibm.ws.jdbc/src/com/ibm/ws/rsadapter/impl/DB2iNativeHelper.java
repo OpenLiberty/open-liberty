@@ -140,13 +140,13 @@ public class DB2iNativeHelper extends DB2Helper {
             if (c == null) { 
                 if(System.getSecurityManager() == null)
                     com_ibm_db2_jdbc_app_DB2ConnectionHandle_class.set(
-                        c = mc.mcf.dataSourceImplClass.getClassLoader().loadClass("com.ibm.db2.jdbc.app.DB2ConnectionHandle"));
+                        c = mc.mcf.jdbcDriverLoader.loadClass("com.ibm.db2.jdbc.app.DB2ConnectionHandle"));
                 else 
                     com_ibm_db2_jdbc_app_DB2ConnectionHandle_class.set( 
                         c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                             @Override
                             public Class<?> run() throws ClassNotFoundException {
-                                return mc.mcf.dataSourceImplClass.getClassLoader().loadClass("com.ibm.db2.jdbc.app.DB2ConnectionHandle");
+                                return mc.mcf.jdbcDriverLoader.loadClass("com.ibm.db2.jdbc.app.DB2ConnectionHandle");
                             }
                         }));
             }
@@ -162,13 +162,13 @@ public class DB2iNativeHelper extends DB2Helper {
             if (c == null) { 
                 if(System.getSecurityManager() == null)
                     com_ibm_db2_jdbc_app_UDBConnectionHandle_class.set(
-                        c = mc.mcf.dataSourceImplClass.getClassLoader().loadClass("com.ibm.db2.jdbc.app.UDBConnectionHandle"));               
+                        c = mc.mcf.jdbcDriverLoader.loadClass("com.ibm.db2.jdbc.app.UDBConnectionHandle"));               
                 else 
                     com_ibm_db2_jdbc_app_DB2ConnectionHandle_class.set( 
                         c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                             @Override
                             public Class<?> run() throws ClassNotFoundException {
-                                return mc.mcf.dataSourceImplClass.getClassLoader().loadClass("com.ibm.db2.jdbc.app.UDBConnectionHandle");
+                                return mc.mcf.jdbcDriverLoader.loadClass("com.ibm.db2.jdbc.app.UDBConnectionHandle");
                             }
                         }));
             }
