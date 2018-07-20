@@ -63,6 +63,7 @@ public class AuditEvent {
     public final static String TARGET_MESSAGING_OPERATIONTYPE = "target.messaging.operationType";
     public final static String TARGET_MESSAGING_CALLTYPE = "target.messaging.callType";
     public final static String TARGET_MESSAGING_JMS_RESOURCE = "target.messaging.jmsResource";
+    public final static String TARGET_MESSAGING_JMS_ACTIONS = "target.messaging.jmsActions";
     public final static String TARGET_MESSAGING_JMS_ROLES = "target.messaging.jmsRoles";
     public final static String TARGET_MESSAGING_JMS_REQUESTOR_TYPE = "target.messaging.jmsRequestorType";
     public final static String TARGET_MESSAGING_JMS_QUEUE_PERMISSIONS = "target.messaging.queuePermissions";
