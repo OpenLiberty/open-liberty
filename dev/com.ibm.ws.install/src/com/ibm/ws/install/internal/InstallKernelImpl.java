@@ -443,12 +443,26 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
 
     @Override
     public void uninstallFeaturesByProductId(String productId, Collection<File> toBeDeleted) throws InstallException {
-        uninstallFeaturesByProductId(productId, toBeDeleted, false);
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstallFeaturesByProductId(productIds, toBeDeleted);
+    }
+
+    @Override
+    public void uninstallFeaturesByProductId(String[] productIds, Collection<File> toBeDeleted) throws InstallException {
+        uninstallFeaturesByProductId(productIds, toBeDeleted, false);
     }
 
     @Override
     public void uninstallProductFeatures(String productId, Collection<File> toBeDeleted) throws InstallException {
-        uninstallFeaturesByProductId(productId, toBeDeleted, true);
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstallFeaturesByProductId(productIds, toBeDeleted);
+    }
+
+    @Override
+    public void uninstallProductFeatures(String[] productIds, Collection<File> toBeDeleted) throws InstallException {
+        uninstallFeaturesByProductId(productIds, toBeDeleted, true);
     }
 
     public void uninstallFeaturesByProductId(String productId, Collection<File> toBeDeleted,
