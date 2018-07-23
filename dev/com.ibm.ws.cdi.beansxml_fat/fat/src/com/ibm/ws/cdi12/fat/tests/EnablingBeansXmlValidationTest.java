@@ -29,6 +29,7 @@ import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -43,15 +44,16 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive invalidBeansXml = ShrinkWrap.create(WebArchive.class, "invalidBeansXml.war")//
-                        .addClass("com.ibm.ws.cdi12.test.TestServlet")//
-                        .addClass("com.ibm.ws.cdi12.test.TestBean")//
-                        .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")//
+        WebArchive invalidBeansXml = ShrinkWrap.create(WebArchive.class, "invalidBeansXml.war")
+                        .addClass("com.ibm.ws.cdi12.test.TestServlet")
+                        .addClass("com.ibm.ws.cdi12.test.TestBean")
+                        .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
                         .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
         ShrinkHelper.exportDropinAppToServer(server, invalidBeansXml);
     }
 
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEnablingBeansXmlValidation() throws Exception {
         boolean foundNetworkError = false;
@@ -77,6 +79,35 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
             }
         }
 
+    }
+
+    //In CDI 2.0 with weld 3.0.4 or later WELD-001210 is a warning not an error. 
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @ExpectedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
+    public void testEnablingBeansXmlValidationCDITwo() throws Exception {
+        boolean foundNetworkError = false;
+        try {
+            server.startServer(true);
+
+            if (server.waitForStringInLog("WELD-001210") != null) {
+                /*
+                 * WELD-001210 means that the server could not get the schema document from java.sun.com.
+                 * In this case the server defaults to saying the xml is valid.
+                 */
+                 foundNetworkError = true;
+            } else { 
+                if (server.waitForStringInLog("WELD-001210") == null) {
+                    assertNotNull("WELD-001208 Warning message not found", server.waitForStringInLog("WELD-001208"));
+                }
+            }
+        } catch (Exception e) {
+            //I saw a failure with WELD-001208 in the logs, but not CWWKZ0002E, so I'm adding a fallback WELD-001210 check.
+            //If we saw WELD-001210 before or we see it now skip the asserts. 
+            if (foundNetworkError == false && server.waitForStringInLog("WELD-001210") == null) {
+                assertNotNull("WELD-001208 Warning message not found", server.waitForStringInLog("WELD-001208"));
+            }
+        }
     }
 
     @Override
