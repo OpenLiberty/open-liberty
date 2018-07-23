@@ -148,7 +148,7 @@ public class MergedConfigTests extends ServletRunner {
 
     @AfterClass
     public static void shutdown() throws Exception {
-        server.stopServer("CWWKG0101W");
+        server.stopServer("CWWKG0101W", "CWWKG0103W");
         server.deleteFileFromLibertyInstallRoot("lib/features/mergedConfigTest-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("lib/test.merged.config.jar");
         server.deleteFileFromLibertyInstallRoot("lib/features/configfatlibertyinternals-1.0.mf");
