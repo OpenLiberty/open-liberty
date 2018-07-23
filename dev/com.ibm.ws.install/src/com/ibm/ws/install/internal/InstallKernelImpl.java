@@ -457,7 +457,7 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
     public void uninstallProductFeatures(String productId, Collection<File> toBeDeleted) throws InstallException {
         String[] productIds = new String[1];
         productIds[0] = productId;
-        uninstallFeaturesByProductId(productIds, toBeDeleted);
+        uninstallProductFeatures(productIds, toBeDeleted);
     }
 
     @Override
