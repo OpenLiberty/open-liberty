@@ -39,10 +39,9 @@ public class BufferManagerImpl extends BufferManager {
 	protected Queue<Object> earlyMessageQueue;
 
 	private static final int EARLY_MESSAGE_QUEUE_SIZE = 400;
-	private final static boolean defaultIsSoftRefEMQ = true;
 	
 	public BufferManagerImpl(int capacity, String sourceId) {
-		this(capacity,sourceId, defaultIsSoftRefEMQ);
+		this(capacity,sourceId, true);
 	}
 
 	public BufferManagerImpl(int capacity, String sourceId, boolean isSoftRefEMQ) {
@@ -55,12 +54,12 @@ public class BufferManagerImpl extends BufferManager {
 		if (!BufferManagerEMQHelper.getEMQRemovedFlag()) {
 			if (isSoftRefEMQ){
 				earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
-				// Check again just in case
-				if (BufferManagerEMQHelper.getEMQRemovedFlag()) {
-					removeEMQ();
-				}
 			} else {
 				earlyMessageQueue = new SimpleRotatingQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+			}
+			// Check again just in case
+			if (BufferManagerEMQHelper.getEMQRemovedFlag()) {
+				removeEMQ();
 			}
 		}
 	}
