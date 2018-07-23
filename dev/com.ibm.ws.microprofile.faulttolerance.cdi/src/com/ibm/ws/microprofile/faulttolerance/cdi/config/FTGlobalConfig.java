@@ -64,7 +64,7 @@ public class FTGlobalConfig {
     }
 
     /**
-     * Checks if an annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax:
+     * Checks if an fault tolerance annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax:
      *
      * <ul>
      * <li>Disable at the method-level: com.acme.test.MyClient/serviceA/methodA/CircuitBreaker/enabled=false</li>
@@ -77,9 +77,14 @@ public class FTGlobalConfig {
      * @param ann The annotation
      * @param clazz The class containing the annotation.
      * @param method The method annotated with the annotation. If {@code null} only class and global scope properties will be checked.
+     * @throws IllegalArgumentException If passed a non-fault-tolerance annotation
      * @return Is the annotation enabled
      */
     public static boolean isAnnotationEnabled(Annotation ann, Class<?> clazz, Method method) {
+        if (!ALL_ANNOTATIONS.contains(ann.annotationType())) {
+            throw new IllegalArgumentException(ann + " is not a fault tolerance annotation");
+        }
+
         // Find the real class since we probably have a Weld proxy
         clazz = FTUtils.getRealClass(clazz);
         ClassLoader cl = FTUtils.getClassLoader(clazz);
