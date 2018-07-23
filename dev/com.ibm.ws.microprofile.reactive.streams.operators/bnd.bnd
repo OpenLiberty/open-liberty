@@ -50,6 +50,7 @@ testsrc: test/src
         com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
         com.ibm.ws.kernel.service;version=latest, \
         com.ibm.ws.context;version=latest, \
+	com.ibm.ws.org.reactivestreams.interfaces, \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 
 -testpath: \
