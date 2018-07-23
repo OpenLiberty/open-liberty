@@ -90,34 +90,33 @@ public class MetricsMonitorTest {
        
     @Test
     public void testEnableDisableFeatures() throws Exception {
+
+    	String testName = "testEnableDisableFeatures";
     	
-    	Log.info(c, "testEnableDisableFeatures", "------- No monitor-1.0: no vendor metrics should be available ------");
+    	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
     	server.startServer();
-    	server.waitForStringInLog("defaultHttpEndpoint-ssl",5000);
-    	Log.info(c, "testEnableDisableFeatures", "------- server started -----");
+    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",5000));
+    	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor:" });
     	
-    	Log.info(c, "testEnableDisableFeatures", "------- Enable mpMetrics-1.1 and monitor-1.0: threadpool metrics should be available ------");
+    	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: threadpool metrics should be available ------");
     	server.setMarkToEndOfLog();
     	server.setServerConfigurationFile("server_monitor.xml");
-   		if (server.waitForStringInLogUsingMark("CWPMI2000I") == null) {
-   			Assert.fail("No CWPMI2000I was found.");
-   		}
+    	String logMsg = server.waitForStringInLogUsingMark("CWPMI2001I");
+    	Log.info(c, testName, logMsg);
+		Assert.assertNotNull("No CWPMI2001I was found.", logMsg);
+
+       	Log.info(c, testName, "------- threadpool metrics should be available ------");
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size"
        	}, new String[] {});
     	
-       	Log.info(c, "testEnableDisableFeatures", "------- Second run: serlvet metrics should be available ------");
-   		server.setMarkToEndOfLog();
-   		String s = server.waitForStringInLogUsingMark("CWPMI2000I: Monitoring MXBean WebSphere:type=ServletStats", 5000);
-   		if (s == null) {
-   			Log.info(c, "testEnableDisableFeatures", "Warning: No CWPMI2000I was found.");
-   		} else {
-   			Log.info(c, "testEnableDisableFeatures", "Waited: " + s);
-   		}
+       	Log.info(c, testName, "------- serlvet metrics should be available ------");
+       	server.setMarkToEndOfLog(server.getMostRecentTraceFile());
+       	Log.info(c, testName, server.waitForStringInTrace("Monitoring MXBean WebSphere:type=ServletStats", 5000));
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size",
@@ -125,14 +124,12 @@ public class MetricsMonitorTest {
        		"vendor:servlet_com_ibm_ws_microprofile_metrics_1_1_metrics_rest_proxy_servlet_response_time_total_seconds"
        	}, new String[] {});
        	
-       	Log.info(c, "testEnableDisableFeatures", "------- Add session application and run session servlet ------");
+       	Log.info(c, testName, "------- Add session application and run session servlet ------");
        	ShrinkHelper.defaultDropinApp(server, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-       	Log.info(c, "testEnableDisableFeatures", "------- added testSessionApp to dropins -----");
-    	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), new String[] {
-       		"Session id:"
-       	}, new String[] {});
-
-       	Log.info(c, "testEnableDisableFeatures", "------- Third run: session metrics should be available ------");
+       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
+    	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"),
+    		new String[] { "Session id:" }, new String[] {});
+       	Log.info(c, testName, "------- session metrics should be available ------");
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:session_default_host_test_session_app_create_total",
        		"vendor:session_default_host_test_session_app_live_sessions",
@@ -141,14 +138,12 @@ public class MetricsMonitorTest {
        		"vendor:session_default_host_test_session_app_invalidatedby_timeout_total"
        	}, new String[] {});
        	
-       	Log.info(c, "testEnableDisableFeatures", "------- Add JDBC application and run JDBC servlet ------");
+       	Log.info(c, testName, "------- Add JDBC application and run JDBC servlet ------");
        	ShrinkHelper.defaultDropinApp(server, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-       	Log.info(c, "testEnableDisableFeatures", "------- added testJDBCApp to dropins -----");
-      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create"), new String[] {
-       		"sql: create table cities"
-      	}, new String[] {});
-      	
-       	Log.info(c, "testEnableDisableFeatures", "------- Fourth run: connectionpool metrics should be available ------");
+       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
+      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create"), 
+      		new String[] { "sql: create table cities" }, new String[] {});
+       	Log.info(c, testName, "------- connectionpool metrics should be available ------");
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:connectionpool_jdbc_example_ds1_connection_handles",
        		"vendor:connectionpool_jdbc_example_ds1_free_connections",
@@ -162,22 +157,66 @@ public class MetricsMonitorTest {
        		"vendor:connectionpool_jdbc_example_ds2_managed_connections"
        	}, new String[] {});
        	
-       	Log.info(c, "testEnableDisableFeatures", "------- Remove JDBC application ------");
+       	Log.info(c, testName, "------- Monitor filter ThreadPool and WebContainer  ------");
+       	server.setMarkToEndOfLog();
+       	server.setServerConfigurationFile("server_monitorFilter1.xml");
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I",5000));
+       	Log.info(c, testName, "------- Only threadpool and servlet metrics should be available ------");
+       	checkStrings(getHttpsServlet("/metrics/vendor"), 
+       		new String[] { "vendor:threadpool", "vendor:servlet" }, 
+       		new String[] { "vendor:session", "vendor:connectionpool" });
+       	
+       	Log.info(c, testName, "------- Monitor filter WebContainer and Session ------");
+       	server.setMarkToEndOfLog();
+       	server.setServerConfigurationFile("server_monitorFilter2.xml");
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I",5000));
+    	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
+    		new String[] { "Session id:" }, new String[] {});
+       	Log.info(c, testName, "------- Only servlet and session metrics should be available ------");
+       	checkStrings(getHttpsServlet("/metrics/vendor"), 
+       		new String[] { "vendor:servlet", "vendor:session" }, 
+       		new String[] { "vendor:threadpool", "vendor:connectionpool" });
+       	
+       	Log.info(c, testName, "------- Monitor filter Session and ConnectionPool ------");
+       	server.setMarkToEndOfLog();
+       	server.setServerConfigurationFile("server_monitorFilter3.xml");
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I",5000));
+      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1"), 
+          		new String[] { "sql: select" }, new String[] {});
+       	Log.info(c, testName, "------- Only session and connectionpool metrics should be available ------");
+       	checkStrings(getHttpsServlet("/metrics/vendor"), 
+       		new String[] { "vendor:session", "vendor:connectionpool" }, 
+       		new String[] { "vendor:servlet", "vendor:threadpool" });
+       	
+       	Log.info(c, testName, "------- Monitor filter ThreadPool, WebContainer, Session and ConnectionPool ------");
+       	server.setMarkToEndOfLog();
+       	server.setServerConfigurationFile("server_monitorFilter4.xml");
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKG0017I",5000));
+    	checkStrings(getHttpServlet("/testSessionApp/testSessionServlet"), 
+        		new String[] { "Session id:" }, new String[] {});
+      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1"), 
+          		new String[] { "sql: select" }, new String[] {});
+       	Log.info(c, testName, "------- all four vendor metrics should be available ------");
+       	checkStrings(getHttpsServlet("/metrics/vendor"), 
+       		new String[] {"vendor:threadpool", "vendor:servlet", "vendor:session", "vendor:connectionpool" }, 
+       		new String[] {});
+       	
+       	Log.info(c, testName, "------- Remove JDBC application ------");
        	boolean rc1 = server.removeDropinsApplications("testJDBCApp.war");
-       	Log.info(c, "testEnableDisableFeatures", "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JDBC application ------");
+       	Log.info(c, testName, "------- " + (rc1 ? "successfully removed" : "failed to remove") + " JDBC application ------");
        	server.setMarkToEndOfLog();
        	server.setServerConfigurationFile("server_noJDBC.xml");
-       	Log.info(c, "testEnableDisableFeatures", server.waitForStringInLogUsingMark("CWWKF0007I",5000));
-       	Log.info(c, "testEnableDisableFeatures", "------- Fifth run: connectionpool metrics should not be available ------");
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWWKF0007I",5000));
+       	Log.info(c, testName, "------- connectionpool metrics should not be available ------");
       	checkStrings(getHttpsServlet("/metrics/vendor"), 
       		new String[] { "vendor:" }, 
       		new String[] { "vendor:connectionpool", "vendor:servlet_test_jdbc_app" });
       	
-       	Log.info(c, "testEnableDisableFeatures", "------- Remove monitor-1.0 ------");
+       	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	server.setMarkToEndOfLog();
     	server.setServerConfigurationFile("server_mpMetric11.xml");
-       	Log.info(c, "testEnableDisableFeatures", server.waitForStringInLogUsingMark("CWPMI2002I",5000));
-       	Log.info(c, "testEnableDisableFeatures", "------- Sixth run: no vendor metrics should be available ------");
+       	Log.info(c, testName, server.waitForStringInLogUsingMark("CWPMI2002I",5000));
+       	Log.info(c, testName, "------- no vendor metrics should be available ------");
       	checkStrings(getHttpsServlet("/metrics"), 
       		new String[] {}, 
       		new String[] { "vendor:" });
@@ -186,19 +225,21 @@ public class MetricsMonitorTest {
     @Test
     public void testDisableMpMetricsFeature() throws Exception {
     	
-    	Log.info(c, "testDisableMpMetricsFeature", "------- Enable mpMetrics-1.1 and monitor-1.0: vendor metrics should be available ------");
+    	String testName = "testDisableMpMetricsFeature";
+    	
+    	Log.info(c, testName, "------- Enable mpMetrics-1.1 and monitor-1.0: vendor metrics should be available ------");
     	server.setServerConfigurationFile("server_monitor.xml");
     	server.startServer();
-    	server.waitForStringInLog("defaultHttpEndpoint-ssl",5000);
-    	Log.info(c, "testDisableMpMetricsFeature", "------- server started -----");
+    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",5000));
+    	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:", "vendor:" }, 
           	new String[] {});
       	
-      	Log.info(c, "testDisableMpMetricsFeature", "------- Remove mpMetrics-1.1: no metrics should be available ------");
+      	Log.info(c, testName, "------- Remove mpMetrics-1.1: no metrics should be available ------");
       	server.setServerConfigurationFile("server_monitorOnly.xml");
       	String logMsg = server.waitForStringInLogUsingMark("CWPMI2002I",5000);
-      	Log.info(c, "testEnableDisableFeatures", logMsg);
+      	Log.info(c, testName, logMsg);
       	Assert.assertNotNull("No CWPMI2002I message", logMsg);
       	try {
       		getHttpsServlet("/metrics");
@@ -211,11 +252,13 @@ public class MetricsMonitorTest {
     @Test
     public void testMpMetrics10Monitor10Feature() throws Exception {
     	
-    	Log.info(c, "testMpMetrics10Monitor10Feature", "------- Enable mpMetrics-1.0 and monitor-1.0: vendor metrics should not be available ------");
+    	String testName = "testMpMetrics10Monitor10Feature";
+    	
+    	Log.info(c, testName, "------- Enable mpMetrics-1.0 and monitor-1.0: vendor metrics should not be available ------");
     	server.setServerConfigurationFile("server_mpMetric10Monitor10.xml");
     	server.startServer();
-    	server.waitForStringInLog("defaultHttpEndpoint-ssl",5000);
-    	Log.info(c, "testDisableMpMetricsFeature", "------- server started -----");
+    	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",5000));
+    	Log.info(c, testName, "------- server started -----");
       	checkStrings(getHttpsServlet("/metrics"), 
           	new String[] { "base:" }, 
           	new String[] { "vendor: "});

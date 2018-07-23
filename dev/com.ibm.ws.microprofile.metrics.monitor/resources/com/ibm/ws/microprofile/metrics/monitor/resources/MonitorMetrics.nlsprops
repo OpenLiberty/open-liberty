@@ -18,15 +18,10 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Messages used by MonitorMetrics Impl -  range is 2000-3999
 #-----------------------------------------------------------------------------------------------------------------------------
-REGISTERED_STATS=CWPMI2000I: Monitoring MXBean {0} is registered to mpMetrics.
-# e.g. Monitoring MXBean WebSphere:type=ConnectionPoolStats,name=jdbc/exampleDS1 is registered to mpMetrics.
-REGISTERED_STATS.explanation=A monitoring MXBean is available and registered to mpMetrics.
-REGISTERED_STATS.useraction=No user action is required.
-
-UNREGISTERED_STATS=CWPMI2001I: Monitoring MXBean {0} was unregistered from mpMetrics.
-UNREGISTERED_STATS.explanation=A monitoring MXBean was removed and unregistered from mpMetrics.
-UNREGISTERED_STATS.useraction=No user action is required.
+FEATURE_REGISTERED=CWPMI2001I: Monitoring metrics can be retrieved through mpMetrics.
+FEATURE_REGISTERED.explanation=Feature monitor-1.0 and mpMetrics-1.1 are enabled and monitoring metrics can be retrieved through mpMetrics.
+FEATURE_REGISTERED.useraction=No user action is required.
 
 FEATURE_UNREGISTERED=CWPMI2002I: All monitoring metrics were unregistered from mpMetrics.
-FEATURE_UNREGISTERED.explanation=Feature monitor-1.0 or mpMetrics-1.1 was removed from the server and all its metrics were unregistered from mpMetrics.
+FEATURE_UNREGISTERED.explanation=Either monitor-1.0, mpMetrics-1.1 or both features were removed from the server and all monitoring metrics were unregistered from mpMetrics.
 FEATURE_UNREGISTERED.useraction=No user action is required.

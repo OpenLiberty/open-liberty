@@ -50,6 +50,7 @@ public class MonitorMetricsHandler {
 		this.mappingTable = MappingTable.getInstance();
 		register();
         addMBeanListener();
+        Tr.info(tc, "FEATURE_REGISTERED");
     }
 
 	@Reference
@@ -115,7 +116,7 @@ public class MonitorMetricsHandler {
     		if (mm.objectName.equals(objectName)) {
     			removeSet.add(mm);
     			mm.unregisterMetrics(sharedMetricRegistry);
-    			Tr.info(tc, "UNREGISTERED_STATS", objectName);
+    			Tr.debug(tc, "Monitoring MXBean " + objectName + " was unregistered from mpMetrics.");
     		}
     	}
     	metricsSet.removeAll(removeSet);
@@ -149,7 +150,7 @@ public class MonitorMetricsHandler {
 			metrics = new MonitorMetrics(objectName);
 			metrics.createMetrics(sharedMetricRegistry, data);
         	metricsSet.add(metrics);
-        	Tr.info(tc, "REGISTERED_STATS", objectName);
+        	Tr.debug(tc, "Monitoring MXBean " + objectName + " is registered to mpMetrics.");
         } else {
         	Tr.debug(tc, objectName + " is already registered.");
         }
