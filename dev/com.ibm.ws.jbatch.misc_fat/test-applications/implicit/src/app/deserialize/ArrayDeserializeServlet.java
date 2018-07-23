@@ -30,7 +30,7 @@ public class ArrayDeserializeServlet extends FATServlet {
     public static Logger logger = Logger.getLogger("test");
 
     @Test
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException", "java.lang.IllegalStateException" })
     public void testDeserializeArrayCheckpoint() throws Exception {
         logger.fine("Running test = testDeserializeArrayCheckpoint");
@@ -42,7 +42,7 @@ public class ArrayDeserializeServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException", "java.lang.IllegalStateException" })
     public void testDeserializeArrayUserData() throws Exception {
         logger.fine("Running test = testDeserializeArrayUserData");
@@ -55,7 +55,7 @@ public class ArrayDeserializeServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
+    @Mode(TestMode.FULL)
     public void testDeserializeArrayCollectorData() throws Exception {
         logger.fine("Running test = testDeserializeArrayUserData");
 
