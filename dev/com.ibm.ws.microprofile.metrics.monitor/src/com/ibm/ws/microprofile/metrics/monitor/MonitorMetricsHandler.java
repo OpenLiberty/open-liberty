@@ -73,7 +73,7 @@ public class MonitorMetricsHandler {
     	}
     	SharedMetricRegistries.remove(MetricRegistry.Type.VENDOR.getName());
    	
-    	// TODO: clean up if necessary
+    	Tr.info(tc, "FEATURE_UNREGISTERED");
     }
 
     private void addMBeanListener() {

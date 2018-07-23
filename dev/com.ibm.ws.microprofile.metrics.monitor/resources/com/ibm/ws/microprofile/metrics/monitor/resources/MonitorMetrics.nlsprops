@@ -26,3 +26,7 @@ REGISTERED_STATS.useraction=No user action is required.
 UNREGISTERED_STATS=CWPMI2001I: Monitoring MXBean {0} was unregistered from mpMetrics.
 UNREGISTERED_STATS.explanation=A monitoring MXBean was removed and unregistered from mpMetrics.
 UNREGISTERED_STATS.useraction=No user action is required.
+
+FEATURE_UNREGISTERED=CWPMI2002I: All monitoring metrics were unregistered from mpMetrics.
+FEATURE_UNREGISTERED.explanation=Feature monitor-1.0 or mpMetrics-1.1 was removed from the server and all its metrics were unregistered from mpMetrics.
+FEATURE_UNREGISTERED.useraction=No user action is required.
