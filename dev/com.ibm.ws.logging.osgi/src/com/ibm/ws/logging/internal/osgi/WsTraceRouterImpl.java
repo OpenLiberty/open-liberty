@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import com.ibm.ws.logging.utils.RecursionCounter;
 
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
@@ -40,7 +41,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
      * when or if a wsTraceHandler will be registered).
      */
     private Queue<RoutedMessage> earlierTraces;
-    private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
+    private static final ReentrantReadWriteLock REWRLOCK = new ReentrantReadWriteLock(true);
 
     /**
      * CTOR, protected.
@@ -53,12 +54,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
      */
     @Override
     public void setEarlierTraces(Queue<RoutedMessage> earlierTraces) {
-    	RERWLOCK.writeLock().lock();
-        try {
-        	this.earlierTraces = earlierTraces;
-        } finally {
-        	RERWLOCK.writeLock().unlock();
-        }
+        this.earlierTraces = earlierTraces;
     }
 
     /**
@@ -66,7 +62,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
      */
     public void setWsTraceHandler(String id, WsTraceHandler ref) {
         if (id != null && ref != null) {
-            RERWLOCK.writeLock().lock();
+            REWRLOCK.writeLock().lock();
             try {
                 wsTraceHandlerServices.put(id, ref);
 
@@ -87,7 +83,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
                     }
                 }
             } finally {
-                RERWLOCK.writeLock().unlock();
+                REWRLOCK.writeLock().unlock();
             }
         }
     }
@@ -111,7 +107,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
     @Override
     public boolean route(RoutedMessage routedTrace) {
         boolean logNormally = true;
-        RERWLOCK.readLock().lock();
+        REWRLOCK.readLock().lock();
         try {
                 // Cache message for WsTraceHandlers that haven't registered yet.
                 if (earlierTraces != null) {
@@ -121,7 +117,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
                 logNormally = routeToAll(routedTrace, routeAllMsgsToTheseLogHandlers);
 
         } finally {
-            RERWLOCK.readLock().unlock();
+            REWRLOCK.readLock().unlock();
         }
         return logNormally;
 
@@ -155,5 +151,5 @@ public class WsTraceRouterImpl implements WsTraceRouter {
             wsTraceHandler.publish(routedTrace);
         }
     }
-    
+
 }

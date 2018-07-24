@@ -63,12 +63,7 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
      */
     @Override
     public void setEarlierMessages(Queue<RoutedMessage> earlierMessages) {
-        RERWLOCK.writeLock().lock();
-        try {
-        	this.earlierMessages = earlierMessages;
-        } finally {
-        	RERWLOCK.writeLock().unlock();
-        }
+        this.earlierMessages = earlierMessages;
     }
 
     /**
