@@ -13,6 +13,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.org.reactivestreams-1.0.2
 -bundles=\
   com.ibm.ws.require.java8, \
-  com.ibm.ws.microprofile.reactive.streams.operators
-kind=ga
-edition=core
+  com.ibm.ws.microprofile.reactive.streams.operators, \
+  com.ibm.websphere.org.reactivestreams.1.0.2
+kind=noship
+edition=full
