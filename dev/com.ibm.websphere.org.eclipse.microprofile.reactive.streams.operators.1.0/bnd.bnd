@@ -35,7 +35,7 @@ Include-Resource: \
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-WS-TraceGroup: FAULTTOLERANCE
+WS-TraceGroup: REACTIVESTREAMS
 
 -buildpath: \
 	com.ibm.ws.org.reactivestreams.interfaces

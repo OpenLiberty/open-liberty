@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-test {
-    systemProperty "a-system-property", "true"
-}
+package com.ibm.ws.microprofile.reactive.streams.test.util;
 
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
+import java.util.concurrent.Executor;
+
+/**
+ *
+ */
+public class TestExecutor implements Executor {
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute(Runnable command) {
+        // TODO Auto-generated method stub
+
     }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
 
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
 }

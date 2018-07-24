@@ -14,27 +14,25 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Name: com.ibm.ws.microprofile.reactive.streams.operators
-Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.streams.operators
+Bundle-Name: com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep
+Bundle-SymbolicName: com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep
 
-Bundle-Description:MicroProfile Reactive Streams 1.0 impl, version ${bVersion}
+Bundle-Description:A Zero Dependancy Implementation of MicroProfile Reactive Streams, version ${bVersion}
 
 WS-TraceGroup: REACTIVESTREAMS
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.reactive.streams.spi.ReactiveStreamsEngineImpl
+-dsannotations: 
 
 Import-Package: \
   org.eclipse.microprofile.reactive.streams.spi; version="[1.0,1.1)",\
   org.eclipse.microprofile.reactive.streams; version="[1.0,1.1)",\
-  com.lightbend.microprofile.reactive.streams.zerodep; version="[1.0,1.1)",\
   *
 
 Export-Package: \
- com.ibm.ws.microprofile.reactive.streams.spi; version=1.0
+  com.lightbend.microprofile.reactive.streams.zerodep; version=1.0
 
 Private-Package: \
-  com.ibm.ws.microprofile.reactive.streams.impl
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
@@ -51,9 +49,8 @@ testsrc: test/src
   com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
   com.ibm.ws.kernel.service;version=latest, \
   com.ibm.ws.context;version=latest, \
-  com.ibm.ws.org.reactivestreams.interfaces;version=latest, \
+  com.ibm.ws.org.reactivestreams.interfaces, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest
 
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
