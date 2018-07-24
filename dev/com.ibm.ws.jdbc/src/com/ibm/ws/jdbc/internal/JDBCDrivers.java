@@ -10,15 +10,32 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.internal;
 
+import java.sql.Driver;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.rsadapter.AdapterUtil;
 
 /**
  * Contains information about known JDBC drivers.
  */
 public class JDBCDrivers {
+    private static final TraceComponent tc = Tr.register(JDBCDrivers.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
+
+    /**
+     * Constants for the positions of each type of data source within the classNames arrays.
+     */
+    static final int DATA_SOURCE = 0, CONNECTION_POOL_DATA_SOURCE = 1, XA_DATA_SOURCE = 2, NUM_TYPES = 3;
+
     /**
      * Ordered map of upper-case key to data source implementation class names.
      * The key is a pattern found in the JAR or ZIP file names for the driver.
@@ -309,5 +326,70 @@ public class JDBCDrivers {
     static String getXADataSourceClassName(String vendorPropertiesPID) {
         String[] classNames = classNamesByPID.get(vendorPropertiesPID);
         return classNames == null ? null : classNames[2];
+    }
+
+    /**
+     * Infer the vendor implementation class name of the specified type(s) based on the java.sql.Driver.
+     * This includes:
+     * <li>comparing known types with the java.sql.Driver implementation's package name.
+     * <li>TODO swapping Driver --> [type]DataSource and seeing if it loads
+     * <li>TODO scanning JAR file for class names that include [type]DataSource
+     * 
+     * @param loader class loader from which to load JDBC driver classes 
+     * @param ordered list of data source types (see type constants in this class) indicating precedence
+     * @return name of vendor data source implementation class. Null if unknown.
+     */
+    static String inferDataSourceClassFromDriver(ClassLoader loader, int... types) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(tc, "infer from driver", loader, Arrays.toString(types));
+
+        // TODO gate this method on hidden property
+        String[] found = new String[NUM_TYPES];
+
+        // Load JDBC driver class from service registry and use the package to infer the data source class
+        ServiceLoader<Driver> serviceLoader = loader == null ? ServiceLoader.load(Driver.class) : ServiceLoader.load(Driver.class, loader);
+        if (serviceLoader != null) {
+            for (Iterator<Driver> it = serviceLoader.iterator(); found[types[0]] == null && it.hasNext(); ) {
+                Driver driver = it.next();
+                String driverClassName = driver.getClass().getName();
+
+                // Truncate the deepest subpackage to allow for the possibility that the Driver impl
+                // might be in a different subpackage than the data source impls.
+                int lastDot = driverClassName.lastIndexOf('.');
+                if (lastDot > 0) {
+                    int dot = driverClassName.lastIndexOf('.', lastDot - 1);
+                    dot = dot <= 10 ? lastDot : dot; // avoid packages that are so short they might be generic (org.apache.) 
+                    String driverPackage = driverClassName.substring(0, dot);
+
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(tc, "infer from " + driverClassName, driverPackage);
+
+                    for (String[] classNames : classNamesByKey.values())
+                        for (int type : types)
+                            if (classNames[type] != null && classNames[type].startsWith(driverPackage))
+                                if (found[type] == null) {
+                                    try {
+                                        loader.loadClass(classNames[type]);
+                                        found[type] = classNames[type];
+
+                                        if (trace && tc.isDebugEnabled())
+                                            Tr.debug(tc, "found type " + type + ": " + classNames[type]);
+
+                                        if (type == types[0])
+                                            break; // found an impl class of the highest precedence type
+                                    } catch (ClassNotFoundException x) {
+                                        if (trace && tc.isDebugEnabled())
+                                            Tr.debug(tc, classNames[type] + " not found on " + loader);
+                                    }
+                                }
+                }
+            }
+        }
+
+        for (int type : types)
+            if (found[type] != null)
+                return found[type];
+        return null;
     }
 }
