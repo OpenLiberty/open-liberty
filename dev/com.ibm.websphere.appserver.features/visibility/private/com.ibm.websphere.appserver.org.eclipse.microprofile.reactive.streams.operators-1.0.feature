@@ -1,7 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0
+visibility=private
 singleton=true
--features=
--bundles=com.ibm.ws.org.reactivestreams.interfaces; location:="dev/api/stable/,lib/"
-kind=beta
+-bundles=com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0; location:="dev/api/stable/,lib/"
+kind=ga
 edition=core
