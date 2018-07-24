@@ -348,7 +348,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                     // Throw an exception, which will hopefully propagate through the
                     // persistence provider.                                RTC114812
                     String message = Tr.formatMessage(tc, "UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E",
-                                                      dsName, ivArchivePuId.getPuName(), ex.toString() );
+                                                      dsName, ivArchivePuId.getPuName(), ex.toString());
                     PersistenceException ex2 = new PersistenceException(message, ex);
 
                     if (isTraceOn && tc.isEntryEnabled())
@@ -524,7 +524,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         ivJarFileURLs.clear();
         for (String jarFilePath : jarFilePaths) {
             if (!addJarFileUrls(trim(jarFilePath), pxml)) {
-                Tr.error(tc, "INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E", jarFilePath, getPersistenceUnitName() );
+                Tr.error(tc, "INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E", jarFilePath, getPersistenceUnitName());
             }
         }
 
@@ -707,7 +707,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         }
 
         if (!registerClassFileTransformer(ivClassLoader)) {
-            Tr.warning(tc, "APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W", ivArchivePuId.getPuName(), ivPUnitRootURL, ivClassLoader.getClass().getName() );
+            Tr.warning(tc, "APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W", ivArchivePuId.getPuName(), ivPUnitRootURL, ivClassLoader.getClass().getName());
             tempClassLoader = ivClassLoader;
         }
 
@@ -923,16 +923,16 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             // Perhaps the module start code flow should be completely disabled for them instead?
             if (!ignoreProviderCNFE) {
                 FFDCFilter.processException(cnfe, CLASS_NAME + ".createEMFactory", "1168", this);
-                Tr.error(tc, "JPA_PROVIDER_NOT_FOUND_CWWJP0050E", ivProviderClassName );
+                Tr.error(tc, "JPA_PROVIDER_NOT_FOUND_CWWJP0050E", ivProviderClassName);
             }
-            String nlsMessage = Tr.formatMessage(tc, "JPA_PROVIDER_NOT_FOUND_CWWJP0050E", ivProviderClassName );
+            String nlsMessage = Tr.formatMessage(tc, "JPA_PROVIDER_NOT_FOUND_CWWJP0050E", ivProviderClassName);
             throw new RuntimeException(nlsMessage, cnfe);
         } catch (Exception e) {
             // Combined catch clause for IllegalAccessException and InstantiationException
             FFDCFilter.processException(e, CLASS_NAME + ".createEMFactory", "773", this);
             Tr.error(tc,
                      "CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E",
-                     ivProviderClassName, ivArchivePuId.getPuName(), e );
+                     ivProviderClassName, ivArchivePuId.getPuName(), e);
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createEMFactory", e);
             throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e); // d743091
@@ -945,7 +945,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         // Indicates an error to log with problem creating a factory, post once only.
         if (emfactory == null) {
             Tr.error(tc, "UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E",
-                     ivArchivePuId.getPuName(), ivProviderClassName, ivPUnitRootURL );
+                     ivArchivePuId.getPuName(), ivProviderClassName, ivPUnitRootURL);
             String message = "EntityManagerFactory has not been created for PU : " + ivArchivePuId;
             if (isTraceOn && tc.isEntryEnabled())
                 Tr.exit(tc, "createEMFactory : IllegalStateException");
