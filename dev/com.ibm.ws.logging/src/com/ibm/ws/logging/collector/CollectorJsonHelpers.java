@@ -34,11 +34,13 @@ public class CollectorJsonHelpers {
     private static String startAccessLogJson1_1 = null;
     private static String startGCJson = null;
     private static String startGCJson1_1 = null;
+    private static String startAuditJson1_1 = null;
     private static final String messageEventTypeFieldJson = "\"type\":\"liberty_message\"";
     private static final String traceEventTypeFieldJson = "\"type\":\"liberty_trace\"";
     private static final String accessLogEventTypeFieldJson = "\"type\":\"liberty_accesslog\"";
     private static final String ffdcEventTypeFieldJson = "\"type\":\"liberty_ffdc\"";
     private static final String gcEventTypeFieldJson = "\"type\":\"liberty_gc\"";
+    private static final String auditEventTypeFieldJson = "\"type\":\"liberty_audit\"";
     private static String unchangingFieldsJson = null;
     private static String unchangingFieldsJson1_1 = null;
     public final static String TRUE_BOOL = "true";
@@ -69,6 +71,8 @@ public class CollectorJsonHelpers {
             return CollectorConstants.FFDC_EVENT_TYPE;
         } else if (source.endsWith(CollectorConstants.ACCESS_LOG_SOURCE) && location.equals(CollectorConstants.MEMORY)) {
             return CollectorConstants.ACCESS_LOG_EVENT_TYPE;
+        } else if (source.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
+            return CollectorConstants.AUDIT_LOG_EVENT_TYPE;
         } else
             return "";
     }
@@ -273,6 +277,21 @@ public class CollectorJsonHelpers {
             addUnchangingFields(sb, hostName, wlpUserDir, serverName);
 
             startGCJson = sb.toString();
+        }
+
+        return sb;
+    }
+
+    protected static StringBuilder startAuditJson1_1(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
+        if (startAuditJson1_1 != null) {
+            sb.append(startAuditJson1_1);
+        } else {
+            sb.append("{");
+            sb.append(auditEventTypeFieldJson);
+            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+            startAuditJson1_1 = sb.toString();
         }
 
         return sb;
