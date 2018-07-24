@@ -28,14 +28,6 @@ public class MonitorMetrics {
 
 	private static final TraceComponent tc = Tr.register(MonitorMetrics.class);
 	
-	private static final int METRIC_NAME = 0;
-	private static final int METRIC_DISPLAYNAME = 1;
-	private static final int METRIC_DESCRIPTION = 2;
-	private static final int METRIC_TYPE = 3;
-	private static final int METRIC_UNIT = 4;
-	private static final int MBEAN_ATTRIBUTE = 5;
-	private static final int MBEAN_SUBATTRIBUTE = 6;
-	
 	protected String objectName;
 	private String mbeanStatsName;
 	private MBeanServer mbs;
@@ -52,20 +44,20 @@ public class MonitorMetrics {
         MetricRegistry registry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.VENDOR.getName());
         
         for (String[] metricData : data) {
-            String metricName = getMetricName(metricData[METRIC_NAME]);
-            MetricType type = MetricType.valueOf(metricData[METRIC_TYPE]);
+            String metricName = getMetricName(metricData[MappingTable.METRIC_NAME]);
+            MetricType type = MetricType.valueOf(metricData[MappingTable.METRIC_TYPE]);
             if (MetricType.COUNTER.equals(type)) {
         		registry.register(
-        				new Metadata(metricName, metricData[METRIC_DISPLAYNAME], metricData[METRIC_DESCRIPTION], type, metricData[METRIC_UNIT]), 
-        				new MonitorCounter(mbs, objectName, metricData[MBEAN_ATTRIBUTE]));            	
+        				new Metadata(metricName, metricData[MappingTable.METRIC_DISPLAYNAME], metricData[MappingTable.METRIC_DESCRIPTION], type, metricData[MappingTable.METRIC_UNIT]), 
+        				new MonitorCounter(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE]));            	
         		metricNames.add(metricName);
         		Tr.debug(tc, "Registered " + metricName);
         	} else if (MetricType.GAUGE.equals(type)) {
-            	MonitorGauge<Number> mg =  metricData[MBEAN_SUBATTRIBUTE] == null ?
-            		new MonitorGauge<Number>(mbs, objectName, metricData[MBEAN_ATTRIBUTE]) :
-            		new MonitorGauge<Number>(mbs, objectName, metricData[MBEAN_ATTRIBUTE], metricData[MBEAN_SUBATTRIBUTE]);
+            	MonitorGauge<Number> mg =  metricData[MappingTable.MBEAN_SUBATTRIBUTE] == null ?
+            		new MonitorGauge<Number>(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE]) :
+            		new MonitorGauge<Number>(mbs, objectName, metricData[MappingTable.MBEAN_ATTRIBUTE], metricData[MappingTable.MBEAN_SUBATTRIBUTE]);
         		registry.register(
-        			new Metadata(metricName, metricData[METRIC_DISPLAYNAME], metricData[METRIC_DESCRIPTION], type, metricData[METRIC_UNIT]), 
+        			new Metadata(metricName, metricData[MappingTable.METRIC_DISPLAYNAME], metricData[MappingTable.METRIC_DESCRIPTION], type, metricData[MappingTable.METRIC_UNIT]), 
         			mg);
         		metricNames.add(metricName);
         		Tr.debug(tc, "Registered " + metricName);

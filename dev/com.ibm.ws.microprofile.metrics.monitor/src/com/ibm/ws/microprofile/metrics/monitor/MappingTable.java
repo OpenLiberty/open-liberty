@@ -19,8 +19,16 @@ import org.eclipse.microprofile.metrics.MetricUnits;
 
 public class MappingTable {
 	
-	private static final String COUNTER = MetricType.COUNTER.toString().toUpperCase();
-	private static final String GAUGE = MetricType.GAUGE.toString().toUpperCase();
+	public static final int METRIC_NAME = 0;
+	public static final int METRIC_DISPLAYNAME = 1;
+	public static final int METRIC_DESCRIPTION = 2;
+	public static final int METRIC_TYPE = 3;
+	public static final int METRIC_UNIT = 4;
+	public static final int MBEAN_ATTRIBUTE = 5;
+	public static final int MBEAN_SUBATTRIBUTE = 6;
+	
+	public static final String COUNTER = MetricType.COUNTER.toString().toUpperCase();
+	public static final String GAUGE = MetricType.GAUGE.toString().toUpperCase();
 	
 	private static MappingTable singleton = null;
 
