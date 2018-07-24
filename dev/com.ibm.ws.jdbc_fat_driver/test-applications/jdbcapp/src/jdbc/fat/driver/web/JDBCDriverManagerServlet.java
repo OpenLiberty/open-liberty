@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -185,5 +186,19 @@ public class JDBCDriverManagerServlet extends FATServlet {
             }
             con.close();
         }
+    }
+
+    //TODO this test can be removed once other tests are updated to use the custom FAT driver
+    @Test
+    public void testFATDriver() throws Exception {
+        Class.forName("jdbc.fat.driver.derby.FATDriver");
+        Connection conn = DriverManager.getConnection("jdbc:derby:memory:wrappedDerby;create=true");
+        try {
+            System.out.println("Connected to " + conn.getMetaData().getDatabaseProductName());
+            conn.createStatement().executeQuery("VALUES 1");
+        } finally {
+            conn.close();
+        }
+
     }
 }

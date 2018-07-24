@@ -10,10 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.driver;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -21,6 +27,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import jdbc.fat.driver.derby.FATDriver;
 import jdbc.fat.driver.web.JDBCDriverManagerServlet;
 
 @RunWith(FATRunner.class)
@@ -35,6 +42,19 @@ public class JDBCDriverManagerTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.driver.web");
+
+        RemoteFile derby = server.getFileFromLibertySharedDir("resources/derby/derby.jar");
+
+        JavaArchive derbyJar = ShrinkWrap.create(ZipImporter.class, "derby.jar")
+                        .importFrom(new File(derby.getAbsolutePath()))
+                        .as(JavaArchive.class);
+
+        JavaArchive fatDriver = ShrinkWrap.create(JavaArchive.class, "FATDriver.jar")
+                        .addPackage("jdbc.fat.driver.derby")
+                        .merge(derbyJar)
+                        .addAsServiceProvider(java.sql.Driver.class, FATDriver.class);
+
+        ShrinkHelper.exportToServer(server, "derby", fatDriver);
 
         server.startServer();
     }
