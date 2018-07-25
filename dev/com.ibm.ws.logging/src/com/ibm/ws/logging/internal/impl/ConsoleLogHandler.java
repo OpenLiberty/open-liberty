@@ -80,7 +80,9 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
 
         /*
          * To write out to the console must determine if we are JSON or BASIC
-         * 1. JSON OR not a message/log-source event
+         * 1. (JSON OR not a message/log-source event) AND NOT ( tracefile=stdout + basic format config)
+         * Note: The "not a message/log-source event condition" is to ensure any non-message sources that were on-route to the consoleLogHandler
+         * before a switch to 'basic' will be properly formatted as JSON instead of directly going to basic formatter.
          * a) Message
          * - Check if it is above consoleLogLevel OR if it is from SysOut/SysErr AND copySystemStreams is true
          * then format as JSON
@@ -96,7 +98,8 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * c) Lastly this leaves message origin from publishLogRecord()
          * - We must check if it is above consoleLogLevel to format it
          */
-        if (format.equals(LoggingConstants.JSON_FORMAT) || !eventSourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
+        if ((format.equals(LoggingConstants.JSON_FORMAT) || !eventSourceType.equals(CollectorConstants.MESSAGES_SOURCE))
+            && (!(format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && eventSourceType.equals(CollectorConstants.TRACE_SOURCE) && isTraceStdout))) {
             String eventsourceType = getSourceTypeFromDataObject(genData);
 
             //First retrieve a cached JSON  message if possible, if not, format it and store it.
