@@ -17,8 +17,9 @@ public class CountingOutputStream extends OutputStream {
     private final OutputStream out;
     private long count;
 
-    public CountingOutputStream(OutputStream out) {
+    public CountingOutputStream(OutputStream out, long startOffset) {
         this.out = out;
+        this.count = startOffset;
     }
 
     public long count() {
