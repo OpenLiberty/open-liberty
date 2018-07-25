@@ -821,7 +821,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                             : "TRANSACTION_REPEATABLE_READ".equals(isolationLevel) ? Connection.TRANSACTION_REPEATABLE_READ
                                             : "TRANSACTION_SERIALIZABLE".equals(isolationLevel) ? Connection.TRANSACTION_SERIALIZABLE
                                                             : "TRANSACTION_READ_UNCOMMITTED".equals(isolationLevel) ? Connection.TRANSACTION_READ_UNCOMMITTED
-                                                                            : "TRANSACTION_DRIVER_DEFAULT".equals(isolationLevel) ? AdapterUtil.TRANSACTION_DRIVER_DEFAULT
+                                                                            : "TRANSACTION_NONE".equals(isolationLevel) ? Connection.TRANSACTION_NONE
                                                                                             : "TRANSACTION_SNAPSHOT".equals(isolationLevel) ? (dsImplClassName.startsWith("com.microsoft.") ? 4096 : 16)
                                                                                                             : isolationLevel;
 

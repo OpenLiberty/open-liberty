@@ -356,6 +356,11 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      * flag to keep track of isolation level switching on connection support or not
      **/
     boolean supportIsolvlSwitching = false; 
+    
+    /**
+     * flag if data source is set to Isolation Level 'TRANSACTION_NONE (0)'
+     */
+    boolean useDriverIsoLvl = false;
 
     /**
      * The value of the fatal connection error counter of the parent ManagedConnectionFactory
@@ -485,8 +490,19 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             cri = WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri);
         cri.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);
 
-
-        //  - synchronize the connectionproperties
+        //MARKED This is where we are setting useDriverDefaultIsolvl = true.  Only happens if dsConfig isolation level == TRANSACTION_NONE (0) 
+        if(dsConfig.get().isolationLevel == Connection.TRANSACTION_NONE) {
+            if(isTraceOn && tc.isEntryEnabled()) {
+                try {
+                    Tr.debug(this, tc, "Isolation Level: 'TRANSACTION_NONE (0)' detected.  Continue to use drivers default isolation level of " + AdapterUtil.getIsolationLevelString(sqlConn.getTransactionIsolation()));
+                } catch (SQLException e) {
+                    //Only used for debugging no need to trace exception if there is a SQLException from accessing connection
+                }
+            }
+            useDriverIsoLvl = true;
+        }
+ 
+        //  - synchronize the connection properties
         synchronizePropertiesWithCRI();
 
         //Create the stmt cache if cachesize > 0
@@ -1164,11 +1180,13 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      * 
      * @return true if transaction enlistment is enabled, false otherwise.
      */
-    public final boolean isTransactional() {
+    public final boolean isTransactional() { //MARKED
         // Take a snapshot of the value with first use (or reuse from pool) of the managed connection.
         // This value will be cleared when the managed connection is returned to the pool.
         if (transactional == null) {
             transactional = mcf.dsConfig.get().transactional;
+            if (useDriverIsoLvl)
+                transactional = false;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "transactional=", transactional);
         }
@@ -1879,10 +1897,28 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      */
     private void replaceCRI(WSConnectionRequestInfoImpl newCRI) throws ResourceException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        
+        //MARKED Ensure driver's isolation level is being used if useDriverDefaultIsolvl is true
+        //TODO also is this still necessary?
+//        try {
+//            int driverIsoLvl = sqlConn.getTransactionIsolation();
+//            if(useDriverIsoLvl && (driverIsoLvl != newCRI.getIsolationLevel())) {
+//                if(isTraceOn && tc.isDebugEnabled()) {
+//                    Tr.debug(this, tc, "Attempting to replace CRI isolation level of " + AdapterUtil.getIsolationLevelString(cri.getIsolationLevel()) +
+//                             " with newCRI isolation level of " + AdapterUtil.getIsolationLevelString(newCRI.getIsolationLevel()) + 
+//                             " but we should use driver default isolation level of " + AdapterUtil.getIsolationLevelString(driverIsoLvl));
+//                }
+//                newCRI.setTransactionIsolationLevel(driverIsoLvl);
+//            }  
+//        } catch (SQLException e) {
+//            if(isTraceOn && tc.isDebugEnabled()) {
+//                Tr.debug(this, tc, "Error attempting to get driver's isolation level");
+//            }
+//        }
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(this, tc, "replaceCRI", "Current:", cri, "New:", newCRI);
-
+        
         if (numHandlesInUse > 0 || !cri.isReconfigurable(newCRI, false))
         {
             if (numHandlesInUse > 0) 
@@ -1937,6 +1973,24 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      */
     private void replaceCRIForCCI(WSConnectionRequestInfoImpl newCRI) throws ResourceException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        
+        //MARKED Ensure driver's isolation level is being used if useDriverDefaultIsolvl is true
+        //TODO also is this still necessary
+//        try {
+//            int driverIsoLvl = sqlConn.getTransactionIsolation();
+//            if(useDriverIsoLvl && (driverIsoLvl != newCRI.getIsolationLevel())) {
+//                if(isTraceOn && tc.isDebugEnabled()) {
+//                    Tr.debug(this, tc, "Attempting to replace CRI isolation level of " + AdapterUtil.getIsolationLevelString(cri.getIsolationLevel()) +
+//                             " with newCRI isolation level of " + AdapterUtil.getIsolationLevelString(newCRI.getIsolationLevel()) + 
+//                             " but we should use driver default isolation level of " + AdapterUtil.getIsolationLevelString(driverIsoLvl));
+//                }
+//                newCRI.setTransactionIsolationLevel(driverIsoLvl);
+//            }
+//        } catch (SQLException e) {
+//            if(isTraceOn && tc.isDebugEnabled()) {
+//                Tr.debug(this, tc, "Error attempting to get driver's isolation level");
+//            }
+//        }  
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(this, tc, "replaceCRIForCCI", "Current:", cri, "New:", newCRI);
@@ -1958,7 +2012,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // The ManagedConnection should use the new CRI value in place of its current CRI.
         if (!newCRI.isCRIChangable())
             newCRI = WSConnectionRequestInfoImpl.createChangableCRIFromNon(newCRI);
-        newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);
+        newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);        
         cri = newCRI;
 
         //  -- don't intialize the properties, deplay to synchronizePropertiesWithCRI().
@@ -2046,9 +2100,18 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             previousTransactionIsolation = getTransactionIsolation();
             previousHoldability = currentHoldability;
 
-            if (currentTransactionIsolation != cri.ivIsoLevel) 
-            {
-                setTransactionIsolation(cri.ivIsoLevel);
+            //MARKED Called from constructor 
+            //testExample previousTransationIsolation = 2, currentTransationIsolation = 2, cri.ivIsoLevel = 0
+            if (currentTransactionIsolation != cri.ivIsoLevel) {
+                if(useDriverIsoLvl) {
+                    //CurrentTransationIsolation should = the drivers default and cri.ivIsoLevel should = TRANSACTION_NONE (0)
+                    if (isTraceOn && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "KJA1017Hook Continue to use JDBC driver's isolation level."); //REMOVE hook
+                    }
+                    //cri.setTransactionIsolationLevel(currentTransactionIsolation); //TODO is this necessary anymore?
+                }else {
+                    setTransactionIsolation(cri.ivIsoLevel);
+                }
             }
 
             if (cri.ivCatalog != null && !cri.ivCatalog.equals(defaultCatalog)) {
@@ -2916,16 +2979,21 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                 try {
                     currentTransactionIsolation = sqlConn.getTransactionIsolation();
-                    if (cachedConnection != null) 
-                        cachedConnection.setCurrentTransactionIsolation(currentTransactionIsolation, key);
+                    if(useDriverIsoLvl) {
+                        //Just cleaning up no need to warn user that we are not touching the isolation level
+                    }else {
+                        if (cachedConnection != null) 
+                            cachedConnection.setCurrentTransactionIsolation(currentTransactionIsolation, key);
 
-                    // in case doConnectionCleanup changed the value, we need to synchup the cri if isoswitching is not supported.
-                    if (!supportIsolvlSwitching && connectionSharing == ConnectionSharing.MatchCurrentState)
-                    {
-                        if (!cri.isCRIChangable()) // only set the cri if its not one of the static ones.
-                            setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
+                        // in case doConnectionCleanup changed the value, we need to synchup the cri if isoswitching is not supported.
+                        if (!supportIsolvlSwitching && connectionSharing == ConnectionSharing.MatchCurrentState)
+                        {
+                            if (!cri.isCRIChangable()) // only set the cri if its not one of the static ones.
+                                setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
 
-                        cri.setTransactionIsolationLevel(currentTransactionIsolation);
+                            cri.setTransactionIsolationLevel(currentTransactionIsolation);
+                        }
+                        
                     }
 
                 } catch (SQLException sqle) {
@@ -3821,6 +3889,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     {
         if (value != currentAutoCommit || helper.alwaysSetAutoCommit()) 
         {
+            if(useDriverIsoLvl && (value == false) )
+                throw new SQLException("Currently using default driver isolation level. Connection is not enlisited in global transations. AutoCommit cannot be set to false.");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Set AutoCommit to " + value); 
 
@@ -3842,6 +3912,12 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
     public final void setTransactionIsolation(int isoLevel) throws SQLException 
     {
+        if(useDriverIsoLvl) {
+            Tr.error(tc,"KJA1017Hook Isolation Level: 'TRANSACTION_NONE (0)' detected. Isolation level cannot be changed."); //REMOVE hook
+            currentTransactionIsolation = isoLevel; 
+            isolationChanged = true; 
+            return;
+        }
         if (currentTransactionIsolation != isoLevel) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "Set Isolation Level to " + AdapterUtil.getIsolationLevelString(isoLevel));
@@ -4387,5 +4463,5 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         } catch (Exception e){
             throw new SQLException(e);
         }
-    }
+    } 
 }

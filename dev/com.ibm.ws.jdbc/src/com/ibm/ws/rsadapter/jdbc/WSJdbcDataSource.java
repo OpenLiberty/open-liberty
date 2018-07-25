@@ -36,6 +36,7 @@ import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
+import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -104,7 +105,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "getConnection");
+            Tr.debug(this, tc, "getConnection with default isolation level");
 
         // Get the isolation level from the resource reference, or if that is not specified, use the
         // configured isolationLevel value, otherwise use a default that we choose for the database.
@@ -218,9 +219,15 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
      * @return the default isolation level for this data source.
      */
     private final int getDefaultIsolationLevel() {
+        System.out.println("KJA1017Hook resRefInfo.getIsolationLevel() == " + resRefInfo.getIsolationLevel() + " |dsConfig.get().isolationLevel == " + dsConfig.get().isolationLevel +
+                           " |mcf.getHelper().getDefaultIsolationlevel() == " + mcf.getHelper().getDefaultIsolationLevel()); //REMOVE
+        
         int defaultIsolationLevel = resRefInfo == null ? Connection.TRANSACTION_NONE : resRefInfo.getIsolationLevel();
         if (defaultIsolationLevel == Connection.TRANSACTION_NONE)
             defaultIsolationLevel = dsConfig.get().isolationLevel;
+        if(defaultIsolationLevel == Connection.TRANSACTION_NONE) {
+            //might need to do something here //MARKED
+        }
         if (defaultIsolationLevel == -1)
             defaultIsolationLevel = mcf.getHelper().getDefaultIsolationLevel();
         return defaultIsolationLevel;

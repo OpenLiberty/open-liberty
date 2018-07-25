@@ -85,11 +85,6 @@ public class AdapterUtil {
      * com.ddtek.jdbc.extensions.ExtConstants.TRANSACTION_SNAPSHOT
      */
     public static final int TRANSACTION_SNAPSHOT = 16;
-    
-    /**
-     * Isolation level that indicates we do not intend to use transactions
-     */
-    public static final int TRANSACTION_DRIVER_DEFAULT = 32;
 
     /**
      * com.microsoft.sqlserver.jdbc.SQLServerConnection.TRANSACTION_SNAPSHOT
@@ -302,10 +297,7 @@ public class AdapterUtil {
 
             case Connection.TRANSACTION_SERIALIZABLE:
                 return "SERIALIZABLE (" + level + ')'; 
-
-            case TRANSACTION_DRIVER_DEFAULT:
-                return "DRIVER_DEFAULT (" + level + ')';
-                
+               
             case TRANSACTION_SNAPSHOT: 
             case TRANSACTION_SS_SNAPSHOT: 
                 return "SNAPSHOT (" + level + ')'; 
