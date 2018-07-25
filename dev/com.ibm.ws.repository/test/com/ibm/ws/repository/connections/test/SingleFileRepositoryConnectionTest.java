@@ -35,7 +35,7 @@ public class SingleFileRepositoryConnectionTest {
     @After
     public void cleanup() {
         if (FILE.exists()) {
-            FILE.delete();
+            assertThat("Test file deleted", FILE.delete(), is(true));
         }
     }
 
