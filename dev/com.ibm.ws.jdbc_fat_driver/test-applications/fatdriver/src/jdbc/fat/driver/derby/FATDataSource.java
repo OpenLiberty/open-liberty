@@ -16,13 +16,18 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
 
+import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 
 public class FATDataSource implements DataSource {
-    private final DataSource derbyds;
+    protected final CommonDataSource derbyds;
 
     public FATDataSource() throws Exception {
         derbyds = (DataSource) Class.forName("org.apache.derby.jdbc.EmbeddedDataSource").newInstance();
+    }
+
+    protected FATDataSource(CommonDataSource derbyds) {
+        this.derbyds = derbyds;
     }
 
     public boolean getAutoCreate() throws Exception {
@@ -31,12 +36,12 @@ public class FATDataSource implements DataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return derbyds.getConnection();
+        return ((DataSource) derbyds).getConnection();
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return derbyds.getConnection(username, password);
+        return ((DataSource) derbyds).getConnection(username, password);
     }
 
     public String getDatabaseName() throws Exception {
@@ -86,7 +91,9 @@ public class FATDataSource implements DataSource {
 
     @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
-        if (isWrapperFor(iface))
+        if (CharSequence.class.equals(iface)) // hacky way of allowing the application to identify which data source is selected
+            return iface.cast(getClass().getName());
+        else if (isWrapperFor(iface))
             return iface.cast(this);
         else
             throw new SQLException(this + " does not wrap " + iface);
@@ -94,6 +101,6 @@ public class FATDataSource implements DataSource {
 
     @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return iface.isInterface() && iface.isAssignableFrom(getClass());
+        return CharSequence.class.equals(iface) || iface.isInterface() && iface.isAssignableFrom(getClass());
     }
 }

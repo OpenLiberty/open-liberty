@@ -40,6 +40,9 @@ public class JDBCDriverManagerServlet extends FATServlet {
     @Resource(name = "jdbc/fatDataSource", shareable = false, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds;
 
+    @Resource
+    DataSource xads;
+
     /**
      * Test of basic database connectivity
      */
@@ -137,6 +140,11 @@ public class JDBCDriverManagerServlet extends FATServlet {
             tran.begin();
             try {
                 stmt.executeUpdate("update drivertable set col2='uno' where col1=1");
+
+                // Enlist second resource (must be two-phase capable)
+                Connection con2 = xads.getConnection();
+                Statement stmt2 = con2.createStatement();
+                stmt2.executeUpdate("insert into drivertable values (5, 'five')");
             } finally {
                 tran.commit();
             }
