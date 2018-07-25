@@ -1860,7 +1860,7 @@ public class Director extends AbstractDirector {
     }
 
     /**
-     * Uninstalls product depending on dependencies
+     * Creates array of productIds and calls method below
      *
      * @param checkDependency if uninstall should check for dependencies
      * @param productId Id of product to uninstall
@@ -1868,11 +1868,25 @@ public class Director extends AbstractDirector {
      * @throws InstallException
      */
     public void uninstall(boolean checkDependency, String productId, Collection<File> toBeDeleted) throws InstallException {
-        getUninstallDirector().uninstall(checkDependency, productId, toBeDeleted);
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstall(checkDependency, productIds, toBeDeleted);
     }
 
     /**
-     * Uninstalls features depending on dependencies
+     * Uninstalls product depending on dependencies
+     *
+     * @param checkDependency if uninstall should check for dependencies
+     * @param productIds Ids of product to uninstall
+     * @param toBeDeleted Collection of files to uninstall
+     * @throws InstallException
+     */
+    public void uninstall(boolean checkDependency, String[] productIds, Collection<File> toBeDeleted) throws InstallException {
+        getUninstallDirector().uninstall(checkDependency, productIds, toBeDeleted);
+    }
+
+    /**
+     * Creates array of productIds and calls method below
      *
      * @param featureNames Collection of features names to uninstall
      * @param allowUninstallAll If false, will fail if no user features are installed
@@ -1884,14 +1898,27 @@ public class Director extends AbstractDirector {
     }
 
     /**
-     * Uninstalls features by product id
+     * Calls below method to uninstall features by product id
      *
      * @param productId product id to uninstall
-     * @param exceptPlatfromFeatuers If platform features should be ignored
+     * @param exceptPlatformFeatures If platform features should be ignored
      * @throws InstallException
      */
     public void uninstallFeaturesByProductId(String productId, boolean exceptPlatformFeatures) throws InstallException {
-        getUninstallDirector().uninstallFeaturesByProductId(productId, exceptPlatformFeatures);
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstallFeaturesByProductId(productIds, exceptPlatformFeatures);
+    }
+
+    /**
+     * Uninstalls features by product id
+     *
+     * @param productIds product ids to uninstall
+     * @param exceptPlatfromFeatuers If platform features should be ignored
+     * @throws InstallException
+     */
+    public void uninstallFeaturesByProductId(String[] productIds, boolean exceptPlatformFeatures) throws InstallException {
+        getUninstallDirector().uninstallFeaturesByProductId(productIds, exceptPlatformFeatures);
     }
 
     /**
