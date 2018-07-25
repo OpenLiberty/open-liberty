@@ -373,7 +373,7 @@ public class CollectorManagerImpl implements CollectorManager {
          *
          * Also if it is audit, there is no point of creating a bufferManager here, it won't start up the audit source.
          */
-        if (activeBuffMgrServices.containsKey(sourceId) || sourceId.contains("audit")) {
+        if (activeBuffMgrServices.containsKey(sourceId) || sourceId.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return;
         }
         //result[0] is sourceName
