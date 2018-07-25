@@ -34,6 +34,7 @@ public class CollectorJsonHelpers {
     private static String startAccessLogJson1_1 = null;
     private static String startGCJson = null;
     private static String startGCJson1_1 = null;
+    private static String startAuditJson = null;
     private static String startAuditJson1_1 = null;
     private static final String TYPE_FIELD_PREPPEND = "\"type\":\"";
     private static final String TYPE_FIELD_APPEND = "\"";
@@ -284,6 +285,21 @@ public class CollectorJsonHelpers {
         return sb;
     }
 
+    protected static StringBuilder startAuditJson(String hostName, String wlpUserDir, String serverName) {
+        StringBuilder sb = new StringBuilder(512);
+
+        if (startAuditJson != null) {
+            sb.append(startAuditJson);
+        } else {
+            sb.append("{");
+            sb.append(AUDIT_JSON_TYPE_FIELD);
+            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+            startAuditJson = sb.toString();
+        }
+
+        return sb;
+    }
+
     protected static StringBuilder startAuditJson1_1(String hostName, String wlpUserDir, String serverName) {
         StringBuilder sb = new StringBuilder(512);
 
@@ -292,7 +308,7 @@ public class CollectorJsonHelpers {
         } else {
             sb.append("{");
             sb.append(AUDIT_JSON_TYPE_FIELD);
-            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+            addUnchangingFields1_1(sb, hostName, wlpUserDir, serverName);
             startAuditJson1_1 = sb.toString();
         }
 
