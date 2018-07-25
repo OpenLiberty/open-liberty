@@ -112,8 +112,8 @@ public class FaultToleranceInterceptor {
         Annotation[] annotations = targetClass.getAnnotations();
         for (Annotation annotation : annotations) {
 
-            //Check that the annotation has not been disabled for this specific class. 
-            if (FTGlobalConfig.isAnnotationEnabled(annotation, targetClass)) { 
+            //Check that the annotation has not been disabled for this specific class.
+            if (FTGlobalConfig.ALL_ANNOTATIONS.contains(annotation.annotationType()) && FTGlobalConfig.isAnnotationEnabled(annotation, targetClass)) {
 
                 if (annotation.annotationType().equals(Asynchronous.class)) {
                     asynchronous = new AsynchronousConfig(targetClass, (Asynchronous) annotation);
@@ -140,8 +140,8 @@ public class FaultToleranceInterceptor {
         annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
 
-            //Check that the annotation has not been disabled for this specific method. 
-            if (FTGlobalConfig.isAnnotationEnabled(annotation, targetClass, method)) { 
+            //Check that the annotation has not been disabled for this specific method.
+            if (FTGlobalConfig.ALL_ANNOTATIONS.contains(annotation.annotationType()) && FTGlobalConfig.isAnnotationEnabled(annotation, targetClass, method)) {
 
                 if (annotation.annotationType().equals(Asynchronous.class)) {
                     asynchronous = new AsynchronousConfig(method, targetClass, (Asynchronous) annotation);

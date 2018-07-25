@@ -42,8 +42,8 @@ public class FTGlobalConfig {
     private final static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private final static Set<Class<?>> ONLY_FALLBACK = Collections.singleton(Fallback.class);
-    private final static Set<Class<?>> ALL_ANNOTATIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Asynchronous.class, CircuitBreaker.class,
-                                                                                                                 Retry.class, Timeout.class, Bulkhead.class, Fallback.class)));
+    public final static Set<Class<?>> ALL_ANNOTATIONS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(Asynchronous.class, CircuitBreaker.class,
+                                                                                                                Retry.class, Timeout.class, Bulkhead.class, Fallback.class)));
     private final static String CONFIG_NONFALLBACK_ENABLED = "MP_Fault_Tolerance_NonFallback_Enabled";
 
     /**
@@ -64,7 +64,7 @@ public class FTGlobalConfig {
     }
 
     /**
-     * Checks if an annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax:
+     * Checks if an fault tolerance annotation is enabled or disabled via configuration options. Annotations can be disabled with the following syntax:
      *
      * <ul>
      * <li>Disable at the method-level: com.acme.test.MyClient/serviceA/methodA/CircuitBreaker/enabled=false</li>
@@ -77,9 +77,14 @@ public class FTGlobalConfig {
      * @param ann The annotation
      * @param clazz The class containing the annotation.
      * @param method The method annotated with the annotation. If {@code null} only class and global scope properties will be checked.
+     * @throws IllegalArgumentException If passed a non-fault-tolerance annotation
      * @return Is the annotation enabled
      */
     public static boolean isAnnotationEnabled(Annotation ann, Class<?> clazz, Method method) {
+        if (!ALL_ANNOTATIONS.contains(ann.annotationType())) {
+            throw new IllegalArgumentException(ann + " is not a fault tolerance annotation");
+        }
+
         // Find the real class since we probably have a Weld proxy
         clazz = FTUtils.getRealClass(clazz);
         ClassLoader cl = FTUtils.getClassLoader(clazz);
@@ -112,7 +117,7 @@ public class FTGlobalConfig {
         }
 
         //The lowest priority is a global disabling of all fault tolerence annotations. (Only check FT annotations. Fallback is exempt from this global configuration)
-        if (enabled == null && ALL_ANNOTATIONS.contains(ann.annotationType()) && !getActiveAnnotations(clazz).contains(ann.annotationType())){
+        if (enabled == null && !getActiveAnnotations(clazz).contains(ann.annotationType())) {
             enabled = false;
         }
 

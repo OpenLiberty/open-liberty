@@ -56,7 +56,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     private boolean forceAddFeatures = true;
     private int minJavaLevel = 7;
-    protected String currentID = toString();
+    protected String currentID = null;
     private final Set<String> servers = new HashSet<>(Arrays.asList(ALL_SERVERS));
     private final Set<String> clients = new HashSet<>(Arrays.asList(ALL_CLIENTS));
     private final Set<String> removeFeatures = new HashSet<>();
@@ -368,6 +368,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public String getID() {
-        return currentID;
+        if (currentID != null) {
+            return currentID;
+        } else {
+            return toString();
+        }
     }
 }

@@ -31,6 +31,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryReorderedTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -48,6 +49,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
                 TestMultiModuleConfigLoad.class,
                 TestMultiModuleClassLoading.class,
                 ValidationTest.class,
+                DisableEnableTest.class,
 })
 
 public class FATSuite {
