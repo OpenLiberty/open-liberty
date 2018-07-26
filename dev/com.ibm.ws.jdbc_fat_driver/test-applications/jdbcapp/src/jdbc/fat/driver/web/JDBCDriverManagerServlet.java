@@ -37,7 +37,7 @@ import componenttest.app.FATServlet;
 @WebServlet("/JDBCDriverManagerServlet")
 public class JDBCDriverManagerServlet extends FATServlet {
 
-    @Resource(name = "jdbc/derby", shareable = false, authenticationType = AuthenticationType.APPLICATION)
+    @Resource(name = "jdbc/fatDataSource", shareable = false, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds;
 
     /**
