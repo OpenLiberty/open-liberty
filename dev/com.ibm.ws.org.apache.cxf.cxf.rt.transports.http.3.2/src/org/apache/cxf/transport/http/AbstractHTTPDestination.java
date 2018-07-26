@@ -290,6 +290,8 @@ public abstract class AbstractHTTPDestination
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Finished servicing http request on thread: " + Thread.currentThread());
             }
+            //clean up address within threadlocal of EndPointInfo   Liberty#3669
+            endpointInfo.resetAddress();
         }
     }
 

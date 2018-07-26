@@ -156,7 +156,7 @@ public class DB2JCCHelper extends DB2Helper {
         //  we need to check whether the impl class has the  correct configuration for zOS. we can't do
         // this checking in the constructor since we don't have the properties at that time.
         if (localZOS && driverType == 2) {
-            String dsClassName = mcf.getDataSourceClass().getName();
+            String dsClassName = mcf.vendorImplClass.getName();
             if (dsClassName.equals("com.ibm.db2.jcc.DB2XADataSource")) {
                 throw new ResourceException(AdapterUtil.getNLSMessage("DB2ZOS_TYPE2_ERROR"));
             } else if (dsClassName.equals("com.ibm.db2.jcc.DB2ConnectionPoolDataSource")) {

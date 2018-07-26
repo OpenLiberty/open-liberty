@@ -155,7 +155,8 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
                        ClientResponseContext clientResponseContext) throws IOException {
         String methodName = "filter(incoming)";
 
-        if ((Boolean) clientRequestContext.getProperty(CLIENT_SPAN_SKIPPED_ID)) {
+        Boolean skip = (Boolean) clientRequestContext.getProperty(CLIENT_SPAN_SKIPPED_ID);
+        if ((skip != null) && skip) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName, "skipped");
             }

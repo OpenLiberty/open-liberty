@@ -1,0 +1,50 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>jndi-1.0</feature>
+    </featureManager>
+ 
+    <library id="FATDriverLib">
+        <file name="${server.config.dir}/derby/FATDriver.jar"/>
+    </library>
+
+    <dataSource id="DefaultDataSource">
+      <jdbcDriver libraryRef="FATDriverLib"
+                  javax.sql.XADataSource="jdbc.fat.driver.derby.xa.FAT2PCDataSource"/> <!-- TODO automatically locate this data source class -->
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <dataSource id="fatDataSource" jndiName="jdbc/fatDataSource">
+      <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+
+    <dataSource id="fatDriver" jndiName="jdbc/fatDriver">
+      <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
+      <properties url="jdbc:derby:memory:wrappedDerby;create=true" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <javaPermission codeBase="${server.config.dir}derby/FATDriver.jar" className="java.security.AllPermission"/>
+    
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <application location="jdbcapp.war" >
+        <classloader commonLibraryRef="FATDriverLib"/>
+    </application>
+
+</server>

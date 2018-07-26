@@ -57,7 +57,7 @@ public class SybaseHelper extends DatabaseHelper
     public boolean doConnectionCleanup(Connection conn) throws SQLException {
         boolean standardPropModified = false;
 
-        if (XADataSource.class.isAssignableFrom(mcf.dataSourceImplClass)) {
+        if (XADataSource.class.isAssignableFrom(mcf.vendorImplClass)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "doConnectionCleanup(): calling setAutoCommit(true) and returning true from this method"); 
             conn.setAutoCommit(true);

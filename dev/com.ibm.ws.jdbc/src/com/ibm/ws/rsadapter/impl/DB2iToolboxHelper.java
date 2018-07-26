@@ -143,13 +143,13 @@ public class DB2iToolboxHelper extends DB2Helper {
             if (c == null) {
                 if(System.getSecurityManager() == null)
                     com_ibm_as400_access_AS400JDBCConnectionHandle_class.set(
-                        c = mc.mcf.dataSourceImplClass.getClassLoader().loadClass("com.ibm.as400.access.AS400JDBCConnectionHandle"));
+                        c = mc.mcf.jdbcDriverLoader.loadClass("com.ibm.as400.access.AS400JDBCConnectionHandle"));
                 else 
                     com_ibm_as400_access_AS400JDBCConnectionHandle_class.set(
                         c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                             @Override
                             public Class<?> run() throws ClassNotFoundException {
-                                return mc.mcf.dataSourceImplClass.getClassLoader().loadClass("com.ibm.as400.access.AS400JDBCConnectionHandle");
+                                return mc.mcf.jdbcDriverLoader.loadClass("com.ibm.as400.access.AS400JDBCConnectionHandle");
                             }
                         }));
             }

@@ -14,51 +14,56 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 import static com.ibm.ws.jpa.management.JPAConstants.PERSISTENCE_XML_RESOURCE_NAME;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jpa.JPAPuId;
+import com.ibm.ws.jpa.diagnostics.JPAORMDiagnostics;
 
 /**
  * This is a data container manages persistence unit information defined in a ejb-jar, war or jar.
  * Each of this object represents a persistenc.xml in an application.
- * 
+ *
  * @see com.ibm.ws.jpa.management.JPAApplInfo
  */
-class JPAPxmlInfo
-{
-    private static final TraceComponent tc = Tr.register
-                    (JPAPxmlInfo.class,
-                     JPA_TRACE_GROUP,
-                     JPA_RESOURCE_BUNDLE_NAME);
+class JPAPxmlInfo {
+    private static final TraceComponent tc = Tr.register(JPAPxmlInfo.class,
+                                                         JPA_TRACE_GROUP,
+                                                         JPA_RESOURCE_BUNDLE_NAME);
 
     // Scope information associated to this persistence.xml.
-    private JPAScopeInfo ivScopeInfo;
+    private final JPAScopeInfo ivScopeInfo;
 
     // Root URL of this persistence.xml.
-    private URL ivRootURL;
+    private final URL ivRootURL;
 
     // List of persistence units defined in this persistence.xml.
-    private Map<String, JPAPUnitInfo> ivPuList;
+    private final Map<String, JPAPUnitInfo> ivPuList;
 
     /**
      * Constructor.
-     * 
+     *
      * @param scopeInfo
      * @param rootURL
      */
-    JPAPxmlInfo(JPAScopeInfo scopeInfo, URL rootURL)
-    {
+    JPAPxmlInfo(JPAScopeInfo scopeInfo, URL rootURL) {
         super();
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(tc, "<init>", scopeInfo, rootURL );
+            Tr.entry(tc, "<init>", scopeInfo, rootURL);
 
         ivScopeInfo = scopeInfo;
         ivRootURL = rootURL;
@@ -70,12 +75,11 @@ class JPAPxmlInfo
 
     /**
      * Populates the list of persistence units defined in this persistence.xml.
-     * 
+     *
      * @param pxml
      * @param looseConfig
      */
-    void extractPersistenceUnits(JPAPXml pxml)
-    {
+    void extractPersistenceUnits(JPAPXml pxml) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "extractPersistenceUnits : " + pxml);
@@ -86,8 +90,7 @@ class JPAPxmlInfo
         JaxbPersistence p = JaxbUnmarshaller.unmarshal(pxml);
 
         List<JaxbPUnit> pus = p.getPersistenceUnit();
-        for (JaxbPUnit pu : pus)
-        {
+        for (JaxbPUnit pu : pus) {
             // Guarantee to have a puName from <persistence-unit>
             String puName = pu.getName();
             // Set <persistence-unit>
@@ -139,8 +142,7 @@ class JPAPxmlInfo
             // Set <properties> (mapped by JaxbPUnit abstraction)       F1879-16302
             puInfo.setProperties(pu.getProperties());
 
-            if (isTraceOn && tc.isDebugEnabled())
-            {
+            if (isTraceOn && tc.isDebugEnabled()) {
                 String rootURLStr = pxml.getRootURL().getFile();
                 int earIndex = rootURLStr.indexOf(applInfo.getApplName() + ".ear"); // d507361
                 if (earIndex != -1) { // d507361
@@ -152,6 +154,12 @@ class JPAPxmlInfo
                              "|" + pxml.getArchiveName() + "|" + rootURLStr + "|" +
                              puInfo.getPersistenceUnitName() + "|" +
                              ivScopeInfo.getScopeType() + "|" + puInfo.dump());
+
+                try {
+                    JPAORMDiagnostics.writeJPAORMDiagnostics(puInfo, pxml.openStream());
+                } catch (Throwable t) {
+                    FFDCFilter.processException(t, JPAPxmlInfo.class.getName() + ".extractPersistenceUnits", "155");
+                }
             }
 
             if (getPuInfo(puName) != null) // d441029
@@ -160,9 +168,7 @@ class JPAPxmlInfo
                            "DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W",
                            puName, applInfo.getApplName(), pxml.getArchiveName()); // d460065
                 puInfo.close(); // d681393
-            }
-            else
-            {
+            } else {
                 addPU(puName, puInfo);
 
                 // This getFactory initiates the createEntityManagerFactory call to
@@ -192,91 +198,155 @@ class JPAPxmlInfo
         }
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(tc, "extractPersistenceUnits : # of PU defined = " + ivPuList.size());
+            Tr.exit(tc, "extractPersistenceUnits : # of PU defined = " + getPuCount());
     }
 
     /**
      * Close all the active EntityManagers declared in this persistence.xml.
      */
-    void close()
-    {
-        for (JPAPUnitInfo puInfo : ivPuList.values())
-        {
-            puInfo.close();
+    void close() {
+        synchronized (ivPuList) {
+            for (JPAPUnitInfo puInfo : ivPuList.values()) {
+                puInfo.close();
+            }
+            ivPuList.clear();
         }
-        ivPuList.clear();
     }
 
     /**
      * Returns the PersistenceUnitInfo object for persistence unit (puName) or null if not
      * defined.
      */
-    JPAPUnitInfo getPuInfo(String puName)
-    {
-        return ivPuList.get(puName);
+    JPAPUnitInfo getPuInfo(String puName) {
+        synchronized (ivPuList) {
+            return ivPuList.get(puName);
+        }
     }
 
     /**
      * Adds the puInfo to the collection maintained in this xml info object.
-     * 
+     *
      * @param puName
      * @param puInfo
      * @return JPAUnitInfo just added.
      */
-    JPAPUnitInfo addPU(String puName, JPAPUnitInfo puInfo)
-    {
-        return ivPuList.put(puName, puInfo);
+    JPAPUnitInfo addPU(String puName, JPAPUnitInfo puInfo) {
+        synchronized (ivPuList) {
+            return ivPuList.put(puName, puInfo);
+        }
     }
 
     /**
      * Returns all persistence unit name defined in this persistence.xml.
-     * 
+     *
      * @return Persistence unit name collection.
      */
-    Set<String> getPuNames()
-    {
-        return ivPuList.keySet();
+    Set<String> getPuNames() {
+        synchronized (ivPuList) {
+            return ivPuList.keySet();
+        }
     }
 
     /**
      * Returns the number of persistence unit defined in this persistence.xml.
-     * 
+     *
      * @return Defined persistence unit count.
      */
-    int getPuCount()
-    {
-        return ivPuList.size();
+    int getPuCount() {
+        synchronized (ivPuList) {
+            return ivPuList.size();
+        }
     }
 
     /**
      * Dump this persistence.xml data to the input StringBuilder.
      */
-    StringBuilder toStringBuilder(StringBuilder sbuf)
-    {
-        sbuf.append("\n  PxmlInfo: ScopeName=").append(ivScopeInfo.getScopeName())
-                        .append("\tRootURL = ").append(ivRootURL).append("\t# PUs = ")
-                        .append(ivPuList.size()).append("\t[");
-        int index = 0;
-        for (JPAPUnitInfo puInfo : ivPuList.values())
-        {
-            puInfo.toStringBuilder(sbuf);
-            if (++index < ivPuList.size())
-            {
-                sbuf.append(", ");
+    StringBuilder toStringBuilder(StringBuilder sbuf) {
+        synchronized (ivPuList) {
+            sbuf.append("\n  PxmlInfo: ScopeName=").append(ivScopeInfo.getScopeName()).append("\tRootURL = ").append(ivRootURL).append("\t# PUs = ").append(ivPuList.size()).append("\t[");
+            int index = 0;
+            for (JPAPUnitInfo puInfo : ivPuList.values()) {
+                puInfo.toStringBuilder(sbuf);
+                if (++index < ivPuList.size()) {
+                    sbuf.append(", ");
+                }
             }
+            sbuf.append(']');
         }
-        sbuf.append(']');
+
         return sbuf;
     }
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return toStringBuilder(new StringBuilder()).toString();
+    }
+
+    void doIntrospect(PrintWriter out) {
+        final Map<String, JPAPUnitInfo> ivPuListCopy = new HashMap<String, JPAPUnitInfo>();
+        synchronized (ivPuList) {
+            ivPuListCopy.putAll(ivPuList);
+        }
+
+        out.println("ScopeName = " + ivScopeInfo.getScopeName());
+        out.println("RootURL = " + ivRootURL);
+        out.println("# Persistence Units = " + ivPuList.size());
+        out.println();
+
+        for (Map.Entry<String, JPAPUnitInfo> entry : ivPuListCopy.entrySet()) {
+            final String puName = entry.getKey();
+            final JPAPUnitInfo jpaPUInfo = entry.getValue();
+
+            final URL puRootURL = jpaPUInfo.getPersistenceUnitRootUrl();
+            final String urlPtcol = puRootURL.getProtocol();
+
+//            out.println();
+//            out.println("Application Name: " + jpaPUInfo.getApplName());
+            out.println("************************************************************");
+            out.println(jpaPUInfo.dump());
+
+            out.println();
+            out.println("Object Relational Mapping Dump:");
+            out.println();
+            if (urlPtcol.toLowerCase().contains("wsjpa")) {
+                // WSJPA: zip-format InputStream
+                boolean printed = false;
+                try (ZipInputStream zis = new ZipInputStream(puRootURL.openStream())) {
+                    ZipEntry ze = null;
+                    while ((ze = zis.getNextEntry()) != null) {
+                        if (!(ze.getName().endsWith("/persistence.xml"))) {
+                            continue;
+                        }
+
+                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        final byte[] buffer = new byte[4096];
+                        int bytesRead = -1;
+                        while ((bytesRead = zis.read(buffer)) >= 0) {
+                            baos.write(buffer, 0, bytesRead);
+                        }
+
+                        JPAORMDiagnostics.writeJPAORMDiagnostics(jpaPUInfo, new ByteArrayInputStream(baos.toByteArray()), out);
+                        printed = true;
+                        break;
+                    }
+                } catch (IOException ioe) {
+                    FFDCFilter.processException(ioe, JPAPxmlInfo.class.getName() + ".doIntrospect", "323");
+                }
+                if (!printed) {
+                    out.println("WARNING: Failed to dump ORM for PURoot: " + puRootURL);
+                }
+            } else if (urlPtcol.toLowerCase().contains("jar")) {
+                // TODO
+                out.println("TODO found jar.");
+            } else if (urlPtcol.toLowerCase().contains("file")) {
+                // TODO
+                out.println("TODO found file.");
+            }
+        }
     }
 }

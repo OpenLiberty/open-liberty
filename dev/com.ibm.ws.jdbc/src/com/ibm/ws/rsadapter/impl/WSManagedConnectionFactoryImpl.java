@@ -120,11 +120,16 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
     transient private CommonDataSource dataSource;
 
-    transient Class<?> dataSourceImplClass;
     /**
-     * The type of data source (for example javax.sql.XADataSource) that this managed connection factory creates.
+     * Class name of data source or driver implementation from the JDBC vendor.
+     * It could be an implementation of javax.sql.DataSource, javax.sql.ConnectionPoolDataSource, javax.sql.XADataSource, or java.sql.Driver
      */
-    final Class<? extends CommonDataSource> dataSourceInterface;
+    transient Class<?> vendorImplClass;
+
+    /**
+     * The type of data source (for example, javax.sql.XADataSource) or java.sql.Driver that this managed connection factory uses to establish connections.
+     */
+    final Class<?> type;
 
     transient DatabaseHelper helper;
 
@@ -287,12 +292,12 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * Constructs a managed connection factory based on configuration.
      * 
      * @param dsConfigRef reference to update to point at the new data source configuration.
-     * @param ifc the type of data source.
+     * @param ifc the type of data source, otherwise java.sql.Driver.
      * @param ds the data source.
      * @param jdbcRuntime version of the Liberty jdbc feature
      * @throws Exception if an error occurs.
      */
-    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, Class<? extends CommonDataSource> ifc,
+    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, Class<?> ifc,
                                           CommonDataSource ds, JDBCRuntimeVersion jdbcRuntime) throws Exception {
         dsConfig = dsConfigRef;
         DSConfig config = dsConfig.get();
@@ -304,13 +309,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         this.connectorSvc = config.connectorSvc;
         this.jdbcRuntime = jdbcRuntime;
         instanceID = NUM_INITIALIZED.incrementAndGet();
-        dataSourceImplClass = ds.getClass();
-        dataSourceInterface = ifc;
-        jdbcDriverLoader = priv.getClassLoader(dataSourceImplClass);
+        vendorImplClass = ds.getClass();
+        type = ifc;
+        jdbcDriverLoader = priv.getClassLoader(vendorImplClass);
         supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
-        String dataSourceImplClassName = dataSourceImplClass.getName();
-        isUCP = dataSourceImplClassName.charAt(2) == 'a' && dataSourceImplClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
+        String implClassName = vendorImplClass.getName();
+        isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
@@ -319,7 +324,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
             if (tracer != null && tracer.isDebugEnabled()) {
                 try {
-                    ds = (CommonDataSource) getTraceableDataSource(ds);
+                    ds = (CommonDataSource) getTraceable(ds); // TODO supplemental trace for java.sql.Driver
                     Tr.debug(this, tc, "supplemental tracing set for data source", "Data source: " + ds, "Tracer: " + tracer);
                 } catch (ResourceException e) {
                     Tr.debug(this, tc, "error setting supplemental trace on data source", "Data source: " + ds, e);
@@ -370,10 +375,10 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     private void createDatabaseHelper(String vPropsPid) throws Exception {
-        // Data store helper class is inferred first based on the data source implementation class,
-        // except for DB2 JCC and Informix JCC, which have the same data source implementation classes.
+        // Data store helper class is inferred first based on the data source or driver implementation class,
+        // except for DB2 JCC and Informix JCC, which have the same data source/driver implementation classes.
         // Second, we look at the type of vendor properties list to further distinguish.
-        String dsClassName = dataSourceImplClass.getName();
+        String dsClassName = vendorImplClass.getName();
         if (dsClassName.startsWith("oracle.")) helper = new OracleHelper(this);
         else if (dsClassName.startsWith("com.ibm.as400.")) helper = new DB2iToolboxHelper(this);
         else if (dsClassName.startsWith("com.ibm.db2.jdbc.app.")) helper = new DB2iNativeHelper(this);
@@ -797,7 +802,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                     // shouldn't ever happen
                     throw new DataStoreAdapterException("GENERAL_EXCEPTION", null, getClass(), x.getMessage());
             }
-        else if (DataSource.class.equals(dataSourceInterface) || isUCP)
+        else if (DataSource.class.equals(type) || isUCP)
         {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Getting a connection using Datasource. Is UCP? " + isUCP);
@@ -805,7 +810,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             results = new ConnectionResults(null, conn);
         } else {
             try {
-                results = helper.getPooledConnection(dataSource, userName, password, XADataSource.class.equals(dataSourceInterface), cri, useKerb, credential);
+                results = helper.getPooledConnection(dataSource, userName, password, XADataSource.class.equals(type), cri, useKerb, credential);
             } catch (DataStoreAdapterException dae) {
                 throw (ResourceException) AdapterUtil.mapException(dae, null, this, false); // error can't be fired as we don't have an mc
             }
@@ -950,18 +955,18 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     /**
-     * Enable supplemental tracing for the underlying data source.
+     * Enable supplemental tracing for the underlying data source or java.sql.Driver.
      * 
-     * @param ds the underlying data source.
+     * @param d the underlying data source or driver.
      * 
-     * @return a data source enabled for supplemental trace.
+     * @return a data source or driver enabled for supplemental trace.
      * @throws ResourceException if an error occurs obtaining the print writer.
      */
-    private Object getTraceableDataSource(Object ds) throws ResourceException {
-        WSJdbcTracer tracer = new WSJdbcTracer(helper.getTracer(), helper.getPrintWriter(), ds, dataSourceInterface, null, true);
+    private Object getTraceable(Object d) throws ResourceException {
+        WSJdbcTracer tracer = new WSJdbcTracer(helper.getTracer(), helper.getPrintWriter(), d, type, null, true);
 
         Set<Class<?>> classes = new HashSet<Class<?>>();
-        for (Class<?> cl = ds.getClass(); cl != null; cl = cl.getSuperclass())
+        for (Class<?> cl = d.getClass(); cl != null; cl = cl.getSuperclass())
             classes.addAll(Arrays.asList(cl.getInterfaces()));
         
         return Proxy.newProxyInstance(jdbcDriverLoader,
@@ -1244,8 +1249,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (dsConfig.get().enableMultithreadedAccessDetection)
             info.append("Multithreaded access was detected?", detectedMultithreadedAccess);
 
-        info.append("DataSource Implementation Class:", dataSourceImplClass);
-        info.append("DataSource interface:", dataSourceInterface);
+        info.append("Vendor implementation class:", vendorImplClass);
+        info.append("Type:", type);
         info.append("Underlying DataSource Object: " + AdapterUtil.toString(dataSource), dataSource);
         info.append("Instance id:", instanceID);
         info.append("Log Writer:", logWriter);
@@ -1455,13 +1460,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
             return rVal;
         }
-    }
-
-    /**
-     * Returns the dataSoure class name
-     */
-    public final Class<?> getDataSourceClass() {
-        return dataSourceImplClass;
     }
 
     /**

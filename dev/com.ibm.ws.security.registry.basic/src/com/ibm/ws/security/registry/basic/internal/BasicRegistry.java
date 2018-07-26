@@ -446,6 +446,10 @@ public class BasicRegistry implements UserRegistry {
     /** {@inheritDoc} */
     @Override
     public SearchResult getUsers(String pattern, int limit) throws RegistryException {
+        // support ignoreCaseForAuthentication for user lookup
+        if (state.ignoreCaseForAuthentication) {
+            pattern = "(?i)" + pattern;
+        }
         return searchMap(state.users, pattern, limit);
     }
 

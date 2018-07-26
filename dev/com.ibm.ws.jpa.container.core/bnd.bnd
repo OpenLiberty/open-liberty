@@ -27,4 +27,5 @@ instrument.disabled: true
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.tx.ltc;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.jpa.container.ormdiagnostics;version=latest

@@ -21,17 +21,19 @@ Import-Package: \
   *
 
 Export-Package: \
-	org.eclipse.microprofile.opentracing;version=1.0
+	org.eclipse.microprofile.opentracing;version=1.0.1
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"
 
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.opentracing:microprofile-opentracing-api;1.0.1;EXACT}
+  
 WS-TraceGroup: OPENTRACING
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	org.eclipse.microprofile.opentracing:microprofile-opentracing-api;version=1.0
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 #instrument.disabled: true
 
