@@ -95,7 +95,7 @@ public interface IBMSession extends HttpSession, Externalizable {
      */
     public boolean isOverflow();
 
-    /**
+    /*
      * To get the IBMApplicationSession associated with the session.
      * This can be called when in a converged (HTTP/SIP) application or when sharing session data.
      * The IBMApplicationSession will be created if it does not exist.
@@ -105,7 +105,7 @@ public interface IBMSession extends HttpSession, Externalizable {
      */
     public IBMApplicationSession getIBMApplicationSession();
 
-    /**
+    /*
      * To get the IBMApplicationSession associated with the session.
      * This can be called when in a converged (HTTP/SIP) application or when sharing session data.
      * 
