@@ -571,7 +571,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
     @Override
     public void merge(String argv[]) {
         if (argv.length < 2)
-            throw new IllegalArgumentException("Please provide at least 1 plugin-cfg.xml files to merge.");
+            throw new IllegalArgumentException("Please provide at least 1 plugin-cfg.xml file to merge.");
 
         PluginMergeToolImpl toolInstance = new PluginMergeToolImpl();
         matchUriAppVhost = Boolean.getBoolean("com.ibm.ws.pluginmerge.match.appname");
