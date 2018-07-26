@@ -10,16 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.internal;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
@@ -338,7 +346,7 @@ public class JDBCDrivers {
      * This includes:
      * <li>comparing known types with the java.sql.Driver implementation's package name.
      * <li>swapping Driver --> [type]DataSource and seeing if it loads
-     * <li>TODO scanning JAR file for class names that contain DataSource and comparing against the desired type(s)?
+     * <li>scanning JAR file for class names that contain DataSource and comparing against the desired type(s)
      * 
      * @param loader class loader from which to load JDBC driver classes 
      * @param ordered list of data source types (see type constants in this class) indicating precedence
@@ -358,6 +366,7 @@ public class JDBCDrivers {
             for (Iterator<Driver> it = serviceLoader.iterator(); found[preferredType] == null && it.hasNext(); ) {
                 Driver driver = it.next();
                 String driverClassName = driver.getClass().getName();
+                String driverPackage = null;
 
                 // Truncate the deepest subpackage to allow for the possibility that the Driver impl
                 // might be in a different subpackage than the data source impls.
@@ -365,7 +374,7 @@ public class JDBCDrivers {
                 if (lastDot > 0) {
                     int dot = driverClassName.lastIndexOf('.', lastDot - 1);
                     dot = dot <= 10 ? lastDot : dot; // avoid packages that are so short they might be generic (org.apache.) 
-                    String driverPackage = driverClassName.substring(0, dot);
+                    driverPackage = driverClassName.substring(0, dot);
 
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(tc, "infer from " + driverClassName, driverPackage);
@@ -402,6 +411,53 @@ public class JDBCDrivers {
                                                     driverClassName.replace("Driver", "XADataSource"),
                                                     driverClassName.replace("Driver", "DataSource"));
                     }
+
+                // Scan the driver JAR file for class names in the same or similar packages that might be data sources
+                if (found[preferredType] == null && driverPackage != null) {
+                    String driverFile = loader.getResource(driverClassName.replace('.', '/') + ".class").getFile();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(tc, "Driver impl file", driverFile);
+
+                    int i = driverFile.indexOf('!');
+                    if (i > 0)
+                        try {
+                            driverPackage = driverPackage.replace('.', '/');
+                            int start = driverFile.startsWith("file:") ? 5 : 0;
+                            String jarFile = driverFile.substring(start, i);
+                            ZipInputStream zin = new ZipInputStream(new FileInputStream(jarFile));
+                            try {
+                                for (ZipEntry entry; found[preferredType] == null && (entry = zin.getNextEntry()) != null; ) { 
+                                    String name = entry.getName();
+                                    if (name.startsWith(driverPackage) && name.contains("DataSource") && name.endsWith(".class")) {
+                                        name = name.substring(0, name.lastIndexOf('.')).replace('/', '.');
+                                        try {
+                                            Class<?> c = loader.loadClass(name);
+                                            if (CommonDataSource.class.isAssignableFrom(c)) {
+                                                if (trace && tc.isDebugEnabled())
+                                                    Tr.debug(tc, "checking " + name);
+                                                if (found[DATA_SOURCE] == null && DataSource.class.isAssignableFrom(c))
+                                                    found[DATA_SOURCE] = name;
+                                                if (found[CONNECTION_POOL_DATA_SOURCE] == null && ConnectionPoolDataSource.class.isAssignableFrom(c))
+                                                    found[CONNECTION_POOL_DATA_SOURCE] = name;
+                                                if (found[XA_DATA_SOURCE] == null && XADataSource.class.isAssignableFrom(c))
+                                                    found[XA_DATA_SOURCE] = name;
+                                            } else
+                                                if (trace && tc.isDebugEnabled())
+                                                    Tr.debug(tc, name + " not a data source");
+                                        } catch (ClassNotFoundException x) {
+                                            if (trace && tc.isDebugEnabled())
+                                                Tr.debug(tc, name + " not found on " + loader);
+                                        }
+                                    }
+                                }
+                            } finally {
+                                zin.close();
+                            }
+                        } catch (IOException x) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(tc, "Error reading JDBC driver binary", AdapterUtil.stackTraceToString(x));
+                        }
+                }
             }
         }
 
