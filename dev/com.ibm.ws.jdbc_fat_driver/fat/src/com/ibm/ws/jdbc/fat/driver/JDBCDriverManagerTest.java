@@ -51,6 +51,7 @@ public class JDBCDriverManagerTest extends FATServletClient {
 
         JavaArchive fatDriver = ShrinkWrap.create(JavaArchive.class, "FATDriver.jar")
                         .addPackage("jdbc.fat.driver.derby")
+                        .addPackage("jdbc.fat.driver.derby.xa")
                         .merge(derbyJar)
                         .addAsServiceProvider(java.sql.Driver.class, FATDriver.class);
 
