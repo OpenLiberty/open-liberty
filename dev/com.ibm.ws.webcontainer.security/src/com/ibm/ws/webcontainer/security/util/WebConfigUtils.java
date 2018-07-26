@@ -19,7 +19,6 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * This class contains methods for getting web app config information
@@ -28,10 +27,10 @@ public class WebConfigUtils {
     private static ThreadLocal<MetaDataThreadContext> metaDataThreadLocal = new MetaDataThreadLocal();
 
     public static final String ATTR_WEB_MODULE_METADATA = "com.ibm.ws.webcontainer.security.webmodulemetadata";
-    
+
     /**
      * Get the web application config
-     * 
+     *
      * @return the web application config
      */
     public static WebAppConfig getWebAppConfig() {
@@ -49,7 +48,7 @@ public class WebConfigUtils {
 
     /**
      * Get the web app security config
-     * 
+     *
      * @return the web app security config
      */
     public static WebAppSecurityConfig getWebAppSecurityConfig() {
@@ -58,19 +57,19 @@ public class WebConfigUtils {
 
     /**
      * Get the security metadata
-     * 
+     *
      * @return the security metadata
      */
     public static SecurityMetadata getSecurityMetadata() {
         SecurityMetadata secMetadata = null;
         ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
         if (mmd instanceof WebModuleMetaData) {
-            secMetadata = (SecurityMetadata)((WebModuleMetaData)mmd).getSecurityMetaData();
+            secMetadata = (SecurityMetadata) ((WebModuleMetaData) mmd).getSecurityMetaData();
         } else {
             // ejb environment, check threadlocal.
             WebModuleMetaData wmmd = getWebModuleMetaData();
             if (wmmd != null) {
-                secMetadata = (SecurityMetadata)wmmd.getSecurityMetaData();
+                secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
             }
         }
         return secMetadata;
@@ -98,6 +97,11 @@ public class WebConfigUtils {
         if (mdtc != null) {
             mdtc.clearMetaData(key);
         }
+    }
+
+    // For unit test only
+    static void resetMetaData() {
+        metaDataThreadLocal = new MetaDataThreadLocal();
     }
 
     private static final class MetaDataThreadLocal extends ThreadLocal<MetaDataThreadContext> {

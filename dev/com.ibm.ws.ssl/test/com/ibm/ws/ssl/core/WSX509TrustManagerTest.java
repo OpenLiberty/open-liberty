@@ -167,6 +167,9 @@ public class WSX509TrustManagerTest {
      */
     @Test
     public void userAcceptedPrompt_sayY() throws Exception {
+        if (!System.getProperty("java.version").startsWith("1."))
+            return;
+
         tm = new WSX509TrustManager(mockTM1, stdin, stdout, false);
 
         mock.checking(new Expectations() {
@@ -198,6 +201,9 @@ public class WSX509TrustManagerTest {
      */
     @Test
     public void userAcceptedPrompt_sayN() throws Exception {
+        if (!System.getProperty("java.version").startsWith("1."))
+            return;
+
         tm = new WSX509TrustManager(mockTM1, stdin, stdout, false);
 
         mock.checking(new Expectations() {
@@ -233,8 +239,7 @@ public class WSX509TrustManagerTest {
 
         try {
             tm.setCertificateToTruststore(mockX509s);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             assertEquals(e.getMessage(), "Keystore defaultTrustStore does not exist in the configuration.");
         }
 
