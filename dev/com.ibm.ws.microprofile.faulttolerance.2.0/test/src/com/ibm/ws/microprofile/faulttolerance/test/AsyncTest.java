@@ -10,17 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
-import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -30,7 +29,6 @@ import java.util.concurrent.TimeoutException;
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.faulttolerance.impl.policy.TimeoutPolicyImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutorBuilder;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
@@ -51,7 +49,7 @@ public class AsyncTest extends AbstractFTTest {
         ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
         Executor<Future<String>> executor = builder.buildAsync(Future.class);
 
-        Future<String>[] futures = new Future[TASKS];
+        List<Future<String>> futures = new ArrayList<>();
         try {
             for (int i = 0; i < TASKS; i++) {
                 String id = "testAsync" + i;
@@ -59,16 +57,16 @@ public class AsyncTest extends AbstractFTTest {
                 ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
                 Future<String> future = executor.execute(callable, context);
                 assertFalse(future.isDone());
-                futures[i] = future;
+                futures.add(future);
             }
 
             for (int i = 0; i < TASKS; i++) {
-                String data = futures[i].get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
+                String data = futures.get(i).get(FUTURE_TIMEOUT, TimeUnit.MILLISECONDS);
                 assertEquals("testAsync" + i, data);
             }
         } finally {
             for (int i = 0; i < TASKS; i++) {
-                Future<String> future = futures[i];
+                Future<String> future = futures.get(i);
                 if (future != null && !future.isDone()) {
                     future.cancel(true);
                 }
@@ -96,40 +94,25 @@ public class AsyncTest extends AbstractFTTest {
     }
 
     @Test
-    public void testAsyncTimeout() throws InterruptedException {
-        TimeoutPolicyImpl timeout = new TimeoutPolicyImpl();
-        timeout.setTimeout(Duration.ofMillis(500));
-
+    public void testAsyncCS() throws InterruptedException, ExecutionException, TimeoutException {
         ExecutorBuilder<String, String> builder = FaultToleranceProvider.newExecutionBuilder();
-        builder.setTimeoutPolicy(timeout);
-        Executor<Future<String>> executor = builder.buildAsync(Future.class);
+        Executor<CompletionStage<String>> executor = builder.buildAsync(CompletionStage.class);
+        ExecutionContext context = executor.newExecutionContext("testAsyncCS", null);
 
-        String id = "testAsyncTimeout";
-        ExecutionContext context = executor.newExecutionContext(id, null);
+        CompletableFuture<String> waitingFuture = new CompletableFuture<>();
 
-        Callable<Future<String>> nonInterruptableTask = () -> {
-            long startTime = System.nanoTime();
-            while (TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime) < 2000) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                } //Ignore interruption
-            }
-            return CompletableFuture.completedFuture("OK");
-        };
+        CompletionStage<String> result = executor.execute(this::waitThenReturnCS, context);
+        result.thenAccept((r) -> {
+            waitingFuture.complete(r);
+        });
 
-        Future<String> future = executor.execute(nonInterruptableTask, context);
-        assertFalse(future.isDone());
+        assertFalse("Waiting future is done", waitingFuture.isDone());
+        waitingFuture.get(2000, TimeUnit.MILLISECONDS);
+    }
 
-        Thread.sleep(700); // Sleep until Timeout should have fired
-
-        assertTrue("Future did not complete quickly enough", future.isDone());
-        try {
-            future.get();
-            fail("Future did not throw exception");
-        } catch (ExecutionException e) {
-            assertThat("Exception thrown by future", e.getCause(), instanceOf(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class));
-        }
+    private CompletionStage<String> waitThenReturnCS() throws InterruptedException {
+        Thread.sleep(1000);
+        return CompletableFuture.completedFuture("Test");
     }
 
 }

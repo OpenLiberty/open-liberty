@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 2.0
+ * Includes interfaces for Fault Tolerance State objects, which each implement one of the fault tolerance policies.
+ * <p>
+ * Implementations for these interfaces are created using the methods on {@link com.ibm.ws.microprofile.faulttolerance20.state.FaultToleranceStateFactory}
  */
-@org.osgi.annotation.versioning.Version("2.0") // Last updated for 18.0.0.4
-@TraceOptions(traceGroup = "FAULTTOLERANCE", messageBundle = "com.ibm.ws.microprofile.faulttolerance.resources.FaultTolerance")
-package com.ibm.ws.microprofile.faulttolerance.impl;
+@TraceOptions(traceGroup = "FAULTTOLERANCE")
+package com.ibm.ws.microprofile.faulttolerance20.state;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

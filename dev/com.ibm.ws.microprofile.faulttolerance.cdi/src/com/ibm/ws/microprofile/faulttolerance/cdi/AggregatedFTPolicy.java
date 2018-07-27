@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.Future;
 
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 
@@ -139,7 +140,7 @@ public class AggregatedFTPolicy {
                 ExecutorBuilder<ExecutionContext, ?> builder = newBuilder();
 
                 if (isAsynchronous()) {
-                    this.executor = builder.buildAsync();
+                    this.executor = builder.buildAsync(Future.class);
                 } else {
                     this.executor = builder.build();
                 }

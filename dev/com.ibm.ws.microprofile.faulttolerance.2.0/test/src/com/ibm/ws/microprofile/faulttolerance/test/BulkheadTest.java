@@ -10,8 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.test;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -266,9 +268,11 @@ public class BulkheadTest extends AbstractFTTest {
             try {
                 futures[4] = executor.execute(callable, context);
                 System.out.println(System.currentTimeMillis() + " Test " + id + " - submitted");
+                assertTrue(futures[4].isDone());
+                futures[4].get();
                 fail("Exception not thrown");
-            } catch (BulkheadException e) {
-                //expected
+            } catch (ExecutionException e) {
+                assertThat(e.getCause(), instanceOf(BulkheadException.class));
             }
         } finally {
             for (int i = 0; i < 5; i++) {
