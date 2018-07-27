@@ -22,8 +22,7 @@
     </library>
 
     <dataSource id="DefaultDataSource">
-      <jdbcDriver libraryRef="FATDriverLib"
-                  javax.sql.XADataSource="jdbc.fat.driver.derby.xa.FAT2PCDataSource"/> <!-- TODO automatically locate this data source class -->
+      <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
       <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
