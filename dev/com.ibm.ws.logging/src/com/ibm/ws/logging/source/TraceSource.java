@@ -23,7 +23,6 @@ import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
-import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
@@ -33,7 +32,6 @@ public class TraceSource implements Source {
     private final String sourceName = "com.ibm.ws.logging.source.trace";
     private final String location = "memory";
     private BufferManager bufferMgr = null;
-    private final SequenceNumber sequenceNumber = new SequenceNumber();
     //private final AtomicLong seq = new AtomicLong();
 
     protected void activate(Map<String, Object> configuration) {
@@ -135,8 +133,7 @@ public class TraceSource implements Source {
             extensions = null;
         }
 
-        String sequenceNum = sequenceNumber.next(datetimeValue);
-        traceData.setSequence(sequenceNum);
+        traceData.setSequence(null);
 
         traceData.setThrowable(null);
         traceData.setThrowableLocalized(null);

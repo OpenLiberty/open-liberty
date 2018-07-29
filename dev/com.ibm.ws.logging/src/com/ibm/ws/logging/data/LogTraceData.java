@@ -10,12 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.ibm.ws.logging.collector.LogFieldConstants;
+import com.ibm.ws.logging.utils.SequenceNumber;
 
 /**
  *
  */
 public class LogTraceData extends GenericData {
+
+    private final SequenceNumber sequenceNumber = new SequenceNumber();
+    static Pattern messagePattern;
+
+    static {
+        messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
+    }
 
     private final static String[] NAMES1_1 = {
                                                LogFieldConstants.IBM_DATETIME,
@@ -357,7 +368,15 @@ public class LogTraceData extends GenericData {
     }
 
     public String getMessageId() {
-        return getStringValue(1);
+        String messageId = getStringValue(1);
+        if (messageId == null || messageId.isEmpty()) {
+            String message = getMessage();
+            if (message != null) {
+                messageId = parseMessageId(message);
+                this.modifyPair(1, NAMES1_1[1], messageId);
+            }
+        }
+        return messageId;
     }
 
     public int getThreadId() {
@@ -409,7 +428,12 @@ public class LogTraceData extends GenericData {
     }
 
     public String getSequence() {
-        return getStringValue(14);
+        String sequenceId = getStringValue(14);
+        if (sequenceId == null || sequenceId.isEmpty()) {
+            sequenceId = sequenceNumber.next(getDatetime());
+            this.modifyPair(14, NAMES1_1[14], sequenceId);
+        }
+        return sequenceId;
     }
 
     public String getThrowable() {
@@ -434,6 +458,17 @@ public class LogTraceData extends GenericData {
 
     public int getObjectId() {
         return getIntValue(20);
+    }
+
+    /**
+     * @return the message ID for the given message.
+     */
+    protected String parseMessageId(String msg) {
+        String messageId = null;
+        Matcher matcher = messagePattern.matcher(msg);
+        if (matcher.find())
+            messageId = msg.substring(matcher.start(), matcher.end() - 1);
+        return messageId;
     }
 
 }

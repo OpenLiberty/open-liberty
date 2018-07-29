@@ -28,6 +28,11 @@ public class GenericData {
         pairs = new ArrayList<KeyValuePair>(size);
     }
 
+    public void modifyPair(int index, String key, String value) {
+        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
+        pairs.set(index, kvp);
+    }
+
     public void setPair(int index, String key, String value) {
         KeyValueStringPair kvp = new KeyValueStringPair(key, value);
         pairs.add(index, kvp);
