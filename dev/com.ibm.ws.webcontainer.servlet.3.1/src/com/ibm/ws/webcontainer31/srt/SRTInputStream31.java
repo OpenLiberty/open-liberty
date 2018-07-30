@@ -43,9 +43,9 @@ public class SRTInputStream31 extends SRTInputStream
     private SRTServletRequest31 request;
     private Object lockObj = new Object() {};
     private Object completeLockObj = new Object() {};  
-    private Boolean asyncReadOutstanding = false;
-    private Boolean readLineCall = false;
-    private Boolean isClosed = false;
+    private boolean asyncReadOutstanding = false;
+    private boolean readLineCall = false;
+    private boolean isClosed = false;
     private final static TraceComponent tc = Tr.register(SRTInputStream31.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
 
     /**
@@ -398,7 +398,7 @@ public class SRTInputStream31 extends SRTInputStream
     }
     
         
-    public void setAsyncReadOutstanding(Boolean asyncReadOutstanding){
+    public void setAsyncReadOutstanding(boolean asyncReadOutstanding){
         this.asyncReadOutstanding = asyncReadOutstanding;
     }
     
