@@ -7,6 +7,7 @@ IBM-API-Package: \
   org.eclipse.microprofile.auth; type="stable"
 Subsystem-Name: Micro Profile Json Web Token 1.0
 -features=com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
+  com.ibm.websphere.appserver.authFilter-1.0, \
   com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:=2.0, \
   com.ibm.websphere.appserver.jwt-1.0, \
   com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:=1.1, \

@@ -80,6 +80,7 @@ Include-Resource: \
         com.ibm.ws.security;version=latest, \
         com.ibm.ws.security.authentication.tai;version=latest, \
         com.ibm.ws.security.authentication;version=latest, \
+        com.ibm.ws.security.authentication.filter;version=latest,\
         com.ibm.ws.org.jose4j.0.5.1;version=latest, \
         com.ibm.ws.security.jwt;version=latest, \
         com.ibm.ws.security.token;version=latest, \
