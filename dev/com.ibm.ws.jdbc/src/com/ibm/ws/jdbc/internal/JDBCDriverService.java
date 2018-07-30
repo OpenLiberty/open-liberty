@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -44,6 +45,7 @@ import javax.sql.XADataSource;
 
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -369,13 +371,21 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
              || null != (className = (String) properties.get(XADataSource.class.getName()))
              || null != (className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true)))
+             || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true))))
+                return create(className, props);
 
-             || nonshipFunction && null != (className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
-                                                                                JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
-                                                                                JDBCDrivers.DATA_SOURCE,
-                                                                                JDBCDrivers.XA_DATA_SOURCE)))
-                 return create(className, props);
+            if (nonshipFunction) {
+                Driver driver = loadDriver(props, classloader);
+                if (driver != null)
+                    return driver;
+
+                className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                       JDBCDrivers.DATA_SOURCE,
+                                                                       JDBCDrivers.XA_DATA_SOURCE);
+                if (className != null)
+                    return create(className, props);
+            }
 
             throw classNotFound(null);
         } finally {
@@ -429,13 +439,21 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
              || null != (className = (String) properties.get(DataSource.class.getName()))
              || null != (className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true)))
-
-             || nonshipFunction && null != (className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
-                                                                                JDBCDrivers.XA_DATA_SOURCE,
-                                                                                JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
-                                                                                JDBCDrivers.DATA_SOURCE)))
+             || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true))))
                 return create(className, props);
+
+            if (nonshipFunction) {
+                Driver driver = loadDriver(props, classloader);
+                if (driver != null)
+                    return driver;
+
+                className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                       JDBCDrivers.XA_DATA_SOURCE,
+                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                       JDBCDrivers.DATA_SOURCE);
+                if (className != null)
+                    return create(className, props);
+            }
 
             throw classNotFound(null);
         } finally {
@@ -645,6 +663,81 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getClasspath", classpath);
         return classpath;
+    }
+
+    /**
+     * Load java.sql.Driver implementations available to the specific class loader and return
+     * the first that accepts the URL (if any) that is specified in the vendor properties.
+     *
+     * @param vProps configured JDBC vendor properties.
+     * @param classloader class loader from which to load JDBC drivers.
+     * @return Driver instance that accepts the URL. NULL if no such Driver can be loaded.
+     * @throws SQLException if an error occurs.
+     */
+    private Driver loadDriver(Properties vProps, ClassLoader classloader) throws SQLException {
+        String url = vProps.getProperty("URL", vProps.getProperty("url"));
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            Tr.entry(this, tc, "loadDriver", url, classloader);
+
+        SQLException failure = null;
+        if (url != null)
+            for (Driver driver : ServiceLoader.load(Driver.class, classloader)) {
+                boolean acceptsURL;
+                try {
+                    acceptsURL = driver.acceptsURL(url);
+                } catch (SQLException x) {
+                    if (failure != null)
+                        failure = x;
+                    acceptsURL = false;
+                }
+                if (acceptsURL) {
+                    // TODO When it does matching, DataSourceService.modified method will dislike that we have stringified the values. Need to allow for this.
+                    // convert property values to String and decode passwords 
+                    for (Map.Entry<Object, Object> prop : vProps.entrySet()) {
+                        Object value = prop.getValue();
+                        if (value instanceof String) {
+                            String str = (String) value;
+                            // Decode passwords
+                            if (PropertyService.isPassword((String) prop.getKey()) && PasswordUtil.getCryptoAlgorithm(str) != null)
+                                try {
+                                    prop.setValue(PasswordUtil.decode(str));
+                                } catch (Exception x) {
+                                    if (trace && tc.isEntryEnabled())
+                                        Tr.exit(this, tc, "loadDriver", x);
+                                    if (x instanceof SQLException)
+                                        throw (SQLException) x;
+                                    else
+                                        throw new SQLNonTransientException(x);
+                                }
+                        } else {
+                            // Convert to String value
+                            prop.setValue(value.toString());
+                        }
+                    }
+
+                    if (classloader != null && url.startsWith("jdbc:derby:") && isDerbyEmbedded.compareAndSet(false, true)) {
+                        embDerbyRefCount.add(classloader);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "ref count for shutdown", classloader, embDerbyRefCount);
+                    }
+
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(this, tc, "loadDriver", driver);
+                    return driver;
+                } else {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, driver + " does not accept url");
+                }
+            }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "loadDriver", failure);
+        if (failure == null)
+            return null;
+        else
+            throw failure;
     }
 
     /**

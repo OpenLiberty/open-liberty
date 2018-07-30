@@ -200,7 +200,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
     @Test
     public void testFATDriver() throws Exception {
         Class.forName("jdbc.fat.driver.derby.FATDriver");
-        Connection conn = DriverManager.getConnection("jdbc:derby:memory:wrappedDerby;create=true");
+        Connection conn = DriverManager.getConnection("jdbc:fatdriver:memory:jdbcdriver1;create=true");
         try {
             System.out.println("Connected to " + conn.getMetaData().getDatabaseProductName());
             conn.createStatement().executeQuery("VALUES 1");
