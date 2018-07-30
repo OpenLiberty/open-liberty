@@ -121,6 +121,8 @@ public class FileLogHolder implements TraceWriter {
      *            New maximum number of log files. If 0, log files won't be pruned.
      * @param maxSizeBytes
      *            New maximum log file size in bytes. If 0, log files won't be rolled.
+     * @param fillExistingFile
+     *            Whether to fill an existing primary file (if it exists) if there's space.
      * @return a log holder. If all values are the same, the old one is returned, otherwise a new log holder is created.
      */
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
@@ -212,8 +214,6 @@ public class FileLogHolder implements TraceWriter {
             setStreamStatus(StreamStatus.INIT, currentFileStream, currentCountingStream, currentPrintStream);
         }
 
-        EmergencyLog.debug(FileLogHolder.class, "update", newMaxSizeBytes);
-
         maxFileSizeBytes = newMaxSizeBytes;
     }
 
@@ -275,22 +275,25 @@ public class FileLogHolder implements TraceWriter {
         switch (currentStatus) {
             case INIT:
 
-                EmergencyLog.debug(FileLogHolder.class, "getPrintStream", fillExistingFile, EmergencyLog.getCurrentStack());
-
                 if (fillExistingFile) {
                     // Check if we can fill into an existing file (including
                     // a new log header).
                     File primaryFile = getPrimaryFile();
                     if (primaryFile.exists()) {
 
-                        EmergencyLog.debug(FileLogHolder.class, "getPrintStream", primaryFile.getAbsolutePath(), primaryFile.length(), logHeader.length(), numNewChars,
-                                           maxFileSizeBytes);
+                        // If maxFileSize is set in bootstrap.properties, then maxFileSizeBytes will have been
+                        // updated before this INIT check to that value; otherwise, if maxFileSize was not
+                        // set (i.e. default) or it was set in server.xml, then config processing hasn't run
+                        // yet, so maxFileSizeBytes will be 0 (there will be an `update` call later). In the
+                        // latter case, this means that we might add the logging header (about 1KB) plus
+                        // any other messages up until that size update, meaning that we could go
+                        // over the configured maxFileSize by a little bit, but this is okay. In that case,
+                        // maxFileSizeBytes will be 0, so we'll fill the existing file, and then later on,
+                        // it'll roll over if needed.
 
                         if (maxFileSizeBytes <= 0 || primaryFile.length() + logHeader.length() + numNewChars <= maxFileSizeBytes) {
                             // There's space, so print the header and return
                             // the stream.
-
-                            EmergencyLog.debug(FileLogHolder.class, "getPrintStream", "Getting primary stream");
 
                             return getPrimaryStream(true);
                         }
