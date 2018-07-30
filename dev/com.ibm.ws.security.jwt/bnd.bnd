@@ -50,6 +50,7 @@ Import-Package: \
     com.ibm.ws.security.common.web, \
     com.ibm.ws.security.common.jwk.impl, \
     com.ibm.ws.security.common.jwk.interfaces, \
+    com.ibm.ws.webcontainer.security.jwk, \
     com.ibm.json.java.*, \
     org.osgi.service.component.*, \
     org.osgi.framework, \
