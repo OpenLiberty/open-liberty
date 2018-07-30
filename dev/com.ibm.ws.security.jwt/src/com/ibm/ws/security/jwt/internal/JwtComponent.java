@@ -39,9 +39,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
-import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 @Component(service = JwtConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwt.builder", name = "jwtConfig", property = "service.vendor=IBM")
 public class JwtComponent implements JwtConfig {

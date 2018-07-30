@@ -19,6 +19,7 @@ Bundle-SymbolicName: com.ibm.ws.webcontainer.security
 Export-Package: \
   com.ibm.websphere.security.web, \
   com.ibm.ws.webcontainer.security, \
+  com.ibm.ws.webcontainer.security.jwk, \
   com.ibm.ws.webcontainer.security.context, \
   com.ibm.ws.webcontainer.security.internal, \
   com.ibm.ws.webcontainer.security.metadata, \
