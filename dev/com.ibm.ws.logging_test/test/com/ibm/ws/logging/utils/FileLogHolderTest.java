@@ -258,4 +258,47 @@ public class FileLogHolderTest {
             return name.startsWith("b") && name.endsWith(".log");
         }
     };
+
+    /**
+     * Issue 4364: Check that we refill the existing file.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testFillingExistingFile() throws Exception {
+        testFilling("d.log", true);
+
+        // Also check that the old behavior works:
+        testFilling("e.log", false);
+    }
+
+    private void testFilling(String logName, boolean refill) {
+        final String bannerLine = BaseTraceFormatter.banner + LoggingConstants.nl;
+        String headerLine = "header line" + LoggingConstants.nl;
+        String header = bannerLine + headerLine + bannerLine;
+
+        String record = "record";
+
+        writeFileOnce(headerLine, record, logName, refill);
+        writeFileOnce(headerLine, record, logName, refill);
+
+        File f = new File(testLogDir, logName);
+
+        int expected = header.length() + record.length() + LoggingConstants.nlen;
+
+        if (refill) {
+            expected <<= 1;
+        }
+
+        assertTrue("Incorrect file length for " + logName + ". Length: " + f.length() + ", Expected: " + expected + ", Refill: " + refill, f.length() == expected);
+    }
+
+    private void writeFileOnce(String headerLine, String record, String logName, boolean refill) {
+        FileLogHolder d1 = FileLogHolder.createFileLogHolder(null, new FileLogHeader(headerLine, false, false),
+                                                             testLogDir, logName, 2, 0, refill);
+
+        d1.writeRecord(record);
+
+        d1.close();
+    }
 }
