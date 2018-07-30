@@ -20,7 +20,18 @@ public class SequenceNumber {
     private final static String ZEROES = "0000000000000";
 
     /*
-     * Creates the next sequence number string
+     * Creates the next sequence number
+     */
+    public long getRawSequenceNumber(long date) {
+        return seq.incrementAndGet();
+    }
+
+    public String formatSequenceNumber(long date, long n) {
+        return date + "_" + toPaddedHex(n);
+    }
+
+    /*
+     * Creates the next sequence number formatted string
      */
     public String next(long date) {
         long n = seq.incrementAndGet();

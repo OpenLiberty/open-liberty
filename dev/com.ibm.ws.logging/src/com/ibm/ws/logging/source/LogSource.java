@@ -25,6 +25,7 @@ import com.ibm.ws.logging.data.KeyValuePairList;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.utils.LogFormatUtils;
+import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
@@ -35,6 +36,7 @@ public class LogSource implements Source {
     private final String sourceName = "com.ibm.ws.logging.source.message";
     private final String location = "memory";
     private BufferManager bufferMgr = null;
+    private final SequenceNumber sequenceNumber = new SequenceNumber();
 
     protected void activate(Map<String, Object> configuration) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -159,6 +161,7 @@ public class LogSource implements Source {
             extensions = null;
         }
 
+        logData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber(dateVal));
         logData.setSequence(null);
 
         Throwable thrown = logRecord.getThrown();

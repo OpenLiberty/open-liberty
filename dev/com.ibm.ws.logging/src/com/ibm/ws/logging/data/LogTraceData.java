@@ -23,6 +23,7 @@ public class LogTraceData extends GenericData {
 
     private final SequenceNumber sequenceNumber = new SequenceNumber();
     static Pattern messagePattern;
+    private long rawSequenceNumber = -1;
 
     static {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
@@ -430,7 +431,7 @@ public class LogTraceData extends GenericData {
     public String getSequence() {
         String sequenceId = getStringValue(14);
         if (sequenceId == null || sequenceId.isEmpty()) {
-            sequenceId = sequenceNumber.next(getDatetime());
+            sequenceId = sequenceNumber.formatSequenceNumber(getDatetime(), rawSequenceNumber);
             this.modifyPair(14, NAMES1_1[14], sequenceId);
         }
         return sequenceId;
@@ -458,6 +459,14 @@ public class LogTraceData extends GenericData {
 
     public int getObjectId() {
         return getIntValue(20);
+    }
+
+    public void setRawSequenceNumber(long l) {
+        rawSequenceNumber = l;
+    }
+
+    public long getRawSequenceNumber(long l) {
+        return rawSequenceNumber;
     }
 
     /**
