@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.common.jwk.interfaces;
+package com.ibm.ws.webcontainer.security.jwk;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;

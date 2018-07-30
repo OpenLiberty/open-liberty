@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 /**
  *
