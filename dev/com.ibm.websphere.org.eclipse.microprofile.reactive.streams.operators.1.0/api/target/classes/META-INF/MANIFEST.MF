@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1531313579531
+Bundle-License: Apache License, Version 2.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MicroProfile Reactive Streams Bundle
+Bundle-SymbolicName: org.eclipse.microprofile.reactive.streams
+Bundle-Version: 1.0.0.201807111252
+Created-By: 1.8.0_151 (Oracle Corporation)
+Export-Package: org.eclipse.microprofile.reactive.streams;uses:="org.e
+ clipse.microprofile.reactive.streams.spi,org.reactivestreams";version
+ ="1.0.0",org.eclipse.microprofile.reactive.streams.spi;uses:="org.ecl
+ ipse.microprofile.reactive.streams,org.reactivestreams";version="1.0.
+ 0"
+Import-Package: org.reactivestreams;version="[1.0.0,2)",org.eclipse.mi
+ croprofile.reactive.streams,org.eclipse.microprofile.reactive.streams
+ .spi
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-3.4.0.201707252008

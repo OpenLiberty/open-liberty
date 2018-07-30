@@ -1,0 +1,130 @@
+//
+// Copyright (c) 2018 Contributors to the Eclipse Foundation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+[[reactivestreamsarchitecture]]
+== Introduction
+
+This specification defines an API for manipulating Reactive Streams, providing operators such as `map`, `filter`, `flatMap`, in a similar fashion to the `java.util.streams` API introduced in Java 8.
+It also provides an SPI for implementing and providing custom Reactive Streams engines, allowing application developers to use whichever engine they see fit.
+
+=== Rationale
+
+The `java.util.streams` API provides functionality necessary for manipulating streams in memory introducing functional programming into the Java language.
+However, manipulating potentially infinite asynchronous streams has some very different requirements which the `java.util.streams` API is not suitable for.
+
+Reactive Streams is a specification for asynchronous streaming between different libraries and/or technologies, which is included in JDK9 as the `java.util.concurrent.Flow` spec.
+Reactive Streams itself however is an SPI for library and technology vendors to implement, it is not intended that application developers implement it as the semantics are very complex.
+
+Commonly, Reactive Streams requires more than just plumbing `publishers` to `subscribers`, the stream typically needs to be manipulated in some way, such as applying operations such as `map`, `filter` and `flatMap`.
+Neither Reactive Streams, nor the JDK, provides an API for doing these manipulations.
+Since users are not meant to implement Reactive Streams themselves, this means the only way to do these manipulations currently is to depend on a third party library providing operators, such as https://doc.akka.io/docs/akka/current/stream/index.html[Akka Streams], https://github.com/ReactiveX/RxJava[RxJava] or https://projectreactor.io/[Reactor].
+
+This API seeks to fill that gap, so that MicroProfile application developers can manipulate Reactive Streams without bringing in a third party dependency.
+By itself, this API is not interesting to MicroProfile, but with the addition of other Reactive features, such as the MicroProfile Reactive Messaging proposal, it is essential.
+
+There are a number of different approaches to handling the cross cutting concerns relating to actually running streams.
+These include how and whether context is propagated, concurrency models, buffering, hooks for monitoring and remoting.
+Different implementations of Reactive Streams offer different approaches based on varying opinions on how these cross cutting concerns should be treated.
+For this reason, this API provides an underlying SPI to allow different engines to be plugged in to actually run the streams.
+Implementors of this spec will provide a default implementation, however users can select to use a custom implementation if they need.
+
+This specification started as a proposal for the JDK, but after discussions there, it was decided that the JDK was not the right place to incubate such an API.
+It is the intention that once incubated in MicroProfile, this specification will be put to the JDK again as a proposal.
+
+=== Scope
+
+This specification aims to define a set of operators to manipulate Reactive Streams. The proposed API is voluntarily close to the `java.utils.Stream` API.
+
+It does not define CDI and container API integrations but implementations may provide integrations.
+
+=== Reactive Streams API dependency
+
+Reactive Streams has been included in the JDK9 as the `java.util.concurrent.Flow` API, which contains the `Publisher`, `Subscriber`, `Subscription` and `Processor` interfaces as nested interfaces of `Flow`.
+MicroProfile however is not ready to move to a baseline requirement for JDK9 or above.
+
+For this reason, this proposal uses the JDK6 compatible `org.reactivestreams` API, which provides identical `Publisher`, `Subscriber`, `Subscription` and `Processor` interfaces as members of the `org.reactivestreams` package.
+This dependency contains nothing but those interfaces.
+
+It has been discussed that MicroProfile could copy those interfaces itself, so as to not add this dependency, however this would most likely frustrate use of Reactive Streams in MicroProfile.
+There is a large ecosystem built around the `org.reactivestreams` interfaces.
+If application developers wanted to leverage that ecosystem in their application, they would have to write adapters to bridge the two APIs.
+Given that the `org.reactivestreams` dependency is a jar that contains only these interfaces, identical to the interfaces in JDK9, there doesn't seem to be any value in copying them again into MicroProfile.
+
+To facilitate an eventual migration to the JDK9 interfaces, once MicroProfile adopts JDK9 or later as a baseline JDK version, all methods that pass `org.reactivestreams` interfaces to the user (either as a return value, or by virtue of a user providing a callback to the method to receive it) will have `Rs` added to their name.
+For example, `getSubscriber` will be called `getRsSubscriber`.
+This will allow new methods to be added in future that return `java.util.concurrent.Flow` interfaces, without the `Rs` in the name, allowing the existing `Rs` methods to be kept for a limited time for backwards compatibility.
+Methods that accept a `org.reactivestreams` interface do not need to be given the same treatment, as support for the JDK9 interfaces can be added by overloading them, with backwards compatibility being maintained (see https://github.com/eclipse/microprofile-reactive/blob/master/approach.asciidoc[reactive approach for MicroProfile]).
+
+== Design
+
+The design of MicroProfile Reactive Streams is centered around **builders** for the various shapes of streams.
+There are four different shapes of streams that can be built:
+
+* Processors. A processor has one inlet and one outlet, and is represented as a Reactive Streams `Processor` when built. This is called a `ProcessorBuilder`.
+
+* Publishers. A publisher has one outlet but no inlet, and is represented as a Reactive Streams `Publisher` when built. This is called a `PublisherBuilder`
+
+* Subscribers. A subscriber has one inlet but no outlet, and it also has a result. It is represented as a product of a Reactive Streams `Subscriber` and a `CompletionStage` that is redeemed with the result, or error if the stream fails, when built. This is called a `SubscriberBuilder`.
+
+image::shapes.png[Shapes,400,400,align="center"]
+
+* Closed graphs. A closed graph has no inlet or outlet, both having being provided in during the construction of the graph
+. It is represented as a `CompletionStage` of the result of the stream. This is called a `CompletionRunner`. The result is
+ retrieved using the `run` method.
+
+image::graph.png[Closed graph,250,250,align="center"]
+
+While building a stream, the stream may change shape during its construction.
+For example, a publisher may be collected into a `List` of elements.
+When this happens, the stream becomes a closed graph, since there is no longer an outlet, but just a result, the result being the `List` of elements:
+
+[source, java]
+----
+PublisherBuilder<Integer> intsPublisher =
+  ReactiveStreams.of(1, 2, 3); <1>
+
+CompletionRunner<List<Integer>> intsResult =
+  intsPublisher.toList(); <2>
+----
+<1> A publisher of integers 1, 2 and 3.
+<2> A closed graph that emits all the received integers as a result.
+
+
+Or, a processor may be plumbed to a subscriber, in which case, the resulting builder is now a subscriber:
+
+[source, java]
+----
+ProcessorBuilder<Integer, String> toStringProcessor =
+  ReactiveStreams.<Integer>builder()
+    .map(Object::toString); <1>
+
+SubscriberBuilder<Integer, List<String>> toListSubscriber =
+  toStringProcessor.toList(); <2>
+----
+<1> A processor that receives integers and emits them as strings.
+<2> A subscriber that receives integers, and emits all the integers as Strings in a List when the stream completes.
+
+When MicroProfile specifications provide an API that uses Reactive Streams, it is intended that application developers can return and pass the builder interfaces directly to the MicroProfile APIs.
+In many cases, application developers will not need to run the streams themselves.
+However, should they need to run the streams directly themselves, they can do so by using the streams `build` or `run`
+methods. `PublisherBuilder`, `SubscriberBuilder` and `ProcessorBuilder` all provide a `build` method that returns a
+`Publisher`, `CompletionSubscriber` and `Processor` respectively, while `CompletionRunner`, since it actually
+runs the stream, provides a `run` method that returns a `CompletionStage`.
+
+The `CompletionSubscriber` class is so named because, where a `CompletionStage` is a stage of asynchronous computation that completes with a value or an error, a `CompletionSubscriber` is subscriber to an asynchronous stream that completes with a value or an error.
+
+The `build` and `run` methods both provide a zero arg variant, which uses the default Reactive Streams engine provided by the platform, as well as a overload that takes a `ReactiveStreamsEngine`, allowing application developers to use a custom engine when they please.
+

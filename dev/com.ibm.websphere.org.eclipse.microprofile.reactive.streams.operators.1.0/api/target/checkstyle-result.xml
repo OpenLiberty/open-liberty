@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.11.2">
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/InternalStages.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/ProcessorBuilder.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/SubscriberBuilder.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/CompletionRunner.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/ReactiveStreamsGraphBuilder.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/ReactiveStreams.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/Stage.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/ReactiveStreamsEngine.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/UnsupportedStageException.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/Graph.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/package-info.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/Reductions.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/CompletionSubscriber.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/PublisherBuilder.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/package-info.java">
+</file>
+</checkstyle>

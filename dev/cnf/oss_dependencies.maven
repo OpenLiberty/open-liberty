@@ -305,4 +305,5 @@ xalan:xalan:2.7.1
 xerces:xercesImpl:2.11.0
 commons-collections:commons-collections:3.2.2
 org.reactivestreams:reactive-streams:1.0.2
+org.reactivestreams:reactive-streams-tck:1.0.2
 #org.eclipse.microprofile.reactive.streams:microprofile-reactive-streams-operators:1.0

@@ -54,7 +54,7 @@ testsrc: test/src
   com.ibm.ws.org.reactivestreams.interfaces;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest
-
+  
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
   com.ibm.ws.junit.extensions;version=latest, \

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="6.11.2">
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/FlatMapStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/FlatMapPublisherStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/ConcatStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/DistinctStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/EmptyProcessorVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/FindFirstStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/TakeWhileStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/FlatMapIterableStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/CancelStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/MapStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/OnStagesVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/FilterStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/ReactiveStreamsTck.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/AbstractStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/LimitStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/OfStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/SkipStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/DropWhileStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/CollectStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/FlatMapCompletionStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/PeekStageVerification.java">
+</file>
+<file name="/Users/hutchig/git/microprofile-reactive/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/SubscriberStageVerification.java">
+</file>
+</checkstyle>

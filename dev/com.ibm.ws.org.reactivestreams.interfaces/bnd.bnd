@@ -15,7 +15,8 @@ Bundle-Name: Reactive Streams Interfaces
 Bundle-SymbolicName: com.ibm.ws.org.reactivestreams.interfaces
 Bundle-Description: Bundle for exposing and constraining the org.reactivestreams interfaces to Liberty ; version=${bVersion}
 
-Export-Package: org.reactivestreams
+Export-Package: org.reactivestreams, \
+                org.reactivestreams.tck
 
 -buildpath: \
     com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2

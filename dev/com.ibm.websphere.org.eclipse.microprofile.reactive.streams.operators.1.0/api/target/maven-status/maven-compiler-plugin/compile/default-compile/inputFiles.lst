@@ -1,0 +1,15 @@
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/ReactiveStreams.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/CompletionSubscriber.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/SubscriberBuilder.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/package-info.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/Stage.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/Reductions.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/UnsupportedStageException.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/InternalStages.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/CompletionRunner.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/PublisherBuilder.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/ProcessorBuilder.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/ReactiveStreamsEngine.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/spi/Graph.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/package-info.java
+/Users/hutchig/git/microprofile-reactive/streams/api/src/main/java/org/eclipse/microprofile/reactive/streams/ReactiveStreamsGraphBuilder.java
