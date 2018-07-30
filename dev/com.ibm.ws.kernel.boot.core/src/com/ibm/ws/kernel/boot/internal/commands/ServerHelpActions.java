@@ -14,7 +14,7 @@ import com.ibm.ws.kernel.boot.HelpActions;
 
 public class ServerHelpActions implements HelpActions {
     private enum Command {
-        createCmd(Category.lifecycle, "template"),
+        createCmd(Category.lifecycle, "template", "no-password"),
         debugCmd(Category.lifecycle, "clean"),
         dumpCmd(Category.service, "archive"),
         helpCmd(Category.help),
@@ -119,15 +119,20 @@ public class ServerHelpActions implements HelpActions {
     private static final Map<Category, List<Command>> commandsByCategory = Command.commandsMap();
     private static final ResourceBundle rb = ResourceBundle.getBundle("com.ibm.ws.kernel.boot.resources.LauncherOptions");
 
+    @Override
     public Object toAction(String val) {
         return Command.toCommand(val);
     }
+
+    @Override
     public boolean isHelpAction(Object action) {
         return action == Command.helpCmd;
     }
+
+    @Override
     public String allActions() {
         List<Command> cmds = Command.commands();
-        
+
         StringBuilder builder = new StringBuilder();
         builder.append('{');
         for (Command c : cmds) {
@@ -136,17 +141,20 @@ public class ServerHelpActions implements HelpActions {
         }
         builder.deleteCharAt(builder.length() - 1);
         builder.append('}');
-        
+
         return builder.toString();
     }
+
+    @Override
     public Collection<String> options(Object action) {
         if (action instanceof Command) {
-            return ((Command)action).options();
+            return ((Command) action).options();
         } else {
             return new ArrayList<String>();
         }
     }
 
+    @Override
     public Collection<?> getCategories() {
         List<?> categories = new ArrayList<Category>(Arrays.asList(Category.values()));
 
@@ -157,10 +165,12 @@ public class ServerHelpActions implements HelpActions {
         return categories;
     }
 
+    @Override
     public Collection<?> geActionsForCategories(Object c) {
         return commandsByCategory.get(c);
     }
 
+    @Override
     public ResourceBundle getResourceBundle() {
         return rb;
     }
