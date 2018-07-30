@@ -24,11 +24,14 @@ import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
@@ -37,6 +40,7 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -64,6 +68,10 @@ public class JwKRetriever {
 	String keyFileName = null;
 
 	boolean hostNameVerificationEnabled = true;
+	
+	String jwkClientId = null;
+	
+	String jwkClientSecret = null;
 
 	/**
 	 *
@@ -77,13 +85,15 @@ public class JwKRetriever {
 	 *            using the jwkSet from the config
 	 * @param hnvEnabled 
 	 */
-	public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled) {
+	public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret) {
 		this.configId = configId;
 		this.sslConfigurationName = sslConfigurationName;
 		this.jwkEndpointUrl = jwkEndpointUrl;
 		this.jwkSet = jwkSet; // get the JWKSet from the Config
 		this.sslSupport = sslSupport;
 		this.hostNameVerificationEnabled = hnvEnabled;
+		this.jwkClientId = jwkClientId;
+		this.jwkClientSecret = jwkClientSecret;
 	}
 
 //	public JwKRetriever(JwtConsumerConfig config) {
@@ -490,8 +500,10 @@ public class JwKRetriever {
 
 		HttpClient client = null;
 
+		BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(jwkClientId, jwkClientSecret));
 		if (url.startsWith("http:")) {
-			client = HttpClientBuilder.create().build();
+			client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
 		} else {
 			SSLConnectionSocketFactory connectionFactory = null;
 			if (!isHostnameVerification) {
@@ -499,13 +511,8 @@ public class JwKRetriever {
 			} else {
 				connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
 			}
-			client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+			client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
 		}
-
-		// BasicCredentialsProvider credentialsProvider = new
-		// BasicCredentialsProvider();
-		// credentialsProvider.setCredentials(AuthScope.ANY, new
-		// UsernamePasswordCredentials("username", "mypassword"));
 
 		return client;
 
