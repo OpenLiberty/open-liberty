@@ -82,7 +82,7 @@ public class FileLogHolderTest {
 
         // Create a log file with 50byte limit that will keep at most 2 files.
         FileLogHolder a1 = FileLogHolder.createFileLogHolder(null, new FileLogHeader(headerLine, false, false),
-                                                             testLogDir, "a.log", 2, headerLen + aRecordLen + (rolledRecordLen / 2));
+                                                             testLogDir, "a.log", 2, headerLen + aRecordLen + (rolledRecordLen / 2), true);
         a1.writeRecord(aRecord);
 
         assertEquals("fileName should match expected", "a", a1.fileLogSet.getFileName());
@@ -117,7 +117,7 @@ public class FileLogHolderTest {
         // Now lets change the maxNumFiles and maxFileSizeBytes and repeat.
         // a1 and a2 should be the same instance (updates applied)
         FileLogHolder a2 = FileLogHolder.createFileLogHolder(a1, new FileLogHeader(headerLine, false, false),
-                                                             testLogDir, "a.log", 1, headerLen + 20);
+                                                             testLogDir, "a.log", 1, headerLen + 20, true);
         assertSame("a1 and a2 should be the same instance", a1, a2);
         assertEquals("maxNumFiles should have changed to new value", 1, a2.fileLogSet.getMaxFiles());
         assertEquals("maxFileSizeBytes should have changed to new value", headerLen + 20, a2.maxFileSizeBytes);
@@ -132,7 +132,7 @@ public class FileLogHolderTest {
         // Now, let's change the log name to b*. Nothing should happen to the a* log file.
         // a1 and b1 should still be the same log holder instance
         // It should have a new regex pattern for the new filename
-        FileLogHolder b1 = FileLogHolder.createFileLogHolder(a1, null, testLogDir, "b.log", 1, headerLen + 20);
+        FileLogHolder b1 = FileLogHolder.createFileLogHolder(a1, null, testLogDir, "b.log", 1, headerLen + 20, true);
         assertSame("a1 and b1 should be the same instance", a1, b1);
         assertEquals("fileName should match expected", "b", b1.fileLogSet.getFileName());
         assertEquals("fileExtension should match expected", ".log", b1.fileLogSet.getFileExtension());
@@ -148,7 +148,7 @@ public class FileLogHolderTest {
         assertEquals("Only one b* file should exist", 1, getLogFiles(bLogFilter).length);
 
         // Turn off log-rolling
-        FileLogHolder b2 = FileLogHolder.createFileLogHolder(b1, null, testLogDir, "b.log", 1, 0);
+        FileLogHolder b2 = FileLogHolder.createFileLogHolder(b1, null, testLogDir, "b.log", 1, 0, true);
         assertSame("b1 and b2 should be the same instance", b1, b2);
         assertEquals("maxFileSizeBytes should have changed to new value", 0, b2.maxFileSizeBytes);
         assertEquals("maxFiles should be preserved", 1, b2.fileLogSet.getMaxFiles());
@@ -196,7 +196,7 @@ public class FileLogHolderTest {
 
         // Now let's create a new c.log. the previous a and b logs should stay present.
         // Purpose is to test whether or not lock on file can be released.
-        FileLogHolder c1 = FileLogHolder.createFileLogHolder(null, null, testLogDir, "c.log", 1, 0);
+        FileLogHolder c1 = FileLogHolder.createFileLogHolder(null, null, testLogDir, "c.log", 1, 0, true);
 
         // Verify that c.log does not exist, write text to log, and check that file exists
         File cLog = new File(testLogDir, "c.log");
