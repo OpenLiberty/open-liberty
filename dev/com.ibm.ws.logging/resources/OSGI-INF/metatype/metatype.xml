@@ -99,6 +99,10 @@
             <Option value="INFO" label="INFO"/>
             <Option value="NONE" label="NONE"/>
         </AD>
+
+        <AD name="%fillExistingFile" description="%fillExistingFile.desc" 
+            ibm:variable="com.ibm.ws.logging.fillExistingFile"
+            id="fillExistingFile" required="false" type="Boolean" default="true" />  
     </OCD>
   
     <Designate pid="com.ibm.ws.logging">
