@@ -363,7 +363,20 @@ public class JDBCDrivers {
         // Load JDBC driver class from service registry and use the package to infer the data source class
         ServiceLoader<Driver> serviceLoader = loader == null ? ServiceLoader.load(Driver.class) : ServiceLoader.load(Driver.class, loader);
         if (serviceLoader != null) {
-            for (Iterator<Driver> it = serviceLoader.iterator(); found[preferredType] == null && it.hasNext(); ) {
+            // In order to give preference to JDBC drivers supplied by the user,
+            // move to the end of the list any JDBC drivers that are packaged with Java
+            List<Driver> drivers = new ArrayList<Driver>();
+            List<Driver> builtInDrivers = new ArrayList<Driver>();
+            for (Iterator<Driver> it = serviceLoader.iterator(); it.hasNext(); ) {
+                Driver driver = it.next();
+                if (driver.getClass().getName().startsWith("sun."))
+                    builtInDrivers.add(driver);
+                else
+                    drivers.add(driver);
+            }
+            drivers.addAll(builtInDrivers);
+
+            for (Iterator<Driver> it = drivers.iterator(); found[preferredType] == null && it.hasNext(); ) {
                 Driver driver = it.next();
                 String driverClassName = driver.getClass().getName();
                 String driverPackage = null;
