@@ -864,7 +864,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
 
     private void handleConfigUpdateException(ConfigUpdateException e) {
         Tr.error(tc, "error.config.update.init", e.getMessage());
-        if (getOnError(variableRegistryService).equals(OnError.FAIL)) {
+        if (ErrorHandler.INSTANCE.getOnError().equals(OnError.FAIL)) {
             quit(e);
         }
     }
