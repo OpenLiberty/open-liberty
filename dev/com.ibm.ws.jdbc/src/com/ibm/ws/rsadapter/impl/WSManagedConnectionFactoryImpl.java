@@ -22,6 +22,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException; 
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
@@ -118,7 +119,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * The underlying data source implementation from the JDBC vendor.
      * It could be a javax.sql.DataSource, javax.sql.ConnectionPoolDataSource, or javax.sql.XADataSource
      */
-    transient private CommonDataSource dataSource;
+    transient private Object dataSourceOrDriver;
 
     /**
      * Class name of data source or driver implementation from the JDBC vendor.
@@ -331,7 +332,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 }
             }
         }
-        dataSource = (CommonDataSource) vendorImpl; // TODO support driver, either directly or by creating a wrapper data source for it here
+        dataSourceOrDriver = vendorImpl;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");
@@ -808,9 +809,14 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 Tr.debug(this, tc, "Getting a connection using Datasource. Is UCP? " + isUCP);
             conn = getConnectionUsingDS(userName, password, cri);
             results = new ConnectionResults(null, conn);
+        } else if (Driver.class.equals(type)) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Getting a connection using Driver");
+            conn = getConnectionUsingDriver(userName, password);
+            results = new ConnectionResults(null, conn);
         } else {
             try {
-                results = helper.getPooledConnection(dataSource, userName, password, XADataSource.class.equals(type), cri, useKerb, credential);
+                results = helper.getPooledConnection((CommonDataSource) dataSourceOrDriver, userName, password, XADataSource.class.equals(type), cri, useKerb, credential);
             } catch (DataStoreAdapterException dae) {
                 throw (ResourceException) AdapterUtil.mapException(dae, null, this, false); // error can't be fired as we don't have an mc
             }
@@ -820,6 +826,81 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getConnection", results);
         return results;
+    }
+    
+    /**
+     * Get a Connection from a DriverManager. A null userName
+     * indicates that no user name or password should be provided.
+     * 
+     * @param userN the user name for obtaining a Connection, or null if none.
+     * @param password the password for obtaining a Connection.
+     * @param cri optional information for the connection request
+     * 
+     * @return a Connection.
+     * @throws ResourceException
+     */
+    private final Connection getConnectionUsingDriver(String userN, String password) throws ResourceException 
+    {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getConnectionUsingDriver", AdapterUtil.toString(dataSourceOrDriver), userN);
+
+        final String user = userN == null ? null : userN.trim();
+        final String pwd = password == null ? null : password.trim();
+
+        Connection conn = null;
+        boolean isConnectionSetupComplete = false;
+        try {
+            conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
+                public Connection run() throws Exception {
+                    Properties props = (Properties) dsConfig.get().vendorProps.clone(); //TODO would be nice if we could avoid cloning here
+                    String url = (String) props.remove("URL");
+                    if(user != null) {
+                        props.setProperty("user", user);
+                        props.setProperty("password", pwd);
+                    }
+                        return ((Driver) dataSourceOrDriver).connect(url, props);
+                }
+            });
+            
+            //TODO need to handle null connection here, otherwise we'll get a null pointer below
+
+            try {
+                postGetConnectionHandling(conn);
+            } catch (SQLException se) {
+                FFDCFilter.processException(se, getClass().getName(), "871", this);
+                if (isTraceOn && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "getConnectionUsingDriver", se);
+                throw AdapterUtil.translateSQLException(se, this, false, getClass()); 
+            }
+
+            isConnectionSetupComplete = true;
+        } catch (PrivilegedActionException pae) {
+            FFDCFilter.processException(pae.getException(), getClass().getName(), "879");
+            ResourceException resX = new DataStoreAdapterException("JAVAX_CONN_ERR", pae.getException(), getClass(), "Connection");
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(this, tc, "getConnectionUsingDriver", pae.getException());
+            throw resX;
+        } catch (ClassCastException castX) {
+            // There's a possibility this occurred because of an error in the JDBC driver
+            // itself.  The trace should allow us to determine this.
+            FFDCFilter.processException(castX, getClass().getName(), "887");
+            ResourceException resX = new DataStoreAdapterException("NOT_A_1_PHASE_DS", null, getClass(), castX.getMessage());
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(this, tc, "getConnectionUsingDriver", castX);
+            throw resX;
+        } finally {
+            // Destroy the connection if we weren't able to successfully complete the setup.
+            if (conn != null && !isConnectionSetupComplete)
+                try {
+                    conn.close();
+                } catch (Throwable x) {
+                }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getConnectionUsingDriver", AdapterUtil.toString(conn));
+        return conn;
     }
 
     /**
@@ -837,7 +918,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "getConnectionUsingDS", AdapterUtil.toString(dataSource), userN);
+            Tr.entry(this, tc, "getConnectionUsingDS", AdapterUtil.toString(dataSourceOrDriver), userN);
 
         final String user = userN == null ? null : userN.trim();
         final String pwd = password == null ? null : password.trim();
@@ -853,7 +934,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         try {
                             if (isTraceOn && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "obtain Oracle data source with properties:", oracleProps);
-                            final Object ods = WSJdbcTracer.getImpl(dataSource);
+                            final Object ods = WSJdbcTracer.getImpl(dataSourceOrDriver);
                             Class<?> dsClass = null;
                             if(System.getSecurityManager() == null) {
                                 dsClass = jdbcDriverLoader.loadClass("oracle.jdbc.pool.OracleDataSource");
@@ -870,12 +951,12 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                             throw x.getCause() instanceof Exception ? (Exception) x.getCause() : x;
                         }
 
-                    if (dataSource instanceof XADataSource) {
-                        return user == null ? ((XADataSource) dataSource).getXAConnection().getConnection()
-                                        : ((XADataSource) dataSource).getXAConnection(user, pwd).getConnection();
+                    if (dataSourceOrDriver instanceof XADataSource) {
+                        return user == null ? ((XADataSource) dataSourceOrDriver).getXAConnection().getConnection()
+                                        : ((XADataSource) dataSourceOrDriver).getXAConnection(user, pwd).getConnection();
                     } else {
-                        return user == null ? ((DataSource) dataSource).getConnection()
-                                        : ((DataSource) dataSource).getConnection(user, pwd);
+                        return user == null ? ((DataSource) dataSourceOrDriver).getConnection()
+                                        : ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
                     }
                 }
             });
@@ -977,11 +1058,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     /**
      * Retrieve the underlying DataSource for this ManagedConnectionFactory.
      * 
-     * @return the underlying DataSource.
+     * @return the underlying DataSource, null if a Driver is used
      */
     public CommonDataSource getUnderlyingDataSource() throws SQLException
     {
-        return dataSource;
+        if(Driver.class.equals(type))
+            return null;
+        return (CommonDataSource) dataSourceOrDriver;
     }
 
     /**
@@ -1220,11 +1303,15 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "setting the logWriter to:", out);
 
-        if (dataSource != null) {
+        if (dataSourceOrDriver != null) {
             try {
                 AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
                     public Void run() throws SQLException {
-                        dataSource.setLogWriter(out);
+                        if(!Driver.class.equals(type)) {
+                            ((CommonDataSource) dataSourceOrDriver).setLogWriter(out);
+                        } else {
+                            //TODO behavior for java.sql.Driver
+                        }
                         return null;
                     }
                 });
@@ -1251,7 +1338,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
         info.append("Vendor implementation class:", vendorImplClass);
         info.append("Type:", type);
-        info.append("Underlying DataSource Object: " + AdapterUtil.toString(dataSource), dataSource);
+        info.append("Underlying DataSource or Driver Object: " + AdapterUtil.toString(dataSourceOrDriver), dataSourceOrDriver);
         info.append("Instance id:", instanceID);
         info.append("Log Writer:", logWriter);
         info.append("Counter of fatal connection errors on ManagedConnections created by this MCF:",
@@ -1276,11 +1363,15 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
 
     public final PrintWriter getLogWriter() throws ResourceException {
-        if (dataSource == null) {
+        if (dataSourceOrDriver == null) {
             return logWriter;
         }
         try {
-            return dataSource.getLogWriter();
+            if(!Driver.class.equals(type)) {
+                return ((CommonDataSource) dataSourceOrDriver).getLogWriter();
+            }
+            //TODO behavior for java.sql.driver
+            return null;
         } catch (SQLException se) {
             FFDCFilter.processException(se, getClass().getName(), "1656", this);
             throw AdapterUtil.translateSQLException(se, this, false, getClass());
@@ -1294,7 +1385,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
     public final int getLoginTimeout() throws SQLException {
         try {
-            return dataSource.getLoginTimeout();
+            if(!Driver.class.equals(type)) {
+                return ((CommonDataSource) dataSourceOrDriver).getLoginTimeout();
+            }
+            //TODO behavior for java.sql.Driver
+            return 0;
         } catch (SQLException sqlX) {
             FFDCFilter.processException(sqlX, getClass().getName(), "1670", this);
             throw AdapterUtil.mapSQLException(sqlX, this);

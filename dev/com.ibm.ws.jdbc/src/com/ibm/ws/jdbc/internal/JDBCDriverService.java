@@ -331,7 +331,6 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
      * <li>javax.sql.XADataSource
-     * <li>java.sql.Driver // TODO
      * </ul>
      * 
      * @param props typed data source properties
@@ -588,6 +587,39 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             }
 
             return create(className, props);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+    
+    /**
+     * Create a Driver
+     * 
+     * @param props typed data source properties
+     * @return the driver
+     * @throws SQLException if an error occurs
+     */
+    public Object createDriver(PropertyService props) throws SQLException {
+        lock.readLock().lock();
+        try {
+            if (!isInitialized)
+                try {
+                    // Switch to write lock for lazy initialization
+                    lock.readLock().unlock();
+                    lock.writeLock().lock();
+
+                    if (!isInitialized) {
+                        if (!loadFromApp())
+                            classloader = AdapterUtil.getClassLoaderWithPriv(sharedLib);
+                        isInitialized = true;
+                    }
+                } finally {
+                    // Downgrade to read lock for rest of method
+                    lock.readLock().lock();
+                    lock.writeLock().unlock();
+                }
+            
+            return loadDriver(props, classloader);
         } finally {
             lock.readLock().unlock();
         }
