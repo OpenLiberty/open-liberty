@@ -3231,6 +3231,8 @@ public class ConfigEvaluatorTest {
         properties = result.getProperties();
         assertEquals("topId", properties.get("id"));
 
+        assertTrue("We should get a message that invalid config is being ignored", outputMgr.checkForMessages("CWWKG0103W"));
+
     }
 
     private static Set<String> toSet(String... values) {
