@@ -688,7 +688,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 try {
                     acceptsURL = driver.acceptsURL(url);
                 } catch (SQLException x) {
-                    if (failure != null)
+                    if (failure == null)
                         failure = x;
                     acceptsURL = false;
                 }
