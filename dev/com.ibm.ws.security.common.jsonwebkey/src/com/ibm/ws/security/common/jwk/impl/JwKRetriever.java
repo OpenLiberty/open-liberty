@@ -32,6 +32,7 @@ import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
@@ -499,22 +500,50 @@ public class JwKRetriever {
 	public HttpClient createHTTPClient(SSLSocketFactory sslSocketFactory, String url, boolean isHostnameVerification) {
 
 		HttpClient client = null;
-
-		BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(jwkClientId, jwkClientSecret));
-		if (url.startsWith("http:")) {
-			client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
-		} else {
-			SSLConnectionSocketFactory connectionFactory = null;
-			if (!isHostnameVerification) {
-				connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
-			} else {
-				connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
-			}
-			client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+		boolean addBasicAuthHeader = false;
+		
+		if (jwkClientId != null && jwkClientSecret != null) {
+		    addBasicAuthHeader = true;
 		}
 
+		BasicCredentialsProvider credentialsProvider = null;		
+		if (addBasicAuthHeader) {
+		    credentialsProvider = createCredentialsProvider();
+		}
+		
+        client = createHttpClient(url.startsWith("http:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
 		return client;
 
 	}
+
+    private HttpClient createHttpClient(boolean isSecure, boolean isHostnameVerification, SSLSocketFactory sslSocketFactory, boolean addBasicAuthHeader, BasicCredentialsProvider credentialsProvider) {
+        
+        HttpClient client = null;
+        if (isSecure) {
+            SSLConnectionSocketFactory connectionFactory = null;
+            if (!isHostnameVerification) {
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+            } else {
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+            }
+            if (addBasicAuthHeader) {
+                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
+            } else {
+                client = HttpClientBuilder.create().setSSLSocketFactory(connectionFactory).build();
+            }  
+        } else {
+            if (addBasicAuthHeader) {
+                client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
+            } else {
+                client = HttpClientBuilder.create().build();
+            }
+        }
+        return client;
+    }
+
+    private BasicCredentialsProvider createCredentialsProvider() {
+        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(jwkClientId, jwkClientSecret));
+        return credentialsProvider;
+    }
 }
