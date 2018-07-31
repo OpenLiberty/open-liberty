@@ -234,7 +234,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         connectionSharing = remove(CONNECTION_SHARING, ConnectionSharing.MatchOriginalRequest, ConnectionSharing.class);
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
-        isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096); //MARKED Should we add 32 = TRANSACTION_NONE??
+        isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
         statementCacheSize = remove(STATEMENT_CACHE_SIZE, 10, 0, null); // If UCP support is ever added to Liberty, can document how to disable statement caching

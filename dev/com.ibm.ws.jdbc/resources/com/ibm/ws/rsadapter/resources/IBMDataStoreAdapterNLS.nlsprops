@@ -602,3 +602,8 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Disable Kerberos, or use a DB2 backen
 
 # 9600-9603 deleted 
 # 9900 deleted
+
+#9549			TRANSACTION_NONE_UNSUPPORTED
+TRANSACTION_NONE_UNSUPPORTED=DSRA9549W: The JDBC driver does not support an isolation level of TRANSACTION_NONE.  The isolation level was set to TRANSACTION_NONE because of the data source configuration.
+TRANSACTION_NONE_UNSUPPORTED.explanation= The JDBC driver does not support using an isolation level of TRANSACTION_NONE.  An attempt to set the isolation level to TRANSACTION_NONE was the result of the data source configuration.
+TRANSACTION_NONE_UNSUPPORTED.useraction=  Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
