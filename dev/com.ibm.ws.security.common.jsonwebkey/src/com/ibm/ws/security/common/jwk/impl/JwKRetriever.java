@@ -32,7 +32,7 @@ import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
+
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
@@ -511,7 +511,7 @@ public class JwKRetriever {
 		    credentialsProvider = createCredentialsProvider();
 		}
 		
-        client = createHttpClient(url.startsWith("http:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
+        client = createHttpClient(url.startsWith("https:"), isHostnameVerification, sslSocketFactory, addBasicAuthHeader, credentialsProvider);
 		return client;
 
 	}
