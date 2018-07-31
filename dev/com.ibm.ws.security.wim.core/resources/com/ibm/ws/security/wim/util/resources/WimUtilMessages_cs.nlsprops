@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Slu\u017eba federace registru u\u017eivatel\u016f byla zastavena.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Platn\u00fd registr u\u017eivatel\u016f nebyl nalezen. P\u0159idejte nebo opravte definici registru v souboru server.xml.
+MISSING_REGISTRY_DEFINITION.explanation=Registr u\u017eivatel\u016f nebyl nadefinov\u00e1n nebo inicializov\u00e1n kv\u016fli chyb\u011b konfigurace. Platn\u00fd registr u\u017eivatel\u016f zahrnuje registr LDAP nebo jin\u00e9 podporovan\u00e9 registry nebo \u00falo\u017ei\u0161t\u011b.
+MISSING_REGISTRY_DEFINITION.useraction=Pokud byl registr u\u017eivatel\u016f nadefinov\u00e1n v konfigura\u010dn\u00edm souboru, zkontrolujte protokoly, zda neobsahuj\u00ed chyby konfigurace b\u011bhem spu\u0161t\u011bn\u00ed serveru. P\u0159idejte nebo opravte definici registru u\u017eivatel\u016f v souboru server.xml.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Operaci registru u\u017eivatel\u016f nelze dokon\u010dit. Identifik\u00e1tor entity nebyl nalezen. Zadejte jako vstupn\u00ed parametr spr\u00e1vn\u00fd identifik\u00e1tor. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Identifik\u00e1tor entity nebyl uveden. Syst\u00e9m nem\u016f\u017ee entitu naj\u00edt. Operace registru u\u017eivatel\u016f nem\u016f\u017ee bez nalezen\u00ed t\u00e9to entity pokra\u010dovat. 

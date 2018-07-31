@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=Nu este necesar\u0103 nici o ac\u0163
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Serviciul de federalizare registru utilizator este oprit.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Acest mesaj are doar scop informa\u0163ional.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: Opera\u0163ia de \u00eenregistrare utilizator nu poate fi finalizat\u0103. Nu a fost g\u0103sit un registru de utilizatori valid. Ad\u0103uga\u0163i sau corecta\u0163i defini\u0163ia de registru \u00een fi\u015fierul server.xml.
+MISSING_REGISTRY_DEFINITION.explanation=Nu a fost definit un registru de utilizatori sau nu a putut fi ini\u0163ializat din cauza unei erori de configurare. Un registru de utilizatori valid include un registru LDAP sau alte registre sau magazii suportate.
+MISSING_REGISTRY_DEFINITION.useraction=Dac\u0103 a fost definit un registru de utilizatori \u00een fi\u015fierul de configura\u0163ie, examina\u0163i istoricele pentru erori de configurare ap\u0103rute \u00een timpul pornirii serverului. Ad\u0103uga\u0163i sau corecta\u0163i defini\u0163ia de registru de utilizatori \u00een fi\u015fierul server.xml.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Opera\u0163ia de \u00eenregistrare utilizator nu poate fi finalizat\u0103. Identificatorul intr\u0103rii nu a fost g\u0103sit. Specifica\u0163i identificatorul corect ca \u015fi parametru de intrare. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Identificatorul intr\u0103rii nu a fost specificat. Sistemul nu poate g\u0103si entitatea. Opera\u0163ia de \u00eenregistrare utilizator nu poate continua f\u0103r\u0103 g\u0103sirea acestei entit\u0103\u0163i. 
