@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E: Warto\u015b\u0107 {0} nie jest poprawn\u0
 J2CA9934.not.a.valid.option.explanation=Skonfigurowana warto\u015b\u0107 pochodzi spoza zasi\u0119gu poprawnych opcji dla atrybutu.
 J2CA9934.not.a.valid.option.useraction=Wybierz warto\u015b\u0107 z listy poprawnych opcji.
 
-J2CA9935.secperm.not.supported=J2CA9935I: Uprawnienia zabezpiecze\u0144 Java 2 okre\u015blone w deskryptorze wdra\u017cania dla adaptera zasob\u00f3w {0} nie b\u0119d\u0105 wymuszane.
-J2CA9935.secperm.not.supported.explanation=Zabezpieczenia Java 2 nie s\u0105 w\u0142\u0105czone w profilu Liberty, a wi\u0119c nie b\u0119d\u0105 wykonywane operacje sprawdzania zabezpiecze\u0144 Java 2 dla adaptera zasob\u00f3w.
-J2CA9935.secperm.not.supported.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
-
 J2CA9936.default.value.error=J2CA9936W: Nie mo\u017cna uzyska\u0107 warto\u015bci domy\u015blnej w\u0142a\u015bciwo\u015bci {0} z instancji klasy {1} w adapterze zasob\u00f3w {2}, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d: {3}
 J2CA9936.default.value.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by uzyskania dost\u0119pu do warto\u015bci domy\u015blnej w\u0142a\u015bciwo\u015bci JavaBean adaptera zasob\u00f3w.
 J2CA9936.default.value.error.useraction=Przeczytaj opis b\u0142\u0119du i skoryguj adapter zasob\u00f3w zgodnie z wymaganiami.

@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Verifica\u0163i ac\u0163iunea utilizatorului
 warn_mpjwt_prop_service_notavail=CWWKW0708W: Serviciul de propagare MicroProfile JWT nu este disponibil. Runtime-ul nu poate accesa jetonul pentru a-l include \u00een antetul de autorizare.
 warn_mpjwt_prop_service_notavail.explanation=Serviciul de propagare MicroProfile JWT necesit\u0103 caracteristica mpJwt-1.0.
 warn_mpjwt_prop_service_notavail.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul ruleaz\u0103 cu caracteristica cerut\u0103.
+
+warn_unknown_keepalive_setting=CWWKW0709W: Valoarea propriet\u0103\u0163ii de men\u0163inere (keep alive) a conexiunii, {0}, nu este o op\u0163iune valid\u0103. Aceast\u0103 proprietate trebuie s\u0103 fie setat\u0103 la una dintre: {1}. Va fi utilizat\u0103 valoarea implicit\u0103 pentru men\u0163inere.
+warn_unknown_keepalive_setting.explanation=Codul de aplica\u0163ie a setat proprietatea property com.ibm.ws.jaxrs.client.keepalive.connection \u00eentr-un client JAX-RS la o valoare incorect\u0103.
+warn_unknown_keepalive_setting.useraction=Modifica\u0163i codul pentru a utiliza o valoare de proprietate valid\u0103, cum ar fi keep-alive sau close.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2017 IBM Corporation and others.
+# Copyright (c) 2013, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -193,6 +193,13 @@ BL_VIEW_USAGE_032=\tIndiquez le codage de caract\u00e8res \u00e0 utiliser pour l
 # do not translate "--isoDateFormat"
 BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
 BL_VIEW_USAGE_034=\tSp\u00e9cifiez le format de date et heure ISO-8601 \u00e0 utiliser pour la sortie.
+
+# do not translate "--excludeMessage=value[,value]*"
+BL_VIEW_USAGE_035=\ \ \ \ --excludeMessage=value[,value]*
+BL_VIEW_USAGE_036=\tLes enregistrements avec le message sp\u00e9cifi\u00e9 sont \
+exclus. \
+La valeur peut inclure le caract\u00e8re g\u00e9n\u00e9rique\n\
+\t* ou ?.
 #--------------------------------------------------------------------------------------------------
 
 # do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"

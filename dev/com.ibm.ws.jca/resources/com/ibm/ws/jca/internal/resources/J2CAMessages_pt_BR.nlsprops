@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -130,6 +130,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=Atribua identificadores exclus
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: O atributo do id do elemento resourceAdapter para o m\u00f3dulo do adaptador de recursos {0} n\u00e3o pode ser um dos identificadores reservados {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=O ID especificado na configura\u00e7\u00e3o ou derivado do nome do m\u00f3dulo \u00e9 um identificador reservado. Os identificadores reservados s\u00e3o somente para uso interno.
 J2CA8816.reserved.resource.adapter.id.useraction=Forne\u00e7a um valor n\u00e3o reservado para o atributo do id do elemento resourceAdapter ou para o nome do m\u00f3dulo na configura\u00e7\u00e3o do servidor.
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: O adaptador de recursos {0} encontrou um erro de an\u00e1lise quando processou o descritor de implementa\u00e7\u00e3o no caminho {1}: {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=Ocorreu um erro enquanto o adaptador de recursos analisava o descritor de implementa\u00e7\u00e3o. O adaptador de recursos n\u00e3o estar\u00e1 dispon\u00edvel.
+J2CA8817.parse.deployment.descriptor.failed.useraction=Consulte as informa\u00e7\u00f5es da exce\u00e7\u00e3o para obter detalhes adicionais. Revise os conte\u00fados do descritor de implementa\u00e7\u00e3o para assegurar-se de que os conte\u00fados sejam v\u00e1lidos como dados XML. Se necess\u00e1rio, trabalhe com o fornecedor do adaptador de recursos para resolver os dados XML inv\u00e1lidos.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"

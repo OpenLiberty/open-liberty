@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E: A(z) {0} \u00e9rt\u00e9k a(z) {1} attrib\
 J2CA9934.not.a.valid.option.explanation=A be\u00e1ll\u00edtott \u00e9rt\u00e9k k\u00edv\u00fcl esik az attrib\u00fatum \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1sainak tartom\u00e1ny\u00e1n.
 J2CA9934.not.a.valid.option.useraction=V\u00e1lasszon egy \u00e9rt\u00e9ket az \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1sok list\u00e1j\u00e1b\u00f3l.
 
-J2CA9935.secperm.not.supported=J2CA9935I: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 telep\u00edt\u00e9si le\u00edr\u00f3j\u00e1ban megadott Java 2 biztons\u00e1gi enged\u00e9lyek nem lesznek betartatva.
-J2CA9935.secperm.not.supported.explanation=A Java 2 biztons\u00e1g a Liberty profilban nem enged\u00e9lyezett, \u00edgy az er\u0151forr\u00e1s-illeszt\u0151n nem lesznek Java 2 biztons\u00e1gi ellen\u0151rz\u00e9sek v\u00e9grehajtva.
-J2CA9935.secperm.not.supported.useraction=Semmit sem kell tennie.
-
 J2CA9936.default.value.error=J2CA9936W: A(z) {0} tulajdons\u00e1g alap\u00e9rtelmezett \u00e9rt\u00e9ke nem k\u00e9rdezhet\u0151 le a(z) {1} oszt\u00e1ly p\u00e9ld\u00e1ny\u00e1b\u00f3l a(z) {2} er\u0151forr\u00e1s-illeszt\u0151ben, mert hiba t\u00f6rt\u00e9nt: {3}
 J2CA9936.default.value.error.explanation=Hiba t\u00f6rt\u00e9nt, mik\u00f6zben a rendszer megk\u00eds\u00e9relte el\u00e9rni egy er\u0151forr\u00e1s-illeszt\u0151 JavaBean tulajdons\u00e1g alap\u00e9rtelmezett \u00e9rt\u00e9k\u00e9t.
 J2CA9936.default.value.error.useraction=Tekintse \u00e1t a hib\u00e1t, \u00e9s sz\u00fcks\u00e9g szerint \u00e1ll\u00edtsa be az er\u0151forr\u00e1s-illeszt\u0151t.

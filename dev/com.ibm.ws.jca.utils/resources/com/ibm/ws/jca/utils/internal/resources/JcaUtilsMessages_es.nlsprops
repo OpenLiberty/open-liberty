@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E: El valor {0} no es una opci\u00f3n v\u00e
 J2CA9934.not.a.valid.option.explanation=El valor configurado est\u00e1 fuera del rango de opciones v\u00e1lidas para el atributo.
 J2CA9934.not.a.valid.option.useraction=Elija un valor de la lista de opciones v\u00e1lidas.
 
-J2CA9935.secperm.not.supported=J2CA9935I: Los permisos de seguridad de Java 2 especificados en el descriptor de despliegue para el adaptador de recursos {0} no se aplicar\u00e1n.
-J2CA9935.secperm.not.supported.explanation=La seguridad de Java 2 no est\u00e1 habilitada en el perfil Liberty, por lo que las comprobaciones de seguridad de Java 2 no se realizan para el adaptador de recursos.
-J2CA9935.secperm.not.supported.useraction=No se requiere ninguna acci\u00f3n.
-
 J2CA9936.default.value.error=J2CA9936W: El valor predeterminado para la propiedad {0} no se ha podido obtener de una instancia de la clase {1} en el adaptador de recursos {2} porque se ha producido un error: {3}
 J2CA9936.default.value.error.explanation=Se ha producido un error al intentar acceder al valor predeterminado de una propiedad JavaBean adaptador de recursos.
 J2CA9936.default.value.error.useraction=Revise el error y ajuste el adaptador de recursos como sea necesario.

@@ -27,6 +27,7 @@ category-key.win=Windows
 category-key.service=Hibafelder\u00edt\u00e9s
 category-key.help=Inform\u00e1ci\u00f3k
 category-key.misc=Egyebek
+
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -146,12 +147,13 @@ option-key.include=\ \ \ \ --include=\u00e9rt\u00e9k,\u00e9rt\u00e9k,...
 option-desc.javadump.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: heap, system \n\
 \tthread.
 option-desc.package.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott list\u00e1ja. \u00c9rv\u00e9nyes \u00e9rt\u00e9kek: all*, usr,   \n\
-\tminify, runnable. Ha a "runnable" \u00e9rt\u00e9ket adja meg, az eredm\u00e9ny\u00fcl kapott csomag\n\
+\tminify, runnable, wlp. Ha a "runnable" \u00e9rt\u00e9ket adja meg, az eredm\u00e9ny\u00fcl kapott csomag\n\
 \ta kiszolg\u00e1l\u00f3t futtat\u00f3 v\u00e9grehajthat\u00f3 jar lesz. A "minify" param\u00e9ter \n\
-\ta lehet\u0151 legkisebb k\u00e9pf\u00e1jlt \u00e1ll\u00edtja el\u0151 a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra. A "usr" param\u00e9ter olyan csomagot\n\
-\thoz l\u00e9tre, amely a kiszolg\u00e1l\u00f3t \u00e9s az alkalmaz\u00e1st tartalmazza, de a fut\u00e1si k\u00f6rnyezetet nem. \n\
-\tAz alap\u00e9rtelmezett "all" param\u00e9ter egy mindent tartalmaz\u00f3\n\
-\tkiszolg\u00e1l\u00f3csomagot hoz l\u00e9tre.
+\ta lehet\u0151 legkisebb k\u00e9pf\u00e1jlt \u00e1ll\u00edtja el\u0151 a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra. A "usr" param\u00e9ter olyan\n\
+\tcsomagot hoz l\u00e9tre, amely a kiszolg\u00e1l\u00f3t \u00e9s az alkalmaz\u00e1st tartalmazza, de a fut\u00e1si \n\
+\tk\u00f6rnyezetet nem.A wlp param\u00e9ter olyan fut\u00e1si k\u00f6rnyezetet hoz l\u00e9tre, amely nem \n\
+\ttartalmazza a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t. Az alap\u00e9rtelmezett all param\u00e9ter egy mindent\n\
+\ttartalmaz\u00f3 kiszolg\u00e1l\u00f3csomagot hoz l\u00e9tre.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="sablonN\u00e9v"
 option-desc.template=\tAdja meg a sablon nev\u00e9t az \u00faj kiszolg\u00e1l\u00f3 l\u00e9trehoz\u00e1s\u00e1hoz. 

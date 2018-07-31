@@ -141,12 +141,13 @@ option-key.include=\ \ \ \ --include=value,value,...
 option-desc.javadump.include=\tLista de valores delimitados por comas. Los valores v\u00e1lidos son: heap, system \n\
 \tthread.
 option-desc.package.include=\tLista de valores delimitados por comas. Los valores v\u00e1lidos son: all*, usr,   \n\
-\tminify, runnable. Si especifica runnable, el paquete resultante ser\u00e1 \n\
-\tun jar ejecutable que ejecuta el servidor. La opci\u00f3n minify produce\n\
-\tla imagen m\u00e1s peque\u00f1a posible para el servidor. La opci\u00f3n usr crea un \n\
-\tpaquete que contiene el servidor y la aplicaci\u00f3n, pero no el \n\
-\ttiempo de ejecuci\u00f3n. La opci\u00f3n all predeterminada produce un paquete de servidor que  \n\
-\tlo contiene todo.
+\tminify, runnable, wlp. Si especifica runnable, el paquete resultante \n\
+\tser\u00e1 un jar ejecutable que ejecuta el servidor. La opci\u00f3n minify \n\
+\tproduce la imagen m\u00e1s peque\u00f1a posible para el servidor. La opci\u00f3n usr \n\
+\tcrea un paquete que contiene el servidor y la aplicaci\u00f3n, pero no \n\
+\tel tiempo de ejecuci\u00f3n. La opci\u00f3n wlp produce un tiempo de ejecuci\u00f3n que no contiene \n\
+\tla configuraci\u00f3n de servidor. La opci\u00f3n all predeterminada produce un paquete\n\
+\tde servidor que lo contiene todo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nombrePlantilla"
 option-desc.template=\tEspecifique el nombre de la plantilla que debe utilizarse al crear un servidor. 

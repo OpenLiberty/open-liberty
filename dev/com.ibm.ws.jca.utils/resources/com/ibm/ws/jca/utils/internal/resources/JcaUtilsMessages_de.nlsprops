@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E: Der Wert {0} ist keine g\u00fcltige Optio
 J2CA9934.not.a.valid.option.explanation=Der konfigurierte Wert liegt au\u00dferhalb des Bereichs g\u00fcltiger Optionen f\u00fcr das Attribut.
 J2CA9934.not.a.valid.option.useraction=W\u00e4hlen Sie einen Wert aus der Liste g\u00fcltiger Optionen.
 
-J2CA9935.secperm.not.supported=J2CA9935I: Die im Implementierungsdeskriptor f\u00fcr den Ressourcenadapter {0} angegebenen Java-2-Sicherheitsberechtigungen werden nicht umgesetzt.
-J2CA9935.secperm.not.supported.explanation=Die Java-2-Sicherheit ist im Liberty-Profil nicht aktiviert. Deshalb werden keine Java-2-Sicherheitspr\u00fcfungen f\u00fcr den Ressourcenadapter durchgef\u00fchrt.
-J2CA9935.secperm.not.supported.useraction=Es ist keine Aktion erforderlich.
-
 J2CA9936.default.value.error=J2CA9936W: Der Standardwert f\u00fcr die Eigenschaft {0} konnte nicht von der Instanz der Klasse {1} im Ressourcenadapter {2} abgerufen werden, weil ein Fehler aufgetreten ist: {3}
 J2CA9936.default.value.error.explanation=Beim Zugriff auf den Standardwert einer JavaBean-Eigenschaft des Ressourcenadapters ist ein Fehler aufgetreten.
 J2CA9936.default.value.error.useraction=Sehen Sie sich den Fehler an und passen Sie den Ressourcenadapter gegebenenfalls an.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich.
 CONSOLE_FORMAT_UPDATED=TRAS3003I: Das Konsolenausgabeformat wurde jetzt in ''{0}'' aktualisiert.
 CONSOLE_FORMAT_UPDATED.explanation=Das Konsolenausgabeformat wurde jetzt aktualisiert.
 CONSOLE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: Die folgenden Nachrichten werden nicht in die Datei console.log geschrieben: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Als verdeckte Nachrichten konfigurierte Nachrichten werden nicht in die Dateien console.log und messages.log geschrieben. Sie werden in der Bin\u00e4rprotokollierung in die Protokoll- und Tracedatenrepositorys geschrieben. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Es ist keine Aktion erforderlich.
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Die Nachricht konnten kann nicht in die Datei {0} geschrieben werden.
+FAILED_TO_WRITE_LOG.explanation=Beim Schreiben einer Nachricht in die Datei ist ein Fehler aufgetreten. 
+FAILED_TO_WRITE_LOG.useraction=Stellen Sie sicher, dass das Verzeichnis vorhanden und modifizierbar ist und \u00fcber ausreichenden Plattenspeicherplatz verf\u00fcgt.
+
+LOG_FILE_RESUMED=TRAS3006I: Die Protokollierung von Nachrichten in der Datei {0} wurde wieder aufgenommen.
+LOG_FILE_RESUMED.explanation=Es k\u00f6nnen Nachrichten in die Datei geschrieben werden.
+LOG_FILE_RESUMED.useraction=Es ist keine Aktion erforderlich.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

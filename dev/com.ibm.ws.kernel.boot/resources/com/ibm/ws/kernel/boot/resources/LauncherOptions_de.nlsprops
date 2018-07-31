@@ -151,12 +151,13 @@ option-key.include=\ \ \ \ --include=Wert,Wert,...
 option-desc.javadump.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: heap, system \n\
 \tthread.
 option-desc.package.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: all*, usr,   \n\
-\tminify, runnable. Wenn Sie runnable angeben, wird das resultierende Paket\n\
-\teine ausf\u00fchrbare JAR-Datei, in der der Server ausgef\u00fchrt wird. Die Option minify erzeugt\n\
+\tminify, runnable und wlp. Wenn Sie runnable angeben, ist das erstellte Paket\n\
+\teine ausf\u00fchrbare JAR-Datei, die den Server ausf\u00fchrt. Die Option minify erzeugt\n\
 \tdas f\u00fcr den Server kleinstm\u00f6gliche Image. Die Option usr erstellt ein Paket, \n\
 \tdas den Server und die Anwendung enth\u00e4lt, aber nicht die \n\
-\tLaufzeit. Die Option default all erzeugt ein Serverpaket, das \n\
-\talles enth\u00e4lt.
+\tLaufzeitumgebung. Die Option wlp erstellt eine Laufzeitumgebung, \n\
+\tdie die Serverkonfiguration nicht enth\u00e4lt. Die Standardoption\n\
+\tall erzeugt ein Serverpaket, das alles enth\u00e4lt.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="Schablonenname"
 option-desc.template=\tGibt den Namen der Schablone an, die beim Erstellen eines neuen Servers verwendet werden soll.

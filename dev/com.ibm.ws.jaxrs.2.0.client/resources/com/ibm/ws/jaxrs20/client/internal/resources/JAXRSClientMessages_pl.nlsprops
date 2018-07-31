@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Sprawd\u017a czynno\u015bci u\u017cytkownika
 warn_mpjwt_prop_service_notavail=CWWKW0708W: Us\u0142uga MicroProfile JWT Propagation jest niedost\u0119pna. \u015arodowisko wykonawcze nie mo\u017ce uzyska\u0107 dost\u0119pu do znacznika w celu uwzgl\u0119dnienia go w nag\u0142\u00f3wku Authorization.
 warn_mpjwt_prop_service_notavail.explanation=Us\u0142uga propagacji MicroProfile JWT wymaga sk\u0142adnika mpJwt-1.0. 
 warn_mpjwt_prop_service_notavail.useraction=Zadbaj o to, aby serwer zosta\u0142 uruchomiony z wymaganym sk\u0142adnikiem.
+
+warn_unknown_keepalive_setting=CWWKW0709W: Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci podtrzymywania po\u0142\u0105czenia {0} nie jest poprawn\u0105 opcj\u0105. Ta w\u0142a\u015bciwo\u015b\u0107 musi by\u0107 ustawiona na jedn\u0105 z nast\u0119puj\u0105cych warto\u015bci: {1}. U\u017cyta zostanie warto\u015b\u0107 domy\u015blna keep-alive.
+warn_unknown_keepalive_setting.explanation=Kod aplikacji ustawi\u0142 w\u0142a\u015bciwo\u015b\u0107 com.ibm.ws.jaxrs.client.keepalive.connection w kliencie JAX-RS na niepoprawn\u0105 warto\u015b\u0107.
+warn_unknown_keepalive_setting.useraction=Zmodyfikuj kod tak, aby u\u017cywana by\u0142a poprawna warto\u015b\u0107 w\u0142a\u015bciwo\u015bci, na przyk\u0142ad keep-alive lub close.
