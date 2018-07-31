@@ -452,7 +452,7 @@ class SchemaWriter {
                 String extension = currOcd.getExtends();
                 // Check that we've got extensions and ensure we're a Factory Pid. If so, add the definition to the list, and get the parent type
                 // to check on the next loop.
-                if (extension != null && currOcdType.getHasFactoryReference()) {
+                if (extension != null && (currOcdType.getHasFactoryReference() || currOcdType.getHasIBMFinalWithDefault())) {
                     ocdDefs.add(0, currOcd);
                     TypeBuilder.OCDTypeReference ocdSuperType = builder.getPidType(extension);
                     if (ocdSuperType != null) {
@@ -819,7 +819,14 @@ class SchemaWriter {
             }
             refElement.setType((Type) null);
             refElement.setCardinality(attributeDef.getCardinality() == 0 ? 1 : attributeDef.getCardinality());
-            String typeName = refElement.getCardinality() == 1 ? ocdReference.getTypeName() : ocdReference.getTypeName() + "-factory";
+            String typeName = null;
+
+            if (ocdReference.getHasIBMFinalWithDefault() == false) {
+                typeName = refElement.getCardinality() == 1 ? ocdReference.getTypeName() : ocdReference.getTypeName() + "-factory";
+            } else {
+                typeName = refElement.getCardinality() == 1 ? ocdReference.getTypeName() : ocdReference.getTypeName();
+            }
+
             refElement.setType(typeName);
             refElement.setRequired(requiredForThisAttribute);
             xmlElements.add(refElement);

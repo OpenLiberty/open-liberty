@@ -324,18 +324,19 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
 
     /**
-     * Create any type of data source - whichever is available, in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
      * <li>javax.sql.XADataSource
+     * <li>java.sql.Driver // TODO
      * </ul>
      * 
      * @param props typed data source properties
-     * @return the data source
+     * @return the data source or driver instance
      * @throws SQLException if an error occurs
      */
-    public CommonDataSource createAnyDataSource(Properties props) throws SQLException {
+    public Object createAnyDataSourceOrDriver(Properties props) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -383,19 +384,19 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
     
     /**
-     * Create any type of data source - whichever is available, in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.XADataSource
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
      * </ul>
-     * This order is different than the standard priority, which prioritizes javax.sql.XADataSource last.
+     * This order is different than the standard priority, which prioritizes javax.sql.XADataSource after ConnectionPoolDataSource and DataSource.
      * 
      * @param props typed data source properties
-     * @return the data source
+     * @return the data source or driver instance
      * @throws SQLException if an error occurs
      */
-    public CommonDataSource createDefaultDataSource(Properties props) throws SQLException {
+    public Object createDefaultDataSourceOrDriver(Properties props) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
