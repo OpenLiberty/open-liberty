@@ -33,6 +33,11 @@ public class FATDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
+        if (!acceptsURL(url))
+            return null;
+
+        url = url.replace(":fatdriver:", ":derby:");
+
         System.out.println("[FATDriver]   ->  connect");
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -51,7 +56,7 @@ public class FATDriver implements Driver {
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return url.startsWith("jdbc:fatdriver:");
     }
 
     @Override
@@ -61,7 +66,7 @@ public class FATDriver implements Driver {
 
     @Override
     public int getMajorVersion() {
-        return 0;
+        return 1;
     }
 
     @Override
