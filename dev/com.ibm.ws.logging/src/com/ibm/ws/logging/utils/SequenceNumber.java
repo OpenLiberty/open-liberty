@@ -22,7 +22,7 @@ public class SequenceNumber {
     /*
      * Creates the next sequence number
      */
-    public long getRawSequenceNumber(long date) {
+    public long getRawSequenceNumber() {
         return seq.incrementAndGet();
     }
 
