@@ -1,0 +1,182 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+https://stackoverflow.com/questions/9373081/how-to-set-up-jax-rs-application-using-annotations-only-no-web-xml
+
+@ApplicationPath("rest")
+public class ApplicationConfig extends Application {}
+
+@Path("calc/1.0")
+public class CalculatorV1_0 {
+  @GET
+  @Consumes("text/plain")
+  @Produces("text/plain")
+  @Path("addTwoNumbers")
+  public String add(@MatrixParam("firstNumber") int n1, @MatrixParam("secondNumber") int n2) {
+    return String.valueOf(n1 + n2);
+  }
+}
+
+http://localhost:8080/myContext/rest/calc/1.0/addTwoNumbers;firstNumber=2;secondNumber=3  
+/**
+ * Media Types (See {@link javax.ws.rs.core#MediaType}):
+ *
+ * <ul>
+ *
+ * <li>String APPLICATION_ATOM_XML A String constant representing "application\/atom+xml" media type.</li>
+ * <li>MediaType APPLICATION_ATOM_XML_TYPE A MediaType constant representing "application\/atom+xml" media type.</li>
+ *
+ * <li>String APPLICATION_FORM_URLENCODED A String constant representing "application\/x-www-form-urlencoded" media type.</li>
+ * <li>MediaType APPLICATION_FORM_URLENCODED_TYPE A MediaType constant representing "application\/x-www-form-urlencoded" media type.</li>
+ *
+ * <li>String APPLICATION_JSON A String constant representing "application\/json" media type.</li>
+ * <li>MediaType APPLICATION_JSON_TYPE A MediaType constant representing "application\/json" media type.</li>
+ *
+ * <li>String APPLICATION_OCTET_STREAM A String constant representing "application\/octet-stream" media type.</li>
+ * <li>MediaType APPLICATION_OCTET_STREAM_TYPE A MediaType constant representing "application\/octet-stream" media type.</li>
+ *
+ * <li>String APPLICATION_SVG_XML A String constant representing "application\/svg+xml" media type.</li>
+ * <li>MediaType APPLICATION_SVG_XML_TYPE A MediaType constant representing "application\/svg+xml" media type.</li>
+ *
+ * <li>String APPLICATION_XHTML_XML A String constant representing "application\/xhtml+xml" media type.</li>
+ * <li>MediaType APPLICATION_XHTML_XML_TYPE A MediaType constant representing "application\/xhtml+xml" media type.</li>
+ *
+ * <li>String APPLICATION_XML A String constant representing "application\/xml" media type.</li>
+ * <li>MediaType APPLICATION_XML_TYPE A MediaType constant representing "application\/xml" media type.</li>
+ *
+ * <li>String CHARSET_PARAMETER The media type charset parameter name.</li>
+ * <li>String MEDIA_TYPE_WILDCARD The value of a type or subtype wildcard "\*".</li>
+ *
+ * <li>String MULTIPART_FORM_DATA A String constant representing "multipart\/form-data" media type.</li>
+ * <li>MediaType MULTIPART_FORM_DATA_TYPE A MediaType constant representing "multipart\/form-data" media type.</li>
+ *
+ * <li>String TEXT_HTML A String constant representing "text\/html" media type.</li>
+ * <li>MediaType TEXT_HTML_TYPE A MediaType constant representing "text\/html" media type.</li>
+ *
+ * <li>String TEXT_PLAIN A String constant representing "text\/plain" media type.</li>
+ * <li>MediaType TEXT_PLAIN_TYPE A MediaType constant representing "text\/plain" media type.</li>
+ *
+ * <li>String TEXT_XML A String constant representing "text/xml" media type.</li>
+ * <li>MediaType TEXT_XML_TYPE A MediaType constant representing "text/xml" media type.</li>
+ *
+ * <li>String WILDCARD A String constant representing wildcard "\*\/\*" media type .</li>
+ * <li>MediaType WILDCARD_TYPE A MediaType constant representing wildcard "\*\/\*" media type.</li>
+ *
+ * </ul>
+ */
+
+/**
+ * JAXRS annotations (See {@link javax.ws.rx}):
+ *
+ * <ul>
+ * <li>@ApplicationPath Identifies the application path that serves as
+ * the base URI for all resource URIs provided by Path.</li>
+ *
+ * <li>@Consumes Defines the media types that the methods of a resource
+ * class or MessageBodyReader can accept.</li>
+ *
+ * <li>@CookieParam Binds the value of a HTTP cookie to a resource
+ * method parameter, resource class field, or resource class bean
+ * property.</li>
+ *
+ * <li>@DefaultValue Defines the default value of request metadata that
+ * is bound using one of the following annotations: PathParam,
+ * QueryParam, MatrixParam, Cooki eParam, FormParam, or HeaderParam.</li>
+ *
+ * <li>@DELETE Indicates that the annotated method responds to HTTP
+ * DELETE requests</li>
+ *
+ * <li>@Encoded Disables automatic decoding of parameter values bound
+ * using QueryParam, PathParam, FormParam or MatrixParam.</li>
+ *
+ * <li>@FormParam Binds the value(s) of a form parameter contained
+ * within a request entity body to a resource method parameter.</li>
+ *
+ * <li>@GET Indicates that the annotated method responds to HTTP GET
+ * requests</li>
+ *
+ * <li>@HEAD Indicates that the annotated method responds to HTTP HEAD
+ * requests</li>
+ *
+ * <li>@HeaderParam Binds the value(s) of a HTTP header to a resource
+ * method parameter, resource class field, or resource class bean
+ * property.</li>
+ *
+ * <li>@HttpMethod Associates the name of a HTTP method with an
+ * annotation.</li>
+ *
+ * <li>@MatrixParam Binds the value(s) of a URI matrix parameter to a
+ * resource method parameter, resource class field, or resource class
+ * bean property.</li>
+ *
+ * <li>@OPTIONS Indicates that the annotated method responds to HTTP
+ * OPTIONS requests</li>
+ *
+ * <li>@Path Identifies the URI path that a resource class or class
+ * method will serve requests for.</li>
+ *
+ * <li>@PathParam Binds the value of a URI template parameter or a path
+ * segment containing the template parameter to a resource method
+ * parameter, resource class fi eld, or resource class bean
+ * property.</li>
+ *
+ * <li>@POST Indicates that the annotated method responds to HTTP POST
+ * requests</li>
+ *
+ * <li>@Produces Defines the media type(s) that the methods of a
+ * resource class or MessageBodyWriter can produce.</li>
+ *
+ * <li>@PUT Indicates that the annotated method responds to HTTP PUT
+ * requests</li>
+ *
+ * <li>@QueryParam Binds the value(s) of a HTTP query parameter to a
+ * resource method parameter, resource class field, or resource class
+ * bean property.</li>
+ * </ul>
+ */
+
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+ *
+ * HTTP defines a set of request methods to indicate the desired
+ * action to be performed for a given resource. Although they can
+ * also be nouns, these request methods are sometimes referred to
+ * as HTTP verbs. Each of them implements a different semantic,
+ * but some common features are shared by a group of them: e.g. a
+ * request method can be safe, idempotent, or cacheable.
+ *
+ * GET The GET method requests a representation of the specified
+ * resource. Requests using GET should only retrieve data.
+ *
+ * HEAD The HEAD method asks for a response identical to that of a
+ * GET request, but without the response body.
+ *
+ * POST The POST method is used to submit an entity to the
+ * specified resource, often causing a change in state or side
+ * effects on the server
+ *
+ * PUT The PUT method replaces all current representations of the
+ * target resource with the request payload.
+ *
+ * DELETE The DELETE method deletes the specified resource.
+ *
+ * CONNECT The CONNECT method establishes a tunnel to the server
+ * identified by the target resource.
+ *
+ * OPTIONS The OPTIONS method is used to describe the
+ * communication options for the target resource.
+ *
+ * TRACE The TRACE method performs a message loop-back test along
+ * the path to the target resource.
+ *
+ * PATCH The PATCH method is used to apply partial modifications
+ * to a resource.
+ */
