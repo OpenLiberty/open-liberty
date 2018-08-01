@@ -19,6 +19,7 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.private
 
 Bundle-Description: MicroProfile Metrics 1.0 Private REST API, version ${bVersion}
 
+IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
 Web-ContextPath: /metrics
