@@ -348,6 +348,8 @@ public class CollectorJsonUtils {
                      *
                      * Explicitly parse for ibm_sequence/loggingSequenceNumber for special processing.
                      *
+                     * Explicitly parse for ibm_threadid for special processing.
+                     *
                      * Audit is currently not using the logging constants for the datetime and sequence keys,
                      * we need to format the json output with the appropriate logging values for the keys.
                      *
@@ -356,13 +358,15 @@ public class CollectorJsonUtils {
                      * Note: we'll expect any external/thirdparty/additional source to be using IBM_* keys.
                      * This method is to parse and format into logstash_1.0 expected formatting.
                      */
-                    if (key.equals("eventTime") || key.equals("eventSequenceNumber")) {
+                    if (key.equals("eventTime") || key.equals("eventSequenceNumber") || key.equals("eventThreadId")) {
                         continue;
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
                         CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.DATETIME, datetime, false, true, false, false, false);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
                         CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.SEQUENCE, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
                     } else {
                         CollectorJsonHelpers.addToJSON(sb, key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
                     }
