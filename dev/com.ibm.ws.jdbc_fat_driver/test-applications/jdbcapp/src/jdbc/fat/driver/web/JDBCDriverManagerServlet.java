@@ -72,7 +72,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * Verify that it is possible to establish a second connection to a data source that is backed by a Driver,
      * which demonstrates that the URL and other properties are not lost upon the initial connection.
      * Also verifies that the user/password from the data source vendor properties are supplied to the driver
-     * in the case of application authentication (which is default when looked up with a resource reference).
+     * in the case of application authentication (which is default when looked up without a resource reference).
      */
     @Test
     public void testAnotherConnection() throws Exception {
@@ -245,7 +245,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
      * This test validates that the user name from the container authentication data is used for resource reference lookup with
      * auth=CONTAINER rather than the default user/password that are specified in the data source vendor properties.
      * It also verifies that we can read an entry that was previously written by the same data source when accessed via
-     * a direct lookup, which equates to auth=APPLICATION where the same same user/password as the container auth data were
+     * a direct lookup, which equates to auth=APPLICATION where the same user/password as the container auth data were
      * explicitly requested.
      */
     @Test

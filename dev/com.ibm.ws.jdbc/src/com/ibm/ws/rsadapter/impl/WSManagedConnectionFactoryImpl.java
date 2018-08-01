@@ -868,8 +868,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                             if ("URL".equals(name) || "url".equals(name)) {
                                 url = str;
                                 if (isTraceOn && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, name + '=' + str);
-                            } else if ((user == null || !"user".equals(name) && (pwd == null || !"password".equals(name)))) {
+                                    Tr.debug(this, tc, name + '=' + str); // TODO obscure values of any possible passwords in URL value?
+                            } else if ((user == null || !"user".equals(name)) && (pwd == null || !"password".equals(name))) {
                                 // Decode passwords
                                 if (PropertyService.isPassword(name) && PasswordUtil.getCryptoAlgorithm(str) != null) {
                                     if (isTraceOn && tc.isDebugEnabled())
