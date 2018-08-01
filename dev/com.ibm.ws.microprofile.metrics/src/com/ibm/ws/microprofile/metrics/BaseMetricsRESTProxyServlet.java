@@ -26,7 +26,7 @@ import com.ibm.ws.rest.handler.helper.ServletRESTRequestImpl;
 import com.ibm.ws.rest.handler.helper.ServletRESTResponseImpl;
 import com.ibm.wsspi.rest.handler.RESTHandlerContainer;
 
-public class MetricsRESTProxyServlet extends HttpServlet {
+public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private transient RESTHandlerContainer REST_HANDLER_CONTAINER = null;
