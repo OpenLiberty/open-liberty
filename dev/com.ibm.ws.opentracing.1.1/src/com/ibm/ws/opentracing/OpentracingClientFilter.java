@@ -32,6 +32,9 @@ import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
+import io.opentracing.util.AutoFinishScope;
+import io.opentracing.util.AutoFinishScope.Continuation;
+import io.opentracing.util.AutoFinishScopeManager;
 
 /**
  * <p>Open tracing client filter implementation. Handles outgoing requests and
@@ -55,6 +58,8 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     public static final String CLIENT_SPAN_SKIPPED_ID = OpentracingClientFilter.class.getName() + ".Skipped";
 
     private static final String TAG_COMPONENT_JAXRS = "jaxrs";
+
+    private static final AutoFinishScopeManager AUTO_FINISH_SCOPE_MANAGER = new AutoFinishScopeManager();
 
     private OpentracingFilterHelper helper;
 
@@ -128,12 +133,16 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " span", span);
             }
-            tracer.inject(
-                          span.context(),
-                          Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
 
-            clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, span);
+            try (AutoFinishScope scope = AUTO_FINISH_SCOPE_MANAGER.activate(span, true)) {
+                Continuation continuation = scope.capture();
 
+                tracer.inject(
+                              scope.span().context(),
+                              Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
+
+                clientRequestContext.setProperty(CLIENT_CONTINUATION_PROP_ID, continuation);
+            }
         } else {
             Span currentSpan = tracer.activeSpan();
             if (currentSpan != null) {
@@ -171,12 +180,13 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
             return;
         }
 
-        Span contSpan = (Span) clientRequestContext.getProperty(CLIENT_CONTINUATION_PROP_ID);
+        Continuation continuation = (Continuation) clientRequestContext.getProperty(CLIENT_CONTINUATION_PROP_ID);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName, contSpan);
+            Tr.debug(tc, methodName, continuation);
         }
 
-        if (contSpan == null) {
+        if (continuation == null) {
             // This may occur if there's no Tracer (see other method); otherwise, there's
             // probably some bug sending the right Continuation (e.g. threading?).
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -187,23 +197,24 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
 
         clientRequestContext.removeProperty(CLIENT_CONTINUATION_PROP_ID);
 
-        Integer httpStatus = Integer.valueOf(clientResponseContext.getStatus());
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " httpStatus", httpStatus);
-        }
-
-        contSpan.setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
-        if (clientResponseContext.getStatus() >= 400) {
-            contSpan.setTag(Tags.ERROR.getKey(), true);
+        try (AutoFinishScope scope = continuation.activate()) {
+            Integer httpStatus = Integer.valueOf(clientResponseContext.getStatus());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, methodName + " error", clientResponseContext.getStatus());
+                Tr.debug(tc, methodName + " httpStatus", httpStatus);
+            }
+
+            scope.span().setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
+            if (clientResponseContext.getStatus() >= 400) {
+                scope.span().setTag(Tags.ERROR.getKey(), true);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + " error", clientResponseContext.getStatus());
+                }
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName + " finish span", scope.span());
             }
         }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, methodName + " finish span", contSpan);
-        }
-        contSpan.finish();
     }
 
     private class MultivaluedMapToTextMap implements TextMap {
