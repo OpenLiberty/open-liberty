@@ -83,8 +83,6 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * 1. (JSON OR not a message/log-source event) AND NOT ( tracefile=stdout + basic format config)
          * Note: The "not a message/log-source event condition" is to ensure any non-message sources that were on-route to the consoleLogHandler
          * before a switch to 'basic' will be properly formatted as JSON instead of directly going to basic formatter.
-         * Note: The "not a message/log-source event condition" is to ensure any non-message sources that were on-route to the consoleLogHandler
-         * before a switch to 'basic' will be properly formatted as JSON instead of directly going to basic formatter.
          * a) Message
          * - Check if it is above consoleLogLevel OR if it is from SysOut/SysErr AND copySystemStreams is true
          * then format as JSON
