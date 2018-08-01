@@ -341,9 +341,6 @@ public class CollectorJsonUtils {
                     key = kvp.getKey();
 
                     /*
-                     * Skip GDO KVP if the key is 'eventTime' or 'eventSequenceNumber' - this is not valid for our use.
-                     * This is reserved for AuditFileHandler.
-                     *
                      * Explicitly parse for ibm_datetime/loggingEventTime for special processing.
                      *
                      * Explicitly parse for ibm_sequence/loggingSequenceNumber for special processing.
@@ -358,9 +355,7 @@ public class CollectorJsonUtils {
                      * Note: we'll expect any external/thirdparty/additional source to be using IBM_* keys.
                      * This method is to parse and format into logstash_1.0 expected formatting.
                      */
-                    if (key.equals("eventTime") || key.equals("eventSequenceNumber")) {
-                        continue;
-                    } else if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
+                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
                         CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.DATETIME, datetime, false, true, false, false, false);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
