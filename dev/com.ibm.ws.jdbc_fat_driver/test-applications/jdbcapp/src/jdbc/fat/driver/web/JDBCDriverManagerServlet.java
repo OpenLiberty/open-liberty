@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,6 +41,9 @@ public class JDBCDriverManagerServlet extends FATServlet {
 
     @Resource
     DataSource xads;
+
+    @Resource(name = "jdbc/fatDriver")
+    DataSource fatDriverDS;
 
     /**
      * Test of basic database connectivity
@@ -196,17 +198,17 @@ public class JDBCDriverManagerServlet extends FATServlet {
         }
     }
 
-    //TODO this test can be removed once other tests are updated to use the custom FAT driver
+    /**
+     * Very basic test using a connection established via the Driver
+     */
     @Test
-    public void testFATDriver() throws Exception {
-        Class.forName("jdbc.fat.driver.derby.FATDriver");
-        Connection conn = DriverManager.getConnection("jdbc:fatdriver:memory:jdbcdriver1;create=true");
+    public void testBasicFatDriverUsage() throws Exception {
+        Connection conn = fatDriverDS.getConnection();
         try {
             System.out.println("Connected to " + conn.getMetaData().getDatabaseProductName());
             conn.createStatement().executeQuery("VALUES 1");
         } finally {
             conn.close();
         }
-
     }
 }
