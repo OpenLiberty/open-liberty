@@ -59,6 +59,7 @@ public class MessageLogHandler extends JsonLogHandler implements SynchronousHand
         }
 
         String eventSourceType = getSourceTypeFromDataObject(genData);
+
         String messageOutput = null;
         if (currFormat.equals(LoggingConstants.JSON_FORMAT) || !eventSourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
             if (genData.getJsonMessage() == null) {

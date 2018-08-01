@@ -29,7 +29,7 @@ public class ConnectionResults
 
     /**
      * The PooledConnection or XAConnection (which implements PooledConnection).
-     * This value will be null if the connection was requested from a DataSource
+     * This value will be null if the connection was requested from a DataSource or Driver
      * rather than a ConnectionPoolDataSource or XADataSource.
      */
     PooledConnection pooledConnection;
