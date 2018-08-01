@@ -27,12 +27,11 @@ WS-TraceGroup: REACTIVESTREAMS
 Import-Package: \
   org.eclipse.microprofile.reactive.streams.spi; version="[1.0,1.1)",\
   org.eclipse.microprofile.reactive.streams; version="[1.0,1.1)",\
-  org.eclipse.microprofile.reactive.streams.tck; version="[1.0,1.1)",\
   *
 
 Export-Package: \
   com.lightbend.microprofile.reactive.streams.zerodep; version=1.0
-
+  
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: zerodep/src/main/java
