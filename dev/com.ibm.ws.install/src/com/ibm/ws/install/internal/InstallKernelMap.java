@@ -551,29 +551,34 @@ public class InstallKernelMap implements Map {
             int alreadyInstalled = 0;
             Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
 
-//TODO
+            //TODO
             if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
                 Path tempDir = Files.createTempDirectory("generatedJson");
                 tempDir.toFile().deleteOnExit();
                 Map<String, String> shortNameMap = new HashMap<String, String>();
                 File individualEsaJson = individualESAInstall(tempDir, shortNameMap);
+                //File individualEsaJson = individualESAInstall(jsonDir);
                 RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
                 repoList.add(repo);
-
+                //repoList.add(individualESAInstall(tempDir));
                 for (String feature : featureToInstall) {
                     if (feature.endsWith(".esa")) {
                         if (shortNameMap.containsKey(feature)) {
                             String shortName = shortNameMap.get(feature);
                             featureToInstall.remove(feature);
+                            System.out.println("This is the shortname" + shortName);
                             featureToInstall.add(shortName);
                         } else {
                             //TODO
-                            //throw warning???
+                            //throw error???
 
                         }
                     }
                 }
 
+            }
+            for (String feature : featureToInstall) {
+                System.out.println("This is featureToInstall   " + feature);
             }
 
             Collection<String> featuresAlreadyPresent = new ArrayList<String>();

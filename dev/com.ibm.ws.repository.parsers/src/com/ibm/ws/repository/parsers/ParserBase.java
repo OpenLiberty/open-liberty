@@ -579,6 +579,7 @@ public abstract class ParserBase {
             }
             // cdpj Temporary workaround ends
         } else {
+
             if ((LAHeader == null && LIHeader != null)
                 || (LAHeader != null && LIHeader == null)) {
                 System.err.println("LA/LI Problem with archive" + archive.getCanonicalPath());
