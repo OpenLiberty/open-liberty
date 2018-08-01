@@ -42,6 +42,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
+import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
 import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
@@ -83,6 +84,7 @@ public class InstallKernelMap implements Map {
     private static final String ACTION_ERROR_MESSAGE = "action.error.message";
     private static final String ACTION_EXCEPTION_STACKTRACE = "action.exception.stacktrace";
     private static final String TO_EXTENSION = "to.extension";
+    private static final String DIRECTORY_BASED_REPOSITORY = "directory.based.repository";
     private static final String FEATURES_TO_RESOLVE = "features.to.resolve";
     private static final String SINGLE_JSON_FILE = "single.json.file";
     private static final String MESSAGE_LOCALE = "message.locale";
@@ -363,6 +365,12 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
+        } else if (DIRECTORY_BASED_REPOSITORY.equals(key)) {
+            if (value instanceof File) {
+                data.put(DIRECTORY_BASED_REPOSITORY, value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         } else if (key.equals("debug")) {
             if (value instanceof Level) {
                 data.put("debug", value);
@@ -487,6 +495,12 @@ public class InstallKernelMap implements Map {
 
             RepositoryConnectionList repoList = new RepositoryConnectionList();
             List<File> singleJsonRepos = (List<File>) data.get(SINGLE_JSON_FILE);
+            File directoryBasedRepo = (File) data.get(DIRECTORY_BASED_REPOSITORY);
+            if (directoryBasedRepo != null) {
+                RepositoryConnection directRepo = new DirectoryRepositoryConnection(directoryBasedRepo);
+                repoList.add(directRepo);
+            }
+
             for (File jsonRepo : singleJsonRepos) {
                 RepositoryConnection repo = new SingleFileRepositoryConnection(jsonRepo);
                 repoList.add(repo);
@@ -521,7 +535,11 @@ public class InstallKernelMap implements Map {
             }
             for (List<RepositoryResource> item : resolveResult) {
                 for (RepositoryResource repoResrc : item) {
-                    featuresResolved.add(repoResrc.getMavenCoordinates());
+                    if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
+                        featuresResolved.add(repoResrc.getId());
+                    } else {
+                        featuresResolved.add(repoResrc.getMavenCoordinates());
+                    }
                 }
             }
             actionType = ActionType.install;

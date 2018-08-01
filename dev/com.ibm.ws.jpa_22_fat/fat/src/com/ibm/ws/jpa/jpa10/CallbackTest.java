@@ -12,6 +12,8 @@
 package com.ibm.ws.jpa.jpa10;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -24,13 +26,13 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.jpa.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 import jpa10callback.web.CallbackOrderOfInvocationTestServlet;
 import jpa10callback.web.CallbackRuntimeExceptionTestServlet;
 import jpa10callback.web.CallbackTestServlet;
@@ -38,13 +40,24 @@ import jpa10callback.web.DefaultListenerCallbackRuntimeExceptionTestServlet;
 import jpa10callback.web.DefaultListenerCallbackTestServlet;
 
 @RunWith(FATRunner.class)
-public class CallbackTest extends FATServletClient {
+public class CallbackTest extends JPAFATServletClient {
     public static final String APP_NAME = "callback";
     public static final String SERVLET = "TestCallback";
     public static final String SERVLET2 = "DefaultTestCallback";
     public static final String SERVLET3 = "TestCallbackRuntimeException";
     public static final String SERVLET4 = "DefaultCallbackRuntimeTestCallback";
     public static final String SERVLET5 = "TestCallbackOrderOfInvocation";
+    private static final String resPath = "test-applications/jpa10/" + APP_NAME + "/resources";
+
+    private final static Set<String> dropSet = new HashSet<String>();
+    private final static Set<String> createSet = new HashSet<String>();
+
+    private static long timestart = 0;
+
+    static {
+        dropSet.add("JPA10_CALLBACK_DROP_${dbvendor}.ddl");
+        createSet.add("JPA10_CALLBACK_CREATE_${dbvendor}.ddl");
+    }
 
     @Server("JPA10Server")
     @TestServlets({
@@ -58,8 +71,31 @@ public class CallbackTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        final String resPath = "test-applications/jpa10/" + APP_NAME + "/resources/";
+        bannerStart(CallbackTest.class);
+        timestart = System.currentTimeMillis();
 
+        server1.startServer();
+
+        setupDatabaseApplication(server1, resPath + "/ddl/");
+
+        final Set<String> ddlSet = new HashSet<String>();
+
+        ddlSet.clear();
+        for (String ddlName : dropSet) {
+            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+        }
+        executeDDL(server1, ddlSet, true);
+
+        ddlSet.clear();
+        for (String ddlName : createSet) {
+            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+        }
+        executeDDL(server1, ddlSet, false);
+
+        setupTestApplication();
+    }
+
+    private static void setupTestApplication() throws Exception {
         WebArchive webApp = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         webApp.addPackages(true, "jpa10callback");
         ShrinkHelper.addDirectory(webApp, resPath + "/callback.war");
@@ -85,13 +121,19 @@ public class CallbackTest extends FATServletClient {
         server1.updateServerConfiguration(sc);
         server1.saveServerConfiguration();
 
-        server1.startServer();
+        HashSet<String> appNamesSet = new HashSet<String>();
+        appNamesSet.add(APP_NAME);
+        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                           "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
-        );
+        try {
+            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            );
+        } finally {
+            bannerEnd(CallbackTest.class, timestart);
+        }
     }
 }

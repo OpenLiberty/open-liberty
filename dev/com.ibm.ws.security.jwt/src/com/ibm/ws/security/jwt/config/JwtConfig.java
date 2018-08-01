@@ -14,7 +14,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.List;
 
-import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 public interface JwtConfig {
 

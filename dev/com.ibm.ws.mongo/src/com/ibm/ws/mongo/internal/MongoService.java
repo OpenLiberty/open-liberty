@@ -188,8 +188,6 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
 
     /**
      * Instance of
-     * com.mongodb.async.client.MongoClient (Mongo async driver v3.0+), or
-     * com.mongodb.client.MongoClient (Mongo Java driver v3.7+), or
      * com.mongodb.MongoClient (Mongo Java driver v2.x)
      */
     private Object mongoClient;
@@ -395,28 +393,8 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
 
         ClassLoader loader = libraryRef.getServiceWithException().getClassLoader();
 
-        Class<?> MongoClients = null;
-        // TODO remove temporary guard that prevents code under development from being shipped once it is ready
-        if ("Not supported. Do not use this property.".equals(props.get("v3.x"))) {
-            MongoClients = loadClass(loader, "com.mongodb.async.client.MongoClients"); // requires v3.0+
-            if (MongoClients == null)
-                MongoClients = loadClass(loader, "com.mongodb.client.MongoClients"); // requires v3.7+
-        }
+        // Lazy initialization for version 2.x of the Mongo Java driver.
 
-        if (MongoClients == null)
-            initV2(loader);
-        else
-            initV3(loader, MongoClients);
-    }
-
-    /**
-     * Lazy initialization for version 2.x of the Mongo Java driver.
-     * Precondition: invoker must have write lock on this MongoService instance
-     *
-     * @param loader class loader for Mongo Java driver classes
-     * @throws Exception if unable to initialize
-     */
-    private void initV2(ClassLoader loader) throws Exception {
         boolean sslEnabled = (((Boolean) props.get(SSL_ENABLED)) == null) ? false : (Boolean) props.get(SSL_ENABLED);
 
         assertLibrary(loader, sslEnabled);
@@ -514,19 +492,6 @@ public class MongoService implements LibraryChangeListener, MongoChangeListener 
         Class<?> DB = loader.loadClass("com.mongodb.DB");
         DB_authenticate = DB.getMethod("authenticate", String.class, char[].class);
         DB_isAuthenticated = DB.getMethod("isAuthenticated");
-    }
-
-    /**
-     * Lazy initialization for version 3.x+ of the Mongo Async driver and Mongo Java driver.
-     * Precondition: invoker must have write lock on this MongoService instance
-     *
-     * @param loader class loader for Mongo Java driver classes
-     * @param MongoClients com.mongodb.async.client.MongoClients or com.mongodb.client.MongoClients class
-     * @throws Exception if unable to initialize
-     */
-    private void initV3(ClassLoader loader, Class<?> MongoClients) throws Exception {
-        // TODO implement
-        // mongoClient = ...
     }
 
     /**

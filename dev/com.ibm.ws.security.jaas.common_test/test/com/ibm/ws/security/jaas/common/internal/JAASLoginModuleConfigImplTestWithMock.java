@@ -29,11 +29,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.authentication.jaas.modules.WSLoginModuleImpl;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -81,6 +81,10 @@ public class JAASLoginModuleConfigImplTestWithMock {
 
     @Test
     public void activate_noOptions() throws Exception {
+        // Skip test on Java 11 because even the latest version of CGLib has issues when running on Hotspot JVM
+        if (!System.getProperty("java.version").startsWith("1."))
+            return;
+
         ModuleConfig moduleConfig = moduleConfig();
         jaasLoginModuleConfig.setClassLoadingSvc(classLoadingService);
         jaasLoginModuleConfig.setSharedLib(sharedLibrary);
@@ -155,6 +159,9 @@ public class JAASLoginModuleConfigImplTestWithMock {
 
     @Test
     public void activate_withOptions() throws Exception {
+        // Skip test on Java 11 because even the latest version of CGLib has issues when running on Hotspot JVM
+        if (!System.getProperty("java.version").startsWith("1."))
+            return;
 
         final Map<String, Object> orops = new HashMap<String, Object>();
         orops.put("options.0.option1", "value1");

@@ -39,8 +39,12 @@ public class BufferManagerImpl extends BufferManager {
 	protected Queue<Object> earlyMessageQueue;
 
 	private static final int EARLY_MESSAGE_QUEUE_SIZE = 400;
-
+	
 	public BufferManagerImpl(int capacity, String sourceId) {
+		this(capacity,sourceId, true);
+	}
+
+	public BufferManagerImpl(int capacity, String sourceId, boolean isSoftRefEMQ) {
 		super();
 
 		BufferManagerEMQHelper.addBufferManagerList(this);
@@ -48,24 +52,17 @@ public class BufferManagerImpl extends BufferManager {
 		this.sourceId = sourceId;
 		this.capacity = capacity;
 		if (!BufferManagerEMQHelper.getEMQRemovedFlag()) {
-			earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+			if (isSoftRefEMQ){
+				earlyMessageQueue = new SimpleRotatingSoftQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+			} else {
+				earlyMessageQueue = new SimpleRotatingQueue<Object>(new Object[EARLY_MESSAGE_QUEUE_SIZE]);
+			}
 			// Check again just in case
 			if (BufferManagerEMQHelper.getEMQRemovedFlag()) {
 				removeEMQ();
 			}
 		}
 	}
-
-	public BufferManagerImpl(int capacity, String sourceId, boolean isEMQ) {
-		super();
-		this.sourceId = sourceId;
-		this.capacity = capacity;
-		if (!isEMQ) {
-			earlyMessageQueue = null; // don't need earlyMessageQueue
-			ringBuffer = new Buffer<Object>(capacity);
-		}
-	}
-	
 	
 	@Override
 	public void add(Object event) {
@@ -223,7 +220,9 @@ public class BufferManagerImpl extends BufferManager {
 		if (earlyMessageQueue != null && earlyMessageQueue.size() != 0
 				&& !synchronousHandlerSet.contains(syncHandler)) {
 			for (Object message : earlyMessageQueue.toArray()) {
-				syncHandler.synchronousWrite(message);
+				if (message != null){
+					syncHandler.synchronousWrite(message);
+				}
 			}
 		}
 

@@ -11,6 +11,7 @@
 package com.ibm.ws.security.common.jwk.interfaces;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 /**
  * TODO: This should replace com.ibm.ws.security.openidconnect.jwk.JWK

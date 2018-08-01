@@ -77,7 +77,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     // Test with JPA entities defined by annotation
 
     @Test
-    public void Callback002_EntitySupportingDefaultCallbacks_Ano_AMJTA_Web() throws Exception {
+    public void jpa10_Callback002_EntitySupportingDefaultCallbacks_Ano_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -88,7 +88,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback002_EntitySupportingDefaultCallbacks_Ano_AMRL_Web() throws Exception {
+    public void jpa10_Callback002_EntitySupportingDefaultCallbacks_Ano_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -99,7 +99,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback002_EntitySupportingDefaultCallbacks_Ano_CMTS_Web() throws Exception {
+    public void jpa10_Callback002_EntitySupportingDefaultCallbacks_Ano_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         ctl.testCallback002(em, tx, targetEntityClass);
     }
@@ -107,7 +107,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     // Test with JPA entities defined by XML
 
     @Test
-    public void Callback002_EntitySupportingDefaultCallbacks_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback002_EntitySupportingDefaultCallbacks_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -118,7 +118,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback002_EntitySupportingDefaultCallbacks_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback002_EntitySupportingDefaultCallbacks_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -129,7 +129,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback002_EntitySupportingDefaultCallbacks_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback002_EntitySupportingDefaultCallbacks_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         ctl.testCallback002(em, tx, targetEntityClass);
     }
@@ -142,7 +142,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     // Test with JPA entities defined by annotation
 
     @Test
-    public void Callback003_EntitySupportingDefaultCallbacks_Ano_AMJTA_Web() throws Exception {
+    public void jpa10_Callback003_EntitySupportingDefaultCallbacks_Ano_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = EntityNotSupportingDefaultCallbacks.class;
         try {
@@ -153,7 +153,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback003_EntitySupportingDefaultCallbacks_Ano_AMRL_Web() throws Exception {
+    public void jpa10_Callback003_EntitySupportingDefaultCallbacks_Ano_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = EntityNotSupportingDefaultCallbacks.class;
         try {
@@ -164,7 +164,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback003_EntitySupportingDefaultCallbacks_Ano_CMTS_Web() throws Exception {
+    public void jpa10_Callback003_EntitySupportingDefaultCallbacks_Ano_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = EntityNotSupportingDefaultCallbacks.class;
         ctl.testCallback003(em, tx, targetEntityClass);
     }
@@ -172,7 +172,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     // Test with JPA entities defined by XML
 
     @Test
-    public void Callback003_EntitySupportingDefaultCallbacks_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback003_EntitySupportingDefaultCallbacks_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLEntityNotSupportingDefaultCallbacks.class;
         try {
@@ -183,7 +183,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback003_EntitySupportingDefaultCallbacks_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback003_EntitySupportingDefaultCallbacks_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLEntityNotSupportingDefaultCallbacks.class;
         try {
@@ -194,7 +194,7 @@ public class DefaultListenerCallbackTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback003_EntitySupportingDefaultCallbacks_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback003_EntitySupportingDefaultCallbacks_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLEntityNotSupportingDefaultCallbacks.class;
         ctl.testCallback003(em, tx, targetEntityClass);
     }

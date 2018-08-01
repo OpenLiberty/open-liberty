@@ -90,6 +90,8 @@ import org.apache.cxf.workqueue.AutomaticWorkQueue;
 import org.apache.cxf.workqueue.WorkQueueManager;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /*
@@ -171,6 +173,7 @@ public abstract class HTTPConduit
     protected static final Logger LOG = LogUtils.getL7dLogger(HTTPConduit.class);
 
     private static boolean hasLoggedAsyncWarning;
+    private static final TraceComponent tc = Tr.register(HTTPConduit.class);
 
     /**
      * This constant holds the suffix ".http-conduit" that is appended to the
@@ -675,7 +678,16 @@ public abstract class HTTPConduit
                 }
             }
         } finally {
-            super.close(msg);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Finished servicing http request on conduit. ");
+            }
+            try {
+                super.close(msg);
+            } finally {
+                //clean up address within threadlocal of EndPointInfo
+                endpointInfo.resetAddress();  //Liberty #3669
+            }
+
         }
     }
 
@@ -733,9 +745,19 @@ public abstract class HTTPConduit
      */
     @Override
     public void close() {
-        if (clientSidePolicy != null) {
-            clientSidePolicy.removePropertyChangeListener(this);
+        try {
+            if (clientSidePolicy != null) {
+                clientSidePolicy.removePropertyChangeListener(this);
+            }
+
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Finished servicing http request on conduit. ");
+            }
+            //clean up address within threadlocal of EndPointInfo
+            endpointInfo.resetAddress();    //Liberty #3669
         }
+
     }
 
     /**

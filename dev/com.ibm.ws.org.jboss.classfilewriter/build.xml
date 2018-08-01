@@ -13,6 +13,6 @@
     <import file="../ant_build/public_imports/rejar_imports.xml"/>
     
     <target name="package"> 
-    	<bndPackage version="1.0" original.jar.name="org.jboss.classfilewriter" original.jar.version="1.2.3" bnd.classpath="lib/jboss-classfilewriter-1.2.3.Final.jar" bnd.file="bnd.bnd"  />
+    	<bndPackage version="1.0" original.jar.name="org.jboss.classfilewriter" original.jar.version="1.1.2" bnd.classpath="lib/jboss-classfilewriter-1.1.2.Final.jar" bnd.file="bnd.bnd"  />
     </target>
 </project>

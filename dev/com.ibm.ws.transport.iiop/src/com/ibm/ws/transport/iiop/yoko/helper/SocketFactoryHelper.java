@@ -29,6 +29,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  *
@@ -43,7 +45,7 @@ public abstract class SocketFactoryHelper implements ExtendedConnectionHelper {
     }
 
     @FFDCIgnore(IOException.class)
-    protected IOException openSocket(int port, int backlog, InetAddress address, ServerSocket socket, boolean soReuseAddr) {
+    protected IOException openSocket(final int port, int backlog, InetAddress address, ServerSocket socket, boolean soReuseAddr) {
         SocketAddress socketAddress = new InetSocketAddress(address, port);
 
         //This code borrowed from TCPPort in channelFw:
@@ -81,8 +83,13 @@ public abstract class SocketFactoryHelper implements ExtendedConnectionHelper {
                 }
                 bindError = ioe;
                 try {
-                    String hostName = address == null ? "localhost" : address.getHostName();
-                    InetSocketAddress testAddr = new InetSocketAddress(hostName, port);
+                    final String hostName = address == null ? "localhost" : address.getHostName();
+                    final InetSocketAddress testAddr = AccessController.doPrivileged(new PrivilegedAction<InetSocketAddress>() {
+                        @Override
+                        public InetSocketAddress run() {
+                            return new InetSocketAddress(hostName, port);
+                        }
+                    });
                     // PK40741 - test for localhost being resolvable before using it
                     if (!testAddr.isUnresolved()) {
                         SocketChannel testChannel = SocketChannel.open(testAddr);

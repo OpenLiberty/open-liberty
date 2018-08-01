@@ -418,6 +418,12 @@ public class H2InboundLink extends HttpInboundLink {
         startAsyncRead(newFrame, configuredInactivityTimeout);
     }
 
+    private boolean freeBufferOnError = false;
+
+    protected boolean getFreeBufferOnError() {
+        return freeBufferOnError;
+    }
+
     public void startAsyncRead(boolean newFrame, int readTimeout) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "startAsyncRead entry; newframe = " + newFrame + " readTimeout: " + readTimeout);
@@ -427,6 +433,8 @@ public class H2InboundLink extends HttpInboundLink {
             frameReadProcessor.reset(true);
         }
 
+        freeBufferOnError = false;
+
         if (slicedBuffer == null) {
 
             // allocate a byte buffer to read data into
@@ -434,6 +442,7 @@ public class H2InboundLink extends HttpInboundLink {
             WsByteBuffer buf = mgr.allocate(Constants.READ_FRAME_BUFFER_SIZE);
 
             h2MuxTCPReadContext.setBuffer(buf);
+            freeBufferOnError = true;
 
             boolean forceQueue = true;
             int numBytes = 1; // read at least 1 or more bytes
@@ -448,9 +457,20 @@ public class H2InboundLink extends HttpInboundLink {
                     timeout = readTimeout;
                 }
 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "startAsyncRead do read on channel below ");
+                }
+
                 h2MuxTCPReadContext.read(numBytes, h2MuxReadCallback, forceQueue, timeout);
+
             } catch (Throwable up) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "startAsyncRead read caught throwable: " + up);
+                }
+
+                buf.release();
                 setReadLinkStatusToNotReadingAndNotify();
+
                 throw up;
             }
 
@@ -480,7 +500,11 @@ public class H2InboundLink extends HttpInboundLink {
                 executorService.execute(ac);
                 // the complete will execute async on another thread - there should be no more logic after this since read could complete right away
             }
-            return;
+            // return;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "startAsyncRead exit");
         }
 
     }

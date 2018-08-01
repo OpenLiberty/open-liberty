@@ -18,7 +18,6 @@ import java.io.File;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -36,15 +35,12 @@ import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.SkipForRepeat;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @Mode(TestMode.FULL)
-@RunWith(FATRunner.class)//Needed for SkipForRepeat
 public class EnablingBeansXmlValidationTest extends LoggingTest {
 
     //For reasons I do not know this test requires the app to be in the dropins folder before the test starts. Thus the app is built and exported in FATSuit.java
@@ -69,7 +65,6 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
     }        
 
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEnablingBeansXmlValidation() throws Exception {
         server = LibertyServerFactory.getLibertyServer("cdi12BeansXmlValidationServer");
@@ -99,35 +94,6 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
             }
         }
 
-    }
-
-    //In CDI 2.0 with weld 3.0.4 or later WELD-001210 is a warning not an error. 
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    public void testEnablingBeansXmlValidationCDITwo() throws Exception {
-        boolean foundNetworkError = false;
-        try {
-            server = LibertyServerFactory.getLibertyServer("cdi12BeansXmlValidationServer");
-            server.startServer(true);
-
-            if (server.waitForStringInLog("WELD-001210") != null) {
-                /*
-                 * WELD-001210 means that the server could not get the schema document from java.sun.com.
-                 * In this case the server defaults to saying the xml is valid.
-                 */
-                 foundNetworkError = true;
-            } else { 
-                if (server.waitForStringInLog("WELD-001210") == null) {
-                    assertNotNull("WELD-001208 Warning message not found", server.waitForStringInLog("WELD-001208"));
-                }
-            }
-        } catch (Exception e) {
-            //I saw a failure with WELD-001208 in the logs, but not CWWKZ0002E, so I'm adding a fallback WELD-001210 check.
-            //If we saw WELD-001210 before or we see it now skip the asserts. 
-            if (foundNetworkError == false && server.waitForStringInLog("WELD-001210") == null) {
-                assertNotNull("WELD-001208 Warning message not found", server.waitForStringInLog("WELD-001208"));
-            }
-        }
     }
 
     /*

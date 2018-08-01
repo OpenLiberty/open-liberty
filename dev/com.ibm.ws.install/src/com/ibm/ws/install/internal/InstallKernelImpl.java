@@ -289,7 +289,7 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
                 this.director.uninstall(ids, force);
             } else if (assetType.equalsIgnoreCase(IFIX)) {
                 this.director.uninstallFix(ids);
-                this.director.uninstall(true, null, null);
+                this.director.uninstall(true, (String) null, null);
             } else {
                 InstallException e = ExceptionUtils.createByKey("ERROR_UNSUPPORTED_ASSETTYPE", assetType);
                 throw e;
@@ -443,22 +443,36 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
 
     @Override
     public void uninstallFeaturesByProductId(String productId, Collection<File> toBeDeleted) throws InstallException {
-        uninstallFeaturesByProductId(productId, toBeDeleted, false);
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstallFeaturesByProductId(productIds, toBeDeleted);
+    }
+
+    @Override
+    public void uninstallFeaturesByProductId(String[] productIds, Collection<File> toBeDeleted) throws InstallException {
+        uninstallFeaturesByProductId(productIds, toBeDeleted, false);
     }
 
     @Override
     public void uninstallProductFeatures(String productId, Collection<File> toBeDeleted) throws InstallException {
-        uninstallFeaturesByProductId(productId, toBeDeleted, true);
+        String[] productIds = new String[1];
+        productIds[0] = productId;
+        uninstallProductFeatures(productIds, toBeDeleted);
     }
 
-    public void uninstallFeaturesByProductId(String productId, Collection<File> toBeDeleted,
+    @Override
+    public void uninstallProductFeatures(String[] productIds, Collection<File> toBeDeleted) throws InstallException {
+        uninstallFeaturesByProductId(productIds, toBeDeleted, true);
+    }
+
+    public void uninstallFeaturesByProductId(String[] productIds, Collection<File> toBeDeleted,
                                              boolean exceptPlatfromFeatuers) throws InstallException {
         this.director.fireProgressEvent(InstallProgressEvent.BEGIN, 0,
                                         Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_UNINSTALL"));
         try {
             this.director.refresh();
-            this.director.uninstallFeaturesByProductId(productId, exceptPlatfromFeatuers);
-            this.director.uninstall(false, productId, toBeDeleted);
+            this.director.uninstallFeaturesByProductId(productIds, exceptPlatfromFeatuers);
+            this.director.uninstall(false, productIds, toBeDeleted);
         } catch (InstallException e) {
             throw e;
         } finally {

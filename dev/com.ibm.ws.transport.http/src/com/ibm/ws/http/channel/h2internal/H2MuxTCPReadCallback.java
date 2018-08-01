@@ -16,6 +16,7 @@ import java.net.SocketTimeoutException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
@@ -84,6 +85,15 @@ public class H2MuxTCPReadCallback implements TCPReadCompletedCallback {
             }
 
             connLink.setReadLinkStatusToNotReadingAndNotify();
+
+            // release the read buffer since read failed
+            if (connLink.getFreeBufferOnError()) {
+                WsByteBuffer wsbb = rrc.getBuffer();
+                if (wsbb != null) {
+                    wsbb.release();
+                    rrc.setBuffer(null);
+                }
+            }
 
             if (exception instanceof SocketTimeoutException) {
                 //should send goaway on timeout exception

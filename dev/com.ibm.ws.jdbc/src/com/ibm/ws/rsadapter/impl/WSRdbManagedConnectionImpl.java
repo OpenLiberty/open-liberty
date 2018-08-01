@@ -410,11 +410,11 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         {
             if (isTraceOn && tc.isDebugEnabled()) 
             {
-                if (!DataSource.class.equals(mcf.dataSourceInterface) && !mcf.isUCP)
+                if (!DataSource.class.equals(mcf.type) && !mcf.isUCP)
                     Tr.debug(this, tc, "##### poolConn is null which will cause is2Phase to always be false and that will cause XA to break");
             }
         }
-        else if (!DataSource.class.equals(mcf.dataSourceInterface) && !mcf.isUCP)
+        else if (!DataSource.class.equals(mcf.type) && !mcf.isUCP)
         {
             poolConn1.addConnectionEventListener(this); 
 

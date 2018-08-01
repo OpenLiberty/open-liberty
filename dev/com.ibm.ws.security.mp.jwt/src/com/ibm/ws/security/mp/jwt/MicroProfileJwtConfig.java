@@ -28,4 +28,6 @@ public interface MicroProfileJwtConfig extends JwtConsumerConfig {
 
     public boolean getMapToUserRegistry();
 
+    public String getAuthFilterRef();
+
 }

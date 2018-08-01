@@ -1029,13 +1029,15 @@ public abstract class ProviderFactory {
      * rather than calculating the media types for every provider on every request. If there is a cache miss, we
      * will look up the media types by calling JAXRSUtils.getProviderConsumeTypes(mbr).
      */
-    private static List<MediaType> getProviderConsumeTypes(MessageBodyReader<?> mbr, Map<MessageBodyReader<?>, List<MediaType>> cache) {
+    private static List<MediaType> getSortedProviderConsumeTypes(MessageBodyReader<?> mbr, Map<MessageBodyReader<?>, List<MediaType>> cache) {
         List<MediaType> mediaTypes = cache.get(mbr);
         if (mediaTypes == null) {
             mediaTypes = JAXRSUtils.getProviderConsumeTypes(mbr);
+            // sort here before putting in the cache to avoid ConcurrentModificationException
+            mediaTypes = JAXRSUtils.sortMediaTypes(mediaTypes, null);
             cache.put(mbr, mediaTypes);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getProviderConsumeTypes - cache miss - caching " + mbr + " = " + mediaTypes);
+                Tr.debug(tc, "getSortedProviderConsumeTypes - cache miss - caching " + mbr + " = " + mediaTypes);
             }
         }
         return mediaTypes;
@@ -1072,13 +1074,15 @@ public abstract class ProviderFactory {
      * rather than calculating the media types for every provider on every request. If there is a cache miss, we
      * will look up the media types by calling JAXRSUtils.getProviderProduceTypes(mbw).
      */
-    private static List<MediaType> getProviderProduceTypes(MessageBodyWriter<?> mbw, Map<MessageBodyWriter<?>, List<MediaType>> cache) {
+    private static List<MediaType> getSortedProviderProduceTypes(MessageBodyWriter<?> mbw, Map<MessageBodyWriter<?>, List<MediaType>> cache) {
         List<MediaType> mediaTypes = cache.get(mbw);
         if (mediaTypes == null) {
             mediaTypes = JAXRSUtils.getProviderProduceTypes(mbw);
+            // sort here before putting in the cache to avoid ConcurrentModificationException
+            mediaTypes = JAXRSUtils.sortMediaTypes(mediaTypes, JAXRSUtils.MEDIA_TYPE_QS_PARAM);
             cache.put(mbw, mediaTypes);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getProviderProduceTypes - cache miss - caching " + mbw + " = " + mediaTypes);
+                Tr.debug(tc, "getSortedProviderProduceTypes - cache miss - caching " + mbw + " = " + mediaTypes);
             }
         }
         return mediaTypes;
@@ -1160,10 +1164,10 @@ public abstract class ProviderFactory {
             MessageBodyReader<?> e1 = p1.getOldProvider();
             MessageBodyReader<?> e2 = p2.getOldProvider();
 
-            List<MediaType> types1 = getProviderConsumeTypes(e1, cache);
-            types1 = JAXRSUtils.sortMediaTypes(types1, null);
-            List<MediaType> types2 = getProviderConsumeTypes(e2, cache);
-            types2 = JAXRSUtils.sortMediaTypes(types2, null);
+            //Liberty code change start
+            List<MediaType> types1 = getSortedProviderConsumeTypes(e1, cache);
+            List<MediaType> types2 = getSortedProviderConsumeTypes(e2, cache);
+            //Liberty code change end
 
             int result = JAXRSUtils.compareSortedMediaTypes(types1, types2, null);
             if (result != 0) {
@@ -1199,14 +1203,10 @@ public abstract class ProviderFactory {
             if (result != 0) {
                 return result;
             }
-            List<MediaType> types1 =
-                //Liberty code change start
-                JAXRSUtils.sortMediaTypes(getProviderProduceTypes(e1, cache), JAXRSUtils.MEDIA_TYPE_QS_PARAM);
-                //Liberty code change end
-            List<MediaType> types2 =
-                //Liberty code change start
-                JAXRSUtils.sortMediaTypes(getProviderProduceTypes(e2, cache), JAXRSUtils.MEDIA_TYPE_QS_PARAM);
-                //Liberty code change end
+            //Liberty code change start
+            List<MediaType> types1 = getSortedProviderProduceTypes(e1, cache);
+            List<MediaType> types2 = getSortedProviderProduceTypes(e2, cache);
+            //Liberty code change end
 
             result = JAXRSUtils.compareSortedMediaTypes(types1, types2, JAXRSUtils.MEDIA_TYPE_QS_PARAM);
             if (result != 0) {

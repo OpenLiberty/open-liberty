@@ -23,8 +23,8 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.jwk.constants.TraceConstants;
-import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 /**
  * TODO: This should replace com.ibm.ws.security.openidconnect.server.internal.JWKProvider

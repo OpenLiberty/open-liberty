@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
@@ -296,14 +297,14 @@ public class TAIRequestHelper {
 
         while (services.hasNext()) {
             MicroProfileJwtConfig mpJwtConfig = services.next();
-            //            AuthenticationFilter authFilter = mpJwtConfig.getAuthFilter();
-            //            if (authFilter != null) {
-            //                if (authFilter.isAccepted(request)) {
-            //                    mpJwtTaiRequest.addFilteredConfig(mpJwtConfig);
-            //                }
-            //            } else {
-            mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
-            //            }
+            AuthenticationFilter authFilter = MicroProfileJwtTAI.getAuthFilter(mpJwtConfig.getAuthFilterRef());
+            if (authFilter != null) {
+                if (authFilter.isAccepted(request)) {
+                    mpJwtTaiRequest.addFilteredConfig(mpJwtConfig);
+                }
+            } else {
+                mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
+            }
         }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, mpJwtTaiRequest);
@@ -346,10 +347,10 @@ public class TAIRequestHelper {
             Tr.entry(tc, methodName, request, configId);
         }
         MicroProfileJwtConfig mpJwtConfig = getConfig(configId);
-        //        if (!configAuthFilterMatchesRequest(request, mpJwtConfig)) {
-        //            // The config with the specified ID isn't configured to service this request
-        //            mpJwtConfig = null;
-        //        }
+        if (!configAuthFilterMatchesRequest(request, mpJwtConfig)) {
+            // The config with the specified ID isn't configured to service this request
+            mpJwtConfig = null;
+        }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, mpJwtConfig);
         }
@@ -364,18 +365,18 @@ public class TAIRequestHelper {
         return MicroProfileJwtTAI.getMicroProfileJwtConfig(configId);
     }
 
-    //    boolean configAuthFilterMatchesRequest(HttpServletRequest request, MicroProfileJwtConfig config) {
-    //        if (config == null) {
-    //            return false;
-    //        }
-    //        AuthenticationFilter authFilter = config.getAuthFilter();
-    //        if (authFilter != null) {
-    //            if (!authFilter.isAccepted(request)) {
-    //                // Specified configuration is present but its auth filter is not configured to service this request
-    //                return false;
-    //            }
-    //        }
-    //        return true;
-    //    }
+    boolean configAuthFilterMatchesRequest(HttpServletRequest request, MicroProfileJwtConfig config) {
+        if (config == null) {
+            return false;
+        }
+        AuthenticationFilter authFilter = MicroProfileJwtTAI.getAuthFilter(config.getAuthFilterRef());
+        if (authFilter != null) {
+            if (!authFilter.isAccepted(request)) {
+                // Specified configuration is present but its auth filter is not configured to service this request
+                return false;
+            }
+        }
+        return true;
+    }
 
 }

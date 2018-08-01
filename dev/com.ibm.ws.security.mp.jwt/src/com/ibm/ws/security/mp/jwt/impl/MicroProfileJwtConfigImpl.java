@@ -107,6 +107,10 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String CFG_KEY_SIGALG = "signatureAlgorithm";
 
     String signatureAlgorithm = "RS256";
+
+    public static final String KEY_authFilterRef = "authFilterRef";
+    protected String authFilterRef;
+
     @com.ibm.websphere.ras.annotation.Sensitive
     private String sharedKey;
 
@@ -160,7 +164,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.sslRef = configUtils.getConfigAttribute(props, KEY_sslRef);
         this.sslRefInfo = null; // lazy init
 
-        //this.authFilterRef = getConfigAttribute(props, KEY_authFilterRef);
+        this.authFilterRef = configUtils.getConfigAttribute(props, KEY_authFilterRef);
         //this.authFilter = null; // lazy init
 
         this.sslContext = null;
@@ -191,7 +195,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             Tr.debug(tc, "userNameAttribute:" + userNameAttribute);
             Tr.debug(tc, "groupNameAttribute:" + groupNameAttribute);
             Tr.debug(tc, "mapToUserRegistry:" + mapToUserRegistry);
-            //Tr.debug(tc, "authFilterRef = " + authFilterRef);
+            Tr.debug(tc, "authFilterRef = " + authFilterRef);
             Tr.debug(tc, "sslRef = " + sslRef);
             Tr.debug(tc, "sigAlg = " + signatureAlgorithm);
             Tr.debug(tc, "sharedKey" + sharedKey == null ? "null" : "*********");
@@ -480,6 +484,13 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public boolean getMapToUserRegistry() {
         // TODO Auto-generated method stub
         return this.mapToUserRegistry;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getAuthFilterRef() {
+        // TODO Auto-generated method stub
+        return this.authFilterRef;
     }
 
 }
