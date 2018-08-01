@@ -187,6 +187,7 @@ org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.0
 org.eclipse.microprofile.fault-tolerance:microprofile-fault-tolerance-api:1.1
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0.1
+org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.0.1
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.1.1
@@ -268,8 +269,12 @@ org.jmockit:jmockit:1.25
 org.yaml:snakeyaml:1.18
 cglib:cglib-nodep:3.2.7
 io.opentracing:opentracing-api:0.30.0
+io.opentracing:opentracing-api:0.31.0
 io.opentracing:opentracing-util:0.30.0
+io.opentracing:opentracing-util:0.31.0
 io.opentracing:opentracing-mock:0.30.0
+io.opentracing:opentracing-mock:0.31.0
+io.opentracing:opentracing-noop:0.31.0
 org.quartz-scheduler:quartz:2.2.1
 org.apache.deltaspike.core:deltaspike-core-api:1.5.0
 org.apache.deltaspike.core:deltaspike-core-impl:1.5.0
