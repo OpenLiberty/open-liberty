@@ -33,7 +33,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -58,6 +60,7 @@ import javax.resource.spi.ValidatingManagedConnectionFactory;
 import javax.resource.spi.security.GenericCredential;
 import javax.resource.spi.security.PasswordCredential;
 
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
@@ -853,13 +856,48 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         try {
             conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
                 public Connection run() throws Exception {
-                    Properties props = (Properties) dsConfig.get().vendorProps.clone(); //TODO would be nice if we could avoid cloning here
-                    String url = (String) props.remove("URL");
-                    if(user != null) {
-                        props.setProperty("user", user);
-                        props.setProperty("password", pwd);
+                    Hashtable<?, ?> vProps = dsConfig.get().vendorProps;
+                    Properties conProps = new Properties();
+                    String url = null;
+                    // convert property values to String and decode passwords 
+                    for (Map.Entry<?, ?> prop : vProps.entrySet()) {
+                        String name = (String) prop.getKey();
+                        Object value = prop.getValue();
+                        if (value instanceof String) {
+                            String str = (String) value;
+                            if ("URL".equals(name) || "url".equals(name)) {
+                                url = str;
+                                if (isTraceOn && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, name + '=' + str);
+                            } else if ((user == null || !"user".equals(name) && (pwd == null || !"password".equals(name)))) {
+                                // Decode passwords
+                                if (PropertyService.isPassword(name) && PasswordUtil.getCryptoAlgorithm(str) != null) {
+                                    if (isTraceOn && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "prop " + name + '=' + (str == null ? null : "***"));
+                                    str = PasswordUtil.decode(str);
+                                } else {
+                                    if (isTraceOn && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "prop " + name + '=' + str);
+                                }
+                                conProps.setProperty(name, str);
+                            }
+                        } else {
+                            if (isTraceOn && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "prop " + name + '=' + value);
+                            // Convert to String value
+                            conProps.setProperty(name, value.toString());
+                        }
                     }
-                        return ((Driver) dataSourceOrDriver).connect(url, props);
+
+                    if (user != null) {
+                        conProps.setProperty("user", user);
+                        conProps.setProperty("password", pwd);
+                        if (isTraceOn && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "prop user=" + user);
+                            Tr.debug(this, tc, "prop password=" + (pwd == null ? null : "***"));
+                        }
+                    }
+                    return ((Driver) dataSourceOrDriver).connect(url, conProps);
                 }
             });
             

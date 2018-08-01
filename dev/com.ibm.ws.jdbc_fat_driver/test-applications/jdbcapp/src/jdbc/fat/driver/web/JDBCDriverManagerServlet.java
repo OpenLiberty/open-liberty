@@ -24,6 +24,8 @@ import java.sql.Statement;
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
@@ -44,6 +46,46 @@ public class JDBCDriverManagerServlet extends FATServlet {
 
     @Resource(name = "jdbc/fatDriver")
     DataSource fatDriverDS;
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            DataSource dds = InitialContext.doLookup("jdbc/fatDriver");
+            // match the user/password specified for container auth data in server.xml
+            Connection con = dds.getConnection("dbuser1", "dbpwd1");
+            try {
+                Statement s = con.createStatement();
+                s.execute("create table address (name varchar(50) not null primary key, num int, street varchar(80), city varchar(40), state varchar(2), zip int)");
+                s.executeUpdate("insert into address values ('IBM Rochester Building 050-2 H215-1', 3605, 'Hwy 52 N', 'Rochester', 'MN', 55901)");
+                s.close();
+            } finally {
+                con.close();
+            }
+        } catch (NamingException x) {
+            throw new ServletException(x);
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+    }
+
+    /**
+     * Verify that it is possible to establish a second connection to a data source that is backed by a Driver,
+     * which demonstrates that the URL and other properties are not lost upon the initial connection.
+     * Also verifies that the user/password from the data source vendor properties are supplied to the driver
+     * in the case of application authentication (which is default when looked up with a resource reference).
+     */
+    @Test
+    public void testAnotherConnection() throws Exception {
+        DataSource dds = InitialContext.doLookup("jdbc/fatDriver");
+        Connection con = dds.getConnection();
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+            String user = mdata.getUserName();
+            assertEquals("dbuser2", user.toLowerCase());
+        } finally {
+            con.close();
+        }
+    }
 
     /**
      * Test of basic database connectivity
@@ -199,14 +241,28 @@ public class JDBCDriverManagerServlet extends FATServlet {
     }
 
     /**
-     * Very basic test using a connection established via the Driver
+     * Very basic test using a connection established via the Driver.
+     * This test validates that the user name from the container authentication data is used for resource reference lookup with
+     * auth=CONTAINER rather than the default user/password that are specified in the data source vendor properties.
+     * It also verifies that we can read an entry that was previously written by the same data source when accessed via
+     * a direct lookup, which equates to auth=APPLICATION where the same same user/password as the container auth data were
+     * explicitly requested.
      */
     @Test
-    public void testBasicFatDriverUsage() throws Exception {
+    public void testUserForContainerAuth() throws Exception {
         Connection conn = fatDriverDS.getConnection();
         try {
-            System.out.println("Connected to " + conn.getMetaData().getDatabaseProductName());
-            conn.createStatement().executeQuery("VALUES 1");
+            DatabaseMetaData mdata = conn.getMetaData();
+
+            String user = mdata.getUserName();
+            assertEquals("dbuser1", user.toLowerCase());
+
+            System.out.println("Connected to " + mdata.getDatabaseProductName());
+            ResultSet result = conn.createStatement().executeQuery("select city, zip from address where name = 'IBM Rochester Building 050-2 H215-1'");
+            assertTrue(result.next());
+            assertEquals("Rochester", result.getString(1));
+            assertEquals(55901, result.getInt(2));
+            assertFalse(result.next());
         } finally {
             conn.close();
         }

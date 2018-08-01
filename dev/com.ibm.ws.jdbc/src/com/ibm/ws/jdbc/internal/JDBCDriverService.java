@@ -374,9 +374,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 return create(className, props);
 
             if (nonshipFunction) {
-                Driver driver = loadDriver(props, classloader);
-                if (driver != null)
-                    return driver;
+                String url = props.getProperty("URL", props.getProperty("url"));
+                if (url != null) {
+                    Driver driver = loadDriver(url, classloader);
+                    if (driver != null)
+                        return driver;
+                }
 
                 className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
                                                                        JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
@@ -442,9 +445,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 return create(className, props);
 
             if (nonshipFunction) {
-                Driver driver = loadDriver(props, classloader);
-                if (driver != null)
-                    return driver;
+                String url = props.getProperty("URL", props.getProperty("url"));
+                if (url != null) {
+                    Driver driver = loadDriver(url, classloader);
+                    if (driver != null)
+                        return driver;
+                }
 
                 className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
                                                                        JDBCDrivers.XA_DATA_SOURCE,
@@ -593,13 +599,13 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
     
     /**
-     * Create a Driver
+     * Load the Driver instance for the specified URL.
      * 
-     * @param props typed data source properties
+     * @param url JDBC driver URL.
      * @return the driver
      * @throws SQLException if an error occurs
      */
-    public Object createDriver(PropertyService props) throws SQLException {
+    public Object createDriver(String url) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -618,8 +624,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.readLock().lock();
                     lock.writeLock().unlock();
                 }
-            
-            return loadDriver(props, classloader);
+
+            return loadDriver(url, classloader);
         } finally {
             lock.readLock().unlock();
         }
@@ -699,70 +705,43 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
     /**
      * Load java.sql.Driver implementations available to the specific class loader and return
-     * the first that accepts the URL (if any) that is specified in the vendor properties.
+     * the first that accepts the URL that is specified in the vendor properties.
      *
-     * @param vProps configured JDBC vendor properties.
+     * @param url the JDBC driver URL.
      * @param classloader class loader from which to load JDBC drivers.
      * @return Driver instance that accepts the URL. NULL if no such Driver can be loaded.
      * @throws SQLException if an error occurs.
      */
-    private Driver loadDriver(Properties vProps, ClassLoader classloader) throws SQLException {
-        String url = vProps.getProperty("URL", vProps.getProperty("url"));
-
+    private Driver loadDriver(String url, ClassLoader classloader) throws SQLException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
             Tr.entry(this, tc, "loadDriver", url, classloader);
 
         SQLException failure = null;
-        if (url != null)
-            for (Driver driver : ServiceLoader.load(Driver.class, classloader)) {
-                boolean acceptsURL;
-                try {
-                    acceptsURL = driver.acceptsURL(url);
-                } catch (SQLException x) {
-                    if (failure == null)
-                        failure = x;
-                    acceptsURL = false;
-                }
-                if (acceptsURL) {
-                    // TODO When it does matching, DataSourceService.modified method will dislike that we have stringified the values. Need to allow for this.
-                    // convert property values to String and decode passwords 
-                    for (Map.Entry<Object, Object> prop : vProps.entrySet()) {
-                        Object value = prop.getValue();
-                        if (value instanceof String) {
-                            String str = (String) value;
-                            // Decode passwords
-                            if (PropertyService.isPassword((String) prop.getKey()) && PasswordUtil.getCryptoAlgorithm(str) != null)
-                                try {
-                                    prop.setValue(PasswordUtil.decode(str));
-                                } catch (Exception x) {
-                                    if (trace && tc.isEntryEnabled())
-                                        Tr.exit(this, tc, "loadDriver", x);
-                                    if (x instanceof SQLException)
-                                        throw (SQLException) x;
-                                    else
-                                        throw new SQLNonTransientException(x);
-                                }
-                        } else {
-                            // Convert to String value
-                            prop.setValue(value.toString());
-                        }
-                    }
-
-                    if (classloader != null && url.startsWith("jdbc:derby:") && isDerbyEmbedded.compareAndSet(false, true)) {
-                        embDerbyRefCount.add(classloader);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "ref count for shutdown", classloader, embDerbyRefCount);
-                    }
-
-                    if (trace && tc.isEntryEnabled())
-                        Tr.exit(this, tc, "loadDriver", driver);
-                    return driver;
-                } else {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, driver + " does not accept url");
-                }
+        for (Driver driver : ServiceLoader.load(Driver.class, classloader)) {
+            boolean acceptsURL;
+            try {
+                acceptsURL = driver.acceptsURL(url);
+            } catch (SQLException x) {
+                if (failure == null)
+                    failure = x;
+                acceptsURL = false;
             }
+            if (acceptsURL) {
+                if (classloader != null && url.startsWith("jdbc:derby:") && isDerbyEmbedded.compareAndSet(false, true)) {
+                    embDerbyRefCount.add(classloader);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "ref count for shutdown", classloader, embDerbyRefCount);
+                }
+
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "loadDriver", driver);
+                return driver;
+            } else {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, driver + " does not accept url");
+            }
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "loadDriver", failure);
