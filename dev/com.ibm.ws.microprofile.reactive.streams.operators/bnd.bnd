@@ -38,7 +38,7 @@ Private-Package: \
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-src: src,resources
+src: src
 testsrc: test/src
 
 -buildpath: \

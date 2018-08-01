@@ -36,5 +36,5 @@ instrument.disabled: true
 
 -buildpath: \
 
-publish.wlp.jar.suffix: dev/api/stable
+publish.wlp.jar.suffix: dev/api/spec
 

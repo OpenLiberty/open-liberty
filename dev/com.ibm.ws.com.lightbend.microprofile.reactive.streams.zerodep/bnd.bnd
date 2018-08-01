@@ -31,12 +31,11 @@ Import-Package: \
   *
 
 Export-Package: \
-  com.lightbend.microprofile.reactive.streams.zerodep; version=1.0, \
-  com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep; version=1.0
+  com.lightbend.microprofile.reactive.streams.zerodep; version=1.0
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-src: zerodep/src
+src: zerodep/src/main/java
 
 -buildpath: \
   com.ibm.ws.logging;version=latest, \
@@ -61,5 +60,4 @@ src: zerodep/src
   org.slf4j:slf4j-api;version=1.7.7, \
   org.slf4j:slf4j-jdk14;version=1.7.7, \
   com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-  org.apache.commons:commons-lang3;version=3.7, \
-  ./resources/;version=file
+  org.apache.commons:commons-lang3;version=3.7

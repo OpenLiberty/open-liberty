@@ -10,10 +10,8 @@ IBM-API-Package: \
   org.eclipse.microprofile.reactive.streams; type="stable"
 -features=\
   com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0, \
-  com.ibm.websphere.appserver.org.reactivestreams-1.0.2
+  com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0.2
 -bundles=\
-  com.ibm.ws.require.java8, \
-  com.ibm.ws.microprofile.reactive.streams.operators, \
-  com.ibm.websphere.org.reactivestreams.1.0.2
+  com.ibm.ws.require.java8
 kind=noship
 edition=full
