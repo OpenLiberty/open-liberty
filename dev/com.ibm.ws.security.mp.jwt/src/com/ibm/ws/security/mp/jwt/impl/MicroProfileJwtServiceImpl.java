@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl;
 
@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
@@ -98,12 +99,15 @@ public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
     protected void activate(ComponentContext cc, Map<String, Object> props) throws MpJwtProcessingException {
         sslSupportRef.activate(cc);
         keyStoreServiceRef.activate(cc);
+        JwtUtils.setKeyStoreService(keyStoreServiceRef);
+        JwtUtils.setSSLSupportService(sslSupportRef);
         this.sslSupport = sslSupportRef.getService();
         Tr.info(tc, "MPJWT_CONFIG_PROCESSED", uniqueId);
     }
 
     @Modified
     protected void modified(ComponentContext cc, Map<String, Object> props) throws MpJwtProcessingException {
+        JwtUtils.setSSLSupportService(sslSupportRef);
         this.sslSupport = sslSupportRef.getService();
         Tr.info(tc, "MPJWT_CONFIG_MODIFIED", uniqueId);
     }
@@ -112,6 +116,8 @@ public class MicroProfileJwtServiceImpl implements MicroProfileJwtService {
     protected void deactivate(ComponentContext cc) {
         sslSupportRef.deactivate(cc);
         keyStoreServiceRef.deactivate(cc);
+        JwtUtils.setKeyStoreService(null);
+        JwtUtils.setSSLSupportService(null);
         Tr.info(tc, "MPJWT_CONFIG_DEACTIVATED", uniqueId);
     }
 
