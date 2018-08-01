@@ -605,7 +605,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @return the driver
      * @throws SQLException if an error occurs
      */
-    public Object createDriver(String url) throws SQLException {
+    public Object getDriver(String url) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
