@@ -344,7 +344,7 @@ public class CollectorJsonUtils1_1 {
                      *
                      * Parse the rest of audit GDO KVP - They are strings.
                      */
-                    if (key.equals("eventTime") || key.equals("eventSequenceNumber") || key.equals("eventThreadId")) {
+                    if (key.equals("eventTime") || key.equals("eventSequenceNumber")) {
                         continue;
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());

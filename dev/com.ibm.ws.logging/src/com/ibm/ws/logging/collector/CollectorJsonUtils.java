@@ -358,7 +358,7 @@ public class CollectorJsonUtils {
                      * Note: we'll expect any external/thirdparty/additional source to be using IBM_* keys.
                      * This method is to parse and format into logstash_1.0 expected formatting.
                      */
-                    if (key.equals("eventTime") || key.equals("eventSequenceNumber") || key.equals("eventThreadId")) {
+                    if (key.equals("eventTime") || key.equals("eventSequenceNumber")) {
                         continue;
                     } else if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
