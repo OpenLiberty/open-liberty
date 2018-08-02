@@ -40,7 +40,7 @@ src: api/src
 WS-TraceGroup: REACTIVESTREAMS
 
 -buildpath: \
-	com.ibm.ws.org.reactivestreams.interfaces
+	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2
 
 instrument.disabled: true
 
