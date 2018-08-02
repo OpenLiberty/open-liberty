@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ import com.ibm.ws.http.plugin.merge.PluginMergeTool;
  * Utility to merge multiple WebSphere generated plugin-cfg.xml files into a single file.
  * Ported from tWAS:
  * SERV1/ws/code/plugincfg/src/com/ibm/websphere/plugincfg/generator/PluginMergeTool.java WASX.SERV1
- * 
+ *
  * @author bparees
  */
 @Component(service = { PluginMergeTool.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM" })
@@ -96,7 +96,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
      * JVM prop "com.ibm.ws.pluginmerge.match.appname"
      * if set to "true" the uniqueness test for a shared app will be (uri, appName, vhost)
      * else uniqueness test will be (uri, vhost)
-     * 
+     *
      * NOTE: This will only ever work for ODC generated plugin-cfg.xml files
      */
     private static boolean matchUriAppVhost = false;
@@ -112,7 +112,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
     /**
      * Removes all comments from the document except for the Properties comment
      * All exceptions are suppressed because this is just a nicety to improve human readability.
-     * 
+     *
      * @param parser
      * @param doc
      * @return
@@ -144,7 +144,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
 
     /**
      * Output the finalized merged plugin-cfg.xml
-     * 
+     *
      * @param output - filename for output
      * @throws IOException
      * @throws IOException
@@ -425,7 +425,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
     /**
      * Removes all nodes contained in the NodeList from the Element.
      * Convenience method because NodeList objects in the DOM are live.
-     * 
+     *
      * @param xEml
      * @param nodes
      */
@@ -547,33 +547,32 @@ public class PluginMergeToolImpl implements PluginMergeTool {
     }
 
     public static void printHelp() {
-        System.out
-                        .println("\nUSAGE"
-                                 + "\n  <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg1.xml <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg2.xml [...] <Liberty_Home>/wlp/usr/servers/<Controller_Name>/<ClusterName>-plugin-cfg.xml\n");
-        System.out
-                        .println("DESCRIPTION"
-                                 + "\n    The PluginCfgMerge Tool combines the plugin-cfg.xml files from two or more unbridged "
-                                 + "\n    servers such that the IBM HTTP Server Plugin will route traffic to all servers. "
-                                 + "\n    A uri is considered to be shared between two unbridged servers if the uri and  "
-                                 + "\n    corresponding virtual host definitions are identical."
-                                 + "\n"
-                                 + "\n    The contents of the merged plugin-cfg.xml files must be in English language"
-                                 + "\n"
-                                 + "\n    Additional parmaters:"
-                                 + "\n     -debug               = prints additional log statements"
-                                 + "\n     -sortVhostGrp        = adds VirtualHostGroup name as part of the key.  Use this if a single XML contains"
-                                 + "\n                            two identical sets of URIs assigned to two different VirtualHostGroup Names."
-                                 + "\n     -setMatchUriAppVhost = sets the MatchUriAppVhost value."
-                                 + "\n \n Example with Paramters:"
-                                 + "\n    -sortVhostGrp -debug <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg1.xml <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg2.xml [...] <Liberty_Home>/wlp/usr/servers/<Controller_Name>/<ClusterName>-plugin-cfg.xml\n");
+        System.out.println("\nUSAGE"
+                           + "\n  <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg1.xml <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg2.xml [...] <Liberty_Home>/wlp/usr/servers/<Controller_Name>/<ClusterName>-plugin-cfg.xml\n");
+        System.out.println("DESCRIPTION"
+                           + "\n    The PluginCfgMerge Tool combines the plugin-cfg.xml files from two or more unbridged "
+                           + "\n    servers such that the IBM HTTP Server Plugin will route traffic to all servers. "
+                           + "\n    A uri is considered to be shared between two unbridged servers if the uri and  "
+                           + "\n    corresponding virtual host definitions are identical."
+                           + "\n"
+                           + "\n    The contents of the merged plugin-cfg.xml files must be in English language"
+                           + "\n"
+                           + "\n    Additional parmaters:"
+                           + "\n     -debug               = prints additional log statements"
+                           + "\n     -sortVhostGrp        = adds VirtualHostGroup name as part of the key.  Use this if a single XML contains"
+                           + "\n                            two identical sets of URIs assigned to two different VirtualHostGroup Names."
+                           + "\n     -setMatchUriAppVhost = sets the MatchUriAppVhost value."
+                           + "\n \n Example with Paramters:"
+                           + "\n    -sortVhostGrp -debug <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg1.xml <Liberty_Home>/wlp/usr/servers/<Member_Name>/plugin-cfg2.xml [...] <Liberty_Home>/wlp/usr/servers/<Controller_Name>/<ClusterName>-plugin-cfg.xml\n");
 
         System.exit(1);
     }
 
     @Override
     public void merge(String argv[]) {
-        if (argv.length < 3)
-            throw new IllegalArgumentException("Please provide at least 2 plugin-cfg.xml files to merge.");
+        if (argv.length < 2)
+            throw new IllegalArgumentException("Please provide at least 1 plugin-cfg.xml file to merge.");
+
         PluginMergeToolImpl toolInstance = new PluginMergeToolImpl();
         matchUriAppVhost = Boolean.getBoolean("com.ibm.ws.pluginmerge.match.appname");
 
@@ -704,7 +703,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
 
         /**
          * Constructor for the input plugin-cfg.xml files
-         * 
+         *
          * @param seqNum
          * @param config
          * @param fileLoc
@@ -878,7 +877,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
 
         /**
          * Constructor for a shared plugin-cfg.xml
-         * 
+         *
          * @param seqNum
          * @param serverCluster1
          * @throws ParserConfigurationException
@@ -980,7 +979,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
         /**
          * Builds allSharedScElements Hashtable
          * <Key: Set containing SeverCluster server names, Value: Node ServerCluster>
-         * 
+         *
          * @param scNum
          * @param serverNames
          */
@@ -1340,7 +1339,8 @@ public class PluginMergeToolImpl implements PluginMergeTool {
                     Element serverName = (Element) nlstServers.item(i);
                     if (debug)
                         Tr.info(traceComponent, "\t Cluster Server Name: " + serverName.getAttribute("Name"));
-                    if ((G_primaryServers.contains(serverName.getAttribute("Name"))) || (G_primaryServers.isEmpty() || !G_backupServers.contains(serverName.getAttribute("Name")))) { /* 720290 */
+                    if ((G_primaryServers.contains(serverName.getAttribute("Name")))
+                        || (G_primaryServers.isEmpty() || !G_backupServers.contains(serverName.getAttribute("Name")))) { /* 720290 */
                         if (debug)
                             Tr.info(traceComponent, "UnShared: Adding " + serverName.getAttribute("Name") + " to PrimaryServer list");
                         primaries.add(serverName.getAttribute("Name"));
