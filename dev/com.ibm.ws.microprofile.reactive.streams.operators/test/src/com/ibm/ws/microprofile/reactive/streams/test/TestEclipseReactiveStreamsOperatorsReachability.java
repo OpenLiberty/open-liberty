@@ -40,38 +40,23 @@ public class TestEclipseReactiveStreamsOperatorsReachability {
 
         /** {@inheritDoc} */
         @Override
-        public void onComplete() {
-            // TODO Auto-generated method stub
-
-        }
+        public void onComplete() {}
 
         /** {@inheritDoc} */
         @Override
-        public void onError(Throwable arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void onError(Throwable arg0) {}
 
         /** {@inheritDoc} */
         @Override
-        public void onNext(Integer arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void onNext(Integer arg0) {}
 
         /** {@inheritDoc} */
         @Override
-        public void onSubscribe(Subscription arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void onSubscribe(Subscription arg0) {}
 
         /** {@inheritDoc} */
         @Override
-        public void subscribe(Subscriber<? super Integer> arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void subscribe(Subscriber<? super Integer> arg0) {}
 
     };
 
@@ -79,31 +64,19 @@ public class TestEclipseReactiveStreamsOperatorsReachability {
 
         /** {@inheritDoc} */
         @Override
-        public void onComplete() {
-            // TODO Auto-generated method stub
-
-        }
+        public void onComplete() {}
 
         /** {@inheritDoc} */
         @Override
-        public void onError(Throwable arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void onError(Throwable arg0) {}
 
         /** {@inheritDoc} */
         @Override
-        public void onNext(Integer arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void onNext(Integer arg0) {}
 
         /** {@inheritDoc} */
         @Override
-        public void onSubscribe(Subscription arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void onSubscribe(Subscription arg0) {}
 
     };
 
@@ -111,17 +84,11 @@ public class TestEclipseReactiveStreamsOperatorsReachability {
 
         /** {@inheritDoc} */
         @Override
-        public void cancel() {
-            // TODO Auto-generated method stub
-
-        }
+        public void cancel() {}
 
         /** {@inheritDoc} */
         @Override
-        public void request(long arg0) {
-            // TODO Auto-generated method stub
-
-        }
+        public void request(long arg0) {}
 
     };
 

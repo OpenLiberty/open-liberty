@@ -17,7 +17,7 @@ javac.target: 1.8
 Bundle-Name: com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep
 Bundle-SymbolicName: com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep
 
-Bundle-Description: A Zero Dependancy Implementation of MicroProfile Reactive Streams, version ${bVersion}
+Bundle-Description: A Zero Dependency Implementation of MicroProfile Reactive Streams, version ${bVersion}
 
 WS-TraceGroup: REACTIVESTREAMS
 
@@ -46,7 +46,7 @@ src: zerodep/src/main/java
   com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
   com.ibm.ws.kernel.service;version=latest, \
   com.ibm.ws.context;version=latest, \
-  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2, \
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
