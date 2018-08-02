@@ -31,8 +31,8 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Provide-Capability: osgi.service;objectClass:List<String>="com.ibm.ws.opentracing.tracer.OpentracingTracerFactory"
 
 -includeresource: \
-   @${repo;io.opentracing:opentracing-mock;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*, \
-   @${repo;io.opentracing:opentracing-util;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
+   @${repo;io.opentracing:opentracing-mock;0.30.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*, \
+   @${repo;io.opentracing:opentracing-util;0.30.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*
    
 -buildpath: \
         io.opentracing:opentracing-mock;version=0.30.0, \
