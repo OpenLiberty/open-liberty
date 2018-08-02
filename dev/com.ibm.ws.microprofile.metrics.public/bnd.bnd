@@ -14,19 +14,19 @@ bVersion=1.0
 javac.source: 1.8
 javac.target: 1.8
 
-Bundle-Name: MicroProfile Metrics Private REST API
-Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.private
+Bundle-Name: MicroProfile Metrics Public REST API
+Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.public
 
-Bundle-Description: MicroProfile Metrics 1.0 Private REST API, version ${bVersion}
+Bundle-Description: MicroProfile Metrics 1.0 Public REST API, version ${bVersion}
 
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
-Web-ContextPath: @privateMetricsURL
+Web-ContextPath: @publicMetricsURL
 
 Private-Package: \
-	com.ibm.ws.microprofile.metrics.privateapi,\
-	com.ibm.ws.microprofile.metrics.privateapi.resources.*
+	com.ibm.ws.microprofile.metrics.publicapi,\
+	com.ibm.ws.microprofile.metrics.publicapi.resources.*
 
 Include-Resource: \
 	WEB-INF=resources/WEB-INF
@@ -34,7 +34,7 @@ Include-Resource: \
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.metrics.privateapi.PrivateMetricsRESTHandler
+-dsannotations: com.ibm.ws.microprofile.metrics.publicapi.PublicMetricsRESTHandler
 
 WS-TraceGroup: METRICS
 
