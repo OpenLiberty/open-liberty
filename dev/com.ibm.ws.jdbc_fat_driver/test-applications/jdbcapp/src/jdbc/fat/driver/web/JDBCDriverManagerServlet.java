@@ -50,7 +50,16 @@ import componenttest.app.FATServlet;
                                                               "createDatabase=create",
                                                               "onConnect=insert into address values ('Rochester International Airport', 7600, 'Helgerson Dr SW', 'Rochester', 'MN', 55902)",
                                                               "queryTimeout=1m16s"
-                                               })
+                                               }),
+                         @DataSourceDefinition(name = "java:module/env/jdbc/dsd-infer-datasource-class",
+                                               className = "",
+                                               databaseName = "memory:jdbcdriver1;create=true",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                               },
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu")
+
 })
 
 @SuppressWarnings("serial")
@@ -65,6 +74,9 @@ public class JDBCDriverManagerServlet extends FATServlet {
 
     @Resource(name = "jdbc/fatDriver")
     DataSource fatDriverDS;
+
+    @Resource
+    UserTransaction tx;
 
     @Override
     public void init() throws ServletException {
@@ -256,6 +268,45 @@ public class JDBCDriverManagerServlet extends FATServlet {
             } catch (Throwable x) {
             }
             con.close();
+        }
+    }
+
+    /**
+     * Verify that className is optional in DataSourceDefinition (can be assigned to empty string),
+     * in which case, in the absence of a url propety, we infer the data source class from the Driver class,
+     * giving highest precedence to XADataSource.
+     */
+    @Test
+    public void testUnspecifiedClassNameInDataSourceDefinitionWithoutURL() throws Exception {
+        DataSource dsd = InitialContext.doLookup("java:module/env/jdbc/dsd-infer-datasource-class");
+
+        // Prove it is two-phase capable by using multiple connections that cannot be shared in a transaction
+        tx.begin();
+        try {
+            Connection con1 = dsd.getConnection();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+
+            DatabaseMetaData mdata1 = con1.getMetaData();
+            String user1 = mdata1.getUserName();
+            assertEquals("dbuser1", user1.toLowerCase());
+
+            Statement s1 = con1.createStatement();
+            s1.executeUpdate("insert into address values ('Mayo Clinic', 200, '1st St SW', 'Rochester', 'MN', 55902)");
+
+            // Only possible to use this second, non-matching connection when the data source is capable of two-phase commit
+            Connection con2 = dsd.getConnection("dbuser2", "dbpwd2");
+
+            DatabaseMetaData mdata2 = con2.getMetaData();
+            String user2 = mdata2.getUserName();
+            assertEquals("dbuser2", user2.toLowerCase());
+
+            ResultSet result = con2.createStatement().executeQuery("values 2");
+            assertTrue(result.next());
+            assertEquals(2, result.getInt(1));
+            assertFalse(result.next());
+            result.getStatement().getConnection().close();
+        } finally {
+            tx.commit();
         }
     }
 
