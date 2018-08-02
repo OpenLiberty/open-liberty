@@ -25,6 +25,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 
+import org.apache.cxf.microprofile.client.cdi.RestClientBean;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -82,7 +83,7 @@ public class LibertyRestClientExtension implements WebSphereCDIExtension, Extens
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Registering RestClients from classloader: " + tccl, classes);
             }
-            classes.stream().map(c -> new LibertyRestClientBean(c, beanManager)).forEach(afterBeanDiscovery::addBean);
+            classes.stream().map(c -> new RestClientBean(c, beanManager)).forEach(afterBeanDiscovery::addBean);
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Attempting to register RestClient for unknown app classloader: " + tccl);
         }

@@ -1096,7 +1096,7 @@ public final class ResourceUtils {
 
         JAXBContext ctx;
         try {
-            ctx = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]),
+            ctx = JAXBContext.newInstance(classes.toArray(new Class[0]),
                                           contextProperties);
             return ctx;
         } catch (JAXBException ex) {

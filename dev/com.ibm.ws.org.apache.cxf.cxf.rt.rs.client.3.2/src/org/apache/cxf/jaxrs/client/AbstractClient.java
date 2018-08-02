@@ -917,7 +917,7 @@ public abstract class AbstractClient implements Client {
                 }
             }
         }
-        return results.toArray(new String[results.size()]);
+        return results.toArray(new String[0]);
     }
 
     protected ClientConfiguration getConfiguration() {
