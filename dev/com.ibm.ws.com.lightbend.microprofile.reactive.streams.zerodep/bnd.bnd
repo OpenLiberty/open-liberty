@@ -34,7 +34,7 @@ Export-Package: \
   
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-src: zerodep/src/main/java
+src: src/main/java
 
 -buildpath: \
   com.ibm.ws.logging;version=latest, \

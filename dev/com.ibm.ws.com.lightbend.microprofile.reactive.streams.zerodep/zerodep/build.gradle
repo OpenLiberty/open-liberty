@@ -1,8 +1,0 @@
-/*
- * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
- */
-
-dependencies {
-    compile libraries.microprofile_reactive_streams_api
-    testCompile libraries.microprofile_reactive_streams_tck
-}
