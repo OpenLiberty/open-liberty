@@ -16,9 +16,11 @@ Bundle-SymbolicName: com.ibm.ws.io.opentracing.opentracing-util.0.31.0
 Bundle-Description: OpenTracing Java Utilities, version 0.31.0
 
 -includeresource: \
-  @${repo;io.opentracing:opentracing-util;0.31.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*
+  @${repo;io.opentracing:opentracing-util;0.31.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*,\
+  @${repo;io.opentracing:opentracing-noop;0.31.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*
 
-Export-Package: io.opentracing.util;version=0.31.0
+Export-Package: io.opentracing.util;version=0.31.0,\
+                io.opentracing.noop;version=0.31.0
 
 # no notice file in source jar
 Include-Resource: \
@@ -26,4 +28,6 @@ Include-Resource: \
 
 instrument.disabled: true
 
-
+-buildpath: \
+  io.opentracing:opentracing-util;version=0.31.0,\
+  io.opentracing:opentracing-noop;version=0.31.0
