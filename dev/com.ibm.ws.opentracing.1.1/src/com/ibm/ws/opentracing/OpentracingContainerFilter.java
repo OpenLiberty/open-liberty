@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,15 +128,12 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
                 spanBuilder.asChildOf(priorOutgoingContext);
             }
 
-//            Span span = spanBuilder.startActive(false).span();
             Scope scope = spanBuilder.startActive(true);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                Tr.debug(tc, methodName + " span", span);
                 Tr.debug(tc, methodName + " span", scope.span());
             }
 
-//            incomingRequestContext.setProperty(SERVER_SPAN_PROP_ID, span);
             incomingRequestContext.setProperty(SERVER_SPAN_PROP_ID, scope);
         }
 
@@ -164,10 +161,8 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         }
 
         // If processing wasn't skipped, then we should have an ActiveSpan
-//        Span span = (Span) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
         Scope scope = (Scope) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
         if (scope == null) {
-//        if (span == null) {
             // This may occur if there's no Tracer (see other method); otherwise, there's
             // probably some bug sending the right ActiveSpan (e.g. threading?).
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -180,7 +175,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
 
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                Tr.debug(tc, methodName + " span", span);
                 Tr.debug(tc, methodName + " span", scope.span());
             }
 
@@ -188,7 +182,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, methodName + " httpStatus", httpStatus);
             }
-//            span.setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
             scope.span().setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
 
             if (outgoingResponseContext.getStatus() >= 400) {
@@ -199,7 +192,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
                     headers.remove(EXCEPTION_KEY);
                 }
 
-//                OpentracingService.addSpanErrorInfo(span, exception);
                 OpentracingService.addSpanErrorInfo(scope.span(), exception);
             }
         } finally {
