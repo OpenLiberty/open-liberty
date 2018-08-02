@@ -26,7 +26,7 @@ public class SequenceNumber {
         return seq.incrementAndGet();
     }
 
-    public String formatSequenceNumber(long date, long n) {
+    public static String formatSequenceNumber(long date, long n) {
         return date + "_" + toPaddedHex(n);
     }
 
@@ -35,7 +35,7 @@ public class SequenceNumber {
      */
     public String next(long date) {
         long n = seq.incrementAndGet();
-        return date + "_" + toPaddedHex(n);
+        return formatSequenceNumber(date, n);
     }
 
     /*

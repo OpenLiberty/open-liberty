@@ -21,7 +21,6 @@ import com.ibm.ws.logging.utils.SequenceNumber;
  */
 public class LogTraceData extends GenericData {
 
-    private final SequenceNumber sequenceNumber = new SequenceNumber();
     static Pattern messagePattern;
     private long rawSequenceNumber = -1;
 
@@ -431,7 +430,7 @@ public class LogTraceData extends GenericData {
     public String getSequence() {
         String sequenceId = getStringValue(14);
         if (sequenceId == null || sequenceId.isEmpty()) {
-            sequenceId = sequenceNumber.formatSequenceNumber(getDatetime(), rawSequenceNumber);
+            sequenceId = SequenceNumber.formatSequenceNumber(getDatetime(), rawSequenceNumber);
             this.modifyPair(14, NAMES1_1[14], sequenceId);
         }
         return sequenceId;

@@ -161,7 +161,7 @@ public class LogSource implements Source {
             extensions = null;
         }
 
-        logData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber(dateVal));
+        logData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());
         logData.setSequence(null);
 
         Throwable thrown = logRecord.getThrown();

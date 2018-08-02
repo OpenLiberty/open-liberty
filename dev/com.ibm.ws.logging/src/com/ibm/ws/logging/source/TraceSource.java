@@ -134,7 +134,7 @@ public class TraceSource implements Source {
             extensions = null;
         }
 
-        traceData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber(datetimeValue));
+        traceData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());
         traceData.setSequence(null);
 
         traceData.setThrowable(null);
