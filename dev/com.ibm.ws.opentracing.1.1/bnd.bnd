@@ -30,6 +30,7 @@ Import-Package: \
     io.opentracing.propagation;version=0.31.0,\
     io.opentracing.tag;version=0.31.0,\
     io.opentracing.util;version=0.31.0,\
+    io.opentracing.noop;version=0.31.0,\
     *
 
 
@@ -40,7 +41,9 @@ Export-Package: \
 	io.opentracing;version=0.31.0,\
 	io.opentracing.log;version=0.31.0,\
 	io.opentracing.propagation;version=0.31.0,\
-	io.opentracing.tag;version=0.31.0
+	io.opentracing.tag;version=0.31.0,\
+    io.opentracing.util;version=0.31.0,\
+    io.opentracing.noop;version=0.31.0
                 
 Private-Package: com.ibm.ws.opentracing.resources
 
