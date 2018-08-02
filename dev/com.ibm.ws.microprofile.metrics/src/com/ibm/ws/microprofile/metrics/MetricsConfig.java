@@ -44,10 +44,10 @@ public class MetricsConfig {
 
     private Boolean authentication;
 
-    // Cached WAB service configurations for Public MicroProfile Metrics URL
+    // Cached WAB service configurations for Public MicroProfile Metrics
     private final WABConfigManager publicWabConfigMgr;
 
-    // Cached WAB service configurations for Private MicroProfile Metrics URL
+    // Cached WAB service configurations for Private MicroProfile Metrics
     private final WABConfigManager privateWabConfigMgr;
 
     public MetricsConfig() {
@@ -87,13 +87,18 @@ public class MetricsConfig {
 
         authentication = (Boolean) properties.get(CONFIG_AUTHENTICATION);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, toString());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Processing configuration - " + toString());
         }
 
         if (valueChanged(authenticationOld, authentication)) {
-            publicWabConfigMgr.processEnableAuthentication(context, !authentication);
-            privateWabConfigMgr.processEnableAuthentication(context, authentication);
+            if (authentication) {
+                publicWabConfigMgr.processEnableAuthentication(context, false);
+                privateWabConfigMgr.processEnableAuthentication(context, true);
+            } else {
+                privateWabConfigMgr.processEnableAuthentication(context, false);
+                publicWabConfigMgr.processEnableAuthentication(context, true);
+            }
         }
     }
 
@@ -103,7 +108,7 @@ public class MetricsConfig {
 
     @Override
     public String toString() {
-        return "mpMetrics configuration: { authentication=" + authentication + " }";
+        return "MetricsConfig [authentication=" + authentication + "]";
     }
 
     final static class WABConfigManager {
@@ -128,14 +133,14 @@ public class MetricsConfig {
 
         public void processEnableAuthentication(ComponentContext context, boolean enabled) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "OpenAPI enablePrivateURL attribute updated: " + enabled + " WAB config=" + wabConfigReg);
+                Tr.event(tc, "mpMetrics authentication attribute updated: " + enabled + " WAB config=" + wabConfigReg);
             }
-            // if authentication="false" and WAB has never started then there is no work to do here.
+            // if enabled="false" and WAB has never started then there is no work to do here.
             if (wabConfigReg == null && !enabled) {
                 return;
             }
             if (enabled) {
-                // Push configuration to the WAB installer to start the WAB
+                // Push WAB configuration to the WAB installer to start the WAB
                 pushConfiguration(context, contextPath);
             } else {
                 deactivate();
@@ -161,15 +166,20 @@ public class MetricsConfig {
         }
 
         public void registerEvent(Dictionary<String, String> props) {
-            Tr.event(tc, "Registered web app bundle: { WAB config=" + wabConfigReg + ", contextName=" + contextName + ", contextPath=" + contextPath + ", props=" + props + " }");
+            Tr.event(tc, "Registered web app bundle", toString(), "props=" + props + " }");
         }
 
         public void modifiedEvent(Dictionary<String, String> props) {
-            Tr.event(tc, "Modified web app bundle: { WAB config=" + wabConfigReg + ", contextName=" + contextName + ", contextPath=" + contextPath + ", props=" + props + " }");
+            Tr.event(tc, "Modified web app bundle", toString(), "props=" + props + " }");
         }
 
         public void deactivateEvent() {
-            Tr.event(tc, "Unregistered web app bundle: { WAB config=" + wabConfigReg + ", contextName=" + contextName + ", contextPath=" + contextPath + " }");
+            Tr.event(tc, "Unregistered web app bundle", toString());
+        }
+
+        @Override
+        public String toString() {
+            return "WABConfigManager [contextPath=" + contextPath + ", contextName=" + contextName + ", wabConfigReg=" + wabConfigReg + "]";
         }
     }
 }
