@@ -24,6 +24,7 @@ import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.concurrent.ForkJoinPool;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -60,7 +61,9 @@ final class TestUtil {
     }
 
     static synchronized ClassLoadingServiceImpl getClassLoadingService(ClassLoader parentClassLoader) throws BundleException, InvalidSyntaxException {
-        return getClassLoadingService(parentClassLoader, null, false, null);
+        ClassLoadingServiceImpl service = getClassLoadingService(parentClassLoader, null, false, null);
+        service.setExecutorService(ForkJoinPool.commonPool());
+        return service;
     }
 
     static synchronized ClassLoadingServiceImpl getClassLoadingService(ClassLoader parentClassLoader, boolean failResolve) throws BundleException, InvalidSyntaxException {
