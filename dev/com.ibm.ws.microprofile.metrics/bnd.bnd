@@ -36,11 +36,15 @@ Export-Package: \
 	com.ibm.ws.microprofile.metrics,\
 	com.ibm.ws.microprofile.metrics.impl,\
 	com.ibm.ws.microprofile.metrics.helper
+
+Include-Resource: \
+	OSGI-INF=resources/OSGI-INF
     
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -dsannotations-inherit: true
 -dsannotations: \
+	com.ibm.ws.microprofile.metrics.MetricsConfig,\
 	com.ibm.ws.microprofile.metrics.ApplicationListener,\
 	com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries
 
@@ -59,6 +63,7 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.ws.app.manager.wab;version=latest,\
 	com.ibm.ws.rest.handler;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
