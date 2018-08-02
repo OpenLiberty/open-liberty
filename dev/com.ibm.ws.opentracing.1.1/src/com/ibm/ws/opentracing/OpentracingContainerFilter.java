@@ -129,7 +129,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             }
 
 //            Span span = spanBuilder.startActive(false).span();
-            Scope scope = spanBuilder.startActive(false);
+            Scope scope = spanBuilder.startActive(true);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 //                Tr.debug(tc, methodName + " span", span);
