@@ -59,8 +59,7 @@ public class XATest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.*");
-        // Install bundle for txfat feature
-        server.copyFileToLibertyInstallRoot("lib/", "bundles/com.ibm.ws.transactions.fat.utils.jar");
+
         server.startServer();
     }
 
