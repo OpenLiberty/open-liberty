@@ -29,4 +29,5 @@ Include-Resource: \
 
 instrument.disabled: true
 
-
+-buildpath: \
+  io.opentracing:opentracing-api;version=0.31.0
