@@ -23,6 +23,8 @@ import java.sql.Statement;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
+import javax.annotation.sql.DataSourceDefinition;
+import javax.annotation.sql.DataSourceDefinitions;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -33,6 +35,23 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+
+@DataSourceDefinitions({
+                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-infer-driver-class",
+                                               className = "",
+                                               isolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED,
+                                               // loginTimeout = 76, // TODO decide whether/how to support for driver path
+                                               maxPoolSize = 2,
+                                               url = "jdbc:fatdriver:memory:jdbcdriver1",
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                                              "createDatabase=create",
+                                                              "onConnect=insert into address values ('Rochester International Airport', 7600, 'Helgerson Dr SW', 'Rochester', 'MN', 55902)",
+                                                              "queryTimeout=1m16s"
+                                               })
+})
 
 @SuppressWarnings("serial")
 @WebServlet("/JDBCDriverManagerServlet")
@@ -236,6 +255,41 @@ public class JDBCDriverManagerServlet extends FATServlet {
                 con.rollback();
             } catch (Throwable x) {
             }
+            con.close();
+        }
+    }
+
+    /**
+     * Verify that className is optional in DataSourceDefinition (can be assigned to empty string),
+     * in which case we choose the Driver class based on the URL.
+     */
+    @Test
+    public void testUnspecifiedClassNameInDataSourceDefinitionWithURL() throws Exception {
+        DataSource dsd = InitialContext.doLookup("java:app/env/jdbc/dsd-infer-driver-class");
+
+        // assertEquals(76, dsd.getLoginTimeout()); // TODO if we find a way to support loginTimeout
+
+        Connection con = dsd.getConnection();
+        try {
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con.getTransactionIsolation());
+
+            DatabaseMetaData mdata = con.getMetaData();
+            String user = mdata.getUserName();
+            assertEquals("dbuser1", user.toLowerCase());
+
+            String url = mdata.getURL(); // Due to delegation, Derby URL will be returned. It will include the database name.
+            assertTrue(url, url.contains("memory:jdbcdriver1"));
+
+            Statement s = con.createStatement();
+            assertEquals(76, s.getQueryTimeout());
+
+            ResultSet result = s.executeQuery("select num, street, zip from address where name = 'Rochester International Airport'");
+            assertTrue(result.next());
+            assertEquals(7600, result.getInt(1));
+            assertEquals("Helgerson Dr SW", result.getString(2));
+            assertEquals(55902, result.getInt(3));
+            assertFalse(result.next());
+        } finally {
             con.close();
         }
     }
