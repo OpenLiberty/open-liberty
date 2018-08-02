@@ -22,28 +22,5 @@
     <method name="getContents"/>
     <Bug pattern="EI_EXPOSE_REP"/>
   </Match>
-  
-  <Match>
-    <Class name="com.ibm.ws.microprofile.faulttolerance.spi.impl.policy.CircuitBreakerPolicyImpl"/>
-    <method name="getFailOn"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-  
-  <Match>
-    <Class name="com.ibm.ws.microprofile.faulttolerance.spi.impl.policy.RetryPolicyImpl"/>
-    <method name="getAbortOn"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-  
-  <Match>
-    <Class name="com.ibm.ws.microprofile.faulttolerance.spi.impl.policy.RetryPolicyImpl"/>
-    <method name="getRetryOn"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-  
-  <Match>
-    <Class name="com.ibm.ws.microprofile.faulttolerance.spi.impl.QueuedFuture"/>
-    <field name="futureFuture"/>
-    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
-  </Match>
+
 </FindBugsFilter>

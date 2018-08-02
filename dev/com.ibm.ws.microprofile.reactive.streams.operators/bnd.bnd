@@ -22,7 +22,7 @@ Bundle-Description:MicroProfile Reactive Streams 1.0 impl, version ${bVersion}
 WS-TraceGroup: REACTIVESTREAMS
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.reactive.streams.spi.ReactiveStreamsEngineImpl
+-dsannotations: com.ibm.ws.microprofile.reactive.streams.ReactiveStreamsEngineImpl
 
 Import-Package: \
   org.eclipse.microprofile.reactive.streams.spi; version="[1.0,1.1)",\
@@ -31,10 +31,7 @@ Import-Package: \
   *
 
 Export-Package: \
- com.ibm.ws.microprofile.reactive.streams.spi; version=1.0
-
-Private-Package: \
-  com.ibm.ws.microprofile.reactive.streams.impl
+ com.ibm.ws.microprofile.reactive.streams; version=1.0
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
@@ -51,7 +48,7 @@ testsrc: test/src
   com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
   com.ibm.ws.kernel.service;version=latest, \
   com.ibm.ws.context;version=latest, \
-  com.ibm.ws.org.reactivestreams.interfaces;version=latest, \
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest
   

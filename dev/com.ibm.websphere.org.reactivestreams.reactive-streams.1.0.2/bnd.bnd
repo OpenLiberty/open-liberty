@@ -8,8 +8,6 @@
 # Contributors:
 #    IBM Corporation 
 # This wraps the external JAR. From this we consume both the API and TCK
-#
-# Use com.ibm.ws.org.reactivestreams.interfaces bundle for API
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.2
