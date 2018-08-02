@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,9 +28,6 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
 
-/**
- *
- */
 public class FeatureResourceImpl implements FeatureResource {
     private static final TraceComponent tc = Tr.register(FeatureResourceImpl.class);
 
@@ -48,13 +45,10 @@ public class FeatureResourceImpl implements FeatureResource {
     private final AtomicReference<Map<String, String>> _directives = new AtomicReference<Map<String, String>>();
     private final AtomicInteger _startLevel = new AtomicInteger(-1);
     private final AtomicReference<List<String>> _tolerates = new AtomicReference<List<String>>();
+    private final AtomicReference<String> _requiredOSGiEE = new AtomicReference<String>();
 
     private volatile SubsystemContentType _type = null;
 
-    /**
-     * @param key
-     * @param value
-     */
     public FeatureResourceImpl(String key, Map<String, String> value, String bundleRepositoryType, String featureName) {
         _symbolicName = key;
         _rawAttributes = value;
@@ -330,6 +324,12 @@ public class FeatureResourceImpl implements FeatureResource {
         } else if (!_tolerates.get().equals(other.getTolerates())) {
             return false;
         }
+        if (getRequiredOSGiEE() == null) {
+            if (other.getRequiredOSGiEE() != null)
+                return false;
+        } else if (!_requiredOSGiEE.get().equals(other.getRequiredOSGiEE())) {
+            return false;
+        }
         return true;
     }
 
@@ -373,4 +373,20 @@ public class FeatureResourceImpl implements FeatureResource {
         return result;
     }
 
+    @Override
+    public String getRequiredOSGiEE() {
+        String result = _requiredOSGiEE.get();
+        if (result == null) {
+            // Directive names are in the attributes map, but end with a colon
+            result = _rawAttributes.get("required-osgi-ee:");
+            if (result == null)
+                result = "";
+            if (!_requiredOSGiEE.compareAndSet(null, result))
+                result = _requiredOSGiEE.get();
+        }
+        if ("".equals(result))
+            return null;
+        else
+            return result;
+    }
 }
