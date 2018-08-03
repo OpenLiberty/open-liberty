@@ -94,7 +94,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     private void invokeSpringMain(Future<Boolean> mainInvokeResult, SpringBootModuleInfo springBootModuleInfo) {
         final SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
         final Method main;
-        ClassLoader newTccl = springBootModuleInfo.getClassLoader();
+        ClassLoader newTccl = springBootModuleInfo.getThreadContextClassLoader();
         ClassLoader previousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             Thread.currentThread().setContextClassLoader(newTccl);
@@ -179,6 +179,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
         SpringBootModuleInfo springBootModuleInfo = (SpringBootModuleInfo) moduleInfo;
         springBootModuleInfo.getSpringBootApplication().unregisterSpringConfigFactory();
         springBootModuleInfo.getSpringBootApplication().callShutdownHooks();
+        springBootModuleInfo.destroyThreadContextClassLoader();
     }
 
 }
