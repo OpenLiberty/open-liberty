@@ -50,7 +50,12 @@ testsrc: test/src
   com.ibm.ws.context;version=latest, \
   com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest
+  com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest, \
+  com.ibm.websphere.security;version=latest, \
+  com.ibm.websphere.javaee.annotation.1.2;version=latest, \
+  com.ibm.websphere.javaee.concurrent.1.0;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.threading;version=latest
   
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
