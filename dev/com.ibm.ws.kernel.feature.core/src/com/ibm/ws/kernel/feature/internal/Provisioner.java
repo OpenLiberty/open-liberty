@@ -275,33 +275,9 @@ public class Provisioner {
                     String productName = bundleRepositoryHolder.getFeatureType();
 
                     // If a bundle dependency specifies a required-osgi-ee capability, ensure it is satisfied before installing the bundle
-                    final String requiredOSGiEE = fr.getRequiredOSGiEE();
-                    if (requiredOSGiEE != null) {
-                        Collection<BundleCapability> foundEEs = fwkWiring.findProviders(new Requirement() {
-                            @Override
-                            public Resource getResource() {
-                                return null;
-                            }
-
-                            @Override
-                            public String getNamespace() {
-                                return ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE;
-                            }
-
-                            @Override
-                            public Map<String, String> getDirectives() {
-                                return Collections.singletonMap(Namespace.REQUIREMENT_FILTER_DIRECTIVE, requiredOSGiEE);
-                            }
-
-                            @Override
-                            public Map<String, Object> getAttributes() {
-                                return Collections.emptyMap();
-                            }
-                        });
-                        if (foundEEs.isEmpty()) {
-                            // require-osgi-ee capability not satisfied, do not install
-                            return true;
-                        }
+                    if (missingRequiredOSGiEE(fr, fwkWiring)) {
+                        // require-osgi-ee capability not satisfied, do not install
+                        return true;
                     }
 
                     if (libertyBoot) {
@@ -1235,6 +1211,35 @@ public class Provisioner {
         } else {
             return Collections.emptySet();
         }
+    }
+
+    private boolean missingRequiredOSGiEE(FeatureResource fr, FrameworkWiring fwkWiring) {
+        final String requiredOSGiEE = fr.getRequiredOSGiEE();
+        if (requiredOSGiEE != null) {
+            Collection<BundleCapability> foundEEs = fwkWiring.findProviders(new Requirement() {
+                @Override
+                public Resource getResource() {
+                    return null;
+                }
+
+                @Override
+                public String getNamespace() {
+                    return ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE;
+                }
+
+                @Override
+                public Map<String, String> getDirectives() {
+                    return Collections.singletonMap(Namespace.REQUIREMENT_FILTER_DIRECTIVE, requiredOSGiEE);
+                }
+
+                @Override
+                public Map<String, Object> getAttributes() {
+                    return Collections.emptyMap();
+                }
+            });
+            return foundEEs.isEmpty();
+        }
+        return false;
     }
 
 }

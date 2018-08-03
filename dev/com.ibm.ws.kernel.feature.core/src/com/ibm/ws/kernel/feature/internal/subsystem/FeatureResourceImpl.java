@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -39,13 +40,11 @@ public class FeatureResourceImpl implements FeatureResource {
     private String matchString = null;
 
     private final AtomicReference<VersionRange> _range = new AtomicReference<VersionRange>();
-    private final AtomicReference<String> _location = new AtomicReference<String>();
     private final AtomicReference<List<String>> _osList = new AtomicReference<List<String>>();
     private final AtomicReference<Map<String, String>> _attributes = new AtomicReference<Map<String, String>>();
     private final AtomicReference<Map<String, String>> _directives = new AtomicReference<Map<String, String>>();
     private final AtomicInteger _startLevel = new AtomicInteger(-1);
     private final AtomicReference<List<String>> _tolerates = new AtomicReference<List<String>>();
-    private final AtomicReference<String> _requiredOSGiEE = new AtomicReference<String>();
 
     private volatile SubsystemContentType _type = null;
 
@@ -131,23 +130,7 @@ public class FeatureResourceImpl implements FeatureResource {
     /** {@inheritDoc} */
     @Override
     public String getLocation() {
-        String result = _location.get();
-        if (result == null) {
-            // Directive names are in the attributes map, but end with a colon
-            result = _rawAttributes.get("location:");
-            if (result == null) {
-                result = "";
-            }
-
-            if (!!!_location.compareAndSet(null, result)) {
-                result = _location.get();
-            }
-        }
-
-        if ("".equals(result)) {
-            result = null;
-        }
-        return result;
+        return _rawAttributes.get("location:");
     }
 
     /** {@inheritDoc} */
@@ -279,8 +262,8 @@ public class FeatureResourceImpl implements FeatureResource {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getLocation() == null) ? 0 : _location.get().hashCode());
-        result = prime * result + ((getVersionRange() == null) ? 0 : _range.get().hashCode());
+        result = prime * result + ((getLocation() == null) ? 0 : getLocation().hashCode());
+        result = prime * result + ((getVersionRange() == null) ? 0 : getVersionRange().hashCode());
         result = prime * result + ((_symbolicName == null) ? 0 : _symbolicName.hashCode());
         result = prime * result + ((_type == null) ? 0 : _type.hashCode());
         return result;
@@ -296,41 +279,13 @@ public class FeatureResourceImpl implements FeatureResource {
         if (getClass() != obj.getClass())
             return false;
         FeatureResourceImpl other = (FeatureResourceImpl) obj;
-        if (getLocation() == null) {
-            if (other.getLocation() != null)
-                return false;
-        } else if (!_location.get().equals(other._location.get()))
-            return false;
-        if (getVersionRange() == null) {
-            if (other.getVersionRange() != null)
-                return false;
-        } else if (!_range.get().equals(other._range.get()))
-            return false;
-        if (_symbolicName == null) {
-            if (other._symbolicName != null)
-                return false;
-        } else if (!_symbolicName.equals(other._symbolicName))
-            return false;
-        if (_type != other._type)
-            return false;
-        if (getOsList() == null) {
-            if (other.getOsList() != null)
-                return false;
-        } else if (!_osList.get().equals(other.getOsList()))
-            return false;
-        if (getTolerates() == null) {
-            if (other.getTolerates() != null)
-                return false;
-        } else if (!_tolerates.get().equals(other.getTolerates())) {
-            return false;
-        }
-        if (getRequiredOSGiEE() == null) {
-            if (other.getRequiredOSGiEE() != null)
-                return false;
-        } else if (!_requiredOSGiEE.get().equals(other.getRequiredOSGiEE())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(_symbolicName, other._symbolicName)
+               && _type == other._type
+               && Objects.equals(getVersionRange(), other.getVersionRange())
+               && Objects.equals(getLocation(), other.getLocation())
+               && Objects.equals(getOsList(), other.getOsList())
+               && Objects.equals(getTolerates(), other.getTolerates())
+               && Objects.equals(getRequiredOSGiEE(), other.getRequiredOSGiEE());
     }
 
     /** {@inheritDoc} */
@@ -375,18 +330,7 @@ public class FeatureResourceImpl implements FeatureResource {
 
     @Override
     public String getRequiredOSGiEE() {
-        String result = _requiredOSGiEE.get();
-        if (result == null) {
-            // Directive names are in the attributes map, but end with a colon
-            result = _rawAttributes.get("required-osgi-ee:");
-            if (result == null)
-                result = "";
-            if (!_requiredOSGiEE.compareAndSet(null, result))
-                result = _requiredOSGiEE.get();
-        }
-        if ("".equals(result))
-            return null;
-        else
-            return result;
+        // Directive names are in the attributes map, but end with a colon
+        return _rawAttributes.get("required-osgi-ee:");
     }
 }
