@@ -350,23 +350,21 @@ public final class PersistenceUnitScanner {
                     }
 
                     final List<ClassInfoType> citList = allClassMap.get(className);
-                    boolean hasJpaAnnotations = false;
 
                     classsearch: for (ClassInfoType cit : citList) {
                         AnnotationsType ait = cit.getAnnotations();
                         if (ait != null) {
                             for (AnnotationInfoType aInfT : ait.getAnnotation()) {
                                 String type = aInfT.getType();
-                                if (type != null && type.startsWith("javax.persistence.")) {
-                                    hasJpaAnnotations = true;
+                                if (type != null &&
+                                    (type.startsWith("javax.persistence.") ||
+                                     type.startsWith("org.eclipse.persistence.") ||
+                                     type.startsWith("org.apache.openjpa."))) {
+                                    trimSet.add(className);
                                     break classsearch;
                                 }
                             }
                         }
-                    }
-
-                    if (hasJpaAnnotations) {
-                        trimSet.add(className);
                     }
                 }
 
