@@ -1,7 +1,8 @@
 <client>
-	<include location="../fatTestPorts.xml"/>
+
     <featureManager>
         <feature>javaeeClient-7.0</feature>
+        <feature>timedexit-1.0</feature>
     </featureManager>
     
    <application id="appClientAdvanced" name="appClientAdvanced" type="ear" location="appClientAdvanced.ear"/>
