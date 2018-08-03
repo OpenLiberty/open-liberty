@@ -341,7 +341,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
      * This method is called asynchronously from queued work resulting from
      * WAB bundles entering the STARTING|ACTIVE states as tracked by the {@link WABTracker} and {@link WABTrackerCustomizer}.
      *
-     * @param wab    - the tracked {@link WAB} object
+     * @param wab - the tracked {@link WAB} object
      * @param bundle - the {@link Bundle} to install
      */
     protected boolean installIntoWebContainer(WAB wab) {
@@ -978,32 +978,36 @@ public class WABInstaller implements EventHandler, ExtensionFactory {
         }
 
         private void removeWAB(ConfigurableWAB configurable) {
-            //The installer only needs to forget about this wab..
-            //the remaining actions are now handled by the WAB itself.
-            WAB wab = configurable.wabRef.get();
-            if (wab == null) {
-                return;
-            }
-            wabLifecycleDebug("Master WAB Tracker processing shutdown for ", wab);
+            try {
+                //The installer only needs to forget about this wab..
+                //the remaining actions are now handled by the WAB itself.
+                WAB wab = configurable.wabRef.get();
+                if (wab == null) {
+                    return;
+                }
+                wabLifecycleDebug("Master WAB Tracker processing shutdown for ", wab);
 
-            //this WAB is being removed
-            synchronized (knownPaths) {
-                WABPathSpecificItemHolder holder = knownPaths.get(wab.getContextRoot());
-                if (holder != null) {
-                    synchronized (holder) {
-                        holder.getWABs().remove(wab);
+                //this WAB is being removed
+                synchronized (knownPaths) {
+                    WABPathSpecificItemHolder holder = knownPaths.get(wab.getContextRoot());
+                    if (holder != null) {
+                        synchronized (holder) {
+                            holder.getWABs().remove(wab);
+                        }
                     }
                 }
-            }
-            synchronized (wabsEligibleForCollisionResolution) {
-                WABPathSpecificItemHolder eligibleWab = wabsEligibleForCollisionResolution.get(wab.getContextRoot());
-                if (eligibleWab != null) {
-                    synchronized (eligibleWab) {
-                        eligibleWab.getWABs().remove(wab);
+                synchronized (wabsEligibleForCollisionResolution) {
+                    WABPathSpecificItemHolder eligibleWab = wabsEligibleForCollisionResolution.get(wab.getContextRoot());
+                    if (eligibleWab != null) {
+                        synchronized (eligibleWab) {
+                            eligibleWab.getWABs().remove(wab);
+                        }
                     }
                 }
+            } finally {
+                // always be sure to unconfigure the WAB bundle
+                unconfigureWABBundle(configurable);
             }
-            unconfigureWABBundle(configurable);
         }
 
         /*

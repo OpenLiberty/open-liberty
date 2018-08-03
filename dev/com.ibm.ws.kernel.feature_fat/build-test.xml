@@ -57,7 +57,7 @@
                     <mapper type="flatten"/>
                 </unzip>
                 
-                <copy file="${liberty.image.dir}/output/upload/externals/installables/wlp-developers-extended-${liberty.service.version}.jar" todir="${basedir}/publish/images" />    
+                <!--copy file="${liberty.image.dir}/output/upload/externals/installables/wlp-developers-extended-${liberty.service.version}.jar" todir="${basedir}/publish/images" /-->    
             </then>
         </iff>
     </target>

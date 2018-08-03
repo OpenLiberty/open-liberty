@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 IBM-ShortName: persistentExecutor-1.0
-Subsystem-Name: Persistent Scheduled Executor
+Subsystem-Name: Persistent Scheduled Executor 1.0
 symbolicName=com.ibm.websphere.appserver.persistentExecutor-1.0
 visibility=public
 IBM-API-Package: \

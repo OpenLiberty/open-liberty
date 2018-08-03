@@ -460,9 +460,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 } else if (DataSource.class.getName().equals(type)) {
                     ifc = DataSource.class;
                     vendorImpl = jdbcDriverSvc.createDataSource(vProps);
-//                } else if (Driver.class.getName().equals(type)) { //TODO uncomment when we add support for type=java.sql.Driver
-//                    ifc = Driver.class;
-//                    vendorImpl = jdbcDriverSvc.createDriver(vProps);
+                } else if (Driver.class.getName().equals(type)) {
+                    ifc = Driver.class;
+                    String url = vProps.getProperty("URL", vProps.getProperty("url"));
+                    vendorImpl = jdbcDriverSvc.getDriver(url);
                 } else
                     throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
@@ -610,9 +611,10 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             } else if (DataSource.class.getName().equals(type)) {
                 ifc = DataSource.class;
                 vendorImpl = jdbcDriverSvc.createDataSource(vProps);
-//            } else if (Driver.class.getName().equals(type)) { //TODO uncomment when we add support for type=java.sql.Driver
-//                ifc = Driver.class;
-//                vendorImpl = jdbcDriverSvc.createDriver(vProps);
+            } else if (Driver.class.getName().equals(type)) {
+                ifc = Driver.class;
+                String url = vProps.getProperty("URL", vProps.getProperty("url"));
+                vendorImpl = jdbcDriverSvc.getDriver(url);
             } else
                 throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 

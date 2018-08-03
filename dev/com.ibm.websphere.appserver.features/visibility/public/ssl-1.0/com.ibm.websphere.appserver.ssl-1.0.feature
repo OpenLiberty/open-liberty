@@ -6,7 +6,7 @@ IBM-API-Package: com.ibm.websphere.ssl; type="ibm-api"
 IBM-SPI-Package: com.ibm.wsspi.ssl
 IBM-Process-Types: server, \
  client
-Subsystem-Name: Secure Socket Layer
+Subsystem-Name: Secure Socket Layer 1.0
 -features=com.ibm.websphere.appserver.channelfw-1.0
 -bundles=com.ibm.ws.ssl, \
  com.ibm.ws.channel.ssl, \

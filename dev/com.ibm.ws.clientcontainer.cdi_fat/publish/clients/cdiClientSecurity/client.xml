@@ -1,6 +1,7 @@
 <client>
-	<include location="../fatTestPorts.xml"/>
+
     <featureManager>
+        <feature>timedexit-1.0</feature>
         <feature>javaeeClient-7.0</feature>
         <feature>appSecurityClient-1.0</feature>
     </featureManager>

@@ -4,7 +4,7 @@ visibility=public
 IBM-API-Package: com.ibm.ws.ejb.portable; type="internal", \
  javax.xml.ws; type="internal"
 IBM-ShortName: javaeeClient-7.0
-Subsystem-Name: Java EE V7 Application Client
+Subsystem-Name: Java EE 7 Application Client
 -features=com.ibm.websphere.appserver.ejbRemoteClient-1.0, \
  com.ibm.websphere.appserver.cdi-1.2, \
  com.ibm.websphere.appserver.jndiClient-1.0, \
