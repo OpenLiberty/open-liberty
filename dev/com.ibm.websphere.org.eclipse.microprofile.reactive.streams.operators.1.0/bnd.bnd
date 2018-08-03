@@ -28,12 +28,12 @@ Bundle-Name: MicroProfile Reactive Streams Operators Bundle
 Bundle-License: Apache License, Version 2.0
 
 Import-Package: \
-    org.reactivestreams;version="[1.0.0,2)", \
-    *
+  org.reactivestreams; version="[1.0,1.1)", \
+  *
 
 Export-Package: \
   org.eclipse.microprofile.reactive.streams;version=1.0, \
-  org.eclipse.microprofile.reactive.streams.spi;version=1.0, \
+  org.eclipse.microprofile.reactive.streams.spi;version=1.0
 
 Include-Resource: \
 
@@ -49,4 +49,3 @@ WS-TraceGroup: REACTIVESTREAMS
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/stable
-
