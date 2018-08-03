@@ -60,7 +60,9 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ErrorPage20Test.class,
                 WebFluxApplicationNotSupportedTest.class,
                 EnableSpringBootTraceTests.class,
-                ExceptionOccuredAfterAppIsAvailableTest15.class
+                ExceptionOccuredAfterAppIsAvailableTest15.class,
+                JavaeeFeatureTests15.class,
+                JavaeeFeatureTests20.class
 })
 
 public class FATSuite {
