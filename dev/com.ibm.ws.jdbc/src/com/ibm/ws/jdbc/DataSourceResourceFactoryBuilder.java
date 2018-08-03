@@ -13,6 +13,7 @@ package com.ibm.ws.jdbc;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -213,7 +214,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
             throw new IllegalArgumentException("className");
 
         // libraryRef - scan shared libraries from the application
-        updateWithLibraries(bundleContext, application, declaringApplication, className, url, driverProps, dsSvcProps);
+        className = updateWithLibraries(bundleContext, application, declaringApplication, className, url, driverProps, dsSvcProps);
 
         // initialPoolSize > 0 not supported
         value = vendorProps.remove(DataSourceDef.initialPoolSize.name());
@@ -403,15 +404,16 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
      * @param url URL with which the Driver will connect to the database. NULL if data source should be used instead of Driver.
      * @param driverProps properties for the jdbcDriver.
      * @param dsSvcProps properties for the dataSource.
-     * @throws Exception if an error occurs.
+     * @return the supplied className unless NULL, in which case the inferred class name is returned. 
+     * @throws Exception if an error occurs or unable to locate a library containing the data source class or unable to infer a data source/driver class.
      */
-    private final void updateWithLibraries(BundleContext bundleContext,
-                                           String applicationName,
-                                           String declaringApplication,
-                                           String className,
-                                           String url,
-                                           Hashtable<String, Object> driverProps,
-                                           Hashtable<String, Object> dsSvcProps) throws Exception {
+    private final String updateWithLibraries(BundleContext bundleContext,
+                                             String applicationName,
+                                             String declaringApplication,
+                                             String className,
+                                             String url,
+                                             Hashtable<String, Object> driverProps,
+                                             Hashtable<String, Object> dsSvcProps) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "updateWithLibraries", applicationName, className);
@@ -493,6 +495,10 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         if (trace && tc.isDebugEnabled())
             Tr.debug(tc, "libraries", libraryRefs.toArray());
 
+        // this structure is populated only if className and url properties are absent.
+        String[][] dsClassInfo = new String[JDBCDrivers.NUM_DATA_SOURCE_INTERFACES][2];
+        final int CLASS_NAME = 0, LIBRARY_PID = 1; // indices for the second dimension
+
         // Determine which shared library can load className
         for (ServiceReference<Library> libraryRef : libraryRefs) {
             Library library = DataSourceService.priv.getService(bundleContext,libraryRef);
@@ -505,12 +511,20 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                     try {
                         ClassLoader loader = AdapterUtil.getClassLoaderWithPriv(library);
 
-                        String type;
+                        String type = null;
                         if (className == null || className.length() == 0) {
                             if (url == null) {
-                                if (trace && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, "path where url is lacking has not been implemented");
-                                break; // TODO implement this path : JDBCDriverService.inferDataSourceClass[es]FromDriver & combine ?
+                                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(loader,
+                                                                                                                  JDBCDrivers.XA_DATA_SOURCE,
+                                                                                                                  JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                                                                  JDBCDrivers.DATA_SOURCE);
+                                if (dsEntry != null) {
+                                    int dsType = dsEntry.getKey();
+                                    if (dsClassInfo[dsType][CLASS_NAME] == null || dsClassInfo[dsType][CLASS_NAME].startsWith("sun.")) {
+                                        dsClassInfo[dsType][CLASS_NAME] = dsEntry.getValue();
+                                        dsClassInfo[dsType][LIBRARY_PID] = libraryPid;
+                                    }
+                                }
                             } else {
                                 type = Driver.class.getName();
                                 for (Iterator<Driver> it = ServiceLoader.load(Driver.class, loader).iterator(); it.hasNext(); ) {
@@ -549,7 +563,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
 
                             if (trace && tc.isEntryEnabled())
                                 Tr.exit(tc, "updateWithLibraries", driverProps);
-                            return;
+                            return className;
                         }
                     } catch (ClassNotFoundException x) {
                         if (trace && tc.isDebugEnabled())
@@ -565,6 +579,23 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                 bundleContext.ungetService(libraryRef);
             }
         }
+
+        // Inferred data source class name when className and url properties are absent 
+        for (int useBuiltInPackages = 0; useBuiltInPackages <= 1; useBuiltInPackages++)
+            for (int dsType : new int[] { JDBCDrivers.XA_DATA_SOURCE, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE, JDBCDrivers.DATA_SOURCE })
+                if (dsClassInfo[dsType][CLASS_NAME] != null && (useBuiltInPackages == 1 || !dsClassInfo[dsType][CLASS_NAME].startsWith("sun."))) {
+                    String type = dsType == JDBCDrivers.XA_DATA_SOURCE ? XADataSource.class.getName()
+                                : dsType == JDBCDrivers.CONNECTION_POOL_DATA_SOURCE ? ConnectionPoolDataSource.class.getName()
+                                : DataSource.class.getName();
+                    driverProps.put(JDBCDriverService.LIBRARY_REF, new String[] { dsClassInfo[dsType][LIBRARY_PID] });
+                    driverProps.put(JDBCDriverService.TARGET_LIBRARY, FilterUtils.createPropertyFilter("service.pid", dsClassInfo[dsType][LIBRARY_PID]));
+                    driverProps.put(type, dsClassInfo[dsType][CLASS_NAME]);
+                    dsSvcProps.put(DSConfig.TYPE, type);
+
+                    if (trace && tc.isEntryEnabled())
+                        Tr.exit(tc, "updateWithLibraries", driverProps);
+                    return dsClassInfo[dsType][CLASS_NAME];
+                }
 
         // className couldn't be found in any of the shared libraries
         SQLNonTransientException x = new SQLNonTransientException(ConnectorService.getMessage("MISSING_LIBRARY_J2CA8022", declaringApplication, className, DataSourceService.DATASOURCE,

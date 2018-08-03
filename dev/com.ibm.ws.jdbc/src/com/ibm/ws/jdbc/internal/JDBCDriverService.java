@@ -20,6 +20,7 @@ import java.security.PrivilegedExceptionAction;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -381,12 +382,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                         return driver;
                 }
 
-                className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
                                                                        JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
                                                                        JDBCDrivers.DATA_SOURCE,
                                                                        JDBCDrivers.XA_DATA_SOURCE);
-                if (className != null)
-                    return create(className, props);
+                if (dsEntry != null)
+                    return create(className = dsEntry.getValue(), props);
             }
 
             throw classNotFound(null);
@@ -452,12 +453,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                         return driver;
                 }
 
-                className = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
                                                                        JDBCDrivers.XA_DATA_SOURCE,
                                                                        JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
                                                                        JDBCDrivers.DATA_SOURCE);
-                if (className != null)
-                    return create(className, props);
+                if (dsEntry != null)
+                    return create(className = dsEntry.getValue(), props);
             }
 
             throw classNotFound(null);
@@ -499,8 +500,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction)
-                        className = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE);
+                    if (className == null && nonshipFunction) {
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE); 
+                        className = dsEntry == null ? null : dsEntry.getValue();
+                    }
                 }
             }
 
@@ -543,8 +546,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction)
-                        className = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.DATA_SOURCE);
+                    if (className == null && nonshipFunction) {
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.DATA_SOURCE);
+                        className = dsEntry == null ? null : dsEntry.getValue();
+                    }
                 }
             }
 
@@ -587,8 +592,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction)
-                        className = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.XA_DATA_SOURCE);
+                    if (className == null && nonshipFunction) {
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.XA_DATA_SOURCE);
+                        className = dsEntry == null ? null : dsEntry.getValue();
+                    }
                 }
             }
 
