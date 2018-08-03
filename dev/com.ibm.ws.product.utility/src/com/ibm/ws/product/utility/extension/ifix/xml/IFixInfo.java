@@ -18,11 +18,29 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 /**
  * This is a representation of an iFix XML file on disk
  */
 @XmlRootElement(name = "fix")
 public class IFixInfo implements MetadataOutput {
+
+    public static IFixInfo fromDocument(Document doc) {
+        if (doc == null)
+            return null;
+
+        Element e = doc.getDocumentElement();
+        e.normalize();
+        if (!"fix".equals(e.getNodeName()))
+            return null;
+
+        NodeList nl = e.getElementsByTagName("applicability");
+
+        return new IFixInfo(e.getAttribute("id"), e.getAttribute("version"), aparList, fixDescription, offerings, properties, updatedFiles);
+    }
 
     private final String aparIdPrefix = "com.ibm.ws.apar.";
 
@@ -55,7 +73,7 @@ public class IFixInfo implements MetadataOutput {
     }
 
     /**
-     * 
+     *
      * @param setId
      * @param setVersion
      * @param aparList
