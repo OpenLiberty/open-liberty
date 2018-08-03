@@ -10,12 +10,6 @@
 # Add to Include Resource when present
 # We will add this in when it is in maven central
 # @${repo;org.eclipse.microprofile.reactive.streams:microprofile-reactive-streams-operators;1.0;EXACT}
-# and remove the src directory
-# We removed 
-# com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2;version=latest
-# from Export-package to remove the org reactive streams classes from the
-# jar
-# com.ibm.websphere.org.reactivestreams.reactive-streams.1.0.2;version=latest
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -25,6 +19,9 @@ javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0; singleton:=true
 Bundle-Name: MicroProfile Reactive Streams Operators Bundle
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 Bundle-License: Apache License, Version 2.0
 
 Import-Package: \
@@ -37,14 +34,12 @@ Export-Package: \
 
 Include-Resource: \
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
 src: src/main/java
 
-WS-TraceGroup: REACTIVESTREAMS
-
 -buildpath: \
-	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest
+
+WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true
 
