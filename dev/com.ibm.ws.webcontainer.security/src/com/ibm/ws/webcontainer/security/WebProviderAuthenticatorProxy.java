@@ -157,7 +157,8 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     private AuthenticationResult authenticateForFormMechanism(WebRequest webRequest, HashMap<String, Object> props, WebAuthenticator jaspiAuthenticator) {
         AuthenticationResult authResult;
         try {
-            authResult = jaspiAuthenticator.authenticate(webRequest.getHttpServletRequest(),
+            HttpServletRequest req = webRequest.getHttpServletRequest();
+            authResult = jaspiAuthenticator.authenticate(req,
                                                          webRequest.getHttpServletResponse(),
                                                          props);
             if (authResult.getStatus() != AuthResult.CONTINUE) {
@@ -167,6 +168,12 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     int index = basicAuthHeader.indexOf(':');
                     String uid = basicAuthHeader.substring(0, index);
                     authResult.setAuditCredValue(uid);
+                } else {
+                    // best effort to set the user id for audit message upon error.
+                    String username = req.getParameter("j_username");
+                    if (username != null) {
+                        authResult.setAuditCredValue(username);
+                    }
                 }
                 authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
             }

@@ -97,7 +97,7 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
         AuthenticationResult result = null;
         String hdrValue = req.getHeader(BASIC_AUTH_HEADER_NAME);
         if (hdrValue == null || !hdrValue.startsWith("Basic ")) {
-            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_REDIRECT);
+            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, null);
             return result;
         }
         // Parse the username & password from the header.
@@ -107,7 +107,7 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
 
         int idx = hdrValue.indexOf(':');
         if (idx < 0) {
-            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_REDIRECT);
+            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, null);
             return result;
         }
 
@@ -127,7 +127,7 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
             authResult = new AuthenticationResult(AuthResult.SUCCESS, authenticatedSubject, AuditEvent.CRED_TYPE_BASIC, username, AuditEvent.OUTCOME_SUCCESS);
         } catch (AuthenticationException e) {
             
-            authResult = new AuthenticationResult(AuthResult.SEND_401, e.getMessage(), AuditEvent.CRED_TYPE_BASIC, username, AuditEvent.OUTCOME_DENIED);
+            authResult = new AuthenticationResult(AuthResult.SEND_401, e.getMessage(), AuditEvent.CRED_TYPE_BASIC, username, AuditEvent.OUTCOME_FAILURE);
 
             if (e instanceof com.ibm.ws.security.authentication.PasswordExpiredException) {  
                 authResult.passwordExpired = true;
