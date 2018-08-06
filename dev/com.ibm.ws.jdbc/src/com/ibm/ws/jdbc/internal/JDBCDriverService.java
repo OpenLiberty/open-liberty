@@ -338,7 +338,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @return the data source or driver instance
      * @throws SQLException if an error occurs
      */
-    public Object createAnyDataSourceOrDriver(Properties props) throws SQLException {
+    public Object createAnyDataSourceOrDriver(Properties props, String dataSourceID) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -377,6 +377,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
+                    if(url.toLowerCase().contains("logintimeout") || props.containsKey("loginTimeout")) {
+                        SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "INVALID_LOGINTIMEOUT", dataSourceID);
+                        if (failure != null)
+                            throw failure;
+                    }
                     Driver driver = loadDriver(url, classloader);
                     if (driver != null)
                         return driver;
@@ -448,6 +453,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
+                    if(url.toLowerCase().contains("logintimeout") || props.containsKey("loginTimeout")) {
+                        SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "INVALID_LOGINTIMEOUT", "dataSource[DefaultDataSource]");
+                        if (failure != null)
+                            throw failure;
+                    }
                     Driver driver = loadDriver(url, classloader);
                     if (driver != null)
                         return driver;
@@ -612,7 +622,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @return the driver
      * @throws SQLException if an error occurs
      */
-    public Object getDriver(String url) throws SQLException {
+    public Object getDriver(String url, Properties props, String dataSourceID) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -632,6 +642,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().unlock();
                 }
 
+            if(url.toLowerCase().contains("logintimeout") || props.containsKey("loginTimeout")) {
+                SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "INVALID_LOGINTIMEOUT", dataSourceID);
+                if (failure != null)
+                    throw failure;
+            }
+            
             return loadDriver(url, classloader);
         } finally {
             lock.readLock().unlock();

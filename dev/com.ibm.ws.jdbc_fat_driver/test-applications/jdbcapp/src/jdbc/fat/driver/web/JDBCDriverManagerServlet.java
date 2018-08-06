@@ -13,9 +13,11 @@ package jdbc.fat.driver.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,13 +36,13 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @DataSourceDefinitions({
                          @DataSourceDefinition(name = "java:app/env/jdbc/dsd-infer-driver-class",
                                                className = "",
                                                isolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED,
-                                               // loginTimeout = 76, // TODO decide whether/how to support for driver path
                                                maxPoolSize = 2,
                                                url = "jdbc:fatdriver:memory:jdbcdriver1",
                                                user = "dbuser1",
@@ -58,8 +60,17 @@ import componenttest.app.FATServlet;
                                                               "internal.nonship.function=This is for internal development only. Never use this in production",
                                                },
                                                user = "dbuser1",
-                                               password = "{xor}Oz0vKDtu")
-
+                                               password = "{xor}Oz0vKDtu"),
+                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-login-timeout",
+                                               className = "",
+                                               loginTimeout = 76,
+                                               url = "jdbc:fatdriver:memory:jdbcdriver1",
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                                              "createDatabase=create"
+                                               })
 })
 
 @SuppressWarnings("serial")
@@ -318,8 +329,6 @@ public class JDBCDriverManagerServlet extends FATServlet {
     public void testUnspecifiedClassNameInDataSourceDefinitionWithURL() throws Exception {
         DataSource dsd = InitialContext.doLookup("java:app/env/jdbc/dsd-infer-driver-class");
 
-        // assertEquals(76, dsd.getLoginTimeout()); // TODO if we find a way to support loginTimeout
-
         Connection con = dsd.getConnection();
         try {
             assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con.getTransactionIsolation());
@@ -372,4 +381,27 @@ public class JDBCDriverManagerServlet extends FATServlet {
             conn.close();
         }
     }
+
+    @Test
+    @ExpectedFFDC({ "java.sql.SQLNonTransientException" })
+    public void testGetSetLoginTimeout() throws Exception {
+        InitialContext ctx = new InitialContext();
+        //Ensure URL with loginTimeout specified is not allowed when using Driver
+        try {
+            ctx.lookup("jdbc/fatDriverInvalidURLLoginTimeout");
+            fail("URL containing LoginTimeout should not be allowed when using Driver");
+        } catch (Exception e) {
+        } //expected
+          //Ensure datasource with property loginTimeout is not allowed when using Driver
+        try {
+            ctx.lookup("java:app/env/jdbc/dsd-with-login-timeout");
+            fail("loginTimeout property now allowed when using Driver");
+        } catch (Exception e) {
+        } //expected
+          //Datasource using a driver should return DriverManager value of loginTimeout
+        DriverManager.setLoginTimeout(10 * 60); //10 minutes
+
+        assertEquals("Login timeout should be 600", 600, fatDriverDS.getLoginTimeout());
+    }
+
 }

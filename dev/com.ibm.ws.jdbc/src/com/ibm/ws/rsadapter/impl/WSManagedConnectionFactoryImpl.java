@@ -23,6 +23,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
@@ -1426,8 +1427,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             if(!Driver.class.equals(type)) {
                 return ((CommonDataSource) dataSourceOrDriver).getLoginTimeout();
             }
-            //TODO behavior for java.sql.Driver
-            return 0;
+            //When using Driver, loginTimeout is blocked from being set via URL or properties
+            //Therefore we know the loginTimeout being used is from the DriverManager
+            return DriverManager.getLoginTimeout();
         } catch (SQLException sqlX) {
             FFDCFilter.processException(sqlX, getClass().getName(), "1670", this);
             throw AdapterUtil.mapSQLException(sqlX, this);

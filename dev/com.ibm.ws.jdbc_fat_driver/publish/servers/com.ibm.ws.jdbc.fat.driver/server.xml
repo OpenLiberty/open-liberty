@@ -28,12 +28,18 @@
     
     <dataSource id="fatDataSource" jndiName="jdbc/fatDataSource">
       <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
-      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" />
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" loginTimeout="660"/>
     </dataSource>
 
     <dataSource id="fatDriver" jndiName="jdbc/fatDriver">
       <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
       <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true" user="dbuser2" password="{xor}Oz0vKDtt"/>
+      <containerAuthData user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    
+    <dataSource id="fatDriverInvalidURLLoginTimeout" jndiName="jdbc/fatDriverInvalidURLLoginTimeout">
+      <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
+      <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true;LoginTimeout=10" user="dbuser2" password="{xor}Oz0vKDtt"/>
       <containerAuthData user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
@@ -46,5 +52,7 @@
     <application location="jdbcapp.war" >
         <classloader commonLibraryRef="FATDriverLib"/>
     </application>
+    
+    <variable name="onError" value="FAIL"/>
 
 </server>
