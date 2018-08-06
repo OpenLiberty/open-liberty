@@ -134,7 +134,8 @@ public class AggregatedFTPolicy {
     /**
      * @return
      */
-    public Executor<?> getExecutor() {
+    @SuppressWarnings("unchecked")
+    public Executor<Object> getExecutor() {
         synchronized (this) {
             if (this.executor == null) {
                 ExecutorBuilder<ExecutionContext, ?> builder = newBuilder();
@@ -145,7 +146,7 @@ public class AggregatedFTPolicy {
                     this.executor = builder.build();
                 }
             }
-            return this.executor;
+            return (Executor<Object>) this.executor;
         }
     }
 
