@@ -62,7 +62,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 EnableSpringBootTraceTests.class,
                 ExceptionOccuredAfterAppIsAvailableTest15.class,
                 JavaeeFeatureTests15.class,
-                JavaeeFeatureTests20.class
+                JavaeeFeatureTests20.class,
+                TemplateTests.class
 })
 
 public class FATSuite {
