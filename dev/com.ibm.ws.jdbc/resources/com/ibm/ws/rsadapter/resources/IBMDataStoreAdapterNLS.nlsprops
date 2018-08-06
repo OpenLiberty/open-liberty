@@ -250,6 +250,11 @@ DSRA4005.invalid.logintimeout=DSRA4005E: The server does not support the loginTi
 DSRA4005.invalid.logintimeout.explanation=The loginTimeout property is not supported when it is specified for a DataSource that is backed by a java.sql.Driver implementation because the server is unable to call getLoginTimeout on the java.sql.Driver class.
 DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to use a DataSource implementation instead of a java.sql.Driver implementation, or remove the loginTimeout property.
 
+#4008			TRANSACTION_NONE_UNSUPPORTED
+TRANSACTION_NONE_UNSUPPORTED=DSRA4008: The JDBC driver does not support an isolation level of TRANSACTION_NONE.  The isolation level was set to TRANSACTION_NONE because of the data source configuration.
+TRANSACTION_NONE_UNSUPPORTED.explanation= The JDBC driver does not support using an isolation level of TRANSACTION_NONE.  An attempt to set the isolation level to TRANSACTION_NONE was the result of the data source configuration.
+TRANSACTION_NONE_UNSUPPORTED.useraction=  Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
@@ -602,8 +607,3 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Disable Kerberos, or use a DB2 backen
 
 # 9600-9603 deleted 
 # 9900 deleted
-
-#9549			TRANSACTION_NONE_UNSUPPORTED
-TRANSACTION_NONE_UNSUPPORTED=DSRA9549W: The JDBC driver does not support an isolation level of TRANSACTION_NONE.  The isolation level was set to TRANSACTION_NONE because of the data source configuration.
-TRANSACTION_NONE_UNSUPPORTED.explanation= The JDBC driver does not support using an isolation level of TRANSACTION_NONE.  An attempt to set the isolation level to TRANSACTION_NONE was the result of the data source configuration.
-TRANSACTION_NONE_UNSUPPORTED.useraction=  Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
