@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.wsspi.anno.info;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public interface MethodInfo extends Info {
 
     /**
      * <p>Answer the qualified name of the receiver. For methods, the qualified name is
-     * the declaring class name plus <q>.</q> plus the method name.</p>
+     * the declaring class name plus "." plus the method name.</p>
      * 
      * <p>Qualified names provide unique IDs for packages, classes, methods,
      * and methods. The names of annotations are the names of an annotation
@@ -55,7 +56,7 @@ public interface MethodInfo extends Info {
     /**
      * <p>Answer the in-order types of the parameters of this method.</p>
      * 
-     * <p>The in-order types of the parameters of this method.</p>
+     * <p>The in-order types of the parameters of this method.
      */
     public List<? extends ClassInfo> getParameterTypes();
 
@@ -87,8 +88,7 @@ public interface MethodInfo extends Info {
      * a singleton string is returned, per the java descriptor of the
      * return type:</p>
      * 
-     * <ul>
-     * <li>void: V</li>
+     * <ul><li>void: V</li>
      * <li>boolean: Z</li>
      * <li>char: C</li>
      * <li>byte: B</li>
@@ -106,8 +106,8 @@ public interface MethodInfo extends Info {
     /**
      * <p>Answer the class info object of the return type of this method.
      * Note that a non-null class info object is returned in all cases,
-     * including <code>void</code>. (<code>void.class</code> is a valid
-     * java class).</p>
+     * including <code>void</code>. (<code>void.class</void> is a valid
+     * java class.</p>).
      * 
      * @return The class info object of the return type of this method.
      */

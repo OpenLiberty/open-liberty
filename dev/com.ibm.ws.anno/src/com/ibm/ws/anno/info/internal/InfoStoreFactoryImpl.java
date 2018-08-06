@@ -1,30 +1,29 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2012, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.anno.info.internal;
 
-import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
+import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
 import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
-import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.info.InfoStoreException;
 import com.ibm.wsspi.anno.info.InfoStoreFactory;
 
 public class InfoStoreFactoryImpl implements InfoStoreFactory {
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
 
-    public static final TraceComponent tc = Tr.register(InfoStoreFactoryImpl.class);
-    public static final String CLASS_NAME = InfoStoreFactoryImpl.class.getName();
+    private static final String CLASS_NAME = "InfoStoreFactoryImpl";
 
     //
 
@@ -37,23 +36,40 @@ public class InfoStoreFactoryImpl implements InfoStoreFactory {
 
     //
 
-    public InfoStoreFactoryImpl(UtilImpl_Factory utilFactory) {
+    public InfoStoreFactoryImpl(
+        AnnotationServiceImpl_Service annoService,
+        UtilImpl_Factory utilFactory) {
+
         super();
 
-        this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
+        String methodName = "<init>";
 
+        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+
+        this.annoService = annoService;
         this.utilFactory = utilFactory;
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Created", this.hashText));
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Util Factory [ {1} ]",
-                                              this.hashText, this.utilFactory.getHashText()));
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] Created",
+                        this.hashText);
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] Util Factory [ {1} ]",
+                        new Object[] { this.hashText, this.utilFactory.getHashText() });
         }
     }
 
     //
 
-    protected UtilImpl_Factory utilFactory;
+    protected final AnnotationServiceImpl_Service annoService;
+
+    public AnnotationServiceImpl_Service getAnnotationService() {
+        return annoService;
+    }
+
+    //
+
+    protected final UtilImpl_Factory utilFactory;
 
     @Override
     public UtilImpl_Factory getUtilFactory() {
@@ -63,26 +79,33 @@ public class InfoStoreFactoryImpl implements InfoStoreFactory {
     //
 
     @Override
-    public InfoStoreException newInfoStoreException(TraceComponent logger, String message) {
+    public InfoStoreException newInfoStoreException(Logger useLogger, String message) {
+        String methodName = "newInfoStoreException";
+
         InfoStoreException exception = new InfoStoreException(message);
 
-        if (logger.isDebugEnabled()) {
-            Tr.debug(logger, exception.getMessage(), exception);
+        if (useLogger.isLoggable(Level.FINER) ) {
+            useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Created [ {0} ]", exception.getMessage());
         }
 
         return exception;
     }
 
     @Override
-    public InfoStoreException wrapIntoInfoStoreException(TraceComponent logger, String callingClassName, String callingMethodName, String message, Throwable th) {
-        return InfoStoreException.wrap(logger, callingClassName, callingMethodName, message, th);
+    public InfoStoreException wrapIntoInfoStoreException(
+        Logger useLogger,
+        String callingClassName,
+        String callingMethodName,
+        String message,
+        Throwable th) {
+
+        return InfoStoreException.wrap(useLogger, callingClassName, callingMethodName, message, th);
     }
 
     //
 
     @Override
-    public InfoStore createInfoStore(ClassSource_Aggregate classSource) throws InfoStoreException {
+    public InfoStoreImpl createInfoStore(ClassSource_Aggregate classSource) throws InfoStoreException {
         return new InfoStoreImpl(this, classSource); // throws InfoStoreException
     }
-
 }

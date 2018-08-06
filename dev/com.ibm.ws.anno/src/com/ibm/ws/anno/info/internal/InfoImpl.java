@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.anno.info.internal;
 
 import java.lang.annotation.Annotation;
@@ -16,23 +17,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.objectweb.asm.Type;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.Info;
 
 public abstract class InfoImpl implements Info {
 
-    public static final String CLASS_NAME = ClassInfoImpl.class.getName();
+    private static final String CLASS_NAME = "ClassInfoImpl";
 
     protected String hashText;
 
     @Override
-    @Trivial
     public String getHashText() {
         if (hashText == null) {
             hashText = computeHashText();
@@ -41,19 +40,17 @@ public abstract class InfoImpl implements Info {
         return hashText;
     }
 
-    @Trivial
     protected String computeHashText() {
-        return getClass().getName() + "@" + Integer.toString((new Object()).hashCode()) + " ( " + getName() + " )";
+        return getClass().getName() + "@" + Integer.toHexString(hashCode()) + " ( " + getName() + " )";
     }
 
     @Override
-    @Trivial
     public String toString() {
         return getHashText();
     }
 
     // Top O' the world ...
-    @Trivial
+
     public InfoImpl(String name, int modifiers, InfoStoreImpl infoStore) {
 
         this.infoStore = infoStore;
@@ -82,7 +79,7 @@ public abstract class InfoImpl implements Info {
         return infoStore;
     }
 
-    protected abstract String internName(String name);
+    protected abstract String internName(String infoName);
 
     // TODO: Should this be allowed??
     //       The current implementation will cause the
@@ -131,12 +128,33 @@ public abstract class InfoImpl implements Info {
         return (getModifiers() & (Modifier.PRIVATE | Modifier.PROTECTED | Modifier.PUBLIC)) == 0;
     }
 
+    /**
+     * Tell if the info is flagged as bridge.  This is currently meaningful only for
+     * methods.  See {@link Info#ACC_BRIDGE}.
+     * 
+     * @return True or false telling if the info is flagged as bridge.
+     */
+    public boolean isBridge() {
+        return ( (getModifiers() & ACC_BRIDGE) != 0 );
+    }
+
+    /**
+     * Tell if the info is flagged as synthetic.  This is currently meaningful only for
+     * methods.  See {@link Info#ACC_SYNTHETIC}.
+     *
+     * @return True or false telling if the info is flagged as synthetic.
+     */
+    public boolean isSynthetic() {
+        return ( (getModifiers() & ACC_SYNTHETIC) != 0 );
+    }
+
+    
+    
     // Typing ...
 
     protected String name;
 
     @Override
-    @Trivial
     public String getName() {
         return name;
     }
@@ -248,14 +266,15 @@ public abstract class InfoImpl implements Info {
     //
 
     @Override
-    public abstract void log(TraceComponent logger);
+    public abstract void log(Logger logger);
 
-    public void logAnnotations(TraceComponent logger) {
+    public void logAnnotations(Logger logger) {
+        String methodName = "logAnnotations";
 
         boolean firstAnnotation = true;
         for (AnnotationInfoImpl nextAnnotation : getAnnotations()) {
             if (firstAnnotation) {
-                Tr.debug(logger, "  Annotations:");
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "  Annotations:");
                 firstAnnotation = false;
             }
 
@@ -263,7 +282,7 @@ public abstract class InfoImpl implements Info {
         }
 
         if (firstAnnotation) {
-            Tr.debug(logger, "  No Annotations");
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "  No Annotations");
         }
     }
 }

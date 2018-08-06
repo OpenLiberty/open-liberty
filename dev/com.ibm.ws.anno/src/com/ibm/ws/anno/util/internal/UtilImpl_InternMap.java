@@ -1,37 +1,32 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.ws.anno.util.internal;
 
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
-/**
- * String intern map implementation.
- */
 public class UtilImpl_InternMap implements Util_InternMap {
-    private static final TraceComponent tc = Tr.register(UtilImpl_InternMap.class);
-    public static final String CLASS_NAME = UtilImpl_InternMap.class.getName();
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.util");
+    
+    public static final String CLASS_NAME = "UtilImpl_InternMap";
 
     protected final String hashText;
 
-    @Trivial
     @Override
     public String getHashText() {
         return hashText;
@@ -41,7 +36,6 @@ public class UtilImpl_InternMap implements Util_InternMap {
 
     protected final int logThreshHold;
 
-    @Trivial
     @Override
     public int getLogThreshHold() {
         return logThreshHold;
@@ -51,59 +45,58 @@ public class UtilImpl_InternMap implements Util_InternMap {
 
     // TODO: How does this factor across the factory/service implementation?
     /*
-     * Validate a string against a value type. Answer null if the string is
-     * valid. Answer a message ID describing the validation failure if the
-     * string is not valid for the value type.
-     * 
-     * @return Null for a valid value; a non-null message ID for a non-valid value.
+     * The validate method will return a Message Id as the string if a
+     * validation error is found.
+     *
+     * see com.ibm.wsspi.anno.util.Util_InternMap.doValidate
      */
-    @Trivial
+
     public static String doValidate(String value, ValueType valueType) {
         String vMsg = null;
 
-        switch (valueType) {
+        switch ( valueType ) {
             case VT_CLASS_RESOURCE:
-                if (value.contains("\\")) {
+                if ( value.contains("\\") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_BACKSLASH";
-                } else if (!value.endsWith(".class")) {
+                } else if ( !value.endsWith(".class") ) {
                     vMsg = "ANNO_UTIL_EXPECTED_CLASS";
                 }
                 break;
 
             case VT_CLASS_REFERENCE:
-                if (value.contains("\\")) {
+                if ( value.contains("\\") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_BACKSLASH";
-                } else if (value.endsWith(".class")) {
+                } else if ( value.endsWith(".class") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_CLASS";
                 }
                 break;
 
             case VT_CLASS_NAME:
-                if (value.contains("\\")) {
+                if ( value.contains("\\") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_BACKSLASH";
-                } else if (value.contains("/")) {
+                } else if ( value.contains("/") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_FORWARD_SLASH";
-                } else if (value.endsWith(".class")) {
+                } else if ( value.endsWith(".class") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_CLASS";
                 }
                 break;
 
             case VT_FIELD_NAME:
-                if (value.contains("\\")) {
+                if ( value.contains("\\") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_BACKSLASH";
-                } else if (value.contains("/")) {
+                } else if ( value.contains("/") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_FORWARD_SLASH";
-                } else if (value.endsWith(".class")) {
+                } else if ( value.endsWith(".class") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_CLASS";
                 }
                 break;
 
             case VT_METHOD_NAME:
-                if (value.contains("\\")) {
+                if ( value.contains("\\") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_BACKSLASH";
-                } else if (value.contains("/")) {
+                } else if ( value.contains("/") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_FORWARD_SLASH";
-                } else if (value.endsWith(".class")) {
+                } else if ( value.endsWith(".class") ) {
                     vMsg = "ANNO_UTIL_UNEXPECTED_CLASS";
                 }
                 break;
@@ -120,40 +113,43 @@ public class UtilImpl_InternMap implements Util_InternMap {
     }
 
     @Override
-    @Trivial
-    public String validate(String value, ValueType valueType) {
-        return UtilImpl_InternMap.doValidate(value, valueType);
+    public String validate(String useValue, ValueType useValueType) {
+        return UtilImpl_InternMap.doValidate(useValue, useValueType);
     }
 
     //
 
-    @Trivial
     public UtilImpl_InternMap(UtilImpl_Factory factory, ValueType valueType, String name) {
         this(factory, valueType, DEFAULT_LOG_THRESHHOLD, name);
     }
 
-    @Trivial
     public UtilImpl_InternMap(UtilImpl_Factory factory, ValueType valueType, int logThreshHold, String name) {
         super();
 
+        String methodName = "<init>";
+        
         this.factory = factory;
 
         this.logThreshHold = logThreshHold;
 
         this.name = name;
 
-        this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this) + "(" + this.name + ")";
+        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
+                        "(" + this.name + ")";
 
         this.valueType = valueType;
-        this.checkValues = tc.isDebugEnabled();
+        this.checkValues = logger.isLoggable(Level.FINER);
 
         this.internMap = new HashMap<String, String>();
         this.lastReportedLength = 0;
         this.totalLength = 0;
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Value type [ {1} ] Log threshhold [ {2} ]",
-                                              this.hashText, this.valueType, Integer.valueOf(this.logThreshHold)));
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] Value type [ {1} ] Log threshhold [ {2} ]",
+                    new Object[] { this.hashText,
+                                   this.valueType,
+                                   Integer.valueOf(this.logThreshHold) });
         }
     }
 
@@ -162,7 +158,6 @@ public class UtilImpl_InternMap implements Util_InternMap {
     protected final UtilImpl_Factory factory;
 
     @Override
-    @Trivial
     public UtilImpl_Factory getFactory() {
         return factory;
     }
@@ -172,14 +167,12 @@ public class UtilImpl_InternMap implements Util_InternMap {
     protected final ValueType valueType;
 
     @Override
-    @Trivial
     public ValueType getValueType() {
         return valueType;
     }
 
     protected boolean checkValues;
 
-    @Trivial
     public boolean getCheckValues() {
         return checkValues;
     }
@@ -189,7 +182,6 @@ public class UtilImpl_InternMap implements Util_InternMap {
     protected final String name;
 
     @Override
-    @Trivial
     public String getName() {
         return name;
     }
@@ -197,147 +189,104 @@ public class UtilImpl_InternMap implements Util_InternMap {
     // Name intern map ...
 
     protected final Map<String, String> internMap;
-    protected int lastReportedLength; // Used for logging.
-    protected int totalLength; // Used for logging.
+    protected int lastReportedLength;
+    protected int totalLength;
 
-    @Trivial
     protected Map<String, String> getInternMap() {
         return internMap;
     }
 
-    @Trivial
-    protected int getLastReportedLength() {
+    protected synchronized int getLastReportedLength() {
         return lastReportedLength;
     }
 
     @Override
-    @Trivial
-    public Collection<String> getValues() {
+    public synchronized Collection<String> getValues() {
         return getInternMap().values();
     }
 
     @Override
-    @Trivial
-    public int getSize() {
+    public synchronized int getSize() {
         return getInternMap().size();
     }
 
     @Override
-    @Trivial
-    public int getTotalLength() {
+    public synchronized int getTotalLength() {
         return totalLength;
     }
 
-    /**
-     * Intern a string value. Do force the value to be interned.
-     * 
-     * See {@link #intern(String, boolean) and {@link Util_InternMap#DO_FORCE}.
-     * 
-     * @param value The string value which is to be interned.
-     * 
-     * @return The interned string value. Only null if the string
-     *         value is null.
-     */
     @Override
-    // Don't log this call: Rely on 'intern(String, boolean)' to log the intern call and result.    
-    @Trivial
-    public String intern(String value) {
-        return intern(value, Util_InternMap.DO_FORCE);
+    public String intern(String useName) {
+        return intern(useName, Util_InternMap.DO_FORCE);
     }
 
-    /**
-     * Intern a string string. Answer the prior interned value, if the
-     * value is already interned. Otherwise, depending on the
-     * forcing control parameter, answer null, or, store the value
-     * and answer it as the newly interned value.
-     * 
-     * Emit a warning if validation is enabled and the value does
-     * not match the value type set for this intern map.
-     * 
-     * Answer null for a null string value, and perform no validation.
-     * Null is never stored in the intern map. A call to {@link #contains(String)} answers false for null.
-     * 
-     * @param value The string value which is to be interned.
-     * @param doForce True or false telling if the value, if
-     *            not already interned, should be interned.
-     * 
-     * @return The intern value for the string. Null if the
-     *         value is not interned and the forcing control parameter
-     *         is false.
-     */
-    // Not set as Trivial: We want to trace intern calls.
     @Override
-    public String intern(String value, boolean doForce) {
-        if (value == null) {
-            return value;
+    public synchronized String intern(String useName, boolean doForce) {
+        String methodName = "intern";
+        
+        if ( useName == null ) {
+            return useName;
         }
 
-        if (checkValues) {
-            String vMsgId = validate(value, valueType);
-            if (vMsgId != null) {
-                Tr.warning(tc, vMsgId, getHashText(), value, valueType);
+        if ( checkValues ) {
+            // The validate method will return a Message Id as the string if a
+            // validation error is found. The Message Id can then be passed to Tr.warning
+            // along with the substitution parameters.
+            String vMsg = validate(useName, valueType);
+            if ( vMsg != null ) {
+                logger.logp(Level.WARNING, CLASS_NAME, methodName,
+                        vMsg,
+                        new Object[] { getHashText(), useName, valueType });
             }
         }
 
-        String priorIntern = internMap.get(value);
-        if ((priorIntern != null) || !doForce) {
+        String priorIntern = internMap.get(useName);
+        if ( (priorIntern != null) || !doForce ) {
             return priorIntern;
         }
 
-        priorIntern = value;
-        internMap.put(value, value);
+        priorIntern = useName;
+        internMap.put(useName, useName);
 
-        totalLength += value.length();
-        if ((totalLength - lastReportedLength) > logThreshHold) {
+        totalLength += useName.length();
+        if ( (totalLength - lastReportedLength) > logThreshHold ) {
             lastReportedLength = totalLength;
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Total [ {1} ]", hashText, Integer.valueOf(totalLength)));
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] Total [ {1} ]",
+                        new Object[] { hashText, Integer.valueOf(totalLength) });
             }
         }
 
         return priorIntern;
     }
 
-    /**
-     * Tell if a value is held by the intern map.
-     * 
-     * This is not an intern enabled call: Simple string equality
-     * is used to test for containment. That is, this tests if
-     * a value has been interned for the value, not whether the
-     * value is the actual interned string value. A call to {@link #intern(String, boolean)} with a false forcing parameter,
-     * plus a test for identity on the return value are necessary
-     * to test if a string is the interned string value.
-     * 
-     * Null is never interned: Answer false for a null value.
-     * 
-     * @param value The value to test.
-     */
-    // Used by:
-    // See: UtilImpl_BidirectionalMap.containsHeld(String)
-    // And: UtilImpl_BidirectionalMap.containsHolder(String)
+    // Used to allow fast return lookups:
+    //
+    // For a lookup to an identity map that is backed by an intern map,
+    // if the intern map lookup fails, the map lookup must return null.
+
     @Override
-    @Trivial
-    public boolean contains(String value) {
-        return internMap.containsKey(value);
+    public synchronized boolean contains(String useName) {
+        return internMap.containsKey(useName);
     }
 
     //
 
     @Override
-    @Trivial
-    public void logState() {
-        if (AnnotationServiceImpl_Logging.stateLogger.isDebugEnabled()) {
-            log(AnnotationServiceImpl_Logging.stateLogger);
+    public synchronized void log(Logger useLogger) {
+        String methodName = "log";
+        if ( !useLogger.isLoggable(Level.FINER) ) {
+            return;
         }
-    }
 
-    @Override
-    @Trivial
-    public void log(TraceComponent logger) {
-        Tr.debug(logger, MessageFormat.format("BEGIN Intern Map [ {0} ]:", getHashText()));
-        Tr.debug(logger, MessageFormat.format("  Log threshhold[ {0} ]", Integer.valueOf(getLogThreshHold())));
-        Tr.debug(logger, MessageFormat.format("  Size [ {0} ]", Integer.valueOf(getSize())));
-        Tr.debug(logger, MessageFormat.format("  Total Length [ {0} ]", Integer.valueOf(getTotalLength())));
-        Tr.debug(logger, "END Intern Map");
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Intern Map: BEGIN [ {0} ]:", getHashText());
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Log threshhold[ {0} ]", Integer.valueOf(getLogThreshHold()));
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Size [ {0} ]", Integer.valueOf(getSize()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Total Length [ {0} ]", Integer.valueOf(getTotalLength()));
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Intern Map: END [ {0} ]:", getHashText());
     }
 }

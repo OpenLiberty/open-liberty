@@ -11,28 +11,35 @@
 
 package com.ibm.ws.anno.classsource.internal;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.anno.jandex.internal.SparseClassInfo;
+import com.ibm.ws.anno.jandex.internal.SparseIndex;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
+
 import com.ibm.wsspi.anno.classsource.ClassSource;
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Options;
-import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 public abstract class ClassSourceImpl implements ClassSource {
-    private static final TraceComponent tc = Tr.register(ClassSourceImpl.class);
-    public static final String CLASS_NAME = ClassSourceImpl.class.getName();
+    protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
+    protected static final Logger stateLogger = AnnotationServiceImpl_Logging.ANNO_STATE_LOGGER;
+    protected static final Logger jandexLogger = AnnotationServiceImpl_Logging.ANNO_JANDEX_LOGGER;
+
+    public static final String CLASS_NAME = ClassSourceImpl.class.getSimpleName();
 
     @Trivial
     protected static long getTime() {
@@ -58,40 +65,52 @@ public abstract class ClassSourceImpl implements ClassSource {
     //
 
     @Trivial
-    protected ClassSourceImpl(ClassSourceImpl_Factory factory,
-                              Util_InternMap internMap,
-                              String name,
-                              ClassSource_Options options,
-                              String hashTextSuffix) {
+    protected ClassSourceImpl(
+        ClassSourceImpl_Factory factory, Util_InternMap internMap,
+        String entryPrefix,
+        String name, String hashTextSuffix) {
+
         super();
 
-        this.factory = factory;
+        String methodName = "<init>";
 
         this.internMap = internMap;
+        this.factory = factory;
+
+        if ( entryPrefix != null ) {
+            if ( entryPrefix.isEmpty() ) {
+                throw new IllegalArgumentException("Prefix cannot be empty");
+            } else if ( entryPrefix.charAt(entryPrefix.length() - 1) != '/' ) {
+                throw new IllegalArgumentException("Prefix [ " + entryPrefix + " ] must have a trailing '/'");
+            }
+        }
+        this.entryPrefix = entryPrefix;
 
         this.name = name;
         this.canonicalName = factory.getCanonicalName(this.name);
 
         this.parentSource = null;
 
-        this.options = options;
-
-        String useHashText = AnnotationServiceImpl_Logging.getBaseHash(this);
+        String useHashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
         useHashText += "(" + this.canonicalName;
-        if (hashTextSuffix != null) {
+        if ( hashTextSuffix != null ) {
             useHashText += ", " + hashTextSuffix;
         }
         useHashText += ")";
-
         this.hashText = useHashText;
 
-        this.scanCounts = new ClassSourceImpl_ScanCounts();
+        this.processedUsingJandex = false;
+        this.processTime = 0L;
+        this.processCount = 0;
 
-        if ( tc.isDebugEnabled() ) {
-            String msg = MessageFormat.format(
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "[ {0} ] InternMap [ {1} ]",
-                this.hashText, internMap.getHashText());
-            Tr.debug(tc, msg);
+                new Object[] { this.hashText, this.internMap.getHashText() });
+            if ( this.entryPrefix != null ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Prefix [ {1} ]",
+                    new Object[] { this.hashText, this.entryPrefix });
+            }
         }
     }
 
@@ -104,6 +123,18 @@ public abstract class ClassSourceImpl implements ClassSource {
     public ClassSourceImpl_Factory getFactory() {
         return factory;
     }
+
+    //
+
+    private final String entryPrefix;
+
+    @Trivial
+    @Override
+    public String getEntryPrefix() {
+        return entryPrefix;
+    }
+
+    //
 
     protected final String name;
 
@@ -123,52 +154,142 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     //
 
-    protected ClassSource parentSource;
+    protected ClassSource_Aggregate parentSource;
 
     @Override
     @Trivial
-    public ClassSource getParentSource() {
+    public ClassSource_Aggregate getParentSource() {
         return parentSource;
     }
 
     @Override
-    public void setParentSource(ClassSource parentSource) {
+    public void setParentSource(ClassSource_Aggregate parentSource) {
         this.parentSource = parentSource;
     }
-
+    
     //
-
-    protected final ClassSource_Options options;
 
     @Override
     @Trivial
     public ClassSource_Options getOptions() {
-    	return options;
+        return getParentSource().getOptions();
     }
 
     @Trivial
     public boolean getUseJandex() {
-    	return getOptions().getUseJandex();
+        return getOptions().getUseJandex();
+    }
+    
+    @Trivial
+    public boolean getUseJandexFull() {
+        return getOptions().getUseJandexFull();
+    }
+
+    /**
+     * <p>Answer the path to JANDEX index files.</p>
+     *
+     * <p>The default implementation answers <code>"META-INF/jandex.ndx"</code>.</p>
+     *
+     * @return The relative path to JANDEX index files.
+     */
+    @Trivial
+    public String getJandexIndexPath() {
+        return getOptions().getJandexPath();
+    }
+    
+    // Sparse Jandex Index Methods ...
+
+    private static final int NS_IN_MS = 1000000;
+
+    /**
+     * Attempt to read the Jandex index.
+     *
+     * If Jandex is not enabled, immediately answer null.
+     *
+     * If no Jandex index is available, or if it cannot be read, answer null.
+     *
+     * @return The read Jandex index.
+     */
+    protected SparseIndex getSparseJandexIndex() {
+        String methodName = "getSparseJandexIndex";
+
+        long startTime = System.nanoTime();
+        SparseIndex jandexIndex = basicGetSparseJandexIndex();
+        long readTime = System.nanoTime() - startTime;
+
+        if ( jandexIndex != null ) {
+            setProcessTime(readTime);
+            setProcessCount(jandexIndex.getKnownClasses().size());
+        }
+
+        boolean doLog = logger.isLoggable(Level.FINER);
+        boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
+        if ( doLog || doJandexLog ) {
+            String msg;
+            if ( jandexIndex != null ) {
+                msg = MessageFormat.format(
+                    "[ {0} ] Index [ {1} ] found; [ {2} (ms) ]",
+                    getHashText(), getJandexIndexPath(), Long.valueOf(readTime / NS_IN_MS));
+            } else {
+                msg = MessageFormat.format(
+                    "[ {0} ] Index [ {1} ] not found",
+                    getHashText(), getJandexIndexPath());
+            }
+            if ( doLog ) {
+                logger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
+            }
+            if ( doJandexLog ) {
+                jandexLogger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
+            }
+        }
+
+        return jandexIndex;
+    }
+
+    protected SparseIndex basicGetSparseJandexIndex() {
+        return null;
+    }
+    
+    protected boolean processedUsingSparseJandex = false;
+    
+    public boolean isProcessedUsingSparseJandex() {
+        return processedUsingSparseJandex;
     }
 
     //
 
-    @Trivial
-    public boolean getConvertResourceNames() {
-        return false;
-    }
+    protected String stamp;
 
     @Override
     @Trivial
-    public String inconvertResourceName(String externalResourceName) {
-        return externalResourceName;
+    public String getStamp() {
+        if ( stamp == null ) {
+            stamp = computeStamp();
+        }
+        return stamp;
     }
 
-    @Override
-    @Trivial
-    public String outconvertResourceName(String resourceName) {
-        return resourceName;
-    }
+    /**
+     * <p>Compute and return a time stamp for this class source.</p>
+     *
+     * <p>Two value patterns are returned: An entirely numeric value encodes
+     * the the last updated time of the target container, per {@link File#lastModified}.
+     * A non-numeric value represents either an unavailable value or an unrecorded
+     * value.  The unavailable value is used for containers which are not mapped to
+     * an archive type file.  The unrecorded value is used for container types which
+     * do not support time stamps.</p>
+     *
+     * <p>For numeric values, this text from {@link File#lastModified} applies:</p>
+     *
+     * <quote>A <code>long</code> value representing the time the file was
+     * last modified, measured in milliseconds since the epoch
+     * (00:00:00 GMT, January 1, 1970), or <code>0L</code> if the
+     * file does not exist or if an I/O error occurs.
+     * </quote}
+     *
+     * @return The last modified value for the class source.
+     */
+    protected abstract String computeStamp();
 
     //
 
@@ -185,163 +306,10 @@ public abstract class ClassSourceImpl implements ClassSource {
         return getInternMap().intern(className);
     }
 
-    //
-
-    @Override
-    public abstract void open() throws ClassSource_Exception;
-
-    @Override
-    public abstract void close() throws ClassSource_Exception;
-
-    //
-
-    @Override
     @Trivial
-    public boolean isDirectoryResource(String resourceName) {
-        return resourceName.endsWith(ClassSource.RESOURCE_SEPARATOR_STRING);
+    protected String internClassName(String className, boolean doForce) {
+        return getInternMap().intern(className, doForce);
     }
-
-    @Override
-    @Trivial
-    public boolean isClassResource(String resourceName) {
-        return resourceName.endsWith(CLASS_EXTENSION);
-    }
-
-    @Override
-    @Trivial
-    public String getClassNameFromResourceName(String resourceName) {
-        int endingOffset = resourceName.length() - ClassSource.CLASS_EXTENSION.length();
-        String className = resourceName.substring(0, endingOffset);
-        className = className.replace(RESOURCE_SEPARATOR_CHAR, ClassSource.CLASS_SEPARATOR_CHAR);
-
-        return className;
-    }
-
-    @Override
-    @Trivial
-    public String getResourceNameFromClassName(String className) {
-        return
-            className.replace(ClassSource.CLASS_SEPARATOR_CHAR, RESOURCE_SEPARATOR_CHAR) +
-            ClassSource.CLASS_EXTENSION;
-    }
-
-    @Override
-    @Trivial
-    public String resourceAppend(String head, String tail) {
-        if ( head.isEmpty() ) {
-            return tail;
-        } else {
-            return (head + ClassSource.RESOURCE_SEPARATOR_CHAR + tail);
-        }
-    }
-
-    //
-
-    protected final ClassSourceImpl_ScanCounts scanCounts;
-
-    @Override
-    @Trivial
-    public ClassSourceImpl_ScanCounts getScanResults() {
-        return scanCounts;
-    }
-
-    protected void markResult(ClassSource_ScanCounts.ResultField resultField) {
-        scanCounts.increment(resultField);
-    }
-
-    protected void addResults(ClassSource_ScanCounts partialScanCounts) {
-        scanCounts.addResults(partialScanCounts);
-    }
-
-    @Trivial
-    @Override
-    public int getResult(ClassSource_ScanCounts.ResultField resultField) {
-        return scanCounts.getResult(resultField);
-    }
-
-    //
-
-    @Override
-    @Trivial
-    public boolean scanSpecificSeedClass(String className, ClassSource_Streamer streamer) throws ClassSource_Exception {
-        return scanClass(streamer, className, ScanPolicy.SEED); // throws ClassSource_Exception
-    }
-
-    @Override
-    @Trivial
-    public boolean scanReferencedClass(String referencedClassName, ClassSource_Streamer streamer) throws ClassSource_Exception {
-        return scanClass(streamer, referencedClassName, ScanPolicy.EXTERNAL); // throws ClassSource_Exception
-    }
-
-    // Entry from:
-    //   ClassSourceImpl.scanSpecifiedSeedClasses(Set<String>, ClassSource_Streamer)
-    //   ClassSourceImpl.scanReferencedClasses(Set<String>, ClassSource_Streamer)
-
-    /**
-     * <p>Attempt to process a specified class. Answer whether processing was handed
-     * successfully by the streamer via {@link ClassSource_Streamer#process(String, InputStream, boolean, boolean, boolean)}.</p>
-     *
-     * <p>A failure (false) result occurs the class is blocked by {@link ClassSource_Streamer#doProcess(String, boolean, boolean, boolean)},
-     * or if no resource is available for the class. A failure to open the resource results
-     * in an exception. Certain processing failures also result in an exception.</p>
-     *
-     * <p>An exception thrown by the streamer indicates that the class was not successfully
-     * handled by the streamer.</p>
-     *
-     * <p>A failure to close the stream for the class is handled locally.</p>
-     *
-     * @param streamer The streamer which is to be used to process the named class.
-     * @param className The class which is to be processed.
-     * @param scanPolicy The scan policy of the class source of the named class.
-     *
-     * @return True if processing reaches the streamer. Otherwise, false.
-     *
-     * @throws ClassSource_Exception Thrown in case of a processing failure.
-     */
-    @Trivial
-    protected boolean scanClass(ClassSource_Streamer streamer, String className, ScanPolicy scanPolicy)
-        throws ClassSource_Exception {
-
-        String methodName = "scanClass";
-        Object[] logParms;
-        if ( tc.isEntryEnabled() ) {
-            logParms = new Object[] { getHashText(), className };
-            Tr.entry(tc, methodName, MessageFormat.format("[ {0} ] Name [ {1} ]", logParms));
-        } else {
-            logParms = null;
-        }
-
-        if ( !streamer.doProcess(className, scanPolicy) ) {
-            if ( logParms != null ) {
-                Tr.exit(tc, methodName,
-                        MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: Filtered by streamer", logParms));
-            }
-            return false;
-        }
-
-        String resourceName = getResourceNameFromClassName(className);
-
-        InputStream inputStream = openResourceStream(className, resourceName); // throws ClassSource_Exception
-        if ( inputStream == null ) {
-            if ( logParms != null ) {
-                Tr.exit(tc, methodName, MessageFormat.format("[ {0} ] Return [ {1} ] [ false ]: No resource is available", logParms));
-            }
-            return false;
-        }
-
-        try {
-            streamer.process( getCanonicalName(), className, inputStream, scanPolicy );
-        } finally {
-            closeResourceStream(className, resourceName, inputStream);
-        }
-
-        if ( logParms != null ) {
-            Tr.exit(tc, methodName, MessageFormat.format("[ {0} ] Return [ {1} ] [ true ]", logParms));
-        }
-        return true;
-    }
-
-    //
 
     @Trivial
     protected boolean i_maybeAdd(String i_resourceName, Set<String> i_seedClassNamesSet) {
@@ -357,11 +325,10 @@ public abstract class ClassSourceImpl implements ClassSource {
         // seed class names can be large, and displaying it to trace
         // rather bloats the trace.
 
-        if ( tc.isDebugEnabled() ) {
-            String msg = MessageFormat.format(
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "[ {0} ] Resource [ {1} ]: [ {2} ]",
-                getHashText(), i_resourceName, Boolean.valueOf(didAdd));
-            Tr.debug(tc, methodName, msg);
+                new Object[] { getHashText(), i_resourceName, Boolean.valueOf(didAdd) });
         }
 
         return didAdd;
@@ -369,20 +336,19 @@ public abstract class ClassSourceImpl implements ClassSource {
 
     //
 
-    // Mostly common, but overloaded by mapped jars.
     @Override
-    @Trivial
-    public InputStream openClassStream(String className) throws ClassSource_Exception {
-        String resourceName = getResourceNameFromClassName(className);
-        return openResourceStream(className, resourceName); // throws ClassSource_Exception
-    }
+    public abstract void open() throws ClassSource_Exception;
 
-    // Mostly common, but overloaded by mapped jars.
+    @Override
+    public abstract void close() throws ClassSource_Exception;
+
+    //
+
     @Override
     @Trivial
-    public void closeClassStream(String className, InputStream inputStream) {
-        String resourceName = getResourceNameFromClassName(className);
-        closeResourceStream(className, resourceName, inputStream);
+    public BufferedInputStream openClassResourceStream(String className, String resourceName)
+        throws ClassSource_Exception {
+        return openResourceStream(className, resourceName, CLASS_BUFFER_SIZE);
     }
 
     @Override
@@ -390,172 +356,90 @@ public abstract class ClassSourceImpl implements ClassSource {
         throws ClassSource_Exception;
 
     @Override
+    public BufferedInputStream openResourceStream(String className, String resourceName, int bufferSize)
+        throws ClassSource_Exception {
+        InputStream inputStream = openResourceStream(className, resourceName); // throws ClassSource_Exception
+        return ( (inputStream == null) ? null : new BufferedInputStream(inputStream, bufferSize) );
+    }
+
+    @Override
     public abstract void closeResourceStream(String className, String resourceName, InputStream inputStream);
-
-    //
-
-    protected int resourceExclusionCount;
-    protected int classExclusionCount;
-    protected int classInclusionCount;
-
-    protected void incrementResourceExclusionCount() {
-        resourceExclusionCount++;
-    }
-
-    @Override
-    @Trivial
-    public int getResourceExclusionCount() {
-        return resourceExclusionCount;
-    }
-
-    protected void incrementClassExclusionCount() {
-        classExclusionCount++;
-    }
-
-    @Override
-    @Trivial
-    public int getClassExclusionCount() {
-        return classExclusionCount;
-    }
-
-    protected void incrementClassInclusionCount() {
-        classInclusionCount++;
-    }
-
-    @Override
-    @Trivial
-    public int getClassInclusionCount() {
-        return classInclusionCount;
-    }
 
     //
 
     @Override
     @Trivial
     public void logState() {
-        TraceComponent stateLogger = AnnotationServiceImpl_Logging.stateLogger;
-
-        if (stateLogger.isDebugEnabled()) {
+        if ( stateLogger.isLoggable(Level.FINER) ) {
             log(stateLogger);
         }
     }
 
     @Override
-    public abstract void log(TraceComponent logger);
-
-    @Trivial
-    protected void logCounts(TraceComponent logger) {
-        if (logger.isDebugEnabled()) {
-            Tr.debug(logger, MessageFormat.format("  Included classes: [ {0} ]",
-                                                  Integer.valueOf(getClassInclusionCount())));
-
-            Tr.debug(logger, MessageFormat.format("  Excluded classes: [ {0} ]",
-                                                  Integer.valueOf(getClassExclusionCount())));
-        }
-    }
+    public abstract void log(Logger useLogger);
 
     //
 
     @Override
-    public void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNames, ScanPolicy scanPolicy) {
-    	String methodName = "scanClasses";
-
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER", getHashText()));
+    public void process(ClassSource_Streamer streamer) throws ClassSource_Exception {
+        String methodName = "process";
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", getHashText());
         }
 
-        int initialClasses = i_seedClassNames.size();
-
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] Initial classes [ {2} ]",
-                     new Object[] { getHashText(), getCanonicalName(), Integer.valueOf(initialClasses) } ));
+        int initialClasses = getInternMap().getSize();
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Processing [ {1} ] Initial classes [ {2} ]",
+                new Object[] { getHashText(), getCanonicalName(), Integer.valueOf(initialClasses) });
         }
 
         boolean fromJandex;
-
-        if ( processFromCache(streamer, i_seedClassNames, scanPolicy) ) {
-        	fromJandex = true;
+        if ( processUsingJandex(streamer) ) {
+            fromJandex = true;
         } else {
-            processFromScratch(streamer, i_seedClassNames, scanPolicy);
+        	long startScan = System.nanoTime();
+            setProcessCount( processFromScratch(streamer) );
+            long scanTime = System.nanoTime() - startScan;
+            setProcessTime(scanTime);
             fromJandex = false;
         }
 
-        int finalClasses = i_seedClassNames.size();
+        int finalClasses = getInternMap().getSize();
 
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
-                    new Object[] { getHashText(),
-                    		       getCanonicalName(),
-                    		       (fromJandex ? "New Scan" : "Jandex"),
-                    		       Integer.valueOf(finalClasses) } ));
-
-            Object[] logParms = new Object[] { getHashText(), null, null };
-
-            logParms[1] = Integer.valueOf(finalClasses - initialClasses);
-            Tr.debug(tc, MessageFormat.format("[ {0} ] RETURN [ {1} ] Added classes", logParms));
-
-            for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
-                int nextResult = getResult(resultField);
-                String nextResultTag = resultField.getTag();
-
-                logParms[1] = Integer.valueOf(nextResult);
-                logParms[2] = nextResultTag;
-
-                Tr.debug(tc, MessageFormat.format("[ {0} ]  [ {1} ] {2}", logParms));
-            }
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
+                new Object[] { getHashText(),
+                               getCanonicalName(),
+                               (fromJandex ? "New Scan" : "Jandex"),
+                               Integer.valueOf(finalClasses) } );
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] RETURN [ {1} ] Added classes",
+                new Object[] { getHashText(),
+                               Integer.valueOf(finalClasses - initialClasses) } );
         }
 
-        if ( fromJandex && JandexLogger.doLog() ) {
-        	String useHashText = getHashText();
+        if ( fromJandex && jandexLogger.isLoggable(Level.FINER) ) {
+            String useHashText = getHashText();
 
-        	String msg = MessageFormat.format(
-        		"[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
-        		useHashText, getCanonicalName(),
-        		(fromJandex ? "New Scan" : "Jandex"),
-        		Integer.valueOf(finalClasses) );
-        	JandexLogger.log(CLASS_NAME, methodName, msg);
+            jandexLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Processing [ {1} ] {2}; Final classes [ {3} ]",
+                new Object[] { useHashText,
+                              getCanonicalName(),
+                              (fromJandex ? "New Scan" : "Jandex"),
+                              Integer.valueOf(finalClasses) } );
 
-        	JandexLogger.log(CLASS_NAME, methodName,
-        		MessageFormat.format("[ {0} ] Added classes [ {1} ]",
-        			useHashText, Integer.valueOf(finalClasses - initialClasses)));
-
-        	for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
-        		int nextResult = getResult(resultField);
-        		String nextResultTag = resultField.getTag();
-
-            	JandexLogger.log(CLASS_NAME, methodName,
-                    MessageFormat.format("[ {0} ]  [ {1} ] {2}",
-                    	useHashText, Integer.valueOf(nextResult), nextResultTag));
-            }
+            jandexLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Added classes [ {1} ]",
+                new Object[] { useHashText,
+                               Integer.valueOf(finalClasses - initialClasses) });
         }
     }
 
-    /**
-     * <p>Main scan implementation step: Process the classes of this class source.  No cache
-     * data is available.</p>
-     *
-     * @param streamer The streamer used to process the classes.
-     * @param i_seedClassNames The seed class names.  Updated with new seed class names from the scan.
-     * @param scanPolicy The policy to apply to the scan data.
-     */
-    protected abstract void processFromScratch(
-        ClassSource_Streamer streamer,
-        Set<String> i_seedClassNames,
-        ScanPolicy scanPolicy);
+    protected abstract int processFromScratch(ClassSource_Streamer streamer)
+        throws ClassSource_Exception;
 
     //
-
-    /**
-     * <p>Answer the path to JANDEX index files.</p>
-     *
-     * <p>The default implementation answers <code>"META-INF/jandex.ndx"</code>.</p>
-     *
-     * @return The relative path to JANDEX index files.
-     */
-    @Trivial
-    public String getJandexIndexPath() {
-        return "/META-INF/jandex.idx";
-    }
 
     /**
      * Attempt to read the Jandex index.
@@ -567,65 +451,36 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The read Jandex index.
      */
     protected Index getJandexIndex() {
-    	String methodName = "getJandexIndex";
+        String methodName = "getJandexIndex";
 
-        boolean doLog = tc.isDebugEnabled();
-        boolean doJandexLog = JandexLogger.doLog();
-
-        boolean useJandex = getUseJandex();
-
-        if ( !useJandex ) {
-        	// Figuring out if there is a Jandex index is mildly expensive,
-        	// and is to be avoided when logging is disabled.
-
-        	if ( doLog || doJandexLog ) {
-        		boolean haveJandex = basicHasJandexIndex();
-
-        		String msg;
-        		if ( haveJandex ) {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
-        				getHashText(), getJandexIndexPath());
-        		} else {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex disabled; Jandex index [ {1} ] not found",
-        				getHashText(), getJandexIndexPath());
-
-        		}
-        		if ( doLog ) {
-        		    Tr.debug(tc, msg);
-        		}
-        		if ( doJandexLog ) {
-        		    JandexLogger.log(CLASS_NAME,  methodName, msg);
-        		}
-        	}
-
-        	return null;
-
-        } else {
-        	Index jandexIndex = basicGetJandexIndex();
-
-        	if ( doLog || doJandexLog ) {
-        		String msg;
-        		if ( jandexIndex != null ) {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] found",
-        				getHashText(), getJandexIndexPath());
-        		} else {
-        			msg = MessageFormat.format(
-        				"[ {0} ] Jandex enabled; Jandex index [ {1} ] not found",
-        				getHashText(), getJandexIndexPath());
-        		}
-        		if ( doLog ) {
-        	        Tr.debug(tc, msg);
-        		}
-        		if ( doJandexLog ) {
-        			JandexLogger.log(CLASS_NAME,  methodName, msg);
-        		}
-        	}
-
-        	return jandexIndex;
+        long startTime = System.nanoTime();
+        Index jandexIndex = basicGetJandexIndex();
+        long readTime = System.nanoTime() - startTime;
+        if ( jandexIndex != null ) {
+            setProcessTime(readTime);
+            setProcessCount(jandexIndex.getKnownClasses().size());
         }
+
+        boolean doLog = logger.isLoggable(Level.FINER);
+        boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
+        if ( doLog || doJandexLog ) {
+            String msg;
+            if ( jandexIndex != null ) {
+                msg = MessageFormat.format("[ {0} ] Index [ {1} ] found [ {2} (ms) ]",
+                    getHashText(), getJandexIndexPath(), Long.valueOf(readTime / NS_IN_MS));
+            } else {
+                msg = MessageFormat.format("[ {0} ] Index [ {1} ] not found",
+                    getHashText(), getJandexIndexPath());
+            }
+            if ( doLog ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, msg);
+            }
+            if ( doJandexLog ) {
+                jandexLogger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
+            }
+        }
+
+        return jandexIndex;
     }
 
     /**
@@ -645,134 +500,212 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return Whether a Jandex index is available.  This implementation always
      *     answers false.
      */
+    @Trivial
     protected boolean basicHasJandexIndex() {
         return false;
     }
-    
-    protected boolean processedUsingJandex = false;
-    
+
+    protected boolean processedUsingJandex;
+
+    @Trivial
+    @Override
     public boolean isProcessedUsingJandex() {
         return processedUsingJandex;
     }
+
+    //
+    
+    protected long processTime;
+
+    @Trivial
+    @Override
+    public long getProcessTime() {
+    	return processTime;
+    }
+
+    protected void setProcessTime(long jandexReadTime) {
+    	this.processTime = jandexReadTime;
+    }
+
+    protected int processCount;
+
+    @Trivial
+    @Override
+    public int getProcessCount() {
+    	return processCount;
+    }
+
+    @Trivial
+    protected void setProcessCount(int processCount) {
+    	this.processCount = processCount;
+    }
+
+    //
 
     /**
      * <p>Attempt to process this class source using cache data.</p>
      *
      * @param streamer The streamer used to process the class source.
-     * @param i_seedClassNames The class names of the class source.
-     * @param scanPolicy The policy of this class source.
      *
      * @return True or false telling if the class was successfully
      *     processed using cache data.
      */
-    protected boolean processFromCache(
-        ClassSource_Streamer streamer,
-        Set<String> i_seedClassNames,
-        ScanPolicy scanPolicy) {
+    @Trivial
+    protected boolean processUsingJandex(ClassSource_Streamer streamer) {
+        String methodName = "processUsingJandex";
 
         if ( streamer == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: Null streamer");
+            }
             return false;
         }
 
-        Index jandexIndex = getJandexIndex();
-        if ( jandexIndex == null ) {
-        	return false;
-        }
-        
-        processedUsingJandex = true;
+        if ( processJandexSparse(streamer) ) {
+            processedUsingJandex = true;
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ true ]: using sparse index");
+            }
+            return true;
+        } else if ( processJandexFull(streamer) ) {
+            processedUsingJandex = true;
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ true ]: using full index");
+            }
+            return true;
 
-        String useClassSourceName = getCanonicalName();
-
-        for ( org.jboss.jandex.ClassInfo nextJandexClassInfo : jandexIndex.getKnownClasses() ) {
-            DotName nextClassDotName = nextJandexClassInfo.name();
-            String nextClassName = nextClassDotName.toString();
-
-            markResult(ClassSource_ScanCounts.ResultField.ENTRY);
-            markResult(ClassSource_ScanCounts.ResultField.NON_CONTAINER);
-            markResult(ClassSource_ScanCounts.ResultField.CLASS);
-
-            // Processing notes:
-            //
-            // Make sure to record the class before attempting processing.
-            //
-            // Only one version of the class is to be processed, even if processing
-            // fails on that one version.
-            //
-            // That is, if two child class sources have versions of a class, and
-            // the version from the first class source is non-valid, the version
-            // of the class in the second class source is still masked by the
-            // version in the first class source.
-
-            String i_nextClassName = internClassName(nextClassName);
-            boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
-
-            if ( !didAdd ) {
-                incrementClassExclusionCount();
-                markResult(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);
-
-            } else {
-                incrementClassInclusionCount();
-
-                boolean didProcess;
-
-                if ( !streamer.doProcess(i_nextClassName, scanPolicy) ) {
-                    didProcess = false;
-
-                } else {
-                    try {
-                        didProcess = streamer.process(useClassSourceName, nextJandexClassInfo, scanPolicy);
-                    } catch ( ClassSource_Exception e ) {
-                        didProcess = false;
-
-                        // CWWKC0065W: An exception occurred while processing class [ {0} ].  The identifier for the class source is [ {1} ]. The exception was {2}.
-                        Tr.warning(tc, "JANDEX_SCAN_EXCEPTION", i_nextClassName, getHashText(), e);
+        } else {
+            if ( !getUseJandex() ) {
+                boolean doLog = logger.isLoggable(Level.FINER);
+                boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
+                if ( doLog || doJandexLog ) {
+                    if ( basicHasJandexIndex() ) {
+                        String msg = MessageFormat.format(
+                            "[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
+                            getHashText(), getJandexIndexPath());
+                        if ( doLog ) {
+                            logger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
+                        }
+                        if ( doJandexLog ) {
+                            jandexLogger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
+                        }
                     }
                 }
+            }
 
-                if ( didProcess ) {
-                    markResult(ClassSource_ScanCounts.ResultField.PROCESSED_CLASS);
-                } else {
-                    markResult(ClassSource_ScanCounts.ResultField.UNPROCESSED_CLASS);
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: no index or read failure");
+            }
+            return false;
+        }
+    }
+
+    @Trivial
+    protected boolean processJandexFull(ClassSource_Streamer streamer) {
+        String methodName = "processJandexFull";
+
+        if ( !getUseJandex() ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: jandex is not enabled");
+            }
+            return false;
+        } else if ( !getUseJandexFull() ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: full reads are not enabled");
+            }
+            return false;
+        }
+
+        Index index = getJandexIndex();
+        if ( index == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: no index or read failure");
+            }
+            return false;
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER Classes [ {0} ]",
+                Integer.valueOf(index.getKnownClasses().size()));
+        }
+
+        for ( ClassInfo classInfo : index.getKnownClasses() ) {
+            DotName classDotName = classInfo.name();
+            String className = classDotName.toString();
+
+            if ( streamer.doProcess(className) ) {
+                try {
+                    @SuppressWarnings("unused")
+                    boolean didProcess = streamer.processJandex(classInfo);
+                } catch ( ClassSource_Exception e ) {
+                    // TODO: JANDEX_SCAN_EXCEPTION
+                    String msg = "CWWKC0065W: Exception processing class [ {0} ] from class source [ {1} ]: {2}";
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, msg,
+                        new Object[] { className, getHashText(), e });
                 }
             }
         }
 
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ true ]");
+        }
         return true;
-    } 
-    
-
-    private static final int META_INF_LENGTH = "META-INF".length();   
-    /**
-     *
-     * The intent of this method is to add toleration of Java V9 classes in multi-release
-     * JAR files.  Java V9 adds classes under the META-INF directory. This is a characteristic of
-     * multi-release JARs.  Java 9 also adds a file module-info.java which we want to allow, but 
-     * we don't want to scan these until support for Java 9 is added.  For now we want
-     * to just ignore all of these classes.
-     *
-     * @param name - simple class name,  (without .class suffix)
-     *               fully qualified class name, (example com.ibm.someClass OR com/ibm/someClass)
-     *               or simple directory name
-     *
-     * @return     - true if the name startsWith "META-INF" or ends with "module-info"
-     *             The startsWith & endsWith tests do not definitively confirm Java-9 specificity,
-     *             but for all intents and purposes, it does what we want.  For example if we get a 
-     *             class name or directory name that starts with META-INF or ends with module-info, 
-     *             but it's not really a Java 9 case, well it's still not a valid class name or it's not
-     *             a valid directory name that could be part of a java package name.  Returning
-     *             true has the end result of the class being ignored.
-     */
-    protected boolean isJava9SpecificClass(String name) {
-
-        if ( ( name.length() >= META_INF_LENGTH ) && name.regionMatches(true, 0, "META-INF", 0, META_INF_LENGTH) ) {
-            return true; // Starts with "META-INF" ignoring case
-        }        
-
-        if ( name.endsWith("module-info") ) {
-            return true;
-        }        
-
-        return false;
     }
-    
+
+    protected boolean processJandexSparse(ClassSource_Streamer streamer) {
+        String methodName = "processJandexSparse";
+
+        if ( !getUseJandex() ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: jandex is not enabled");
+            }
+            return false;
+        } else if ( getUseJandexFull() ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: full reads are enabled");
+            }
+            return false;
+        }
+
+        SparseIndex sparseIndex = getSparseJandexIndex();
+        if ( sparseIndex == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER / RETURN [ false ]: no index or read failure");
+            }
+            return false;
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER Classes [ {0} ]",
+                Integer.valueOf(sparseIndex.getKnownClasses().size()));
+        }
+
+        for ( SparseClassInfo classInfo : sparseIndex.getKnownClasses() ) {
+            com.ibm.ws.anno.jandex.internal.SparseDotName classDotName = classInfo.name();
+            String className = classDotName.toString();
+
+            if ( streamer.doProcess(className) ) {
+                try {
+                    @SuppressWarnings("unused")
+                    boolean didProcess = streamer.processSparseJandex(classInfo);
+                } catch ( ClassSource_Exception e ) {
+                    // TODO: JANDEX_SCAN_EXCEPTION
+                    String msg = "CWWKC0065W: Exception processing class [ {0} ] from class source [ {1} ]: {2}";
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, msg,
+                        new Object[] { className, getHashText(), e });
+                }
+            }
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ true ]");
+        }
+        return true;
+    }
+
+    //
+
+    @Override
+    public abstract void processSpecific(ClassSource_Streamer streamer, Set<String> i_classNames)
+        throws ClassSource_Exception;
 }

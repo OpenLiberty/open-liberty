@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,48 +11,78 @@
 
 package com.ibm.ws.anno.classsource.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.jandex.Index;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.jandex.internal.Jandex_Utils;
+import com.ibm.ws.anno.jandex.internal.SparseIndex;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.FastModeControl;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedContainer;
-import com.ibm.wsspi.anno.classsource.ClassSource_Options;
-import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 public class ClassSourceImpl_MappedContainer
-    extends ClassSourceImpl
-    implements ClassSource_MappedContainer {
+    extends ClassSourceImpl implements ClassSource_MappedContainer {
 
-    public static final String CLASS_NAME = ClassSourceImpl_MappedContainer.class.getName();
-    private static final TraceComponent tc = Tr.register(ClassSourceImpl_MappedContainer.class);
+    public static final String CLASS_NAME = ClassSourceImpl_MappedContainer.class.getSimpleName();
 
     // Top O' the world
 
-    @Trivial
     public ClassSourceImpl_MappedContainer(
         ClassSourceImpl_Factory factory, Util_InternMap internMap,
-        String name, ClassSource_Options options,
+        String name,
         Container container) throws ClassSource_Exception {
 
-        super(factory, internMap, name, options, String.valueOf(container));
+        this(factory, internMap, name, container, NO_ENTRY_PREFIX); // throws ClassSource_Exception
+    }
 
-        this.container = container;
+    public ClassSourceImpl_MappedContainer(
+        ClassSourceImpl_Factory factory, Util_InternMap internMap,
+        String name,
+        Container container, String entryPrefix) throws ClassSource_Exception {
+
+        super(factory, internMap, entryPrefix, name, String.valueOf(container));
+        // throws ClassSource_Exception
+
+        this.rootContainer = container;
+        this.container = navigateFrom(container, entryPrefix);
+    }
+
+    private Container navigateFrom(Container container, String prefix) {
+        String methodName = "navigateFrom";
+
+        if ( prefix == null ) {
+            return container;
+        }
+
+        Entry prefixEntry = container.getEntry(prefix);
+        if ( prefixEntry == null ) {
+            return null;
+        }
+        
+        try {
+            return prefixEntry.adapt(Container.class);
+        } catch ( UnableToAdaptException e ) {
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_CLASSSOURCE_ADAPT_EXCEPTION",
+                new Object[] { getHashText(), prefixEntry.getName(), prefixEntry, container, prefix });
+            return null;
+        }
     }
 
     //
@@ -86,8 +116,8 @@ public class ClassSourceImpl_MappedContainer
             throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);
         }
 
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER/RETURN", getHashText()));
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER/RETURN", getHashText());
         }
     }
 
@@ -114,12 +144,19 @@ public class ClassSourceImpl_MappedContainer
             throw getFactory().wrapIntoClassSourceException(CLASS_NAME, methodName, eMsg, e);
         }
 
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER/RETURN", getHashText()));
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER/RETURN", getHashText());
         }
     }
 
     //
+
+    protected final Container rootContainer;
+
+    @Trivial
+    public Container getRootContainer() {
+        return rootContainer;
+    }
 
     protected final Container container;
 
@@ -132,59 +169,88 @@ public class ClassSourceImpl_MappedContainer
     //
 
     @Override
-    protected void processFromScratch(
-        ClassSource_Streamer streamer,
-        Set<String> i_seedClassNames,
-        ScanPolicy scanPolicy) {
-
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            startTimings();
-        }
-
-        processClasses(
-            getContainer(), EMPTY_PREFIX,
-            streamer,
-            i_seedClassNames,
-            getScanResults(),
-            scanPolicy);
-
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            endTimings();
+    public int processFromScratch(ClassSource_Streamer streamer) throws ClassSource_Exception {
+        Container useContainer = getContainer();
+        if ( useContainer != null ) {
+            return processContainer(EMPTY_PREFIX, useContainer, streamer);
+        } else {
+            return 0;
         }
     }
 
     //
 
-    protected long startTime;
-    protected long endTime;
+    /**
+     * <p>Answer a time stamp for the mapped container.</p>
+     *
+     * <p>Answer the file time last modified time for containers
+     * which are mapped to a an archive type file.</p>
+     *
+     * <p>Answer the unavailable times tamp value if the file is not
+     * an archive type file.  (The directory last modified value does
+     * tell when child files were updated.  Iterating across the child
+     * files (which would be recursive) is not done because of the
+     * cost.</p>
+     *
+     * <p>See {@link File#lastModified()} and {@link ClassSource#UNAVAILABLE_STAMP}.</p>
+     *
+     * <p>From {@link File#lastModified()}:</p>
+     *
+     * <quote>A <code>long</code> value representing the time the file was
+     * last modified, measured in milliseconds since the epoch
+     * (00:00:00 GMT, January 1, 1970), or <code>0L</code> if the
+     * file does not exist or if an I/O error occurs.
+     * </quote}
+     *
+     * @return The time stamp of the mapped container.
+     *
+     * <p>This implementation uses the deprecated {@link Container#getPhysicalPath()}.
+     * No alternate is yet available.</p>
+     */
+    @Override
+    protected String computeStamp() {
+        String methodName = "computeStamp";
 
-    protected long streamTime;
-    protected long jandexTime;
+        Container useRootContainer = getRootContainer();
 
-    protected void startTimings() {
-        startTime = getTime();
-        streamTime = 0L;
-        jandexTime = 0L;
-    }
+        @SuppressWarnings("deprecation")
+        final String rootContainerPath = useRootContainer.getPhysicalPath();
 
-    protected void addStreamTime(long additionalTime) {
-        streamTime += additionalTime;
-    }
+        if ( rootContainerPath == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "Container [ {0} ] [ {1} ]",
+                    new Object[] { useRootContainer.getName(), useRootContainer.getPath() });
+            }
 
-    protected void addJandexTime(long additionalTime) {
-        jandexTime += additionalTime;
-    }
+            Container enclosingContainer = useRootContainer.getEnclosingContainer();
+            if ( enclosingContainer != null ) {
+                if ( logger.isLoggable(Level.FINER) ) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Enclosed by [ {0} ] [ {1} ]",
+                        new Object[] { enclosingContainer.getName(), enclosingContainer.getPath() });
+                }
+            }
 
-    @Trivial
-    protected void endTimings() {
-        endTime = getTime();
+            return ClassSource.UNAVAILABLE_STAMP;
+        }
 
-        Tr.debug(tc, MessageFormat.format("Start time:  [ {0} ]", Long.valueOf(startTime)));
-        Tr.debug(tc, MessageFormat.format("End time:    [ {0} ]", Long.valueOf(endTime)));
-        Tr.debug(tc, MessageFormat.format("Delta time:  [ {0} ]", Long.valueOf(endTime - startTime)));
+        String result = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                File containerFile = new File(rootContainerPath);
 
-        Tr.debug(tc, MessageFormat.format("Stream time: [ {0} ]", Long.valueOf(streamTime)));
-        Tr.debug(tc, MessageFormat.format("Jandex time: [ {0} ]", Long.valueOf(jandexTime)));
+                if ( !containerFile.exists() || !containerFile.isFile() ) {
+                    return ClassSource.UNAVAILABLE_STAMP;
+                }
+
+                long containerLastModified = containerFile.lastModified();
+                return Long.toString(containerLastModified);
+            }
+        });
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, MessageFormat.format("[ {0} ] Container [ {1} ] Stamp [ {2} ]", getHashText(), rootContainerPath, result));
+        }
+        return result;
     }
 
     //
@@ -192,26 +258,24 @@ public class ClassSourceImpl_MappedContainer
     public static final String EMPTY_PREFIX = "";
 
     @Trivial
-    protected void processClasses(
-        Container targetContainer, String prefix,
-        ClassSource_Streamer streamer,
-        Set<String> i_seedClassNames,
-        ClassSourceImpl_ScanCounts localScanCounts,
-        ScanPolicy scanPolicy) {
+    protected int processContainer(
+        String prefix, Container targetContainer,
+        ClassSource_Streamer streamer) throws ClassSource_Exception {
 
-        String methodName = "processClasses";
-        if ( tc.isEntryEnabled() ) {
-            String msg = MessageFormat.format(
-                "[ {0} ] ENTER [ {1} ] of [ {2} ]",
+        String methodName = "processContainer";
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER [ {1} ] of [ {2} ]",
                 new Object[] { getHashText(), prefix, targetContainer.getName() });
-            Tr.entry(tc, methodName, msg);
         }
 
-        int initialResources = i_seedClassNames.size();
+        int classCount = 0;
+
+        int initialResources = getInternMap().getSize();
 
         for ( Entry nextEntry : targetContainer ) {
             String nextChildName = nextEntry.getName();
-            String nextPrefix = resourceAppend(prefix, nextChildName);
+            String nextPrefix = ClassSource.resourceAppend(prefix, nextChildName);
 
             Container nextChildContainer;
             try {
@@ -225,8 +289,8 @@ public class ClassSourceImpl_MappedContainer
                 //               " as [ " + nextEntry + " ]" +
                 //               " under root [ " + targetContainer + " ]" +
                 //               " for prefix [ " + prefix + " ]";
-                Tr.warning(tc, "ANNO_CLASSSOURCE_ADAPT_EXCEPTION",
-                           getHashText(), nextChildName, nextEntry, targetContainer, prefix);
+                logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_CLASSSOURCE_ADAPT_EXCEPTION",
+                    new Object[] { getHashText(), nextChildName, nextEntry, targetContainer, prefix });
             }
 
             if ( nextChildContainer != null ) {
@@ -251,31 +315,15 @@ public class ClassSourceImpl_MappedContainer
                 //     aSubJar.asAJar
 
                 if ( nextChildContainer.isRoot() ) {
-                    incrementResourceExclusionCount();
-
-                    localScanCounts.increment(ClassSource_ScanCounts.ResultField.ROOT_CONTAINER);
-
+                    // Ignore
                 } else {
-                    ClassSourceImpl_ScanCounts childScanCounts = new ClassSourceImpl_ScanCounts();
-
-                    processClasses(nextChildContainer, nextPrefix,
-                                streamer,
-                                i_seedClassNames,
-                                childScanCounts,
-                                scanPolicy);
+                    classCount += processContainer(nextPrefix, nextChildContainer, streamer);
                     // throws ClassSource_Exception
-
-                    localScanCounts.addResults(childScanCounts);
-
-                    localScanCounts.increment(ClassSource_ScanCounts.ResultField.ROOT_CONTAINER);
                 }
 
             } else {
-                if ( !isClassResource(nextPrefix) ) {
-                    incrementResourceExclusionCount();
-
-                    localScanCounts.increment(ClassSource_ScanCounts.ResultField.NON_CLASS);
-
+                if ( !ClassSource.isClassResource(nextPrefix) ) {
+                    // Ignore
                 } else {
                     // Processing notes:
                     //
@@ -289,208 +337,284 @@ public class ClassSourceImpl_MappedContainer
                     // of the class in the second class source is still masked by the
                     // version in the first class source.
 
-                    String nextClassName = getClassNameFromResourceName(nextPrefix);
-                    if ( isJava9SpecificClass(nextClassName) ) {
-                        Tr.debug(tc, MessageFormat.format("[ {0} ] Unsupported class; skipping [ {1} ]", 
-                                                          new Object[] { getHashText(), nextClassName }));
+                    String nextClassName = ClassSource.getClassNameFromResourceName(nextPrefix);
+                    if ( ClassSource.isJava9PackageName(nextClassName) ) {
+                        logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Java9 class name [ {1} ]", 
+                            new Object[] { getHashText(), nextClassName });
                         continue;
                     }
-                    
+
                     String i_nextClassName = internClassName(nextClassName);
 
-                    boolean didAdd = i_maybeAdd(i_nextClassName, i_seedClassNames);
-
-                    if (!didAdd) {
-                        incrementClassExclusionCount();
-
-                        localScanCounts.increment(ClassSource_ScanCounts.ResultField.DUPLICATE_CLASS);
-
-                    } else {
-                        incrementClassInclusionCount();
-
-                        boolean didProcess;
-
-                        try {
-                            didProcess = process(streamer, nextClassName, nextPrefix, nextEntry, scanPolicy);
-                        } catch (ClassSource_Exception e) {
-                            didProcess = false;
-
-                            // TODO: NEW_MESSAGE: Need a new message here.
-
-                             String eMsg = "[ " + getHashText() + " ]" +
-                                           " Failed to process class [ " + nextClassName + " ]" +
-                                           " under root [ " + getContainer() + " ]";
-                            // CWWKC0068W: An exception occurred while processing class [ {0} ] in container [ {1} ]
-                            // identified by [ {2} ]. The exception was {3}.
-                            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
-                        }
-
-                        if (didProcess) {
-                            localScanCounts.increment(ClassSource_ScanCounts.ResultField.PROCESSED_CLASS);
-
-                        } else {
-                            localScanCounts.increment(ClassSource_ScanCounts.ResultField.UNPROCESSED_CLASS);
-                        }
+                    try {
+                        @SuppressWarnings("unused")
+                        boolean didProcess = processEntry(streamer, i_nextClassName, nextPrefix, nextEntry);
+                    } catch ( ClassSource_Exception e ) {
+                        // CWWKC0068W: An exception occurred while processing class [ {0} ] in container [ {1} ]
+                        // identified by [ {2} ]. The exception was {3}.
+                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_SCAN_EXCEPTION",
+                            new Object[] { nextClassName, targetContainer, nextPrefix, e });
                     }
-
-                    localScanCounts.increment(ClassSource_ScanCounts.ResultField.CLASS);
+                    
+                    classCount++;
                 }
-
-                localScanCounts.increment(ClassSource_ScanCounts.ResultField.NON_CONTAINER);
             }
-
-            localScanCounts.increment(ClassSource_ScanCounts.ResultField.ENTRY);
         }
 
-        int finalResources = i_seedClassNames.size();
+        int finalResources = getInternMap().getSize();
 
-        if ( tc.isDebugEnabled() ) {
+        if ( logger.isLoggable(Level.FINER) ) {
             Object[] logParms = new Object[] { getHashText(), null, null };
 
             logParms[1] = Integer.valueOf(finalResources - initialResources);
-            Tr.debug(tc, MessageFormat.format("[ {0} ] RETURN [ {1} ] Added classes", logParms));
-
-            for ( ClassSource_ScanCounts.ResultField resultField : ClassSource_ScanCounts.ResultField.values() ) {
-                int nextResult = localScanCounts.getResult(resultField);
-                String nextResultTag = resultField.getTag();
-
-                logParms[1] = Integer.valueOf(nextResult);
-                logParms[2] = nextResultTag;
-
-                Tr.debug(tc, MessageFormat.format("[ {0} ]  [ {1} ] {0}", logParms));
-            }
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN [ {1} ] Added classes", logParms);
         }
 
-        if ( tc.isEntryEnabled() ) {
-            Tr.exit(tc, methodName, getHashText());
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN [ {1} ]",
+                new Object[] { getHashText(), Integer.valueOf(classCount) });
         }
+        
+        return classCount;
     }
 
-    protected boolean process(
+    protected boolean processEntry(
         ClassSource_Streamer streamer,
-        String className, String resourceName, Entry entry, ScanPolicy scanPolicy)
-        throws ClassSource_Exception {
+        String i_className, String resourceName, Entry entry) throws ClassSource_Exception {
 
         if ( streamer == null ) {
             return true;
-        } else if ( !streamer.doProcess(className, scanPolicy) ) {
+        } else if ( !streamer.doProcess(i_className) ) {
             return false;
         }
 
-        InputStream inputStream = openResourceStream(className, resourceName, entry);
-        // throws ClassSource_Exception
+        InputStream inputStream = openResourceStream(
+            i_className, resourceName,
+            getContainer(), entry ); // throws ClassSource_Exception
+
         try {
-            streamer.process( getCanonicalName(), className, inputStream, scanPolicy );
-            // 'process' throws ClassSourceException
+            streamer.process(i_className, inputStream); // 'process' throws ClassSourceException
         } finally {
-            closeResourceStream(className, resourceName, entry, inputStream);
+            closeResourceStream(i_className, resourceName, entry, inputStream);
         }
 
         return true;
     }
 
-    //
-
-    /**
-     * <p>Answer the path to JANDEX index files.</p>
-     *
-     * <p>The default implementation answers <code>"META-INF/jandex.ndx"</code>.
-     * This implementation accounts for the possibility that the target container
-     * might be "/WEB-INF/classes", in which case the path is adjusted
-     * to "../../META_INF/jandex.ndx".</p>
-     *
-     * @return The relative path to JANDEX index files.
-     */
-    @Trivial
     @Override
-    public String getJandexIndexPath() {
-        String jandexIndexPath = super.getJandexIndexPath();
+    @Trivial
+    public void processSpecific(ClassSource_Streamer streamer, Set<String> i_classNames)
+        throws ClassSource_Exception {
 
-        Container useContainer = getContainer();
-        if ( !useContainer.isRoot() && useContainer.getPath().equals("/WEB-INF/classes") ) {
-            jandexIndexPath = "../.." + jandexIndexPath;
+        String methodName = "processSpecific";
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] [ {1} ]",
+                new Object[] { getHashText(), Integer.valueOf(i_classNames.size()) });
         }
 
-        return jandexIndexPath;
+        Container useContainer = getContainer();
+        if ( useContainer == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN", getHashText());
+            }
+            return;
+        }
+
+        long scanStart = System.nanoTime();
+
+        for ( String i_className : i_classNames ) {
+            String resourceName = ClassSource.getResourceNameFromClassName(i_className);
+
+            Entry nextEntry;
+            try {
+                nextEntry = useContainer.getEntry(resourceName);
+            } catch ( Throwable th ) {
+                nextEntry = null;
+                // CWWKC0044W: An exception occurred while scanning class and annotation data.
+                logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_SCAN_EXCEPTION", th);
+            }
+
+            if ( nextEntry == null ) {
+                continue;
+            }
+
+            try {
+                processEntry(streamer, i_className, resourceName, nextEntry);
+            } catch ( ClassSource_Exception e ) {
+                // CWWKC0044W: An exception occurred while scanning class and annotation data.
+                logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+            }
+        }
+
+        long scanTime = System.nanoTime() - scanStart;
+
+        setProcessTime(scanTime);
+        setProcessCount( i_classNames.size() );
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN", getHashText());
+        }
     }
+
+    //
 
     @Override
     protected boolean basicHasJandexIndex() {
-    	return ( getContainer().getEntry( getJandexIndexPath() ) != null );
+        return ( getRootContainer().getEntry( getJandexIndexPath() ) != null );
     }
 
     @SuppressWarnings("deprecation")
     @Override
+    @Trivial
     protected Index basicGetJandexIndex() {
+        String methodName = "basicGetJandexIndex";
+
         String useJandexIndexPath = getJandexIndexPath();
 
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
-                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } ));
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
+                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } );
         }
 
         InputStream jandexStream;
 
         try {
-            jandexStream = openResourceStream(null, useJandexIndexPath); // throws ClassSource_Exception
+            jandexStream = openRootResourceStream(null, useJandexIndexPath); // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
-            // CWWKC0066E: An exception occurred while attempting to open Jandex index file [ {0} ] The identifier for the class source is [ {1} ].
-            Tr.error(tc, "JANDEX_INDEX_OPEN_EXCEPTION", useJandexIndexPath, getCanonicalName());
+            // CWWKC0066E: An exception occurred while attempting to open Jandex index file [ {0} ].
+            // The identifier for the class source is [ {1} ].
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_OPEN_EXCEPTION",
+                new Object[] { useJandexIndexPath, getCanonicalName() });
             return null;
         }
 
         if ( jandexStream == null ) {
-            if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] No JANDEX index was found", getHashText()));
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] No JANDEX index was found", getHashText());
             }
             return null;
         }
 
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Located JANDEX index", getHashText()));
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Located JANDEX index", getHashText());
         }
-
-        long startJandexTime = getTime();
 
         try {
             Index jandexIndex = Jandex_Utils.basicReadIndex(jandexStream); // throws IOException
-            if ( tc.isDebugEnabled() ) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]",
-                        new Object[] {  getHashText(), useJandexIndexPath,  getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) } ));
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]",
+                    new Object[] {  getHashText(),
+                                    useJandexIndexPath,
+                                    getCanonicalName(),
+                                    Integer.toString(jandexIndex.getKnownClasses().size()) } );
             }
             return jandexIndex;
 
-        } catch ( Exception e ) {
-
+        } catch ( IOException e ) {
             // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
-            Tr.error(tc, "JANDEX_INDEX_READ_EXCEPTION", useJandexIndexPath, getCanonicalName());
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_READ_EXCEPTION",
+                new Object[] { useJandexIndexPath, getCanonicalName() });
             return null;
 
         } finally {
             closeResourceStream(null,  useJandexIndexPath, jandexStream);
+        }
+    }
 
-            long endJandexTime = getTime();
-            addJandexTime(endJandexTime - startJandexTime);
+    @SuppressWarnings("deprecation")
+    @Override
+    protected SparseIndex basicGetSparseJandexIndex() {
+        String methodName = "basicGetSparseJandexIndex";
+
+        String useJandexIndexPath = getJandexIndexPath();
+    
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
+                    new Object[] {  getHashText(), useJandexIndexPath, getContainer().getPhysicalPath() } );
+        }
+
+        InputStream jandexStream;
+        try {
+            jandexStream = openResourceStream(null, useJandexIndexPath, JANDEX_BUFFER_SIZE); // throws ClassSource_Exception
+        } catch ( ClassSource_Exception e ) {
+            // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_READ_EXCEPTION",
+                new Object[] { useJandexIndexPath, getCanonicalName() });
+            return null;
+        }
+    
+        if ( jandexStream == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] No JANDEX index was found", getHashText());
+            }
+            return null;
+        }
+    
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Located JANDEX index", getHashText());
+        }
+
+        try {
+            SparseIndex jandexIndex = Jandex_Utils.basicReadSparseIndex(jandexStream); // throws IOException
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] Read JANDEX index [ {1} ] from [ {2} ]: Classes [ {3} ]",
+                    new Object[] {  getHashText(),
+                                    useJandexIndexPath,
+                                    getCanonicalName(),
+                                    Integer.toString(jandexIndex.getKnownClasses().size()) } );
+            }
+            return jandexIndex;
+    
+        } catch ( IOException e ) {
+            // CWWKC0067E: An exception occurred while reading Jandex index file [ {0} ] from resource [ {1} ].
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "JANDEX_INDEX_READ_EXCEPTION",
+                new Object[] { useJandexIndexPath, getCanonicalName() });
+            return null;
+    
+        } finally {
+            closeResourceStream(null,  useJandexIndexPath, jandexStream);
         }
     }
 
     //
 
-    @Override
-    public InputStream openResourceStream(String className, String resourceName)
-                    throws ClassSource_Exception {
+    public InputStream openRootResourceStream(String className, String resourceName)
+        throws ClassSource_Exception {
 
-        Entry entry = getContainer().getEntry(resourceName);
+        Container useContainer = getRootContainer();
+        
+        Entry entry = useContainer.getEntry(resourceName);
         if ( entry == null ) {
             return null;
         }
 
-        return openResourceStream(className, resourceName, entry);
+        return openResourceStream(className, resourceName, useContainer, entry);
+        // throws ClassSource_Exception
+    }
+
+    @Override
+    public InputStream openResourceStream(String className, String resourceName)
+        throws ClassSource_Exception {
+
+        Container useContainer = getContainer();
+        if ( useContainer == null ) {
+            return null;
+        }
+
+        Entry entry = useContainer.getEntry(resourceName);
+        if ( entry == null ) {
+            return null;
+        }
+
+        return openResourceStream(className, resourceName, useContainer, entry);
         // throws ClassSource_Exception
     }
 
     public InputStream openResourceStream(
-        String className, String resourceName, Entry entry)
+        String className, String resourceName,
+        Container useContainer, Entry entry)
         throws ClassSource_Exception {
 
         String methodName = "openResourceStream";
@@ -498,29 +622,20 @@ public class ClassSourceImpl_MappedContainer
         InputStream result;
 
         try {
-            long initialTime = 0;
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                initialTime = getTime();
-            }
-
             result = entry.adapt(InputStream.class);
 
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                long finalTime = getTime();
-                addStreamTime(finalTime - initialTime);
-            }
-
         } catch ( Throwable th ) {
-            // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
+            // defect 84235:we are generating multiple Warning/Error messages for each error due
+            // to each level reporting them.
             // Disable the following warning and defer message generation to a higher level,
             // preferably the ultimate consumer of the exception.
-            //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
-            //           getHashText(), resourceName, entry, getContainer(), className);
+            // logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
+            //     new Object[] { getHashText(), resourceName, entry, getContainer(), className });
 
             String eMsg = "[ " + getHashText() + " ]" +
                           " Failed to open [ " + resourceName + " ]" +
                           " as [ " + entry + " ]" +
-                          " under root [ " + getContainer() + " ]";
+                          " under [ " + useContainer + " ]";
             if ( className != null ) {
                 eMsg += " for class [ " + className + " ]";
             }
@@ -528,16 +643,17 @@ public class ClassSourceImpl_MappedContainer
         }
 
         if ( result == null ) {
-            // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
+            // defect 84235:we are generating multiple Warning/Error messages for each
+            // error due to each level reporting them.
             // Disable the following warning and defer message generation to a higher level,
             // preferably the ultimate consumer of the exception.
-            //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
-            //           getHashText(), resourceName, entry, getContainer(), className);
+            // logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_CLASSSOURCE_OPEN2_EXCEPTION",
+            //     new Object[] { getHashText(), resourceName, entry, getContainer(), className });
 
             String eMsg = "[ " + getHashText() + " ]" +
                           " Failed to open [ " + resourceName + " ]" +
                           " as [ " + entry + " ]" +
-                          " under root [ " + getContainer() + " ]";
+                          " under [ " + useContainer + " ]";
             if ( className != null ) {
                 eMsg += " for class [ " + className + " ]";
             }
@@ -549,24 +665,26 @@ public class ClassSourceImpl_MappedContainer
 
     @Override
     public void closeResourceStream(String className, String resourceName, InputStream inputStream) {
+        String methodName = "closeResourceStream";
+
         Entry entry = getContainer().getEntry(resourceName);
         if ( entry == null ) {
             // String eMsg = "[ " + getHashText() + " ]" +
             //               " Failed to locate entry [ " + resourceName + " ]" +
             //               " under root [ " + getContainer() + " ]" +
             //               " for class [ " + className + " ]";
-            Tr.warning(tc, "ANNO_CLASSSOURCE_RESOURCE_NOTFOUND",
-                       getHashText(), resourceName, getContainer(), className);
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_CLASSSOURCE_RESOURCE_NOTFOUND",
+                new Object[] { getHashText(), resourceName, getRootContainer(), className });
         } else {
             closeResourceStream(className, resourceName, entry, inputStream);
         }
     }
 
     protected void closeResourceStream(
-        String className,
-        String resourceName,
-        Entry entry,
-        InputStream inputStream) {
+        String className, String resourceName,
+        Entry entry, InputStream inputStream) {
+
+        String methodName = "closeResourceStream";
 
         try {
             inputStream.close(); // throws IOException
@@ -580,7 +698,7 @@ public class ClassSourceImpl_MappedContainer
             if ( className != null ) {
                 eMsg += " for class [ " + className + " ]";
             }
-            Tr.warning(tc, eMsg);
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, eMsg);
         }
     }
 
@@ -588,7 +706,8 @@ public class ClassSourceImpl_MappedContainer
 
     @Override
     @Trivial
-    public void log(TraceComponent logger) {
-        Tr.debug(logger, MessageFormat.format("Class Source [ {0} ]", getHashText()));
+    public void log(Logger useLogger) {
+        String methodName = "log";
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Class Source [ {0} ]", getHashText());
     }
 }

@@ -1,18 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.ws.anno.util.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.security.AccessController;
@@ -20,28 +23,37 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // TODO: Are there global utilities to use instead of these?
 
 public class UtilImpl_FileUtils {
-    // TODO: Change the result to 'boolean'.
-    public static Boolean isFile(final File target) {
-        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+    private static final String CLASS_NAME = "UtilImpl_FileUtils";
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.util");
+
+    // Testing ...
+
+    public static boolean isFile(final File target) {
+        Boolean result = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
             public Boolean run() {
                 return Boolean.valueOf(target.isFile());
             }
         });
+        return result.booleanValue();
     }
 
-    // TODO: Change the result to 'boolean'.
-    public static Boolean isDirectory(final File target) {
-        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+    public static boolean isDirectory(final File target) {
+        Boolean result = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
             public Boolean run() {
                 return Boolean.valueOf(target.isDirectory());
             }
         });
+        return result.booleanValue();
     }
 
     public static boolean exists(final File target) {
@@ -54,13 +66,86 @@ public class UtilImpl_FileUtils {
         return exists.booleanValue();
     }
 
+    public static File validateDir(final File dir) throws IOException {
+        return AccessController.doPrivileged(new PrivilegedAction<File>() {
+            @Override
+            public File run() {
+                if ( !dir.exists() ) {
+                    throw new IllegalArgumentException("Target location [ " + dir.getPath() + " ] does not exist.");
+                } else if ( !dir.isDirectory() ) {
+                    throw new IllegalArgumentException("Target location [ " + dir.getPath() + " ] is not a directory.");
+                } else {
+                    return dir;
+                }
+            }
+        });
+    }
+
+    // Listing ...
+
+    public static final File[] EMPTY_FILES = new File[] {};
+    public static final String[] EMPTY_FILE_NAMES = new String[] {};
+
     public static File[] listFiles(final File target) {
         return AccessController.doPrivileged(new PrivilegedAction<File[]>() {
             @Override
             public File[] run() {
-                return target.listFiles();
+                File[] fileList = target.listFiles();
+                return ( (fileList == null) ? EMPTY_FILES : fileList );
             }
         });
+    }
+
+    public static File[] listFiles(final File target, final FilenameFilter filter) {
+        return AccessController.doPrivileged(new PrivilegedAction<File[]>() {
+            @Override
+            public File[] run() {
+                File[] fileList = target.listFiles(filter);
+                return ( (fileList == null) ? EMPTY_FILES : fileList );
+            }
+        });
+    }
+
+    public static String[] list(final File target) {
+        return AccessController.doPrivileged(new PrivilegedAction<String[]>() {
+            @Override
+            public String[] run() {
+                String[] fileNames = target.list();
+                return ( (fileNames == null) ? EMPTY_FILE_NAMES : fileNames );
+            }
+        });
+    }
+
+    public static String[] list(final File target, final FilenameFilter filter) {
+        return AccessController.doPrivileged(new PrivilegedAction<String[]>() {
+            @Override
+            public String[] run() {
+                String[] fileNames = target.list(filter);
+                return ( (fileNames == null) ? EMPTY_FILE_NAMES : fileNames );
+            }
+        });
+    }
+
+    // IO ...
+
+    public static FileOutputStream createFileOutputStream(final File target) throws IOException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
+                @Override
+                public FileOutputStream run() throws IOException {
+                    return new FileOutputStream(target);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            Exception innerException = e.getException();
+            if (innerException instanceof IOException) {
+                throw (IOException) innerException;
+            } else if (innerException instanceof RuntimeException) {
+                throw (RuntimeException) innerException;
+            } else {
+                throw new UndeclaredThrowableException(e);
+            }
+        }
     }
 
     public static FileInputStream createFileInputStream(final File target) throws IOException {
@@ -91,15 +176,175 @@ public class UtilImpl_FileUtils {
                     return new JarFile(jarPath);
                 }
             });
-        } catch (PrivilegedActionException e) {
+        } catch ( PrivilegedActionException e ) {
             Exception innerException = e.getException();
-            if (innerException instanceof IOException) {
+            if ( innerException instanceof IOException ) {
                 throw (IOException) innerException;
-            } else if (innerException instanceof RuntimeException) {
-                throw (RuntimeException) innerException;
+            } else if ( innerException instanceof RuntimeException ) {
+                throw ( RuntimeException ) innerException;
             } else {
                 throw new UndeclaredThrowableException(e);
             }
         }
+    }
+
+    // Dir ops ...
+
+    public static boolean mkdirs(final File file) {
+        Boolean result = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                return Boolean.valueOf( file.mkdirs() );
+            }
+        });
+        return result.booleanValue();
+    }
+
+    public static boolean ensureDir(final Logger useLogger, final File file) {
+        Boolean existsAsDir = AccessController.doPrivileged( new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                return Boolean.valueOf( unprotectedEnsureDir(useLogger, file) );
+            }
+        } );
+        return existsAsDir.booleanValue();
+    }
+
+    public static boolean unprotectedEnsureDir(final Logger useLogger, final File file) {
+        String methodName = "unprotectedEnsureDir";
+
+        if ( file.exists() ) {
+            if ( !file.isDirectory() ) {
+                if ( useLogger != null ) {
+                    useLogger.logp(Level.WARNING, CLASS_NAME, methodName,
+                            "Target [ {0} ] already exists as a simple file",
+                            file.getPath());
+                } else {
+                    System.out.println("Target [ " + file.getPath() + " ] already exists as a simple file");
+                }
+                return false;
+
+            } else {
+                if ( (useLogger != null) && useLogger.isLoggable(Level.FINER) ) {
+                    useLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                            "Target [ {0} ] already exists as directory",
+                            file.getPath());
+                }
+                return true;
+            }
+
+        } else {
+            @SuppressWarnings("unused")
+            boolean didMake = file.mkdirs();
+
+            if ( !file.exists() ) {
+                if ( useLogger != null ) {
+                    useLogger.logp(Level.WARNING, CLASS_NAME, methodName,
+                            "Target [ {0} ] could not be created",
+                            file.getPath());
+                } else {
+                    System.out.println("Target [ " + file.getPath() + " ] could not be created");
+                }
+                return false;
+
+            } else {
+                if ( !file.isDirectory() ) {
+                    if ( useLogger != null ) {
+                        useLogger.logp(Level.WARNING, CLASS_NAME, methodName,
+                                "Target [ {0} ] was created, but is not a directory",
+                                file.getPath());
+                    } else {
+                        System.out.println("Target [ " + file.getPath() + " ] was created, but is not a directory");
+                    }
+                    return false;
+
+                } else {
+                    if ( (useLogger != null) && useLogger.isLoggable(Level.FINER) ) {
+                        useLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                                "Target [ {0} ] was created as a directory",
+                                file.getPath());
+                    }
+                    return true;
+                }
+            }
+        }
+    }
+
+    public static boolean remove(final Logger useLogger, final File file) {
+        final String methodName = "remove";
+        final Logger innerLogger = useLogger;
+        
+        Boolean failedRemoval = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
+            public Boolean run() {
+                final String innerMethodName = methodName + "." + "run";
+
+                @SuppressWarnings("unused")
+                boolean didDelete = file.delete();
+
+                if ( file.exists() ) {
+                    if ( useLogger != null ) {
+                        innerLogger.logp(Level.WARNING, CLASS_NAME, innerMethodName, 
+                                "Failed to delete [ {0} ]",
+                                file.getPath());
+                    } else {
+                        System.out.println("Failed to delete [ " + file.getPath() + " ]");
+                    }
+                    return Boolean.TRUE;
+
+                } else {
+                    if ( (innerLogger != null) && innerLogger.isLoggable(Level.FINER) ) {
+                        innerLogger.logp(Level.FINER, CLASS_NAME, innerMethodName, "Deleted [ {0} ]", file.getPath());
+                    }
+                    return Boolean.FALSE;
+                }
+            }
+        });
+        return failedRemoval.booleanValue();
+    }
+
+    public static int removeAll(final Logger useLogger, final File file) {
+        Integer failedRemovals = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+            @Override
+            public Integer run() {
+                return Integer.valueOf( unprotectedRemoveAll(useLogger, file) );
+            }
+        });
+
+        return failedRemovals.intValue();
+    }
+
+    public static int unprotectedRemoveAll(Logger useLogger, File file) {
+        String methodName = "unprotectedRemoveAll";
+
+        int failedRemovals = 0;
+
+        if ( file.isDirectory() ) {
+            File[] childFiles = file.listFiles();
+            if ( childFiles != null ) {
+                for ( File childFile : childFiles) {
+                    failedRemovals += unprotectedRemoveAll(useLogger, childFile);
+                }
+            }
+        }
+
+        file.delete();
+
+        if ( file.exists() ) {
+            failedRemovals++;
+
+            if ( useLogger != null ) {
+                useLogger.logp(Level.WARNING, CLASS_NAME, methodName, "Failed to delete [ {0} ]", file.getPath());
+            } else {
+                System.out.println("Failed to delete [ " + file.getPath() + " ]");
+            }
+
+        } else {
+            if ( (useLogger != null) && useLogger.isLoggable(Level.FINER) ) {
+                useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Deleted [ {0} ]", file.getPath());
+            }
+        }
+
+        return failedRemovals;
     }
 }

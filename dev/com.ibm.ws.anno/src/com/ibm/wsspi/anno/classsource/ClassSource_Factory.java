@@ -8,18 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.wsspi.anno.classsource;
 
-import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Container_EJB;
-import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Container_WAR;
+import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Element;
+import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Elements;
+
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_Bundle;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_EJB;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_WAR;
+
 import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.anno.classsource.ClassSource_MappedSimple.SimpleClassProvider;
+
 import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
+import com.ibm.wsspi.anno.util.Util_RelativePath;
 
 public interface ClassSource_Factory {
     String getHashText();
@@ -32,9 +34,10 @@ public interface ClassSource_Factory {
 
     ClassSource_Exception newClassSourceException(String message);
 
-    ClassSource_Exception wrapIntoClassSourceException(String callingClassName,
-                                                       String callingMethodName,
-                                                       String message, Throwable th);
+    ClassSource_Exception wrapIntoClassSourceException(
+        String callingClassName, String callingMethodName,
+        String message,
+        Throwable throwable);
 
     //
 
@@ -45,6 +48,16 @@ public interface ClassSource_Factory {
      */
     ClassSource_Options createOptions();
 
+    /**
+     * Create class source options with default values and
+     * with jandex enablement set to a specified value.
+     * 
+     * @param useJandex The jandex enablement for the new options.
+     *
+     * @return New default class source options.
+     */
+    ClassSource_Options createOptions(boolean useJandex);
+
     //
 
     String getCanonicalName(String classSourceName);
@@ -52,29 +65,61 @@ public interface ClassSource_Factory {
     //
 
     /**
-     * Create a new empty aggregate class source. Give the class source
-     * default options.
-     * 
-     * @param name The name of the class source.
-     *
-     * @return THe new class source.
-     *
-     * @throws ClassSource_Exception Thrown if there was a problem creating the class source.
-     */
-    ClassSource_Aggregate createAggregateClassSource(String name) throws ClassSource_Exception;
-
-    /**
      * Create a new empty aggregate class source. Assign options to the new
      * class source.
      * 
      * @param name The name of the class source.
-     * @param options Options for the new class source.
-     *
+     * @param appName The name of the application of the class source.
+     * @param modName The name of the module of the class source.
+     * @param options Options for the new class source. 
+     * 
      * @return The new class source.
      *
      * @throws ClassSource_Exception Thrown if there was a problem creating the class source.
      */
-    ClassSource_Aggregate createAggregateClassSource(String name, ClassSource_Options options) throws ClassSource_Exception;
+    ClassSource_Aggregate createAggregateClassSource(
+        String appName, String modName,
+        ClassSource_Options options) throws ClassSource_Exception;
+
+    ClassSource_MappedSimple createSimpleClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        ClassSource_MappedSimple.SimpleClassProvider provider) throws ClassSource_Exception;
+
+    ClassSource_MappedContainer createContainerClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        Container container) throws ClassSource_Exception;
+
+    ClassSource_MappedContainer createContainerClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        Container container, String entryPrefix) throws ClassSource_Exception;
+
+    ClassSource_MappedDirectory createDirectoryClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        String dirPath) throws ClassSource_Exception;
+
+    ClassSource_MappedDirectory createDirectoryClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        String dirPath, String entryPrefix) throws ClassSource_Exception;
+
+    ClassSource_MappedJar createJarClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        String jarPath) throws ClassSource_Exception;    
+
+    ClassSource_MappedJar createJarClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        String jarPath, String entryPrefix) throws ClassSource_Exception;
+
+    ClassSource_ClassLoader createClassLoaderClassSource(
+        ClassSource_Aggregate aggregate,
+        String name,
+        ClassLoader classLoader) throws ClassSource_Exception;
 
     //
 
@@ -83,60 +128,59 @@ public interface ClassSource_Factory {
     // source is usually created with it's own intern map.
 
     ClassSource_Aggregate createAggregateClassSource(
-                                                     Util_InternMap internMap, String name) throws ClassSource_Exception;
-
-    ClassSource_Aggregate createAggregateClassSource(
-                                                     Util_InternMap internMap, String name, ClassSource_Options options) throws ClassSource_Exception;
-
-    //
-
-    ClassSource_MappedContainer createContainerClassSource(
-                                                           Util_InternMap internMap, String name, Container container) throws ClassSource_Exception;
-
-    ClassSource_MappedContainer createContainerClassSource(
-                                                           Util_InternMap internMap, String name, ClassSource_Options options, Container container) throws ClassSource_Exception;
-
-    ClassSource_MappedSimple createSimpleClassSource(
-                                                     Util_InternMap internMap, String name, SimpleClassProvider provider) throws ClassSource_Exception;
-
-    ClassSource_MappedSimple createSimpleClassSource(
-                                                     Util_InternMap internMap, String name, ClassSource_Options options,
-                                                         SimpleClassProvider provider) throws ClassSource_Exception;
-
-    ClassSource_MappedDirectory createDirectoryClassSource(
-                                                           Util_InternMap internMap, String name, String dirPath) throws ClassSource_Exception;
-
-    ClassSource_MappedDirectory createDirectoryClassSource(
-                                                           Util_InternMap internMap, String name, ClassSource_Options options, String dirPath) throws ClassSource_Exception;
-
-    ClassSource_MappedJar createJarClassSource(
-                                               Util_InternMap internMap, String name, String jarPath) throws ClassSource_Exception;
-
-    ClassSource_MappedJar createJarClassSource(
-                                               Util_InternMap internMap, String name, ClassSource_Options options, String jarPath) throws ClassSource_Exception;
-
-    ClassSource_ClassLoader createClassLoaderClassSource(
-                                                         Util_InternMap internMap, String name, ClassLoader classLoader) throws ClassSource_Exception;
-
-    ClassSource_ClassLoader createClassLoaderClassSource(
-                                                         Util_InternMap internMap, String name, ClassSource_Options options,
-                                                         ClassLoader classLoader) throws ClassSource_Exception;
+        Util_InternMap internMap,
+        String appName, String modName,
+        ClassSource_Options options) throws ClassSource_Exception;
 
     //
 
-    ClassSource_Specification_Direct_EJB newEJBSpecification();
+    ClassSource_MappedSimple createSimpleClassSource(
+        Util_InternMap internMap,
+        String name,
+        ClassSource_MappedSimple.SimpleClassProvider provider) throws ClassSource_Exception;
 
-    ClassSource_Specification_Direct_Bundle newEBASpecification();
+    ClassSource_MappedContainer createContainerClassSource(
+        Util_InternMap internMap,
+        String name,
+        Container container) throws ClassSource_Exception;    
 
-    ClassSource_Specification_Direct_WAR newWARSpecification();
+    ClassSource_MappedContainer createContainerClassSource(
+        Util_InternMap internMap,
+        String name,
+        Container container, String entryPrefix) throws ClassSource_Exception;
 
-    ClassSource_Specification_Container_EJB newEJBContainerSpecification();
+    ClassSource_MappedDirectory createDirectoryClassSource(
+        Util_InternMap internMap,
+        String name,
+        String dirPath) throws ClassSource_Exception;    
+    
+    ClassSource_MappedDirectory createDirectoryClassSource(
+        Util_InternMap internMap,
+        String name,
+        String dirPath, String entryPrefix) throws ClassSource_Exception;        
 
-    ClassSource_Specification_Container_WAR newWARContainerSpecification();
+    ClassSource_MappedJar createJarClassSource(
+        Util_InternMap internMap,
+        String name,
+        String jarPath) throws ClassSource_Exception;    
 
-    /**
-     * @param useJandex
-     * @return
-     */
-    ClassSource_Options createOptions(boolean useJandex);
+    ClassSource_MappedJar createJarClassSource(
+        Util_InternMap internMap,
+        String name,
+        String jarPath, String entryPrefix) throws ClassSource_Exception;
+
+    ClassSource_ClassLoader createClassLoaderClassSource(
+        Util_InternMap internMap,
+        String name,
+        ClassLoader classLoader) throws ClassSource_Exception;
+
+    //
+
+    ClassSource_Specification_Elements newElementsSpecification(String appName, String modName);
+    ClassSource_Specification_Element newElementSpecification(
+        String name, ClassSource_Aggregate.ScanPolicy policy, Util_RelativePath relativePath);
+
+    ClassSource_Specification_Direct_Bundle newBundleDirectSpecification(String appName, String modName);
+    ClassSource_Specification_Direct_EJB newEJBDirectSpecification(String appName, String modName);
+    ClassSource_Specification_Direct_WAR newWARDirectSpecification(String appName, String modName);
 }

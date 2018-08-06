@@ -8,14 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.wsspi.anno.classsource;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 //
@@ -37,7 +37,7 @@ public interface ClassSource {
      * The hash text should include a unique identifier (usually the base
      * hash code of the class source) plus the most relevant descriptive
      * information for the class source.</p>
-     * 
+     *
      * @return A string representation of the class source suitable for logging.
      */
     String getHashText();
@@ -50,57 +50,12 @@ public interface ClassSource {
     /**
      * <p>Log state information for the class source to a specified
      * logger. State information uses 'debug' log enablement.</p>
-     * 
-     * @param logger A logger which is to receive state information.
+     *
+     * @param useLogger A logger which is to receive state information.
      */
-    void log(TraceComponent logger);
+    void log(Logger useLogger);
 
-    // Context and identity ...
-
-    /**
-     * <P>The factory used to create this class source. Other factory based
-     * objects created by the class source will use this factory.</p>
-     * 
-     * @return The factory used to create this class source.
-     */
-    ClassSource_Factory getFactory();
-
-    /**
-     * <p>Answer the parent of this class source. Answer null if none is set.</p>
-     * 
-     * @return The parent of this class source.
-     */
-    ClassSource getParentSource();
-
-    /**
-     * <p>Set the parent of this class source.</p>
-     * 
-     * @param parent The parent of this class source.
-     */
-    void setParentSource(ClassSource classSource);
-
-    /**
-     * <p>A name for this class source.</p>
-     * 
-     * <p>The class source name is used as a unique ID when storing values to
-     * annotation targets. See {@link com.ibm.wsspi.anno.targets.AnnotationTargets_Targets#getClassSourceNames()}.</p>
-     * 
-     * <p>When adding class sources to an aggregate, the names of the child class
-     * sources must be unique.</p>
-     * 
-     * @return A name for this class source.
-     */
-    String getName();
-
-    /**
-     * <p>Answer the canonical name of the class source. All use
-     * of the class source uses the canonical name.</p>
-     * 
-     * @return The canonical name of the class source.
-     * 
-     * @see ClassSource_Factory#getCanonicalName(String)
-     */
-    String getCanonicalName();
+    // Embodiement ...
 
     /**
      * Answer the options of the class source.
@@ -108,97 +63,149 @@ public interface ClassSource {
      * @return The options of the class source.
      */
     ClassSource_Options getOptions();
-    
-    //
-
-    // State management ...
 
     /**
-     * Open the class source for use. This will open any underlying objects.
-     * 
-     * @throws ClassSource_Exception Thrown if the class source could not be opened.
+     * <P>The factory used to create this class source. Other factory based
+     * objects created by the class source will use this factory.</p>
+     *
+     * @return The factory used to create this class source.
      */
-    void open() throws ClassSource_Exception;
-
-    /**
-     * Close the class source. Close any underlying objects.
-     * 
-     * @throws ClassSource_Exception Thrown if the class source could not be closed.
-     */
-    void close() throws ClassSource_Exception;
-
-    // String management ...
+    ClassSource_Factory getFactory();
 
     /**
      * <p>Answer the string intern map of the class source.</p>
-     * 
+     *
      * <p>Class sources intern all class names of scanned classes.</p>
-     * 
+     *
      * @return The intern map of the class source.
      */
     Util_InternMap getInternMap();
 
     //
 
-    /**
-     * <p>Entry point for scanning a class source which is a child of an aggregate
-     * class source.</p>
-     * 
-     * @param streamer A selection and processing helper for the scan operation.
-     * @param i_seedClassNamesSet The accumulated seed class names.
-     * @param scanPolicy The scan policy of the class source (recorded by the parent).
-     */
-    void scanClasses(ClassSource_Streamer streamer, Set<String> i_seedClassNamesSet, ScanPolicy scanPolicy);
-
-    //
+    String NO_ENTRY_PREFIX = null;
 
     /**
-     * <p>Answer statistics for a scan processing. (These are only available
-     * after scanning is complete.)</p>
+     * Answer the prefix to use when selecting entries.
      * 
-     * @return Statistics for scan processing.
+     * @return The prefix to use when selecting entries.
+     *     When no, no prefix is used.
      */
-    ClassSource_ScanCounts getScanResults();
+    String getEntryPrefix();
+
+    // Identity ...
 
     /**
-     * <p>Answer a specific field from the scan results table.</p>
-     * 
-     * @param resultField The scan results field which is to be retrieved.
-     * 
-     * @return The value of the requested scan results field.
+     * <p>A name for this class source.</p>
+     *
+     * <p>The class source name is used as a unique ID when storing values to
+     * annotation targets. See {@link com.ibm.wsspi.anno.targets.AnnotationTargets_Targets#getClassSourceNames()}.</p>
+     *
+     * <p>When adding class sources to an aggregate, the names of the child class
+     * sources must be unique.</p>
+     *
+     * @return A name for this class source.
      */
-    int getResult(ClassSource_ScanCounts.ResultField resultField);
-
-    // Alternate scan processing ...
+    String getName();
 
     /**
-     * <p>Alternate scan processing step: Perform scanning only on specific class.</p>
-     * 
-     * @param specificClassNamesThe name of the class which is to be scanned.
-     * @param streamer A selection and processing helper for the scan operation.
-     * 
-     * @return True if the streamer processed the class. Otherwise, false.
-     * 
-     * @throws ClassSource_Exception Thrown in case of an error during scan processing.
+     * <p>Answer the canonical name of the class source. All use
+     * of the class source uses the canonical name.</p>
+     *
+     * @return The canonical name of the class source.
+     *
+     * @see ClassSource_Factory#getCanonicalName(String)
      */
-    boolean scanSpecificSeedClass(String specificClassName, ClassSource_Streamer streamer) throws ClassSource_Exception;
+    String getCanonicalName();
 
-    //
+    // Structure ...
 
     /**
-     * <p>Required entry point for scans of referenced classes.</p>
-     * 
-     * @param referencedClassNam The names of a referenced classes which
-     *            requires scanning.
-     * @param streamer A selection and processing helper for the scan operation.
-     * 
-     * @return True if the streamer processed the class. Otherwise, false.
-     * 
-     * @throws ClassSource_Exception Thrown in case of an error during scan processing.
+     * <p>Answer the parent of this class source. Answer null if none is set.</p>
+     *
+     * @return The parent of this class source.
      */
-    boolean scanReferencedClass(String referencedClassNam, ClassSource_Streamer streamer) throws ClassSource_Exception;
+    ClassSource_Aggregate getParentSource();
 
-    //
+    /**
+     * <p>Set the parent of this class source.</p>
+     *
+     * @param parent The parent of this class source.
+     */
+    void setParentSource(ClassSource_Aggregate classSource);
+
+    // Stamping ...
+
+    String UNAVAILABLE_STAMP = "** UNAVAILABLE **";
+
+    /**
+     * <p>Value used for containers which do not record a time stamp.  This is
+     * used for aggregate, class loader, and directory containers.</p>
+     */
+    String UNRECORDED_STAMP = "** UNRECORDED **";
+
+    /**
+     * <p>Answer the time stamp of the class source.</p>
+     *
+     * <p>The time stamp, if a numeric value, provides the
+     * @return The time stamp of the class source.
+     */
+    String getStamp();
+
+    // State ...
+
+    /**
+     * Open the class source for use. This will open any underlying objects.
+     *
+     * @throws ClassSource_Exception Thrown if the class source could not be opened.
+     */
+    void open() throws ClassSource_Exception;
+
+    /**
+     * Close the class source. Close any underlying objects.
+     *
+     * @throws ClassSource_Exception Thrown if the class source could not be closed.
+     */
+    void close() throws ClassSource_Exception;
+
+    // Scanning ...
+
+    /**
+     * Leaf processing API: Process this leaf class source using a supplied streamer.
+     * 
+     * @param streamer The streamer to apply to this class source.
+     *
+     * @throws ClassSource_Exception Thrown if an error occured while applying the streamer.
+     */
+    void process(ClassSource_Streamer streamer) throws ClassSource_Exception;
+
+    /**
+     * <p>Tell if this class source used jandex processing.
+     * 
+     * @return True or false telling if this class source used jandex processing.
+     */
+    boolean isProcessedUsingJandex();
+    
+    /**
+     * <p>Answer the time in nano-seconds spent reading the JANDEX index.</p>
+     *
+     * @return The time in nano-speconds spent reading the JANDEX index.
+     */
+	long getProcessTime();
+
+	/**
+	 * <p>Answer the count of classes processed.
+	 *
+	 * @return The count of classes processed.
+	 */
+	int getProcessCount();
+
+	//
+
+    void processSpecific(ClassSource_Streamer streamer, Set<String> i_classNames)
+        throws ClassSource_Exception;
+
+    // Static class naming helpers ...
 
     /** <p>Constant resource separation character.</p> */
     char RESOURCE_SEPARATOR_CHAR = '/';
@@ -218,130 +225,165 @@ public interface ClassSource {
     /**
      * <p>Perform a resource append operation: This places
      * a resource separator between the supplied values.
-     * 
+     *
      * @param head The first value to put into the concatenated value.
      * @param tail The second value to put into the concatenated value.
-     * 
+     *
      * @return The first value concatenated with a resource separator
      *         and with the second value.
      */
-    String resourceAppend(String head, String tail);
+    @Trivial
+    public static String resourceAppend(String head, String tail) {
+        if ( head.isEmpty() ) {
+            return tail;
+        } else {
+            return (head + ClassSource.RESOURCE_SEPARATOR_CHAR + tail);
+        }
+    }    
 
     /**
      * <p>Tell if a specified resource is a directory resource.
      * Resources which end with the resource separator are directory
      * resources.</p>
-     * 
+     *
      * @param resourceName The resource name to test.
-     * 
+     *
      * @return True if the resource is a directory resource. Otherwise,
      *         false.
      */
-    boolean isDirectoryResource(String resourceName);
+    @Trivial
+    public static boolean isDirectoryResource(String resourceName) {
+        return resourceName.endsWith(ClassSource.RESOURCE_SEPARATOR_STRING);
+    }
 
     /**
      * <p>Tell if a specified resource is a class resource. A resource
      * is a class resource if and only if it has the class extension.</p>
-     * 
+     *
      * @param resourceName The resource which is to be tested.
-     * 
+     *
      * @return True if the resource is a class resource. Otherwise, false.
      */
-    boolean isClassResource(String resourceName);
+    @Trivial
+    public static boolean isClassResource(String resourceName) {
+        return resourceName.endsWith(CLASS_EXTENSION);
+    }
 
     /**
      * <p>Convert a resource name to a class name. Conversion strips
      * the class extension and converts all resource separators to
      * class separators. Note that the inner class separator is not
      * changed by the conversion.
-     * 
+     *
      * @param resourceName The resource to convert to a class name.
-     * 
+     *
      * @return The class name for the resource.
      */
-    String getClassNameFromResourceName(String resourceName);
+    @Trivial
+    public static String getClassNameFromResourceName(String resourceName) {
+        int endingOffset = resourceName.length() - ClassSource.CLASS_EXTENSION.length();
+        String className = resourceName.substring(0, endingOffset);
+        className = className.replace(RESOURCE_SEPARATOR_CHAR, ClassSource.CLASS_SEPARATOR_CHAR);
+
+        return className;
+    }
 
     /**
      * <p>Convert a class name to a resource name. Conversion
      * changes the class separator to the resource separator and
      * adds the class extension. The inner class separator is not
      * changed by the conversion.</p>
-     * 
+     *
      * @param className The class name to convert to a resource.
-     * 
+     *
      * @return The resource for the class name.
      */
-    String getResourceNameFromClassName(String className);
+    @Trivial
+    public static String getResourceNameFromClassName(String className) {
+        return
+            className.replace(ClassSource.CLASS_SEPARATOR_CHAR, RESOURCE_SEPARATOR_CHAR) +
+            ClassSource.CLASS_EXTENSION;
+    }
 
     /**
-     * <p>Optional API for processing which uses an alternate
-     * form for resources. For example, directory based processing
-     * may change the resource separator to a platform specific
-     * separator.</p>
+     * Tell if a class is a forbidden java9 type class.  These are not
+     * currently processed.
      * 
-     * @param externalResourceName The external form of the resource.
-     * 
-     * @return The internal form of the resource.
+     * There are two cases: multi-release classes, which are beneath the META-INF folder,
+     * and module classes, which are named "module-info.class".
+     *
+     * @param packageName A package name to test.
+     *
+     * @return True or false telling if the the name is a forbidden java9 name.
      */
-    String inconvertResourceName(String externalResourceName);
-
-    /**
-     * <p>Optional API for processing which uses an alternate
-     * form for resources. For example, directory based processing
-     * may change the resource separator to a platform specific
-     * separator.</p>
-     * 
-     * @param internalResourceName The internal form of the resource.
-     * 
-     * @return The external form of the resource.
-     */
-    String outconvertResourceName(String internalResourceName);
+    public static boolean isJava9PackageName(String packageName) {
+        if ( packageName.endsWith("module-info") ) {
+            return true;
+        } else if ( packageName.contains("META-INF") ) {
+            return true;
+        } else {
+            return false;
+            // if ( SourceVersion.isName(packageName) ) {
+        }
+    }
 
     // Stream handling ...
 
-    // Cases:
-    // 1) The class is not present in the class source.
-    // 2) The class is present, but could not be opened.
-    //
-    // Results:
-    // 1) Class is not present: Answer null.
-    // 2) Class is present, but could not be opened: Exception
-    // 3) Class is present, and could be opened: InputStream
+    /** The buffer size for reading jandex indexes. */
+    int JANDEX_BUFFER_SIZE = 32 * 1024;
+
+    /** The buffer size for reading classes. */
+    int CLASS_BUFFER_SIZE = 8 * 1024;
 
     /**
-     * <p>Open an input stream for a named class.</p>
-     * 
-     * <p>Note the distinct cases: If no resource is available for the class,
-     * answer null. If a resource is available but cannot be opened, throw an
-     * exception.</p>
-     * 
+     * <p>Open a buffered input stream for a named class which has a specified resource name.</p>
+     *
      * @param className The name of the class for which to open an input stream.
-     * 
+     * @param resourceName The Name of the resource which is to be opened.
+     *
+     * @return The input stream for the named class. Null if no resource is
+     *     available for the class.
+     *
+     * @throws ClassSource_Exception Thrown in case a resource is available
+     *     for the class, but that resource could not be opened.
+     */
+    InputStream openClassResourceStream(String className, String resourceName)
+        throws ClassSource_Exception;
+
+    /**
+     * <p>Open a buffered input stream for a named class which has a specified resource name.</p>
+     *
+     * @param className The name of the class for which to open an input stream.
+     * @param resourceName The Name of the resource which is to be opened.
+     * @param bufferSize The size of buffer to use for the input stream.
+     *
      * @return The input stream for the named class. Null if no resource is
      *         available for the class.
-     * 
+     *
      * @throws ClassSource_Exception Thrown in case a resource is available
      *             for the class, but that resource could not
      *             be opened.
      */
-    InputStream openClassStream(String className) throws ClassSource_Exception;
+    BufferedInputStream openResourceStream(String className, String resourceName, int bufferSize)
+        throws ClassSource_Exception;
 
     /**
      * <p>Open an input stream for a named class which has a specified resource name.</p>
-     * 
+     *
      * <p>This code point is exposed to minimize class name to resource name conversion:
      * Processing which prefers to use the resource name will generate a class name, but
      * should not be forced to discard the resource name.</p>
-     * 
+     *
      * <p>Note the distinct cases: If no resource is available for the class,
      * answer null. If a resource is available but cannot be opened, throw an
      * exception.</p>
-     * 
+     *
      * @param className The name of the class for which to open an input stream.
-     * 
+     * @param resourceName The Name of the resource which is to be opened.
+     *
      * @return The input stream for the named class. Null if no resource is
      *         available for the class.
-     * 
+     *
      * @throws ClassSource_Exception Thrown in case a resource is available
      *             for the class, but that resource could not
      *             be opened.
@@ -350,79 +392,15 @@ public interface ClassSource {
 
     /**
      * <p>Class the input stream which was opened for a specified class.</p>
-     * 
-     * @param className The class for which the input stream was opened.
-     * @param inputStream The input stream which is to be closed.
-     * 
-     * @throws ClassSource_Exception Thrown in case the input stream could not be closed.
-     */
-    void closeClassStream(String className, InputStream inputStream) throws ClassSource_Exception;
-
-    /**
-     * <p>Class the input stream which was opened for a specified class.</p>
-     * 
+     *
      * <p>This code point is exposed to minimize class name to resource name conversion:
      * Processing which prefers to use the resource name will generate a class name, but
      * should not be forced to discard the resource name.</p>
-     * 
+     *
      * @param className The class for which the input stream was opened.
      * @param inputStream The input stream which is to be closed.
-     * 
+     *
      * @throws ClassSource_Exception Thrown in case the input stream could not be closed.
      */
     void closeResourceStream(String className, String resourceName, InputStream inputStream) throws ClassSource_Exception;
-
-    //
-
-    /**
-     * <p>Answer the count of resources which were excluded from processing because
-     * they were not class resources. This includes all container resources and
-     * all resources which do not have the class extension.</p>
-     * 
-     * @return The count of resources excluded from processing as non-class resources.
-     * 
-     * @see ClassSource#isClassResource(String)
-     */
-    int getResourceExclusionCount();
-
-    /**
-     * <p>Answer the count of class resources which were excluded as duplicates
-     * resources for the same class. For example, an aggregate class source may
-     * contain a resource for the same class in two different child class sources.
-     * Only one of these is processed; the others are excluded and will contribute
-     * to the exclusion count.</p>
-     * 
-     * <p>Class resources skipping by the stream are not included in this count.</p>
-     * 
-     * <p>The class inclusion count plus the class exclusion count add up to the
-     * count of all class resources encountered during processing.</p>
-     * 
-     * <p>Classes from non-seed class sources are not included in either statistic.</p>
-     * 
-     * @return The count of class resources for duplicate classes.
-     * 
-     * @see #getClassInclusionCount()
-     * @see ClassSource#isClassResource(String)
-     * @see ClassSource_Streamer#doProcess(String)
-     */
-    int getClassExclusionCount();
-
-    /**
-     * <p>Answer the count of class resources for distinct classes. For example, an
-     * aggregate class source may contain a resource for the same class in two different
-     * child class sources. The class inclusion count is incremented just once for the
-     * entire set of duplicating class resources. The exclusion count is incremented
-     * once for each of the other duplicating class resources.</p>
-     * 
-     * <p>Class resources skipping by the stream are not included in this count.</p>
-     * 
-     * @return The count of class resources for distinct classes.
-     * 
-     * @see #getClassExclusionCount()
-     * @see ClassSource#isClassResource(String)
-     * @see ClassSource_Streamer#doProcess(String)
-     */
-    int getClassInclusionCount();
-    
-    boolean isProcessedUsingJandex();
 }

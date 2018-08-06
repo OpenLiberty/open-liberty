@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,204 +11,301 @@
 
 package com.ibm.ws.anno.classsource.specification.internal;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate;
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
+import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory;
+import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_WAR;
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 
 public class ClassSourceImpl_Specification_Direct_WAR
-                extends ClassSourceImpl_Specification_Direct
-                implements ClassSource_Specification_Direct_WAR {
+    extends ClassSourceImpl_Specification_Direct
+    implements ClassSource_Specification_Direct_WAR {
 
-    public ClassSourceImpl_Specification_Direct_WAR(ClassSourceImpl_Factory factory) {
-        super(factory);
+    public static final String CLASS_NAME = ClassSourceImpl_Specification_Direct_WAR.class.getSimpleName();
+
+    //
+
+    public ClassSourceImpl_Specification_Direct_WAR(
+        ClassSourceImpl_Factory factory,
+        String appName, String modName) {
+
+        super(factory, appName, modName);
+
+        this.ignoreClassesPath = false;
+        this.classesPath = null; // The default will be used.
+
+        this.ignoreLibPath = false;
+        this.libPath = null; // The default will be used.
+
+        this.libPaths = null; // Will be obtained from the listing of the lib path.
     }
 
     //
 
-    protected String warClassesPath;
+    protected boolean ignoreClassesPath;
 
     @Override
-    public String getWARClassesPath() {
-        return warClassesPath;
+    @Trivial
+    public boolean getIgnoreClassesPath() {
+        return ignoreClassesPath;
     }
 
     @Override
-    public void setWARClassesPath(String warClassesPath) {
-        this.warClassesPath = warClassesPath;
-    }
-
-    //
-
-    protected String warLibraryPath;
-
-    @Override
-    public String getWARLibraryPath() {
-        return warLibraryPath;
+    public void setIgnoreClassesPath(boolean ignoreClassesPath) {
+        this.ignoreClassesPath = ignoreClassesPath;
     }
 
     @Override
-    public void setWARLibraryPath(String warLibraryPath) {
-        this.warLibraryPath = warLibraryPath;
+    @Trivial
+    public String getDefaultClassesPath() {
+        return DEFAULT_CLASSES_PATH;
     }
 
-    //
-
-    protected boolean useWARLibraryJarPaths;
+    protected String classesPath;
 
     @Override
-    public boolean getUseWARLibraryJarPaths() {
-        return useWARLibraryJarPaths;
-    }
-
-    @Override
-    public void setUseWARLibraryJarPaths(boolean useWARLibraryJarPaths) {
-        this.useWARLibraryJarPaths = useWARLibraryJarPaths;
-    }
-
-    protected List<String> warLibraryJarPaths;
-
-    @Override
-    public List<String> getWARLibraryJarPaths() {
-        return warLibraryJarPaths;
+    @Trivial
+    public String getClassesPath() {
+        return classesPath;
     }
 
     @Override
-    public void addWARLibraryJarPath(String warLibraryJarPath) {
-        if (warLibraryJarPaths == null) {
-            warLibraryJarPaths = new ArrayList<String>();
-        }
-
-        warLibraryJarPaths.add(warLibraryJarPath);
-    }
-
-    @Override
-    public void addWARLibraryJarPaths(List<String> warLibraryJarPaths) {
-        if (this.warLibraryJarPaths == null) {
-            this.warLibraryJarPaths = new ArrayList<String>();
-        }
-
-        this.warLibraryJarPaths.addAll(warLibraryJarPaths);
-    }
-
-    protected Set<String> warIncludedJarPaths;
-
-    @Override
-    public Set<String> getWARIncludedJarPaths() {
-        return warIncludedJarPaths;
-    }
-
-    @Override
-    public void addWARIncludedJarPath(String warIncludedJarPath) {
-        if (warIncludedJarPaths == null) {
-            warIncludedJarPaths = new HashSet<String>();
-        }
-
-        warIncludedJarPaths.add(warIncludedJarPath);
-    }
-
-    @Override
-    public void addWARIncludedJarPaths(Set<String> warIncludedJarPaths) {
-        if (this.warIncludedJarPaths == null) {
-            this.warIncludedJarPaths = new HashSet<String>();
-        }
-
-        this.warIncludedJarPaths.addAll(warIncludedJarPaths);
+    public void setClassesPath(String classesPath) {
+        this.classesPath = classesPath;
     }
 
     //
 
+    protected boolean ignoreLibPath;
+
     @Override
-    public ClassSource_Aggregate createClassSource(String targetName, ClassLoader rootClassLoader)
-                    throws ClassSource_Exception {
+    @Trivial
+    public boolean getIgnoreLibPath() {
+        return ignoreLibPath;
+    }
 
-        ClassSourceImpl_Aggregate classSource = createAggregateClassSource(targetName);
+    @Override
+    public void setIgnoreLibPath(boolean ignoreLibPath) {
+        this.ignoreLibPath = ignoreLibPath;
+    }
 
-        String useWARClassesPath = getWARClassesPath();
-        if (useWARClassesPath == null) {
-            useWARClassesPath = getImmediatePath() + "/" + "WEB-INF/classes";
+    @Override
+    @Trivial
+    public String getDefaultLibPath() {
+        return DEFAULT_LIB_PATH;
+    }
+
+    protected String libPath;
+
+    @Override
+    @Trivial
+    public String getLibPath() {
+        return libPath;
+    }
+
+    @Override
+    public void setLibPath(String libPath) {
+        this.libPath = libPath;
+    }
+
+    protected List<String> libPaths;
+
+    @Override
+    @Trivial
+    public List<String> getLibPaths() {
+        return libPaths;
+    }
+
+    @Override
+    public void addLibPath(String libPath) {
+        addLibPath(libPath, IS_NOT_PARTIAL, IS_NOT_EXCLUDED);
+    }
+
+    @Override
+    public void addLibPath(String libPath, boolean isPartial, boolean isExcluded) {
+        if ( libPaths == null ) {
+            libPaths = new ArrayList<String>();
         }
 
-        getFactory().addDirectoryClassSource(classSource, targetName, useWARClassesPath, ScanPolicy.SEED); // throws ClassSource_Exception
+        libPaths.add(libPath);
 
-        List<String> warLibJarPaths;
+        if ( isPartial ) {
+            addPartialPath(libPath);
+        } else if ( isExcluded ) {
+            addExcludedPath(libPath);
+        }
+    }
 
-        if (getUseWARLibraryJarPaths()) {
-            warLibJarPaths = getWARLibraryJarPaths();
+    @Override
+    public void addLibPaths(List<String> libPaths) {
+        addLibPaths(libPaths, IS_NOT_PARTIAL, IS_NOT_EXCLUDED);
+    }
 
+    @Override
+    public void addLibPaths(List<String> libPaths, boolean isPartial, boolean isExcluded) {
+        if ( this.libPaths == null ) {
+            this.libPaths = new ArrayList<String>();
+        }
+
+        this.libPaths.addAll(libPaths);
+
+        if ( isPartial ) {
+            addPartialPaths(libPaths);
+        } else if ( isExcluded ) {
+            addExcludedPaths(libPaths);
+        }
+    }
+
+    private Set<String> partialPaths;
+
+    @Override
+    @Trivial
+    public boolean isPartialPath(String libPath) {
+        return ( (partialPaths != null) && partialPaths.contains(libPath) );
+    }
+
+    @Override
+    public void addPartialPath(String libPath) {
+        if ( partialPaths == null ) {
+            partialPaths = new HashSet<String>();
+        }
+        partialPaths.add(libPath);
+    }
+
+    @Override
+    public void addPartialPaths(Collection<String> libPath) {
+        if ( partialPaths == null ) {
+            partialPaths = new HashSet<String>();
+        }
+        partialPaths.addAll(libPaths);
+    }
+    
+    private Set<String> excludedPaths;
+
+    @Override
+    @Trivial
+    public boolean isExcludedPath(String libPath) {
+        return ( (excludedPaths != null) && excludedPaths.contains(libPath) );
+    }
+
+    @Override
+    public void addExcludedPath(String libPath) {
+        if ( excludedPaths == null ) {
+            excludedPaths = new HashSet<String>();
+        }
+        excludedPaths.add(libPath);
+    }
+
+    @Override
+    public void addExcludedPaths(Collection<String> libPath) {
+        if ( excludedPaths == null ) {
+            excludedPaths = new HashSet<String>();
+        }
+        excludedPaths.addAll(libPaths);
+    }
+
+    @Trivial
+    public ScanPolicy selectPolicy(String libPath) {
+        if ( isPartialPath(libPath) ) {
+            return ScanPolicy.PARTIAL;
+        } else if ( isExcludedPath(libPath) ) {
+            return ScanPolicy.EXCLUDED;
         } else {
-            String useWARLibPath = getWARLibraryPath();
-
-            if (useWARLibPath == null) {
-                useWARLibPath = getImmediatePath() + "/" + "WEB-INF/lib";
-            }
-
-            warLibJarPaths = selectJars(useWARLibPath);
+            return ScanPolicy.SEED;
         }
-
-        Set<String> useWARIncludedJarPaths = getWARIncludedJarPaths();
-
-        if (warLibJarPaths != null) {
-            for (String nextJarPath : warLibJarPaths) {
-                boolean isSeed = ((useWARIncludedJarPaths == null) || useWARIncludedJarPaths.contains(nextJarPath));
-                ScanPolicy scanPolicy = (isSeed ? ScanPolicy.SEED : ScanPolicy.EXTERNAL);
-                getFactory().addJarClassSource(classSource, nextJarPath, nextJarPath, scanPolicy); // throws ClassSource_Exception
-            }
-        }
-
-        addStandardClassSources(targetName, rootClassLoader, classSource);
-
-        return classSource;
     }
 
     //
 
     @Override
-    public void log(TraceComponent logger) {
-        Tr.debug(logger, MessageFormat.format("Class source specification [ {0} ]", getHashText()));
+    public void addInternalClassSources(ClassSourceImpl_Aggregate rootClassSource)
+        throws ClassSource_Exception {
 
-        logLocations(logger);
-        logCommon(logger);
-    }
+        if ( !getIgnoreClassesPath() ) {
+            String useClassesPath = getClassesPath();
 
-    protected void logLocations(TraceComponent logger) {
+            if ( useClassesPath == null ) {
+                useClassesPath = getDefaultClassesPath();
 
-        String useWARClassesPath = getWARClassesPath();
-        if (useWARClassesPath == null) {
-            useWARClassesPath = getImmediatePath() + "/" + "WEB-INF/classes";
+                @SuppressWarnings("unused")
+                ClassSourceImpl_MappedDirectory classesClassSource = addDirectoryClassSource(
+                    rootClassSource,
+                    "WEB-INF/classes", getModulePath(), getDefaultClassesPath(),
+                    ScanPolicy.SEED);
+                // throws ClassSource_Exception
+
+            } else {
+                @SuppressWarnings("unused")
+                ClassSourceImpl_MappedDirectory classesClassSource = addDirectoryClassSource(
+                    rootClassSource,
+                    "WEB-INF/classes", useClassesPath,
+                    ScanPolicy.SEED);
+                // throws ClassSource_Exception
+            }
         }
 
-        Tr.debug(logger, "Classes path [ " + useWARClassesPath + " ]");
+        if ( !getIgnoreLibPath() ) {
+            List<String> useLibPaths = getLibPaths();
+        
+            String useModulePath = getModulePath();
 
-        List<String> warLibJarPaths;
-
-        if (getUseWARLibraryJarPaths()) {
-            warLibJarPaths = getWARLibraryJarPaths();
-
-            if (warLibJarPaths != null) {
-                for (String nextJarPath : warLibJarPaths) {
-                    Tr.debug(logger, "WAR library jar [ " + nextJarPath + " ]");
+            if ( useLibPaths == null ) {
+                String useLibPath = getLibPath();
+                if ( useLibPath == null ) {
+                    useLibPath = useModulePath + getDefaultLibPath();
                 }
+
+                useLibPaths = new ArrayList<String>();
+                selectJars(useLibPath, useLibPaths);
             }
 
-        } else {
-            String useWARLibPath = getWARLibraryPath();
+            for ( String nextLibPath : useLibPaths ) {
+                String nextLibName;
+                if ( nextLibPath.startsWith(useModulePath) ) {
+                    nextLibName = nextLibPath.substring( useModulePath.length() );
+                } else {
+                    nextLibName = nextLibPath;
+                }
 
-            if (useWARLibPath == null) {
-                useWARLibPath = getImmediatePath() + "/" + "WEB-INF/lib";
+                ScanPolicy scanPolicy = selectPolicy(nextLibPath);
+                @SuppressWarnings("unused")
+                ClassSourceImpl_MappedJar libClassSource =
+                    addJarClassSource(rootClassSource, nextLibName, nextLibPath, scanPolicy);
+                // throws ClassSource_Exception
             }
+        }
+    }
 
-            Tr.debug(logger, "WAR library path [ " + useWARLibPath + " ]");
+    //
+
+    @Override
+    @Trivial
+    public void logInternal(Logger useLogger) {
+        super.logInternal(useLogger);
+
+        String methodName = "logInternal";
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "    Classes path [ " + getClassesPath() + " ]");
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "    Library path [ " + getLibPath() + " ]");
+
+        List<String> useLibPaths = getLibPaths();
+        if ( useLibPaths != null ) {
+            for ( String nextLibPath : useLibPaths ) {
+                ScanPolicy nextScanPolicy = selectPolicy(nextLibPath);
+                useLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "      Library [ " + nextLibPath + " ] [ " + nextScanPolicy + " ]");
+            }
         }
     }
 }

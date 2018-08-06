@@ -13,8 +13,6 @@ package com.ibm.wsspi.anno.classsource;
 
 import java.io.InputStream;
 
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
-
 /**
  * <p>Call back type for class source processing.</p>
  */
@@ -23,57 +21,65 @@ public interface ClassSource_Streamer {
      * <p>Tell if a specified class is to be scanned.</p>
      * 
      * @param className The name of the class to test.
-     * @param scanPolicy The policy to test against.
-     * 
+     *
      * @return True if the class is to be processed. Otherwise, false.
      */
-    boolean doProcess(String className, ScanPolicy scanPolicy);
+    boolean doProcess(String className);
 
     /**
      * <p>Process the data for the specified class.</p>
-     * 
-     * @param classSourceName The name of the class source which contains the class.
-     * @param className The name of the class to process.
+     *
+     * @param i_className The interned name of the class to process.
      * @param inputStream The stream containing the class data.
-     * @param scanPolicy The policy active on the class.
      * 
      * @return True if the class was processed. Otherwise, false.
-     * 
+     *
      * @throws ClassSource_Exception Thrown if an error occurred while
      *             testing the specified class.
      */
-    boolean process(String classSourceName,
-            String className, InputStream inputStream,
-            ScanPolicy scanPolicy) throws ClassSource_Exception;
+    boolean process(String i_className, InputStream inputStream)
+        throws ClassSource_Exception;
 
-    //
+    // Jandex added APIs ...
 
     /**
-     * <p>Tell if this streamer supports the processing of JANDEX class information.</p>
+     * <p>Tell if this streamer supports the processing of Jandex class information.</p>
      *
-     * @return True or false telling if this streamer supports the processing of JANDEX
+     * @return True or false telling if this streamer supports the processing of Jandex
      *     class information.
      */
     boolean supportsJandex();
 
     /**
-     * <p>Process the data for the specified class.</p>
+     * <p>Process the data for the specified class.  The data was obtained from
+     * the full Jandex reader.</p>
      *
-     * @param classSourceName The name of the class source which contains the class.
-     * @param className The name of the class to process.
-     * @param jandexClassInfo JANDEX class information for the class.  Note:  Type is Object
-     * because we can't expose org.jboss.jandex.ClassInfo in SPI.
-     * @param scanPolicy The policy active on the class.
+     * <p>Entry point preserved to enable comparisons between full and sparse
+     * processing.</p>
+     *
+     * @param classInfo Full Jandex class information for the class.
+     *     Typed as {#link Object} to avoid exposing <code>org.jboss.jandex.ClassInfo</code>
+     *     in SPI.
+     *
+     * @return True if the class was processed. Otherwise, false.
+     *
+     * @throws ClassSource_Exception Thrown if an error occurred while
+     *     testing the specified class.
+     */
+    boolean processJandex(Object classInfo) throws ClassSource_Exception;
+
+    /**
+     * <p>Process the data for the specified class.  The data was obtained
+     * from the sparse reader.</p>
+     *
+     * @param sparseClassInfo Sparse Jandex class information for the class.
+     *     Typed as {#link Object} to avoid exposing <code>org.jboss.jandex.ClassInfo</code>
+     *     in SPI.
      * 
      * @return True if the class was processed. Otherwise, false.
      * 
      * @throws ClassSource_Exception Thrown if an error occurred while
-     *             testing the specified class.
-     *             
-     *             
+     *     testing the specified class.
      */
-    boolean process(
-        String classSourceName,
-        Object jandexClassInfo,
-        ScanPolicy scanPolicy) throws ClassSource_Exception;
+    boolean processSparseJandex(Object sparseClassInfo) throws ClassSource_Exception;
 }

@@ -1,60 +1,106 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.ws.anno.service.internal;
 
-import java.text.MessageFormat;
+import java.io.File;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl;
+import com.ibm.ws.anno.targets.cache.TargetCache_Options;
+import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Factory;
+import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Options;
 import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
 import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.service.AnnotationService_Service;
 
 public class AnnotationServiceImpl_Service implements AnnotationService_Service {
-    public static final TraceComponent tc = Tr.register(AnnotationServiceImpl_Service.class);
-    public static final String CLASS_NAME = AnnotationServiceImpl_Service.class.getName();
+    public static final String CLASS_NAME = "AnnotationServiceImpl_Service";
+
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.service");
 
     //
 
-    protected final String hashText;
+    // Service entry point ...
 
-    @Override
-    @Trivial
-    public String getHashText() {
-        return hashText;
+    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
+    setBundleContext( componentContext.getBundleContext() );
+
+    String workArea = getOsgiWorkArea(); // Need the bundle context to get the work area path.
+        setWorkAreaPath(workArea);
+
+        TargetCacheImpl_Options useCacheOptions = TargetCacheImpl_Factory.createOptionsFromProperties();
+        if ( !useCacheOptions.getDisabled() ) {
+            if ( workArea != null ) {
+                useCacheOptions.setDir(workArea + File.separatorChar + TargetCache_Options.CACHE_NAME_DEFAULT);
+            }
+        }
+        setCacheOptions(useCacheOptions);
+
+        setFactories(); // Need the work area path to setup the cache instance.
+   }
+
+    // Test entry point ...
+
+    public void activate(TargetCacheImpl_Options useCacheOptions) {
+        setBundleContext(null);
+        setWorkAreaPath(null);
+        setCacheOptions(useCacheOptions);
+        setFactories();
     }
 
     //
 
     protected BundleContext bundleContext;
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
-        String methodName = "activate";
+    protected void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
 
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, getHashText());
-        }
-        bundleContext = componentContext.getBundleContext();
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
 
-        if (tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName, getHashText());
+    private String getOsgiWorkArea() {
+        String methodName = "getOsgiWorkArea";
+
+        File osgiWorkFile = getBundleContext().getDataFile(""); // Empty string obtains the work directory.
+        if ( osgiWorkFile == null ) {
+            if ( logger.isLoggable(Level.FINER)) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "OSGi Platform does not have file system support.");
+            }
+            return null;
         }
+
+        String osgiWorkPath = osgiWorkFile.getAbsolutePath();
+        if ( logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "OSGi Work Path [ {0} ]", osgiWorkPath);
+        }
+        return osgiWorkPath;
+    }
+
+    //
+
+    protected final String hashText;
+
+    @Override
+    public String getHashText() {
+        return hashText;
     }
 
     //
@@ -62,41 +108,70 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
     public AnnotationServiceImpl_Service() {
         super();
 
-        String methodName = "<init>";
+        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+    }
 
-        this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
+    //
 
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, this.hashText);
-        }
+    private String workAreaPath;
 
-        UtilImpl_Factory useUtilFactory = new UtilImpl_Factory();
-        setUtilFactory(useUtilFactory);
+    protected void setWorkAreaPath(String workAreaPath) {
+        this.workAreaPath = workAreaPath;
+    }
 
-        ClassSourceImpl_Factory useClassSourceFactory = new ClassSourceImpl_Factory(useUtilFactory);
-        setClassSourceFactory(useClassSourceFactory);
+    public String getWorkAreaPath() {
+        return workAreaPath;
+    }
 
-        AnnotationTargetsImpl_Factory useAnnotationTargetsFactory =
-                        new AnnotationTargetsImpl_Factory(useUtilFactory, useClassSourceFactory);
-        setAnnotationTargetsFactory(useAnnotationTargetsFactory);
+    private TargetCacheImpl_Options cacheOptions;
 
-        InfoStoreFactoryImpl useInfoStoreFactory = new InfoStoreFactoryImpl(useUtilFactory);
-        setInfoStoreFactory(useInfoStoreFactory);
+    protected void setCacheOptions(TargetCacheImpl_Options cacheOptions) {
+        this.cacheOptions = cacheOptions;
+    }
 
-        if (tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName, this.hashText);
+    public TargetCacheImpl_Options getCacheOptions() {
+        return cacheOptions;
+    }
 
-            // Logged in the setters.
-            //
-            // logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Util Factory [ {1} ]",
-            //             new Object[] { this.hashText, useUtilFactory.getHashText() });
-            // logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class Source Factory [ {1} ]",
-            //             new Object[] { this.hashText, useClassSourceFactory.getHashText() });
-            // logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Annotation Targets Factory [ {1} ]",
-            //             new Object[] { this.hashText, useAnnotationTargetsFactory.getHashText() });
-            // logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Info Store Factory [ {1} ]",
-            //             new Object[] { this.hashText, useInfoStoreFactory.getHashText() });
-        }
+    //
+
+    protected UtilImpl_Factory createUtilFactory() {
+        return new UtilImpl_Factory(this);
+    }
+
+    protected ClassSourceImpl_Factory createClassSourceFactory() {
+        return new ClassSourceImpl_Factory( this, getUtilFactory() );
+    }
+
+    protected TargetCacheImpl_Factory createCacheFactory() {
+        return new TargetCacheImpl_Factory(this);
+    }
+
+    protected AnnotationTargetsImpl_Factory createAnnotationTargetsFactory() {
+        return new AnnotationTargetsImpl_Factory(
+            this,
+            getUtilFactory(),
+            getClassSourceFactory(),
+            getTargetCacheFactory() );
+    }
+
+    protected InfoStoreFactoryImpl createInfoStoreFactory() {
+        return new InfoStoreFactoryImpl( this, getUtilFactory() );
+    }
+
+    //
+    
+    protected void setFactories() {
+        setUtilFactory( createUtilFactory() );
+        setClassSourceFactory( createClassSourceFactory() );
+
+        TargetCacheImpl_Factory useCacheFactory = createCacheFactory();
+        useCacheFactory.setOptions( getCacheOptions() );
+        setTargetCacheFactory(useCacheFactory);
+
+        setAnnotationTargetsFactory( createAnnotationTargetsFactory() );
+
+        setInfoStoreFactory( createInfoStoreFactory() );
     }
 
     //
@@ -104,19 +179,12 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
     protected UtilImpl_Factory utilFactory;
 
     @Override
-    @Trivial
     public UtilImpl_Factory getUtilFactory() {
         return utilFactory;
     }
 
     protected void setUtilFactory(UtilImpl_Factory utilFactory) {
-
         this.utilFactory = utilFactory;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" [ {0} ] Set utility factory [ {1} ]",
-                                              this.hashText, this.utilFactory.getHashText()));
-        }
     }
 
     //
@@ -124,18 +192,25 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
     protected ClassSourceImpl_Factory classSourceFactory;
 
     @Override
-    @Trivial
     public ClassSourceImpl_Factory getClassSourceFactory() {
         return classSourceFactory;
     }
 
     protected void setClassSourceFactory(ClassSourceImpl_Factory classSourceFactory) {
         this.classSourceFactory = classSourceFactory;
+    }
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" [ {0} ] Set class source factory [ {1} ]",
-                                              this.hashText, this.classSourceFactory.getHashText()));
-        }
+    //
+
+    protected TargetCacheImpl_Factory targetCacheFactory;
+
+    @Override
+    public TargetCacheImpl_Factory getTargetCacheFactory() {
+        return targetCacheFactory;
+    }
+
+    protected void setTargetCacheFactory(TargetCacheImpl_Factory targetCacheFactory) {
+        this.targetCacheFactory = targetCacheFactory;
     }
 
     //
@@ -143,18 +218,12 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
     protected AnnotationTargetsImpl_Factory annotationTargetsFactory;
 
     @Override
-    @Trivial
     public AnnotationTargetsImpl_Factory getAnnotationTargetsFactory() {
         return annotationTargetsFactory;
     }
 
     protected void setAnnotationTargetsFactory(AnnotationTargetsImpl_Factory annotationTargetsFactory) {
         this.annotationTargetsFactory = annotationTargetsFactory;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" [ {0} ] Set annotation targets factory [ {1} ]",
-                                              this.hashText, this.annotationTargetsFactory.getHashText()));
-        }
     }
 
     //
@@ -162,17 +231,11 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
     protected InfoStoreFactoryImpl infoStoreFactory;
 
     @Override
-    @Trivial
     public InfoStoreFactoryImpl getInfoStoreFactory() {
         return infoStoreFactory;
     }
 
     protected void setInfoStoreFactory(InfoStoreFactoryImpl infoStoreFactory) {
         this.infoStoreFactory = infoStoreFactory;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" {0} ] Set info store factory [ {1} ]",
-                                              this.hashText, this.infoStoreFactory.getHashText()));
-        }
     }
 }

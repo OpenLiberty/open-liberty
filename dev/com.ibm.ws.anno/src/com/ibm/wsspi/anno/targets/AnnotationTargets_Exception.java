@@ -1,25 +1,24 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.wsspi.anno.targets;
 
-import java.text.MessageFormat;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AnnotationTargets_Exception extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public static final String CLASS_NAME = AnnotationTargets_Exception.class.getName();
+    public static final String CLASS_NAME = "AnnotationTargets_Exception";
 
     //
 
@@ -31,20 +30,21 @@ public class AnnotationTargets_Exception extends Exception {
         super(message, cause);
     }
 
-    public static AnnotationTargets_Exception wrap(TraceComponent logger,
+    public static AnnotationTargets_Exception wrap(Logger logger,
                                                    String callingClassName,
                                                    String callingMethodName,
                                                    String message, Throwable th) {
         AnnotationTargets_Exception wrappedException = new AnnotationTargets_Exception(message, th);
 
-        if (logger.isDebugEnabled()) {
-            Tr.debug(logger, MessageFormat.format(" [ {0} ] [ {1} ] Wrap [ {2} ] as [ {3} ]",
-                                                  callingClassName, callingMethodName,
-                                                  th.getClass().getName(),
-                                                  wrappedException.getClass().getName()));
-
-            Tr.debug(logger, th.getMessage(), th);
-            Tr.debug(logger, message, wrappedException);
+        String methodName = "wrap";
+        
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    " [ {0} ] [ {1} ] Wrap [ {2} ] as [ {3} ]",
+                    new Object[] { callingClassName, 
+                                   callingMethodName,
+                                   th.getClass().getName(),
+                                   wrappedException.getClass().getName() });
         }
 
         return wrappedException;

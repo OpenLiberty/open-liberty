@@ -1,47 +1,150 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.ws.anno.targets.internal;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
+import com.ibm.ws.anno.targets.cache.TargetCache_Options;
+import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataApp;
+import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataApps;
+import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataMod;
+import com.ibm.ws.anno.targets.delta.internal.TargetsDeltaImpl;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;
-import com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet;
-import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
+import com.ibm.ws.anno.util.internal.UtilImpl_EmptyBidirectionalMap;
+import com.ibm.ws.anno.util.internal.UtilImpl_EmptyInternMap;
+import com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.wsspi.anno.classsource.ClassSource;
+import com.ibm.ws.anno.util.internal.UtilImpl_NonInternSet;
+import com.ibm.ws.anno.util.internal.UtilImpl_Utils;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_OpCodes;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
 import com.ibm.wsspi.anno.util.Util_InternMap;
+import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
+
+/*
+ * Summary of scan policies:
+ *
+ * A "scan space" is the space which may be scanned for class information
+ * for a module.
+ *
+ * "Complete" regions are associated with a descriptor which
+ * is set as metadata complete.  "Incomplete" regions are associated
+ * with a descriptor which is not metadata complete.  "Excluded" regions
+ * are associated with web modules which use an absolute ordering element,
+ * and includes jar files omitted from the absolute ordering element.
+ *
+ * Classes within a module are located according to the module type:
+ * A CLIENT or EJBJAR provides classes directly as elements of the module
+ * archive.  RAR files provide classes directly from the module archive
+ * and provide classes indirectly through nested JAR files.  WAR files
+ * provide classes directly (but restricted to the WEB-INF/classes
+ * directory) and indirectly through nested JARs, restricted to the
+ * WEB-INF/lib directory.
+ *
+ * Classes outside of a module include four categories of classes:
+ * Classes available in archives linked through the manifest class path;
+ * Classes available in application library archives; Classes available
+ * in shared libraries of the application; Classes available in the
+ * external references class loader of the application.  (Java classes
+ * are available through the external references class loader.)
+ *
+ * Scan results are recorded independently for the several scan regions
+ * of a module:
+ *
+ * ClassSourceAggregate.ScanPolicy.SEED(0x01)
+ *
+ * Policy for incomplete regions of the target scan space.  Annotations are
+ * scanned from the seed region.  Default queries obtain results from seed data.
+ *
+ * ClassSourceAggregate.ScanPolicy.PARTIAL(0x02)
+ *
+ * Policy for complete but not excluded regions of the scan space.  Annotations are
+ * scanned from the partial region.  Default queries do not obtain results from
+ * the partial region.
+ *
+ * ClassSourceAggregate.ScanPolicy.EXCLUDED(0x04)
+ *
+ * Policy for excluded regions of the scan space.  Annotations are scanned
+ * from the excluded region.  Default queries do not obtain results from the
+ * excluded region.
+ *
+ * Annotations are scanned from the excluded region.  However, the default
+ * queries do not obtain results from the partial region.  To obtain results
+ * from the partial region, a scan policy selector must be provided.
+ *
+ * ClassSourceAggregate.ScanPolicy.EXTERNAL(0x08)
+ *
+ * Policy for regions outside of the core region of the target scan space.
+ * For all module type scans (EJB and CLIENT for JAR files, WEB for WAR files),
+ * this includes all parts of the scan space which is external to the target
+ * module.  For most modules, this includes the module MANIFEST class path
+ * elements, JAR files from the application library, JAR files from shared
+ * libraries, and any elements of the module external references class loader.
+ *
+ * The external region is only scanned to complete class information
+ * for classes from the other regions.  No annotations are recorded for
+ * classes scanned from the external region.
+ *
+ * For standard JavaEE module types, several cases result:
+ *
+ * 1) Complete EJBJAR or CLIENT JAR
+ *    [ JAR(Partial), CLASSLOADER(External) ]
+ * 2) Incomplete EJBJAR or CLIENT JAR
+ *    [ JAR(SEED), CLASSLOADER(External) ]
+ *
+ * 3) Complete RAR.
+ *    [ RAR(Partial), Nested Jar(Partial), ..., CLASSLOADER(External) ]
+ * 4) Incomplete RAR.
+ *    [ RAR(Seed), Nested Jar(Seed), ..., CLASSLOADER(External) ]
+ *
+ * 5) Wholly complete WAR.
+ *    [ WEB-INF/classes(Partial), WEB-INF/LIB/jar(Partial), ..., CLASSLOADER(External) ]
+ * 6) Wholly incomplete WAR.
+ *    [ WEB-INF/classes(Seed), WEB-INF/LIB/jar(Seed), ..., CLASSLOADER(External) ]
+ * 7) Partially complete WAR with no excluded regions
+ *    [ WEB-INF/classes(Seed), WEB-INF/LIB/jar(Seed|Partial), ..., CLASSLOADER(External) ]
+ * 8) Partially complete WAR with excluded regions.
+ *    [ WEB-INF/classes(Seed), WEB-INF/LIB/jar(Seed|Partial|Excluded), ..., CLASSLOADER(External) ]
+ *
+ * <p>For updates, these patterns are distinguished:</p>
+ *
+ * 1) JAR + CLASSLOADER: EJBJAR and CLIENT cases.
+ *
+ * 2) DIR + CLASSLOADER: WAR + EMPTY LIB and RAR + EMPTY NESTED cases.
+ *
+ * 3) DIR + JARS + CLASSLOADER: WAR + LIB and RAR + NESTED cases.
+ */
 
 public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets {
-    private static final TraceComponent tc = Tr.register(AnnotationTargetsImpl_Targets.class);
-    public static final String CLASS_NAME = AnnotationTargetsImpl_Targets.class.getName();
+    protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
+    protected static final Logger stateLogger = AnnotationServiceImpl_Logging.ANNO_STATE_LOGGER;
 
+    public static final String CLASS_NAME = AnnotationTargetsImpl_Targets.class.getSimpleName(); 
+            
     protected final String hashText;
 
     public String getHashText() {
@@ -50,72 +153,61 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     //
 
-    protected AnnotationTargetsImpl_Targets(AnnotationTargetsImpl_Factory factory,
-                                            UtilImpl_InternMap classInternMap,
-                                            boolean isDetailEnabled) {
-        this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
+    protected AnnotationTargetsImpl_Targets(
+        AnnotationTargetsImpl_Factory factory,
+        TargetCacheImpl_DataApps annoCache,
+        UtilImpl_InternMap classNameInternMap,
+        UtilImpl_InternMap fieldNameInternMap,
+        UtilImpl_InternMap methodSignatureInternMap) {
+
+        String methodName = "<init>";
+
+        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
         this.factory = factory;
 
-        //
+        this.annoCache = annoCache;
 
-        // Intern map for class source names;
-        // Not entirely necessary, but allows reuse of the Bidi map.
-        this.classSourceInternMap = createInternMap(Util_InternMap.ValueType.VT_OTHER, "class sources");
-
-        // Mapping of class source name to class names.
-        // Not entirely proper, as classes can arise from at most one class source.
-        this.classSourceClassData = createBidiMap("class source", classSourceInternMap,
-                                                  "class", classInternMap,
-                                                  Util_BidirectionalMap.IS_ENABLED);
-
-        this.classInternMap = classInternMap; // Holds both class and package names
+        this.classNameInternMap = classNameInternMap;
+        this.fieldNameInternMap = fieldNameInternMap;
+        this.methodSignatureInternMap = methodSignatureInternMap;
 
         //
 
-        // Class tables ... these span the result regions.
-
-        this.i_scannedClassNames = new IdentityHashMap<String, String>();
-        this.i_superclassNameMap = new IdentityHashMap<String, String>();
-        this.i_interfaceNameMap = new IdentityHashMap<String, String[]>();
-
-        this.isDetailEnabled = isDetailEnabled; // To enable recording field and method results
-
-        // TODO:
-        //
-        // 1) Fold each of these data sets into a data structure; re-use that data structure.
-        // 2) Split the data sets into data source specific structures.
-        // 3) Create a facade for the result selection.  Use the facade to encapsulate and hide
-        //    the scan policy selection variable. 
-
-        this.seedData = new AnnotationTargetsImpl_PolicyData(this, classInternMap, ScanPolicy.SEED, isDetailEnabled);
-        this.partialData = new AnnotationTargetsImpl_PolicyData(this, classInternMap, ScanPolicy.PARTIAL, isDetailEnabled);
-        this.excludedData = new AnnotationTargetsImpl_PolicyData(this, classInternMap, ScanPolicy.EXCLUDED, isDetailEnabled);
-        this.externalData = new AnnotationTargetsImpl_PolicyData(this, classInternMap, ScanPolicy.EXTERNAL, isDetailEnabled);
-
-        // Extra tracking data.  The set of referenced classes is used only
-        // during scan processing, and is empty at the conclusion of processing.
-
-        this.i_referencedClassNames = new IdentityHashMap<String, String>();
-
-        this.i_unresolvedPackageNames = new IdentityHashMap<String, String>();
-        this.i_unresolvedClassNames = new IdentityHashMap<String, String>();
+        this.emptyPackageAnnotations =
+            createEmptyBidiMap(ValueType.VT_CLASS_NAME, "annotated package",
+                               ValueType.VT_CLASS_NAME, "package annotation");
+        this.emptyClassAnnotations =
+            createEmptyBidiMap(ValueType.VT_CLASS_NAME, "annotated class",
+                               ValueType.VT_CLASS_NAME, "class annotation");
+        this.emptyFieldAnnotations =
+            createEmptyBidiMap(ValueType.VT_FIELD_NAME, "annotated field",
+                               ValueType.VT_CLASS_NAME, "field annotation");
+        this.emptyMethodAnnotations =
+            createEmptyBidiMap(ValueType.VT_OTHER, "annotated method",
+                               ValueType.VT_CLASS_NAME, "method annotation");
 
         //
 
-        this.visitor = new AnnotationTargetsVisitor(this);
+        this.limitedScan = false;
+        this.specificScan = false;
 
-        // Derived from the i_superclassNamesMap, which will therefore
-        // need to be populated before the i_subclassNameMap
-        this.i_descendantsMap = null;
+        this.rootClassSource = null;
+        this.overallScanner = null;
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Visitor [ {1} ]",
-                                              new Object[] { this.hashText, this.visitor.getHashText() }));
+        this.seedData = null;
+        this.partialData = null;
+        this.excludedData = null;
+
+        this.externalData = null;
+        this.classData = null;
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
         }
     }
 
-    //
+    // Factory, and related methods ...
 
     protected final AnnotationTargetsImpl_Factory factory;
 
@@ -124,762 +216,889 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return factory;
     }
 
-    protected AnnotationTargetsImpl_Fault createFault(String unresolvedText, String[] parameters) {
-        return getFactory().createFault(unresolvedText, parameters);
-    }
-
-    protected AnnotationTargetsImpl_Scanner createScanner(ClassSource_Aggregate classSource) throws AnnotationTargets_Exception {
-        return new AnnotationTargetsImpl_Scanner(getFactory(), classSource, this);
+    protected UtilImpl_EmptyInternMap createEmptyInternMap(Util_InternMap.ValueType valueType, String mapName) {
+        return getFactory().getUtilFactory().createEmptyInternMap(valueType, mapName);
     }
 
     protected UtilImpl_BidirectionalMap createBidiMap(String holderTag, UtilImpl_InternMap holderInternMap,
-                                                      String heldTag, UtilImpl_InternMap heldInternMap,
-                                                      boolean isEnabled) {
-
-        return getFactory().getUtilFactory().createBidirectionalMap(holderTag, holderInternMap,
-                                                                    heldTag, heldInternMap,
-                                                                    isEnabled);
+                                                      String heldTag, UtilImpl_InternMap heldInternMap) {
+        return getFactory().getUtilFactory().createBidirectionalMap(holderTag, holderInternMap, heldTag, heldInternMap);
     }
 
-    protected UtilImpl_InternMap createInternMap(Util_InternMap.ValueType valueType, String mapName) {
-        return getFactory().getUtilFactory().createInternMap(valueType, mapName);
+    protected UtilImpl_EmptyBidirectionalMap createEmptyBidiMap(ValueType holderType, String holderTag,
+                                                                ValueType heldType, String heldTag) {
+        return getFactory().getUtilFactory().createEmptyBidirectionalMap(holderType, holderTag, heldType, heldTag);
     }
 
-    //
+    // Cache ...
 
-    protected final UtilImpl_InternMap classSourceInternMap;
+    private final TargetCacheImpl_DataApps annoCache;
 
-    protected UtilImpl_InternMap getClassSourceInternMap() {
-        return classSourceInternMap;
+    public TargetCacheImpl_DataApps getAnnoCache() {
+        return annoCache;
     }
 
-    protected String internClassSourceName(String classSourceName) {
-        return getClassSourceInternMap().intern(classSourceName);
-    }
+    // Class, field, and method interning ...
 
-    protected String internClassSourceName(String className, boolean doForce) {
-        return getClassSourceInternMap().intern(className, doForce);
-    }
+    protected final UtilImpl_InternMap classNameInternMap;
 
-    //
-
-    // State0: Table created, but no scan requested.
-
-    // State1: The root class source was set.  This
-    //         is tested as ('haveScannedReferencedClasses'
-    //         || (classSource != null)).
-    protected ClassSource_Aggregate rootClassSource;
-
-    // State2: At least one non-external class source
-    //         has been provided.  Adding a direct class  
-    //         requires that the root class source is set. 
-    protected int directClassSourceCount;
-
-    // State3: Direct classes have been scanned.  Requires
-    //         that at least one direct class source has
-    //         been provided.
-    protected boolean haveScannedDirectClasses;
-
-    // State4: At least one external class source has been
-    //         provided.  Requires that at least one direct
-    //         class source is set.
-    protected int externalClassSourceCount;
-
-    // State5: Reference classes have been scanned.  Requires
-    //         That direct classes have been scanned and at
-    //         least one external class source is set.
-    protected boolean haveScannedReferencedClasses;
-
-    public boolean activated() {
-        return (haveScannedReferencedClasses || (rootClassSource != null));
-    }
-
-    public ClassSource_Aggregate getRootClassSource() {
-        return rootClassSource;
-    }
-
-    protected void setRootClassSource(ClassSource_Aggregate classSource) {
-        rootClassSource = classSource;
-
-        Set<? extends ClassSource> seedClassSources = classSource.getSeedClassSources();
-        Set<? extends ClassSource> partialClassSources = classSource.getPartialClassSources();
-        Set<? extends ClassSource> excludedClassSources = classSource.getExcludedClassSources();
-        Set<? extends ClassSource> externalClassSources = classSource.getExternalClassSources();
-
-        directClassSourceCount =
-                        seedClassSources.size() + partialClassSources.size() + excludedClassSources.size();
-        externalClassSourceCount =
-                        externalClassSources.size();
-    }
-
-    public int getDirectClassSourceCount() {
-        return directClassSourceCount;
-    }
-
-    public boolean scannedDirectClasses() {
-        return haveScannedDirectClasses;
-    }
-
-    public int getExternalClassSourceCount() {
-        return externalClassSourceCount;
-    }
-
-    public boolean scannedReferencedClasses() {
-        return haveScannedReferencedClasses;
-    }
-
-    @Override
-    public void addClassSource(ClassSource source, ScanPolicy scanPolicy) {
-        if (source == null) {
-            throw new IllegalArgumentException("Null added class source");
-        }
-
-        // These should be errors.
-
-        if (haveScannedReferencedClasses) {
-            if (tc.isDebugEnabled()) {
-                String eMsg = MessageFormat.format("Attempt to add class source [ {0} ] [ {1} ] after both direct and reference scans", source, scanPolicy);
-                Tr.debug(tc, eMsg);
-            }
-
-        } else if (haveScannedDirectClasses && (scanPolicy != ScanPolicy.EXTERNAL)) {
-            if (tc.isDebugEnabled()) {
-                String eMsg = MessageFormat.format("Non-external class source [ {0} ] [ {1} ] added after the direct scan", source, scanPolicy);
-                Tr.debug(tc, eMsg);
-            }
-
-        } else if (rootClassSource == null) {
-            if (tc.isDebugEnabled()) {
-                String eMsg = MessageFormat.format("Attempt to add class source [ {0} ] [ {1} ] before activation", source, scanPolicy);
-                Tr.debug(tc, eMsg);
-            }
-
-        } else {
-            if (scanPolicy == ScanPolicy.EXTERNAL) {
-                if (directClassSourceCount == 0) {
-                    if (tc.isDebugEnabled()) {
-                        String eMsg = MessageFormat.format("Strange addition external class source [ {0} ] [ {1} ] with no direct class sources", source, scanPolicy);
-                        Tr.debug(tc, eMsg);
-                    }
-                }
-
-                externalClassSourceCount++;
-
-            } else if (externalClassSourceCount != 0) {
-                if (tc.isDebugEnabled()) {
-                    String eMsg = MessageFormat.format("Strange addition direct class source [ {0} ] [ {1} ] after an external class source", source, scanPolicy);
-                    Tr.debug(tc, eMsg);
-                }
-
-                directClassSourceCount++;
-            }
-
-            if (tc.isDebugEnabled()) {
-                String eMsg = MessageFormat.format("Adding class source [ {0} ] [ {1} ]", source, scanPolicy);
-                Tr.debug(tc, eMsg);
-            }
-
-            rootClassSource.addClassSource(source, scanPolicy);
-        }
-    }
-
-    protected void scanReferenceClasses() {
-        if (haveScannedReferencedClasses) {
-            return;
-        }
-
-        try {
-            doScanReferenceClasses(); // throws AnnotationTargets_Exception
-
-        } catch (AnnotationTargets_Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception scanning referenced classes for annotations");
-                Tr.debug(tc, MessageFormat.format("[ {0} ]", e.toString()));
-            }
-        }
-    }
-
-    // PostCondition: haveScannedReferencedClasses == true
-    // PostCondition: rootClassSource == null
-
-    protected void doScanReferenceClasses() throws AnnotationTargets_Exception {
-        if (haveScannedReferencedClasses) {
-            return;
-        }
-
-        try {
-            doScanDirectClasses();
-
-        } catch (AnnotationTargets_Exception e) {
-            haveScannedReferencedClasses = true;
-            rootClassSource = null;
-
-            throw e;
-        }
-
-        haveScannedReferencedClasses = true;
-
-        ClassSource_Aggregate useRootClassSource = rootClassSource;
-        rootClassSource = null;
-
-        if (useRootClassSource == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Attempt scan referenced classes before activation");
-            }
-
-        } else {
-            if (externalClassSourceCount == 0) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Strange call to scan reference classes with no external class sources");
-                }
-            }
-
-            createScanner(useRootClassSource).scanReferenced();
-            // 'createScanner' and 'scan' both throw AnnotationTargets_Exception
-        }
-    }
-
-    protected void scanDirectClasses() {
-        if (haveScannedDirectClasses) {
-            return;
-        }
-
-        try {
-            doScanDirectClasses(); // throws AnnotationTargets_Exception            
-
-        } catch (AnnotationTargets_Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception scanning referenced classes for annotations");
-                Tr.debug(tc, MessageFormat.format("[ {0} ]", e.toString()));
-            }
-        }
-    }
-
-    // PostCondition: haveScannedDirectClasses == true
-
-    protected void doScanDirectClasses() throws AnnotationTargets_Exception {
-        if (haveScannedDirectClasses) {
-            return;
-        }
-
-        haveScannedDirectClasses = true;
-
-        if (rootClassSource == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Call to scan direct classes before activation");
-            }
-
-        } else {
-            if (directClassSourceCount == 0) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Strange call to scan direct classes before adding direct class sources");
-                }
-            }
-
-            createScanner(rootClassSource).scanDirect();
-            // 'createScanner' and 'scanDirect' both throw AnnotationTargets_Exception
-        }
-    }
-
-    //
-
-    @Override
-    public void scan(ClassSource_Aggregate classSource, boolean scanImmediate) throws AnnotationTargets_Exception {
-        if (haveScannedReferencedClasses) {
-            if (tc.isDebugEnabled()) {
-                String eMsg = MessageFormat.format("Scan requested on class source [ {0} ] but a reference scan has already been performed", classSource);
-                Tr.debug(tc, eMsg);
-            }
-
-        } else if (rootClassSource != null) {
-            if (tc.isDebugEnabled()) {
-                String eMsg = MessageFormat.format("Scan requested on class source [ {0} ] but root class source [ {1} ] is already set", classSource, rootClassSource);
-                Tr.debug(tc, eMsg);
-            }
-
-        } else {
-            setRootClassSource(classSource);
-
-            if (scanImmediate) {
-                doScanDirectClasses(); // throws AnnotationTargets_Exception
-                doScanReferenceClasses(); // throws AnnotationTargets_Exception
-            }
-        }
-    }
-
-    @Override
-    public void scan(ClassSource_Aggregate classSource) throws AnnotationTargets_Exception {
-        this.scan(classSource, false);
-    }
-
-    // PostCondition: haveScannedDirectClasses == true
-    // PostCondition: haveScannedReferencedClasses == true    
-
-    @Override
-    public void scan(ClassSource_Aggregate classSource, Set<String> specificClassNames) throws AnnotationTargets_Exception {
-        try {
-            createScanner(classSource).scan(specificClassNames);
-            // 'createScanner' throws class source exception
-
-        } finally {
-            haveScannedDirectClasses = true;
-            haveScannedReferencedClasses = true;
-        }
-    }
-
-    //
-
-    protected final UtilImpl_InternMap classInternMap;
-
-    public UtilImpl_InternMap getClassInternMap() {
-        return classInternMap;
-    }
-
-    public String internClassName(String className) {
-        return getClassInternMap().intern(className);
+    public UtilImpl_InternMap getClassNameInternMap() {
+        return classNameInternMap;
     }
 
     public String internClassName(String className, boolean doForce) {
-        return getClassInternMap().intern(className, doForce);
+        return getClassNameInternMap().intern(className, doForce);
     }
 
-    // Class source call back:
-    //
-    // A scan entry to the class source will call back to 'scanClass' after retrieving
-    // the input stream for a class.
-    //
-    // Class source entry is through one of 'scanDirectClasses', 'scanSpecifiedSeedClasses',
-    // or 'scanReferencedClasses'.
-    //
-    // The class name is the external class name of the class, as computed from the
-    // resource name.
-    //
-    // The 'class' is a class resource (a resource having the signature of a class file,
-    // that is, which has the extension ".class").  The class resource may represent
-    // a java package or a java class.
-
-    // Entry is from:
-    //     AnnotationTargetsImpl_Streamer.process(String, InputStream, boolean, boolean, boolean)
-
-    @FFDCIgnore({ AnnotationTargetsVisitor.VisitEnded.class, ArrayIndexOutOfBoundsException.class })
-    protected boolean scanClass(String classSourceName,
-                                String className,
-                                InputStream inputStream,
-                                ScanPolicy scanPolicy) {
-
-        Object[] logParms;
-        if (tc.isDebugEnabled()) {
-            logParms = new Object[] { getHashText(), className, null };
-            Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER class [ {1} ]", logParms));
+    public Set<String> uninternClassNames(Set<String> classNames) {
+        if ( (classNames == null) || classNames.isEmpty() ) {
+            return Collections.emptySet();
         } else {
-            logParms = null;
+            return new UtilImpl_NonInternSet( getClassNameInternMap(), classNames );
         }
-
-        AnnotationTargetsVisitor useVisitor = getVisitor();
-
-        useVisitor.i_setClassSourceName(internClassSourceName(classSourceName));
-
-        // For non-seed scans, tell the visitor to only process the
-        // class relationship information.  Skip class annotations and
-        // and class contents (fields and methods).
-
-        useVisitor.setScanPolicy(scanPolicy);
-        useVisitor.setExternalName(className);
-
-        boolean failedScan;
-
-        try {
-            // Both IOException and Exception have been seen;
-            // in particular ArrayindexOutOfBoundsException for a non-valid class.
-
-            ClassReader classReader = new ClassReader(inputStream); // throws IOException, Exception
-
-            classReader.accept(getVisitor(),
-                               (ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG | ClassReader.SKIP_CODE));
-            // 'accept' throws IOException, VisitEnded, Exception
-
-            failedScan = false;
-
-            if (logParms != null) {
-                logParms[2] = "Success";
-            }
-
-        } catch (IOException e) {
-            failedScan = true;
-
-            // String eMsg = "[ " + getHashText() + " ] Class [ " + className + " ] Exception creating reader";
-            Tr.warning(tc, "ANNO_TARGETS_FAILED_TO_CREATE_READER", className); // CWWKC0049W
-
-        } catch (AnnotationTargetsVisitor.VisitEnded e) {
-            // 'VisitEnded' is used both for a normal flow control for
-            // skipping detailed scan data (which is not a failed scan)
-            // and for other cases, such as duplicate scan requests
-            // and name mismatch cases, which are failures.
-
-            failedScan = !e.isDetailCase();
-
-            if (logParms != null) {
-                logParms[2] = "Halted: " + e.getEndCase();
-            }
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Tr.info(tc, "ANNO_TARGETS_CORRUPT_CLASS", className, classSourceName);
-            failedScan = true;
-
-        } catch (Exception e) {
-            // String eMsg = "[ " + getHashText() + " ] Visit failure [ " + className + " ]";
-            // CWWKC0044W: An exception occurred while scanning class and annotation data.
-            Tr.warning(tc, "ANNO_TARGETS_SCAN_EXCEPTION", e);
-
-            if (logParms != null) {
-                logParms[2] = "Exception: " + e.getMessage();
-            }
-
-            failedScan = true;
-        }
-
-        if (logParms != null) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] RETURN From class [ {1} ]: [ {2} ]", logParms));
-        }
-
-        return (!failedScan);
     }
 
-    protected final AnnotationTargetsVisitor visitor;
+    protected final UtilImpl_InternMap fieldNameInternMap;
 
-    protected AnnotationTargetsVisitor getVisitor() {
-        return visitor;
+    public UtilImpl_InternMap getFieldNameInternMap() {
+        return fieldNameInternMap;
+    }
+
+    public Set<String> uninternFieldNames(Set<String> fieldNames) {
+        if ( (fieldNames == null) || fieldNames.isEmpty() ) {
+            return Collections.emptySet();
+        } else {
+            return new UtilImpl_NonInternSet( getFieldNameInternMap(), fieldNames );
+        }
+    }
+
+    protected final UtilImpl_InternMap methodSignatureInternMap;
+
+    public UtilImpl_InternMap getMethodSignatureInternMap() {
+        return methodSignatureInternMap;
     }
 
     //
 
-    // Record a class as being unresolvable.
+    /**
+     * <p>Set to scan a fully realized class source.</p>
+     *
+     * <p>Use of {@link #scan(Future, Future)} is preferred: The step of
+     * obtaining the external class source should be deferred until absolutely
+     * necessary.</p>
+     *
+     * @param useRootClassSource The class source which is to be scanned.
+     */
+    @Override
+    public void scan(ClassSource_Aggregate useRootClassSource) {
+        setRootClassSource(useRootClassSource); // Scanning is now done on demand.
+    }
+
     //
-    // This is used to record referenced classes which could not be
-    // scanned.  The class must be removed from the referenced classes
-    // list, but must be remembered, so not to add it to the referenced
-    // classes list by a later processing step.
 
-    protected void recordUnresolvedClass(String classOrPackageName) {
-        if (!AnnotationTargetsVisitor.isPackageName(classOrPackageName)) {
-            String i_className = internClassName(classOrPackageName);
+    /**
+     * <p>Scan specific classes for annotations.</p>
+     *
+     * <p>Scan only for annotations: Do not complete class reference information.</p>
+     *
+     * @param useRootClassSource The root class source which is to be scanned.
+     * @param specificClassNames The names of the classes which are to be scanned.
+     */
+    @Override
+    public void scan(ClassSource_Aggregate useRootClassSource, Set<String> specificClassNames)
+        throws AnnotationTargets_Exception {
+        scan(useRootClassSource, specificClassNames, TargetsVisitorClassImpl.SELECT_ALL_ANNOTATIONS);
+        // throws AnnotationTargets_Exception {
+    }
 
-            // Make sure to not double record the class:
-            // A failure occur *after* recording the class.
+    //
 
-            if (!i_containsScannedClassName(i_className)) {
-                i_addUnresolvedClassName(i_className);
+    /**
+     * <p>Do a limited scan.  The cache is not enabled, and no external class source is available.</p>
+     *
+     * @param useRootClassSource The class source which is to be scanned.
+     */
+    @Override
+    public void scanLimited(ClassSource_Aggregate useRootClassSource) {
+        String methodName = "scanLimited";
+
+        if ( limitedScan ) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER / RETURN (already scanned)", getHashText());
             }
+            return;
+        }
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER [ {0} ]", getHashText());
+        }
+
+        limitedScan = true;
+
+        TargetsScannerLimitedImpl limitedScanner = new TargetsScannerLimitedImpl(this, useRootClassSource);
+
+        limitedScanner.scanContainer();
+
+        putLimitedResults(limitedScanner);
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashText());
+        }
+    }
+
+    protected void putLimitedResults(TargetsScannerLimitedImpl scanner) {
+        seedData = scanner.getTargetsData();
+        partialData = null;
+        excludedData = null;
+        externalData = null;
+
+        classData = null;
+    }
+
+    //
+
+    /**
+     * <p>Scan specific classes for annotations.</p>
+     *
+     * <p>Scan only for annotations: Do not complete class reference information.</p>
+     *
+     * @param useRootClassSource The root class source which is to be scanned.
+     * @param specificClassNames The names of the classes which are to be scanned.
+     * @param specificAnnotationClassNames The names of the annotations which of are of interest.
+     */
+    @Override
+    public void scan(ClassSource_Aggregate useRootClassSource,
+                     Set<String> specificClassNames,
+                     Set<String> specificAnnotationClassNames)
+                    throws AnnotationTargets_Exception {
+
+        String methodName = "scan";
+
+        if ( specificScan ) {
+            if (logger.isLoggable(Level.FINER)) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER / RETURN (already scanned)", getHashText());
+            }
+            return;
+        }
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER [ {0} ]", getHashText());
+        }
+
+        specificScan = true;
+
+        TargetsScannerSpecificImpl specificScanner = new TargetsScannerSpecificImpl(this, useRootClassSource);
+
+        specificScanner.scan(specificClassNames, specificAnnotationClassNames);
+        // throws AnnotationTargets_Exception
+
+        putSpecificResults(specificScanner);
+
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashText());
+        }
+    }
+
+    protected void putSpecificResults(TargetsScannerBaseImpl scanner) {
+        seedData = scanner.getSeedBucket();
+        partialData = scanner.getPartialBucket();
+        excludedData = scanner.getExcludedBucket();
+        externalData = scanner.getExternalBucket();
+
+        classData = scanner.getClassTable();
+    }
+
+    // Policy data fan-outs ...
+
+    // Phase 1: Internal data
+
+    protected ClassSource_Aggregate rootClassSource;
+    protected String appName;
+    protected String modName;
+
+    protected void setRootClassSource(ClassSource_Aggregate rootClassSource) {
+        this.rootClassSource = rootClassSource;
+
+        this.appName = rootClassSource.getApplicationName();
+        this.modName = rootClassSource.getModuleName();
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+    
+    public String getModName() {
+        return modName;
+    }
+
+    protected ClassSource_Aggregate consumeRootClassSource() {
+        ClassSource_Aggregate useRootClassSource = rootClassSource;
+
+        rootClassSource = null;
+
+        return useRootClassSource;
+    }
+
+    protected boolean limitedScan;
+    protected boolean specificScan;
+
+    protected TargetsScannerOverallImpl overallScanner;
+
+    protected TargetsTableImpl seedData;
+    protected TargetsTableImpl partialData;
+    protected TargetsTableImpl excludedData;
+
+    // Phase 2: External data
+
+    protected TargetsTableImpl externalData;
+    protected TargetsTableClassesMultiImpl classData;
+
+    //
+
+    public TargetsTableImpl getSeedData() {
+        ensureInternalResults();
+
+        return seedData;
+    }
+
+    public TargetsTableImpl getPartialData() {
+        ensureInternalResults();
+
+        return partialData;
+    }
+
+    public TargetsTableImpl getExcludedData() {
+        ensureInternalResults();
+
+        return excludedData;
+    }
+
+    public TargetsTableImpl getExternalData() {
+        ensureExternalResults();
+
+        return externalData;
+    }
+
+    // Careful!
+    //
+    // Three modes must be handled:
+    //
+    // Overall, Limited, and Specific
+    //
+    // When an overall scan is performed, there are three phases,
+    // with the scanner held temporarily between the internal and external
+    // scan phases:
+    //
+    // PreScan:          (rootClassSource != null) (overallScanner == null) (externalData == null)
+    // PostInternalScan: (rootClassSource != null) (overallScanner != null) (externalData == null)
+    // PostExternalScan: (rootClassSource == null) (overallScanner == null) (externalData != null)
+    //
+    // When a limited scan is performed, the scanner is not held temporarily,
+    // and there are only two phases:
+    //
+    // PreScan:          (seedData == null)
+    // PostScan:         (seedData != null)
+    //
+    // When a specific scan is performed, the scanner is not held temporarily,
+    // and there are only two phases:
+    //
+    // PreScan:          (seedData == null)
+    // PostScan:         (seedData != null)
+
+    public boolean hasInternalData() {
+        if ( limitedScan || specificScan ) {
+            return ( seedData != null );
+        } else {
+            return ( (externalData != null) || (overallScanner != null ) );
         }
     }
 
     //
 
-    protected final Map<String, String> i_unresolvedPackageNames;
+    /**
+     * <p>Answer the targets data for the specified policy. The result
+     * is null when no sources were scanned having the specified policy.</p>
+     *
+     * @param policy The policy for which to obtain targets data.
+     *
+     * @return Targets data for the policy.
+     */
+    protected TargetsTableImpl getPolicyData(ScanPolicy policy) {
+        if ( policy == ScanPolicy.SEED ) {
+            return getSeedData();
 
-    public Set<String> getUnresolvedPackageNames() {
-        scanReferenceClasses();
+        } else if ( policy == ScanPolicy.PARTIAL ) {
+            return getPartialData();
 
-        return i_unresolvedPackageNames.keySet();
+        } else if ( policy == ScanPolicy.EXCLUDED ) {
+            return getExcludedData();
+
+        } else if ( policy == ScanPolicy.EXTERNAL ) {
+            return getExternalData();
+
+        } else {
+            throw new IllegalArgumentException("Policy [ " + policy + " ]");
+        }
     }
 
-    protected boolean i_addUnresolvedPackageName(String i_packageName) {
-        return (i_unresolvedPackageNames.put(i_packageName, i_packageName) == null);
+    /**
+     * <p>Obtain the class table, but only ensure that it has the internal class
+     * source class information.</p>
+     *
+     * @return The class table.
+     */
+    protected TargetsTableClassesMultiImpl getInternalClassTable() {
+        ensureInternalResults();
+
+        return classData;
+    }
+
+    protected Set<String> getInternalClassNames(String classSourceName) {
+        return getInternalClassTable().getClassNames(classSourceName);
+    }
+
+    public TargetsTableClassesMultiImpl getClassTable() {
+        ensureExternalResults();
+
+        return classData;
+    }
+
+    /**
+     * <p>Answer the names of the classes scanned from the named class source.
+     * Answer an empty set if the class source is not present, or was not scanned.</p>
+     *
+     * <p>A class source will not be scanned if it failed to open, or, if a
+     * specific scan was performed and no classes were left to scan when the
+     * class source was reached.
+     *
+     * @param classSourceName
+     *            The name of the class source for which to retrieve scanned class names.
+     *
+     * @return The names of the classes scanned from the class source.
+     */
+    public Set<String> getClassNames(String classSourceName) {
+        // The external scan need not be performed if the class source is
+        // one of the internal class sources.
+
+        TargetsTableClassesMultiImpl internalClassTable = getInternalClassTable();
+        if ( internalClassTable.getClassSourceNames().contains(classSourceName) ) {
+            return internalClassTable.getClassNames(classSourceName);
+        }
+
+        TargetsTableClassesMultiImpl externalClassTable = getClassTable();
+        return externalClassTable.getClassNames(classSourceName);
     }
 
     //
 
-    protected boolean i_addScannedClassName(String i_className, ScanPolicy scanPolicy) {
-        boolean result = (i_scannedClassNames.put(i_className, i_className) == null);
+    protected void ensureInternalResults() {
+        String methodName = "ensureInternalResults";
 
-        doGetPolicyData(scanPolicy).i_addScannedClassName(i_className);
+        if ( hasInternalData() ) {
+            return;
+        }
 
-        return result;
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER [ {0} ]", getHashText());
+        }
+
+        ClassSource_Aggregate useRootClassSource = consumeRootClassSource();
+        String useAppName = getAppName();
+        String useModName = getModName();
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "App [ {0} ] Mod [ {1} ]", new Object[] { useAppName, useModName });
+        }
+
+        TargetCacheImpl_DataApp appData = getAnnoCache().getActiveAppForcing(useAppName);
+        TargetCacheImpl_DataMod modData = appData.getActiveModForcing(useModName);
+
+        TargetsScannerOverallImpl useOverallScanner =
+            new TargetsScannerOverallImpl(this, useRootClassSource, modData);
+
+        useOverallScanner.validInternal();
+
+        putInternalResults(useOverallScanner);
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashText());
+        }
     }
 
-    protected final Map<String, String> i_scannedClassNames;
+    protected void putInternalResults(TargetsScannerOverallImpl useOverallScanner) {
+        overallScanner = useOverallScanner;
 
-    public Set<String> getScannedClassNames() {
-        scanReferenceClasses();
+        seedData = useOverallScanner.getSeedBucket();
+        partialData = useOverallScanner.getPartialBucket();
+        excludedData = useOverallScanner.getExcludedBucket();
 
-        return i_scannedClassNames.keySet();
+        // The class data is incomplete, but, is useful for queries which obtain
+        // annotation results and which do not need superclass or interface information.
+        classData = useOverallScanner.getClassTable();
     }
 
-    public boolean i_containsScannedClassName(String i_className) {
-        scanDirectClasses();
+    private static final int NS_IN_MS = 1000 * 1000;
 
-        return i_scannedClassNames.containsKey(i_className);
+    protected void ensureExternalResults() {
+        String methodName = "ensureExternalResults";
+
+        if ( externalData != null ) {
+            return;
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER[ {0} ]", getHashText());
+        }
+
+        ensureInternalResults();
+
+        TargetsScannerOverallImpl useOverallScanner = overallScanner;
+        overallScanner = null;
+
+        useOverallScanner.validExternal();
+
+        externalData = useOverallScanner.getExternalBucket();
+
+        long cacheReadTime = useOverallScanner.getCacheReadTime();
+        long cacheWriteTime = useOverallScanner.getCacheWriteTime();
+        long containerReadTime = useOverallScanner.getContainerReadTime();
+        long containerWriteTime = useOverallScanner.getContainerWriteTime();
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "Cache Read [ {0} (ms)",
+                	Long.valueOf(cacheReadTime / NS_IN_MS));
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "Cache Write [ {0} (ms)",
+                	Long.valueOf(cacheWriteTime / NS_IN_MS));
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "Container Read [ {0} (ms)",
+                	Long.valueOf(containerReadTime / NS_IN_MS));
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "Container Write [ {0} (ms)",
+                	Long.valueOf(containerWriteTime / NS_IN_MS));
+        }
+
+        ClassSource_Aggregate rootClassSource = useOverallScanner.getRootClassSource();
+
+        rootClassSource.addCacheReadTime(cacheReadTime, "Module Reads");
+        rootClassSource.addCacheReadTime(containerReadTime, "Container Reads");
+
+        rootClassSource.addCacheWriteTime(cacheWriteTime, "Module Writes");
+        rootClassSource.addCacheWriteTime(containerWriteTime, "Container Writes");
+
+        // The class table was already set during internal processing.
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashText());
+        }
     }
+
+    //
 
     @Override
     public Set<String> getSeedClassNames() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getClassNames();
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getClassNames();
+        }
     }
 
     @Override
     public boolean isSeedClassName(String className) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        String i_className = getClassInternMap().intern(className, Util_InternMap.DO_NOT_FORCE);
-        if (i_className == null) {
+        if ( useSeedData == null ) {
             return false;
         } else {
-            return seedData.i_isClassName(i_className);
+            return useSeedData.containsClassName(className);
         }
     }
 
     @Override
     public Set<String> getPartialClassNames() {
-        scanDirectClasses();
+        TargetsTableImpl usePartialData = getPartialData();
 
-        return partialData.getClassNames();
+        if ( usePartialData == null ) {
+            return Collections.emptySet();
+        } else {
+            return usePartialData.getClassNames();
+        }
     }
 
     @Override
     public boolean isPartialClassName(String className) {
-        scanDirectClasses();
+        TargetsTableImpl usePartialData = getPartialData();
 
-        String i_className = getClassInternMap().intern(className, Util_InternMap.DO_NOT_FORCE);
-        if (i_className == null) {
+        if ( usePartialData == null ) {
             return false;
+        } else {
+            return usePartialData.containsClassName(className);
         }
-        return partialData.i_isClassName(i_className);
     }
 
     @Override
     public Set<String> getExcludedClassNames() {
-        scanDirectClasses();
+        TargetsTableImpl useExcludedData = getExcludedData();
 
-        return excludedData.getClassNames();
+        if ( useExcludedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useExcludedData.getClassNames();
+        }
     }
 
     @Override
     public boolean isExcludedClassName(String className) {
-        scanDirectClasses();
+        TargetsTableImpl useExcludedData = getExcludedData();
 
-        String i_className = getClassInternMap().intern(className, Util_InternMap.DO_NOT_FORCE);
-        if (i_className == null) {
+        if ( useExcludedData == null ) {
             return false;
+        } else {
+            return useExcludedData.containsClassName(className);
         }
-        return excludedData.i_isClassName(i_className);
     }
 
     @Override
     public Set<String> getExternalClassNames() {
-        // External classes are not visited until the referenced
-        // scan is performed.        
-        scannedReferencedClasses();
+        TargetsTableImpl useExternalData = getExternalData();
 
-        return externalData.getClassNames();
+        if ( useExternalData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useExternalData.getClassNames();
+        }
     }
 
     @Override
     public boolean isExternalClassName(String className) {
-        // External classes are not visited until the referenced
-        // scan is performed.                
-        scannedReferencedClasses();
+        TargetsTableImpl useExternalData = getExternalData();
 
-        String i_className = getClassInternMap().intern(className, Util_InternMap.DO_NOT_FORCE);
-        if (i_className == null) {
+        if ( useExternalData == null ) {
             return false;
+        } else {
+            return useExternalData.containsClassName(className);
         }
-        return externalData.i_isClassName(i_className);
     }
 
+    /**
+     * <p>Answer the union of class names obtained from class sources having
+     * specified policies.</p>
+     *
+     * @param int Specification of which scan policies to select, as the bit-or
+     *        of the policy values.
+     *
+     * @return The union of class names obtained for the specified policies.
+     */
     @Override
-    public Set<String> getClassNames(int scanPolicy) {
-        return selectClassNames(scanPolicy);
+    public Set<String> getClassNames(int scanPolicies) {
+        return uninternClassNames( i_getClassNames(scanPolicies) );
     }
 
-    //
+    public Set<String> i_getClassNames(int scanPolicies) {
+        int nonEmptyCount = 0;
+        int totalCount = 0;
 
-    protected Map<String, String> i_referencedClassNames;
-
-    protected void i_removeReferencedClassName(String i_className) {
-        i_referencedClassNames.remove(i_className);
-    }
-
-    protected boolean i_addReferencedClassName(String i_className) {
-        if (i_scannedClassNames.containsKey(i_className)) {
-            return false;
+        Set<String> i_seed = null;
+        if ( ScanPolicy.SEED.accept(scanPolicies) ) {
+            TargetsTableImpl useSeedData = getSeedData();
+            if ( useSeedData != null ) {
+                i_seed = useSeedData.i_getClassNames();
+                if ( i_seed.isEmpty() ) {
+                    i_seed = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_seed.size();
+                }
+            }
         }
 
-        if (i_unresolvedClassNames.containsKey(i_className)) {
-            return false;
+        Set<String> i_partial = null;
+        if ( ScanPolicy.PARTIAL.accept(scanPolicies) ) {
+            TargetsTableImpl usePartialData = getPartialData();
+            if ( usePartialData != null ) {
+                i_partial = usePartialData.i_getClassNames();
+                if ( i_partial.isEmpty() ) {
+                    i_partial = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_partial.size();
+                }
+            }
         }
 
-        // System.out.println("Referenced class [ " + i_className + " ]");
-
-        return (i_referencedClassNames.put(i_className, i_className) == null);
-    }
-
-    public Set<String> getReferencedClassNames() {
-        // External classes are not visited until the referenced
-        // scan is performed.                
-        scanReferenceClasses();
-
-        Set<String> i_retrievedClassNames = i_referencedClassNames.keySet();
-        i_referencedClassNames = new IdentityHashMap<String, String>();
-        return i_retrievedClassNames;
-    }
-
-    //
-
-    protected final Map<String, String> i_unresolvedClassNames;
-
-    public Set<String> getUnresolvedClassNames() {
-        scanReferenceClasses();
-
-        return i_unresolvedClassNames.keySet();
-    }
-
-    protected boolean i_addUnresolvedClassName(String i_className) {
-        return (i_unresolvedClassNames.put(i_className, i_className) == null);
-    }
-
-    //
-
-    protected final UtilImpl_BidirectionalMap classSourceClassData;
-
-    protected boolean i_placeClass(String i_classSourceName, String i_className) {
-        return classSourceClassData.i_record(i_classSourceName, i_className);
-    }
-
-    protected UtilImpl_BidirectionalMap getClassSourceClassData() {
-        return classSourceClassData;
-    }
-
-    public Set<String> getScannedClassNames(String classSourceName) {
-        scanReferenceClasses();
-
-        return getClassSourceClassData().selectHeldOf(classSourceName);
-    }
-
-    public String getClassClassSourceName(String className) {
-        scanReferenceClasses();
-
-        Set<String> classSourceNames = getClassSourceClassData().selectHoldersOf(className);
-        for (String classSourceName : classSourceNames) {
-            return classSourceName;
+        Set<String> i_excluded = null;
+        if ( ScanPolicy.PARTIAL.accept(scanPolicies) ) {
+            TargetsTableImpl useExcludedData = getExcludedData();
+            if ( useExcludedData != null ) {
+                i_excluded = useExcludedData.i_getClassNames();
+                if ( i_excluded.isEmpty() ) {
+                    i_excluded = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_excluded.size();
+                }
+            }
         }
-        return null;
+
+        Set<String> i_external = null;
+        if ( ScanPolicy.EXTERNAL.accept(scanPolicies) ) {
+            TargetsTableImpl useExternalData = getExternalData();
+            if ( useExternalData != null ) {
+                i_external = useExternalData.i_getClassNames();
+                if ( i_external.isEmpty() ) {
+                    i_external = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_external.size();
+                }
+            }
+        }
+
+        if ( nonEmptyCount == 0 ) {
+            return Collections.emptySet();
+
+        } else if ( nonEmptyCount == 1 ) {
+            if ( i_seed != null ) {
+                return i_seed;
+            } else if ( i_partial != null ) {
+                return i_partial;
+            } else if ( i_excluded != null ) {
+                return i_excluded;
+            } else {
+                return i_external;
+            }
+
+        } else {
+            UtilImpl_IdentityStringSet i_result = new UtilImpl_IdentityStringSet(totalCount);
+
+            if ( i_seed != null ) {
+                i_result.addAll(i_seed);
+            }
+            if ( i_partial != null ) {
+                i_result.addAll(i_partial);
+            }
+            if ( i_excluded != null ) {
+                i_result.addAll(i_excluded);
+            }
+            if ( i_external != null ) {
+                i_result.addAll(i_external);
+            }
+
+            i_result.trimStorage();
+
+            return i_result;
+        }
     }
 
+    // Seed data specific annotation lookups.
     //
+    // Most lookups are for annotations in seed data.
 
     @Override
     public Set<String> getAnnotatedPackages() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.PACKAGE);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotatedTargets(AnnotationCategory.PACKAGE);
+        }
     }
 
     @Override
     public Set<String> getAnnotatedPackages(String annotationName) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.PACKAGE);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotatedTargets(AnnotationCategory.PACKAGE, annotationName);
+        }
     }
 
     @Override
     public Set<String> getPackageAnnotations() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(AnnotationCategory.PACKAGE);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.PACKAGE);
+        }
     }
 
     @Override
     public Set<String> getPackageAnnotations(String packageName) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(packageName, AnnotationCategory.PACKAGE);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.PACKAGE, packageName);
+        }
     }
 
     @Override
     public Set<String> getAnnotatedClasses() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.CLASS);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotatedTargets(AnnotationCategory.CLASS);
+        }
     }
 
     @Override
     public Set<String> getAnnotatedClasses(String annotationName) {
-        scanDirectClasses();
+        String methodName = "getAnnotatedClasses";
+        
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.CLASS);
+        if ( useSeedData == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER [ {0} ] RETURN [ 0 ]", annotationName);
+            }
+            return Collections.emptySet();
+
+        } else {
+            Set<String> result = useSeedData.getAnnotatedTargets(AnnotationCategory.CLASS, annotationName);
+
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "ENTER [ {0} ] RETURN [ {1} ]",
+                        new Object[] { annotationName, Integer.valueOf(result.size()) });
+                for ( String annotatedClassName : result ) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "  [ {0} ]", annotatedClassName);
+                }
+            }
+
+            return result;
+        }
+    }
+
+    @Override
+    public Set<String> getAnnotatedClasses(String classSourceName, String annotationName) {
+        Set<String> annotatedClassNames = getAnnotatedClasses(annotationName);
+        Set<String> classSourceClassNames = getInternalClassNames(classSourceName);
+
+        return ( UtilImpl_Utils.restrict(annotatedClassNames, classSourceClassNames) );
     }
 
     @Override
     public Set<String> getClassAnnotations() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(AnnotationCategory.CLASS);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.CLASS);
+        }
     }
 
     @Override
     public Set<String> getClassAnnotations(String className) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(className, AnnotationCategory.CLASS);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.CLASS, className);
+        }
     }
 
     public Set<String> getClassesWithFieldAnnotations() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.FIELD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotatedTargets(AnnotationCategory.FIELD);
+        }
     }
 
     @Override
     public Set<String> getClassesWithFieldAnnotation(String annotationName) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.FIELD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotatedTargets(AnnotationCategory.FIELD, annotationName);
+        }
     }
 
     @Override
     public Set<String> getFieldAnnotations() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(AnnotationCategory.FIELD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.FIELD);
+        }
     }
 
     @Override
     public Set<String> getFieldAnnotations(String className) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(className, AnnotationCategory.FIELD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.FIELD, className);
+        }
     }
 
     public Set<String> getClassesWithMethodAnnotations() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(AnnotationCategory.METHOD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotatedTargets(AnnotationCategory.METHOD);
+        }
     }
 
     @Override
     public Set<String> getClassesWithMethodAnnotation(String annotationName) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotatedTargets(annotationName, AnnotationCategory.METHOD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotatedTargets(AnnotationCategory.METHOD, annotationName);
+        }
     }
 
     @Override
     public Set<String> getMethodAnnotations() {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(AnnotationCategory.METHOD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.METHOD);
+        }
     }
 
     @Override
     public Set<String> getMethodAnnotations(String className) {
-        scanDirectClasses();
+        TargetsTableImpl useSeedData = getSeedData();
 
-        return seedData.getAnnotations(className, AnnotationCategory.METHOD);
+        if ( useSeedData == null ) {
+            return Collections.emptySet();
+        } else {
+            return useSeedData.getAnnotations(AnnotationCategory.METHOD, className);
+        }
     }
 
+    // Policy based annotation lookups ...
     //
+    // Answers are obtained from the results matching the
+    // scan policies, which are specified as a bit-wise or
+    // of scan policy values.
 
     @Override
     public Set<String> getAnnotatedPackages(int scanPolicies) {
@@ -909,8 +1128,32 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     @Override
+    public Set<String> getAnnotatedClasses(String classSourceName, String annotationName, int scanPolicies) {
+        Set<String> annotatedClassNames = getAnnotatedClasses(annotationName, scanPolicies);
+        Set<String> classSourceClassNames = getClassNames(classSourceName);
+
+        return (UtilImpl_Utils.restrict(annotatedClassNames, classSourceClassNames));
+    }
+
+    @Override
     public Set<String> getAnnotatedClasses(String annotationName, int scanPolicies) {
-        return selectAnnotatedTargets(annotationName, scanPolicies, AnnotationCategory.CLASS);
+        String methodName = "getAnnotatedClasses";
+        
+        Set<String> annotatedClassNames = selectAnnotatedTargets(annotationName, scanPolicies, AnnotationCategory.CLASS);
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Annotated classes [ {0} ] [ {1} ]: [ {2} ]",
+                new Object[] { annotationName,
+                               Integer.valueOf(scanPolicies),
+                               Integer.valueOf(annotatedClassNames.size()) });
+
+            for ( String annotatedClassName : annotatedClassNames ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "  [ {0} ]", annotatedClassName );
+            }
+        }
+
+        return annotatedClassNames;
     }
 
     @Override
@@ -967,54 +1210,408 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return selectAnnotations(className, scanPolicies, AnnotationCategory.METHOD);
     }
 
-    //
+    // Complex annotations accessors ...
 
-    @Override
-    public Set<String> getAnnotatedClasses(String classSourceName, String annotationName) {
-        Set<String> annotatedClassNames = getAnnotatedClasses(annotationName);
-        Set<String> classSourceClassNames = getScannedClassNames(classSourceName);
+    // The SEED data accessors are preserved as unit test entry points.
+    // These must ensure the scan has been performed.
 
-        return (restrict(annotatedClassNames, classSourceClassNames));
+    public Util_BidirectionalMap i_getPackageAnnotationData() {
+        return i_getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.PACKAGE);
     }
 
-    @Override
-    public Set<String> getAnnotatedClasses(String classSourceName, String annotationName, int scanPolicies) {
-
-        Set<String> annotatedClassNames = getAnnotatedClasses(annotationName, scanPolicies);
-        Set<String> classSourceClassNames = getScannedClassNames(classSourceName);
-
-        return (restrict(annotatedClassNames, classSourceClassNames));
+    public boolean i_packageHasAnnotation(String i_packageName, String i_annotationClassName) {
+        return i_getPackageAnnotationData().holds(i_packageName, i_annotationClassName);
     }
 
-    //
+    public Util_BidirectionalMap i_getClassAnnotationData() {
+        return i_getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.CLASS);
+    }
 
-    @Override
-    public Set<String> getAllInheritedAnnotatedClasses(String annotationName) {
-        scanDirectClasses();
+    public boolean i_classHasAnnotation(String i_className, String i_annotationClassName) {
+        return i_getClassAnnotationData().holds(i_className, i_annotationClassName);
+    }
 
-        Set<String> allClassNames = new HashSet<String>();
+    public Util_BidirectionalMap i_getFieldAnnotationData() {
+        return i_getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.FIELD);
+    }
 
-        // For each class which has the specified annotation as a class annotation ...
+    public boolean i_classHasFieldAnnotation(String i_className, String i_annotationClassName) {
+        return i_getFieldAnnotationData().holds(i_className, i_annotationClassName);
+    }
 
-        for (String className : getAnnotatedClasses(annotationName)) {
-            // Add that class as a declared target ...
-            allClassNames.add(className);
+    public Util_BidirectionalMap i_getMethodAnnotationData() {
+        return i_getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.METHOD);
+    }
 
-            // And add all subclasses as targets ...
-            allClassNames.addAll(getSubclassNames(className));
+    public boolean i_classHasMethodAnnotation(String i_className, String i_annotationClassName) {
+        return i_getMethodAnnotationData().holds(i_className, i_annotationClassName);
+    }
 
-            // The result of 'getSubclassnames' can never be null for
-            // a class which is recorded as a declared class annotation
-            // target.  That is only possible for a class which was
-            // scanned, and such never answer null from 'getSubclassNames'.
+    protected final UtilImpl_EmptyBidirectionalMap emptyPackageAnnotations;
+    protected final UtilImpl_EmptyBidirectionalMap emptyClassAnnotations;
+    protected final UtilImpl_EmptyBidirectionalMap emptyFieldAnnotations;
+    protected final UtilImpl_EmptyBidirectionalMap emptyMethodAnnotations;
+
+    protected Util_BidirectionalMap i_getAnnotationsMap(ScanPolicy policy, AnnotationCategory category) {
+        TargetsTableImpl policyData = getPolicyData(policy);
+
+        if ( policyData == null ) {
+            if ( category == AnnotationCategory.PACKAGE ) {
+                return emptyPackageAnnotations;
+            } else if ( category == AnnotationCategory.CLASS ) {
+                return emptyClassAnnotations;
+            } else if ( category == AnnotationCategory.FIELD ) {
+                return emptyFieldAnnotations;
+            } else if ( category == AnnotationCategory.METHOD ) {
+                return emptyMethodAnnotations;
+            } else {
+                throw new IllegalArgumentException("Unknown annotation category [ " + category + " ]");
+            }
+
+        } else {
+            return policyData.i_getAnnotationData(category);
+        }
+    }
+
+    protected Set<String> selectAnnotations(int scanPolicies, AnnotationCategory category) {
+        return uninternClassNames( i_selectAnnotations(scanPolicies, category) );
+    }
+
+    protected Set<String> i_selectAnnotations(int scanPolicies, AnnotationCategory category) {
+        int nonEmptyCount = 0;
+        int totalCount = 0;
+
+        Set<String> i_selectedSeed = null;
+        if ( ScanPolicy.SEED.accept(scanPolicies) ) {
+            TargetsTableImpl useSeedData = getSeedData();
+            if ( useSeedData != null ) {
+                i_selectedSeed = useSeedData.i_getAnnotations(category);
+                if ( i_selectedSeed.isEmpty() ) {
+                    i_selectedSeed = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedSeed.size();
+                }
+            }
         }
 
-        return allClassNames;
+        Set<String> i_selectedPartial = null;
+        if ( ScanPolicy.PARTIAL.accept(scanPolicies) ) {
+            TargetsTableImpl usePartialData = getPartialData();
+            if ( usePartialData != null ) {
+                i_selectedPartial = usePartialData.i_getAnnotations(category);
+                if ( i_selectedPartial.isEmpty() ) {
+                    i_selectedPartial = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedPartial.size();
+                }
+            }
+        }
+
+        Set<String> i_selectedExcluded = null;
+        if ( ScanPolicy.EXCLUDED.accept(scanPolicies) ) {
+            TargetsTableImpl useExcludedData = getExcludedData();
+            if ( useExcludedData != null ) {
+                i_selectedExcluded = useExcludedData.i_getAnnotations(category);
+                if ( i_selectedExcluded.isEmpty() ) {
+                    i_selectedExcluded = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedExcluded.size();
+                }
+            }
+        }
+
+        if ( nonEmptyCount == 0 ) {
+            return Collections.emptySet();
+
+        } else if ( nonEmptyCount == 1 ) {
+            if ( i_selectedSeed != null ) {
+                return i_selectedSeed;
+            } else if ( i_selectedPartial != null ) {
+                return i_selectedPartial;
+            } else {
+                return i_selectedExcluded ;
+            }
+
+        } else {
+            // Handles both the case when all three are requested and
+            // when just two are requested.  When just two are requested,
+            // or when just two are non-empty, there is one extra call
+            // to 'addAll'.
+
+            UtilImpl_IdentityStringSet i_result = new UtilImpl_IdentityStringSet(totalCount);
+
+            if ( i_selectedSeed != null ) {
+                i_result.addAll(i_selectedSeed);
+            }
+            if ( i_selectedPartial != null ) {
+                i_result.addAll(i_selectedPartial);
+            }
+            if ( i_selectedExcluded != null ) {
+                i_result.addAll(i_selectedExcluded);
+            }
+
+            i_result.trimStorage();
+
+            return i_result;
+        }
     }
 
+    protected Set<String> selectAnnotations(String classOrPackageName,
+                                            int scanPolicies,
+                                            AnnotationCategory category) {
+
+        // There is a direct line into this call from public APIs (e.g., from getMethodAnnotations).
+        // To this point, no steps have been taken to ensure that scans have been performed,
+        // meaning, no steps have been taken to ensure the intern maps are populated.
+
+        if ( scanPolicies == 0 ) {
+            return Collections.emptySet();
+        } else if ( ScanPolicy.EXTERNAL.accept(scanPolicies) ) {
+            ensureExternalResults();
+        } else {
+            ensureInternalResults();
+        }
+
+        String i_classOrPackageName = internClassName(classOrPackageName, Util_InternMap.DO_NOT_FORCE);
+        if ( i_classOrPackageName == null ) {
+            return Collections.emptySet();
+        }
+
+        return uninternClassNames( i_selectAnnotations(i_classOrPackageName, scanPolicies, category) );
+    }
+
+    protected Set<String> i_selectAnnotations(String i_classOrPackageName,
+                                              int scanPolicies,
+                                              AnnotationCategory category) {
+
+        // Only one of the result buckets can have annotations results for
+        // a given target.
+        if ( ScanPolicy.SEED.accept(scanPolicies) ) {
+            TargetsTableImpl useSeedData = getSeedData();
+            if ( useSeedData != null ) {
+                Set<String> i_selected = useSeedData.i_getAnnotations(category, i_classOrPackageName);
+                if ( !i_selected.isEmpty() ) {
+                    return i_selected;
+                }
+            }
+        }
+
+        if ( ScanPolicy.PARTIAL.accept(scanPolicies) ) {
+            TargetsTableImpl usePartialData = getPartialData();
+            if ( usePartialData != null ) {
+                Set<String> i_selected = usePartialData.i_getAnnotations(category, i_classOrPackageName);
+                if ( !i_selected.isEmpty() ) {
+                    return i_selected;
+                }
+            }
+        }
+
+        if ( ScanPolicy.EXCLUDED.accept(scanPolicies) ) {
+            TargetsTableImpl useExcludedData = getExcludedData();
+            if ( useExcludedData != null ) {
+                Set<String> i_selected = useExcludedData.i_getAnnotations(category, i_classOrPackageName);
+                if ( !i_selected.isEmpty() ) {
+                    return i_selected;
+                }
+            }
+        }
+
+        return Collections.emptySet();
+    }
+
+    protected Set<String> selectAnnotatedTargets(int scanPolicies, AnnotationCategory category) {
+        return uninternClassNames( i_selectAnnotatedTargets(scanPolicies, category) );
+    }
+
+    protected Set<String> i_selectAnnotatedTargets(int scanPolicies, AnnotationCategory category) {
+        int nonEmptyCount = 0;
+        int totalCount = 0;
+
+        Set<String> i_selectedSeed = null;
+        if ( ScanPolicy.SEED.accept(scanPolicies) ) {
+            TargetsTableImpl useSeedData = getSeedData();
+            if ( useSeedData != null ) {
+                i_selectedSeed = useSeedData.getAnnotatedTargets(category);
+                if ( i_selectedSeed.isEmpty() ) {
+                    i_selectedSeed = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedSeed.size();
+                }
+            }
+        }
+
+        Set<String> i_selectedPartial = null;
+        if ( ScanPolicy.PARTIAL.accept(scanPolicies) ) {
+            TargetsTableImpl usePartialData = getPartialData();
+            if ( usePartialData != null ) {
+                i_selectedPartial = usePartialData.getAnnotatedTargets(category);
+                if ( i_selectedPartial.isEmpty() ) {
+                    i_selectedPartial = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedPartial.size();
+                }
+            }
+        }
+
+        Set<String> i_selectedExcluded = null;
+        if ( ScanPolicy.EXCLUDED.accept(scanPolicies) ) {
+            TargetsTableImpl useExcludedData = getExcludedData();
+            if ( useExcludedData != null ) {
+                i_selectedExcluded = useExcludedData.getAnnotatedTargets(category);
+                if ( i_selectedExcluded.isEmpty() ) {
+                    i_selectedExcluded = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedExcluded.size();
+                }
+            }
+        }
+
+        if ( nonEmptyCount == 0 ) {
+            return Collections.emptySet();
+
+        } else if ( nonEmptyCount == 1 ) {
+            if ( i_selectedSeed != null ) {
+                return i_selectedSeed;
+            } else if ( i_selectedPartial != null ) {
+                return i_selectedPartial;
+            } else {
+                return i_selectedExcluded;
+            }
+
+        } else {
+            UtilImpl_IdentityStringSet i_result = new UtilImpl_IdentityStringSet(totalCount);
+
+            if ( i_selectedSeed != null ) {
+                i_result.addAll(i_selectedSeed);
+            }
+            if ( i_selectedPartial != null ) {
+                i_result.addAll(i_selectedPartial);
+            }
+            if ( i_selectedExcluded != null ) {
+                i_result.addAll(i_selectedExcluded);
+            }
+
+            i_result.trimStorage();
+
+            return i_result;
+        }
+    }
+
+    protected Set<String> selectAnnotatedTargets(String annotationName,
+                                                 int scanPolicies,
+                                                 AnnotationCategory category) {
+
+        // There is a direct line into this call from public APIs (e.g., from getMethodAnnotations).
+        // To this point, no steps have been taken to ensure that scans have been performed,
+        // meaning, no steps have been taken to ensure the intern maps are populated.
+
+        if ( scanPolicies == 0 ) {
+            return Collections.emptySet();
+        } else if ( ScanPolicy.EXTERNAL.accept(scanPolicies) ) {
+            ensureExternalResults();
+        } else {
+            ensureInternalResults();
+        }
+
+        String i_annotationName = internClassName(annotationName, Util_InternMap.DO_NOT_FORCE);
+        if ( i_annotationName == null ) {
+            return Collections.emptySet();
+        } else {
+            return uninternClassNames( i_selectAnnotatedTargets(i_annotationName, scanPolicies, category) );
+        }
+    }
+
+    protected Set<String> i_selectAnnotatedTargets(String i_annotationName,
+                                                   int scanPolicies,
+                                                   AnnotationCategory category) {
+
+        int nonEmptyCount = 0;
+        int totalCount = 0;
+
+        Set<String> i_selectedSeed = null;
+        if ( ScanPolicy.SEED.accept(scanPolicies) ) {
+            TargetsTableImpl useSeedData = getSeedData();
+            if ( useSeedData != null ) {
+                i_selectedSeed = useSeedData.getAnnotatedTargets(category, i_annotationName);
+                if ( i_selectedSeed.isEmpty() ) {
+                    i_selectedSeed = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedSeed.size();
+                }
+            }
+        }
+
+        Set<String> i_selectedPartial = null;
+        if ( ScanPolicy.PARTIAL.accept(scanPolicies) ) {
+            TargetsTableImpl usePartialData = getPartialData();
+            if ( usePartialData != null ) {
+                i_selectedPartial = usePartialData.getAnnotatedTargets(category, i_annotationName);
+                if ( i_selectedPartial.isEmpty() ) {
+                    i_selectedPartial = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedPartial.size();
+                }
+            }
+        }
+
+        Set<String> i_selectedExcluded = null;
+        if ( ScanPolicy.EXCLUDED.accept(scanPolicies) ) {
+            TargetsTableImpl useExcludedData = getExcludedData();
+            if ( useExcludedData != null ) {
+                i_selectedExcluded = useExcludedData.getAnnotatedTargets(category, i_annotationName);
+                if ( i_selectedExcluded.isEmpty() ) {
+                    i_selectedExcluded = null;
+                } else {
+                    nonEmptyCount++;
+                    totalCount += i_selectedExcluded.size();
+                }
+            }
+        }
+
+        if ( nonEmptyCount == 0 ) {
+            return Collections.emptySet();
+
+        } else if ( nonEmptyCount == 1 ) {
+            if ( i_selectedSeed != null ) {
+                return i_selectedSeed;
+            } else if ( i_selectedPartial != null ) {
+                return i_selectedPartial;
+            } else {
+                return i_selectedExcluded;
+            }
+
+        } else {
+            UtilImpl_IdentityStringSet i_result = new UtilImpl_IdentityStringSet(totalCount);
+
+            if ( i_selectedSeed != null ) {
+                i_result.addAll(i_selectedSeed);
+            }
+            if ( i_selectedPartial != null ) {
+                i_result.addAll(i_selectedPartial);
+            }
+            if ( i_selectedExcluded != null ) {
+                i_result.addAll(i_selectedExcluded);
+            }
+
+            i_result.trimStorage();
+
+            return i_result;
+        }
+    }
+
+    // Special helpers for obtaining inherited annotations ...
+
     @Override
-    public Set<String> getAllInheritedAnnotatedClasses(String annotationName, int scanResults) {
-        return getAllInheritedAnnotatedClasses(annotationName, scanResults, scanResults);
+    public Set<String> getAllInheritedAnnotatedClasses(String annotationName, int scanPolicies) {
+        return getAllInheritedAnnotatedClasses(annotationName, scanPolicies, scanPolicies);
     }
 
     @Override
@@ -1022,13 +1619,11 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
                                                        int declarerScanPolicies,
                                                        int inheritorScanPolicies) {
 
-        scanDirectClasses();
-
         Set<String> allClassNames = new HashSet<String>();
 
         // For each class which has the specified annotation as a class annotation ...
 
-        for (String className : getAnnotatedClasses(annotationName, declarerScanPolicies)) {
+        for ( String className : getAnnotatedClasses(annotationName, declarerScanPolicies) ) {
             // Add that class as a declared target ...
             allClassNames.add(className);
 
@@ -1043,886 +1638,295 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         Set<String> regionClassNames = getClassNames(inheritorScanPolicies);
 
-        return restrict(allClassNames, regionClassNames);
+        return UtilImpl_Utils.restrict(allClassNames, regionClassNames);
     }
 
-    //
+    // Class relationship data for all scanned classes.
 
-    protected final Map<String, String> i_superclassNameMap;
+    @Override
+    public Set<String> getAllInheritedAnnotatedClasses(String annotationName) {
+        Set<String> allClassNames = new HashSet<String>();
 
-    public String i_getSuperclassName(String i_subclassName) {
-        return i_superclassNameMap.get(i_subclassName);
+        // For each class which has the specified annotation as a class annotation ...
+
+        for ( String className : getAnnotatedClasses(annotationName) ) {
+            // Add that class as a declared target ...
+            allClassNames.add(className);
+
+            // And add all subclasses as targets ...
+            allClassNames.addAll( getSubclassNames(className) );
+
+            // The result of 'getSubclassnames' can never be null for
+            // a class which is recorded as a declared class annotation
+            // target.  That is only possible for a class which was
+            // scanned, and such never answer null from 'getSubclassNames'.
+        }
+
+        return allClassNames;
     }
 
     @Override
     public String getSuperclassName(String subclassName) {
-        return i_getSuperclassName(internClassName(subclassName));
+        return getClassTable().getSuperclassName(subclassName);
     }
 
-    public Map<String, String> getSuperclassNames() {
-        scanReferenceClasses();
-
-        return i_superclassNameMap;
+    public String i_getSuperclassName(String i_subclassName) {
+        return getClassTable().i_getSuperclassName(i_subclassName);
     }
 
-    // TODO should this clear the subclass names map?
-
-    // When reading from serialization, don't set the referenced classes.
-    protected void i_setSuperclassName(String i_subclassName, String i_superclassName) {
-        i_superclassNameMap.put(i_subclassName, i_superclassName);
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Subclass [ {1} ] has superclass [ {2} ]",
-                                              new Object[] { getHashText(), i_subclassName, i_superclassName }));
-        }
+    public Map<String, String> i_getSuperclassNames() {
+        return getClassTable().i_getSuperclassNames();
     }
 
-    //
-
-    protected Map<String, String[]> i_interfaceNameMap;
-
-    protected String[] i_getInterfaceNames(String i_classOrInterfaceName) {
-        return i_interfaceNameMap.get(i_classOrInterfaceName);
+    @Override
+    public String[] getInterfaceNames(String className) {
+        return getClassTable().getInterfaceNames(className);
     }
 
-    public String[] getInterfaceNames(String classOrInterfaceName) {
-        scanReferenceClasses();
-
-        return i_getInterfaceNames(internClassName(classOrInterfaceName));
+    protected String[] i_getInterfaceNames(String i_className) {
+        return getClassTable().i_getInterfaceNames(i_className);
     }
 
-    public Map<String, String[]> getInterfaceNames() {
-        scanReferenceClasses();
-
-        return i_interfaceNameMap;
+    protected Map<String, String[]> i_getInterfaceNames() {
+        return getClassTable().i_getInterfaceNames();
     }
-
-    protected void i_setInterfaceNames(String i_classOrInterfaceName, String[] i_interfaceNames) {
-        i_interfaceNameMap.put(i_classOrInterfaceName, i_interfaceNames);
-
-        if (tc.isDebugEnabled()) {
-            for (String i_interfaceName : i_interfaceNames) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Child [ {1} ] has interface [ {2} ]",
-                                                  new Object[] { getHashText(), i_classOrInterfaceName, i_interfaceName }));
-            }
-        }
-    }
-
-    //
-    // Map direction is: implementer to implemented
-    protected IdentityHashMap<String, Set<String>> i_allImplementersMap;
 
     @Override
     public Set<String> getAllImplementorsOf(String interfaceName) {
-        scanReferenceClasses();
-
-        String i_interfaceName = getClassInternMap().intern(interfaceName, Util_InternMap.DO_NOT_FORCE);
-        if (i_interfaceName == null) {
-            return UtilImpl_EmptyStringSet.INSTANCE; // No data is available for a result.
+        String i_interfaceName = internClassName(interfaceName, Util_InternMap.DO_NOT_FORCE);
+        if ( i_interfaceName == null ) {
+            return Collections.emptySet();
         }
 
-        if (this.i_allImplementersMap == null) {
-            createAllImplementersMap();
-        }
-
-        // Map direction is: implementer to implemented
-        Set<String> result = this.i_allImplementersMap.get(i_interfaceName);
-        if (result == null) {
-            result = Collections.emptySet();
-        }
-
-        return result;
+        return getClassTable().i_getAllImplementorsOf(i_interfaceName);
     }
-
-    protected void createAllImplementersMap() {
-        UtilImpl_InternMap useClassNameMap = getClassInternMap();
-        UtilImpl_Factory useUtilFactory = useClassNameMap.getFactory();
-
-        // Map direction is: implementer to implemented
-        this.i_allImplementersMap = new IdentityHashMap<String, Set<String>>();
-
-        // Do NOT use the direct interface map to seed table generation;
-        // the direct interface map only locates classes which are immediate
-        // implementers.
-        //
-        // All classes which are immediate implementers ... or which are subclasses ...
-        // must be scanned!  A subclass may be an indirect implementer, through
-        // one of it's superclasses.
-
-        // A class implements the interfaces that it declares,
-        // and implements and superinterfaces of the interfaces that it declares,
-        // and implements the interfaces implemented by its superclasses.
-
-        for (String i_implementerName : this.i_scannedClassNames.keySet()) {
-            // System.out.println("Recording implements of [ " + i_implementerName + " ]");
-
-            String i_nextImplementsSource = i_implementerName;
-
-            while (i_nextImplementsSource != null) {
-                String[] i_immediateImplements = this.i_interfaceNameMap.get(i_nextImplementsSource);
-                if (i_immediateImplements != null) {
-                    for (String i_immediateImplement : i_immediateImplements) {
-                        Set<String> implementers = i_allImplementersMap.get(i_immediateImplement);
-                        if (implementers == null) {
-                            implementers = useUtilFactory.createIdentityStringSet();
-                            i_allImplementersMap.put(i_immediateImplement, implementers);
-                        }
-                        implementers.add(i_implementerName);
-                    }
-                }
-
-                i_nextImplementsSource = this.i_superclassNameMap.get(i_nextImplementsSource);
-            }
-        }
-    }
-
-    // Map direction is: superclass to subclass
-    protected IdentityHashMap<String, Set<String>> i_descendantsMap;
 
     @Override
     public Set<String> getSubclassNames(String superclassName) {
-        scanReferenceClasses();
-
-        String i_superclassName = getClassInternMap().intern(superclassName, Util_InternMap.DO_NOT_FORCE);
-        if (i_superclassName == null) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
-        }
-
-        if (i_descendantsMap == null) {
-            createDescendantsMap();
-        }
-
-        // Map direction is: superclass to subclass
-        Set<String> result = i_descendantsMap.get(i_superclassName);
-        if (result == null) {
-            result = Collections.emptySet();
-        }
-        return result;
+        return getClassTable().getSubclassNames(superclassName);
     }
 
-    protected void createDescendantsMap() {
-        UtilImpl_InternMap useClassNameMap = getClassInternMap();
-        UtilImpl_Factory useUtilFactory = useClassNameMap.getFactory();
-
-        // Map direction is: superclass to subclass
-        this.i_descendantsMap = new IdentityHashMap<String, Set<String>>();
-
-        // For each class recorded as a subclass ...
-        for (String i_subclassName : i_superclassNameMap.keySet()) {
-
-            // Start with the immediate super class of that subclass, and walk
-            // upwards to the ascendant super classes.
-            //
-            // For each super class, either as an immediate super class or as an
-            // ancestral super class, record the subclass as a descendant of the
-            // superclass.
-
-            String i_superclassName = i_subclassName;
-            while ((i_superclassName = i_superclassNameMap.get(i_superclassName)) != null) {
-                Set<String> subclasses = i_descendantsMap.get(i_superclassName);
-                if (subclasses == null) {
-                    subclasses = useUtilFactory.createIdentityStringSet();
-                    i_descendantsMap.put(i_superclassName, subclasses);
-                }
-                subclasses.add(i_subclassName);
-            }
-
-            // Note: The irreflexive closure is generated: A class is not recorded
-            //       as the subclass of itself.
+    @Override
+    public boolean isInstanceOf(String candidateClassName, Class<?> classOrInterface) {
+        return isInstanceOf( candidateClassName, classOrInterface.getName(), classOrInterface.isInterface() );
+    }
+    
+    @Override
+    public boolean isInstanceOf(String candidateClassName, String criterionClassName, boolean isInterface) {
+        String i_classOrInterfaceName = internClassName(criterionClassName, Util_InternMap.DO_NOT_FORCE);
+        if ( i_classOrInterfaceName == null ) {
+            return false;
         }
+
+        String i_candidateClassName = internClassName(candidateClassName, Util_InternMap.DO_NOT_FORCE);
+        if ( i_candidateClassName == null ) {
+            return false;
+        }
+
+        return getClassTable().i_isInstanceOf(i_candidateClassName,
+                                              i_classOrInterfaceName,
+                                              isInterface);
     }
 
     //
 
-    public void logState() {
-        TraceComponent stateLogger = AnnotationServiceImpl_Logging.stateLogger;
+    @Override
+    public Integer i_getModifiers(String i_className) {
+        return getClassTable().i_getModifiers(i_className);
+    }
 
-        if (stateLogger.isDebugEnabled()) {
+    @Override
+    public Integer getModifiers(String className) {
+        String i_className = internClassName(className, Util_InternMap.DO_NOT_FORCE);
+        if ( i_className == null ) {
+            return null;
+        }
+        return getClassTable().i_getModifiers(i_className);
+    }
+
+    @Override
+    public int i_getModifiersValue(String i_className) {
+        return getClassTable().i_getModifiersValue(i_className);
+    }
+
+    @Override
+    public int getModifiersValue(String className) {
+        String i_className = internClassName(className, Util_InternMap.DO_NOT_FORCE);
+        if ( i_className == null ) {
+            return 0;
+        }
+        return getClassTable().i_getModifiersValue(i_className);
+    }
+
+    @Override
+    public EnumSet<AnnotationTargets_OpCodes> i_getModifiersSet(String i_className) {
+        Integer modifiers = i_getModifiers(i_className);
+        if ( modifiers == null ) {
+            return null;
+        } else {
+            return AnnotationTargets_OpCodes.split( modifiers.intValue() );
+        }
+    }
+
+    @Override
+    public EnumSet<AnnotationTargets_OpCodes> getModifiersSet(String className) {
+        String i_className = internClassName(className, Util_InternMap.DO_NOT_FORCE);
+        if ( i_className == null ) {
+            return null;
+        }
+        return i_getModifiersSet(i_className);
+    }
+
+    @Override
+    public EnumSet<AnnotationTargets_OpCodes> i_getModifiersSet(
+        String i_className,
+        EnumSet<AnnotationTargets_OpCodes> modifierSet) {
+
+        Integer modifiers = i_getModifiers(i_className);
+        if ( modifiers == null ) {
+            return null;
+        } else {
+            return AnnotationTargets_OpCodes.place( modifiers.intValue(), modifierSet );
+        }
+    }
+
+    @Override
+    public EnumSet<AnnotationTargets_OpCodes> getModifiersSet(
+        String className,
+        EnumSet<AnnotationTargets_OpCodes> modifierSet) {
+
+        String i_className = internClassName(className, Util_InternMap.DO_NOT_FORCE);
+        if ( i_className == null ) {
+            return null;
+        }
+        return i_getModifiersSet(i_className, modifierSet);
+    }
+
+    @Override
+    public boolean isAbstract(String className) {
+        Integer modifiers = getModifiers(className);
+        if ( modifiers == null ) {
+            return false;
+        } else {
+            return ( (modifiers.intValue() & Opcodes.ACC_ABSTRACT) != 0 );
+        }
+    }
+
+    @Override
+    public boolean isInterface(String className) {
+        Integer modifiers = getModifiers(className);
+        if ( modifiers == null ) {
+            return false;
+        } else {
+            return ( (modifiers.intValue() & Opcodes.ACC_INTERFACE) != 0 );
+        }
+    }
+
+    // Logging ...
+
+    protected void log(Logger useLogger,
+                       TargetCache_Options cacheOptions) {
+
+        String methodName = "log";
+
+        if ( !useLogger.isLoggable(Level.FINER) ) {
+            return;
+        }
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Cache Options:");
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Disabled:      [ {0} ]", Boolean.valueOf(cacheOptions.getDisabled()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Directory:     [ {0} ]", cacheOptions.getDir());
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Read-Only:     [ {0} ]", Boolean.valueOf(cacheOptions.getReadOnly()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Always Valid:  [ {0} ]", Boolean.valueOf(cacheOptions.getAlwaysValid()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Validate:      [ {0} ]", Boolean.valueOf(cacheOptions.getValidate()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Write Threads: [ {0} ]", Integer.valueOf(cacheOptions.getWriteThreads()));
+    }
+
+    //
+
+    @Override
+    public void logState() {
+        if (stateLogger.isLoggable(Level.FINER) ) {
             log(stateLogger);
         }
     }
 
-    public void log(TraceComponent logger) {
-        Tr.debug(logger, MessageFormat.format("BEGIN STATE [ {0} ]", getHashText()));
+    @Override
+    public void log(Logger useLogger) {
+        String methodName = "log";
 
-        Tr.debug(logger, MessageFormat.format("  Is Detail Enabled [ {0} ]",
-                                              Boolean.valueOf(getIsDetailEnabled())));
-
-        logScannedClasses(logger);
-        logClassClassSources(logger);
-        logSuperclassNames(logger);
-        logInterfaceNames(logger);
-
-        logUnresolvedPackages(logger);
-        logUnresolvedClasses(logger);
-
-        seedData.log(logger);
-        partialData.log(logger);
-        excludedData.log(logger);
-        externalData.log(logger);
-
-        Tr.debug(logger, MessageFormat.format("END STATE [ {0} ]", getHashText()));
-    }
-
-    public void logScannedClasses(TraceComponent logger) {
-        Tr.debug(logger, "Scanned classes: BEGIN");
-
-        for (String className : getScannedClassNames()) {
-            Tr.debug(logger, MessageFormat.format("  [ {0} ]", className));
+        if ( !useLogger.isLoggable(Level.FINER) ) {
+            return;
         }
 
-        Tr.debug(logger, "Scanned classes: END");
-    }
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "BEGIN STATE [ {0} ]", getHashText());
 
-    public void logClassClassSources(TraceComponent logger) {
-        Tr.debug(logger, "Class Class Sources: BEGIN");
+        // Scan flags: Used to distinguish the limited and specific scans.
 
-        for (String className : getScannedClassNames()) {
-            Tr.debug(logger, MessageFormat.format("  [ {0} ]: [ {1} ]",
-                                                  new Object[] { className, getClassClassSourceName(className) }));
+        if ( limitedScan ) {
+            useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Limited scan");
+        }
+        if ( specificScan ) {
+            useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Specific scan");
         }
 
-        Tr.debug(logger, "Class Class Sources: END");
-    }
+        // Overall scan intermediate settings:
+        // The root class source is set before the internal scan step;
+        // The overall scanner is set by the internal scan step.
+        // Both the root class source and the overall scanner are cleared
+        // by the external scan step.
 
-    public void logSuperclassNames(TraceComponent logger) {
-        Tr.debug(logger, "Superclasses: BEGIN");
-
-        Object[] logParms = new Object[] { null, null };
-
-        Map<String, String> mapToIterate = i_superclassNameMap == null ? Collections.<String, String> emptyMap() : i_superclassNameMap;
-
-        for (Map.Entry<String, String> superclassNameEntry : mapToIterate.entrySet()) {
-            String subclassName = superclassNameEntry.getKey();
-            String superclassName = superclassNameEntry.getValue();
-
-            logParms[0] = subclassName;
-            logParms[1] = superclassName;
-
-            Tr.debug(logger, MessageFormat.format("  Subclass [ {0} ] Superclass [ {1} ]", logParms));
+        if ( rootClassSource != null ) {
+            useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Root class source [ " + rootClassSource + " ]");
+        }
+        if ( overallScanner != null ) {
+            useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Overall scanner still present");
         }
 
-        Tr.debug(logger, "Superclasses: END");
-    }
+        // Internal results: Which are set depends on the
+        // scan type and scan phase.
+        //
+        // Before any scan has been performed, none are set.
+        //
+        // After the internal phase of an overall scan,
+        // none, some, or all may be set.
+        //
+        // After limited and specific scans, seed results are
+        // set, and partial and excluded results are null.
 
-    public void logInterfaceNames(TraceComponent logger) {
-        Tr.debug(logger, "Interfaces: BEGIN");
-
-        Object[] logParms = new Object[] { null, null };
-
-        Map<String, String[]> mapToIterate = i_interfaceNameMap == null ? Collections.<String, String[]> emptyMap() : i_interfaceNameMap;
-
-        for (Map.Entry<String, String[]> interfaceNamesEntry : mapToIterate.entrySet()) {
-            String childName = interfaceNamesEntry.getKey();
-            String[] interfaceNames = interfaceNamesEntry.getValue();
-
-            logParms[0] = childName;
-            logParms[1] = interfaceNames;
-
-            Tr.debug(logger, MessageFormat.format("  Child [ {0} ] Interfaces [ {1} ]", logParms));
+        if ( seedData != null ) {
+            seedData.log(useLogger);
+        }
+        if ( partialData != null ) {
+            partialData.log(useLogger);
+        }
+        if ( excludedData != null ) {
+            excludedData.log(useLogger);
         }
 
-        Tr.debug(logger, "Interfaces: END");
-    }
+        // Overall scan results.  Particular rules apply to both
+        // of these values ...
 
-    public void logUnresolvedPackages(TraceComponent logger) {
-        Tr.debug(logger, "Unresolved packages: BEGIN");
-
-        for (String packageName : getUnresolvedPackageNames()) {
-            Tr.debug(logger, MessageFormat.format("  [ {0} ]", packageName));
+        // ... class data is null pre-scan, is set to a partially completed
+        // value by the internal scan phase, and is completed by the
+        // external scan phase.
+        if ( classData != null ) {
+            classData.log(useLogger);
         }
 
-        Tr.debug(logger, "Unresolved packages: END");
-    }
-
-    public void logUnresolvedClasses(TraceComponent logger) {
-        Tr.debug(logger, "Unresolved classes: BEGIN");
-
-        for (String className : getUnresolvedClassNames()) {
-            Tr.debug(logger, MessageFormat.format("  [ {0} ]", className));
+        // ...external data is null pre-scan, and is set after the external
+        // scan phase.
+        if ( externalData != null ) {
+            externalData.log(useLogger);
         }
 
-        Tr.debug(logger, "Unresolved classes: END");
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "END STATE [ {0} ]", getHashText());
     }
 
     //
 
-    protected Set<String> restrict(Set<String> candidates, Set<String> allowed) {
-        if ((candidates == null) || (allowed == null) || candidates.isEmpty() || allowed.isEmpty()) {
-            return UtilImpl_EmptyStringSet.INSTANCE;
-        }
-
-        Set<String> restrictedSet = new HashSet<String>();
-
-        for (String candidate : candidates) {
-            if (allowed.contains(candidate)) {
-                restrictedSet.add(candidate);
-            }
-        }
-
-        return restrictedSet;
-    }
-
-    @Override
-    public boolean isInstanceOf(String className, Class<?> targetClass) {
-        scanReferenceClasses();
-
-        String i_className = internClassName(className, false);
-        if ( i_className == null ) {
-            return false; // The immediate class is not in the targets data.
-        }
-
-        String i_targetClassName = internClassName(targetClass.getName(), false);
-        if ( i_targetClassName == null ) {
-            return false; // The target class is not in the targets data.
-        }
-
-        if ( i_className == i_targetClassName ) {
-            return true; // The immediate class is the target class.
-        }
-
-        String i_targetInterfaceName = null;
-        if ( targetClass.isInterface() ) {
-            i_targetInterfaceName = i_targetClassName;
-            i_targetClassName = null;
-        }
-
-        while ( i_className != null ) {
-            if ( i_targetInterfaceName != null ) {
-                // Match on one of the interfaces of the next super class.
-
-                String[] i_interfaces = i_getInterfaceNames(i_className);
-                if ( i_interfaces != null ) {
-                    for ( String i_interface : i_interfaces ) {
-                        if ( i_targetInterfaceName == i_interface ) {
-                            return true;
-                        }
-                    }
-                }
-
-            } else if ( i_className == i_targetClassName ) {
-                return true;
-            }
-
-            i_className = i_getSuperclassName(i_className);
-
-            // TODO: This should build a table of visited super classes.  An
-            //       infinite loop will result from a class inheritance loop.
-            //       We need to detect that case and fail gracefully.
-        }
-
-        return false;
-    }
-
-    /**
-     * <p>Record the annotation to the specified table. Scan policies SEED, PARTIAL, and EXCLUDED
-     * are allowed. Scan policy EXTERNAL should never be used as a parameter.</p>
-     * 
-     * @param policy
-     *            The policy of the class, as derived from the class source which present
-     *            the class (SEED, PARTIAL, EXCLUDED, or EXTERNAL).
-     * @param category
-     *            The category of the annotation (PACKAGE, CLASS, METHOD, or FIELD).
-     * @param i_targetName
-     *            The name of the class or package having the annotation.
-     * @param i_annotationClassName
-     *            The name of the class of the annotation.
-     */
-    protected void i_recordAnnotation(ScanPolicy policy,
-                                      AnnotationCategory category,
-                                      String i_targetName,
-                                      String i_annotationClassName) {
-
-        UtilImpl_BidirectionalMap annoMap = doGetAnnotationsMap(policy, category);
-
-        annoMap.record(i_targetName, i_annotationClassName);
-
-        i_addReferencedClassName(i_annotationClassName);
-    }
-
-    // Detail (field and method) enablement ...
-
-    protected final boolean isDetailEnabled;
-
-    @Override
-    public boolean getIsDetailEnabled() {
-        return isDetailEnabled;
-    }
-
-    // Policy data fan-outs ...
-
-    protected final AnnotationTargetsImpl_PolicyData seedData;
-    protected final AnnotationTargetsImpl_PolicyData partialData;
-    protected final AnnotationTargetsImpl_PolicyData excludedData;
-    protected final AnnotationTargetsImpl_PolicyData externalData;
-
-    // Version for results retrieval ... trigger a scan.
-    protected AnnotationTargetsImpl_PolicyData getPolicyData(ScanPolicy policy) {
-        if (policy == ScanPolicy.SEED) {
-            scanDirectClasses();
-            return seedData;
-
-        } else if (policy == ScanPolicy.PARTIAL) {
-            scanDirectClasses();
-            return partialData;
-
-        } else if (policy == ScanPolicy.EXCLUDED) {
-            scanDirectClasses();
-            return excludedData;
-
-        } else if (policy == ScanPolicy.EXTERNAL) {
-            scanReferenceClasses();
-            return externalData;
-
-        } else {
-            throw new IllegalArgumentException("Policy [ " + policy + " ]");
-        }
-    }
-
-    // Version for recording ... don't trigger a scan! 
-    protected AnnotationTargetsImpl_PolicyData doGetPolicyData(ScanPolicy policy) {
-
-        if (policy == ScanPolicy.SEED) {
-            return seedData;
-
-        } else if (policy == ScanPolicy.PARTIAL) {
-            return partialData;
-
-        } else if (policy == ScanPolicy.EXCLUDED) {
-            return excludedData;
-
-        } else if (policy == ScanPolicy.EXTERNAL) {
-            return externalData;
-
-        } else {
-            throw new IllegalArgumentException("Policy [ " + policy + " ]");
-        }
-    }
-
-    // The SEED data accessors are preserved as unit test entry points.
-    // These must ensure the scan has been performed.
-
-    public UtilImpl_BidirectionalMap getPackageAnnotationData() {
-        return getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.PACKAGE);
-    }
-
-    public UtilImpl_BidirectionalMap getClassAnnotationData() {
-        return getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.CLASS);
-    }
-
-    public UtilImpl_BidirectionalMap getFieldAnnotationData() {
-        return getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.FIELD);
-    }
-
-    public UtilImpl_BidirectionalMap getMethodAnnotationData() {
-        return getAnnotationsMap(ScanPolicy.SEED, AnnotationCategory.METHOD);
-    }
-
-    // Do trigger a scan: This is used to retrieve results.
-    protected UtilImpl_BidirectionalMap getAnnotationsMap(ScanPolicy policy, AnnotationCategory category) {
-        return getPolicyData(policy).getTargetData(category);
-    }
-
-    // Do not trigger a scan: This is used by the recording steps.
-    protected UtilImpl_BidirectionalMap doGetAnnotationsMap(ScanPolicy policy, AnnotationCategory category) {
-        return doGetPolicyData(policy).getTargetData(category);
-    }
-
-    //
-
-    protected Set<String> selectAnnotations(int scanPolicies, AnnotationCategory category) {
-        int nonEmptyCount = 0;
-
-        Set<String> selected_SEED;
-        if (ScanPolicy.SEED.accept(scanPolicies)) {
-            selected_SEED = seedData.getAnnotations(category);
-            if (selected_SEED.isEmpty()) {
-                selected_SEED = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_SEED = null;
-        }
-
-        Set<String> selected_PARTIAL;
-        if (ScanPolicy.PARTIAL.accept(scanPolicies)) {
-            selected_PARTIAL = partialData.getAnnotations(category);
-            if (selected_PARTIAL.isEmpty()) {
-                selected_PARTIAL = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_PARTIAL = null;
-        }
-
-        Set<String> selected_EXCLUDED;
-        if (ScanPolicy.EXCLUDED.accept(scanPolicies)) {
-            selected_EXCLUDED = excludedData.getAnnotations(category);
-            if (selected_EXCLUDED.isEmpty()) {
-                selected_EXCLUDED = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_EXCLUDED = null;
-        }
-
-        Set<String> selected_EXTERNAL;
-        if (ScanPolicy.EXTERNAL.accept(scanPolicies)) {
-            selected_EXTERNAL = externalData.getAnnotations(category);
-            if (selected_EXTERNAL.isEmpty()) {
-                selected_EXTERNAL = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_EXTERNAL = null;
-        }
-
-        if (nonEmptyCount == 0) {
-            return Collections.emptySet();
-
-        } else if (nonEmptyCount == 1) {
-            if (selected_SEED != null) {
-                return selected_SEED;
-            } else if (selected_PARTIAL != null) {
-                return selected_PARTIAL;
-            } else if (selected_EXCLUDED != null) {
-                return selected_EXCLUDED;
-            } else {
-                return selected_EXTERNAL;
-            }
-
-        } else {
-            // Handles both the case when all three are requested and
-            // when just two are requested.  When just two are requested,
-            // or when just two are non-empty, there is one extra call
-            // to 'addAll'.
-
-            Set<String> result = new HashSet<String>();
-            if (selected_SEED != null) {
-                result.addAll(selected_SEED);
-            }
-            if (selected_PARTIAL != null) {
-                result.addAll(selected_PARTIAL);
-            }
-            if (selected_EXCLUDED != null) {
-                result.addAll(selected_EXCLUDED);
-            }
-            if (selected_EXTERNAL != null) {
-                result.addAll(selected_EXTERNAL);
-            }
-            return result;
-        }
-    }
-
-    protected Set<String> selectAnnotations(String targetName,
-                                            int scanPolicies,
-                                            AnnotationCategory category) {
-
-        if (ScanPolicy.SEED.accept(scanPolicies)) {
-            Set<String> selected = seedData.getAnnotations(targetName, category);
-            if (!selected.isEmpty()) {
-                return selected;
-            }
-        }
-
-        if (ScanPolicy.PARTIAL.accept(scanPolicies)) {
-            Set<String> selected = partialData.getAnnotations(targetName, category);
-            if (!selected.isEmpty()) {
-                return selected;
-            }
-        }
-
-        if (ScanPolicy.EXCLUDED.accept(scanPolicies)) {
-            Set<String> selected = excludedData.getAnnotations(targetName, category);
-            if (!selected.isEmpty()) {
-                return selected;
-            }
-        }
-
-        if (ScanPolicy.EXTERNAL.accept(scanPolicies)) {
-            Set<String> selected = externalData.getAnnotations(targetName, category);
-            if (!selected.isEmpty()) {
-                return selected;
-            }
-        }
-
-        return Collections.emptySet();
-    }
-
-    protected Set<String> selectAnnotatedTargets(int scanPolicies, AnnotationCategory category) {
-        scanDirectClasses();
-
-        int nonEmptyCount = 0;
-
-        Set<String> selected_SEED;
-        if (ScanPolicy.SEED.accept(scanPolicies)) {
-            selected_SEED = seedData.getAnnotatedTargets(category);
-            if (selected_SEED.isEmpty()) {
-                selected_SEED = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_SEED = null;
-        }
-
-        Set<String> selected_PARTIAL;
-        if (ScanPolicy.PARTIAL.accept(scanPolicies)) {
-            selected_PARTIAL = partialData.getAnnotatedTargets(category);
-            if (selected_PARTIAL.isEmpty()) {
-                selected_PARTIAL = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_PARTIAL = null;
-        }
-
-        Set<String> selected_EXCLUDED;
-        if (ScanPolicy.EXCLUDED.accept(scanPolicies)) {
-            selected_EXCLUDED = excludedData.getAnnotatedTargets(category);
-            if (selected_EXCLUDED.isEmpty()) {
-                selected_EXCLUDED = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_EXCLUDED = null;
-        }
-
-        Set<String> selected_EXTERNAL;
-        if (ScanPolicy.EXTERNAL.accept(scanPolicies)) {
-            selected_EXTERNAL = externalData.getAnnotatedTargets(category);
-            if (selected_EXTERNAL.isEmpty()) {
-                selected_EXTERNAL = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_EXTERNAL = null;
-        }
-
-        if (nonEmptyCount == 0) {
-            return Collections.emptySet();
-
-        } else if (nonEmptyCount == 1) {
-            if (selected_SEED != null) {
-                return selected_SEED;
-            } else if (selected_PARTIAL != null) {
-                return selected_PARTIAL;
-            } else if (selected_EXCLUDED != null) {
-                return selected_EXCLUDED;
-            } else {
-                return selected_EXTERNAL;
-            }
-
-        } else {
-            // Handles both the case when all three are requested and
-            // when just two are requested.  When just two are requested,
-            // or when just two are non-empty, there is one extra call
-            // to 'addAll'.
-
-            Set<String> result = new HashSet<String>();
-            if (selected_SEED != null) {
-                result.addAll(selected_SEED);
-            }
-            if (selected_PARTIAL != null) {
-                result.addAll(selected_PARTIAL);
-            }
-            if (selected_EXCLUDED != null) {
-                result.addAll(selected_EXCLUDED);
-            }
-            if (selected_EXTERNAL != null) {
-                result.addAll(selected_EXTERNAL);
-            }
-            return result;
-        }
-    }
-
-    protected Set<String> selectAnnotatedTargets(String annotationName,
-                                                 int scanPolicies,
-                                                 AnnotationCategory category) {
-
-        if (ScanPolicy.EXTERNAL.accept(scanPolicies)) {
-            scanReferenceClasses();
-        } else if ((scanPolicies | AnnotationTargets_Targets.POLICY_ALL_EXCEPT_EXTERNAL) != 0) {
-            scanDirectClasses();
-        } else {
-            return Collections.emptySet(); // Strange: NO-OP selection
-        }
-
-        int nonEmptyCount = 0;
-
-        Set<String> selected_SEED;
-        if (ScanPolicy.SEED.accept(scanPolicies)) {
-            selected_SEED = seedData.getAnnotatedTargets(annotationName, category);
-            if (selected_SEED.isEmpty()) {
-                selected_SEED = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_SEED = null;
-        }
-
-        Set<String> selected_PARTIAL;
-        if (ScanPolicy.PARTIAL.accept(scanPolicies)) {
-            selected_PARTIAL = partialData.getAnnotatedTargets(annotationName, category);
-            if (selected_PARTIAL.isEmpty()) {
-                selected_PARTIAL = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_PARTIAL = null;
-        }
-
-        Set<String> selected_EXCLUDED;
-        if (ScanPolicy.EXCLUDED.accept(scanPolicies)) {
-            selected_EXCLUDED = excludedData.getAnnotatedTargets(annotationName, category);
-            if (selected_EXCLUDED.isEmpty()) {
-                selected_EXCLUDED = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_EXCLUDED = null;
-        }
-
-        Set<String> selected_EXTERNAL;
-        if (ScanPolicy.EXTERNAL.accept(scanPolicies)) {
-            selected_EXTERNAL = externalData.getAnnotatedTargets(annotationName, category);
-            if (selected_EXTERNAL.isEmpty()) {
-                selected_EXTERNAL = null;
-            } else {
-                nonEmptyCount++;
-            }
-        } else {
-            selected_EXTERNAL = null;
-        }
-
-        if (nonEmptyCount == 0) {
-            return Collections.emptySet();
-
-        } else if (nonEmptyCount == 1) {
-            if (selected_SEED != null) {
-                return selected_SEED;
-            } else if (selected_PARTIAL != null) {
-                return selected_PARTIAL;
-            } else if (selected_EXCLUDED != null) {
-                return selected_EXCLUDED;
-            } else {
-                return selected_EXTERNAL;
-            }
-
-        } else {
-            // Handles both the case when all three are requested and
-            // when just two are requested.  When just two are requested,
-            // or when just two are non-empty, there is one extra call
-            // to 'addAll'.
-
-            Set<String> result = new HashSet<String>();
-            if (selected_SEED != null) {
-                result.addAll(selected_SEED);
-            }
-            if (selected_PARTIAL != null) {
-                result.addAll(selected_PARTIAL);
-            }
-            if (selected_EXCLUDED != null) {
-                result.addAll(selected_EXCLUDED);
-            }
-            if (selected_EXTERNAL != null) {
-                result.addAll(selected_EXTERNAL);
-            }
-            return result;
-        }
-    }
-
-    protected Set<String> selectClassNames(int scanPolicies) {
-
-        int nonEmptyCount = 0;
-
-        Set<String> seed;
-        if (!ScanPolicy.SEED.accept(scanPolicies)) {
-            seed = null;
-        } else {
-            seed = seedData.getClassNames();
-            if (seed.isEmpty()) {
-                seed = null;
-            } else {
-                nonEmptyCount++;
-            }
-        }
-
-        Set<String> partial;
-        if (!ScanPolicy.PARTIAL.accept(scanPolicies)) {
-            partial = null;
-        } else {
-            partial = partialData.getClassNames();
-            if (partial.isEmpty()) {
-                partial = null;
-            } else {
-                nonEmptyCount++;
-            }
-        }
-
-        Set<String> excluded;
-        if (!ScanPolicy.PARTIAL.accept(scanPolicies)) {
-            excluded = null;
-        } else {
-            excluded = excludedData.getClassNames();
-            if (excluded.isEmpty()) {
-                excluded = null;
-            } else {
-                nonEmptyCount++;
-            }
-        }
-
-        Set<String> external;
-        if (!ScanPolicy.PARTIAL.accept(scanPolicies)) {
-            external = null;
-        } else {
-            external = externalData.getClassNames();
-            if (external.isEmpty()) {
-                external = null;
-            } else {
-                nonEmptyCount++;
-            }
-        }
-
-        if (nonEmptyCount == 0) {
-            return Collections.emptySet();
-
-        } else if (nonEmptyCount == 1) {
-            if (seed != null) {
-                return seed;
-            } else if (partial != null) {
-                return partial;
-            } else if (excluded != null) {
-                return excluded;
-            } else {
-                return external;
-            }
-
-        } else {
-            Set<String> result = new HashSet<String>();
-            if (seed != null) {
-                result.addAll(seed);
-            }
-            if (partial != null) {
-                result.addAll(partial);
-            }
-            if (excluded != null) {
-                result.addAll(excluded);
-            }
-            if (external != null) {
-                result.addAll(external);
-            }
-            return result;
-        }
+    public TargetsDeltaImpl subtract(AnnotationTargetsImpl_Targets initialTargets) {
+        return new TargetsDeltaImpl( getFactory(), getAppName(), getModName(), this, initialTargets);
     }
 }

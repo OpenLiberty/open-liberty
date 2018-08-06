@@ -1,18 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.wsspi.anno.util;
 
 import java.util.Collection;
-import com.ibm.websphere.ras.TraceComponent;
+import java.util.logging.Logger;
 
 // Several names for packages, classes, fields, and methods are available:
 //
@@ -30,15 +31,12 @@ import com.ibm.websphere.ras.TraceComponent;
 // For fields and methods, a single name is available, with no possible adornments.
 
 public interface Util_InternMap {
-    //
 
     String getHashText();
 
     int getLogThreshHold();
 
-    void logState();
-
-    void log(TraceComponent tc);
+    void log(Logger logger);
 
     //
 
@@ -67,7 +65,7 @@ public interface Util_InternMap {
      * resource bundle used by the caller. The message key can then be passed
      * to com.ibm.websphere.ras.Tr along with any substitution parameters
      * for display in the log file.
-     * 
+     *
      * @param value a String that contains the value to be validated
      * @param valueType a ValueType that identifies the type of 'value'
      * @return String if 'value' contains an error, return the message key to the

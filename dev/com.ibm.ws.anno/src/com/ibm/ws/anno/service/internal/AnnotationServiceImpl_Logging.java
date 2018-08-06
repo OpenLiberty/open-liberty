@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+☺ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,59 +11,36 @@
 
 package com.ibm.ws.anno.service.internal;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.anno.service.AnnotationService_Logging;
 
-@TraceOptions(traceGroup = AnnotationService_Logging.ANNO_LOGGER_STATE)
 public class AnnotationServiceImpl_Logging implements AnnotationService_Logging {
 
-    /**
-     * Annotation Scan logging conversion notes.
-     *
-     * The com.ibm.ws.anno package uses com.ibm.websphere.ras.Tr for all logging now.
-     *
-     * Tr.entry/exit trace uses the java.util.Level of FINER,
-     * Tr.debug uses the java.util.Level FINEST
-     * Tr.dump is a level lower that Tr.debug.
-     *
-     * Liberty trace injection will automatically inject entry/exit trace for all methods. To override
-     * this, use the @com.ibm.websphere.ras.annotation.Trivial annotation before the method name. This has
-     * been used at some points in the anno code to reduce trace for methods which only do a simple 'get',
-     * and where the old Logger Entry/Return trace was converted to Tr.debug in order to preserve information that
-     * was being displayed in the trace message.
-     *
-     * "@Trivial" is not needed on methods which have Tr.enter and Tr.exit; the instrumented trace injection process
-     * detects these statements and avoided added duplicate statements.
-     *
-     * Conversion from java.util.Logger to using the Liberty standard Tr followed these standards:
-     * - change Logger(FINER) entries to use Tr(debug)
-     * - change Logger(FINEST) entries to use Tr(dump)
-     *
-     * - The AnnotationService_Logging.ANNO_LOGGER_STATE logging was implemented by registering a TraceComponent
-     * under this class. Therefore, to restrict tracing to see only 'State' traces, the Liberty trace specification
-     * should be set to enable only 'com.ibm.wsspi.anno.service.internal.AnnotationServiceImpl_Logging' traces.
-     *
-     */
+    // Loggers ...
 
-    // Special category loggers ... these cut across the function loggers.
+    /** <p>Common reference to the annotations logger.</p> */
+    public static final Logger ANNO_LOGGER = Logger.getLogger(AnnotationService_Logging.ANNO_LOGGER_NAME);
 
     /** <p>Common reference to the annotations state logger.</p> */
-    public static final TraceComponent stateLogger = Tr.register(AnnotationServiceImpl_Logging.class);
+    public static final Logger ANNO_STATE_LOGGER = Logger.getLogger(AnnotationService_Logging.ANNO_LOGGER_STATE_NAME);
+    
+    /** <p>Common reference to the jandex logger.</p> */
+    public static final Logger ANNO_JANDEX_LOGGER = Logger.getLogger(AnnotationService_Logging.ANNO_LOGGER_JANDEX_NAME);
 
     /**
      * <p>Answer a base hash code for a target object.</p>
      *
-     * <p>This override is provided to avoid issues with container types, which often
-     * override {@link Object#hashCode()} to aggregate the hash codes of contained
-     * elements. That creates an unstable hash value.</p>
-     *
      * @param object A target object for which to obtain a base hash code.
+     * 
      * @return A hash code for the object.
      */
     public static String getBaseHash(Object object) {
-        return object.getClass().getSimpleName() + "@" + Integer.toString((new Object()).hashCode());
+        return object.getClass().getSimpleName() + "@" + Integer.toString(object.hashCode());
     }
 
     // Utilities for avoiding warnings ... for cases where
@@ -100,5 +77,167 @@ public class AnnotationServiceImpl_Logging implements AnnotationService_Logging 
      */
     public static void consumeRef(Object objectRef) {
         // NO-OP
+    }
+
+    //
+
+    /**
+     * Tell if a property is set.
+     * 
+     * @param propertyName The name of the property which is to be tested.
+     *  
+     * @return True or false telling if a valus is provided for the property.
+     */
+    public static boolean hasProperty(final String propertyName) {
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            return AccessController.doPrivileged( new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.valueOf( System.getProperty(propertyName) != null );
+                }
+            } ).booleanValue();
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
+    }
+
+    /**
+     * Answer the text value of a property.  Obtain the property value
+     * using a privileged operation.
+     * 
+     * @param propertyName The name of the property which is to be retrieved.
+     *  
+     * @return The value of the property.
+     */
+    public static String getProperty(final String propertyName) {
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            return AccessController.doPrivileged( new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty(propertyName);
+                }
+            } );
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
+    }
+
+    /**
+     * Obtain a string property.
+     * 
+     * If trace is enabled for the specified logger, log the property value.
+     * 
+     * @param logger The logger to use to display the property value.
+     * @param sourceClass The class requesting the property value.
+     * @param sourceMethod The method requesting the property value.
+     * @param propertyName The name of the property.
+     * @param propertyDefaultValue The default value of the property.
+     * 
+     * @return The value of the property.
+     */
+    public static String getProperty(
+        Logger logger,
+        String sourceClass, String sourceMethod,
+        String propertyName, String propertyDefaultValue) {
+
+        String propertyText = getProperty(propertyName);
+        
+        String propertyValue;
+        boolean propertyDefaulted;
+        if ( propertyDefaulted = (propertyText == null) ) {
+            propertyValue = propertyDefaultValue;
+        } else {
+            propertyValue = propertyText;
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            String debugText =
+                "Property [ " + propertyName + " ]" +
+                " [ " + propertyValue + " ]" +
+                " (" + (propertyDefaulted ? "from default" : "from property") + ")";
+            logger.logp(Level.FINER, sourceClass, sourceMethod, debugText);
+        }
+
+        return propertyValue;
+    }
+
+    /**
+     * Obtain a boolean property.
+     * 
+     * If trace is enabled for the specified logger, log the property value.
+     * 
+     * @param logger The logger to use to display the property value.
+     * @param sourceClass The class requesting the property value.
+     * @param sourceMethod The method requesting the property value.
+     * @param propertyName The name of the property.
+     * @param propertyDefaultValue The default value of the property.
+     * 
+     * @return The value of the property.
+     */
+    public static boolean getProperty(
+        Logger logger,
+        String sourceClass, String sourceMethod,
+        String propertyName, boolean propertyDefaultValue) {
+
+        String propertyText = getProperty(propertyName);
+        
+        boolean propertyValue;
+        boolean propertyDefaulted;
+        if ( propertyDefaulted = (propertyText == null) ) {
+            propertyValue = propertyDefaultValue;
+        } else {
+            propertyValue = Boolean.parseBoolean(propertyText);
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            String debugText =
+                "Property [ " + propertyName + " ]" +
+                " [ " + propertyValue + " ]" +
+                " (" + (propertyDefaulted ? "from default" : "from property") + ")";
+            logger.logp(Level.FINER, sourceClass, sourceMethod, debugText);
+        }
+
+        return propertyValue;
+    }
+    
+    /**
+     * Obtain a integer property.
+     * 
+     * If trace is enabled for the specified logger, log the property value.
+     * 
+     * @param logger The logger to use to display the property value.
+     * @param sourceClass The class requesting the property value.
+     * @param sourceMethod The method requesting the property value.
+     * @param propertyName The name of the property.
+     * @param propertyDefaultValue The default value of the property.
+     * 
+     * @return The value of the property.
+     */
+    public static int getProperty(
+        Logger logger,
+        String sourceClass, String sourceMethod,
+        String propertyName, int propertyDefaultValue) {
+
+        String propertyText = getProperty(propertyName);
+        
+        int propertyValue;
+        boolean propertyDefaulted;
+        if ( propertyDefaulted = (propertyText == null) ) {
+            propertyValue = propertyDefaultValue;
+        } else {
+            propertyValue = Integer.parseInt(propertyText);
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            String debugText =
+                "Property [ " + propertyName + " ]" +
+                " [ " + propertyValue + " ]" +
+                " (" + (propertyDefaulted ? "from default" : "from property") + ")";
+            logger.logp(Level.FINER, sourceClass, sourceMethod, debugText);
+        }
+
+        return propertyValue;
     }
 }
