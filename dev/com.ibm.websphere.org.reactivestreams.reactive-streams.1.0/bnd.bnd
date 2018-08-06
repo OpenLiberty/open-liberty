@@ -24,12 +24,10 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.reactivestreams; version=1.0.2, \
-  org.reactivestreams.tck; version=1.0.2
+  org.reactivestreams; version=1.0.2
 
 Include-Resource: \
-  @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT},\
-  @${repo;org.reactivestreams:reactive-streams-tck;1.0.2;EXACT}
+  @${repo;org.reactivestreams:reactive-streams;1.0.2;EXACT}
 
 WS-TraceGroup: REACTIVESTREAMS
 

@@ -91,8 +91,8 @@ interface InletListener {
   /**
    * Indicates that an element has been pushed. The element can be received using {@link StageInlet#grab()}.
    * <p>
-   * If this throws an exception, the error will be passed to {@link #onUpstreamFailure(Throwable)}, upstream will
-   * be cancelled, and the stage will not receive any further signals.
+   * If this throws an exception, the error will be passed to {@link #onUpstreamFailure(Throwable)}, anything upstream
+   * from this inlet will be cancelled, and the stage listening will not receive any further signals.
    */
   void onPush();
 
@@ -100,9 +100,10 @@ interface InletListener {
    * Indicates that upstream has completed the stream. Unless this throws an exception, no signals may be sent to the
    * inlet after this has been invoked.
    * <p>
-   * If this throws an exception, the error will be passed to {@link #onUpstreamFailure(Throwable)}, upstream will
-   * be cancelled, and the stage will not receive any further signals. Stages should be careful to ensure that if they
-   * do throw from this method, that they are ready to receive that exception from {@code onUpstreamFailure}.
+   * If this throws an exception, the error will be passed to {@link #onUpstreamFailure(Throwable)}, anything upstream
+   * from this inlet will be cancelled, and the stage will not receive any further signals. Stages should be careful
+   * to ensure that if they do throw from this method, that they are ready to receive that exception from
+   * {@code onUpstreamFailure}.
    */
   void onUpstreamFinish();
 
@@ -111,9 +112,9 @@ interface InletListener {
    * will be sent to this listener.
    * <p>
    * If this throws an exception, the entire stream will be shut down, since there's no other way to guarantee that
-   * the failure signal will be propagated downstream. Hence, stages should generally not throw exceptions from this
-   * method, particularly exceptions from user supplied callbacks, as such errors will not be recoverable (eg, a
-   * recover stage won't be able to resume the stream).
+   * the failure signal will be propagated downstream. Hence, stages should not throw exceptions from this method,
+   * particularly exceptions from user supplied callbacks, as such errors will not be recoverable (eg, a recover stage
+   * won't be able to resume the stream).
    */
   void onUpstreamFailure(Throwable error);
 }

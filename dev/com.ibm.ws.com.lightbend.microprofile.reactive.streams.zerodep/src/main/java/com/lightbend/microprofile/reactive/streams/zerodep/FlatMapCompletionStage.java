@@ -15,7 +15,7 @@ class FlatMapCompletionStage<T, R> extends GraphStage implements InletListener {
   private final StageOutlet<R> outlet;
   private final Function<T, CompletionStage<R>> mapper;
 
-  private Throwable error;
+  private CompletionStage<R> activeCompletionStage;
 
   FlatMapCompletionStage(BuiltGraph builtGraph, StageInlet<T> inlet, StageOutlet<R> outlet, Function<T, CompletionStage<R>> mapper) {
     super(builtGraph);
@@ -29,20 +29,16 @@ class FlatMapCompletionStage<T, R> extends GraphStage implements InletListener {
 
   @Override
   public void onPush() {
-    CompletionStage<R> future = mapper.apply(inlet.grab());
-    future.whenCompleteAsync((result, error) -> {
+    activeCompletionStage = mapper.apply(inlet.grab());
+    activeCompletionStage.whenCompleteAsync((result, error) -> {
+      activeCompletionStage = null;
       if (!outlet.isClosed()) {
         if (error == null) {
           outlet.push(result);
           if (inlet.isClosed()) {
-            if (this.error != null) {
-              outlet.fail(this.error);
-            } else {
-              outlet.complete();
-            }
+            outlet.complete();
           }
         } else {
-
           outlet.fail(error);
           if (!inlet.isClosed()) {
             inlet.cancel();
@@ -54,21 +50,13 @@ class FlatMapCompletionStage<T, R> extends GraphStage implements InletListener {
 
   @Override
   public void onUpstreamFinish() {
-    if (!activeCompletionStage()) {
+    if (activeCompletionStage == null) {
       outlet.complete();
     }
   }
 
   @Override
   public void onUpstreamFailure(Throwable error) {
-    if (activeCompletionStage()) {
-      this.error = error;
-    } else {
-      outlet.fail(error);
-    }
-  }
-
-  private boolean activeCompletionStage() {
-    return outlet.isAvailable() && !inlet.isPulled();
+    outlet.fail(error);
   }
 }

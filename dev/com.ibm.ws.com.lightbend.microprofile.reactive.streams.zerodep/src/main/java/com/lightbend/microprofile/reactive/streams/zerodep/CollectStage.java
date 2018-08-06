@@ -23,12 +23,12 @@ class CollectStage<T, A, R> extends GraphStage implements InletListener {
     this.result = result;
     this.collector = collector;
 
-    container = collector.supplier().get();
     inlet.setListener(this);
   }
 
   @Override
   protected void postStart() {
+    container = collector.supplier().get();
     inlet.pull();
   }
 

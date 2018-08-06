@@ -14,7 +14,6 @@ class FlatMapStage<T, R> extends GraphStage implements InletListener, OutletList
   private final Function<T, Graph> mapper;
 
   private BuiltGraph.SubStageInlet<R> substream;
-  private Throwable error;
 
   FlatMapStage(BuiltGraph builtGraph, StageInlet<T> inlet, StageOutlet<R> outlet, Function<T, Graph> mapper) {
     super(builtGraph);
@@ -40,11 +39,7 @@ class FlatMapStage<T, R> extends GraphStage implements InletListener, OutletList
       public void onUpstreamFinish() {
         substream = null;
         if (inlet.isClosed()) {
-          if (error != null) {
-            outlet.fail(error);
-          } else {
-            outlet.complete();
-          }
+          outlet.complete();
         } else if (outlet.isAvailable()) {
           inlet.pull();
         }
@@ -52,6 +47,7 @@ class FlatMapStage<T, R> extends GraphStage implements InletListener, OutletList
 
       @Override
       public void onUpstreamFailure(Throwable error) {
+        substream = null;
         outlet.fail(error);
         if (!inlet.isClosed()) {
           inlet.cancel();
@@ -71,10 +67,9 @@ class FlatMapStage<T, R> extends GraphStage implements InletListener, OutletList
 
   @Override
   public void onUpstreamFailure(Throwable error) {
-    if (substream == null) {
-      outlet.fail(error);
-    } else {
-      this.error = error;
+    outlet.fail(error);
+    if (substream != null) {
+      substream.cancel();
     }
   }
 

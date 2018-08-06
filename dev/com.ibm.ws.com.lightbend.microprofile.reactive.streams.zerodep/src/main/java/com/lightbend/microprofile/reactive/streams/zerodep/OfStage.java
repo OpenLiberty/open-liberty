@@ -11,27 +11,33 @@ import java.util.Iterator;
  */
 class OfStage<T> extends GraphStage implements OutletListener {
   private final StageOutlet<T> outlet;
-  private Iterator<T> elements;
+  private final Iterable<T> elements;
+  private Iterator<T> iterator;
 
   public OfStage(BuiltGraph builtGraph, StageOutlet<T> outlet, Iterable<T> elements) {
     super(builtGraph);
     this.outlet = outlet;
-    this.elements = elements.iterator();
+    this.elements = elements;
 
     outlet.setListener(this);
   }
 
   @Override
   protected void postStart() {
-    if (!elements.hasNext()) {
-      outlet.complete();
+    iterator = elements.iterator();
+    try {
+      if (!iterator.hasNext()) {
+        outlet.complete();
+      }
+    } catch (Exception e) {
+      outlet.fail(e);
     }
   }
 
   @Override
   public void onPull() {
-    outlet.push(elements.next());
-    if (!elements.hasNext()) {
+    outlet.push(iterator.next());
+    if (!iterator.hasNext()) {
       outlet.complete();
     }
   }

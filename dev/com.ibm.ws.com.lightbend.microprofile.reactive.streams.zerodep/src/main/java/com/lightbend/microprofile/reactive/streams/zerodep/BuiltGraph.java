@@ -66,35 +66,35 @@ public class BuiltGraph implements Executor {
     /**
      * Build a pubisher graph.
      */
-    static public <T> Publisher<T> buildPublisher(Executor mutex, Graph graph) {
+    public static <T> Publisher<T> buildPublisher(Executor mutex, Graph graph) {
         return newBuilder(mutex).buildGraph(graph, Shape.PUBLISHER).publisher();
     }
 
     /**
      * Build a subscriber graph.
      */
-    static public <T, R> CompletionSubscriber<T, R> buildSubscriber(Executor mutex, Graph graph) {
+    public static <T, R> CompletionSubscriber<T, R> buildSubscriber(Executor mutex, Graph graph) {
         return newBuilder(mutex).buildGraph(graph, Shape.SUBSCRIBER).subscriber();
     }
 
     /**
      * Build a processor graph.
      */
-    static public <T, R> Processor<T, R> buildProcessor(Executor mutex, Graph graph) {
+    public static <T, R> Processor<T, R> buildProcessor(Executor mutex, Graph graph) {
         return newBuilder(mutex).buildGraph(graph, Shape.PROCESSOR).processor();
     }
 
     /**
      * Build a closed graph.
      */
-    static public <T> CompletionStage<T> buildCompletion(Executor mutex, Graph graph) {
+    public static <T> CompletionStage<T> buildCompletion(Executor mutex, Graph graph) {
         return newBuilder(mutex).buildGraph(graph, Shape.CLOSED).completion();
     }
 
     /**
      * Build a sub stage inlet.
      */
-    <T> SubStageInlet<T> buildSubInlet(Graph graph) {
+    public <T> SubStageInlet<T> buildSubInlet(Graph graph) {
         return new Builder().buildGraph(graph, Shape.INLET).inlet();
     }
 
@@ -276,9 +276,6 @@ public class BuiltGraph implements Executor {
                 }
             }
 
-            ports.addAll(builderPorts);
-            stages.addAll(builderStages);
-
             return this;
         }
 
@@ -291,6 +288,19 @@ public class BuiltGraph implements Executor {
             for (Port port : builderPorts) {
                 port.verifyReady();
             }
+            ports.addAll(builderPorts);
+        }
+
+        /**
+         * Start the stages on this listener
+         */
+        private void startGraph() {
+            execute(() -> {
+                for (GraphStage stage : builderStages) {
+                    stages.add(stage);
+                    stage.postStart();
+                }
+            });
         }
 
         private <T> SubStageInlet<T> inlet() {
@@ -366,18 +376,8 @@ public class BuiltGraph implements Executor {
                 if (stage instanceof Stage.Of) {
                     addStage(new OfStage(BuiltGraph.this, outlet, ((Stage.Of) stage).getElements()));
                 } else if (stage instanceof Stage.Concat) {
-
-                    // Use this builder to build each of the sub stages that are being concatenated as an inlet graph, and then
-                    // capture the last inlet of each to pass to the concat stage.
-                    buildGraph(((Stage.Concat) stage).getFirst(), Shape.INLET);
-                    StageInlet firstInlet = lastInlet;
-                    lastInlet = null;
-
-                    buildGraph(((Stage.Concat) stage).getSecond(), Shape.INLET);
-                    StageInlet secondInlet = lastInlet;
-                    lastInlet = null;
-
-                    addStage(new ConcatStage(BuiltGraph.this, firstInlet, secondInlet, outlet));
+                    Stage.Concat concat = (Stage.Concat) stage;
+                    addStage(new ConcatStage(BuiltGraph.this, buildSubInlet(concat.getFirst()), buildSubInlet(concat.getSecond()), outlet));
                 } else if (stage instanceof Stage.PublisherStage) {
                     addStage(new ConnectorStage(BuiltGraph.this, ((Stage.PublisherStage) stage).getRsPublisher(), subscriber));
                 } else if (stage instanceof Stage.Failed) {
@@ -421,6 +421,10 @@ public class BuiltGraph implements Executor {
                     addStage(new OnErrorStage<>(BuiltGraph.this, inlet, outlet, ((Stage.OnError) stage).getConsumer()));
                 } else if (stage instanceof Stage.OnTerminate) {
                     addStage(new OnTerminateStage<>(BuiltGraph.this, inlet, outlet, ((Stage.OnTerminate) stage).getAction()));
+                } else if (stage instanceof Stage.OnErrorResume) {
+                    addStage(new OnErrorResumeStage(BuiltGraph.this, inlet, outlet, ((Stage.OnErrorResume) stage).getFunction()));
+                } else if (stage instanceof Stage.OnErrorResumeWith) {
+                    addStage(new OnErrorResumeWithStage(BuiltGraph.this, inlet, outlet, ((Stage.OnErrorResumeWith) stage).getFunction()));
                 } else {
                     throw new UnsupportedStageException(stage);
                 }
@@ -518,17 +522,6 @@ public class BuiltGraph implements Executor {
         });
     }
 
-    /**
-     * Start the whole graph.
-     */
-    private void startGraph() {
-        execute(() -> {
-            for (GraphStage stage : stages) {
-                stage.postStart();
-            }
-        });
-    }
-
     private void streamFailure(Throwable error) {
         // todo handle better
         error.printStackTrace();
@@ -559,8 +552,6 @@ public class BuiltGraph implements Executor {
         private final List<GraphStage> subStages;
         private final List<Port> subStagePorts;
 
-        private boolean started = false;
-
         private SubStageInlet(StageInlet<T> delegate, List<GraphStage> subStages, List<Port> subStagePorts) {
             this.delegate = delegate;
             this.subStages = subStages;
@@ -569,20 +560,24 @@ public class BuiltGraph implements Executor {
 
         void start() {
             subStagePorts.forEach(Port::verifyReady);
-            started = true;
-            subStages.forEach(GraphStage::postStart);
+            ports.addAll(subStagePorts);
+            for (GraphStage stage : subStages) {
+                stages.add(stage);
+                stage.postStart();
+            }
         }
 
         private void shutdown() {
-            stages.removeAll(subStages);
-            ports.removeAll(subStagePorts);
+            // Do it in a signal, this ensures that if shutdown happens while something is iterating through
+            // the ports, we don't get a concurrent modification exception.
+            enqueueSignal(() -> {
+                stages.removeAll(subStages);
+                ports.removeAll(subStagePorts);
+            });
         }
 
         @Override
         public void pull() {
-            if (!started) {
-                throw new IllegalStateException("Pull before the sub stream has been started.");
-            }
             delegate.pull();
         }
 
@@ -603,17 +598,11 @@ public class BuiltGraph implements Executor {
 
         @Override
         public void cancel() {
-            if (!started) {
-                throw new IllegalStateException("Cancel before the sub stream has been started.");
-            }
             delegate.cancel();
         }
 
         @Override
         public T grab() {
-            if (!started) {
-                throw new IllegalStateException("Grab before the sub stream has been started.");
-            }
             return delegate.grab();
         }
 

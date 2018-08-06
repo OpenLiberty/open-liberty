@@ -4,92 +4,79 @@
 
 package com.lightbend.microprofile.reactive.streams.zerodep;
 
-public class ConcatStage<T> extends GraphStage implements OutletListener {
+public class ConcatStage<T> extends GraphStage implements InletListener, OutletListener {
 
-  private final StageInlet<T> first;
-  private final StageInlet<T> second;
+  private final BuiltGraph.SubStageInlet<T> first;
+  private final BuiltGraph.SubStageInlet<T> second;
   private final StageOutlet<T> outlet;
 
-  private Throwable secondError;
-
-  public ConcatStage(BuiltGraph builtGraph, StageInlet<T> first, StageInlet<T> second, StageOutlet<T> outlet) {
+  public ConcatStage(BuiltGraph builtGraph, BuiltGraph.SubStageInlet<T> first, BuiltGraph.SubStageInlet<T> second, StageOutlet<T> outlet) {
     super(builtGraph);
     this.first = first;
     this.second = second;
     this.outlet = outlet;
 
-    first.setListener(new FirstInletListener());
-    second.setListener(new SecondInletListener());
+    first.setListener(this);
     outlet.setListener(this);
   }
 
   @Override
+  protected void postStart() {
+    first.start();
+  }
+
+  @Override
   public void onPull() {
-    if (first.isClosed()) {
-      second.pull();
-    } else {
-      first.pull();
-    }
+    first.pull();
   }
 
   @Override
   public void onDownstreamFinish() {
-    if (!first.isClosed()) {
-      first.cancel();
-    }
-    if (!second.isClosed()) {
-      second.cancel();
+    first.cancel();
+    // Start up second so we can shut it down, in case it holds any resources.
+    startAndCancelSecond();
+  }
+
+  @Override
+  public void onPush() {
+    outlet.push(first.grab());
+  }
+
+  @Override
+  public void onUpstreamFinish() {
+    second.forwardTo(outlet);
+    outlet.forwardTo(second);
+    second.start();
+    if (outlet.isAvailable()) {
+      second.pull();
     }
   }
 
-  private class FirstInletListener implements InletListener {
-    @Override
-    public void onPush() {
-      outlet.push(first.grab());
-    }
+  @Override
+  public void onUpstreamFailure(Throwable error) {
+    outlet.fail(error);
+    startAndCancelSecond();
+  }
 
-    @Override
-    public void onUpstreamFinish() {
-      if (second.isClosed()) {
-        if (secondError != null) {
-          outlet.fail(secondError);
-        } else {
-          outlet.complete();
+  private void startAndCancelSecond() {
+    try {
+      second.setListener(new InletListener() {
+        @Override
+        public void onPush() {
         }
-      } else if (outlet.isAvailable()) {
-        second.pull();
-      }
-    }
 
-    @Override
-    public void onUpstreamFailure(Throwable error) {
-      outlet.fail(error);
-      if (!second.isClosed()) {
-        second.cancel();
-      }
-    }
-  }
+        @Override
+        public void onUpstreamFinish() {
+        }
 
-  private class SecondInletListener implements InletListener {
-    @Override
-    public void onPush() {
-      outlet.push(second.grab());
-    }
-
-    @Override
-    public void onUpstreamFinish() {
-      if (first.isClosed()) {
-        outlet.complete();
-      }
-    }
-
-    @Override
-    public void onUpstreamFailure(Throwable error) {
-      if (first.isClosed()) {
-        outlet.fail(error);
-      } else {
-        secondError = error;
-      }
+        @Override
+        public void onUpstreamFailure(Throwable error) {
+        }
+      });
+      second.start();
+      second.cancel();
+    } catch (Exception e) {
+      // Ignore exceptions
     }
   }
 }

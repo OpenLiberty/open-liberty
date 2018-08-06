@@ -15,7 +15,6 @@ class FlatMapIterableStage<T, R> extends GraphStage implements InletListener, Ou
   private final StageOutlet<R> outlet;
   private final Function<T, Iterable<R>> mapper;
 
-  private Throwable error;
   private Iterator<R> iterator;
 
   FlatMapIterableStage(BuiltGraph builtGraph, StageInlet<T> inlet, StageOutlet<R> outlet, Function<T, Iterable<R>> mapper) {
@@ -30,17 +29,15 @@ class FlatMapIterableStage<T, R> extends GraphStage implements InletListener, Ou
 
   @Override
   public void onPush() {
-    Iterator<R> iterator = mapper.apply(inlet.grab()).iterator();
+    iterator = mapper.apply(inlet.grab()).iterator();
 
     if (iterator.hasNext()) {
-      this.iterator = iterator;
-
       outlet.push(iterator.next());
-      // Make sure we're still on the same iterator in case a recursive call changed things
-      if (!iterator.hasNext() && this.iterator == iterator) {
-        this.iterator = null;
+      if (!iterator.hasNext()) {
+        iterator = null;
       }
     } else {
+      iterator = null;
       inlet.pull();
     }
   }
@@ -54,11 +51,8 @@ class FlatMapIterableStage<T, R> extends GraphStage implements InletListener, Ou
 
   @Override
   public void onUpstreamFailure(Throwable error) {
-    if (iterator == null) {
-      outlet.fail(error);
-    } else {
-      this.error = error;
-    }
+    // Allow failures to overtake elements here
+    outlet.fail(error);
   }
 
   @Override
@@ -66,16 +60,11 @@ class FlatMapIterableStage<T, R> extends GraphStage implements InletListener, Ou
     if (iterator == null) {
       inlet.pull();
     } else {
-      Iterator<R> iterator = this.iterator;
       outlet.push(iterator.next());
-      if (!iterator.hasNext() && this.iterator == iterator) {
-        this.iterator = null;
+      if (!iterator.hasNext()) {
+        iterator = null;
         if (inlet.isClosed()) {
-          if (error != null) {
-            outlet.fail(error);
-          } else {
-            outlet.complete();
-          }
+          outlet.complete();
         }
       }
     }
