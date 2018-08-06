@@ -24,16 +24,19 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -198,22 +201,26 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
     /**
      * Returns an exception to raise when the data source class is not found.
-     * 
+     *
+     * @param interfaceNames names of data source interface(s) or java.sql.Driver for which we could not find an implementation class.
+     * @param packagesSearched packages in or beneath which we have searched for data source implementation classes.
      * @param cause error that already occurred. Null if not applicable.
      * @return an exception to raise when the data source class is not found.
      */
-    private SQLException classNotFound(Throwable cause) {
+    private SQLException classNotFound(Object interfaceNames, Set<String> packagesSearched, Throwable cause) {
         if (cause instanceof SQLException)
             return (SQLException) cause;
 
         // TODO need an appropriate message when sharedLib is null and classes are loaded from the application
         String sharedLibId = sharedLib.id();
-        String message = sharedLibId.startsWith("com.ibm.ws.jdbc.jdbcDriver-")
-                        ? AdapterUtil.getNLSMessage("DSRA4001.no.suitable.driver.nested", name)
-                        : AdapterUtil.getNLSMessage("DSRA4000.no.suitable.driver", name, sharedLibId);
 
-        // Append the list of folders that should contain the JDBC driver files.
-        message += " " + getClasspath(sharedLib, false);
+        // Determine the list of folders that should contain the JDBC driver files.
+        Collection<String> driverJARs = getClasspath(sharedLib, false);
+
+        // TODO consider using dataSource id in place of jdbcDriver id once Alex's pull goes in?
+        String message = sharedLibId.startsWith("com.ibm.ws.jdbc.jdbcDriver-")
+                        ? AdapterUtil.getNLSMessage("DSRA4001.no.suitable.driver.nested", interfaceNames, name, driverJARs, packagesSearched)
+                        : AdapterUtil.getNLSMessage("DSRA4000.no.suitable.driver", interfaceNames, name, sharedLibId, driverJARs, packagesSearched);
 
         return new SQLNonTransientException(message, cause);
     }
@@ -229,9 +236,6 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @throws SQLException if an error occurs
      */
     private <T extends CommonDataSource> T create(final String className, final Hashtable<?, ?> props) throws SQLException {
-        if (className == null)
-            throw classNotFound(null);
-
         if (classloader != null && className.startsWith("org.apache.derby.jdbc.Embedded") && isDerbyEmbedded.compareAndSet(false, true)) {
             embDerbyRefCount.add(classloader);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -317,7 +321,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         } catch (PrivilegedActionException privX) {
             Throwable x = privX.getCause();
             FFDCFilter.processException(x, JDBCDriverService.class.getName(), "234");
-            SQLException sqlX = x instanceof ClassNotFoundException ? classNotFound(x)
+            int lastDot = className.lastIndexOf('.');
+            Set<String> searched = Collections.singleton(lastDot > 0 ? className.substring(0, lastDot) : className);
+            SQLException sqlX = x instanceof ClassNotFoundException ? classNotFound(className, searched, x)
                             : x instanceof SQLException ? (SQLException) x
                                             : new SQLNonTransientException(x);
             if (trace && tc.isEntryEnabled())
@@ -374,6 +380,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
              || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true))))
                 return create(className, props);
 
+            Set<String> packagesSearched = new LinkedHashSet<String>();
+
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
@@ -383,6 +391,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 }
 
                 SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                       packagesSearched,
                                                                        JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
                                                                        JDBCDrivers.DATA_SOURCE,
                                                                        JDBCDrivers.XA_DATA_SOURCE);
@@ -390,7 +399,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     return create(className = dsEntry.getValue(), props);
             }
 
-            throw classNotFound(null);
+            List<String> interfaceNames = Arrays.asList(ConnectionPoolDataSource.class.getName(),
+                                                        DataSource.class.getName(),
+                                                        XADataSource.class.getName(),
+                                                        Driver.class.getName());
+            throw classNotFound(interfaceNames, packagesSearched, null);
         } finally {
             lock.readLock().unlock();
         }
@@ -445,6 +458,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
              || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true))))
                 return create(className, props);
 
+            Set<String> packagesSearched = new LinkedHashSet<String>();
+
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
@@ -454,6 +469,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 }
 
                 SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                       packagesSearched,
                                                                        JDBCDrivers.XA_DATA_SOURCE,
                                                                        JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
                                                                        JDBCDrivers.DATA_SOURCE);
@@ -461,7 +477,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     return create(className = dsEntry.getValue(), props);
             }
 
-            throw classNotFound(null);
+            List<String> interfaceNames = Arrays.asList(XADataSource.class.getName(),
+                                                        ConnectionPoolDataSource.class.getName(),
+                                                        DataSource.class.getName(),
+                                                        Driver.class.getName());
+            throw classNotFound(interfaceNames, packagesSearched, null);
         } finally {
             lock.readLock().unlock();
         }
@@ -501,9 +521,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 if (className == null) {
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
                     if (className == null && nonshipFunction) {
-                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE); 
+                        Set<String> packagesSearched = new LinkedHashSet<String>();
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
+                                        (classloader, packagesSearched, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE); 
                         className = dsEntry == null ? null : dsEntry.getValue();
-                    }
+                        if (className == null)
+                            throw classNotFound(ConnectionPoolDataSource.class.getName(), packagesSearched, null);
+                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
+                        throw classNotFound(ConnectionPoolDataSource.class.getName(), Collections.EMPTY_SET, null);
                 }
             }
 
@@ -547,9 +572,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 if (className == null) {
                     className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true));
                     if (className == null && nonshipFunction) {
-                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.DATA_SOURCE);
+                        Set<String> packagesSearched = new LinkedHashSet<String>();
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
+                                        (classloader, packagesSearched, JDBCDrivers.DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
-                    }
+                        if (className == null)
+                            throw classNotFound(DataSource.class.getName(), packagesSearched, null);
+                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
+                        throw classNotFound(DataSource.class.getName(), Collections.EMPTY_SET, null);
                 }
             }
 
@@ -593,9 +623,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 if (className == null) {
                     className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true));
                     if (className == null && nonshipFunction) {
-                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.XA_DATA_SOURCE);
+                        Set<String> packagesSearched = new LinkedHashSet<String>();
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
+                                        (classloader, packagesSearched, JDBCDrivers.XA_DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
-                    }
+                        if (className == null)
+                            throw classNotFound(XADataSource.class.getName(), packagesSearched, null);
+                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
+                        throw classNotFound(XADataSource.class.getName(), Collections.EMPTY_SET, null);
                 }
             }
 

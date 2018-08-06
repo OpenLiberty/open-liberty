@@ -19,6 +19,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -515,12 +516,13 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                         if (className == null || className.length() == 0) {
                             if (url == null) {
                                 SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(loader,
+                                                                                                                  new LinkedHashSet<String>(), // TODO
                                                                                                                   JDBCDrivers.XA_DATA_SOURCE,
                                                                                                                   JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
                                                                                                                   JDBCDrivers.DATA_SOURCE);
                                 if (dsEntry != null) {
                                     int dsType = dsEntry.getKey();
-                                    if (dsClassInfo[dsType][CLASS_NAME] == null || dsClassInfo[dsType][CLASS_NAME].startsWith("sun.")) {
+                                    if (dsClassInfo[dsType][CLASS_NAME] == null) {
                                         dsClassInfo[dsType][CLASS_NAME] = dsEntry.getValue();
                                         dsClassInfo[dsType][LIBRARY_PID] = libraryPid;
                                     }
@@ -581,21 +583,20 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         }
 
         // Inferred data source class name when className and url properties are absent 
-        for (int useBuiltInPackages = 0; useBuiltInPackages <= 1; useBuiltInPackages++)
-            for (int dsType : new int[] { JDBCDrivers.XA_DATA_SOURCE, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE, JDBCDrivers.DATA_SOURCE })
-                if (dsClassInfo[dsType][CLASS_NAME] != null && (useBuiltInPackages == 1 || !dsClassInfo[dsType][CLASS_NAME].startsWith("sun."))) {
-                    String type = dsType == JDBCDrivers.XA_DATA_SOURCE ? XADataSource.class.getName()
-                                : dsType == JDBCDrivers.CONNECTION_POOL_DATA_SOURCE ? ConnectionPoolDataSource.class.getName()
-                                : DataSource.class.getName();
-                    driverProps.put(JDBCDriverService.LIBRARY_REF, new String[] { dsClassInfo[dsType][LIBRARY_PID] });
-                    driverProps.put(JDBCDriverService.TARGET_LIBRARY, FilterUtils.createPropertyFilter("service.pid", dsClassInfo[dsType][LIBRARY_PID]));
-                    driverProps.put(type, dsClassInfo[dsType][CLASS_NAME]);
-                    dsSvcProps.put(DSConfig.TYPE, type);
+        for (int dsType : new int[] { JDBCDrivers.XA_DATA_SOURCE, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE, JDBCDrivers.DATA_SOURCE })
+            if (dsClassInfo[dsType][CLASS_NAME] != null) {
+                String type = dsType == JDBCDrivers.XA_DATA_SOURCE ? XADataSource.class.getName()
+                            : dsType == JDBCDrivers.CONNECTION_POOL_DATA_SOURCE ? ConnectionPoolDataSource.class.getName()
+                            : DataSource.class.getName();
+                driverProps.put(JDBCDriverService.LIBRARY_REF, new String[] { dsClassInfo[dsType][LIBRARY_PID] });
+                driverProps.put(JDBCDriverService.TARGET_LIBRARY, FilterUtils.createPropertyFilter("service.pid", dsClassInfo[dsType][LIBRARY_PID]));
+                driverProps.put(type, dsClassInfo[dsType][CLASS_NAME]);
+                dsSvcProps.put(DSConfig.TYPE, type);
 
-                    if (trace && tc.isEntryEnabled())
-                        Tr.exit(tc, "updateWithLibraries", driverProps);
-                    return dsClassInfo[dsType][CLASS_NAME];
-                }
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(tc, "updateWithLibraries", driverProps);
+                return dsClassInfo[dsType][CLASS_NAME];
+            }
 
         // className couldn't be found in any of the shared libraries
         SQLNonTransientException x = new SQLNonTransientException(ConnectorService.getMessage("MISSING_LIBRARY_J2CA8022", declaringApplication, className, DataSourceService.DATASOURCE,

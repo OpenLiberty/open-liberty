@@ -196,6 +196,22 @@ public class JDBCDriverManagerServlet extends FATServlet {
     }
 
     /**
+     * Verify the exception path where ConnectionPoolDataSource is requested but no
+     * ConnectionPoolDataSource implementation is available from the driver.
+     */
+    @ExpectedFFDC("java.sql.SQLNonTransientException")
+    @Test
+    public void testConnectionPoolDataSourceNotFound() throws Exception {
+        try {
+            DataSource cpds = InitialContext.doLookup("jdbc/fatConnectionPoolDataSource");
+            fail("Should not be able to look up data source configured with type of ConnectionPoolDataSource " +
+                 "when the JDBC driver doesn't provide an implementation of one. " + cpds);
+        } catch (NamingException x) {
+            // expected - unfortunately the cause is not chained
+        }
+    }
+
+    /**
      * Test enlistment in transactions.
      */
     @Test
