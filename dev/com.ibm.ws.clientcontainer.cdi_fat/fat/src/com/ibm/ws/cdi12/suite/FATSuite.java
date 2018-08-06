@@ -10,19 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.suite;
 
-import java.nio.file.Files; 
-import java.nio.file.StandardCopyOption; 
-import java.nio.file.attribute.FileAttribute; 
-import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
-
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -30,24 +17,23 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.AppClientTest;
-import com.ibm.ws.cdi12.fat.tests.AppClientAdvancedTest;
-import com.ibm.ws.cdi12.fat.tests.AppClientSecurityTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
-/**
- * Tests specific to cdi-1.2
- */
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-             AppClientTest.class,
-             AppClientAdvancedTest.class,
-             AppClientSecurityTest.class
+                AppClientTest.class,
+//             AppClientAdvancedTest.class,
+//             AppClientSecurityTest.class
 })
 public class FATSuite {
-    
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES());
+
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
      */

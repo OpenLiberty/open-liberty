@@ -10,38 +10,34 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.io.File;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DisablingBeansXmlValidationTest extends LoggingTest {
 
     @BuildShrinkWrap
     public static Archive buildShrinkWrap() {
-        return ShrinkWrap.create(WebArchive.class, "invalidBeansXml.war")
-                        .addClass("com.ibm.ws.cdi12.test.TestServlet")
-                        .addClass("com.ibm.ws.cdi12.test.TestBean")
-                        .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                        .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        return ShrinkWrap.create(WebArchive.class,
+                                 "invalidBeansXml.war").addClass("com.ibm.ws.cdi12.test.TestServlet").addClass("com.ibm.ws.cdi12.test.TestBean").add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/web.xml")),
+                                                                                                                                                     "/WEB-INF/web.xml").add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/beans.xml")),
+                                                                                                                                                                             "/WEB-INF/beans.xml");
     }
 
     @ClassRule

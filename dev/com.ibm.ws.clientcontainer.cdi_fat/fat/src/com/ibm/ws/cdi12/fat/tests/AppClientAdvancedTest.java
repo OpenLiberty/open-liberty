@@ -15,26 +15,20 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.custom.junit.runner.ClientOnly;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
 
-@ClientOnly
 public class AppClientAdvancedTest {
     private static final String testClientName = "cdiClientAdvanced";
     private static final LibertyClient client = LibertyClientFactory.getLibertyClient(testClientName);
@@ -54,7 +48,7 @@ public class AppClientAdvancedTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        JavaArchive appClientAdvanced = ShrinkWrap.create(JavaArchive.class,"appClientAdvanced.jar")
+        JavaArchive appClientAdvanced = ShrinkWrap.create(JavaArchive.class, "appClientAdvanced.jar")
                         .addClass("com.ibm.ws.cdi.client.fat.counting.impl.CountingInterceptor")
                         .addClass("com.ibm.ws.cdi.client.fat.counting.impl.CountWarningLogger")
                         .addClass("com.ibm.ws.cdi.client.fat.counting.CountBean")
@@ -71,7 +65,7 @@ public class AppClientAdvancedTest {
                         .add(new FileAsset(new File("test-applications/appClientAdvanced.jar/resources/META-INF/MANIFEST.MF")), "/META-INF/MANIFEST.MF")
                         .add(new FileAsset(new File("test-applications/appClientAdvanced.jar/resources/META-INF/application-client.xml")), "/META-INF/application-client.xml");
 
-        EnterpriseArchive appClientAdvancedEar = ShrinkWrap.create(EnterpriseArchive.class,"appClientAdvanced.ear")
+        EnterpriseArchive appClientAdvancedEar = ShrinkWrap.create(EnterpriseArchive.class, "appClientAdvanced.ear")
                         .add(new FileAsset(new File("test-applications/appClientAdvanced.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(appClientAdvanced);
 
@@ -85,7 +79,8 @@ public class AppClientAdvancedTest {
 
         String featuresMessage = client.waitForStringInCopiedLog("CWWKF0034I", 0);
         assertNotNull("Did not receive features loaded message", featuresMessage);
-        assertTrue("cdi-1.2 was not among the loaded features", featuresMessage.contains("cdi-1.2"));
+        String cdiFeature = EmptyAction.ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION) ? "cdi-1.2" : "cdi-2.0";
+        assertTrue("cdi-1.2 was not among the loaded features", featuresMessage.contains(cdiFeature));
 
         assertNotNull("Did not receive hello from decorated english beans. Decorator or bean qualifiers may have failed",
                       client.waitForStringInCopiedLog("Hello, I mean... Ahoy", 0));

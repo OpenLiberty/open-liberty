@@ -16,30 +16,23 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.custom.junit.runner.ClientOnly;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
 
 /**
  * Test that our integration with security works in the client container.
  */
-
-@ClientOnly
 public class AppClientSecurityTest {
     private static final String testClientName = "cdiClientSecurity";
     private static final LibertyClient client = LibertyClientFactory.getLibertyClient(testClientName);
@@ -49,7 +42,7 @@ public class AppClientSecurityTest {
 
         client.addIgnoreErrors("CWWKS9702W");
 
-        JavaArchive appClientSecurity = ShrinkWrap.create(JavaArchive.class,"appClientSecurity.jar")
+        JavaArchive appClientSecurity = ShrinkWrap.create(JavaArchive.class, "appClientSecurity.jar")
                         .addClass("com.ibm.ws.cdi.client.security.fat.AppCallbackHandler")
                         .addClass("com.ibm.ws.cdi.client.security.fat.AppMainClass")
                         .addClass("com.ibm.ws.cdi.client.security.fat.TestCredentialBean")
@@ -57,7 +50,7 @@ public class AppClientSecurityTest {
                         .add(new FileAsset(new File("test-applications/appClientSecurity.jar/resources/META-INF/MANIFEST.MF")), "/META-INF/MANIFEST.MF")
                         .add(new FileAsset(new File("test-applications/appClientSecurity.jar/resources/META-INF/application-client.xml")), "/META-INF/application-client.xml");
 
-        EnterpriseArchive appClientSecurityEar = ShrinkWrap.create(EnterpriseArchive.class,"appClientSecurity.ear")
+        EnterpriseArchive appClientSecurityEar = ShrinkWrap.create(EnterpriseArchive.class, "appClientSecurity.ear")
                         .add(new FileAsset(new File("test-applications/appClientSecurity.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .add(new FileAsset(new File("test-applications/appClientSecurity.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
                         .addAsModule(appClientSecurity);
@@ -71,7 +64,8 @@ public class AppClientSecurityTest {
 
         List<String> featuresMessages = client.findStringsInCopiedLogs("CWWKF0034I");
         assertFalse("Did not receive features loaded message", featuresMessages.isEmpty());
-        assertTrue("cdi-1.2 was not among the loaded features", featuresMessages.get(0).contains("cdi-1.2"));
+        String cdiFeature = EmptyAction.ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION) ? "cdi-1.2" : "cdi-2.0";
+        assertTrue("cdi-1.2 was not among the loaded features", featuresMessages.get(0).contains(cdiFeature));
 
         assertFalse("Callback handler was not called to provide the username",
                     client.findStringsInCopiedLogs("Name callback: testUser").isEmpty());
