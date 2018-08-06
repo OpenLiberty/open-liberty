@@ -377,12 +377,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
-                    if(url.toLowerCase().contains("logintimeout") || props.containsKey("loginTimeout")) {
-                        SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "INVALID_LOGINTIMEOUT", dataSourceID);
-                        if (failure != null)
-                            throw failure;
-                    }
-                    Driver driver = loadDriver(url, classloader);
+                    Driver driver = loadDriver(url, classloader, props, dataSourceID);
                     if (driver != null)
                         return driver;
                 }
@@ -453,12 +448,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
-                    if(url.toLowerCase().contains("logintimeout") || props.containsKey("loginTimeout")) {
-                        SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "INVALID_LOGINTIMEOUT", "dataSource[DefaultDataSource]");
-                        if (failure != null)
-                            throw failure;
-                    }
-                    Driver driver = loadDriver(url, classloader);
+                    Driver driver = loadDriver(url, classloader, props, "dataSource[DefaultDataSource]");
                     if (driver != null)
                         return driver;
                 }
@@ -641,14 +631,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.readLock().lock();
                     lock.writeLock().unlock();
                 }
-
-            if(url.toLowerCase().contains("logintimeout") || props.containsKey("loginTimeout")) {
-                SQLNonTransientException failure = connectorSvc.ignoreWarnOrFail(tc, null, SQLNonTransientException.class, "INVALID_LOGINTIMEOUT", dataSourceID);
-                if (failure != null)
-                    throw failure;
-            }
             
-            return loadDriver(url, classloader);
+            return loadDriver(url, classloader, props, dataSourceID);
         } finally {
             lock.readLock().unlock();
         }
@@ -735,10 +719,30 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @return Driver instance that accepts the URL. NULL if no such Driver can be loaded.
      * @throws SQLException if an error occurs.
      */
-    private Driver loadDriver(String url, ClassLoader classloader) throws SQLException {
+    private Driver loadDriver(String url, ClassLoader classloader, Properties props, String dataSourceID) throws SQLException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
             Tr.entry(this, tc, "loadDriver", url, classloader);
+        int index = url.toLowerCase().indexOf("logintimeout");
+        if(index != -1) {
+            int length = url.length();
+            index += 13;  //length of logintimeout=
+            //check that the value after logintime= is 0
+            if(index < length && !url.substring(index, index+1).equals("0")) {
+                throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4005.invalid.logintimeout", dataSourceID));
+            }
+            if(index + 1 < length && !Character.isDigit(url.charAt(index+1))) { //check that the value after 0 (if there is one) is not numeric
+                throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4005.invalid.logintimeout", dataSourceID));
+            }
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Allowing value of 0 for loginTimeout in URL");
+        }
+        
+        
+        Object loginTimeout = props.get("loginTimeout");
+        if(loginTimeout != null && !loginTimeout.toString().equals("0")) {
+            throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4005.invalid.logintimeout", dataSourceID));
+        }
 
         SQLException failure = null;
         for (Driver driver : ServiceLoader.load(Driver.class, classloader)) {

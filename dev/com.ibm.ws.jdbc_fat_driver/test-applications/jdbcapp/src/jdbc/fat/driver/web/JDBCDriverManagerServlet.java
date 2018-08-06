@@ -65,11 +65,8 @@ import componenttest.app.FATServlet;
                                                className = "",
                                                loginTimeout = 76,
                                                url = "jdbc:fatdriver:memory:jdbcdriver1",
-                                               user = "dbuser1",
-                                               password = "{xor}Oz0vKDtu",
                                                properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
-                                                              "createDatabase=create"
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production"
                                                })
 })
 
@@ -395,13 +392,13 @@ public class JDBCDriverManagerServlet extends FATServlet {
           //Ensure datasource with property loginTimeout is not allowed when using Driver
         try {
             ctx.lookup("java:app/env/jdbc/dsd-with-login-timeout");
-            fail("loginTimeout property now allowed when using Driver");
+            fail("loginTimeout property not allowed when using Driver");
         } catch (Exception e) {
         } //expected
           //Datasource using a driver should return DriverManager value of loginTimeout
         DriverManager.setLoginTimeout(10 * 60); //10 minutes
 
-        assertEquals("Login timeout should be 600", 600, fatDriverDS.getLoginTimeout());
+        assertEquals("Login timeout should be 0 regardless of what is done to DriverManager", 0, fatDriverDS.getLoginTimeout());
     }
 
 }

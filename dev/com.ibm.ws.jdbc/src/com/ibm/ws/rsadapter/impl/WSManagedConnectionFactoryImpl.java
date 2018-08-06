@@ -1427,9 +1427,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             if(!Driver.class.equals(type)) {
                 return ((CommonDataSource) dataSourceOrDriver).getLoginTimeout();
             }
-            //When using Driver, loginTimeout is blocked from being set via URL or properties
-            //Therefore we know the loginTimeout being used is from the DriverManager
-            return DriverManager.getLoginTimeout();
+            //Return that the default value is being used when using the Driver type
+            return 0;
         } catch (SQLException sqlX) {
             FFDCFilter.processException(sqlX, getClass().getName(), "1670", this);
             throw AdapterUtil.mapSQLException(sqlX, this);
