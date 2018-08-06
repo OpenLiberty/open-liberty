@@ -8,4 +8,4 @@ Implementation-Title: ASM all classes
 DynamicImport-Package: *
 
 Export-Package: \
-  org.objectweb.asm.*;version="6.1.1"
+  org.objectweb.asm.*;version="6.2.1"
