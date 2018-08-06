@@ -251,6 +251,8 @@ public class FormLogoutExtensionProcessorTest {
         final String otherHostLogoutURL1b = "////myserver.com";
         final String otherHostLogoutURL1c = "///myserver.com";
         final String otherHostLogoutURL1d = "//myserver.com";
+        //This URI is invalid for SDK 7 and above, resulting in URISynaxException. In SDK 6 it is not invalid.
+        final String otherHostLogoutURL1g = "//%00//www.ibm.com%00%3a//.";
         //Considered relative URLs by WAS. So redirect performed and no hostname list comparision performed.
         final String otherHostLogoutURL1e = "/myserver.com";
         final String otherHostLogoutURL1f = "myserver.com";
@@ -277,6 +279,7 @@ public class FormLogoutExtensionProcessorTest {
         assertFalse(processorDouble.verifyLogoutURL(req, otherHostLogoutURL1d));
         assertTrue(processorDouble.verifyLogoutURL(req, otherHostLogoutURL1e));
         assertTrue(processorDouble.verifyLogoutURL(req, otherHostLogoutURL1f));
+        assertFalse(processorDouble.verifyLogoutURL(req, otherHostLogoutURL1g));
     }
 
     // Note that we cannot simulate code flow through if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) blocks
