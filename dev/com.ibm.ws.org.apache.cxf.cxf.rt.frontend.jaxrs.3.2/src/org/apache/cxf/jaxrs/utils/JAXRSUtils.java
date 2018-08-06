@@ -212,7 +212,7 @@ public final class JAXRSUtils {
                 types = ((AbstractConfigurableProvider) provider).getProduceMediaTypes();
             }
             if (types != null) {
-                values = !types.isEmpty() ? types.toArray(new String[types.size()]) : new String[] { "*/*" };
+                values = !types.isEmpty() ? types.toArray(new String[0]) : new String[] { "*/*" };
             }
         }
         return values;

@@ -28,6 +28,7 @@ import static java.lang.Math.min;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -120,7 +121,7 @@ public class ExponentiallyDecayingReservoir implements Reservoir {
         try {
             final double itemWeight = weight(timestamp - startTime);
             final WeightedSample sample = new WeightedSample(value, itemWeight);
-            final double priority = itemWeight / ThreadLocalRandomProxy.current().nextDouble();
+            final double priority = itemWeight / ThreadLocalRandom.current().nextDouble();
 
             final long newCount = count.incrementAndGet();
             if (newCount <= size) {

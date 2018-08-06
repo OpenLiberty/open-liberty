@@ -30,7 +30,8 @@ public class LaunchArguments {
 
     private static final List<String> KNOWN_OPTIONS = Collections.unmodifiableList(Arrays.asList(new String[] { "archive", "include",
                                                                                                                 "os", "pid", "pid-file",
-                                                                                                                "script", "template", "force", "target" }));
+                                                                                                                "script", "template", "force",
+                                                                                                                "target", "no-password" }));
 
     /**
      * Script argument: set by both batch and shell scripts to record the
@@ -152,7 +153,7 @@ public class LaunchArguments {
                     } else if (argToLower.equals("--javadump")) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.JAVADUMP_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);
-                    } else if (argToLower.equals("--pause")) { 
+                    } else if (argToLower.equals("--pause")) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.PAUSE_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);
                     } else if (argToLower.equals("--resume")) {

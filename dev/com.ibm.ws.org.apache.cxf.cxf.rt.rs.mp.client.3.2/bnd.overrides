@@ -7,7 +7,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Export-Package: \
   com.ibm.ws.microprofile.rest.client.component,\
-  org.apache.cxf.microprofile.client.cdi,\
+  org.apache.cxf.microprofile.client.cdi;version="3.2.4",\
   org.apache.cxf.microprofile.client;version="3.2.4",\
   org.apache.cxf.microprofile.client.cdi;version="3.2.4",\
   org.apache.cxf.microprofile.client.config;version="3.2.4",\
@@ -29,8 +29,10 @@ Import-Package: \
  org.apache.cxf;version="[3.1,4)",\
  org.apache.cxf.common.classloader;version="[3.1,4)",\
  org.apache.cxf.common.i18n;version="[3.1,4)",\
+ org.apache.cxf.common.logging;version="[3.1,4)",\
  org.apache.cxf.common.util;version="[3.1,4)",\
  org.apache.cxf.endpoint;version="[3.1,4)",\
+ org.apache.cxf.interceptor;version="[3.1,4)",\
  org.apache.cxf.jaxrs.client;version="[3.1,4)",\
  org.apache.cxf.jaxrs.client.blueprint;version="[3.1,4)",\
  org.apache.cxf.jaxrs.impl;version="[3.1,4)",\
@@ -38,6 +40,7 @@ Import-Package: \
  org.apache.cxf.jaxrs.provider;version="[3.1,4)",\
  org.apache.cxf.jaxrs.utils;version="[3.1,4)",\
  org.apache.cxf.message;version="[3.1,4)",\
+ org.apache.cxf.phase;version="[3.1,4)",\
  org.eclipse.microprofile.config;version="[1.0,2)";resolution:=optional,\
  org.eclipse.microprofile.rest.client;version="[1.0,2)",\
  org.eclipse.microprofile.rest.client.annotation;version="[1.0,2)",\

@@ -22,6 +22,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException; 
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
@@ -32,7 +33,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -57,6 +60,7 @@ import javax.resource.spi.ValidatingManagedConnectionFactory;
 import javax.resource.spi.security.GenericCredential;
 import javax.resource.spi.security.PasswordCredential;
 
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
@@ -118,13 +122,18 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * The underlying data source implementation from the JDBC vendor.
      * It could be a javax.sql.DataSource, javax.sql.ConnectionPoolDataSource, or javax.sql.XADataSource
      */
-    transient private CommonDataSource dataSource;
+    transient private Object dataSourceOrDriver;
 
-    transient Class<?> dataSourceImplClass;
     /**
-     * The type of data source (for example javax.sql.XADataSource) that this managed connection factory creates.
+     * Class name of data source or driver implementation from the JDBC vendor.
+     * It could be an implementation of javax.sql.DataSource, javax.sql.ConnectionPoolDataSource, javax.sql.XADataSource, or java.sql.Driver
      */
-    final Class<? extends CommonDataSource> dataSourceInterface;
+    transient Class<?> vendorImplClass;
+
+    /**
+     * The type of data source (for example, javax.sql.XADataSource) or java.sql.Driver that this managed connection factory uses to establish connections.
+     */
+    final Class<?> type;
 
     transient DatabaseHelper helper;
 
@@ -287,13 +296,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * Constructs a managed connection factory based on configuration.
      * 
      * @param dsConfigRef reference to update to point at the new data source configuration.
-     * @param ifc the type of data source.
-     * @param ds the data source.
+     * @param ifc the type of data source, otherwise java.sql.Driver.
+     * @param vendorImpl the data source or driver implementation.
      * @param jdbcRuntime version of the Liberty jdbc feature
      * @throws Exception if an error occurs.
      */
-    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, Class<? extends CommonDataSource> ifc,
-                                          CommonDataSource ds, JDBCRuntimeVersion jdbcRuntime) throws Exception {
+    public WSManagedConnectionFactoryImpl(AtomicReference<DSConfig> dsConfigRef, Class<?> ifc,
+                                          Object vendorImpl, JDBCRuntimeVersion jdbcRuntime) throws Exception {
         dsConfig = dsConfigRef;
         DSConfig config = dsConfig.get();
 
@@ -304,13 +313,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         this.connectorSvc = config.connectorSvc;
         this.jdbcRuntime = jdbcRuntime;
         instanceID = NUM_INITIALIZED.incrementAndGet();
-        dataSourceImplClass = ds.getClass();
-        dataSourceInterface = ifc;
-        jdbcDriverLoader = priv.getClassLoader(dataSourceImplClass);
+        vendorImplClass = vendorImpl.getClass();
+        type = ifc;
+        jdbcDriverLoader = priv.getClassLoader(vendorImplClass);
         supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
-        String dataSourceImplClassName = dataSourceImplClass.getName();
-        isUCP = dataSourceImplClassName.charAt(2) == 'a' && dataSourceImplClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
+        String implClassName = vendorImplClass.getName();
+        isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
@@ -319,14 +328,14 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
             if (tracer != null && tracer.isDebugEnabled()) {
                 try {
-                    ds = (CommonDataSource) getTraceableDataSource(ds);
-                    Tr.debug(this, tc, "supplemental tracing set for data source", "Data source: " + ds, "Tracer: " + tracer);
+                    vendorImpl = getTraceable(vendorImpl);
+                    Tr.debug(this, tc, "supplemental tracing set for data source or driver", vendorImpl, "Tracer: " + tracer);
                 } catch (ResourceException e) {
-                    Tr.debug(this, tc, "error setting supplemental trace on data source", "Data source: " + ds, e);
+                    Tr.debug(this, tc, "error setting supplemental trace on data source or driver", vendorImpl, e);
                 }
             }
         }
-        dataSource = ds;
+        dataSourceOrDriver = vendorImpl;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");
@@ -370,10 +379,10 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     private void createDatabaseHelper(String vPropsPid) throws Exception {
-        // Data store helper class is inferred first based on the data source implementation class,
-        // except for DB2 JCC and Informix JCC, which have the same data source implementation classes.
+        // Data store helper class is inferred first based on the data source or driver implementation class,
+        // except for DB2 JCC and Informix JCC, which have the same data source/driver implementation classes.
         // Second, we look at the type of vendor properties list to further distinguish.
-        String dsClassName = dataSourceImplClass.getName();
+        String dsClassName = vendorImplClass.getName();
         if (dsClassName.startsWith("oracle.")) helper = new OracleHelper(this);
         else if (dsClassName.startsWith("com.ibm.as400.")) helper = new DB2iToolboxHelper(this);
         else if (dsClassName.startsWith("com.ibm.db2.jdbc.app.")) helper = new DB2iNativeHelper(this);
@@ -797,15 +806,20 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                     // shouldn't ever happen
                     throw new DataStoreAdapterException("GENERAL_EXCEPTION", null, getClass(), x.getMessage());
             }
-        else if (DataSource.class.equals(dataSourceInterface) || isUCP)
+        else if (DataSource.class.equals(type) || isUCP)
         {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Getting a connection using Datasource. Is UCP? " + isUCP);
             conn = getConnectionUsingDS(userName, password, cri);
             results = new ConnectionResults(null, conn);
+        } else if (Driver.class.equals(type)) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "Getting a connection using Driver");
+            conn = getConnectionUsingDriver(userName, password);
+            results = new ConnectionResults(null, conn);
         } else {
             try {
-                results = helper.getPooledConnection(dataSource, userName, password, XADataSource.class.equals(dataSourceInterface), cri, useKerb, credential);
+                results = helper.getPooledConnection((CommonDataSource) dataSourceOrDriver, userName, password, XADataSource.class.equals(type), cri, useKerb, credential);
             } catch (DataStoreAdapterException dae) {
                 throw (ResourceException) AdapterUtil.mapException(dae, null, this, false); // error can't be fired as we don't have an mc
             }
@@ -815,6 +829,116 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getConnection", results);
         return results;
+    }
+    
+    /**
+     * Get a Connection from a DriverManager. A null userName
+     * indicates that no user name or password should be provided.
+     * 
+     * @param userN the user name for obtaining a Connection, or null if none.
+     * @param password the password for obtaining a Connection.
+     * @param cri optional information for the connection request
+     * 
+     * @return a Connection.
+     * @throws ResourceException
+     */
+    private final Connection getConnectionUsingDriver(String userN, String password) throws ResourceException 
+    {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getConnectionUsingDriver", AdapterUtil.toString(dataSourceOrDriver), userN);
+
+        final String user = userN == null ? null : userN.trim();
+        final String pwd = password == null ? null : password.trim();
+
+        Connection conn = null;
+        boolean isConnectionSetupComplete = false;
+        try {
+            conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
+                public Connection run() throws Exception {
+                    Hashtable<?, ?> vProps = dsConfig.get().vendorProps;
+                    Properties conProps = new Properties();
+                    String url = null;
+                    // convert property values to String and decode passwords 
+                    for (Map.Entry<?, ?> prop : vProps.entrySet()) {
+                        String name = (String) prop.getKey();
+                        Object value = prop.getValue();
+                        if (value instanceof String) {
+                            String str = (String) value;
+                            if ("URL".equals(name) || "url".equals(name)) {
+                                url = str;
+                                if (isTraceOn && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, name + '=' + str); // TODO obscure values of any possible passwords in URL value?
+                            } else if ((user == null || !"user".equals(name)) && (pwd == null || !"password".equals(name))) {
+                                // Decode passwords
+                                if (PropertyService.isPassword(name) && PasswordUtil.getCryptoAlgorithm(str) != null) {
+                                    if (isTraceOn && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "prop " + name + '=' + (str == null ? null : "***"));
+                                    str = PasswordUtil.decode(str);
+                                } else {
+                                    if (isTraceOn && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "prop " + name + '=' + str);
+                                }
+                                conProps.setProperty(name, str);
+                            }
+                        } else {
+                            if (isTraceOn && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "prop " + name + '=' + value);
+                            // Convert to String value
+                            conProps.setProperty(name, value.toString());
+                        }
+                    }
+
+                    if (user != null) {
+                        conProps.setProperty("user", user);
+                        conProps.setProperty("password", pwd);
+                        if (isTraceOn && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "prop user=" + user);
+                            Tr.debug(this, tc, "prop password=" + (pwd == null ? null : "***"));
+                        }
+                    }
+                    return ((Driver) dataSourceOrDriver).connect(url, conProps);
+                }
+            });
+            
+            //TODO need to handle null connection here, otherwise we'll get a null pointer below
+
+            try {
+                postGetConnectionHandling(conn);
+            } catch (SQLException se) {
+                FFDCFilter.processException(se, getClass().getName(), "871", this);
+                if (isTraceOn && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "getConnectionUsingDriver", se);
+                throw AdapterUtil.translateSQLException(se, this, false, getClass()); 
+            }
+
+            isConnectionSetupComplete = true;
+        } catch (PrivilegedActionException pae) {
+            FFDCFilter.processException(pae.getException(), getClass().getName(), "879");
+            ResourceException resX = new DataStoreAdapterException("JAVAX_CONN_ERR", pae.getException(), getClass(), "Connection");
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(this, tc, "getConnectionUsingDriver", pae.getException());
+            throw resX;
+        } catch (ClassCastException castX) {
+            // There's a possibility this occurred because of an error in the JDBC driver
+            // itself.  The trace should allow us to determine this.
+            FFDCFilter.processException(castX, getClass().getName(), "887");
+            ResourceException resX = new DataStoreAdapterException("NOT_A_1_PHASE_DS", null, getClass(), castX.getMessage());
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(this, tc, "getConnectionUsingDriver", castX);
+            throw resX;
+        } finally {
+            // Destroy the connection if we weren't able to successfully complete the setup.
+            if (conn != null && !isConnectionSetupComplete)
+                try {
+                    conn.close();
+                } catch (Throwable x) {
+                }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getConnectionUsingDriver", AdapterUtil.toString(conn));
+        return conn;
     }
 
     /**
@@ -832,7 +956,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "getConnectionUsingDS", AdapterUtil.toString(dataSource), userN);
+            Tr.entry(this, tc, "getConnectionUsingDS", AdapterUtil.toString(dataSourceOrDriver), userN);
 
         final String user = userN == null ? null : userN.trim();
         final String pwd = password == null ? null : password.trim();
@@ -848,7 +972,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         try {
                             if (isTraceOn && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "obtain Oracle data source with properties:", oracleProps);
-                            final Object ods = WSJdbcTracer.getImpl(dataSource);
+                            final Object ods = WSJdbcTracer.getImpl(dataSourceOrDriver);
                             Class<?> dsClass = null;
                             if(System.getSecurityManager() == null) {
                                 dsClass = jdbcDriverLoader.loadClass("oracle.jdbc.pool.OracleDataSource");
@@ -865,12 +989,12 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                             throw x.getCause() instanceof Exception ? (Exception) x.getCause() : x;
                         }
 
-                    if (dataSource instanceof XADataSource) {
-                        return user == null ? ((XADataSource) dataSource).getXAConnection().getConnection()
-                                        : ((XADataSource) dataSource).getXAConnection(user, pwd).getConnection();
+                    if (dataSourceOrDriver instanceof XADataSource) {
+                        return user == null ? ((XADataSource) dataSourceOrDriver).getXAConnection().getConnection()
+                                        : ((XADataSource) dataSourceOrDriver).getXAConnection(user, pwd).getConnection();
                     } else {
-                        return user == null ? ((DataSource) dataSource).getConnection()
-                                        : ((DataSource) dataSource).getConnection(user, pwd);
+                        return user == null ? ((DataSource) dataSourceOrDriver).getConnection()
+                                        : ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
                     }
                 }
             });
@@ -950,18 +1074,18 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     /**
-     * Enable supplemental tracing for the underlying data source.
+     * Enable supplemental tracing for the underlying data source or java.sql.Driver.
      * 
-     * @param ds the underlying data source.
+     * @param d the underlying data source or driver.
      * 
-     * @return a data source enabled for supplemental trace.
+     * @return a data source or driver enabled for supplemental trace.
      * @throws ResourceException if an error occurs obtaining the print writer.
      */
-    private Object getTraceableDataSource(Object ds) throws ResourceException {
-        WSJdbcTracer tracer = new WSJdbcTracer(helper.getTracer(), helper.getPrintWriter(), ds, dataSourceInterface, null, true);
+    private Object getTraceable(Object d) throws ResourceException {
+        WSJdbcTracer tracer = new WSJdbcTracer(helper.getTracer(), helper.getPrintWriter(), d, type, null, true);
 
         Set<Class<?>> classes = new HashSet<Class<?>>();
-        for (Class<?> cl = ds.getClass(); cl != null; cl = cl.getSuperclass())
+        for (Class<?> cl = d.getClass(); cl != null; cl = cl.getSuperclass())
             classes.addAll(Arrays.asList(cl.getInterfaces()));
         
         return Proxy.newProxyInstance(jdbcDriverLoader,
@@ -972,11 +1096,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     /**
      * Retrieve the underlying DataSource for this ManagedConnectionFactory.
      * 
-     * @return the underlying DataSource.
+     * @return the underlying DataSource, null if a Driver is used
      */
     public CommonDataSource getUnderlyingDataSource() throws SQLException
     {
-        return dataSource;
+        if(Driver.class.equals(type))
+            return null;
+        return (CommonDataSource) dataSourceOrDriver;
     }
 
     /**
@@ -1215,11 +1341,15 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "setting the logWriter to:", out);
 
-        if (dataSource != null) {
+        if (dataSourceOrDriver != null) {
             try {
                 AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
                     public Void run() throws SQLException {
-                        dataSource.setLogWriter(out);
+                        if(!Driver.class.equals(type)) {
+                            ((CommonDataSource) dataSourceOrDriver).setLogWriter(out);
+                        } else {
+                            //TODO behavior for java.sql.Driver
+                        }
                         return null;
                     }
                 });
@@ -1244,9 +1374,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (dsConfig.get().enableMultithreadedAccessDetection)
             info.append("Multithreaded access was detected?", detectedMultithreadedAccess);
 
-        info.append("DataSource Implementation Class:", dataSourceImplClass);
-        info.append("DataSource interface:", dataSourceInterface);
-        info.append("Underlying DataSource Object: " + AdapterUtil.toString(dataSource), dataSource);
+        info.append("Vendor implementation class:", vendorImplClass);
+        info.append("Type:", type);
+        info.append("Underlying DataSource or Driver Object: " + AdapterUtil.toString(dataSourceOrDriver), dataSourceOrDriver);
         info.append("Instance id:", instanceID);
         info.append("Log Writer:", logWriter);
         info.append("Counter of fatal connection errors on ManagedConnections created by this MCF:",
@@ -1271,11 +1401,15 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
 
     public final PrintWriter getLogWriter() throws ResourceException {
-        if (dataSource == null) {
+        if (dataSourceOrDriver == null) {
             return logWriter;
         }
         try {
-            return dataSource.getLogWriter();
+            if(!Driver.class.equals(type)) {
+                return ((CommonDataSource) dataSourceOrDriver).getLogWriter();
+            }
+            //TODO behavior for java.sql.driver
+            return null;
         } catch (SQLException se) {
             FFDCFilter.processException(se, getClass().getName(), "1656", this);
             throw AdapterUtil.translateSQLException(se, this, false, getClass());
@@ -1289,7 +1423,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
     public final int getLoginTimeout() throws SQLException {
         try {
-            return dataSource.getLoginTimeout();
+            if(!Driver.class.equals(type)) {
+                return ((CommonDataSource) dataSourceOrDriver).getLoginTimeout();
+            }
+            //TODO behavior for java.sql.Driver
+            return 0;
         } catch (SQLException sqlX) {
             FFDCFilter.processException(sqlX, getClass().getName(), "1670", this);
             throw AdapterUtil.mapSQLException(sqlX, this);
@@ -1455,13 +1593,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
             return rVal;
         }
-    }
-
-    /**
-     * Returns the dataSoure class name
-     */
-    public final Class<?> getDataSourceClass() {
-        return dataSourceImplClass;
     }
 
     /**

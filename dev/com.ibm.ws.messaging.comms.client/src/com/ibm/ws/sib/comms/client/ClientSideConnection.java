@@ -10,11 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.sib.comms.client;
 
-import java.net.InetSocketAddress;
-import java.util.Map;
-
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.websphere.sib.exception.SIResourceException;
@@ -30,11 +27,11 @@ import com.ibm.ws.sib.comms.common.CommsDiagnosticModule;
 import com.ibm.ws.sib.jfapchannel.ClientConnectionManager;
 import com.ibm.ws.sib.jfapchannel.ConnectionClosedListener;
 import com.ibm.ws.sib.jfapchannel.Conversation;
+import com.ibm.ws.sib.jfapchannel.Conversation.ThrottlingPolicy;
 import com.ibm.ws.sib.jfapchannel.ConversationUsageType;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
-import com.ibm.ws.sib.jfapchannel.Conversation.ThrottlingPolicy;
-import com.ibm.ws.sib.mfp.impl.CompHandshakeFactory;
 import com.ibm.ws.sib.mfp.ConnectionSchemaSet;
+import com.ibm.ws.sib.mfp.impl.CompHandshakeFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.SICoreConnection;
 import com.ibm.wsspi.sib.core.exception.SIAuthenticationException;
@@ -42,6 +39,11 @@ import com.ibm.wsspi.sib.core.exception.SIConnectionDroppedException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionLostException;
 import com.ibm.wsspi.sib.core.exception.SIConnectionUnavailableException;
 import com.ibm.wsspi.sib.core.trm.SibTrmConstants;
+
+import java.net.InetSocketAddress;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Map;
 
 /**
  * An implementation of the ClientConnection to be used by TRM on the client.
@@ -145,15 +147,20 @@ public class ClientSideConnection extends ClientJFapCommunicator implements Clie
          // end point.
          if (cp.getMode() == ConnectionProperties.PropertiesType.HOST_PORT)
          {
-            String host = cp.getEndPoint().getHost();
-            int port = cp.getEndPoint().getPort().intValue();
-            String chainName = cp.getChainName();
+            final String host = cp.getEndPoint().getHost();
+            final int port = cp.getEndPoint().getPort().intValue();
+            final String chainName = cp.getChainName();
 
             connectionInfo = host + ":" + port + " - " + chainName;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Connecting to: " + connectionInfo);
 
-            con = conMan.connect(new InetSocketAddress(host, port),
-                                 new ProxyReceiveListener(), chainName);
+            final InetSocketAddress addr = AccessController.doPrivileged(new PrivilegedAction<InetSocketAddress>() {
+               @Override
+               public InetSocketAddress run() {
+                  return new InetSocketAddress(host, port);
+               }
+            });
+            con = conMan.connect(addr, new ProxyReceiveListener(), chainName);
          }
          else if (cp.getMode() == ConnectionProperties.PropertiesType.WLM_EP)
          {

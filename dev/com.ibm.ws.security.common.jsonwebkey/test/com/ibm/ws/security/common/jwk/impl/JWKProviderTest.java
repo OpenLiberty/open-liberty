@@ -29,8 +29,8 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
-import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 import test.common.SharedOutputManager;
 

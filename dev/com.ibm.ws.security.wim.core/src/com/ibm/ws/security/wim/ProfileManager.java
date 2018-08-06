@@ -768,7 +768,7 @@ public class ProfileManager implements ProfileServiceLite {
             startIndex = pageControl.getStartIndex();
 
             PageCacheEntry entry = (PageCacheEntry) pagingSearchCache.get(cacheKey);
-            int size = 0;
+            int numEntities = 0;
 
             Root cachedRootDO = null;
             List<Entity> entities = null;
@@ -777,7 +777,7 @@ public class ProfileManager implements ProfileServiceLite {
                 if (cachedRootDO != null) {
                     entities = cachedRootDO.getEntities();
                     if (entities != null) {
-                        size = entities.size();
+                        numEntities = entities.size();
                     }
                 }
             }
@@ -791,16 +791,25 @@ public class ProfileManager implements ProfileServiceLite {
                 returnDO = new Root();
                 List<Entity> retDOEntities = null;
 
-                if (size > pageSize) {
-                    // Iterate only if startIndex is less than total search result size
-                    if (startIndex < entities.size()) {
-                        retDOEntities = new ArrayList<Entity>();
-                        int loopTo = startIndex + pageSize;
-                        loopTo = (loopTo < entities.size()) ? loopTo : entities.size();
-                        for (int i = startIndex; i < loopTo; i++) {
-                            Entity ent = entities.get(i);
-                            retDOEntities.add(ent);
-                        }
+                /*
+                 * Return all of the entities unless the allowed page size is less than
+                 * the number of returned entities or if the starting index is not 0.
+                 */
+                if (numEntities > pageSize || startIndex > 0) {
+                    /*
+                     * Iterate only if startIndex is less than total search result size.
+                     */
+                    if (startIndex < numEntities) {
+                        /*
+                         * Determine the end of the entities to include in this request.
+                         */
+                        int toIndex = startIndex + pageSize;
+                        toIndex = (toIndex < numEntities) ? toIndex : numEntities;
+
+                        /*
+                         * Copy the range of entities into the entities to return.
+                         */
+                        retDOEntities = entities.subList(startIndex, toIndex);
                     }
                 } else {
                     retDOEntities = entities;
@@ -813,7 +822,7 @@ public class ProfileManager implements ProfileServiceLite {
 
                 PageResponseControl respPageCtrl = new PageResponseControl();
                 returnDO.getControls().add(respPageCtrl);
-                respPageCtrl.setTotalSize(entities.size());
+                respPageCtrl.setTotalSize(numEntities);
             }
 
             unsetExternalId(returnDO);
@@ -1148,16 +1157,23 @@ public class ProfileManager implements ProfileServiceLite {
             if (pagingSearchCache != null) {
                 Root cachedRootDO = new Root();
 
-                if (reEntitySize > pageSize) {
+                if (reEntitySize > pageSize || startIndex > 0) {
 
-                    // Iterate only if the start index is less than total result size
+                    /*
+                     * Iterate only if the start index is less than total result size
+                     */
                     if (startIndex < returnEntities.size()) {
+                        /*
+                         * Determine the end of the entities to include in this request.
+                         */
+                        int toIndex = startIndex + pageSize;
+                        toIndex = (toIndex < returnEntities.size()) ? toIndex : returnEntities.size();
+
+                        /*
+                         * Copy the range of entities into the entities to return.
+                         */
                         List<Entity> retDOEntities = retRootDO.getEntities();
-                        int loopTo = startIndex + pageSize;
-                        loopTo = (loopTo < returnEntities.size()) ? loopTo : returnEntities.size();
-                        for (int i = startIndex; i < loopTo; i++) {
-                            retDOEntities.add(returnEntities.get(i));
-                        }
+                        retDOEntities.addAll(returnEntities.subList(startIndex, toIndex));
                     }
                 } else {
                     retRootDO.getEntities().addAll(returnEntities);

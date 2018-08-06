@@ -83,7 +83,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
 
     // Package Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -94,7 +94,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -105,14 +105,14 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PACKAGE);
     }
 
     // Private Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -123,7 +123,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -134,14 +134,14 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PRIVATE);
     }
 
     // Protected Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -152,7 +152,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -163,14 +163,14 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PROTECTED);
     }
 
     // Public Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -181,7 +181,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         try {
@@ -192,7 +192,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = EntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PUBLIC);
     }
@@ -201,7 +201,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
 
     // Package Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -212,7 +212,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -223,14 +223,14 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PackageProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PACKAGE);
     }
 
     // Private Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -241,7 +241,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -252,14 +252,14 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PrivateProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PRIVATE);
     }
 
     // Protected Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -270,7 +270,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -281,14 +281,14 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_ProtectedProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PROTECTED);
     }
 
     // Public Protection
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -299,7 +299,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         try {
@@ -310,7 +310,7 @@ public class DefaultListenerCallbackRuntimeExceptionTestServlet extends FATServl
     }
 
     @Test
-    public void Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_RuntimeException_002_EntitySupportingDefaultCallbacks_PublicProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLEntitySupportingDefaultCallbacks.class;
         ctl.testCallbackRuntimeException002(em, tx, targetEntityClass, ProtectionType.PT_PUBLIC);
     }

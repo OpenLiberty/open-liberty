@@ -1537,6 +1537,10 @@ public class H2StreamProcessor {
         }
         buf.flip();
         if (expectedContentLength != -1 && buf.limit() != expectedContentLength) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "processCompleteData release buffer and throw ProtocolException");
+            }
+            buf.release();
             ProtocolException pe = new ProtocolException("content-length header did not match the expected amount of data received");
             pe.setConnectionError(false); // stream error
             throw pe;

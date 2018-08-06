@@ -39,6 +39,7 @@ import org.jmock.api.Action;
 import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -64,11 +65,16 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 import test.common.SharedOutputManager;
+import test.common.junit.rules.MaximumJavaLevelRule;
 
 /**
  *
  */
 public class PluginGeneratorTest {
+    
+    @ClassRule
+    public static MaximumJavaLevelRule maxLevel = new MaximumJavaLevelRule(8);
+    
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=info:webcontainer=all");
 
     final Mockery context = new JUnit4Mockery() {

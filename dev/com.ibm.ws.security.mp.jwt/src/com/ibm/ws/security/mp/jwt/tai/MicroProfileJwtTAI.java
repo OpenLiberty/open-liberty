@@ -38,6 +38,7 @@ import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
@@ -68,7 +69,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     public static final String JTI_CLAIM = "jti";
 
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
-    //static final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
+    static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
     static final ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig> mpJwtConfigRef = new ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig>(KEY_MP_JWT_CONFIG);
 
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
@@ -86,6 +87,42 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
     public void unsetSecurityService(ServiceReference<SecurityService> reference) {
         securityServiceRef.unsetReference(reference);
+    }
+
+    @Reference(service = AuthenticationFilter.class, name = KEY_FILTER, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.RELUCTANT)
+    protected void setAuthFilter(ServiceReference<AuthenticationFilter> ref) {
+        String pid = (String) ref.getProperty(KEY_SERVICE_PID);
+        synchronized (authFilterServiceRef) {
+            authFilterServiceRef.putReference(pid, ref);
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " setAuthFilter pid:" + pid);
+            Tr.debug(tc, "@AV999 setAuthFilter service ref:" + getAuthFilter(pid));
+        }
+    }
+
+    protected void updatedAuthFilter(ServiceReference<AuthenticationFilter> ref) {
+        String pid = (String) ref.getProperty(KEY_SERVICE_PID);
+        synchronized (authFilterServiceRef) {
+            authFilterServiceRef.putReference(pid, ref);
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " setAuthFilter pid:" + pid);
+        }
+    }
+
+    protected void unsetAuthFilter(ServiceReference<AuthenticationFilter> ref) {
+        String pid = (String) ref.getProperty(KEY_SERVICE_PID);
+        synchronized (authFilterServiceRef) {
+            authFilterServiceRef.removeReference(pid, ref);
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, " unsetAuthFilter pid:" + pid);
+        }
+    }
+
+    static public AuthenticationFilter getAuthFilter(String pid) {
+        return authFilterServiceRef.getService(pid);
     }
 
     @Reference(service = MicroProfileJwtConfig.class, name = KEY_MPJWT_CONFIG, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.RELUCTANT)
@@ -133,9 +170,9 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
-        //        synchronized (authFilterServiceRef) {
-        //            authFilterServiceRef.activate(cc);
-        //        }
+        synchronized (authFilterServiceRef) {
+            authFilterServiceRef.activate(cc);
+        }
 
         synchronized (mpJwtConfigRef) {
             mpJwtConfigRef.activate(cc);
@@ -151,9 +188,9 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        //        synchronized (authFilterServiceRef) {
-        //            authFilterServiceRef.deactivate(cc);
-        //        }
+        synchronized (authFilterServiceRef) {
+            authFilterServiceRef.deactivate(cc);
+        }
         synchronized (mpJwtConfigRef) {
             // 240443 work around small kernel bug.
             // need to remove all references, because if we changed id param, osgi will not remove old one.

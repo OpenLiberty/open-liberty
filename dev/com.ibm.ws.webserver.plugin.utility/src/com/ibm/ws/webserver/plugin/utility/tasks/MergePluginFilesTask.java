@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,8 +164,8 @@ public class MergePluginFilesTask extends BasePluginConfigCommandTask {
             }
         });
 
-        // If there are not at least 2 files to be merged abort
-        if(files.length < 2) {
+        // If there is not at least 1 file to be merged abort
+        if(files.length < 1) {
             abort(console, getMessage("MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files"));
             return;
         }

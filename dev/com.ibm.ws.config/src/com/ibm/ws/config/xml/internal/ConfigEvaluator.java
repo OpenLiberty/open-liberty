@@ -153,9 +153,20 @@ class ConfigEvaluator {
                 }
             }
             for (Map.Entry<String, ExtendedAttributeDefinition> entry : attributeMap.entrySet()) {
+                Object rawValue;
                 ExtendedAttributeDefinition attributeDef = entry.getValue();
                 if (attributeDef.isFinal()) {
                     String attributeName = entry.getKey();
+                    if (XMLConfigConstants.CFG_INSTANCE_ID.equals(attributeName)) {
+                        rawValue = config.getAttribute(XMLConfigConstants.CFG_INSTANCE_ID);
+                        if (!attributeDef.getDefaultValue()[0].equals(rawValue)) {
+                            // User has overridden a ibm:final value in server.xml
+                            if (rawValue != null) {
+                                Tr.warning(tc, "warning.supplied.config.not.valid", attributeName, rawValue);
+                                context.setValid(false);
+                            }
+                        }
+                    }
                     if (XMLConfigConstants.CFG_PARENT_PID.equals(attributeName))
                         continue;
                     evaluateMetaTypeAttribute(attributeName, context, attributeDef, flatPrefix, ignoreWarnings);

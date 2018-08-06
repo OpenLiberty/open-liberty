@@ -21,7 +21,7 @@
         <mapping-file>META-INF/callback-cleanup-orm.xml</mapping-file>
         <properties>
             <property name="eclipselink.cache.shared.default" value="false"/>  
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />          
+            <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />   -->        
         </properties>
     </persistence-unit>
     
@@ -71,7 +71,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="eclipselink.ddl-generation" value="create-tables" /> 
+            <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />   -->  
          </properties>
     </persistence-unit>
 
@@ -121,7 +121,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="eclipselink.ddl-generation" value="create-tables" /> 
+            <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />   --> 
         </properties>
     </persistence-unit>
     
@@ -137,7 +137,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="eclipselink.ddl-generation" value="create-tables" /> 
+            <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />   --> 
         </properties>
     </persistence-unit>
 
@@ -153,7 +153,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="eclipselink.ddl-generation" value="create-tables" /> 
+            <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />   --> 
         </properties>
     </persistence-unit>
     
@@ -198,7 +198,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="eclipselink.ddl-generation" value="create-tables" /> 
+            <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />   -->  
         </properties>
     </persistence-unit>
 
@@ -243,7 +243,7 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.cache.shared.default" value="false"/>
-            <property name="eclipselink.ddl-generation" value="create-tables" /> 
+            <!-- <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />   -->  
         </properties>
     </persistence-unit>
 </persistence>

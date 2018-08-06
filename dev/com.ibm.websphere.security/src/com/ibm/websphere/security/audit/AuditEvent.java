@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.ibm.websphere.security.audit;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import com.ibm.ws.security.utils.SecurityUtils;
@@ -63,6 +65,7 @@ public class AuditEvent {
     public final static String TARGET_MESSAGING_OPERATIONTYPE = "target.messaging.operationType";
     public final static String TARGET_MESSAGING_CALLTYPE = "target.messaging.callType";
     public final static String TARGET_MESSAGING_JMS_RESOURCE = "target.messaging.jmsResource";
+    public final static String TARGET_MESSAGING_JMS_ACTIONS = "target.messaging.jmsActions";
     public final static String TARGET_MESSAGING_JMS_ROLES = "target.messaging.jmsRoles";
     public final static String TARGET_MESSAGING_JMS_REQUESTOR_TYPE = "target.messaging.jmsRequestorType";
     public final static String TARGET_MESSAGING_JMS_QUEUE_PERMISSIONS = "target.messaging.queuePermissions";
@@ -232,9 +235,15 @@ public class AuditEvent {
      * @return current time in yyyy-MM-dd HH:mm:ss.SSS format
      */
     public String getCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
-        String strDate = sdf.format(new Date());
-        return strDate;
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(tz);
+        String nowAsISO = df.format(new Date());
+
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
+        //String strDate = sdf.format(new Date());
+        //return strDate;
+        return nowAsISO;
     }
 
     /**

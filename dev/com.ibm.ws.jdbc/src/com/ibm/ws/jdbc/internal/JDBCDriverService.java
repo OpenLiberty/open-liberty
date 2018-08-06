@@ -17,8 +17,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -27,8 +30,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -41,6 +46,7 @@ import javax.sql.XADataSource;
 
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -147,6 +153,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      */
     private String name;
 
+    // TODO remove once function is ready to GA
+    private boolean nonshipFunction;
+
     /**
      * JDBC driver configuration.
      */
@@ -176,6 +185,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         } finally {
             lock.writeLock().unlock();
         }
+
+        nonshipFunction = props.get("internal.nonship.function") != null;
 
         if ("file".equals(props.get("config.source"))) {
             if (name.startsWith(AppDefinedResource.PREFIX)) // avoid conflicts with application defined data sources
@@ -217,7 +228,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @return the data source
      * @throws SQLException if an error occurs
      */
-    private <T extends CommonDataSource> T create(final Class<T> type, final String className, final Hashtable<?, ?> props) throws SQLException {
+    private <T extends CommonDataSource> T create(final String className, final Hashtable<?, ?> props) throws SQLException {
         if (className == null)
             throw classNotFound(null);
 
@@ -229,7 +240,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(tc, "create", type, className, classloader, PropertyService.hidePasswords(props));
+            Tr.entry(tc, "create", className, classloader, PropertyService.hidePasswords(props));
         try {
             T ds = AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
                 public T run() throws Exception {
@@ -316,7 +327,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
 
     /**
-     * Create any type of data source - whichever is available, in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
@@ -324,10 +335,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * </ul>
      * 
      * @param props typed data source properties
-     * @return the data source
+     * @return the data source or driver instance
      * @throws SQLException if an error occurs
      */
-    public CommonDataSource createAnyDataSource(Properties props) throws SQLException {
+    public Object createAnyDataSourceOrDriver(Properties props) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -352,18 +363,32 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
             if (null != (className = (String) properties.get(ConnectionPoolDataSource.class.getName()))
              || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true))))
-                return create(ConnectionPoolDataSource.class, className, props);
+             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true)))
 
-            if (null != (className = (String) properties.get(DataSource.class.getName()))
+             || null != (className = (String) properties.get(DataSource.class.getName()))
              || null != (className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true))))
-                return create(DataSource.class, className, props);
+             || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true)))
 
-            if (null != (className = (String) properties.get(XADataSource.class.getName()))
+             || null != (className = (String) properties.get(XADataSource.class.getName()))
              || null != (className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID))
              || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true))))
-                return create(XADataSource.class, className, props);
+                return create(className, props);
+
+            if (nonshipFunction) {
+                String url = props.getProperty("URL", props.getProperty("url"));
+                if (url != null) {
+                    Driver driver = loadDriver(url, classloader);
+                    if (driver != null)
+                        return driver;
+                }
+
+                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                       JDBCDrivers.DATA_SOURCE,
+                                                                       JDBCDrivers.XA_DATA_SOURCE);
+                if (dsEntry != null)
+                    return create(className = dsEntry.getValue(), props);
+            }
 
             throw classNotFound(null);
         } finally {
@@ -372,19 +397,19 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
     
     /**
-     * Create any type of data source - whichever is available, in the following order,
+     * Create any type of data source or java.sql.Driver - whichever is available, looking for known data source impl classes in the following order,
      * <ul>
      * <li>javax.sql.XADataSource
      * <li>javax.sql.ConnectionPoolDataSource
      * <li>javax.sql.DataSource
      * </ul>
-     * This order is different than the standard priority, which prioritizes javax.sql.XADataSource last.
+     * This order is different than the standard priority, which prioritizes javax.sql.XADataSource after ConnectionPoolDataSource and DataSource.
      * 
      * @param props typed data source properties
-     * @return the data source
+     * @return the data source or driver instance
      * @throws SQLException if an error occurs
      */
-    public CommonDataSource createDefaultDataSource(Properties props) throws SQLException {
+    public Object createDefaultDataSourceOrDriver(Properties props) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -409,18 +434,32 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             
             if (null != (className = (String) properties.get(XADataSource.class.getName()))
              || null != (className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true))))
-                return create(XADataSource.class, className, props);
+             || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true)))
 
-            if (null != (className = (String) properties.get(ConnectionPoolDataSource.class.getName()))
+             || null != (className = (String) properties.get(ConnectionPoolDataSource.class.getName()))
              || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true))))
-                return create(ConnectionPoolDataSource.class, className, props);
+             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true)))
 
-            if (null != (className = (String) properties.get(DataSource.class.getName()))
+             || null != (className = (String) properties.get(DataSource.class.getName()))
              || null != (className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID))
              || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true))))
-                return create(DataSource.class, className, props);
+                return create(className, props);
+
+            if (nonshipFunction) {
+                String url = props.getProperty("URL", props.getProperty("url"));
+                if (url != null) {
+                    Driver driver = loadDriver(url, classloader);
+                    if (driver != null)
+                        return driver;
+                }
+
+                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                       JDBCDrivers.XA_DATA_SOURCE,
+                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                       JDBCDrivers.DATA_SOURCE);
+                if (dsEntry != null)
+                    return create(className = dsEntry.getValue(), props);
+            }
 
             throw classNotFound(null);
         } finally {
@@ -459,11 +498,16 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (className == null) {
                 String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID);
-                if (className == null)
+                if (className == null) {
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
+                    if (className == null && nonshipFunction) {
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE); 
+                        className = dsEntry == null ? null : dsEntry.getValue();
+                    }
+                }
             }
 
-            return create(ConnectionPoolDataSource.class, className, props);
+            return create(className, props);
         } finally {
             lock.readLock().unlock();
         }
@@ -500,11 +544,16 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (className == null) {
                 String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID);
-                if (className == null)
+                if (className == null) {
                     className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true));
+                    if (className == null && nonshipFunction) {
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.DATA_SOURCE);
+                        className = dsEntry == null ? null : dsEntry.getValue();
+                    }
+                }
             }
 
-            return create(DataSource.class, className, props);
+            return create(className, props);
         } finally {
             lock.readLock().unlock();
         }
@@ -541,11 +590,49 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (className == null) {
                 String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID);
-                if (className == null)
+                if (className == null) {
                     className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true));
+                    if (className == null && nonshipFunction) {
+                        SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader, JDBCDrivers.XA_DATA_SOURCE);
+                        className = dsEntry == null ? null : dsEntry.getValue();
+                    }
+                }
             }
 
-            return create(XADataSource.class, className, props);
+            return create(className, props);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+    
+    /**
+     * Load the Driver instance for the specified URL.
+     * 
+     * @param url JDBC driver URL.
+     * @return the driver
+     * @throws SQLException if an error occurs
+     */
+    public Object getDriver(String url) throws SQLException {
+        lock.readLock().lock();
+        try {
+            if (!isInitialized)
+                try {
+                    // Switch to write lock for lazy initialization
+                    lock.readLock().unlock();
+                    lock.writeLock().lock();
+
+                    if (!isInitialized) {
+                        if (!loadFromApp())
+                            classloader = AdapterUtil.getClassLoaderWithPriv(sharedLib);
+                        isInitialized = true;
+                    }
+                } finally {
+                    // Downgrade to read lock for rest of method
+                    lock.readLock().lock();
+                    lock.writeLock().unlock();
+                }
+
+            return loadDriver(url, classloader);
         } finally {
             lock.readLock().unlock();
         }
@@ -621,6 +708,54 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getClasspath", classpath);
         return classpath;
+    }
+
+    /**
+     * Load java.sql.Driver implementations available to the specific class loader and return
+     * the first that accepts the URL that is specified in the vendor properties.
+     *
+     * @param url the JDBC driver URL.
+     * @param classloader class loader from which to load JDBC drivers.
+     * @return Driver instance that accepts the URL. NULL if no such Driver can be loaded.
+     * @throws SQLException if an error occurs.
+     */
+    private Driver loadDriver(String url, ClassLoader classloader) throws SQLException {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isDebugEnabled())
+            Tr.entry(this, tc, "loadDriver", url, classloader);
+
+        SQLException failure = null;
+        for (Driver driver : ServiceLoader.load(Driver.class, classloader)) {
+            boolean acceptsURL;
+            try {
+                acceptsURL = driver.acceptsURL(url);
+            } catch (SQLException x) {
+                if (failure == null)
+                    failure = x;
+                acceptsURL = false;
+            }
+            if (acceptsURL) {
+                if (classloader != null && url.startsWith("jdbc:derby:") && isDerbyEmbedded.compareAndSet(false, true)) {
+                    embDerbyRefCount.add(classloader);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "ref count for shutdown", classloader, embDerbyRefCount);
+                }
+
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "loadDriver", driver);
+                return driver;
+            } else {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, driver + " does not accept url");
+            }
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "loadDriver", failure);
+        if (failure == null)
+            return null;
+        else
+            throw failure;
     }
 
     /**

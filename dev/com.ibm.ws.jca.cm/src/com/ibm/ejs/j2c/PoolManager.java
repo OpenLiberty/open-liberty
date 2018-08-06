@@ -1348,7 +1348,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                             for (int i = 0; i < maxFreePoolHashSize; ++i) {
                                 /*
                                  *
-                                 * This is not double-checked locking. The following code diry
+                                 * This is not double-checked locking. The following code dirty
                                  * reads the size of the mcWrapperList that may be change at
                                  * any time by another thread. If it is greater than zero, we
                                  * need to synchronize and check the value again. If it is
@@ -1402,12 +1402,26 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                                          * waiter if one exists. This will allow the wait a chance
                                          * at creating a connection to return to the requester.
                                          */
-                                        synchronized (waiterFreePoolLock) {
-                                            this.totalConnectionCount.decrementAndGet();
-                                            if (waiterCount > 0) {
-                                                waiterFreePoolLock.notify();
+                                        if (e.getCause() instanceof InterruptedException) {
+                                            if (isTracingEnabled && tc.isDebugEnabled()) {
+                                                Tr.debug(tc, "Thread was interrupted, skipping decrement of total connection count");
                                             }
+                                            synchronized (waiterFreePoolLock) {
+                                                if (waiterCount > 0) {
+                                                    waiterFreePoolLock.notify();
+                                                }
+                                            }
+                                        } else {
+                                            synchronized (waiterFreePoolLock) {
+                                                int totalCount = this.totalConnectionCount.decrementAndGet();
+                                                if (isTracingEnabled && tc.isDebugEnabled()) {
+                                                  Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                                }
+                                                if (waiterCount > 0) {
+                                                    waiterFreePoolLock.notify();
+                                                }
 
+                                            }
                                         }
                                         throw e;
                                     }
@@ -1453,12 +1467,26 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                              * if one exists. This will allow the wait a chance at creating a
                              * connection to return to the requester.
                              */
-                            synchronized (waiterFreePoolLock) {
-                                this.totalConnectionCount.decrementAndGet();
-                                if (waiterCount > 0) {
-                                    waiterFreePoolLock.notify();
+                            if (e.getCause() instanceof InterruptedException) {
+                                if (isTracingEnabled && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Thread was interrupted, skipping decrement of total connection count");
                                 }
+                                synchronized (waiterFreePoolLock) {
+                                    if (waiterCount > 0) {
+                                        waiterFreePoolLock.notify();
+                                    }
+                                }
+                            } else {
+                                synchronized (waiterFreePoolLock) {
+                                    int totalCount = this.totalConnectionCount.decrementAndGet();
+                                    if (isTracingEnabled && tc.isDebugEnabled()) {
+                                       Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                                    }
+                                    if (waiterCount > 0) {
+                                        waiterFreePoolLock.notify();
+                                    }
 
+                                }
                             }
                             throw e;
                         }
@@ -1500,12 +1528,26 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                      * one exists. This will allow the wait a chance at creating a
                      * connection to return to the requester.
                      */
-                    synchronized (waiterFreePoolLock) {
-                        this.totalConnectionCount.decrementAndGet();
-                        if (waiterCount > 0) {
-                            waiterFreePoolLock.notify();
+                    if (e.getCause() instanceof InterruptedException) {
+                        if (isTracingEnabled && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Thread was interrupted, skipping decrement of total connection count");
                         }
+                        synchronized (waiterFreePoolLock) {
+                            if (waiterCount > 0) {
+                                waiterFreePoolLock.notify();
+                            }
+                        }
+                    } else {
+                        synchronized (waiterFreePoolLock) {
+                            int totalCount = this.totalConnectionCount.decrementAndGet();
+                            if (isTracingEnabled && tc.isDebugEnabled()) {
+                               Tr.debug(tc, "Decrement of total connection count " + totalCount);
+                            }
+                            if (waiterCount > 0) {
+                                waiterFreePoolLock.notify();
+                            }
 
+                        }
                     }
                     throw e;
                 }

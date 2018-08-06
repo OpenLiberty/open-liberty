@@ -500,7 +500,7 @@ ANNO_CLASSSOURCE_RESOURCE_CLOSE_EXCEPTION.useraction=See the exception and the a
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The target convertion type
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC00075W: [ {0} ]: The container of this class source failed to convert to [{1}]. Error message: {2}
+ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION=CWWKC0075W: [ {0} ]: The container of this class source failed to convert to [{1}]. Error message: {2}
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.explanation=The file could not be converted to the new type object.
 ANNO_CLASSSOURCE_MODE_ADAPT_EXCEPTION.useraction=No user action is available.
 

@@ -753,4 +753,18 @@ public interface InstallKernel {
     public Map<String, Collection<String>> installAsset(Collection<String> assetIds, File fromDir, RepositoryConnectionList loginInfo, String proxyHost, String proxyPort,
                                                         String proxyUser,
                                                         String proxyPwd, boolean downloadDependencies) throws InstallException;
+
+    /**
+     * @param productIds
+     * @param toBeDeleted
+     * @throws InstallException
+     */
+    void uninstallFeaturesByProductId(String[] productIds, Collection<File> toBeDeleted) throws InstallException;
+
+    /**
+     * @param productIds
+     * @param toBeDeleted
+     * @throws InstallException
+     */
+    void uninstallProductFeatures(String[] productIds, Collection<File> toBeDeleted) throws InstallException;
 }

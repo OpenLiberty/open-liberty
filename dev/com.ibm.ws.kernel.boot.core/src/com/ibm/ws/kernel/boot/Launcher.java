@@ -14,21 +14,17 @@ import java.security.AccessController;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.KernelBootstrap;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
+import com.ibm.ws.kernel.boot.internal.commands.HelpCommand;
 import com.ibm.ws.kernel.boot.internal.commands.ListServerHelper;
 import com.ibm.ws.kernel.boot.internal.commands.ServerHelpActions;
-import com.ibm.ws.kernel.boot.internal.commands.HelpCommand;
 
 /**
  * The platform launcher; processes command line options and
@@ -249,7 +245,8 @@ public class Launcher {
                 // Use initialized bootstrap configuration to create the server lock.
                 // This ensures the server and nested workarea directory exist and are writable
                 ServerLock.createServerLock(bootProps);
-                rc = bootProps.generateServerEnv();
+                boolean generatePass = launchArgs.getOption("no-password") == null;
+                rc = bootProps.generateServerEnv(generatePass);
                 break;
             case MESSAGE_ACTION:
                 rc = showMessage(launchArgs);
@@ -290,7 +287,7 @@ public class Launcher {
                 break;
             case RESUME_ACTION:
                 rc = new com.ibm.ws.kernel.boot.internal.commands.ProcessControlHelper(bootProps, launchArgs).resume();
-                break; 
+                break;
             case LIST_ACTION:
                 rc = new ListServerHelper(bootProps, launchArgs).listServers();
                 break;

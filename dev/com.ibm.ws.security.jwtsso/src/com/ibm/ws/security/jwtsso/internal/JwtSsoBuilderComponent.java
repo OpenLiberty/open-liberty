@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.jwtsso.config.JwtSsoBuilderConfig;
@@ -44,6 +43,7 @@ import com.ibm.ws.security.jwtsso.utils.ConfigUtils;
 import com.ibm.ws.security.jwtsso.utils.IssuerUtil;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 

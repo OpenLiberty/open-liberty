@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.container.osgi.internal;
 
+import java.io.PrintWriter;
+
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.jpa.JPAPuId;
 import com.ibm.ws.jpa.management.AbstractJPAComponent;
@@ -30,6 +32,10 @@ public class OSGiJPAApplInfo extends JPAApplInfo {
     @Override
     protected JPAPUnitInfo createJPAPUnitInfo(JPAPuId puId, JPAPXml pxml, JPAScopeInfo scopeInfo) {
         return new OSGiJPAPUnitInfo(this, puId, pxml.getClassLoader(), scopeInfo);
+    }
+
+    void introspect(PrintWriter out) {
+        doIntrospect(out);
     }
 
     Container getContainer() {

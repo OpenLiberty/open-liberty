@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.sessionCache-1.0
 visibility=public
 IBM-ShortName: sessionCache-1.0
 Manifest-Version: 1.0
-Subsystem-Name: JCache Session Persistence
+Subsystem-Name: JCache Session Persistence 1.0
 IBM-API-Package: \
  javax.cache; type="spec", \
  javax.cache.annotation; type="spec", \

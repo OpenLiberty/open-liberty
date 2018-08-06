@@ -22,7 +22,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -53,9 +52,11 @@ public class WebConfigUtilsTest {
     private final SecurityMetadata smd2 = context.mock(SecurityMetadata.class, "smd2");
     private final Object key = new Object();
     private final Object key2 = new Object();
+
     @After
     public void tearDown() throws Exception {
         context.assertIsSatisfied();
+        WebConfigUtils.resetMetaData();
     }
 
     /**
@@ -97,9 +98,10 @@ public class WebConfigUtilsTest {
     @Test
     public void setgetWebModuleMetaDataValid() {
         WebConfigUtils.setWebModuleMetaData(key, wmmd2);
-        assertEquals("WebModuleMetadata should be valid.",wmmd2,  WebConfigUtils.getWebModuleMetaData());
+        assertEquals("WebModuleMetadata should be valid.", wmmd2, WebConfigUtils.getWebModuleMetaData());
         WebConfigUtils.removeWebModuleMetaData(key);
     }
+
     /**
      * Tests removeSecurityMetadata method
      */
@@ -107,7 +109,7 @@ public class WebConfigUtilsTest {
     public void removeWebModuleMetaDataValid() {
         WebConfigUtils.setWebModuleMetaData(key, wmmd2);
         WebConfigUtils.removeWebModuleMetaData(key2);
-        assertEquals("WebModuleMetadata should be valid.",wmmd2,  WebConfigUtils.getWebModuleMetaData());
+        assertEquals("WebModuleMetadata should be valid.", wmmd2, WebConfigUtils.getWebModuleMetaData());
         WebConfigUtils.removeWebModuleMetaData(key);
         assertNull("WebModuleMetadata should be removed.", WebConfigUtils.getWebModuleMetaData());
     }
@@ -155,6 +157,5 @@ public class WebConfigUtilsTest {
         });
         return this;
     }
-
 
 }

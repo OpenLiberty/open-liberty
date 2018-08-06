@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 import java.net.ServerSocket;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.Context;
 import javax.naming.ContextNotEmptyException;
@@ -738,14 +739,15 @@ public class ContextManagerTest {
             cm.setConnectTimeout(expectedTimeout);
             cm.initialize();
 
-            long time = System.currentTimeMillis();
+            long time = System.nanoTime();
             try {
                 cm.createDirContext(USER_DN, "password".getBytes());
                 fail("Expected NamingException.");
             } catch (NamingException e) {
                 // javax.naming.NamingException: LDAP response read timed out, timeout used:100ms.
-                time = System.currentTimeMillis() - time;
-                assertTrue("Expected connect timeout to be " + expectedTimeout + " ms.", time >= expectedTimeout && time <= (expectedTimeout + 100));
+                time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - time);
+                assertTrue("Expected connect timeout to be " + expectedTimeout + " ms but was " + time,
+                           time >= expectedTimeout && time <= (expectedTimeout + 200));
             }
 
             /*
@@ -755,14 +757,15 @@ public class ContextManagerTest {
             cm.setConnectTimeout(expectedTimeout);
             cm.initialize();
 
-            time = System.currentTimeMillis();
+            time = System.nanoTime();
             try {
                 cm.createDirContext(USER_DN, "password".getBytes());
                 fail("Expected NamingException.");
             } catch (NamingException e) {
                 // javax.naming.NamingException: LDAP response read timed out, timeout used:500ms.
-                time = System.currentTimeMillis() - time;
-                assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond.", time >= expectedTimeout && time <= (expectedTimeout + 100));
+                time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - time);
+                assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond but was " + time,
+                           time >= expectedTimeout && time <= (expectedTimeout + 200));
             }
         } finally {
             serverSocket.close();
