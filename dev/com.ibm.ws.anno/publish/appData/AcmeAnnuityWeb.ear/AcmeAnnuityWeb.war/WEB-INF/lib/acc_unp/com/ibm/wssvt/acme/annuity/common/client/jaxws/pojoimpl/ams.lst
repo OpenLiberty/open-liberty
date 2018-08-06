@@ -1,0 +1,1249 @@
+Classfile /c:/dev/libertyws/Anno2/publish/appData/AcmeAnnuityWeb.ear/AcmeAnnuityWeb.war/WEB-INF/lib/acc_unp/com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/AnnuityMgmtSvcPojoJAXWS.class
+  Last modified Jun 24, 2011; size 26696 bytes
+  MD5 checksum 519cd545e84ecf54e054385cfedcba49
+  Compiled from "AnnuityMgmtSvcPojoJAXWS.java"
+public interface com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.AnnuityMgmtSvcPojoJAXWS
+  minor version: 0
+  major version: 50
+  flags: ACC_PUBLIC, ACC_INTERFACE, ACC_ABSTRACT
+Constant pool:
+    #1 = Class              #234          // com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/AnnuityMgmtSvcPojoJAXWS
+    #2 = Class              #235          // java/lang/Object
+    #3 = Utf8               createAnnuityAsync
+    #4 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response;
+    #5 = Utf8               Signature
+    #6 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityResponse;>;
+    #7 = Utf8               RuntimeVisibleAnnotations
+    #8 = Utf8               Ljavax/jws/WebMethod;
+    #9 = Utf8               operationName
+   #10 = Utf8               createAnnuity
+   #11 = Utf8               Ljavax/xml/ws/RequestWrapper;
+   #12 = Utf8               localName
+   #13 = Utf8               targetNamespace
+   #14 = Utf8               http://jaxws.client.common.annuity.acme.wssvt.ibm.com/pojoimpl/
+   #15 = Utf8               className
+   #16 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuity
+   #17 = Utf8               Ljavax/xml/ws/ResponseWrapper;
+   #18 = Utf8               createAnnuityResponse
+   #19 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuityResponse
+   #20 = Utf8               RuntimeVisibleParameterAnnotations
+   #21 = Utf8               Ljavax/jws/WebParam;
+   #22 = Utf8               name
+   #23 = Utf8               arg0
+   #24 = Utf8
+   #25 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+   #26 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityResponse;>;)Ljava/util/concurrent/Future<*>;
+   #27 = Utf8               asyncHandler
+   #28 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;
+   #29 = Utf8               Exceptions
+   #30 = Class              #236          // com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/EntityAlreadyExistsException_Exception
+   #31 = Class              #237          // com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/InvalidArgumentException_Exception
+   #32 = Class              #238          // com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/ServerBusinessModuleException_Exception
+   #33 = Class              #239          // com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/ServerPersistenceModuleException_Exception
+   #34 = Utf8               Ljavax/jws/WebResult;
+   #35 = Utf8               updateAnnuityAsync
+   #36 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityResponse;>;
+   #37 = Utf8               updateAnnuity
+   #38 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuity
+   #39 = Utf8               updateAnnuityResponse
+   #40 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuityResponse
+   #41 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityResponse;>;)Ljava/util/concurrent/Future<*>;
+   #42 = Utf8               deleteAnnuityAsync
+   #43 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityResponse;>;
+   #44 = Utf8               deleteAnnuity
+   #45 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuity
+   #46 = Utf8               deleteAnnuityResponse
+   #47 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuityResponse
+   #48 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityResponse;>;)Ljava/util/concurrent/Future<*>;
+   #49 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)V
+   #50 = Utf8               createAnnuityHolderAsync
+   #51 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response;
+   #52 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityHolderResponse;>;
+   #53 = Utf8               createAnnuityHolder
+   #54 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuityHolder
+   #55 = Utf8               createAnnuityHolderResponse
+   #56 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuityHolderResponse
+   #57 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+   #58 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+   #59 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;
+   #60 = Utf8               updateAnnuityHolderAsync
+   #61 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityHolderResponse;>;
+   #62 = Utf8               updateAnnuityHolder
+   #63 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuityHolder
+   #64 = Utf8               updateAnnuityHolderResponse
+   #65 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuityHolderResponse
+   #66 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+   #67 = Utf8               deleteAnnuityHolderAsync
+   #68 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityHolderResponse;>;
+   #69 = Utf8               deleteAnnuityHolder
+   #70 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuityHolder
+   #71 = Utf8               deleteAnnuityHolderResponse
+   #72 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuityHolderResponse
+   #73 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+   #74 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)V
+   #75 = Utf8               createPayorAsync
+   #76 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response;
+   #77 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayorResponse;>;
+   #78 = Utf8               createPayor
+   #79 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayor
+   #80 = Utf8               createPayorResponse
+   #81 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayorResponse
+   #82 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+   #83 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayorResponse;>;)Ljava/util/concurrent/Future<*>;
+   #84 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;
+   #85 = Utf8               updatePayorAsync
+   #86 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayorResponse;>;
+   #87 = Utf8               updatePayor
+   #88 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayor
+   #89 = Utf8               updatePayorResponse
+   #90 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayorResponse
+   #91 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayorResponse;>;)Ljava/util/concurrent/Future<*>;
+   #92 = Utf8               deletePayorAsync
+   #93 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayorResponse;>;
+   #94 = Utf8               deletePayor
+   #95 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayor
+   #96 = Utf8               deletePayorResponse
+   #97 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayorResponse
+   #98 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayorResponse;>;)Ljava/util/concurrent/Future<*>;
+   #99 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)V
+  #100 = Utf8               createContactAsync
+  #101 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response;
+  #102 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateContactResponse;>;
+  #103 = Utf8               createContact
+  #104 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateContact
+  #105 = Utf8               createContactResponse
+  #106 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateContactResponse
+  #107 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+  #108 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateContactResponse;>;)Ljava/util/concurrent/Future<*>;
+  #109 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;
+  #110 = Utf8               updateContactAsync
+  #111 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateContactResponse;>;
+  #112 = Utf8               updateContact
+  #113 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateContact
+  #114 = Utf8               updateContactResponse
+  #115 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateContactResponse
+  #116 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateContactResponse;>;)Ljava/util/concurrent/Future<*>;
+  #117 = Utf8               deleteContactAsync
+  #118 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteContactResponse;>;
+  #119 = Utf8               deleteContact
+  #120 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteContact
+  #121 = Utf8               deleteContactResponse
+  #122 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteContactResponse
+  #123 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteContactResponse;>;)Ljava/util/concurrent/Future<*>;
+  #124 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)V
+  #125 = Utf8               createPayoutAsync
+  #126 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response;
+  #127 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayoutResponse;>;
+  #128 = Utf8               createPayout
+  #129 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayout
+  #130 = Utf8               createPayoutResponse
+  #131 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayoutResponse
+  #132 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+  #133 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayoutResponse;>;)Ljava/util/concurrent/Future<*>;
+  #134 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;
+  #135 = Utf8               updatePayoutAsync
+  #136 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayoutResponse;>;
+  #137 = Utf8               updatePayout
+  #138 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayout
+  #139 = Utf8               updatePayoutResponse
+  #140 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayoutResponse
+  #141 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayoutResponse;>;)Ljava/util/concurrent/Future<*>;
+  #142 = Utf8               deletePayoutAsync
+  #143 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayoutResponse;>;
+  #144 = Utf8               deletePayout
+  #145 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayout
+  #146 = Utf8               deletePayoutResponse
+  #147 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayoutResponse
+  #148 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayoutResponse;>;)Ljava/util/concurrent/Future<*>;
+  #149 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)V
+  #150 = Utf8               deleteRiderAsync
+  #151 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Ljavax/xml/ws/Response;
+  #152 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteRiderResponse;>;
+  #153 = Utf8               deleteRider
+  #154 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteRider
+  #155 = Utf8               deleteRiderResponse
+  #156 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteRiderResponse
+  #157 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+  #158 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteRiderResponse;>;)Ljava/util/concurrent/Future<*>;
+  #159 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)V
+  #160 = Utf8               findAnnuityByIdAsync
+  #161 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityByIdResponse;>;
+  #162 = Utf8               findAnnuityById
+  #163 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityById
+  #164 = Utf8               findAnnuityByIdResponse
+  #165 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityByIdResponse
+  #166 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+  #167 = Class              #240          // com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/EntityNotFoundException_Exception
+  #168 = Utf8               findHolderByIdAsync
+  #169 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderByIdResponse;>;
+  #170 = Utf8               findHolderById
+  #171 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderById
+  #172 = Utf8               findHolderByIdResponse
+  #173 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderByIdResponse
+  #174 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+  #175 = Utf8               findContactByIdAsync
+  #176 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindContactByIdResponse;>;
+  #177 = Utf8               findContactById
+  #178 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindContactById
+  #179 = Utf8               findContactByIdResponse
+  #180 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindContactByIdResponse
+  #181 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindContactByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+  #182 = Utf8               findHolderAnnuitiesAsync
+  #183 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderAnnuitiesResponse;>;
+  #184 = Utf8               findHolderAnnuities
+  #185 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderAnnuities
+  #186 = Utf8               findHolderAnnuitiesResponse
+  #187 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderAnnuitiesResponse
+  #188 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderAnnuitiesResponse;>;)Ljava/util/concurrent/Future<*>;
+  #189 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljava/util/List;
+  #190 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljava/util/List<Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;>;
+  #191 = Utf8               findAnnuityHolderAsync
+  #192 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityHolderResponse;>;
+  #193 = Utf8               findAnnuityHolder
+  #194 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityHolder
+  #195 = Utf8               findAnnuityHolderResponse
+  #196 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityHolderResponse
+  #197 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+  #198 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;
+  #199 = Utf8               findPayorAnnuitiesAsync
+  #200 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorAnnuitiesResponse;>;
+  #201 = Utf8               findPayorAnnuities
+  #202 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorAnnuities
+  #203 = Utf8               findPayorAnnuitiesResponse
+  #204 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorAnnuitiesResponse
+  #205 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorAnnuitiesResponse;>;)Ljava/util/concurrent/Future<*>;
+  #206 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljava/util/List;
+  #207 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljava/util/List<Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;>;
+  #208 = Utf8               findPayorByIdAsync
+  #209 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorByIdResponse;>;
+  #210 = Utf8               findPayorById
+  #211 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorById
+  #212 = Utf8               findPayorByIdResponse
+  #213 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorByIdResponse
+  #214 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+  #215 = Utf8               findPayoutByIdAsync
+  #216 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayoutByIdResponse;>;
+  #217 = Utf8               findPayoutById
+  #218 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayoutById
+  #219 = Utf8               findPayoutByIdResponse
+  #220 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayoutByIdResponse
+  #221 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayoutByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+  #222 = Utf8               findRiderByIdAsync
+  #223 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindRiderByIdResponse;>;
+  #224 = Utf8               findRiderById
+  #225 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindRiderById
+  #226 = Utf8               findRiderByIdResponse
+  #227 = Utf8               com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindRiderByIdResponse
+  #228 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindRiderByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+  #229 = Utf8               (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;
+  #230 = Utf8               SourceFile
+  #231 = Utf8               AnnuityMgmtSvcPojoJAXWS.java
+  #232 = Utf8               Ljavax/jws/WebService;
+  #233 = Utf8               AnnuityMgmtSvcPojoJAXWS
+  #234 = Utf8               com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/AnnuityMgmtSvcPojoJAXWS
+  #235 = Utf8               java/lang/Object
+  #236 = Utf8               com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/EntityAlreadyExistsException_Exception
+  #237 = Utf8               com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/InvalidArgumentException_Exception
+  #238 = Utf8               com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/ServerBusinessModuleException_Exception
+  #239 = Utf8               com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/ServerPersistenceModuleException_Exception
+  #240 = Utf8               com/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/EntityNotFoundException_Exception
+{
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuityResponse> createAnnuityAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #6                           // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#10)
+      1: #11(#12=s#10,#13=s#14,#15=s#16)
+      2: #17(#12=s#18,#13=s#14,#15=s#19)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> createAnnuityAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuityResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #26                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#10)
+      1: #11(#12=s#10,#13=s#14,#15=s#16)
+      2: #17(#12=s#18,#13=s#14,#15=s#19)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject createAnnuity(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#10,#13=s#14,#15=s#16)
+      3: #17(#12=s#18,#13=s#14,#15=s#19)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuityResponse> updateAnnuityAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #36                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#37)
+      1: #11(#12=s#37,#13=s#14,#15=s#38)
+      2: #17(#12=s#39,#13=s#14,#15=s#40)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> updateAnnuityAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuityResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #41                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#37)
+      1: #11(#12=s#37,#13=s#14,#15=s#38)
+      2: #17(#12=s#39,#13=s#14,#15=s#40)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject updateAnnuity(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#37,#13=s#14,#15=s#38)
+      3: #17(#12=s#39,#13=s#14,#15=s#40)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuityResponse> deleteAnnuityAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #43                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#44)
+      1: #11(#12=s#44,#13=s#14,#15=s#45)
+      2: #17(#12=s#46,#13=s#14,#15=s#47)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> deleteAnnuityAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuityResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #48                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#44)
+      1: #11(#12=s#44,#13=s#14,#15=s#45)
+      2: #17(#12=s#46,#13=s#14,#15=s#47)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract void deleteAnnuity(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)V
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #11(#12=s#44,#13=s#14,#15=s#45)
+      2: #17(#12=s#46,#13=s#14,#15=s#47)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuityHolderResponse> createAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #52                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityHolderResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#53)
+      1: #11(#12=s#53,#13=s#14,#15=s#54)
+      2: #17(#12=s#55,#13=s#14,#15=s#56)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> createAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateAnnuityHolderResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #58                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#53)
+      1: #11(#12=s#53,#13=s#14,#15=s#54)
+      2: #17(#12=s#55,#13=s#14,#15=s#56)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder createAnnuityHolder(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#53,#13=s#14,#15=s#54)
+      3: #17(#12=s#55,#13=s#14,#15=s#56)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuityHolderResponse> updateAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #61                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityHolderResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#62)
+      1: #11(#12=s#62,#13=s#14,#15=s#63)
+      2: #17(#12=s#64,#13=s#14,#15=s#65)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> updateAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateAnnuityHolderResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #66                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#62)
+      1: #11(#12=s#62,#13=s#14,#15=s#63)
+      2: #17(#12=s#64,#13=s#14,#15=s#65)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder updateAnnuityHolder(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#62,#13=s#14,#15=s#63)
+      3: #17(#12=s#64,#13=s#14,#15=s#65)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuityHolderResponse> deleteAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #68                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityHolderResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#69)
+      1: #11(#12=s#69,#13=s#14,#15=s#70)
+      2: #17(#12=s#71,#13=s#14,#15=s#72)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> deleteAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteAnnuityHolderResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #73                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#69)
+      1: #11(#12=s#69,#13=s#14,#15=s#70)
+      2: #17(#12=s#71,#13=s#14,#15=s#72)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract void deleteAnnuityHolder(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)V
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #11(#12=s#69,#13=s#14,#15=s#70)
+      2: #17(#12=s#71,#13=s#14,#15=s#72)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayorResponse> createPayorAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #77                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayorResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#78)
+      1: #11(#12=s#78,#13=s#14,#15=s#79)
+      2: #17(#12=s#80,#13=s#14,#15=s#81)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> createPayorAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayorResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #83                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayorResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#78)
+      1: #11(#12=s#78,#13=s#14,#15=s#79)
+      2: #17(#12=s#80,#13=s#14,#15=s#81)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor createPayor(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#78,#13=s#14,#15=s#79)
+      3: #17(#12=s#80,#13=s#14,#15=s#81)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayorResponse> updatePayorAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #86                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayorResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#87)
+      1: #11(#12=s#87,#13=s#14,#15=s#88)
+      2: #17(#12=s#89,#13=s#14,#15=s#90)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> updatePayorAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayorResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #91                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayorResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#87)
+      1: #11(#12=s#87,#13=s#14,#15=s#88)
+      2: #17(#12=s#89,#13=s#14,#15=s#90)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor updatePayor(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#87,#13=s#14,#15=s#88)
+      3: #17(#12=s#89,#13=s#14,#15=s#90)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayorResponse> deletePayorAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #93                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayorResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#94)
+      1: #11(#12=s#94,#13=s#14,#15=s#95)
+      2: #17(#12=s#96,#13=s#14,#15=s#97)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> deletePayorAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayorResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #98                          // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayorResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#94)
+      1: #11(#12=s#94,#13=s#14,#15=s#95)
+      2: #17(#12=s#96,#13=s#14,#15=s#97)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract void deletePayor(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)V
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #11(#12=s#94,#13=s#14,#15=s#95)
+      2: #17(#12=s#96,#13=s#14,#15=s#97)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateContactResponse> createContactAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #102                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateContactResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#103)
+      1: #11(#12=s#103,#13=s#14,#15=s#104)
+      2: #17(#12=s#105,#13=s#14,#15=s#106)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> createContactAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreateContactResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #108                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreateContactResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#103)
+      1: #11(#12=s#103,#13=s#14,#15=s#104)
+      2: #17(#12=s#105,#13=s#14,#15=s#106)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact createContact(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#103,#13=s#14,#15=s#104)
+      3: #17(#12=s#105,#13=s#14,#15=s#106)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateContactResponse> updateContactAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #111                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateContactResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#112)
+      1: #11(#12=s#112,#13=s#14,#15=s#113)
+      2: #17(#12=s#114,#13=s#14,#15=s#115)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> updateContactAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdateContactResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #116                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdateContactResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#112)
+      1: #11(#12=s#112,#13=s#14,#15=s#113)
+      2: #17(#12=s#114,#13=s#14,#15=s#115)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact updateContact(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#112,#13=s#14,#15=s#113)
+      3: #17(#12=s#114,#13=s#14,#15=s#115)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteContactResponse> deleteContactAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #118                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteContactResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#119)
+      1: #11(#12=s#119,#13=s#14,#15=s#120)
+      2: #17(#12=s#121,#13=s#14,#15=s#122)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> deleteContactAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteContactResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #123                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteContactResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#119)
+      1: #11(#12=s#119,#13=s#14,#15=s#120)
+      2: #17(#12=s#121,#13=s#14,#15=s#122)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract void deleteContact(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)V
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #11(#12=s#119,#13=s#14,#15=s#120)
+      2: #17(#12=s#121,#13=s#14,#15=s#122)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayoutResponse> createPayoutAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #127                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayoutResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#128)
+      1: #11(#12=s#128,#13=s#14,#15=s#129)
+      2: #17(#12=s#130,#13=s#14,#15=s#131)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> createPayoutAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.CreatePayoutResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #133                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/CreatePayoutResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#128)
+      1: #11(#12=s#128,#13=s#14,#15=s#129)
+      2: #17(#12=s#130,#13=s#14,#15=s#131)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject createPayout(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityAlreadyExistsException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#128,#13=s#14,#15=s#129)
+      3: #17(#12=s#130,#13=s#14,#15=s#131)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayoutResponse> updatePayoutAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #136                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayoutResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#137)
+      1: #11(#12=s#137,#13=s#14,#15=s#138)
+      2: #17(#12=s#139,#13=s#14,#15=s#140)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> updatePayoutAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.UpdatePayoutResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #141                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/UpdatePayoutResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#137)
+      1: #11(#12=s#137,#13=s#14,#15=s#138)
+      2: #17(#12=s#139,#13=s#14,#15=s#140)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject updatePayout(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#137,#13=s#14,#15=s#138)
+      3: #17(#12=s#139,#13=s#14,#15=s#140)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayoutResponse> deletePayoutAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #143                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayoutResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#144)
+      1: #11(#12=s#144,#13=s#14,#15=s#145)
+      2: #17(#12=s#146,#13=s#14,#15=s#147)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> deletePayoutAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeletePayoutResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #148                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeletePayoutResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#144)
+      1: #11(#12=s#144,#13=s#14,#15=s#145)
+      2: #17(#12=s#146,#13=s#14,#15=s#147)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract void deletePayout(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)V
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #11(#12=s#144,#13=s#14,#15=s#145)
+      2: #17(#12=s#146,#13=s#14,#15=s#147)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteRiderResponse> deleteRiderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Rider);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #152                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteRiderResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#153)
+      1: #11(#12=s#153,#13=s#14,#15=s#154)
+      2: #17(#12=s#155,#13=s#14,#15=s#156)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> deleteRiderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Rider, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.DeleteRiderResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #158                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/DeleteRiderResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#153)
+      1: #11(#12=s#153,#13=s#14,#15=s#154)
+      2: #17(#12=s#155,#13=s#14,#15=s#156)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract void deleteRider(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Rider) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)V
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #11(#12=s#153,#13=s#14,#15=s#154)
+      2: #17(#12=s#155,#13=s#14,#15=s#156)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityByIdResponse> findAnnuityByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #161                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityByIdResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#162)
+      1: #11(#12=s#162,#13=s#14,#15=s#163)
+      2: #17(#12=s#164,#13=s#14,#15=s#165)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findAnnuityByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityByIdResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #166                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#162)
+      1: #11(#12=s#162,#13=s#14,#15=s#163)
+      2: #17(#12=s#164,#13=s#14,#15=s#165)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject findAnnuityById(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#162,#13=s#14,#15=s#163)
+      3: #17(#12=s#164,#13=s#14,#15=s#165)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderByIdResponse> findHolderByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #169                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderByIdResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#170)
+      1: #11(#12=s#170,#13=s#14,#15=s#171)
+      2: #17(#12=s#172,#13=s#14,#15=s#173)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findHolderByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderByIdResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #174                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#170)
+      1: #11(#12=s#170,#13=s#14,#15=s#171)
+      2: #17(#12=s#172,#13=s#14,#15=s#173)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder findHolderById(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#170,#13=s#14,#15=s#171)
+      3: #17(#12=s#172,#13=s#14,#15=s#173)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindContactByIdResponse> findContactByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #176                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindContactByIdResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#177)
+      1: #11(#12=s#177,#13=s#14,#15=s#178)
+      2: #17(#12=s#179,#13=s#14,#15=s#180)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findContactByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindContactByIdResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #181                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindContactByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#177)
+      1: #11(#12=s#177,#13=s#14,#15=s#178)
+      2: #17(#12=s#179,#13=s#14,#15=s#180)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact findContactById(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Contact) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Contact;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#177,#13=s#14,#15=s#178)
+      3: #17(#12=s#179,#13=s#14,#15=s#180)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderAnnuitiesResponse> findHolderAnnuitiesAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #183                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderAnnuitiesResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#184)
+      1: #11(#12=s#184,#13=s#14,#15=s#185)
+      2: #17(#12=s#186,#13=s#14,#15=s#187)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findHolderAnnuitiesAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindHolderAnnuitiesResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #188                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindHolderAnnuitiesResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#184)
+      1: #11(#12=s#184,#13=s#14,#15=s#185)
+      2: #17(#12=s#186,#13=s#14,#15=s#187)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract java.util.List<com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject> findHolderAnnuities(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljava/util/List;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    Signature: #190                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;)Ljava/util/List<Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;>;
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#184,#13=s#14,#15=s#185)
+      3: #17(#12=s#186,#13=s#14,#15=s#187)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityHolderResponse> findAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #192                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityHolderResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#193)
+      1: #11(#12=s#193,#13=s#14,#15=s#194)
+      2: #17(#12=s#195,#13=s#14,#15=s#196)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findAnnuityHolderAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindAnnuityHolderResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #197                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindAnnuityHolderResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#193)
+      1: #11(#12=s#193,#13=s#14,#15=s#194)
+      2: #17(#12=s#195,#13=s#14,#15=s#196)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityHolder findAnnuityHolder(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityHolder;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#193,#13=s#14,#15=s#194)
+      3: #17(#12=s#195,#13=s#14,#15=s#196)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorAnnuitiesResponse> findPayorAnnuitiesAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #200                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorAnnuitiesResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#201)
+      1: #11(#12=s#201,#13=s#14,#15=s#202)
+      2: #17(#12=s#203,#13=s#14,#15=s#204)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findPayorAnnuitiesAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorAnnuitiesResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #205                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorAnnuitiesResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#201)
+      1: #11(#12=s#201,#13=s#14,#15=s#202)
+      2: #17(#12=s#203,#13=s#14,#15=s#204)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract java.util.List<com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.AnnuityValueObject> findPayorAnnuities(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljava/util/List;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    Signature: #207                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljava/util/List<Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/AnnuityValueObject;>;
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#201,#13=s#14,#15=s#202)
+      3: #17(#12=s#203,#13=s#14,#15=s#204)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorByIdResponse> findPayorByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #209                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorByIdResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#210)
+      1: #11(#12=s#210,#13=s#14,#15=s#211)
+      2: #17(#12=s#212,#13=s#14,#15=s#213)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findPayorByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayorByIdResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #214                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayorByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#210)
+      1: #11(#12=s#210,#13=s#14,#15=s#211)
+      2: #17(#12=s#212,#13=s#14,#15=s#213)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor findPayorById(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Payor) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Payor;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#210,#13=s#14,#15=s#211)
+      3: #17(#12=s#212,#13=s#14,#15=s#213)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayoutByIdResponse> findPayoutByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #216                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayoutByIdResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#217)
+      1: #11(#12=s#217,#13=s#14,#15=s#218)
+      2: #17(#12=s#219,#13=s#14,#15=s#220)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findPayoutByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindPayoutByIdResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #221                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindPayoutByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#217)
+      1: #11(#12=s#217,#13=s#14,#15=s#218)
+      2: #17(#12=s#219,#13=s#14,#15=s#220)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject findPayoutById(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.PayoutValueObject) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/PayoutValueObject;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#217,#13=s#14,#15=s#218)
+      3: #17(#12=s#219,#13=s#14,#15=s#220)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract javax.xml.ws.Response<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindRiderByIdResponse> findRiderByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Rider);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Ljavax/xml/ws/Response;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #223                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Ljavax/xml/ws/Response<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindRiderByIdResponse;>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#224)
+      1: #11(#12=s#224,#13=s#14,#15=s#225)
+      2: #17(#12=s#226,#13=s#14,#15=s#227)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+
+  public abstract java.util.concurrent.Future<?> findRiderByIdAsync(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Rider, javax.xml.ws.AsyncHandler<com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.FindRiderByIdResponse>);
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;Ljavax/xml/ws/AsyncHandler;)Ljava/util/concurrent/Future;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Signature: #228                         // (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;Ljavax/xml/ws/AsyncHandler<Lcom/ibm/wssvt/acme/annuity/common/client/jaxws/pojoimpl/FindRiderByIdResponse;>;)Ljava/util/concurrent/Future<*>;
+    RuntimeVisibleAnnotations:
+      0: #8(#9=s#224)
+      1: #11(#12=s#224,#13=s#14,#15=s#225)
+      2: #17(#12=s#226,#13=s#14,#15=s#227)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+      parameter 1:
+        0: #21(#22=s#27,#13=s#24)
+
+  public abstract com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Rider findRiderById(com.ibm.wssvt.acme.annuity.common.bean.jaxbjpa.Rider) throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception;
+    descriptor: (Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;)Lcom/ibm/wssvt/acme/annuity/common/bean/jaxbjpa/Rider;
+    flags: ACC_PUBLIC, ACC_ABSTRACT
+    Exceptions:
+      throws com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.EntityNotFoundException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.InvalidArgumentException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerBusinessModuleException_Exception, com.ibm.wssvt.acme.annuity.common.client.jaxws.pojoimpl.ServerPersistenceModuleException_Exception
+    RuntimeVisibleAnnotations:
+      0: #8()
+      1: #34(#13=s#24)
+      2: #11(#12=s#224,#13=s#14,#15=s#225)
+      3: #17(#12=s#226,#13=s#14,#15=s#227)
+    RuntimeVisibleParameterAnnotations:
+      parameter 0:
+        0: #21(#22=s#23,#13=s#24)
+}
+SourceFile: "AnnuityMgmtSvcPojoJAXWS.java"
+RuntimeVisibleAnnotations:
+  0: #232(#22=s#233,#13=s#14)
