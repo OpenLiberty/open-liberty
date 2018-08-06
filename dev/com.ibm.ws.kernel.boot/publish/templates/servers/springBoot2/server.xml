@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Default server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>springBoot-2.0</feature>
+        <feature>servlet-4.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>webSocket-1.1</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <!-- To allow access to this server from a remote client host="*" has been added to the following element -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="9080"
+                  httpsPort="9443" />
+
+</server>

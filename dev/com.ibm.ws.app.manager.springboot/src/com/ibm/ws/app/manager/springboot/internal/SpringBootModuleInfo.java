@@ -20,22 +20,35 @@ import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 
 /**
  *
  */
 public class SpringBootModuleInfo extends ExtendedModuleInfoImpl {
     private final SpringBootApplicationImpl springBootApplication;
+    private final ClassLoader threadContextClassLoader;
 
     public SpringBootModuleInfo(ApplicationInfo appInfo, String moduleName, String path,
                                 Container moduleContainer, Entry altDDEntry, List<ContainerInfo> moduleClassesContainers,
                                 ModuleClassLoaderFactory classLoaderFactory,
                                 SpringBootApplicationImpl springBootApplication) throws UnableToAdaptException {
-        super(appInfo, moduleName, path, moduleContainer, altDDEntry, moduleClassesContainers, classLoaderFactory, ContainerInfo.Type.WEB_MODULE, WebModuleInfo.class);
+        super(appInfo, moduleName, path, moduleContainer, altDDEntry, moduleClassesContainers, classLoaderFactory, ContainerInfo.Type.WEB_MODULE, SpringBootModuleInfo.class);
         this.springBootApplication = springBootApplication;
+        this.threadContextClassLoader = springBootApplication.getClassLoadingService().createThreadContextClassLoader(this.getClassLoader());        
     }
 
     SpringBootApplicationImpl getSpringBootApplication() {
         return springBootApplication;
+    }
+
+    ClassLoader getThreadContextClassLoader() {
+        return threadContextClassLoader;
+    }
+
+    void destroyThreadContextClassLoader() {
+        if (null != threadContextClassLoader) {
+        	springBootApplication.getClassLoadingService().destroyThreadContextClassLoader(threadContextClassLoader);
+        }
     }
 }
