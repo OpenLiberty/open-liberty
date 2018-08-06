@@ -13,8 +13,19 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 
-public class Information
-{
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+public class Information {
+    public static Information fromNodeList(NodeList nl) {
+        //Only return the first information tag we find
+        if (nl.getLength() > 0) {
+            Node n = nl.item(0);
+            return new Information(n.getAttributes().getNamedItem("name").getNodeValue(), n.getAttributes().getNamedItem("version").getNodeValue(), n.getTextContent());
+        }
+        return null;
+    }
+
     @XmlValue
     private String content;
     @XmlAttribute
@@ -22,13 +33,11 @@ public class Information
     @XmlAttribute
     private String name;
 
-    public Information()
-    {
+    public Information() {
         //required blank constructor
     }
 
-    public Information(String name, String version, String content)
-    {
+    public Information(String name, String version, String content) {
         this.name = name;
         this.version = version;
         this.content = content;

@@ -10,12 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
+
+import org.w3c.dom.NodeList;
 
 /**
  * Representation of the &lt;problem&gt; XML element in an iFix XML file.
  */
 public class Problem {
+
+    public static List<Problem> fromNodeList(NodeList nl) {
+        List<Problem> problems = new ArrayList<Problem>();
+        for (int i = 0; i < nl.getLength(); i++)
+            if (nl.item(i).getNodeName().equals("problem"))
+                problems.add(new Problem(nl.item(i).getAttributes().getNamedItem("id").getNodeValue(), nl.item(i).getAttributes().getNamedItem("displayId").getNodeValue(), nl.item(i).getAttributes().getNamedItem("description").getNodeValue()));
+        return problems;
+    }
 
     private String displayId;
     private String description;

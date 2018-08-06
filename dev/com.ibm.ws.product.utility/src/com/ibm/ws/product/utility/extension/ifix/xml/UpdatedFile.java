@@ -12,7 +12,13 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.w3c.dom.Node;
+
 public class UpdatedFile {
+    public static UpdatedFile fromNode(Node n) {
+        return new UpdatedFile(n.getAttributes().getNamedItem("id").getNodeValue(), Long.parseLong(n.getAttributes().getNamedItem("size").getNodeValue()), n.getAttributes().getNamedItem("date").getNodeValue(), n.getAttributes().getNamedItem("MD5hash").getNodeValue());
+    }
+
     @XmlAttribute
     private String id;
     @XmlAttribute

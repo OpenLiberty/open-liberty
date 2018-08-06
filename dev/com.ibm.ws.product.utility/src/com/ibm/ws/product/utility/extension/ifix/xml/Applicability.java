@@ -10,14 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+
+import org.w3c.dom.NodeList;
 
 /**
  * Representation of the &lt;applicability&gt; XML element in an iFix XML file.
  */
 public class Applicability {
+
+    public static Applicability fromNodeList(NodeList nl) {
+        List<Offering> offerings = new ArrayList<Offering>();
+
+        for (int i = 0; i < nl.getLength(); i++) //Applicability Elements
+            for (int j = 0; j < nl.item(i).getChildNodes().getLength(); j++) //Offering Elements
+                if (nl.item(i).getChildNodes().item(j).getNodeName().equals("offering"))
+                    offerings.add(Offering.fromNode(nl.item(i).getChildNodes().item(j)));
+
+        return new Applicability(offerings);
+    }
 
     @XmlElement(name = "offering")
     private List<Offering> offerings;

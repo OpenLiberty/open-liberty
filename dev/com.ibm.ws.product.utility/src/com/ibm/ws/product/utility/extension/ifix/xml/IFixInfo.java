@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * This is a representation of an iFix XML file on disk
@@ -37,9 +36,14 @@ public class IFixInfo implements MetadataOutput {
         if (!"fix".equals(e.getNodeName()))
             return null;
 
-        NodeList nl = e.getElementsByTagName("applicability");
+        IFixInfo ifi = new IFixInfo(e.getAttribute("id"), e.getAttribute("version"));
+        ifi.applicability = Applicability.fromNodeList(e.getElementsByTagName("applicability"));
+        ifi.information = Information.fromNodeList(e.getElementsByTagName("information"));
+        ifi.properties = Property.fromNodeList(e.getElementsByTagName("properties"));
+        ifi.resolves = Resolves.fromNodeList(e.getElementsByTagName("resolves"));
+        ifi.updates = Updates.fromNodeList(e.getElementsByTagName("updates"));
 
-        return new IFixInfo(e.getAttribute("id"), e.getAttribute("version"), aparList, fixDescription, offerings, properties, updatedFiles);
+        return ifi;
     }
 
     private final String aparIdPrefix = "com.ibm.ws.apar.";
@@ -48,7 +52,7 @@ public class IFixInfo implements MetadataOutput {
     private String id;
 
     @XmlAttribute
-    private String version;
+    private final String version;
 
     @XmlElement
     private Applicability applicability;
@@ -68,8 +72,9 @@ public class IFixInfo implements MetadataOutput {
     @XmlElement
     private Updates updates;
 
-    public IFixInfo() {
-        //needed as Jaxb needs a blank constructor
+    public IFixInfo(String id, String version) {
+        this.id = id;
+        this.version = version;
     }
 
     /**

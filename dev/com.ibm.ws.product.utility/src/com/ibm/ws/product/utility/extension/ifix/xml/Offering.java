@@ -12,10 +12,16 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.w3c.dom.Node;
+
 /**
  * Representation of the &lt;offering&gt; XML element in an iFix XML file.
  */
 public class Offering {
+
+    public static Offering fromNode(Node n) {
+        return new Offering(n.getAttributes().getNamedItem("id").getNodeValue(), n.getAttributes().getNamedItem("tolerance").getNodeValue());
+    }
 
     private String id;
 

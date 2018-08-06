@@ -10,16 +10,28 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 /**
  * Representation of the &lt;resolves&gt; XML element in an iFix XML file.
  */
 public class Resolves {
+
+    public static Resolves fromNodeList(NodeList nl) {
+        //Only return the first resolves tag we find
+        if (nl.getLength() > 0) {
+            Node n = nl.item(0);
+
+            return new Resolves(Problem.fromNodeList(n.getChildNodes()));
+        }
+        return null;
+    }
 
     @XmlAttribute
     private final boolean showList = true;
@@ -41,7 +53,7 @@ public class Resolves {
         //needed as Jaxb needs a blank constructor
     }
 
-    public Resolves(ArrayList<Problem> problems) {
+    public Resolves(List<Problem> problems) {
         this.problems = problems;
         if (problems != null) {
             problemCount = problems.size();

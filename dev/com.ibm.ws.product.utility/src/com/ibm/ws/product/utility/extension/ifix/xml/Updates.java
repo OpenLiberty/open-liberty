@@ -10,11 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 
+import org.w3c.dom.NodeList;
+
 public class Updates {
+
+    public static Updates fromNodeList(NodeList nl) {
+        Set<UpdatedFile> files = new HashSet<UpdatedFile>();
+
+        for (int i = 0; i < nl.getLength(); i++) //Updates Elements
+            for (int j = 0; j < nl.item(i).getChildNodes().getLength(); j++) //File Elements
+                if (nl.item(i).getChildNodes().item(j).getNodeName().equals("file"))
+                    files.add(UpdatedFile.fromNode(nl.item(i).getChildNodes().item(j)));
+
+        return new Updates(files);
+    }
+
     @XmlElement(name = "file")
     private Set<UpdatedFile> files;
 
