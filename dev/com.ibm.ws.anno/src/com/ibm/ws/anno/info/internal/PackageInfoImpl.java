@@ -1,26 +1,25 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.anno.info.internal;
 
-import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.info.PackageInfo;
 
 public class PackageInfoImpl extends InfoImpl implements PackageInfo {
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
 
-    private static final TraceComponent tc = Tr.register(PackageInfoImpl.class);
-    public static final String CLASS_NAME = PackageInfoImpl.class.getName();
+    private static final String CLASS_NAME = "PackageInfoImpl";
 
     //
 
@@ -43,17 +42,19 @@ public class PackageInfoImpl extends InfoImpl implements PackageInfo {
     public PackageInfoImpl(String name, int modifiers, InfoStoreImpl infoStore) {
         super(name, modifiers, infoStore);
 
+        String methodName = "<init>";
+        
         this.isArtificial = false;
         this.forFailedLoad = false;
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "<init> Created [ {0} ]", getHashText());
+        if (logger.isLoggable(Level.FINER)) { 
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "Created [ {0} ]", getHashText());
         }
     }
 
     @Override
-    protected String internName(String name) {
-        return getInfoStore().internPackageName(name);
+    protected String internName(String packageName) {
+        return getInfoStore().internPackageName(packageName);
     }
 
     @Override
@@ -64,15 +65,18 @@ public class PackageInfoImpl extends InfoImpl implements PackageInfo {
     //
 
     @Override
-    @Trivial
-    public void log(TraceComponent logger) {
-
-        if (logger.isDebugEnabled()) {
-            Tr.debug(logger, MessageFormat.format(" Package [ {0} ]", getHashText()));
-            Tr.debug(logger, MessageFormat.format("  isArtifical [ {0} ]", Boolean.valueOf(getIsArtificial())));
-            Tr.debug(logger, MessageFormat.format("  forFailedLoad [ {0} ]", Boolean.valueOf(getForFailedLoad())));
-            logAnnotations(logger);
+    public void log(Logger useLogger) {
+        String methodName = "log";
+        if ( !useLogger.isLoggable(Level.FINER) ) {
+            return;
         }
+        
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, " Package [ {0} ]", getHashText());
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  isArtifical [ {0} ]", Boolean.valueOf(getIsArtificial()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  forFailedLoad [ {0} ]", Boolean.valueOf(getForFailedLoad()));
+
+        logAnnotations(useLogger);
+
     }
 
     //

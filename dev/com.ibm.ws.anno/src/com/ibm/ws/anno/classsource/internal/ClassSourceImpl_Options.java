@@ -11,6 +11,7 @@
 package com.ibm.ws.anno.classsource.internal;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 
 /**
@@ -19,55 +20,150 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 public class ClassSourceImpl_Options implements ClassSource_Options {
     private static final String CLASS_NAME = ClassSourceImpl_Options.class.getSimpleName();
 
-    private static final String JANDEX_OVERRIDE_PROPERTY_NAME = "com.ibm.ws.jandex.enable";
-    private static final boolean JANDEX_OVERRIDE_DEFAULT_VALUE = false;
+    //
 
-    private static final boolean JANDEX_OVERRIDE = JandexLogger.getProperty(
-                                                                            CLASS_NAME, "<static init>",
-                                                                            JANDEX_OVERRIDE_PROPERTY_NAME, JANDEX_OVERRIDE_DEFAULT_VALUE);
+    private static final boolean HAS_JANDEX_ENABLE_OVERRIDE =
+        AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_PROPERTY_NAME);
 
-    public boolean getJandexOverride() {
-        return JANDEX_OVERRIDE;
+    @Trivial
+    public static boolean getHasJandexEnableOverride() {
+        return HAS_JANDEX_ENABLE_OVERRIDE;
+    }
+
+    private static final boolean JANDEX_ENABLE_OVERRIDE =
+        AnnotationServiceImpl_Logging.getProperty(
+            AnnotationServiceImpl_Logging.ANNO_LOGGER,
+            CLASS_NAME, "<static init>",
+            JANDEX_ENABLE_PROPERTY_NAME, JANDEX_ENABLE_DEFAULT_VALUE);
+
+    @Trivial
+    public static boolean getJandexEnableOverride() {
+        return JANDEX_ENABLE_OVERRIDE;
+    }
+
+    //
+
+    private static final boolean HAS_JANDEX_ENABLE_FULL_OVERRIDE =
+        AnnotationServiceImpl_Logging.hasProperty(JANDEX_ENABLE_FULL_PROPERTY_NAME);
+
+    @Trivial
+    public static boolean getHasJandexEnableFullOverride() {
+        return HAS_JANDEX_ENABLE_FULL_OVERRIDE;
+    }
+
+    private static final boolean JANDEX_ENABLE_FULL_OVERRIDE =
+        AnnotationServiceImpl_Logging.getProperty(
+            AnnotationServiceImpl_Logging.ANNO_LOGGER,
+            CLASS_NAME, "<static init>",
+            JANDEX_ENABLE_FULL_PROPERTY_NAME, JANDEX_ENABLE_FULL_DEFAULT_VALUE);
+
+    @Trivial
+    public static boolean getJandexEnableFullOverride() {
+        return JANDEX_ENABLE_FULL_OVERRIDE;
+    }
+
+    //
+
+    private static final boolean HAS_JANDEX_PATH_OVERRIDE =
+        AnnotationServiceImpl_Logging.hasProperty(JANDEX_PATH_PROPERTY_NAME);
+
+    @Trivial
+    public static boolean getHasJandexPathOverride() {
+        return HAS_JANDEX_PATH_OVERRIDE;
+    }
+
+    private static final String JANDEX_PATH_OVERRIDE =
+        AnnotationServiceImpl_Logging.getProperty(
+            AnnotationServiceImpl_Logging.ANNO_LOGGER,
+            CLASS_NAME, "<static init>",
+            JANDEX_PATH_PROPERTY_NAME, JANDEX_PATH_DEFAULT_VALUE);
+
+    @Trivial
+    public static String getJandexPathOverride() {
+        return JANDEX_PATH_OVERRIDE;
+    }
+
+    //
+
+    private static final boolean HAS_SCAN_THREADS_OVERRIDE =
+        AnnotationServiceImpl_Logging.hasProperty(ANNO_SCAN_THREADS_PROPERTY_NAME);
+
+    @Trivial
+    public static boolean getHasScanThreadsOverride() {
+        return HAS_SCAN_THREADS_OVERRIDE;
+    }
+
+    private static final int SCAN_THREADS_OVERRIDE =
+        AnnotationServiceImpl_Logging.getProperty(
+            AnnotationServiceImpl_Logging.ANNO_LOGGER,
+            CLASS_NAME, "<static init>",
+            ANNO_SCAN_THREADS_PROPERTY_NAME, ANNO_SCAN_THREADS_DEFAULT_VALUE);
+
+    @Trivial
+    public static int getScanThreadsOverride() {
+        return SCAN_THREADS_OVERRIDE;
     }
 
     //
 
     @Trivial
     public ClassSourceImpl_Options() {
-        this.isSetUseJandex = false;
-        this.useJandex = (getJandexOverride() ? true : USE_JANDEX_DEFAULT);
-    }
+        if ( getHasJandexEnableOverride() ) {
+            this.isSetUseJandex = true;
+            this.useJandex = getJandexEnableOverride();
+        } else {
+            this.isSetUseJandex = false;
+            this.useJandex = JANDEX_ENABLE_DEFAULT_VALUE;
+        }
 
-    public ClassSourceImpl_Options(boolean useJandex) {
-        this.isSetUseJandex = true;
-        this.useJandex = useJandex;
+        if ( getHasJandexEnableFullOverride() ) {
+            this.isSetUseJandexFull = true;
+            this.useJandexFull = getJandexEnableFullOverride();
+        } else {
+            this.isSetUseJandexFull = false;
+            this.useJandexFull = JANDEX_ENABLE_FULL_DEFAULT_VALUE;
+        }
+
+        if ( getHasJandexPathOverride() ) {
+            this.isSetJandexPath = true;
+            this.jandexPath = getJandexPathOverride();
+        } else {
+            this.isSetJandexPath = false;
+            this.jandexPath = JANDEX_PATH_DEFAULT_VALUE;
+        }
+        
+        if ( getHasScanThreadsOverride() ) {
+            this.isSetScanThreads = true;
+            this.scanThreads = getScanThreadsOverride();
+        } else {
+            this.isSetScanThreads = false;
+            this.scanThreads = ANNO_SCAN_THREADS_DEFAULT_VALUE;
+        }
+        
     }
 
     @Override
     @Trivial
     public String toString() {
         return super.toString() +
-               "(" +
-               Boolean.toString(useJandex) +
-               (isSetUseJandex ? " [Set]" : " [Unset]") +
-               ")";
-    }
-
-    public static final boolean USE_JANDEX_DEFAULT = false;
-
-    /**
-     * Answer the default 'use jandex' value. This implementation
-     * always answers false.
-     *
-     * @return The default 'use jandex value'.
-     */
-    @Override
-    @Trivial
-    public boolean getUseJandexDefault() {
-        return USE_JANDEX_DEFAULT;
+            "(" +
+                (Boolean.toString(useJandex) + (isSetUseJandex ? "[Set]" : "[Unset]")) +
+                "," +
+                (Boolean.toString(useJandexFull) + (isSetUseJandexFull ? "[Set(Full)]" : "[Unset(Full)]")) +
+                "," +
+                ('"' + jandexPath + '"' + (isSetJandexPath ? "[Set]" : "[Unset]")) +
+                "," +
+                (Integer.toString(scanThreads)+ (isSetScanThreads ? "[Set]" : "[Unset]")) +
+            ")";
     }
 
     //
+
+    @Override
+    @Trivial
+    public boolean getUseJandexDefault() {
+        return JANDEX_ENABLE_DEFAULT_VALUE;
+    }
 
     private boolean isSetUseJandex;
     private boolean useJandex;
@@ -92,7 +188,111 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
 
     @Override
     public void unsetUseJandex() {
-        this.useJandex = USE_JANDEX_DEFAULT;
+        this.useJandex = JANDEX_ENABLE_FULL_DEFAULT_VALUE;
         this.isSetUseJandex = false;
+    }
+
+    //
+
+    @Override
+    @Trivial
+    public boolean getUseJandexFullDefault() {
+        return JANDEX_ENABLE_FULL_DEFAULT_VALUE;
+    }
+
+    private boolean isSetUseJandexFull;
+    private boolean useJandexFull;
+
+    @Override
+    @Trivial
+    public boolean getIsSetUseJandexFull() {
+        return isSetUseJandexFull;
+    }
+
+    @Override
+    @Trivial
+    public boolean getUseJandexFull() {
+        return useJandexFull;
+    }
+
+    @Override
+    public void setUseJandexFull(boolean useJandexFull) {
+        this.isSetUseJandexFull = true;
+        this.useJandexFull = useJandexFull;
+    }
+
+    @Override
+    public void unsetUseJandexFull() {
+        this.useJandexFull = JANDEX_ENABLE_FULL_DEFAULT_VALUE;
+        this.isSetUseJandexFull = false;
+    }
+
+    //
+
+    @Override
+    public String getJandexPathDefault() {
+        return JANDEX_PATH_DEFAULT_VALUE;
+    }
+
+    private boolean isSetJandexPath;
+    private String jandexPath;
+
+    @Override
+    @Trivial
+    public boolean getIsSetJandexPath() {
+        return isSetJandexPath;
+    }
+
+    @Override
+    @Trivial    
+    public String getJandexPath() {
+        return jandexPath;
+    }
+
+    @Override
+    public void setJandexPath(String jandexPath) {
+        this.jandexPath = jandexPath;
+        this.isSetJandexPath = true;
+    }
+
+    @Override
+    public void unsetJandexPath() {
+        this.jandexPath = JANDEX_PATH_DEFAULT_VALUE;
+        this.isSetJandexPath = false;
+    }
+
+    //
+
+    @Override
+    @Trivial
+    public int getScanThreadsDefault() {
+        return ANNO_SCAN_THREADS_DEFAULT_VALUE;
+    }
+
+    private boolean isSetScanThreads;
+    private int scanThreads;
+
+    @Override
+    @Trivial
+    public boolean getIsSetScanThreads() {
+        return isSetScanThreads;
+    }
+
+    @Override
+    @Trivial
+    public int getScanThreads() {
+        return scanThreads;
+    }
+
+    @Override
+    public void setScanThreads(int scanThreads) {
+        this.isSetScanThreads = true;
+        this.scanThreads = scanThreads; 
+    }
+
+    @Override
+    public void unsetScanThreads() {
+        this.isSetScanThreads = false;
+        this.scanThreads = ANNO_SCAN_THREADS_DEFAULT_VALUE;
     }
 }

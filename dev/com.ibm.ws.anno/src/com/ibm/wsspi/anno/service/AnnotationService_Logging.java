@@ -1,31 +1,34 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.wsspi.anno.service;
 
 public interface AnnotationService_Logging {
     // Root logging constant.
-    public static final String ANNO_LOGGER = "com.ibm.ws.anno";
+    String ANNO_LOGGER_NAME = "com.ibm.ws.anno";
 
     // Function categories ... these match entire packages.
-    public static final String ANNO_LOGGER_SERVICE = ANNO_LOGGER + ".service";
+    String ANNO_LOGGER_SERVICE = ANNO_LOGGER_NAME + ".service";
 
-    public static final String ANNO_LOGGER_TARGETS = ANNO_LOGGER + ".target";
-    public static final String ANNO_LOGGER_TARGETS_VISITOR = ANNO_LOGGER_TARGETS + ".visitor";
+    String ANNO_LOGGER_TARGETS = ANNO_LOGGER_NAME + ".target";
+    String ANNO_LOGGER_TARGETS_VISITOR = ANNO_LOGGER_TARGETS + ".visitor";
 
-    public static final String ANNO_LOGGER_SOURCE = ANNO_LOGGER + ".source";
-    public static final String ANNO_LOGGER_UTIL = ANNO_LOGGER + ".util";
-    public static final String ANNO_LOGGER_INFO = ANNO_LOGGER + ".info";
+    String ANNO_LOGGER_SOURCE = ANNO_LOGGER_NAME + ".source";
+    String ANNO_LOGGER_UTIL = ANNO_LOGGER_NAME + ".util";
+    String ANNO_LOGGER_INFO = ANNO_LOGGER_NAME + ".info";
 
     // Detail categories ... these cross the boundaries of the function categories.
-    public static final String ANNO_LOGGER_STATE = ANNO_LOGGER + ".state";
-    public static final String ANNO_LOGGER_SCAN = ANNO_LOGGER + ".scan";
+    String ANNO_LOGGER_STATE_NAME = ANNO_LOGGER_NAME + ".state";
+    String ANNO_LOGGER_SCAN = ANNO_LOGGER_NAME + ".scan";
+
+    String ANNO_LOGGER_JANDEX_NAME = ANNO_LOGGER_NAME + ".jandex";
 }

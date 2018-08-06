@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,42 +11,51 @@
 
 package com.ibm.ws.anno.classsource.specification.internal;
 
-import java.text.MessageFormat;
+import java.io.File;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate;
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
+import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory;
+import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_EJB;
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 
-public class ClassSourceImpl_Specification_Direct_EJB extends ClassSourceImpl_Specification_Direct implements ClassSource_Specification_Direct_EJB {
-    public ClassSourceImpl_Specification_Direct_EJB(ClassSourceImpl_Factory factory) {
-        super(factory);
-    }
+public class ClassSourceImpl_Specification_Direct_EJB
+    extends ClassSourceImpl_Specification_Direct
+    implements ClassSource_Specification_Direct_EJB {
 
-    @Override
-    public ClassSource_Aggregate createClassSource(String targetName, ClassLoader rootClassLoader)
-                    throws ClassSource_Exception {
-
-        ClassSourceImpl_Aggregate classSource = createAggregateClassSource(targetName);
-
-        getFactory().addJarClassSource(classSource, targetName, getImmediatePath(), ScanPolicy.SEED); // throws ClassSource_Exception
-
-        addStandardClassSources(targetName, rootClassLoader, classSource);
-
-        return classSource;
-    }
+    public static final String CLASS_NAME = ClassSourceImpl_Specification_Direct_EJB.class.getSimpleName();
 
     //
 
-    @Override
-    public void log(TraceComponent logger) {
+    public ClassSourceImpl_Specification_Direct_EJB(
+        ClassSourceImpl_Factory factory,
+        String appName, String modName) {
 
-        Tr.debug(logger, MessageFormat.format("Class source specification [ {0} ]", getHashText()));
+        super(factory, appName, modName);
+    }
 
-        logCommon(logger);
+    public void addInternalClassSources(ClassSourceImpl_Aggregate rootClassSource)
+        throws ClassSource_Exception {
+
+        String useModulePath = getModulePath();
+        File useModuleFile = new File(useModulePath);
+        if ( !useModuleFile.exists() ) {
+            throw new IllegalArgumentException("Module location [ " + useModuleFile.getAbsolutePath() + " ] does not exist");
+        }
+
+        if ( useModuleFile.isDirectory() ) {
+            @SuppressWarnings("unused")
+            ClassSourceImpl_MappedDirectory dirClassSource =
+                addDirectoryClassSource(rootClassSource, "immediate", useModulePath, ScanPolicy.SEED);
+                // throws ClassSource_Exception
+
+        } else {
+            @SuppressWarnings("unused")
+            ClassSourceImpl_MappedJar jarClassSource =
+                addJarClassSource(rootClassSource, "immediate", useModulePath, ScanPolicy.SEED);
+                // throws ClassSource_Exception
+        }
     }
 }

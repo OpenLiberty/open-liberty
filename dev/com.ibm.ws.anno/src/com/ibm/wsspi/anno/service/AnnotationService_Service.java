@@ -1,16 +1,18 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 
 package com.ibm.wsspi.anno.service;
 
+import com.ibm.ws.anno.targets.cache.TargetCache_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.info.InfoStoreFactory;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
@@ -28,6 +30,7 @@ public interface AnnotationService_Service {
 
     ClassSource_Factory getClassSourceFactory();
 
+    TargetCache_Factory getTargetCacheFactory();
     AnnotationTargets_Factory getAnnotationTargetsFactory();
 
     InfoStoreFactory getInfoStoreFactory();

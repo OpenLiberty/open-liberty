@@ -1,19 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.wsspi.anno.info;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-
-import com.ibm.websphere.ras.TraceComponent;
+import java.util.logging.Logger;
 
 /**
  * <p>Base class for info objects.</p>
@@ -68,7 +68,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * may have annotations which were declared on that object, and may have annotations
  * which are present by annotation inheritance.</p>
  * 
- * <p/>
+ * <p>
  * 
  * <p>Model notes:</p>
  * 
@@ -168,7 +168,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * <pre>
  * C.isMethodAnnotationPresent()
  * C.isFieldAnnotationPresent()
- * </pre>
+ * </p>
  */
 public interface Info {
     // Logging ...
@@ -187,7 +187,7 @@ public interface Info {
      * 
      * @param logger The logger to receive the display of the receiver.
      */
-    public void log(TraceComponent logger);
+    public void log(Logger logger);
 
     //
 
@@ -270,6 +270,56 @@ public interface Info {
     public boolean isPackagePrivate();
 
     /**
+     * Flag for BRIDGE methods.  This is available on {@link Modifiers}, but is not
+     * public.
+     */
+    public int ACC_BRIDGE = 0x00000040;
+
+    /**
+     * Flag for BRIDGE methods.  This is available on {@link Modifiers}, but is not
+     * public.
+     */
+    public int ACC_SYNTHETIC = 0x00001000;
+
+    /**
+     * Tell if the info is flagged as bridge.  This is currently meaningful only for
+     * methods.  See {@link #ACC_BRIDGE}.
+     *
+     * For more information on BRIDGE and SYNTHETIC methods, see
+     * 
+     * {@link https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6-200-A.1}
+     * {@link https://docs.oracle.com/javase/tutorial/java/generics/bridgeMethods.html}.
+     * 
+     * While described in reference to generics and the consequences of type erasure across
+     * a superclass subclass relationship, there is a simpler example which addes a bridge method.
+     * 
+     * <code>
+     * class SuperClass {
+     *     Number getValue() { return null };
+     * }
+     * class SubClass {
+     *     Integer getValue() { return null };
+     * }
+     * </code>
+     *
+     * In this example, the class file for <code>SubClass</code> has method implementations
+     * for both forms of <code>getValue</code>.
+     *
+     * @return True or false telling if the info is flagged as bridge.
+     */
+    public boolean isBridge();
+
+    /**
+     * Tell if the info is flagged as synthetic.  This is currently meaningful only for
+     * methods.  See {@link #ACC_SYNTHETIC}.
+     *
+     * @return True or false telling if the info is flagged as synthetic.
+     */
+    public boolean isSynthetic();
+
+    //
+    
+    /**
      * <p>Answer the name of the receiver.</p>
      * 
      * <p>The name of a class, package, or annotation, is the same as the
@@ -286,11 +336,10 @@ public interface Info {
      * <p>Answer the qualified name of the receiver. This is the same as the
      * regular name, with two specific exceptions:</p>
      * 
-     * <ul>
-     * <li>For fields, the qualified name is the class
+     * <ul><li>For fields, the qualified name is the class
      * name plus "." plus the field name.</li>
      * 
-     * <li>For methods, the qualified name is the class
+     * <ul><li>For methods, the qualified name is the class
      * name plus "." plus the method name.</li>
      * </ul>
      * 

@@ -1,50 +1,55 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.anno.info.internal;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.objectweb.asm.Type;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.MethodInfo;
 
 public class MethodInfoImpl extends InfoImpl implements MethodInfo {
+    private static final String CLASS_NAME = "MethodInfoImpl";
 
-    public static final TraceComponent tc = Tr.register(MethodInfoImpl.class);
-    public static final String CLASS_NAME = MethodInfoImpl.class.getName();
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
 
     @Override
     protected String computeHashText() {
-        return getClass().getName() + "@" + Integer.toString((new Object()).hashCode()) + " ( " + getQualifiedName() + getDescription() + " )";
+        return
+            getClass().getName() +
+            "@" + Integer.toHexString(hashCode()) +
+            " ( " + getQualifiedName() + getDescription() + " )";
     }
 
     //
 
-    public MethodInfoImpl(String name, String desc,
+    public MethodInfoImpl(String name, String description,
                           String exceptions[],
                           int modifiers,
-                          NonDelayedClassInfo declaringClass) {
+                          NonDelayedClassInfoImpl declaringClass) {
 
         super(name, modifiers, declaringClass.getInfoStore());
 
+        String methodName = "<init>";
+
         InfoStoreImpl useInfoStore = getInfoStore();
 
-        this.desc = useInfoStore.internDescription(desc);
+        this.description = useInfoStore.internDescription(description);
 
         this.declaringClass = declaringClass;
 
@@ -63,9 +68,12 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
         this.parameterAnnotations = Collections.emptyList();
 
         // This bloats the log if allowed on FINER.
-        if (tc.isDumpEnabled()) {
-            Tr.dump(tc, "<init> [ {0} ] Created on [ {1} ] [ {2} ]",
-                    getHashText(), getDeclaringClass().getHashText(), getDescription());
+        if ( logger.isLoggable(Level.FINEST) ) {
+            logger.logp(Level.FINEST, CLASS_NAME, methodName,
+                        "{0} ] Created on [ {1} ] [ {2} ]",
+                        new Object[] { getHashText(),
+                                       getDeclaringClass().getHashText(),
+                                       getDescription() });
         }
     }
 
@@ -81,8 +89,8 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
     //
 
     @Override
-    protected String internName(String name) {
-        return getInfoStore().internMethodName(name);
+    protected String internName(String methodName) {
+        return getInfoStore().internMethodName(methodName);
     }
 
     @Override
@@ -92,10 +100,11 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
 
     //
 
-    private final String desc;
+    private final String description;
 
+    @Override
     public String getDescription() {
-        return desc;
+        return description;
     }
 
     // Information derived from the description ...
@@ -197,6 +206,7 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
         if (parmAnnos == null) {
             parameterAnnotations = Collections.emptyList();
         } else {
+            @SuppressWarnings("unchecked")
             List<? extends AnnotationInfo>[] parmInfos = new List[parmAnnos.length];
             for (int i = 0; i < parmAnnos.length; ++i) {
                 parmInfos[i] = Arrays.asList(parmAnnos[i]);
@@ -243,13 +253,18 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
     protected AnnotationValueImpl annotationDefaultValue;
 
     public void setAnnotationDefaultValue(AnnotationValueImpl annotationDefaultValue) {
+        String methodName = "setAnnotationDefaultValue";
+
         AnnotationValueImpl priorDefaultValue = this.annotationDefaultValue;
         this.annotationDefaultValue = annotationDefaultValue;
 
-        if (tc.isDumpEnabled()) {
-            Tr.dump(tc, MessageFormat.format("[ {0} ] of [ {1} ] Updated from [ {2} ] to [ {3} ]",
-                                             getHashText(), getDeclaringClass().getHashText(),
-                                             priorDefaultValue, this.annotationDefaultValue));
+        if ( logger.isLoggable(Level.FINEST) ) {
+            logger.logp(Level.FINEST, CLASS_NAME, methodName, 
+                        "[ {0} ] of [ {1} ] Updated from [ {2} ] to [ {3} ]",
+                        new Object[] { getHashText(),
+                                       getDeclaringClass().getHashText(),
+                                       priorDefaultValue,
+                                       this.annotationDefaultValue });
         }
     }
 
@@ -289,23 +304,29 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
     //
 
     @Override
-    public void log(TraceComponent logger) {
-        Tr.debug(logger, MessageFormat.format("Method [ {0} ]", getHashText()));
+    public void log(Logger useLogger) {
+        String methodName = "log";
 
-        Tr.debug(logger, MessageFormat.format("  Name [ {0} ]", getName()));
+        if ( !useLogger.isLoggable(Level.FINER) ) {
+            return;
+        }
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Method [ {0} ]", getHashText());
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Name [ {0} ]", getName());
 
         for (ClassInfoImpl nextParameterType : getParameterTypes()) {
-            Tr.debug(logger, MessageFormat.format("  Parameter Type [ {0} ]", nextParameterType.getHashText()));
+            useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Parameter Type [ {0} ]", nextParameterType.getHashText());
         }
 
-        Tr.debug(logger, MessageFormat.format("  Return Type [ {0} ]", getReturnType().getHashText()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Return Type [ {0} ]", getReturnType().getHashText());
 
         for (ClassInfoImpl nextExceptionType : getExceptionTypes()) {
-            Tr.debug(logger, MessageFormat.format("  Exception Type [ {0} ]", nextExceptionType.getHashText()));
+            useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Exception Type [ {0} ]", nextExceptionType.getHashText());
         }
 
-        Tr.debug(logger, MessageFormat.format("  Declaring Class [ {0} ]", getDeclaringClass().getHashText()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Declaring Class [ {0} ]", getDeclaringClass().getHashText());
 
-        Tr.debug(logger, MessageFormat.format("  Default Value [ {0} ]", getAnnotationDefaultValue()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Default Value [ {0} ]", getAnnotationDefaultValue());
     }
 }

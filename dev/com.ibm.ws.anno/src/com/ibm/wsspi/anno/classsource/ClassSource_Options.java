@@ -29,40 +29,58 @@ package com.ibm.wsspi.anno.classsource;
  * container root.
  */
 public interface ClassSource_Options {
-	// JANDEX usags:
+    // JANDEX usage:
 
-	/**
-	 * Answer the default 'use jandex' setting.
-	 * 
-	 * @return The default 'use jandex' setting.
-	 */
-	boolean getUseJandexDefault();
+    boolean JANDEX_ENABLE_DEFAULT_VALUE = false;
+    String JANDEX_ENABLE_PROPERTY_NAME = "com.ibm.ws.jandex.enable";
 
-	/**
-	 * Tell if 'use jandex' is set.  If unset, the
-	 * default value is returned from {@#getUseJandex()}.
-	 * 
-	 * @return Whether 'use jandex' is set.
-	 */
-	boolean getIsSetUseJandex();
+    boolean getUseJandexDefault();
 
-	/**
-	 * Set the 'use jandex' value.
-	 * 
-	 * @param useJandex The value to set to 'use jandex'.
-	 */
-	void setUseJandex(boolean useJandex);
-	
-	/**
-	 * Unset the 'use jandex' value.
-	 */
-	void unsetUseJandex();
+    boolean getIsSetUseJandex();
+    boolean getUseJandex();
 
-	/**
-	 * Answer the 'use jandex' value.  If unset, the
-	 * default value will be returned.
-	 * 
-	 * @return The 'use jandex' value.
-	 */
-	boolean getUseJandex();
+    void setUseJandex(boolean useJandex);
+    void unsetUseJandex();
+
+    // Full JANDEX usage:
+
+    boolean JANDEX_ENABLE_FULL_DEFAULT_VALUE = false;
+    String JANDEX_ENABLE_FULL_PROPERTY_NAME = "com.ibm.ws.jandex.enable.full";
+
+    boolean getUseJandexFullDefault();
+
+    boolean getIsSetUseJandexFull();
+    boolean getUseJandexFull();
+
+    void setUseJandexFull(boolean useJandexFull);
+    void unsetUseJandexFull();
+
+    // Jandex path ...
+
+    String JANDEX_PATH_DEFAULT_VALUE = "META-INF/jandex.idx";
+    String JANDEX_PATH_PROPERTY_NAME = "com.ibm.ws.jandex.path";
+
+    String getJandexPathDefault();
+
+    boolean getIsSetJandexPath();
+    String getJandexPath();
+
+    void setJandexPath(String jandexPath);
+    void unsetJandexPath();
+
+    // Scan threading:
+
+    int ANNO_SCAN_THREADS_UNBOUNDED = -1;
+    int ANNO_SCAN_THREADS_MAX = 64;
+
+    int ANNO_SCAN_THREADS_DEFAULT_VALUE = 8;
+    String ANNO_SCAN_THREADS_PROPERTY_NAME = "com.ibm.ws.anno.scan.threads";
+
+    int getScanThreadsDefault();
+
+    boolean getIsSetScanThreads();
+    int getScanThreads();
+
+    void setScanThreads(int scanThreads);
+    void unsetScanThreads();
 }

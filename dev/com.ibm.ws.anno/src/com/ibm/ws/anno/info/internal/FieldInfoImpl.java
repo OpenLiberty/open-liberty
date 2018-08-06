@@ -1,39 +1,41 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.anno.info.internal;
 
-import java.text.MessageFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.objectweb.asm.Type;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.anno.info.FieldInfo;
 
 public class FieldInfoImpl extends InfoImpl implements FieldInfo {
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
 
-    private static final TraceComponent tc = Tr.register(FieldInfoImpl.class);
-    public static final String CLASS_NAME = FieldInfoImpl.class.getName();
+    private static final String CLASS_NAME = "FieldInfoImpl";
 
     @Override
     protected String computeHashText() {
-        return getClass().getName() + "@" + Integer.toString((new Object()).hashCode()) + " ( " + getQualifiedName() + " )";
+        return getClass().getName() + "@" + Integer.toHexString(hashCode()) + " ( " + getQualifiedName() + " )";
     }
 
     //
 
     public FieldInfoImpl(String name, String desc, int modifiers, Object defaultValue,
-                         NonDelayedClassInfo declaringClass) {
+                         NonDelayedClassInfoImpl declaringClass) {
 
         super(name, modifiers, declaringClass.getInfoStore());
+
+        String methodName = "<init>";
 
         InfoStoreImpl useInfoStore = declaringClass.getInfoStore();
 
@@ -58,17 +60,21 @@ public class FieldInfoImpl extends InfoImpl implements FieldInfo {
         this.defaultValue = defaultValue;
 
         // This bloats the log if allowed on FINER.        
-        if (tc.isDumpEnabled()) {
-            Tr.dump(tc, MessageFormat.format("Created [ {0} ] on [ {1} ] of type [ {2} ] and default [ {3} ]",
-                                             getHashText(), getDeclaringClass().getHashText(), getType(), getDefaultValue()));
+        if (logger.isLoggable(Level.FINEST) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "Created [ {0} ] on [ {1} ] of type [ {2} ] and default [ {3} ]",
+                        new Object[] { getHashText(),
+                                       getDeclaringClass().getHashText(),
+                                       getType(),
+                                       getDefaultValue() });
         }
     }
 
     //
 
     @Override
-    protected String internName(String name) {
-        return getInfoStore().internFieldName(name);
+    protected String internName(String fieldName) {
+        return getInfoStore().internFieldName(fieldName);
     }
 
     @Override
@@ -111,15 +117,20 @@ public class FieldInfoImpl extends InfoImpl implements FieldInfo {
     //
 
     @Override
-    public void log(TraceComponent logger) {
+    public void log(Logger useLogger) {
+        String methodName = "log";
 
-        Tr.debug(logger, MessageFormat.format("Field [ {0} ]", getHashText()));
-        Tr.debug(logger, MessageFormat.format("  Name [ {0} ]", getName()));
-        Tr.debug(logger, MessageFormat.format("  Type [ {0} ]", getType().getHashText()));
-        Tr.debug(logger, MessageFormat.format("  Default Value [ {0} ]", getDefaultValue()));
+        if ( !useLogger.isLoggable(Level.FINER) ) {
+            return;
+        }
 
-        Tr.debug(logger, MessageFormat.format("  Declaring Class [ {0} ]", getDeclaringClass().getHashText()));
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Field [ {0} ]", getHashText());
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Name [ {0} ]", getName());
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Type [ {0} ]", getType().getHashText());
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Default Value [ {0} ]", getDefaultValue());
 
-        logAnnotations(logger);
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Declaring Class [ {0} ]", getDeclaringClass().getHashText());
+
+        logAnnotations(useLogger);
     }
 }

@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.anno.info.internal;
 
 import java.util.List;
@@ -16,10 +17,6 @@ import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.PackageInfo;
 
 public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
-
-    public static final String CLASS_NAME = ClassInfoImpl.class.getName();
-
-    //
 
     // Common method for consuming references.
     //
@@ -81,7 +78,7 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
     }
 
     public ClassInfoImpl asDelayedClass() {
-        throw createClassCastException(DelayedClassInfo.class);
+        throw createClassCastException(DelayedClassInfoImpl.class);
     }
 
     @Override
@@ -89,15 +86,15 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
         return false;
     }
 
-    public NonDelayedClassInfo asNonDelayedClass() {
-        throw createClassCastException(NonDelayedClassInfo.class);
+    public NonDelayedClassInfoImpl asNonDelayedClass() {
+        throw createClassCastException(NonDelayedClassInfoImpl.class);
     }
 
     //
 
     @Override
-    protected String internName(String name) {
-        return getInfoStore().internClassName(name);
+    protected String internName(String className) {
+        return getInfoStore().internClassName(className);
     }
 
     //
@@ -109,16 +106,13 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
 
     //
 
+    @Override
     public abstract List<MethodInfoImpl> getMethods();
 
-    /**
-     * @param name
-     * @return
-     */
-    public MethodInfoImpl getMethod(String name) {
-        for (MethodInfoImpl meth : getMethods()) {
-            if (meth.getName().equals(name)) {
-                return meth;
+    public MethodInfoImpl getMethod(String methodName) {
+        for ( MethodInfoImpl methodInfo : getMethods() ) {
+            if ( methodInfo.getName().equals(methodName) ) {
+                return methodInfo;
             }
         }
 
@@ -126,7 +120,7 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
     }
 
     @Override
-    public boolean isInstanceOf(Class<?> clazz) {
-        return isInstanceOf(clazz.getName());
+    public boolean isInstanceOf(Class<?> targetClass) {
+        return isInstanceOf( targetClass.getName() );
     }
 }

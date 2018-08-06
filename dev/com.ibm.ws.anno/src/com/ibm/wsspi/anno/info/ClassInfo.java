@@ -1,13 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corporation 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.wsspi.anno.info;
 
 import java.util.List;
@@ -170,7 +171,7 @@ public interface ClassInfo extends Info {
 
     /**
      * <p>Tell if this class object is for an annotation class. That is,
-     * whether <code>java.lang.annotation.Annotation</code> is one of the
+     * whether <code>java.lang.annotation.Annotation</p> is one of the
      * interfaces of the class.</p>
      * 
      * @return True if this class object is for an annotation class.

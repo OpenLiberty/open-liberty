@@ -1,23 +1,22 @@
-/*******************************************************************************
- * Copyright (c) 2011, 2012 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * IBM Confidential
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * OCO Source Materials
+ *
+ * Copyright IBM Corp. 2011, 2018
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
+ * U.S. Copyright Office.
+ */
 package com.ibm.ws.anno.info.internal;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.AnnotationValue;
 
@@ -26,11 +25,11 @@ import com.ibm.wsspi.anno.info.AnnotationValue;
  * represents an occurrence of an annotation. Such occur either as directly
  * declared, on a package, class, field, or method, or as a child value of an
  * annotation value, or as a default value of an annotation method.</p>
- * 
+ *
  * <p>An annotation info has, primarily, an annotation class name, a table
  * of annotation values, which are keyed by method name, and a context
  * defining info store.</p>
- * 
+ *
  * <p>Annotation info objects are scoped to an info store: The info store
  * is necessary for resolving default values, which requires the resolution
  * of the annotation info annotation class name as a class info object. Child
@@ -39,7 +38,7 @@ import com.ibm.wsspi.anno.info.AnnotationValue;
  * be performed in the same scope as provided the annotation info object: The
  * annotation class must be retrieved using the same class resolution rules as
  * were used for the initial annotation processing.</p>
- * 
+ *
  * <p>An annotation info may have an associated declaring info object (which
  * can be for a package, class, field, or method), and may have a table of
  * associated found info objects (for inherited class annotations, and for
@@ -48,15 +47,16 @@ import com.ibm.wsspi.anno.info.AnnotationValue;
  * info object, and have an empty table of found objects. Annotations which
  * occur as method default values also do not have declaring or found info
  * objects.</p>
- * 
+ *
  * <p>Annotation values should never be null. This implementation allows
  * a null value only when resolution of the associated annotation class
  * information cannot be resolved.</p>
  */
 public class AnnotationInfoImpl implements AnnotationInfo {
 
-    private static final TraceComponent tc = Tr.register(AnnotationInfoImpl.class);
-    public static final String CLASS_NAME = AnnotationInfoImpl.class.getName();
+    private static final Logger logger = Logger.getLogger("com.ibm.ws.anno");
+
+    private static final String CLASS_NAME = "AnnotationInfoImpl";
 
     protected String hashText;
 
@@ -75,21 +75,21 @@ public class AnnotationInfoImpl implements AnnotationInfo {
     /**
      * <p>Construct a new annotation info object. An annotation info object represents a single
      * specific occurrence of an annotation.</p>
-     * 
+     *
      * <p>The required class name tells the type of the annotation occurrence.</p>
-     * 
+     *
      * <p>An info store is required for default value processing: Assignment of default values
      * requires that the class info of the annotation type be obtained. Default values
      * are stored as default value on the methods of the class.</p>
-     * 
+     *
      * <p>Note that the info store provides the correct context information for resolving
      * the annotation class. While many classloading contexts provide access to <code>java<code>
      * and <code>javax</code> annotations, user scenarios may create new annotation types,
      * and these must be resolved using the same class lookup information as was used
      * to locate target class or package of the annotation occurrence.</p>
-     * 
+     *
      * <p>Package, class, field, and method annotations are recorded to the info store.</p>
-     * 
+     *
      * @param annotationClassName The name of the annotation type of the new annotation info object.
      * @param infoStore The store relative to which the annotation info object is created.
      */
@@ -98,11 +98,7 @@ public class AnnotationInfoImpl implements AnnotationInfo {
 
         String methodName = "<init>";
 
-        this.hashText = CLASS_NAME + "@" + Integer.toString((new Object()).hashCode()) + " ( " + annotationClassName + " )";
-
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, getHashText());
-        }
+        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + " ( " + annotationClassName + " )";
 
         this.infoStore = infoStore;
 
@@ -112,8 +108,10 @@ public class AnnotationInfoImpl implements AnnotationInfo {
 
         this.values = null;
 
-        if (tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName, getHashText());
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] in [ {1} ]",
+                        new Object[] { getHashText(), infoStore.getHashText() });
         }
     }
 
@@ -176,14 +174,18 @@ public class AnnotationInfoImpl implements AnnotationInfo {
 
     @Override
     public AnnotationValueImpl getValue(String name) {
+        String methodName = "getValue";
+
         AnnotationValueImpl annotationValue = ((this.values == null) ? null : this.values.get(name));
 
         if (annotationValue == null) {
             ClassInfoImpl useAnnotationClassInfo = getAnnotationClassInfo();
             MethodInfoImpl methodInfo = useAnnotationClassInfo.getMethod(name);
             if (methodInfo == null) {
-                Tr.warning(tc, "ANNO_ANNOINFO_NO_METHOD", getHashText(), useAnnotationClassInfo.getHashText(), name);
-                // leave the value null
+                // leave the value null                
+                logger.logp(Level.WARNING, CLASS_NAME, methodName,
+                        "[ {0} ] ANNO_ANNOINFO_NO_METHOD [ {1} ] [ {2} ]",
+                        new Object[] { getHashText(), useAnnotationClassInfo.getHashText(), name });
             } else {
                 annotationValue = methodInfo.getAnnotationDefaultValue();
             }
@@ -200,6 +202,7 @@ public class AnnotationInfoImpl implements AnnotationInfo {
     }
 
     public void addAnnotationValue(String name, AnnotationValueImpl value) {
+        String methodName = "addAnnotationValue";
 
         if (this.values == null) {
             this.values = new HashMap<String, AnnotationValueImpl>();
@@ -207,14 +210,21 @@ public class AnnotationInfoImpl implements AnnotationInfo {
 
         AnnotationValueImpl oldValue = this.values.put(name, value);
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Value Name [ {1} ] Value Enum Class [ {2} ] Value [ {3} ]",
-                                              getHashText(), name, value.getEnumClassName(), value.getObjectValue()));
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] Value Name [ {1} ] Value Enum Class [ {2} ] Value [ {3} ]",
+                        new Object[] { getHashText(),
+                                       name,
+                                       value.getEnumClassName(),
+                                       value.getObjectValue() });
 
             if (oldValue != null) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Old value Name [ {1} ] Value Enum Class [ {2} ] Value [ {3} ]",
-                                                  getHashText(), name, oldValue.getEnumClassName(),
-                                                  oldValue.getObjectValue()));
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                            "[ {0} ] Old value Name [ {1} ] Value Enum Class [ {2} ] Value [ {3} ]",
+                            new Object[] { getHashText(),
+                                           name,
+                                           oldValue.getEnumClassName(),
+                                           oldValue.getObjectValue() });
             }
         }
     }
@@ -330,10 +340,16 @@ public class AnnotationInfoImpl implements AnnotationInfo {
     //
 
     //  because of the global state access.
-    @Trivial
-    public void log(TraceComponent logger) {
+    public void log(Logger useLogger) {
+        String methodName = "log";
 
-        Tr.debug(logger, MessageFormat.format("Annotation [ {0} ]", getAnnotationClassName()));
+        if ( !useLogger.isLoggable(Level.FINER) ) {
+            return;
+        }
+
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "Annotation [ {0} ]",
+                    getAnnotationClassName());
 
         // Only log the non-defaulted values.
         for (String valueName : this.values.keySet()) {
@@ -344,12 +360,13 @@ public class AnnotationInfoImpl implements AnnotationInfo {
             // works for all value types, e.g., Object, Enumerated (as String), Class, Array
 
             if (valueEnumClassName != null) {
-                Tr.debug(logger,
-                         MessageFormat.format("  Value: Name [ {0} ] Enum Type [ {1} ] Value [ {2} ]",
-                                              new Object[] { valueName, valueEnumClassName, valueValue }));
+                useLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                            "  Value: Name [ {0} ] Enum Type [ {1} ] Value [ {2} ]",
+                            new Object[] { valueName, valueEnumClassName, valueValue });
             } else {
-                Tr.debug(logger, MessageFormat.format("  Value: Name [ {0} ] Value [ {1} ]",
-                                                      new Object[] { valueName, valueValue }));
+                useLogger.logp(Level.FINER, CLASS_NAME, methodName,
+                            "  Value: Name [ {0} ] Value [ {1} ]",
+                            new Object[] { valueName, valueValue });
             }
         }
     }

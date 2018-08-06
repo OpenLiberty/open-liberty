@@ -1,55 +1,94 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.anno.classsource.internal;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.Set;
+import java.util.concurrent.Future;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.anno.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
-import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 public class ClassSourceImpl_ClassLoader
     extends ClassSourceImpl
     implements ClassSource_ClassLoader {
 
-    public static final String CLASS_NAME = ClassSourceImpl_ClassLoader.class.getName();
-    private static final TraceComponent tc = Tr.register(ClassSourceImpl_ClassLoader.class);
+    public static final String CLASS_NAME = ClassSourceImpl_ClassLoader.class.getSimpleName();
 
     // Top O' the world
+
+    public ClassSourceImpl_ClassLoader(
+        ClassSourceImpl_Factory factory,
+        Util_InternMap internMap,
+        String name,
+        ClassLoader classLoader) {
+
+        super(factory, internMap, NO_ENTRY_PREFIX, name, String.valueOf(classLoader));
+        // throws ClassSource_Exception
+
+        String methodName = "<init>";
+
+        this.classLoader = classLoader;
+        this.classLoaderThunk = null;
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, this.hashText);
+        }
+    }
 
     public ClassSourceImpl_ClassLoader(ClassSourceImpl_Factory factory,
                                        Util_InternMap internMap,
                                        String name,
-                                       ClassSource_Options options,
-                                       ClassLoader classLoader) {
+                                       Future<ClassLoader> classLoaderThunk) {
 
-        super(factory, internMap, name, options, String.valueOf(classLoader));
+        super(factory, internMap, NO_ENTRY_PREFIX, name, String.valueOf(classLoaderThunk));
 
-        this.classLoader = classLoader;
+        String methodName = "<init>";
 
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, this.hashText);
+        this.classLoader = null;
+        this.classLoaderThunk = classLoaderThunk;
+        
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, this.hashText);
         }
     }
+
+    //
+
+    /**
+     * <p>Compute and return a time stamp for this class source.</p>
+     *
+     * <p>Time stamps are not available for class loader class sources:
+     * Answer the unrecorded stamp value {@link ClassSource#UNRECORDED_STAMP}.</p>
+     *
+     * @return The computed stamp for this class source.  This implementation always
+     *         returns the unrecorded stamp value.
+     */
+    @Override
+    protected String computeStamp() {
+        return UNRECORDED_STAMP;
+    }
+
+    //
 
     /**
      * <p>Open this class source.  This implementation does nothing.</p>
@@ -59,8 +98,10 @@ public class ClassSourceImpl_ClassLoader
     @Override
     @Trivial
     public void open() throws ClassSource_Exception {
-        if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER/RETURN", getHashText()));
+        String methodName = "open";
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER/RETURN", getHashText());
         }
     }
 
@@ -72,42 +113,41 @@ public class ClassSourceImpl_ClassLoader
     @Override
     @Trivial
     public void close() throws ClassSource_Exception {
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] ENTER/RETURN", getHashText()));
+        String methodName = "close";
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER/RETURN", getHashText());
         }
     }
 
     //
 
-    protected final ClassLoader classLoader;
+    protected volatile ClassLoader classLoader;
+
+    protected final Future<ClassLoader> classLoaderThunk;
 
     @Override
     @Trivial
     public ClassLoader getClassLoader() {
+        String methodName = "getClassLoader";
+
+        if ( classLoader == null ) {
+            synchronized(this) {
+                if ( classLoader == null ) {
+                    try {
+                        classLoader = classLoaderThunk.get();
+                        // throws InterruptedException, ExecutionException
+                    } catch ( Exception e ) {
+                        // Should never happen!
+                    }
+                    if ( logger.isLoggable(Level.FINER) ) {
+                        logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Resolved [ {1} ]",
+                            new Object[] { getHashText(), classLoader });
+                    }
+                }
+            }
+        }
         return classLoader;
-    }
-
-    // Leaf class source API.
-    //
-    // Class loader class sources should only be set with the EXTERNAL
-    // scan policy, and external regions are never scanned iteratively.
-
-    @Override
-    public void scanClasses(
-        ClassSource_Streamer streamer,
-        Set<String> i_seedClassNamesSet,
-        ScanPolicy scanPolicy) {
-
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void processFromScratch(
-        ClassSource_Streamer streamer,
-        Set<String> i_seedClassNames,
-        ScanPolicy scanPolicy) {
-
-        throw new UnsupportedOperationException();
     }
 
     //
@@ -115,7 +155,6 @@ public class ClassSourceImpl_ClassLoader
     @Override
     public InputStream openResourceStream(String className, String resourceName)
         throws ClassSource_Exception {
-
         String methodName = "openResourceStream";
 
         ClassLoader useClassLoader = getClassLoader();
@@ -128,11 +167,12 @@ public class ClassSourceImpl_ClassLoader
         try {
             return url.openStream(); // throws IOException
 
-        } catch ( IOException e) {
+        } catch ( IOException e ) {
             // defect 84235:we are generating multiple Warning/Error messages for each error due to each level reporting them.
-            // Disable the following warning and defer message generation to a higher level, 
+            // Disable the following warning and defer message generation to a higher level,
             // preferably the ultimate consumer of the exception.
-            //Tr.warning(tc, "ANNO_CLASSSOURCE_OPEN1_EXCEPTION", getHashText(), resourceName, className);
+            // logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_CLASSSOURCE_OPEN1_EXCEPTION",
+            //     new Object[] { getHashText(), resourceName, className });
 
             String eMsg =
                 "[ " + getHashText() + " ]" +
@@ -144,6 +184,8 @@ public class ClassSourceImpl_ClassLoader
 
     @Override
     public void closeResourceStream(String className, String resourceName, InputStream inputStream) {
+        String methodName = "closeResourceStream";
+
         try {
             inputStream.close(); // throws IOException
 
@@ -151,7 +193,88 @@ public class ClassSourceImpl_ClassLoader
             // String eMsg = "[ " + getHashText() + " ]" +
             //               " Failed to close resource [ " + resourceName + " ]" +
             //               " for class [ " + className + " ]";
-            Tr.warning(tc, "ANNO_CLASSSOURCE_CLOSE2_EXCEPTION", getHashText(), resourceName, className);
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_CLASSSOURCE_CLOSE2_EXCEPTION",
+                new Object[] { getHashText(), resourceName, className });
+        }
+    }
+
+    //
+
+    @Override
+    public void process(ClassSource_Streamer streamer) throws ClassSource_Exception {
+        throw new UnsupportedOperationException("ClassLoader; no class streaming");
+    }
+
+    @Override
+    public int processFromScratch(ClassSource_Streamer streamer) throws ClassSource_Exception {
+        throw new UnsupportedOperationException("ClasLloader; no class streaming");
+    }
+
+    @Override
+    protected boolean processUsingJandex(ClassSource_Streamer streamer) {
+        throw new UnsupportedOperationException("ClassLoader; no class streaming");
+    }
+
+    @Override
+    @Trivial
+    public void processSpecific(ClassSource_Streamer streamer, Set<String> i_classNames) throws ClassSource_Exception {
+        String methodName = "processSpecific";
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTRY [ {1} ]",
+                new Object[] { getHashText(), Integer.valueOf(i_classNames.size()) });
+        }
+
+        long scanStart = System.nanoTime();
+
+        for ( String i_className : i_classNames ) {
+            String resourceName = ClassSource.getResourceNameFromClassName(i_className);
+            try {
+                scan(streamer, i_className, resourceName); // throws ClassSource_Exception
+            } catch ( ClassSource_Exception e ) {
+                logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_SCAN_EXCEPTION", e);
+            }
+        }
+
+        long scanTime = System.nanoTime() - scanStart;
+
+        setProcessTime(scanTime);
+        setProcessCount( i_classNames.size() );
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,  "[ {0} ] RETURN", getHashText());
+        }
+    }
+
+    //
+
+    private static final int CLASS_BUFFER_SIZE = 8 * 1024;
+
+    @Trivial
+    protected void scan(ClassSource_Streamer streamer, String i_className, String resourceName)
+        throws ClassSource_Exception {
+
+        String methodName = "scan";
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Scan [ {1} ] as [ {2} ]",
+                new Object[] { getHashText(), i_className, resourceName });
+        }
+
+        InputStream inputStream = openClassResourceStream(i_className, resourceName); // throws ClassSource_Exception
+        if ( inputStream == null ) {
+            return;
+        }
+
+        inputStream = new BufferedInputStream(inputStream, CLASS_BUFFER_SIZE);
+
+        try {
+            streamer.process(i_className, inputStream); // throws ClassSource_Exception
+
+        } finally {
+            closeResourceStream(i_className, resourceName, inputStream);
         }
     }
 
@@ -159,9 +282,11 @@ public class ClassSourceImpl_ClassLoader
 
     @Override
     @Trivial
-    public void log(TraceComponent logger) {
-        if ( logger.isDebugEnabled() ) {
-            Tr.debug(logger, MessageFormat.format("Class Source [ {0} ]", getHashText()));
+    public void log(Logger useLogger) {
+        String methodName = "log";
+
+        if ( useLogger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "Class Source [ {0} ]", getHashText());
         }
     }
 }
