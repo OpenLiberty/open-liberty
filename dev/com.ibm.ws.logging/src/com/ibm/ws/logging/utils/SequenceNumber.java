@@ -20,11 +20,22 @@ public class SequenceNumber {
     private final static String ZEROES = "0000000000000";
 
     /*
-     * Creates the next sequence number string
+     * Creates the next sequence number
+     */
+    public long getRawSequenceNumber() {
+        return seq.incrementAndGet();
+    }
+
+    public static String formatSequenceNumber(long date, long n) {
+        return date + "_" + toPaddedHex(n);
+    }
+
+    /*
+     * Creates the next sequence number formatted string
      */
     public String next(long date) {
         long n = seq.incrementAndGet();
-        return date + "_" + toPaddedHex(n);
+        return formatSequenceNumber(date, n);
     }
 
     /*

@@ -29,11 +29,10 @@ import com.ibm.wsspi.collector.manager.Source;
 
 public class TraceSource implements Source {
     private static final TraceComponent tc = Tr.register(TraceSource.class);
-
+    private final SequenceNumber sequenceNumber = new SequenceNumber();
     private final String sourceName = "com.ibm.ws.logging.source.trace";
     private final String location = "memory";
     private BufferManager bufferMgr = null;
-    private final SequenceNumber sequenceNumber = new SequenceNumber();
     //private final AtomicLong seq = new AtomicLong();
 
     protected void activate(Map<String, Object> configuration) {
@@ -135,8 +134,8 @@ public class TraceSource implements Source {
             extensions = null;
         }
 
-        String sequenceNum = sequenceNumber.next(datetimeValue);
-        traceData.setSequence(sequenceNum);
+        traceData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());
+        traceData.setSequence(null);
 
         traceData.setThrowable(null);
         traceData.setThrowableLocalized(null);
