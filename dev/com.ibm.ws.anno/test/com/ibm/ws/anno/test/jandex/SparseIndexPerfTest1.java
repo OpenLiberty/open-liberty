@@ -23,7 +23,9 @@ import org.junit.Assert;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class SparseIndexPerfTest1 {
@@ -35,24 +37,45 @@ public class SparseIndexPerfTest1 {
 
     //
 
-    private final String indexPath;
-    private final int indexSize;
-    private final byte[] indexBytes;
+    private static class TestData {
+    	public final String indexPath;
+    	public final int indexSize;
+    	public final byte[] indexBytes;
+
+    	public TestData(String indexPath, int indexSize) {
+    		this.indexPath = indexPath;
+    		this.indexSize = indexSize;
+
+            long readStart = System.nanoTime();
+            this.indexBytes = JandexTestUtils.asBytes(indexPath);
+            long readDuration = System.nanoTime() - readStart;
+
+            System.out.println("Raw read [ " + Long.valueOf(readDuration / JandexTestUtils.NANOS_IN_MICRO) + " (micro) ]");
+    	}
+    }
 
     private List<List<SparseIndex>> sparseData =  new ArrayList<List<SparseIndex>>();
 	private List<List<Index>> fullData = new ArrayList<List<Index>>();
 
     //
 
-    public SparseIndexPerfTest1(Object indexPathObj, Object indexSizeObj) {
-        this.indexPath = (String) indexPathObj;
-        this.indexSize = ((Integer) indexSizeObj).intValue();
+	private static final Map<Integer, TestData> allTestData = new HashMap<Integer, TestData>();
+	private final TestData testData;
 
-        long readStart = System.nanoTime();
-        this.indexBytes = JandexTestUtils.asBytes(indexPath);
-        long readDuration = System.nanoTime() - readStart;
+    public SparseIndexPerfTest1(Object testNoObj, Object indexPathObj, Object indexSizeObj) {
+        System.out.println("Test [ " + testNoObj + " ] [ " + indexPathObj + " ] [ " + indexSizeObj + " (classes) ]");
 
-        System.out.println("Raw read [ " + Long.valueOf(readDuration / JandexTestUtils.NANOS_IN_MICRO) + " (micro) ]");
+    	Integer testNo = (Integer) testNoObj;
+    	String indexPath = (String) indexPathObj;
+    	int indexSize = ((Integer) indexSizeObj).intValue();
+
+        TestData useTestData = allTestData.get(testNoObj);
+        if ( useTestData == null ) {
+        	useTestData = new TestData(indexPath, indexSize);
+        	allTestData.put(testNo, useTestData);
+        }
+
+        testData = useTestData;
     }
 
     public static class HeapStats {
@@ -88,7 +111,7 @@ public class SparseIndexPerfTest1 {
         	long readStart = System.nanoTime();
 
         	Index fullIndex = JandexTestUtils.readFullIndex(
-        	    indexPath, new ByteArrayInputStream(indexBytes));
+        	    testData.indexPath, new ByteArrayInputStream(testData.indexBytes));
         	fullIndexes.add(fullIndex);
 
         	long readDuration = System.nanoTime() - readStart;
@@ -104,19 +127,17 @@ public class SparseIndexPerfTest1 {
 
         	heapStats.add( new HeapStats() );
 
-        	Assert.assertEquals("Expected count of classes", indexSize, fullIndex.getKnownClasses().size());
+        	Assert.assertEquals("Expected count of classes", testData.indexSize, fullIndex.getKnownClasses().size());
         }
 
         displayTimes(
         	"Full Index Read",
-        	indexPath, indexSize,
         	iterations,
         	readTimes,
         	minDuration, maxDuration, totalDuration);
-        
+
         displayHeaps(
             "Full Index Read",
-            indexPath, indexSize,
             iterations,
             heapStats);
     }
@@ -141,7 +162,7 @@ public class SparseIndexPerfTest1 {
         	long readStart = System.nanoTime();
 
         	SparseIndex sparseIndex = JandexTestUtils.readSparseIndex(
-        		indexPath, new ByteArrayInputStream(indexBytes));
+        		testData.indexPath, new ByteArrayInputStream(testData.indexBytes));
         	sparseIndexes.add(sparseIndex);
 
         	long readDuration = System.nanoTime() - readStart;
@@ -157,19 +178,17 @@ public class SparseIndexPerfTest1 {
 
         	heapStats.add( new HeapStats() );
 
-        	Assert.assertEquals("Expected count of classes", indexSize, sparseIndex.getKnownClasses().size());
+        	Assert.assertEquals("Expected count of classes", testData.indexSize, sparseIndex.getKnownClasses().size());
         }
 
         displayTimes(
         	"Sparse Index Read",
-        	indexPath, indexSize,
         	iterations,
         	readTimes,
         	minDuration, maxDuration, totalDuration);
 
         displayHeaps(
             "Sparse Index Read",
-            indexPath, indexSize,
             iterations,
             heapStats);
     }
@@ -177,13 +196,12 @@ public class SparseIndexPerfTest1 {
 
     public void displayTimes(
     	String description,
-    	String path, int numClasses,
     	int iterations,
     	List<Long> readTimes,
     	long minDuration, long maxDuration, long totalDuration) {
 
     	System.out.println(description);;
-        System.out.println("  Read [ " + path + " (path) ] [ " + Integer.valueOf(numClasses) + " (classes) ]");
+        System.out.println("  Read [ " + testData.indexPath + " (path) ] [ " + Integer.valueOf(testData.indexSize) + " (classes) ]");
         System.out.println("  [ " + Integer.valueOf(iterations) + " (iterations) ]");
 
         minDuration /= JandexTestUtils.NANOS_IN_MICRO;
@@ -200,7 +218,7 @@ public class SparseIndexPerfTest1 {
 
 	private void displayHeaps(
 		String description,
-		String path, int numClasses, int iterations,
+		int iterations,
 		List<HeapStats> heapStats) {
 
 		// System.out.println(description);;
