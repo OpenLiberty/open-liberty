@@ -1,58 +1,35 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * The initial set of unit tests below were heavily derived from
- *   https://github.com/eclipse/microprofile-reactive/blob/master/streams/tck/src/main/java/org/eclipse/microprofile/reactive/streams/tck/spi/CollectStageVerification.java
+ * The initial set of unit test material was heavily derived from
+ * tests at https://github.com/eclipse/microprofile-reactive
  * by James Roper.
  ******************************************************************************/
 
 package com.ibm.ws.microprofile.reactive.streams.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
-import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
-import org.junit.After;
-import org.junit.Before;
+import org.eclipse.microprofile.reactive.streams.SubscriberBuilder;
 import org.junit.Test;
 
-import com.ibm.ws.microprofile.reactive.streams.WASReactiveStreamsEngineImpl;
-
-public class CollectTest {
-
-    @Before
-    public void before() {
-        //Engine Start?
-    }
-
-    @After
-    public void after() {
-        //Engine Stop?
-    }
+public class CollectTest extends WASReactiveUT {
 
     @Test
     public void toListStageShouldReturnAList() {
@@ -97,33 +74,60 @@ public class CollectTest {
         await(ReactiveStreams.failed(new RuntimeException("failed")).toList().run(getEngine()));
     }
 
-    /**
-     * @return
-     */
-    private ReactiveStreamsEngine getEngine() {
-        return WASReactiveStreamsEngineImpl.getEngine();
+    @Test(expected = QuietRuntimeException.class)
+    public void collectShouldPropagateUpstreamErrors2() {
+        await(ReactiveStreams.<Integer> failed(new QuietRuntimeException("failed")).collect(
+                                                                                            () -> new AtomicInteger(0),
+                                                                                            AtomicInteger::addAndGet).run(getEngine()));
     }
 
-    <T> T await(CompletionStage<T> future) {
+    @Test(expected = QuietRuntimeException.class)
+    public void toListStageShouldPropagateUpstreamErrors2() {
+        await(ReactiveStreams.failed(new QuietRuntimeException("failed")).toList().run(getEngine()));
+    }
+
+    @Test(expected = QuietRuntimeException.class)
+    public void collectStageShouldPropagateErrorsFromSupplierThroughCompletionStage() {
+        CompletableFuture<Void> cancelled = new CompletableFuture<>();
+        CompletionStage<Integer> result = null;
         try {
-            return future.toCompletableFuture().get(getTimeout(), TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            if (e.getCause() instanceof RuntimeException) {
-                throw (RuntimeException) e.getCause();
-            } else {
-                throw new RuntimeException(e.getCause());
-            }
-        } catch (TimeoutException e) {
-            throw new RuntimeException("Future timed out after " + getTimeout() + "ms", e);
+            result = infiniteStream().onTerminate(() -> cancelled.complete(null)).collect(Collector.<Integer, Integer, Integer> of(() -> {
+                throw new QuietRuntimeException("failed");
+            }, (a, b) -> {
+            }, (a, b) -> a + b, Function.identity())).run(getEngine());
+        } catch (Exception e) {
+            assertNull("Exception thrown directly from stream, it should have been captured by the returned CompletionStage", e);
         }
+        await(cancelled);
+        await(result);
     }
 
-    /**
-     * @return
-     */
-    private long getTimeout() {
-        return 1000;
+    @Test(expected = QuietRuntimeException.class)
+    public void collectStageShouldPropagateErrorsFromAccumulator() {
+        CompletableFuture<Void> cancelled = new CompletableFuture<>();
+        CompletionStage<String> result = infiniteStream().onTerminate(() -> cancelled.complete(null)).collect(Collector.of(() -> "", (a, b) -> {
+            throw new QuietRuntimeException("failed");
+        }, (a, b) -> a + b, Function.identity())).run(getEngine());
+        await(cancelled);
+        await(result);
     }
+
+    @Test(expected = QuietRuntimeException.class)
+    public void collectStageShouldPropagateErrorsFromFinisher() {
+        CompletionStage<Integer> result = ReactiveStreams.of(1, 2, 3).collect(Collector.<Integer, Integer, Integer> of(() -> 0, (a, b) -> {
+        },
+                                                                                                                       (a, b) -> a + b,
+                                                                                                                       r -> {
+                                                                                                                           throw new QuietRuntimeException("failed");
+                                                                                                                       })).run(getEngine());
+        await(result);
+    }
+
+    @Test
+    public void collectStageBuilderShouldBeReusable() {
+        SubscriberBuilder<Integer, List<Integer>> toList = ReactiveStreams.<Integer> builder().toList();
+        assertEquals(await(ReactiveStreams.of(1, 2, 3).to(toList).run(getEngine())), Arrays.asList(1, 2, 3));
+        assertEquals(await(ReactiveStreams.of(4, 5, 6).to(toList).run(getEngine())), Arrays.asList(4, 5, 6));
+    }
+
 }

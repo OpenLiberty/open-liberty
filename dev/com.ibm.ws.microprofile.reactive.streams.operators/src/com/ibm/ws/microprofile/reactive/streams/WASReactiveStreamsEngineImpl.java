@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.streams;
 
 import java.util.concurrent.CompletionStage;
@@ -29,14 +39,14 @@ public class WASReactiveStreamsEngineImpl extends ReactiveStreamsEngineImpl impl
     @Reference(target = "(component.name=com.ibm.ws.threading)")
     private static ExecutorService serverExecutor;
 
-    private ExecutorService executor = null;
+    private static ExecutorService executor = null;
 
     /**
      * @param executor
      */
     public WASReactiveStreamsEngineImpl(ExecutorService ex) {
         // We have a fallback for unit testing
-        this.executor = (ex != null) ? ex : ForkJoinPool.commonPool();
+        WASReactiveStreamsEngineImpl.executor = (ex != null) ? ex : ForkJoinPool.commonPool();
     }
 
     @Override
@@ -67,6 +77,16 @@ public class WASReactiveStreamsEngineImpl extends ReactiveStreamsEngineImpl impl
             singleton = new WASReactiveStreamsEngineImpl(serverExecutor);
         }
         return singleton;
+    }
+
+    /**
+     * @return the executor
+     */
+    public static ExecutorService getExecutor() {
+        if (singleton == null) {
+            singleton = new WASReactiveStreamsEngineImpl(serverExecutor);
+        }
+        return executor;
     }
 
 }
