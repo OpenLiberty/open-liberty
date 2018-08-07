@@ -62,6 +62,7 @@ public class JDBCDriverManagerTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("DSRA8020E.*internal.nonship.function"); // TODO remove once the capability becomes GA
+        server.stopServer("DSRA8020E.*internal.nonship.function", // TODO remove once the capability becomes GA
+                          "CWWKE0701E"); //Expected in testGetSetLoginTimeout
     }
 }

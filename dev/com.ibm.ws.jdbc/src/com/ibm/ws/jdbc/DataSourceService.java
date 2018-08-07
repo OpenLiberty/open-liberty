@@ -446,7 +446,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 if (type == null){
                     vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
                                ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps)
-                               : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps);
+                               : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
                     ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                         : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
                         : vendorImpl instanceof DataSource ? DataSource.class
@@ -463,7 +463,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 } else if (Driver.class.getName().equals(type)) {
                     ifc = Driver.class;
                     String url = vProps.getProperty("URL", vProps.getProperty("url"));
-                    vendorImpl = jdbcDriverSvc.getDriver(url);
+                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
                 } else
                     throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
@@ -597,7 +597,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             if(type == null){
                 vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
                                 ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps)
-                                : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps);
+                                : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
                 ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                     : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
                     : vendorImpl instanceof DataSource ? DataSource.class
@@ -614,7 +614,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             } else if (Driver.class.getName().equals(type)) {
                 ifc = Driver.class;
                 String url = vProps.getProperty("URL", vProps.getProperty("url"));
-                vendorImpl = jdbcDriverSvc.getDriver(url);
+                vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
             } else
                 throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
