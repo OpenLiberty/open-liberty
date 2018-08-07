@@ -228,11 +228,11 @@ FEATURE_NOT_IMPLEMENTED.useraction=Avoid using the feature, or switch to a drive
 # 
 
 DSRA4000.no.suitable.driver=DSRA4000E: No implementations of {0} are found for {1} with library {2}. Searched in: {3}. Searched under packages: {4}.
-DSRA4000.no.suitable.driver.explanation=A data source or driver implementation might not be found for several reasons. The name or location of JDBC driver JAR files might be incorrect or inaccessible. The JDBC driver might not properly identify its java.sql.Driver implementation, or it might not have a java.sql.Driver implementation. Or, Liberty's built-in logic to identify data source implementation classes does not apply to all drivers.
+DSRA4000.no.suitable.driver.explanation=A data source or driver implementation might not be found for several reasons. The name or location of JDBC driver JAR files might be incorrect or inaccessible. The JDBC driver might not properly identify its java.sql.Driver implementation, or it might not have a java.sql.Driver implementation. Or, the built-in logic to identify data source implementation classes does not apply to all drivers.
 DSRA4000.no.suitable.driver.useraction=Verify that the configurations of the JDBC driver and library are correct. If the implementation classes are still not found, manually specify them in the configuration.
 
 DSRA4001.no.suitable.driver.nested=DSRA4001E: No implementations of {0} are found for {1}. Searched in: {2}. Searched under packages: {3}.
-DSRA4001.no.suitable.driver.nested.explanation=A data source or driver implementation might not be found for several reasons. The name or location of JDBC driver JAR files might be incorrect or inaccessible. The JDBC driver might not properly identify its java.sql.Driver implementation, or it might not have a java.sql.Driver implementation. Or, Liberty's built-in logic to identify data source implementation classes does not apply to all drivers.
+DSRA4001.no.suitable.driver.nested.explanation=A data source or driver implementation might not be found for several reasons. The name or location of JDBC driver JAR files might be incorrect or inaccessible. The JDBC driver might not properly identify its java.sql.Driver implementation, or it might not have a java.sql.Driver implementation. Or, the built-in logic to identify data source implementation classes does not apply to all drivers.
 DSRA4001.no.suitable.driver.nested.useraction=Verify that the configurations of the JDBC driver and library are correct. If the implementation classes are still not found, manually specify them in the configuration.
 
 DSRA4003.driver.null=DSRA4003E: A valid jdbcDriver element could not be found for the dataSource {0}.
