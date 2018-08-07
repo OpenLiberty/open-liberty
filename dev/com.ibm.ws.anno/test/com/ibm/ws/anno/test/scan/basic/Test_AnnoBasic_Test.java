@@ -87,7 +87,6 @@ public class Test_AnnoBasic_Test extends Test_Base {
         String i_derivedClassName = i_getClassName(TargetSubInherited_2.class);
 
         Set<String> immediateTargetNames = getBaseTargets().getAnnotatedClasses(inheritAnnoName);
-        System.out.println("!!!!!\n\n\n\n\nimmediateTargetNames.size()=["+ immediateTargetNames.size() + "]\n\n\n\n\n!!!!!!");
         Assert.assertEquals(immediateTargetNames.size(), 1);
         Assert.assertTrue(toString(immediateTargetNames), immediateTargetNames.contains(i_subClassName));
 
@@ -118,8 +117,7 @@ public class Test_AnnoBasic_Test extends Test_Base {
 
         Set<String> testTargetNames = getBaseTargets().getClassesWithMethodAnnotation(testAnnoName);
         testTargetNames = select(testTargetNames, "com.ibm.ws.anno.test.classes.basic");
-        System.out.println("!!!!!\n\n\n\n\ntestTargetNames.size()=["+ testTargetNames.size() + "]\n\n\n\n\n!!!!!!");
-        
+
         Assert.assertEquals(toString(testTargetNames), 1, testTargetNames.size());
         Assert.assertTrue(testTargetNames.contains(i_subClassName));
 

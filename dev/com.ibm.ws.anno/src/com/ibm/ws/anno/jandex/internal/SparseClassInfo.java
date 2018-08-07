@@ -33,9 +33,6 @@ public final class SparseClassInfo {
     private final SparseDotName[] interfaceNames;
     private final SparseDotName superClassName;
 
-    private List<SparseDotName> fieldNames;
-    private List<SparseDotName> methodNames;
-
     private ArrayList<SparseDotName> classAnnotations;
     private List<SparseDotName> fieldAnnotations;
     private List<SparseDotName> methodAnnotations;
@@ -46,9 +43,6 @@ public final class SparseClassInfo {
 
         this.superClassName = superClassName;
         this.interfaceNames = interfaceNames;
-
-        this.fieldNames = null;
-        this.methodNames = null;
 
         this.classAnnotations = null;
         this.fieldAnnotations = null;
@@ -97,68 +91,12 @@ public final class SparseClassInfo {
 
     //
 
-    public List<SparseDotName> fields() {
-        return ((fieldNames == null) ? Collections.emptyList() : fieldNames);
-    }
-
-    // Only used by the V1 reader.
-
     public void addField(SparseDotName fieldName) {
-        if ( fieldNames == null ) {
-            fieldNames = new ArrayList<SparseDotName>(1);
-        }
-        fieldNames.add(fieldName);
+    	// Ignore
     }
-
-    // Only used by the V2 reader.
-
-    public void allocateFields(int numFields) {
-        if ( (numFields == 0) || (numFields == 1) ) {
-            return;
-        }
-        fieldNames = new ArrayList<SparseDotName>(numFields);
-    }
-
-    // Only used by the V2 reader.
-
-    public void addAllocatedField(SparseDotName fieldName) {
-        if ( fieldNames == null ) {
-            fieldNames = new Singleton<SparseDotName>(fieldName);
-        } else {
-            fieldNames.add(fieldName);
-        }
-    }    
-
-    public List<SparseDotName> methods() {
-        return ((methodNames == null) ? Collections.emptyList() : methodNames);
-    }
-
-    // Only used by the V1 reader.
 
     public void addMethod(SparseDotName methodName) {
-        if ( methodNames == null ) {
-            methodNames = new ArrayList<SparseDotName>(1);
-        }
-        methodNames.add(methodName);
-    }
-
-    // Only used by the V2 reader.
-
-    public void allocateMethods(int numMethods) {
-        if ( (numMethods == 0) || (numMethods == 1) ) {
-            return;
-        }
-        methodNames = new ArrayList<SparseDotName>(numMethods);
-    }
-
-    // Only used by the V2 reader.
-
-    public void addAllocatedMethod(SparseDotName methodName) {
-        if ( methodNames == null ) {
-            methodNames = new Singleton<SparseDotName>(methodName);
-        } else {
-            methodNames.add(methodName);
-        }
+    	// Ignore
     }
 
     //
@@ -230,6 +168,12 @@ public final class SparseClassInfo {
         }
     }
 
+    // Only used by the V2 reader.
+
+    public void recordFieldEntry(SparseAnnotationHolder fieldAndAnnotations) {
+        addAllocatedFieldAnnotations(fieldAndAnnotations.getAnnotations());
+    }
+
     public List<SparseDotName> methodAnnotations() {
         return ((methodAnnotations == null) ? Collections.emptyList() : methodAnnotations);
     }
@@ -269,19 +213,9 @@ public final class SparseClassInfo {
         }
     }
 
-    //
-
-    // Only used by the V2 reader.
-
-    public void recordFieldEntry(SparseAnnotationHolder fieldAndAnnotations) {
-        addAllocatedField( fieldAndAnnotations.getName() );
-        addAllocatedFieldAnnotations(fieldAndAnnotations.getAnnotations());
-    }
-
     // Only used by the V2 reader.
 
     public void recordMethodEntry(SparseAnnotationHolder methodAndAnnotations) {
-        addAllocatedMethod( methodAndAnnotations.getName() );
         addAllocatedMethodAnnotations(methodAndAnnotations.getAnnotations());
     }
 }

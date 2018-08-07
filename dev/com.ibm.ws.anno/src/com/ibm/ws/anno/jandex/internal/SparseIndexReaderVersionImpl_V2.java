@@ -23,6 +23,7 @@ package com.ibm.ws.anno.jandex.internal;
 
 import java.io.IOException;
 import java.util.Map;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,7 +81,7 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         // The list will be enlarged if a class has more than the preset
         // allocation.
 
-        this.classAnnotationClassNames = new ArrayList<SparseDotName>(20);
+        this.classAnnoClassNames = new ArrayList<SparseDotName>(20);
     }
 
     //
@@ -99,16 +100,16 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
     // Constants ...
 
     private byte[][] byteTable;
-    private SparseDotName[] resolvedNames; // Avoid re-recreating byte encoded simple names.
+    private SparseDotName[] simpleNameTable; // Avoid re-recreating byte encoded simple names.
 
-    private SparseDotName resolveName(int nameNo) {
-        SparseDotName resolvedName = resolvedNames[nameNo];
-        if ( resolvedName == null ) {
+    private SparseDotName getSimpleName(int nameNo) {
+        SparseDotName simpleName = simpleNameTable[nameNo];
+        if ( simpleName == null ) {
             byte[] nameBytes = byteTable[nameNo];
-            resolvedName = SparseDotName.createSimple(nameBytes);
-            resolvedNames[nameNo] = resolvedName;
+            simpleName = SparseDotName.createSimple(nameBytes);
+            simpleNameTable[nameNo] = simpleName;
         }
-        return resolvedName;
+        return simpleName;
     }
 
     private String[] stringTable;
@@ -116,7 +117,8 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
 
     // Annotations ...
 
-    private SparseDotName[] annotationTable;
+    private SparseDotName[] annoClassNameTable;
+    private byte[] annoTypeTable;
 
     // Types and type lists ...
 
@@ -143,7 +145,8 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
 
         typeTable = new SparseDotName[input.readPackedU32() + 1];
         typeListTable = new SparseDotName[input.readPackedU32() + 1][];
-        annotationTable = new SparseDotName[input.readPackedU32() + 1];
+        annoClassNameTable = new SparseDotName[input.readPackedU32() + 1];
+        annoTypeTable  = new byte[ annoClassNameTable.length ];
 
         readTypeTable();
         readTypeListTable();
@@ -174,7 +177,7 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         }
 
         this.byteTable = byteTable;
-        this.resolvedNames = new SparseDotName[byteTable.length];
+        this.simpleNameTable = new SparseDotName[byteTable.length];
     }
 
     private void readStringTable() throws IOException {
@@ -240,92 +243,101 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
     // Part 1.5: Reading annotations ...
 
     private void readAnnotations() throws IOException {
-        int numAnnotations = input.readPackedU32();
-        if ( numAnnotations == 0 ) {
+        int numAnno = input.readPackedU32();
+        if ( numAnno == 0 ) {
             return;
         }
 
-        for ( int annotationNo = 0; annotationNo < numAnnotations; annotationNo++ ) {
-            int annotationOffset = input.readPackedU32();
-            SparseDotName annotation = annotationTable[annotationOffset];
-
-            if ( annotation == null) {
-                annotation = readAnnotation();
-                annotationTable[annotationOffset] = annotation;
-
-                // System.out.println("Read annotation [ " + annotation + " ]");
-            }
+        for ( int annoNo = 0; annoNo < numAnno; annoNo++ ) {
+        	@SuppressWarnings("unused")
+			int annoOffset = readAnnotation();
         }
     }
 
-    private SparseDotName[] readAnnotations(SparseDotName targetName) throws IOException {
-        int numAnnotations = input.readPackedU32();
+//   	 System.out.println(
+//        		"E [ " + targetName + " ]" +
+//               " A [ " + annoClassName + " ]" +
+//        		" T [ " + Integer.toHexString(annoTypeTable[annoOffset]) + " ]" +
+//               " ET [ " + Integer.toHexString(targetType) + " ]");
+//	}
 
-        if ( numAnnotations == 0 ) {
+    private SparseDotName[] readElementAnnotations(SparseDotName targetName) throws IOException {
+        int numAnno = input.readPackedU32();
+
+        if ( numAnno == 0 ) {
             return SparseDotName.EMPTY_ARRAY;
         }
 
-        SparseDotName[] annotations = new SparseDotName[numAnnotations];
+        SparseDotName[] annoClassNames = new SparseDotName[numAnno];
         int numPlaceholders = 0;
 
-        for ( int annotationNo = 0; annotationNo < numAnnotations; annotationNo++ ) {
-            int annotationOffset = input.readPackedU32();
-            SparseDotName annotation = annotationTable[annotationOffset];
+        for ( int annoNo = 0; annoNo < numAnno; annoNo++ ) {
+            int annoOffset = readAnnotation();
+            SparseDotName annoClassName = annoClassNameTable[annoOffset]; 
 
-            if ( annotation == null ) {
-                annotation = readAnnotation();
-                annotationTable[annotationOffset] = annotation;
-                // System.out.println("Read annotation [ " + annotation + " ]");
-            } else {
-                // System.out.println("Lookup annotation [ " + annotation + " ]");
-            }
-
-            if ( annotation.isPlaceholder() ) {
+            if ( annoClassName.isPlaceholder() ) {
                 numPlaceholders++;
             } else {
-                annotations[annotationNo - numPlaceholders] = annotation;
+                annoClassNames[annoNo - numPlaceholders] = annoClassName;
             }
         }
 
         if ( numPlaceholders != 0 ) {
-            if ( numPlaceholders == numAnnotations ) {
+            if ( numPlaceholders == numAnno ) {
                 return SparseDotName.EMPTY_ARRAY;
             } else {
-                return Arrays.copyOf(annotations, numAnnotations - numPlaceholders);
+                return Arrays.copyOf(annoClassNames, numAnno - numPlaceholders);
             }
         } else {
-            return annotations;
+            return annoClassNames;
         }
     }
 
-    private boolean readAnnotations(SparseDotName targetName, List<SparseDotName> annotationClassNames) throws IOException {
-        int numAnnotations = input.readPackedU32();
-        if ( numAnnotations == 0 ) {
+    private boolean readClassAnnotations(SparseDotName targetName, List<SparseDotName> annoClassNames) throws IOException {
+        int numAnno = input.readPackedU32();
+        if ( numAnno == 0 ) {
             return false;
         }
 
+//        boolean doLog;
+//        if ( targetName.toString().equals("com.ibm.ws.anno.info.internal.FieldInfoImpl") ) {
+//        	System.out.println("Processing [ FieldInfoImpl ]");
+//        	doLog = true;
+//        } else {
+//        	doLog = false;
+//        }
+
         boolean didAdd = false;
 
-        for ( int annotationNo = 0; annotationNo < numAnnotations; annotationNo++ ) {
-            int annotationOffset = input.readPackedU32();
-            SparseDotName annotation = annotationTable[annotationOffset];
+        for ( int annotationNo = 0; annotationNo < numAnno; annotationNo++ ) {
+            int annoOffset = readAnnotation();
 
-            if ( annotation == null) {
-                annotation = readAnnotation();
-                annotationTable[annotationOffset] = annotation;
-                // System.out.println("Read annotation [ " + annotation + " ]");
+//            if ( doLog ) {
+//            	 System.out.println(
+//            	 	"T [ " + targetName + " ]" +
+//                     " A [ " + annoClassNameTable[annoOffset] + " ]" +
+//            	 	" [ " + Integer.toHexString(annoTypeTable[annoOffset]) + " ]");
+//            }
 
-            } else {
-                // System.out.println("Lookup annotation [ " + annotation + " ]");
+            SparseDotName annoClassName = annoClassNameTable[annoOffset]; 
+            if ( annoClassName.isPlaceholder() ) {
+            	continue;
             }
 
-            if ( !annotation.isPlaceholder() ) {
-                annotationClassNames.add(annotation);
-                didAdd = true;
+            byte annoType = annoTypeTable[annoOffset];
+            if ( !isClass(annoType) ) {
+            	continue;
             }
+
+            annoClassNames.add(annoClassName);
+            didAdd = true;
         }
 
         return didAdd;
+    }
+
+    private boolean isClass(byte targetType) {
+    	return ( targetType == SparseIndexReaderVersionImpl_V2.CLASS_TAG );
     }
 
     private boolean selectType(byte targetType) {
@@ -334,8 +346,15 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
                  (targetType == SparseIndexReaderVersionImpl_V2.METHOD_TAG) );
     }
 
-    private SparseDotName readAnnotation() throws IOException {
-        SparseDotName annoClassName = nameTable[input.readPackedU32()];
+    private int readAnnotation() throws IOException {
+        int annoOffset = input.readPackedU32();
+
+        SparseDotName annoClassName = annoClassNameTable[annoOffset];
+        if ( annoClassName != null ) {
+        	return annoOffset;
+        }
+
+        annoClassName = nameTable[input.readPackedU32()];
         byte targetType = readAnnotationTarget();
         movePastAnnotationValues();
 
@@ -351,7 +370,10 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
             annoClassName = SparseDotName.PLACEHOLDER;
         }
 
-        return annoClassName;
+        annoClassNameTable[annoOffset] = annoClassName;
+        annoTypeTable[annoOffset] = targetType;
+
+        return annoOffset;
     }
 
     private byte readAnnotationTarget() throws IOException {
@@ -456,10 +478,8 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
                     movePastAnnotationValues();
                     break;
                 case AVALUE_NESTED: {
-                    int reference = input.readPackedU32();
-                    if ( annotationTable[reference] == null ) {
-                        annotationTable[reference] = readAnnotation();
-                    }
+                	@SuppressWarnings("unused")
+					int annoOffset = readAnnotation();
                     break;
                 }
                 default:
@@ -616,7 +636,7 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
     }
 
     private SparseAnnotationHolder readMethod() throws IOException {
-        SparseDotName methodName = resolveName( input.readPackedU32() );
+        SparseDotName methodName = getSimpleName( input.readPackedU32() );
 
         // System.out.println("Reading method [ " + methodName + " ]");
 
@@ -627,7 +647,7 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         input.seekPackedU32();
         input.seekPackedU32();
 
-        SparseDotName[] methodAnnotations = readAnnotations(methodName);
+        SparseDotName[] methodAnnotations = readElementAnnotations(methodName);
 
         return new SparseAnnotationHolder(methodName, methodAnnotations);
     }
@@ -648,12 +668,12 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
     }
 
     private SparseAnnotationHolder readField() throws IOException {
-        SparseDotName fieldName = resolveName( input.readPackedU32() );
+        SparseDotName fieldName = getSimpleName( input.readPackedU32() );
 
         input.seekPackedU32(); // Skip unused field data.
         input.seekPackedU32();
 
-        SparseDotName[] fieldAnnotations = readAnnotations(fieldName);
+        SparseDotName[] fieldAnnotations = readElementAnnotations(fieldName);
 
         return new SparseAnnotationHolder(fieldName, fieldAnnotations);
     }
@@ -677,7 +697,7 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
     // while reading class annotations.  Shared between loops
     // to avoid re-allocations.
 
-    private final List<SparseDotName> classAnnotationClassNames;
+    private final List<SparseDotName> classAnnoClassNames;
 
     private SparseClassInfo readClass() throws IOException {
         SparseDotName className = nameTable[input.readPackedU32()];
@@ -696,13 +716,13 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
 
         int numAnnotations = input.readPackedU32();
 
-        storeFields(classInfo);
-        storeMethods(classInfo);
+        readFields(classInfo);
+        readMethods(classInfo);
 
         for ( int annoNo = 0; annoNo < numAnnotations; annoNo++ ) {
-            if ( readAnnotations(classInfo.name(), classAnnotationClassNames) ) {
-                classInfo.addClassAnnotations(classAnnotationClassNames);
-                classAnnotationClassNames.clear();
+            if ( readClassAnnotations(classInfo.name(), classAnnoClassNames) ) {
+                classInfo.addClassAnnotations(classAnnoClassNames);
+                classAnnoClassNames.clear();
             }
         }
 
@@ -730,13 +750,11 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         return offsets;
     }
 
-    private void storeFields(SparseClassInfo classInfo) throws IOException {
+    private void readFields(SparseClassInfo classInfo) throws IOException {
         int numFields = input.readPackedU32();
         if ( numFields == 0 ) {
             return;
         }
-
-        classInfo.allocateFields(numFields);
 
         int[] fieldOffsets = getOffsets(numFields);
 
@@ -761,17 +779,15 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         for ( int fieldNo = 0; fieldNo < numFields; fieldNo++ ) {
             int fieldOffset = fieldOffsets[fieldNo];
             SparseAnnotationHolder fieldAnnoHolder = fieldTable[fieldOffset];
-            classInfo.recordFieldEntry(fieldAnnoHolder);
+            classInfo.addAllocatedFieldAnnotations( fieldAnnoHolder.getAnnotations() );
         }
     }
 
-    private void storeMethods(SparseClassInfo classInfo) throws IOException {
+    private void readMethods(SparseClassInfo classInfo) throws IOException {
         int numMethods = input.readPackedU32();
         if ( numMethods == 0 ) {
             return;
         }
-
-        classInfo.allocateMethods(numMethods);
 
         int[] methodOffsets = getOffsets(numMethods);
 
@@ -796,7 +812,7 @@ public class SparseIndexReaderVersionImpl_V2 implements SparseIndexReaderVersion
         for ( int methodNo = 0; methodNo < numMethods; methodNo++ ) {
             int methodOffset = methodOffsets[methodNo];
             SparseAnnotationHolder methodAnnoHolder = methodTable[methodOffset];
-            classInfo.recordMethodEntry(methodAnnoHolder);
+            classInfo.addAllocatedMethodAnnotations( methodAnnoHolder.getAnnotations() );
         }
     }
 }

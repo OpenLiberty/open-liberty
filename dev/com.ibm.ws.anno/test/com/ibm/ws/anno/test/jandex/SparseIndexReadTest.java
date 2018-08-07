@@ -15,10 +15,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.jboss.jandex.AnnotationInstance;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
-import org.jboss.jandex.FieldInfo;
-import org.jboss.jandex.MethodInfo;
 import org.jboss.jandex.Index;
 
 import org.junit.Assert;
@@ -46,64 +45,84 @@ public class SparseIndexReadTest {
 
     //
 
-    private final String indexPath;
-    private final int indexSize;
+    private static class TestData {
+    	public final String indexPath;
+    	public final int indexSize;
 
-    private final Collection<? extends ClassInfo> fullClasses;
-    private final Map<String, ClassInfo> fullClassesMap;
+    	public final Collection<? extends ClassInfo> fullClasses;
+    	public final Map<String, ClassInfo> fullClassesMap;
 
-    private final Collection<? extends SparseClassInfo> sparseClasses;
-    private final Map<String, SparseClassInfo> sparseClassesMap;
+    	public final Collection<? extends SparseClassInfo> sparseClasses;
+    	public final Map<String, SparseClassInfo> sparseClassesMap;
+
+        public TestData(String indexPath, int indexSize) {
+            this.indexPath = indexPath;
+            this.indexSize = indexSize;
+
+            // System.out.println("T: Reading [ " + this.indexPath + " ]");
+
+        	Index fullIndex = JandexTestUtils.readFullIndex(this.indexPath);
+        	this.fullClasses = fullIndex.getKnownClasses();
+        	Assert.assertEquals("Full index classes", this.indexSize, this.fullClasses.size());
+        	this.fullClassesMap = mapFull(this.fullClasses);
+
+        	// System.out.println("T: Full classes [ " + Integer.valueOf(fullClasses.size()) + " ]");
+
+        	SparseIndex sparseIndex = JandexTestUtils.readSparseIndex(this.indexPath);
+        	this.sparseClasses = sparseIndex.getKnownClasses();
+        	Assert.assertEquals("Sparse index classes", this.indexSize, this.sparseClasses.size());
+        	this.sparseClassesMap = mapSparse(this.sparseClasses);
+
+        	// System.out.println("T: Sparse classes [ " + Integer.valueOf(sparseClasses.size()) + " ]");
+        }
+
+        private static Map<String, ClassInfo> mapFull(Collection<? extends ClassInfo> fullClasses) {
+        	Map<String, ClassInfo> fullClassesMap = new HashMap<String, ClassInfo>( fullClasses.size() );
+
+        	for ( ClassInfo fullClass : fullClasses ) {
+        		fullClassesMap.put( fullClass.name().toString(), fullClass );
+        	}
+
+        	return fullClassesMap;
+        }
+
+        private static Map<String, SparseClassInfo> mapSparse(Collection<? extends SparseClassInfo> sparseClasses) {
+        	Map<String, SparseClassInfo> sparseClassesMap = new HashMap<String, SparseClassInfo>( sparseClasses.size() );
+
+        	for ( SparseClassInfo sparseClass : sparseClasses ) {
+        		sparseClassesMap.put( sparseClass.name().toString(), sparseClass );
+        	}
+
+        	return sparseClassesMap;
+        }
+    }
 
     //
 
-    public SparseIndexReadTest(Object indexPathObj, Object indexSizeObj) {
-        this.indexPath = (String) indexPathObj;
-        this.indexSize = ((Integer) indexSizeObj).intValue();
+    protected static Map<Integer, TestData> allTestData = new HashMap<Integer, TestData>();
 
-        // System.out.println("Reading [ " + this.indexPath + " ]");
+    public SparseIndexReadTest(Object indexNoObj, Object indexPathObj, Object indexSizeObj) {
+    	Integer indexNo = (Integer) indexNoObj;
 
-        Index fullIndex = JandexTestUtils.readFullIndex(this.indexPath);
-        this.fullClasses = fullIndex.getKnownClasses();
-        Assert.assertEquals("Full index classes", this.indexSize, this.fullClasses.size());
-        this.fullClassesMap = mapFull(this.fullClasses);
+    	TestData useTestData = allTestData.get(indexNo);
+    	if ( useTestData == null ) {
+    		useTestData = new TestData(
+    			(String) indexPathObj,
+    			((Integer) indexSizeObj).intValue());
+    		allTestData.put(indexNo,  useTestData);
+    	}
 
-        // System.out.println("Full classes [ " + Integer.valueOf(fullClasses.size()) + " ]");
-
-        SparseIndex sparseIndex = JandexTestUtils.readSparseIndex(this.indexPath);
-        this.sparseClasses = sparseIndex.getKnownClasses();
-        Assert.assertEquals("Sparse index classes", this.indexSize, this.sparseClasses.size());
-        this.sparseClassesMap = mapSparse(this.sparseClasses);
-
-        // System.out.println("Sparse classes [ " + Integer.valueOf(sparseClasses.size()) + " ]");
+    	this.testData = useTestData;
     }
 
-    private static Map<String, ClassInfo> mapFull(Collection<? extends ClassInfo> fullClasses) {
-        Map<String, ClassInfo> fullClassesMap = new HashMap<String, ClassInfo>( fullClasses.size() );
-
-        for ( ClassInfo fullClass : fullClasses ) {
-            fullClassesMap.put( fullClass.name().toString(), fullClass );
-        }
-
-        return fullClassesMap;
-    }
-
-    private static Map<String, SparseClassInfo> mapSparse(Collection<? extends SparseClassInfo> sparseClasses) {
-        Map<String, SparseClassInfo> sparseClassesMap = new HashMap<String, SparseClassInfo>( sparseClasses.size() );
-
-        for ( SparseClassInfo sparseClass : sparseClasses ) {
-            sparseClassesMap.put( sparseClass.name().toString(), sparseClass );
-        }
-
-        return sparseClassesMap;
-    }    
+    protected final TestData testData;
 
     //
 
     @Test
-    public void testClasses(){
-        Set<String> fullClassNames = fullClassesMap.keySet();
-        Set<String> sparseClassNames = sparseClassesMap.keySet();
+    public void testClasses() {
+        Set<String> fullClassNames = testData.fullClassesMap.keySet();
+        Set<String> sparseClassNames = testData.sparseClassesMap.keySet();
 
         Set<String> extraFull = new HashSet<String>();
         Set<String> extraSparse = new HashSet<String>();
@@ -115,13 +134,13 @@ public class SparseIndexReadTest {
     }
 
     @Test
-    public void testFlags(){
-        for ( Map.Entry<String, SparseClassInfo> sparseEntry : sparseClassesMap.entrySet() ) {
+    public void testFlags() {
+        for ( Map.Entry<String, SparseClassInfo> sparseEntry : testData.sparseClassesMap.entrySet() ) {
             String sparseClassName = sparseEntry.getKey();
             SparseClassInfo sparseClass = sparseEntry.getValue();
             short sparseFlags = sparseClass.flags();
 
-            ClassInfo fullClass = fullClassesMap.get(sparseClassName);
+            ClassInfo fullClass = testData.fullClassesMap.get(sparseClassName);
             if ( fullClass == null ) {
                 continue;
             }
@@ -137,15 +156,29 @@ public class SparseIndexReadTest {
     public void testClassAnnotations() {
         Map<String, Set<String>> fullClassAnno = new HashMap<String, Set<String>>();
 
-        for ( ClassInfo fullClass: fullClasses ) {
+        for ( ClassInfo fullClass: testData.fullClasses ) {
         	String className = fullClass.name().toString();
 
-        	Set<String> fullAnno = new HashSet<String>();
-        	fullClassAnno.put(className, fullAnno);
+        	// System.out.println("T: Full class [ " + className + " ]");
 
-        	for ( DotName anno : fullClass.annotations().keySet() ) {
-        		fullAnno.add( anno.toString() );
+        	Set<String> fullAnno = new HashSet<String>();
+
+        	for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : fullClass.annotations().entrySet() ) {
+        		DotName annoClassDotName = annoEntry.getKey();
+        		String annoClassName = null;
+        		for ( AnnotationInstance annoInstance : annoEntry.getValue() ) {
+            		if ( annoInstance.target().kind() == AnnotationTarget.Kind.CLASS ) {
+            			if ( annoClassName == null ) {
+            				annoClassName = annoClassDotName.toString();
+            			}
+            			fullAnno.add(annoClassName);
+            		}
+        		}
         	}
+
+            // System.out.println("T:  Full Class Annos [ " + fullAnno + " ]");
+
+        	fullClassAnno.put(className, fullAnno);
         }
 
     	Set<String> sparseAnno = new HashSet<String>();
@@ -153,8 +186,10 @@ public class SparseIndexReadTest {
     	Set<String> inFull = new HashSet<String>();
     	Set<String> inSparse = new HashSet<String>();
 
-        for ( SparseClassInfo sparseClass: sparseClasses ) {
+        for ( SparseClassInfo sparseClass: testData.sparseClasses ) {
         	String className = sparseClass.name().toString();
+
+        	// System.out.println("T: Sparse class [ " + className + " ]");
 
         	Set<String> fullAnno = fullClassAnno.remove(className);
             Assert.assertNotNull("Extra sparse class [ " + className + " ]", fullAnno);
@@ -163,9 +198,11 @@ public class SparseIndexReadTest {
         		sparseAnno.add( anno.toString() );
         	}
 
+            // System.out.println("T:  Sparse Class Annos [ " + sparseAnno + " ]");
+
             boolean diffAnno = diff(fullAnno, sparseAnno, null, inFull, inSparse);
             if ( diffAnno ) {
-            	Assert.assertFalse("Extra full methods [ " + inFull + " ]; extra sparse methods [ " + inSparse + " ]", diffAnno);
+            	Assert.assertFalse("Class [ " + className + " ] Extra full annotations [ " + inFull + " ]; extra sparse annotations [ " + inSparse + " ]", diffAnno);
             }
 
             sparseAnno.clear();
@@ -177,102 +214,91 @@ public class SparseIndexReadTest {
     }
 
     @Test
-    public void testFieldsAndMethods(){
-        Map<String, Set<String>> classField = new HashMap<String, Set<String>>();
+    public void testFieldAndMethodAnnotations(){
         Map<String, Set<String>> classFieldAnno = new HashMap<String, Set<String>>();
-        
-        Map<String, Set<String>> classMethod = new HashMap<String, Set<String>>();
         Map<String, Set<String>> classMethodAnno = new HashMap<String, Set<String>>();
 
-        for ( ClassInfo fullClass: fullClasses ) {
+        for ( ClassInfo fullClass: testData.fullClasses ) {
         	String className = fullClass.name().toString();
 
-        	Set<String> fields = new HashSet<String>();
-        	Set<String> fieldAnno = new HashSet<String>();
+        	// System.out.println("T: Full class [ " + className + " ]");
 
-            for ( FieldInfo field: fullClass.fields() ) {
-            	fields.add(field.name());
-            	for ( AnnotationInstance anno : field.annotations() ) {
-            		fieldAnno.add( anno.name().toString() );
-            	}
-            }
+        	Set<String> fullFields = new HashSet<String>();
+        	Set<String> fullFieldAnno = new HashSet<String>();
 
-            classField.put(className,  fields);
-            classFieldAnno.put(className,  fieldAnno);
-            
-        	Set<String> methods = new HashSet<String>();
-        	Set<String> methodAnno = new HashSet<String>();
+        	Set<String> sparseMethods = new HashSet<String>();
+        	Set<String> sparseMethodAnno = new HashSet<String>();
 
-            for ( MethodInfo method: fullClass.methods() ) {
-            	methods.add(method.name());
-            	for ( AnnotationInstance anno : method.annotations() ) {
-            		methodAnno.add( anno.name().toString() );
-            	}
-            }
+        	for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : fullClass.annotations().entrySet() ) {
+        		String annoClassName = annoEntry.getKey().toString();
 
-            classMethod.put(className,  methods);
-            classMethodAnno.put(className,  methodAnno);
+        		for ( AnnotationInstance anno : annoEntry.getValue() ) {
+        			AnnotationTarget annoTarget = anno.target();
+        			AnnotationTarget.Kind annoKind = annoTarget.kind();
+
+        			if ( annoKind == AnnotationTarget.Kind.FIELD ) {
+        				fullFields.add( annoTarget.asField().name().toString() );
+        				fullFieldAnno.add(annoClassName);
+        			} else if ( annoKind == AnnotationTarget.Kind.METHOD ) {
+        				sparseMethods.add( annoTarget.asMethod().name().toString() );
+        				sparseMethodAnno.add(annoClassName);
+        			} else  {
+        				// Ignore: Not a type of interest.
+        			}
+        		}
+        	}
+
+            // System.out.println("T:  Full Fields [ " + fullFields + " ]");
+            // System.out.println("T:  Full Field Annos [ " + fullFieldAnno + " ]");
+
+            // System.out.println("T:  Full Methods [ " + sparseMethods + " ]");
+            // System.out.println("T:  Full Method Annos [ " + sparseMethodAnno + " ]");
+
+            classFieldAnno.put(className,  fullFieldAnno);
+            classMethodAnno.put(className,  sparseMethodAnno);
         }
 
-    	Set<String> sparseFields = new HashSet<String>();
     	Set<String> sparseFieldAnno = new HashSet<String>();
-
-    	Set<String> sparseMethods = new HashSet<String>();
     	Set<String> sparseMethodAnno = new HashSet<String>();
 
     	Set<String> inFull = new HashSet<String>();
     	Set<String> inSparse = new HashSet<String>();
 
-        for ( SparseClassInfo sparseClass: sparseClasses ) {
+        for ( SparseClassInfo sparseClass: testData.sparseClasses ) {
         	String className = sparseClass.name().toString();
 
-        	Set<String> fields = classField.remove(className);
-        	Set<String> fieldAnno = classFieldAnno.remove(className);
+        	// System.out.println("T: Sparse class [ " + className + " ]");
 
-        	Set<String> methods = classMethod.remove(className);
+        	Set<String> fieldAnno = classFieldAnno.remove(className);
         	Set<String> methodAnno = classMethodAnno.remove(className);
 
-            Assert.assertNotNull("Extra sparse class [ " + className + " ]", fields);
+            Assert.assertNotNull("Extra sparse class [ " + className + " ]", fieldAnno);
 
-            for ( SparseDotName method : sparseClass.methods() ) {
-            	sparseMethods.add(method.toString());
+            for ( SparseDotName anno : sparseClass.fieldAnnotations() ) {
+            	sparseFieldAnno.add(anno.toString());
             }
             for ( SparseDotName anno : sparseClass.methodAnnotations() ) {
             	sparseMethodAnno.add(anno.toString());
             }
-            for ( SparseDotName field : sparseClass.fields() ) {
-            	sparseFields.add(field.toString());
-            }
-            for ( SparseDotName anno : sparseClass.fieldAnnotations() ) {
-            	sparseFieldAnno.add(anno.toString());
-            }
 
-            boolean diffMethods = diff(methods, sparseMethods, null, inFull, inSparse);
-            if ( diffMethods ) {
-            	Assert.assertFalse("Extra full methods [ " + inFull + " ]; extra sparse methods [ " + inSparse + " ]", diffMethods);
+            // System.out.println("T:  Sparse Field Annos [ " + sparseFieldAnno + " ]");
+            // System.out.println("T:  Sparse Method Annos [ " + sparseMethodAnno + " ]");
+
+            boolean diffFieldAnno = diff(fieldAnno, sparseFieldAnno, null, inFull, inSparse);
+            if ( diffFieldAnno ) {
+            	Assert.assertFalse("Class [ " + className + " ] Extra full field annotations [ " + inFull + " ]; extra sparse field annotations [ " + inSparse + " ]", diffFieldAnno);
             }
             boolean diffMethodAnno = diff(methodAnno, sparseMethodAnno, null, inFull, inSparse);
             if ( diffMethodAnno ) {
-            	Assert.assertFalse("Extra full method annotations [ " + inFull + " ]; extra sparse method annotations [ " + inSparse + " ]", diffMethods);
+            	Assert.assertFalse("Class [ " + className + " ] Extra full method annotations [ " + inFull + " ]; extra sparse method annotations [ " + inSparse + " ]", diffMethodAnno);
             }
-            boolean diffFields = diff(fields, sparseFields, null, inFull, inSparse);
-            if ( diffFields ) {
-            	Assert.assertFalse("Extra full fields [ " + inFull + " ]; extra sparse fields [ " + inSparse + " ]", diffMethods);
-            }
-            boolean diffFieldAnno = diff(fieldAnno, sparseFieldAnno, null, inFull, inSparse);
-            if ( diffFieldAnno ) {
-            	Assert.assertFalse("Extra full field annotations [ " + inFull + " ]; extra sparse field annotations [ " + inSparse + " ]", diffMethods);
-            }
-            
-            sparseMethods.clear();
-            sparseMethodAnno.clear();
-            
-            sparseFields.clear();
+
             sparseFieldAnno.clear();
+            sparseMethodAnno.clear();
         }
 
-        if ( !classField.isEmpty() ) {
-            Assert.assertTrue("Extra full classes [ " + classField.keySet() + " ]", classField.isEmpty());
+        if ( !classFieldAnno.isEmpty() ) {
+            Assert.assertTrue("Extra full classes [ " + classFieldAnno.keySet() + " ]", classFieldAnno.isEmpty());
         }
     }
 
@@ -304,13 +330,13 @@ public class SparseIndexReadTest {
     }
 
     @Test
-    public void testSuperNamesAlign(){
+    public void testSuperclassNames(){
         HashMap<String, String> classToSuper = new HashMap<String,String>();
         String nameOfSuper;
-        for(ClassInfo fullClass: fullClasses){
+        for(ClassInfo fullClass: testData.fullClasses){
             classToSuper.put(fullClass.name().toString(), fullClass.superName().toString());
         }
-        for(SparseClassInfo sparseClass: sparseClasses){
+        for(SparseClassInfo sparseClass: testData.sparseClasses){
             nameOfSuper = classToSuper.get(sparseClass.name().toString());
             Assert.assertNotNull(sparseClass.name().toString() + " class is missing from the full sized index",nameOfSuper);
             Assert.assertTrue("Super names don't match up for class " + sparseClass.name().toString(),nameOfSuper.equals(sparseClass.superName().toString()));
@@ -320,26 +346,10 @@ public class SparseIndexReadTest {
     }
 
     @Test
-    public void testNumberOfInterfaces(){
-        HashMap<String, Integer> classToInterfaceSize = new HashMap<String,Integer>();
-        Integer numOfInterfaces;
-        for(ClassInfo fullClass: fullClasses){
-            classToInterfaceSize.put(fullClass.name().toString(), fullClass.interfaceNames().size());
-        }
-
-        for(SparseClassInfo sparseClass: sparseClasses){
-            numOfInterfaces = classToInterfaceSize.get(sparseClass.name().toString());
-            Assert.assertNotNull(sparseClass.name().toString() + " class is missing from the full sized index",numOfInterfaces);
-            Assert.assertTrue("Interface Sizes for class "+sparseClass.name().toString() +" do not match", sparseClass.interfaceNames().length == numOfInterfaces.intValue());
-            
-        }
-    }
-
-    @Test
-    public void testInterfacesHaveSameNames(){
+    public void testInterfaces(){
         HashMap<String,List<String>> classToInterfaceNames = new HashMap<String,List<String>>();
         List<String> nameHolder;
-        for(ClassInfo fullClass: fullClasses){
+        for(ClassInfo fullClass: testData.fullClasses){
             nameHolder = new LinkedList<String>();
             for(DotName interfaceName : fullClass.interfaceNames()){
                 nameHolder.add(interfaceName.toString());
@@ -347,7 +357,7 @@ public class SparseIndexReadTest {
             classToInterfaceNames.put(fullClass.name().toString(), nameHolder);
         }
 
-        for(SparseClassInfo sparseClass: sparseClasses){
+        for(SparseClassInfo sparseClass: testData.sparseClasses){
             nameHolder = classToInterfaceNames.get(sparseClass.name().toString());
             Assert.assertNotNull(sparseClass.name().toString() + " class is missing from the full sized index",nameHolder);
             for(SparseDotName interfaceName: sparseClass.interfaceNames()){

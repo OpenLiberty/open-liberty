@@ -73,7 +73,7 @@ public final class SparseDotName implements Comparable<SparseDotName> {
      * @return A new simple name.
      */
     public static SparseDotName createSimple(String name) {
-        return new SparseDotName(null, name, !SIMPLE, !INNER_CLASS);
+        return new SparseDotName(null, name, SIMPLE, !INNER_CLASS);
     }
 
     public SparseDotName(SparseDotName head, String tail, boolean simple, boolean innerClass) {
