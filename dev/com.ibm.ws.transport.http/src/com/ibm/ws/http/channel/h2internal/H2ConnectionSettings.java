@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
-import javax.xml.bind.DatatypeConverter;
-
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.Frame.FrameDirection;
 import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 
-/**
- *
- */
 public class H2ConnectionSettings {
 
     // set spec default connection settings
@@ -36,7 +33,7 @@ public class H2ConnectionSettings {
     protected void processUpgradeHeaderSettings(String settings) throws Http2Exception {
 
         if (settings != null) {
-            byte[] decoded = DatatypeConverter.parseBase64Binary(settings);
+            byte[] decoded = decode(settings);
             if (decoded != null) {
                 FrameSettings settingsFrame = new FrameSettings(0, decoded.length, (byte) 0x0, false, FrameDirection.READ);
                 settingsFrame.processPayload(decoded);
@@ -142,5 +139,25 @@ public class H2ConnectionSettings {
 
     public int getMaxConcurrentStreams() {
         return this.maxConcurrentStreams;
+    }
+
+    @Trivial
+    private static byte[] decode(String str) {
+        try {
+            // Parse the base 64 string differently depending on JDK level because
+            // on JDK 7/8 we have JAX-B, and on JDK 8+ we have java.util.Base64
+            if (JavaInfo.majorVersion() < 8) {
+                // return DatatypeConverter.parseBase64Binary(str);
+                Class<?> DatatypeConverter = Class.forName("javax.xml.bind.DatatypeConverter");
+                return (byte[]) DatatypeConverter.getMethod("parseBase64Binary", String.class).invoke(null, str);
+            } else {
+                // return Base64.getDecoder().decode(settings);
+                Class<?> Base64 = Class.forName("java.util.Base64");
+                Object decodeObject = Base64.getMethod("getDecoder").invoke(null);
+                return (byte[]) decodeObject.getClass().getMethod("decode", String.class).invoke(decodeObject, str);
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
