@@ -15,8 +15,15 @@ Bundle-Name: Test CDI Extension
 Bundle-SymbolicName: cdi.helloworld.extension
 Bundle-Description: This bundle tests cdi runtime extension; version=${bVersion}
 Include-Resource: META-INF=test-bundles/cdi.helloworld.extension/META-INF/
-# hide the implementation packages
-Export-Package: com.ibm.ws.cdi.extension.impl;version=1.0.0
+
+Import-Package: \
+  javax.enterprise.*; version="[1.1.0,2.1.0)",\
+  javax.validation.*; version="[1.1.0,2.1.0)",\
+  *
+
+Export-Package: \
+  com.ibm.ws.cdi.extension.impl;version=1.0.0
+
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.cdi.extension.impl.HelloWorldExtension

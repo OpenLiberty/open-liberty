@@ -60,7 +60,6 @@ public class BeanDiscoveryModeNoneTest extends LoggingTest {
         return SHARED_SERVER;
     }
 
-    @Mode
     @Test
     @ExpectedFFDC({ "javax.servlet.UnavailableException", "com.ibm.wsspi.injectionengine.InjectionException" })
     public void testcorrectExceptionThrown() throws Exception {

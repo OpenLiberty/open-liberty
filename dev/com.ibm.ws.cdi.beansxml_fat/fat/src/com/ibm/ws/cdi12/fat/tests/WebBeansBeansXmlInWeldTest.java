@@ -15,6 +15,7 @@ import java.io.File;
 import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
@@ -30,9 +31,11 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class WebBeansBeansXmlInWeldTest extends LoggingTest {
 
