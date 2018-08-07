@@ -250,6 +250,11 @@ DSRA4005.invalid.logintimeout=DSRA4005E: The server does not support the loginTi
 DSRA4005.invalid.logintimeout.explanation=The loginTimeout property is not supported when it is specified for a DataSource that is backed by a java.sql.Driver implementation because the server is unable to call getLoginTimeout on the java.sql.Driver class.
 DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to use a DataSource implementation instead of a java.sql.Driver implementation, or remove the loginTimeout property.
 
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: DataSource {0} is unable to connect to the database because {1} returned a null connection for the URL beginning with {2}.
+DSRA4006.null.connection.explanation=Although the java.sql.Driver indicated it accepted the supplied URL, it returned a null connection.
+DSRA4006.null.connection.useraction=This indicates a bug in the JDBC driver. Report the error to the JDBC driver vendor. Also ensure the JDBC driver and DataSource configuration are correct.
+
 DSRA4008.tran.none.unsupported=DSRA4008E: The JDBC driver does not support an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
 DSRA4008.tran.none.unsupported.explanation=The TRANSACTION_NONE isolation level that is configured on the data source is not supported by the JDBC driver.
 DSRA4008.tran.none.unsupported.useraction=Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
