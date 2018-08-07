@@ -39,6 +39,7 @@ import org.osgi.framework.VersionRange;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.FeatureResolverInterfacesTest.TestFeature;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -543,6 +544,11 @@ public class FeatureResolverInterfacesTest {
 
         @Override
         public String getFileEncoding() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String getRequiredOSGiEE() {
             throw new UnsupportedOperationException();
         }
 
