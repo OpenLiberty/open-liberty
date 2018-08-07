@@ -501,6 +501,14 @@ public abstract class CachedPersistableImpl implements Tuple
         return _masterPersistable.getDeliveryDelayTime();
     }
 
+    /* (non-Javadoc)
+     * @see com.ibm.ws.sib.msgstore.persistence.Persistable#getDeliveryDelayTimeIsSuspect()
+     */
+    @Override
+    public boolean getDeliveryDelayTimeIsSuspect() {
+    	 return _masterPersistable.getDeliveryDelayTimeIsSuspect();
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -606,6 +614,7 @@ public abstract class CachedPersistableImpl implements Tuple
                + ", logicallyDeleted: " + isLogicallyDeleted()
                + ", xid: " + getPersistentTranId()
                + ", deliveryDelayTime: " + getDeliveryDelayTime()
+               + ", deliveryDelayTimeIsSuspect: " +getDeliveryDelayTimeIsSuspect()
                + LINE_SEPARATOR;
     }
 }
