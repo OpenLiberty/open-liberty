@@ -118,6 +118,10 @@ public class JobWaiter {
      * AND
      * 2) exitStatus to be non-null
      *
+     * The job is expected to fail on the first attempt, and then a number of restarts up to the
+     * restartAttempts parameter will be tried. The job may complete before that many restarts
+     * are attempted.
+     *
      * Returns JobExecution if it ends in <b>COMPLETED</b> status, otherwise throws
      * <b>IllegalStateException</b>
      *
