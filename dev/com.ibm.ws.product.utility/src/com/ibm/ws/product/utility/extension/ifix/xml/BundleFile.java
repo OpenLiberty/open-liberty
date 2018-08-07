@@ -12,6 +12,8 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.w3c.dom.Node;
+
 public class BundleFile extends UpdatedFile {
 
     @XmlAttribute
@@ -20,6 +22,10 @@ public class BundleFile extends UpdatedFile {
     private String version;
     @XmlAttribute
     private boolean isBaseBundle;
+
+    public static BundleFile fromNode(Node n) {
+        return new BundleFile(n.getAttributes().getNamedItem("id").getNodeValue(), Long.parseLong(n.getAttributes().getNamedItem("size").getNodeValue()), n.getAttributes().getNamedItem("date").getNodeValue(), n.getAttributes().getNamedItem("MD5hash").getNodeValue(), n.getAttributes().getNamedItem("symbolicName").getNodeValue(), n.getAttributes().getNamedItem("version").getNodeValue(), Boolean.parseBoolean(n.getAttributes().getNamedItem("isBaseBundle").getNodeValue()));
+    }
 
     public BundleFile() {
         //required blank constructor for jaxb

@@ -29,7 +29,7 @@ public class LibertyProfileMetadataFile implements MetadataOutput {
         e.normalize();
         if (!"libertyFixMetadata".equals(e.getNodeName()))
             return null;
-        return new LibertyProfileMetadataFile();
+        return new LibertyProfileMetadataFile(Bundles.fromNodeList(e.getElementsByTagName("bundles")), FeatureManifests.fromNodeList(e.getElementsByTagName("newFeatureManifests")));
     }
 
     @XmlElement(name = "bundles")
