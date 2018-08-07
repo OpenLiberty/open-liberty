@@ -358,10 +358,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     boolean supportIsolvlSwitching = false; 
     
     /**
-     * flag if dsConfig is set to isolation level 'NONE (0)'
-     * Used to ensure we use the drivers isolation level
+     * Flag if datasource is configured with isolation level = TRANSACTION_NONE
+     * Used to ensure JDBC driver supports using a datasource with this isolation level 
      */
-    boolean useDriverIsoLvl = false;
+    boolean isDSTranNone = false;
 
     /**
      * The value of the fatal connection error counter of the parent ManagedConnectionFactory
@@ -491,14 +491,14 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             cri = WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri);
         cri.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);
 
-        // Check to make sure a data source configured with 'NONE (0)' is compatible with the driver being used. 
+        // Check to make sure a datasource configured with 'NONE (0)' is compatible with the driver being used. 
         if(config.isolationLevel == Connection.TRANSACTION_NONE) {
             try {
                 if(conn.getTransactionIsolation() == Connection.TRANSACTION_NONE) {
                     if(isTraceOn && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "DataSource configured with an isolation level of 'NONE (0)' and the driver's isolation level is already 'NONE (0)'."); 
                     }
-                    useDriverIsoLvl = true; //Expected behavior
+                    isDSTranNone = true; //Expected behavior
                 } else {
                     //attempt to set isolation level of the driver to 'NONE (0)'
                     conn.setTransactionIsolation(Connection.TRANSACTION_NONE);
@@ -506,13 +506,12 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                         if(isTraceOn && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "DataSource configured with an isolation level of 'NONE (0)' and the driver's isolation level has been set to 'NONE (0)'.");
                         }
-                        useDriverIsoLvl = true;
+                        isDSTranNone = true;
                     } else { //attempt failed
-                        throw new SQLException(AdapterUtil.getNLSMessage("TRANSACTION_NONE_UNSUPPORTED"));
+                        throw new SQLException(AdapterUtil.getNLSMessage("DSRA4008.transaction.none.unsupported"), config.id);
                     }
                 }
             } catch (SQLException sqle) {
-                Tr.error(tc, "TRANSACTION_NONE_UNSUPPORTED");
                 throw AdapterUtil.translateSQLException(sqle, this, true, getClass());
             }
         }
@@ -1202,7 +1201,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // This value will be cleared when the managed connection is returned to the pool.
         if (transactional == null) {
             transactional = mcf.dsConfig.get().transactional;
-            if (useDriverIsoLvl && transactional)
+            if (isDSTranNone && transactional)
                 transactional = false;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "transactional=", transactional);
@@ -3855,10 +3854,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     {
         if (value != currentAutoCommit || helper.alwaysSetAutoCommit()) 
         {
-            if(useDriverIsoLvl && (value == false) )
-                throw new SQLException("DataSource configured with an isolation level of 'NONE (0)'. "
-                                + "Connection is not enlisited in global transations. "
-                                + "AutoCommit cannot be set to false.");
+            if(isDSTranNone && (value == false) ) //TODO translated?
+                throw new SQLException();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Set AutoCommit to " + value); 
 

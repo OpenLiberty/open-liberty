@@ -36,7 +36,6 @@ import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
-import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -105,7 +104,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "getConnection and determine isolation level");
+            Tr.debug(this, tc, "getConnection");
 
         // Get the isolation level from the resource reference, or if that is not specified, use the
         // configured isolationLevel value, otherwise use a default that we choose for the database.

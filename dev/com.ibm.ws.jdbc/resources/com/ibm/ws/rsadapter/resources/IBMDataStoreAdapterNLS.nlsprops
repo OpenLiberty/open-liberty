@@ -250,11 +250,14 @@ DSRA4005.invalid.logintimeout=DSRA4005E: The server does not support the loginTi
 DSRA4005.invalid.logintimeout.explanation=The loginTimeout property is not supported when it is specified for a DataSource that is backed by a java.sql.Driver implementation because the server is unable to call getLoginTimeout on the java.sql.Driver class.
 DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to use a DataSource implementation instead of a java.sql.Driver implementation, or remove the loginTimeout property.
 
-#4008			TRANSACTION_NONE_UNSUPPORTED
-TRANSACTION_NONE_UNSUPPORTED=DSRA4008: The JDBC driver does not support an isolation level of TRANSACTION_NONE.  The isolation level was set to TRANSACTION_NONE because of the data source configuration.
-TRANSACTION_NONE_UNSUPPORTED.explanation= The JDBC driver does not support using an isolation level of TRANSACTION_NONE.  An attempt to set the isolation level to TRANSACTION_NONE was the result of the data source configuration.
-TRANSACTION_NONE_UNSUPPORTED.useraction=  Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
+DSRA4008.transaction.none.unsupported=DSRA4008E: The data source {0} was configured with an isolation level of TRANSACTION_NONE, but that isolation level is not supported by the JDBC driver.
+DSRA4008.transaction.none.unsupported.explanation= The data source was configured with with an isolation level of TRANSACTION_NONE, but that is not the JDBC driver's default isolation level and the Application Server was unable to set the driver's isolation level to TRANSACTION_NONE.
+DSRA4008.transaction.none.unsupported.useraction=  Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
 
+DSRA4009.transaction.none.autocommit.unsupported=DSRA4009E: AutoCommit cannot be set to false when the datasource {0} is configured with an isolation level of "TRANSACTION_NONE."
+DSRA4009.transaction.none.autocommit.unsupported.explanation= Since the data source was configured with an isolation level of TRANSACTION_NONE it will not be enlisted in global transactions.  Therefore, it must be able
+
+"DataSource configured with an isolation level of 'NONE (0)'. Connection is not enlisited in global transactions. AutoCommit cannot be set to false."
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
