@@ -146,6 +146,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     String uid = basicAuthHeader.substring(0, index);
                     authResult.setAuditCredValue(uid);
                 }
+                authResult.setAuditOutcome(AuditEvent.OUTCOME_DENIED);
                 authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
             } else {
                     //TODO: is audit event required?? if so, how to get uid??
@@ -176,6 +177,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     }
                 }
                 authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
+                authResult.setAuditOutcome(AuditEvent.OUTCOME_DENIED);
             }
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
