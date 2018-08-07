@@ -246,9 +246,9 @@ DSRA4004.onconnect.sql.explanation=An error occurred while attempting to execute
 DSRA4004.onconnect.sql.useraction=Refer to the exception message to help determine the cause of the problem.
 
 # {0} name of the DataSource
-DSRA4005.invalid.logintimeout=DSRA4005E: The Application Server does not support the loginTimeout property specified in the URL or properties of the {0} DataSource.
-DSRA4005.invalid.logintimeout.explanation=The loginTimeout property is not supported when specified for a DataSource that uses the Driver type because the Application Server is unable to call getLoginTimeout on the Driver class.
-DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to use a DataSource type rather than a Driver type or remove the loginTimeout property.
+DSRA4005.invalid.logintimeout=DSRA4005E: The server does not support the loginTimeout property that is specified in the URL or in the properties of the {0} DataSource.
+DSRA4005.invalid.logintimeout.explanation=The loginTimeout property is not supported when it is specified for a DataSource that is backed by a java.sql.Driver implementation because the server is unable to call getLoginTimeout on the java.sql.Driver class.
+DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to use a DataSource implementation instead of a java.sql.Driver implementation, or remove the loginTimeout property.
 
 # ----------------------------------------------------------------------------
 # 
