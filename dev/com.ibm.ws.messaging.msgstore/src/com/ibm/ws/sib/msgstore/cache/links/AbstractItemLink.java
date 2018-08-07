@@ -17,6 +17,7 @@ import java.lang.ref.SoftReference;
 import java.util.List;
 
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.msgstore.AbstractItem;
 import com.ibm.ws.sib.msgstore.Filter;
@@ -34,6 +35,7 @@ import com.ibm.ws.sib.msgstore.SevereMessageStoreException;
 import com.ibm.ws.sib.msgstore.StreamIsFull;
 import com.ibm.ws.sib.msgstore.TransactionException;
 import com.ibm.ws.sib.msgstore.XmlConstants;
+import com.ibm.ws.sib.msgstore.MessageStoreConstants.MaximumAllowedDeliveryDelayAction;
 import com.ibm.ws.sib.msgstore.cache.ref.Indirection;
 import com.ibm.ws.sib.msgstore.cache.ref.IndirectionCache;
 import com.ibm.ws.sib.msgstore.cache.statemodel.ListStatistics;
@@ -58,6 +60,7 @@ import com.ibm.ws.sib.msgstore.task.TaskList;
 import com.ibm.ws.sib.msgstore.task.UpdateTask;
 import com.ibm.ws.sib.msgstore.transactions.Transaction;
 import com.ibm.ws.sib.msgstore.transactions.impl.PersistentTransaction;
+import com.ibm.ws.sib.transactions.LocalTransaction;
 import com.ibm.ws.sib.transactions.PersistentTranId;
 import com.ibm.ws.sib.utils.DataSlice;
 import com.ibm.ws.sib.utils.ras.FormattedWriter;
@@ -2413,6 +2416,49 @@ public abstract class AbstractItemLink extends Link implements Membership, Prior
         return removeFromDeliveryDelayIndex;
     }
 
+    /* (non-Javadoc)
+     * @see com.ibm.ws.sib.msgstore.deliverydelay.DeliveryDelayable#handleInvalidDeliveryDelayable(com.ibm.ws.sib.msgstore.MessageStoreConstants.MAXIMUM_ALLOWED_DELIVERY_DELAY_ACTION)
+     */
+    @Override
+    public boolean handleInvalidDeliveryDelayable(MaximumAllowedDeliveryDelayAction action) 
+    	throws MessageStoreException, SIException {
+    	final String methodName = "handleInvalidDeliveryDelayable";
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+             SibTr.entry(this, tc, methodName, "action=" + action);
+    	
+    	boolean unlocked = false;
+    	if (_tuple.getDeliveryDelayTimeIsSuspect()) {
+    		try {
+    			// getItem() will pull the whole item into storage, so by now we should be sure we are actually going to do something.
+    			AbstractItem abstractItem = getItem();
+    			if (abstractItem != null) {
+    				abstractItem.handleInvalidDeliveryDelayable(action);
+    				switch(action) {
+    				case unlock:// No break;
+    				case exception:
+    					LocalTransaction transaction = getMessageStore().getTransactionFactory().createLocalTransaction();
+    					// Tell the DeliveryDelayable to unlock. If it returns true, then remove it from the DeliveryDelay index on return.
+    					unlocked = deliveryDelayableUnlock((PersistentTransaction) transaction, AbstractItem.DELIVERY_DELAY_LOCK_ID);
+    					transaction.commit();
+    					break;
+
+    				case warn:// No break;
+    				default:
+    					break;
+    				} 	
+    			}
+    		} catch (MessageStoreException | SIException exception) {
+    			SibTr.exit(this, tc, methodName, exception);
+    			throw exception;
+    		}
+    	}
+
+    	
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+             SibTr.exit(this, tc, methodName, unlocked);
+    	return unlocked;
+    }
+    
     /**
      * Simple function to check if the item link state is
      * in ItemLinkState.STATE_LOCKED.Seperate function is
