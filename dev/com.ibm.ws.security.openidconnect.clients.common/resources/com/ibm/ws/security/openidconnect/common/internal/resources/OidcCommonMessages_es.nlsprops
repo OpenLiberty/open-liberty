@@ -1,0 +1,178 @@
+###############################################################################
+# Copyright (c) 2013, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+#do not translate issuerIdentifier, iss
+#
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] porque el emisor (iss) [{1}] especificado en la se\u00f1al no coincide con el atributo [issuerIdentifier] [{2}] para el proveedor especificado en la configuraci\u00f3n del cliente de OpenID Connect. Compruebe el atributo issuerIdentifier en la configuraci\u00f3n del cliente.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=La validaci\u00f3n de la se\u00f1al de ID ha fallado porque el emisor especificado en la configuraci\u00f3n de cliente de OpenID Connect (parte dependiente o RP) y el emisor de la se\u00f1al no coinciden.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Aseg\u00farese de que el atributo [issuerIdentifier] especificado en la configuraci\u00f3n del cliente de OpenId Connect (RP) coincide con el emisor del proveedor de OpenID Connect (OP) utilizado.
+
+#
+OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Se ha producido un error al intentar firmar una se\u00f1al de ID utilizando el algoritmo [{0}]: [{1}].
+OIDC_IDTOKEN_SIGNATURE_ERR.explanation=Una se\u00f1al de ID no se puede crear porque no se ha podido firmar. La raz\u00f3n del error se muestra despu\u00e9s del mensaje.
+OIDC_IDTOKEN_SIGNATURE_ERR.useraction=Consulte la acci\u00f3n del usuario para el mensaje que aparece despu\u00e9s de este error.
+
+#
+OIDC_IDTOKEN_INVALID_KEY_ERR=CWWKS1753E: Se ha producido un error al intentar firmar una se\u00f1al de ID utilizando el algoritmo [{0}]: [{1}].
+OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=Una se\u00f1al de ID no se puede crear porque no se ha podido firmar.  La raz\u00f3n del error se muestra despu\u00e9s del mensaje.
+OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Si utiliza la firma asim\u00e9trica, compruebe que se utilice una clave privada v\u00e1lida para firmar la se\u00f1al. Por ejemplo, compruebe si ha caducado una clave. Compruebe el elemento keyStore al que hace referencia la configuraci\u00f3n SSL predeterminada en el archivo server.xml para encontrar informaci\u00f3n sobre el archivo de almac\u00e9n de claves que contiene la clave privada.  Adem\u00e1s, consulte la acci\u00f3n del usuario para el mensaje que aparece despu\u00e9s de este error.
+
+#do not translate clientId, aud
+OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{1}] porque la audiencia (aud) [{0}] especificada en la se\u00f1al no coincide con el clientId [{1}] especificado en la configuraci\u00f3n del cliente de OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=La audiencia de la se\u00f1al de ID debe coincidir con el ID de cliente.  En este caso, la audiencia (aud) de la se\u00f1al de ID no coincid\u00eda con el ID de cliente, por lo que la validaci\u00f3n de la se\u00f1al de ID ha fallado.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Aseg\u00farese de que el atributo [clientId] especificado en la configuraci\u00f3n del cliente OpenID Connect (parte dependiente o RP) es correcto. El valor es sensible a las may\u00fasculas y min\u00fasculas.
+
+#do not translate clientId, azp
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{1}] porque la parte autorizada (azp) [{0}] especificada en la se\u00f1al no coincide con el clientId [{1}] especificado en la configuraci\u00f3n del cliente de OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=La parte autorizada de la se\u00f1al de ID debe coincidir con el ID de cliente. En este caso, la parte autorizada (azp) de la se\u00f1al de ID no coincid\u00eda con el ID de cliente, por lo que la validaci\u00f3n de la se\u00f1al de ID ha fallado.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Aseg\u00farese de que el atributo [clientId] especificado en la configuraci\u00f3n del cliente OpenID Connect (parte dependiente o RP) es correcto. El valor es sensible a las may\u00fasculas y min\u00fasculas.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1756E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] utilizando el algoritmo [{2}] debido a un error de verificaci\u00f3n de firma: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=Una se\u00f1al de ID no se puede validar porque la firma no se ha podido verificar. Esto podr\u00eda haber sido provocado por una discrepancia en el algoritmo de firma o una clave compartida entre el cliente de OpenID Connect y el proveedor de OpenID Connect.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=Compruebe la configuraci\u00f3n de servidor para asegurarse de que el algoritmo de firma configurado y la clave compartida configurada son compatibles con los del proveedor de OpenID Connect.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] utilizando el algoritmo [{2}] debido a un error de verificaci\u00f3n de firma: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Una se\u00f1al de ID no se puede validar porque la firma no se ha podido verificar.  La raz\u00f3n del error se muestra despu\u00e9s del mensaje.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Si utiliza una firma asim\u00e9trica, aseg\u00farese de que la clave p\u00fablica del certificado puede utilizarse a efectos de firma digital.  Compruebe el elemento keyStore al que hace referencia la configuraci\u00f3n SSL predeterminada en el archivo server.xml para encontrar informaci\u00f3n sobre el almac\u00e9n de claves que contiene la clave. Adem\u00e1s, consulte la acci\u00f3n del usuario para el mensaje que aparece despu\u00e9s de este error.
+ 
+#
+OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] debido a [{1}]. Esto puede deberse a que la hora actual [{2}] es posterior a la hora de caducidad de la se\u00f1al [{3}] o a que la hora de emisi\u00f3n [{4}] est\u00e1 demasiado alejada de la hora actual [{2}].
+OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=Una se\u00f1al de ID no se puede validar porque la hora actual mostrada no est\u00e1 entre las horas de emisi\u00f3n y de caducidad de la se\u00f1al.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Aseg\u00farese de que los relojes del sistema del cliente de OpenID Connect (parte dependiente o RP) y del proveedor de OpenID Connect (OP) est\u00e1n sincronizados (si est\u00e1n en dos sistemas).
+
+#do not translate at_hash
+#
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] debido a una discrepancia de hash de la se\u00f1al de acceso [{1}] y la reclamaci\u00f3n at_hash [{2}] de la se\u00f1al de ID. 
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=El valor at_hash de la se\u00f1al de ID permite a los clientes OpenID Connect impedir ataques de sustituci\u00f3n de se\u00f1al. El valor at_hash debe coincidir con el valor del hash de la se\u00f1al de acceso recibida por el cliente OpenID Connect.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Aseg\u00farese de que la comunicaci\u00f3n entre el cliente OpenID Connect (parte dependiente o RP) y el proveedor de OpenID Connect (OP) es segura para evitar una manipulaci\u00f3n indebida de la se\u00f1al de acceso recibida por el RP.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] debido a que falta la firma en la se\u00f1al de ID. La configuraci\u00f3n del cliente OpenID Connect (parte dependiente o RP) especificaba el algoritmo [{1}] y espera una se\u00f1al de ID firmada.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Una se\u00f1al de ID no se puede validar porque la se\u00f1al no se ha firmado. El cliente OpenID Connect (parte dependiente o RP) espera una se\u00f1al firmada.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Aseg\u00farese de que el proveedor de OpenID Connect permite firmar la se\u00f1al.
+
+#do not translate signatureAlgorithm
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: La validaci\u00f3n ha fallado para la se\u00f1al de ID solicitada por [{0}] debido a una discrepancia de algoritmos de firma entre el cliente de OpenID Connect [{1}] y el proveedor de OpenID Connect [{2}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Una se\u00f1al de ID no puede validarse porque el cliente OpenID Connect (parte dependiente o RP) y el proveedor de OpenID Connect (OP) est\u00e1n utilizando algoritmos de firma diferentes para firmar/verificar la se\u00f1al.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Aseg\u00farese de que el algoritmo de firma especificado por RP coincide con el algoritmo de firma de OP.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: La solicitud de punto final de se\u00f1al ha fallado. No se puede validar la se\u00f1al de JWT solicitada por {0} debido a que falta una firma en la se\u00f1al de JWT. El proveedor de OpenID Connect ha especificado el algoritmo {1} y espera que la se\u00f1al JWT est\u00e9 firmada.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=No se puede verificar la se\u00f1al de JWT porque la se\u00f1al no est\u00e1 firmada. El proveedor de OpenID Connect espera que la se\u00f1al est\u00e9 firmada.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Compruebe la configuraci\u00f3n del cliente de OpenID Connect para asegurarse de que firma la se\u00f1al JWT.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: La solicitud de punto final de se\u00f1al ha fallado. No se puede validar la se\u00f1al de JWT solicitada por [{0}] debido a una discrepancia de algoritmos de firma entre el proveedor OpenID Connect [{1}] y el cliente de OpenID Connect [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=No se puede verificar la se\u00f1al de JWT porque el proveedor y el cliente est\u00e1n utilizando algoritmos de firma diferentes para firmar o verificar la se\u00f1al.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Compruebe que la configuraci\u00f3n del cliente de OpenID Connect especifique un algoritmo de firma que coincida con la del proveedor de OpenID Connect.
+
+#
+JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: La solicitud de punto final de se\u00f1al ha fallado. Se ha producido un error al intentar firmar una se\u00f1al de JWT utilizando el algoritmo [{0}]: [{1}].
+JWT_JWTTOKEN_INVALID_KEY_ERR.explanation=Una se\u00f1al de JWT no se ha podido crear porque no se ha podido firmar.  La raz\u00f3n del error se muestra despu\u00e9s del mensaje.
+JWT_JWTTOKEN_INVALID_KEY_ERR.useraction=Si utiliza la firma asim\u00e9trica, compruebe que se utilice una clave privada v\u00e1lida para firmar la se\u00f1al. Por ejemplo, compruebe si ha caducado una clave. Compruebe el elemento keyStore al que hace referencia la configuraci\u00f3n SSL predeterminada en el archivo server.xml para encontrar informaci\u00f3n sobre el archivo de almac\u00e9n de claves que contiene la clave privada.  Adem\u00e1s, consulte la acci\u00f3n del usuario para el mensaje que aparece despu\u00e9s de este error.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1765E: La solicitud de punto final de se\u00f1al ha fallado. La validaci\u00f3n ha fallado para la se\u00f1al de JWT solicitada por [{0}] debido a una excepci\u00f3n de verificaci\u00f3n de firma: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.explanation=Una se\u00f1al de JWT no es v\u00e1lida debido a que ha fallado la verificaci\u00f3n de firma.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.useraction=Aseg\u00farese de que la se\u00f1al de JWT se haya firmado correctamente.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1766E: La solicitud de punto final de se\u00f1al ha fallado. La validaci\u00f3n ha fallado para la se\u00f1al de JWT solicitada por [{0}] utilizando el algoritmo [{2}] debido a un error de verificaci\u00f3n de firma: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Una se\u00f1al de JWT no se puede validar porque la firma no se ha podido verificar.  La raz\u00f3n del error se muestra despu\u00e9s del mensaje.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Si utiliza una firma asim\u00e9trica, aseg\u00farese de que la clave p\u00fablica del certificado puede utilizarse a efectos de firma digital.  Compruebe el elemento keyStore al que hace referencia la configuraci\u00f3n SSL predeterminada en el archivo server.xml para encontrar informaci\u00f3n sobre el almac\u00e9n de claves que contiene la clave. Adem\u00e1s, consulte la acci\u00f3n del usuario para el mensaje que aparece despu\u00e9s de este error.
+ 
+#
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: La solicitud de punto final de se\u00f1al ha fallado. Una se\u00f1al de JWT necesita tener 3 segmentos separados por ''.'', pero esta se\u00f1al de JWT tiene {0}] segmentos.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Una se\u00f1al de JWT necesita tener 3 segmentos separados por '.'. Esta se\u00f1al de JWT tiene un n\u00famero de segmentos err\u00f3neo.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Aseg\u00farese de que la se\u00f1al de JWT sea v\u00e1lida y tenga 3 segmentos.
+
+#
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: La solicitud de punto final de se\u00f1al ha fallado. Ha fallado la validaci\u00f3n de la se\u00f1al JWT solicitada por [{0}]. Ha recibido una IllegalStateException con el mensaje:[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=No se puede validar una se\u00f1al de JWT debido a una IllegalStatException indicada en el mensaje.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrija el error indicado en el mensaje.
+
+#
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: La solicitud de punto final de se\u00f1al ha fallado. No se ha encontrado una se\u00f1al de JWT v\u00e1lida en la solicitud.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=La solicitud debe proporcionar una se\u00f1al de JWT pero no se ha encontrado la se\u00f1al de JWT en la solicitud de punto final de se\u00f1al.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Proporcione una se\u00f1al de JWT v\u00e1lida en la solicitud de punto final de se\u00f1al.
+
+#
+JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: La configuraci\u00f3n del cliente de OpenID Connect necesita un atributo jwkEndpointUrl.
+JWK_ENDPOINT_MISSING_ERR.explanation=El atributo jwkEndpointUrl no se ha especificado en la configuraci\u00f3n del cliente de OpenID Connect.
+JWK_ENDPOINT_MISSING_ERR.useraction=Establezca el atributo jwkEndpointUrl en la clave web JSON del URL del proveedor de OpenID Connect.
+
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Se ha producido una excepci\u00f3n al intentar obtener el RunAsSubject. La excepci\u00f3n era: [{0}]
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Se ha producido una excepci\u00f3n al obtener el RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Aseg\u00farese de que el servidor est\u00e9 configurado y se inicie correctamente.
+
+#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] porque la se\u00f1al est\u00e1 fuera del rango v\u00e1lido. Esto puede deberse a que la hora actual [{1}] es posterior a la hora de caducidad de la se\u00f1al [{2}] o a que la hora de emisi\u00f3n [{3}] est\u00e1 demasiado alejada de la hora actual [{1}].
+OIDC_JWT_VERIFY_STATE_ERR.explanation=No se puede validar una se\u00f1al porque la hora actual mostrada no est\u00e1 entre las horas de emisi\u00f3n y de caducidad de la se\u00f1al.
+OIDC_JWT_VERIFY_STATE_ERR.useraction=Aseg\u00farese de que los relojes del sistema del cliente de OpenID Connect (parte dependiente o RP) y del proveedor de OpenID Connect (OP) est\u00e1n sincronizados (si est\u00e1n en dos sistemas).
+
+# Do not translate clientId, aud
+#0=aud claim, 1=OIDC client ID, 2=audiences of the oidc client
+OIDC_JWT_VERIFY_AUD_ERR=CWWKS1774E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{1}] porque la reclamaci\u00f3n de audiencia [{0}] en la se\u00f1al no est\u00e1 contenida en el atributo audiences [{2}] de la configuraci\u00f3n del cliente de OpenID Connect.
+OIDC_JWT_VERIFY_AUD_ERR.explanation=La reclamaci\u00f3n de audiencia en la se\u00f1al debe especificarse en el atributo audiences de la configuraci\u00f3n del cliente de OpenID Connect, o se deben permitir todas las audiencias especificando el valor ALL_AUDIENCES en el atributo audiences de la configuraci\u00f3n del cliente.
+OIDC_JWT_VERIFY_AUD_ERR.useraction=Aseg\u00farese de que el atributo audiences especificado en la configuraci\u00f3n del cliente de OpenID Connect es correcto. Si desea permitir todas las reclamaciones de audiencia, se debe especificar el valor ALL_AUDIENCES para el atributo audiences de la configuraci\u00f3n del cliente de OpenID Connect. De lo contrario, la reclamaci\u00f3n de audiencia proporcionada en la se\u00f1al debe estar contenida en el valor del atributo audiences en la configuraci\u00f3n del cliente de OpenID Connect. El valor es sensible a las may\u00fasculas y min\u00fasculas.
+
+# do not translate iat
+# 0= oidc client id.
+OIDC_ID_VERIFY_IAT_ERR=CWWKS1775E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] porque la reclamaci\u00f3n de iat necesaria no est\u00e1 presente en la se\u00f1al.
+OIDC_ID_VERIFY_IAT_ERR.explanation=La se\u00f1al debe contener una reclamaci\u00f3n de iat (fecha de emisi\u00f3n).
+OIDC_ID_VERIFY_IAT_ERR.useraction=Obtenga una se\u00f1al v\u00e1lida del proveedor d OpenId Connect.
+
+
+#0=OIDC client ID, 1=exception, 2=signature algorithm
+OIDC_JWT_SIGNATURE_VERIFY_ERR=CWWKS1776E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] utilizando el algoritmo [{2}] debido a un error de verificaci\u00f3n de firma: [{1}]
+OIDC_JWT_SIGNATURE_VERIFY_ERR.explanation=La se\u00f1al no se puede validar porque no se ha podido verificar la firma. La raz\u00f3n de este error se muestra en el mensaje. Las causas posibles de este error pueden ser una discrepancia en el algoritmo de firma o una clave compartida entre el cliente de OpenID Connect y el proveedor de OpenID Connect.
+OIDC_JWT_SIGNATURE_VERIFY_ERR.useraction=Consulte la acci\u00f3n del usuario para conocer la causa visualizada en el mensaje. Si parece que la causa es una discrepancia de clave, compruebe la configuraci\u00f3n de servidor para asegurarse de que el algoritmo de firma configurado y la clave compartida configurada son compatibles con las del proveedor de OpenID Connect.
+
+# Do not translate signatureAlgorithm
+#0= OIDC client ID, 1=client's signature algorithm (such as RS256, HS256), 2=provider's signature algorithm (RS256, HS256, etc.)
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1777E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] debido a una discrepancia de algoritmos de firma entre el cliente de OpenID Connect y el proveedor de OpenID Connect. El algoritmo de firma para el cliente es [{1}] y el algoritmo de firma para el proveedor es [{2}].
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=La se\u00f1al no se puede validar porque el cliente de OpenID Connect (parte dependiente o RP) y el proveedor de OpenID Connect (OP) utilizan algoritmos de firma diferentes.
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Aseg\u00farese de que el atributo signatureAlgorithm especificado en la configuraci\u00f3n de RP coincide con el algoritmo de firma para el OP.
+
+# Do not translate signatureAlgorithm
+#0=OIDC client ID, 1=signature algorithm (none, RS256, HS256)
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1778E: La se\u00f1al solicitada por [{0}] no se ha podido validar porque falta la firma en la se\u00f1al. El atributo signatureAlgorithm para el cliente de OpenID Connect est\u00e1 establecido en [{1}]. Este valor de algoritmo de firma necesita una firma.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=No se puede validar la se\u00f1al porque \u00e9sta no se ha firmado. El valor de algoritmo de firma para el cliente de OpenID Connect necesita que las se\u00f1ales est\u00e9n firmadas.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Realice una de las acciones siguientes: 1) Establezca el atributo signatureAlgorithm en la configuraci\u00f3n de cliente de OpenID Connect en "none". 2) Env\u00ede una se\u00f1al firmada.
+
+# Do not translate aud, audiences (only when followed by "attribute", i.e. "audiences attribute" or "audiences configuration attribute")
+#0=OIDC client ID, 1=audiences of the oidc client
+OIDC_JWT_MISSING_AUD=CWWKS1779E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] porque la se\u00f1al la conten\u00eda la reclamaci\u00f3n de audiencia. El cliente de OpenID Connect [{0}] est\u00e1 configurado para confiar s\u00f3lo en las audiencias siguientes: [{1}]
+OIDC_JWT_MISSING_AUD.explanation=El cliente de OpenID Connect que valida la se\u00f1al ha configurado el atributo audiences para confiar en determinadas audiencias, de forma que las se\u00f1ales validadas por ese cliente deben contener la reclamaci\u00f3n de audiencia. La reclamaci\u00f3n de audiencia en la se\u00f1al debe coincidir tambi\u00e9n con una de las audiencias de confianza del cliente en el atributo de configuraci\u00f3n de audiencias.
+OIDC_JWT_MISSING_AUD.useraction=Aseg\u00farese de que la se\u00f1al proporcionada al cliente de OpenID Connect contiene una reclamaci\u00f3n de audiencia. Si no desea validar las audiencias de se\u00f1al, elimine el atributo audiences de la configuraci\u00f3n del cliente de OpenID Connect.
+
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1780E: El servidor de recursos ha suspendido la solicitud de autenticaci\u00f3n porque la se\u00f1al contenida en la solicitud no se puede utilizar. La hora "no antes de" ("nbf") [{0}] es posterior a la hora actual [{1}] y esta condici\u00f3n no est\u00e1 permitida.
+PROPAGATION_TOKEN_NBF_ERR.explanation=La reclamaci\u00f3n de la hora "no antes de" contenida en la se\u00f1al es posterior a la hora actual y el motor de ejecuci\u00f3n no puede utilizar la se\u00f1al en este momento.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Proporcione una se\u00f1al que no contenga una reclamaci\u00f3n "nbt" que sea posterior a la hora actual y sincronice la hora entre los sistemas, o repita la solicitud m\u00e1s tarde.
+
+# 0=OIDC client ID, 1="issuer" value (typically a URL), 2=Trusted issuer list, 3=OIDC client configuration attribute that specifies trusted issuers
+TOKEN_ISSUER_NOT_TRUSTED=CWWKS1781E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por el cliente [{0}] porque el emisor (iss) [{1}] especificado en la se\u00f1al no coincide con ninguno de los emisores de confianza [{2}] especificados por el atributo [{3}] de la configuraci\u00f3n del cliente de OpenID Connect.
+TOKEN_ISSUER_NOT_TRUSTED.explanation=La se\u00f1al contiene un valor de emisor que no est\u00e1 especificado como emisor de confianza en la configuraci\u00f3n del cliente de OpenID. Un emisor de confianza debe emitir las se\u00f1ales que valida este cliente de OpenID Connect.
+TOKEN_ISSUER_NOT_TRUSTED.useraction=Compruebe que el valor de reclamaci\u00f3n del emisor que est\u00e1 en la se\u00f1al est\u00e9 incluido en el atributo especificado en la configuraci\u00f3n del cliente de OpenID Connect.
+
+# 0=Claim name that should not be in the token, 1=OIDC client configuration attribute
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: El servidor de recursos ha suspendido la solicitud de autenticaci\u00f3n porque la se\u00f1al contiene una reclamaci\u00f3n [{0}], pero el valor del atributo de configuraci\u00f3n del cliente [{1}] indica que la se\u00f1al no debe contener la reclamaci\u00f3n.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=La se\u00f1al no puede contener la reclamaci\u00f3n especificada debido al valor del atributo de configuraci\u00f3n especificado.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Obtenga una nueva se\u00f1al que no contenga la reclamaci\u00f3n especificada, o bien cambie el valor del atributo de configuraci\u00f3n especificado de modo que permita que la reclamaci\u00f3n se incluya en la se\u00f1al.

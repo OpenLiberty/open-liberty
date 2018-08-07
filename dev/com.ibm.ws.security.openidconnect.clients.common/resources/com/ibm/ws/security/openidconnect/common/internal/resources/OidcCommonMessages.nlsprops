@@ -1,0 +1,184 @@
+###############################################################################
+# Copyright (c) 2013, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+#do not translate issuerIdentifier, iss
+#
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Validation failed for the ID token requested by [{0}] because the (iss) issuer [{1}] specified in the token does not match the [issuerIdentifier] attribute [{2}] for the provider specified in the OpenID Connect client configuration. Check the issuerIdentifier attribute on the client configuration.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=ID token validation failed because the issuer specified in the OpenID Connect client (relying party or RP) configuration and the issuer in the token do not match.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Make sure that the [issuerIdentifier] attribute specified in the OpenID Connect client (RP) configuration matches with the issuer for the OpenID Connect provider (OP) being used.
+
+#
+OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: An error occurred while attempting to sign an ID token using the [{0}] algorithm: [{1}].
+OIDC_IDTOKEN_SIGNATURE_ERR.explanation=An ID token cannot be created because it could not be signed. The reason for the error is shown after the message.
+OIDC_IDTOKEN_SIGNATURE_ERR.useraction=See the user action for the message that appears after this error.
+
+#
+OIDC_IDTOKEN_INVALID_KEY_ERR=CWWKS1753E: An error occurred while attempting to sign an ID token using the [{0}] algorithm: [{1}].
+OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=An ID token cannot be created because it could not be signed.  The reason for the error is shown after the message.
+OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=If using asymmetric signature, check that a valid private key is used to sign the token. For example, check whether a key is expired. Check the keyStore element referenced by the default SSL in server.xml to find information about the key store file that contains the private key.  Also, see the user action for the message that appears after this error.
+
+#do not translate clientId, aud
+OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: Validation failed for the ID token requested by [{1}] because the (aud) audience [{0}] specified in the token does not match the clientId [{1}] specified in the OpenID Connect client configuration.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=The audience in the ID token should match the client id.  In this case, the (aud) audience in the ID token did not match the client id, so the ID token validation failed.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Make sure that [clientId] attribute specified in OpenID Connect client (relying party or RP) configuration is correct. The value is case sensitive.
+
+#do not translate clientId, azp
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: Validation failed for the ID token requested by [{1}] because the (azp) authorized party [{0}] specified in the token does not match the clientId [{1}] specified in the OpenID Connect client configuration.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=The authorized party in the ID token should match the client id. In this case, the (azp) authorized party in the ID token did not match the client id, so the ID token validation failed.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Make sure that the [clientId] attribute specified in the OpenID Connect client (relying party or RP) configuration is correct. The value is case sensitive.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1756E: Validation failed for the ID token requested by [{0}] using the [{2}] algorithm due to a signature verification failure: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=An ID token cannot be validated because the signature could not be verified. This might have been caused by a mismatch in the signature algorithm or shared key between the OpenID Connect client and OpenID Connect provider.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=Check the server configuration to make sure the configured signature algorithm and the configured shared key is compatible with that of the OpenID Connect provider.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: Validation failed for the ID token requested by [{0}] using the [{2}] algorithm due to a signature verification failure: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=An ID token cannot be validated because the signature could not be verified.  The reason for the error is shown after the message.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=If using asymmetric signature, ensure that the public key in the certificate can be used for digital signature purposes.  Check the keyStore element referenced by the default SSL configuration in server.xml to find information about the key store that contains the key. Also, see the user action for the message that appears after this error.
+ 
+#
+OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: Validation failed for the ID token requested by the [{0}] due to [{1}]. This might have been caused by either the current time [{2}] being after the token expiration time [{3}] or the issue time [{4}] being too far away from the current time [{2}].
+OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=An ID token cannot be validated because the current time shown is not between the token issue and expiration times.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Make sure that OpenID Connect client (relying party or RP) and OpenID Connect provider (OP) system clocks are in sync (if they are on two systems).
+
+#do not translate at_hash
+#
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: Validation failed for the ID token requested by the [{0}] due to hash mismatch of access token [{1}] and the at_hash claim [{2}] in the ID token. 
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=The at_hash in the ID Token enables OpenID Connect clients to prevent token substitution attacks. The at_hash value should match with the value of the hash of the access token received by the OpenID Connect client.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Ensure that the communication between the OpenID Connect client (relying party or RP) and OpenID Connect provider (OP) is safe to avoid tampering of the access token received by the RP.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: Validation failed for the ID token requested by the [{0}] due to signature missing from the ID token. OpenID Connect client (relying party or RP) configuration specified [{1}] algorithm and expects a signed ID token.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=An ID token cannot be validated because the token was not signed. OpenID Connect client (relying party or RP) is expecting a signed token.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Ensure that the OpenID Connect provider enables the token to be signed.
+
+#do not translate signatureAlgorithm
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: Validation failed for the ID token requested by the [{0}] due to a mismatch of signing algorithms between the OpenID Connect client [{1}] and the OpenID Connect provider [{2}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=An ID token cannot be validated because OpenID Connect client (relying party or RP) and OpenID Connect provider (OP) are using different signature algorithms to sign/verify the token.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Ensure that the RP specified signatureAlgorithm matches the OP signature algorithm.
+
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a signature missing from the JWT token. The OpenID Connect provider specified [{1}] algorithm and expects the JWT Token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Cannot verify the JWT Token because the token is not signed. The OpenID Connect provider is expecting the token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Check the OpenID Connect client configuration to make sure that it signs the JWT Token.
+
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a mismatch of signing algorithms between the OpenID Connect provider [{1}] and the OpenID Connect client [{2}].
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Cannot verify the JWT Token because the OpenID Connect provider and client are using different signature algorithms to sign/verify the token.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Check the OpenID Connect client configuration to specify a signature algorithm that matches with the OpenID Connect provider.
+
+#
+JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: The token endpoint request failed. An error occurred while attempting to sign a JWT token using the [{0}] algorithm: [{1}].
+JWT_JWTTOKEN_INVALID_KEY_ERR.explanation=A JWT token cannot be created because it could not be signed.  The reason for the error is shown in the message.
+JWT_JWTTOKEN_INVALID_KEY_ERR.useraction=If using an asymmetric signature, check that a valid private key is used to sign the token. For example, check whether a key is expired. Check the keyStore element referenced by the default SSL configuration in the server.xml file to find information about the key store file that contains the private key.  Also, see the user action for the message that appears after this error.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1765E: The token endpoint request failed. Validation failed for the JWT token requested from [{0}] due to a signature verification Exception: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.explanation=A JWT token is not valid because the signature verification failed.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.useraction=Make sure the JWT token is signed properly.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1766E: The token endpoint request failed. Validation failed for the JWT token requested by [{0}] using the [{2}] algorithm due to a signature verification failure: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=A JWT token cannot be validated because the signature could not be verified.  The reason for the error is shown after the message.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=If using an asymmetric signature, ensure that the public key in the certificate can be used for digital signature purposes.  Check the keyStore element referenced by the default SSL configuration in the server.xml file to find information about the key store that contains the key. Also, see the user action for the message that appears after this error.
+ 
+#
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: The token endpoint request failed. A signed JWT token needs to have 3 segments separated by ''.'', but this JWT Token has [{0}] segments.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=A signed JWT token needs to have exactly 3 segments separated by '.'. This JWT Token has a bad segment number.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Make sure the JWT Token is valid and has 3 segments.
+
+#
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: The token endpoint request failed. Validation of the JWT token requested by the [{0}] failed. It got an InvalidJwtException with message:[{1}].
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=A JWT token cannot be validated because of an InvalidJwtException which is indicated in the message.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Correct the error which is indicated in the message.
+
+#
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: The token endpoint request failed. A required JWT Token is not found in the request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=The request needs to provide a JWT Token but can not find the JWT Token in the token endpoint request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Provide a valid JWT Token in the token endpoint request.
+
+#
+JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: The OpenID Connect client configuration needs a jwkEndpointUrl attribute.
+JWK_ENDPOINT_MISSING_ERR.explanation=The jwkEndpointUrl attribute was not provided in the OpenID Connect client configuration.
+JWK_ENDPOINT_MISSING_ERR.useraction=Set the jwkEndpointUrl attribute to the URL of the OpenID Connect Provider's JSON Web Key.
+
+# now in openidconnect.common project, no longer used here.
+#OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: An exception occurred while attempting to get the RunAsSubject. The exception was: [{0}].
+#OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
+#OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
+
+#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Validation failed for the token requested by [{0}] because the token is outside of its valid range. This might have been caused by either the current time [{1}] being after the token expiration time [{2}] or the issue time [{3}] being too far away from the current time [{1}].
+OIDC_JWT_VERIFY_STATE_ERR.explanation=A token can not be validated because the current time shown is not between the token issue and expiration times.
+OIDC_JWT_VERIFY_STATE_ERR.useraction=Make sure that OpenID Connect client (relying party or RP) and OpenID Connect provider (OP) system clocks are in sync (if they are on two systems).
+
+# Do not translate clientId, aud
+#0=aud claim, 1=OIDC client ID, 2=audiences of the oidc client
+OIDC_JWT_VERIFY_AUD_ERR=CWWKS1774E: Validation failed for the token requested by [{1}] because the aud claim [{0}] in the token is not contained in the audiences attribute [{2}] of the OpenID Connect client configuration.
+OIDC_JWT_VERIFY_AUD_ERR.explanation=The aud claim in the token must be specified in the audiences attribute of the OpenID Connect client configuration, or all audiences must be allowed by specifying the ALL_AUDIENCES value in the audiences attribute of the client configuration.
+OIDC_JWT_VERIFY_AUD_ERR.useraction=Make sure that the audiences attribute specified in the OpenID Connect client configuration is correct. If you wish to allow all aud claims, the ALL_AUDIENCES value must be specified for the audiences attribute in the OpenID Connect client configuration. Otherwise, the aud claim provided in the token must be contained within the audiences attribute value in the OpenID Connect client configuration. The value is case sensitive.
+
+# do not translate iat
+# 0= oidc client id.
+OIDC_ID_VERIFY_IAT_ERR=CWWKS1775E: Validation failed for the token requested by [{0}] because the required iat claim is not present in the token.
+OIDC_ID_VERIFY_IAT_ERR.explanation=The token must contain an iat (issued at) claim.
+OIDC_ID_VERIFY_IAT_ERR.useraction=Obtain a valid token from the OpenId Connect provider.
+
+
+#0=OIDC client ID, 1=exception, 2=signature algorithm
+OIDC_JWT_SIGNATURE_VERIFY_ERR=CWWKS1776E: Validation failed for the token requested by [{0}] using the [{2}] algorithm due to a signature verification failure: [{1}]
+OIDC_JWT_SIGNATURE_VERIFY_ERR.explanation=The token can not be validated because the signature could not be verified. The reason for this error is displayed in the message. Possible causes of this error could be a mismatch in the signature algorithm or shared key between the OpenID Connect client and OpenID Connect provider.
+OIDC_JWT_SIGNATURE_VERIFY_ERR.useraction=See the user action for the cause displayed in the message. If the cause appears to be because of a key mismatch, check the server configuration to make sure the configured signature algorithm and the configured shared key is compatible with that of the OpenID Connect provider.
+
+# Do not translate signatureAlgorithm
+#0= OIDC client ID, 1=client's signature algorithm (such as RS256, HS256), 2=provider's signature algorithm (RS256, HS256, etc.)
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1777E: Validation failed for the token requested by [{0}] due to a mismatch of signing algorithms between the OpenID Connect client and OpenID Connect provider. The signature algorithm for the client is [{1}] and the signature algorithm for the provider is [{2}].
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=The token can not be validated because OpenID Connect client (relying party or RP) and OpenID Connect provider (OP) are using different signature algorithms.
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Ensure that the signatureAlgorithm attribute specified in the RP configuration matches the signature algorithm for the OP.
+
+# Do not translate signatureAlgorithm
+#0=OIDC client ID, 1=signature algorithm (none, RS256, HS256)
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1778E: The token requested by [{0}] failed validation because the signature is missing from the token. The signatureAlgorithm attribute for the OpenID Connect client is set to [{1}]. This signature algorithm setting requires a signature.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=The token can not be validated because the token was not signed. The signature algorithm setting for the OpenID Connect client requires tokens to be signed.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Do one of the following: 1) Set the signatureAlgorithm attribute in the OpenID Connect client configuration to "none". 2) Send a signed token.
+
+# Do not translate aud, audiences (only when followed by "attribute", i.e. "audiences attribute" or "audiences configuration attribute")
+#0=OIDC client ID, 1=audiences of the oidc client
+OIDC_JWT_MISSING_AUD=CWWKS1779E: Validation failed for the token requested by [{0}] because the token did not contain an aud claim. The OpenID Connect client [{0}] is configured to trust only the following audiences: [{1}]
+OIDC_JWT_MISSING_AUD.explanation=The OpenID Connect client validating the token has configured the audiences attribute to trust certain audiences, so any tokens validated by that client must contain an aud claim. The aud claim in the token must also match one of the audiences configured to be trusted by the client in the audiences configuration attribute.
+OIDC_JWT_MISSING_AUD.useraction=Make sure the token provided to your OpenID Connect client contains an aud claim. If you do not wish to validate token audiences, remove the audiences attribute from your OpenID Connect client configuration.
+
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1780E: The resource server failed the authentication request because the token which is in the request cannot be used. The not before time ("nbf") [{0}] is after the current time [{1}] and this condition is not allowed.
+PROPAGATION_TOKEN_NBF_ERR.explanation=The not before time claim in the token is after the current time and the runtime cannot use the token at present.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Make sure that the token does not have a "nbf" claim set to a future time and/or synchronize the time between the systems or resubmit the request at a later time.
+
+# 0=OIDC client ID, 1="issuer" value (typically a URL), 2=Trusted issuer list, 3=OIDC client configuration attribute that specifies trusted issuers
+TOKEN_ISSUER_NOT_TRUSTED=CWWKS1781E: Validation failed for the token requested by the client [{0}] because the (iss) issuer [{1}] that is specified in the token does not match any of the trusted issuers [{2}] that are specified by the [{3}] attribute of the OpenID Connect client configuration.
+TOKEN_ISSUER_NOT_TRUSTED.explanation=The token contains an issuer value that is not specified as a trusted issuer in the OpenID Connect client configuration. Tokens that are validated by this OpenID Connect client must be issued by a trusted issuer.
+TOKEN_ISSUER_NOT_TRUSTED.useraction=Verify that the issuer claim value that is in the token is included in the specified attribute in the OpenID Connect client configuration.
+
+# 0=Claim name that should not be in the token, 1=OIDC client configuration attribute
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: The resource server failed the authentication request because the token contains a [{0}] claim, but the value of the [{1}] client configuration attribute indicates that the token must not contain the claim.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=The token cannot contain the specified claim because of the value of the specified configuration attribute.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Either obtain a new token that does not contain the specified claim, or change the specified configuration attribute value to allow the claim to be included in the token.
