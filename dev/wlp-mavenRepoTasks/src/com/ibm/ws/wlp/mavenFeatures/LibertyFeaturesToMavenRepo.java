@@ -303,7 +303,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		for (LibertyFeature feature : allFeatures.values()) {
 			MavenCoordinates requiredArtifact = feature.getMavenCoordinates();
 			if(requiredArtifact.getGroupId()==coordinates.getGroupId()){			
-				addDependency(dependencies, requiredArtifact,type,null);	
+				addDependency(dependencies, requiredArtifact,type,"provided");	
 			}
 			
 		}				
