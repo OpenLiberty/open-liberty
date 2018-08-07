@@ -36,10 +36,19 @@ public class WASReactiveStreamsEngineImpl extends ReactiveStreamsEngineImpl impl
 
     private static ReactiveStreamsEngine singleton = null;
 
-    @Reference(target = "(component.name=com.ibm.ws.threading)")
-    private static ExecutorService serverExecutor;
+    private static ExecutorService serverExecutor = null;
 
     private static ExecutorService executor = null;
+
+    /**
+     * Declarative Services method for setting the Liberty executor.
+     *
+     * @param svc the service
+     */
+    @Reference(target = "(component.name=com.ibm.ws.threading)")
+    protected void setExecutor(ExecutorService svc) {
+        serverExecutor = svc;
+    }
 
     /**
      * @param executor

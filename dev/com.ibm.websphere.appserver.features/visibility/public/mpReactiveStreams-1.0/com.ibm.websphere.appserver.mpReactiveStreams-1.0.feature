@@ -7,12 +7,12 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: mpReactiveStreams-1.0
 Subsystem-Name: MicroProfile Reactive Streams 1.0
 IBM-API-Package: \
-  org.eclipse.microprofile.reactive.streams; type="stable"
+  org.eclipse.microprofile.reactive.streams; type="stable", \
+  org.reactivestreams; type="stable"
 -features=\
   com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
 -bundles=\
-  com.ibm.ws.require.java8, \
   com.ibm.ws.microprofile.reactive.streams.operators; apiJar=false; location:="lib/"
 kind=noship
 edition=full
