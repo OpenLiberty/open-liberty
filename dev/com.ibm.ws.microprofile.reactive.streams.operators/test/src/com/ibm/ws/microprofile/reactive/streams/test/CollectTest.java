@@ -33,12 +33,14 @@ public class CollectTest extends WASReactiveUT {
 
     @Test
     public void toListStageShouldReturnAList() {
-        assertEquals(await(ReactiveStreams.of(1, 2, 3).toList().run(getEngine())), Arrays.asList(1, 2, 3));
+        assertEquals(await(ReactiveStreams.of(1, 2, 3).toList().run(getEngine())),
+                     Arrays.asList(1, 2, 3));
     }
 
     @Test
     public void toListStageShouldReturnEmpty() {
-        assertEquals(await(ReactiveStreams.of().toList().run(getEngine())), Collections.emptyList());
+        assertEquals(await(ReactiveStreams.of().toList().run(getEngine())),
+                     Collections.emptyList());
     }
 
     @Test

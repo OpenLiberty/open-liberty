@@ -1,29 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The initial set of unit test material was heavily derived from
+ * tests at https://github.com/eclipse/microprofile-reactive
+ * by James Roper.
  ******************************************************************************/
-
 package com.ibm.ws.microprofile.reactive.streams.test;
 
 /**
  * RuntimeException with no stack trace for expected failures, to make logging not so noisy.
  */
 public class QuietRuntimeException extends RuntimeException {
-    /**  */
+
     private static final long serialVersionUID = 1L;
 
     public QuietRuntimeException() {

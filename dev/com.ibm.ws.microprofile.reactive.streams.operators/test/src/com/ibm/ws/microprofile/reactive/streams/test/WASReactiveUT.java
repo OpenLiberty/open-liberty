@@ -29,12 +29,20 @@ import com.ibm.ws.microprofile.reactive.streams.WASReactiveStreamsEngineImpl;
 public class WASReactiveUT {
 
     /**
-     * @return
+     * Getter for the main class
+     *
+     * @return the ReactiveStreamEngine implementation
      */
     protected ReactiveStreamsEngine getEngine() {
         return WASReactiveStreamsEngineImpl.getEngine();
     }
 
+    /**
+     * Waits for things to complete (with a timeout) and returns the actual result
+     * 
+     * @param future
+     * @return the stage's CompletableFuture.get()
+     */
     protected <T> T await(CompletionStage<T> future) {
         try {
             return future.toCompletableFuture().get(getTimeout(), TimeUnit.MILLISECONDS);
@@ -52,10 +60,12 @@ public class WASReactiveUT {
     }
 
     /**
-     * @return
+     * Just an initial unit test timeout of 10 seconds
+     * 
+     * @return 10000
      */
     private long getTimeout() {
-        return 1000;
+        return 10000;
     }
 
     /**
