@@ -48,6 +48,7 @@
    <Option value="javax.sql.XADataSource"             label="javax.sql.XADataSource"/>
    <Option value="javax.sql.ConnectionPoolDataSource" label="javax.sql.ConnectionPoolDataSource"/>
    <Option value="javax.sql.DataSource"               label="javax.sql.DataSource"/>
+   <Option value="java.sql.Driver"                    label="java.sql.Driver"/>
   </AD>
   <AD id="connectionSharing"                      name="%conSharing"   description="%conSharing.desc"   required="false" type="String"  default="MatchOriginalRequest" >
    <Option value="MatchOriginalRequest"           label="%conSharing.MatchOriginalRequest.desc"/>
