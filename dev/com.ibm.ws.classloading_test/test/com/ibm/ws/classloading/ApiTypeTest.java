@@ -51,6 +51,45 @@ public class ApiTypeTest {
         assertEquals(set(SPEC, IBMAPI, API, THIRDPARTY), ApiType.createApiTypeSet("spec ibm-api,random", "junk,api, third-party"));
     }
 
+    /**
+     * This test assumes a default set of api types will be
+     * provided when a + or - prefix is used.
+     *
+     * The current default is set(SPEC, IBMAPI, API, STABLE). The type set is not
+     * order dependent and a prefix of - overrides a prefix of +
+     *
+     * A common use will be +third-party that will result in api type
+     * set(SPEC, IBMAPI, API, THIRDPARTY, STABLE)
+     */
+    @Test
+    public void testApiTypePlusMinusSetParsing() {
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("+spec"));
+        assertEquals(set(IBMAPI, API, STABLE), ApiType.createApiTypeSet("-spec"));
+        assertEquals(set(IBMAPI, API, STABLE), ApiType.createApiTypeSet("-spec,+spec"));
+        assertEquals(set(IBMAPI, API, STABLE), ApiType.createApiTypeSet("+spec,-spec"));
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("+ibm-api"));
+        assertEquals(set(SPEC, API, STABLE), ApiType.createApiTypeSet("-ibm-api"));
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("+api"));
+        assertEquals(set(SPEC, IBMAPI, STABLE), ApiType.createApiTypeSet("-api"));
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("+stable"));
+        assertEquals(set(SPEC, IBMAPI, API), ApiType.createApiTypeSet("-stable"));
+        assertEquals(set(SPEC, IBMAPI, API, THIRDPARTY, STABLE), ApiType.createApiTypeSet("+third-party"));
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("-third-party"));
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("+third-party,-third-party"));
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("-third-party,+third-party"));
+        assertEquals(set(IBMAPI, API, THIRDPARTY, STABLE), ApiType.createApiTypeSet("-spec,+third-party"));
+        assertEquals(set(IBMAPI, API, THIRDPARTY), ApiType.createApiTypeSet("-spec,+third-party, -stable"));
+        assertEquals(set(IBMAPI, API, STABLE), ApiType.createApiTypeSet("-spec"));
+        assertEquals(set(API, STABLE), ApiType.createApiTypeSet("-spec,-ibm-api"));
+        assertEquals(set(STABLE), ApiType.createApiTypeSet("-spec,-ibm-api,-api"));
+        assertEquals(set(), ApiType.createApiTypeSet("-spec,-ibm-api,-api,-stable"));
+        assertEquals(set(SPEC, IBMAPI, API, THIRDPARTY), ApiType.createApiTypeSet("spec ibm-api,random", "junk,api, third-party"));
+        assertEquals(set(SPEC, IBMAPI, API, THIRDPARTY, STABLE), ApiType.createApiTypeSet("spec ibm-api,random", "junk,api, +third-party"));
+        assertEquals(set(SPEC, IBMAPI, API, THIRDPARTY, STABLE), ApiType.createApiTypeSet("spec +ibm-api,random", "junk,api, third-party"));
+        assertEquals(set(SPEC, IBMAPI, API, STABLE), ApiType.createApiTypeSet("spec ibm-api,random", "junk,api, third-party -third-party"));
+        assertEquals(set(SPEC, IBMAPI, API), ApiType.createApiTypeSet("spec ibm-api,random", "junk,api, +third-parttttty"));
+    }
+
     private static Set<ApiType> set(ApiType... types) {
         return new HashSet<ApiType>(Arrays.asList(types));
     }

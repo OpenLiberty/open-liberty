@@ -43,6 +43,14 @@ public enum ApiType {
         this.attributeName = attributeName;
     }
 
+    private static boolean addDefaults(EnumSet<ApiType> set) {
+        set.add(SPEC);
+        set.add(IBMAPI);
+        set.add(API);
+        set.add(STABLE);
+        return true;
+    }
+
     public static ApiType fromString(String value) {
         if (value != null) {
             value = value.trim();
@@ -61,15 +69,43 @@ public enum ApiType {
     /** Convert one or more comma-and-space-delimited api type strings into a single set of types */
     public static EnumSet<ApiType> createApiTypeSet(String... apiTypes) {
         EnumSet<ApiType> set = EnumSet.noneOf(ApiType.class);
+        EnumSet<ApiType> removeSet = EnumSet.noneOf(ApiType.class);
+        boolean addType = false;
+        boolean removeType = false;
+        boolean defaultsAdded = false;
         if (apiTypes != null)
             for (String types : apiTypes)
                 if (types != null)
                     for (String stype : types.split("[ ,]+")) {
+                        if (stype.indexOf("+") == 0) {
+                            stype = stype.replaceFirst("\\+", "");
+                            addType = true;
+                        } else if (stype.indexOf("-") == 0) {
+                            stype = stype.replaceFirst("-", "");
+                            removeType = true;
+                        }
                         ApiType type = ApiType.fromString(stype);
                         if (type != null) {
-                            set.add(type);
+                            if (removeType) {
+                                removeSet.add(type);
+                                removeType = false;
+                            } else {
+                                set.add(type);
+                                if (!defaultsAdded && addType) {
+                                    defaultsAdded = addDefaults(set);
+                                }
+                            }
                         }
                     }
+
+        if (!removeSet.isEmpty()) {
+            if (!defaultsAdded)
+                addDefaults(set);
+            for (ApiType apiType : removeSet) {
+                set.remove(apiType);
+            }
+        }
+
         return set;
     }
 
