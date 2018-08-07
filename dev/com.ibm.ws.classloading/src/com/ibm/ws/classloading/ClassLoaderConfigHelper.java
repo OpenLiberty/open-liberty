@@ -15,10 +15,6 @@ import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.classPro
 import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.commonLibraryRef;
 import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.delegation;
 import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.privateLibraryRef;
-import static com.ibm.wsspi.classloading.ApiType.API;
-import static com.ibm.wsspi.classloading.ApiType.IBMAPI;
-import static com.ibm.wsspi.classloading.ApiType.SPEC;
-import static com.ibm.wsspi.classloading.ApiType.STABLE;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,8 +71,6 @@ public class ClassLoaderConfigHelper {
         }
     }
 
-    private static final EnumSet<ApiType> DEFAULT_API_TYPES = EnumSet.of(SPEC, IBMAPI, API, STABLE);
-
     private final List<String> sharedLibraries;
     private final List<String> commonLibraries;
     private final List<String> classProviders;
@@ -101,7 +95,7 @@ public class ClassLoaderConfigHelper {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, methodName + reason.getMessage());
             this.classLoaderConfigProps = null;
-            this.apiTypes = DEFAULT_API_TYPES;
+            this.apiTypes = ApiType.DEFAULT_API_TYPES;
             this.isDelegateLast = false;
             this.sharedLibraries = Collections.emptyList();
             this.commonLibraries = Collections.emptyList();

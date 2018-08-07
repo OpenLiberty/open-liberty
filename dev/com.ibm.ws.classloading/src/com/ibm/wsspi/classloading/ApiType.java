@@ -39,16 +39,10 @@ public enum ApiType {
 
     private final String attributeName;
 
+    public static final EnumSet<ApiType> DEFAULT_API_TYPES = EnumSet.of(SPEC, IBMAPI, API, STABLE);
+
     private ApiType(String attributeName) {
         this.attributeName = attributeName;
-    }
-
-    private static boolean addDefaults(EnumSet<ApiType> set) {
-        set.add(SPEC);
-        set.add(IBMAPI);
-        set.add(API);
-        set.add(STABLE);
-        return true;
     }
 
     public static ApiType fromString(String value) {
@@ -70,16 +64,15 @@ public enum ApiType {
     public static EnumSet<ApiType> createApiTypeSet(String... apiTypes) {
         EnumSet<ApiType> set = EnumSet.noneOf(ApiType.class);
         EnumSet<ApiType> removeSet = EnumSet.noneOf(ApiType.class);
-        boolean addType = false;
+        boolean addDefaults = false;
         boolean removeType = false;
-        boolean defaultsAdded = false;
         if (apiTypes != null)
             for (String types : apiTypes)
                 if (types != null)
                     for (String stype : types.split("[ ,]+")) {
                         if (stype.indexOf("+") == 0) {
                             stype = stype.replaceFirst("\\+", "");
-                            addType = true;
+                            addDefaults = true;
                         } else if (stype.indexOf("-") == 0) {
                             stype = stype.replaceFirst("-", "");
                             removeType = true;
@@ -91,19 +84,20 @@ public enum ApiType {
                                 removeType = false;
                             } else {
                                 set.add(type);
-                                if (!defaultsAdded && addType) {
-                                    defaultsAdded = addDefaults(set);
+                                if (addDefaults) {
+                                    for (ApiType apiType : DEFAULT_API_TYPES)
+                                        set.add(apiType);
+                                    addDefaults = false;
                                 }
                             }
                         }
                     }
 
         if (!removeSet.isEmpty()) {
-            if (!defaultsAdded)
-                addDefaults(set);
-            for (ApiType apiType : removeSet) {
-                set.remove(apiType);
-            }
+            for (ApiType apiType1 : DEFAULT_API_TYPES)
+                set.add(apiType1);
+            for (ApiType apiType2 : removeSet)
+                set.remove(apiType2);
         }
 
         return set;
