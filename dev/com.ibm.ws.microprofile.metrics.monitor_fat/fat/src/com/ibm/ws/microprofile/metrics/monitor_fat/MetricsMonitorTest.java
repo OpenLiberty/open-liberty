@@ -264,7 +264,24 @@ public class MetricsMonitorTest {
           	new String[] { "vendor: "});
     }
     
-    
+    @Test
+    public void testMicroProfileMonitor10Feature() throws Exception {
+    	
+    	String testName = "testMicroProfileMonitor10Feature";
+    	
+    	Log.info(c, testName, "------- Enable microProfile-1.3 and monitor-1.0: vendor metrics should be available ------");
+    	server.setServerConfigurationFile("server_microProfile13Monitor10.xml");
+    	server.startServer();
+    	Log.info(c, testName, server.waitForStringInLog("CWWKS5500I",5000));
+    	Log.info(c, testName, "------- server started -----");
+      	checkStrings(getHttpsServlet("/metrics"),
+          	new String[] { "vendor:" }, 
+          	new String[] {});
+      	checkStrings(getHttpsServlet("/metrics/vendor/threadpool.Default_Executor.activeThreads"),
+              	new String[] { "vendor:threadpool_default_executor_active_threads" }, 
+              	new String[] { "vendor:threadpool_default_executor_size" });
+    }
+   
     private String getHttpServlet(String servletPath) throws Exception {
     	HttpURLConnection con = null;
         try {
