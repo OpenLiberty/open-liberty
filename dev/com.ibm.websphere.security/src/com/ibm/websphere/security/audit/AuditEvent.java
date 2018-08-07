@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TimeZone;
 import java.util.TreeMap;
 
 import com.ibm.ws.security.utils.SecurityUtils;
@@ -235,14 +234,12 @@ public class AuditEvent {
      * @return current time in yyyy-MM-dd HH:mm:ss.SSS format
      */
     public String getCurrentTime() {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
+
+        //TimeZone tz = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); // Quoted "Z" to indicate UTC, no timezone offset
-        df.setTimeZone(tz);
+        //df.setTimeZone(tz);
         String nowAsISO = df.format(new Date());
 
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
-        //String strDate = sdf.format(new Date());
-        //return strDate;
         return nowAsISO;
     }
 
