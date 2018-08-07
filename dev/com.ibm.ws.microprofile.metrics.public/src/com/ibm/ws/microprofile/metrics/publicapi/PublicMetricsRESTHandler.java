@@ -47,7 +47,7 @@ public class PublicMetricsRESTHandler extends BaseMetricsHandler {
     }
 
     @Reference
-    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+    public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         this.sharedMetricRegistry = sharedMetricRegistry;
     }
 
