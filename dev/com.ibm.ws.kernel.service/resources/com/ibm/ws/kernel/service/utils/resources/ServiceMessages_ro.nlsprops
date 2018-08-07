@@ -59,3 +59,19 @@ invalidDuration.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea specificat\u0
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Au fost \u00eent\u00e2lnite {0}: {1} informa\u0163ii de memorie sistem de operare nea\u015fteptate.
+memory.information.unexpected.explanation=Unele informa\u0163ii de memorie sistem de operare nu au fost \u00een formatul a\u015fteptat. C\u00e2nd a \u00eent\u00e2lnit formatul nea\u015fteptat produsul putea citi un fi\u015fier sau rula un program. Textul mesajului furnizeaz\u0103 fie numele fi\u015fierului sistemului de operare, fie numele programului \u015fi ie\u015firea programului. Pute\u0163i folosi aceste informa\u0163ii pentru a depana problema.
+memory.information.unexpected.useraction=Examina\u0163i informa\u0163iile din textul mesajului. Corecta\u0163i orice problem\u0103 pentru a v\u0103 asigura c\u0103 sistemul de operare se comport\u0103 corect \u015fi c\u0103 nu se \u00eent\u00e2lnesc informa\u0163ii de memorie sistem de operare nea\u015fteptate.
+
+memory.information.unavailable=CWWKE0948E: Informa\u0163iile de memorie disponibil\u0103 nu sunt implementate pe acest sistem de operare.
+memory.information.unavailable.explanation=Aceast\u0103 func\u0163ie nu a fost \u00eenc\u0103 implementat\u0103 pentru acest sistem de operare.
+memory.information.unavailable.useraction=Utiliza\u0163i API-ul OperatingSystem pentru a ob\u0163ine tipul sistemului de operare \u015fi evita\u0163i apelarea acestei func\u0163ii pentru acest tip de sistem de operare.
+
+os.pagesize.unavailable=CWWKE0949E: Informa\u0163iile de dimensiune pagin\u0103 nu sunt implementate pe acest sistem de operare.
+os.pagesize.unavailable.explanation=Aceast\u0103 func\u0163ie nu a fost \u00eenc\u0103 implementat\u0103 pentru acest sistem de operare.
+os.pagesize.unavailable.useraction=Utiliza\u0163i API-ul OperatingSystem pentru a ob\u0163ine tipul sistemului de operare \u015fi evita\u0163i apelarea acestei func\u0163ii pentru acest tip de sistem de operare.
+
+os.execute.error=CWWKE0950E: Programul {0} a e\u015fuat s\u0103 ruleze. Codul returnat este {1}. Ie\u015firea este {2}
+os.execute.error.explanation=Mai multe situa\u0163ii pot cauza acest e\u015fec. De exemplu, programul a e\u015fuat din cauza unei condi\u0163ii de eroare pe care o raporteaz\u0103 \u00een codul \u015fi ie\u015firea returnate.
+os.execute.error.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 comand\u0103 \u015fi c\u0103 este \u00eentr-unul din din directoarele din variabila de mediu PATH.

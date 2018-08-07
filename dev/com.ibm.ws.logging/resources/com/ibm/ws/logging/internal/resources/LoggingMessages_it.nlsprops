@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
 CONSOLE_FORMAT_UPDATED=TRAS3003I: Il formato di output della console \u00e8 stato aggiornato a ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Il formato di output per la console \u00e8 stato aggiornato.
 CONSOLE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: I seguenti messaggi sono nascosti dal file console.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=I messaggi configurati per essere nascosti non vengono scritti nel file console.log. Vengono scritti nei repository di dati di log e di traccia nella registrazione binaria. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Non \u00e8 richiesta alcuna azione
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Errore di scrittura dei messaggi nel file {0}.
+FAILED_TO_WRITE_LOG.explanation=Si \u00e8 verificato un errore durante il tentativo di scrittura del messaggio nel file. 
+FAILED_TO_WRITE_LOG.useraction=Verificare che la directory esista, sia scrivibile e disponga di spazio su disco sufficiente.
+
+LOG_FILE_RESUMED=TRAS3006I: La registrazione dei messaggi nel file {0} \u00e8 stata ripresa.
+LOG_FILE_RESUMED.explanation=I messaggi possono essere scritti nel file.
+LOG_FILE_RESUMED.useraction=Non \u00e8 richiesta alcuna azione.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

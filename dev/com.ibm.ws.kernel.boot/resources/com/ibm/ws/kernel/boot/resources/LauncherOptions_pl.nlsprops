@@ -129,7 +129,6 @@ option-desc.dump.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez 
 \ti zip na wszystkich innych platformach. U\u017cycie formatu jar archiwum\n\
 \tspowoduje wygenerowanie samorozpakowuj\u0105cego pliku jar podobnego\n\
 \tdo oryginalnego archiwum instalatora.
-
 option-desc.package.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie package.      \n\
 \tElement docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub         \n\
 \twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\
@@ -146,13 +145,13 @@ option-key.include=\ \ \ \ --include=warto\u015b\u0107,warto\u015b\u0107,...
 option-desc.javadump.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: heap, system \n\
 \tthread.
 option-desc.package.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: all*, usr,   \n\
-\tminify, runnable. Je\u015bli zostanie podana warto\u015b\u0107 runnable, wynikowy\n\
+\tminify, runnable, wlp. Je\u015bli zostanie podana warto\u015b\u0107 runnable, wynikowy\n\
 \tpakiet b\u0119dzie wykonywalnym plikiem JAR, kt\u00f3ry uruchamia serwer. Opcja\n\
 \tminify powoduje utworzenie najmniejszego mo\u017cliwego obrazu dla serwera.\n\
-\tOpcja usr powoduje utworzenie pakietu, kt\u00f3ry zawiera serwer\n\
-\ti aplikacj\u0119, ale nie zawiera \u015brodowiska wykonawczego.\n\
-\tOpcja domy\u015blna all powoduje utworzenie pakietu serwera, kt\u00f3ry zawiera\n\
-\twszystkie elementy.
+Opcja usr \n \ttworzy pakiet, kt\u00f3ry zawiera serwer i aplikacj\u0119, ale nie \n\
+\t\u015brodowisko wykonawcze. Opcja wlp powoduje utworzenie \u015brodowiska \n\
+\twykonawczego, kt\u00f3re nie zawiera konfiguracji serwera. Opcja domy\u015blna \n\
+\tall powoduje utworzenie pakietu serwera, kt\u00f3ry zawiera wszystkie elementy.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nazwaSzablonu"
 option-desc.template=\tOkre\u015bl nazw\u0119 szablonu do u\u017cycia przy tworzeniu nowego serwera. 

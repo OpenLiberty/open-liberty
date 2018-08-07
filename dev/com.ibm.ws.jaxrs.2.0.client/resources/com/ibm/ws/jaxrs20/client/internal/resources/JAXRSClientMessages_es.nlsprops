@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Compruebe si se han producido errores previo
 warn_mpjwt_prop_service_notavail=CWWKW0708W: El servicio MicroProfile JWT Propagation no est\u00e1 disponible. El tiempo de ejecuci\u00f3n no puede acceder a la se\u00f1al para incluirla en la cabecera Authorization.
 warn_mpjwt_prop_service_notavail.explanation=El servicio MicroProfile JWT Propagation requiere la caracter\u00edstica mpJwt-1.0. 
 warn_mpjwt_prop_service_notavail.useraction=Compruebe que el servidor se est\u00e9 ejecutando con la caracter\u00edstica obligatoria.
+
+warn_unknown_keepalive_setting=CWWKW0709W: El valor de propiedad de estado activo de conexi\u00f3n {0} no es una opci\u00f3n v\u00e1lida. Esta propiedad se debe establecer en una de: {1}. Se utilizar\u00e1 el valor predeterminado de estado activo.
+warn_unknown_keepalive_setting.explanation=El c\u00f3digo de aplicaci\u00f3n ha establecido la propiedad com.ibm.ws.jaxrs.client.keepalive.connection de un cliente JAX-RS en un valor incorrecto.
+warn_unknown_keepalive_setting.useraction=Modifique el c\u00f3digo para utilizar un valor de propiedad v\u00e1lido como estado activo o cerrar.

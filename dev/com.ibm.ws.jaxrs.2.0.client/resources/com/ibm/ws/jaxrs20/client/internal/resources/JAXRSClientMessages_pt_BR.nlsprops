@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Verifique a a\u00e7\u00e3o do usu\u00e1rio p
 warn_mpjwt_prop_service_notavail=CWWKW0708W: O servi\u00e7o MicroProfile JWT Propagation n\u00e3o est\u00e1 dispon\u00edvel. O tempo de execu\u00e7\u00e3o n\u00e3o pode acessar o token para inclu\u00ed-lo no cabe\u00e7alho de autoriza\u00e7\u00e3o.
 warn_mpjwt_prop_service_notavail.explanation=O servi\u00e7o MicroProfile JWT Propagation requer o recurso mpJwt-1.0. 
 warn_mpjwt_prop_service_notavail.useraction=Certifique-se de que o servidor esteja executando com o recurso requerido.
+
+warn_unknown_keepalive_setting=CWWKW0709W: O valor da propriedade keep-alive da conex\u00e3o {0} n\u00e3o \u00e9 uma op\u00e7\u00e3o v\u00e1lida. Esta propriedade deve ser configurada para um de: {1}. O valor padr\u00e3o de keep-alive ser\u00e1 usado.
+warn_unknown_keepalive_setting.explanation=O c\u00f3digo do aplicativo configurou a propriedade com.ibm.ws.jaxrs.client.keepalive.connection em um cliente JAX-RS para um valor incorreto.
+warn_unknown_keepalive_setting.useraction=Modifique o c\u00f3digo para usar um valor de propriedade v\u00e1lido como keep-alive ou close.

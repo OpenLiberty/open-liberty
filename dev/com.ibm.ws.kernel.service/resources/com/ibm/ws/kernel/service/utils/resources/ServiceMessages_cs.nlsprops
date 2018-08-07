@@ -59,3 +59,19 @@ invalidDuration.useraction=Zkontrolujte, zda hodnota zadan\u00e1 v konfiguraci s
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Byly rozpozn\u00e1ny neo\u010dek\u00e1van\u00e9 informace o pam\u011bti opera\u010dn\u00edho syst\u00e9mu v {0}: {1}
+memory.information.unexpected.explanation=N\u011bkter\u00e9 informace o pam\u011bti opera\u010dn\u00edho syst\u00e9mu nebyly v o\u010dek\u00e1van\u00e9m form\u00e1tu. Produkt mohl \u010d\u00edst soubor nebo spou\u0161t\u011bt program v dob\u011b, kdy do\u0161lo k v\u00fdskytu neo\u010dek\u00e1van\u00e9ho form\u00e1tu. Text zpr\u00e1vy nab\u00edz\u00ed bu\u010f n\u00e1zev souboru opera\u010dn\u00edho syst\u00e9mu a obsah souboru, nebo n\u00e1zev programu a v\u00fdstup programu. Tyto informace m\u016f\u017eete pou\u017e\u00edt k odstran\u011bn\u00ed probl\u00e9mu.
+memory.information.unexpected.useraction=Zkontrolujte informace v textu zpr\u00e1vy. Opravte probl\u00e9my a ujist\u011bte se, \u017ee se opera\u010dn\u00ed syst\u00e9m chov\u00e1 spr\u00e1vn\u011b a \u017ee nebyly rozpozn\u00e1ny \u017e\u00e1dn\u00e9 neo\u010dek\u00e1van\u00e9 informace o pam\u011bti opera\u010dn\u00edho syst\u00e9mu.
+
+memory.information.unavailable=CWWKE0948E: V tomto opera\u010dn\u00edm syst\u00e9mu nebyly naimplementov\u00e1ny informace o dostupn\u00e9 pam\u011bti.
+memory.information.unavailable.explanation=Tato funkce nebyla naimplementov\u00e1na pro tento opera\u010dn\u00ed syst\u00e9m.
+memory.information.unavailable.useraction=Pomoc\u00ed rozhran\u00ed OperatingSystem API z\u00edskejte typ opera\u010dn\u00edho syst\u00e9mu a vyhn\u011bte se vol\u00e1n\u00ed t\u00e9to funkce pro tento typ opera\u010dn\u00edho syst\u00e9mu.
+
+os.pagesize.unavailable=CWWKE0949E: V tomto opera\u010dn\u00edm syst\u00e9mu nebyly naimplementov\u00e1ny informace o velikosti str\u00e1nky.
+os.pagesize.unavailable.explanation=Tato funkce nebyla naimplementov\u00e1na pro tento opera\u010dn\u00ed syst\u00e9m.
+os.pagesize.unavailable.useraction=Pomoc\u00ed rozhran\u00ed OperatingSystem API z\u00edskejte typ opera\u010dn\u00edho syst\u00e9mu a vyhn\u011bte se vol\u00e1n\u00ed t\u00e9to funkce pro tento typ opera\u010dn\u00edho syst\u00e9mu.
+
+os.execute.error=CWWKE0950E: Program {0} se nezda\u0159ilo spustit. N\u00e1vratov\u00fd k\u00f3d je {1}. V\u00fdstup je {2}
+os.execute.error.explanation=R\u016fzn\u00e9 situace mohou zp\u016fsobit selh\u00e1n\u00ed. Nap\u0159. program se nezda\u0159il kv\u016fli chybov\u00e9mu stavu zaznamenan\u00e9mu do n\u00e1vratov\u00e9ho k\u00f3du a v\u00fdstupu.
+os.execute.error.useraction=Ujist\u011bte se, \u017ee p\u0159\u00edkaz existuje a \u017ee je v jednom z adres\u00e1\u0159\u016f v prom\u011bnn\u00e9 prost\u0159ed\u00ed PATH.

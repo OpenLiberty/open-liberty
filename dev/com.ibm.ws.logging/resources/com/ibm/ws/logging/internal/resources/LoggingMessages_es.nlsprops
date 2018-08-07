@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=No se requiere ninguna acci\u00f3n.
 CONSOLE_FORMAT_UPDATED=TRAS3003I: El formato de salida de consola se ha actualizado ahora a ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Ahora el formato de salida para la consola se ha actualizado.
 CONSOLE_FORMAT_UPDATED.useraction=No se requiere ninguna acci\u00f3n.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: Los mensajes siguientes est\u00e1n ocultos del archivo console.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Los mensajes que se han configurado para estar ocultos no se escriben en el archivo console.log. Se escriben en los repositorios de datos de registro y rastreo en el registro binario.
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=No se requiere ninguna acci\u00f3n
+
+FAILED_TO_WRITE_LOG=TRAS3005E: No se han podido escribir mensajes en el archivo {0}.
+FAILED_TO_WRITE_LOG.explanation=Se ha producido un error al intentar escribir el mensaje en el archivo. 
+FAILED_TO_WRITE_LOG.useraction=Aseg\u00farese de que el directorio existe, se puede escribir en \u00e9l y tiene suficiente espacio de disco.
+
+LOG_FILE_RESUMED=TRAS3006I: Se ha reanudado el registro de mensajes en el archivo {0}.
+LOG_FILE_RESUMED.explanation=Se pueden escribir mensajes en el archivo.
+LOG_FILE_RESUMED.useraction=No se requiere ninguna acci\u00f3n.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

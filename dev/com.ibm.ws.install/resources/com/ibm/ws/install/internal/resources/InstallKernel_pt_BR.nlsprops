@@ -437,6 +437,7 @@ ERROR_NON_FEATURE_CANNOT_INSTALL_TO_EXTENSION.action=Execute o comando de instal
 ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY=CWWKF1299E: Os recursos a seguir n\u00e3o puderam ser obtidos: {0}. Assegure-se de que os recursos sejam v\u00e1lidos para o Open Liberty.
 ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.explanation=O instalador n\u00e3o p\u00f4de recuperar os recursos especificados dos reposit\u00f3rios conectados.
 ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY.useraction=Se os recursos especificados existirem, assegure-se de que eles sejam v\u00e1lidos para o Open Liberty.
+
 ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE=CWWKF1300E: O recurso {0} n\u00e3o pode ser instalado para a edi\u00e7\u00e3o do IBM WebSphere Application Server Liberty Core Edition porque ele se aplica somente a outras edi\u00e7\u00f5es do IBM WebSphere Application Server Liberty e do Open Liberty. Use a a\u00e7\u00e3o "localizar" do comando featureManager para recuperar uma lista de recursos que s\u00e3o aplic\u00e1veis \u00e0 edi\u00e7\u00e3o do IBM WebSphere Application Server Liberty Core.
 ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.explanation=O recurso n\u00e3o \u00e9 aplic\u00e1vel para a edi\u00e7\u00e3o do produto instalado.
 ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE.useraction=Instale os recursos que s\u00e3o suportados pela edi\u00e7\u00e3o do produto.

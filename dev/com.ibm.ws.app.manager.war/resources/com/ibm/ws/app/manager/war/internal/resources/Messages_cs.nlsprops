@@ -215,4 +215,8 @@ error.client.not.installed.useraction=Zkontrolujte um\u00edst\u011bn\u00ed v kon
 #{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
 warning.could.not.expand.application=CWWKZ0131W: Aplikaci {0} nelze rozbalit kv\u016fli v\u00fdjimce {1}.
 warning.could.not.expand.application.explanation=Aplikaci nelze rozbalit do do\u010dasn\u00e9ho adres\u00e1\u0159e. Aplikace bude nad\u00e1le pracovat, ale m\u016f\u017ee b\u00fdt dot\u010deno chov\u00e1n\u00ed jist\u00fdch metod, kter\u00e9 p\u0159istupuj\u00ed k soubor\u016fm aplikace. 
-warning.could.not.expand.application.useraction=Pokuste se vy\u0159e\u0161it probl\u00e9m popsan\u00fd v zpr\u00e1v\u011b v\u00fdjimky a restartujte server nebo aktualizujte aplikaci. 
+warning.could.not.expand.application.useraction=Pokuste se vy\u0159e\u0161it probl\u00e9m popsan\u00fd v zpr\u00e1v\u011b v\u00fdjimky a restartujte server nebo aktualizujte aplikaci.
+
+error.file.outside.archive=CWWKZ0132W: Soubor {0} v archivu {1} nebude extrahov\u00e1n, proto\u017ee cesta nen\u00ed obsa\u017eena v archivu.
+error.file.outside.archive.explanation=Cesta souboru ur\u010duje relativn\u00ed adres\u00e1\u0159. Extrahov\u00e1n\u00ed souboru by vedlo k um\u00edst\u011bn\u00ed souboru mimo ko\u0159enov\u00fd adres\u00e1\u0159 archivu.
+error.file.outside.archive.useraction=Odeberte z archivu soubory s relativn\u00edmi cestami. 

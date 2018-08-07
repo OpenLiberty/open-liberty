@@ -59,3 +59,19 @@ invalidDuration.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszol
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: V\u00e1ratlan oper\u00e1ci\u00f3s rendszer mem\u00f3ria inform\u00e1ci\u00f3 tal\u00e1lhat\u00f3k a(z) {0} helyen: {1}
+memory.information.unexpected.explanation=Az oper\u00e1ci\u00f3s rendszer mem\u00f3ria inform\u00e1ci\u00f3k nem a v\u00e1rt form\u00e1tumban voltak. A term\u00e9k k\u00e9pes lehet beolvasni egy f\u00e1jlt vagy futtatni egy programot, amikor v\u00e1ratlan form\u00e1tumba \u00fctk\u00f6zik. Az \u00fczenet sz\u00f6vege biztos\u00edtja vagy egy oper\u00e1ci\u00f3s rendszer f\u00e1jl nev\u00e9t \u00e9s a f\u00e1jl tartalm\u00e1t, vagy egy program nev\u00e9t \u00e9s a program kimenet\u00e9t. Ezeket az inform\u00e1ci\u00f3kat felhaszn\u00e1lhatja a hibaelh\u00e1r\u00edt\u00e1shoz.
+memory.information.unexpected.useraction=Tekintse \u00e1t az \u00fczenet sz\u00f6veg\u00e9ben l\u00e9v\u0151 inform\u00e1ci\u00f3kat. Jav\u00edtsa a probl\u00e9m\u00e1kat, hogy biztos\u00edtsa az oper\u00e1ci\u00f3s megfelel\u0151 viselked\u00e9s\u00e9t \u00e9s azt, hogy a program ne \u00fctk\u00f6zz\u00f6n v\u00e1ratlan oper\u00e1ci\u00f3s rendszer mem\u00f3ria inform\u00e1ci\u00f3kba.
+
+memory.information.unavailable=CWWKE0948E: Az el\u00e9rhet\u0151 mem\u00f3ria inform\u00e1ci\u00f3k biztos\u00edt\u00e1sa nincs megval\u00f3s\u00edtva ezen az oper\u00e1ci\u00f3s rendszeren.
+memory.information.unavailable.explanation=Ez a funkci\u00f3 nem lett megval\u00f3s\u00edtva ehhez az oper\u00e1ci\u00f3s rendszerhez.
+memory.information.unavailable.useraction=Az OperatingSystem API haszn\u00e1lat\u00e1val k\u00e9rdezze le az oper\u00e1ci\u00f3s rendszer t\u00edpus\u00e1t, \u00e9s ker\u00fclje a funkci\u00f3 megh\u00edv\u00e1s\u00e1t az ilyen t\u00edpus\u00fa oper\u00e1ci\u00f3s rendszerhez.
+
+os.pagesize.unavailable=CWWKE0949E: Az oldalm\u00e9ret inform\u00e1ci\u00f3k biztos\u00edt\u00e1sa nincs megval\u00f3s\u00edtva ezen az oper\u00e1ci\u00f3s rendszeren.
+os.pagesize.unavailable.explanation=Ez a funkci\u00f3 nem lett megval\u00f3s\u00edtva ehhez az oper\u00e1ci\u00f3s rendszerhez.
+os.pagesize.unavailable.useraction=Az OperatingSystem API haszn\u00e1lat\u00e1val k\u00e9rdezze le az oper\u00e1ci\u00f3s rendszer t\u00edpus\u00e1t, \u00e9s ker\u00fclje a funkci\u00f3 megh\u00edv\u00e1s\u00e1t az ilyen t\u00edpus\u00fa oper\u00e1ci\u00f3s rendszerhez.
+
+os.execute.error=CWWKE0950E: A(z) {0} program nem futtathat\u00f3. A visszat\u00e9r\u00e9si k\u00f3d {1}. A kimenet {2}
+os.execute.error.explanation=A hib\u00e1t v\u00e1ltozatos helyzetek okozhatj\u00e1k. P\u00e9ld\u00e1ul a program a visszat\u00e9r\u00e9si k\u00f3dban \u00e9s kimenetben jelentett hibahelyzet miatt meghi\u00fasult.
+os.execute.error.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a parancs l\u00e9tezik, \u00e9s hogy a PATH k\u00f6rnyezeti v\u00e1ltoz\u00f3ban l\u00e9v\u0151 k\u00f6nyvt\u00e1rak egyik\u00e9ben tal\u00e1lhat\u00f3.

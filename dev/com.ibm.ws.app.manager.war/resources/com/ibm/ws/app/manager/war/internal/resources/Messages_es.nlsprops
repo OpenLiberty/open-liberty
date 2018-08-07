@@ -216,3 +216,6 @@ error.client.not.installed.useraction=Compruebe la ubicaci\u00f3n en la configur
 warning.could.not.expand.application=CWWKZ0131W: No se ha podido expandir la aplicaci\u00f3n {0} debido a la excepci\u00f3n {1}.
 warning.could.not.expand.application.explanation=La aplicaci\u00f3n no se ha podido expandir en un directorio temporal. La aplicaci\u00f3n continuar\u00e1 ejecut\u00e1ndose, pero el comportamiento de determinados m\u00e9todos que acceden a los archivos de la aplicaci\u00f3n pueden verse afectado. 
 warning.could.not.expand.application.useraction=Intente resolver el problema en el mensaje de la excepci\u00f3n y reinicie el servidor o actualice la aplicaci\u00f3n. 
+error.file.outside.archive=CWWKZ0132W: El archivo {0} del archivado {1} no se extraer\u00e1 porque la v\u00eda de acceso no est\u00e1 contenida dentro del archivado.
+error.file.outside.archive.explanation=La v\u00eda de acceso del archivo especifica un directorio relativo. La extracci\u00f3n del archivo har\u00e1 que el archivo se ubique fuera del directorio ra\u00edz del archivado.
+error.file.outside.archive.useraction=Elimine del archivado los archivos con v\u00edas de acceso relativas.

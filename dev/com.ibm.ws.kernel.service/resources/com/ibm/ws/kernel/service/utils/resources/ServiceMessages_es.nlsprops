@@ -59,3 +59,19 @@ invalidDuration.useraction=Compruebe que el valor especificado en la configuraci
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Se ha encontrado informaci\u00f3n inesperada sobre la memoria del sistema operativo en {0}: {1}
+memory.information.unexpected.explanation=La informaci\u00f3n sobre la memoria del sistema operativo no presenta el formato esperado. Es posible que el producto estuviera leyendo un archivo o ejecutando un programa al encontrarse el formato no esperado. El texto del mensaje proporciona el nombre del archivo del sistema operativo y el contenido del archivo o bien el nombre de un programa y la salida del programa. Puede utilizar esta informaci\u00f3n para tratar de solucionar el problema.
+memory.information.unexpected.useraction=Consulte la informaci\u00f3n en el texto del mensaje. Corrija los problemas para garantizar un comportamiento correcto del sistema operativo y no encontrar informaci\u00f3n inesperada sobre la memoria del sistema operativo.
+
+memory.information.unavailable=CWWKE0948E: No se ha implementado informaci\u00f3n de memoria disponible para este sistema operativo.
+memory.information.unavailable.explanation=Esta funci\u00f3n no se ha implementado para este sistema operativo.
+memory.information.unavailable.useraction=Utilice la API de OperatingSystem para obtener el tipo de sistema operativo y evitar llamar a esta funci\u00f3n para este tipo de sistema operativo.
+
+os.pagesize.unavailable=CWWKE0949E: No se ha implementado informaci\u00f3n de tama\u00f1o de p\u00e1gina para este sistema operativo.
+os.pagesize.unavailable.explanation=Esta funci\u00f3n no se ha implementado para este sistema operativo.
+os.pagesize.unavailable.useraction=Utilice la API de OperatingSystem para obtener el tipo de sistema operativo y evitar llamar a esta funci\u00f3n para este tipo de sistema operativo.
+
+os.execute.error=CWWKE0950E: El programa {0} no ha podido ejecutarse. El c\u00f3digo de retorno es {1}. La salida es {2}
+os.execute.error.explanation=Este error puede estar provocado por una variedad de situaciones. Por ejemplo, el programa falla debido a una condici\u00f3n de error que se notifica en el c\u00f3digo de retorno y en la salida.
+os.execute.error.useraction=Compruebe que el mandato exista y que se encuentre en uno de los directorios de la variable de entorno PATH.

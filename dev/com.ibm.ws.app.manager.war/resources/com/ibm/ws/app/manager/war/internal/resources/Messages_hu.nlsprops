@@ -215,4 +215,8 @@ error.client.not.installed.useraction=Ellen\u0151rizze a helyet az alkalmaz\u00e
 #{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
 warning.could.not.expand.application=CWWKZ0131W: Nem siker\u00fclt a(z) {0} alkalmaz\u00e1s kibont\u00e1sa {1} kiv\u00e9tel miatt.
 warning.could.not.expand.application.explanation=Az alkalmaz\u00e1st nem lehetett kibontani ideiglenes k\u00f6nyvt\u00e1rba. Az alkalmaz\u00e1s folytatja a fut\u00e1s\u00e1t, de ez hat\u00e1ssal lehet bizonyos alkalmaz\u00e1sf\u00e1jlokat el\u00e9r\u0151 met\u00f3dusokra. 
-warning.could.not.expand.application.useraction=Pr\u00f3b\u00e1lja meg elh\u00e1r\u00edtani a kiv\u00e9tel \u00fczenet\u00e9ben jelzett probl\u00e9m\u00e1t, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy friss\u00edtse az alkalmaz\u00e1st. 
+warning.could.not.expand.application.useraction=Pr\u00f3b\u00e1lja meg elh\u00e1r\u00edtani a kiv\u00e9tel \u00fczenet\u00e9ben jelzett probl\u00e9m\u00e1t, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy friss\u00edtse az alkalmaz\u00e1st.
+
+error.file.outside.archive=CWWKZ0132W: A(z) {0} f\u00e1jl a(z) {1} arch\u00edvumban nem ker\u00fcl kibont\u00e1sra, mert az arch\u00edvum nem tartalmazz az \u00fatvonalat.
+error.file.outside.archive.explanation=A f\u00e1jl \u00fatvonala relat\u00edv k\u00f6nyvt\u00e1rat hat\u00e1roz meg. A f\u00e1jl kibont\u00e1sa azt eredm\u00e9nyezn\u00e9, hogy a f\u00e1jl az arch\u00edvum gy\u00f6k\u00e9rk\u00f6nyvt\u00e1r\u00e1n k\u00edv\u00fclre ker\u00fcl.
+error.file.outside.archive.useraction=A relat\u00edv \u00fatvonallal rendelkez\u0151 f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa az arch\u00edvumb\u00f3l. 

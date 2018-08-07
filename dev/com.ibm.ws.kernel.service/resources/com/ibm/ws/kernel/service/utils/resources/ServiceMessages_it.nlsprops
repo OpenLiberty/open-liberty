@@ -59,3 +59,19 @@ invalidDuration.useraction=Verificare che il valore specificato nella configuraz
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Riscontrate informazioni sulla memoria del sistema operativo impreviste in {0}: {1}
+memory.information.unexpected.explanation=Alcune informazioni sulla memoria del sistema operativo non sono nel formato previsto. \u00c8 possibile che il prodotto stesse leggendo un file o eseguendo un programma quando ha rilevato il formato imprevisto. Il testo del messaggio fornisce il nome di un file del sistema operativo e il contenuto del file o il nome di un programma e il relativo output. \u00c8 possibile utilizzare tali informazioni per risolvere il problema.
+memory.information.unexpected.useraction=Esaminare le informazioni nel testo del messaggio. Correggere i problemi per garantire che il sistema operativo funzioni correttamente e che non siano rilevate informazioni sulla memoria del sistema operativo impreviste.
+
+memory.information.unavailable=CWWKE0948E: Le informazioni sulla memoria disponibili non sono implementate su questo sistema operativo.
+memory.information.unavailable.explanation=Questa funzione non \u00e8 stata implementata per questo sistema operativo.
+memory.information.unavailable.useraction=Utilizzare l'API OperatingSystem per ottenere il tipo di sistema operativo ed evitare di richiamare questa funzione per questo tipo di sistema operativo.
+
+os.pagesize.unavailable=CWWKE0949E: Le informazioni sulla dimensione pagina non sono implementate su questo sistema operativo.
+os.pagesize.unavailable.explanation=Questa funzione non \u00e8 stata implementata per questo sistema operativo.
+os.pagesize.unavailable.useraction=Utilizzare l'API OperatingSystem per ottenere il tipo di sistema operativo ed evitare di richiamare questa funzione per questo tipo di sistema operativo.
+
+os.execute.error=CWWKE0950E: Esecuzione del programma {0} non riuscita. Il codice di ritorno \u00e8 {1}. L''output \u00e8 {2}
+os.execute.error.explanation=L'errore pu\u00f2 essere causato da varie situazioni. Ad esempio, il programma ha avuto esito negativo a causa di una condizione di errore che riporta nel codice di ritorno o nell'output.
+os.execute.error.useraction=Verificare che il comando esista e che sia in una delle directory nella variabile di ambiente PATH.

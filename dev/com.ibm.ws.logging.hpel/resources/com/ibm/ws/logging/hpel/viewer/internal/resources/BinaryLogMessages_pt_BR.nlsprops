@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2017 IBM Corporation and others.
+# Copyright (c) 2013, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -186,6 +186,10 @@ BL_VIEW_USAGE_032=\tEspecifique a codifica\u00e7\u00e3o de caracteres a ser usad
 # do not translate "--isoDateFormat"
 BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
 BL_VIEW_USAGE_034=\tEspecifique o formato de data e hora ISO-8601 a ser usado para a sa\u00edda.
+
+# do not translate "--excludeMessage=value[,value]*"
+BL_VIEW_USAGE_035=\ \ \ \ -- excludeMessage = value [, value ] *
+BL_VIEW_USAGE_036=\tExclua registros com a mensagem especificada. O valor pode incluir * ou? como um\n \tcuringa.
 #--------------------------------------------------------------------------------------------------
 
 # do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
