@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -350,11 +351,12 @@ public class JDBCDrivers {
      * <li>swapping Driver --> [type]DataSource and seeing if it loads
      * <li>scanning JAR file for class names that contain DataSource and comparing against the desired type(s)
      * 
-     * @param loader class loader from which to load JDBC driver classes 
+     * @param loader class loader from which to load JDBC driver classes
+     * @param searched list to which this method must add any packages that it searches  
      * @param ordered list of data source types (see type constants in this class) indicating precedence
      * @return pair of data source type constant and name of vendor data source implementation class. Null if unknown.
      */
-    public static SimpleEntry<Integer, String> inferDataSourceClassFromDriver(ClassLoader loader, int... types) {
+    public static SimpleEntry<Integer, String> inferDataSourceClassFromDriver(ClassLoader loader, Set<String> searched, int... types) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
             Tr.debug(tc, "infer from driver", loader, Arrays.toString(types));
@@ -365,18 +367,13 @@ public class JDBCDrivers {
         // Load JDBC driver class from service registry and use the package to infer the data source class
         ServiceLoader<Driver> serviceLoader = loader == null ? ServiceLoader.load(Driver.class) : ServiceLoader.load(Driver.class, loader);
         if (serviceLoader != null) {
-            // In order to give preference to JDBC drivers supplied by the user,
-            // move to the end of the list any JDBC drivers that are packaged with Java
+            // In order to give preference to JDBC drivers supplied by the user, omit JDBC drivers that are packaged with Java
             List<Driver> drivers = new ArrayList<Driver>();
-            List<Driver> builtInDrivers = new ArrayList<Driver>();
             for (Iterator<Driver> it = serviceLoader.iterator(); it.hasNext(); ) {
                 Driver driver = it.next();
-                if (driver.getClass().getName().startsWith("sun."))
-                    builtInDrivers.add(driver);
-                else
+                if (!driver.getClass().getName().startsWith("sun."))
                     drivers.add(driver);
             }
-            drivers.addAll(builtInDrivers);
 
             for (Iterator<Driver> it = drivers.iterator(); found[preferredType] == null && it.hasNext(); ) {
                 Driver driver = it.next();
@@ -390,6 +387,7 @@ public class JDBCDrivers {
                     int dot = driverClassName.lastIndexOf('.', lastDot - 1);
                     dot = dot <= 10 ? lastDot : dot; // avoid packages that are so short they might be generic (org.apache.) 
                     driverPackage = driverClassName.substring(0, dot);
+                    searched.add(driverPackage);
 
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(tc, "infer from " + driverClassName, driverPackage);
@@ -478,11 +476,6 @@ public class JDBCDrivers {
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(tc, "found data sources", found);
-
-        // skip over JDK's built-in driver on first pass
-        for (int type : types)
-            if (found[type] != null && !found[type].startsWith("sun."))
-                return new SimpleEntry<Integer, String>(type, found[type]);
 
         for (int type : types)
             if (found[type] != null)

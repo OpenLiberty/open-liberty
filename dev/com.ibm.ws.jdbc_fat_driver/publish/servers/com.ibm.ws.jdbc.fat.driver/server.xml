@@ -25,6 +25,12 @@
       <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
       <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
+
+    <!-- the following is unusable because no ConnectionPoolDataSource implementation is provided by the driver -->
+    <dataSource id="fatConnectionPoolDataSource" jndiName="jdbc/fatConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">
+      <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
+      <properties databaseName="memory:jdbcdriver1" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
     
     <dataSource id="fatDataSource" jndiName="jdbc/fatDataSource">
       <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
