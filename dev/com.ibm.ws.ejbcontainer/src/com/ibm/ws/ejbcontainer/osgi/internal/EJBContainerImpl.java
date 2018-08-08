@@ -141,7 +141,7 @@ public class EJBContainerImpl implements EJBContainer {
             // This adapt should always succeed because ModuleInitDataAdapter
             // should always find WebModuleInfo.
             ModuleInitDataImpl mid = container.adapt(ModuleInitDataImpl.class);
-            if (mid.ivBeans.isEmpty()) {
+            if (null == mid || mid.ivBeans.isEmpty()) {
                 // Do nothing if there are no EJBs.
                 return null;
             }
