@@ -36,11 +36,13 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.tx.jta.cdi.interceptors.TransactionalInterceptor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
@@ -54,6 +56,17 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
     private static final TraceComponent tc = Tr.register(FaultToleranceCDIExtension.class);
 
     private static final String shuffleInterceptorsPropertyName = "com.ibm.ws.microprofile.faulttolerance.before.transactional";
+
+    private static AnnotationConfigFactory annotationConfigFactory;
+
+    public static AnnotationConfigFactory getAnnotationConfigFactory() {
+        return annotationConfigFactory;
+    }
+
+    @Reference
+    protected void setAnnotationConfigFactory(AnnotationConfigFactory factory) {
+        FaultToleranceCDIExtension.annotationConfigFactory = factory;
+    }
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         //register the interceptor binding and in the interceptor itself
@@ -89,7 +102,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                 if (config.isAnnotationEnabled(annotation, clazz)) {
                     interceptedClass = true;
                     if (annotation.annotationType() == Asynchronous.class) {
-                        AsynchronousConfig asynchronousConfig = new AsynchronousConfig(clazz, (Asynchronous) annotation);
+                        AsynchronousConfig asynchronousConfig = annotationConfigFactory.createAsynchronousConfig(clazz, (Asynchronous) annotation);
                         asynchronousConfig.validate();
                         classLevelAsync = (Asynchronous) annotation;
                     } else if (annotation.annotationType() == Retry.class) {
@@ -155,7 +168,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         }
 
         if (classLevelAsync != null) {
-            AsynchronousConfig asynchronous = new AsynchronousConfig(javaMethod, clazz, classLevelAsync);
+            AsynchronousConfig asynchronous = annotationConfigFactory.createAsynchronousConfig(javaMethod, clazz, classLevelAsync);
             asynchronous.validate();
         }
 
@@ -166,7 +179,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                 if (config.isAnnotationEnabled(annotation, clazz, method.getJavaMember())) {
                     needsIntercepting = true;
                     if (annotation.annotationType() == Asynchronous.class) {
-                        AsynchronousConfig asynchronous = new AsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
+                        AsynchronousConfig asynchronous = annotationConfigFactory.createAsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
                         asynchronous.validate();
                     } else if (annotation.annotationType() == Fallback.class) {
                         FallbackConfig fallback = new FallbackConfig(javaMethod, clazz, (Fallback) annotation);

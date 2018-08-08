@@ -36,6 +36,7 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
@@ -105,6 +106,7 @@ public class FaultToleranceInterceptor {
         BulkheadConfig bulkhead = null;
         FallbackConfig fallback = null;
         FTEnablementConfig enablement = FaultToleranceCDIComponent.getEnablementConfig();
+        AnnotationConfigFactory annotationConfigFactory = FaultToleranceCDIExtension.getAnnotationConfigFactory();
 
         //first check the annotations on the target class
         Class<?> targetClass = context.getTarget().getClass();
@@ -115,7 +117,7 @@ public class FaultToleranceInterceptor {
             if (enablement.isFaultTolerance(annotation) && enablement.isAnnotationEnabled(annotation, targetClass)) {
 
                 if (annotation.annotationType().equals(Asynchronous.class)) {
-                    asynchronous = new AsynchronousConfig(targetClass, (Asynchronous) annotation);
+                    asynchronous = annotationConfigFactory.createAsynchronousConfig(targetClass, (Asynchronous) annotation);
                     asynchronous.validate();
                 } else if (annotation.annotationType().equals(Retry.class)) {
                     retry = new RetryConfig(targetClass, (Retry) annotation);
@@ -143,7 +145,7 @@ public class FaultToleranceInterceptor {
             if (enablement.isFaultTolerance(annotation) && enablement.isAnnotationEnabled(annotation, targetClass, method)) {
 
                 if (annotation.annotationType().equals(Asynchronous.class)) {
-                    asynchronous = new AsynchronousConfig(method, targetClass, (Asynchronous) annotation);
+                    asynchronous = annotationConfigFactory.createAsynchronousConfig(method, targetClass, (Asynchronous) annotation);
                     asynchronous.validate();
                 } else if (annotation.annotationType().equals(Retry.class)) {
                     retry = new RetryConfig(method, targetClass, (Retry) annotation);
@@ -169,7 +171,7 @@ public class FaultToleranceInterceptor {
         aggregatedFTPolicy.setMethod(method);
 
         if (asynchronous != null) {
-            aggregatedFTPolicy.setAsynchronous(true);
+            aggregatedFTPolicy.setAsynchronousResultWrapper(method.getReturnType());
         }
 
         //generate the TimeoutPolicy

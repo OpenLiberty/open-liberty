@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi.config;
+package com.ibm.ws.microprofile.faulttolerance.cdi.config.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -85,15 +85,15 @@ public class AbstractAnnotationConfig<T extends Annotation> {
             }
         }
 
-        protected S getValue() {
+        public S getValue() {
             return parameterValue;
         }
 
-        protected S getConfigValue() {
+        public S getConfigValue() {
             return readConfigValue(parameterType);
         }
 
-        protected <P> P readConfigValue(Class<P> type) {
+        public <P> P readConfigValue(Class<P> type) {
 
             Config mpConfig = ConfigProvider.getConfig(getClassLoader(annotatedClass));
 
@@ -134,7 +134,7 @@ public class AbstractAnnotationConfig<T extends Annotation> {
 
         @SuppressWarnings("unchecked")
         @Override
-        protected Class<? extends S> getConfigValue() {
+        public Class<? extends S> getConfigValue() {
 
             String configValue = readConfigValue(String.class);
 
@@ -178,7 +178,7 @@ public class AbstractAnnotationConfig<T extends Annotation> {
 
         @SuppressWarnings("unchecked")
         @Override
-        protected Class<? extends S>[] getConfigValue() {
+        public Class<? extends S>[] getConfigValue() {
             String[] configValue = readConfigValue(String[].class);
 
             Class<?>[] result = null;

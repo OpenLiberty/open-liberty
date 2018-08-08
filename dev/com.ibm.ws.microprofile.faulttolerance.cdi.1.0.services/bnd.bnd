@@ -18,17 +18,16 @@ Bundle-Name: com.ibm.ws.microprofile.faulttolerance.cdi.1.0.services
 Bundle-SymbolicName: com.ibm.ws.microprofile.faulttolerance.cdi.1.0.services
 Bundle-Description: MicroProfile Fault Tolerance CDI Integration, version ${bVersion} services
 
-Private-Package: \
-    com.ibm.ws.microprofile.faulttolerance10.cdi.config
-
 WS-TraceGroup: FAULTTOLERANCE
 
--dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.faulttolerance10.cdi.config.FTEnablementConfig10Impl
+-dsannotations: *
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
-    com.ibm.ws.logging;version=latest,\
-    com.ibm.ws.microprofile.faulttolerance.cdi;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+        com.ibm.ws.logging.core;version=latest, \
+        com.ibm.ws.microprofile.faulttolerance.cdi;version=latest,\
+        com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.1;version=latest,\
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+        com.ibm.ws.microprofile.faulttolerance.spi;version=latest

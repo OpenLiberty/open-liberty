@@ -8,17 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi.config;
+package com.ibm.ws.micrprofile.faulttolerance10.cdi.services;
 
-/**
- * Annotation config for classes and methods annotated with {@code @Asynchronous}
- */
-public interface AsynchronousConfig {
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
-    /**
-     * Validate Asynchronous annotation to make sure all methods with this annotation specified returns a Future.
-     * If placed on class-level, all declared methods in this class will need to return a Future.
-     */
-    void validate();
+import com.ibm.ws.microprofile.faulttolerance.cdi.FTEnablementConfig;
+import com.ibm.ws.microprofile.faulttolerance.cdi.config.impl.FTEnablementConfig10Impl;
 
-}
+@Component(service = FTEnablementConfig.class, configurationPolicy = ConfigurationPolicy.IGNORE)
+public class FTEnablementConfigComponent extends FTEnablementConfig10Impl {}

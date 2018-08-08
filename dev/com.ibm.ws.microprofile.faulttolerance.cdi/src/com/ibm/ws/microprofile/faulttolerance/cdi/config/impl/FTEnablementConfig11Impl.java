@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance11.cdi.config;
+package com.ibm.ws.microprofile.faulttolerance.cdi.config.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -16,17 +16,15 @@ import java.util.Optional;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.microprofile.faulttolerance.cdi.AbstractFTEnablementConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.FTEnablementConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.FTUtils;
 
 /**
  * FT 1.1 implementation for determining whether an annotation is enabled or not
+ * <p>
+ * Features using this implementation should extend it and register it as a component
  */
-@Component(service = FTEnablementConfig.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class FTEnablementConfig11Impl extends AbstractFTEnablementConfig {
 
     /**
