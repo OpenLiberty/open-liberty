@@ -661,11 +661,11 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                                  String uriName,
                                  WebRequest webRequest,
                                  WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
-        performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
         WebReply webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
         if (webReply != null) {
             logAuditEntriesBeforeAuthn(webReply, receivedSubject, uriName, webRequest);
         } else {
+            performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
             // check global cert login.
             String authMech = webAppSecConfig.getOverrideHttpAuthMethod();
             AuthenticationResult authResult = null;
