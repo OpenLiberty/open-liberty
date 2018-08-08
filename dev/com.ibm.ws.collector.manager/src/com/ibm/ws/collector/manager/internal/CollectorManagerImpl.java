@@ -370,8 +370,10 @@ public class CollectorManagerImpl implements CollectorManager {
         /*
          * An active Buffer already exists. This must mean we subscribed two handlers wanting
          * the same source really quickly back-to-back before the source was set into CollectorManager
+         *
+         * Also if it is audit, there is no point of creating a bufferManager here, it won't start up the audit source.
          */
-        if (activeBuffMgrServices.containsKey(sourceId)) {
+        if (activeBuffMgrServices.containsKey(sourceId) || sourceId.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return;
         }
         //result[0] is sourceName

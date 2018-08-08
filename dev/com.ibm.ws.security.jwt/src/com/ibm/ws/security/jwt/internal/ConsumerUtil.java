@@ -198,7 +198,7 @@ public class ConsumerUtil {
     protected Key getJwksKey(JwtConsumerConfig config, JwtContext jwtContext) throws Exception {
         JsonWebStructure jwtHeader = getJwtHeader(jwtContext);
         String kid = jwtHeader.getKeyIdHeaderValue();
-        JwKRetriever jwkRetriever = new JwKRetriever(config.getId(), config.getSslRef(), config.getJwkEndpointUrl(), config.getJwkSet(), JwtUtils.getSSLSupportService(), config.isHostNameVerificationEnabled());
+        JwKRetriever jwkRetriever = new JwKRetriever(config.getId(), config.getSslRef(), config.getJwkEndpointUrl(), config.getJwkSet(), JwtUtils.getSSLSupportService(), config.isHostNameVerificationEnabled(), null, null);
         Key signingKey = jwkRetriever.getPublicKeyFromJwk(kid, null); // only kid or x5t will work but not both
 
         return signingKey;

@@ -59,35 +59,22 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
     public void write(char[] cbuf, int off, int len) throws IOException
     {
         int index = off;
-        StringBuilder sb = null;
         for (int i = 0; i < len; i++)
         {
             char c = cbuf[off+i];
             if (c1 == ']' && c2 == ']' && c == '>')
             {
-                if (sb == null)
-                {
-                    sb = new StringBuilder(len + 16);
-                }
-                sb.append(cbuf, index, i+1 - ( index - off ));
+                super.write(cbuf, index, i+1 - ( index - off ) ); 
                 index = off+i+1;
-                sb.append("<![CDATA[]]]]><![CDATA[>");
+                out.write("<![CDATA[]]]]><![CDATA[>");
             }
             c1 = c2;
             c2 = c;
             pos++;
         }
-        if (sb != null)
+        if (index < off+len)
         {
-            if (index < off+len)
-            {
-                sb.append(cbuf, index, off+len-index);
-            }
-            out.write(sb.toString());
-        }
-        else
-        {
-            out.write(cbuf, off, len);
+            super.write(cbuf, index, off+len-index);
         }
     }
 
@@ -95,35 +82,22 @@ public class CDataEndEscapeFilterWriter extends FilterWriter
     public void write(String str, int off, int len) throws IOException
     {
         int index = off;
-        StringBuilder sb = null;
         for (int i = 0; i < len; i++)
         {
             char c = str.charAt(off+i);
             if (c1 == ']' && c2 == ']' && c == '>')
             {
-                if (sb == null)
-                {
-                    sb = new StringBuilder(len + 16);
-                }
-                sb.append(str, index, off+i+1);
+                super.write(str, index, i+1 - ( index - off ) );
                 index = off+i+1;
-                sb.append("<![CDATA[]]]]><![CDATA[>");
+                out.write("<![CDATA[]]]]><![CDATA[>");
             }
             c1 = c2;
             c2 = c;
             pos++;
         }
-        if (sb != null)
+        if (index < off+len)
         {
-            if (index < off+len)
-            {
-                sb.append(str, index, off+len);
-            }
-            out.write(sb.toString());
-        }
-        else
-        {
-            out.write(str, off, len);
+            super.write(str, index, off+len-index);
         }
     }
 }

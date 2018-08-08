@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +23,11 @@ import java.sql.Statement;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
+import javax.annotation.sql.DataSourceDefinition;
+import javax.annotation.sql.DataSourceDefinitions;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
@@ -32,6 +35,32 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+
+@DataSourceDefinitions({
+                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-infer-driver-class",
+                                               className = "",
+                                               isolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED,
+                                               // loginTimeout = 76, // TODO decide whether/how to support for driver path
+                                               maxPoolSize = 2,
+                                               url = "jdbc:fatdriver:memory:jdbcdriver1",
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                                              "createDatabase=create",
+                                                              "onConnect=insert into address values ('Rochester International Airport', 7600, 'Helgerson Dr SW', 'Rochester', 'MN', 55902)",
+                                                              "queryTimeout=1m16s"
+                                               }),
+                         @DataSourceDefinition(name = "java:module/env/jdbc/dsd-infer-datasource-class",
+                                               className = "",
+                                               databaseName = "memory:jdbcdriver1;create=true",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                               },
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu")
+
+})
 
 @SuppressWarnings("serial")
 @WebServlet("/JDBCDriverManagerServlet")
@@ -42,6 +71,52 @@ public class JDBCDriverManagerServlet extends FATServlet {
 
     @Resource
     DataSource xads;
+
+    @Resource(name = "jdbc/fatDriver")
+    DataSource fatDriverDS;
+
+    @Resource
+    UserTransaction tx;
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            DataSource dds = InitialContext.doLookup("jdbc/fatDriver");
+            // match the user/password specified for container auth data in server.xml
+            Connection con = dds.getConnection("dbuser1", "dbpwd1");
+            try {
+                Statement s = con.createStatement();
+                s.execute("create table address (name varchar(50) not null primary key, num int, street varchar(80), city varchar(40), state varchar(2), zip int)");
+                s.executeUpdate("insert into address values ('IBM Rochester Building 050-2 H215-1', 3605, 'Hwy 52 N', 'Rochester', 'MN', 55901)");
+                s.close();
+            } finally {
+                con.close();
+            }
+        } catch (NamingException x) {
+            throw new ServletException(x);
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+    }
+
+    /**
+     * Verify that it is possible to establish a second connection to a data source that is backed by a Driver,
+     * which demonstrates that the URL and other properties are not lost upon the initial connection.
+     * Also verifies that the user/password from the data source vendor properties are supplied to the driver
+     * in the case of application authentication (which is default when looked up without a resource reference).
+     */
+    @Test
+    public void testAnotherConnection() throws Exception {
+        DataSource dds = InitialContext.doLookup("jdbc/fatDriver");
+        Connection con = dds.getConnection();
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+            String user = mdata.getUserName();
+            assertEquals("dbuser2", user.toLowerCase());
+        } finally {
+            con.close();
+        }
+    }
 
     /**
      * Test of basic database connectivity
@@ -196,17 +271,105 @@ public class JDBCDriverManagerServlet extends FATServlet {
         }
     }
 
-    //TODO this test can be removed once other tests are updated to use the custom FAT driver
+    /**
+     * Verify that className is optional in DataSourceDefinition (can be assigned to empty string),
+     * in which case, in the absence of a url propety, we infer the data source class from the Driver class,
+     * giving highest precedence to XADataSource.
+     */
     @Test
-    public void testFATDriver() throws Exception {
-        Class.forName("jdbc.fat.driver.derby.FATDriver");
-        Connection conn = DriverManager.getConnection("jdbc:derby:memory:wrappedDerby;create=true");
+    public void testUnspecifiedClassNameInDataSourceDefinitionWithoutURL() throws Exception {
+        DataSource dsd = InitialContext.doLookup("java:module/env/jdbc/dsd-infer-datasource-class");
+
+        // Prove it is two-phase capable by using multiple connections that cannot be shared in a transaction
+        tx.begin();
         try {
-            System.out.println("Connected to " + conn.getMetaData().getDatabaseProductName());
-            conn.createStatement().executeQuery("VALUES 1");
+            Connection con1 = dsd.getConnection();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+
+            DatabaseMetaData mdata1 = con1.getMetaData();
+            String user1 = mdata1.getUserName();
+            assertEquals("dbuser1", user1.toLowerCase());
+
+            Statement s1 = con1.createStatement();
+            s1.executeUpdate("insert into address values ('Mayo Clinic', 200, '1st St SW', 'Rochester', 'MN', 55902)");
+
+            // Only possible to use this second, non-matching connection when the data source is capable of two-phase commit
+            Connection con2 = dsd.getConnection("dbuser2", "dbpwd2");
+
+            DatabaseMetaData mdata2 = con2.getMetaData();
+            String user2 = mdata2.getUserName();
+            assertEquals("dbuser2", user2.toLowerCase());
+
+            ResultSet result = con2.createStatement().executeQuery("values 2");
+            assertTrue(result.next());
+            assertEquals(2, result.getInt(1));
+            assertFalse(result.next());
+            result.getStatement().getConnection().close();
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that className is optional in DataSourceDefinition (can be assigned to empty string),
+     * in which case we choose the Driver class based on the URL.
+     */
+    @Test
+    public void testUnspecifiedClassNameInDataSourceDefinitionWithURL() throws Exception {
+        DataSource dsd = InitialContext.doLookup("java:app/env/jdbc/dsd-infer-driver-class");
+
+        // assertEquals(76, dsd.getLoginTimeout()); // TODO if we find a way to support loginTimeout
+
+        Connection con = dsd.getConnection();
+        try {
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con.getTransactionIsolation());
+
+            DatabaseMetaData mdata = con.getMetaData();
+            String user = mdata.getUserName();
+            assertEquals("dbuser1", user.toLowerCase());
+
+            String url = mdata.getURL(); // Due to delegation, Derby URL will be returned. It will include the database name.
+            assertTrue(url, url.contains("memory:jdbcdriver1"));
+
+            Statement s = con.createStatement();
+            assertEquals(76, s.getQueryTimeout());
+
+            ResultSet result = s.executeQuery("select num, street, zip from address where name = 'Rochester International Airport'");
+            assertTrue(result.next());
+            assertEquals(7600, result.getInt(1));
+            assertEquals("Helgerson Dr SW", result.getString(2));
+            assertEquals(55902, result.getInt(3));
+            assertFalse(result.next());
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Very basic test using a connection established via the Driver.
+     * This test validates that the user name from the container authentication data is used for resource reference lookup with
+     * auth=CONTAINER rather than the default user/password that are specified in the data source vendor properties.
+     * It also verifies that we can read an entry that was previously written by the same data source when accessed via
+     * a direct lookup, which equates to auth=APPLICATION where the same user/password as the container auth data were
+     * explicitly requested.
+     */
+    @Test
+    public void testUserForContainerAuth() throws Exception {
+        Connection conn = fatDriverDS.getConnection();
+        try {
+            DatabaseMetaData mdata = conn.getMetaData();
+
+            String user = mdata.getUserName();
+            assertEquals("dbuser1", user.toLowerCase());
+
+            System.out.println("Connected to " + mdata.getDatabaseProductName());
+            ResultSet result = conn.createStatement().executeQuery("select city, zip from address where name = 'IBM Rochester Building 050-2 H215-1'");
+            assertTrue(result.next());
+            assertEquals("Rochester", result.getString(1));
+            assertEquals(55901, result.getInt(2));
+            assertFalse(result.next());
         } finally {
             conn.close();
         }
-
     }
 }

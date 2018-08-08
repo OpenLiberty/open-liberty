@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E: O valor {0} n\u00e3o \u00e9 uma op\u00e7\
 J2CA9934.not.a.valid.option.explanation=O valor configurado est\u00e1 fora do intervalo de op\u00e7\u00f5es v\u00e1lidas para o atributo.
 J2CA9934.not.a.valid.option.useraction=Escolha um valor na lista de op\u00e7\u00f5es v\u00e1lidas.
 
-J2CA9935.secperm.not.supported=J2CA9935I: As permiss\u00f5es de seguran\u00e7a Java 2 especificadas no descritor de implementa\u00e7\u00e3o para o adaptador de recursos {0} n\u00e3o ser\u00e3o aplicadas.
-J2CA9935.secperm.not.supported.explanation=A seguran\u00e7a Java 2 n\u00e3o est\u00e1 ativada no perfil Liberty, portanto, as verifica\u00e7\u00f5es de seguran\u00e7a Java 2 n\u00e3o s\u00e3o executadas para o adaptador de recursos.
-J2CA9935.secperm.not.supported.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
-
 J2CA9936.default.value.error=J2CA9936W: O valor padr\u00e3o para a propriedade {0} n\u00e3o p\u00f4de ser obtido de uma inst\u00e2ncia da classe {1} no adaptador de recursos {2} devido a um erro ocorrido: {3}
 J2CA9936.default.value.error.explanation=Ocorreu um erro ao tentar acessar o valor padr\u00e3o de uma propriedade JavaBean do adaptador de recursos.
 J2CA9936.default.value.error.useraction=Revise o erro e ajuste o adaptador de recursos, conforme necess\u00e1rio.

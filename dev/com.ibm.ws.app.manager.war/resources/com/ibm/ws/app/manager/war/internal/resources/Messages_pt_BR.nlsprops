@@ -216,3 +216,7 @@ error.client.not.installed.useraction=Verifique o local na configura\u00e7\u00e3
 warning.could.not.expand.application=CWWKZ0131W: N\u00e3o foi poss\u00edvel expandir o aplicativo {0} devido \u00e0 exce\u00e7\u00e3o {1}.
 warning.could.not.expand.application.explanation=N\u00e3o foi poss\u00edvel expandir o aplicativo para um diret\u00f3rio tempor\u00e1rio. O aplicativo continuar\u00e1 a ser executado, mas o comportamento de alguns m\u00e9todos que acessam os arquivos do aplicativo poder\u00e3o ser afetados. 
 warning.could.not.expand.application.useraction=Tente resolver o problema na mensagem de exce\u00e7\u00e3o e reinicie o servidor ou atualize o aplicativo.
+
+error.file.outside.archive=CWWKZ0132W: O arquivo {0} no archive {1} n\u00e3o ser\u00e1 extra\u00eddo porque o caminho n\u00e3o est\u00e1 contido dentro do archive.
+error.file.outside.archive.explanation=O caminho do arquivo especifica um diret\u00f3rio relativo. Extrair o arquivo resultaria no arquivo sendo localizado fora do diret\u00f3rio raiz do archive.
+error.file.outside.archive.useraction=Remova do archive quaisquer arquivos com caminhos relativos.

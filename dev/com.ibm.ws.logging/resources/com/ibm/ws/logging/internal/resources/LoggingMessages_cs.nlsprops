@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 ak
 CONSOLE_FORMAT_UPDATED=TRAS3003I: V\u00fdstupn\u00ed form\u00e1t konzoly byl nyn\u00ed aktualizov\u00e1n na ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=V\u00fdstupn\u00ed form\u00e1t pro konzolu byl nyn\u00ed aktualizov\u00e1n.
 CONSOLE_FORMAT_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: N\u00e1sleduj\u00edc\u00ed zpr\u00e1vy jsou v souboru console.log skryt\u00e9: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Zpr\u00e1vy, kter\u00e9 jsou nakonfigurovan\u00e9 jako skryt\u00e9, se nezap\u00ed\u0161\u00ed do souboru console.log. Jsou zaps\u00e1ny do \u00falo\u017ei\u0161\u0165 protokol\u016f a trasov\u00e1n\u00ed v bin\u00e1rn\u00edm protokolov\u00e1n\u00ed. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Nezda\u0159ilo se zapsat zpr\u00e1vy do souboru {0}.
+FAILED_TO_WRITE_LOG.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o z\u00e1pis zpr\u00e1vy do souboru. 
+FAILED_TO_WRITE_LOG.useraction=Ujist\u011bte se, \u017ee adres\u00e1\u0159 existuje, je schopn\u00fd z\u00e1pisu a m\u00e1 dostatek prostoru na disku.
+
+LOG_FILE_RESUMED=TRAS3006I: Zpr\u00e1vy protokolov\u00e1n\u00ed do souboru {0} byly obnoveny.
+LOG_FILE_RESUMED.explanation=Zpr\u00e1vy lze zapsat do souboru.
+LOG_FILE_RESUMED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

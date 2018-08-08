@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.sessionDatabase-1.0
 visibility=public
 IBM-ShortName: sessionDatabase-1.0
 Manifest-Version: 1.0
-Subsystem-Name: Database Session Persistence
+Subsystem-Name: Database Session Persistence 1.0
 -features=com.ibm.websphere.appserver.sessionStore-1.0.0.Database, \
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1,4.0"; apiJar=false, \

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
 CONSOLE_FORMAT_UPDATED=TRAS3003I: A konzol kimeneti form\u00e1tuma  '' {0} '' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
 CONSOLE_FORMAT_UPDATED.explanation=A konzol kimeneti form\u00e1tuma friss\u00edt\u00e9sre ker\u00fclt.
 CONSOLE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: A k\u00f6vetkez\u0151 \u00fczenetek rejtettek a console.log f\u00e1jl el\u0151l: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=A rejtettk\u00e9nt be\u00e1ll\u00edtott \u00fczenetek nem ker\u00fclnek be\u00edr\u00e1sra a console.log f\u00e1jlba. Ezek az \u00fczenetek a bin\u00e1ris napl\u00f3z\u00e1s napl\u00f3 \u00e9s nyomk\u00f6vet\u00e9si adatlerakataiba \u00edr\u00f3dnak. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Nem kell semmit tennie
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Nem siker\u00fclt a(z) {0} f\u00e1jlba \u00fczeneteket \u00edrni.
+FAILED_TO_WRITE_LOG.explanation=Hiba t\u00f6rt\u00e9nt egy \u00fczenet f\u00e1jlba \u00edr\u00e1s\u00e1sra tett k\u00eds\u00e9rlet sor\u00e1n. 
+FAILED_TO_WRITE_LOG.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6nyvt\u00e1r l\u00e9tezik, \u00edrhat\u00f3, \u00e9s elegend\u0151 szabad lemezter\u00fclet \u00e1ll rendelkez\u00e9sre.
+
+LOG_FILE_RESUMED=TRAS3006I: Az \u00fczenetek napl\u00f3z\u00e1sa a(z) {0} f\u00e1jlba folytat\u00f3dik.
+LOG_FILE_RESUMED.explanation=Az \u00fczenetek a f\u00e1jlba \u00edrhat\u00f3k.
+LOG_FILE_RESUMED.useraction=Nincs teend\u0151.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

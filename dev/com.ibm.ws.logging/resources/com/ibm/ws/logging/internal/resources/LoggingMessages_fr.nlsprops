@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,21 @@ MESSAGE_FORMAT_UPDATED.useraction=Aucune action n'est requise.
 CONSOLE_FORMAT_UPDATED=TRAS3003I: Le format de sortie de la console a \u00e9t\u00e9 mis \u00e0 jour et est d\u00e9sormais ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Le format de sortie de la console a \u00e9t\u00e9 mis \u00e0 jour.
 CONSOLE_FORMAT_UPDATED.useraction=Aucune action n'est requise.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: Les messages suivants sont masqu\u00e9s et n''apparaissent pas dans le fichier console.log : {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Les messages configur\u00e9s pour \u00eatre masqu\u00e9s ne sont pas \u00e9crits dans le fichier console.log. Ils sont \u00e9crits dans les r\u00e9f\u00e9rentiels de journaux et de donn\u00e9es de trace pour la consignation binaire.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Aucune action n'est requise
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Echec de l''\u00e9criture de messages dans le fichier {0}.
+FAILED_TO_WRITE_LOG.explanation=Une erreur est survenue lors de la tentative d'\u00e9criture du message dans le fichier.
+
+FAILED_TO_WRITE_LOG.useraction=Assurez-vous que le r\u00e9pertoire existe, qu'il est accessible en \u00e9criture et qu'il dispose d'un espace disque suffisant.
+
+LOG_FILE_RESUMED=TRAS3006I: La journalisation des messages dans le fichier {0} a repris.
+LOG_FILE_RESUMED.explanation=Les messages peuvent \u00eatre \u00e9crits dans le fichier.
+LOG_FILE_RESUMED.useraction=Aucune action n'est requise.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

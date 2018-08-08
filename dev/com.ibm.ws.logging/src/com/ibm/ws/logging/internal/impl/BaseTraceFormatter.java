@@ -710,7 +710,7 @@ public class BaseTraceFormatter extends Formatter {
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_DATETIME)) {
                     ibm_datetime = kvp.getLongValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.SEVERITY)) {
-                    sym = kvp.getStringValue();
+                    sym = " " + kvp.getStringValue() + " ";
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_CLASSNAME)) {
                     className = kvp.getStringValue();
                 } else if (kvp.getKey().equals(LogFieldConstants.IBM_METHODNAME)) {
@@ -739,13 +739,7 @@ public class BaseTraceFormatter extends Formatter {
 
             }
         }
-        if (levelVal == Level.FINER.intValue()) {
-            if (logLevel.equals("ENTRY")) {
-                sym = " > ";
-            } else if (logLevel.equals("EXIT")) {
-                sym = " < ";
-            }
-        }
+
         StringBuilder sb = new StringBuilder(256);
 
         // Common header

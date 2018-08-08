@@ -309,6 +309,9 @@ public final class ResponseImpl extends Response {
     @Override
     public URI getLocation() {
         Object header = metadata.getFirst(HttpHeaders.LOCATION);
+        if (header == null && outMessage != null) { // Liberty change
+            header = outMessage.get(Message.REQUEST_URI);
+        }
         return header == null || header instanceof URI ? (URI) header : URI.create(header.toString());
     }
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=\u8bf7\u5c06\u552f\u4e00\u6807
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: \u8d44\u6e90\u9002\u914d\u5668\u6a21\u5757 {0} \u7684 resourceAdapter \u5143\u7d20\u7684 id \u5c5e\u6027\u4e0d\u5f97\u662f\u4e00\u4e2a\u4fdd\u7559\u7684\u6807\u8bc6 {1}\u3002
 J2CA8816.reserved.resource.adapter.id.explanation=\u5728\u914d\u7f6e\u4e2d\u6240\u6307\u5b9a\u7684\u6807\u8bc6\u6216\u8005\u4ece\u6a21\u5757\u540d\u79f0\u6d3e\u751f\u7684\u6807\u8bc6\u662f\u4e00\u4e2a\u4fdd\u7559\u7684\u6807\u8bc6\u3002\u4fdd\u7559\u7684\u6807\u8bc6\u4ec5\u4f9b\u5185\u90e8\u4f7f\u7528\u3002
 J2CA8816.reserved.resource.adapter.id.useraction=\u8bf7\u4e3a\u670d\u52a1\u5668\u914d\u7f6e\u4e2d resourceAdapter \u5143\u7d20\u7684 id \u5c5e\u6027\u6216\u8005\u6a21\u5757\u540d\u79f0\u63d0\u4f9b\u4e00\u4e2a\u975e\u4fdd\u7559\u503c\u3002
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: {0} \u8d44\u6e90\u9002\u914d\u5668\u5728\u5904\u7406 {1} \u8def\u5f84\u4e2d\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u65f6\u9047\u5230\u4e86\u89e3\u6790\u9519\u8bef\uff1a{2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=\u8d44\u6e90\u9002\u914d\u5668\u5728\u89e3\u6790\u90e8\u7f72\u63cf\u8ff0\u7b26\u65f6\u53d1\u751f\u9519\u8bef\u3002\u8d44\u6e90\u9002\u914d\u5668\u5c06\u4e0d\u53ef\u7528\u3002
+J2CA8817.parse.deployment.descriptor.failed.useraction=\u6709\u5173\u5176\u4ed6\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u67e5\u770b\u5f02\u5e38\u4fe1\u606f\u3002\u8bf7\u67e5\u770b\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u5185\u5bb9\uff0c\u4ee5\u786e\u4fdd\u5185\u5bb9\u4f5c\u4e3a XML \u6570\u636e\u6709\u6548\u3002\u5fc5\u8981\u65f6\uff0c\u8bf7\u4e0e\u8d44\u6e90\u9002\u914d\u5668\u4f9b\u5e94\u5546\u534f\u540c\u89e3\u6790\u65e0\u6548 XML \u6570\u636e\u3002
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"

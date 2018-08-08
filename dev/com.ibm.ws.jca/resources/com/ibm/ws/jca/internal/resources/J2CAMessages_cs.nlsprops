@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -130,6 +130,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=P\u0159i\u0159a\u010fte jednom
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: Atribut ID prvku resourceAdapter pro modul adapt\u00e9ru prost\u0159edku {0} nem\u016f\u017ee b\u00fdt jedn\u00edm z vyhrazen\u00fdch identifik\u00e1tor\u016f {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=ID uveden\u00e9 v konfiguraci nebo odvozen\u00e9 z n\u00e1zvu modulu je vyhrazen\u00fd identifik\u00e1tor. Vyhrazen\u00e9 identifik\u00e1tory jsou pouze pro intern\u00ed pou\u017eit\u00ed.
 J2CA8816.reserved.resource.adapter.id.useraction=Zadejte nevyhrazenou hodnotu pro atribut ID prvku resourceAdapter nebo pro n\u00e1zev modulu v konfiguraci serveru.
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: Adapt\u00e9r prost\u0159edku {0} rozpoznal chybu anal\u00fdzy p\u0159i zpracov\u00e1n\u00ed deskriptoru implementace v cest\u011b {1}: {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=Do\u0161lo k chyb\u011b p\u0159i anal\u00fdze deskriptoru implementace adapt\u00e9rem prost\u0159edku. Adapt\u00e9r prost\u0159edku nebude k dispozici.
+J2CA8817.parse.deployment.descriptor.failed.useraction=Dal\u0161\u00ed podrobnosti viz informace o v\u00fdjimce. Zkontrolujte obsah deskriptoru implementace a ujist\u011bte se, \u017ee obsah je platn\u00fd jako data XML. V p\u0159\u00edpad\u011b pot\u0159eby pracujte s dodavatelem adapt\u00e9ru prost\u0159edku za \u00fa\u010delem vy\u0159e\u0161en\u00ed neplatn\u00fdch dat XML.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"
