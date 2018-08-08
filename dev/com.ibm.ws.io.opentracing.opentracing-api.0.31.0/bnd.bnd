@@ -11,16 +11,17 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: OpenTracing API
-Bundle-SymbolicName: com.ibm.ws.io.opentracing.opentracing-api
-Bundle-Description: OpenTracing Java API, version 0.30.0
+Bundle-Name: OpenTracing API 0.31.0
+Bundle-SymbolicName: com.ibm.ws.io.opentracing.opentracing-api.0.31.0
+Bundle-Description: OpenTracing Java API, version 0.31.0
 
 -includeresource: \
-  @${repo;io.opentracing:opentracing-api;0.30.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*
+  @${repo;io.opentracing:opentracing-api;0.31.0;EXACT}!/!(OSGI-OPT/src|META-INF/maven)/*
 
-Export-Package: io.opentracing;version=0.30.0, \
-  io.opentracing.propagation;version=0.30.0, \
-  io.opentracing.tag;version=0.30.0
+Export-Package: io.opentracing;version=0.31.0, \
+  io.opentracing.log;version=0.31.0, \
+  io.opentracing.propagation;version=0.31.0, \
+  io.opentracing.tag;version=0.31.0
 
 # no notice file in source jar
 Include-Resource: \
@@ -29,4 +30,4 @@ Include-Resource: \
 instrument.disabled: true
 
 -buildpath: \
-  io.opentracing:opentracing-api;version=0.30.0
+  io.opentracing:opentracing-api;version=0.31.0
