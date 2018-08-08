@@ -13,6 +13,7 @@ package jdbc.fat.driver.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -588,7 +589,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
         //It should however still be able to be unwrapped to an interface impl'd by WsJdbcDataSource
         assertTrue("fatDriverDS should wrap CommonDataSource", fatDriverDS.isWrapperFor(CommonDataSource.class));
         CommonDataSource ds = fatDriverDS.unwrap(CommonDataSource.class);
-        assertEquals("The WSJdbcDataSource instance should have been returned by the call to unwrap", fatDriverDS, ds);
+        assertSame("The WSJdbcDataSource instance should have been returned by the call to unwrap", fatDriverDS, ds);
     }
 
 }

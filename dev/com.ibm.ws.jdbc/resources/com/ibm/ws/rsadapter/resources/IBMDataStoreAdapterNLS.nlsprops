@@ -252,8 +252,8 @@ DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to 
 
 # {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
 DSRA4006.null.connection=DSRA4006E: DataSource {0} is unable to connect to the database because {1} returned a null connection for the URL beginning with {2}.
-DSRA4006.null.connection.explanation=Although the java.sql.Driver indicated it accepted the supplied URL, it returned a null connection.
-DSRA4006.null.connection.useraction=This indicates a bug in the JDBC driver. Report the error to the JDBC driver vendor. Also ensure the JDBC driver and DataSource configuration are correct.
+DSRA4006.null.connection.explanation=Although the java.sql.Driver indicated that it accepted the supplied URL, it returned a null connection. This error indicates a bug in the JDBC driver.
+DSRA4006.null.connection.useraction=Report the error to the JDBC driver vendor and ensure that the JDBC driver and DataSource configuration are correct.
 
 DSRA4008.tran.none.unsupported=DSRA4008E: The JDBC driver does not support an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
 DSRA4008.tran.none.unsupported.explanation=The TRANSACTION_NONE isolation level that is configured on the data source is not supported by the JDBC driver.
