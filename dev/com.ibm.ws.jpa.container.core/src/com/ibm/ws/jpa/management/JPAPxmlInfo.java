@@ -14,15 +14,23 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 import static com.ibm.ws.jpa.management.JPAConstants.PERSISTENCE_XML_RESOURCE_NAME;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -287,6 +295,9 @@ class JPAPxmlInfo {
         return toStringBuilder(new StringBuilder()).toString();
     }
 
+    /**
+     * Writes the JPA ORM information output to the JPARuntimeIntrospector
+     */
     void doIntrospect(PrintWriter out) {
         final Map<String, JPAPUnitInfo> ivPuListCopy = new HashMap<String, JPAPUnitInfo>();
         synchronized (ivPuList) {
@@ -298,55 +309,114 @@ class JPAPxmlInfo {
         out.println("# Persistence Units = " + ivPuList.size());
         out.println();
 
-        for (Map.Entry<String, JPAPUnitInfo> entry : ivPuListCopy.entrySet()) {
-            final String puName = entry.getKey();
-            final JPAPUnitInfo jpaPUInfo = entry.getValue();
-
-            final URL puRootURL = jpaPUInfo.getPersistenceUnitRootUrl();
+        for (JPAPUnitInfo puInfo : ivPuListCopy.values()) {
+            final URL puRootURL = puInfo.getPersistenceUnitRootUrl();
             final String urlPtcol = puRootURL.getProtocol();
 
-//            out.println();
-//            out.println("Application Name: " + jpaPUInfo.getApplName());
             out.println("************************************************************");
-            out.println(jpaPUInfo.dump());
-
+            out.println(puInfo.dump());
             out.println();
             out.println("Object Relational Mapping Dump:");
             out.println();
-            if (urlPtcol.toLowerCase().contains("wsjpa")) {
-                // WSJPA: zip-format InputStream
-                boolean printed = false;
-                try (ZipInputStream zis = new ZipInputStream(puRootURL.openStream())) {
-                    ZipEntry ze = null;
-                    while ((ze = zis.getNextEntry()) != null) {
-                        if (!(ze.getName().endsWith("/persistence.xml"))) {
-                            continue;
-                        }
 
-                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        final byte[] buffer = new byte[4096];
-                        int bytesRead = -1;
-                        while ((bytesRead = zis.read(buffer)) >= 0) {
-                            baos.write(buffer, 0, bytesRead);
-                        }
-
-                        JPAORMDiagnostics.writeJPAORMDiagnostics(jpaPUInfo, new ByteArrayInputStream(baos.toByteArray()), out);
-                        printed = true;
-                        break;
-                    }
-                } catch (IOException ioe) {
-                    FFDCFilter.processException(ioe, JPAPxmlInfo.class.getName() + ".doIntrospect", "323");
-                }
-                if (!printed) {
+            if ("wsjpa".equalsIgnoreCase(urlPtcol)) {
+                if (!doWSJPAIntrospect(puInfo, puRootURL, out)) {
                     out.println("WARNING: Failed to dump ORM for PURoot: " + puRootURL);
                 }
-            } else if (urlPtcol.toLowerCase().contains("jar")) {
-                // TODO
-                out.println("TODO found jar.");
-            } else if (urlPtcol.toLowerCase().contains("file")) {
-                // TODO
-                out.println("TODO found file.");
+            } else if ("jar".equalsIgnoreCase(urlPtcol)) {
+                if (!doJarIntrospect(puInfo, puRootURL, out)) {
+                    out.println("WARNING: Failed to dump ORM for PURoot: " + puRootURL);
+                }
+            } else if ("file".equalsIgnoreCase(urlPtcol)) {
+                if (!doFileIntrospect(puInfo, puRootURL, out)) {
+                    out.println("WARNING: Failed to dump ORM for PURoot: " + puRootURL);
+                }
             }
         }
+    }
+
+    /**
+     * Searches the URL (wsjpa:) from the persistence unit root for the persistence.xml file.
+     * Then prints the ORM information to the output stream.
+     *
+     * @param jpaPUInfo - JPAPUnitInfo for the persistence unit
+     * @param puRootURL - URL pointing to the persistence unit root
+     * @param out - PrintWriter to print ORM information to
+     * @return boolean - If a persistence.xml was found and processed
+     */
+    private boolean doWSJPAIntrospect(final JPAPUnitInfo jpaPUInfo, final URL puRootURL, final PrintWriter out) {
+        try (ZipInputStream zis = new ZipInputStream(puRootURL.openStream())) {
+            ZipEntry ze = null;
+            while ((ze = zis.getNextEntry()) != null) {
+                if ("meta-inf/persistence.xml".equalsIgnoreCase(ze.getName())) {
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    final byte[] buffer = new byte[4096];
+                    int bytesRead = -1;
+                    while ((bytesRead = zis.read(buffer)) >= 0) {
+                        baos.write(buffer, 0, bytesRead);
+                    }
+
+                    JPAORMDiagnostics.writeJPAORMDiagnostics(jpaPUInfo, new ByteArrayInputStream(baos.toByteArray()), out);
+                    return true;
+                }
+            }
+        } catch (IOException ioe) {
+            FFDCFilter.processException(ioe, JPAPxmlInfo.class.getName() + ".doWSJPAIntrospect", "364");
+        }
+        return false;
+    }
+
+    /**
+     * Searches the URL (jar:) from the persistence unit root for the persistence.xml file.
+     * Then prints the ORM information to the output stream.
+     *
+     * @param jpaPUInfo - JPAPUnitInfo for the persistence unit
+     * @param puRootURL - URL pointing to the persistence unit root
+     * @param out - PrintWriter to print ORM information to
+     * @return boolean - If a persistence.xml was found and processed
+     */
+    private boolean doJarIntrospect(final JPAPUnitInfo jpaPUInfo, final URL puRootURL, final PrintWriter out) {
+        try {
+            JarURLConnection conn = (JarURLConnection) puRootURL.openConnection();
+            JarFile jf = conn.getJarFile();
+            Enumeration<JarEntry> entries = jf.entries();
+            for (JarEntry je = entries.nextElement(); entries.hasMoreElements(); je = entries.nextElement()) {
+                if ("meta-inf/persistence.xml".equalsIgnoreCase(je.getName())) {
+                    try (InputStream in = jf.getInputStream(je)) {
+                        JPAORMDiagnostics.writeJPAORMDiagnostics(jpaPUInfo, in, out);
+                        return true;
+                    } catch (IOException ioe) {
+                        FFDCFilter.processException(ioe, JPAPxmlInfo.class.getName() + ".doJarIntrospect", "389");
+                    }
+                }
+            }
+        } catch (IOException ioe) {
+            FFDCFilter.processException(ioe, JPAPxmlInfo.class.getName() + ".doJarIntrospect", "394");
+        }
+        return false;
+    }
+
+    /**
+     * Searches the URL (file:) from the root of the persistence root for the persistence.xml file.
+     * Then prints the ORM information to the output stream.
+     *
+     * @param jpaPUInfo - JPAPUnitInfo for the persistence unit
+     * @param puRootURL - URL pointing to the persistence unit root
+     * @param out - PrintWriter to print ORM information to
+     * @return boolean - If a persistence.xml was found and processed
+     */
+    private boolean doFileIntrospect(final JPAPUnitInfo jpaPUInfo, final URL puRootURL, final PrintWriter out) {
+        try {
+            File rootFile = new File(puRootURL.getFile());
+            File pxmlFile = new File(rootFile, "meta-inf/persistence.xml");
+            if (pxmlFile.exists()) {
+                final BufferedInputStream buffer = new BufferedInputStream(new FileInputStream(pxmlFile));
+                JPAORMDiagnostics.writeJPAORMDiagnostics(jpaPUInfo, buffer, out);
+                return true;
+            }
+        } catch (IOException ioe) {
+            FFDCFilter.processException(ioe, JPAPxmlInfo.class.getName() + ".doFileIntrospect", "418");
+        }
+        return false;
     }
 }

@@ -11,23 +11,27 @@
 
 package com.ibm.ws.jpa.diagnostics.class_scanner.ano;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInfoType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInformationType;
@@ -64,26 +68,21 @@ public final class EntityMappingsScanner {
          * directory that contains an exploded jar file, or some other URL from which an
          * InputStream in jar format can be obtained.
          */
-        final String urlProtocol = targetArchive.getProtocol();
-        if ("file".equalsIgnoreCase(urlProtocol)) {
-            // Protocol is "file", which either addresses a jar file or an exploded jar file
-            try {
-                Path taPath = Paths.get(targetArchive.toURI());
-                if (Files.isDirectory(taPath)) {
-                    // Exploded Archive
-                    citSet.addAll(processExplodedJarFormat(taPath));
-                } else {
-                    // Unexploded Archive
-                    System.err.println("Unexploded Archive Path");
-                }
+        String protocol = this.targetArchive.getProtocol();
 
-            } catch (URISyntaxException e) {
-                throw new ClassScannerException(e);
+        if ("wsjpa".equalsIgnoreCase(protocol)) {
+            citSet.addAll(processWSJPAInputStreamURL(this.targetArchive));
+        } else if ("jar".equalsIgnoreCase(protocol)) {
+            citSet.addAll(processJarInputStreamURL(this.targetArchive));
+        } else if ("file".equalsIgnoreCase(protocol)) {
+            File rootFile = new File(this.targetArchive.getFile());
+            if (rootFile.isDirectory()) {
+                // Exploded Archive
+                citSet.addAll(processFileInputStreamURL(this.targetArchive));
+            } else {
+                // Unexploded Archive
+                System.err.println("Unexploded Archive Path");
             }
-
-        } else {
-            // InputStream will be in jar format.
-            citSet.addAll(processJarFormatInputStreamURL(targetArchive));
         }
 
         // Find Inner Classes, merge them into their encapsulating class, and remove them as a standalone ClassInfoType.
@@ -233,12 +232,63 @@ public final class EntityMappingsScanner {
         citSet.removeAll(innerClassSet);
     }
 
-    private Set<ClassInfoType> processExplodedJarFormat(Path path) throws ClassScannerException {
+    private Set<ClassInfoType> processWSJPAInputStreamURL(URL wsjpaURL) throws ClassScannerException {
+        final HashSet<ClassInfoType> citSet = new HashSet<ClassInfoType>();
+
+        try (ZipInputStream zis = new ZipInputStream(wsjpaURL.openStream())) {
+            ZipEntry ze = null;
+            while ((ze = zis.getNextEntry()) != null) {
+                String name = ze.getName();
+                if (name != null && name.endsWith(".class")) {
+                    name = name.substring(0, name.length() - 6).replace("/", ".");
+
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    final byte[] buffer = new byte[4096];
+                    int bytesRead = -1;
+                    while ((bytesRead = zis.read(buffer)) >= 0) {
+                        baos.write(buffer, 0, bytesRead);
+                    }
+
+                    citSet.add(scanByteCodeFromInputStream(name, new ByteArrayInputStream(baos.toByteArray())));
+                }
+            }
+        } catch (Throwable t) {
+            throw new ClassScannerException(t);
+        }
+        return citSet;
+    }
+
+    private Set<ClassInfoType> processJarInputStreamURL(URL jarURL) throws ClassScannerException {
+        final HashSet<ClassInfoType> citSet = new HashSet<ClassInfoType>();
+
+        try {
+            JarURLConnection conn = (JarURLConnection) jarURL.openConnection();
+            JarFile jf = conn.getJarFile();
+            Enumeration<JarEntry> entries = jf.entries();
+            for (JarEntry je = entries.nextElement(); entries.hasMoreElements(); je = entries.nextElement()) {
+                String name = je.getName();
+                if (name != null && name.endsWith(".class")) {
+                    name = name.substring(0, name.length() - 6).replace("/", ".");
+                    try (InputStream in = jf.getInputStream(je)) {
+                        citSet.add(scanByteCodeFromInputStream(name, in));
+                    } catch (IOException ioe) {
+                        throw new ClassScannerException(ioe);
+                    }
+                }
+            }
+        } catch (Throwable t) {
+            throw new ClassScannerException(t);
+        }
+        return citSet;
+    }
+
+    private Set<ClassInfoType> processFileInputStreamURL(URL fileURL) throws ClassScannerException {
         final HashSet<ClassInfoType> citSet = new HashSet<ClassInfoType>();
         final HashSet<Path> archiveFiles = new HashSet<Path>();
 
+        File rootFile = new File(fileURL.getFile());
         try {
-            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            Files.walkFileTree(rootFile.toPath(), new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (Files.isRegularFile(file) && Files.size(file) > 0
@@ -251,7 +301,7 @@ public final class EntityMappingsScanner {
             });
 
             for (Path p : archiveFiles) {
-                String cName = path.relativize(p).toString().replace("/", ".");
+                String cName = rootFile.toPath().relativize(p).toString().replace("/", ".");
                 cName = cName.substring(0, cName.length() - 6); // Remove ".class" from name
 
                 try (InputStream is = Files.newInputStream(p)) {
@@ -262,25 +312,6 @@ public final class EntityMappingsScanner {
             }
         } catch (ClassScannerException cse) {
             throw cse;
-        } catch (Throwable t) {
-            throw new ClassScannerException(t);
-        }
-
-        return citSet;
-    }
-
-    private Set<ClassInfoType> processJarFormatInputStreamURL(URL jarURL) throws ClassScannerException {
-        final HashSet<ClassInfoType> citSet = new HashSet<ClassInfoType>();
-
-        try (JarInputStream jis = new JarInputStream(jarURL.openStream(), false)) {
-            JarEntry jarEntry = null;
-            while ((jarEntry = jis.getNextJarEntry()) != null) {
-                String name = jarEntry.getName();
-                if (name != null && name.endsWith(".class")) {
-                    name = name.substring(0, name.length() - 6).replace("/", ".");
-                    citSet.add(scanByteCodeFromInputStream(name, jis));
-                }
-            }
         } catch (Throwable t) {
             throw new ClassScannerException(t);
         }
