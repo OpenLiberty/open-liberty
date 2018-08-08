@@ -22,7 +22,11 @@ Export-Package: \
   javax.mail.search, \
   javax.mail.util
 
-Import-Package: javax.activation
+Import-Package: \
+  !javax.activation
+  
+DynamicImport-Package: \
+  javax.activation
 
 instrument.disabled: true
 

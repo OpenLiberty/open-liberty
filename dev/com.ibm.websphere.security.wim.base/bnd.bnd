@@ -16,6 +16,7 @@ Bundle-Description:  wim base, version ${bVersion}
 Bundle-SymbolicName: com.ibm.websphere.security.wim.base
 
 Import-Package: \
+ !javax.activation,\
  !javax.xml.bind.*, \
  *
  
@@ -23,6 +24,7 @@ Import-Package: \
 # those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
 # bundle will be always used due to JAXB 2.2 API is not resolved
 DynamicImport-Package: \
+ javax.activation, \
  javax.xml.bind, \
  javax.xml.bind.annotation, \
  javax.xml.bind.annotation.adapters, \
@@ -47,7 +49,7 @@ instrument.classesExcludes: com/ibm/websphere/security/wim/util/resources/*.clas
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.websphere.security;version=latest,\
-    javax.activation:activation;version=1.1,\
+    com.ibm.websphere.javaee.activation.1.1;version=latest,\
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
     com.sun.xml.bind:jaxb-impl;version=2.2.10,\
     com.sun.xml.bind:jaxb-core;version=2.2.10

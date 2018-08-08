@@ -22,7 +22,7 @@ Import-Package: \
  javax.xml.bind.*;version="[2.2,3)", \
  org.apache.mina.*;resolution:=optional, \
  javax.xml.soap;resolution:=optional, \
- javax.activation;resolution:=optional, \
+ javax.activation;version="[1.1,2)";resolution:=optional, \
  !org.springframework.*;resolution:=optional;version="[2.5,4)", \
  !org.apache.aries.*;version="[0.3,2)", \
  !org.osgi.service.blueprint.*, \

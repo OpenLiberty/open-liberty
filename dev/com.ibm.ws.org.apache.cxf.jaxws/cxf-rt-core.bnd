@@ -26,7 +26,7 @@ Import-Package: \
  junit.framework.*;resolution:=optional, \
  org.apache.xml.resolver.*;resolution:=optional, \
  org.junit.*;resolution:=optional, \
- javax.activation, \
+ javax.activation;version="[1.1,2)", \
  javax.mail;version="[0.0,2)", \
  javax.annotation;version="[0.0,2)", \
  javax.xml.bind.*;version="[2.2,3)", \

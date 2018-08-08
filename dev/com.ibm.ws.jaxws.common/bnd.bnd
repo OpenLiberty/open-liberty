@@ -35,6 +35,7 @@ Export-Package: \
     com.ibm.ws.jaxws.globalhandler
    
 Import-Package: \
+   javax.activation;version="[1.1,2)",\
    javax.xml.bind.*;version="[2.2,3)", \
    javax.xml.ws.*;version="[2.2,3)", \
    com.ibm.ws.javaee.ddmodel.wsbnd, \
@@ -199,6 +200,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+	com.ibm.websphere.javaee.activation.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
@@ -207,8 +209,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	com.ibm.ws.webservices.handler;version=latest,\
 	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
 	com.ibm.websphere.appserver.spi.threading;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	javax.activation:activation;version=1.1
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

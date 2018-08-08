@@ -28,12 +28,15 @@ Export-Package:\
   com.sun.mail.handlers;version="1.6.0"
 
 Import-Package: \
-  javax.activation, \
+  !javax.activation, \
   javax.mail, \
   javax.mail.event, \
   javax.mail.internet, \
   javax.mail.search, \
   javax.mail.util
+  
+DynamicImport-Package: \
+  javax.activation
 
 publish.wlp.jar.suffix: dev/api/third-party
 

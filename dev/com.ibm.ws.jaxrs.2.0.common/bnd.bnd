@@ -65,7 +65,7 @@ Import-Package: \
  org.osgi.framework.*, \
  org.apache.neethi;resolution:=optional, \
  org.apache.commons.logging.*;resolution:=optional, \
- javax.activation, \
+ !javax.activation, \
  javax.mail;version="[0.0,2)", \
  javax.annotation;version="[1.2,2)", \
  javax.xml.stream.*, \
@@ -120,6 +120,7 @@ Import-Package: \
 # those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
 # bundle will be always used due to JAXB 2.2 API is not resolved
 DynamicImport-Package: \
+ javax.activation, \
  javax.xml.ws, \
  javax.xml.ws.*, \
  javax.xml.bind, \
@@ -178,6 +179,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.websphere.javaee.activation.1.1;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.webservices.handler;version=latest,\
@@ -194,5 +196,4 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.ws.kernel.service,\
 	com.ibm.websphere.appserver.spi.threading, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	com.ibm.ws.jaxrs.2.x.config;version=latest,\
-	javax.activation:activation;version=1.1
+	com.ibm.ws.jaxrs.2.x.config;version=latest
