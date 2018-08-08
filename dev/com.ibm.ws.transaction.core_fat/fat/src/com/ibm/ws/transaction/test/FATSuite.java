@@ -25,6 +25,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @SuiteClasses({
                 SimpleTest.class,
                 XATest.class,
+                RecoveryTest.class,
 })
 public class FATSuite {
 
