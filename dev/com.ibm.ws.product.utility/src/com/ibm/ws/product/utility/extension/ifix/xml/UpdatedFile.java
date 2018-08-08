@@ -15,8 +15,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.w3c.dom.Node;
 
 public class UpdatedFile {
+    //needs to support both hash and MD5hash as attributes
     public static UpdatedFile fromNode(Node n) {
-        return new UpdatedFile(n.getAttributes().getNamedItem("id").getNodeValue(), Long.parseLong(n.getAttributes().getNamedItem("size").getNodeValue()), n.getAttributes().getNamedItem("date").getNodeValue(), n.getAttributes().getNamedItem("MD5hash").getNodeValue());
+
+        String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
+        long size = n.getAttributes().getNamedItem("size") == null ? null : Long.parseLong(n.getAttributes().getNamedItem("size").getNodeValue());
+        String date = n.getAttributes().getNamedItem("date") == null ? null : n.getAttributes().getNamedItem("date").getNodeValue();
+        String hash = n.getAttributes().getNamedItem("hash") == null ? n.getAttributes().getNamedItem("MD5hash") == null ? null : n.getAttributes().getNamedItem("MD5hash").getNodeValue() : n.getAttributes().getNamedItem("hash").getNodeValue();
+
+        return new UpdatedFile(id, size, date, hash);
     }
 
     @XmlAttribute

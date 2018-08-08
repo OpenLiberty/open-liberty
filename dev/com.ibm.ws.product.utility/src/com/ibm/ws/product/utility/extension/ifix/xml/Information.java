@@ -21,7 +21,9 @@ public class Information {
         //Only return the first information tag we find
         if (nl.getLength() > 0) {
             Node n = nl.item(0);
-            return new Information(n.getAttributes().getNamedItem("name").getNodeValue(), n.getAttributes().getNamedItem("version").getNodeValue(), n.getTextContent());
+            String name = n.getAttributes().getNamedItem("name") == null ? null : n.getAttributes().getNamedItem("name").getNodeValue();
+            String version = n.getAttributes().getNamedItem("version") == null ? null : n.getAttributes().getNamedItem("version").getNodeValue();
+            return new Information(name, version, n.getTextContent());
         }
         return null;
     }

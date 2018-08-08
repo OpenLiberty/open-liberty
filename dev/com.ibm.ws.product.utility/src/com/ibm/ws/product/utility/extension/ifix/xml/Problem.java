@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -24,10 +25,18 @@ public class Problem {
 
     public static List<Problem> fromNodeList(NodeList nl) {
         List<Problem> problems = new ArrayList<Problem>();
-        for (int i = 0; i < nl.getLength(); i++)
-            if (nl.item(i).getNodeName().equals("problem"))
-                problems.add(new Problem(nl.item(i).getAttributes().getNamedItem("id").getNodeValue(), nl.item(i).getAttributes().getNamedItem("displayId").getNodeValue(), nl.item(i).getAttributes().getNamedItem("description").getNodeValue()));
-        return problems;
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node n = nl.item(i);
+            if (n.getNodeName().equals("problem")) {
+                String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
+                String displayId = n.getAttributes().getNamedItem("displayId") == null ? null : n.getAttributes().getNamedItem("displayId").getNodeValue();
+                String description = n.getAttributes().getNamedItem("description") == null ? null : n.getAttributes().getNamedItem("description").getNodeValue();
+
+                problems.add(new Problem(id, displayId, description));
+            }
+        }
+
+        return problems.size() > 0 ? problems : null;
     }
 
     private String displayId;

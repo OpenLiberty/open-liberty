@@ -15,13 +15,17 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Property {
     public static List<Property> fromNodeList(NodeList nl) {
         List<Property> props = new ArrayList<Property>();
         for (int i = 0; i < nl.getLength(); i++) { //Property Elements
-            props.add(new Property(nl.item(i).getAttributes().getNamedItem("name").getNodeValue(), nl.item(i).getAttributes().getNamedItem("value").getNodeValue()));
+            Node n = nl.item(i);
+            String name = n.getAttributes().getNamedItem("name") == null ? null : n.getAttributes().getNamedItem("name").getNodeValue();
+            String value = n.getAttributes().getNamedItem("value") == null ? null : n.getAttributes().getNamedItem("value").getNodeValue();
+            props.add(new Property(name, value));
         }
         return props;
     }

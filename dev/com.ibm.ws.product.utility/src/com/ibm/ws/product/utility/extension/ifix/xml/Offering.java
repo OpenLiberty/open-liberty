@@ -20,7 +20,9 @@ import org.w3c.dom.Node;
 public class Offering {
 
     public static Offering fromNode(Node n) {
-        return new Offering(n.getAttributes().getNamedItem("id").getNodeValue(), n.getAttributes().getNamedItem("tolerance").getNodeValue());
+        String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
+        String tolerance = n.getAttributes().getNamedItem("tolerance") == null ? null : n.getAttributes().getNamedItem("tolerance").getNodeValue();
+        return new Offering(id, tolerance);
     }
 
     private String id;
