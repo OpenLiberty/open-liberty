@@ -201,7 +201,9 @@ public class BufferManagerImpl extends BufferManager {
 
 		if (earlyMessageQueue != null && earlyMessageQueue.size() != 0) {
 			for (Object message : earlyMessageQueue.toArray()) {
-				ringBuffer.add(message);
+				if (message != null) {
+					ringBuffer.add(message);
+				}
 			}
 		}
 
