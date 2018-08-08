@@ -32,6 +32,7 @@ import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -50,7 +51,7 @@ import componenttest.app.FATServlet;
                                                               "createDatabase=create",
                                                }),
                          @DataSourceDefinition(name = "java:comp/env/jdbc/dsd-driver-interface",
-                                               className = "", // TODO "java.sql.Driver", and other ds interfaces specified as the className
+                                               className = "java.sql.Driver",
                                                url = "jdbc:fatdriver:memory:jdbcdriver1",
                                                user = "dbuser1",
                                                password = "{xor}Oz0vKDtu",
@@ -85,7 +86,23 @@ import componenttest.app.FATServlet;
                                                url = "jdbc:fatdriver:memory:jdbcdriver1",
                                                properties = {
                                                               "internal.nonship.function=This is for internal development only. Never use this in production"
-                                               })
+                                               }),
+                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-datasource-interface",
+                                               className = "javax.sql.DataSource",
+                                               databaseName = "memory:jdbcdriver1;create=true",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                               },
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu"),
+                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-xadatasource-interface",
+                                               className = "javax.sql.XADataSource",
+                                               databaseName = "memory:jdbcdriver1;create=true",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                               },
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu")
 })
 
 @SuppressWarnings("serial")
@@ -242,6 +259,59 @@ public class JDBCDriverManagerServlet extends FATServlet {
             con.createStatement().executeUpdate("insert into address values ('Quarry Hill Nature Center', 701, 'Silver Creek Road NE', 'Rochester', 'MN', 55906)");
         } finally {
             con.close();
+        }
+    }
+
+    /**
+     * Verify that DataSourceDefinitions can specify javax.sql.DataSource and javax.sql.XADataSource as the class name,
+     * and Liberty will discover a data source implementation class of the specified type. In order to confirm that the
+     * correct implementation is chosen, attempt to enlist multiple non-shared connections from the javax.sql.DataSource,
+     * requiring the second to fail, but show that enlisting another resource from the javax.sql.XADataSource succeeds.
+     */
+    @ExpectedFFDC({
+                    "java.lang.IllegalStateException", // intentional failure to enlist second resource that isn't two-phase capable
+                    "java.sql.SQLException", // intentional failure to enlist second resource that isn't two-phase capable
+                    "javax.resource.ResourceException" // intentional failure to enlist second resource that isn't two-phase capable
+    })
+    @Test
+    public void testInterfaceAsClassNameInDataSourceDefinition() throws Exception {
+        DataSource dsd_ds = InitialContext.doLookup("java:app/env/jdbc/dsd-with-datasource-interface");
+
+        int txStatus;
+        tx.begin();
+        try {
+            Connection con1 = dsd_ds.getConnection();
+            con1.createStatement().executeUpdate("insert into address values ('University of Minnesota Rochester', 111, 'S Broadway #300', 'Rochester', 'MN', 55904)");
+
+            // If dsd_ds is backed by javax.sql.DataSource, we will not be able to enlist a second connection,
+            try {
+                Connection con2 = dsd_ds.getConnection("newUser", "newPassword");
+                con2.createStatement().executeUpdate("insert into address values ('Apache Mall', 52, 'US-14', 'Rochester', 'MN', 55902)");
+            } catch (SQLException x) {
+                boolean causedByEnlistmentFailure = false;
+                for (Throwable c = x; !causedByEnlistmentFailure && c != null; c = c.getCause())
+                    causedByEnlistmentFailure |= c instanceof IllegalStateException;
+                if (!causedByEnlistmentFailure)
+                    throw x;
+            }
+        } finally {
+            txStatus = tx.getStatus();
+            tx.rollback();
+        }
+
+        assertEquals(Status.STATUS_MARKED_ROLLBACK, txStatus);
+
+        tx.begin();
+        try {
+            Connection con1 = dsd_ds.getConnection();
+            con1.createStatement().executeUpdate("insert into address values ('Mayo Civic Center', 30, 'Civic Center Dr SE', 'Rochester', 'MN', 55904)");
+
+            // If dsd_xa is backed by javax.sql.XADataSource, then another connection can be enlisted,
+            DataSource dsd_xa = InitialContext.doLookup("java:app/env/jdbc/dsd-with-xadatasource-interface");
+            Connection con2 = dsd_xa.getConnection();
+            con2.createStatement().executeUpdate("insert into address values ('Indian Heights Park', 1800, 'Terracewood Dr NW', 'Rochester', 'MN', 55901)");
+        } finally {
+            tx.commit();
         }
     }
 

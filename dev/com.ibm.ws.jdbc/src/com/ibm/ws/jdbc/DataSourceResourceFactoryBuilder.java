@@ -14,7 +14,9 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -76,6 +78,13 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
      * Name of property used by config service to identify where the configuration of a component instance originates.
      */
     private static final String CONFIG_SOURCE = "config.source";
+
+    /**
+     * Interface names, including package, for supported data source types. 
+     */
+    private static final Collection<String> DS_INTERFACE_NAMES = Arrays.asList(XADataSource.class.getName(),
+                                                                               ConnectionPoolDataSource.class.getName(),
+                                                                               DataSource.class.getName());
 
     /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
@@ -500,6 +509,31 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         String[][] dsClassInfo = new String[JDBCDrivers.NUM_DATA_SOURCE_INTERFACES][2];
         final int CLASS_NAME = 0, LIBRARY_PID = 1; // indices for the second dimension
 
+        // determine if we need to search for an implementation class, and if so, of which type(s)
+        int[] dsTypeSearchOrder;
+        boolean hasImplClassName = className != null && className.length() > 0;
+        if (hasImplClassName) {
+            if (XADataSource.class.getName().equals(className)) {
+                dsTypeSearchOrder = new int[] { JDBCDrivers.XA_DATA_SOURCE };
+                hasImplClassName = false;
+            } else if (ConnectionPoolDataSource.class.getName().equals(className)) {
+                dsTypeSearchOrder = new int[] { JDBCDrivers.CONNECTION_POOL_DATA_SOURCE };
+                hasImplClassName = false;
+            } else if (DataSource.class.getName().equals(className)) {
+                dsTypeSearchOrder = new int[] { JDBCDrivers.DATA_SOURCE };
+                hasImplClassName = false;
+            } else if (Driver.class.getName().equals(className)) {
+                dsTypeSearchOrder = null;
+                hasImplClassName = false;
+            } else {
+                dsTypeSearchOrder = null; // if we know the impl class, there is no need to search for one
+            }
+        } else if (url == null) {
+            dsTypeSearchOrder = new int[] { JDBCDrivers.XA_DATA_SOURCE, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE, JDBCDrivers.DATA_SOURCE };
+        } else { // assume java.sql.Driver due to presence of URL
+            dsTypeSearchOrder = null;
+        }
+
         // Determine which shared library can load className
         for (ServiceReference<Library> libraryRef : libraryRefs) {
             Library library = DataSourceService.priv.getService(bundleContext,libraryRef);
@@ -513,21 +547,14 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                         ClassLoader loader = AdapterUtil.getClassLoaderWithPriv(library);
 
                         String type = null;
-                        if (className == null || className.length() == 0) {
-                            if (url == null) {
-                                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(loader,
-                                                                                                                  new LinkedHashSet<String>(), // TODO
-                                                                                                                  JDBCDrivers.XA_DATA_SOURCE,
-                                                                                                                  JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
-                                                                                                                  JDBCDrivers.DATA_SOURCE);
-                                if (dsEntry != null) {
-                                    int dsType = dsEntry.getKey();
-                                    if (dsClassInfo[dsType][CLASS_NAME] == null) {
-                                        dsClassInfo[dsType][CLASS_NAME] = dsEntry.getValue();
-                                        dsClassInfo[dsType][LIBRARY_PID] = libraryPid;
-                                    }
-                                }
-                            } else {
+                        if (hasImplClassName) {
+                            Class<?> cl = DataSourceService.priv.loadClass(loader, className);
+                            type = XADataSource.class.isAssignableFrom(cl) ? XADataSource.class.getName()
+                                 : ConnectionPoolDataSource.class.isAssignableFrom(cl) ? ConnectionPoolDataSource.class.getName()
+                                 : DataSource.class.isAssignableFrom(cl) ? DataSource.class.getName()
+                                 : Driver.class.getName();
+                        } else {
+                            if (dsTypeSearchOrder == null) {
                                 type = Driver.class.getName();
                                 for (Iterator<Driver> it = ServiceLoader.load(Driver.class, loader).iterator(); it.hasNext(); ) {
                                     Driver driver = it.next();
@@ -548,13 +575,18 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                                             Tr.debug(this, tc, driver + " does not accept " + url, x);
                                     }
                                 }
+                            } else {
+                                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(loader,
+                                                                                                                  new LinkedHashSet<String>(), // TODO
+                                                                                                                  dsTypeSearchOrder);
+                                if (dsEntry != null) {
+                                    int dsType = dsEntry.getKey();
+                                    if (dsClassInfo[dsType][CLASS_NAME] == null) {
+                                        dsClassInfo[dsType][CLASS_NAME] = dsEntry.getValue();
+                                        dsClassInfo[dsType][LIBRARY_PID] = libraryPid;
+                                    }
+                                }
                             }
-                        } else {
-                            Class<?> cl = DataSourceService.priv.loadClass(loader, className);
-                            type = XADataSource.class.isAssignableFrom(cl) ? XADataSource.class.getName()
-                                 : ConnectionPoolDataSource.class.isAssignableFrom(cl) ? ConnectionPoolDataSource.class.getName()
-                                 : DataSource.class.isAssignableFrom(cl) ? DataSource.class.getName()
-                                 : Driver.class.getName();
                         }
 
                         if (className != null) {
