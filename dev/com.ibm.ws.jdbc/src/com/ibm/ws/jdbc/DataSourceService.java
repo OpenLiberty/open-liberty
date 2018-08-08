@@ -621,6 +621,30 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             // Convert isolationLevel constant name to integer
             vendorImplClassName = vendorImpl.getClass().getName();
             parseIsolationLevel(wProps, vendorImplClassName);
+            
+
+            //Local copies of wProps that need to be checked for conflicting settings
+            int wIsolationLevel = -1;
+            Boolean wTransactional = null;
+            
+            try {
+                wIsolationLevel = (int) wProps.get(DataSourceDef.isolationLevel.name());
+            } catch (NullPointerException npe) {
+                // Isolation level was not set on data source
+            }
+            
+            if(wIsolationLevel == Connection.TRANSACTION_NONE) {
+                try {
+                    wTransactional = (Boolean) wProps.get(DataSourceDef.transactional.name());
+                } catch (NullPointerException npe) {
+                    /* Transactional was not set on data source and therefore default of true will be used.
+                     * Stop user to notify them they need to set Transactional to false */
+                    wTransactional = true; 
+                }
+                if (wTransactional) {
+                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4009.tran.none.transactional.unsupported", jndiName));
+                }
+            }
 
             // Derby Embedded needs a reference count so that we can shutdown databases when no longer used.
             isDerbyEmbedded = vendorImplClassName.startsWith("org.apache.derby.jdbc.Embedded");
@@ -822,7 +846,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                                             : "TRANSACTION_SERIALIZABLE".equals(isolationLevel) ? Connection.TRANSACTION_SERIALIZABLE
                                                             : "TRANSACTION_READ_UNCOMMITTED".equals(isolationLevel) ? Connection.TRANSACTION_READ_UNCOMMITTED
                                                                             : "TRANSACTION_NONE".equals(isolationLevel) ? Connection.TRANSACTION_NONE
-                                                                                            : "TRANSACTION_SNAPSHOT".equals(isolationLevel) ? (dsImplClassName.startsWith("com.microsoft.") ? 4096 : 16)
+                                                                                            : "TRANSACTION_SNAPSHOT".equals(isolationLevel) ? (vendorImplClassName.startsWith("com.microsoft.") ? 4096 : 16)
                                                                                                             : isolationLevel;
 
             wProps.put(DataSourceDef.isolationLevel.name(), isolationLevel);

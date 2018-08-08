@@ -500,16 +500,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     }
                     isDSTranNone = true; //Expected behavior
                 } else {
-                    //attempt to set isolation level of the driver to 'NONE (0)'
-                    conn.setTransactionIsolation(Connection.TRANSACTION_NONE);
-                    if(conn.getTransactionIsolation() == Connection.TRANSACTION_NONE) {
-                        if(isTraceOn && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "DataSource configured with an isolation level of 'NONE (0)' and the driver's isolation level has been set to 'NONE (0)'.");
-                        }
-                        isDSTranNone = true;
-                    } else { //attempt failed
-                        throw new SQLException(AdapterUtil.getNLSMessage("DSRA4008.transaction.none.unsupported"), config.id);
-                    }
+                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4008.tran.none.unsupported"), config.id);
                 }
             } catch (SQLException sqle) {
                 throw AdapterUtil.translateSQLException(sqle, this, true, getClass());
@@ -1201,8 +1192,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // This value will be cleared when the managed connection is returned to the pool.
         if (transactional == null) {
             transactional = mcf.dsConfig.get().transactional;
-            if (isDSTranNone && transactional)
-                transactional = false;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "transactional=", transactional);
         }
@@ -3854,8 +3843,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     {
         if (value != currentAutoCommit || helper.alwaysSetAutoCommit()) 
         {
-            if(isDSTranNone && (value == false) ) //TODO translated?
-                throw new SQLException();
+            if(isDSTranNone && (value == false) )
+                throw new SQLException(AdapterUtil.getNLSMessage("DSRA4010.tran.none.autocommit.required", dsConfig.get().id));
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Set AutoCommit to " + value); 
 
@@ -3883,6 +3872,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
             // Don't update the isolation level until AFTER the operation completes
             // succesfully on the underlying Connection. 
+            
+            if ( isDSTranNone && (isoLevel != Connection.TRANSACTION_NONE) ) {
+                throw new SQLException(AdapterUtil.getNLSMessage("DSRA4011.tran.none.iso.switch.unsupported"));
+            }
 
             sqlConn.setTransactionIsolation(isoLevel); 
             currentTransactionIsolation = isoLevel; 
@@ -3895,7 +3888,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     /**
      * Get the transactionIsolation level
      **/
-
     public final int getTransactionIsolation() 
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
