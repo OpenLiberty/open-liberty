@@ -23,7 +23,7 @@
     
     <authData id="derbyAuth" user="dbuser" password="{xor}Oz0vKDtt" />
      
-    <dataSource id="dsfat0" fat.modify="true" jndiName="jdbc/dsfat0" type="javax.sql.DataSource" isolationLevel="TRANSACTION_SERIALIZABLE">
+    <dataSource id="dsfat0" jndiName="jdbc/dsfat0" type="javax.sql.DataSource" isolationLevel="TRANSACTION_SERIALIZABLE">
       <jdbcDriver libraryRef="DerbyLib" />
       <properties.derby.embedded databaseName="memory:ds0" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
@@ -33,7 +33,7 @@
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
     </dataSource>
     
-    <dataSource id="dsfat2" fat.modify="true" jndiName="jdbc/dsfat2" type="javax.sql.DataSource">
+    <dataSource id="dsfat2" jndiName="jdbc/dsfat2" type="javax.sql.DataSource">
       <jdbcDriver libraryRef="DerbyLib" />
       <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>

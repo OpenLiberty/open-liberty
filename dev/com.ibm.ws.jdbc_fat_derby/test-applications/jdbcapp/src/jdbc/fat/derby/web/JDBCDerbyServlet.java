@@ -60,11 +60,7 @@ public class JDBCDerbyServlet extends FATServlet {
                 st.executeUpdate("drop table cities");
             } catch (SQLException x) {
             }
-            String dbProductName = con.getMetaData().getDatabaseProductName().toUpperCase();
-            if (dbProductName.contains("IDS") || dbProductName.contains("INFORMIX")) // Informix JCC and JDBC
-                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30)) LOCK MODE ROW");
-            else
-                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
+            st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
         } finally {
             con.close();
         }
@@ -72,17 +68,30 @@ public class JDBCDerbyServlet extends FATServlet {
 
     /**
      * Data Source - ds1 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     * Data Source - ds0 = DSConfig (TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE) + Normal JDBC Driver
      *
-     * Ensure that if we try to change Transaction Isolation that we throw an exception.
+     * Ensure that if we try to change Transaction Isolation to TRANSACTION_NONE that we throw an exception.
      */
     @Test
     @ExpectedFFDC({ "java.sql.SQLException" })
     public void testRejectIsolationChange() throws Throwable {
         Connection con = null;
+        //TODO if we decide to block users from switching from TRANSACTION_NONE to another isolation level this test will need to be expanded.
+//        try {
+//            con = ds1.getConnection();
+//            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+//            fail("Exception should have been thrown when switching isolation levels on a driver configured with TRANSACTION_NONE.");
+//        } catch (SQLException sql) {
+//            assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4011E"));
+//        } finally {
+//            con.close();
+//        }
+
+        //Change to TRANSACTION_NONE
         try {
-            con = ds1.getConnection();
-            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            fail("Exception should have been thrown when swiching isolation levels on a driver configured with TRANSACTION_NONE.");
+            con = ds0.getConnection();
+            con.setTransactionIsolation(Connection.TRANSACTION_NONE);
+            fail("Exception should have been thrown when switching isolation level to TRANSACTION_NONE.");
         } catch (SQLException sql) {
             assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4011E"));
         } finally {
@@ -102,6 +111,7 @@ public class JDBCDerbyServlet extends FATServlet {
         InitialContext ctx = new InitialContext();
 
         try {
+            @SuppressWarnings("unused")
             DataSource ds4 = (DataSource) ctx.lookup("jdbc/dsfat4");
             fail("Lookup should have failed due to bad config.");
         } catch (Exception e) {
@@ -174,16 +184,6 @@ public class JDBCDerbyServlet extends FATServlet {
              * CommitOrRollbackOnCleanup on dataSource.
              */
             con.setAutoCommit(false);
-
-            Statement stmt = con.createStatement();
-            stmt.executeUpdate("insert into cities values ('Rochester', 106769, 'Olmsted')");
-            ResultSet result = stmt.executeQuery("select county from cities where name='Rochester'");
-            if (!result.next())
-                throw new Exception("Entry missing from database");
-            String value = result.getString(1);
-            if (!"Olmsted".equals(value))
-                throw new Exception("Incorrect value: " + value);
-
             fail("Exception should have been thrown when setting AutoCommit to false.");
 
         } catch (SQLException sql) {

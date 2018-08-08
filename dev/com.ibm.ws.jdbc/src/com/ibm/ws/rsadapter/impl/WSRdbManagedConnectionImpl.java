@@ -500,7 +500,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     }
                     isDSTranNone = true; //Expected behavior
                 } else {
-                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4008.tran.none.unsupported"), config.id);
+                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4008.tran.none.unsupported", config.id));
                 }
             } catch (SQLException sqle) {
                 throw AdapterUtil.translateSQLException(sqle, this, true, getClass());
@@ -3867,16 +3867,22 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     public final void setTransactionIsolation(int isoLevel) throws SQLException 
     {
         if (currentTransactionIsolation != isoLevel) {
+            // TODO Determine behavior when switching from TRANSACTION_NONE to another isolation level
+//            if ( isDSTranNone && (isoLevel != Connection.TRANSACTION_NONE) ) {
+//                throw new SQLException(AdapterUtil.getNLSMessage("DSRA4011.tran.none.iso.switch.unsupported", dsConfig.get().id));
+//            } 
+            
+            // Reject switching to Transaction_None
+            if (isoLevel == Connection.TRANSACTION_NONE) {
+                throw new SQLException(AdapterUtil.getNLSMessage("DSRA4011.tran.none.iso.switch.unsupported", dsConfig.get().id));
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "Set Isolation Level to " + AdapterUtil.getIsolationLevelString(isoLevel));
-
+            
             // Don't update the isolation level until AFTER the operation completes
             // succesfully on the underlying Connection. 
             
-            if ( isDSTranNone && (isoLevel != Connection.TRANSACTION_NONE) ) {
-                throw new SQLException(AdapterUtil.getNLSMessage("DSRA4011.tran.none.iso.switch.unsupported"));
-            }
-
             sqlConn.setTransactionIsolation(isoLevel); 
             currentTransactionIsolation = isoLevel; 
             isolationChanged = true; 

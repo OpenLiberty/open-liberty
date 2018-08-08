@@ -254,17 +254,17 @@ DSRA4008.tran.none.unsupported=DSRA4008E: The JDBC driver does not support an is
 DSRA4008.tran.none.unsupported.explanation=The TRANSACTION_NONE isolation level that is configured on the data source is not supported by the JDBC driver.
 DSRA4008.tran.none.unsupported.useraction=Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
 
-DSRA4009.tran.none.transactional.unsupported=DSA4009E: The data source {0} cannot be configured with an isolation level of TRANSACTION_NONE and transactional=\"true\".
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: The data source {0} cannot be configured with an isolation level of TRANSACTION_NONE and transactional=true.
 DSRA4009.tran.none.transactional.unsupported.explanation=A JDBC driver that is configured with an isolation level of TRANSACTION_NONE will not support transactions.
-DSRA4009.tran.none.transactional.unsupported.useraction=Set transactional=\"false\" on the data source.
+DSRA4009.tran.none.transactional.unsupported.useraction=Set transactional=false on the data source.
 
 DSRA4010.tran.none.autocommit.required=DSRA4010E: Auto commit is required when using an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
 DSRA4010.tran.none.autocommit.required.explanation=The JDBC driver is configured with an isolation level of TRANSACTION_NONE, and requires the use of auto commit.
 DSRA4010.tran.none.autocommit.required.useraction=Keep auto commit set to true.
 
-DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: The JDBC driver does not support switching to or from an isolation level of TRANSACTION_NONE.
-DSRA4011.tran.none.iso.switch.unsupported.explanation=The settings that are accepted by JDBC drivers that support an isolation level of TRANSACTION_NONE can conflict with other JDBC drivers, and therefore switching is unsupported.
-DSRA4011.tran.none.iso.switch.unsupported.useraction=Avoid switching to or from an isolation level of TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: The JDBC driver does not support switching to an isolation level of TRANSACTION_NONE on data source {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=The JDBC specification does not support switching to an isolation level of TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Avoid switching to an isolation level of TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 

@@ -622,27 +622,15 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             vendorImplClassName = vendorImpl.getClass().getName();
             parseIsolationLevel(wProps, vendorImplClassName);
             
-
-            //Local copies of wProps that need to be checked for conflicting settings
-            int wIsolationLevel = -1;
-            Boolean wTransactional = null;
-            
-            try {
-                wIsolationLevel = (int) wProps.get(DataSourceDef.isolationLevel.name());
-            } catch (NullPointerException npe) {
-                // Isolation level was not set on data source
-            }
+            Object objIsolationLevel = wProps.get(DataSourceDef.isolationLevel.name());
+            int wIsolationLevel = objIsolationLevel == null ? -1 : (int) objIsolationLevel;
             
             if(wIsolationLevel == Connection.TRANSACTION_NONE) {
-                try {
-                    wTransactional = (Boolean) wProps.get(DataSourceDef.transactional.name());
-                } catch (NullPointerException npe) {
-                    /* Transactional was not set on data source and therefore default of true will be used.
-                     * Stop user to notify them they need to set Transactional to false */
-                    wTransactional = true; 
-                }
+                Object objTransactional = wProps.get(DataSourceDef.transactional.name());
+                boolean wTransactional = objTransactional == null ? true : (boolean) objTransactional;
+                
                 if (wTransactional) {
-                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4009.tran.none.transactional.unsupported", jndiName));
+                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4009.tran.none.transactional.unsupported", id));
                 }
             }
 
