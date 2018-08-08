@@ -91,7 +91,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                     if (annotation.annotationType() == Asynchronous.class) {
                         AsynchronousConfig asynchronousConfig = new AsynchronousConfig(clazz, (Asynchronous) annotation);
                         asynchronousConfig.validate();
-                        classLevelAsync = asynchronousConfig;
+                        classLevelAsync = (Asynchronous) annotation;
                     } else if (annotation.annotationType() == Retry.class) {
                         RetryConfig retry = new RetryConfig(clazz, (Retry) annotation);
                         retry.validate();

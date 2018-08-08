@@ -22,7 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 
-public class CircuitBreakerConfig extends AbstractAnnotationConfig<CircuitBreaker> implements CircuitBreaker {
+public class CircuitBreakerConfig extends AbstractAnnotationConfig<CircuitBreaker> {
 
     private static final TraceComponent tc = Tr.register(CircuitBreakerConfig.class);
 
@@ -41,39 +41,27 @@ public class CircuitBreakerConfig extends AbstractAnnotationConfig<CircuitBreake
         super(annotatedMethod, annotatedClass, annotation, CircuitBreaker.class);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Class<? extends Throwable>[] failOn() {
+    private Class<? extends Throwable>[] failOn() {
         return failOnConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public long delay() {
+    private long delay() {
         return delayConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ChronoUnit delayUnit() {
+    private ChronoUnit delayUnit() {
         return delayUnitConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public int requestVolumeThreshold() {
+    private int requestVolumeThreshold() {
         return requestVolumeThresholdConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public double failureRatio() {
+    private double failureRatio() {
         return failureRatioConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public int successThreshold() {
+    private int successThreshold() {
         return successThresholdConfig.getValue();
     }
 

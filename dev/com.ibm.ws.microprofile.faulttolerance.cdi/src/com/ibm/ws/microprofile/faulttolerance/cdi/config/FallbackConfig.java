@@ -36,7 +36,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceFunction;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
-public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implements Fallback {
+public class FallbackConfig extends AbstractAnnotationConfig<Fallback> {
 
     private static final TraceComponent tc = Tr.register(FallbackConfig.class);
 
@@ -48,16 +48,12 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
         super(annotatedMethod, annotatedClass, annotation, Fallback.class);
     }
 
-    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
-    @Override
-    public Class<? extends FallbackHandler<?>> value() {
+    private Class<? extends FallbackHandler<?>> value() {
         return (Class<? extends FallbackHandler<?>>) valueConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String fallbackMethod() {
+    private String fallbackMethod() {
         return fallbackMethodConfig.getValue();
     }
 

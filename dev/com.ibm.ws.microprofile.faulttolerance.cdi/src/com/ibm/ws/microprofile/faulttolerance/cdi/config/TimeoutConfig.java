@@ -22,7 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
-public class TimeoutConfig extends AbstractAnnotationConfig<Timeout> implements Timeout {
+public class TimeoutConfig extends AbstractAnnotationConfig<Timeout> {
 
     private static final TraceComponent tc = Tr.register(TimeoutConfig.class);
 
@@ -37,15 +37,11 @@ public class TimeoutConfig extends AbstractAnnotationConfig<Timeout> implements 
         super(annotatedMethod, annotatedClass, annotation, Timeout.class);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public long value() {
+    private long value() {
         return valueConfig.getValue();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ChronoUnit unit() {
+    private ChronoUnit unit() {
         return unitConfig.getValue();
     }
 

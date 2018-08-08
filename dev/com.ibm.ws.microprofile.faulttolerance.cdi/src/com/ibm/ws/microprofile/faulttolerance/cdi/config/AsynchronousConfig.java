@@ -20,7 +20,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
-public class AsynchronousConfig extends AbstractAnnotationConfig<Asynchronous> implements Asynchronous {
+public class AsynchronousConfig extends AbstractAnnotationConfig<Asynchronous> {
 
     private static final TraceComponent tc = Tr.register(AsynchronousConfig.class);
 
