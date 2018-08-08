@@ -471,7 +471,6 @@ LOG_INSTALLED_FIX.useraction=Nincs teend\u0151.
 LOG_UNINSTALLED_FEATURE=CWWKF1306I: A(z) {0} szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sa siker\u00fclt.
 LOG_UNINSTALLED_FEATURE.explanation=A megadott szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
 LOG_UNINSTALLED_FEATURE.useraction=Nincs teend\u0151.
-
 LOG_UNINSTALLED_FIX=CWWKF1307I: A(z) {0} jav\u00edt\u00e1s elt\u00e1vol\u00edt\u00e1sa siker\u00fclt.
 LOG_UNINSTALLED_FIX.explanation=A megadott jav\u00edt\u00e1s sikeresen elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
 LOG_UNINSTALLED_FIX.useraction=Semmit sem kell tennie.

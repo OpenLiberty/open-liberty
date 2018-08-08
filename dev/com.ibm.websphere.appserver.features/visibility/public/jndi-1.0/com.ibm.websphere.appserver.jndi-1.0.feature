@@ -4,7 +4,7 @@ visibility=public
 IBM-ShortName: jndi-1.0
 IBM-Process-Types: server, \
  client
-Subsystem-Name: Java Naming and Directory Interface
+Subsystem-Name: Java Naming and Directory Interface 1.0
 -features=com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \

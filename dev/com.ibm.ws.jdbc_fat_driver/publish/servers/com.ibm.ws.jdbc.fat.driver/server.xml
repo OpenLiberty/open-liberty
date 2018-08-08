@@ -33,7 +33,8 @@
 
     <dataSource id="fatDriver" jndiName="jdbc/fatDriver">
       <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
-      <properties url="jdbc:derby:memory:wrappedDerby;create=true" user="dbuser1" password="{xor}Oz0vKDtu" />
+      <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true" user="dbuser2" password="{xor}Oz0vKDtt"/>
+      <containerAuthData user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
     <javaPermission codeBase="${server.config.dir}derby/FATDriver.jar" className="java.security.AllPermission"/>

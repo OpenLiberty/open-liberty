@@ -216,3 +216,7 @@ error.client.not.installed.useraction=Verifica\u0163i loca\u0163ia \u00een confi
 warning.could.not.expand.application=CWWKZ0131W: Nu s-a putut expanda aplica\u0163ia {0} din cauza excep\u0163iei {1}.
 warning.could.not.expand.application.explanation=Aplica\u0163ia nu a putut fi expandat\u0103 la un director temporar. Aplica\u0163ia va continua s\u0103 ruleze, dar comportamentul anumitor metode care acceseaz\u0103 fi\u015fierele de aplica\u0163ii ar putea fi afectat.
 warning.could.not.expand.application.useraction=\u00cencerca\u0163i s\u0103 rezolva\u0163i problema din mesajul excep\u0163iei \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia.
+
+error.file.outside.archive=CWWKZ0132W: Fi\u015fierul {0} din arhiva {1} nu va fi extras, deoarece calea nu este inclus\u0103 \u00een arhiv\u0103.
+error.file.outside.archive.explanation=Calea fi\u015fierului specific\u0103 un director relativ. Dac\u0103 fi\u015fierul ar fi extras, ar fi plasat \u00een afara directorului r\u0103d\u0103cin\u0103 al arhivei.
+error.file.outside.archive.useraction=\u00cenl\u0103tura\u0163i din arhiv\u0103 fi\u015fierele cu c\u0103i relative.  

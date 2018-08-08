@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Sehen Sie sich die vorgeschlagenen Benutzera
 warn_mpjwt_prop_service_notavail=CWWKW0708W: Der Service f\u00fcr die Weitergabe des MicroProfile JWT ist nicht verf\u00fcgbar. Die Laufzeitumgebung kann nicht auf das Token zugreifen, um es in den Authorization-Header einzuschlie\u00dfen.
 warn_mpjwt_prop_service_notavail.explanation=Der Service f\u00fcr die Weitergabe des MicroProfile JWT setzt das Feature mpJwt-1.0 voraus. 
 warn_mpjwt_prop_service_notavail.useraction=Stellen Sie sicher, dass der Server mit dem erforderlichen Feature ausgef\u00fchrt wird.
+
+warn_unknown_keepalive_setting=CWWKW0709W: Der Keepalive-Eigenschaftwert {0} f\u00fcr die Verbindung ist nicht g\u00fcltig. Diese Eigenschaft muss auf einen der folgenden Werte gesetzt werden: {1}. Es wird der Standardwert f\u00fcr die Keepalive-Eigenschaft verwendet.
+warn_unknown_keepalive_setting.explanation=Im Anwendungscode ist die Eigenschaft com.ibm.ws.jaxrs.client.keepalive.connection in einem JAX-RS-Client auf einen ung\u00fcltigen Wert gesetzt.
+warn_unknown_keepalive_setting.useraction=\u00c4ndern Sie den Code so, dass ein g\u00fcltiger Eigenschaftswert wie keep-alive oder close verwendet wird.

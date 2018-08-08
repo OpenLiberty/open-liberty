@@ -2,7 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.federatedRegistry-1.0
 visibility=public
 IBM-ShortName: federatedRegistry-1.0
-Subsystem-Name: Federated User Registry
+Subsystem-Name: Federated User Registry 1.0
 IBM-SPI-Package: com.ibm.wsspi.security.wim; type="ibm-spi", \
   com.ibm.wsspi.security.wim.exception; type="ibm-spi", \
   com.ibm.wsspi.security.wim.model; type="ibm-spi"

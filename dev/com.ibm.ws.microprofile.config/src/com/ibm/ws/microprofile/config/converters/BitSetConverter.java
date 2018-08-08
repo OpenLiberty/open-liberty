@@ -12,13 +12,8 @@ package com.ibm.ws.microprofile.config.converters;
 
 import java.util.BitSet;
 
-import javax.xml.bind.DatatypeConverter;
-
 import com.ibm.websphere.ras.annotation.Trivial;
 
-/**
- *
- */
 public class BitSetConverter extends BuiltInConverter {
 
     @Trivial
@@ -31,7 +26,13 @@ public class BitSetConverter extends BuiltInConverter {
     public BitSet convert(String value) {
         BitSet converted = null;
         if (value != null) {
-            converted = BitSet.valueOf(DatatypeConverter.parseHexBinary(value));
+            int len = value.length();
+            byte[] data = new byte[len / 2];
+            for (int i = 0; i < len; i += 2) {
+                data[i / 2] = (byte) ((Character.digit(value.charAt(i), 16) << 4)
+                                      + Character.digit(value.charAt(i + 1), 16));
+            }
+            converted = BitSet.valueOf(data);
         }
         return converted;
     }

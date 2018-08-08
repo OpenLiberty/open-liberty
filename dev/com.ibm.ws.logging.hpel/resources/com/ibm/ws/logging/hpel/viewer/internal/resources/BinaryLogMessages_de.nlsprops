@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2017 IBM Corporation and others.
+# Copyright (c) 2013, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -192,6 +192,11 @@ BL_VIEW_USAGE_032=\tGeben Sie die f\u00fcr die Ausgabe zu verwendende Zeichencod
 # do not translate "--isoDateFormat"
 BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
 BL_VIEW_USAGE_034=\tGeben Sie das f\u00fcr die Ausgabe zu verwendende ISO-8601-Format f\u00fcr Datum und Uhrzeit an.
+
+# do not translate "--excludeMessage=value[,value]*"
+BL_VIEW_USAGE_035=\ \ \ \ --excludeMessage=Wert[,Wert]*
+BL_VIEW_USAGE_036=\tSchlie\u00dft Datens\u00e4tze mit der angegebenen Nachricht aus. Der Wert kann einen Stern (*)\n\
+\toder ein Fragezeichen (?) als Platzhalter enthalten.
 #--------------------------------------------------------------------------------------------------
 
 # do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"

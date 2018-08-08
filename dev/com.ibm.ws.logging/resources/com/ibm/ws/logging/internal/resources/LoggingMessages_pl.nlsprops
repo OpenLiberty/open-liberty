@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u010
 CONSOLE_FORMAT_UPDATED=TRAS3003I: Format danych wyj\u015bciowych konsoli zosta\u0142 zaktualizowany do {0}.
 CONSOLE_FORMAT_UPDATED.explanation=Format danych wyj\u015bciowych konsoli zosta\u0142 zaktualizowany.
 CONSOLE_FORMAT_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: Nast\u0119puj\u0105ce komunikaty s\u0105 ukryte w pliku console.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Komunikaty, kt\u00f3re s\u0105 skonfigurowane jako ukryte, nie s\u0105 zapisywane w pliku console.log. S\u0105 one zapisywane w repozytoriach danych rejestrowania i \u015bledzenia przez rejestrowanie binarne. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+FAILED_TO_WRITE_LOG=TRAS3005E: Nie mo\u017cna zapisa\u0107 komunikat\u00f3w do pliku {0}.
+FAILED_TO_WRITE_LOG.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zapisania komunikatu do pliku. 
+FAILED_TO_WRITE_LOG.useraction=Upewnij si\u0119, \u017ce katalog istnieje, jest dost\u0119pny do zapisu oraz \u017ce ilo\u015b\u0107 wolnego miejsca na dysku jest wystarczaj\u0105ca.
+
+LOG_FILE_RESUMED=TRAS3006I: Rejestrowanie komunikat\u00f3w do pliku {0} zosta\u0142o wznowione.
+LOG_FILE_RESUMED.explanation=Komunikaty mog\u0105 by\u0107 zapisywane do pliku.
+LOG_FILE_RESUMED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

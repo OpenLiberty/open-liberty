@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Keressen a felhaszn\u00e1l\u00f3i m\u0171vel
 warn_mpjwt_prop_service_notavail=CWWKW0708W: A MicroProfile JWT tov\u00e1bb\u00edt\u00e1si szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. A fut\u00e1si k\u00f6rnyezet nem tudja el\u00e9rni a tokent, hogy felvegye azt az Authorization fejl\u00e9cbe.
 warn_mpjwt_prop_service_notavail.explanation=A MicroProfile JWT tov\u00e1bb\u00edt\u00e1si szolg\u00e1ltat\u00e1snak sz\u00fcks\u00e9ge van a mpJwt-1.0 szolg\u00e1ltat\u00e1sra. 
 warn_mpjwt_prop_service_notavail.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a a kiszolg\u00e1l\u00f3 a sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1ssal fut.
+
+warn_unknown_keepalive_setting=CWWKW0709W: A kapcsolatfenntart\u00e1si tulajdons\u00e1g {0} \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes be\u00e1ll\u00edt\u00e1s. Ezt a tulajdons\u00e1got a k\u00f6vetkez\u0151k egyik\u00e9re kell be\u00e1ll\u00edtani: {1}. Az alap\u00e9rtelmezett kapcsolatfenntart\u00e1si \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
+warn_unknown_keepalive_setting.explanation=Az alkalmaz\u00e1sk\u00f3d a com.ibm.ws.jaxrs.client.keepalive.connection tulajdons\u00e1got helytelen \u00e9rt\u00e9kre \u00e1ll\u00edtotta be egy JAX-RS \u00fcgyf\u00e9len.
+warn_unknown_keepalive_setting.useraction=M\u00f3dos\u00edtsa a k\u00f3dot \u00e9rv\u00e9nyes tulajdons\u00e1g\u00e9rt\u00e9k haszn\u00e1lat\u00e1ra, mint p\u00e9ld\u00e1ul: kapcsolatfenntart\u00e1s vagy lez\u00e1r\u00e1s.

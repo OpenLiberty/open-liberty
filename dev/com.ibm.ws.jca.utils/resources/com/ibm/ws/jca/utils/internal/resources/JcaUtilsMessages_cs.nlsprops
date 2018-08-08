@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E: Hodnota {0} nen\u00ed platnou volbou atri
 J2CA9934.not.a.valid.option.explanation=Nakonfigurovan\u00e1 hodnota nespad\u00e1 do rozsahu platn\u00fdch voleb pro tento atribut.
 J2CA9934.not.a.valid.option.useraction=Zvolte hodnotu ze seznamu platn\u00fdch voleb.
 
-J2CA9935.secperm.not.supported=J2CA9935I: Opr\u00e1vn\u011bn\u00ed zabezpe\u010den\u00ed Java 2 ur\u010den\u00e1 v deskriptoru implementace pro adapt\u00e9r prost\u0159edku {0} nebudou prosazov\u00e1na.
-J2CA9935.secperm.not.supported.explanation=V profilu Liberty nen\u00ed zabezpe\u010den\u00ed Java 2 povoleno, tak\u017ee se kontroly zabezpe\u010den\u00ed Java 2 pro adapt\u00e9r prost\u0159edku neprov\u00e1d\u00ed.
-J2CA9935.secperm.not.supported.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
-
 J2CA9936.default.value.error=J2CA9936W: Z instance t\u0159\u00eddy {1} v adapt\u00e9ru prost\u0159edku {2} nelze z\u00edskat v\u00fdchoz\u00ed hodnotu vlastnosti {0}, proto\u017ee do\u0161lo k chyb\u011b: {3}
 J2CA9936.default.value.error.explanation=P\u0159i pokusu o p\u0159\u00edstup k v\u00fdchoz\u00ed hodnot\u011b vlastnosti objektu JavaBean adapt\u00e9ru prost\u0159edku do\u0161lo k chyb\u011b.
 J2CA9936.default.value.error.useraction=P\u0159ezkoumejte chybu a nastavte adapt\u00e9r prost\u0159edku podle pot\u0159eby.

@@ -23,7 +23,6 @@
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
-        <!-- <wlp>${project.basedir}/../../../../build.image/wlp/</wlp> -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -66,7 +65,7 @@
         <dependency>
             <groupId>com.ibm.ws.org.apache.cxf</groupId>
             <artifactId>cxf.rt.rs.mp.client</artifactId>
-            <version>3.2.4</version>
+            <version>3.2.6.20180718</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_}</systemPath>
         </dependency>
@@ -118,7 +117,6 @@
             <!--  <scope>provided</scope> -->
             <scope>system</scope>
             <systemPath>${com.ibm.websphere.javaee.jaxrs.2.0_}</systemPath>
-            <!-- <systemPath>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.jaxrs.2.0_1.0.19.jar</systemPath> -->
         </dependency>
 
         <dependency>
@@ -155,7 +153,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2-20180716.130746-3</version>
             <scope>test</scope>
         </dependency>
 <!-- 
@@ -215,6 +213,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
+                    <!-- <argLine>-verbose:class</argLine> -->
                     <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>

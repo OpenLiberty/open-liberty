@@ -59,3 +59,19 @@ invalidDuration.useraction=Sprawd\u017a, czy warto\u015b\u0107 okre\u015blona w 
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Napotkano nieoczekiwane informacje o pami\u0119ci systemu operacyjnego w {0}: {1}
+memory.information.unexpected.explanation=Niekt\u00f3ra informacje o pami\u0119ci systemu operacyjnego nie mia\u0142y oczekiwanego formatu. Produkt m\u00f3g\u0142 czyta\u0107 plik lub uruchamia\u0107 program, gdy napotka\u0142 nieoczekiwany format. Tekst komunikatu zawiera nazw\u0119 pliku systemu operacyjnego i jego tre\u015b\u0107 lub nazw\u0119 programu i dane wyj\u015bciowe programu. U\u017cywaj\u0105c tych informacji, mo\u017cna zdiagnozowa\u0107 problem.
+memory.information.unexpected.useraction=Przejrzyj informacje zawarte w tek\u015bcie komunikatu. Popraw wszystkie b\u0142\u0119dy, aby upewni\u0107 si\u0119, \u017ce system operacyjny zachowuje si\u0119 prawid\u0142owo i \u017ce nie wyst\u0119puj\u0105 nieoczekiwane informacje o pami\u0119ci systemu operacyjnego.
+
+memory.information.unavailable=CWWKE0948E: Informacje o dost\u0119pnej pami\u0119ci nie zosta\u0142y zaimplementowane w tym systemie operacyjnym.
+memory.information.unavailable.explanation=Ta funkcja nie zosta\u0142a zaimplementowana dla tego systemu operacyjnego.
+memory.information.unavailable.useraction=U\u017cyj funkcji API OperatingSystem, aby pobra\u0107 typ systemu operacyjnego i unikn\u0105\u0107 wywo\u0142ywania tej funkcji dla tego typu systemu operacyjnego.
+
+os.pagesize.unavailable=CWWKE0949E: Informacje o wielko\u015bci strony nie zosta\u0142y zaimplementowane w tym systemie operacyjnym.
+os.pagesize.unavailable.explanation=Ta funkcja nie zosta\u0142a zaimplementowana dla tego systemu operacyjnego.
+os.pagesize.unavailable.useraction=U\u017cyj funkcji API OperatingSystem, aby pobra\u0107 typ systemu operacyjnego i unikn\u0105\u0107 wywo\u0142ywania tej funkcji dla tego typu systemu operacyjnego.
+
+os.execute.error=CWWKE0950E: Nie powiod\u0142o si\u0119 uruchomienie programu {0}. Kod powrotu: {1}. Dane wyj\u015bciowe: {2}
+os.execute.error.explanation=To niepowodzenie mo\u017ce wyst\u0105pi\u0107 w wyniku wyst\u0105pienia wielu r\u00f3\u017cnych sytuacji. Na przyk\u0142ad program m\u00f3g\u0142 ulec awarii z powodu wyst\u0105pienia b\u0142\u0119du zg\u0142aszanego w kodzie powrotu i danych wyj\u015bciowych.
+os.execute.error.useraction=Sprawd\u017a, czy ta komenda istnieje i czy znajduje si\u0119 w jednym z katalog\u00f3w uwzgl\u0119dnionych w zmiennej \u015brodowiskowej PATH.

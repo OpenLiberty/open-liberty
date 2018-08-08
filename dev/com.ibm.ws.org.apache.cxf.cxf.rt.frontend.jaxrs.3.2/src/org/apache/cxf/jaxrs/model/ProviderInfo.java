@@ -42,7 +42,7 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
     }
 
     public ProviderInfo(T provider, Bus bus, boolean checkContexts, boolean custom) {
-        this(provider.getClass(), provider.getClass(), provider, bus, true, custom);
+        this(provider.getClass(), provider.getClass(), provider, bus, checkContexts, custom);
     }
 
     public ProviderInfo(Class<?> resourceClass, Class<?> serviceClass, T provider, Bus bus, boolean custom) {

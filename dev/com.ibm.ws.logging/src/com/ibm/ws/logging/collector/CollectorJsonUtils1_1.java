@@ -77,6 +77,10 @@ public class CollectorJsonUtils1_1 {
 
             return jsonifyAccess(wlpUserDir, serverName, serverHostName, event, tags);
 
+        } else if (eventType.equals(CollectorConstants.AUDIT_LOG_EVENT_TYPE)) {
+
+            return jsonifyAudit(wlpUserDir, serverName, serverHostName, event, tags);
+
         }
         return "";
 
@@ -308,6 +312,51 @@ public class CollectorJsonUtils1_1 {
 
         sb.append("}");
 
+        return sb.toString();
+    }
+
+    public static String jsonifyAudit(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
+        GenericData genData = (GenericData) event;
+        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        String key = null;
+        StringBuilder sb = CollectorJsonHelpers.startAuditJson1_1(hostName, wlpUserDir, serverName);
+
+        for (KeyValuePair kvp : pairs) {
+
+            if (kvp != null) {
+                //Logic for non-KeyValuePairList type Pairs
+                if (!kvp.isList()) {
+
+                    key = kvp.getKey();
+
+                    /*
+                     * Explicitly parse for ibm_datetime/loggingEventTime for special processing.
+                     *
+                     * Explicitly parse for ibm_sequence/loggingSequenceNumber for special processing.
+                     *
+                     * Explicitly parse for ibm_threadid for special processing.
+                     *
+                     * Audit is currently not using the logging constants for the datetime and sequence keys,
+                     * we need to format the json output with the appropriate logging values for the keys.
+                     *
+                     * Parse the rest of audit GDO KVP - They are strings.
+                     */
+                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
+                        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_DATETIME, datetime, false, true, false, false, false);
+                    } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_SEQUENCE, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
+                    } else {
+                        CollectorJsonHelpers.addToJSON(sb, key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                    }
+
+                } //There shouldn't be any list items from Audit's Generic Data object
+            }
+
+        }
+        sb.append("}");
         return sb.toString();
     }
 

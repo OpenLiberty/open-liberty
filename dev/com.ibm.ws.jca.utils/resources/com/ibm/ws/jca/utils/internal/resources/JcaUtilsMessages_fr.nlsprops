@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E : La valeur {0} n''est pas une option vali
 J2CA9934.not.a.valid.option.explanation=La valeur configur\u00e9e est en dehors de la plage d'options valides pour l'attribut.
 J2CA9934.not.a.valid.option.useraction=Choisissez une valeur de la liste des options valides.
 
-J2CA9935.secperm.not.supported=J2CA9935I : Les droits Java 2 Security sp\u00e9cifi\u00e9s dans le descripteur de d\u00e9ploiement pour l''adaptateur de ressources {0} ne seront pas appliqu\u00e9s.
-J2CA9935.secperm.not.supported.explanation=Java 2 Security n'est pas activ\u00e9 dans le profil Liberty ; par cons\u00e9quent, les v\u00e9rifications Java 2 Security ne sont pas effectu\u00e9es pour l'adaptateur de ressources.
-J2CA9935.secperm.not.supported.useraction=Aucune action n'est requise.
-
 J2CA9936.default.value.error=J2CA9936W : La valeur par d\u00e9faut de la propri\u00e9t\u00e9 {0} n''a pas pu \u00eatre obtenue d''une instance de la classe {1} sur l''adaptateur de ressources {2} en raison de la survenue d''une erreur : {3}
 J2CA9936.default.value.error.explanation=Une erreur s'est produite lors de la tentative d'acc\u00e8s \u00e0 la valeur par d\u00e9faut d'une propri\u00e9t\u00e9 JavaBeans de l'adaptateur de ressources.
 J2CA9936.default.value.error.useraction=Consultez l'erreur et ajustez l'adaptateur de ressources selon les besoins.

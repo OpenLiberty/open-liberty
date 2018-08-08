@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2017 IBM Corporation and others.
+# Copyright (c) 2013, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -192,6 +192,11 @@ BL_VIEW_USAGE_032=\tMegadja a kimenet karakterk\u00f3dol\u00e1s\u00e1t.
 # do not translate "--isoDateFormat"
 BL_VIEW_USAGE_033=\ \ \ \ --isoDateFormat
 BL_VIEW_USAGE_034=\tAdja meg a kimenethez haszn\u00e1land\u00f3 ISO-8601 d\u00e1tum- \u00e9s id\u0151form\u00e1tumot.
+
+# do not translate "--excludeMessage=value[,value]*"
+BL_VIEW_USAGE_035=\ \ \ \ --excludeMessage=value[,value]*
+BL_VIEW_USAGE_036=\tRekordokat z\u00e1r ki a megadott \u00fczenettel. Az \u00e9rt\u00e9ke tartalmazhat * vagy ? \n\
+\tkaraktert helyettes\u00edt\u0151 karakterk\u00e9nt.
 #--------------------------------------------------------------------------------------------------
 
 # do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"

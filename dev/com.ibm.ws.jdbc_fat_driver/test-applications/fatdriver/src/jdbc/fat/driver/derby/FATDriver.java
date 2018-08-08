@@ -16,9 +16,11 @@ import java.sql.DriverManager;
 import java.sql.DriverPropertyInfo;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.sql.DataSource;
 
 public class FATDriver implements Driver {
     private static Driver fatDriver = new FATDriver();
@@ -33,25 +35,54 @@ public class FATDriver implements Driver {
 
     @Override
     public Connection connect(String url, Properties info) throws SQLException {
-        System.out.println("[FATDriver]   ->  connect");
+        if (!acceptsURL(url))
+            return null;
+
+        String loginTimeout = (String) info.remove("loginTimeout");
+
+        int dbNameStart = "jdbc:fatdriver:".length();
+        int firstSemicolon = url.indexOf(';', dbNameStart);
+
+        String databaseName = url.substring(dbNameStart, firstSemicolon > 0 ? firstSemicolon : url.length());
+
+        StringBuilder attributes = new StringBuilder();
+        if (firstSemicolon > 0)
+            attributes.append(url.substring(firstSemicolon + 1));
+
+        for (Map.Entry<?, ?> prop : info.entrySet()) {
+            if (attributes.length() > 0)
+                attributes.append(';');
+            attributes.append(prop.getKey()).append('=').append(prop.getValue());
+        }
+
+        System.out.println("[FATDriver]   ->  connect to " + databaseName + " using " + attributes);
+
         try {
-            Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-        } catch (ClassNotFoundException e) {
-            throw new SQLException(e);
+            @SuppressWarnings("unchecked")
+            Class<? extends DataSource> EmbeddedDataSource = (Class<? extends DataSource>) Class.forName("org.apache.derby.jdbc.EmbeddedDataSource");
+            DataSource ds = EmbeddedDataSource.newInstance();
+
+            EmbeddedDataSource.getMethod("setDatabaseName", String.class).invoke(ds, databaseName);
+
+            if (attributes.length() > 0)
+                EmbeddedDataSource.getMethod("setConnectionAttributes", String.class).invoke(ds, attributes.toString());
+
+            if (loginTimeout != null)
+                ds.setLoginTimeout(Integer.parseInt(loginTimeout));
+
+            return ds.getConnection();
+        } catch (RuntimeException x) {
+            throw x;
+        } catch (SQLException x) {
+            throw x;
+        } catch (Exception x) {
+            throw new SQLException(x);
         }
-        Enumeration<Driver> drivers = DriverManager.getDrivers();
-        while (drivers.hasMoreElements()) {
-            Driver nextElement = drivers.nextElement();
-            if (nextElement.getClass().getName().contains("org.apache.derby.jdbc")) {
-                return nextElement.connect(url, info);
-            }
-        }
-        throw new SQLException("Unable to find Derby driver");
     }
 
     @Override
     public boolean acceptsURL(String url) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return url.startsWith("jdbc:fatdriver:");
     }
 
     @Override
@@ -61,7 +92,7 @@ public class FATDriver implements Driver {
 
     @Override
     public int getMajorVersion() {
-        return 0;
+        return 1;
     }
 
     @Override
