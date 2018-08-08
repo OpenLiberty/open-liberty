@@ -231,6 +231,31 @@ public class JDBCDriverManagerServlet extends FATServlet {
     }
 
     /**
+     * Verify a data source backed by javax.sql.ConnectionPoolDataSource can be discovered based on the
+     * Driver package and class name.
+     */
+    @Test
+    public void testConnectionPoolDataSource() throws Exception {
+        DataSource proxypoolds = InitialContext.doLookup("jdbc/proxypoolds");
+
+        // Confirm that value configured in server.xml is set on the data source
+        assertEquals(200, proxypoolds.getLoginTimeout());
+
+        Connection con = proxypoolds.getConnection("pxuser2", "pxpwd2");
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("Proxy Pool Driver", mdata.getDriverName());
+            assertEquals("pxuser2", mdata.getUserName());
+
+            // Properties configured in server.xml:
+            assertEquals("proxydb", con.getCatalog());
+            assertEquals("pxschema2", con.getSchema());
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
      * Verify the exception path where ConnectionPoolDataSource is requested but no
      * ConnectionPoolDataSource implementation is available from the driver.
      */
@@ -257,6 +282,27 @@ public class JDBCDriverManagerServlet extends FATServlet {
         Connection con = derbyds.getConnection();
         try {
             con.createStatement().executeUpdate("insert into address values ('Quarry Hill Nature Center', 701, 'Silver Creek Road NE', 'Rochester', 'MN', 55906)");
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Verify a data source backed by java.sql.Driver that isn't available on the application class loader,
+     * and is only available in the shared library that is supplied to the dataSource/jdbcDriver in server config.
+     */
+    @Test
+    public void testDriverUnvailableToApplicationClassLoader() throws Exception {
+        DataSource proxyds = InitialContext.doLookup("jdbc/proxydriver");
+        Connection con = proxyds.getConnection("user1", "pwd1");
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("Proxy Driver", mdata.getDriverName());
+            assertEquals("user1", mdata.getUserName());
+
+            // Properties configured in server.xml:
+            assertEquals("proxydb", con.getCatalog());
+            assertEquals("pxschema1", con.getSchema());
         } finally {
             con.close();
         }
