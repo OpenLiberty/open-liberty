@@ -763,7 +763,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     private Driver loadDriver(final String className, String url, final ClassLoader classloader, Properties props, String dataSourceID) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
-            Tr.entry(this, tc, "loadDriver", url, classloader);
+            Tr.entry(this, tc, "loadDriver", className, url, classloader);
         int index = url.toLowerCase().indexOf("logintimeout");
         if(index != -1) {
             int length = url.length();
@@ -784,23 +784,22 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4005.invalid.logintimeout", dataSourceID));
         }
 
-        Iterator<Driver> drivers;
+        Iterable<Driver> drivers;
         if (className == null) {
-            drivers = ServiceLoader.load(Driver.class, classloader).iterator();
+            drivers = ServiceLoader.load(Driver.class, classloader);
         } else { // load explicitly specified class
             Driver driver = AccessController.doPrivileged(new PrivilegedExceptionAction<Driver>() {
                 public Driver run() throws Exception {
-                    ClassLoader loader = classloader == null ? null : Thread.currentThread().getContextClassLoader();
+                    ClassLoader loader = classloader == null ? Thread.currentThread().getContextClassLoader() : classloader;
                     Class<Driver> driverClass = (Class<Driver>) loader.loadClass(className);
                     return driverClass.newInstance();
                 }
             });
-            drivers = Collections.singleton(driver).iterator();
+            drivers = Collections.singleton(driver);
         }
 
         SQLException failure = null;
-        while (drivers.hasNext()) {
-            Driver driver = drivers.next();
+        for (Driver driver : drivers) {
             boolean acceptsURL;
             try {
                 acceptsURL = driver.acceptsURL(url);
