@@ -589,7 +589,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                             }
                         }
 
-                        if (className != null) {
+                        if (className != null && type != null) {
                             driverProps.put(JDBCDriverService.LIBRARY_REF, new String[] { libraryPid });
                             driverProps.put(JDBCDriverService.TARGET_LIBRARY, FilterUtils.createPropertyFilter("service.pid", libraryPid));
                             driverProps.put(type, className);
