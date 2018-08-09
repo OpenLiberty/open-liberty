@@ -24,10 +24,10 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-//    TestSpanUtils.class,
-//    FATOpentracing.class,
-//    FATOpentracingHelloWorld.class,
-//    FATMPOpenTracing.class,
+    TestSpanUtils.class,
+    FATOpentracing.class,
+    FATOpentracingHelloWorld.class,
+    FATMPOpenTracing.class,
     OpentracingTCKLauncher.class,
 //    MicroProfile13NoTracer.class
 })
