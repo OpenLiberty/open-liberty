@@ -246,7 +246,11 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
     @Override
     @SuppressWarnings("unchecked")
     protected <T> T getJDBCImplObject(Class<T> interfaceClass) throws SQLException {
-        Object impl = WSJdbcTracer.getImpl(getJDBCImplObject());
+        Object jdbcImplObject = getJDBCImplObject();
+        if(jdbcImplObject == null) {
+            return null;
+        }
+        Object impl = WSJdbcTracer.getImpl(jdbcImplObject);
         return interfaceClass.isInstance(impl) ? (T) impl : null;
     }
 

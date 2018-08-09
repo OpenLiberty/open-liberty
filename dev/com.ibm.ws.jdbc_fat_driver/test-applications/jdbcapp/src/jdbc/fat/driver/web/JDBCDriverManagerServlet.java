@@ -12,15 +12,20 @@ package jdbc.fat.driver.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
@@ -31,6 +36,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
@@ -580,6 +586,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
         }
     }
 
+    //Test that setting the LoginTimeout via URL or properties for DataSources using Driver is rejected and that getLoginTimeout always returns 0.
     @Test
     @ExpectedFFDC({ "java.sql.SQLNonTransientException" })
     public void testGetSetLoginTimeout() throws Exception {
@@ -600,6 +607,35 @@ public class JDBCDriverManagerServlet extends FATServlet {
         DriverManager.setLoginTimeout(10 * 60); //10 minutes
 
         assertEquals("Login timeout should be 0 regardless of what is done to DriverManager", 0, fatDriverDS.getLoginTimeout());
+    }
+
+    //Test that you are unable to set the logwriter on the DataSource and that the getLogWriter method returns null
+    @Test
+    public void testGetSetLogWriter() throws Exception {
+        try {
+            fatDriverDS.setLogWriter(new PrintWriter(System.out));
+        } catch (SQLFeatureNotSupportedException ex) {
+        } //expected
+        assertNull("The getLogWriter method should always return null when using Driver", fatDriverDS.getLogWriter());
+    }
+
+    //Test that ensures unwrapping a DataSource backed by Driver to the underlying Driver interface is not possible
+    @Test
+    @ExpectedFFDC({ "java.sql.SQLException" })
+    public void testUnwrapDriver() throws Exception {
+        assertFalse("fatDriverDS should not wrap Driver", fatDriverDS.isWrapperFor(Driver.class));
+        try {
+            fatDriverDS.unwrap(Driver.class);
+            fail("Should not be able to unwrap to the Driver interface");
+        } catch (SQLException ex) {
+            if (!ex.getMessage().contains("DSRA9122E"))
+                throw ex;
+        }
+
+        //It should however still be able to be unwrapped to an interface impl'd by WsJdbcDataSource
+        assertTrue("fatDriverDS should wrap CommonDataSource", fatDriverDS.isWrapperFor(CommonDataSource.class));
+        CommonDataSource ds = fatDriverDS.unwrap(CommonDataSource.class);
+        assertSame("The WSJdbcDataSource instance should have been returned by the call to unwrap", fatDriverDS, ds);
     }
 
 }
