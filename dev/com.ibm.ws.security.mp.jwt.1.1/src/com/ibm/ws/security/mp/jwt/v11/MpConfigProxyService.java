@@ -10,11 +10,21 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.v11;
 
-/**
- *
- */
-public interface TraceConstants {
+import java.util.NoSuchElementException;
+public interface MpConfigProxyService {
 
-    public final static String TRACE_GROUP = "MPJWT";
-    public final static String MESSAGE_BUNDLE = "com.ibm.ws.security.mp.jwt.v11.resources.MpJwtMessages";
+    /**
+     * @return
+     */
+    public String getVersion();
+
+    /**
+     * @return
+     */
+    public boolean isMpConfigAvailable();
+
+    /**
+     * @return
+     */
+    public <T> T getConfigValue(String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException;
 }

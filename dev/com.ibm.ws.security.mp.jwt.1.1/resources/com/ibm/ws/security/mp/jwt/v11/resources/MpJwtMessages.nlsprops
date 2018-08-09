@@ -8,14 +8,14 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 ###############################################################################
-#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/v11/resources/MicroProfileJwtMessages.nlsprops
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/v11/resources/MpJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT 1.1
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: CWWKS5750 - CWWKS5799
+# Message prefix block: CWWKS5750 - CWWKS5774
 
 MPJWT_11_CONFIG_PROCESSED=CWWKS5750I: The MicroProfile JWT v11 configuration [{0}] was successfully processed.
 MPJWT_11_CONFIG_PROCESSED.explanation=The indicated configuration was successfully processed.

@@ -8,23 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.mp.jwt;
+package com.ibm.ws.security.mp.jwt.v11.config;
 
-import java.util.NoSuchElementException;
-public interface MicroProfileJwtExtensionService {
+/**
+ *
+ */
+public interface TraceConstants {
 
-    /**
-     * @return
-     */
-    public String getVersion();
-
-    /**
-     * @return
-     */
-    public boolean isMpConfigAvailable();
-
-    /**
-     * @return
-     */
-    public <T> T getConfigValue(String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException;
+    public final static String TRACE_GROUP = "MPJWT";
+    public final static String MESSAGE_BUNDLE = "com.ibm.ws.security.mp.jwt.v11.config.resources.MpConfigProxyMessages";
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.mp.jwt.v11.impl;
+package com.ibm.ws.security.mp.jwt.v11.config.impl;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -27,44 +27,30 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.mp.jwt.MpJwtExtensionService;
 import com.ibm.ws.security.mp.jwt.v11.MpConfigProxyService;
-import com.ibm.ws.security.mp.jwt.v11.TraceConstants;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.ws.security.mp.jwt.v11.config.TraceConstants;
 
-@Component(service = MpJwtExtensionService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = {"service.vendor=IBM", "version=1.1"}, name = "mpJwtExtensionService")
-public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
+@Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = {"service.vendor=IBM", "version=1.1"}, name = "mpConfigProxyService")
+public class MpConfigProxyServiceImpl implements MpConfigProxyService {
 
-    public static final TraceComponent tc = Tr.register(MpJwtExtensionServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    public static final String KEY_MP_CONFIG_PROXY_SERVICE = "mpConfigProxyService";
+    public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static private String MP_VERSION = "1.1";
     private final String uniqueId = "MpConfigProxyService";
-    static final AtomicServiceReference<MpConfigProxyService> mpConfigProxyServiceRef = new AtomicServiceReference<MpConfigProxyService>(KEY_MP_CONFIG_PROXY_SERVICE);
-
-    @Reference(service = MpConfigProxyService.class, name = KEY_MP_CONFIG_PROXY_SERVICE, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    protected void setMpConfigProxyService(ServiceReference<MpConfigProxyService> reference) {
-        mpConfigProxyServiceRef.setReference(reference);
-    }
-
-    protected void unsetMpConfigProxyService(ServiceReference<MpConfigProxyService> reference) {
-        mpConfigProxyServiceRef.unsetReference(reference);
-    }
-
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
-        Tr.info(tc, "MPJWT_11_CONFIG_PROCESSED", uniqueId);
+        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_PROCESSED", uniqueId);
     }
 
     @Modified
     protected void modified(ComponentContext cc, Map<String, Object> props) {
-        Tr.info(tc, "MPJWT_11_CONFIG_MODIFIED", uniqueId);
+        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_MODIFIED", uniqueId);
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        Tr.info(tc, "MPJWT_11_CONFIG_DEACTIVATED", uniqueId);
+        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_DEACTIVATED", uniqueId);
     }
 
     /**

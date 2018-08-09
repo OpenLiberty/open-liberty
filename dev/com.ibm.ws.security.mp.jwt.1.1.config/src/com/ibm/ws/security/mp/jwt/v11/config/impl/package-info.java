@@ -8,13 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.mp.jwt.v11;
-
 /**
- *
+ * @version 1.0.0
  */
-public interface TraceConstants {
-
-    public final static String TRACE_GROUP = "MPJWT";
-    public final static String MESSAGE_BUNDLE = "com.ibm.ws.security.mp.jwt.v11.resources.MpJwtMessages";
-}
+@org.osgi.annotation.versioning.Version("1.0.0")
+package com.ibm.ws.security.mp.jwt.v11.config.impl;

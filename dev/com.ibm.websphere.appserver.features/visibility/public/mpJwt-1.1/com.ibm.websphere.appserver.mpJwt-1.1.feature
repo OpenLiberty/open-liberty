@@ -15,6 +15,7 @@ Subsystem-Name: MicroProfile JSON Web Token 1.0
 -bundles=com.ibm.ws.security.mp.jwt,\
   com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/",\
   com.ibm.ws.security.mp.jwt.cdi,\
+  com.ibm.ws.security.mp.jwt.1.1,\
   com.ibm.ws.org.apache.commons.codec.1.4, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
 kind=noship
