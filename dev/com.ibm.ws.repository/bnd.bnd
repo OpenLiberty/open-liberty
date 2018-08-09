@@ -36,6 +36,7 @@ Private-Package: com.ibm.ws.repository.resources.internal, \
 -buildpath: \
     com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
     com.ibm.ws.org.apache.aries.util;version=latest, \
+    com.ibm.ws.kernel.service,\
     org.eclipse.osgi;version=latest
 
 -testpath: \

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
+import org.osgi.framework.Version;
 import org.w3c.dom.Node;
 
 public class FeatureManifestFile extends UpdatedFile {
@@ -23,14 +24,22 @@ public class FeatureManifestFile extends UpdatedFile {
         long size = n.getAttributes().getNamedItem("size") == null ? null : Long.parseLong(n.getAttributes().getNamedItem("size").getNodeValue());
         String date = n.getAttributes().getNamedItem("date") == null ? null : n.getAttributes().getNamedItem("date").getNodeValue();
         String hash = n.getAttributes().getNamedItem("hash") == null ? n.getAttributes().getNamedItem("MD5hash") == null ? null : n.getAttributes().getNamedItem("MD5hash").getNodeValue() : n.getAttributes().getNamedItem("hash").getNodeValue();
+        String symbolicName = n.getAttributes().getNamedItem("symbolicName") == null ? null : n.getAttributes().getNamedItem("symbolicName").getNodeValue();
+        String version = n.getAttributes().getNamedItem("version") == null ? null : n.getAttributes().getNamedItem("version").getNodeValue();
 
-        return new FeatureManifestFile(id, size, date, hash, n.getAttributes().getNamedItem("symbolicName").getNodeValue(), n.getAttributes().getNamedItem("version").getNodeValue());
+        return new FeatureManifestFile(id, size, date, hash, symbolicName, version);
     }
 
     public FeatureManifestFile(String id, long size, String date, String hash, String symbolicName, String version) {
         super(id, size, date, hash);
         this.symbolicName = symbolicName;
         this.version = version;
+    }
+
+    public FeatureManifestFile(String id, long size, String date, String hash, String symbolicName, Version version) {
+        super(id, size, date, hash);
+        this.symbolicName = symbolicName;
+        this.version = version != null ? version.toString() : null;
     }
 
     /**

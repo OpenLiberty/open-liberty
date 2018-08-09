@@ -43,6 +43,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.repository.common.enums.AttachmentLinkType;
 import com.ibm.ws.repository.common.enums.AttachmentType;
 import com.ibm.ws.repository.common.enums.FilterableAttribute;
@@ -739,7 +740,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
         }
 
         if (basicAuthUserPass != null) {
-            String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(basicAuthUserPass.getBytes(Charset.forName("UTF-8")));
+            String basicAuth = "Basic " + encode(basicAuthUserPass.getBytes(Charset.forName("UTF-8")));
             connection.setRequestProperty("Authorization", basicAuth);
         }
 
@@ -1046,6 +1047,27 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
             }
         } catch (JsonException e) {
             return errorObject;
+        }
+    }
+
+    /**
+     * Print the base 64 string differently depending on JDK level because
+     * on JDK 7/8 we have JAX-B, and on JDK 8+ we have java.util.Base64
+     */
+    private static String encode(byte[] bytes) {
+        try {
+            if (JavaInfo.majorVersion() < 8) {
+                // return DatatypeConverter.printBase64Binary(str);
+                Class<?> DatatypeConverter = Class.forName("javax.xml.bind.DatatypeConverter");
+                return (String) DatatypeConverter.getMethod("printBase64Binary", byte[].class).invoke(null, bytes);
+            } else {
+                // return Base64.getEncoder().encode();
+                Class<?> Base64 = Class.forName("java.util.Base64");
+                Object encodeObject = Base64.getMethod("getEncoder").invoke(null);
+                return (String) encodeObject.getClass().getMethod("encodeToString", byte[].class).invoke(encodeObject, bytes);
+            }
+        } catch (Exception e) {
+            return null;
         }
     }
 }
