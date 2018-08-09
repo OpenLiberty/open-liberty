@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.0
+ * @version 1.1
  */
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("1.1")
 @TraceOptions(traceGroup = "OPENTRACING")
 package com.ibm.ws.microprofile.opentracing.cdi;
 
