@@ -72,7 +72,8 @@ public class PackageProcessor implements ArchiveProcessor {
     final String wlpProperty = "/lib/versions/WebSphereApplicationServer.properties";
     final String wlpPropertyBackup = "WebSphereApplicationServer.properties.bak";
 
-    public static String packageArchiveEntryPrefix = "wlp/";
+    private static final String PACKAGE_ARCHIVE_PREFIX = "wlp/";
+    public static String packageArchiveEntryPrefix = PACKAGE_ARCHIVE_PREFIX;
 
     public PackageProcessor(String processName, File packageFile, BootstrapConfig bootProps, List<Pair<PackageOption, String>> options, Set<String> processContent) {
         this.processName = processName;
@@ -453,10 +454,18 @@ public class PackageProcessor implements ArchiveProcessor {
         if (bootProps.getProcessType() == BootstrapConstants.LOC_PROCESS_TYPE_CLIENT) {
             locAreaName = BootstrapConstants.LOC_AREA_NAME_CLIENTS;
         }
-        DirEntryConfig processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
-                                                                   + BootstrapConstants.LOC_AREA_NAME_USR + "/"
-                                                                   + locAreaName + "/"
-                                                                   + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
+        DirEntryConfig processConfigDirConfig = null;
+        if (packageArchiveEntryPrefix.equalsIgnoreCase(PACKAGE_ARCHIVE_PREFIX)) {
+            processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                        + BootstrapConstants.LOC_AREA_NAME_USR + "/"
+                                                        + locAreaName + "/"
+                                                        + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
+        } else {
+            // if --server-root set, then don't add /usr/ in path
+            processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                        + locAreaName + "/"
+                                                        + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
+        }
         entryConfigs.add(processConfigDirConfig);
         // avoid any special characters in processName when construct patterns
         String regexProcessName = Pattern.quote(processName);
