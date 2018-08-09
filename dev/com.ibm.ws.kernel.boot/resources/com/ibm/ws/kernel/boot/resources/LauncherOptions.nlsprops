@@ -104,7 +104,8 @@ action-desc.package=\
 \tThe --include option can be used with values "all", "usr", "minify", \n\
 \t"wlp", "runnable", "all,runnable", and "minify,runnable". The values \n\
 \t"runnable" and "all,runnable" are equivalent. The "runnable" value   \n\
-\tworks with "jar" type archives only.
+\tworks with "jar" type archives only. The --server-root option can be \n\
+\tused to specify the root folder in the package archive.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\
 \ \ \ \ --dump
@@ -233,3 +234,8 @@ option-key.no-password=\
 \ \ \ \ --no-password
 option-desc.no-password=\
 \tDisable generation of default keystore password
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\
+\ \ \ \ --server-root="root server folder in archive"
+option-desc.package.server-root=\
+\tSpecifies the root server folder name in the archive file.           \n\

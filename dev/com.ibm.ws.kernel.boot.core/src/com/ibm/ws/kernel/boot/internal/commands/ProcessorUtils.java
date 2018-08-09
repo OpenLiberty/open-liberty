@@ -50,7 +50,7 @@ public class ProcessorUtils {
 
     /**
      * Get the loose config files from ${server.config.dir}/apps, ${server.config.dir}/dropins or ${shared.app.dir}
-     * 
+     *
      * @param bootProps
      * @return
      */
@@ -80,7 +80,7 @@ public class ProcessorUtils {
     /**
      * Refer to the com.ibm.ws.artifact.api.loose.internal.LooseContainerFactoryHelper.createContainer.
      * Parse the loose config file and create the looseConfig object which contains the file's content.
-     * 
+     *
      * @param looseFile
      * @return
      * @throws Exception
@@ -178,7 +178,7 @@ public class ProcessorUtils {
 
     /**
      * Using the method to create Loose config's Archive entry config
-     * 
+     *
      * @param looseConfig
      * @param looseFile
      * @param bootProps
@@ -189,7 +189,7 @@ public class ProcessorUtils {
         File usrRoot = bootProps.getUserRoot();
         int len = usrRoot.getAbsolutePath().length();
 
-        String entryPath = PackageProcessor.PACKAGE_ARCHIVE_ENTRY_PREFIX + "usr" + looseFile.getAbsolutePath().substring(len);
+        String entryPath = PackageProcessor.packageArchiveEntryPrefix + "usr" + looseFile.getAbsolutePath().substring(len);
         entryPath = entryPath.replace("\\", "/");
         entryPath = entryPath.substring(0, entryPath.length() - 4); // trim the .xml
 
@@ -259,7 +259,7 @@ public class ProcessorUtils {
 
     /**
      * Copy from com.ibm.ws.artifact.api.loose.internal.LooseArchive
-     * 
+     *
      * @param excludeStr
      * @return
      */
