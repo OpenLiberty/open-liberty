@@ -21,15 +21,32 @@
     	<fileset dir="${shared.resource.dir}/derby"/>
     </library>
     
-    <dataSource id="ds1" jndiName="jdbc/ds1">
-        <jdbcDriver libraryRef="DerbyLib"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    <authData id="derbyAuth" user="dbuser" password="{xor}Oz0vKDtt" />
+     
+    <dataSource id="dsfat0" jndiName="jdbc/dsfat0" type="javax.sql.DataSource" isolationLevel="TRANSACTION_SERIALIZABLE">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:ds0" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
-     <!-- dataSource id="tranNoneDS" jndiName="jdbc/tranNoneDS" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE">
-    	<jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
-    </dataSource-->
+    <dataSource id="dsfat1" jndiName="jdbc/dsfat1" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource id="dsfat2" jndiName="jdbc/dsfat2" type="javax.sql.DataSource">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:ds2" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    
+    <dataSource id="dsfat3" jndiName="jdbc/dsfat3" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
+      <properties.derby.embedded databaseName="memory:ds3" createDatabase="create"/>
+    </dataSource >
+    
+    <dataSource id="dsfat4" jndiName="jdbc/dsfat4" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
+      <properties.derby.embedded databaseName="memory:ds4" createDatabase="create"/>
+    </dataSource>
     
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
         

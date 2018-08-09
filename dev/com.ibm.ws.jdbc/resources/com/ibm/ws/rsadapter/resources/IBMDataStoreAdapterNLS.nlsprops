@@ -250,6 +250,22 @@ DSRA4005.invalid.logintimeout=DSRA4005E: The server does not support the loginTi
 DSRA4005.invalid.logintimeout.explanation=The loginTimeout property is not supported when it is specified for a DataSource that is backed by a java.sql.Driver implementation because the server is unable to call getLoginTimeout on the java.sql.Driver class.
 DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to use a DataSource implementation instead of a java.sql.Driver implementation, or remove the loginTimeout property.
 
+DSRA4008.tran.none.unsupported=DSRA4008E: The JDBC driver does not support an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
+DSRA4008.tran.none.unsupported.explanation=The TRANSACTION_NONE isolation level that is configured on the data source is not supported by the JDBC driver.
+DSRA4008.tran.none.unsupported.useraction=Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: The data source {0} cannot be configured with an isolation level of TRANSACTION_NONE and transactional=true.
+DSRA4009.tran.none.transactional.unsupported.explanation=A JDBC driver that is configured with an isolation level of TRANSACTION_NONE will not support transactions.
+DSRA4009.tran.none.transactional.unsupported.useraction=Set transactional=false on the data source.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: Auto commit is required when using an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
+DSRA4010.tran.none.autocommit.required.explanation=The JDBC driver is configured with an isolation level of TRANSACTION_NONE, and requires the use of auto commit.
+DSRA4010.tran.none.autocommit.required.useraction=Keep auto commit set to true.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: The JDBC driver does not support switching to an isolation level of TRANSACTION_NONE on data source {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=The JDBC specification does not support switching to an isolation level of TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Avoid switching to an isolation level of TRANSACTION_NONE.
+
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings

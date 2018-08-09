@@ -38,15 +38,16 @@ public class JDBCDerbyTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.derby.web");
 
-        JavaArchive tranNoneDriver = ShrinkWrap.create(JavaArchive.class, "trandriver.jar")//
-                        .addPackage("jdbc.tran.none.driver");
+        JavaArchive tranNoneDriver = ShrinkWrap.create(JavaArchive.class, "trandriver.jar").addPackage("jdbc.tran.none.driver");
         ShrinkHelper.exportToServer(server, "../../shared/resources/derby", tranNoneDriver);
 
+        server.configureForAnyDatabase();
+        server.addInstalledAppForValidation("jdbcapp");
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE0701E"); //expected by testTransactionalSetting
     }
 }

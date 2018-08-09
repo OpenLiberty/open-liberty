@@ -69,7 +69,7 @@ final class ResourceEnvRefInfo implements ResourceInfo {
 
     @Override
     public int getIsolationLevel() {
-        return 0; // TRANSACTION_NONE
+        return java.sql.Connection.TRANSACTION_NONE; // TRANSACTION_NONE
     }
 
     @Override
