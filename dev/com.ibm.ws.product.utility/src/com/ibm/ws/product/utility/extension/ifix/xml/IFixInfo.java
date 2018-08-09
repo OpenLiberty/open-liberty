@@ -14,17 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * This is a representation of an iFix XML file on disk
  */
-@XmlRootElement(name = "fix")
 public class IFixInfo implements MetadataOutput {
 
     public static IFixInfo fromDocument(Document doc) {
@@ -51,25 +46,18 @@ public class IFixInfo implements MetadataOutput {
     //XmlAttribute - defined on setter below
     private String id;
 
-    @XmlAttribute
     private final String version;
 
-    @XmlElement
     private Applicability applicability;
 
-    @XmlElement
     private final Categories categories = new Categories();//unused for now but we need it in xml as a self-closing element
 
-    @XmlElement
     private Information information;
 
-    @XmlElement(name = "property")
     private List<Property> properties;
 
-    @XmlElement
     private Resolves resolves;
 
-    @XmlElement
     private Updates updates;
 
     public IFixInfo(String id, String version) {
@@ -130,7 +118,6 @@ public class IFixInfo implements MetadataOutput {
     /**
      * @param id the id to set
      */
-    @XmlAttribute
     public void setId(String id) {
         this.id = id;
     }

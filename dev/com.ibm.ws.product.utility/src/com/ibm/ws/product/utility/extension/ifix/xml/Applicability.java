@@ -13,8 +13,6 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.w3c.dom.NodeList;
 
 /**
@@ -33,12 +31,7 @@ public class Applicability {
         return new Applicability(offerings);
     }
 
-    @XmlElement(name = "offering")
-    private List<Offering> offerings;
-
-    public Applicability() {
-        //blank constructor required for jaxb to work
-    }
+    private final List<Offering> offerings;
 
     public Applicability(List<Offering> offeringList) {
         offerings = offeringList;

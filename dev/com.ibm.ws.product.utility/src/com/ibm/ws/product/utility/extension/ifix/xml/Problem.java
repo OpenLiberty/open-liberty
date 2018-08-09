@@ -13,8 +13,6 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -43,10 +41,6 @@ public class Problem {
     private String description;
     private String id;
 
-    public Problem() {
-        //needed as Jaxb needs a blank constructor
-    }
-
     public Problem(String setId, String setDisplayId, String setDescription) {
         id = setId;
         displayId = setDisplayId;
@@ -63,7 +57,6 @@ public class Problem {
     /**
      * @param displayId the displayId to set
      */
-    @XmlAttribute
     public void setDisplayId(String displayId) {
         this.displayId = displayId;
     }
@@ -78,7 +71,6 @@ public class Problem {
     /**
      * @param description the description to set
      */
-    @XmlAttribute
     public void setDescription(String description) {
         this.description = description;
     }
@@ -93,7 +85,6 @@ public class Problem {
     /**
      * @param id the id to set
      */
-    @XmlAttribute
     public void setId(String id) {
         this.id = id;
     }

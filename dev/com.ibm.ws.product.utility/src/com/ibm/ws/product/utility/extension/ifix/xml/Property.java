@@ -13,8 +13,6 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -30,14 +28,9 @@ public class Property {
         return props;
     }
 
-    @XmlAttribute
-    private String value;
-    @XmlAttribute
-    private String name;
+    private final String value;
 
-    public Property() {
-        //blank constructor required by jaxb
-    }
+    private final String name;
 
     public Property(String name, String value) {
         this.name = name;

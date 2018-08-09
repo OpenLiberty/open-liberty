@@ -13,8 +13,6 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlElement;
-
 import org.w3c.dom.NodeList;
 
 public class Updates {
@@ -30,12 +28,7 @@ public class Updates {
         return new Updates(files);
     }
 
-    @XmlElement(name = "file")
-    private Set<UpdatedFile> files;
-
-    public Updates() {
-        //required empty constructor for jaxb
-    }
+    private final Set<UpdatedFile> files;
 
     public Updates(Set<UpdatedFile> files) {
         this.files = files;

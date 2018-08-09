@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.w3c.dom.Node;
 
 public class UpdatedFile {
@@ -26,18 +24,13 @@ public class UpdatedFile {
         return new UpdatedFile(id, size, date, hash);
     }
 
-    @XmlAttribute
-    private String id;
-    @XmlAttribute
-    private long size;
-    @XmlAttribute
-    private String hash;
-    @XmlAttribute
-    private String date;
+    private final String id;
 
-    public UpdatedFile() {
-        //required blank constructor for jaxb
-    }
+    private final long size;
+
+    private final String hash;
+
+    private final String date;
 
     public UpdatedFile(String id, long size, String date, String hash) {
         this.id = id;

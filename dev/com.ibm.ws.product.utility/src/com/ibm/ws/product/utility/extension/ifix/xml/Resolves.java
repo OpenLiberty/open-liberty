@@ -12,9 +12,6 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -33,24 +30,19 @@ public class Resolves {
         return null;
     }
 
-    @XmlAttribute
     private final boolean showList = true;
-    @XmlAttribute
+
     private final String description = "This fix resolves APARS:";
-    @XmlAttribute
+
     private int problemCount;
-    @XmlElement(name = "problem")
-    private List<Problem> problems;
+
+    private final List<Problem> problems;
 
     /**
      * @return the problems in this resolves element or <code>null</code> if there aren't any
      */
     public List<Problem> getProblems() {
         return problems;
-    }
-
-    public Resolves() {
-        //needed as Jaxb needs a blank constructor
     }
 
     public Resolves(List<Problem> problems) {

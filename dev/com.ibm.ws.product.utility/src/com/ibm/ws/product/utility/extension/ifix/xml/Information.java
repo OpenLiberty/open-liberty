@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlValue;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -28,11 +25,10 @@ public class Information {
         return null;
     }
 
-    @XmlValue
     private String content;
-    @XmlAttribute
+
     private String version;
-    @XmlAttribute
+
     private String name;
 
     public Information() {

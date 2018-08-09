@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.w3c.dom.Node;
 
 /**
@@ -29,10 +27,6 @@ public class Offering {
 
     private String tolerance;
 
-    public Offering() {
-        //required empty constructor for jaxb
-    }
-
     public Offering(String id, String tolerance) {
         this.id = id;
         this.tolerance = tolerance;
@@ -42,7 +36,6 @@ public class Offering {
         return this.id;
     }
 
-    @XmlAttribute
     public void setId(String id) {
         this.id = id;
     }
@@ -51,7 +44,6 @@ public class Offering {
         return this.tolerance;
     }
 
-    @XmlAttribute
     public void setTolerance(String tolerance) {
         this.tolerance = tolerance;
     }

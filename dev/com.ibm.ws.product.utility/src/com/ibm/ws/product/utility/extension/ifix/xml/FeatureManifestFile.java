@@ -10,16 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.w3c.dom.Node;
 
 public class FeatureManifestFile extends UpdatedFile {
 
-    @XmlAttribute
-    private String symbolicName;
-    @XmlAttribute
-    private String version;
+    private final String symbolicName;
+
+    private final String version;
 
     public static FeatureManifestFile fromNode(Node n) {
         String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
@@ -28,10 +25,6 @@ public class FeatureManifestFile extends UpdatedFile {
         String hash = n.getAttributes().getNamedItem("hash") == null ? n.getAttributes().getNamedItem("MD5hash") == null ? null : n.getAttributes().getNamedItem("MD5hash").getNodeValue() : n.getAttributes().getNamedItem("hash").getNodeValue();
 
         return new FeatureManifestFile(id, size, date, hash, n.getAttributes().getNamedItem("symbolicName").getNodeValue(), n.getAttributes().getNamedItem("version").getNodeValue());
-    }
-
-    public FeatureManifestFile() {
-        //required blank constructor for jaxb
     }
 
     public FeatureManifestFile(String id, long size, String date, String hash, String symbolicName, String version) {
