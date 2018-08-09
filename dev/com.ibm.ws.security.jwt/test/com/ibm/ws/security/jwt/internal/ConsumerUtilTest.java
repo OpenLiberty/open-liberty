@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwt.internal;
 
@@ -24,7 +24,9 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -161,6 +163,39 @@ public class ConsumerUtilTest {
         System.out.println("Exiting test: " + testName.getMethodName());
     }
 
+    class TestConsumerUtil01 extends ConsumerUtil {
+        TestConsumerUtil01() {
+            super(null);
+        }
+
+        @Override
+        boolean validateIssuer(String consumerConfigId, String issuers, String tokenIssuer) throws InvalidClaimException {
+            if (issuers.compareTo("issuerFromMap") == 0) {
+                throw new RuntimeException("it worked");
+            }
+            return false;
+        }
+    }
+
+    /**
+     * check that validateClaims reads the issuer from the properties map if supplied
+     */
+    @Test
+    public void testValidateClaimsReadsConfigProperty() {
+        boolean valid = false;
+        TestConsumerUtil01 cu = new TestConsumerUtil01();
+        Map<String, String> propsMap = new HashMap<String, String>();
+        propsMap.put(ConsumerUtil.ISSUER, "issuerFromMap");
+        try {
+            cu.validateClaims(jwtClaims, jwtContext, null, propsMap);
+        } catch (Exception e) {
+            if (e instanceof RuntimeException) {
+                valid = true;
+            }
+        }
+        assertTrue("expected property to be read from map but it was not", valid);
+    }
+
     /********************************************* getSigningKey *********************************************/
 
     /**
@@ -169,7 +204,7 @@ public class ConsumerUtilTest {
     @Test
     public void testGetSigningKey_nullConfig() {
         try {
-            Key result = consumerUtil.getSigningKey((JwtConsumerConfig) null, (JwtContext) null);
+            Key result = consumerUtil.getSigningKey((JwtConsumerConfig) null, (JwtContext) null, null);
             assertNull("Result was not null when it should have been. Result: " + result, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -188,7 +223,7 @@ public class ConsumerUtilTest {
                     will(returnValue("SomeUnknownAlg"));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
             assertNull("Result was not null when it should have been. Result: " + result, result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -210,7 +245,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+                Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
                 fail("Should have thrown KeyException but did not. Got key: " + result);
             } catch (KeyException e) {
                 validateException(e, MSG_JWT_ERROR_GETTING_SHARED_KEY + ".+" + MSG_JWT_MISSING_SHARED_KEY);
@@ -234,7 +269,7 @@ public class ConsumerUtilTest {
                     will(returnValue(sharedKey));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
             assertNotNull("Result was null when it should not have been.", result);
             assertTrue("Result was not an HmacKey. Result was: " + result, result instanceof HmacKey);
         } catch (Throwable t) {
@@ -255,14 +290,14 @@ public class ConsumerUtilTest {
                     will(returnValue(RS256));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri(jwkEndpointUrl
                     will(returnValue(false)); //
-                    one(jwtConfig).getTrustedAlias();
+                    allowing(jwtConfig).getTrustedAlias();
                     will(returnValue(trustedAlias));
                     one(jwtConfig).getTrustStoreRef();
                     will(returnValue(trustStoreRef));
                 }
             });
             try {
-                Key result = testConsumerUtil.getSigningKey(jwtConfig, jwtContext);
+                Key result = testConsumerUtil.getSigningKey(jwtConfig, jwtContext, null);
                 fail("Should have thrown Exception but did not. Got key: " + result);
             } catch (Exception e) {
                 validateException(e, MSG_JWT_ERROR_GETTING_PRIVATE_KEY + ".+\\[" + trustedAlias + "\\].+\\[" + trustStoreRef + "\\].+" + MSG_JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE);
@@ -280,11 +315,12 @@ public class ConsumerUtilTest {
         try {
             mockery.checking(new Expectations() {
                 {
+
                     one(jwtConfig).getSignatureAlgorithm();
                     will(returnValue(RS256));
                     one(jwtConfig).getJwkEnabled(); // for jwksUri
                     will(returnValue(false)); //
-                    one(jwtConfig).getTrustedAlias();
+                    allowing(jwtConfig).getTrustedAlias();
                     will(returnValue(trustedAlias));
                     one(jwtConfig).getTrustStoreRef();
                     will(returnValue(trustStoreRef));
@@ -296,7 +332,7 @@ public class ConsumerUtilTest {
                     will(returnValue(rsaPublicKey));
                 }
             });
-            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext);
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, null);
             assertNotNull("Resulting key was null when it should not have been.", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
