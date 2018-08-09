@@ -84,7 +84,6 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
     //In CDI 2.0 with weld 3.0.4 or later WELD-001210 is a warning not an error. 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @ExpectedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEnablingBeansXmlValidationCDITwo() throws Exception {
         boolean foundNetworkError = false;
         try {
