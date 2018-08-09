@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 IBM Corporation and others.
+ * Copyright (c) 2016, 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
+import com.ibm.ws.security.mp.jwt.MicroProfileJwtExtensionService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.ErrorHandlerImpl;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
@@ -67,10 +68,11 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     public static final String KEY_MP_JWT_CONFIG = "microProfileJwtConfig";
     public static final String ATTRIBUTE_TAI_REQUEST = "MPJwtTaiRequest";
     public static final String JTI_CLAIM = "jti";
-
+    public static final String KEY_MP_JWT_EXTENSION_SERVICE = "microProfileJwtExtensionService";
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
     static final ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig> mpJwtConfigRef = new ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig>(KEY_MP_JWT_CONFIG);
+    static final AtomicServiceReference<MicroProfileJwtExtensionService> mpJwtExtensionServiceRef = new AtomicServiceReference<MicroProfileJwtExtensionService>(KEY_MP_JWT_EXTENSION_SERVICE);
 
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
 
@@ -159,6 +161,15 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         }
     }
 
+    @Reference(service = MicroProfileJwtExtensionService.class, name = KEY_MP_JWT_EXTENSION_SERVICE, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setMicroProfileJwtExtensionService(ServiceReference<MicroProfileJwtExtensionService> reference) {
+        mpJwtExtensionServiceRef.setReference(reference);
+    }
+
+    protected void unsetMicroProfileJwtExtensionService(ServiceReference<MicroProfileJwtExtensionService> reference) {
+        mpJwtExtensionServiceRef.unsetReference(reference);
+    }
+
     public static MicroProfileJwtConfig getMicroProfileJwtConfig(String key) {
         // TODO: Use read/write locks to serialize access when the mpJwtConfigRef is being updated.
         return mpJwtConfigRef.getService(key);
@@ -178,6 +189,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             mpJwtConfigRef.activate(cc);
         }
         securityServiceRef.activate(cc);
+        mpJwtExtensionServiceRef.activate(cc);
     }
 
     @Modified
@@ -204,6 +216,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             mpJwtConfigRef.deactivate(cc);
         }
         securityServiceRef.deactivate(cc);
+        mpJwtExtensionServiceRef.deactivate(cc);
     }
 
     @Override
