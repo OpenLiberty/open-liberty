@@ -17,13 +17,22 @@
       <feature>jndi-1.0</feature>
     </featureManager>
  
+    <library id="DerbyLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    </library>
+ 
     <library id="FATDriverLib">
         <file name="${server.config.dir}/derby/FATDriver.jar"/>
     </library>
 
     <dataSource id="DefaultDataSource">
       <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
-      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu" />
+      <properties databaseName="memory:jdbcdriver1" autoCreate="true" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <dataSource id="derby" jndiName="jdbc/derby" type="java.sql.Driver">
+      <jdbcDriver libraryRef="DerbyLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
+      <properties.derby.embedded url="jdbc:derby:" databaseName="memory:derbydb" create="true" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <!-- the following is unusable because no ConnectionPoolDataSource implementation is provided by the driver -->
@@ -47,7 +56,9 @@
       <jdbcDriver libraryRef="FATDriverLib" internal.nonship.function="This is for internal development only. Never use this in production"/>
       <properties url="jdbc:fatdriver:memory:jdbcdriver1;create=true;LoginTimeout=10"/>
     </dataSource>
-    
+
+    <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+
     <javaPermission codeBase="${server.config.dir}derby/FATDriver.jar" className="java.security.AllPermission"/>
     
     <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
