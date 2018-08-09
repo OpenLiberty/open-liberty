@@ -139,3 +139,16 @@ slf.no.acf.useraction=See the problem determination information on the WebSphere
 slf.failed.delete=CWWKL0072W: The [{0}] cache file cannot be deleted. This result can lead to the corruption of nested archives.
 slf.failed.delete.explanation=The system failed to delete the cache file. Because the file still exists in the system, this might cause corruption in nested archives.
 slf.failed.delete.useraction=Verify that the cache file is not in a locked state, which can cause the file deletion to fail.
+
+cls.classloader.config.duplicate=CWWKL0080E: API id [{0}] was already used in this list [{1}], remove the duplicate API id.
+cls.classloader.config.duplicate.explanation=Remove the duplicate API id.
+cls.classloader.config.duplicate.useraction=Check the server configuration to ensure that the class loader has been defined and that the ID is correct.
+
+cls.classloader.config.not.allowed=CWWKL0081E: API id [{0}] is already added to the list when using prefix + or -, remove [{0}] from the list [{1}].
+cls.classloader.config.not.allowed.explanation=All default API ids are added, remove duplicates.
+cls.classloader.config.not.allowed.useraction=Check the server configuration to ensure that the class loader has been defined and that the ID is correct.
+
+cls.classloader.config.typo=CWWKL0082E: API id [{0}] is not valid in this list [{1}] and needs to be changed to one of the valid API ids {2}.
+cls.classloader.config.typo.explanation=Change the invalid API id to a valid API id.
+cls.classloader.config.typo.useraction=Check the server configuration to ensure that the class loader has been defined and that the ID is correct.
+
