@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=Nie jest wymagana \u017cadna czynno\u
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Us\u0142uga stowarzyszania rejestru u\u017cytkownik\u00f3w jest zatrzymana.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie znaleziono poprawnego rejestru u\u017cytkownik\u00f3w. Dodaj lub popraw definicj\u0119 rejestru w pliku server.xml.
+MISSING_REGISTRY_DEFINITION.explanation=Rejestr u\u017cytkownik\u00f3w nie zosta\u0142 zdefiniowany lub nie mo\u017cna go zainicjowa\u0107 z powodu b\u0142\u0119du konfiguracji. Poprawnym rejestrem u\u017cytkownik\u00f3w mo\u017ce by\u0107 rejestr LDAP lub inny obs\u0142ugiwany rejestr lub repozytorium.
+MISSING_REGISTRY_DEFINITION.useraction=Je\u015bli rejestr u\u017cytkownik\u00f3w zosta\u0142 zdefiniowany w pliku konfiguracyjnym, poszukaj w dziennikach b\u0142\u0119d\u00f3w konfiguracji wyst\u0119puj\u0105cych podczas uruchamiania. Dodaj lub popraw definicj\u0119 rejestru u\u017cytkownik\u00f3w w pliku server.xml.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Nie mo\u017cna zako\u0144czy\u0107 operacji na rejestrze u\u017cytkownik\u00f3w. Nie znaleziono identyfikatora jednostki. Okre\u015bl poprawny identyfikator jako parametr wej\u015bciowy. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Identyfikator jednostki nie zosta\u0142 okre\u015blony. System nie mo\u017ce znale\u017a\u0107 jednostki. Nie mo\u017cna kontynuowa\u0107 operacji na rejestrze u\u017cytkownik\u00f3w przed znalezieniem tej jednostki. 

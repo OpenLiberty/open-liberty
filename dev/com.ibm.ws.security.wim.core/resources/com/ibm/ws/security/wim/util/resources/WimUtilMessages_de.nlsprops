@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=Es ist keine Aktion erforderlich.
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Der Service f\u00fcr die Einbindung der Benutzerregistry wurde gestoppt.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Es ist keine Aktion erforderlich.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Es wurde keine g\u00fcltige Benutzerregistry gefunden. F\u00fcgen Sie die Registry-Definition in der Datei server.xml hinzu bzw. korrigieren Sie sie.
+MISSING_REGISTRY_DEFINITION.explanation=Es wurde keine Benutzerregistry definiert oder eine Benutzerregistry konnte wegen eines Konfigurationsfehlers nicht initialisiert werden. Zu den g\u00fcltigen Benutzerregistrys geh\u00f6ren LDAP-Registrys und andere unterst\u00fctzte Registrys oder Repositorys.
+MISSING_REGISTRY_DEFINITION.useraction=Wenn eine Benutzerregistry in der Konfigurationsdatei definiert wurde, suchen Sie in den Protokollen nach Konfigurationsfehlers, die w\u00e4hrend des Serverstarts aufgetreten sind. F\u00fcgen Sie die Benutzerregistry-Definition in der Datei server.xml hinzu bzw. korrigieren Sie sie.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden. Die Kennung der Entit\u00e4t wurde nicht gefunden. Geben Sie die richtige ID als Eingabeparameter an. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Die Kennung der Entit\u00e4t wurde nicht angegeben. Das System kann die Entit\u00e4t nicht finden. Die Benutzerregistry-Operation kann ohne diese Entit\u00e4t nicht fortgesetzt werden. 

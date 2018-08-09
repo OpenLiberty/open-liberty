@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=No se requiere ninguna acci\u00f3n.
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: El servicio de federaci\u00f3n de registro de usuarios se ha detenido.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Este mensaje es meramente informativo.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=No se requiere ninguna acci\u00f3n.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: La operaci\u00f3n del registro de usuarios no ha podido completarse. No se ha encontrado un registro de usuarios v\u00e1lido. A\u00f1ada y corrija la definici\u00f3n de registro en el archivo server.xml.
+MISSING_REGISTRY_DEFINITION.explanation=No se ha definido un registro de usuarios o no ha podido inicializarse debido a un error de configuraci\u00f3n. Un registro de usuarios v\u00e1lido incluye un registro LDAP u otros registros o repositorios soportados.
+MISSING_REGISTRY_DEFINITION.useraction=Si se ha definido un registro de usuarios en el archivo de configuraci\u00f3n, revise si hay errores de configuraci\u00f3n durante el arranque del servidor en los registros. A\u00f1ada y corrija la definici\u00f3n de registro de usuarios en el archivo server.xml.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: La operaci\u00f3n del registro de usuarios no ha podido completarse. No se ha encontrado el identificador de la entidad. Especifique el identificador correcto como par\u00e1metro de entrada. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=No se ha especificado el identificador de la entidad. El sistema no puede encontrar la entidad. La operaci\u00f3n de registro de usuarios no puede continuar sin encontrar esta entidad. 
