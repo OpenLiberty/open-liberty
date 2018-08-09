@@ -152,3 +152,6 @@ cls.classloader.config.typo=CWWKL0082E: API id [{0}] is not valid in this list [
 cls.classloader.config.typo.explanation=Change the invalid API id to a valid API id.
 cls.classloader.config.typo.useraction=Check the server configuration for invalid API id to ensure that the API id are correct.
 
+cls.classloader.config.typo=CWWKL0083E: When using prefix + or -, API id [{0}] is not valid in this list [{1}].  All API id must have a prefix of + or -
+cls.classloader.config.typo.explanation=Change the invalid API id to a valid API id with + or -.
+cls.classloader.config.typo.useraction=Check the server configuration for invalid API id to ensure that the API id are correct.
