@@ -756,7 +756,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      *
      * @param className pre-computed Driver implementation class name to load. This will only ever be available on the DataSourceDefinition path.
      * @param url the JDBC driver URL.
-     * @param classloader class loader from which to load JDBC drivers.
+     * @param classloader class loader from which to load JDBC drivers. NULL to load from the application's thread context class loader.
      * @return Driver instance that accepts the URL. NULL if no such Driver can be loaded.
      * @throws Exception if an error occurs.
      */
@@ -786,7 +786,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
         Iterable<Driver> drivers;
         if (className == null) {
-            drivers = ServiceLoader.load(Driver.class, classloader);
+            if (classloader == null)
+                drivers = ServiceLoader.load(Driver.class); // use thread context class loader of application
+            else
+                drivers = ServiceLoader.load(Driver.class, classloader);
         } else { // load explicitly specified class
             Driver driver = AccessController.doPrivileged(new PrivilegedExceptionAction<Driver>() {
                 public Driver run() throws Exception {
