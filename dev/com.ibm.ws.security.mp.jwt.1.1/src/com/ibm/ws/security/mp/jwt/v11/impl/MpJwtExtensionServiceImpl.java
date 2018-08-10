@@ -90,6 +90,7 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
     /**
      * @return
      */
+    @FFDCIgnore({ NoSuchElementException.class })
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
         MpConfigProxyService ps = mpConfigProxyServiceRef.getService();
         if (ps != null) {

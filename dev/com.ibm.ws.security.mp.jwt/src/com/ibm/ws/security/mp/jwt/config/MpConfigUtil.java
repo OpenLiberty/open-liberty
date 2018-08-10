@@ -10,8 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,7 +39,7 @@ public class MpConfigUtil {
 
     public Map<String, String> getMpConfig(HttpServletRequest req) {
         ClassLoader cl = getApplicationClassloader(req);
-        return getMpConfigByClassLoader(cl);
+        return getMpConfigMap(cl);
     }
 
     protected ClassLoader getApplicationClassloader(HttpServletRequest req) {
@@ -54,16 +56,24 @@ public class MpConfigUtil {
         return cl;
     }
 
-    protected Map<String, String> getMpConfigByClassLoader(ClassLoader cl) {
+    protected Map<String, String> getMpConfigMap(ClassLoader cl) {
         Map<String, String> map = new HashMap<String, String>();
         MpJwtExtensionService service = mpJwtExtensionServiceRef.getService();
         if (service != null) {
-            String issuer = service.getConfigValue(cl, MpConstants.ISSUER, String.class);
-            map.put(MpConstants.ISSUER, issuer);
-            String publicKey = service.getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
-            map.put(MpConstants.PUBLIC_KEY, publicKey);
-            String keyLocation = service.getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
-            map.put(MpConstants.KEY_LOCATION, keyLocation);
+            Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
+        }
+        return map;
+    }
+
+    // no null check other than cl. make sure that the caller sets non null objects.
+    @FFDCIgnore({ NoSuchElementException.class })
+    protected Map<String, String> getMpConfig(MpJwtExtensionService service, ClassLoader cl, String propertyName,  Map<String, String> map) {
+        try {
+            map.put(MpConstants.ISSUER, service.getConfigValue(cl, propertyName, String.class));
+        } catch (NoSuchElementException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, propertyName + " is not in mpConfig.");
+            }
         }
         return map;
     }

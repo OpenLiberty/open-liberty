@@ -76,6 +76,7 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
      * @return
      */
     @Override
+    @FFDCIgnore({ NoSuchElementException.class })
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
         Config config;
         if (cl != null) {
