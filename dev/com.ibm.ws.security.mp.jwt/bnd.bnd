@@ -81,7 +81,7 @@ Include-Resource: \
         com.ibm.ws.security.authentication.tai;version=latest, \
         com.ibm.ws.security.authentication;version=latest, \
         com.ibm.ws.security.authentication.filter;version=latest,\
-        com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+        com.ibm.ws.org.jose4j.0.6.4;version=latest, \
         com.ibm.ws.security.jwt;version=latest, \
         com.ibm.ws.security.token;version=latest, \
         com.ibm.ws.security.common;version=latest, \
@@ -100,4 +100,4 @@ Include-Resource: \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest
+    com.ibm.ws.org.jose4j.0.6.4;version=latest
