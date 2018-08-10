@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.mp.jwt.MpJwtExtensionService;
 import com.ibm.ws.security.mp.jwt.v11.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.v11.TraceConstants;
@@ -90,7 +91,6 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
     /**
      * @return
      */
-    @FFDCIgnore({ NoSuchElementException.class })
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
         MpConfigProxyService ps = mpConfigProxyServiceRef.getService();
         if (ps != null) {

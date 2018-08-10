@@ -30,6 +30,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.mp.jwt.v11.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.v11.config.TraceConstants;
 
@@ -76,7 +77,6 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
      * @return
      */
     @Override
-    @FFDCIgnore({ NoSuchElementException.class })
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
         Config config;
         if (cl != null) {
