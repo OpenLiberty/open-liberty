@@ -16,7 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                MetricsTCKLauncher.class
+                MetricsTCKLauncher.class,
+                MetricsTCKLauncherNoAuth.class
 })
 
 public class FATSuite {}
