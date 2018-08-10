@@ -192,13 +192,16 @@ public class ConsumerUtil {
     }
 
     boolean isPublicKeyPropsPresent(Map props) {
+        if (props == null) {
+            return false;
+        }
         return props.get(PUBLIC_KEY) != null || props.get(KEY_LOCATION) != null;
     }
 
     Key getSigningKeyForRS256(JwtConsumerConfig config, JwtContext jwtContext, Map properties) throws KeyException {
         Key signingKey = null;
-        if (config.getJwkEnabled()  ||
-                ( config.getTrustedAlias()== null && isPublicKeyPropsPresent(properties))) { // need change to consider MP-Config
+        if (config.getJwkEnabled() ||
+                (config.getTrustedAlias() == null && isPublicKeyPropsPresent(properties))) { // need change to consider MP-Config
             signingKey = getKeyForJwkEnabled(config, jwtContext, properties);
         } else {
             signingKey = getKeyForJwkDisabled(config);
