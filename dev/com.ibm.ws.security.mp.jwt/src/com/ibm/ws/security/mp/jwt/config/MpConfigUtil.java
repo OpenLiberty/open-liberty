@@ -39,8 +39,22 @@ public class MpConfigUtil {
     }
 
     public Map<String, String> getMpConfig(HttpServletRequest req) {
-        ClassLoader cl = getApplicationClassloader(req);
-        return getMpConfigMap(cl);
+        Map<String, String> map = new HashMap<String, String>();
+        MpJwtExtensionService service = mpJwtExtensionServiceRef.getService();
+        if (service != null) {
+            if (service.isMpConfigAvailable()) {
+                return getMpConfigMap(service, getApplicationClassloader(req), map);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "mpJwt-1.1 feature is enabled but mpConfig-1.x feature is not enabled.");
+                }
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "mpJwt-1.1 feature is not enabled.");
+            }
+        }
+        return map;
     }
 
     protected ClassLoader getApplicationClassloader(HttpServletRequest req) {
@@ -57,12 +71,9 @@ public class MpConfigUtil {
         return cl;
     }
 
-    protected Map<String, String> getMpConfigMap(ClassLoader cl) {
-        Map<String, String> map = new HashMap<String, String>();
-        MpJwtExtensionService service = mpJwtExtensionServiceRef.getService();
-        if (service != null) {
-            Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
-        }
+    // no null check. make sure that the caller sets non null objects.
+    protected Map<String, String> getMpConfigMap(MpJwtExtensionService service, ClassLoader cl, Map<String, String> map) {
+        Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
         return map;
     }
 
