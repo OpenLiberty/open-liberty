@@ -59,19 +59,6 @@ import componenttest.app.FATServlet;
                                                               "internal.nonship.function=This is for internal development only. Never use this in production",
                                                               "createDatabase=create",
                                                }),
-                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-infer-driver-class",
-                                               className = "",
-                                               isolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED,
-                                               maxPoolSize = 2,
-                                               url = "jdbc:fatdriver:memory:jdbcdriver1",
-                                               user = "dbuser1",
-                                               password = "{xor}Oz0vKDtu",
-                                               properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
-                                                              "createDatabase=create",
-                                                              "onConnect=insert into address values ('Rochester International Airport', 7600, 'Helgerson Dr SW', 'Rochester', 'MN', 55902)",
-                                                              "queryTimeout=1m16s"
-                                               }),
                          @DataSourceDefinition(name = "java:module/env/jdbc/dsd-infer-datasource-class",
                                                className = "",
                                                databaseName = "memory:jdbcdriver1;create=true",
@@ -482,7 +469,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
 
     /**
      * Verify that className is optional in DataSourceDefinition (can be assigned to empty string),
-     * in which case, in the absence of a url propety, we infer the data source class from the Driver class,
+     * in which case, in the absence of a url property, we infer the data source class from the Driver class,
      * giving highest precedence to XADataSource.
      */
     @Test
@@ -596,7 +583,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
             fail("loginTimeout property not allowed when using Driver");
         } catch (Exception e) {
         } //expected
-          //Datasource using a driver should return DriverManager value of loginTimeout
+          //Datasource using a driver should return 0 (which means use defaults) for loginTimeout, regardless of value set on DriverManager
         DriverManager.setLoginTimeout(10 * 60); //10 minutes
 
         assertEquals("Login timeout should be 0 regardless of what is done to DriverManager", 0, fatDriverDS.getLoginTimeout());
