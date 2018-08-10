@@ -179,55 +179,65 @@ public class PackageCommandTest {
     public void testCorrectErrorMessageWhenProductExtensionsInstalledAndServerRootSpecified() throws Exception {
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-        // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
-        File prodExtensionDir = null;
+        server.getFileFromLibertyInstallRoot("lib/extract");
         try {
-            server.getFileFromLibertyInstallRoot("etc/extension/");
+
+            // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
+            File prodExtensionDir = null;
+            try {
+                server.getFileFromLibertyInstallRoot("etc/extension/");
+            } catch (FileNotFoundException ex) {
+                // The /etc/extension directory does not exist - so create it for this test.
+                String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
+                prodExtensionDir = new File(pathToProdExt);
+                prodExtensionDir.mkdirs();
+            }
+
+            String[] cmd = new String[] { "--archive=" + archivePackage,
+                                          "--include=minify",
+                                          "--server-root= " };
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+
+            assertTrue("Did not find expected failure message, CWWKE0947W.  STDOUT = " + stdout, stdout.contains("CWWKE0947W"));
+
         } catch (FileNotFoundException ex) {
-            // The /etc/extension directory does not exist - so create it for this test.
-            String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
-            prodExtensionDir = new File(pathToProdExt);
-            prodExtensionDir.mkdirs();
+            assumeTrue(false); // the directory does not exist, so we skip this test.
         }
-
-        String[] cmd = new String[] { "--archive=" + archivePackage,
-                                      "--include=minify",
-                                      "--server-root= " };
-        String stdout = server.executeServerScript("package", cmd).getStdout();
-
-        assertTrue("Did not find expected failure message, CWWKE0947W.  STDOUT = " + stdout, stdout.contains("CWWKE0947W"));
     }
 
     @Test
     public void testServerRootSpecified() throws Exception {
-
         LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-
-        String[] cmd = new String[] { "--archive=" + archivePackage,
-                                      "--include=minify",
-                                      "--server-root=MyRoot" };
-        // Ensure package completes
-        String stdout = server.executeServerScript("package", cmd).getStdout();
-        assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
-
-        // Ensure root is correct in the .zip
-        ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
         try {
 
-            for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
-                ZipEntry entry = en.nextElement();
-                String entryName = entry.getName();
-                assertTrue("The package did not contain MyRoot as expected. Entry Name is = " + entryName, entryName.contains("MyRoot"));
-            }
+            server.getFileFromLibertyInstallRoot("lib/extract");
 
-        } finally {
+            String[] cmd = new String[] { "--archive=" + archivePackage,
+                                          "--include=minify",
+                                          "--server-root=MyRoot" };
+            // Ensure package completes
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+            assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
+
+            // Ensure root is correct in the .zip
+            ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
             try {
-                zipFile.close();
-            } catch (IOException ex) {
-            }
-        }
 
+                for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+                    ZipEntry entry = en.nextElement();
+                    String entryName = entry.getName();
+                    assertTrue("The package did not contain MyRoot as expected. Entry Name is = " + entryName, entryName.contains("MyRoot"));
+                }
+
+            } finally {
+                try {
+                    zipFile.close();
+                } catch (IOException ex) {
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
     }
 
 }
