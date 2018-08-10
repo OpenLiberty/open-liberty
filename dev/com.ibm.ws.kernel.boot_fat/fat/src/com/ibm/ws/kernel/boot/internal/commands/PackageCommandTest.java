@@ -196,7 +196,7 @@ public class PackageCommandTest {
                                       "--server-root= " };
         String stdout = server.executeServerScript("package", cmd).getStdout();
 
-        assertTrue("Did not find expected failure message, CWWKE0947W", stdout.contains("CWWKE0947W"));
+        assertTrue("Did not find expected failure message, CWWKE0947W.  STDOUT = " + stdout, stdout.contains("CWWKE0947W"));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class PackageCommandTest {
                                       "--server-root=MyRoot" };
         // Ensure package completes
         String stdout = server.executeServerScript("package", cmd).getStdout();
-        assertTrue("The package command did not complete as expected", stdout.contains("package complete"));
+        assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
 
         // Ensure root is correct in the .zip
         ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
@@ -218,7 +218,7 @@ public class PackageCommandTest {
             for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
                 ZipEntry entry = en.nextElement();
                 String entryName = entry.getName();
-                assertTrue("The package did not contain MyRoot as expected", entryName.contains("MyRoot"));
+                assertTrue("The package did not contain MyRoot as expected. Entry Name is = " + entryName, entryName.contains("MyRoot"));
             }
 
         } finally {
