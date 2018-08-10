@@ -156,9 +156,6 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      */
     private String name;
 
-    // TODO remove once function is ready to GA
-    private boolean nonshipFunction;
-
     /**
      * JDBC driver configuration.
      */
@@ -188,8 +185,6 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         } finally {
             lock.writeLock().unlock();
         }
-
-        nonshipFunction = props.get("internal.nonship.function") != null;
 
         if ("file".equals(props.get("config.source"))) {
             if (name.startsWith(AppDefinedResource.PREFIX)) // avoid conflicts with application defined data sources
@@ -380,30 +375,28 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
              || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true))))
                 return create(className, props);
 
-            Set<String> packagesSearched = new LinkedHashSet<String>();
-
-            if (nonshipFunction) {
-                String url = props.getProperty("URL", props.getProperty("url"));
-                if (url != null) {
-                    Driver driver = loadDriver(null, url, classloader, props, dataSourceID);
-                    if (driver != null)
-                        return driver;
-                }
-
-                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
-                                                                       packagesSearched,
-                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
-                                                                       JDBCDrivers.DATA_SOURCE,
-                                                                       JDBCDrivers.XA_DATA_SOURCE);
-                if (dsEntry != null)
-                    return create(className = dsEntry.getValue(), props);
+            String url = props.getProperty("URL", props.getProperty("url"));
+            if (url != null) {
+                Driver driver = loadDriver(null, url, classloader, props, dataSourceID);
+                if (driver != null)
+                    return driver;
             }
 
-            List<String> interfaceNames = Arrays.asList(ConnectionPoolDataSource.class.getName(),
-                                                        DataSource.class.getName(),
-                                                        XADataSource.class.getName(),
-                                                        Driver.class.getName());
-            throw classNotFound(interfaceNames, packagesSearched, null);
+            Set<String> packagesSearched = new LinkedHashSet<String>();
+            SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                   packagesSearched,
+                                                                   JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                   JDBCDrivers.DATA_SOURCE,
+                                                                   JDBCDrivers.XA_DATA_SOURCE);
+            if (dsEntry == null) {
+                List<String> interfaceNames = Arrays.asList(ConnectionPoolDataSource.class.getName(),
+                                                            DataSource.class.getName(),
+                                                            XADataSource.class.getName(),
+                                                            Driver.class.getName());
+                throw classNotFound(interfaceNames, packagesSearched, null);                
+            }
+
+            return create(className = dsEntry.getValue(), props);
         } finally {
             lock.readLock().unlock();
         }
@@ -458,30 +451,28 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
              || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true))))
                 return create(className, props);
 
-            Set<String> packagesSearched = new LinkedHashSet<String>();
-
-            if (nonshipFunction) {
-                String url = props.getProperty("URL", props.getProperty("url"));
-                if (url != null) {
-                    Driver driver = loadDriver(null, url, classloader, props, "dataSource[DefaultDataSource]");
-                    if (driver != null)
-                        return driver;
-                }
-
-                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
-                                                                       packagesSearched,
-                                                                       JDBCDrivers.XA_DATA_SOURCE,
-                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
-                                                                       JDBCDrivers.DATA_SOURCE);
-                if (dsEntry != null)
-                    return create(className = dsEntry.getValue(), props);
+            String url = props.getProperty("URL", props.getProperty("url"));
+            if (url != null) {
+                Driver driver = loadDriver(null, url, classloader, props, "dataSource[DefaultDataSource]");
+                if (driver != null)
+                    return driver;
             }
 
-            List<String> interfaceNames = Arrays.asList(XADataSource.class.getName(),
-                                                        ConnectionPoolDataSource.class.getName(),
-                                                        DataSource.class.getName(),
-                                                        Driver.class.getName());
-            throw classNotFound(interfaceNames, packagesSearched, null);
+            Set<String> packagesSearched = new LinkedHashSet<String>();
+            SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                   packagesSearched,
+                                                                   JDBCDrivers.XA_DATA_SOURCE,
+                                                                   JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                   JDBCDrivers.DATA_SOURCE);
+            if (dsEntry == null) {
+                List<String> interfaceNames = Arrays.asList(XADataSource.class.getName(),
+                                                            ConnectionPoolDataSource.class.getName(),
+                                                            DataSource.class.getName(),
+                                                            Driver.class.getName());
+                throw classNotFound(interfaceNames, packagesSearched, null);
+            }
+
+            return create(className = dsEntry.getValue(), props);
         } finally {
             lock.readLock().unlock();
         }
@@ -520,15 +511,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction) {
+                    if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE); 
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
                             throw classNotFound(ConnectionPoolDataSource.class.getName(), packagesSearched, null);
-                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
-                        throw classNotFound(ConnectionPoolDataSource.class.getName(), Collections.EMPTY_SET, null);
+                    }
                 }
             }
 
@@ -571,15 +561,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction) {
+                    if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
                             throw classNotFound(DataSource.class.getName(), packagesSearched, null);
-                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
-                        throw classNotFound(DataSource.class.getName(), Collections.EMPTY_SET, null);
+                    }
                 }
             }
 
@@ -622,15 +611,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction) {
+                    if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.XA_DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
                             throw classNotFound(XADataSource.class.getName(), packagesSearched, null);
-                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
-                        throw classNotFound(XADataSource.class.getName(), Collections.EMPTY_SET, null);
+                    }
                 }
             }
 

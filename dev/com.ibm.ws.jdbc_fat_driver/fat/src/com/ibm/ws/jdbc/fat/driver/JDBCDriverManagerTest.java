@@ -70,7 +70,6 @@ public class JDBCDriverManagerTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer("CWWKE0701E", // ResourceFactoryTrackerData error for data source that intentionally lacks ConnectionPoolDataSource class
                           "J2CA0030E", // Test intentionally makes illegal attempt to enlist multiple one-phase resources
-                          "WTRN0062E", // Test intentionally makes illegal attempt to enlist multiple one-phase resources
-                          "DSRA8020E.*internal.nonship.function"); // TODO remove once the capability becomes GA
+                          "WTRN0062E"); // Test intentionally makes illegal attempt to enlist multiple one-phase resources
     }
 }

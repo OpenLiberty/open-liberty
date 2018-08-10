@@ -220,9 +220,6 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
         if (vendorProps.containsKey(DataSourceDef.databaseName.name()) || vendorProps.containsKey(DataSourceDef.portNumber.name()))
             url = null;
 
-        if ((className == null || className.length() == 0) && !vendorProps.containsKey("internal.nonship.function")) // TODO remove nonship check once ready for GA
-            throw new IllegalArgumentException("className");
-
         // libraryRef - scan shared libraries from the application
         className = updateWithLibraries(bundleContext, application, declaringApplication, className, url, driverProps, dsSvcProps);
 
