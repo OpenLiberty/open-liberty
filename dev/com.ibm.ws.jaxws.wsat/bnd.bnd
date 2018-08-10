@@ -24,7 +24,7 @@ Export-Package: \
  com.ibm.ws.jaxws.wsat.components
 
 Import-Package: \
-   javax.jws,\
+   javax.jws;version="1.0",\
    javax.xml,\
    javax.xml.namespace,\
    org.osgi.framework;version="1.5.0",\

@@ -201,6 +201,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
 	com.ibm.websphere.javaee.activation.1.1;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\

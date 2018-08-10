@@ -33,6 +33,9 @@ Import-Package: \
  javax.annotation;version="[0.0,2)", \
  javax.xml.bind.*;version="[2.2,3)", \
  javax.xml.stream.*, \
+ javax.jws.*; version="1.0",\
+ javax.xml.soap; version="1.4",\
+ javax.xml.ws.*; version="2.2",\
  com.sun.xml.bind.api;resolution:=optional, \
  com.sun.xml.bind.api.impl;resolution:=optional, \
  com.sun.xml.internal.bind.api;resolution:=optional, \
