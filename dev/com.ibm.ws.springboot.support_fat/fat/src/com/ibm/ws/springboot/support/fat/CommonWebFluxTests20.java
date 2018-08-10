@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,10 +21,15 @@ import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-public class CommonWebFluxTests20 extends CommonWebServerTests {
+public class CommonWebFluxTests20 extends CommonWebFluxTests {
     @Test
-    public void testBasicSpringBootApplication20() throws Exception {
+    public void testBasicWebFluxtAppServlet31() throws Exception {
         testBasicSpringBootApplication();
+    }
+
+    @Test
+    public void testBlockingIOServlet31() throws IOException, InterruptedException {
+        testBlockingIO();
     }
 
     @Override
