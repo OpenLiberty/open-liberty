@@ -55,6 +55,7 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         Tr.info(tc, "MPJWT_11_CONFIG_PROCESSED", uniqueId);
+        mpConfigProxyServiceRef.activate(cc);
     }
 
     @Modified
@@ -65,6 +66,7 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         Tr.info(tc, "MPJWT_11_CONFIG_DEACTIVATED", uniqueId);
+        mpConfigProxyServiceRef.deactivate(cc);
     }
 
     /**
@@ -78,13 +80,22 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
      * @return
      */
     public boolean isMpConfigAvailable() {
-        return false;
+        if (mpConfigProxyServiceRef.getService() != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * @return
      */
-    public <T> T getConfigValue(String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
-        return null;
+    public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
+        MpConfigProxyService ps = mpConfigProxyServiceRef.getService();
+        if (ps != null) {
+            return ps.getConfigValue(cl, propertyName, propertyType);
+        } else {
+            throw new IllegalStateException("mpConfigProxyService is not available.");
+        }
     }
 }

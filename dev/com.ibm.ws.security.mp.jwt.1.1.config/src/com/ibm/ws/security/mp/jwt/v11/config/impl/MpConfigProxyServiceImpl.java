@@ -13,6 +13,9 @@ package com.ibm.ws.security.mp.jwt.v11.config.impl;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -56,6 +59,7 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     /**
      * @return
      */
+    @Override
     public String getVersion(){
         return MP_VERSION;
     }
@@ -63,14 +67,22 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     /**
      * @return
      */
+    @Override
     public boolean isMpConfigAvailable() {
-        return false;
+        return true;
     }
 
     /**
      * @return
      */
-    public <T> T getConfigValue(String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
-        return null;
+    @Override
+    public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
+        Config config;
+        if (cl != null) {
+            config = ConfigProvider.getConfig(cl);
+        } else {
+            config = ConfigProvider.getConfig();
+        }
+        return config.getValue(propertyName, propertyType);
     }
 }

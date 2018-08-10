@@ -26,5 +26,5 @@ public interface MpJwtExtensionService {
     /**
      * @return
      */
-    public <T> T getConfigValue(String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException;
+    public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException;
 }

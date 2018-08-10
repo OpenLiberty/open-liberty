@@ -43,6 +43,7 @@ import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.MpJwtExtensionService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
+import com.ibm.ws.security.mp.jwt.config.MpConfigUtil;
 import com.ibm.ws.security.mp.jwt.error.ErrorHandlerImpl;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
@@ -78,8 +79,10 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
     ReferrerURLCookieHandler referrerURLCookieHandler = null;
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
+    MpConfigUtil mpConfigUtil = null;
 
     public MicroProfileJwtTAI() {
+        mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
     }
 
     @Reference(service = SecurityService.class, name = KEY_SECURITY_SERVICE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -361,7 +364,12 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         if (token != null) {
             // Create JWT from access token / id token
             try {
-                jwtToken = taiJwtUtils.createJwt(token, clientConfig.getUniqueId());
+                Map mpCfg = mpConfigUtil.getMpConfig(req);
+//                if (!mpCfg.isEmpty()) {
+//                    jwtToken = clientConfig.getConsumerUtils().parseJwt(token, clientConfig, mpCfg);
+//                } else {
+                    jwtToken = taiJwtUtils.createJwt(token, clientConfig.getUniqueId());
+//                }
             } catch (MpJwtProcessingException e) {
                 Tr.error(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() });
                 return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
