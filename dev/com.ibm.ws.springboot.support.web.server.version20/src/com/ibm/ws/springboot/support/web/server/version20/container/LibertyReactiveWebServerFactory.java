@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.servlet.ServletRegistration;
 
 import org.springframework.beans.BeansException;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.reactive.server.AbstractReactiveWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
@@ -24,6 +25,8 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ServletHttpHandlerAdapter;
 
+import com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory;
+
 @ConfigurationProperties(prefix = "server.liberty", ignoreUnknownFields = true)
 public class LibertyReactiveWebServerFactory extends AbstractReactiveWebServerFactory implements ApplicationContextAware, LibertyFactoryBase {
     private boolean useDefaultHost = true;
@@ -32,6 +35,10 @@ public class LibertyReactiveWebServerFactory extends AbstractReactiveWebServerFa
 
     @Override
     public WebServer getWebServer(HttpHandler httpHandler) {
+        String springVersion = SpringBootVersion.getVersion();
+        if (springVersion != null) {
+            ServerConfigurationFactory.checkSpringBootVersion("2.0.1", "3.0", springVersion);
+        }
         ServletContextInitializer[] initializers = { (c) -> {
             ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter(httpHandler);
             ServletRegistration.Dynamic registration = c.addServlet("http-handler-adapter", servlet);

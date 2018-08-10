@@ -132,23 +132,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                 Throwable target = e.getTargetException();
                 String msgKey = null;
                 if (target instanceof ApplicationError) {
-                    switch (((ApplicationError) target).getType()) {
-                        case NEED_SPRING_BOOT_VERSION_15:
-                            msgKey = "error.need.springboot.version.15";
-                            break;
-                        case NEED_SPRING_BOOT_VERSION_20:
-                            msgKey = "error.need.springboot.version.20";
-                            break;
-                        case MISSING_SERVLET_FEATURE:
-                            msgKey = "error.missing.servlet";
-                            break;
-                        case MISSING_WEBSOCKET_FEATURE:
-                            msgKey = "error.missing.websocket";
-                            break;
-                        default:
-                            break;
-
-                    }
+                    msgKey = ((ApplicationError) target).getType().getMessageKey();
                     Tr.error(tc, msgKey);
                     futureMonitor.setResult(mainInvokeResult, target);
                 } else {

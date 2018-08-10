@@ -27,6 +27,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.osgi.framework.Version;
+import org.osgi.framework.VersionRange;
+
+import com.ibm.ws.app.manager.springboot.container.ApplicationError;
+import com.ibm.ws.app.manager.springboot.container.ApplicationError.Type;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 import com.ibm.ws.app.manager.springboot.container.config.ConfigElementList;
 import com.ibm.ws.app.manager.springboot.container.config.HttpEndpoint;
@@ -82,6 +87,25 @@ public class ServerConfigurationFactory {
         configureSSL(sc, port, serverProperties, configFactory, urlGetter);
         configureHttpEndpoint(sc, port, serverProperties);
         return sc;
+    }
+
+    public static void checkSpringBootVersion(String min, String max, String actual) {
+        VersionRange range = null;
+        Version vActual = null;
+        try {
+            vActual = Version.valueOf(actual);
+            if (max == null) {
+                range = new VersionRange(min);
+            } else {
+                range = new VersionRange('[' + min + ',' + max + ')');
+            }
+        } catch (IllegalArgumentException e) {
+            // version parsing issues; auto-FFDC here
+        }
+        if (!range.includes(vActual)) {
+            throw new ApplicationError(Type.UNSUPPORTED_SPRING_BOOT_VERSION, actual, range.toString());
+        }
+
     }
 
     private static void configureVirtualHost(ServerConfiguration sc, Integer port) {
