@@ -900,8 +900,10 @@ public class LibertyServer implements LogMonitorClient {
         this.isTidy = false;
 
         //Tidy up any pre-existing logs
-        if (preClean)
+        if (preClean) {
+            resetLogMarks();
             preStartServerLogsTidy();
+        }
 
         final Properties envVars = new Properties();
 
@@ -2037,6 +2039,12 @@ public class LibertyServer implements LogMonitorClient {
 
             checkLogsForErrorsAndWarnings(expectedFailuresRegExps);
         } finally {
+            // Issue 4363: No longer reset the log offsets because if the
+            // server starts again, logs will roll into the existing logs.
+            // We also don't clear the message counters because the use
+            // of those counters uses searchForMessages which doesn't take
+            // into account marks.
+            /*-
             if (commandPortEnabled) {
                 // If the command port is enabled we should reset the log offsets
                 // as we will get new logs on the next start. However, if the
@@ -2045,6 +2053,8 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
                 clearMessageCounters();
             }
+            */
+
             if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
                 try {
                     new ACEScanner(this).run();
