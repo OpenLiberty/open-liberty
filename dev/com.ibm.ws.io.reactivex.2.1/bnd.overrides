@@ -1,0 +1,39 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.io.reactivex.2.1
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+
+Export-Package: \
+io.reactivex;version=2.1.16,\
+io.reactivex.annotations;version=2.1.16,\
+io.reactivex.disposables;version=2.1.16,\
+io.reactivex.exceptions;version=2.1.16,\
+io.reactivex.flowables;version=2.1.16,\
+io.reactivex.functions;version=2.1.16,\
+io.reactivex.internal.disposables;version=2.1.16,\
+io.reactivex.internal.functions;version=2.1.16,\
+io.reactivex.internal.fuseable;version=2.1.16,\
+io.reactivex.internal.observers;version=2.1.16,\
+io.reactivex.internal.operators.completable;version=2.1.16,\
+io.reactivex.internal.operators.flowable;version=2.1.16,\
+io.reactivex.internal.operators.maybe;version=2.1.16,\
+io.reactivex.internal.operators.mixed;version=2.1.16,\
+io.reactivex.internal.operators.observable;version=2.1.16,\
+io.reactivex.internal.operators.parallel;version=2.1.16,\
+io.reactivex.internal.operators.single;version=2.1.16,\
+io.reactivex.internal.queue;version=2.1.16,\
+io.reactivex.internal.schedulers;version=2.1.16,\
+io.reactivex.internal.subscribers;version=2.1.16,\
+io.reactivex.internal.subscriptions;version=2.1.16,\
+io.reactivex.internal.util;version=2.1.16,\
+io.reactivex.observables;version=2.1.16,\
+io.reactivex.observers;version=2.1.16,\
+io.reactivex.parallel;version=2.1.16,\
+io.reactivex.plugins;version=2.1.16,\
+io.reactivex.processors;version=2.1.16,\
+io.reactivex.subjects;version=2.1.16,\
+io.reactivex.subscribers;version=2.1.16,\
+io.reactivex.schedulers;version=2.1.16
