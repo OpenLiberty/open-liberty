@@ -43,7 +43,7 @@ public enum ApiType {
 
     private final String attributeName;
 
-    public static final EnumSet<ApiType> DEFAULT_API_TYPES = EnumSet.of(SPEC, IBMAPI, API, STABLE);
+    private static final EnumSet<ApiType> DEFAULT_API_TYPES = EnumSet.of(SPEC, IBMAPI, API, STABLE);
 
     private ApiType(String attributeName) {
         this.attributeName = attributeName;
