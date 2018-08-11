@@ -10,13 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.mp.jwt.MpJwtExtensionService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
@@ -36,8 +39,22 @@ public class MpConfigUtil {
     }
 
     public Map<String, String> getMpConfig(HttpServletRequest req) {
-        ClassLoader cl = getApplicationClassloader(req);
-        return getMpConfigByClassLoader(cl);
+        Map<String, String> map = new HashMap<String, String>();
+        MpJwtExtensionService service = mpJwtExtensionServiceRef.getService();
+        if (service != null) {
+            if (service.isMpConfigAvailable()) {
+                return getMpConfigMap(service, getApplicationClassloader(req), map);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "mpJwt-1.1 feature is enabled but mpConfig-1.x feature is not enabled.");
+                }
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "mpJwt-1.1 feature is not enabled.");
+            }
+        }
+        return map;
     }
 
     protected ClassLoader getApplicationClassloader(HttpServletRequest req) {
@@ -54,16 +71,21 @@ public class MpConfigUtil {
         return cl;
     }
 
-    protected Map<String, String> getMpConfigByClassLoader(ClassLoader cl) {
-        Map<String, String> map = new HashMap<String, String>();
-        MpJwtExtensionService service = mpJwtExtensionServiceRef.getService();
-        if (service != null) {
-            String issuer = service.getConfigValue(cl, MpConstants.ISSUER, String.class);
-            map.put(MpConstants.ISSUER, issuer);
-            String publicKey = service.getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
-            map.put(MpConstants.PUBLIC_KEY, publicKey);
-            String keyLocation = service.getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
-            map.put(MpConstants.KEY_LOCATION, keyLocation);
+    // no null check. make sure that the caller sets non null objects.
+    protected Map<String, String> getMpConfigMap(MpJwtExtensionService service, ClassLoader cl, Map<String, String> map) {
+        Arrays.asList(MpConstants.ISSUER, MpConstants.PUBLIC_KEY, MpConstants.KEY_LOCATION).forEach(s -> getMpConfig(service, cl, s, map));
+        return map;
+    }
+
+    // no null check other than cl. make sure that the caller sets non null objects.
+    @FFDCIgnore({ NoSuchElementException.class })
+    protected Map<String, String> getMpConfig(MpJwtExtensionService service, ClassLoader cl, String propertyName,  Map<String, String> map) {
+        try {
+            map.put(MpConstants.ISSUER, service.getConfigValue(cl, propertyName, String.class));
+        } catch (NoSuchElementException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, propertyName + " is not in mpConfig.");
+            }
         }
         return map;
     }

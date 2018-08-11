@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.mp.jwt.MpJwtExtensionService;
 import com.ibm.ws.security.mp.jwt.v11.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.v11.TraceConstants;
@@ -41,6 +42,7 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
     static private String MP_VERSION = "1.1";
     private final String uniqueId = "MpConfigProxyService";
     static final AtomicServiceReference<MpConfigProxyService> mpConfigProxyServiceRef = new AtomicServiceReference<MpConfigProxyService>(KEY_MP_CONFIG_PROXY_SERVICE);
+    static private boolean isMpConfigWarningLogged = false;
 
     @Reference(service = MpConfigProxyService.class, name = KEY_MP_CONFIG_PROXY_SERVICE, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setMpConfigProxyService(ServiceReference<MpConfigProxyService> reference) {
@@ -83,6 +85,10 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
         if (mpConfigProxyServiceRef.getService() != null) {
             return true;
         } else {
+            if (!isMpConfigWarningLogged) {
+                Tr.warning(tc, "MPJWT_11_NO_MP_CONFIG");
+                isMpConfigWarningLogged = true;
+            }
             return false;
         }
     }
@@ -95,6 +101,10 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
         if (ps != null) {
             return ps.getConfigValue(cl, propertyName, propertyType);
         } else {
+            if (!isMpConfigWarningLogged) {
+                Tr.warning(tc, "MPJWT_11_NO_MP_CONFIG");
+                isMpConfigWarningLogged = true;
+            }
             throw new IllegalStateException("mpConfigProxyService is not available.");
         }
     }
