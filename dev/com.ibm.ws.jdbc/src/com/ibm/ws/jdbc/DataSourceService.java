@@ -134,15 +134,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
-     * Privileged action to obtain the thread context class loader.
-     */
-    private static final PrivilegedAction<ClassLoader> getContextClassLoader = new PrivilegedAction<ClassLoader>() {
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
-        }
-    };
-
-    /**
      * Properties to skip when parsing configuration.
      */
     private static final HashSet<String> WPROPS_TO_SKIP = new HashSet<String>(Arrays.asList
@@ -417,7 +408,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             // data source class is loaded from thread context class loader
             if (identifier == null) {
-                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                ClassLoader tccl = priv.getContextClassLoader();
                 identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
                 // TODO better error handling when thread context class loader does not have an identifier
             }
@@ -518,7 +509,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             // data source class is loaded from thread context class loader
             if (identifier == null) {
-                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                ClassLoader tccl = priv.getContextClassLoader();
                 identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
                 // TODO better error handling when thread context class loader does not have an identifier
             }
@@ -656,7 +647,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 // data source class loaded from thread context class loader
                 mcf = null;
                 mcfPerClassLoader = new ConcurrentHashMap<String, WSManagedConnectionFactoryImpl>();
-                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                ClassLoader tccl = priv.getContextClassLoader();
                 String identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
                 mcfPerClassLoader.put(identifier, mcfImpl);
             } else {

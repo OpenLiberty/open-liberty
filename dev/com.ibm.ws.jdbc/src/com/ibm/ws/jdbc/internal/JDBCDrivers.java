@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
 import java.sql.Driver;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
@@ -39,6 +40,7 @@ import javax.sql.XADataSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
 /**
@@ -240,6 +242,8 @@ public class JDBCDrivers {
         classNamesByKey.put("H2-", classes);
     }
 
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
     /**
      * Utility method that determines if some text is found as a substring within the contents of a list.
      * 
@@ -351,7 +355,7 @@ public class JDBCDrivers {
      * <li>swapping Driver --> [type]DataSource and seeing if it loads
      * <li>scanning JAR file for class names that contain DataSource and comparing against the desired type(s)
      * 
-     * @param loader class loader from which to load JDBC driver classes
+     * @param loader class loader from which to load JDBC driver classes. Null to load from application's thread context class loader
      * @param searched list to which this method must add any packages that it searches  
      * @param ordered list of data source types (see type constants in this class) indicating precedence
      * @return pair of data source type constant and name of vendor data source implementation class. Null if unknown.
@@ -361,11 +365,14 @@ public class JDBCDrivers {
         if (trace && tc.isDebugEnabled())
             Tr.debug(tc, "infer from driver", loader, Arrays.toString(types));
 
+        if (loader == null)
+            loader = priv.getContextClassLoader();
+
         String[] found = new String[NUM_DATA_SOURCE_INTERFACES];
         int preferredType = types[0];
 
         // Load JDBC driver class from service registry and use the package to infer the data source class
-        ServiceLoader<Driver> serviceLoader = loader == null ? ServiceLoader.load(Driver.class) : ServiceLoader.load(Driver.class, loader);
+        ServiceLoader<Driver> serviceLoader = ServiceLoader.load(Driver.class, loader);
         if (serviceLoader != null) {
             // In order to give preference to JDBC drivers supplied by the user, omit JDBC drivers that are packaged with Java
             List<Driver> drivers = new ArrayList<Driver>();
@@ -441,8 +448,8 @@ public class JDBCDrivers {
                             try {
                                 for (ZipEntry entry; found[preferredType] == null && (entry = zin.getNextEntry()) != null; ) { 
                                     String name = entry.getName();
-                                    if (name.startsWith(driverPackage) && name.contains("DataSource") && name.endsWith(".class")) {
-                                        name = name.substring(0, name.lastIndexOf('.')).replace('/', '.');
+                                    if (name.contains(driverPackage) && name.contains("DataSource") && name.endsWith(".class")) {
+                                        name = name.substring(name.indexOf(driverPackage), name.lastIndexOf('.')).replace('/', '.');
                                         try {
                                             Class<?> c = loader.loadClass(name);
                                             if (CommonDataSource.class.isAssignableFrom(c)) {
