@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.wsspi.classloading;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
@@ -36,8 +39,11 @@ public enum ApiType {
 
     // OSGi APIs are marked spec:api, which is obviously not in this enum.
     // This means that OSGi application API will not be visible to EE applications.
+    private static final TraceComponent tc = Tr.register(ApiType.class);
 
     private final String attributeName;
+
+    private static final EnumSet<ApiType> DEFAULT_API_TYPES = EnumSet.of(SPEC, IBMAPI, API, STABLE);
 
     private ApiType(String attributeName) {
         this.attributeName = attributeName;
@@ -61,15 +67,115 @@ public enum ApiType {
     /** Convert one or more comma-and-space-delimited api type strings into a single set of types */
     public static EnumSet<ApiType> createApiTypeSet(String... apiTypes) {
         EnumSet<ApiType> set = EnumSet.noneOf(ApiType.class);
+        EnumSet<ApiType> removeSet = EnumSet.noneOf(ApiType.class);
+        EnumSet<ApiType> addSet = EnumSet.noneOf(ApiType.class);
+        ArrayList<String> notFoundSet = new ArrayList<String>();
+        StringBuffer initialtypes = new StringBuffer();
         if (apiTypes != null)
-            for (String types : apiTypes)
+            for (String types : apiTypes) {
+                if (initialtypes.length() == 0)
+                    initialtypes.append("\"" + types + "\"");
+                else
+                    initialtypes.append(" \"" + types + "\"");
                 if (types != null)
                     for (String stype : types.split("[ ,]+")) {
-                        ApiType type = ApiType.fromString(stype);
-                        if (type != null) {
-                            set.add(type);
+                        if (stype.indexOf("+") == 0) {
+                            stype = stype.replaceFirst("\\+", "");
+                            ApiType type = ApiType.fromString(stype);
+                            if (type != null) {
+                                if (!addSet.add(type)) {
+                                    if (tc.isErrorEnabled())
+                                        Tr.error(tc, "cls.classloader.config.duplicate", stype, initialtypes);
+                                    set.clear();
+                                    return set;
+                                }
+                            } else {
+                                if (tc.isErrorEnabled())
+                                    Tr.error(tc, "cls.classloader.config.typo", stype, initialtypes, EnumSet.allOf(ApiType.class));
+                                set.clear();
+                                return set;
+                            }
+                        } else if (stype.indexOf("-") == 0) {
+                            stype = stype.replaceFirst("-", "");
+                            ApiType type = ApiType.fromString(stype);
+                            if (type != null) {
+                                if (!removeSet.add(type)) {
+                                    if (tc.isErrorEnabled())
+                                        Tr.error(tc, "cls.classloader.config.duplicate", stype, initialtypes);
+                                    set.clear();
+                                    return set;
+                                }
+                            } else {
+                                if (tc.isErrorEnabled())
+                                    Tr.error(tc, "cls.classloader.config.typo", stype, initialtypes, EnumSet.allOf(ApiType.class));
+                                set.clear();
+                                return set;
+                            }
+                        } else {
+                            ApiType type = ApiType.fromString(stype);
+                            if (type != null)
+                                set.add(type);
+                            else
+                                notFoundSet.add(stype);
+
                         }
                     }
+            }
+
+        if (!removeSet.isEmpty() || !addSet.isEmpty()) {
+            // processing +/- api types
+            if (set.isEmpty() && notFoundSet.isEmpty()) {
+                for (ApiType apiType : addSet) {
+                    if (removeSet.contains(apiType)) {
+                        if (tc.isErrorEnabled())
+                            Tr.error(tc, "cls.classloader.config.duplicate", apiType, initialtypes);
+                        set.clear();
+                        return set;
+                    }
+                }
+            } else {
+                EnumSet<ApiType> invalidSet = EnumSet.noneOf(ApiType.class);
+                for (ApiType apiType1 : DEFAULT_API_TYPES)
+                    for (ApiType set1 : set)
+                        if (set1.equals(apiType1))
+                            invalidSet.add(set1);
+                if (!invalidSet.isEmpty() || !notFoundSet.isEmpty() || !set.isEmpty()) {
+                    if (tc.isErrorEnabled()) {
+                        if (!notFoundSet.isEmpty())
+                            Tr.error(tc, "cls.classloader.config.typo", notFoundSet, initialtypes, EnumSet.allOf(ApiType.class));
+                        if (!invalidSet.isEmpty())
+                            Tr.error(tc, "cls.classloader.config.not.allowed", invalidSet, initialtypes);
+                        if (!set.isEmpty())
+                            Tr.error(tc, "cls.classloader.config.typo2", set, initialtypes);
+
+                    }
+                    set.clear();
+                    return set;
+                }
+            }
+            for (ApiType apiType : addSet) {
+                if (removeSet.contains(apiType) || set.contains(apiType)) {
+                    if (tc.isErrorEnabled())
+                        Tr.error(tc, "cls.classloader.config.duplicate", apiType, initialtypes);
+                    set.clear();
+                    return set;
+                }
+            }
+            for (ApiType apiType : removeSet) {
+                if (set.contains(apiType)) {
+                    if (tc.isErrorEnabled())
+                        Tr.error(tc, "cls.classloader.config.duplicate", apiType, initialtypes);
+                    set.clear();
+                    return set;
+                }
+            }
+            for (ApiType apiType : DEFAULT_API_TYPES)
+                set.add(apiType);
+            for (ApiType apiType : addSet)
+                set.add(apiType);
+            for (ApiType apiType : removeSet)
+                set.remove(apiType);
+        }
         return set;
     }
 

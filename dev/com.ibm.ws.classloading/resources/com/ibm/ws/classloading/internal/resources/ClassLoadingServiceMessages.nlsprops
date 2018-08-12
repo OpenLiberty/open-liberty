@@ -139,3 +139,19 @@ slf.no.acf.useraction=See the problem determination information on the WebSphere
 slf.failed.delete=CWWKL0072W: The [{0}] cache file cannot be deleted. This result can lead to the corruption of nested archives.
 slf.failed.delete.explanation=The system failed to delete the cache file. Because the file still exists in the system, this might cause corruption in nested archives.
 slf.failed.delete.useraction=Verify that the cache file is not in a locked state, which can cause the file deletion to fail.
+
+cls.classloader.config.duplicate=CWWKL0080E: [{0}] API type was already used in this [{1}] list.  Remove the duplicate API type.
+cls.classloader.config.duplicate.explanation=Each API type can be specified a maximum of one time.
+cls.classloader.config.duplicate.useraction=Check the server configuration for duplicate API type to ensure that the API type are correct.
+
+cls.classloader.config.not.allowed=CWWKL0081E: [{0}] API type is already added to the list when using prefix + or -.  Remove [{0}] from the [{1}] list.
+cls.classloader.config.not.allowed.explanation=All default API types are added, remove duplicates.
+cls.classloader.config.not.allowed.useraction=Check the server configuration and remove default API type to ensure that the API type are correct.
+
+cls.classloader.config.typo=CWWKL0082E: [{0}] API type is not valid in this [{1}] list and needs to be changed to one of the valid {2} API types.
+cls.classloader.config.typo.explanation=Change the invalid API type to a valid API type.
+cls.classloader.config.typo.useraction=Check the server configuration for invalid API type to ensure that the API type are correct.
+
+cls.classloader.config.typo2=CWWKL0083E: When using prefix + or -, [{0}] API type is not valid in this [{1}] list.  All API type must have a prefix of + or -
+cls.classloader.config.typo2.explanation=Change the invalid API type to a valid API type with + or -.
+cls.classloader.config.typo2.useraction=Check the server configuration for invalid API type to ensure that the API type are correct.
