@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.mp.jwt.v11.MpConfigProxyService;
+import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.v11.config.TraceConstants;
 
 @Component(service = MpConfigProxyService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = {"service.vendor=IBM", "version=1.1"}, name = "mpConfigProxyService")
