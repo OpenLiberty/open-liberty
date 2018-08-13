@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
-import com.ibm.ws.security.mp.jwt.MpJwtExtensionService;
+import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -54,8 +54,8 @@ public class MpConfigUtilTest {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.mp.jwt.*=all");
 
     @SuppressWarnings("unchecked")
-    private final AtomicServiceReference<MpJwtExtensionService> mpJwtExtensionServiceRef = mockery.mock(AtomicServiceReference.class, "mpJwtExtensionServiceRef");
-    private final MpJwtExtensionService mpJwtExtensionService = mockery.mock(MpJwtExtensionService.class);
+    private final AtomicServiceReference<MpConfigProxyService> mpConfigProxyServiceRef = mockery.mock(AtomicServiceReference.class, "mpConfigProxyServiceRef");
+    private final MpConfigProxyService mpConfigProxyService = mockery.mock(MpConfigProxyService.class);
     private final HttpServletRequest req = mockery.mock(HttpServletRequest.class);
     private final SRTServletRequest srtReq = mockery.mock(SRTServletRequest.class);
     private final IWebAppDispatcherContext webAppDispatcherContext = mockery.mock(IWebAppDispatcherContext.class);
@@ -99,60 +99,40 @@ public class MpConfigUtilTest {
     }
 
     /**
-     * Tests getMpConfig method without having the extension service.
+     * Tests getMpConfig method without having the proxy service.
      */
     @Test
-    public void getMpConfigNoExtensionService() {
+    public void getMpConfigNoConfigProxyService() {
         mockery.checking(new Expectations() {
             {
-                one(mpJwtExtensionServiceRef).getService();
+                one(mpConfigProxyServiceRef).getService();
                 will(returnValue(null));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(req);
         assertTrue("the map should be empty.", map.isEmpty());
     }
 
     /**
-     * Tests getMpConfig method with the extension service but mpConfig isn't available.
-     */
-    @Test
-    public void getMpConfigWithExtensionServiceNoMpConfig() {
-        mockery.checking(new Expectations() {
-            {
-                one(mpJwtExtensionServiceRef).getService();
-                will(returnValue(mpJwtExtensionService));
-                one(mpJwtExtensionService).isMpConfigAvailable();
-                will(returnValue(false));
-            }
-        });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
-        Map<String, String> map = mpConfigUtil.getMpConfig(req);
-        assertTrue("the map should be empty when mpConfig is not available.", map.isEmpty());
-    }
-
-    /**
-     * Tests getMpConfig method with the extension service and mpConfig is available.
+     * Tests getMpConfig method with the proxy service is available.
      * No SRTServletRequest
      */
     @Test
-    public void getMpConfigWithExtensionServiceAndMpConfigNoSrtReq() {
+    public void getMpConfigWithConfigProxyServiceNoSrtReq() {
         mockery.checking(new Expectations() {
             {
-                one(mpJwtExtensionServiceRef).getService();
-                will(returnValue(mpJwtExtensionService));
-                one(mpJwtExtensionService).isMpConfigAvailable();
-                will(returnValue(true));
-                one(mpJwtExtensionService).getConfigValue(null, MpConstants.ISSUER, String.class);
+                one(mpConfigProxyServiceRef).getService();
+                will(returnValue(mpConfigProxyService));
+                one(mpConfigProxyService).getConfigValue(null, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
-                one(mpJwtExtensionService).getConfigValue(null, MpConstants.PUBLIC_KEY, String.class);
+                one(mpConfigProxyService).getConfigValue(null, MpConstants.PUBLIC_KEY, String.class);
                 will(returnValue("value_" + MpConstants.PUBLIC_KEY));
-                one(mpJwtExtensionService).getConfigValue(null, MpConstants.KEY_LOCATION, String.class);
+                one(mpConfigProxyService).getConfigValue(null, MpConstants.KEY_LOCATION, String.class);
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(req);
         assertEquals("the map should be 3 items.", 3, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -164,32 +144,30 @@ public class MpConfigUtilTest {
     }
 
     /**
-     * Tests getMpConfig method with the extension service and mpConfig is available.
+     * Tests getMpConfig method with the config proxy service is available.
      * SRTServletRequest
      */
     @Test
-    public void getMpConfigWithExtensionServiceAndMpConfigSrtReq() {
+    public void getMpConfigWithConfigProxyServiceSrtReq() {
         mockery.checking(new Expectations() {
             {
-                one(mpJwtExtensionServiceRef).getService();
-                will(returnValue(mpJwtExtensionService));
-                one(mpJwtExtensionService).isMpConfigAvailable();
-                will(returnValue(true));
+                one(mpConfigProxyServiceRef).getService();
+                will(returnValue(mpConfigProxyService));
                 one(srtReq).getWebAppDispatcherContext();
                 will(returnValue(webAppDispatcherContext));
                 one(webAppDispatcherContext).getWebApp();
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.ISSUER, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
                 will(returnValue("value_" + MpConstants.PUBLIC_KEY));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 3 items.", 3, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -201,32 +179,30 @@ public class MpConfigUtilTest {
     }
 
     /**
-     * Tests getMpConfig method with the extension service and mpConfig is available.
+     * Tests getMpConfig method with the config proxy service is available.
      * The MpConstants.ISSUER does not exist.
      */
     @Test
-    public void getMpConfigWithExtensionServiceAndMpConfigSrtReqNoIssuer() {
+    public void getMpConfigWithConfigProxyServiceSrtReqNoIssuer() {
         mockery.checking(new Expectations() {
             {
-                one(mpJwtExtensionServiceRef).getService();
-                will(returnValue(mpJwtExtensionService));
-                one(mpJwtExtensionService).isMpConfigAvailable();
-                will(returnValue(true));
+                one(mpConfigProxyServiceRef).getService();
+                will(returnValue(mpConfigProxyService));
                 one(srtReq).getWebAppDispatcherContext();
                 will(returnValue(webAppDispatcherContext));
                 one(webAppDispatcherContext).getWebApp();
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.ISSUER, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(throwException(new NoSuchElementException()));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
                 will(returnValue("value_" + MpConstants.PUBLIC_KEY));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 2 items.", 2, map.size());
         assertTrue("the map should contain the key " + MpConstants.PUBLIC_KEY, map.containsKey(MpConstants.PUBLIC_KEY));
@@ -236,32 +212,30 @@ public class MpConfigUtilTest {
     }
 
     /**
-     * Tests getMpConfig method with the extension service and mpConfig is available.
+     * Tests getMpConfig method with the config proxy service is available.
      * The MpConstants.PUBLIC_KEY does not exist.
      */
     @Test
-    public void getMpConfigWithExtensionServiceAndMpConfigSrtReqNoPublicKey() {
+    public void getMpConfigWithConfigProxyServiceSrtReqNoPublicKey() {
         mockery.checking(new Expectations() {
             {
-                one(mpJwtExtensionServiceRef).getService();
-                will(returnValue(mpJwtExtensionService));
-                one(mpJwtExtensionService).isMpConfigAvailable();
-                will(returnValue(true));
+                one(mpConfigProxyServiceRef).getService();
+                will(returnValue(mpConfigProxyService));
                 one(srtReq).getWebAppDispatcherContext();
                 will(returnValue(webAppDispatcherContext));
                 one(webAppDispatcherContext).getWebApp();
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.ISSUER, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
                 will(throwException(new NoSuchElementException()));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
                 will(returnValue("value_" + MpConstants.KEY_LOCATION));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 2 items.", 2, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -271,32 +245,30 @@ public class MpConfigUtilTest {
     }
 
     /**
-     * Tests getMpConfig method with the extension service and mpConfig is available.
+     * Tests getMpConfig method with the config proxy service is available.
      * The MpConstants.KEY_LOCATION does not exist.
      */
     @Test
-    public void getMpConfigWithExtensionServiceAndMpConfigSrtReqNoKeyLocation() {
+    public void getMpConfigWithConfigProxyServiceSrtReqNoKeyLocation() {
         mockery.checking(new Expectations() {
             {
-                one(mpJwtExtensionServiceRef).getService();
-                will(returnValue(mpJwtExtensionService));
-                one(mpJwtExtensionService).isMpConfigAvailable();
-                will(returnValue(true));
+                one(mpConfigProxyServiceRef).getService();
+                will(returnValue(mpConfigProxyService));
                 one(srtReq).getWebAppDispatcherContext();
                 will(returnValue(webAppDispatcherContext));
                 one(webAppDispatcherContext).getWebApp();
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.ISSUER, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(returnValue("value_" + MpConstants.ISSUER));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
                 will(returnValue("value_" + MpConstants.PUBLIC_KEY));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
                 will(throwException(new NoSuchElementException()));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertEquals("the map should be 2 items.", 2, map.size());
         assertTrue("the map should contain the key " + MpConstants.ISSUER, map.containsKey(MpConstants.ISSUER));
@@ -306,33 +278,61 @@ public class MpConfigUtilTest {
     }
 
     /**
-     * Tests getMpConfig method with the extension service and mpConfig is available.
+     * Tests getMpConfig method with the config proxy service is available.
      * No data exists.
      */
     @Test
-    public void getMpConfigWithExtensionServiceAndMpConfigSrtReqNoProperties() {
+    public void getMpConfigWithConfigProxyServiceSrtReqNoProperties() {
         mockery.checking(new Expectations() {
             {
-                one(mpJwtExtensionServiceRef).getService();
-                will(returnValue(mpJwtExtensionService));
-                one(mpJwtExtensionService).isMpConfigAvailable();
-                will(returnValue(true));
+                one(mpConfigProxyServiceRef).getService();
+                will(returnValue(mpConfigProxyService));
                 one(srtReq).getWebAppDispatcherContext();
                 will(returnValue(webAppDispatcherContext));
                 one(webAppDispatcherContext).getWebApp();
                 will(returnValue(webApp));
                 one(webApp).getClassLoader();
                 will(returnValue(cl));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.ISSUER, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
                 will(throwException(new NoSuchElementException()));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
                 will(throwException(new NoSuchElementException()));
-                one(mpJwtExtensionService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
                 will(throwException(new NoSuchElementException()));
             }
         });
-        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
         assertTrue("the map should be empty when none of the properties is available.", map.isEmpty());
+    }
+
+    /**
+     * Tests getMpConfig method with the config proxy service is available.
+     * make sure that empty data (after trim) is not put.
+     */
+    @Test
+    public void getMpConfigWithConfigProxyServiceSrtReqTrim() {
+        mockery.checking(new Expectations() {
+            {
+                one(mpConfigProxyServiceRef).getService();
+                will(returnValue(mpConfigProxyService));
+                one(srtReq).getWebAppDispatcherContext();
+                will(returnValue(webAppDispatcherContext));
+                one(webAppDispatcherContext).getWebApp();
+                will(returnValue(webApp));
+                one(webApp).getClassLoader();
+                will(returnValue(cl));
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
+                will(returnValue("\t\t\t\n"));
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.PUBLIC_KEY, String.class);
+                will(returnValue("               "));
+                one(mpConfigProxyService).getConfigValue(cl, MpConstants.KEY_LOCATION, String.class);
+                will(returnValue("     value_" + MpConstants.KEY_LOCATION + "          "));
+            }
+        });
+        MpConfigUtil mpConfigUtil = new MpConfigUtil(mpConfigProxyServiceRef);
+        Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
+        assertEquals("the map should be 1 item.", 1, map.size());
+        assertTrue("the map should contain the value" + MpConstants.KEY_LOCATION, map.get(MpConstants.KEY_LOCATION).equals("value_" + MpConstants.KEY_LOCATION));
     }
 }

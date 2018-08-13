@@ -35,7 +35,7 @@ Export-Package: \
    com.ibm.ws.security.mp.jwt.v11.config.impl
 
 Import-Package: \
-   com.ibm.ws.security.mp.jwt.v11, \
+   com.ibm.ws.security.mp.jwt, \
    org.eclipse.microprofile.config;version="[1.0,2)", \
    *
 
@@ -51,17 +51,17 @@ Private-Package: \
 #    OSGI-INF=resources/OSGI-INF
 
 -buildpath: \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-        com.ibm.websphere.org.osgi.core;version=latest, \
-        com.ibm.websphere.org.osgi.service.cm;version=latest, \
-        com.ibm.websphere.org.osgi.service.component;version=latest, \
-        com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-        com.ibm.ws.logging;version=latest, \
-        com.ibm.ws.kernel.service;version=latest, \
-        com.ibm.ws.resource;version=latest, \
-        com.ibm.ws.security.mp.jwt.1.1;version=latest, \
-        com.ibm.ws.microprofile.config.1.2;version=latest, \
-        com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.websphere.org.osgi.core;version=latest, \
+    com.ibm.websphere.org.osgi.service.cm;version=latest, \
+    com.ibm.websphere.org.osgi.service.component;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.ws.logging;version=latest, \
+    com.ibm.ws.kernel.service;version=latest, \
+    com.ibm.ws.resource;version=latest, \
+    com.ibm.ws.microprofile.config.1.2;version=latest, \
+    com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest, \
+    com.ibm.ws.security.mp.jwt;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
