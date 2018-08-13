@@ -41,8 +41,8 @@ public class ShrinkWrapSharedServer extends SharedServer {
      * Creates a {@link SharedServer} then runs any methods in testClass annotated with
      * @BuildShrinkWrap and copies the returned Archives to the servers 
      *
-     * Methods must be static, have no paramaters, return: Archive, Archive[], Map<Archive,String>. 
-     * If Archive or Archive[] is returned the returned values will be placed to the server's 
+     * Methods must be static, have no paramaters, return: Archive, Archive[], List<Archive> Map<Archive,String>. 
+     * If Archive, List<Archive> or Archive[] is returned the returned values will be placed to the server's 
      * dropins folders. If a map is returned each archive will be placed whereever the
      * string points too.
      * 
@@ -71,6 +71,16 @@ public class ShrinkWrapSharedServer extends SharedServer {
                         for (Archive a : archives) {
                             if (a != null) { 
                               archivesAndPaths.put(a, Arrays.asList(dropinsPath));
+                            }
+                        }
+                    } else if (archive instanceof List<?>){
+                        List<?> archives = (List<?>) archive;
+                        for (Object a : archives) {
+                            if (! (a instanceof Archive)) {
+                                throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a List, but an entry was not an Archive");
+                            }
+                            if (a != null) { 
+                              archivesAndPaths.put((Archive) a, Arrays.asList(dropinsPath));
                             }
                         }
                     } else if (archive instanceof Map<?,?>) { 
