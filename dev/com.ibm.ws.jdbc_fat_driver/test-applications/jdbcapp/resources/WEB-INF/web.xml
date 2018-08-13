@@ -16,9 +16,6 @@
       <value>create</value>
     </property>
     <property>
-      <name>internal.nonship.function</name>
-      <value>This is for internal development only. Never use this in production</value></property>
-    <property>
       <name>onConnect</name>
       <value>insert into address values ('Rochester International Airport', 7600, 'Helgerson Dr SW', 'Rochester', 'MN', 55902)</value>
     </property>

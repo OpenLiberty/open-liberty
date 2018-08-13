@@ -52,48 +52,30 @@ import componenttest.app.FATServlet;
                                                url = "jdbc:derby:memory:jdbcdriver1",
                                                user = "dbuser1",
                                                password = "{xor}Oz0vKDtu",
-                                               properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
-                                                              "createDatabase=create",
-                                               }),
+                                               properties = "createDatabase=create"),
                          @DataSourceDefinition(name = "java:comp/env/jdbc/dsd-driver-interface",
                                                className = "java.sql.Driver",
                                                url = "jdbc:fatdriver:memory:jdbcdriver1",
                                                user = "dbuser1",
                                                password = "{xor}Oz0vKDtu",
-                                               properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
-                                                              "createDatabase=create",
-                                               }),
+                                               properties = "createDatabase=create"),
                          @DataSourceDefinition(name = "java:module/env/jdbc/dsd-infer-datasource-class",
                                                className = "",
                                                databaseName = "memory:jdbcdriver1;create=true",
-                                               properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
-                                               },
                                                user = "dbuser1",
                                                password = "{xor}Oz0vKDtu"),
                          @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-login-timeout",
                                                className = "",
                                                loginTimeout = 76,
-                                               url = "jdbc:fatdriver:memory:jdbcdriver1",
-                                               properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production"
-                                               }),
+                                               url = "jdbc:fatdriver:memory:jdbcdriver1"),
                          @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-datasource-interface",
                                                className = "javax.sql.DataSource",
                                                databaseName = "memory:jdbcdriver1;create=true",
-                                               properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
-                                               },
                                                user = "dbuser1",
                                                password = "{xor}Oz0vKDtu"),
                          @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-xadatasource-interface",
                                                className = "javax.sql.XADataSource",
                                                databaseName = "memory:jdbcdriver1;create=true",
-                                               properties = {
-                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
-                                               },
                                                user = "dbuser1",
                                                password = "{xor}Oz0vKDtu")
 })
