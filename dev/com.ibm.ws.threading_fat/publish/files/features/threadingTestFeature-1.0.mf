@@ -1,7 +1,0 @@
-Subsystem-ManifestVersion: 1
-IBM-ShortName: threadingTestFeature-1.0
-Subsystem-SymbolicName: test.feature.threading.threadingTestFeature-1.0; visibility:=public
-Subsystem-Version: 1.0
-Subsystem-Content: test.bundle.threading; version="[1,1.0.100)"
-Subsystem-Type: osgi.subsystem.feature
-IBM-Feature-Version: 2
