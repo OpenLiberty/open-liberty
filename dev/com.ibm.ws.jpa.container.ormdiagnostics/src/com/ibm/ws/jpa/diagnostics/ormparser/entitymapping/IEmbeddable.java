@@ -20,4 +20,6 @@ public interface IEmbeddable {
 
     public Boolean isMetadataComplete();
 
+    public IEmbeddableAttributes _getAttributes();
+
 }

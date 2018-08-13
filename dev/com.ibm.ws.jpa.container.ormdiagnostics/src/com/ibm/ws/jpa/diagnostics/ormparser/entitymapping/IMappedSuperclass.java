@@ -24,4 +24,6 @@ public interface IMappedSuperclass {
 
     public Set<String> _getEntityListeners();
 
+    public IAttributes _getAttributes();
+
 }

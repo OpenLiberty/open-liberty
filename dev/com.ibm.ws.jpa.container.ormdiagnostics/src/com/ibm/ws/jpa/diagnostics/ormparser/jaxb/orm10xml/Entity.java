@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IAttributes;
+
 /**
  *
  *
@@ -948,6 +950,12 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
     }
 
     // IEntity methods
+
+    @Override
+    public IAttributes _getAttributes() {
+        return getAttributes();
+    }
+
     @Override
     public String _getIDClass() {
         IdClass idCls = this.getIdClass();

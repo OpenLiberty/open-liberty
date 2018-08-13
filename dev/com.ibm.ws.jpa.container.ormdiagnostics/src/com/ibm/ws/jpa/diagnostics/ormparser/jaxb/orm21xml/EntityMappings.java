@@ -19,7 +19,9 @@
 package com.ibm.ws.jpa.diagnostics.ormparser.jaxb.orm21xml;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -629,28 +631,81 @@ public class EntityMappings implements com.ibm.ws.jpa.diagnostics.ormparser.enti
      *
      */
     @Override
-    public List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntity> getEntityList() {
+    public List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntity> _getEntity() {
         List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntity> entityList = new ArrayList<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntity>();
         entityList.addAll(getEntity());
         return entityList;
     }
 
     @Override
-    public List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddable> getEmbeddableList() {
+    public List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddable> _getEmbeddable() {
         List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddable> embeddableList = new ArrayList<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddable>();
         embeddableList.addAll(this.getEmbeddable());
         return embeddableList;
     }
 
     @Override
-    public List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IMappedSuperclass> getMappedSuperclassList() {
+    public List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IMappedSuperclass> _getMappedSuperclass() {
         List<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IMappedSuperclass> embeddableList = new ArrayList<com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IMappedSuperclass>();
         embeddableList.addAll(this.getMappedSuperclass());
         return embeddableList;
     }
 
     @Override
-    public IPersistenceUnitMetadata getIPersistenceUnitMetadata() {
+    public IPersistenceUnitMetadata _getPersistenceUnitMetadata() {
         return this.getPersistenceUnitMetadata();
+    }
+
+    @Override
+    public Set<String> _getNamedNativeQueryClasses() {
+        final HashSet<String> retList = new HashSet<String>();
+
+        final List<NamedNativeQuery> nnqList = getNamedNativeQuery();
+        if (nnqList.size() > 0) {
+            for (NamedNativeQuery neg : nnqList) {
+                retList.add(neg.getResultClass());
+            }
+        }
+
+        return retList;
+    }
+
+    @Override
+    public Set<String> _getSQLResultSetClasses() {
+        final HashSet<String> retList = new HashSet<String>();
+        List<SqlResultSetMapping> srsmList = getSqlResultSetMapping();
+        if (srsmList != null && srsmList.size() > 0) {
+            for (SqlResultSetMapping srsm : srsmList) {
+                List<ConstructorResult> crList = srsm.getConstructorResult();
+                for (ConstructorResult cr : crList) {
+                    String targetClass = cr.getTargetClass();
+                    if (targetClass != null) {
+                        retList.add(targetClass);
+                    }
+                }
+
+                List<ColumnResult> colrList = srsm.getColumnResult();
+                for (ColumnResult cr : colrList) {
+                    String clazz = cr.getClazz();
+                    if (clazz != null) {
+                        retList.add(clazz);
+                    }
+                }
+            }
+        }
+        return retList;
+    }
+
+    @Override
+    public Set<String> _getNamedStoredProcedureResultSetClasses() {
+        final HashSet<String> retList = new HashSet<String>();
+
+        List<NamedStoredProcedureQuery> nspqList = getNamedStoredProcedureQuery();
+        for (NamedStoredProcedureQuery nspq : nspqList) {
+            List<String> rcList = nspq.getResultClass();
+            retList.addAll(rcList);
+        }
+
+        return retList;
     }
 }

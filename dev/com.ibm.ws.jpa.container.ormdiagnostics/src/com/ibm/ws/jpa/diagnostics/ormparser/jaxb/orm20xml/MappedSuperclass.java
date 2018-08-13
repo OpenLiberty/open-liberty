@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IAttributes;
 import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IMappedSuperclass;
 
 /**
@@ -534,5 +535,10 @@ public class MappedSuperclass implements IMappedSuperclass {
         }
 
         return retList;
+    }
+
+    @Override
+    public IAttributes _getAttributes() {
+        return getAttributes();
     }
 }

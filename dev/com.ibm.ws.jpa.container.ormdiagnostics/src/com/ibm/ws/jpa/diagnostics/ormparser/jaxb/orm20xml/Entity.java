@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IAttributes;
+
 /**
  *
  *
@@ -975,6 +977,12 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
     }
 
     // IEntity methods
+
+    @Override
+    public IAttributes _getAttributes() {
+        return getAttributes();
+    }
+
     @Override
     public String _getIDClass() {
         IdClass idCls = this.getIdClass();
@@ -1027,7 +1035,6 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
     @Override
     public Set<String> _getSQLResultSetClasses() {
         final HashSet<String> retList = new HashSet<String>();
-        List<SqlResultSetMapping> srsm = getSqlResultSetMapping();
         return retList;
     }
 

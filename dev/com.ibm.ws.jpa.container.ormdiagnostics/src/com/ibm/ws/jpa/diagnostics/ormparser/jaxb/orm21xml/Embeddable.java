@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddable;
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddableAttributes;
 
 /**
  *
@@ -38,7 +39,7 @@ import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddable;
  * @Target({TYPE}) @Retention(RUNTIME)
  *                 public @interface Embeddable {}
  *
- * 
+ *
  *
  *                 <p>Java class for embeddable complex type.
  *
@@ -84,8 +85,9 @@ public class Embeddable implements IEmbeddable {
      * @return
      *         possible object is
      *         {@link String }
-     * 
+     *
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -96,7 +98,7 @@ public class Embeddable implements IEmbeddable {
      * @param value
      *            allowed object is
      *            {@link String }
-     * 
+     *
      */
     public void setDescription(String value) {
         this.description = value;
@@ -108,7 +110,7 @@ public class Embeddable implements IEmbeddable {
      * @return
      *         possible object is
      *         {@link EmbeddableAttributes }
-     * 
+     *
      */
     public EmbeddableAttributes getAttributes() {
         return attributes;
@@ -120,7 +122,7 @@ public class Embeddable implements IEmbeddable {
      * @param value
      *            allowed object is
      *            {@link EmbeddableAttributes }
-     * 
+     *
      */
     public void setAttributes(EmbeddableAttributes value) {
         this.attributes = value;
@@ -132,8 +134,9 @@ public class Embeddable implements IEmbeddable {
      * @return
      *         possible object is
      *         {@link String }
-     * 
+     *
      */
+    @Override
     public String getClazz() {
         return clazz;
     }
@@ -144,7 +147,7 @@ public class Embeddable implements IEmbeddable {
      * @param value
      *            allowed object is
      *            {@link String }
-     * 
+     *
      */
     public void setClazz(String value) {
         this.clazz = value;
@@ -156,7 +159,7 @@ public class Embeddable implements IEmbeddable {
      * @return
      *         possible object is
      *         {@link AccessType }
-     * 
+     *
      */
     public AccessType getAccess() {
         return access;
@@ -168,7 +171,7 @@ public class Embeddable implements IEmbeddable {
      * @param value
      *            allowed object is
      *            {@link AccessType }
-     * 
+     *
      */
     public void setAccess(AccessType value) {
         this.access = value;
@@ -180,8 +183,9 @@ public class Embeddable implements IEmbeddable {
      * @return
      *         possible object is
      *         {@link Boolean }
-     * 
+     *
      */
+    @Override
     public Boolean isMetadataComplete() {
         return metadataComplete;
     }
@@ -192,10 +196,14 @@ public class Embeddable implements IEmbeddable {
      * @param value
      *            allowed object is
      *            {@link Boolean }
-     * 
+     *
      */
     public void setMetadataComplete(Boolean value) {
         this.metadataComplete = value;
     }
 
+    @Override
+    public IEmbeddableAttributes _getAttributes() {
+        return getAttributes();
+    }
 }

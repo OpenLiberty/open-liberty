@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IAttributes;
+
 /**
  *
  *
@@ -1106,6 +1108,12 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
     }
 
     // IEntity methods
+
+    @Override
+    public IAttributes _getAttributes() {
+        return getAttributes();
+    }
+
     @Override
     public String _getIDClass() {
         IdClass idCls = this.getIdClass();
@@ -1177,9 +1185,29 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
         return retList;
     }
 
+    @Override
     public Set<String> _getSQLResultSetClasses() {
         final HashSet<String> retList = new HashSet<String>();
-        List<SqlResultSetMapping> srsm = getSqlResultSetMapping();
+        List<SqlResultSetMapping> srsmList = getSqlResultSetMapping();
+        if (srsmList != null && srsmList.size() > 0) {
+            for (SqlResultSetMapping srsm : srsmList) {
+                List<ConstructorResult> crList = srsm.getConstructorResult();
+                for (ConstructorResult cr : crList) {
+                    String targetClass = cr.getTargetClass();
+                    if (targetClass != null) {
+                        retList.add(targetClass);
+                    }
+                }
+
+                List<ColumnResult> colrList = srsm.getColumnResult();
+                for (ColumnResult cr : colrList) {
+                    String clazz = cr.getClazz();
+                    if (clazz != null) {
+                        retList.add(clazz);
+                    }
+                }
+            }
+        }
         return retList;
     }
 }

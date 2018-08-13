@@ -12,15 +12,22 @@
 package com.ibm.ws.jpa.diagnostics.ormparser.entitymapping;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IEntityMappings {
     public String getVersion();
 
-    public List<IEntity> getEntityList();
+    public List<IEntity> _getEntity();
 
-    public List<IEmbeddable> getEmbeddableList();
+    public List<IEmbeddable> _getEmbeddable();
 
-    public List<IMappedSuperclass> getMappedSuperclassList();
+    public List<IMappedSuperclass> _getMappedSuperclass();
 
-    public IPersistenceUnitMetadata getIPersistenceUnitMetadata();
+    public IPersistenceUnitMetadata _getPersistenceUnitMetadata();
+
+    public Set<String> _getNamedNativeQueryClasses();
+
+    public Set<String> _getSQLResultSetClasses();
+
+    public Set<String> _getNamedStoredProcedureResultSetClasses();
 }

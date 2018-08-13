@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IAttributes;
+
 /**
  *
  *
@@ -45,7 +47,7 @@ import javax.xml.bind.annotation.XmlType;
  *               String name() default "";
  *               }
  *
- * 
+ *
  *
  *               <p>Java class for entity complex type.
  *
@@ -208,7 +210,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link String }
-     * 
+     *
      */
     public String getDescription() {
         return description;
@@ -220,7 +222,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link String }
-     * 
+     *
      */
     public void setDescription(String value) {
         this.description = value;
@@ -232,7 +234,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link Table }
-     * 
+     *
      */
     public Table getTable() {
         return table;
@@ -244,7 +246,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link Table }
-     * 
+     *
      */
     public void setTable(Table value) {
         this.table = value;
@@ -261,7 +263,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getSecondaryTable().add(newItem);
      * </pre>
@@ -291,7 +293,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getPrimaryKeyJoinColumn().add(newItem);
      * </pre>
@@ -316,7 +318,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link ForeignKey }
-     * 
+     *
      */
     public ForeignKey getPrimaryKeyForeignKey() {
         return primaryKeyForeignKey;
@@ -328,7 +330,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link ForeignKey }
-     * 
+     *
      */
     public void setPrimaryKeyForeignKey(ForeignKey value) {
         this.primaryKeyForeignKey = value;
@@ -340,7 +342,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link IdClass }
-     * 
+     *
      */
     public IdClass getIdClass() {
         return idClass;
@@ -352,7 +354,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link IdClass }
-     * 
+     *
      */
     public void setIdClass(IdClass value) {
         this.idClass = value;
@@ -364,7 +366,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link Inheritance }
-     * 
+     *
      */
     public Inheritance getInheritance() {
         return inheritance;
@@ -376,7 +378,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link Inheritance }
-     * 
+     *
      */
     public void setInheritance(Inheritance value) {
         this.inheritance = value;
@@ -388,7 +390,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link String }
-     * 
+     *
      */
     public String getDiscriminatorValue() {
         return discriminatorValue;
@@ -400,7 +402,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link String }
-     * 
+     *
      */
     public void setDiscriminatorValue(String value) {
         this.discriminatorValue = value;
@@ -412,7 +414,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link DiscriminatorColumn }
-     * 
+     *
      */
     public DiscriminatorColumn getDiscriminatorColumn() {
         return discriminatorColumn;
@@ -424,7 +426,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link DiscriminatorColumn }
-     * 
+     *
      */
     public void setDiscriminatorColumn(DiscriminatorColumn value) {
         this.discriminatorColumn = value;
@@ -436,7 +438,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link SequenceGenerator }
-     * 
+     *
      */
     public SequenceGenerator getSequenceGenerator() {
         return sequenceGenerator;
@@ -448,7 +450,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link SequenceGenerator }
-     * 
+     *
      */
     public void setSequenceGenerator(SequenceGenerator value) {
         this.sequenceGenerator = value;
@@ -460,7 +462,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link TableGenerator }
-     * 
+     *
      */
     public TableGenerator getTableGenerator() {
         return tableGenerator;
@@ -472,7 +474,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link TableGenerator }
-     * 
+     *
      */
     public void setTableGenerator(TableGenerator value) {
         this.tableGenerator = value;
@@ -489,7 +491,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getNamedQuery().add(newItem);
      * </pre>
@@ -519,7 +521,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getNamedNativeQuery().add(newItem);
      * </pre>
@@ -549,7 +551,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getNamedStoredProcedureQuery().add(newItem);
      * </pre>
@@ -579,7 +581,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getSqlResultSetMapping().add(newItem);
      * </pre>
@@ -604,7 +606,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link EmptyType }
-     * 
+     *
      */
     public EmptyType getExcludeDefaultListeners() {
         return excludeDefaultListeners;
@@ -616,7 +618,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link EmptyType }
-     * 
+     *
      */
     public void setExcludeDefaultListeners(EmptyType value) {
         this.excludeDefaultListeners = value;
@@ -628,7 +630,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link EmptyType }
-     * 
+     *
      */
     public EmptyType getExcludeSuperclassListeners() {
         return excludeSuperclassListeners;
@@ -640,7 +642,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link EmptyType }
-     * 
+     *
      */
     public void setExcludeSuperclassListeners(EmptyType value) {
         this.excludeSuperclassListeners = value;
@@ -652,7 +654,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link EntityListeners }
-     * 
+     *
      */
     public EntityListeners getEntityListeners() {
         return entityListeners;
@@ -664,7 +666,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link EntityListeners }
-     * 
+     *
      */
     public void setEntityListeners(EntityListeners value) {
         this.entityListeners = value;
@@ -676,7 +678,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link PrePersist }
-     * 
+     *
      */
     public PrePersist getPrePersist() {
         return prePersist;
@@ -688,7 +690,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link PrePersist }
-     * 
+     *
      */
     public void setPrePersist(PrePersist value) {
         this.prePersist = value;
@@ -700,7 +702,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link PostPersist }
-     * 
+     *
      */
     public PostPersist getPostPersist() {
         return postPersist;
@@ -712,7 +714,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link PostPersist }
-     * 
+     *
      */
     public void setPostPersist(PostPersist value) {
         this.postPersist = value;
@@ -724,7 +726,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link PreRemove }
-     * 
+     *
      */
     public PreRemove getPreRemove() {
         return preRemove;
@@ -736,7 +738,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link PreRemove }
-     * 
+     *
      */
     public void setPreRemove(PreRemove value) {
         this.preRemove = value;
@@ -748,7 +750,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link PostRemove }
-     * 
+     *
      */
     public PostRemove getPostRemove() {
         return postRemove;
@@ -760,7 +762,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link PostRemove }
-     * 
+     *
      */
     public void setPostRemove(PostRemove value) {
         this.postRemove = value;
@@ -772,7 +774,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link PreUpdate }
-     * 
+     *
      */
     public PreUpdate getPreUpdate() {
         return preUpdate;
@@ -784,7 +786,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link PreUpdate }
-     * 
+     *
      */
     public void setPreUpdate(PreUpdate value) {
         this.preUpdate = value;
@@ -796,7 +798,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link PostUpdate }
-     * 
+     *
      */
     public PostUpdate getPostUpdate() {
         return postUpdate;
@@ -808,7 +810,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link PostUpdate }
-     * 
+     *
      */
     public void setPostUpdate(PostUpdate value) {
         this.postUpdate = value;
@@ -820,7 +822,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link PostLoad }
-     * 
+     *
      */
     public PostLoad getPostLoad() {
         return postLoad;
@@ -832,7 +834,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link PostLoad }
-     * 
+     *
      */
     public void setPostLoad(PostLoad value) {
         this.postLoad = value;
@@ -849,7 +851,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getAttributeOverride().add(newItem);
      * </pre>
@@ -879,7 +881,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getAssociationOverride().add(newItem);
      * </pre>
@@ -909,7 +911,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getConvert().add(newItem);
      * </pre>
@@ -939,7 +941,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      *
      * <p>
      * For example, to add a new item, do as follows:
-     * 
+     *
      * <pre>
      * getNamedEntityGraph().add(newItem);
      * </pre>
@@ -964,7 +966,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link Attributes }
-     * 
+     *
      */
     public Attributes getAttributes() {
         return attributes;
@@ -976,7 +978,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link Attributes }
-     * 
+     *
      */
     public void setAttributes(Attributes value) {
         this.attributes = value;
@@ -988,7 +990,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link String }
-     * 
+     *
      */
     @Override
     public String getName() {
@@ -1001,7 +1003,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link String }
-     * 
+     *
      */
     public void setName(String value) {
         this.name = value;
@@ -1013,7 +1015,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link String }
-     * 
+     *
      */
     @Override
     public String getClazz() {
@@ -1026,7 +1028,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link String }
-     * 
+     *
      */
     public void setClazz(String value) {
         this.clazz = value;
@@ -1038,7 +1040,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link AccessType }
-     * 
+     *
      */
     public AccessType getAccess() {
         return access;
@@ -1050,7 +1052,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link AccessType }
-     * 
+     *
      */
     public void setAccess(AccessType value) {
         this.access = value;
@@ -1062,7 +1064,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link Boolean }
-     * 
+     *
      */
     public Boolean isCacheable() {
         return cacheable;
@@ -1074,7 +1076,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link Boolean }
-     * 
+     *
      */
     public void setCacheable(Boolean value) {
         this.cacheable = value;
@@ -1086,7 +1088,7 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @return
      *         possible object is
      *         {@link Boolean }
-     * 
+     *
      */
     @Override
     public Boolean isMetadataComplete() {
@@ -1099,13 +1101,18 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
      * @param value
      *            allowed object is
      *            {@link Boolean }
-     * 
+     *
      */
     public void setMetadataComplete(Boolean value) {
         this.metadataComplete = value;
     }
 
     // IEntity methods
+    @Override
+    public IAttributes _getAttributes() {
+        return getAttributes();
+    }
+
     @Override
     public String _getIDClass() {
         IdClass idCls = this.getIdClass();
@@ -1180,7 +1187,26 @@ public class Entity implements com.ibm.ws.jpa.diagnostics.ormparser.entitymappin
     @Override
     public Set<String> _getSQLResultSetClasses() {
         final HashSet<String> retList = new HashSet<String>();
-        List<SqlResultSetMapping> srsm = getSqlResultSetMapping();
+        List<SqlResultSetMapping> srsmList = getSqlResultSetMapping();
+        if (srsmList != null && srsmList.size() > 0) {
+            for (SqlResultSetMapping srsm : srsmList) {
+                List<ConstructorResult> crList = srsm.getConstructorResult();
+                for (ConstructorResult cr : crList) {
+                    String targetClass = cr.getTargetClass();
+                    if (targetClass != null) {
+                        retList.add(targetClass);
+                    }
+                }
+
+                List<ColumnResult> colrList = srsm.getColumnResult();
+                for (ColumnResult cr : colrList) {
+                    String clazz = cr.getClazz();
+                    if (clazz != null) {
+                        retList.add(clazz);
+                    }
+                }
+            }
+        }
         return retList;
     }
 }

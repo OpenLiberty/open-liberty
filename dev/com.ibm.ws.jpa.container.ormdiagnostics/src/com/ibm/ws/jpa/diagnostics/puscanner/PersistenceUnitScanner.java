@@ -33,7 +33,10 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInform
 import com.ibm.ws.jpa.diagnostics.ormparser.EntityMappingsDefinition;
 import com.ibm.ws.jpa.diagnostics.ormparser.EntityMappingsException;
 import com.ibm.ws.jpa.diagnostics.ormparser.EntityMappingsFactory;
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IAttributes;
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IElementCollection;
 import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddable;
+import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEmbeddableAttributes;
 import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntity;
 import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntityMappings;
 import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IMappedSuperclass;
@@ -262,6 +265,11 @@ public final class PersistenceUnitScanner {
      * metadata for the persistence unit is contained in the XML mapping files for the persistence unit, and any
      * persistence annotations on the classes are ignored.
      */
+
+    /**
+     * Iterates through all of the classes found by the class scanner, and trims those which are not relevent to
+     * the persistence unit.
+     */
     private void trim() {
         // Relevant data from <persistence-unit>
         final boolean excludeUnlistedClasses = pUnit.excludeUnlistedClasses();
@@ -396,18 +404,13 @@ public final class PersistenceUnitScanner {
     }
 
     private boolean checkXMLMetadataComplete() {
-        boolean xmlMetaDataComplete = false;
         for (EntityMappingsDefinition emd : entityMappingsDefinitionsList) {
-            final IEntityMappings entityMappings = emd.getEntityMappings();
-            final IPersistenceUnitMetadata puMetaData = entityMappings.getIPersistenceUnitMetadata();
-            if (puMetaData == null) {
-                continue;
-            }
-            if (puMetaData.isXmlMappingMetadataComplete()) {
-                xmlMetaDataComplete = true;
+            final IPersistenceUnitMetadata puMetaData = emd.getEntityMappings()._getPersistenceUnitMetadata();
+            if (puMetaData != null && puMetaData.isXmlMappingMetadataComplete()) {
+                return true;
             }
         }
-        return xmlMetaDataComplete;
+        return false;
     }
 
     /*
@@ -422,8 +425,9 @@ public final class PersistenceUnitScanner {
                                      final Set<String> ormDefinedMappedSuperclassSet,
                                      final Set<String> metadataCompleteMappedSuperclassSet) {
         // Process Persistence Unit Defaults
-        final IPersistenceUnitMetadata puMetaData = entityMappings.getIPersistenceUnitMetadata();
+        final IPersistenceUnitMetadata puMetaData = entityMappings._getPersistenceUnitMetadata();
         if (puMetaData != null) {
+            // Types in persistence unit defaults that we will want to keep are EntityListeners.
             IPersistenceUnitDefaults puDefaults = puMetaData.getIPersistenceUnitDefaults();
             if (puDefaults != null) {
                 persistenceAwareClassSet.addAll(puDefaults._getEntityListeners());
@@ -431,7 +435,7 @@ public final class PersistenceUnitScanner {
         }
 
         // Process Entity definitions for entity class and JPA important classes
-        final List<IEntity> entityList = entityMappings.getEntityList();
+        final List<IEntity> entityList = entityMappings._getEntity();
         if (entityList != null && entityList.size() > 0) {
             for (IEntity entity : entityList) {
                 final String className = entity.getClazz();
@@ -452,12 +456,27 @@ public final class PersistenceUnitScanner {
                 persistenceAwareClassSet.addAll(entity._getNamedNativeQueryClasses());
                 persistenceAwareClassSet.addAll(entity._getSQLResultSetClasses());
 
-                // TODO: Process attributes
+                // Process attributes
+                IAttributes attr = entity._getAttributes();
+                List<IElementCollection> eCollections = attr._getElementCollection();
+                if (eCollections != null && eCollections.size() > 0) {
+                    for (IElementCollection ec : eCollections) {
+                        String targetClass = ec.getTargetClass();
+                        String mapKeyClass = (ec._getMapKeyClass() == null) ? null : ec._getMapKeyClass().getClazz();
+
+                        if (targetClass != null) {
+                            persistenceAwareClassSet.add(targetClass);
+                        }
+                        if (mapKeyClass != null) {
+                            persistenceAwareClassSet.add(mapKeyClass);
+                        }
+                    }
+                }
             }
         }
 
         // Process Embeddable definitions for embeddable class and JPA important classes
-        final List<IEmbeddable> embeddableList = entityMappings.getEmbeddableList();
+        final List<IEmbeddable> embeddableList = entityMappings._getEmbeddable();
         if (embeddableList != null && embeddableList.size() > 0) {
             for (IEmbeddable embeddable : embeddableList) {
                 final String className = embeddable.getClazz();
@@ -468,12 +487,26 @@ public final class PersistenceUnitScanner {
                     metadataCompleteEmbeddableSet.add(className);
                 }
 
-                // TODO: Need to dive into the EmbeddableAttributes to find converters, etc.
+                IEmbeddableAttributes attr = embeddable._getAttributes();
+                List<IElementCollection> eCollections = attr._getElementCollection();
+                if (eCollections != null && eCollections.size() > 0) {
+                    for (IElementCollection ec : eCollections) {
+                        String targetClass = ec.getTargetClass();
+                        String mapKeyClass = (ec._getMapKeyClass() == null) ? null : ec._getMapKeyClass().getClazz();
+
+                        if (targetClass != null) {
+                            persistenceAwareClassSet.add(targetClass);
+                        }
+                        if (mapKeyClass != null) {
+                            persistenceAwareClassSet.add(mapKeyClass);
+                        }
+                    }
+                }
             }
         }
 
         // Process MappedSuperclass definitions for mapped super class and JPA important classes
-        final List<IMappedSuperclass> mappedSuperclassList = entityMappings.getMappedSuperclassList();
+        final List<IMappedSuperclass> mappedSuperclassList = entityMappings._getMappedSuperclass();
         if (mappedSuperclassList != null && mappedSuperclassList.size() > 0) {
             for (IMappedSuperclass msc : mappedSuperclassList) {
                 final String className = msc.getClazz();
@@ -488,14 +521,34 @@ public final class PersistenceUnitScanner {
                     metadataCompleteMappedSuperclassSet.add(className);
                 }
 
-                // TODO: Need to dive into the Attributes to find converters, etc.
+                persistenceAwareClassSet.addAll(msc._getEntityListeners());
+
+                // Process attributes
+                IAttributes attr = msc._getAttributes();
+                List<IElementCollection> eCollections = attr._getElementCollection();
+                if (eCollections != null && eCollections.size() > 0) {
+                    for (IElementCollection ec : eCollections) {
+                        String targetClass = ec.getTargetClass();
+                        String mapKeyClass = (ec._getMapKeyClass() == null) ? null : ec._getMapKeyClass().getClazz();
+
+                        if (targetClass != null) {
+                            persistenceAwareClassSet.add(targetClass);
+                        }
+                        if (mapKeyClass != null) {
+                            persistenceAwareClassSet.add(mapKeyClass);
+                        }
+                    }
+                }
             }
         }
 
         // Named Native Query
+        persistenceAwareClassSet.addAll(entityMappings._getNamedNativeQueryClasses());
 
         // NamedStoredProcedureQuery
+        persistenceAwareClassSet.addAll(entityMappings._getNamedStoredProcedureResultSetClasses());
 
         // SQL Result Set Mapping
+        persistenceAwareClassSet.addAll(entityMappings._getSQLResultSetClasses());
     }
 }
