@@ -15,6 +15,16 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
+<<<<<<< HEAD
+=======
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+>>>>>>> update test for weld 3.0
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,8 +38,11 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.annotation.ExpectedFFDC;
+<<<<<<< HEAD
 import componenttest.annotation.Server;
+=======
 import componenttest.annotation.SkipForRepeat;
+>>>>>>> update test for weld 3.0
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -37,6 +50,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)//Needed for SkipForRepeat
 public class EnablingBeansXmlValidationTest extends LoggingTest {
 
     @Server("cdi12BeansXmlValidationServer")
@@ -44,10 +58,10 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive invalidBeansXml = ShrinkWrap.create(WebArchive.class, "invalidBeansXml.war")
-                        .addClass("com.ibm.ws.cdi12.test.TestServlet")
-                        .addClass("com.ibm.ws.cdi12.test.TestBean")
-                        .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
+        WebArchive invalidBeansXml = ShrinkWrap.create(WebArchive.class, "invalidBeansXml.war")//
+                        .addClass("com.ibm.ws.cdi12.test.TestServlet")//
+                        .addClass("com.ibm.ws.cdi12.test.TestBean")//
+                        .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")//
                         .add(new FileAsset(new File("test-applications/invalidBeansXml.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
         ShrinkHelper.exportDropinAppToServer(server, invalidBeansXml);
     }
@@ -81,12 +95,15 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
 
     }
 
+<<<<<<< HEAD
+=======
     //In CDI 2.0 with weld 3.0.4 or later WELD-001210 is a warning not an error. 
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testEnablingBeansXmlValidationCDITwo() throws Exception {
         boolean foundNetworkError = false;
         try {
+            server = LibertyServerFactory.getLibertyServer("cdi12BeansXmlValidationServer");
             server.startServer(true);
 
             if (server.waitForStringInLog("WELD-001210") != null) {
@@ -109,6 +126,12 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
+     */
+>>>>>>> update test for weld 3.0
     @Override
     protected SharedServer getSharedServer() {
         return null;
