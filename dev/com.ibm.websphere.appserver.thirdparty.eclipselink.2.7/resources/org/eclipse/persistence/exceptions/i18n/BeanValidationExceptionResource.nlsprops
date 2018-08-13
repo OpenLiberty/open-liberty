@@ -32,7 +32,8 @@
 7501=Bean validation mode on {0}marshaller is set to illegal value, "{1}".
 
 7510=Constraints violated on {0}marshalled bean:
-{1}{2}
 
 7525=Cannot parse property {0}, because it is both annotated with @NotNull and has attribute "xs:nillable=true".
+
+{1}{2}=
 
