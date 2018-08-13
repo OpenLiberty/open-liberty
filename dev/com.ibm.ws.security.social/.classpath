@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.cm"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jsonp.1.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.osgi.annotation.versioning"/>
+	<classpathentry kind="src" path="/com.ibm.ws.logging"/>
+	<classpathentry kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry kind="src" path="/com.ibm.websphere.security"/>
+	<classpathentry kind="src" path="/com.ibm.ws.resource"/>
+	<classpathentry kind="src" path="/com.ibm.ws.crypto.passwordutil"/>
+	<classpathentry kind="src" path="/com.ibm.ws.org.apache.httpcomponents"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.webcontainer.security"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.ssl"/>
+	<classpathentry kind="src" path="/com.ibm.ws.webcontainer"/>
+	<classpathentry kind="src" path="/com.ibm.websphere.javaee.servlet.3.1"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security.authentication.filter"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security.authentication.tai"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security.authentication"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.jose4j"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.jwt"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.token"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.security.common.jsonwebkey"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.app.manager.wab"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.apache.commons.codec"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.transport.http"/>
+	<classpathentry kind="src" path="/com.ibm.json4j"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security.openidconnect.clients.common"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security.common.jsonwebkey"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="output" path="build/classes"/>
+        <classpathentry kind="src" output="bin_test" path="test"/>
+</classpath>

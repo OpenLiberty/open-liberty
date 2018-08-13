@@ -1,0 +1,543 @@
+###############################################################################
+# Copyright (c) 2016, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5400 - CWWKS5499
+ADD_ID={0} ({1})
+ADD_ID.explanation=Tylko do u\u017cytku wewn\u0119trznego.
+ADD_ID.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# HTML title of the social media selection page
+SELECTION_PAGE_TITLE=Formularz wyboru medi\u00f3w spo\u0142eczno\u015bciowych
+
+# Text that appears above the social media options to choose from on the social media selection page
+SELECTION_PAGE_HEADER=Zaloguj
+
+# Text that indicates a user can sign in using social media "or" with a username and password ("or" being the text that appears on the web page)
+SELECTION_PAGE_ALTERNATE_TEXT=Lub
+
+SELECTION_PAGE_USERNAME=Nazwa u\u017cytkownika
+
+SELECTION_PAGE_PASSWORD=Has\u0142o
+
+SELECTION_PAGE_SUBMIT=Wy\u015blij
+
+SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych [{0}] zosta\u0142a pomy\u015blnie przetworzona.
+SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Wskazana konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych zosta\u0142a pomy\u015blnie przetworzona.
+SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SOCIAL_LOGIN_CONFIG_MODIFIED=CWWKS5401I: Konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych [{0}] zosta\u0142a pomy\u015blnie przetworzona.
+SOCIAL_LOGIN_CONFIG_MODIFIED.explanation=Wskazana konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych zosta\u0142a pomy\u015blnie przetworzona.
+SOCIAL_LOGIN_CONFIG_MODIFIED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+SOCIAL_LOGIN_CONFIG_DEACTIVATED=CWWKS5402I: Konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych [{0}] zosta\u0142a pomy\u015blnie dezaktywowana.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.explanation=Wskazana konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych zosta\u0142a pomy\u015blnie dezaktywowana.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# 0=exception class name, 1=exception message, 2=stack trace
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR=CWWKS5403E: Podczas przetwarzania \u017c\u0105dania logowania w serwisach spo\u0142eczno\u015bciowych [{0}] wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera. Przyczyna:[{1}], stos wywo\u0142a\u0144: [{2}].
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.explanation=Podczas przetwarzania \u017c\u0105dania logowania w serwisach spo\u0142eczno\u015bciowych wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny serwera.
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.useraction=Sprawd\u017a b\u0142\u0119dy w plikach dziennika serwera i upewnij si\u0119, \u017ce konfiguracja jest poprawna. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# 
+SOCIAL_LOGIN_AUTHENTICATION_FAIL=CWWKS5404E: Wyj\u0105tek logowania w serwisach spo\u0142eczno\u015bciowych: dostawca us\u0142ugi logowania w serwisach spo\u0142eczno\u015bciowych nie przetworzy\u0142 \u017c\u0105dania uwierzytelniania.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.explanation=Proces uwierzytelniania nie powi\u00f3d\u0142 si\u0119, poniewa\u017c przed tym komunikatem wyst\u0105pi\u0142 inny b\u0142\u0105d.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla b\u0142\u0119du, kt\u00f3ry zosta\u0142 wy\u015bwietlony przed tym komunikatem.
+
+# Do not translate "social_login_hint"
+# 0=Social login configuration ID
+SOCIAL_LOGIN_NO_SUCH_PROVIDER=CWWKS5405E: Konfiguracja logowania spo\u0142eczno\u015bciowego [{0}] okre\u015blona w \u017c\u0105daniu nie istnieje lub nie jest skonfigurowana do obs\u0142ugi tego \u017c\u0105dania.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.explanation=\u017b\u0105danie zawiera parametr social_login_hint lub nag\u0142\u00f3wek okre\u015blaj\u0105cy identyfikator konfiguracji logowania spo\u0142eczno\u015bciowego, kt\u00f3ry ma zosta\u0107 u\u017cyty na potrzeby tego \u017c\u0105dania. Jednak\u017ce nie istnieje konfiguracja logowania spo\u0142eczno\u015bciowego zgodna z tym identyfikatorem lub filtr uwierzytelniania, kt\u00f3ry jest u\u017cywany na potrzeby konfiguracji logowania spo\u0142eczno\u015bciowego, nie jest skonfigurowany do obs\u0142ugi tego \u017c\u0105dania.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.useraction=Sprawd\u017a, czy us\u0142uga logowania spo\u0142eczno\u015bciowego o wskazanym identyfikatorze jest skonfigurowana. Je\u015bli filtr uwierzytelniania jest skonfigurowany na potrzeby us\u0142ugi logowania spo\u0142eczno\u015bciowego, upewnij si\u0119, \u017ce filtr jest skonfigurowany do obs\u0142ugi \u017c\u0105dania.
+
+# web RequestFilter
+# 0=url
+SOCIAL_LOGIN_INVALID_URL=CWWKS5406E: \u017b\u0105dany punkt ko\u0144cowy [{0}] nie jest obs\u0142ugiwany u tego dostawcy us\u0142ugi logowania w serwisach spo\u0142eczno\u015bciowych.
+SOCIAL_LOGIN_INVALID_URL.explanation=Wskazany adres URL nie jest poprawnym punktem ko\u0144cowym logowania w serwisach spo\u0142eczno\u015bciowych. Przyczyn\u0105 mo\u017ce to by\u0107 niepoprawna konfiguracja serwera logowania w serwisach spo\u0142eczno\u015bciowych.
+SOCIAL_LOGIN_INVALID_URL.useraction=Upewnij si\u0119, \u017ce logowanie w serwisach spo\u0142eczno\u015bciowych zosta\u0142o poprawnie skonfigurowane.
+
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED=CWWKS5407I: Us\u0142uga punktu ko\u0144cowego logowania w serwisach spo\u0142eczno\u015bciowych 1.0 zosta\u0142a aktywowana.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.explanation=Us\u0142uga punktu ko\u0144cowego logowania w serwisach spo\u0142eczno\u015bciowych 1.0 zosta\u0142a aktywowana.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# EndpointServlet
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5408E: Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania logowania w serwisach spo\u0142eczno\u015bciowych, poniewa\u017c nie jest dost\u0119pny sk\u0142adnik logowania w serwisach spo\u0142eczno\u015bciowych.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Serwer odebra\u0142 \u017c\u0105danie logowania w serwisach spo\u0142eczno\u015bciowych, ale sk\u0142adnik socialLogin-1.0 nie zosta\u0142 w\u0142\u0105czony w pliku server.xml lub jest niedost\u0119pny.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Upewnij si\u0119, \u017ce sk\u0142adnik ssocialLogin-1.0 i jego zale\u017cno\u015bci s\u0105 skonfigurowane w sekcji featureManager pliku server.xml.
+
+# Do not translate RFC
+# 0=Exception message
+TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: Nie mo\u017cna utworzy\u0107 podpisu dla autoryzowanego \u017c\u0105dania serwisu Twitter: {0}
+TWITTER_ERROR_CREATING_SIGNATURE.explanation=Autoryzowane \u017c\u0105dania serwisu Twitter musz\u0105 by\u0107 podpisywane przy u\u017cyciu algorytmu podpisu HMAC-SHA1. Wyst\u0105pi\u0142 problem podczas uzyskiwania \u017c\u0105danego algorytmu podpisu albo podanego klucza nie mo\u017cna u\u017cy\u0107 do zainicjowania algorytmu podpisu.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Sprawd\u017a, czy system obs\u0142uguje algorytm podpisu HMAC-SHA1. Sprawd\u017a warto\u015bci klucza tajnego konsumenta i klucza tajnego znacznika \u017c\u0105dania. Te dwie warto\u015bci s\u0105 u\u017cywane jako cz\u0119\u015bci klucza dla algorytmu podpisu. Je\u015bli jedna z nich jest zniekszta\u0142cona lub zawiera znaki, kt\u00f3rych nie mo\u017cna zakodowa\u0107 zgodnie ze specyfikacj\u0105 RFC 3986, prawdopodobnie konieczne b\u0119dzie uzyskanie nowej warto\u015bci.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: Odpowied\u017a z punktu ko\u0144cowego serwisu Twitter [{0}] nie zawiera\u0142a \u017cadnych parametr\u00f3w w oczekiwanym formacie. Odpowied\u017a: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=Odpowied\u017a z punktu ko\u0144cowego serwisu Twitter mia\u0142a prawdopodobnie warto\u015b\u0107 NULL lub by\u0142a pusta. Pocz\u0105tkowe \u017c\u0105danie mog\u0142o zosta\u0107 skierowane do niew\u0142a\u015bciwego punktu ko\u0144cowego. Odpowiedzi z punktu ko\u0144cowego serwisu Twitter powinny mie\u0107 posta\u0107 \u0142a\u0144cucha par klucza i warto\u015bci. Klucz i warto\u015b\u0107 powinny by\u0107 rozdzielone znakiem r\u00f3wno\u015bci (\u201e=\u201d), a w przypadku wielu par klucza i warto\u015bci powinny by\u0107 one rozdzielane znakiem ampersand (\u201e&\u201d).
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Sprawd\u017a, czy \u017c\u0105danie zosta\u0142o skierowane do poprawnego punktu ko\u0144cowego serwisu Twitter. Sprawd\u017a, czy wszystkie wymagane parametry zosta\u0142y uwzgl\u0119dnione w pocz\u0105tkowym \u017c\u0105daniu, a \u017c\u0105danie zosta\u0142o autoryzowane przez dodanie poprawnego nag\u0142\u00f3wka Authorization. Poprawny nag\u0142\u00f3wek Authorization jest tworzony przy u\u017cyciu klucza konsumenta dla aplikacji Twitter dodanego do adresu URL wywo\u0142ania zwrotnego lub znacznika \u017c\u0105dania OAuth. Sprawd\u017a konfiguracj\u0119 serwera, aby upewni\u0107 si\u0119, \u017ce skonfigurowano poprawny klucz konsumenta i adres URL wywo\u0142ania zwrotnego.
+
+# Do not translate "Authorization"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: Odpowied\u017a z punktu ko\u0144cowego serwisu Twitter [{0}] nie zawiera\u0142a przynajmniej jednego wymaganego parametru. Wymagane parametry, kt\u00f3rych brakuje w odpowiedzi, to: [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER.explanation=Odpowiedzi z ka\u017cdego punktu ko\u0144cowego serwisu Twitter zwracaj\u0105 w\u0142asny zestaw parametr\u00f3w. Odebrana odpowied\u017a z serwisu Twitter nie zawiera\u0142a wymaganych parametr\u00f3w, kt\u00f3re s\u0105 wymienione w komunikacie. Pocz\u0105tkowe \u017c\u0105danie mog\u0142o zosta\u0107 skierowane do niew\u0142a\u015bciwego punktu ko\u0144cowego.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Sprawd\u017a, czy \u017c\u0105danie zosta\u0142o skierowane do poprawnego punktu ko\u0144cowego serwisu Twitter. Sprawd\u017a, czy wszystkie wymagane parametry zosta\u0142y uwzgl\u0119dnione w pocz\u0105tkowym \u017c\u0105daniu, a \u017c\u0105danie zosta\u0142o autoryzowane przez dodanie poprawnego nag\u0142\u00f3wka Authorization. Poprawny nag\u0142\u00f3wek Authorization jest tworzony przy u\u017cyciu klucza konsumenta dla aplikacji Twitter dodanego do adresu URL wywo\u0142ania zwrotnego lub znacznika \u017c\u0105dania OAuth. Sprawd\u017a konfiguracj\u0119 serwera, aby upewni\u0107 si\u0119, \u017ce skonfigurowano poprawny klucz konsumenta i adres URL wywo\u0142ania zwrotnego.
+
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: Warto\u015b\u0107 parametru [{0}] w odpowiedzi z punktu ko\u0144cowego serwisu Twitter [{1}] nie by\u0142a zgodna z oczekiwan\u0105 warto\u015bci\u0105 [{2}]. Warto\u015b\u0107 w odpowiedzi wynosi [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=Parametr okre\u015blony w komunikacie musi mie\u0107 warto\u015b\u0107 zgodn\u0105 z oczekiwan\u0105 warto\u015bci\u0105. Scenariusz, w kt\u00f3rym serwis Twitter pomy\u015blnie przetworzy\u0142 \u017c\u0105danie, ale zwr\u00f3ci\u0142 nieoczekiwan\u0105 warto\u015b\u0107 parametru, jest ma\u0142o prawdopodobny.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=Sprawd\u017a konfiguracj\u0119 serwera, aby upewni\u0107 si\u0119, \u017ce adres URL wywo\u0142ania zwrotnego skonfigurowany dla tej aplikacji wskazuje poprawny adres URL, do kt\u00f3rego serwis Twitter mo\u017ce przekierowa\u0107 u\u017cytkownika, gdy uzyska on autoryzacj\u0119.
+
+# Do not translate "Authorization"
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: Parametr [{0}] by\u0142 pusty w odpowiedzi z punktu ko\u0144cowego serwisu Twitter [{1}]. Warto\u015b\u0107 tego parametru musi zosta\u0107 podana, aby mo\u017cliwe by\u0142o przetworzenie \u017c\u0105dania autoryzacji.
+TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=Odpowied\u017a z punktu ko\u0144cowego serwisu Twitter zawiera\u0142a parametr podany w komunikacie, ale nie udost\u0119pnia\u0142a warto\u015bci tego parametru.
+TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Sprawd\u017a, czy odpowied\u017a z punktu ko\u0144cowego serwisu Twitter zawiera\u0142a wszystkie oczekiwane parametry i warto\u015bci tych parametr\u00f3w. Sprawd\u017a, czy wszystkie wymagane parametry zosta\u0142y uwzgl\u0119dnione w pocz\u0105tkowym \u017c\u0105daniu, a \u017c\u0105danie zosta\u0142o autoryzowane przez dodanie poprawnego nag\u0142\u00f3wka Authorization. Poprawny nag\u0142\u00f3wek Authorization jest tworzony przy u\u017cyciu klucza konsumenta dla aplikacji Twitter dodanego do adresu URL wywo\u0142ania zwrotnego lub znacznika \u017c\u0105dania OAuth. Sprawd\u017a konfiguracj\u0119 serwera, aby upewni\u0107 si\u0119, \u017ce skonfigurowano poprawny klucz konsumenta i adres URL wywo\u0142ania zwrotnego.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: Nie mo\u017cna okre\u015bli\u0107 warto\u015bci odpowiedzi z punktu ko\u0144cowego serwisu Twitter [{0}], poniewa\u017c tre\u015b\u0107 odpowiedzi jest pusta.
+TWITTER_EMPTY_RESPONSE_BODY.explanation=Pocz\u0105tkowe \u017c\u0105danie mog\u0142o zosta\u0107 skierowane do niew\u0142a\u015bciwego punktu ko\u0144cowego serwisu Twitter lub wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania odpowiedzi z punktu ko\u0144cowego.
+TWITTER_EMPTY_RESPONSE_BODY.useraction=Sprawd\u017a dzienniki serwera pod k\u0105tem komunikat\u00f3w mog\u0105cych wskazywa\u0107 na b\u0142\u0105d. Sprawd\u017a, czy pocz\u0105tkowe \u017c\u0105danie zosta\u0142o skierowane do odpowiedniego punktu ko\u0144cowego.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: \u017b\u0105danie punktu ko\u0144cowego serwisu Twitter [{0}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Status odpowiedzi: [{1}], tre\u015b\u0107 odpowiedzi: [{2}]
+TWITTER_ENDPOINT_REQUEST_FAILED.explanation=Pocz\u0105tkowe \u017c\u0105danie prawdopodobnie zawiera\u0142o niepoprawne dane autoryzacji lub zabroniono wykonania \u017c\u0105danej operacji. Punkty ko\u0144cowe serwisu Twitter, kt\u00f3re wymagaj\u0105 autoryzacji, musz\u0105 mie\u0107 nag\u0142\u00f3wek Authorization, kt\u00f3ry jest zgodny z okre\u015blonym formatem. W przypadku autoryzowanych \u017c\u0105da\u0144 jest prawdopodobne, \u017ce pewien element danych u\u017cywanych przy tworzeniu nag\u0142\u00f3wka Authorization, taki jak podpis lub znacznik OAuth, jest zniekszta\u0142cony lub niepoprawny. Kod statusu dost\u0119pny w komunikacie powinien wskazywa\u0107 konkretny pow\u00f3d niepowodzenia \u017c\u0105dania.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Je\u015bli \u017c\u0105danie nie by\u0142o autoryzowane, sprawd\u017a, czy \u017c\u0105danie zawiera\u0142o nag\u0142\u00f3wek Authorization z dok\u0142adnymi danymi autoryzacji. Je\u015bli dane autoryzacji zawieraj\u0105 znacznik OAuth, sprawd\u017a, czy znacznik jest wci\u0105\u017c poprawny, lub rozwa\u017c uzyskanie nowego znacznika. Sprawd\u017a, czy \u017c\u0105danie nie jest takie samo jak poprzednie, przez por\u00f3wnanie podpis\u00f3w w nag\u0142\u00f3wkach Authorization obu \u017c\u0105da\u0144. Je\u015bli \u017c\u0105danie by\u0142o zabronione, sprawd\u017a, czy aplikacja Twitter zezwala na wykonanie \u017c\u0105danej operacji.
+
+# 0=Outgoing request URL, 1=Parameter name
+OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: Wychodz\u0105ce \u017c\u0105danie do [{0}] nie powiod\u0142o si\u0119, poniewa\u017c parametr [{1}] nie istnieje lub jest pusty.
+OUTGOING_REQUEST_MISSING_PARAMETER.explanation=Okre\u015blony parametr jest wymagany do uwierzytelniania OAuth. \u017b\u0105danie, kt\u00f3re jest kierowane do okre\u015blonego punktu ko\u0144cowego, mo\u017ce si\u0119 nie powie\u015b\u0107 z powodu braku wymaganych informacji.
+OUTGOING_REQUEST_MISSING_PARAMETER.useraction=Upewnij si\u0119, \u017ce atrybut konfiguracji, kt\u00f3ry odpowiada okre\u015blonemu parametrowi, jest skonfigurowany przez ka\u017cdego dostawc\u0119 logowania spo\u0142eczno\u015bciowego w konfiguracji serwera.
+
+# 0=URL string, 1=Exception message text
+EXCEPTION_INITIALIZING_URL=CWWKS5417E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas inicjowania identyfikatora URI [{0}]: {1}
+EXCEPTION_INITIALIZING_URL.explanation=\u0141a\u0144cuch okre\u015blony w komunikacie mo\u017ce nie by\u0107 poprawnym identyfikatorem URI lub system mo\u017ce nie mie\u0107 uprawnie\u0144 do wykonania dzia\u0142ania inicjowania identyfikatora URI.
+EXCEPTION_INITIALIZING_URL.useraction=Sprawd\u017a, czy podany \u0142a\u0144cuch jest poprawnym adresem URL. Sprawd\u017a, czy \u0142a\u0144cuch nie ma warto\u015bci NULL i czy protok\u00f3\u0142 u\u017cywany w adresie URL jest poprawnym protoko\u0142em, takim jak http lub https. Upewnij si\u0119, \u017ce kod podstawowy ma odpowiednie uprawnienia do inicjowania identyfikatora URI obiektu.
+
+# Do not translate "GET" or "POST"
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania \u017c\u0105dania skierowanego do punktu ko\u0144cowego serwisu Twitter [{0}]: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=Prawdopodobnie wyst\u0105pi\u0142a jedna z nast\u0119puj\u0105cych sytuacji: 1. Wyst\u0105pi\u0142 b\u0142\u0105d podczas otwierania po\u0142\u0105czenia z okre\u015blonym punktem ko\u0144cowym. 2. U\u017cyta metoda \u017c\u0105dania nie by\u0142a znanym protoko\u0142em, np. GET lub POST. 3. Wyst\u0105pi\u0142 b\u0142\u0105d podczas zapisywania danych POST do po\u0142\u0105czenia. 4. Wyst\u0105pi\u0142 b\u0142\u0105d podczas odczytu odpowiedzi z punktu ko\u0144cowego serwisu Twitter.
+TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=Wi\u0119cej informacji o niepowodzeniu zawiera tekst b\u0142\u0119du w komunikacie. Sprawd\u017a, czy system utrzymywa\u0142 po\u0142\u0105czenie podczas \u017c\u0105dania. Sprawd\u017a, czy w \u017c\u0105daniu u\u017cyto znanej metody, na przyk\u0142ad GET lub POST.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: \u017b\u0105danie autoryzacji nie powiod\u0142o si\u0119, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas tworzenia wyniku z punktu ko\u0144cowego serwisu Twitter [{0}].
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation=Podane \u017c\u0105danie nie zwr\u00f3ci\u0142o \u017cadnego wyniku lub zwr\u00f3ci\u0142o pusty wynik. B\u0142\u0105d musia\u0142 wyst\u0105pi\u0107 w trakcie wprowadzania lub przetwarzania \u017c\u0105dania.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction=Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach, kt\u00f3re wskazuj\u0105 miejsce wyst\u0105pienia niepowodzenia.
+
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przekierowywania odpowiedzi z punktu ko\u0144cowego serwisu Twitter [{0}]: {1}
+TWITTER_REDIRECT_IOEXCEPTION.explanation=Adres URL, do kt\u00f3rego zosta\u0142a przekierowana odpowied\u017a, m\u00f3g\u0142 by\u0107 niepoprawny lub nie m\u00f3g\u0142 obs\u0142u\u017cy\u0107 \u017c\u0105dania.
+TWITTER_REDIRECT_IOEXCEPTION.useraction=Sprawd\u017a, czy miejsce docelowe przekierowania jest dost\u0119pne i mo\u017ce obs\u0142ugiwa\u0107 \u017c\u0105dania. Wi\u0119cej informacji o niepowodzeniu zawiera komunikat o b\u0142\u0119dzie.
+
+# Do not translate OAuth
+TWITTER_TOKEN_DOES_NOT_MATCH=CWWKS5421E: \u017b\u0105danie autoryzacji nie powiod\u0142o si\u0119, poniewa\u017c znacznik podany w \u017c\u0105daniu nie jest zgodny ze znacznikiem, kt\u00f3ry zosta\u0142 u\u017cyty w pocz\u0105tkowym \u017c\u0105daniu autoryzacji.
+TWITTER_TOKEN_DOES_NOT_MATCH.explanation=\u017b\u0105danie przychodz\u0105ce musi zawiera\u0107 warto\u015b\u0107 znacznika \u017c\u0105dania OAuth, kt\u00f3ra jest identyczna ze znacznikiem \u017c\u0105dania OAuth uzyskanym w pierwszym kroku procesu autoryzacji. Warto\u015bci musz\u0105 by\u0107 zgodne, aby potwierdzi\u0107, \u017ce \u017c\u0105danie przychodz\u0105ce odpowiada pocz\u0105tkowemu \u017c\u0105daniu, kt\u00f3re rozpocz\u0119\u0142o proces autoryzacji.
+TWITTER_TOKEN_DOES_NOT_MATCH.useraction=Sprawd\u017a, czy \u017c\u0105danie przychodz\u0105ce odpowiada wcze\u015bniejszemu \u017c\u0105daniu dla znacznika \u017c\u0105dania OAuth. Rozwa\u017c ponowne rozpocz\u0119cie przep\u0142ywu autoryzacji w celu uzyskania nowego znacznika \u017c\u0105dania OAuth.
+
+# 0=Endpoint ("oauth/access_token"), 1=Parameter name
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: W \u017c\u0105daniu skierowanym do punktu ko\u0144cowego serwisu Twitter [{0}] brakuje wymaganego parametru. Wymagane parametry, kt\u00f3rych nie ma w \u017c\u0105daniu, to: {1}
+TWITTER_REQUEST_MISSING_PARAMETER.explanation=\u017b\u0105danie musi zawiera\u0107 wszystkie parametry podane w komunikacie. \u017b\u0105danie nie zawiera\u0142o \u017cadnego parametru wymienionego w komunikacie.
+TWITTER_REQUEST_MISSING_PARAMETER.useraction=Sprawd\u017a, czy \u017c\u0105danie zawiera wszystkie wymagane parametry.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: Nie mo\u017cna okre\u015bli\u0107 statusu odpowiedzi z punktu ko\u0144cowego serwisu Twitter [{0}]. B\u0142\u0105d wyst\u0105pi\u0142 prawdopodobnie podczas wprowadzania lub przetwarzania \u017c\u0105dania.
+TWITTER_RESPONSE_STATUS_MISSING.explanation=Oczekuje si\u0119, \u017ce pole statusu odpowiedzi okre\u015bla wynik \u017c\u0105dania autoryzacji.
+TWITTER_RESPONSE_STATUS_MISSING.useraction=Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach, kt\u00f3re wskazuj\u0105 miejsce wyst\u0105pienia innego b\u0142\u0119du.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: Nie mo\u017cna przetworzy\u0107 odpowiedzi z punktu ko\u0144cowego serwisu Twitter [{0}]. {1}
+TWITTER_RESPONSE_FAILURE.explanation=Status odpowiedzi zawarty w wyniku nie wskazywa\u0142 poprawnego wyniku. Niepowodzenie musia\u0142o wyst\u0105pi\u0107 w trakcie wprowadzania lub przetwarzania \u017c\u0105dania.
+TWITTER_RESPONSE_FAILURE.useraction=Je\u015bli komunikat zawiera inny komunikat o b\u0142\u0119dzie, zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla tego komunikatu. W przeciwnym razie sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach, kt\u00f3re mog\u0105 wskazywa\u0107 miejsce wyst\u0105pienia innego b\u0142\u0119du.
+
+# web EndpointServices 
+# 0=qualified config IDs
+SOCIAL_LOGIN_MANY_PROVIDERS=CWWKS5425E: Zbyt wiele us\u0142ug logowania w serwisach spo\u0142eczno\u015bciowych [{0}] zakwalifikowano do obs\u0142ugi \u017c\u0105dania.
+SOCIAL_LOGIN_MANY_PROVIDERS.explanation=Je\u015bli zakwalifikowano wi\u0119cej ni\u017c jedn\u0105 us\u0142ug\u0119 logowania w serwisach spo\u0142eczno\u015bciowych, nie mo\u017cna wybra\u0107 tej us\u0142ugi, kt\u00f3ra ma obs\u0142u\u017cy\u0107 \u017c\u0105danie.
+SOCIAL_LOGIN_MANY_PROVIDERS.useraction=Upewnij si\u0119, \u017ce w pliku server.xml tylko jedna us\u0142uga logowania w serwisach spo\u0142eczno\u015bciowych jest skonfigurowana pod k\u0105tem obs\u0142ugi \u017c\u0105dania.
+
+# Do not translate "JSON"
+# 0=Endpoint ("/1.1/accounts/verify_credentials"), 1=Error message, 2=Endpoint response content
+TWITTER_RESPONSE_NOT_JSON=CWWKS5426E: Odpowied\u017a z punktu ko\u0144cowego serwisu Twitter [{0}] nie mia\u0142a oczekiwanego formatu JSON. B\u0142\u0105d: [{1}]. Tre\u015b\u0107 odpowiedzi: [{2}]
+TWITTER_RESPONSE_NOT_JSON.explanation=Okre\u015blony punkt ko\u0144cowy mo\u017ce nie dzia\u0142a\u0107 w oczekiwany spos\u00f3b lub jego dzia\u0142anie mog\u0142o zosta\u0107 zmienione w celu zwracania odpowiedzi w innym formacie. Niekt\u00f3re dane mog\u0142y zosta\u0107 pomini\u0119te podczas odczytywania odpowiedzi.
+TWITTER_RESPONSE_NOT_JSON.useraction=Sprawd\u017a, czy serwer odczytuje ca\u0142\u0105 odpowied\u017a z okre\u015blonego punktu ko\u0144cowego. Sprawd\u017a, czy \u017c\u0105danie zosta\u0142o wys\u0142ane do poprawnego punktu ko\u0144cowego serwisu Twitter i czy odpowied\u017a ma poprawny format.
+
+SIGN_IN_NO_CONFIGS=CWWKS5427E: Nie mo\u017cna wy\u015bwietli\u0107 strony logowania do medi\u00f3w spo\u0142eczno\u015bciowych, poniewa\u017c funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017cna znale\u017a\u0107 \u017cadnych konfiguracji logowania spo\u0142eczno\u015bciowego, kt\u00f3re zosta\u0142y skonfigurowane do uwierzytelnienia tego \u017c\u0105dania.
+SIGN_IN_NO_CONFIGS.explanation=Aby mo\u017cna by\u0142o wy\u015bwietli\u0107 t\u0119 stron\u0119 logowania, musi istnie\u0107 co najmniej jedna konfiguracja logowania spo\u0142eczno\u015bciowego. Albo informacja cookie zawieraj\u0105ca list\u0119 zgodnych konfiguracji logowania spo\u0142eczno\u015bciowego nie istnieje lub jest pusta, albo nie mo\u017cna znale\u017a\u0107 konfiguracji logowania spo\u0142eczno\u015bciowego okre\u015blonych przez t\u0119 informacj\u0119 cookie.
+SIGN_IN_NO_CONFIGS.useraction=Upewnij si\u0119, \u017ce co najmniej jedna us\u0142uga logowania spo\u0142eczno\u015bciowego zosta\u0142a skonfigurowana do uwierzytelnienia tego \u017c\u0105dania.
+
+# 0=Config element ID
+SIGN_IN_MISSING_EXPECTED_CONFIG=CWWKS5428W: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017cna znale\u017a\u0107 konfiguracji logowania spo\u0142eczno\u015bciowego, kt\u00f3ra jest zgodna z identyfikatorem [{0}]. Konfiguracja logowania spo\u0142eczno\u015bciowego o podanym identyfikatorze powinna istnie\u0107 i by\u0107 skonfigurowana, aby mo\u017cliwe by\u0142o uwierzytelnienie tego \u017c\u0105dania.
+SIGN_IN_MISSING_EXPECTED_CONFIG.explanation=Okre\u015blony identyfikator jest zawarty w informacji cookie, kt\u00f3ra jest u\u017cywana do rejestrowania informacji o konfiguracjach logowania spo\u0142eczno\u015bciowego skonfigurowanych do uwierzytelniania tego \u017c\u0105dania. Jednak nie mo\u017cna znale\u017a\u0107 konfiguracji logowania spo\u0142eczno\u015bciowego, kt\u00f3ra jest zgodna z tym identyfikatorem. Identyfikator jest zniekszta\u0142cony lub usuni\u0119to odpowiadaj\u0105c\u0105 mu konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego.
+SIGN_IN_MISSING_EXPECTED_CONFIG.useraction=Sprawd\u017a, czy w konfiguracji serwera istnieje konfiguracja logowania spo\u0142eczno\u015bciowego o okre\u015blonym identyfikatorze.
+
+# 0=Specific error message describing why the page cannot be displayed
+ERROR_DISPLAYING_SIGN_IN_PAGE=CWWKS5429E: Nie mo\u017cna wy\u015bwietli\u0107 domy\u015blnej strony logowania do serwisu spo\u0142eczno\u015bciowego. {0}
+ERROR_DISPLAYING_SIGN_IN_PAGE.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania domy\u015blnej strony logowania. Komunikat zawiera wyja\u015bnienie konkretnej przyczyny niemo\u017cno\u015bci wy\u015bwietlenia strony logowania.
+ERROR_DISPLAYING_SIGN_IN_PAGE.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=Selection page URL configured in server.xml, 1=Specific error message
+SELECTION_PAGE_URL_NOT_VALID=CWWKS5430W: Adres URL strony wybory medi\u00f3w spo\u0142eczno\u015bciowych [{0}] okre\u015blony przez konfiguracj\u0119 aplikacji WWW logowania spo\u0142eczno\u015bciowego nie jest poprawnym identyfikatorem URI. Zostanie u\u017cyta domy\u015blna strona wyboru. {1}
+SELECTION_PAGE_URL_NOT_VALID.explanation=Adres URL strony wyboru, kt\u00f3ry jest konfigurowany przez konfiguracj\u0119 aplikacji WWW logowania spo\u0142eczno\u015bciowego, nie jest poprawnym \u0142a\u0144cuchem identyfikatora URI. Adres URL strony wyboru musi by\u0107 zgodny ze specyfikacj\u0105 RFC 3986 (https://tools.ietf.org/html/rfc3986) i mo\u017ce zawiera\u0107 tylko niekt\u00f3re znaki.
+SELECTION_PAGE_URL_NOT_VALID.useraction=Upewnij si\u0119, \u017ce skonfigurowany adres URL strony wyboru zawiera tylko te znaki, kt\u00f3re s\u0105 dozwolone przez specyfikacj\u0119 RFC 3986.
+
+# 0=Selection page URL configured in server.xml
+SELECTION_PAGE_URL_NOT_HTTP=CWWKS5431E: Adres URL strony wyboru medi\u00f3w spo\u0142eczno\u015bciowych [{0}] okre\u015blony przez konfiguracj\u0119 aplikacji WWW logowania spo\u0142eczno\u015bciowego nie jest \u015bcie\u017ck\u0105 wzgl\u0119dn\u0105 i nie u\u017cywa schematu HTTP ani HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.explanation=Warto\u015b\u0107 adresu URL strony wyboru medi\u00f3w spo\u0142eczno\u015bciowych musi by\u0107 \u015bcie\u017ck\u0105 wzgl\u0119dn\u0105 lub adresem URL korzystaj\u0105cym ze schematu HTTP lub HTTPS. Podany adres URL ma warto\u015b\u0107 Null lub korzysta ze schematu URL innego ni\u017c HTTP lub HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 adresu URL strony wyboru medi\u00f3w spo\u0142eczno\u015bciowych jest \u015bcie\u017ck\u0105 wzgl\u0119dn\u0105 lub \u017ce dla warto\u015bci URL u\u017cywany jest schemat HTTP lub HTTPS.
+
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG=CWWKS5432W: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce przekierowa\u0107 \u017c\u0105dania na niestandardow\u0105 stron\u0119 wyboru medi\u00f3w spo\u0142eczno\u015bciowych, poniewa\u017c konfiguracja aplikacji WWW logowania spo\u0142eczno\u015bciowego nie jest dost\u0119pna. Zostanie u\u017cyta domy\u015blna strona wyboru.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.explanation=Us\u0142uga aplikacji WWW logowania spo\u0142eczno\u015bciowego jest niedost\u0119pna. Prawdopodobnie brak konfiguracji aplikacji WWW w konfiguracji serwera.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.useraction=Sprawd\u017a, czy w konfiguracji serwera podano konfiguracj\u0119 aplikacji WWW logowania spo\u0142eczno\u015bciowego. Sprawd\u017a w dziennikach serwera, czy us\u0142uga aplikacji WWW dzia\u0142a i czy jest dost\u0119pna.
+
+# 0=Endpoint URL
+REDIRECT_NO_MATCHING_CONFIG=CWWKS5433E: \u017b\u0105dania skierowanego do [{0}] nie mo\u017cna powi\u0105za\u0107 z \u017cadn\u0105 konfiguracj\u0105 logowania spo\u0142eczno\u015bciowego.
+REDIRECT_NO_MATCHING_CONFIG.explanation=\u017b\u0105danie powinno zosta\u0107 wys\u0142ane do punktu ko\u0144cowego, kt\u00f3rego adres URL zawiera identyfikator logowania spo\u0142eczno\u015bciowego. Jednak ten adres URL nie zawiera identyfikatora znanej konfiguracji logowania spo\u0142eczno\u015bciowego.
+REDIRECT_NO_MATCHING_CONFIG.useraction=Upewnij si\u0119, \u017ce adres URL przekierowania zosta\u0142 poprawnie utworzony i \u017ce zawiera on identyfikator konfiguracji logowania spo\u0142eczno\u015bciowych, kt\u00f3re istniej\u0105 w konfiguracji serwera.
+
+# 0=Specific exception or error message
+ERROR_PROCESSING_REDIRECT=CWWKS5434E: Sk\u0142adnik logowania spo\u0142eczno\u015bciowego napotka\u0142 b\u0142\u0105d podczas przetwarzania \u017c\u0105dania przekierowania. {0}
+ERROR_PROCESSING_REDIRECT.explanation=Dostawca medi\u00f3w spo\u0142eczno\u015bciowych przekierowa\u0142 \u017c\u0105danie do tego punktu ko\u0144cowego, aby kontynuowa\u0107 uwierzytelnianie lub autoryzowanie u\u017cytkownika. Jednak nie mo\u017cna wykona\u0107 tego \u017c\u0105dania z powodu wy\u015bwietlonego w komunikacie o b\u0142\u0119dzie.
+ERROR_PROCESSING_REDIRECT.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach. 
+
+USERNAME_NOT_FOUND=CWWKS5435E: Nie mo\u017cna wyodr\u0119bni\u0107 nazwy u\u017cytkownika ze znacznika, kt\u00f3ry uzyskano z platformy serwisu spo\u0142eczno\u015bciowego.
+USERNAME_NOT_FOUND.explanation=Atrybut definiuj\u0105cy nazw\u0119 u\u017cytkownika r\u00f3\u017cni si\u0119 w zale\u017cno\u015bci od platformy serwisu spo\u0142eczno\u015bciowego. Warto\u015b\u0107 skonfigurowana dla atrybutu nazwy u\u017cytkownika (userName) mo\u017ce by\u0107 niepoprawna.
+USERNAME_NOT_FOUND.useraction=Sprawd\u017a, czy warto\u015b\u0107 atrybutu nazwy u\u017cytkownika jest zgodna z warto\u015bci\u0105 u\u017cywan\u0105 przez platform\u0119 serwisu spo\u0142eczno\u015bciowego do definiowania nazwy u\u017cytkownika.
+
+REALM_NOT_FOUND=CWWKS5436E: Nie mo\u017cna wyodr\u0119bni\u0107 dziedziny ze znacznika, kt\u00f3ry uzyskano z platformy serwisu spo\u0142eczno\u015bciowego.
+REALM_NOT_FOUND.explanation=Atrybut definiuj\u0105cy nazw\u0119 dziedziny r\u00f3\u017cni si\u0119 w zale\u017cno\u015bci od platformy serwisu spo\u0142eczno\u015bciowego. Warto\u015b\u0107 skonfigurowana dla atrybutu nazwy dziedziny (realmName) mo\u017ce by\u0107 niepoprawna.
+REALM_NOT_FOUND.useraction=Sprawd\u017a, czy warto\u015b\u0107 atrybutu realmName jest zgodna z warto\u015bci\u0105 u\u017cywan\u0105 przez platform\u0119 serwisu spo\u0142eczno\u015bciowego do definiowania dziedziny.
+
+# "subject" refers to a Java Authentication and Authorization Service (JAAS) subject
+# 0=socialLogin element ID, 1=Error message (if present)
+TWITTER_ERROR_CREATING_RESULT=CWWKS5437E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce utworzy\u0107 podmiotu dla u\u017cytkownika przy u\u017cyciu informacji z profilu serwisu Twitter i konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+TWITTER_ERROR_CREATING_RESULT.explanation=By\u0107 mo\u017ce brak niekt\u00f3rych informacji profilowych u\u017cywanych do tworzenia podmiotu dla u\u017cytkownika lub zosta\u0142y one zniekszta\u0142cone.
+TWITTER_ERROR_CREATING_RESULT.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN=CWWKS5438E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce utworzy\u0107 zaszyfrowanego znacznika dost\u0119pu dla konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, gdy funkcja u\u017cywa\u0142a jednego z algorytm\u00f3w szyfrowania do utworzenia szyfrowanego znacznika dost\u0119pu na podstawie podanego znacznika. Dok\u0142adniejsze informacje o przyczynie braku mo\u017cliwo\u015bci utworzenia szyfrowanego znacznika powinien zawiera\u0107 komunikat.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL=CWWKS5439E: Znacznik dost\u0119pu udost\u0119pniony funkcji logowania spo\u0142eczno\u015bciowego ma warto\u015b\u0107 NULL, wi\u0119c ten znacznik nie mo\u017ce zosta\u0107 zaszyfrowany.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.explanation=Nie mo\u017cna zaszyfrowa\u0107 znacznika dost\u0119pu o warto\u015bci NULL.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=Udost\u0119pnij do zaszyfrowania znacznik dost\u0119pu o warto\u015bci innej ni\u017c NULL.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce zaszyfrowa\u0107 podanego znacznika dost\u0119pu przy u\u017cyciu klucza publicznego okre\u015blonego przez konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=Klucz publiczny u\u017cywany do szyfrowania znacznika dost\u0119pu mo\u017ce by\u0107 zniekszta\u0142cony lub niepoprawny albo wymagany algorytm szyfrowania RSA jest niedost\u0119pny.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Sprawd\u017a, czy klucz publiczny skonfigurowany dla okre\u015blonej konfiguracji logowania w serwisach spo\u0142eczno\u015bciowych jest poprawny i mo\u017cna go u\u017cywa\u0107 do szyfrowania RSA.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES=CWWKS5441E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce zaszyfrowa\u0107 podanego znacznika dost\u0119pu przy u\u017cyciu klucza tajnego podanego w konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.explanation=Klucz tajny u\u017cywany do szyfrowania znacznika dost\u0119pu mo\u017ce by\u0107 zniekszta\u0142cony lub niepoprawny. M\u00f3g\u0142 wyst\u0105pi\u0107 b\u0142\u0105d podczas pobierania wektora inicjowania algorytmu szyfrowania lub wymagany algorytm szyfrowania AES jest niedost\u0119pny.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.useraction=Sprawd\u017a, czy klucz tajny skonfigurowany dla okre\u015blonej konfiguracji logowania w serwisach spo\u0142eczno\u015bciowych wskazanej w komunikacie jest poprawny i mo\u017cna go u\u017cywa\u0107 do szyfrowania AES.
+
+# 0=socialLogin element ID
+TWITTER_STATE_MISSING=CWWKS5442E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce wykona\u0107 \u017c\u0105dania za pomoc\u0105 konfiguracji logowania spo\u0142eczno\u015bciowego [{0}], poniewa\u017c brakuje warto\u015bci stanu.
+TWITTER_STATE_MISSING.explanation=Warto\u015b\u0107 stanu jest generowana dla ka\u017cdego unikalnego \u017c\u0105dania uwierzytelniania i przechowywana w informacji cookie. Warto\u015b\u0107 ta jest wymagana do weryfikacji i przetwarzania ka\u017cdego \u017c\u0105dania uwierzytelniania. Informacja cookie dotycz\u0105ca stanu nie zosta\u0142a utworzona lub usuni\u0119to j\u0105.
+TWITTER_STATE_MISSING.useraction=Sprawd\u017a, czy warto\u015b\u0107 stanu zosta\u0142a zapisana w informacji cookie i czy nie usuni\u0119to informacji cookie.
+
+# 0=socialLogin element ID
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY=CWWKS5443E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce wykona\u0107 \u017c\u0105dania za pomoc\u0105 konfiguracji logowania spo\u0142eczno\u015bciowego [{0}], poniewa\u017c warto\u015b\u0107 oryginalnego adresu URL \u017c\u0105dania nie istnieje lub jest pusta. Warto\u015b\u0107 oryginalnego adresu URL \u017c\u0105dania musi by\u0107 obecna, aby przekierowa\u0107 u\u017cytkownika z powrotem do chronionego zasobu, kt\u00f3ry by\u0142 pierwotnie \u017c\u0105dany.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.explanation=Oryginalny adres URL \u017c\u0105dania jest zapisywany w informacji cookie na pocz\u0105tku procesu uwierzytelniania. Brak informacji cookie lub jej warto\u015b\u0107 jest pusta.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.useraction=Sprawd\u017a, czy oryginalny adres URL \u017c\u0105dania zosta\u0142 zapisany w informacji cookie i czy nie usuni\u0119to informacji cookie.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA=CWWKS5444E: Znacznika dost\u0119pu podanego dla funkcji logowania spo\u0142eczno\u015bciowego nie mo\u017cna zdeszyfrowa\u0107 za pomoc\u0105 klucza prywatnego podanego w konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwi\u0142 zdeszyfrowanie znacznika dost\u0119pu za pomoc\u0105 algorytmu szyfrowania RSA. Klucz prywatny u\u017cywany do zdeszyfrowania znacznika dost\u0119pu mo\u017ce by\u0107 zniekszta\u0142cony lub niepoprawny, zaszyfrowany znacznik mo\u017ce nie by\u0107 poprawnie sformatowany albo wymagany algorytm szyfrowania RSA jest niedost\u0119pny.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.useraction=Sprawd\u017a, czy konfiguracja logowania spo\u0142eczno\u015bciowego okre\u015bla klucz prywatny, kt\u00f3ry ma poprawn\u0105 konfiguracj\u0119 i mo\u017ce by\u0107 u\u017cywany do deszyfrowania za pomoc\u0105 algorytmu RSA. Upewnij si\u0119, \u017ce zaszyfrowany znacznik jest poprawnie sformatowany, a algorytm deszyfrowania jest dost\u0119pny.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES=CWWKS5445E: Znacznika dost\u0119pu podanego dla funkcji logowania spo\u0142eczno\u015bciowego nie mo\u017cna zdeszyfrowa\u0107 za pomoc\u0105 klucza tajnego podanego w konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwi\u0142 zdeszyfrowanie znacznika dost\u0119pu za pomoc\u0105 algorytmu szyfrowania AES. Klucz tajny u\u017cywany do deszyfrowania znacznika dost\u0119pu mo\u017ce by\u0107 zniekszta\u0142cony lub niepoprawny. Zaszyfrowany znacznik mo\u017ce nie by\u0107 poprawnie sformatowany. M\u00f3g\u0142 wyst\u0105pi\u0107 b\u0142\u0105d podczas pobierania wektora inicjowania algorytmu deszyfrowania lub wymagany algorytm szyfrowania AES jest niedost\u0119pny.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.useraction=Sprawd\u017a, czy konfiguracja logowania spo\u0142eczno\u015bciowego okre\u015bla klucz tajny, kt\u00f3ry ma poprawn\u0105 konfiguracj\u0119 i mo\u017ce by\u0107 u\u017cywany do deszyfrowania za pomoc\u0105 algorytmu AES. Upewnij si\u0119, \u017ce zaszyfrowany znacznik jest poprawnie sformatowany, a algorytm deszyfrowania jest dost\u0119pny.
+
+# Intended to be a child of ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA or ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES
+VALUE_NOT_HEXADECIMAL=CWWKS5446E: Podana warto\u015b\u0107 nie ma formatu szesnastkowego, dlatego nie mo\u017cna jej zdekodowa\u0107.
+VALUE_NOT_HEXADECIMAL.explanation=Warto\u015b\u0107 dla zaszyfrowanego znacznika powinna by\u0107 zakodowana w formacie szesnastkowym.
+VALUE_NOT_HEXADECIMAL.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 zosta\u0142a poprawnie zakodowana w formacie szesnastkowym.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT=CWWKS5447E: Nie mo\u017cna przekierowa\u0107 \u017c\u0105dania do punktu ko\u0144cowego autoryzacji, kt\u00f3ry jest skonfigurowany na potrzeby konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.explanation=Prawdopodobnie wyst\u0105pi\u0142 b\u0142\u0105d podczas budowy adresu URL przekierowania punktu ko\u0144cowego autoryzacji. Mo\u017cliwe te\u017c, \u017ce wyst\u0105pi\u0142 b\u0142\u0105d podczas przekierowywania \u017c\u0105dania.
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Upewnij si\u0119, \u017ce adres URL przekierowania dla punktu ko\u0144cowego autoryzacji jest poprawnym adresem URL. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'state', OAuth
+# 0=socialLogin element ID
+STATE_IS_NULL=CWWKS5448E: Nie mo\u017cna utworzy\u0107 poprawnego \u0142a\u0144cucha zapytania dla punktu ko\u0144cowego autoryzacji konfiguracji logowania spo\u0142eczno\u015bciowego [{0}], poniewa\u017c podan\u0105 warto\u015bci\u0105 stanu jest warto\u015b\u0107 NULL.
+STATE_IS_NULL.explanation=Parametr state jest wymagany w \u017c\u0105daniach do punkt\u00f3w ko\u0144cowych autoryzacji OAuth. Nie mo\u017cna utworzy\u0107 poprawnego \u017c\u0105dania punktu ko\u0144cowego autoryzacji bez warto\u015bci stanu.
+STATE_IS_NULL.useraction=Sprawd\u017a, czy dla tego \u017c\u0105dania wygenerowano warto\u015b\u0107 stanu r\u00f3\u017cn\u0105 od warto\u015bci NULL.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'redirect_uri', OAuth
+# 0=socialLogin element ID
+REDIRECT_URL_IS_NULL=CWWKS5449E: Nie mo\u017cna utworzy\u0107 poprawnego \u0142a\u0144cucha zapytania dla punktu ko\u0144cowego autoryzacji konfiguracji logowania spo\u0142eczno\u015bciowego [{0}], poniewa\u017c podan\u0105 warto\u015bci\u0105 identyfikatora URI przekierowania jest warto\u015b\u0107 NULL.
+REDIRECT_URL_IS_NULL.explanation=Parametr redirect_uri jest wymagany w \u017c\u0105daniach do punkt\u00f3w ko\u0144cowych autoryzacji OAuth. Nie mo\u017cna utworzy\u0107 poprawnego \u017c\u0105dania punktu ko\u0144cowego autoryzacji bez warto\u015bci adresu URL przekierowania.
+REDIRECT_URL_IS_NULL.useraction=Sprawd\u017a, czy dla tego \u017c\u0105dania utworzono warto\u015b\u0107 identyfikatora URI przekierowania r\u00f3\u017cn\u0105 od warto\u015bci NULL.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_SSL_CONTEXT=CWWKS5450E: \u017b\u0105danie nie mo\u017ce wywo\u0142a\u0107 punktu ko\u0144cowego znacznika, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania informacji protoko\u0142u SSL dotycz\u0105cych konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+AUTH_CODE_ERROR_SSL_CONTEXT.explanation=\u017b\u0105danie zawiera kod autoryzacji, kt\u00f3ry jest u\u017cywany w celu uzyskania informacji o u\u017cytkowniku z punktu ko\u0144cowego znacznika OAuth. Informacje protoko\u0142u SSL s\u0105 wymagane do wywo\u0142ania punktu ko\u0144cowego znacznika. Wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania informacji protoko\u0142u SSL, dlatego nie mo\u017cna wywo\u0142a\u0107 punktu ko\u0144cowego znacznika.
+AUTH_CODE_ERROR_SSL_CONTEXT.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a, czy podana konfiguracja logowania spo\u0142eczno\u015bciowego odwo\u0142uje si\u0119 do poprawnej konfiguracji protoko\u0142u SSL, lub upewnij si\u0119, \u017ce domy\u015blna konfiguracja protoko\u0142u SSL dla serwera jest poprawnie skonfigurowana.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_GETTING_TOKENS=CWWKS5451E: Funkcja logowania spo\u0142eczno\u015bciowego napotka\u0142a problem podczas uzyskiwania informacji o znaczniku z punktu ko\u0144cowego znacznika, kt\u00f3ry jest skonfigurowany na potrzeby konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+AUTH_CODE_ERROR_GETTING_TOKENS.explanation=Funkcja logowania spo\u0142eczno\u015bciowego musi skierowa\u0107 \u017c\u0105danie do punktu ko\u0144cowego znacznika, aby uzyska\u0107 znacznik dost\u0119pu i opcjonalny znacznik identyfikatora. Adres URL punktu ko\u0144cowego znacznika mo\u017ce by\u0107 zniekszta\u0142cony lub nie istnieje, odpowied\u017a z punktu ko\u0144cowego znacznika mo\u017ce nie by\u0107 poprawnie sformatowana lub wyst\u0105pi\u0142 b\u0142\u0105d podczas wywo\u0142ywania punktu ko\u0144cowego znacznika.
+AUTH_CODE_ERROR_GETTING_TOKENS.useraction=Sprawd\u017a, czy adres URL punktu ko\u0144cowego znacznika skonfigurowany na potrzeby podanej konfiguracji logowania spo\u0142eczno\u015bciowego jest poprawnym adresem URL. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=socialLogin element ID
+USER_API_RESPONSE_NULL_OR_EMPTY=CWWKS5452E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce uwierzytelni\u0107 u\u017cytkownika, poniewa\u017c odpowied\u017a z interfejsu API u\u017cytkownika skonfigurowanego na potrzeby konfiguracji logowania spo\u0142eczno\u015bciowego [{0}] ma warto\u015b\u0107 NULL lub jest pusta.
+USER_API_RESPONSE_NULL_OR_EMPTY.explanation=Ze skonfigurowanego interfejsu API u\u017cytkownika musz\u0105 zosta\u0107 zwr\u00f3cone dane u\u017cytkownika. Nie mo\u017cna uwierzytelni\u0107 u\u017cytkownika bez danych u\u017cytkownika pochodz\u0105cych z interfejsu API u\u017cytkownika.
+USER_API_RESPONSE_NULL_OR_EMPTY.useraction=Upewnij si\u0119, \u017ce co najmniej jeden interfejs API u\u017cytkownika jest skonfigurowany na potrzeby podanej konfiguracji logowania spo\u0142eczno\u015bciowego. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_FAILED_TO_CREATE_JWT=CWWKS5453E: Funkcja logowania spo\u0142eczno\u015bciowego napotka\u0142a problem podczas tworzenia znacznika JWT (JSON Web Token) z podanego znacznika dost\u0119pu na potrzeby konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+AUTH_CODE_FAILED_TO_CREATE_JWT.explanation=By\u0107 mo\u017ce wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania informacji o u\u017cytkowniku za pomoc\u0105 podanego znacznika dost\u0119pu lub m\u00f3g\u0142 wyst\u0105pi\u0107 b\u0142\u0105d podczas budowania znacznika JWT z podanego identyfikatora znacznika.
+AUTH_CODE_FAILED_TO_CREATE_JWT.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_CREATING_RESULT=CWWKS5454E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce utworzy\u0107 podmiotu dla u\u017cytkownika przy u\u017cyciu podanego kodu autoryzacji za pomoc\u0105 konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+AUTH_CODE_ERROR_CREATING_RESULT.explanation=By\u0107 mo\u017ce brak niekt\u00f3rych danych u\u017cywanych do tworzenia podmiotu dla podanego u\u017cytkownika lub zosta\u0142y one zniekszta\u0142cone.
+AUTH_CODE_ERROR_CREATING_RESULT.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=socialLogin element ID, 1=User name
+ACCESS_TOKEN_MISSING=CWWKS5455E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce uwierzytelni\u0107 u\u017cytkownika [{0}], poniewa\u017c nie mo\u017cna znale\u017a\u0107 znacznika dost\u0119pu.
+ACCESS_TOKEN_MISSING.explanation=Nie mo\u017cna utworzy\u0107 podmiotu dla u\u017cytkownika, poniewa\u017c brakuje znacznika dost\u0119pu. Znacznik dost\u0119pu powinien by\u0107 zawarty w danych, kt\u00f3re zosta\u0142y zwr\u00f3cone z serwisu spo\u0142eczno\u015bciowego.
+ACCESS_TOKEN_MISSING.useraction=Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach. Sprawd\u017a, czy znacznik dost\u0119pu zosta\u0142 zwr\u00f3cony z serwisu spo\u0142eczno\u015bciowego.
+
+USER_PROFILE_ACCESS_TOKEN_NULL=CWWKS5456E: Nie mo\u017cna utworzy\u0107 profilu u\u017cytkownika, poniewa\u017c podany znacznik dost\u0119pu ma warto\u015b\u0107 NULL.
+USER_PROFILE_ACCESS_TOKEN_NULL.explanation=Nale\u017cy poda\u0107 poprawny znacznik dost\u0119pu, aby pobra\u0107 konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego, kt\u00f3ra jest powi\u0105zana ze znacznikiem dost\u0119pu.
+USER_PROFILE_ACCESS_TOKEN_NULL.useraction=Podaj znacznik dost\u0119pu, aby utworzy\u0107 profil u\u017cytkownika.
+
+ACCESS_TOKEN_NOT_IN_CACHE=CWWKS5457E: Nie mo\u017cna utworzy\u0107 profilu u\u017cytkownika, poniewa\u017c podany znacznik dost\u0119pu nie zosta\u0142 znaleziony w pami\u0119ci podr\u0119cznej znacznik\u00f3w.
+ACCESS_TOKEN_NOT_IN_CACHE.explanation=Obliczony klucz znacznika mo\u017ce by\u0107 zniekszta\u0142cony lub znacznik dost\u0119pu nie zosta\u0142 u\u017cyty w ostatnim \u017c\u0105daniu uwierzytelniania. Znacznik m\u00f3g\u0142 zosta\u0107 usuni\u0119ty z pami\u0119ci podr\u0119cznej, poniewa\u017c by\u0142 zbyt stary.
+ACCESS_TOKEN_NOT_IN_CACHE.useraction=Upewnij si\u0119, \u017ce podany znacznik dost\u0119pu jest poprawny i jest zgodny ze znacznikiem dost\u0119pu, kt\u00f3ry zosta\u0142 u\u017cyty w pomy\u015blnie uwierzytelnionym \u017c\u0105daniu. Sprawd\u017a, czy pami\u0119\u0107 podr\u0119czna znacznik\u00f3w nie zosta\u0142a wyczyszczona od czasu dodania znacznika.
+
+# 0=socialLogin element ID
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND=CWWKS5458E: Nie mo\u017cna znale\u017a\u0107 konfiguracji logowania spo\u0142eczno\u015bciowego [{0}], kt\u00f3ra jest powi\u0105zana ze znacznikiem znajduj\u0105cym si\u0119 w pami\u0119ci podr\u0119cznej.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.explanation=Podanej us\u0142ugi logowania spo\u0142eczno\u015bciowego nie mo\u017cna znale\u017a\u0107 w konfiguracji serwera. Identyfikator konfiguracji logowania spo\u0142eczno\u015bciowego, kt\u00f3ry jest powi\u0105zany ze znacznikiem dost\u0119pu, nie istnieje lub podana konfiguracja logowania spo\u0142eczno\u015bciowego nie istnieje.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce konfiguracja logowania spo\u0142eczno\u015bciowego o podanym identyfikatorze istnieje w konfiguracji serwera. Upewnij si\u0119, \u017ce konfiguracja logowania spo\u0142eczno\u015bciowego zosta\u0142a pomy\u015blnie za\u0142adowana.
+
+# 0=socialLogin element ID
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN=CWWKS5459E: Nie mo\u017cna znale\u017a\u0107 znacznika dost\u0119pu w zestawie znacznik\u00f3w udost\u0119pnionych funkcji logowania spo\u0142eczno\u015bciowego.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.explanation=Znacznik dost\u0119pu musi zosta\u0107 podany, aby utworzy\u0107 profil u\u017cytkownika. Znacznik mo\u017ce nie znajdowa\u0107 si\u0119 w pami\u0119ci podr\u0119cznej znacznik\u00f3w lub mo\u017ce go nie by\u0107 w informacjach o u\u017cytkowniku, kt\u00f3re zosta\u0142y zwr\u00f3cone z serwisu spo\u0142eczno\u015bciowego.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.useraction=Sprawd\u017a, czy znacznik dost\u0119pu by\u0142 zawarty w zestawie danych zwr\u00f3conych z serwisu spo\u0142eczno\u015bciowego. Sprawd\u017a, czy obiekt znacznika okre\u015bla\u0142 poprawny znacznik dost\u0119pu w czasie, gdy obiekt znacznika zosta\u0142 zapisany w pami\u0119ci podr\u0119cznej.
+
+# 0=socialLogin element ID
+NO_USER_API_CONFIGS_PRESENT=CWWKS5460W: Nie okre\u015blono konfiguracji interfejsu API u\u017cytkownika dla konfiguracji logowania spo\u0142eczno\u015bciowego [{0}].
+NO_USER_API_CONFIGS_PRESENT.explanation=W celu uzyskania informacji o u\u017cytkowniku nale\u017cy okre\u015bli\u0107 co najmniej jedn\u0105 konfiguracj\u0119 interfejsu API u\u017cytkownika.
+NO_USER_API_CONFIGS_PRESENT.useraction=Upewnij si\u0119, \u017ce podana konfiguracja logowania spo\u0142eczno\u015bciowego zawiera co najmniej jedn\u0105 konfiguracj\u0119 interfejsu API u\u017cytkownika.
+
+# 0=User API string, 1=socialLogin element ID, 2=Error message
+ERROR_GETTING_USER_API_RESPONSE=CWWKS5461E: Funkcja logowania spo\u0142eczno\u015bciowego napotka\u0142a b\u0142\u0105d podczas pobierania informacji o u\u017cytkowniku z interfejsu API u\u017cytkownika [{0}], kt\u00f3ry jest skonfigurowany na potrzeby konfiguracji logowania spo\u0142eczno\u015bciowego [{1}]. {2}
+ERROR_GETTING_USER_API_RESPONSE.explanation=Podany interfejs API u\u017cytkownika mo\u017ce nie by\u0107 poprawnie skonfigurowany. By\u0107 mo\u017ce istnieje problem zwi\u0105zany ze znacznikiem dost\u0119pu, kt\u00f3ry zosta\u0142 u\u017cyty do wywo\u0142ania interfejsu API u\u017cytkownika. Odpowied\u017a z interfejsu API u\u017cytkownika mo\u017ce nie by\u0107 w oczekiwanym formacie.
+ERROR_GETTING_USER_API_RESPONSE.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+TOKEN_ENDPOINT_NULL_OR_EMPTY=CWWKS5462E: Warto\u015b\u0107 adresu URL punktu ko\u0144cowego znacznika jest pusta lub ma warto\u015b\u0107 NULL.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.explanation=Aby uzyska\u0107 znaczniki dost\u0119pu lub znaczniki identyfikatora dla u\u017cytkownik\u00f3w, nale\u017cy poda\u0107 poprawny adres URL punktu ko\u0144cowego znacznika.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.useraction=Upewnij si\u0119, \u017ce dla ka\u017cdej konfiguracji logowania spo\u0142eczno\u015bciowego skonfigurowany jest poprawny adres URL punktu ko\u0144cowego znacznika.
+
+# Intended to be a child of AUTH_CODE_ERROR_SSL_CONTEXT
+# 0=socialLogin element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5463E: Nie mo\u017cna za\u0142adowa\u0107 kontekstu protoko\u0142u SSL dla konfiguracji logowania spo\u0142eczno\u015bciowego [{0}]. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=Konfiguracja protoko\u0142u SSL, kt\u00f3ra jest u\u017cywana przez podan\u0105 konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego, mo\u017ce nie istnie\u0107 lub mo\u017ce by\u0107 niepoprawna.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Sprawd\u017a dok\u0142adno\u015b\u0107 informacji o protokole SSL dla podanej konfiguracji logowania spo\u0142eczno\u015bciowego. Je\u015bli w konfiguracji logowania spo\u0142eczno\u015bciowego okre\u015blony jest atrybut sslRef konfiguracji, upewnij si\u0119, \u017ce odpowiednia konfiguracja protoko\u0142u SSL jest poprawna. W przeciwnym razie sprawd\u017a, czy domy\u015blna konfiguracja protoko\u0142u SSL dla serwera jest poprawnie skonfigurowana.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=socialLogin element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5464E: Funkcja konsumenta znacznika JWT (JSON Web Token) mo\u017ce nie by\u0107 dost\u0119pna dla konfiguracji logowania spo\u0142eczno\u015bciowego [{0}], poniewa\u017c nie mo\u017cna znale\u017a\u0107 us\u0142ugi dla podanej konfiguracji logowania spo\u0142eczno\u015bciowego.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Podana konfiguracja logowania spo\u0142eczno\u015bciowego mo\u017ce nie by\u0107 jeszcze dost\u0119pna lub us\u0142uga dla konfiguracji logowania spo\u0142eczno\u015bciowego zosta\u0142a zatrzymana.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Sprawd\u017a, czy podana konfiguracja logowania spo\u0142eczno\u015bciowego jest skonfigurowana i dost\u0119pna.
+
+# 0=Context path string from webapp configuration
+INVALID_CONTEXT_PATH_CHARS=CWWKS5465E: \u015acie\u017cka kontekstu [{0}] okre\u015blona przez konfiguracj\u0119 aplikacji WWW logowania spo\u0142eczno\u015bciowego zawiera znaki, kt\u00f3rych nie mo\u017cna u\u017cywa\u0107 w \u015bcie\u017cce poprawnego identyfikatora URI. Funkcja logowania spo\u0142eczno\u015bciowego nie b\u0119dzie dzia\u0142a\u0107 z niepoprawn\u0105 \u015bcie\u017ck\u0105 kontekstu.
+INVALID_CONTEXT_PATH_CHARS.explanation=\u015acie\u017cka kontekstu, kt\u00f3ra jest konfigurowana przez konfiguracj\u0119 aplikacji WWW logowania spo\u0142eczno\u015bciowego, nie jest poprawnym \u0142a\u0144cuchem \u015bcie\u017cki identyfikatora URI. \u015acie\u017cka kontekstu musi by\u0107 zgodna z RFC 3986 (https://tools.ietf.org/html/rfc3986) i mo\u017ce zawiera\u0107 tylko niekt\u00f3re znaki.
+INVALID_CONTEXT_PATH_CHARS.useraction=Upewnij si\u0119, \u017ce skonfigurowana \u015bcie\u017cka kontekstu zawiera tylko te znaki, kt\u00f3re s\u0105 dozwolone przez RFC 3986 dla komponent\u00f3w \u015bcie\u017cki identyfikatora URI.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5466E: Nie mo\u017cna za\u0142adowa\u0107 informacji uzupe\u0142niaj\u0105cych dotycz\u0105cych protoko\u0142u SSL dla funkcji logowania spo\u0142eczno\u015bciowego, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania w\u0142a\u015bciwo\u015bci protoko\u0142u SSL. {0}
+ERROR_LOADING_SSL_PROPS.explanation=Konfiguracja protoko\u0142u SSL, kt\u00f3ra jest u\u017cywana przez konfiguracj\u0119 logowania spo\u0142eczno\u015bciowego, mo\u017ce by\u0107 niedost\u0119pna lub wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania w\u0142a\u015bciwo\u015bci dla konfiguracji SSL.
+ERROR_LOADING_SSL_PROPS.useraction=Sprawd\u017a, czy konfiguracja protoko\u0142u SSL u\u017cywana przez us\u0142ug\u0119 logowania spo\u0142eczno\u015bciowego jest poprawnie okre\u015blona i zosta\u0142a pomy\u015blnie uruchomiona.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5467E: Nie mo\u017cna za\u0142adowa\u0107 kluczy publicznych z magazynu kluczy, poniewa\u017c nie mo\u017cna znale\u017a\u0107 us\u0142ugi magazynu kluczy.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=Us\u0142uga magazynu kluczy dla funkcji logowania spo\u0142eczno\u015bciowego mo\u017ce nie by\u0107 dost\u0119pna.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Sprawd\u017a, czy us\u0142uga magazynu kluczy u\u017cywana przez us\u0142ug\u0119 logowania spo\u0142eczno\u015bciowego jest poprawnie okre\u015blona i zosta\u0142a pomy\u015blnie uruchomiona.
+
+# 0=Truststore ID, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5468E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania zaufanych certyfikat\u00f3w z magazynu zaufanych certyfikat\u00f3w [{0}]. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=Magazyn zaufanych certyfikat\u00f3w m\u00f3g\u0142 nie zosta\u0107 jeszcze zainicjowany albo podany magazyn zaufanych certyfikat\u00f3w nie istnieje w konfiguracji serwera.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Sprawd\u017a, czy magazyn zaufanych certyfikat\u00f3w o podanym identyfikatorze istnieje w konfiguracji serwera i zosta\u0142 pomy\u015blnie przetworzony.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5469E: Certyfikatu o aliasie [{0}] nie mo\u017cna za\u0142adowa\u0107 z magazynu zaufanych certyfikat\u00f3w [{1}]. {2}
+ERROR_LOADING_CERTIFICATE.explanation=Certyfikat o podanym aliasie mo\u017ce by\u0107 nieobecny w magazynie zaufanych certyfikat\u00f3w, magazyn zaufanych certyfikat\u00f3w mo\u017ce nie by\u0107 jeszcze zainicjowany lub magazyn zaufanych certyfikat\u00f3w nie istnieje w konfiguracji serwera.
+ERROR_LOADING_CERTIFICATE.useraction=Sprawd\u017a, czy certyfikat o podanym aliasie znajduje si\u0119 w magazynie zaufanych certyfikat\u00f3w. Sprawd\u017a, czy magazyn zaufanych certyfikat\u00f3w o podanym identyfikatorze istnieje w konfiguracji serwera i zosta\u0142 pomy\u015blnie przetworzony.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_GETTING_PUBLIC_KEYS=CWWKS5470E: Certyfikatu o aliasie [{0}] nie mo\u017cna za\u0142adowa\u0107 z magazynu zaufanych certyfikat\u00f3w [{1}], poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas pobierania kluczy publicznych z magazynu zaufanych certyfikat\u00f3w. {2}
+ERROR_LOADING_GETTING_PUBLIC_KEYS.explanation=Us\u0142uga magazynu kluczy mo\u017ce nie by\u0107 dost\u0119pna, nie mo\u017cna za\u0142adowa\u0107 certyfikat\u00f3w znajduj\u0105cych si\u0119 w magazynie zaufanych certyfikat\u00f3w lub nie mo\u017cna za\u0142adowa\u0107 certyfikatu o podanym aliasie.
+ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=Private key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: Klucza prywatnego o aliasie [{0}] nie mo\u017cna za\u0142adowa\u0107 z magazynu kluczy [{1}]. {2}
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=Klucz prywatny o podanym aliasie mo\u017ce by\u0107 nieobecny w magazynie kluczy, klucz prywatny mo\u017ce nie by\u0107 poprawnego typu, magazyn kluczy mo\u017ce nie by\u0107 jeszcze zainicjowany lub magazyn kluczy nie istnieje w konfiguracji serwera.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Sprawd\u017a, czy klucz prywatny o podanym aliasie znajduje si\u0119 w magazynie kluczy i czy klucz prywatny jest poprawnego typu. Sprawd\u017a, czy magazyn kluczy o podanym identyfikatorze istnieje w konfiguracji serwera i zosta\u0142 pomy\u015blnie przetworzony.
+
+# 0=Keystore ID, 1=Exception message
+ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: Klucza prywatnego nie mo\u017cna za\u0142adowa\u0107 z magazynu kluczy [{0}]. {1}
+ERROR_LOADING_PRIVATE_KEY.explanation=Klucz prywatny, kt\u00f3ry zosta\u0142 wybrany z magazynu kluczy, mo\u017ce nie by\u0107 poprawnego typu, magazyn kluczy mo\u017ce nie by\u0107 jeszcze zainicjowany lub magazyn kluczy nie istnieje w konfiguracji serwera.
+ERROR_LOADING_PRIVATE_KEY.useraction=Upewnij si\u0119, \u017ce klucze prywatne w magazynie kluczy maj\u0105 poprawny typ. Sprawd\u017a, czy magazyn kluczy o podanym identyfikatorze istnieje w konfiguracji serwera i zosta\u0142 pomy\u015blnie przetworzony.
+
+# 0=Secret key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SECRET_KEY=CWWKS5473E: Klucza tajnego o aliasie [{0}] nie mo\u017cna za\u0142adowa\u0107 z magazynu kluczy [{1}]. {2}
+ERROR_LOADING_SECRET_KEY.explanation=Klucz tajny o podanym aliasie mo\u017ce by\u0107 nieobecny w magazynie kluczy, klucz tajny mo\u017ce nie by\u0107 poprawnego typu, magazyn kluczy mo\u017ce nie by\u0107 jeszcze zainicjowany lub magazyn kluczy nie istnieje w konfiguracji serwera.
+ERROR_LOADING_SECRET_KEY.useraction=Sprawd\u017a, czy klucz tajny o podanym aliasie znajduje si\u0119 w magazynie kluczy i czy klucz tajny jest poprawnego typu. Sprawd\u017a, czy magazyn kluczy o podanym identyfikatorze istnieje w konfiguracji serwera i zosta\u0142 pomy\u015blnie przetworzony.
+
+# 0=HttpResponse entity
+ERROR_PARSING_RESPONSE_ENTITY=CWWKS5474E: Nie mo\u017cna wyodr\u0119bni\u0107 znacznik\u00f3w z odpowiedzi, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania odpowiedzi. [{0}]
+ERROR_PARSING_RESPONSE_ENTITY.explanation=Odpowied\u017a z punktu ko\u0144cowego serwisu spo\u0142eczno\u015bciowego mo\u017ce nie by\u0107 w oczekiwanym formacie. By\u0107 mo\u017ce wyst\u0105pi\u0142 b\u0142\u0105d podczas wykonywania odpowiedzi lub serwis spo\u0142eczno\u015bciowy zwr\u00f3ci\u0142 b\u0142\u0105d.
+ERROR_PARSING_RESPONSE_ENTITY.useraction=Sprawd\u017a tre\u015b\u0107 odpowiedzi z serwisu spo\u0142eczno\u015bciowego. Sprawd\u017a, czy tre\u015b\u0107 odpowiedzi jest poprawnie sformatowana i odpowied\u017a nie zawiera komunikatu o b\u0142\u0119dzie.
+
+NULL_OR_EMPTY_REQUEST_URL=CWWKS5475E: Nie mo\u017cna wykona\u0107 \u017c\u0105dania HTTP, poniewa\u017c podany adres URL ma warto\u015b\u0107 NULL lub jest pusty.
+NULL_OR_EMPTY_REQUEST_URL.explanation=Nie mo\u017cna wykona\u0107 \u017c\u0105dania HTTP z adresem URL o warto\u015bci NULL lub pustym. By\u0107 mo\u017ce brakuje adresu URL punktu ko\u0144cowego w konfiguracji logowania spo\u0142eczno\u015bciowego lub adres jest pusty.
+NULL_OR_EMPTY_REQUEST_URL.useraction=Sprawd\u017a, czy ka\u017cdy adres URL punktu ko\u0144cowego, kt\u00f3ry jest podany w konfiguracji logowania spo\u0142eczno\u015bciowego, jest poprawnym adresem URL.
+
+# Do not translate "POST"
+# 0=URL to which the request was submitted, 1=Error message
+ERROR_EXECUTING_REQUEST=CWWKS5476E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105dania do podanego adresu URL [{0}]. {1}
+ERROR_EXECUTING_REQUEST.explanation=By\u0107 mo\u017ce podany adres URL jest zniekszta\u0142cony lub zawiera niepoprawny protok\u00f3\u0142 albo obs\u0142ug\u0119 \u017c\u0105dania uniemo\u017cliwi\u0142 b\u0142\u0105d.
+ERROR_EXECUTING_REQUEST.useraction=Bardziej szczeg\u00f3\u0142owy opis b\u0142\u0119du zawiera komunikat. Sprawd\u017a, czy adres URL jest poprawnie zbudowany i nie ma \u017cadnych problem\u00f3w z po\u0142\u0105czeniem z serwerem docelowym.
+
+# 0=Response status
+RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: Nie mo\u017cna znale\u017a\u0107 statusu odpowiedzi lub odpowied\u017a zwr\u00f3ci\u0142a b\u0142\u0105d. Status odpowiedzi: [{0}].
+RESPONSE_STATUS_MISSING_OR_ERROR.explanation=\u017b\u0105danie prawdopodobnie nie powiod\u0142o si\u0119, poniewa\u017c nie by\u0142o autoryzowane lub brakowa\u0142o w nim informacji, takich jak wymagany parametr \u017c\u0105dania albo nag\u0142\u00f3wek. Je\u015bli status odpowiedzi nie jest r\u00f3wny NULL, kod statusu i przyczyna odpowiedzi s\u0105 podane w komunikacie.
+RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Sprawd\u017a kod statusu odpowiedzi w komunikacie (je\u015bli istnieje). Sprawd\u017a, czy wszystkie wymagane parametry i nag\u0142\u00f3wki s\u0105 zawarte w \u017c\u0105daniu.
+
+# 0=URL to which the request was submitted, 1=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: \u017b\u0105danie do punktu ko\u0144cowego [{0}] nie powiod\u0142o si\u0119. B\u0142\u0105d: {1}
+RESPONSE_STATUS_UNSUCCESSFUL.explanation=\u017b\u0105danie prawdopodobnie nie powiod\u0142o si\u0119, poniewa\u017c nie by\u0142o autoryzowane lub brakowa\u0142o w nim informacji, takich jak wymagany parametr \u017c\u0105dania albo nag\u0142\u00f3wek. \u017b\u0105danie mog\u0142o zosta\u0107 skierowane do niew\u0142a\u015bciwego punktu ko\u0144cowego.
+RESPONSE_STATUS_UNSUCCESSFUL.useraction=Sprawd\u017a, czy \u017c\u0105danie zosta\u0142o skierowane do poprawnego punktu ko\u0144cowego. Sprawd\u017a, czy wszystkie wymagane parametry i nag\u0142\u00f3wki s\u0105 zawarte w \u017c\u0105daniu.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS5479E: Atrybut konfiguracji [{0}], kt\u00f3ry jest wymagany w konfiguracji logowania spo\u0142eczno\u015bciowego [{1}], nie istnieje lub jest pusty. Upewnij si\u0119, \u017ce atrybut nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Podany atrybut konfiguracji mo\u017ce by\u0107 nieobecny w konfiguracji serwera. Je\u015bli warto\u015b\u0107 jest okre\u015blona, bia\u0142e znaki na jej pocz\u0105tku i na ko\u0144cu s\u0105 usuwane podczas przetwarzania, dlatego warto\u015b\u0107 w konfiguracji mo\u017ce by\u0107 pusta lub zawiera\u0107 wy\u0142\u0105cznie bia\u0142e znaki.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Upewnij si\u0119, \u017ce podany atrybut konfiguracji nie jest pusty i nie sk\u0142ada si\u0119 wy\u0142\u0105cznie z bia\u0142ych znak\u00f3w.
+
+STATE_NULL_OR_MISMATCHED=CWWKS5480E: \u017b\u0105danie logowania spo\u0142eczno\u015bciowego nie powiod\u0142o si\u0119, poniewa\u017c element stanu \u017c\u0105dania by\u0142 pusty lub niezgodny.
+STATE_NULL_OR_MISMATCHED.explanation=Pusty lub brakuj\u0105cy element stanu w \u017c\u0105daniu logowania spo\u0142eczno\u015bciowego spowodowa\u0142 b\u0142\u0105d. 
+STATE_NULL_OR_MISMATCHED.useraction=Sprawd\u017a, czy konfiguracja logowania spo\u0142eczno\u015bciowego jest poprawna, a us\u0142uga zdalna dzia\u0142a poprawnie.
+
+REQUEST_URL_NULL_OR_EMPTY=CWWKS5481E: \u017b\u0105danie logowania spo\u0142eczno\u015bciowego nie powiod\u0142o si\u0119, poniewa\u017c atrybut adresu URL \u017c\u0105dania ma warto\u015b\u0107 NULL lub jest pusty.
+REQUEST_URL_NULL_OR_EMPTY.explanation=Pusty lub brakuj\u0105cy atrybut adresu URL \u017c\u0105dania w \u017c\u0105daniu logowania spo\u0142eczno\u015bciowego spowodowa\u0142 b\u0142\u0105d.
+REQUEST_URL_NULL_OR_EMPTY.useraction=Sprawd\u017a, czy konfiguracja logowania spo\u0142eczno\u015bciowego dla atrybutu adresu URL jest poprawna, a us\u0142uga zdalna dzia\u0142a poprawnie.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_REQUEST_TOKEN_URL=CWWKS5482E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce uzyska\u0107 znacznika \u017c\u0105dania z serwisu Twitter, poniewa\u017c adres URL [{0}] okre\u015blony przez atrybut konfiguracji [{1}] w konfiguracji Twitter [{2}] nie jest poprawny. {3}
+TWITTER_BAD_REQUEST_TOKEN_URL.explanation=Warto\u015bci\u0105 okre\u015blonego atrybutu konfiguracji nie jest poprawny adres URL. Nale\u017cy poda\u0107 poprawny adres URL, kt\u00f3ry mo\u017ce obs\u0142ugiwa\u0107 \u017c\u0105dania dla znacznik\u00f3w \u017c\u0105da\u0144 serwisu Twitter.
+TWITTER_BAD_REQUEST_TOKEN_URL.useraction=Sprawd\u017a, czy dla okre\u015blonego atrybutu konfiguracji skonfigurowano poprawny adres URL i czy ten adres URL mo\u017ce obs\u0142ugiwa\u0107 \u017c\u0105dania dla znacznik\u00f3w \u017c\u0105da\u0144 serwisu Twitter. Aby u\u017cy\u0107 domy\u015blnego punktu ko\u0144cowego Twitter, usu\u0144 okre\u015blony atrybut konfiguracji z konfiguracji serwisu Twitter okre\u015blonej w tym komunikacie.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_ACCESS_TOKEN_URL=CWWKS5483E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce uzyska\u0107 znacznika dost\u0119pu z serwisu Twitter, poniewa\u017c adres URL [{0}] okre\u015blony przez atrybut konfiguracji [{1}] w konfiguracji Twitter [{2}] nie jest poprawny. {3}
+TWITTER_BAD_ACCESS_TOKEN_URL.explanation=Warto\u015bci\u0105 okre\u015blonego atrybutu konfiguracji nie jest poprawny adres URL. Nale\u017cy poda\u0107 poprawny adres URL, kt\u00f3ry mo\u017ce obs\u0142ugiwa\u0107 \u017c\u0105dania dla znacznik\u00f3w dost\u0119pu serwisu Twitter.
+TWITTER_BAD_ACCESS_TOKEN_URL.useraction=Sprawd\u017a, czy dla okre\u015blonego atrybutu konfiguracji skonfigurowano poprawny adres URL i czy ten adres URL mo\u017ce obs\u0142ugiwa\u0107 \u017c\u0105dania dla znacznik\u00f3w dost\u0119pu serwisu Twitter. Aby u\u017cy\u0107 domy\u015blnego punktu ko\u0144cowego Twitter, usu\u0144 okre\u015blony atrybut konfiguracji z konfiguracji serwisu Twitter okre\u015blonej w tym komunikacie.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_USER_API_URL=CWWKS5484E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce uzyska\u0107 danych konta u\u017cytkownika z serwisu Twitter, poniewa\u017c adres URL [{0}] okre\u015blony przez atrybut konfiguracji [{1}] w konfiguracji Twitter [{2}] nie jest poprawny. {3}
+TWITTER_BAD_USER_API_URL.explanation=Warto\u015bci\u0105 okre\u015blonego atrybutu konfiguracji nie jest poprawny adres URL. Nale\u017cy poda\u0107 poprawny adres URL, kt\u00f3ry mo\u017ce obs\u0142ugiwa\u0107 \u017c\u0105dania dla danych konta u\u017cytkownika serwisu Twitter.
+TWITTER_BAD_USER_API_URL.useraction=Sprawd\u017a, czy dla okre\u015blonego atrybutu konfiguracji skonfigurowano poprawny adres URL i czy ten adres URL mo\u017ce obs\u0142ugiwa\u0107 \u017c\u0105dania dla danych konta u\u017cytkownika serwisu Twitter. Aby u\u017cy\u0107 domy\u015blnego punktu ko\u0144cowego Twitter, usu\u0144 okre\u015blony atrybut konfiguracji z konfiguracji serwisu Twitter okre\u015blonej w tym komunikacie.
+
+# 0=Configuration attribute name
+TWITTER_MISSING_REQ_ATTR=CWWKS5485W: \u017b\u0105dania uwierzytelniania w serwisie Twitter mog\u0142y si\u0119 nie powie\u015b\u0107, poniewa\u017c podana warto\u015b\u0107 konfiguracyjna [{0}] ma warto\u015b\u0107 Null lub jest pusta. Sprawd\u017a, czy w wszystkich konfiguracjach logowania spo\u0142eczno\u015bciowego serwisu Twitter podano niepust\u0105 warto\u015b\u0107 atrybutu konfiguracji [{0}].
+TWITTER_MISSING_REQ_ATTR.explanation=W konfiguracji brak atrybutu konfiguracji, kt\u00f3ry zosta\u0142 okre\u015blony w komunikacie, lub warto\u015b\u0107 tego atrybutu jest pusta albo zawiera wy\u0142\u0105cznie bia\u0142e znaki. Dla tego atrybutu wymagana jest warto\u015b\u0107 niepusta.
+TWITTER_MISSING_REQ_ATTR.useraction=Sprawd\u017a, podany w komunikacie atrybut zosta\u0142 skonfigurowany we wszystkich elementach logowania spo\u0142eczno\u015bciowego serwisu Twitter w konfiguracji serwera i czy te warto\u015bci nie s\u0105 puste.
+
+# 0=Endpoint URL, 1=Map of data about the endpoint response
+POST_RESPONSE_NULL=CWWKS5486W: Nie mo\u017cna wyodr\u0119bni\u0107 znacznik\u00f3w z odpowiedzi dla punktu ko\u0144cowego [{0}]. Odwzorowanie odpowiedzi z punktu ko\u0144cowego: [{1}].
+POST_RESPONSE_NULL.explanation=\u017b\u0105danie mog\u0142o zosta\u0107 skierowane do nieodpowiedniego punktu ko\u0144cowego lub nie zawiera odpowiedniej ilo\u015bci informacji.
+POST_RESPONSE_NULL.useraction=Sprawd\u017a, czy adres URL punktu ko\u0144cowego jest poprawny i czy \u017c\u0105danie zawiera\u0142o wszystkie wymagane nag\u0142\u00f3wki lub parametry. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# Do not translate "JSON"
+# 0=Endpoint URL, 1=Error message, 2=Endpoint response content
+ENDPOINT_RESPONSE_NOT_JSON=CWWKS5487W: Odpowied\u017a z punktu ko\u0144cowego [{0}] nie mia\u0142a oczekiwanego formatu JSON. B\u0142\u0105d: [{1}]. Tre\u015b\u0107 odpowiedzi: [{2}].
+ENDPOINT_RESPONSE_NOT_JSON.explanation=Okre\u015blony punkt ko\u0144cowy mo\u017ce nie by\u0107 aktywny lub mo\u017ce zwraca\u0107 odpowiedzi i innym formacie.
+ENDPOINT_RESPONSE_NOT_JSON.useraction=Sprawd\u017a, czy serwer odczytuje ca\u0142\u0105 odpowied\u017a z okre\u015blonego punktu ko\u0144cowego. Sprawd\u017a, czy \u017c\u0105danie zosta\u0142o wys\u0142ane do poprawnego punktu ko\u0144cowego i czy odpowied\u017a ma poprawny format.
+
+# 0=URI value
+URI_CONTAINS_INVALID_CHARS=CWWKS5488W: Podana warto\u015b\u0107 [{0}] zawiera co najmniej jeden znak, kt\u00f3rego nie mo\u017cna umieszcza\u0107 w poprawnym identyfikatorze URI.
+URI_CONTAINS_INVALID_CHARS.explanation=Podana w komunikacie warto\u015b\u0107 punktu ko\u0144cowego nie jest uznawana za poprawny identyfikator URI, poniewa\u017c zawiera niepoprawne znaki. Zestaw poprawnych znak\u00f3w identyfikatora URI zosta\u0142 zdefiniowany w specyfikacji RFC 3986.
+URI_CONTAINS_INVALID_CHARS.useraction=Zaktualizuj \u0142a\u0144cuch identyfikatora URI tak, aby zawiera\u0142 tylko poprawne znaki identyfikatora URI.
+
+SOCIAL_LOGIN_FRONT_END_ERROR=CWWKS5489E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas uwierzytelniania u\u017cytkownika za pomoc\u0105 serwisu spo\u0142eczno\u015bciowego.
+SOCIAL_LOGIN_FRONT_END_ERROR.explanation=Wyst\u0105pi\u0142 problem podczas uwierzytelniania u\u017cytkownika. Przyczyn\u0105 mo\u017ce by\u0107 problem z po\u0142\u0105czeniem mi\u0119dzy aplikacj\u0105 i dostawc\u0105 us\u0142ug innych firm.
+SOCIAL_LOGIN_FRONT_END_ERROR.useraction=Skontaktuj si\u0119 z administratorem systemu, aby rozwi\u0105za\u0107 ten problem.
+
+# 0=User API URL, 1=HTTP response status, 2=Error code, 3=Error description
+USERAPI_RESP_INVALID_STATUS=CWWKS5490E: Nie mo\u017cna przetworzy\u0107 odpowiedzi z punktu ko\u0144cowego interfejsu API u\u017cytkownika [{0}]. Status odpowiedzi: [{1}], b\u0142\u0105d: [{2}], opis b\u0142\u0119du: [{3}].
+USERAPI_RESP_INVALID_STATUS.explanation=Podany status odpowiedzi nie oznacza\u0142 pomy\u015blnego wyniku. B\u0142\u0105d i opis b\u0142\u0119du podane w komunikacie mog\u0105 zawiera\u0107 dodatkowe informacje.
+USERAPI_RESP_INVALID_STATUS.useraction=Podejmij niezb\u0119dne dzia\u0142ania, aby naprawi\u0107 b\u0142\u0105d w odpowiedzi.
+
+# 0=User API URL, 1=Error message
+USERAPI_ERROR_RESPONSE=CWWKS5491E: Nie mo\u017cna przetworzy\u0107 odpowiedzi z b\u0142\u0119dem z punktu ko\u0144cowego interfejsu API u\u017cytkownika [{0}]. B\u0142\u0105d: [{1}]
+USERAPI_ERROR_RESPONSE.explanation=Podany punkt ko\u0144cowy interfejsu API u\u017cytkownika nie zwr\u00f3ci\u0142 poprawnego statusu odpowiedzi, a podczas przetwarzania odpowiedzi napotkano b\u0142\u0105d.
+USERAPI_ERROR_RESPONSE.useraction=Upewnij si\u0119, \u017ce podany punkt ko\u0144cowy jest poprawny i umo\u017cliwia przetwarzanie \u017c\u0105da\u0144 interfejsu API informacji o u\u017cytkowniku.
+
+# 0=User API URL, 1=Error message
+USERAPI_RESP_PROCESS_ERR=CWWKS5492E: Nie mo\u017cna przetworzy\u0107 odpowiedzi z punktu ko\u0144cowego interfejsu API u\u017cytkownika [{0}]. B\u0142\u0105d: [{1}]
+USERAPI_RESP_PROCESS_ERR.explanation=Podany punkt ko\u0144cowy interfejsu API u\u017cytkownika zwr\u00f3ci\u0142 poprawny status odpowiedzi, ale \u015brodowisko wykonawcze napotka\u0142o b\u0142\u0105d podczas przetwarzania tre\u015bci odpowiedzi.
+USERAPI_RESP_PROCESS_ERR.useraction=Sprawd\u017a, czy podany punkt ko\u0144cowy jest poprawny i tre\u015b\u0107 odpowiedzi jest poprawnie sformatowana. Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie.
+
+# 0=User API URL
+USERAPI_NULL_RESP_STR=CWWKS5493E: Tre\u015b\u0107 odpowiedzi z punktu ko\u0144cowego interfejsu API u\u017cytkownika [{0}] nie jest poprawna. 
+USERAPI_NULL_RESP_STR.explanation=Podany punkt ko\u0144cowy interfejsu API u\u017cytkownika nie zwr\u00f3ci\u0142 poprawnej odpowiedzi na \u017c\u0105danie interfejsu API u\u017cytkownika. 
+USERAPI_NULL_RESP_STR.useraction=Upewnij si\u0119, \u017ce podany punkt ko\u0144cowy jest poprawny i umo\u017cliwia przetwarzanie \u017c\u0105da\u0144 interfejsu API informacji o u\u017cytkowniku.
+
+# do not translate CODE
+CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: \u017b\u0105danie logowania spo\u0142eczno\u015bciowego nie powiod\u0142o si\u0119, poniewa\u017c atrybut CODE \u017c\u0105dania jest pusty lub ma warto\u015b\u0107 NULL.
+CODE_PARAMETER_NULL_OR_EMPTY.explanation=Pusty lub brakuj\u0105cy atrybut CODE w \u017c\u0105daniu logowania spo\u0142eczno\u015bciowego spowodowa\u0142 b\u0142\u0105d. 
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Sprawd\u017a, czy konfiguracja logowania spo\u0142eczno\u015bciowego dla atrybutu CODE jest poprawna, a us\u0142uga zdalna dzia\u0142a prawid\u0142owo.
+
+# 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
+REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: \u017b\u0105danie uwierzytelnienia logowania spo\u0142eczno\u015bciowego nie powiod\u0142o si\u0119, poniewa\u017c media spo\u0142eczno\u015bciowe zwr\u00f3ci\u0142y nast\u0119puj\u0105cy b\u0142\u0105d {0}: {1}. Identyfikator URI b\u0142\u0119du: [{2}].
+REDIRECT_REQUEST_CONTAINED_ERROR.explanation=Okre\u015blony status odpowiedzi wskazuje, \u017ce uwierzytelnianie nie powiod\u0142o si\u0119. B\u0142\u0105d i opis b\u0142\u0119du podane w komunikacie zawieraj\u0105 dodatkowe informacje.
+REDIRECT_REQUEST_CONTAINED_ERROR.useraction=Sprawd\u017a, czy logowanie spo\u0142eczno\u015bciowe zosta\u0142o poprawnie skonfigurowane w konfiguracji serwera i czy warto\u015bci w konfiguracji serwera s\u0105 zgodne z warto\u015bciami zdefiniowanymi w zdalnych mediach spo\u0142eczno\u015bciowych.
+
+# 0=URI value
+HTTP_URI_DOES_NOT_START_WITH_HTTP=CWWKS5496W: Podana warto\u015b\u0107 [{0}] powinna by\u0107 identyfikatorem URI HTTP. Ta warto\u015b\u0107 nie rozpoczyna si\u0119 symbolem protoko\u0142u HTTP.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.explanation=Warto\u015b\u0107 powinna by\u0107 identyfikatorem URI HTTP, zatem musi rozpoczyna\u0107 si\u0119 od \u0142a\u0144cucha http://lub https://.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.useraction=Zaktualizuj identyfikator URI tak, aby zawiera\u0142 albo protok\u00f3\u0142 HTTP, albo HTTPS.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=User API value, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_USER_API=CWWKS5497E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce utworzy\u0107 znacznika WWW JSON (JSON Web Token - JWT) przy u\u017cyciu informacji ze skonfigurowanego interfejsu API u\u017cytkownika [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_USER_API.explanation=B\u0142\u0105d, kt\u00f3ry jest wy\u015bwietlony w komunikacie, powinien zawiera\u0107 bardziej szczeg\u00f3\u0142owe informacje o tym, dlaczego nie mo\u017cna utworzy\u0107 znacznika JWT. Albo \u017c\u0105danie interfejsu API u\u017cytkownika jest zniekszta\u0142cone lub nie zawiera wszystkich informacji, albo wyst\u0105pi\u0142 b\u0142\u0105d po przes\u0142aniu \u017c\u0105dania interfejsu API u\u017cytkownika zosta\u0142 wys\u0142any. Inn\u0105 przyczyn\u0105 mo\u017ce by\u0107 to, \u017ce odpowied\u017a z interfejsu API u\u017cytkownika nie mo\u017ce by\u0107 u\u017cywana do tworzenia znacznik\u00f3w JWT.
+FAILED_TO_CREATE_JWT_FROM_USER_API.useraction=Sprawd\u017a, czy warto\u015b\u0107 interfejsu API u\u017cytkownika jest poprawna. Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=JWT configuration element ID, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN=CWWKS5498E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce utworzy\u0107 znacznika WWW JSON (JSON Web Token - JWT) przy u\u017cyciu podanego znacznika ID i konfiguracji JWT [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.explanation=Podana w komunikacie konfiguracja JWT mo\u017ce by\u0107 niepoprawna, informacje w znaczniku ID mog\u0105 by\u0107 zniekszta\u0142cone lub niekompletne albo wyst\u0105pi\u0142 inny b\u0142\u0105d podczas tworzenia znacznika JWT.
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Sprawd\u017a, czy konfiguracja JWT, kt\u00f3ry zosta\u0142a podana w komunikacie, zosta\u0142a poprawnie skonfigurowana. Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dotycz\u0105c\u0105 b\u0142\u0119du wy\u015bwietlonego w tym komunikacie. Sprawd\u017a dzienniki serwera pod k\u0105tem dodatkowych komunikat\u00f3w o b\u0142\u0119dach.
+
+# 0=Request URL value, 1=Error message
+REQUEST_URL_NOT_VALID=CWWKS5499E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce przekierowa\u0107 \u017c\u0105dania z powrotem na adres URL oryginalnego \u017c\u0105dania [{0}], poniewa\u017c ten adres URL jest niepoprawny. {1}
+REQUEST_URL_NOT_VALID.explanation=Adres URL oryginalnego \u017c\u0105dania jest niepoprawny. Adres URL mo\u017ce zawiera\u0107 znaki, kt\u00f3re nie s\u0105 poprawne, lub mo\u017ce by\u0107 on zniekszta\u0142cony.
+REQUEST_URL_NOT_VALID.useraction=Sprawd\u017a, czy podany w komunikacie adres URL \u017c\u0105dania jest zgodny z adresem URL oryginalnego \u017c\u0105dania chronionego zasobu. Sprawd\u017a, czy ten adres URL zosta\u0142 poprawnie zbudowany i czy zawiera tylko poprawne znaki identyfikatora URI.

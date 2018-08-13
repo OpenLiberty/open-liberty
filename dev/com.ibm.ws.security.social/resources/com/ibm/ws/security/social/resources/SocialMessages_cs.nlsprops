@@ -1,0 +1,543 @@
+###############################################################################
+# Copyright (c) 2016, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5400 - CWWKS5499
+ADD_ID={0} ({1})
+ADD_ID.explanation=Pouze pro vnit\u0159n\u00ed pou\u017eit\u00ed.
+ADD_ID.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# HTML title of the social media selection page
+SELECTION_PAGE_TITLE=Formul\u00e1\u0159 v\u00fdb\u011bru soci\u00e1ln\u00edho m\u00e9dia
+
+# Text that appears above the social media options to choose from on the social media selection page
+SELECTION_PAGE_HEADER=P\u0159ihl\u00e1sit
+
+# Text that indicates a user can sign in using social media "or" with a username and password ("or" being the text that appears on the web page)
+SELECTION_PAGE_ALTERNATE_TEXT=Nebo
+
+SELECTION_PAGE_USERNAME=Jm\u00e9no u\u017eivatele
+
+SELECTION_PAGE_PASSWORD=Heslo
+
+SELECTION_PAGE_SUBMIT=Odeslat
+
+SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+SOCIAL_LOGIN_CONFIG_MODIFIED=CWWKS5401I: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SOCIAL_LOGIN_CONFIG_MODIFIED.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
+SOCIAL_LOGIN_CONFIG_MODIFIED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+SOCIAL_LOGIN_CONFIG_DEACTIVATED=CWWKS5402I: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b deaktivov\u00e1na.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla \u00fasp\u011b\u0161n\u011b deaktivov\u00e1na.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# 0=exception class name, 1=exception message, 2=stack trace
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR=CWWKS5403E: Do\u0161lo k intern\u00ed chyb\u011b serveru p\u0159i zpracov\u00e1n\u00ed po\u017eadavku na soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed [{0}]. P\u0159\u00ed\u010dina: [{1}], trasov\u00e1n\u00ed z\u00e1sobn\u00edku: [{2}].
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku na soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed do\u0161lo k intern\u00ed chyb\u011b serveru.
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.useraction=Vyhledejte chyby v souboru protokolu serveru a ujist\u011bte se, \u017ee m\u00e1te spr\u00e1vnou konfiguraci. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# 
+SOCIAL_LOGIN_AUTHENTICATION_FAIL=CWWKS5404E: V\u00fdjimka soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed: Poskytovateli slu\u017eby soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed se nezda\u0159ilo zpracov\u00e1n\u00ed \u017e\u00e1dosti o ov\u011b\u0159en\u00ed.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.explanation=Proces ov\u011b\u0159en\u00ed nebyl \u00fasp\u011b\u0161n\u00fd, nebo\u0165 p\u0159ed touto zpr\u00e1vou do\u0161lo k n\u011bjak\u00e9 jin\u00e9 chyb\u011b.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.useraction=Projd\u011bte si akce u\u017eivatele pro tuto chybu, kter\u00e9 se zobrazily p\u0159ed touto zpr\u00e1vou.
+
+# Do not translate "social_login_hint"
+# 0=Social login configuration ID
+SOCIAL_LOGIN_NO_SUCH_PROVIDER=CWWKS5405E: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] uveden\u00e1 v po\u017eadavku chyb\u00ed nebo nen\u00ed nakonfigurov\u00e1na pro obsluhu tohoto po\u017eadavku.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.explanation=Po\u017eadavek obsahuje parametr nebo z\u00e1hlav\u00ed 'social_login_hint', kter\u00e9 uv\u00e1d\u00ed ID konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, kter\u00e9 se m\u00e1 pou\u017e\u00edt pro tento po\u017eadavek. Nicm\u00e9n\u011b konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, kter\u00e9 by toto ID odpov\u00eddalo, chyb\u00ed, nebo filtr ov\u011b\u0159ov\u00e1n\u00ed, kter\u00fd se pou\u017e\u00edv\u00e1 pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed konfigurov\u00e1n, aby obslou\u017eil tento po\u017eadavek.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.useraction=Ov\u011b\u0159te, \u017ee je nakonfigurov\u00e1na slu\u017eba soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed s uveden\u00fdm ID. Je-li pro slu\u017ebu soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nakonfigurov\u00e1n filtr ov\u011b\u0159ov\u00e1n\u00ed, ov\u011b\u0159te, \u017ee je tento filtr nakonfigurov\u00e1n tak, aby obslou\u017eil dan\u00fd po\u017eadavek.
+
+# web RequestFilter
+# 0=url
+SOCIAL_LOGIN_INVALID_URL=CWWKS5406E: Po\u017eadovan\u00fd koncov\u00fd bod [{0}] nen\u00ed podporov\u00e1n t\u00edmto poskytovatelem slu\u017eby soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed.
+SOCIAL_LOGIN_INVALID_URL.explanation=Uveden\u00e1 adresa URL nen\u00ed platn\u00fdm koncov\u00fdm bodem soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed. To m\u016f\u017ee b\u00fdt zp\u016fsobeno nespr\u00e1vnou konfigurac\u00ed na serveru soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed.
+SOCIAL_LOGIN_INVALID_URL.useraction=Zajist\u011bte spr\u00e1vnou konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed.
+
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED=CWWKS5407I: Slu\u017eba koncov\u00e9ho bodu soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed verze 1.0 je aktivov\u00e1na.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.explanation=Slu\u017eba koncov\u00e9ho bodu soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed verze 1.0 je aktivov\u00e1na.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# EndpointServlet
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5408E: Po\u017eadavek soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nelze zpracovat, proto\u017ee nen\u00ed k dispozici \u017e\u00e1dn\u00e1 funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Po\u017eadavek soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byl p\u0159ijat serverem, av\u0161ak funkce socialLogin-1.0 nen\u00ed aktivov\u00e1na v souboru server.xml nebo nen\u00ed k dispozici.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Zajist\u011bte nakonfigurov\u00e1n\u00ed funkce ssocialLogin-1.0 a jej\u00edch z\u00e1vislost\u00ed v sekci featureManager souboru server.xml.
+
+# Do not translate RFC
+# 0=Exception message
+TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: Nelze vytvo\u0159it podpis pro autorizovan\u00fd po\u017eadavek Twitter: {0}
+TWITTER_ERROR_CREATING_SIGNATURE.explanation=Autorizovan\u00e9 po\u017eadavky Twitter mus\u00ed b\u00fdt podeps\u00e1ny pomoc\u00ed podpisov\u00e9ho algoritmu HMAC-SHA1. Bu\u010f do\u0161lo k probl\u00e9mu p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed po\u017eadovan\u00e9ho podpisov\u00e9ho algoritmu, nebo nelze k inicializaci podpisov\u00e9ho algoritmu pou\u017e\u00edt poskytnut\u00fd kl\u00ed\u010d.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Ov\u011b\u0159te, zda v\u00e1\u0161 syst\u00e9m podporuje podpisov\u00fd algoritmus HMAC-SHA1. Ov\u011b\u0159te utajen\u00fd \u00fadaj spot\u0159ebitele a utajen\u00e9 hodnoty tokenu po\u017eadavku. Tyto dv\u011b hodnoty se pou\u017e\u00edvaj\u00ed jako sou\u010d\u00e1st kl\u00ed\u010de podpisov\u00e9ho algoritmu. Pokud je n\u011bkter\u00e1 z t\u011bchto hodnot chybn\u00e1 nebo obsahuje znaky, kter\u00e9 nelze k\u00f3dovat v souladu s RFC 3986, budete z\u0159ejm\u011b muset z\u00edskat novou hodnotu.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: Odezva z koncov\u00e9ho bodu Twitter [{0}] neobsahovala \u017e\u00e1dn\u00e9 parametry v o\u010dek\u00e1van\u00e9ho form\u00e1tu. Odezva byla: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=Odezva z koncov\u00e9ho bodu Twitter m\u011bla pravd\u011bpodobn\u011b hodnotu null nebo byla pr\u00e1zdn\u00e1. Po\u010d\u00e1te\u010dn\u00ed po\u017eadavek byl z\u0159ejm\u011b sm\u011brov\u00e1n na nespr\u00e1vn\u00fd koncov\u00fd bod. Odezvy z koncov\u00fdch bod\u016f Twitter by m\u011bly p\u0159edstavovat \u0159et\u011bzec dvojic kl\u00ed\u010d\u016f a hodnot. O\u010dek\u00e1v\u00e1 se, \u017ee kl\u00ed\u010d a hodnota budou odd\u011bleny znakem rovn\u00edtka ("=") a jednotliv\u00e9 dvojice kl\u00ed\u010d\u016f a hodnot budou odd\u011bleny znakem ampersandu ("&").
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Ov\u011b\u0159te, \u017ee byl po\u017eadavek sm\u011brov\u00e1n na spr\u00e1vn\u00fd koncov\u00fd bod Twitter. Ov\u011b\u0159te, \u017ee v po\u010d\u00e1te\u010dn\u00edm po\u017eadavku byly obsa\u017eeny v\u0161echny po\u017eadovan\u00e9 parametry a po\u017eadavek byl autorizov\u00e1n p\u0159id\u00e1n\u00edm platn\u00e9ho z\u00e1hlav\u00ed Authorization. Platn\u00e9 z\u00e1hlav\u00ed Authorization se krom\u011b adresy URL zp\u011btn\u00e9ho vol\u00e1n\u00ed nebo tokenu po\u017eadavku OAuth vytvo\u0159\u00ed pomoc\u00ed kl\u00ed\u010de spot\u0159ebitele pro aplikaci Twitter. V konfiguraci serveru zkontrolujte, zda je nakonfigurov\u00e1n spr\u00e1vn\u00fd kl\u00ed\u010d spot\u0159ebitele a adresa URL zp\u011btn\u00e9ho vol\u00e1n\u00ed.
+
+# Do not translate "Authorization"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: Odezva z koncov\u00e9ho bodu Twitter [{0}] neobsahovala minim\u00e1ln\u011b jeden povinn\u00fd parametr. V odezv\u011b chyb\u00ed tyto po\u017eadovan\u00e9 parametry: [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER.explanation=Odezvy z jednotliv\u00fdch koncov\u00fdch bod\u016f Twitter vrac\u00ed vlastn\u00ed sady parametr\u016f. P\u0159ijat\u00e1 odezva Twitter neobsahovala po\u017eadovan\u00e9 parametry, kter\u00e9 jsou uvedeny ve zpr\u00e1v\u011b. Po\u010d\u00e1te\u010dn\u00ed po\u017eadavek byl z\u0159ejm\u011b sm\u011brov\u00e1n na nespr\u00e1vn\u00fd koncov\u00fd bod.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Ov\u011b\u0159te, \u017ee byl po\u017eadavek sm\u011brov\u00e1n na spr\u00e1vn\u00fd koncov\u00fd bod Twitter. Ov\u011b\u0159te, \u017ee v po\u010d\u00e1te\u010dn\u00edm po\u017eadavku byly obsa\u017eeny v\u0161echny po\u017eadovan\u00e9 parametry a po\u017eadavek byl autorizov\u00e1n p\u0159id\u00e1n\u00edm platn\u00e9ho z\u00e1hlav\u00ed Authorization. Platn\u00e9 z\u00e1hlav\u00ed Authorization se krom\u011b adresy URL zp\u011btn\u00e9ho vol\u00e1n\u00ed nebo tokenu po\u017eadavku OAuth vytvo\u0159\u00ed pomoc\u00ed kl\u00ed\u010de spot\u0159ebitele pro aplikaci Twitter. V konfiguraci serveru zkontrolujte, zda je nakonfigurov\u00e1n spr\u00e1vn\u00fd kl\u00ed\u010d spot\u0159ebitele a adresa URL zp\u011btn\u00e9ho vol\u00e1n\u00ed.
+
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: Hodnota parametru [{0}] v odezv\u011b z koncov\u00e9ho bodu Twitter [{1}] neodpov\u00eddala o\u010dek\u00e1van\u00e9 hodnot\u011b [{2}]. Hodnota v odezv\u011b: [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=Parametr uveden\u00fd ve zpr\u00e1v\u011b mus\u00ed m\u00edt hodnotu, kter\u00e1 odpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9 hodnot\u011b. Jedn\u00e1 se o nepravd\u011bpodobn\u00fd sc\u00e9n\u00e1\u0159, kdy Twitter \u00fasp\u011b\u0161n\u011b zpracoval po\u017eadavek, ale vr\u00e1til neo\u010dek\u00e1vanou hodnotu parametru.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee adresa URL zp\u011btn\u00e9ho vol\u00e1n\u00ed nakonfigurovan\u00e1 pro tuto aplikaci ukazuje na platnou adresu URL, na kterou m\u016f\u017ee Twitter p\u0159esm\u011brovat u\u017eivatele po ud\u011blen\u00ed autorizace.
+
+# Do not translate "Authorization"
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: Parametr [{0}] v odezv\u011b z koncov\u00e9ho bodu Twitter [{1}] byl pr\u00e1zdn\u00fd. Ke zpracov\u00e1n\u00ed po\u017eadavku na autorizaci je t\u0159eba zadat hodnotu tohoto parametru.
+TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=Odezva z koncov\u00e9ho bodu Twitter obsahovala parametr zadan\u00fd ve zpr\u00e1v\u011b, ale neposkytla hodnotu tohoto parametru.
+TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Ov\u011b\u0159te, \u017ee odezva z koncov\u00e9ho bodu Twitter obsahovala v\u0161echny o\u010dek\u00e1van\u00e9 parametry a hodnoty t\u011bchto parametr\u016f. Ov\u011b\u0159te, \u017ee v po\u010d\u00e1te\u010dn\u00edm po\u017eadavku byly obsa\u017eeny v\u0161echny po\u017eadovan\u00e9 parametry a po\u017eadavek byl autorizov\u00e1n p\u0159id\u00e1n\u00edm platn\u00e9ho z\u00e1hlav\u00ed Authorization. Platn\u00e9 z\u00e1hlav\u00ed Authorization se krom\u011b adresy URL zp\u011btn\u00e9ho vol\u00e1n\u00ed nebo tokenu po\u017eadavku OAuth vytvo\u0159\u00ed pomoc\u00ed kl\u00ed\u010de spot\u0159ebitele pro aplikaci Twitter. V konfiguraci serveru zkontrolujte, zda je nakonfigurov\u00e1n spr\u00e1vn\u00fd kl\u00ed\u010d spot\u0159ebitele a adresa URL zp\u011btn\u00e9ho vol\u00e1n\u00ed.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: Odezvu z koncov\u00e9ho bodu Twitter [{0}] nelze vyhodnotit, proto\u017ee v t\u011ble odezvy nen\u00ed \u017e\u00e1dn\u00fd obsah.
+TWITTER_EMPTY_RESPONSE_BODY.explanation=Po\u010d\u00e1te\u010dn\u00ed po\u017eadavek byl z\u0159ejm\u011b sm\u011brov\u00e1n na nespr\u00e1vn\u00fd koncov\u00fd bod Twitter nebo do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed odezvy z koncov\u00e9ho bodu.
+TWITTER_EMPTY_RESPONSE_BODY.useraction=Zkontrolujte, zda protokoly serveru neobsahuj\u00ed dal\u0161\u00ed zpr\u00e1vy, kter\u00e9 by mohly ozna\u010dovat selh\u00e1n\u00ed. Ov\u011b\u0159te, zda byl po\u010d\u00e1te\u010dn\u00ed po\u017eadavek sm\u011brov\u00e1n na p\u0159\u00edslu\u0161n\u00fd koncov\u00fd bod.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: Po\u017eadavek na koncov\u00fd bod [{0}] se nezda\u0159il. Stav odezvy: [{1}], obsah odezvy: [{2}]
+TWITTER_ENDPOINT_REQUEST_FAILED.explanation=Po\u010d\u00e1te\u010dn\u00ed po\u017eadavek pravd\u011bpodobn\u011b obsahoval chybn\u00e1 data autorizace nebo m\u011bl zak\u00e1zan\u00e9 proveden\u00ed po\u017eadovan\u00e9 operace. Koncov\u00e9 body Twitter, kter\u00e9 vy\u017eaduj\u00ed autorizaci, mus\u00ed m\u00edt z\u00e1hlav\u00ed Authorization odpov\u00eddaj\u00edc\u00ed specifick\u00e9mu form\u00e1tu. V p\u0159\u00edpad\u011b autorizovan\u00fdch po\u017eadavk\u016f je pravd\u011bpodobn\u00e9, \u017ee \u010d\u00e1st dat pou\u017eit\u00e1 k vytvo\u0159en\u00ed z\u00e1hlav\u00ed Authorization, jako nap\u0159. podpis nebo token OAuth, byla nespr\u00e1vn\u011b utvo\u0159en\u00e1 nebo chybn\u00e1. Konkr\u00e9tn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinu nezdaru po\u017eadavku by m\u011bl ozna\u010dovat stavov\u00fd k\u00f3d poskytnut\u00fd ve zpr\u00e1v\u011b.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Pokud byl po\u017eadavek neautorizovan\u00fd, ov\u011b\u0159te, zda po\u017eadavek obsahoval z\u00e1hlav\u00ed Authorization s p\u0159esn\u00fdmi daty autorizace. Pokud data autorizace obsahuj\u00ed token OAuth, ov\u011b\u0159te, zda je tento token st\u00e1le platn\u00fd, nebo zva\u017ete z\u00edsk\u00e1n\u00ed nov\u00e9ho tokenu. Ov\u011b\u0159te, \u017ee nen\u00ed po\u017eadavek identick\u00fd s p\u0159edchoz\u00edm po\u017eadavkem, a to porovn\u00e1n\u00edm podpis\u016f v z\u00e1hlav\u00edch Authorization po\u017eadavk\u016f. Pokud byl po\u017eadavek zak\u00e1z\u00e1n, ov\u011b\u0159te, zda aplikace Twitter umo\u017e\u0148uje po\u017eadovanou operaci.
+
+# 0=Outgoing request URL, 1=Parameter name
+OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: Odchoz\u00ed po\u017eadavek na [{0}] se nemus\u00ed zda\u0159it, proto\u017ee parametr [{1}] chyb\u00ed nebo je pr\u00e1zdn\u00fd.
+OUTGOING_REQUEST_MISSING_PARAMETER.explanation=Ur\u010den\u00fd parametr je nezbytn\u00fd pro ov\u011b\u0159ov\u00e1n\u00ed OAuth. Po\u017eadavek, kter\u00fd se p\u0159esm\u011brov\u00e1v\u00e1 na uveden\u00fd koncov\u00fd bod m\u016f\u017ee selhat, proto\u017ee chyb\u00ed pot\u0159ebn\u00e9 informace.
+OUTGOING_REQUEST_MISSING_PARAMETER.useraction=Ov\u011b\u0159te, \u017ee atribut konfigurace, kter\u00fd odpov\u00edd\u00e1 ur\u010den\u00e9mu parametru je konfigurov\u00e1n ka\u017ed\u00fdm poskytovatelem p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b v konfiguraci serveru.
+
+# 0=URL string, 1=Exception message text
+EXCEPTION_INITIALIZING_URL=CWWKS5417E: Byla rozpozn\u00e1na chyba p\u0159i inicializaci identifik\u00e1toru URI [{0}]: {1}
+EXCEPTION_INITIALIZING_URL.explanation=Je mo\u017en\u00e9, \u017ee \u0159et\u011bzec uveden\u00fd ve zpr\u00e1v\u011b nen\u00ed platn\u00fd identifik\u00e1tor URI, nebo syst\u00e9m nem\u00e1 opr\u00e1vn\u011bn\u00ed k proveden\u00ed akce inicializace identifik\u00e1toru URI.
+EXCEPTION_INITIALIZING_URL.useraction=Ov\u011b\u0159te, \u017ee zadan\u00fd \u0159et\u011bzec je platn\u00e1 adresa URL. Ov\u011b\u0159te, \u017ee \u0159et\u011bzec nem\u00e1 hodnotu null a protokol pou\u017eit\u00fd v adrese URL je platn\u00fd protokol, jako nap\u0159. http nebo https. P\u0159esv\u011bd\u010dte se, \u017ee m\u00e1 k\u00f3dovac\u00ed b\u00e1ze dostate\u010dn\u00e1 opr\u00e1vn\u011bn\u00ed k inicializaci objektu URI.
+
+# Do not translate "GET" or "POST"
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: Byla rozpozn\u00e1na chyba p\u0159i zpracov\u00e1n\u00ed po\u017eadavku na koncov\u00fd bod Twitter [{0}]: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=Pravd\u011bpodobn\u011b do\u0161lo k jedn\u00e9 z n\u00e1sleduj\u00edc\u00edch situac\u00ed: 1. Do\u0161lo k chyb\u011b p\u0159i otev\u00edr\u00e1n\u00ed p\u0159ipojen\u00ed k uveden\u00e9mu koncov\u00e9mu bodu. 2. Metoda po\u017eadavku pou\u017eit\u00e1 pro dan\u00fd po\u017eadavek nen\u00ed zn\u00e1m\u00fd protokol, jako nap\u0159. GET nebo POST. 3. Do\u0161lo k chyb\u011b p\u0159i z\u00e1pisu dat POST do p\u0159ipojen\u00ed. 4. Do\u0161lo k chyb\u011b p\u0159i \u010dten\u00ed odezvy z koncov\u00e9ho bodu Twitter.
+TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=Dal\u0161\u00ed informace o tomto selh\u00e1n\u00ed najdete v textu chyby ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee syst\u00e9m b\u011bhem po\u017eadavku udr\u017eoval spojen\u00ed. Ov\u011b\u0159te, \u017ee byla pro po\u017eadavek pou\u017eita zn\u00e1m\u00e1 metoda po\u017eadavku, jako nap\u0159. GET nebo POST.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: Po\u017eadavek na autorizaci se nezda\u0159il, proto\u017ee do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed v\u00fdsledku z koncov\u00e9ho bodu [{0}].
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation=Bu\u010f nebyl z uveden\u00e9ho po\u017eadavku vr\u00e1cen \u017e\u00e1dn\u00fd v\u00fdsledek, nebo byl vr\u00e1cen pr\u00e1zdn\u00fd v\u00fdsledek. Muselo doj\u00edt k chyb\u011b p\u0159i odes\u00edl\u00e1n\u00ed nebo zpracov\u00e1n\u00ed po\u017eadavku.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction=Zkontrolujte, zda protokoly serveru neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e9 by ozna\u010dovaly, kde do\u0161lo k selh\u00e1n\u00ed.
+
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: Byla rozpozn\u00e1na chyba p\u0159i p\u0159esm\u011brov\u00e1n\u00ed odezvy z koncov\u00e9ho bodu Twitter [{0}]: {1}
+TWITTER_REDIRECT_IOEXCEPTION.explanation=Adresa URL, na kterou byla p\u0159esm\u011brov\u00e1na odezva, z\u0159ejm\u011b nebyla platn\u00e1 nebo nebyla schopna obslou\u017eit po\u017eadavek.
+TWITTER_REDIRECT_IOEXCEPTION.useraction=Ov\u011b\u0159te, \u017ee je c\u00edl p\u0159esm\u011brov\u00e1n\u00ed dostupn\u00fd a je schopen obslou\u017eit po\u017eadavek. Dal\u0161\u00ed informace o tomto selh\u00e1n\u00ed najdete v chybov\u00e9 zpr\u00e1v\u011b.
+
+# Do not translate OAuth
+TWITTER_TOKEN_DOES_NOT_MATCH=CWWKS5421E: Po\u017eadavek na autorizaci se nezda\u0159il, proto\u017ee token poskytnut\u00fd v po\u017eadavku neodpov\u00edd\u00e1 tokenu pou\u017eit\u00e9mu pro po\u010d\u00e1te\u010dn\u00ed po\u017eadavek na autorizaci.
+TWITTER_TOKEN_DOES_NOT_MATCH.explanation=P\u0159\u00edchoz\u00ed po\u017eadavek mus\u00ed obsahovat hodnotu tokenu po\u017eadavku OAuth, kter\u00e1 je stejn\u00e1 jako token po\u017eadavku OAuth z\u00edskan\u00fd v prvn\u00edm kroku procesu autorizace. Hodnoty se mus\u00ed shodovat, aby bylo potvrzeno, \u017ee p\u0159\u00edchoz\u00ed po\u017eadavek odpov\u00edd\u00e1 po\u010d\u00e1te\u010dn\u00edmu po\u017eadavku, kter\u00fd zah\u00e1jil proces autorizace.
+TWITTER_TOKEN_DOES_NOT_MATCH.useraction=Ov\u011b\u0159te, \u017ee p\u0159\u00edchoz\u00ed po\u017eadavek odpov\u00edd\u00e1 d\u0159\u00edv\u011bj\u0161\u00edmu po\u017eadavku na token po\u017eadavku OAuth. Zva\u017ete z\u00edsk\u00e1n\u00ed nov\u00e9ho tokenu po\u017eadavku OAuth nov\u00fdm zah\u00e1jen\u00edm toku autorizace.
+
+# 0=Endpoint ("oauth/access_token"), 1=Parameter name
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: V po\u017eadavku ur\u010den\u00e9m pro koncov\u00fd bod Twitter [{0}] chyb\u00ed povinn\u00fd parametr. V po\u017eadavku chyb\u00ed tyto povinn\u00e9 parametry: {1}
+TWITTER_REQUEST_MISSING_PARAMETER.explanation=Po\u017eadavek mus\u00ed obsahovat v\u0161echny parametry uveden\u00e9 ve zpr\u00e1v\u011b. Po\u017eadavek neobsahoval n\u011bkter\u00fd z parametr\u016f uveden\u00fdch ve zpr\u00e1v\u011b.
+TWITTER_REQUEST_MISSING_PARAMETER.useraction=Ov\u011b\u0159te, \u017ee po\u017eadavek obsahuje v\u0161echny povinn\u00e9 parametry.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: Nelze ur\u010dit stav odezvy z koncov\u00e9ho bodu Twitter [{0}]. Pravd\u011bpodobn\u011b do\u0161lo k chyb\u011b p\u0159i odes\u00edl\u00e1n\u00ed nebo zpracov\u00e1n\u00ed po\u017eadavku.
+TWITTER_RESPONSE_STATUS_MISSING.explanation=O\u010dek\u00e1v\u00e1 se, \u017ee pole stavu odezvy bude ur\u010dovat v\u00fdsledek po\u017eadavku na autorizaci.
+TWITTER_RESPONSE_STATUS_MISSING.useraction=Zkontrolujte, zda protokoly serveru neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e9 by ozna\u010dovaly, kde do\u0161lo k dal\u0161\u00ed chyb\u011b.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: Nelze zpracovat odezvu z koncov\u00e9ho bodu Twitter [{0}]. {1}
+TWITTER_RESPONSE_FAILURE.explanation=Stav odezvy obsa\u017een\u00fd ve v\u00fdsledku neozna\u010doval \u00fasp\u011b\u0161n\u00fd v\u00fdsledek. Muselo doj\u00edt k selh\u00e1n\u00ed p\u0159i odes\u00edl\u00e1n\u00ed nebo zpracov\u00e1n\u00ed po\u017eadavku.
+TWITTER_RESPONSE_FAILURE.useraction=Pokud zpr\u00e1va obsahuje jinou chybovou zpr\u00e1vu, pod\u00edvejte se na akci u\u017eivatele pro tuto zpr\u00e1vu. Jinak zkontrolujte, zda protokoly serveru neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e9 by mohly ozna\u010dovat, kde do\u0161lo k dal\u0161\u00ed chyb\u011b.
+
+# web EndpointServices 
+# 0=qualified config IDs
+SOCIAL_LOGIN_MANY_PROVIDERS=CWWKS5425E: Ke zpracov\u00e1n\u00ed \u017e\u00e1dosti je kvalifikov\u00e1no p\u0159\u00edli\u0161 mnoho slu\u017eeb soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}].
+SOCIAL_LOGIN_MANY_PROVIDERS.explanation=V p\u0159\u00edpad\u011b v\u00edce kvalifikovan\u00fdch slu\u017eeb soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nelze ur\u010dit, kter\u00e1 slu\u017eba soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed zpracuje \u017e\u00e1dost.
+SOCIAL_LOGIN_MANY_PROVIDERS.useraction=Ujist\u011bte se, \u017ee ke zpracov\u00e1n\u00ed \u017e\u00e1dosti je v souboru server.xml nakonfigurov\u00e1no v\u00edce slu\u017eeb soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed.
+
+# Do not translate "JSON"
+# 0=Endpoint ("/1.1/accounts/verify_credentials"), 1=Error message, 2=Endpoint response content
+TWITTER_RESPONSE_NOT_JSON=CWWKS5426E: Odezva z koncov\u00e9ho bodu Twitter [{0}] nebyla v o\u010dek\u00e1van\u00e9m form\u00e1tu JSON. Chyba: [{1}]. Obsah odezvy byl: [{2}]
+TWITTER_RESPONSE_NOT_JSON.explanation=Ur\u010den\u00fd koncov\u00fd bod nemus\u00ed b\u00fdt funk\u010dn\u00ed dle o\u010dek\u00e1v\u00e1n\u00ed, nebo chov\u00e1n\u00ed koncov\u00e9ho bodu mohlo b\u00fdt zm\u011bn\u011bno pro n\u00e1vrat odezev v jin\u00e9m form\u00e1tu. N\u011bkter\u00e1 data mohla b\u00fdt p\u0159i \u010dten\u00ed odezvy vynech\u00e1na.
+TWITTER_RESPONSE_NOT_JSON.useraction=Ov\u011b\u0159te, \u017ee server \u010dte celou odezvu z ur\u010den\u00e9ho koncov\u00e9ho bodu. Ov\u011b\u0159te, \u017ee byl po\u017eadavek odesl\u00e1n na spr\u00e1vn\u00fd koncov\u00fd bod Twitter a \u017ee odezva je v o\u010dek\u00e1van\u00e9m form\u00e1tu.
+
+SIGN_IN_NO_CONFIGS=CWWKS5427E: P\u0159ihla\u0161ovac\u00ed str\u00e1nku soci\u00e1ln\u00edho m\u00e9dia nelze zobrazit, proto\u017ee funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee naj\u00edt \u017e\u00e1dnou konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nakonfigurovanou k ov\u011b\u0159en\u00ed tohoto po\u017eadavku.
+SIGN_IN_NO_CONFIGS.explanation=Alespo\u0148 jedna soci\u00e1ln\u00ed konfigurace p\u0159ihl\u00e1\u0161en\u00ed mus\u00ed b\u00fdt p\u0159\u00edtomna k zobrazen\u00ed p\u0159ihla\u0161ovac\u00ed str\u00e1nky. Bu\u010f soubor cookie, kter\u00fd obsahuje seznam odpov\u00eddaj\u00edc\u00edch konfigurac\u00ed soci\u00e1ln\u00edho p\u0159ihla\u0161ov\u00e1n\u00ed chyb\u00ed, nebo je pr\u00e1zdn\u00fd, nebo konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed ur\u010den\u00e9 souborem cookie nelze nal\u00e9zt.
+SIGN_IN_NO_CONFIGS.useraction=Ujist\u011bte se, \u017ee je nakonfigurov\u00e1na k ov\u011b\u0159en\u00ed tohoto po\u017eadavku alespo\u0148 jedna slu\u017eba p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b.
+
+# 0=Config element ID
+SIGN_IN_MISSING_EXPECTED_CONFIG=CWWKS5428W: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee naj\u00edt konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, kter\u00e1 odpov\u00edd\u00e1 ID [{0}]. Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed se zadan\u00fdm ID m\u00e1 b\u00fdt p\u0159\u00edtomna a nakonfigurov\u00e1na pro ov\u011b\u0159en\u00ed tohoto po\u017eadavku.
+SIGN_IN_MISSING_EXPECTED_CONFIG.explanation=Zadan\u00e9 ID je sou\u010d\u00e1st\u00ed souboru cookie, kter\u00fd se pou\u017e\u00edv\u00e1 k zaznamen\u00e1v\u00e1n\u00ed, kter\u00e9 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed jsou nakonfigurov\u00e1ny k ov\u011b\u0159en\u00ed tohoto po\u017eadavku. Nicm\u00e9n\u011b konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, kter\u00e1 odpov\u00edd\u00e1 dan\u00e9mu ID, nelze nal\u00e9zt. ID je bu\u010f chybn\u00e9, nebo odpov\u00eddaj\u00edc\u00ed konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla odebr\u00e1na.
+SIGN_IN_MISSING_EXPECTED_CONFIG.useraction=Ov\u011b\u0159te, \u017ee konfigurace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00edch s\u00edt\u00ed s uveden\u00fdm ID v konfiguraci serveru existuje.
+
+# 0=Specific error message describing why the page cannot be displayed
+ERROR_DISPLAYING_SIGN_IN_PAGE=CWWKS5429E: V\u00fdchoz\u00ed p\u0159ihla\u0161ovac\u00ed str\u00e1nku soci\u00e1ln\u00edho m\u00e9dia nelze zobrazit. {0}
+ERROR_DISPLAYING_SIGN_IN_PAGE.explanation=P\u0159i zpracov\u00e1n\u00ed v\u00fdchoz\u00ed p\u0159ihla\u0161ovac\u00ed str\u00e1nky do\u0161lo k chyb\u011b. Tato zpr\u00e1va obsahuje specifick\u00e9 vysv\u011btlen\u00ed, pro\u010d nelze p\u0159ihla\u0161ovac\u00ed str\u00e1nku zobrazit.
+ERROR_DISPLAYING_SIGN_IN_PAGE.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=Selection page URL configured in server.xml, 1=Specific error message
+SELECTION_PAGE_URL_NOT_VALID=CWWKS5430W: Adresa URL str\u00e1nky v\u00fdb\u011bru soci\u00e1ln\u00edho m\u00e9dia [{0}], kter\u00e1 je ur\u010dena konfigurac\u00ed webov\u00e9 aplikace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b, nen\u00ed platn\u00fdm identifik\u00e1torem URI. Pou\u017eije se v\u00fdchoz\u00ed str\u00e1nka v\u00fdb\u011bru. {1}
+SELECTION_PAGE_URL_NOT_VALID.explanation=Adresa URL str\u00e1nky v\u00fdb\u011bru nakonfigurovan\u00e1 konfigurac\u00ed webov\u00e9 aplikace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed platn\u00fdm \u0159et\u011bzcem identifik\u00e1toru URI. Adresa URL str\u00e1nky v\u00fdb\u011bru mus\u00ed odpov\u00eddat specifikaci RFC 3986 (https://tools.ietf.org/html/rfc3986), a m\u016f\u017ee obsahovat pouze ur\u010dit\u00e9 znaky.
+SELECTION_PAGE_URL_NOT_VALID.useraction=Ov\u011b\u0159te, \u017ee nakonfigurovan\u00e1 adresa URL str\u00e1nky v\u00fdb\u011bru nen\u00ed null a obsahuje pouze znaky povolen\u00e9 specifikac\u00ed RFC 3986.
+
+# 0=Selection page URL configured in server.xml
+SELECTION_PAGE_URL_NOT_HTTP=CWWKS5431E: Adresa URL str\u00e1nky v\u00fdb\u011bru soci\u00e1ln\u00edho m\u00e9dia [{0}], kter\u00e1 je ur\u010dena konfigurac\u00ed webov\u00e9 aplikace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b, nen\u00ed relativn\u00ed cestou a nepou\u017e\u00edv\u00e1 bu\u010f HTTP, nebo HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.explanation=Hodnota adresy URL str\u00e1nky v\u00fdb\u011bru soci\u00e1ln\u00edho m\u00e9dia mus\u00ed b\u00fdt relativn\u00ed cesta nebo adresa URL, kter\u00e1 pou\u017e\u00edv\u00e1 sch\u00e9ma HTTP nebo HTTPS. Zadan\u00e1 adresa URL je bu\u010f null, nebo pou\u017e\u00edv\u00e1 sch\u00e9ma adresy URL jin\u00e9 ne\u017e HTTP nebo HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.useraction=Ujist\u011bte se, \u017ee hodnota adresy URL str\u00e1nky v\u00fdb\u011bru soci\u00e1ln\u00edho m\u00e9dia je relativn\u00ed cesta nebo \u017ee hodnota adresy URL pou\u017e\u00edv\u00e1 sch\u00e9ma HTTP nebo HTTPS.
+
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG=CWWKS5432W: Funkci p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nelze p\u0159esm\u011brovat na po\u017eadavek na vlastn\u00ed str\u00e1nku v\u00fdb\u011bru soci\u00e1ln\u00edho m\u00e9dia, proto\u017ee konfigurace webov\u00e9 aplikace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nen\u00ed dostupn\u00e1. Pou\u017eije se v\u00fdchoz\u00ed str\u00e1nka v\u00fdb\u011bru.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.explanation=Slu\u017eba webov\u00e9 aplikace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nen\u00ed dostupn\u00e1. Konfigurace webov\u00e9 aplikace pravd\u011bpodobn\u011b chyb\u00ed v konfiguraci serveru.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.useraction=Ov\u011b\u0159te, \u017ee konfigurace webov\u00e9 aplikace p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b je v konfiguraci serveru ur\u010dena. Zkontrolujte protokoly serveru a ujist\u011bte se, \u017ee slu\u017eba webov\u00e9 aplikace je ke \u010dten\u00ed a je dostupn\u00e1.
+
+# 0=Endpoint URL
+REDIRECT_NO_MATCHING_CONFIG=CWWKS5433E: Po\u017eadavek sm\u011brovan\u00fd na [{0}] nem\u00e1 konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, ke kter\u00e9 m\u016f\u017ee b\u00fdt p\u0159idru\u017eena.
+REDIRECT_NO_MATCHING_CONFIG.explanation=U po\u017eadavku se p\u0159edpokl\u00e1d\u00e1, \u017ee bude odesl\u00e1n na koncov\u00fd bod, kter\u00fd m\u00e1 v adrese URL ID konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed. Av\u0161ak adresa URL neobsahuje ID zn\u00e1m\u00e9 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed.
+REDIRECT_NO_MATCHING_CONFIG.useraction=Ov\u011b\u0159te, \u017ee je adresa URL p\u0159esm\u011brov\u00e1n\u00ed dob\u0159e formovanou adresou URL konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, kter\u00e1 existuje v konfiguraci serveru.
+
+# 0=Specific exception or error message
+ERROR_PROCESSING_REDIRECT=CWWKS5434E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b rozpoznala chybu p\u0159i zpracov\u00e1n\u00ed po\u017eadavku na p\u0159esm\u011brov\u00e1n\u00ed. {0}
+ERROR_PROCESSING_REDIRECT.explanation=Poskytovatel soci\u00e1ln\u00edho m\u00e9dia p\u0159esm\u011broval po\u017eadavek na tento koncov\u00fd bod, aby se mohlo pokra\u010dovat v ov\u011b\u0159ov\u00e1n\u00ed nebo autorizace u\u017eivatele. Nicm\u00e9n\u011b po\u017eadavek nelze dokon\u010dit kv\u016fli p\u0159\u00ed\u010din\u011b zobrazen\u00e9 v chybov\u00e9 zpr\u00e1v\u011b.
+ERROR_PROCESSING_REDIRECT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy. 
+
+USERNAME_NOT_FOUND=CWWKS5435E: Jm\u00e9no u\u017eivatele nelze extrahovat z tokenu, kter\u00fd byl z\u00edsk\u00e1n z platformy soci\u00e1ln\u00edch m\u00e9di\u00ed.
+USERNAME_NOT_FOUND.explanation=Atribut, kter\u00fd definuje jm\u00e9no u\u017eivatele, se li\u0161\u00ed od platformy soci\u00e1ln\u00edch m\u00e9di\u00ed. Hodnota nakonfigurovan\u00e1 pro atribut userNameAttribute m\u016f\u017ee b\u00fdt chybn\u00e1.
+USERNAME_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee hodnota atributu userNameAttribute odpov\u00edd\u00e1 hodnot\u011b pou\u017eit\u00e9 platformou soci\u00e1ln\u00edch m\u00e9di\u00ed k nadefinov\u00e1n\u00ed jm\u00e9na u\u017eivatele.
+
+REALM_NOT_FOUND=CWWKS5436E: Sf\u00e9ru nelze extrahovat z tokenu, kter\u00fd byl z\u00edsk\u00e1n z platformy soci\u00e1ln\u00edch m\u00e9di\u00ed.
+REALM_NOT_FOUND.explanation=Atribut, kter\u00fd definuje n\u00e1zev sf\u00e9ry, se li\u0161\u00ed od platformy soci\u00e1ln\u00edch m\u00e9di\u00ed. Hodnota nakonfigurovan\u00e1 pro atribut realmName m\u016f\u017ee b\u00fdt chybn\u00e1.
+REALM_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee hodnota atributu realmName odpov\u00edd\u00e1 hodnot\u011b pou\u017eit\u00e9 platformou soci\u00e1ln\u00edch m\u00e9di\u00ed k nadefinov\u00e1n\u00ed sf\u00e9ry.
+
+# "subject" refers to a Java Authentication and Authorization Service (JAAS) subject
+# 0=socialLogin element ID, 1=Error message (if present)
+TWITTER_ERROR_CREATING_RESULT=CWWKS5437E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nevytvo\u0159ila p\u0159edm\u011bt pro u\u017eivatele pomoc\u00ed informac\u00ed o profilu Twitter a konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}]. {1}
+TWITTER_ERROR_CREATING_RESULT.explanation=N\u011bkter\u00e9 informace o profilu, kter\u00e9 byly pou\u017eity k vytvo\u0159en\u00ed p\u0159edm\u011btu pro u\u017eivatele, mohou chyb\u011bt nebo mohou b\u00fdt chybn\u00e9.
+TWITTER_ERROR_CREATING_RESULT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN=CWWKS5438E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nevytvo\u0159ila pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] za\u0161ifrovan\u00fd p\u0159\u00edstupov\u00fd token. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.explanation=Do\u0161lo k chyb\u011b, kdy\u017e funkce pou\u017eila n\u011bkter\u00fd z \u0161ifrovac\u00edch algoritm\u016f k vytvo\u0159en\u00ed tokenu \u0161ifrovan\u00e9ho p\u0159\u00edstupu na z\u00e1klad\u011b poskytnut\u00e9ho p\u0159\u00edstupov\u00e9ho tokenu. Zpr\u00e1va by mohla zahrnovat v\u00edce specifick\u00fdch p\u0159\u00ed\u010din, pro\u010d za\u0161ifrovan\u00fd token nelze vytvo\u0159it.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL=CWWKS5439E: P\u0159\u00edstupov\u00fd token dodan\u00fd konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed je null, tak\u017ee token nem\u016f\u017ee b\u00fdt za\u0161ifrov\u00e1n.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.explanation=P\u0159\u00edstupov\u00fd token Null nelze za\u0161ifrovat.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=K \u0161ifrovan\u00ed zadejte jin\u00fd p\u0159\u00edstupov\u00fd token ne\u017e Null.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed neza\u0161ifrovala pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] poskytnut\u00fd p\u0159\u00edstupov\u00fd token. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=Ve\u0159ejn\u00fd kl\u00ed\u010d pou\u017eit\u00fd k za\u0161ifrov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho tokenu m\u016f\u017ee b\u00fdt chybn\u00fd nebo nemus\u00ed b\u00fdt platn\u00fd nebo po\u017eadovan\u00fd \u0161ifrovac\u00ed algoritmus RSA nemus\u00ed b\u00fdt k dispozici.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Ov\u011b\u0159te, \u017ee ve\u0159ejn\u00fd kl\u00ed\u010d, kter\u00fd je konfigurov\u00e1n pro uvedenou konfiguraci soci\u00e1ln\u00edho p\u0159ihla\u0161ov\u00e1n\u00ed, je platn\u00fd a lze jej pou\u017e\u00edt pro \u0161ifrov\u00e1n\u00ed RSA.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES=CWWKS5441E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed neza\u0161ifrovala pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] poskytnut\u00fd p\u0159\u00edstupov\u00fd token pomoc\u00ed tajn\u00e9ho kl\u00ed\u010de. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.explanation=Tajn\u00fd kl\u00ed\u010d pou\u017eit\u00fd k za\u0161ifrov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho tokenu m\u016f\u017ee b\u00fdt chybn\u00fd nebo nemus\u00ed b\u00fdt platn\u00fd. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed inicializa\u010dn\u00edho vektoru pro \u0161ifrovac\u00ed algoritmus, nebo po\u017eadovan\u00fd \u0161ifrovac\u00ed algoritmus AES nemus\u00ed b\u00fdt k dispozici.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.useraction=Ov\u011b\u0159te, \u017ee tajn\u00fd kl\u00ed\u010d nakonfigurovan\u00fd pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed ve zpr\u00e1v\u011b je platn\u00fd a lze jej pou\u017e\u00edt pro \u0161ifrov\u00e1n\u00ed AES.
+
+# 0=socialLogin element ID
+TWITTER_STATE_MISSING=CWWKS5442E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nedokon\u010dila po\u017eadavek pomoc\u00ed konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}], proto\u017ee chyb\u00ed hodnota stavu.
+TWITTER_STATE_MISSING.explanation=Hodnota stavu je generov\u00e1na pro ka\u017edou jedine\u010dnou \u017e\u00e1dost o ov\u011b\u0159en\u00ed a ulo\u017eena v souboru cookie. Hodnota je zapot\u0159eb\u00ed pro ov\u011b\u0159en\u00ed a zpracov\u00e1n\u00ed ka\u017ed\u00e9 \u017e\u00e1dosti o ov\u011b\u0159en\u00ed. Soubor cookie stavu bu\u010f nebyl vytvo\u0159en, nebo byl odstran\u011bn.
+TWITTER_STATE_MISSING.useraction=Ov\u011b\u0159te, \u017ee hodnota stavu byla \u00fasp\u011b\u0161n\u011b ulo\u017eena do souboru cookie a \u017ee soubor cookie nebyl odstran\u011bn.
+
+# 0=socialLogin element ID
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY=CWWKS5443E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nedokon\u010dila po\u017eadavek pomoc\u00ed konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}], proto\u017ee adresa URL p\u016fvodn\u00edho po\u017eadavku chyb\u00ed nebo je pr\u00e1zdn\u00e1. P\u016fvodn\u00ed adresa URL po\u017eadavku mus\u00ed b\u00fdt uvedena, aby bylo mo\u017en\u00e9 p\u0159esm\u011brovat u\u017eivatele zp\u011bt na chr\u00e1n\u011bn\u00fd prost\u0159edek, kter\u00fd byl p\u016fvodn\u011b po\u017eadov\u00e1n.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.explanation=P\u016fvodn\u00ed adresa URL po\u017eadavku je ulo\u017eena v souboru cookie na za\u010d\u00e1tku procesu ov\u011b\u0159en\u00ed. Tento soubor cookie bu\u010f chyb\u00ed, nebo m\u00e1 pr\u00e1zdnou hodnotu.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.useraction=Ov\u011b\u0159te, \u017ee p\u016fvodn\u00ed adresa URL po\u017eadavku byla \u00fasp\u011b\u0161n\u011b ulo\u017eena do souboru cookie a \u017ee soubor cookie nebyl odstran\u011bn.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA=CWWKS5444E: P\u0159\u00edstupov\u00fd token zadan\u00fd do funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nelze de\u0161ifrovat pomoc\u00ed soukrom\u00e9ho kl\u00ed\u010de uveden\u00e9ho v konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 zabr\u00e1nila \u0161ifrovac\u00edmu algoritmu RSA de\u0161ifrovat p\u0159\u00edstupov\u00fd token. Soukrom\u00fd kl\u00ed\u010d pou\u017eit\u00fd k de\u0161ifrov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho tokenu m\u016f\u017ee b\u00fdt chybn\u00fd, nebo nemus\u00ed b\u00fdt platn\u00fd, za\u0161ifrovan\u00fd token m\u016f\u017ee b\u00fdt nespr\u00e1vn\u011b naform\u00e1tovan\u00fd nebo vy\u017eadovat takov\u00fd \u0161ifrovac\u00ed algoritmus RSA, kter\u00fd nen\u00ed k dispozici.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.useraction=Ov\u011b\u0159te, \u017ee konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed vy\u017eaduje takov\u00fd soukrom\u00fd kl\u00ed\u010d, kter\u00fd m\u00e1 platnou konfiguraci a lze ho pou\u017e\u00edt pro de\u0161ifrov\u00e1n\u00ed RSA. Ov\u011b\u0159te, \u017ee za\u0161ifrovan\u00fd token je spr\u00e1vn\u011b form\u00e1tov\u00e1n a de\u0161ifrovac\u00ed algoritmus je k dispozici.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES=CWWKS5445E: P\u0159\u00edstupov\u00fd token zadan\u00fd do funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nelze de\u0161ifrovat pomoc\u00ed tajn\u00e9ho kl\u00ed\u010de uveden\u00e9ho v konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.explanation=Do\u0161lo k chyb\u011b, kter\u00e1 zabr\u00e1nila \u0161ifrovac\u00edmu algoritmu AES de\u0161ifrovat p\u0159\u00edstupov\u00fd token. Tajn\u00fd kl\u00ed\u010d pou\u017eit\u00fd k de\u0161ifrov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho tokenu m\u016f\u017ee b\u00fdt chybn\u00fd nebo nemus\u00ed b\u00fdt platn\u00fd. Za\u0161ifrovan\u00fd token nemus\u00ed b\u00fdt spr\u00e1vn\u011b naform\u00e1tov\u00e1n. K t\u00e9to chyb\u011b mohlo doj\u00edt p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed inicializa\u010dn\u00edho vektoru pro de\u0161ifrovac\u00ed algoritmus, nebo po\u017eadovan\u00fd \u0161ifrovac\u00ed algoritmus AES nemusel b\u00fdt k dispozici.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.useraction=Ov\u011b\u0159te, \u017ee konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed vy\u017eaduje takov\u00fd tajn\u00fd kl\u00ed\u010d, kter\u00fd m\u00e1 platnou konfiguraci a lze ho pou\u017e\u00edt pro de\u0161ifrov\u00e1n\u00ed AES. Ov\u011b\u0159te, \u017ee za\u0161ifrovan\u00fd token je spr\u00e1vn\u011b form\u00e1tov\u00e1n a de\u0161ifrovac\u00ed algoritmus je k dispozici.
+
+# Intended to be a child of ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA or ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES
+VALUE_NOT_HEXADECIMAL=CWWKS5446E: Poskytnut\u00e1 hodnota nen\u00ed v hexadecim\u00e1ln\u00edm form\u00e1tu, tak\u017ee ji nelze dek\u00f3dovat.
+VALUE_NOT_HEXADECIMAL.explanation=O\u010dek\u00e1v\u00e1 se, \u017ee hodnota \u0161ifrovan\u00e9ho tokenu bude zak\u00f3dov\u00e1na v hexadecim\u00e1ln\u00edm form\u00e1tu.
+VALUE_NOT_HEXADECIMAL.useraction=Ov\u011b\u0159te, \u017ee je heslo zak\u00f3dov\u00e1no spr\u00e1vn\u011b v hexadecim\u00e1ln\u00edm form\u00e1tu.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT=CWWKS5447E: Po\u017eadavek nelze p\u0159esm\u011brovat na koncov\u00fd bod autorizace, kter\u00fd je konfigurovan\u00fd pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}]. {1}
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.explanation=Pravd\u011bpodobn\u011b do\u0161lo k chyb\u011b p\u0159i sestavov\u00e1n\u00ed adresy URL p\u0159esm\u011brov\u00e1n\u00ed koncov\u00e9ho bodu autorizace. Nebo do\u0161lo k chyb\u011b p\u0159i p\u0159esm\u011brov\u00e1n\u00ed po\u017eadavku.
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee adresa URL p\u0159esm\u011brov\u00e1n\u00ed pro koncov\u00fd bod autorizace je platnou adresou URL. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'state', OAuth
+# 0=socialLogin element ID
+STATE_IS_NULL=CWWKS5448E: Pro koncov\u00fd bod autorizace konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] nebyl vytvo\u0159en \u0159et\u011bzec platn\u00e9ho dotazu, proto\u017ee poskytnut\u00e1 hodnota stavu m\u00e1 hodnotu null.
+STATE_IS_NULL.explanation=V po\u017eadavc\u00edch na koncov\u00e9 body autorizace OAuth se po\u017eaduje parametr 'state'. Platn\u00fd po\u017eadavek koncov\u00e9ho bodu autorizace nelze vytvo\u0159it bez hodnoty stavu.
+STATE_IS_NULL.useraction=Ov\u011b\u0159te, \u017ee se pro tento po\u017eadavek vygenerovala hodnota stavu, kter\u00e1 nen\u00ed null.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'redirect_uri', OAuth
+# 0=socialLogin element ID
+REDIRECT_URL_IS_NULL=CWWKS5449E: Pro koncov\u00fd bod autorizace konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] nebyl vytvo\u0159en \u0159et\u011bzec platn\u00e9ho dotazu, proto\u017ee poskytnut\u00e1 hodnota identifik\u00e1toru URI p\u0159esm\u011brov\u00e1n\u00ed m\u00e1 hodnotu NULL.
+REDIRECT_URL_IS_NULL.explanation=V po\u017eadavc\u00edch na koncov\u00e9 body autorizace OAuth se po\u017eaduje parametr 'redirect_uri'. Platn\u00fd po\u017eadavek koncov\u00e9ho bodu autorizace nelze vytvo\u0159it bez hodnoty identifik\u00e1toru URI p\u0159esm\u011brov\u00e1n\u00ed.
+REDIRECT_URL_IS_NULL.useraction=Ov\u011b\u0159te, \u017ee se pro tento po\u017eadavek vytvo\u0159ila hodnota identifik\u00e1toru URI p\u0159esm\u011brov\u00e1n\u00ed, kter\u00e1 nen\u00ed null.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_SSL_CONTEXT=CWWKS5450E: Po\u017eadavek nem\u016f\u017ee vyvolat koncov\u00fd bod tokenu, proto\u017ee p\u0159i na\u010d\u00edt\u00e1n\u00ed informac\u00ed SSL pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] do\u0161lo k chyb\u011b. {1}
+AUTH_CODE_ERROR_SSL_CONTEXT.explanation=Po\u017eadavek obsahuje autoriza\u010dn\u00ed k\u00f3d, kter\u00fd se pou\u017e\u00edv\u00e1 k z\u00edsk\u00e1n\u00ed informac\u00ed o u\u017eivateli z koncov\u00e9ho bodu tokenu OAuth. Pro vyvol\u00e1n\u00ed tohoto koncov\u00e9ho bodu tokenu jsou nezbytn\u00e9 informace o SSL. P\u0159i na\u010d\u00edt\u00e1n\u00ed informac\u00ed SSL do\u0161lo k chyb\u011b, tak\u017ee koncov\u00fd bod tokenu nebylo mo\u017en\u00e9 vyvolat.
+AUTH_CODE_ERROR_SSL_CONTEXT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee se uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed odkazuje na platnou konfiguraci SSL, p\u0159\u00edpadn\u011b ov\u011b\u0159te, \u017ee v\u00fdchoz\u00ed konfigurace SSL serveru je nakonfigurovan\u00e1 spr\u00e1vn\u011b.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_GETTING_TOKENS=CWWKS5451E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed rozpoznala probl\u00e9m p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed informac\u00ed o tokenu z konfigurace koncov\u00e9ho bodu tokenu pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}]. {1}
+AUTH_CODE_ERROR_GETTING_TOKENS.explanation=Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed mus\u00ed vydat po\u017eadavek na koncov\u00fd bod tokenu, aby bylo mo\u017en\u00e9 z\u00edskat p\u0159\u00edstupov\u00fd token a voliteln\u00fd token s ID. Adresa URL koncov\u00e9ho bodu tokenu mohla b\u00fdt chybn\u00e1, nebo chyb\u011bla, odezvy z koncov\u00e9ho bodu tokenu mohly b\u00fdt nespr\u00e1vn\u011b naform\u00e1tov\u00e1ny, nebo do\u0161lo k chyb\u011b p\u0159i vol\u00e1n\u00ed koncov\u00e9ho bodu tokenu.
+AUTH_CODE_ERROR_GETTING_TOKENS.useraction=Ov\u011b\u0159te, \u017ee adresa URL koncov\u00e9ho bodu tokenu nakonfigurovan\u00e1 pro tuto konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed je platnou adresou URL. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=socialLogin element ID
+USER_API_RESPONSE_NULL_OR_EMPTY=CWWKS5452E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed neov\u011b\u0159ila u\u017eivatele, proto\u017ee odezva z u\u017eivatelsk\u00e9ho rozhran\u00ed API nakonfigurovan\u00e1 pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] m\u00e1 hodnotu null nebo je pr\u00e1zdn\u00e1.
+USER_API_RESPONSE_NULL_OR_EMPTY.explanation=Z nakonfigurovan\u00e9ho u\u017eivatelsk\u00e9ho rozhran\u00ed API se mus\u00ed vr\u00e1tit u\u017eivatelsk\u00e1 data. U\u017eivatele nelze ov\u011b\u0159it bez u\u017eivatelsk\u00fdch dat z u\u017eivatelsk\u00e9ho rozhran\u00ed API.
+USER_API_RESPONSE_NULL_OR_EMPTY.useraction=Ov\u011b\u0159te, \u017ee je pro uvedenou konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nakonfigurovan\u00e9 alespo\u0148 jedno u\u017eivatelsk\u00e9 rozhran\u00ed API. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_FAILED_TO_CREATE_JWT=CWWKS5453E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed rozpoznala probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed tokenu JWT (JSON Web Token) z poskytnut\u00e9ho p\u0159\u00edstupov\u00e9ho tokenu pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}]. {1}
+AUTH_CODE_FAILED_TO_CREATE_JWT.explanation=K t\u00e9to chyb\u011b mohlo doj\u00edt p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed informac\u00ed o u\u017eivateli pomoc\u00ed poskytnut\u00e9ho p\u0159\u00edstupov\u00e9ho tokenu, nebo k chyb\u011b mohlo doj\u00edt p\u0159i vytv\u00e1\u0159en\u00ed tokenu JWT z poskytnut\u00e9ho tokenu s ID.
+AUTH_CODE_FAILED_TO_CREATE_JWT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_CREATING_RESULT=CWWKS5454E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nevytvo\u0159ila s vyu\u017eit\u00edm konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] pro u\u017eivatele s poskytnut\u00fdm autoriza\u010dn\u00edm k\u00f3dem p\u0159edm\u011bt. {1}
+AUTH_CODE_ERROR_CREATING_RESULT.explanation=N\u011bkter\u00e1 data, kter\u00e1 byla pou\u017eita pro vytvo\u0159en\u00ed p\u0159edm\u011btu pro uveden\u00e9ho u\u017eivatele, mohou chyb\u011bt nebo mohou b\u00fdt chybn\u00e1.
+AUTH_CODE_ERROR_CREATING_RESULT.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=socialLogin element ID, 1=User name
+ACCESS_TOKEN_MISSING=CWWKS5455E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed neov\u011b\u0159ila u\u017eivatele [{0}], proto\u017ee nebyl nalezen p\u0159\u00edstupov\u00fd token.
+ACCESS_TOKEN_MISSING.explanation=P\u0159edm\u011bt nelze pro dan\u00e9ho u\u017eivatele vytvo\u0159it, proto\u017ee chyb\u00ed p\u0159\u00edstupov\u00fd token. P\u0159\u00edstupov\u00fd token by m\u011bl b\u00fdt zahrnut v datech vr\u00e1cen\u00fdch ze soci\u00e1ln\u00edho m\u00e9dia.
+ACCESS_TOKEN_MISSING.useraction=Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy. Ov\u011b\u0159te, \u017ee se ze soci\u00e1ln\u00edho m\u00e9dia vrac\u00ed p\u0159\u00edstupov\u00fd token.
+
+USER_PROFILE_ACCESS_TOKEN_NULL=CWWKS5456E: U\u017eivatelsk\u00fd profil nelze vytvo\u0159it, proto\u017ee poskytnut\u00fd p\u0159\u00edstupov\u00fd token m\u00e1 hodnotu null.
+USER_PROFILE_ACCESS_TOKEN_NULL.explanation=Pro na\u010dten\u00ed konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, kter\u00e1 je p\u0159idru\u017eena k p\u0159\u00edstupov\u00e9mu tokenu, mus\u00ed b\u00fdt poskytnut platn\u00fd p\u0159\u00edstupov\u00fd token.
+USER_PROFILE_ACCESS_TOKEN_NULL.useraction=K vytvo\u0159en\u00ed profilu u\u017eivatele zadejte platn\u00fd p\u0159\u00edstupov\u00fd token.
+
+ACCESS_TOKEN_NOT_IN_CACHE=CWWKS5457E: U\u017eivatelsk\u00fd profil nelze vytvo\u0159it, proto\u017ee poskytnut\u00fd p\u0159\u00edstupov\u00fd token nebyl v mezipam\u011bti token\u016f nalezen.
+ACCESS_TOKEN_NOT_IN_CACHE.explanation=Vypo\u010dten\u00fd kl\u00ed\u010d tokenu m\u016f\u017ee b\u00fdt chybn\u00fd, nebo tento p\u0159\u00edstupov\u00fd token nebyl v ned\u00e1vn\u00fdch po\u017eadavc\u00edch na ov\u011b\u0159en\u00ed pou\u017eit. Token mohl b\u00fdt odebr\u00e1n z mezipam\u011bti, proto\u017ee byl p\u0159\u00edli\u0161 star\u00fd.
+ACCESS_TOKEN_NOT_IN_CACHE.useraction=Zkontrolujte, zda poskytnut\u00fd p\u0159\u00edstupov\u00fd token je platn\u00fdm p\u0159\u00edstupov\u00fdm tokenem a \u017ee odpov\u00edd\u00e1 p\u0159\u00edstupov\u00e9mu tokenu, kter\u00fd byl pou\u017eit v \u00fasp\u011b\u0161n\u011b ov\u011b\u0159en\u00fdch po\u017eadavc\u00edch. Ov\u011b\u0159te, \u017ee mezipam\u011b\u0165 token\u016f nebyla vymaz\u00e1na od p\u0159id\u00e1n\u00ed tohoto tokenu.
+
+# 0=socialLogin element ID
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND=CWWKS5458E: Nebyla nalezena konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}], p\u0159idru\u017een\u00e1 k tokenu ulo\u017een\u00e9mu do mezipam\u011bti.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.explanation=Uvedenou slu\u017ebu soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nelze v konfiguraci serveru nal\u00e9zt. ID konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed p\u0159idru\u017een\u00e9 k tomuto p\u0159\u00edstupov\u00e9mu tokenu chyb\u00ed, nebo uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed neexistuje.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.useraction=Zkontrolujte, zda konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed s uveden\u00fdm ID v konfiguraci serveru existuje. Ov\u011b\u0159te, \u017ee byla konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed \u00fasp\u011b\u0161n\u011b na\u010dtena.
+
+# 0=socialLogin element ID
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN=CWWKS5459E: P\u0159\u00edstupov\u00fd token nebyl nalezen v sad\u011b token\u016f poskytnut\u00fdch funkci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.explanation=P\u0159\u00edstupov\u00fd token mus\u00ed b\u00fdt poskytnut, aby bylo mo\u017en\u00e9 vytvo\u0159it profil u\u017eivatele. Tento token nen\u00ed v mezipam\u011bti token\u016f, nebo tokenu chyb\u00ed v informac\u00edch o u\u017eivateli vr\u00e1cen\u00fdch ze soci\u00e1ln\u00edho m\u00e9dia.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.useraction=Ov\u011b\u0159te, \u017ee p\u0159\u00edstupov\u00fd token je sou\u010d\u00e1st\u00ed sady dat vr\u00e1cen\u00fdch ze soci\u00e1ln\u00edho m\u00e9dia. Ov\u011b\u0159te, \u017ee objekt tokenu v okam\u017eiku ulo\u017een\u00ed objektu tokenu do mezipam\u011bti uv\u00e1d\u011bl platn\u00fd p\u0159\u00edstupov\u00fd token.
+
+# 0=socialLogin element ID
+NO_USER_API_CONFIGS_PRESENT=CWWKS5460W: Pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] nejsou uvedeny \u017e\u00e1dn\u00e9 konfigurace u\u017eivatelsk\u00e9ho rozhran\u00ed API.
+NO_USER_API_CONFIGS_PRESENT.explanation=Pro z\u00edsk\u00e1n\u00ed informac\u00ed o u\u017eivateli mus\u00ed b\u00fdt uvedena minim\u00e1ln\u011b jedna konfigurace u\u017eivatelsk\u00e9ho rozhran\u00ed API.
+NO_USER_API_CONFIGS_PRESENT.useraction=Zkontrolujte, zda uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed obsahuje minim\u00e1ln\u011b jednu konfiguraci u\u017eivatelsk\u00e9ho rozhran\u00ed API.
+
+# 0=User API string, 1=socialLogin element ID, 2=Error message
+ERROR_GETTING_USER_API_RESPONSE=CWWKS5461E: Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161ena rozpoznala chybu p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed informac\u00ed o u\u017eivateli z u\u017eivatelsk\u00e9ho rozhran\u00ed API [{0}], kter\u00e9 je nakonfigurovan\u00e9 pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{1}]. {2}
+ERROR_GETTING_USER_API_RESPONSE.explanation=Uveden\u00e9 u\u017eivatelsk\u00e9 rozhran\u00ed API nemus\u00ed b\u00fdt spr\u00e1vn\u011b nakonfigurovan\u00e9. M\u016f\u017ee doch\u00e1zet k probl\u00e9m\u016fm s p\u0159\u00edstupov\u00fdm tokenem pou\u017eit\u00fdm k vyvol\u00e1n\u00edm u\u017eivatelsk\u00e9ho rozhran\u00ed API. Odezva z u\u017eivatelsk\u00e9ho rozhran\u00ed API nemus\u00ed b\u00fdt v o\u010dek\u00e1van\u00e9m form\u00e1tu.
+ERROR_GETTING_USER_API_RESPONSE.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+TOKEN_ENDPOINT_NULL_OR_EMPTY=CWWKS5462E: Hodnota adresy URL koncov\u00e9ho bodu tokenu m\u00e1 hodnotu null nebo je pr\u00e1zdn\u00e1.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.explanation=Pro z\u00edsk\u00e1n\u00ed p\u0159\u00edstupov\u00fdch token\u016f nebo token\u016f s ID pro u\u017eivatele mus\u00ed b\u00fdt poskytnuta platn\u00e1 adresa URL koncov\u00e9ho bodu tokenu.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.useraction=Zkontrolujte, zda je pro ka\u017edou konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nakonfigurovan\u00e1 platn\u00e1 adresa URL koncov\u00e9ho bodu tokenu.
+
+# Intended to be a child of AUTH_CODE_ERROR_SSL_CONTEXT
+# 0=socialLogin element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5463E: Kontext SSL pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] nelze na\u010d\u00edst. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=Konfigurace SSL pou\u017eit\u00e1 pro uvedenou konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed m\u016f\u017ee chyb\u011bt, nebo nen\u00ed spr\u00e1vn\u00e1.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Dal\u0161\u00ed informace viz chyba ve zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee informace o SSL jsou pro uvedenou konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed p\u0159esn\u00e9. Je-li v konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed uveden atribut konfigurace 'sslRef', zkontrolujte, zda je p\u0159\u00edslu\u0161n\u00e1 konfigurace SSL spr\u00e1vn\u00e1. Jinak ov\u011b\u0159te, \u017ee je v\u00fdchoz\u00ed konfigurace SSL serveru spr\u00e1vn\u011b nakonfigurovan\u00e1.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=socialLogin element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5464E: Funk\u010dnost odb\u011bratele tokenu JSON Web Token (JWT) pravd\u011bpodobn\u011b nen\u00ed pro konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] dostupn\u00e1, proto\u017ee slu\u017eba pro uvedenou konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nebyla nalezena.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed pravd\u011bpodobn\u011b dosud dostupn\u00e1, nebo byla slu\u017eba pro tuto konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed zastavena.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Ov\u011b\u0159te, \u017ee je uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nakonfigurovan\u00e1 a dostupn\u00e1.
+
+# 0=Context path string from webapp configuration
+INVALID_CONTEXT_PATH_CHARS=CWWKS5465E: Kontextov\u00e1 cesta [{0}] uveden\u00e1 v konfiguraci webov\u00e9 aplikace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed obsahuje znaky, kter\u00e9 nelze zahrnout do platn\u00e9 cesty identifik\u00e1toru URI. Funkce soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nefunguje s neplatnou kontextovou cestou.
+INVALID_CONTEXT_PATH_CHARS.explanation=Kontextov\u00e1 cesta nakonfigurovan\u00e1 konfigurac\u00ed webov\u00e9 aplikace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed platn\u00fdm \u0159et\u011bzcem cesty identifik\u00e1toru URI. Kontextov\u00e1 cesta mus\u00ed odpov\u00eddat specifikaci RFC 3986 (https://tools.ietf.org/html/rfc3986), a m\u016f\u017ee obsahovat pouze ur\u010dit\u00e9 znaky.
+INVALID_CONTEXT_PATH_CHARS.useraction=Ov\u011b\u0159te, \u017ee nakonfigurovan\u00e1 kontextov\u00e1 cesta obsahuje pouze znaky povolen\u00e9 specifikac\u00ed RFC 3986 pro komponenty cest identifik\u00e1tor\u016f URI.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5466E: Referen\u010dn\u00ed informace SSL pro funkci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nelze na\u010d\u00edst, proto\u017ee p\u0159i na\u010d\u00edt\u00e1n\u00ed vlastnost\u00ed SSL do\u0161lo k chyb\u011b. {0}
+ERROR_LOADING_SSL_PROPS.explanation=Konfigurace SSL pou\u017eit\u00e1 konfigurac\u00ed soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nebyla dostupn\u00e1, nebo p\u0159i na\u010d\u00edt\u00e1n\u00ed vlastnost\u00ed konfigurace SSL do\u0161lo k chyb\u011b.
+ERROR_LOADING_SSL_PROPS.useraction=Ov\u011b\u0159te, \u017ee konfigurace SSL, pou\u017eit\u00e1 slu\u017ebou soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5467E: Ve\u0159ejn\u00e9 kl\u00ed\u010de nelze na\u010d\u00edst z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, proto\u017ee nebyla nalezena slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=Slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f pro funkci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed nen\u00ed pravd\u011bpodobn\u011b k dispozici.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Ov\u011b\u0159te, \u017ee slu\u017eba \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, pou\u017e\u00edvan\u00e1 slu\u017ebou soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed, je spr\u00e1vn\u011b nakonfigurovan\u00e1 a byla \u00fasp\u011b\u0161n\u011b spu\u0161t\u011bna.
+
+# 0=Truststore ID, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5468E: Do\u0161lo k chyb\u011b p\u0159i na\u010d\u00edt\u00e1n\u00ed d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti [{0}]. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=\u00dalo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti nemus\u00ed b\u00fdt dosud inicializov\u00e1no, nebo ur\u010den\u00e9 \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti v konfiguraci serveru neexistuje.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Ov\u011b\u0159te, \u017ee \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti s uveden\u00fdm ID je v konfiguraci serveru p\u0159\u00edtomno a bylo \u00fasp\u011b\u0161n\u011b zpracov\u00e1no.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5469E: Certifik\u00e1t s aliasem [{0}] nelze na\u010d\u00edst z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti [{1}]. {2}
+ERROR_LOADING_CERTIFICATE.explanation=Certifik\u00e1t s uveden\u00fdm aliasem nemus\u00ed b\u00fdt p\u0159\u00edtomen v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti, \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti nemus\u00ed b\u00fdt dosud inicializov\u00e1no nebo \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti neexistuje v konfiguraci serveru.
+ERROR_LOADING_CERTIFICATE.useraction=Ov\u011b\u0159te, \u017ee certifik\u00e1t s uveden\u00fdm aliasem je obsa\u017een v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti. Ov\u011b\u0159te, \u017ee \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti s uveden\u00fdm ID je v konfiguraci serveru p\u0159\u00edtomno a bylo \u00fasp\u011b\u0161n\u011b zpracov\u00e1no.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_GETTING_PUBLIC_KEYS=CWWKS5470E: Certifik\u00e1t s aliasem [{0}] nelze na\u010d\u00edst z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti [{1}], proto\u017ee p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed ve\u0159ejn\u00fdch kl\u00ed\u010d\u016f z \u00falo\u017ei\u0161t\u011b \u00fadaj\u016f o d\u016fv\u011bryhodnosti do\u0161lo k chyb\u011b. {2}
+ERROR_LOADING_GETTING_PUBLIC_KEYS.explanation=\u00dalo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f slu\u017eby nemus\u00ed b\u00fdt k dispozici, certifik\u00e1ty v \u00falo\u017ei\u0161ti \u00fadaj\u016f o d\u016fv\u011bryhodnosti nelze na\u010d\u00edst nebo certifik\u00e1t s uveden\u00fdm aliasem nelze na\u010d\u00edst.
+ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=Private key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: Soukrom\u00fd kl\u00ed\u010d s aliasem [{0}] nelze na\u010d\u00edst z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f [{1}]. {2}
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=Soukrom\u00fd kl\u00ed\u010d s uveden\u00fdm aliasem nemus\u00ed b\u00fdt p\u0159\u00edtomen v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f, soukrom\u00fd kl\u00ed\u010d nemus\u00ed b\u00fdt spr\u00e1vn\u00e9ho typu, \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nemus\u00ed b\u00fdt dosud inicializov\u00e1no nebo \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v konfiguraci serveru neexistuje.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Ov\u011b\u0159te, \u017ee soukrom\u00fd kl\u00ed\u010d s uveden\u00fdm aliasem je obsa\u017een v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f a soukrom\u00fd kl\u00ed\u010d je spr\u00e1vn\u00e9ho typu. Ov\u011b\u0159te, \u017ee \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f s uveden\u00fdm ID je v konfiguraci serveru p\u0159\u00edtomno a bylo \u00fasp\u011b\u0161n\u011b zpracov\u00e1no.
+
+# 0=Keystore ID, 1=Exception message
+ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: Soukrom\u00fd kl\u00ed\u010d nelze na\u010d\u00edst z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f [{0}]. {1}
+ERROR_LOADING_PRIVATE_KEY.explanation=Soukrom\u00fd kl\u00ed\u010d, kter\u00fd byl vybr\u00e1n z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, nemus\u00ed b\u00fdt spr\u00e1vn\u00e9ho typu, \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nemus\u00ed b\u00fdt dosud inicializov\u00e1no nebo \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v konfiguraci serveru neexistuje.
+ERROR_LOADING_PRIVATE_KEY.useraction=Ov\u011b\u0159te, zda jsou soukrom\u00e9 kl\u00ed\u010de v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f spr\u00e1vn\u00e9ho typu. Ov\u011b\u0159te, \u017ee \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f s uveden\u00fdm ID je v konfiguraci serveru p\u0159\u00edtomno a bylo \u00fasp\u011b\u0161n\u011b zpracov\u00e1no.
+
+# 0=Secret key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SECRET_KEY=CWWKS5473E: Tajn\u00fd kl\u00ed\u010d s aliasem [{0}] nelze na\u010d\u00edst z \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f [{1}]. {2}
+ERROR_LOADING_SECRET_KEY.explanation=Tajn\u00fd kl\u00ed\u010d s uveden\u00fdm aliasem nemus\u00ed b\u00fdt p\u0159\u00edtomen v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f, tajn\u00fd kl\u00ed\u010d nemus\u00ed b\u00fdt spr\u00e1vn\u00e9ho typu, \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f nemus\u00ed b\u00fdt dosud inicializov\u00e1no nebo \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v konfiguraci serveru neexistuje.
+ERROR_LOADING_SECRET_KEY.useraction=Ov\u011b\u0159te, \u017ee tajn\u00fd kl\u00ed\u010d s uveden\u00fdm aliasem je obsa\u017een v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f a tajn\u00fd kl\u00ed\u010d je spr\u00e1vn\u00e9ho typu. Ov\u011b\u0159te, \u017ee \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f s uveden\u00fdm ID je v konfiguraci serveru p\u0159\u00edtomno a bylo \u00fasp\u011b\u0161n\u011b zpracov\u00e1no.
+
+# 0=HttpResponse entity
+ERROR_PARSING_RESPONSE_ENTITY=CWWKS5474E: Tokeny nelze extrahovat z odezvy, proto\u017ee p\u0159i anal\u00fdze odpov\u011bdi do\u0161lo k chyb\u011b. [ {0} ]
+ERROR_PARSING_RESPONSE_ENTITY.explanation=Odezva z koncov\u00e9ho bodu soci\u00e1ln\u00edho m\u00e9dia patrn\u011b nen\u00ed v o\u010dek\u00e1van\u00e9m form\u00e1tu. Mohlo doj\u00edt k chyb\u011b p\u0159i zpracov\u00e1n\u00ed odezvy, nebo soci\u00e1ln\u00ed m\u00e9dium vr\u00e1tilo chybu.
+ERROR_PARSING_RESPONSE_ENTITY.useraction=Zkontrolujte obsah odezvy ze soci\u00e1ln\u00edho m\u00e9dia. Ov\u011b\u0159te, \u017ee je obsah odezvy spr\u00e1vn\u011b naform\u00e1tovan\u00fd a odezva neobsahuje chybovou zpr\u00e1vu.
+
+NULL_OR_EMPTY_REQUEST_URL=CWWKS5475E: Po\u017eadavek HTTP nebylo mo\u017en\u00e9 prov\u00e9st, proto\u017ee zadan\u00e1 adresa URL m\u00e1 hodnotu null nebo je pr\u00e1zdn\u00e1.
+NULL_OR_EMPTY_REQUEST_URL.explanation=Po\u017eadavek HTTP nelze vytvo\u0159it s nulovou nebo pr\u00e1zdnou adresou URL. Adresa URL koncov\u00e9ho bodu v konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed chyb\u00ed nebo je pr\u00e1zdn\u00e1.
+NULL_OR_EMPTY_REQUEST_URL.useraction=Ov\u011b\u0159te, \u017ee adresa URL koncov\u00e9ho bodu uveden\u00e1 v konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed je platn\u00e1.
+
+# Do not translate "POST"
+# 0=URL to which the request was submitted, 1=Error message
+ERROR_EXECUTING_REQUEST=CWWKS5476E: Do\u0161lo k chyb\u011b p\u0159i prov\u00e1d\u011bn\u00ed po\u017eadavku na poskytnutou adresu URL [{0}]. {1}
+ERROR_EXECUTING_REQUEST.explanation=Poskytnut\u00e1 adresa URL m\u016f\u017ee b\u00fdt chybn\u00e1 nebo obsahovat neplatn\u00fd protokol, p\u0159\u00edpadn\u011b do\u0161lo k chyb\u011b, kter\u00e1 zabr\u00e1nila obsluze po\u017eadavku.
+ERROR_EXECUTING_REQUEST.useraction=Podrobn\u011bj\u0161\u00ed popis chyby viz zpr\u00e1va. Ov\u011b\u0159te, \u017ee adresa URL je adresou URL ve spr\u00e1vn\u00e9m tvaru a nedo\u0161lo k \u017e\u00e1dn\u00fdm probl\u00e9m\u016fm p\u0159ipojen\u00ed k c\u00edlov\u00e9mu serveru.
+
+# 0=Response status
+RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: Stav odezvy nelze nal\u00e9zt nebo odpov\u011b\u010f vr\u00e1tila chybu. Stav odezvy byl [{0}].
+RESPONSE_STATUS_MISSING_OR_ERROR.explanation=Po\u017eadavek pravd\u011bpodobn\u011b selhal, proto\u017ee byl neautorizovan\u00fd, nebo mu chyb\u011bly informace, jako nap\u0159. povinn\u00fd parametr nebo z\u00e1hlav\u00ed po\u017eadavku. Pokud stav odezvy nebyl null, budou k\u00f3d a p\u0159\u00ed\u010dina stavu odezvy ve zpr\u00e1v\u011b.
+RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Zkontrolujte k\u00f3d stavu odezvy ve zpr\u00e1v\u011b, je-li p\u0159\u00edtomen. Ov\u011b\u0159te, \u017ee sou\u010d\u00e1st\u00ed po\u017eadavku byly v\u0161echny povinn\u00e9 parametry a z\u00e1hlav\u00ed.
+
+# 0=URL to which the request was submitted, 1=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: Po\u017eadavek na koncov\u00fd bod [{0}] se nezda\u0159il. Chyba: {1}
+RESPONSE_STATUS_UNSUCCESSFUL.explanation=Po\u017eadavek pravd\u011bpodobn\u011b selhal, proto\u017ee byl neautorizovan\u00fd, nebo mu chyb\u011bly informace, jako nap\u0159. povinn\u00fd parametr nebo z\u00e1hlav\u00ed po\u017eadavku. Po\u017eadavek mohl b\u00fdt sm\u011brov\u00e1n na nespr\u00e1vn\u00fd koncov\u00fd bod.
+RESPONSE_STATUS_UNSUCCESSFUL.useraction=Ov\u011b\u0159te, \u017ee byl po\u017eadavek sm\u011brov\u00e1n na spr\u00e1vn\u00fd koncov\u00fd bod. Ov\u011b\u0159te, \u017ee sou\u010d\u00e1st\u00ed po\u017eadavku byly v\u0161echny povinn\u00e9 parametry a z\u00e1hlav\u00ed.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS5479E: Povinn\u00fd atribut konfigurace [{0}] v konfiguraci soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{1}] chyb\u00ed nebo je pr\u00e1zdn\u00fd. Ov\u011b\u0159te, zda je tento atribut nakonfigurovan\u00fd, \u017ee nen\u00ed pr\u00e1zdn\u00fd a neobsahuje pouze pr\u00e1zdn\u00e9 znaky.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Uveden\u00fd atribut konfigurace by mohl v konfiguraci serveru chyb\u011bt. Je-li zad\u00e1na n\u011bjak\u00e1 hodnota, odeberou se p\u0159i zpracov\u00e1n\u00ed hodnoty pr\u00e1zdn\u00e1 m\u00edsta na za\u010d\u00e1tku a konci hodnoty, tak\u017ee hodnota v konfiguraci by mohla b\u00fdt pr\u00e1zdn\u00e1 nebo obsahovat pouze pr\u00e1zdn\u00e9 mezery.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Zkontrolujte, zda je uveden\u00fd atribut konfigurace nakonfigurovan\u00fd, \u017ee nen\u00ed pr\u00e1zdn\u00fd a neobsahuje pouze pr\u00e1zdn\u00e9 znaky.
+
+STATE_NULL_OR_MISMATCHED=CWWKS5480E: Po\u017eadavek na soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed se nezda\u0159il, proto\u017ee prvek stavu po\u017eadavku byl pr\u00e1zdn\u00fd nebo se neshodoval.
+STATE_NULL_OR_MISMATCHED.explanation=Pr\u00e1zdn\u00fd nebo chyb\u011bj\u00edc\u00ed prvek stavu v po\u017eadavku na soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed zp\u016fsobil chybu. 
+STATE_NULL_OR_MISMATCHED.useraction=Ov\u011b\u0159te, \u017ee je konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed spr\u00e1vn\u00e1 a vzd\u00e1len\u00e1 slu\u017eba funguje spr\u00e1vn\u011b.
+
+REQUEST_URL_NULL_OR_EMPTY=CWWKS5481E: Po\u017eadavek na soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed se nezda\u0159il, proto\u017ee atribut adresy URL po\u017eadavku byl v po\u017eadavku pr\u00e1zdn\u00fd nebo m\u011bl hodnotu null.
+REQUEST_URL_NULL_OR_EMPTY.explanation=Pr\u00e1zdn\u00fd nebo chyb\u011bj\u00edc\u00ed atribut adresy URL po\u017eadavku v po\u017eadavku na soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed zp\u016fsobil chybu.
+REQUEST_URL_NULL_OR_EMPTY.useraction=Ov\u011b\u0159te, \u017ee je konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed atributu adresy URL spr\u00e1vn\u00e1 a vzd\u00e1len\u00e1 slu\u017eba funguje spr\u00e1vn\u011b.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_REQUEST_TOKEN_URL=CWWKS5482E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee z\u00edskat token po\u017eadavku z port\u00e1lu Twitter, proto\u017ee adresa URL [{0}], kter\u00e1 je ur\u010dena atributem konfigurace [{1}] v konfiguraci Twitter [{2}] nen\u00ed platn\u00e1. {3}
+TWITTER_BAD_REQUEST_TOKEN_URL.explanation=Hodnota pro ur\u010den\u00fd atribut konfigurace nen\u00ed platnou adresou URL. Mus\u00ed b\u00fdt ur\u010dena platn\u00e1 adresa URL tak, aby mohla obsluhovat po\u017eadavky pro tokeny po\u017eadavku na Twitter.
+TWITTER_BAD_REQUEST_TOKEN_URL.useraction=Ujist\u011bte se, \u017ee platn\u00e1 adresa URL je nakonfigurov\u00e1na pro ur\u010den\u00fd atribut konfigurace, a \u017ee adresa URL je schopn\u00e1 obslou\u017eit po\u017eadavky pro tokeny po\u017eadavku Twitter. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed koncov\u00fd bod Twitter, odeberte ur\u010den\u00fd atribut konfigurace z Twitter, kter\u00fd je uveden ve zpr\u00e1v\u011b.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_ACCESS_TOKEN_URL=CWWKS5483E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee z\u00edskat p\u0159\u00edstupov\u00fd token z port\u00e1lu Twitter, proto\u017ee adresa URL [{0}], kter\u00e1 je ur\u010dena atributem konfigurace [{1}] v konfiguraci Twitter [{2}] nen\u00ed platn\u00e1. {3}
+TWITTER_BAD_ACCESS_TOKEN_URL.explanation=Hodnota pro ur\u010den\u00fd atribut konfigurace nen\u00ed platnou adresou URL. Mus\u00ed b\u00fdt ur\u010dena platn\u00e1 adresa URL tak, aby mohla obsluhovat po\u017eadavky pro p\u0159\u00edstupov\u00e9 tokeny Twitter.
+TWITTER_BAD_ACCESS_TOKEN_URL.useraction=Ujist\u011bte se, \u017ee platn\u00e1 adresa URL je nakonfigurov\u00e1na pro ur\u010den\u00fd atribut konfigurace, a \u017ee adresa URL je schopn\u00e1 obslou\u017eit po\u017eadavky pro p\u0159\u00edstupov\u00e9 tokeny Twitter. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed koncov\u00fd bod Twitter, odeberte ur\u010den\u00fd atribut konfigurace z Twitter, kter\u00fd je uveden ve zpr\u00e1v\u011b.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_USER_API_URL=CWWKS5484E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee z\u00edskat data u\u017eivatelsk\u00e9ho \u00fa\u010dtu z port\u00e1lu Twitter, proto\u017ee adresa URL [{0}], kter\u00e1 je ur\u010dena atributem konfigurace [{1}] v konfiguraci Twitter [{2}] nen\u00ed platn\u00e1. {3}
+TWITTER_BAD_USER_API_URL.explanation=Hodnota pro ur\u010den\u00fd atribut konfigurace nen\u00ed platnou adresou URL. Mus\u00ed b\u00fdt ur\u010dena platn\u00e1 adresa URL tak, aby mohla obsluhovat po\u017eadavky pro data u\u017eivatelsk\u00e9ho \u00fa\u010dtu Twitter.
+TWITTER_BAD_USER_API_URL.useraction=Ujist\u011bte se, \u017ee platn\u00e1 adresa URL je nakonfigurov\u00e1na pro ur\u010den\u00fd atribut konfigurace, a \u017ee adresa URL je schopn\u00e1 obslou\u017eit po\u017eadavky pro data u\u017eivatelsk\u00e9ho \u00fa\u010dtu Twitter. Chcete-li pou\u017e\u00edt v\u00fdchoz\u00ed koncov\u00fd bod Twitter, odeberte ur\u010den\u00fd atribut konfigurace z Twitter, kter\u00fd je uveden ve zpr\u00e1v\u011b.
+
+# 0=Configuration attribute name
+TWITTER_MISSING_REQ_ATTR=CWWKS5485W: \u017d\u00e1dost o ov\u011b\u0159en\u00ed Twitter nemus\u00ed b\u00fdt \u00fasp\u011b\u0161n\u00e1, proto\u017ee zadan\u00e1 konfigura\u010dn\u00ed hodnota [{0}] je bu\u010f null, nebo pr\u00e1zdn\u00e1. Ov\u011b\u0159te, \u017ee v\u0161echny konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed Twitter ur\u010duj\u00ed nepr\u00e1zdnou hodnotu pro atribut konfigurace [{0}].
+TWITTER_MISSING_REQ_ATTR.explanation=Atribut konfigurace, kter\u00fd je uveden ve zpr\u00e1v\u011b, chyb\u00ed v konfiguraci nebo hodnota pro atribut je pr\u00e1zdn\u00e1 nebo obsahuje pouze znaky mezery. Pro tento atribut je po\u017eadovan\u00e1 nepr\u00e1zdn\u00e1 hodnota.
+TWITTER_MISSING_REQ_ATTR.useraction=Ov\u011b\u0159te, \u017ee v\u0161echny prvky p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b Twitter v konfiguraci serveru maj\u00ed nakonfigurovan\u00fd atribut ur\u010den\u00fd ve zpr\u00e1v\u011b a \u017ee jejich hodnoty nejsou pr\u00e1zdn\u00e9.
+
+# 0=Endpoint URL, 1=Map of data about the endpoint response
+POST_RESPONSE_NULL=CWWKS5486W: Tokeny nelze extrahovat z odezvy z koncov\u00e9ho bodu [{0}]. Mapa odezev z koncov\u00e9ho bodu byla [{1}].
+POST_RESPONSE_NULL.explanation=Po\u017eadavek m\u016f\u017ee b\u00fdt sm\u011brov\u00e1n na chybn\u00fd koncov\u00fd bod nebo po\u017eadavek nezahrnuje dostatek informac\u00ed.
+POST_RESPONSE_NULL.useraction=Ov\u011b\u0159te, \u017ee adresa URL koncov\u00e9ho bodu je p\u0159esn\u00e1 a \u017ee po\u017eadavek zahrnoval v\u0161echna nezbytn\u00e1 z\u00e1hlav\u00ed nebo parametry. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# Do not translate "JSON"
+# 0=Endpoint URL, 1=Error message, 2=Endpoint response content
+ENDPOINT_RESPONSE_NOT_JSON=CWWKS5487W: Odezva z koncov\u00e9ho bodu [{0}] nebyla v o\u010dek\u00e1van\u00e9m form\u00e1tu JSON. Chyba: [{1}]. Obsah odezvy byl [{2}].
+ENDPOINT_RESPONSE_NOT_JSON.explanation=Ur\u010den\u00fd koncov\u00fd bod m\u016f\u017ee b\u00fdt aktivn\u00ed nebo koncov\u00fd bod mohl vr\u00e1tit odezvy v jin\u00e9m form\u00e1tu.
+ENDPOINT_RESPONSE_NOT_JSON.useraction=Ov\u011b\u0159te, \u017ee server \u010dte celou odezvu z ur\u010den\u00e9ho koncov\u00e9ho bodu. Ov\u011b\u0159te, \u017ee byl po\u017eadavek odesl\u00e1n na spr\u00e1vn\u00fd koncov\u00fd bod a \u017ee odezva je v o\u010dek\u00e1van\u00e9m form\u00e1tu.
+
+# 0=URI value
+URI_CONTAINS_INVALID_CHARS=CWWKS5488W: Zadan\u00e1 hodnota [{0}] obsahuje alespo\u0148 jeden znak, kter\u00fd nelze zahrnout do platn\u00e9ho identifik\u00e1toru URI.
+URI_CONTAINS_INVALID_CHARS.explanation=Hodnota koncov\u00e9ho bodu uveden\u00e1 ve zpr\u00e1v\u011b nen\u00ed pova\u017eov\u00e1n za platn\u00fd identifik\u00e1tor URI, proto\u017ee obsahuje neplatn\u00e9 znaky. Sada platn\u00fdch znak\u016f identifik\u00e1toru URI je definov\u00e1na specifikac\u00ed RFC 3986.
+URI_CONTAINS_INVALID_CHARS.useraction=Aktualizujte \u0159et\u011bzec identifik\u00e1toru URI tak, aby obsahoval pouze platn\u00e9 znaky identifik\u00e1toru URI.
+
+SOCIAL_LOGIN_FRONT_END_ERROR=CWWKS5489E: Do\u0161lo k chyb\u011b p\u0159i ov\u011b\u0159ov\u00e1n\u00ed u\u017eivatele pomoc\u00ed soci\u00e1ln\u00edho m\u00e9dia.
+SOCIAL_LOGIN_FRONT_END_ERROR.explanation=P\u0159i ov\u011b\u0159ov\u00e1n\u00ed u\u017eivatele do\u0161lo k chyb\u011b. Mezi aplikac\u00ed a poskytovatelem slu\u017eeb t\u0159et\u00ed strany mohlo doj\u00edt k probl\u00e9m\u016fm v komunikaci.
+SOCIAL_LOGIN_FRONT_END_ERROR.useraction=Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.
+
+# 0=User API URL, 1=HTTP response status, 2=Error code, 3=Error description
+USERAPI_RESP_INVALID_STATUS=CWWKS5490E: Nelze zpracovat odezvu z koncov\u00e9ho bodu u\u017eivatelsk\u00e9ho rozhran\u00ed API [{0}]. Stav odezvy byl [{1}], chyba byla [{2}] a popis chyby byl [{3}].
+USERAPI_RESP_INVALID_STATUS.explanation=Uveden\u00fd stav odezvy neozna\u010duje \u00fasp\u011b\u0161n\u00fd v\u00fdsledek. Chyba a popis chyby uveden\u00e9 ve zpr\u00e1v\u011b mohou obsahovat dal\u0161\u00ed informace.
+USERAPI_RESP_INVALID_STATUS.useraction=Prove\u010fte akce nezbytn\u00e9 pro vy\u0159e\u0161en\u00ed chyby v odezv\u011b.
+
+# 0=User API URL, 1=Error message
+USERAPI_ERROR_RESPONSE=CWWKS5491E: Nelze zpracovat chybovou odezvu z koncov\u00e9ho bodu u\u017eivatelsk\u00e9ho rozhran\u00ed API [{0}]. Chyba byla: [{1}]
+USERAPI_ERROR_RESPONSE.explanation=Uveden\u00fd koncov\u00fd bod u\u017eivatelsk\u00e9ho rozhran\u00ed API nevr\u00e1til platn\u00fd stav odezvy, a p\u0159i zpracov\u00e1n\u00ed t\u00e9to odezvy do\u0161lo k chyb\u011b.
+USERAPI_ERROR_RESPONSE.useraction=Ov\u011b\u0159te, \u017ee je uveden\u00fd koncov\u00fd bod spr\u00e1vn\u00fd a \u017ee jde o platn\u00fd koncov\u00fd bod, kter\u00fd je schopen zpracov\u00e1vat po\u017eadavky u\u017eivatelsk\u00e9ho rozhran\u00ed API.
+
+# 0=User API URL, 1=Error message
+USERAPI_RESP_PROCESS_ERR=CWWKS5492E: Nelze zpracovat odezvu z koncov\u00e9ho bodu u\u017eivatelsk\u00e9ho rozhran\u00ed API [{0}]. Chyba byla: [{1}]
+USERAPI_RESP_PROCESS_ERR.explanation=Uveden\u00fd koncov\u00fd bod u\u017eivatelsk\u00e9ho rozhran\u00ed API vr\u00e1til platn\u00fd stav odezvy, a p\u0159i zpracov\u00e1n\u00ed obsahu odezvy objevil b\u011bhov\u00fd modul chybu.
+USERAPI_RESP_PROCESS_ERR.useraction=Ov\u011b\u0159te, \u017ee je uveden\u00fd koncov\u00fd bod spr\u00e1vn\u00fd a \u017ee obsah odezvy byl spr\u00e1vn\u011b naform\u00e1tov\u00e1n. Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b.
+
+# 0=User API URL
+USERAPI_NULL_RESP_STR=CWWKS5493E: Obsah odezvy z koncov\u00e9ho bodu u\u017eivatelsk\u00e9ho rozhran\u00ed API [{0}] nen\u00ed platn\u00fd. 
+USERAPI_NULL_RESP_STR.explanation=Uveden\u00fd koncov\u00fd bod u\u017eivatelsk\u00e9ho rozhran\u00ed API nevr\u00e1til platnou odezvu na po\u017eadavek u\u017eivatelsk\u00e9ho rozhran\u00ed API. 
+USERAPI_NULL_RESP_STR.useraction=Ov\u011b\u0159te, \u017ee je uveden\u00fd koncov\u00fd bod spr\u00e1vn\u00fd a \u017ee jde o platn\u00fd koncov\u00fd bod, kter\u00fd je schopen zpracov\u00e1vat po\u017eadavky u\u017eivatelsk\u00e9ho rozhran\u00ed API.
+
+# do not translate CODE
+CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: Po\u017eadavek na soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed se nezda\u0159il, proto\u017ee atribut CODE po\u017eadavku byl pr\u00e1zdn\u00fd nebo m\u011bl hodnotu null.
+CODE_PARAMETER_NULL_OR_EMPTY.explanation=Pr\u00e1zdn\u00fd nebo chyb\u011bj\u00edc\u00ed atribut CODE v po\u017eadavku na soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed zp\u016fsobil chybu. 
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Ov\u011b\u0159te, \u017ee je konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed atributu CODE spr\u00e1vn\u00e1 a vzd\u00e1len\u00e1 slu\u017eba funguje spr\u00e1vn\u011b.
+
+# 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
+REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: \u017d\u00e1dost o ov\u011b\u0159en\u00ed p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b se nezda\u0159il, proto\u017ee soci\u00e1ln\u00ed m\u00e9dium vr\u00e1tilo n\u00e1sleduj\u00edc\u00ed chybu {0}: {1}. Chybov\u00fd identifik\u00e1tor URI byl [{2}].
+REDIRECT_REQUEST_CONTAINED_ERROR.explanation=Zadan\u00fd stav odezvy ozna\u010dil, \u017ee ov\u011b\u0159ov\u00e1n\u00ed nebylo \u00fasp\u011b\u0161n\u00e9. Chyba a popis chyby uveden\u00e9 ve zpr\u00e1v\u011b obsahuje dal\u0161\u00ed informace.
+REDIRECT_REQUEST_CONTAINED_ERROR.useraction=Ov\u011b\u0159te, \u017ee p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b je spr\u00e1vn\u011b konfigurov\u00e1no v konfiguraci serveru, a ov\u011b\u0159te, zda hodnoty v konfiguraci serveru odpov\u00eddaj\u00ed hodnot\u00e1m definovan\u00fdm ve vzd\u00e1len\u00e9m soci\u00e1ln\u00edm m\u00e9diu.
+
+# 0=URI value
+HTTP_URI_DOES_NOT_START_WITH_HTTP=CWWKS5496W: P\u0159edpokl\u00e1d\u00e1 se, \u017ee zadan\u00e1 hodnota [{0}] bude identifik\u00e1tor HTTP URI. Hodnota ale neza\u010d\u00edn\u00e1 protokolem HTTP.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.explanation=Hodnota m\u00e1 b\u00fdt identifik\u00e1tor HTTP URI, proto mus\u00ed za\u010d\u00ednat znaky http:// nebo https://.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.useraction=Aktualizujte identifik\u00e1tor IRI tak, aby ur\u010doval protokol HTTP nebo HTTPS.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=User API value, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_USER_API=CWWKS5497E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee vytvo\u0159it token JWT (JSON Web Token) pomoc\u00ed informac\u00ed z nakonfigurovan\u00e9ho u\u017eivatelsk\u00e9ho rozhran\u00ed API [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_USER_API.explanation=Chyba uveden\u00e1 ve zpr\u00e1v\u011b by m\u011bla uv\u00e1d\u011bt konkr\u00e9tn\u011bj\u0161\u00ed p\u0159\u00ed\u010diny, pro\u010d nelze JWT vytvo\u0159it. Bu\u010f po\u017eadavek na u\u017eivatelsk\u00e9 rozhran\u00ed API je chybn\u00fd nebo chyb\u00ed informace, do\u0161lo k chyb\u011b pot\u00e9, co byl odesl\u00e1n po\u017eadavek na u\u017eivatelsk\u00e9 rozhran\u00ed API, nebo odezvu z u\u017eivatelsk\u00e9ho rozhran\u00ed API nelze pou\u017e\u00edt k vytvo\u0159en\u00ed JWT.
+FAILED_TO_CREATE_JWT_FROM_USER_API.useraction=Ov\u011b\u0159te, \u017ee je hodnota u\u017eivatelsk\u00e9ho rozhran\u00ed API spr\u00e1vn\u00e1. Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=JWT configuration element ID, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN=CWWKS5498E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee vytvo\u0159it token JWT (JSON Web Token) pomoc\u00ed zadan\u00e9ho tokenu ID a konfigurace JWT [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.explanation=Konfigurace JWT zadan\u00e1 ve zpr\u00e1v\u011b m\u016f\u017ee b\u00fdt nakonfigurov\u00e1na nespr\u00e1vn\u011b, token ID m\u016f\u017ee b\u00fdt chybn\u00fd nebo chyb\u00ed informace, nebo do\u0161lo k jin\u00e9 chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed JWT.
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Ov\u011b\u0159te, \u017ee konfigurace JWT ur\u010den\u00e1 ve zpr\u00e1v\u011b je nakonfigurov\u00e1na spr\u00e1vn\u011b. Projd\u011bte si akce u\u017eivatele pro chybu zobrazenou ve zpr\u00e1v\u011b. Zkontrolujte protokoly serveru, zda neobsahuj\u00ed dal\u0161\u00ed chybov\u00e9 zpr\u00e1vy.
+
+# 0=Request URL value, 1=Error message
+REQUEST_URL_NOT_VALID=CWWKS5499E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee p\u0159esm\u011brovat po\u017eadavek zp\u011bt na p\u016fvodn\u00ed adresu URL po\u017eadavku [{0}], proto\u017ee  adresa URL nen\u00ed platn\u00e1. {1}
+REQUEST_URL_NOT_VALID.explanation=P\u016fvodn\u00ed adresa URL po\u017eadavku nen\u00ed platnou adresou URL. Adresa URL m\u016f\u017ee obsahovat znaky, kter\u00e9 nejsou platn\u00e9, nebo adresa URL m\u016f\u017ee b\u00fdt chybn\u00e1.
+REQUEST_URL_NOT_VALID.useraction=Ov\u011b\u0159te, \u017ee adresa URL po\u017eadavku, kter\u00fd je uvedena ve zpr\u00e1v\u011b, odpov\u00edd\u00e1 p\u016fvodn\u00ed adrese URL po\u017eadavku na chr\u00e1n\u011bn\u00fd prost\u0159edek. Ov\u011b\u0159te, \u017ee adresa URL je dob\u0159e formovan\u00e1 a obsahuje pouze platn\u00e9 znaky identifik\u00e1toru URI.
