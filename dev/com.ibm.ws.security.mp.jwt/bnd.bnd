@@ -101,4 +101,11 @@ Include-Resource: \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest
+    com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+    com.ibm.ws.org.apache.commons.io;version=latest, \
+    com.ibm.ws.org.apache.commons.fileupload;version=latest, \
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection.core;version=latest,\
+    com.ibm.websphere.appserver.spi.servlet;version=latest
