@@ -380,6 +380,10 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
                 Tr.debug(tc, "******* return from JASPI provider authContext.validateRequest, status: " + status);
             }
             authResult = createAuthenticationResult(clientSubject, jaspiRequest, status, msgInfo, isJsr375BridgeProvider(provider));
+            if (provider != null && provider.getClass() != null) {
+                authResult.setAuditAuthConfigProviderName(provider.getClass().toString());
+                authResult.setAuditAuthConfigProviderAuthType(getRequestAuthType(jaspiRequest.getHttpServletRequest(), "AUTH_TYPE"));
+            }
         } catch (AuthException e) {
             AuthenticationException ex = new AuthenticationException("JASPIC Authenticated with status: SEND_FAILURE, exception: " + e);
             ex.initCause(e);

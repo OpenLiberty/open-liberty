@@ -97,7 +97,7 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
         AuthenticationResult result = null;
         String hdrValue = req.getHeader(BASIC_AUTH_HEADER_NAME);
         if (hdrValue == null || !hdrValue.startsWith("Basic ")) {
-            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_REDIRECT);
+            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_CHALLENGE);
             return result;
         }
         // Parse the username & password from the header.
@@ -107,7 +107,7 @@ public class BasicAuthAuthenticator implements WebAuthenticator {
 
         int idx = hdrValue.indexOf(':');
         if (idx < 0) {
-            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_REDIRECT);
+            result = new AuthenticationResult(AuthResult.SEND_401, inRealm, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_CHALLENGE);
             return result;
         }
 

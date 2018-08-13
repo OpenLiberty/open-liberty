@@ -160,7 +160,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private boolean isJaspiEnabled = false;
     private Subject savedSubject = null;
-    private boolean byPassedAuthRequest = false;
     private boolean isActive = false;
 
     private static ThreadLocal<AuditThreadContext> threadLocal = new ThreadLocal<AuditThreadContext>();
@@ -651,11 +650,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
         validateWebReply(webSecurityContext, webReply);
 
-        if (webReply.getStatusCode() == HttpServletResponse.SC_OK && byPassedAuthRequest) {
-            AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_SUCCESS);
-            //Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
-        }
-
         webReply.writeResponse(resp);
     }
 
@@ -667,10 +661,11 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                                  String uriName,
                                  WebRequest webRequest,
                                  WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
-        performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
         WebReply webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
-
-        if (webReply == null) {
+        if (webReply != null) {
+            logAuditEntriesBeforeAuthn(webReply, receivedSubject, uriName, webRequest);
+        } else {
+            performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
             // check global cert login.
             String authMech = webAppSecConfig.getOverrideHttpAuthMethod();
             AuthenticationResult authResult = null;
@@ -936,24 +931,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      * @return Non-null WebReply
      */
     public WebReply determineWebReply(Subject receivedSubject, String uriName, WebRequest webRequest) {
-        byPassedAuthRequest = false;
 
         WebReply webReply = performInitialChecks(webRequest, uriName);
         if (webReply != null) {
-            byPassedAuthRequest = true;
-            String realm = collabUtils.getUserRegistryRealm(securityServiceRef);
-
-            if (webReply instanceof PermitReply) {
-                AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, AuditEvent.CRED_TYPE_BASIC, realm, AuditEvent.OUTCOME_SUCCESS);
-                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
-                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
-
-            } else {
-                AuthenticationResult authResult = new AuthenticationResult(AuthResult.FAILURE, receivedSubject, AuditEvent.CRED_TYPE_BASIC, realm, AuditEvent.OUTCOME_FAILURE);
-                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
-                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
-            }
-
+            logAuditEntriesBeforeAuthn(webReply, receivedSubject, uriName, webRequest);
             return webReply;
         }
         AuthenticationResult authResult = authenticateRequest(webRequest);
@@ -1685,5 +1666,18 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return true;
         }
         return false;
+    }
+
+    // no null check for webReply object, so make sure it is not null upon calling this method.
+    private void logAuditEntriesBeforeAuthn(WebReply webReply, Subject receivedSubject, String uriName, WebRequest webRequest) {
+        AuthenticationResult authResult;
+        if (webReply instanceof PermitReply) {
+            authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, null, null, AuditEvent.OUTCOME_SUCCESS);
+        } else {
+            authResult = new AuthenticationResult(AuthResult.FAILURE, receivedSubject, null, null, AuditEvent.OUTCOME_FAILURE);
+        }
+        int statusCode = Integer.valueOf(webReply.getStatusCode());
+        Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, statusCode);
+        Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, statusCode);
     }
 }

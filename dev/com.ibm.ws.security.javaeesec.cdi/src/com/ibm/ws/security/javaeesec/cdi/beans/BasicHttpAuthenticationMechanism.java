@@ -145,7 +145,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                 status = utils.validateUserAndPassword(getCDI(), realmName, clientSubject, basicAuthCredential, httpMessageContext);
                 if (status == AuthenticationStatus.SUCCESS) {
                     Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
-                    messageInfoMap.put("javax.servlet.http.authType", "BASIC_AUTH");
+                    messageInfoMap.put("javax.servlet.http.authType", "BASIC");
                     messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
                     rspStatus = HttpServletResponse.SC_OK;
                 } else if (status == AuthenticationStatus.NOT_DONE) {
