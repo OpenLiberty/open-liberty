@@ -282,7 +282,9 @@ public class LibertyServer implements LogMonitorClient {
     protected List<String> originalFeatureSet = null;
 
     //Used for keeping track of offset positions of log files
-    protected final HashMap<String, Long> logOffsets = new HashMap<String, Long>();
+    protected HashMap<String, Long> logOffsets = new HashMap<String, Long>();
+
+    protected HashMap<String, Long> originOffsets = new HashMap<String, Long>();
 
     protected boolean serverCleanupProblem = false;
 
@@ -5662,6 +5664,27 @@ public class LibertyServer implements LogMonitorClient {
     @Override
     public void lmcClearLogOffsets() {
         logOffsets.clear();
+        originOffsets.clear();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see componenttest.topology.impl.LogMonitorClient#lmcResetLogOffsets()
+     */
+    @Override
+    public void lmcResetLogOffsets() {
+        logOffsets = new HashMap<String, Long>(originOffsets);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see componenttest.topology.impl.LogMonitorClient#lmcSetOriginLogOffsets()
+     */
+    @Override
+    public void lmcSetOriginLogOffsets() {
+        originOffsets = new HashMap<String, Long>(logOffsets);
     }
 
     /*

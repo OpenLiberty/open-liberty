@@ -416,6 +416,26 @@ public class WebServer extends Server implements LogMonitorClient {
         // Do nothing, the use of offsets is not supported in this server type
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see componenttest.topology.impl.LogMonitorClient#lmcResetLogOffsets()
+     */
+    @Override
+    public void lmcResetLogOffsets() {
+        // Do nothing, the use of offsets is not supported in this server type
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see componenttest.topology.impl.LogMonitorClient#lmcSetOriginLogOffsets()
+     */
+    @Override
+    public void lmcSetOriginLogOffsets() {
+        // Do nothing, the use of offsets is not supported in this server type
+    }
+
     //*******************************************************************************************************
     //*** End of log monitoring methods
     //*******************************************************************************************************

@@ -56,6 +56,7 @@ public class LogMonitor {
      * Reset the mark and offset values for logs back to the start of the JVM's run.
      */
     public void resetLogMarks() {
+        client.lmcResetLogOffsets();
         logMarks = new HashMap<String, Long>(originMarks);
         Log.finer(c, "resetLogMarks", "reset log offsets");
     }
@@ -70,6 +71,8 @@ public class LogMonitor {
         client.lmcClearLogOffsets();
         logMarks.clear();
         originMarks.clear();
+
+        Log.finer(c, "clearLogMarks", "cleared marks");
     }
 
     /**
@@ -77,9 +80,10 @@ public class LogMonitor {
      */
     public void setOriginLogMarks() {
 
+        client.lmcSetOriginLogOffsets();
         originMarks = new HashMap<String, Long>(logMarks);
 
-        Log.finer(c, "setOriginMarks", "set origin marks");
+        Log.finer(c, "setOriginLogMarks", "set origin marks");
     }
 
     /**
