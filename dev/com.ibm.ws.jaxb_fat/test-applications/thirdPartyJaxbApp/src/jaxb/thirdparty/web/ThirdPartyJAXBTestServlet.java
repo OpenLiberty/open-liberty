@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jaxb.web;
+package jaxb.thirdparty.web;
 
 import static org.junit.Assert.assertNull;
 
@@ -26,7 +26,7 @@ import componenttest.app.FATServlet;
 public class ThirdPartyJAXBTestServlet extends FATServlet {
 
     @Test
-    public void testJaxbAPILoadedFromApp() throws Exception {
+    public void testJaxbAPILoadedFromJDK() throws Exception {
         assertNull("System property 'javax.xml.bind.context.factory' effects the entire JVM and should not be set by the Liberty runtime!",
                    System.getProperty("javax.xml.bind.context.factory"));
 
@@ -43,7 +43,7 @@ public class ThirdPartyJAXBTestServlet extends FATServlet {
     @Test
     public void testJaxbImplLoadedFromJDK() throws Exception {
         // Verify JAX-B impl came from the JDK
-        JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
+        JAXBContext ctx = JAXBContext.newInstance("jaxb.thirdparty.web", ObjectFactory.class.getClassLoader());
         ClassLoader implLoader = ctx.getClass().getClassLoader();
         CodeSource implSrc = ctx.getClass().getProtectionDomain().getCodeSource();
         String implLocation = implSrc == null ? null : implSrc.getLocation().toString();
@@ -52,5 +52,17 @@ public class ThirdPartyJAXBTestServlet extends FATServlet {
         System.out.println("Got JAX-B impl from location=" + implLocation);
         assertNull("Expected JAX-B impl to come from JDK classloader, but it came from: " + implLoader, implLoader);
         assertNull("Expected JAX-B impl to come from JDK, but it came from: " + implLocation, implLocation);
+    }
+
+    @Test
+    public void testActivationLoadedFromJDK() throws Exception {
+        // Verify Activation API came from the JDK
+        ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
+        CodeSource apiSrc = javax.activation.DataHandler.class.getProtectionDomain().getCodeSource();
+        String apiLocation = apiSrc == null ? null : apiSrc.getLocation().toString();
+        System.out.println("Got javax.activation from loader=  " + apiLoader);
+        System.out.println("Got javax.activation from location=" + apiLocation);
+        assertNull("Expected javax.activation to come from JDK classloader, but it came from: " + apiLoader, apiLoader);
+        assertNull("Expected javax.activation to come from JDK, but it came from: " + apiLocation, apiLocation);
     }
 }
