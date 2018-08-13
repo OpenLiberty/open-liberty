@@ -58,7 +58,7 @@ public class PackageCommandTest {
     @Test
     public void testCorrectErrorMessageWhenLibExtractDirIsMissing() throws Exception {
         // Pick any server, doesn't matter.
-        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.boot.fat");
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.bootstrap.fat");
         // Only run the test if the lib/extract directory does not exist
         try {
             server.getFileFromLibertyInstallRoot("lib/extract");
@@ -179,8 +179,9 @@ public class PackageCommandTest {
     public void testCorrectErrorMessageWhenProductExtensionsInstalledAndServerRootSpecified() throws Exception {
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
-        server.getFileFromLibertyInstallRoot("lib/extract");
+
         try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
 
             // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
             File prodExtensionDir = null;
