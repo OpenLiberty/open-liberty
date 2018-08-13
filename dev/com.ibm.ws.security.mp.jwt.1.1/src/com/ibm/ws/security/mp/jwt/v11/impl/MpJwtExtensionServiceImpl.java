@@ -55,13 +55,13 @@ public class MpJwtExtensionServiceImpl implements MpJwtExtensionService {
 
 
     @Activate
-    protected void activate(ComponentContext cc, Map<String, Object> props) {
+    protected void activate(ComponentContext cc) {
         Tr.info(tc, "MPJWT_11_CONFIG_PROCESSED", uniqueId);
         mpConfigProxyServiceRef.activate(cc);
     }
 
     @Modified
-    protected void modified(ComponentContext cc, Map<String, Object> props) {
+    protected void modified(ComponentContext cc) {
         Tr.info(tc, "MPJWT_11_CONFIG_MODIFIED", uniqueId);
     }
 
