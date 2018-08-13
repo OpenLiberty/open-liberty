@@ -351,7 +351,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         return result;
     }
 
-    @FFDCIgnore({ MpJwtProcessingException.class })
+    @FFDCIgnore({ Exception.class })
     public TAIResult handleMicroProfileJwtValidation(HttpServletRequest req, HttpServletResponse res, MicroProfileJwtConfig clientConfig, String token, boolean addJwtPrincipal) throws WebTrustAssociationFailedException {
         String methodName = "handleMicroProfileJwtValidation";
         if (tc.isDebugEnabled()) {
@@ -365,12 +365,12 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             // Create JWT from access token / id token
             try {
                 Map mpCfg = mpConfigUtil.getMpConfig(req);
-//                if (!mpCfg.isEmpty()) {
-//                    jwtToken = clientConfig.getConsumerUtils().parseJwt(token, clientConfig, mpCfg);
-//                } else {
+                if (!mpCfg.isEmpty()) {
+                    jwtToken = clientConfig.getConsumerUtils().parseJwt(token, clientConfig, mpCfg);
+                } else {
                     jwtToken = taiJwtUtils.createJwt(token, clientConfig.getUniqueId());
-//                }
-            } catch (MpJwtProcessingException e) {
+                }
+            } catch (Exception e) {
                 Tr.error(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() });
                 return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }

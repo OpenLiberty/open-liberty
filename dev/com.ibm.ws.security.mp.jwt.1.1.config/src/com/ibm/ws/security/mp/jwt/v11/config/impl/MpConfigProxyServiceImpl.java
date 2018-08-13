@@ -40,21 +40,20 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     public static final TraceComponent tc = Tr.register(MpConfigProxyServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     static private String MP_VERSION = "1.1";
-    private final String uniqueId = "MpConfigProxyService";
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
-        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_PROCESSED", uniqueId);
+        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_PROCESSED");
     }
 
     @Modified
     protected void modified(ComponentContext cc, Map<String, Object> props) {
-        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_MODIFIED", uniqueId);
+        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_MODIFIED");
     }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {
-        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_DEACTIVATED", uniqueId);
+        Tr.info(tc, "MPJWT_11_CONFIG_PROXY_DEACTIVATED");
     }
 
     /**
@@ -78,12 +77,14 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
      */
     @Override
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
-        Config config;
+        return getConfig(cl).getValue(propertyName, propertyType);
+    }
+
+    protected Config getConfig(ClassLoader cl) {
         if (cl != null) {
-            config = ConfigProvider.getConfig(cl);
+            return ConfigProvider.getConfig(cl);
         } else {
-            config = ConfigProvider.getConfig();
+            return ConfigProvider.getConfig();
         }
-        return config.getValue(propertyName, propertyType);
     }
 }

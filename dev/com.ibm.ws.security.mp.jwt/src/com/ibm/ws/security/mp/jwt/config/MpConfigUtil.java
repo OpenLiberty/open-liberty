@@ -81,7 +81,7 @@ public class MpConfigUtil {
     @FFDCIgnore({ NoSuchElementException.class })
     protected Map<String, String> getMpConfig(MpJwtExtensionService service, ClassLoader cl, String propertyName,  Map<String, String> map) {
         try {
-            map.put(MpConstants.ISSUER, service.getConfigValue(cl, propertyName, String.class));
+            map.put(propertyName, service.getConfigValue(cl, propertyName, String.class));
         } catch (NoSuchElementException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, propertyName + " is not in mpConfig.");
