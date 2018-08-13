@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -131,11 +132,9 @@ public class SSLUtils {
         }
 
         TCPWriteRequestContext deviceWriteInterface = xConnLink.getDeviceWriteInterface();
-        //Start PI52696
-        //Note: For each loop, the thread will sleep for 1000ms. This property defines the time in seconds, so
-        //each second will have 1 Tread.sleep(100) calls.
-        int amountToYield = xConnLink.getChannel().getTimeoutValueInSSLClosingHandshake();
-        int loopCounter = 0;
+
+        int configuredTimeoutValue = xConnLink.getChannel().getTimeoutValueInSSLClosingHandshake();
+        long timeoutTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(configuredTimeoutValue);
 
         try {
             Status status = null;
@@ -167,7 +166,8 @@ public class SSLUtils {
                         }
 
                         // Write the buffer to the device side channel.  need to return immediately so we don't hang this write.
-                        amountWritten = deviceWriteInterface.write(0, TCPRequestContext.USE_CHANNEL_TIMEOUT);
+                        // Update the amount of bytes that have been written out in our internal instance.
+                        amountWritten += deviceWriteInterface.write(0, TCPRequestContext.USE_CHANNEL_TIMEOUT);
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                             Tr.event(tc, "bytes written: " + amountWritten);
@@ -178,14 +178,13 @@ public class SSLUtils {
                             break;
                         }
 
-                        if (amountToYield > -1 && amountToYield <= loopCounter) {
-                            // don't hold up stopping the channel if the custom property is set and the
-                            // designated count has been reached.
+                        if (configuredTimeoutValue > -1 && timeoutTimestamp <= System.currentTimeMillis()) {
+                            // don't hold up stopping the channel if the custom property is not set to indefinite and the
+                            // designated timeout point has been reached.
                             break;
                         }
 
-                        else if (amountToYield > -1 && amountWritten == 0) {
-                            loopCounter++;
+                        else if (configuredTimeoutValue > -1 && amountWritten == 0) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                                 Tr.event(tc, "Did not write anything, sleeping thread before trying again.");
                             }
@@ -201,6 +200,7 @@ public class SSLUtils {
                             // if we didn't write anything, don't hard loop, but let other threads run before trying again.
                             Thread.yield();
                         }
+
                     }
 
                     // after the sync write, clear the buffer in case there was a
@@ -217,9 +217,9 @@ public class SSLUtils {
                                      + " amountWritten: " + amountWritten + " stop0Called: " + xConnLink.getChannel().getstop0Called());
                     }
                     break; // out of while
-                } else if (amountToYield > -1 && amountToYield <= loopCounter) {
+                } else if (configuredTimeoutValue > -1 && timeoutTimestamp <= System.currentTimeMillis()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Closing handshake write timeout amount in SSL Channel met. Slept " + loopCounter + " times. Quit now.");
+                        Tr.debug(tc, "Closing handshake write timeout amount in SSL Channel met. Quit now.");
                     }
                     break; //out of while
                 }
