@@ -40,7 +40,9 @@ public class LogMonitor {
     protected static final long LOG_SEARCH_TIMEOUT = FATRunner.FAT_TEST_LOCALRUN ? 12 * 1000 : 120 * 1000;
 
     //Used for keeping track of mark positions of log files
-    protected final HashMap<String, Long> logMarks = new HashMap<String, Long>();
+    protected HashMap<String, Long> logMarks = new HashMap<String, Long>();
+
+    protected HashMap<String, Long> originMarks = new HashMap<String, Long>();
 
     //The sole client for this LogMonitor instance.  The LogMonitorClient provides a means of hiding
     //the underlying server class for which this class providing log monitoring services.
@@ -51,17 +53,33 @@ public class LogMonitor {
     }
 
     /**
-     * Reset the mark and offset values for logs back to the start of the file.
-     * <p>
+     * Reset the mark and offset values for logs back to the start of the JVM's run.
+     */
+    public void resetLogMarks() {
+        logMarks = new HashMap<String, Long>(originMarks);
+        Log.finer(c, "resetLogMarks", "reset log offsets");
+    }
+
+    /**
      * Note: This method doesn't set the offset values to the beginning of the file per se,
      * rather this method sets the list of logs and their offset values to null. When one
      * of the findStringsInLogsAndTrace...(...) methods are called, it will recreate the
      * list of logs and set each offset value to 0L - the start of the file.
      */
-    public void resetLogMarks() {
-        client.lmcClearLogOffsets();//logOffsets.clear();
+    public void clearLogMarks() {
+        client.lmcClearLogOffsets();
         logMarks.clear();
-        Log.finer(c, "resetLogOffsets", "cleared log and mark offsets");
+        originMarks.clear();
+    }
+
+    /**
+     * Set the marks that we'll go back to when {@link #resetLogMarks()} is called.
+     */
+    public void setOriginLogMarks() {
+
+        originMarks = new HashMap<String, Long>(logMarks);
+
+        Log.finer(c, "setOriginMarks", "set origin marks");
     }
 
     /**

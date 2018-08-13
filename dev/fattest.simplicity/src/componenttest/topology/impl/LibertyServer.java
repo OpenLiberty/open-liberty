@@ -242,8 +242,10 @@ public class LibertyServer implements LogMonitorClient {
     protected String relativeLogsRoot = "/logs/"; // this will be appended to logsRoot in setUp
     protected String consoleFileName = DEFAULT_CONSOLE_FILE; // Console log file name
     protected String messageFileName = DEFAULT_MSG_FILE; // Messages log file name (optionally changed by the FAT)
+    protected String traceFileName = DEFAULT_TRACE_FILE_PREFIX + ".log"; // Trace log file name
     protected String messageAbsPath = null;
     protected String consoleAbsPath = null;
+    protected String traceAbsPath = null;
 
     protected String machineJava; // Path to Java 6 JDK on the Machine
 
@@ -498,6 +500,7 @@ public class LibertyServer implements LogMonitorClient {
         this.serverOutputRoot = this.serverRoot;
         this.logsRoot = serverOutputRoot + relativeLogsRoot;
         this.messageAbsPath = logsRoot + messageFileName;
+        this.traceAbsPath = logsRoot + traceFileName;
 
         // delete existing server directory if requested:
         if (deleteServerDirIfExist) {
@@ -899,10 +902,24 @@ public class LibertyServer implements LogMonitorClient {
         //if we're (re-)starting then we must be untidy!
         this.isTidy = false;
 
-        //Tidy up any pre-existing logs
         if (preClean) {
-            resetLogMarks();
+            // Tidy up any pre-existing logs
             preStartServerLogsTidy();
+            clearLogMarks();
+        } else {
+            // We were asked not to pre-clean the logs, so given the
+            // new behavior of not rolling messages.log & traces.log
+            // in issue 4364, check if those exist, and if so, set
+            // our marks to the end of those files.
+            RemoteFile messagesLog = getDefaultLogFile(false);
+            if (messagesLog != null && messagesLog.exists()) {
+                setMarkToEndOfLog();
+            }
+            RemoteFile traceLog = getDefaultTraceFile();
+            if (traceLog != null && traceLog.exists()) {
+                setTraceMarkToEndOfDefaultTrace();
+            }
+            logMonitor.setOriginLogMarks();
         }
 
         final Properties envVars = new Properties();
@@ -940,6 +957,7 @@ public class LibertyServer implements LogMonitorClient {
         //Setup the server logs assuming the default setting.
         messageAbsPath = logsRoot + messageFileName;
         consoleAbsPath = logsRoot + consoleFileName;
+        traceAbsPath = logsRoot + traceFileName;
 
         Log.finer(c, method, "Starting server, messages will go to file " + messageAbsPath);
 
@@ -3940,6 +3958,10 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public RemoteFile getDefaultLogFile() throws Exception {
+        return getDefaultLogFile(true);
+    }
+
+    public RemoteFile getDefaultLogFile(boolean throwIfMissing) throws Exception {
         //Set path to server log assuming the default setting.
         // ALWAYS RETURN messages.log -- tests assume they can look for INFO+ messages.
         RemoteFile file = LibertyFileManager.getLibertyFile(machine, messageAbsPath);
@@ -3956,6 +3978,10 @@ public class LibertyServer implements LogMonitorClient {
         } catch (Exception ex) {
             return "DefaultLogFile";
         }
+    }
+
+    public RemoteFile getDefaultTraceFile() throws Exception {
+        return LibertyFileManager.getLibertyFile(machine, traceAbsPath);
     }
 
     protected RemoteFile getTraceFile(String fileName) throws Exception {
@@ -4236,19 +4262,24 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
-     * Reset the mark and offset values for logs back to the start of the file.
-     * <p>
-     * Note: This method doesn't set the offset values to the beginning of the file per se,
-     * rather this method sets the list of logs and their offset values to null. When one
-     * of the findStringsInLogsAndTrace...(...) methods are called, it will recreate the
-     * list of logs and set each offset value to 0L - the start of the file.
+     * Reset the mark and offset values for logs back to the start of the JVM's run.
      */
     public void resetLogMarks() {
         logMonitor.resetLogMarks();
     }
 
     /**
-     * Reset the marks and offset values for the logs back to the start of the file.
+     * Note: This method doesn't set the offset values to the beginning of the file per se,
+     * rather this method sets the list of logs and their offset values to null. When one
+     * of the findStringsInLogsAndTrace...(...) methods are called, it will recreate the
+     * list of logs and set each offset value to 0L - the start of the file.
+     */
+    public void clearLogMarks() {
+        logMonitor.clearLogMarks();
+    }
+
+    /**
+     * Reset the marks and offset values for the logs back to the start of the JVM's run.
      *
      * @deprecated Using log offsets is deprecated in favor of using log marks.
      *             For all new test code, use the following methods: {@link #resetLogMarks()}, {@link #setMarkToEndOfLog(RemoteFile...)},
@@ -4266,6 +4297,15 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void setMarkToEndOfLog(RemoteFile... logFiles) throws Exception {
         logMonitor.setMarkToEndOfLog(logFiles);
+    }
+
+    /**
+     * Set the mark offset to the end of the default trace file (i.e. trace.log).
+     *
+     * @throws Exception
+     */
+    public void setTraceMarkToEndOfDefaultTrace() throws Exception {
+        setMarkToEndOfLog(getDefaultTraceFile());
     }
 
     /**
@@ -5056,6 +5096,7 @@ public class LibertyServer implements LogMonitorClient {
             //Setup the server logs assuming the default setting.
             messageAbsPath = logsRoot + messageFileName;
             consoleAbsPath = logsRoot + consoleFileName;
+            traceAbsPath = logsRoot + traceFileName;
 
         } else {
             // Server is stopped when rc == 1.  Any other value means server
