@@ -92,7 +92,7 @@ public class JDBCDerbyTest extends FATServletClient {
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(new TreeSet<String>(Arrays.asList(jdbcapp)));
 
-            //Ensure that updating the config resulted in server not being able to restart
+            //Ensure that updating the config results in servlet class being found, but a resource injection failure to occur.
             int responseCode = runTestForResponseCode(server, jdbcappfat, "testTNTransationEnlistment");
             assertEquals("Reponse from servlet should have been", 404, responseCode);
         } catch (Exception e) {
@@ -107,8 +107,6 @@ public class JDBCDerbyTest extends FATServletClient {
             server.waitForConfigUpdateInLogUsingMark(new TreeSet<String>(Arrays.asList(jdbcapp)));
 
             //Ensure that we were able to switch back
-
-            assertEquals("ds12 should have transactional = false", "false", ds12.getTransactional());
             runTest(server, jdbcappfat, "testTNTransationEnlistment");
         }
     }
@@ -117,9 +115,10 @@ public class JDBCDerbyTest extends FATServletClient {
      * Update the data source configuration while the server is running.
      * Ensure that switching from a data source configured with an isolation level of TRANSACTION_NONE
      * to a data source configured with a different isolation level does not fail.
-     * And, ensure that switching the other way is not prevented.
+     * And, ensure that switching the other way is prevented.
      */
     @Test
+    @ExpectedFFDC({ "java.sql.SQLException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testTNConfigIsoLvl() throws Throwable {
         String method = "testTNConfigIsoLvl";
         Log.info(c, method, "Executing " + method);
@@ -145,64 +144,17 @@ public class JDBCDerbyTest extends FATServletClient {
         }
 
         try {
-            //Attempt to switch back
+            //Attempt to switch back to TRANSACTION_NONE
             ds11.setIsolationLevel("TRANSACTION_NONE");
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(new TreeSet<String>(Arrays.asList(jdbcapp)));
 
-            //Ensure that we were able to switch back
-            runTest(server, jdbcappfat, "testTNOriginalIsoLvl");
+            //Ensure that trying to get a connection fails since we cannot set isolation level to TRANSACTION_NONE
+            runTest(server, jdbcappfat, "testTNRevertedIsoLvl");
         } catch (Exception e) {
             fail("Exception should not have been thrown when switching isolation level to TRANSACTION_NONE.");
-        }
-    }
-
-    /**
-     * Update the data source configuration while the server is running.
-     * Ensure that switching to a data source configured with an isolation level of TRANSACTION_NONE
-     * from a data source configured with a different isolation level fails to get an connection.
-     * And, ensure that switching the other way is not prevented.
-     */
-    @Test
-    @ExpectedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "java.sql.SQLException" })
-    public void testTNConfigIsoLvlReverse() throws Throwable {
-        String method = "testTNConfigIsoLvl";
-        Log.info(c, method, "Executing " + method);
-
-        //First ensure we are using a data source with an isolation level of TRANSACTION_SERIALIZABLE
-        runTest(server, jdbcappfat, "testTNOriginalIsoLvlReverse");
-
-        ServerConfiguration config = server.getServerConfiguration();
-        DataSource ds10 = config.getDataSources().getBy("id", "dsfat10");
-
-        try {
-            ds10.setIsolationLevel("TRANSACTION_NONE");
-
-            //Update config
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(new TreeSet<String>(Arrays.asList(jdbcapp)));
-
-            //Check update was successful and getting a connection fails
-            runTest(server, jdbcappfat, "testTNModifiedIsoLvlReverse");
-        } catch (Exception e) {
-            fail("Exception should not have been thrown when switching isolation level to TRANSACTION_NONE.");
-        }
-
-        try {
-            //Attempt to switch back
-            ds10.setIsolationLevel("TRANSACTION_SERIALIZABLE");
-
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(new TreeSet<String>(Arrays.asList(jdbcapp)));
-
-            //Ensure that we were able to switch back
-            runTest(server, jdbcappfat, "testTNOriginalIsoLvlReverse");
-        } catch (Exception e) {
-            fail("Exception should not have been thrown when switching isolation level from TRANSACTION_NONE.");
         }
     }
 }

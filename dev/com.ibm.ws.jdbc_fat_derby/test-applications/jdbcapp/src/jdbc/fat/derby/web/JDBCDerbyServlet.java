@@ -102,9 +102,6 @@ public class JDBCDerbyServlet extends FATServlet {
     @Resource(name = "jdbc/dsfat9ref", lookup = "java:module/env/jdbc/dsfat9")
     DataSource ds9; //DataSourceDef(TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE)
 
-    @Resource(lookup = "jdbc/dsfat10")
-    DataSource ds10; //DSConfig (TRAN_SERIALIZABLE) + No Res-ref + Normal JDBC Driver
-
     @Resource(lookup = "jdbc/dsfat11")
     DataSource ds11; //DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
 
@@ -168,7 +165,6 @@ public class JDBCDerbyServlet extends FATServlet {
     @ExpectedFFDC({ "java.sql.SQLException" })
     public void testTNTransactionalSetting() throws Throwable {
         InitialContext ctx = new InitialContext();
-
         try {
             @SuppressWarnings("unused")
             DataSource ds4 = (DataSource) ctx.lookup("jdbc/dsfat4");
@@ -422,33 +418,16 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     /**
-     * Called by testTNConfigIsoLvlReverse in JDBCDerbyTest
-     * Data Source - ds10 = DSConfig (TRAN_SERIALIZABLE) + No Res-ref + Normal JDBC Driver
+     * Called by testTNConfigIsoLvl in JDBCDerbyTest
+     * Data Source - ds11 = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
-     * Ensure that the unmodified data source has the expected isolation level.
+     * Ensure that the attempt to switch back to TRANSACTION_NONE results in an error when attempting to get connection.
      */
-    public void testTNOriginalIsoLvlReverse() throws Throwable {
-        int expected = Connection.TRANSACTION_SERIALIZABLE;
-        final Connection con = ds10.getConnection();
-        try {
-            int actual = con.getTransactionIsolation();
-            assertEquals("Connection should have had an isolation level of: ", expected, actual);
-        } finally {
-            con.close();
-        }
-    }
-
-    /**
-     * Called by testTNConfigIsoLvlReverse in JDBCDerbyTest
-     * Data Source - ds10 = DSConfig (TRAN_SERIALIZABLE) + No Res-ref + Normal JDBC Driver
-     *
-     * Ensure that the modified data source results in an error when attempting to get connection.
-     */
-    public void testTNModifiedIsoLvlReverse() throws Throwable {
+    public void testTNRevertedIsoLvl() throws Throwable {
         try {
             @SuppressWarnings("unused")
-            Connection con = ds10.getConnection();
-            fail("Connection should have thrown an exception since the JDBC driver does not support an isolation level of TRANSACTION_NONE.");
+            Connection con = ds11.getConnection();
+            fail("Connection should have thrown an exception since the JDBC driver does not support setting isolation level to TRANSACTION_NONE.");
         } catch (SQLException sql) {
             assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4011E"));
         }

@@ -3859,16 +3859,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     public final void setTransactionIsolation(int isoLevel) throws SQLException 
     {
         if (currentTransactionIsolation != isoLevel) {            
-            // Reject switching to an isolation level of TRANSACTION_NONE unless 
-            // the driver is configured with an isolation level of TRANSACTION_NONE.
+            // Reject switching to an isolation level of TRANSACTION_NONE
             if (isoLevel == Connection.TRANSACTION_NONE) {
-                if(sqlConn.getTransactionIsolation() != Connection.TRANSACTION_NONE) {
                     throw new SQLException(AdapterUtil.getNLSMessage("DSRA4011.tran.none.iso.switch.unsupported", dsConfig.get().id));
-                } else {
-                    currentTransactionIsolation = isoLevel;
-                    isolationChanged = true;
-                    return;
-                }   
             }
             
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 

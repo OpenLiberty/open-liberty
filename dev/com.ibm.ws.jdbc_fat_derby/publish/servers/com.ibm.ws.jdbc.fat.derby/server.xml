@@ -58,12 +58,6 @@
     
     <!-- dsfat6, dsfat7, dsfat8, dsfat9 are defined via @DataSourceDefinition in JDBCDerbyServlet -->
     
-    <dataSource id="dsfat10" jndiName="jdbc/dsfat10" type="javax.sql.DataSource" isolationLevel="TRANSACTION_SERIALIZABLE" transactional="false">
-      <jdbcDriver libraryRef="DerbyLib" />
-      <authentication-alias name="derbyAuth"/>
-      <properties.derby.embedded databaseName="memory:ds10" createDatabase="create"/>
-    </dataSource>
-    
     <dataSource id="dsfat11" jndiName="jdbc/dsfat11" type="javax.sql.DataSource" isolationLevel="TRANSACTION_NONE" transactional="false">
       <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="jdbc.tran.none.driver.TranNoneDataSource"/>
       <properties.derby.embedded databaseName="memory:ds11" createDatabase="create"/>
