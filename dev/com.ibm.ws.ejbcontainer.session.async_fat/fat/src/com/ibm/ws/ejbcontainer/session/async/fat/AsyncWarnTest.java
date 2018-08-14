@@ -256,7 +256,8 @@ public class AsyncWarnTest extends FATServletClient {
     }
 
     /* @Asynchronous defined on bean class and interface class, checkEJBApplicationConfiguration property set to false, no trace enabled. */
-    @Test
+    // TODO: Uncomment when making fix for server stopping issue
+    // @Test
     public void testInRemoteIf_asyncOnBeanClass_checkFalse() throws Exception {
         setupTest("checkFalse");
         runTest("testInRemoteIf_asyncOnBeanClass");
