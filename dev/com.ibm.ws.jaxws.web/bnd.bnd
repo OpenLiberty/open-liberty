@@ -74,6 +74,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
 	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\

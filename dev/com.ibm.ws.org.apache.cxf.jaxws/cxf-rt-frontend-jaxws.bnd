@@ -29,6 +29,9 @@ Import-Package: \
  org.apache.commons.logging.*;resolution:=optional, \
  javax.servlet.*;resolution:=optional;version="[0.0,4)", \
  javax.xml.ws.*;version="[2.2,3)", \
+ javax.jws.*; version="1.0",\
+ javax.xml.soap; version="1.4",\
+ javax.xml.ws.*; version="2.2",\
  com.ibm.wsspi.classloading, \
  com.ibm.wsdl.util.xml, \
  !org.springframework.*;resolution:=optional;version="[2.5,4)", \

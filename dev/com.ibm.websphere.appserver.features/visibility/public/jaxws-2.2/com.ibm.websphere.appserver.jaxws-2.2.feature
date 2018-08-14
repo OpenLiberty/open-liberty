@@ -3,7 +3,11 @@ symbolicName=com.ibm.websphere.appserver.jaxws-2.2
 visibility=public
 IBM-App-ForceRestart: uninstall, \
  install
-IBM-API-Package: javax.xml.ws.handler; type="spec", \
+IBM-API-Package: \
+ javax.jws; type=spec, \
+ javax.jws.soap; type=spec, \
+ javax.xml.soap; type=spec, \
+ javax.xml.ws.handler; type="spec", \
  javax.xml.ws.http; type="spec", \
  javax.xml.ws.spi; type="spec", \
  javax.xml.ws.handler.soap; type="spec", \
