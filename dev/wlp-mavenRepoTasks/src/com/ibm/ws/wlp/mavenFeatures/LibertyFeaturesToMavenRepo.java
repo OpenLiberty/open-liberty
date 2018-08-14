@@ -254,23 +254,11 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setPackaging(type.getType());
 		setLicense(model, coordinates.getVersion(), true, feature.isRestrictedLicense(), Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID.equals(coordinates.getGroupId()));
 		
-		//set scm, url, and developers section 
-		model.setScm(new Scm());
-		model.getScm().setConnection("scm:git:git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setDeveloperConnection("scm:git:git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setUrl("git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setTag("HEAD");
-		model.setUrl("https://openliberty.io/");
-		
-		
-		List<Developer> developers = new ArrayList<Developer>();
 		Developer dev = new Developer();
-		dev.setId("ericglau");
-		dev.setName("Eric Lau");
-		dev.setEmail("ericglau@ca.ibm.com");
-		developers.add(dev);
-		model.setDevelopers(developers);
-		
+		dev.setId(Constants.ERICGLAU_DEV_ID);
+		dev.setName(Constants.ERICGLAU_DEV_NAME);
+		dev.setEmail(Constants.ERICGLAU_DEV_EMAIL);
+		setScmDevUrl(model, dev);
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		model.setDependencies(dependencies);
@@ -316,21 +304,12 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		setLicense(model,version, false, false,isWebsphereLiberty);
 		
 		//set scm, url, and developers section 
-		model.setScm(new Scm());
-		model.getScm().setConnection("scm:git:git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setDeveloperConnection("scm:git:git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setUrl("git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setTag("HEAD");
-		model.setUrl("https://openliberty.io/");
-		
-		List<Developer> developers = new ArrayList<Developer>();
 		Developer dev = new Developer();
-		dev.setId("ericglau");
-		dev.setName("Eric Lau");
-		dev.setEmail("ericglau@ca.ibm.com");
-		developers.add(dev);
-		model.setDevelopers(developers);
-	
+		dev.setId(Constants.ERICGLAU_DEV_ID);
+		dev.setName(Constants.ERICGLAU_DEV_NAME);
+		dev.setEmail(Constants.ERICGLAU_DEV_EMAIL);
+		setScmDevUrl(model, dev);
+		
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		DependencyManagement dependencyManagement = new DependencyManagement();		
@@ -348,11 +327,11 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		if(isWebsphereLiberty){
 			MavenCoordinates openLibertyCoordinates = new MavenCoordinates(Constants.OPEN_LIBERTY_FEATURES_GROUP_ID, Constants.BOM_ARTIFACT_ID, version);				
 			addDependency(dependencies,openLibertyCoordinates, Constants.ArtifactType.POM,"import");
-			model.setName("WebSphere Liberty features bill of materials");
-			model.setDescription("WebSphere Liberty features bill of materials");
+			model.setName(Constants.WEBSPHERE_LIBERTY_BOM);
+			model.setDescription(Constants.WEBSPHERE_LIBERTY_BOM);
 		} else{
-			model.setName("Open Liberty features bill of materials");
-			model.setDescription("Open Liberty features bill of materialsN");
+			model.setName(Constants.OPEN_LIBERTY_BOM);
+			model.setDescription(Constants.OPEN_LIBERTY_BOM);
 		}
 		
 		File artifactDir = new File(outputDir, Utils.getRepositorySubpath(coordinates));
@@ -387,20 +366,11 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		setLicense(model, version, false, false, isWebsphereLiberty);
 		
 		//set scm, url, and developers section 
-		model.setScm(new Scm());
-		model.getScm().setConnection("scm:git:git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setDeveloperConnection("scm:git:git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setUrl("git@github.com:OpenLiberty/open-liberty.git");
-		model.getScm().setTag("HEAD");
-		model.setUrl("https://openliberty.io/");
-		
-		List<Developer> developers = new ArrayList<Developer>();
 		Developer dev = new Developer();
-		dev.setId("ericglau");
-		dev.setName("Eric Lau");
-		dev.setEmail("ericglau@ca.ibm.com");
-		developers.add(dev);
-		model.setDevelopers(developers);
+		dev.setId(Constants.ERICGLAU_DEV_ID);
+		dev.setName(Constants.ERICGLAU_DEV_NAME);
+		dev.setEmail(Constants.ERICGLAU_DEV_EMAIL);
+		setScmDevUrl(model, dev);
 		
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -410,11 +380,11 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		if (isWebsphereLiberty && openLibertyJson != null) {
 			MavenCoordinates openLibertyCoordinates = new MavenCoordinates(Constants.OPEN_LIBERTY_FEATURES_GROUP_ID, Constants.JSON_ARTIFACT_ID, version);
 			addDependency(dependencies, openLibertyCoordinates, Constants.ArtifactType.JSON,null);
-			model.setName("WebSphere Liberty features JSON");
-			model.setDescription("WebSphere Liberty features JSON");
+			model.setName(Constants.WEBSPHERE_LIBERTY_JSON);
+			model.setDescription(Constants.WEBSPHERE_LIBERTY_JSON);
 		} else {
-			model.setName("Open Liberty features JSON");
-			model.setDescription("Open Liberty features JSON");
+			model.setName(Constants.OPEN_LIBERTY_JSON);
+			model.setDescription(Constants.OPEN_LIBERTY_JSON);
 		}
 				
 		File artifactDir = new File(outputDir, Utils.getRepositorySubpath(coordinates));
@@ -876,6 +846,23 @@ public class LibertyFeaturesToMavenRepo extends Task {
 			}
 		}
 		return dependencies;
+	}
+	
+	/**
+	 * 
+	 * @param model
+	 */
+	private static void setScmDevUrl(Model model, Developer dev){
+		model.setScm(new Scm());
+		model.getScm().setConnection(Constants.OPEN_LIBERTY_SCM_CONNECTION);
+		model.getScm().setDeveloperConnection(Constants.OPEN_LIBERTY_SCM_CONNECTION);
+		model.getScm().setUrl(Constants.OPEN_LIBRETY_SCM_URL);
+		model.getScm().setTag(Constants.OPEN_LIBERTY_SCM_TAG);
+		model.setUrl(Constants.OPEN_LIBERTY_URL);
+		
+		List<Developer> developers = new ArrayList<Developer>();
+		developers.add(dev);
+		model.setDevelopers(developers);
 	}
 
 }
