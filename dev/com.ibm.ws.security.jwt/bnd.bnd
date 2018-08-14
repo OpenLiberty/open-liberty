@@ -50,6 +50,7 @@ Import-Package: \
     com.ibm.ws.security.common.web, \
     com.ibm.ws.security.common.jwk.impl, \
     com.ibm.ws.security.common.jwk.interfaces, \
+    com.ibm.ws.webcontainer.security.jwk, \
     com.ibm.json.java.*, \
     org.osgi.service.component.*, \
     org.osgi.framework, \
@@ -132,7 +133,7 @@ instrument.classesExcludes: com/ibm/ws/security/jwt/internal/resources/*.class
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
-    cglib:cglib-nodep;version=3.2.6, \
+    cglib:cglib-nodep;version=3.2.7, \
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \

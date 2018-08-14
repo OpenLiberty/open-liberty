@@ -22,14 +22,21 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.ws.security.utility.IFileUtility;
+
+import test.common.junit.rules.MaximumJavaLevelRule;
 
 /**
  *
  */
 public class FileUtilityTest {
+
+    @ClassRule
+    public static MaximumJavaLevelRule maxLevel = new MaximumJavaLevelRule(8);
+
     private final Mockery mock = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);

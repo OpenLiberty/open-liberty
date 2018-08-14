@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=Aucune action n'est requise.
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Le service de f\u00e9d\u00e9ration de registre est arr\u00eat\u00e9.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ce message est fourni \u00e0 titre  d'information uniquement.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Aucune action n'est requise.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. Aucun registre d'utilisateurs n'a \u00e9t\u00e9 trouv\u00e9. Ajoutez ou corrigez la d\u00e9finition de registre dans le fichier server.xml.
+MISSING_REGISTRY_DEFINITION.explanation=Aucun registre d'utilisateurs n'a \u00e9t\u00e9 d\u00e9fini ou n'a pu \u00eatre initialis\u00e9 en raison d'une erreur de configuration. Un registre d'utilisateurs valide inclut un registre LDAP ou d'autres registres ou r\u00e9f\u00e9rentiels pris en charge.
+MISSING_REGISTRY_DEFINITION.useraction=Si un registre d'utilisateurs a \u00e9t\u00e9 d\u00e9fini dans le fichier de configuration, v\u00e9rifiez les journaux pour y rechercher d'\u00e9ventuelles erreurs de configuration survenues au cours du d\u00e9marrage du serveur. Ajoutez ou corrigez la d\u00e9finition de registre d'utilisateurs dans le fichier server.xml.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: L'op\u00e9ration de registre d'utilisateurs n'a pas pu \u00eatre ex\u00e9cut\u00e9e. L'identificateur de l'entit\u00e9 est introuvable. Indiquez l'identificateur correct comme param\u00e8tre d'entr\u00e9e. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=L'identificateur de l'entit\u00e9 n'a pas \u00e9t\u00e9 indiqu\u00e9. Le syst\u00e8me ne peut pas localiser l'entit\u00e9. L'op\u00e9ration de registre d'utilisateurs ne peut pas se poursuivre sans cette entit\u00e9. 

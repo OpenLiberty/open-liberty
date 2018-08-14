@@ -54,11 +54,11 @@ File packageDir = new File(project.buildDir, 'openliberty')
 def props = new Properties()
 rootProject.file('generated.properties').withInputStream { props.load(it) }
 
-// Set the generated zip version to the
+// Set the generated zip version to the product version and the
 // version qualifier to be consistent
-// with what is use for the individual Bundle-Versions
+// with what is used for the individual Bundle-Versions
 // as well as the server version output.
-def releaseVersion = props.getProperty("version.qualifier")
+def releaseVersion = "${bnd.libertyRelease}-" + props.getProperty("version.qualifier")
 
 class PackageLibertyWithFeatures extends DefaultTask {
     Closure withFeatures

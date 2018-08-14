@@ -52,6 +52,7 @@ instrument.classesExcludes: com/ibm/ws/security/common/jwk/internal/resources/*.
     com.ibm.ws.common.encoder;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.webcontainer;version=latest, \
+    com.ibm.ws.webcontainer.security;version=latest, \
     com.ibm.ws.security.authentication;version=latest, \
     com.ibm.ws.security.common;version=latest, \
     com.ibm.json4j;version=latest, \

@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientException;
@@ -133,15 +134,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
-     * Privileged action to obtain the thread context class loader.
-     */
-    private static final PrivilegedAction<ClassLoader> getContextClassLoader = new PrivilegedAction<ClassLoader>() {
-        public ClassLoader run() {
-            return Thread.currentThread().getContextClassLoader();
-        }
-    };
-
-    /**
      * Properties to skip when parsing configuration.
      */
     private static final HashSet<String> WPROPS_TO_SKIP = new HashSet<String>(Arrays.asList
@@ -164,9 +156,9 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     private final AtomicReference<DSConfig> dsConfigRef = new AtomicReference<DSConfig>();
 
     /**
-     * Data source implementation class name. Only rely on this value when initialized.
+     * Data source or driver implementation class name. Only rely on this value when initialized.
      */
-    private String dsImplClassName;
+    private String vendorImplClassName;
 
     /**
      * Indicates that we deferred the destroying that would normally happen because of configuration changes.
@@ -416,7 +408,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             // data source class is loaded from thread context class loader
             if (identifier == null) {
-                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                ClassLoader tccl = priv.getContextClassLoader();
                 identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
                 // TODO better error handling when thread context class loader does not have an identifier
             }
@@ -439,28 +431,34 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "create new data source", id, jndiName, type);
 
-                CommonDataSource ds;
+                Object vendorImpl;
                 Class<?> ifc;
 
                 if (type == null){
-                    ds = id != null && id.contains("dataSource[DefaultDataSource]") ? jdbcDriverSvc.createDefaultDataSource(vProps)
-                                    :jdbcDriverSvc.createAnyDataSource(vProps);
-                    ifc = ds instanceof XADataSource ? XADataSource.class
-                                    : ds instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
-                                                    : DataSource.class;
+                    vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
+                               ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps)
+                               : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
+                    ifc = vendorImpl instanceof XADataSource ? XADataSource.class
+                        : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
+                        : vendorImpl instanceof DataSource ? DataSource.class
+                        : Driver.class;
                 } else if (ConnectionPoolDataSource.class.getName().equals(type)) {
                     ifc = ConnectionPoolDataSource.class;
-                    ds = jdbcDriverSvc.createConnectionPoolDataSource(vProps);
+                    vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps);
                 } else if (XADataSource.class.getName().equals(type)) {
                     ifc = XADataSource.class;
-                    ds = jdbcDriverSvc.createXADataSource(vProps);
+                    vendorImpl = jdbcDriverSvc.createXADataSource(vProps);
                 } else if (DataSource.class.getName().equals(type)) {
                     ifc = DataSource.class;
-                    ds = jdbcDriverSvc.createDataSource(vProps);
+                    vendorImpl = jdbcDriverSvc.createDataSource(vProps);
+                } else if (Driver.class.getName().equals(type)) {
+                    ifc = Driver.class;
+                    String url = vProps.getProperty("URL", vProps.getProperty("url"));
+                    vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
                 } else
                     throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
-                mcf1 = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, ds, jdbcRuntime);
+                mcf1 = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, jdbcRuntime);
                 WSManagedConnectionFactoryImpl mcf0 = mcfPerClassLoader.putIfAbsent(identifier, mcf1);
                 mcf1 = mcf0 == null ? mcf1 : mcf0;
 
@@ -511,7 +509,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             // data source class is loaded from thread context class loader
             if (identifier == null) {
-                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                ClassLoader tccl = priv.getContextClassLoader();
                 identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
                 // TODO better error handling when thread context class loader does not have an identifier
             }
@@ -584,33 +582,51 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             }
             jdbcDriverSvc.addObserver(this);
 
-            CommonDataSource ds;
+            Object vendorImpl;
             Class<?> ifc;
 
             if(type == null){
-                ds = id != null && id.contains("dataSource[DefaultDataSource]") ? jdbcDriverSvc.createDefaultDataSource(vProps)
-                                :jdbcDriverSvc.createAnyDataSource(vProps);
-                ifc = ds instanceof XADataSource ? XADataSource.class
-                                : ds instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
-                                                : DataSource.class;
+                vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
+                                ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps)
+                                : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
+                ifc = vendorImpl instanceof XADataSource ? XADataSource.class
+                    : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
+                    : vendorImpl instanceof DataSource ? DataSource.class
+                    : Driver.class;
             } else if (ConnectionPoolDataSource.class.getName().equals(type)) {
                 ifc = ConnectionPoolDataSource.class;
-                ds = jdbcDriverSvc.createConnectionPoolDataSource(vProps);
+                vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps);
             } else if (XADataSource.class.getName().equals(type)) {
                 ifc = XADataSource.class;
-                ds = jdbcDriverSvc.createXADataSource(vProps);
+                vendorImpl = jdbcDriverSvc.createXADataSource(vProps);
             } else if (DataSource.class.getName().equals(type)) {
                 ifc = DataSource.class;
-                ds = jdbcDriverSvc.createDataSource(vProps);
+                vendorImpl = jdbcDriverSvc.createDataSource(vProps);
+            } else if (Driver.class.getName().equals(type)) {
+                ifc = Driver.class;
+                String url = vProps.getProperty("URL", vProps.getProperty("url"));
+                vendorImpl = jdbcDriverSvc.getDriver(url, vProps, id);
             } else
                 throw new SQLNonTransientException(ConnectorService.getMessage("MISSING_RESOURCE_J2CA8030", DSConfig.TYPE, type, DATASOURCE, jndiName == null ? id : jndiName));
 
             // Convert isolationLevel constant name to integer
-            dsImplClassName = ds.getClass().getName();
-            parseIsolationLevel(wProps, dsImplClassName);
+            vendorImplClassName = vendorImpl.getClass().getName();
+            parseIsolationLevel(wProps, vendorImplClassName);
+            
+            Object objIsolationLevel = wProps.get(DataSourceDef.isolationLevel.name());
+            int wIsolationLevel = objIsolationLevel == null ? -1 : (int) objIsolationLevel;
+            
+            if(wIsolationLevel == Connection.TRANSACTION_NONE) {
+                Object objTransactional = wProps.get(DataSourceDef.transactional.name());
+                boolean wTransactional = objTransactional == null ? true : (boolean) objTransactional;
+                
+                if (wTransactional) {
+                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4009.tran.none.transactional.unsupported", id));
+                }
+            }
 
             // Derby Embedded needs a reference count so that we can shutdown databases when no longer used.
-            isDerbyEmbedded = dsImplClassName.startsWith("org.apache.derby.jdbc.Embedded");
+            isDerbyEmbedded = vendorImplClassName.startsWith("org.apache.derby.jdbc.Embedded");
             if (isDerbyEmbedded) {
                 String dbName = (String) vProps.get(DataSourceDef.databaseName.name());
                 if (dbName != null) {
@@ -625,13 +641,13 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             dsConfigRef.set(new DSConfig(id, jndiName, wProps, vProps, connectorSvc));
 
-            WSManagedConnectionFactoryImpl mcfImpl = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, ds, jdbcRuntime);
+            WSManagedConnectionFactoryImpl mcfImpl = new WSManagedConnectionFactoryImpl(dsConfigRef, ifc, vendorImpl, jdbcRuntime);
 
             if (jdbcDriverSvc.loadFromApp()) {
                 // data source class loaded from thread context class loader
                 mcf = null;
                 mcfPerClassLoader = new ConcurrentHashMap<String, WSManagedConnectionFactoryImpl>();
-                ClassLoader tccl = AccessController.doPrivileged(getContextClassLoader);
+                ClassLoader tccl = priv.getContextClassLoader();
                 String identifier = connectorSvc.getClassLoaderIdentifierService().getClassLoaderIdentifier(tccl);
                 mcfPerClassLoader.put(identifier, mcfImpl);
             } else {
@@ -718,7 +734,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     // to issue a shutdown of the Derby database in order to free it up for other class loaders.
                     destroyConnectionFactories(isDerbyEmbedded);
                 } else {
-                    parseIsolationLevel(wProps, dsImplClassName);
+                    parseIsolationLevel(wProps, vendorImplClassName);
 
                     // Swap the reference to the configuration - the WAS data source will start honoring it
                     dsConfigRef.set(new DSConfig(config, wProps));
@@ -796,11 +812,11 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
      * Utility method that converts transaction isolation level constant names
      * to the corresponding int value.
      *
-     * @param isolationLevel the value to parse.
-     * @param ds the data source.
+     * @param wProps WAS data source properties, including the configured isolationLevel property.
+     * @param vendorImplClassName name of the vendor data source or driver implementation class.
      * @return Integer transaction isolation level constant value. If unknown, then the original String value.
      */
-    private static final void parseIsolationLevel(NavigableMap<String, Object> wProps, String dsImplClassName) {
+    private static final void parseIsolationLevel(NavigableMap<String, Object> wProps, String vendorImplClassName) {
         // Convert isolationLevel constant name to integer
         Object isolationLevel = wProps.get(DataSourceDef.isolationLevel.name());
         if (isolationLevel instanceof String) {
@@ -808,8 +824,9 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                             : "TRANSACTION_REPEATABLE_READ".equals(isolationLevel) ? Connection.TRANSACTION_REPEATABLE_READ
                                             : "TRANSACTION_SERIALIZABLE".equals(isolationLevel) ? Connection.TRANSACTION_SERIALIZABLE
                                                             : "TRANSACTION_READ_UNCOMMITTED".equals(isolationLevel) ? Connection.TRANSACTION_READ_UNCOMMITTED
-                                                                            : "TRANSACTION_SNAPSHOT".equals(isolationLevel) ? (dsImplClassName.startsWith("com.microsoft.") ? 4096 : 16)
-                                                                                            : isolationLevel;
+                                                                            : "TRANSACTION_NONE".equals(isolationLevel) ? Connection.TRANSACTION_NONE
+                                                                                            : "TRANSACTION_SNAPSHOT".equals(isolationLevel) ? (vendorImplClassName.startsWith("com.microsoft.") ? 4096 : 16)
+                                                                                                            : isolationLevel;
 
             wProps.put(DataSourceDef.isolationLevel.name(), isolationLevel);
         }

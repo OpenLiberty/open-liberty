@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.jcaInboundSecurity-1.0
 visibility=public
 IBM-API-Package: javax.security.auth.message.callback; type="spec"
 IBM-ShortName: jcaInboundSecurity-1.0
-Subsystem-Name: Java Connector Architecture Security Inflow
+Subsystem-Name: Java Connector Architecture Security Inflow 1.0
 -features=com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:=1.2, \
  com.ibm.websphere.appserver.security-1.0, \
  com.ibm.websphere.appserver.jca-1.6; ibm.tolerates:=1.7

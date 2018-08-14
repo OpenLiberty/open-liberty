@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+  -->
+
+<!-- 
+
+    Note this is a edited, non-operative pom where only attribution text remains
+    so this can be distributed along with the source as per the Apache
+    2.0 licence.
+
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.lightbend.microprofile.reactive.streams</groupId>
+    <artifactId>lightbend-microprofile-reactive-streams-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Lightbend MicroProfile Reactive Streams Operators</name>
+    <description>Lightbend MicroProfile Reactive Streams Operators :: Parent POM</description>
+    <url>https://github.com/lightbend/lightbend-microprofile-streams</url>
+
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Lightbend</name>
+        <url>https://www.lightbend.com</url>
+    </organization>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/lightbend/microprofile-reactive-streams/issues</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <name>James Roper</name>
+            <url>https://jazzy.id.au</url>
+            <organization>Lightbend</organization>
+            <organizationUrl>https://www.lightbend.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/lightbend/microprofile-reactive-streams.git</connection>
+        <developerConnection>scm:git:git@github.com:lightbend/microprofile-reactive-streams.git</developerConnection>
+        <url>https://github.com/lightbend/microprofile-reactive-streams</url>
+        <tag>HEAD</tag>
+    </scm>
+
+</project>

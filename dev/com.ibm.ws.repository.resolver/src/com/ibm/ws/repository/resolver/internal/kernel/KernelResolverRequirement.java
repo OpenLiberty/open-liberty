@@ -116,4 +116,9 @@ public class KernelResolverRequirement implements FeatureResource {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public String getRequiredOSGiEE() {
+        throw new UnsupportedOperationException();
+    }
+
 }

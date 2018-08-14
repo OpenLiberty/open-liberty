@@ -149,7 +149,7 @@ public class MetricRecorderImpl implements MetricRecorder {
 
         if (bulkheadPolicy != null && isAsync == AsyncType.ASYNC) {
             bulkheadQueuePopulation = gauge(registry, metricPrefix + ".bulkhead.waitingQueue.population", MetricUnits.NONE, this::getQueuePopulation);
-            bulkheadQueueWaitTimeHistogram = registry.histogram(metricPrefix + ".bulkhead.waiting.duration");
+            bulkheadQueueWaitTimeHistogram = registry.histogram(new Metadata(metricPrefix + ".bulkhead.waiting.duration", MetricType.HISTOGRAM, MetricUnits.NANOSECONDS));
         } else {
             bulkheadQueuePopulation = null;
             bulkheadQueueWaitTimeHistogram = null;

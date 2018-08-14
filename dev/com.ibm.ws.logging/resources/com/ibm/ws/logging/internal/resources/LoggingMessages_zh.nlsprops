@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -121,6 +121,16 @@ MESSAGE_FORMAT_UPDATED.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f
 CONSOLE_FORMAT_UPDATED=TRAS3003I: \u63a7\u5236\u53f0\u8f93\u51fa\u683c\u5f0f\u73b0\u5728\u5df2\u66f4\u65b0\u4e3a\u201c{0}\u201d\u3002
 CONSOLE_FORMAT_UPDATED.explanation=\u73b0\u5728\u5df2\u66f4\u65b0\u63a7\u5236\u53f0\u7684\u8f93\u51fa\u683c\u5f0f\u3002
 CONSOLE_FORMAT_UPDATED.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: console.log \u6587\u4ef6\u4e2d\u9690\u85cf\u4e86\u4e0b\u5217\u6d88\u606f\uff1a{0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=\u914d\u7f6e\u4e3a\u9690\u85cf\u72b6\u6001\u7684\u6d88\u606f\u672a\u5199\u5165 console.log \u6587\u4ef6\u3002\u5728\u4e8c\u8fdb\u5236\u65e5\u5fd7\u8bb0\u5f55\u4e2d\uff0c\u4f1a\u5c06\u5b83\u4eec\u5199\u5165\u65e5\u5fd7\u548c\u8ddf\u8e2a\u6570\u636e\u5b58\u50a8\u5e93\u3002
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c
+FAILED_TO_WRITE_LOG=TRAS3005E: \u672a\u80fd\u5c06\u6d88\u606f\u5199\u5165 {0} \u6587\u4ef6\u3002
+FAILED_TO_WRITE_LOG.explanation=\u5c1d\u8bd5\u5c06\u6d88\u606f\u5199\u5165\u8be5\u6587\u4ef6\u65f6\u53d1\u751f\u9519\u8bef\u3002
+FAILED_TO_WRITE_LOG.useraction=\u8bf7\u786e\u4fdd\u8be5\u76ee\u5f55\u5b58\u5728\u3001\u53ef\u5199\u5e76\u4e14\u5177\u6709\u8db3\u591f\u7684\u78c1\u76d8\u7a7a\u95f4\u3002
+
+LOG_FILE_RESUMED=TRAS3006I: \u5df2\u6062\u590d\u5c06\u6d88\u606f\u8bb0\u5f55\u5230 {0} \u6587\u4ef6\u3002
+LOG_FILE_RESUMED.explanation=\u53ef\u4ee5\u5c06\u6d88\u606f\u5199\u5165\u8be5\u6587\u4ef6\u3002
+LOG_FILE_RESUMED.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

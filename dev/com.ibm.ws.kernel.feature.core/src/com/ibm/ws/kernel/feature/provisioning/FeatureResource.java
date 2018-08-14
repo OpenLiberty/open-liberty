@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,6 @@ import java.util.List;
 
 import org.osgi.framework.VersionRange;
 
-/**
- *
- */
 public interface FeatureResource extends HeaderElementDefinition {
 
     public VersionRange getVersionRange();
@@ -32,24 +29,17 @@ public interface FeatureResource extends HeaderElementDefinition {
 
     /**
      * obtain a list of operating systems this resource is relevant to.
-     * 
+     *
      * @return null, if for ALL os, or a list of platform names this resource is for.
      */
     public List<String> getOsList();
 
-    /**
-     * @return
-     */
     public int getStartLevel();
 
     public String getMatchString();
 
     public String getBundleRepositoryType();
 
-    /**
-     * @param type
-     * @return
-     */
     public boolean isType(SubsystemContentType type);
 
     public String getExtendedAttributes();
@@ -59,4 +49,6 @@ public interface FeatureResource extends HeaderElementDefinition {
     public String getFileEncoding();
 
     public List<String> getTolerates();
+
+    public String getRequiredOSGiEE();
 }

@@ -88,7 +88,7 @@ public class RequestUtils {
     static public Hashtable parseQueryString(String s) {
         return parseQueryString(s.toCharArray(), SHORT_ENGLISH);
     }
-    
+
     static public Hashtable parseQueryString(String s, String encoding) {
         return parseQueryString(s.toCharArray(), encoding);
     }
@@ -648,21 +648,32 @@ public class RequestUtils {
         * Parse a name in the query string.
         */
    // @MD17415 begin part 3 of 3 New Loop for finding key and value
-   static private String parseName(char [] ch, int startOffset, int endOffset) {
+   static private String parseName(final char [] ch, final int startOffset, final int endOffset) {
        int j = 0;
-       int startOffsetLocal = startOffset;   // local variable  -  @RWS2 
-       int endOffsetLocal = endOffset;       // local variable  -  @RWS2 
-       char [] chLocal = ch;                 // local variable  -  @RWS7
-       char [] c = new char [endOffsetLocal-startOffsetLocal];     // @RWS2
-       for (int i = startOffsetLocal; i < endOffsetLocal; i++) {  // @RWS2
-           switch (chLocal[i]) {                                   // @RWS7
+       char [] c = null;
+       for (int i = startOffset; i < endOffset; i++) {
+           switch (ch[i]) {
            case '+' :
+               if (c == null) {
+                   c = new char [endOffset-startOffset];
+                   j = i - startOffset;
+                   if (j != 0) {
+                       System.arraycopy(ch, startOffset, c, 0, j);
+                   }
+               }
                c[j++] = ' ';
                break;
            case '%' :
-               if (i+2 < endOffsetLocal) {   // @RWS2
-                   int num1 = Character.digit(chLocal[++i],16);   //@RWS7
-                   int num2 = Character.digit(chLocal[++i],16);   //@RWS7
+               if (i+2 < endOffset) {   // @RWS2
+                   if (c == null) {
+                       c = new char [endOffset-startOffset];
+                       j = i - startOffset;
+                       if (j != 0) {
+                           System.arraycopy(ch, startOffset, c, 0, j);
+                       }
+                   }
+                   int num1 = Character.digit(ch[++i],16);   //@RWS7
+                   int num2 = Character.digit(ch[++i],16);   //@RWS7
                    if (num1 == -1 || num2 == -1)             //@RWS5
                    {																	//PK75617 starts
                 	   if (ignoreInvalidQueryString)									
@@ -675,18 +686,25 @@ public class RequestUtils {
                    // c[j++] = (char)(num1*16 + num2);       //@RWS5
                    c[j++] = (char)((num1<<4) | num2);       //@RWS8
                } else {   // allow '%' at end of value or second to last character (as original code does)
-                   for (i=i; i<endOffsetLocal; i++)   // @RWS2
-                       c[j++] = chLocal[i];           // @RWS7
+                   if (c != null) {
+                       for (; i<endOffset; i++)   // @RWS2
+                           c[j++] = ch[i];        // @RWS7
+                   } else {
+                       i = endOffset;
+                   }
                }
                break;
            default :
-               c[j++] = chLocal[i];
+               if (c != null) {
+                   c[j++] = ch[i];
+               }
                break;
            } 
-       } 
+       }
+       String returnValue = c != null ? new String(c, 0, j) : new String(ch, startOffset, endOffset - startOffset);
        if (printbyteValueandcharParamdata && com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  
-           printValues(new String(c,0,j), "parseNameOUT");
-       return new String(c,0,j);
+           printValues(returnValue, "parseNameOUT");
+       return returnValue;
    }
    // @MD17415 end part 3 of 3 New Loop for finding key and value
    

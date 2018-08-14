@@ -48,6 +48,7 @@
    <Option value="javax.sql.XADataSource"             label="javax.sql.XADataSource"/>
    <Option value="javax.sql.ConnectionPoolDataSource" label="javax.sql.ConnectionPoolDataSource"/>
    <Option value="javax.sql.DataSource"               label="javax.sql.DataSource"/>
+   <Option value="java.sql.Driver"                    label="java.sql.Driver"/>
   </AD>
   <AD id="connectionSharing"                      name="%conSharing"   description="%conSharing.desc"   required="false" type="String"  default="MatchOriginalRequest" >
    <Option value="MatchOriginalRequest"           label="%conSharing.MatchOriginalRequest.desc"/>
@@ -65,6 +66,7 @@
    <Option value="TRANSACTION_REPEATABLE_READ"    label="%isoLevel.REPEATABLE_READ.desc"/>
    <Option value="TRANSACTION_SERIALIZABLE"       label="%isoLevel.SERIALIZABLE.desc"/>
    <Option value="TRANSACTION_SNAPSHOT"           label="%isoLevel.SNAPSHOT.desc"/>
+   <Option value="TRANSACTION_NONE"               label="%isoLevel.NONE.desc" />
   </AD>
   <AD id="statementCacheSize"                     name="%stmtCacheSz"  description="%stmtCacheSz.desc"  required="false" type="Integer" default="10" min="0"/>
   <AD id="transactional"                          name="%transactnl"   description="%transactnl.desc"   required="false" type="Boolean" default="true"/>

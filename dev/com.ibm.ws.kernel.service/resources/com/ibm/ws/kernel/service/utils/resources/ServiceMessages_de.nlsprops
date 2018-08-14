@@ -59,3 +59,19 @@ invalidDuration.useraction=Stellen Sie sicher, dass der in der Serverkonfigurati
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Es wurden nicht erwartete Speicherdaten f\u00fcr das Betriebssystem in {0} gefunden: {1}
+memory.information.unexpected.explanation=Einige Speicherdaten f\u00fcr das Betriebssystem haben nicht das erwartete Format. M\u00f6glicherweise hat das Produkt gerade eine Datei gelesen oder ein Programm ausgef\u00fchrt, als es das nicht erwartete Format gefunden hat. Der Nachrichtentext enth\u00e4lt entweder den Namen einer Betriebssystemdatei und den Inhalt der Datei oder den Namen eines Programms und die Ausgabe des Programms. Sie k\u00f6nnen diese Informationen f\u00fcr die Behebung des Problems verwenden.
+memory.information.unexpected.useraction=Sehen Sie sich die Informationen im Nachrichtentext an. Beheben Sie alle Probleme, um sicherzustellen, dass sich das Betriebssystem ordnungsgem\u00e4\u00df verh\u00e4lt und dass keine nicht erwarteten Speicherdaten f\u00fcr das Betriebssystem gefunden werden.
+
+memory.information.unavailable=CWWKE0948E: Es sind keine Informationen zum verf\u00fcgbaren Speicher in diesem Betriebssystem implementiert.
+memory.information.unavailable.explanation=Diese Funktion wurde f\u00fcr dieses Betriebssystem nicht implementiert.
+memory.information.unavailable.useraction=Verwenden Sie die API OperatingSystem, um den Betriebssystemtyp abzurufen und zu verhindern, dass diese Funktion f\u00fcr diesen Betriebssystemtyp aufgerufen wird.
+
+os.pagesize.unavailable=CWWKE0949E: Es sind keine Informationen zur Seitengr\u00f6\u00dfe in diesem Betriebssystem implementiert.
+os.pagesize.unavailable.explanation=Diese Funktion wurde f\u00fcr dieses Betriebssystem nicht implementiert.
+os.pagesize.unavailable.useraction=Verwenden Sie die API OperatingSystem, um den Betriebssystemtyp abzurufen und zu verhindern, dass diese Funktion f\u00fcr diesen Betriebssystemtyp aufgerufen wird.
+
+os.execute.error=CWWKE0950E: Die Ausf\u00fchrung des Programms {0} ist fehlgeschlagen. Der R\u00fcckgabecode ist {1}. Die Ausgabe ist {2}.
+os.execute.error.explanation=Dieser Fehler kann verschiedene Ursachen haben. Es k\u00f6nnte beispielsweise sein, dass die Ausf\u00fchrung des Programms wegen einer Fehlerbedingung fehlgeschlagen ist, die im R\u00fcckgabecode und in der Ausgabe gemeldet werden.
+os.execute.error.useraction=Stellen Sie sicher, dass der Befehl vorhanden ist und sich in einem der in der Umgebungsvariablen PATH angegebenen Verzeichnis befindet.

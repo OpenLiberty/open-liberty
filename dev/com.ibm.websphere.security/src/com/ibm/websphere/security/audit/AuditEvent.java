@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.websphere.security.audit;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -233,9 +234,13 @@ public class AuditEvent {
      * @return current time in yyyy-MM-dd HH:mm:ss.SSS format
      */
     public String getCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS z");
-        String strDate = sdf.format(new Date());
-        return strDate;
+
+        //TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); // Quoted "Z" to indicate UTC, no timezone offset
+        //df.setTimeZone(tz);
+        String nowAsISO = df.format(new Date());
+
+        return nowAsISO;
     }
 
     /**

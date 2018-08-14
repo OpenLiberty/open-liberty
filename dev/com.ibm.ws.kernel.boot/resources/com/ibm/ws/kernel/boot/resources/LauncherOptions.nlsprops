@@ -227,4 +227,9 @@ option-desc.os=\
 \tThis option applies only to the package operation, and can be used   \n\
 \tonly with the --include=minify option. If you exclude an operating   \n\
 \tsystem, you cannot later include it if you repeat the minify         \n\
-\toperation on the archive. 
+\toperation on the archive.
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\
+\ \ \ \ --no-password
+option-desc.no-password=\
+\tDisable generation of default keystore password

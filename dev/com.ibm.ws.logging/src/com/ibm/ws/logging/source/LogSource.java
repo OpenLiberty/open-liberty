@@ -12,8 +12,6 @@ package com.ibm.ws.logging.source;
 
 import java.util.Map;
 import java.util.logging.LogRecord;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.Tr;
@@ -38,14 +36,7 @@ public class LogSource implements Source {
     private final String sourceName = "com.ibm.ws.logging.source.message";
     private final String location = "memory";
     private BufferManager bufferMgr = null;
-    static Pattern messagePattern;
     private final SequenceNumber sequenceNumber = new SequenceNumber();
-
-    static {
-        messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
-    }
-
-    //private final AtomicLong seq = new AtomicLong();
 
     protected void activate(Map<String, Object> configuration) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -130,13 +121,9 @@ public class LogSource implements Source {
         long dateVal = logRecord.getMillis();
         logData.setDatetime(dateVal);
 
-        String messageIdVal = null;
         String messageVal = extractMessage(routedMessage, logRecord);
 
-        if (messageVal != null) {
-            messageIdVal = parseMessageId(messageVal);
-        }
-        logData.setMessageId(messageIdVal);
+        logData.setMessageId(null);
 
         int threadIdVal = (int) Thread.currentThread().getId();
         logData.setThreadId(threadIdVal);
@@ -174,7 +161,8 @@ public class LogSource implements Source {
             extensions = null;
         }
 
-        logData.setSequence(sequenceNumber.next(dateVal));
+        logData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());
+        logData.setSequence(null);
 
         Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
@@ -206,17 +194,6 @@ public class LogSource implements Source {
         logData.setSourceType(sourceName);
 
         return logData;
-    }
-
-    /**
-     * @return the message ID for the given message.
-     */
-    protected String parseMessageId(String msg) {
-        String messageId = null;
-        Matcher matcher = messagePattern.matcher(msg);
-        if (matcher.find())
-            messageId = msg.substring(matcher.start(), matcher.end() - 1);
-        return messageId;
     }
 
     private WsLogRecord getWsLogRecord(LogRecord logRecord) {

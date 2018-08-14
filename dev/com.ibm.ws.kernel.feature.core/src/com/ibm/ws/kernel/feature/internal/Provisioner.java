@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.namespace.BundleNamespace;
+import org.osgi.framework.namespace.ExecutionEnvironmentNamespace;
 import org.osgi.framework.namespace.HostNamespace;
 import org.osgi.framework.namespace.PackageNamespace;
 import org.osgi.framework.startlevel.BundleStartLevel;
@@ -59,6 +60,9 @@ import org.osgi.framework.wiring.BundleWiring;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.namespace.service.ServiceNamespace;
 import org.osgi.resource.Capability;
+import org.osgi.resource.Namespace;
+import org.osgi.resource.Requirement;
+import org.osgi.resource.Resource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -269,6 +273,12 @@ public class Provisioner {
                     }
                     // Get the product name for which the bundles are being installed.
                     String productName = bundleRepositoryHolder.getFeatureType();
+
+                    // If a bundle dependency specifies a required-osgi-ee capability, ensure it is satisfied before installing the bundle
+                    if (missingRequiredOSGiEE(fr, fwkWiring)) {
+                        // require-osgi-ee capability not satisfied, do not install
+                        return true;
+                    }
 
                     if (libertyBoot) {
                         bundle = installLibertyBootBundle(productName, fr, fwkWiring);
@@ -1201,6 +1211,35 @@ public class Provisioner {
         } else {
             return Collections.emptySet();
         }
+    }
+
+    private boolean missingRequiredOSGiEE(FeatureResource fr, FrameworkWiring fwkWiring) {
+        final String requiredOSGiEE = fr.getRequiredOSGiEE();
+        if (requiredOSGiEE != null) {
+            Collection<BundleCapability> foundEEs = fwkWiring.findProviders(new Requirement() {
+                @Override
+                public Resource getResource() {
+                    return null;
+                }
+
+                @Override
+                public String getNamespace() {
+                    return ExecutionEnvironmentNamespace.EXECUTION_ENVIRONMENT_NAMESPACE;
+                }
+
+                @Override
+                public Map<String, String> getDirectives() {
+                    return Collections.singletonMap(Namespace.REQUIREMENT_FILTER_DIRECTIVE, requiredOSGiEE);
+                }
+
+                @Override
+                public Map<String, Object> getAttributes() {
+                    return Collections.emptyMap();
+                }
+            });
+            return foundEEs.isEmpty();
+        }
+        return false;
     }
 
 }

@@ -30,6 +30,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderTable;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -50,6 +51,8 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     private ArrayList<H2HeaderField> headers = null;
     private int headersLength = 0;
 
+    private HttpInboundServiceContextImpl httpInboundServiceContextImpl = null;
+
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2HttpInboundLinkWrap.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -60,6 +63,9 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         vc = v;
         h2TCPConnectionContext = new H2TCPConnectionContext(streamID, muxLink, v);
         h2ConnectionProxy = new H2ConnectionLinkProxy(this);
+
+        httpInboundServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
+
     }
 
     // implement the methods that HttpInboundLink will need to have changed/overridden so that it will work "as-is"
@@ -272,7 +278,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
     @Override
     public void close(VirtualConnection inVC, Exception e) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "close() called H2InboundLink: " + this + " " + inVC);
+            Tr.debug(tc, "close(vc, e) called H2InboundLink: " + this + " " + inVC);
         }
 
         //At this point our side should be in the close state, as we have sent out our data
@@ -284,6 +290,13 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
             if (e == null || e instanceof Http2Exception) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "close: closing with exception: " + e);
+                }
+                if (httpInboundServiceContextImpl != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close: (1)httpInboundServiceContextImpl.clear()");
+                    }
+                    httpInboundServiceContextImpl.clear();
+                    httpInboundServiceContextImpl = null;
                 }
                 this.muxLink.close(inVC, e);
             } else {
@@ -298,8 +311,22 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                         h2sp.processNextFrame(reset, Constants.Direction.WRITING_OUT);
                     } catch (Http2Exception h2e) {
                         // if we can't write out RST frame, throw the original exception
+                        if (httpInboundServiceContextImpl != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "close: (2)httpInboundServiceContextImpl.clear()");
+                            }
+                            httpInboundServiceContextImpl.clear();
+                            httpInboundServiceContextImpl = null;
+                        }
                         this.muxLink.close(inVC, e);
                     }
+                }
+                if (httpInboundServiceContextImpl != null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close: (3)httpInboundServiceContextImpl.clear()");
+                    }
+                    httpInboundServiceContextImpl.clear();
+                    httpInboundServiceContextImpl = null;
                 }
                 this.muxLink.close(inVC, null);
             }

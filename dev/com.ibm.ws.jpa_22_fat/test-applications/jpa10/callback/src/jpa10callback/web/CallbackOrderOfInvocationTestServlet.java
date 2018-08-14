@@ -125,7 +125,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
 
     // Package Protection
     @Test
-    public void Callback_OrderOfInvocation_001_PackageProtection_Ano_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PackageProtection_Ano_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafPackageEntity.class;
         try {
@@ -136,7 +136,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PackageProtection_Ano_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PackageProtection_Ano_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafPackageEntity.class;
         try {
@@ -147,14 +147,14 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PackageProtection_Ano_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PackageProtection_Ano_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = AnoOOILeafPackageEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PACKAGE);
     }
 
     // Private Protection
     @Test
-    public void Callback_OrderOfInvocation_001_PrivateProtection_Ano_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PrivateProtection_Ano_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafPrivateEntity.class;
         try {
@@ -165,7 +165,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PrivateProtection_Ano_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PrivateProtection_Ano_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafPrivateEntity.class;
         try {
@@ -176,14 +176,14 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PrivateProtection_Ano_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PrivateProtection_Ano_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = AnoOOILeafPrivateEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PRIVATE);
     }
 
     // Protected Protection
     @Test
-    public void Callback_OrderOfInvocation_001_ProtectedProtection_Ano_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_ProtectedProtection_Ano_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafProtectedEntity.class;
         try {
@@ -194,7 +194,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_ProtectedProtection_Ano_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_ProtectedProtection_Ano_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafProtectedEntity.class;
         try {
@@ -205,14 +205,14 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_ProtectedProtection_Ano_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_ProtectedProtection_Ano_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = AnoOOILeafProtectedEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PROTECTED);
     }
 
     // Public Protection
     @Test
-    public void Callback_OrderOfInvocation_001_PublicProtection_Ano_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PublicProtection_Ano_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafPublicEntity.class;
         try {
@@ -223,7 +223,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PublicProtection_Ano_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PublicProtection_Ano_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = AnoOOILeafPublicEntity.class;
         try {
@@ -234,7 +234,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PublicProtection_Ano_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PublicProtection_Ano_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = AnoOOILeafPublicEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PUBLIC);
     }
@@ -243,7 +243,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
 
     // Package Protection
     @Test
-    public void Callback_OrderOfInvocation_001_PackageProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PackageProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafPackageEntity.class;
         try {
@@ -254,7 +254,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PackageProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PackageProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafPackageEntity.class;
         try {
@@ -265,14 +265,14 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PackageProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PackageProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLOOILeafPackageEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PACKAGE);
     }
 
     // Private Protection
     @Test
-    public void Callback_OrderOfInvocation_001_PrivateProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PrivateProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafPrivateEntity.class;
         try {
@@ -283,7 +283,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PrivateProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PrivateProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafPrivateEntity.class;
         try {
@@ -294,14 +294,14 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PrivateProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PrivateProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLOOILeafPrivateEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PRIVATE);
     }
 
     // Protected Protection
     @Test
-    public void Callback_OrderOfInvocation_001_ProtectedProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_ProtectedProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafProtectedEntity.class;
         try {
@@ -312,7 +312,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_ProtectedProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_ProtectedProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafProtectedEntity.class;
         try {
@@ -323,14 +323,14 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_ProtectedProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_ProtectedProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLOOILeafProtectedEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PROTECTED);
     }
 
     // Public Protection
     @Test
-    public void Callback_OrderOfInvocation_001_PublicProtection_XML_AMJTA_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PublicProtection_XML_AMJTA_Web() throws Exception {
         final EntityManager em = emfJTA.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafPublicEntity.class;
         try {
@@ -341,7 +341,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PublicProtection_XML_AMRL_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PublicProtection_XML_AMRL_Web() throws Exception {
         final EntityManager em = emfRL.createEntityManager();
         final Class<?> targetEntityClass = XMLOOILeafPublicEntity.class;
         try {
@@ -352,7 +352,7 @@ public class CallbackOrderOfInvocationTestServlet extends FATServlet {
     }
 
     @Test
-    public void Callback_OrderOfInvocation_001_PublicProtection_XML_CMTS_Web() throws Exception {
+    public void jpa10_Callback_OrderOfInvocation_001_PublicProtection_XML_CMTS_Web() throws Exception {
         final Class<?> targetEntityClass = XMLOOILeafPublicEntity.class;
         ctl.testOrderOfInvocation001(em, tx, targetEntityClass, ProtectionType.PT_PUBLIC);
     }

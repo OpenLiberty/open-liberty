@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=Zkontrolujte akci u\u017eivatele pro jak\u00
 warn_mpjwt_prop_service_notavail=CWWKW0708W: Slu\u017eba MicroProfile JWT Propagation nen\u00ed dostupn\u00e1. B\u011bhov\u00e9 prost\u0159ed\u00ed nem\u00e1 p\u0159\u00edstup k tokenu, aby jej zahrnulo do z\u00e1hlav\u00ed autorizace.
 warn_mpjwt_prop_service_notavail.explanation=Slu\u017eba MicroProfile JWT Propagation vy\u017eaduje funkci mpJwt-1.0. 
 warn_mpjwt_prop_service_notavail.useraction=P\u0159esv\u011bd\u010dte se, \u017ee je server spu\u0161t\u011bn s po\u017eadovanou funkc\u00ed.
+
+warn_unknown_keepalive_setting=CWWKW0709W: Hodnota vlastnosti uchov\u00e1n\u00ed aktivn\u00edho p\u0159ipojen\u00ed {0} nen\u00ed platn\u00e1 volba. Tato vlastnost mus\u00ed b\u00fdt nastavena na: {1}. Pou\u017eije se v\u00fdchoz\u00ed hodnota keep-alive.
+warn_unknown_keepalive_setting.explanation=K\u00f3d aplikace m\u00e1 nastavenu vlastnost com.ibm.ws.jaxrs.client.keepalive.connection v klientu JAX-RS na chybnou hodnotu.
+warn_unknown_keepalive_setting.useraction=Upravte k\u00f3d tak, aby byla pou\u017eita platn\u00e1 hodnota vlastnosti, nap\u0159. keep-alive nebo close.

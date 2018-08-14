@@ -59,3 +59,19 @@ invalidDuration.useraction=V\u00e9rifiez que la valeur sp\u00e9cifi\u00e9e dans 
 #
 # W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
 #
+
+memory.information.unexpected=CWWKE0947E: Des informations inattendues sur la m\u00e9moire du syst\u00e8me d''exploitation ont \u00e9t\u00e9 rencontr\u00e9es dans {0} : {1}
+memory.information.unexpected.explanation=Certaines informations sur la m\u00e9moire du syst\u00e8me d'exploitation ne sont pas au format attendu. Le produit pouvait \u00eatre en train de lire un fichier ou d'ex\u00e9cuter un programme lorsqu'il a rencontr\u00e9 le format inattendu. Le texte du message indique le nom d'un fichier de syst\u00e8me d'exploitation et le contenu du fichier ou le nom d'un programme et la sortie du programme. Vous pouvez vous servir de ces informations pour traiter le probl\u00e8me.
+memory.information.unexpected.useraction=Prenez connaissance des informations dans le texte du message. Corrigez tout probl\u00e8me afin de vous assurer que le syst\u00e8me d'exploitation se comporte correctement et qu'aucune information inattendue sur la m\u00e9moire du syst\u00e8me d'exploitation ne soit rencontr\u00e9e.
+
+memory.information.unavailable=CWWKE0948E: Les informations sur la m\u00e9moire disponibles ne sont pas impl\u00e9ment\u00e9es sur ce syst\u00e8me d'exploitation.
+memory.information.unavailable.explanation=Cette fonction n'a pas \u00e9t\u00e9 impl\u00e9ment\u00e9e pour ce syst\u00e8me d'exploitation.
+memory.information.unavailable.useraction=Utilisez l'API OperatingSystem pour obtenir le type de syst\u00e8me d'exploitation et \u00e9viter d'appeler cette fonction pour ce type de syst\u00e8me d'exploitation.
+
+os.pagesize.unavailable=CWWKE0949E: Les informations sur la taille de page ne sont pas impl\u00e9ment\u00e9es pour ce syst\u00e8me d'exploitation.
+os.pagesize.unavailable.explanation=Cette fonction n'a pas \u00e9t\u00e9 impl\u00e9ment\u00e9e pour ce syst\u00e8me d'exploitation.
+os.pagesize.unavailable.useraction=Utilisez l'API OperatingSystem pour obtenir le type de syst\u00e8me d'exploitation et \u00e9viter d'appeler cette fonction pour ce type de syst\u00e8me d'exploitation.
+
+os.execute.error=CWWKE0950E: L''ex\u00e9cution du programme {0} a \u00e9chou\u00e9. Le code retour est {1}. La sortie est {2}
+os.execute.error.explanation=De nombreuses situations peuvent entra\u00eener un \u00e9chec. Par exemple, le programme peut \u00e9chouer en raison d'un cas d'erreur qu'il indique dans le code retour et la sortie.
+os.execute.error.useraction=Assurez-vous que la commande existe et qu'elle se trouve dans l'un des r\u00e9pertoires indiqu\u00e9s dans la variable d'environnement PATH.

@@ -13,31 +13,25 @@ package com.ibm.ws.cdi12.fat.tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileWriter;
 import java.io.File;
+import java.io.FileWriter;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.custom.junit.runner.ClientOnly;
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
 import componenttest.topology.impl.LibertyServer;
 
-@ClientOnly
 public class AppClientTest {
     private static final Class<AppClientTest> c = AppClientTest.class;
     private static final String testClientName = "cdiClient";
@@ -45,8 +39,7 @@ public class AppClientTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        JavaArchive helloAppClient = ShrinkWrap.create(JavaArchive.class,"HelloAppClient.jar")
+        JavaArchive helloAppClient = ShrinkWrap.create(JavaArchive.class, "HelloAppClient.jar")
                         .addClass("com.ibm.ws.clientcontainer.fat.HelloBean")
                         .addClass("com.ibm.ws.clientcontainer.fat.TestLoginCallbackHandler")
                         .addClass("com.ibm.ws.clientcontainer.fat.HelloAppClient")
@@ -54,7 +47,7 @@ public class AppClientTest {
                         .add(new FileAsset(new File("test-applications/HelloAppClient.jar/resources/META-INF/application-client.xml")), "/META-INF/application-client.xml")
                         .add(new FileAsset(new File("test-applications/HelloAppClient.jar/resources/META-INF/MANIFEST.MF")), "/META-INF/MANIFEST.MF");
 
-        EnterpriseArchive helloAppClientEar = ShrinkWrap.create(EnterpriseArchive.class,"HelloAppClient.ear")
+        EnterpriseArchive helloAppClientEar = ShrinkWrap.create(EnterpriseArchive.class, "HelloAppClient.ear")
                         .add(new FileAsset(new File("test-applications/HelloAppClient.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(helloAppClient);
 
@@ -73,7 +66,9 @@ public class AppClientTest {
 
         String featuresMessage = client.waitForStringInCopiedLog("CWWKF0034I", 0);
         assertNotNull("Did not receive features loaded message", featuresMessage);
-        assertTrue("cdi-1.2 was not among the loaded features", featuresMessage.contains("cdi-1.2"));
+
+        String cdiFeature = EmptyAction.ID.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION) ? "cdi-1.2" : "cdi-2.0";
+        assertTrue(cdiFeature + " was not among the loaded features", featuresMessage.contains(cdiFeature));
 
         assertNotNull("Did not recieve app started message",
                       client.waitForStringInCopiedLog("Client App Start", 0));

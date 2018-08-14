@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=Non \u00e8 richiesta alcuna azione.
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: Il servizio di federazione del registro utenti \u00e8 stato arrestato.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Messaggio a solo scopo informativo.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Non \u00e8 richiesta alcuna azione.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: Impossibile completare l'operazione registro utenti. Non \u00e8 stato trovato un registro utente valido. Aggiungere o correggere la definizione di registro nel file server.xml.
+MISSING_REGISTRY_DEFINITION.explanation=Non \u00e8 stato definito un registro utente o non \u00e8 stato possibile inizializzarlo a causa di errori di configurazione. Un registro utente valido include un registro LDAP o altri registri o repository supportati.
+MISSING_REGISTRY_DEFINITION.useraction=Se \u00e8 stato definito un registro utente nel file di configurazione, cercare nei log gli errori di configurazione durante l'avvio del server. Aggiungere o correggere la definizione del registro utente nel file server.xml.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: Impossibile completare l'operazione registro utenti. Non \u00e8 stato trovato l'identificativo dell'entit\u00e0. Specificare l'identificativo corretto come parametro di input. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=Non \u00e8 stato specificato l'identificativo dell'entit\u00e0. Il sistema non \u00e8 in grado di trovare l'entit\u00e0. Impossibile proseguire l'operazione registro utenti senza trovare questa entit\u00e0. 

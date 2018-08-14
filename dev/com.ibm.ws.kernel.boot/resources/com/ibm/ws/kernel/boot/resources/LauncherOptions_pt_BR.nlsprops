@@ -148,12 +148,13 @@ option-key.include=\ \ \ \ --include=value,value,...
 option-desc.javadump.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: heap, system \n\
 \tthread.
 option-desc.package.include=\tUma lista de valores delimitada por v\u00edrgula. Os valores v\u00e1lidos s\u00e3o: all*, usr,   \n\
-\tminify, runnable. Se voc\u00ea especificar runnable, o pacote resultante \n\
-\tser\u00e1 um jar execut\u00e1vel que executa o servidor. A op\u00e7\u00e3o minify produz \n\
-\ta menor imagem poss\u00edvel para o servidor. A op\u00e7\u00e3o usr cria um \n\
-\tpacote que cont\u00e9m o servidor e o aplicativo, mas n\u00e3o o \n\
-\ttempo de execu\u00e7\u00e3o. A op\u00e7\u00e3o all padr\u00e3o produz um pacote do servidor que \n\
-\tcont\u00e9m tudo.
+\tminify, runnable, wlp. Se voc\u00ea especificar runnable, o pacote resultante \n\
+\tser\u00e1 um jar execut\u00e1vel que executa o servidor. A op\u00e7\u00e3o minify    \n\
+\tproduz a menor imagem poss\u00edvel para o servidor. A op\u00e7\u00e3o usr  \n\
+\tcria um pacote que cont\u00e9m o servidor e o aplicativo, mas n\u00e3o  \n\
+\to tempo de execu\u00e7\u00e3o. A op\u00e7\u00e3o wlp produz um tempo de execu\u00e7\u00e3o que n\u00e3o cont\u00e9m \n\
+\ta configura\u00e7\u00e3o do servidor. A op\u00e7\u00e3o all padr\u00e3o produz um pacote   \n\
+\tdo servidor que cont\u00e9m tudo.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nome_do_Modelo"
 option-desc.template=\tEspecifique o nome do modelo a ser usado ao criar um novo servidor. 

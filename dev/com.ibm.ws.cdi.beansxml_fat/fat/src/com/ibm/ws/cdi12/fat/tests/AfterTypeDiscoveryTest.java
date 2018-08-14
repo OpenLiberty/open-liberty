@@ -20,14 +20,17 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class AfterTypeDiscoveryTest extends LoggingTest {
 

@@ -86,6 +86,10 @@ public class CollectorJsonUtils {
 
                 return jsonifyAccess(wlpUserDir, serverName, serverHostName, event, tags);
 
+            } else if (eventType.equals(CollectorConstants.AUDIT_LOG_EVENT_TYPE)) {
+
+                return jsonifyAudit(wlpUserDir, serverName, serverHostName, event, tags);
+
             }
         }
         return "";
@@ -150,20 +154,20 @@ public class CollectorJsonUtils {
 
         StringBuilder sb = CollectorJsonHelpers.startGCJson(hostName, wlpUserDir, serverName);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey(), Long.toString(gcData.getHeap()), false, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey(), Long.toString(gcData.getUsedHeap()), false, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey(), Long.toString(gcData.getMaxHeap()), false, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey(), Long.toString(gcData.getHeap()), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey(), Long.toString(gcData.getUsedHeap()), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey(), Long.toString(gcData.getMaxHeap()), false, false, false, false, true);
 
         long duration = gcData.getDuration() * 1000;
         CollectorJsonHelpers.addToJSON(sb, gcData.getDurationKey(), Long.toString(duration), false, false, false, false, true);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey(), gcData.getGcType(), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey(), gcData.getReason(), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey(), gcData.getGcType(), false, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey(), gcData.getReason(), false, false, false, false, false);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(gcData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, gcData.getDatetimeKey(), datetime, false, false, false, false, false);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey(), gcData.getSequence(), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey(), gcData.getSequence(), false, false, false, false, false);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
@@ -319,6 +323,54 @@ public class CollectorJsonUtils {
 
         sb.append("}");
 
+        return sb.toString();
+    }
+
+    public static String jsonifyAudit(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
+        GenericData genData = (GenericData) event;
+        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        String key = null;
+        StringBuilder sb = CollectorJsonHelpers.startAuditJson(hostName, wlpUserDir, serverName);
+
+        for (KeyValuePair kvp : pairs) {
+
+            if (kvp != null) {
+                //Logic for non-KeyValuePairList type Pairs
+                if (!kvp.isList()) {
+
+                    key = kvp.getKey();
+
+                    /*
+                     * Explicitly parse for ibm_datetime/loggingEventTime for special processing.
+                     *
+                     * Explicitly parse for ibm_sequence/loggingSequenceNumber for special processing.
+                     *
+                     * Explicitly parse for ibm_threadid for special processing.
+                     *
+                     * Audit is currently not using the logging constants for the datetime and sequence keys,
+                     * we need to format the json output with the appropriate logging values for the keys.
+                     *
+                     * Parse the rest of audit GDO KVP - They are strings.
+                     *
+                     * Note: we'll expect any external/thirdparty/additional source to be using IBM_* keys.
+                     * This method is to parse and format into logstash_1.0 expected formatting.
+                     */
+                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
+                        String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.DATETIME, datetime, false, true, false, false, false);
+                    } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.SEQUENCE, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
+                    } else {
+                        CollectorJsonHelpers.addToJSON(sb, key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                    }
+
+                } //There shouldn't be any list items from Audit's Generic Data object
+            }
+
+        }
+        sb.append("}");
         return sb.toString();
     }
 

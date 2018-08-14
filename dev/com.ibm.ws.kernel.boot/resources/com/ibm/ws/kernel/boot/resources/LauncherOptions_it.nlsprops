@@ -128,7 +128,6 @@ option-desc.dump.archive=\tSpecifica la destinazione di archivio che deve essere
 \tdell'archivio predefinito per l'azione di package \u00e8 "pax" su z/OS e "zip"\n\
 \tsu tutte le altre piattaforme. Il formato archivio "jar" produce un jar \n\
 \tad estrazione automatica simile all'archivio del programma di installazione originale.
-
 option-desc.package.archive=\tSpecifica la destinazione di archivio che deve essere generata dall'azione package.       \n\
 \tLa destinazione pu\u00f2 essere specificata come un percorso assoluto o come \n\
 \tun percorso relativo. Se questa opzione viene omessa, il file archivio viene\n\
@@ -146,12 +145,13 @@ option-key.include=\ \ \ \ --include=value,value,...
 option-desc.javadump.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: heap, system \n\
 \tthread.
 option-desc.package.include=\tUn elenco di valori delimitati da virgole. I valori validi sono: all*, usr,   \n\
-\tminify, runnable. Se si specifica runnable il package risultante sar\u00e0 \n\
-\tun jar eseguibile che esegue il server. L'opzione minify produce \n\
-\tl'immagine minima possibile per il server. L'opzione usr crea\n\
-\tun package che contiene il servere l'applicazione, ma non il\n\
-\truntime. L'opzione predefinita all produce un package server      \n\
-\tche contiene tutto.
+\tminify, runnable, wlp. Se si specifica runnable il package risultante \n\
+\tsar\u00e0 un jar eseguibile che esegue il server. L'opzione minify \n\
+\tproduce l'immagine minima possibile per il server. L'opzione usr \n\
+\tcrea un package che contiene il servere l'applicazione, ma non \n\
+\til runtime. L'opzione wlp produce un runtime che non contiene\n\
+\tla configurazione del server. L'opzione predefinita all produce un package\n\
+\tserver che contiene tutto.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tSpecifica il nome del modello da utilizzare quando si crea un nuovo server. 

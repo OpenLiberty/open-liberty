@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -130,6 +130,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=Affectez des identificateurs u
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: L''attribut id de l''\u00e9l\u00e9ment resourceAdapter pour le module d''adaptateur de ressource {0} ne peut pas \u00eatre l''un des identificateurs r\u00e9serv\u00e9s {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=L'ID sp\u00e9cifi\u00e9 dans la configuration ou d\u00e9riv\u00e9 du nom de module est un identificateur r\u00e9serv\u00e9. Les identificateurs r\u00e9serv\u00e9s sont destin\u00e9s \u00e0 un usage interne seulement.
 J2CA8816.reserved.resource.adapter.id.useraction=Fournissez une valeur non r\u00e9serv\u00e9e pour l'attribut id de l'\u00e9l\u00e9ment resourceAdapter ou pour le nom de module dans la configuration de serveur.
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: L''adaptateur de ressources {0} a rencontr\u00e9 une erreur d''analyse lors du traitement du descripteur de d\u00e9ploiement dans le chemin {1} : {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=Une erreur est survenue alors que l'adaptateur de ressources analysait le descripteur de d\u00e9ploiement. L'adaptateur de ressources ne sera pas disponible.
+J2CA8817.parse.deployment.descriptor.failed.useraction=Pour plus de d\u00e9tails, consultez les informations sur l'exception.  Examinez le contenu du descripteur de d\u00e9ploiement afin de vous assurer qu'il est valide et qu'il pr\u00e9sente des donn\u00e9es XML correctes. Si n\u00e9cessaire, collaborez avec le fournisseur de l'adaptateur de ressources pour r\u00e9soudre les donn\u00e9es XML non valides.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"

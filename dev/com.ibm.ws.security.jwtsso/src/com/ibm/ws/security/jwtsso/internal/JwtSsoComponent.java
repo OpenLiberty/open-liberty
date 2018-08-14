@@ -417,4 +417,10 @@ public class JwtSsoComponent implements JwtSsoConfig {
         return cookieName;
     }
 
+	@Override
+	public String getAuthFilterRef() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
