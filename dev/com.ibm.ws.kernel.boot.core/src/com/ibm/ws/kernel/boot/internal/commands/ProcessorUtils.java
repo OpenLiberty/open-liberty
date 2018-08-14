@@ -185,11 +185,12 @@ public class ProcessorUtils {
      * @return
      * @throws IOException
      */
-    public static ArchiveEntryConfig createLooseArchiveEntryConfig(LooseConfig looseConfig, File looseFile, BootstrapConfig bootProps) throws IOException {
+    public static ArchiveEntryConfig createLooseArchiveEntryConfig(LooseConfig looseConfig, File looseFile, BootstrapConfig bootProps,
+                                                                   String archiveEntryPrefix) throws IOException {
         File usrRoot = bootProps.getUserRoot();
         int len = usrRoot.getAbsolutePath().length();
 
-        String entryPath = PackageProcessor.packageArchiveEntryPrefix + "usr" + looseFile.getAbsolutePath().substring(len);
+        String entryPath = archiveEntryPrefix + "usr" + looseFile.getAbsolutePath().substring(len);
         entryPath = entryPath.replace("\\", "/");
         entryPath = entryPath.substring(0, entryPath.length() - 4); // trim the .xml
 

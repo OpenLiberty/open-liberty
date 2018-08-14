@@ -229,23 +229,16 @@ public class PackageCommand {
             List<Pair<PackageOption, String>> options = new ArrayList<Pair<PackageOption, String>>();
             options.add(new Pair<PackageOption, String>(PackageOption.INCLUDE, includeValue));
             processor = new PackageProcessor(serverName, packageFile, bootProps, options, libertyFiles);
-            if (rootOption != null) {
-                if (processor.hasProductExtentions() && rootOption.trim().equalsIgnoreCase("")) {
-                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid"),
-                                                            serverName));
-                } else {
-                    processor.setArchivePrefix(rootOption);
-                }
-            }
         } else {
             processor = new PackageProcessor(serverName, packageFile, bootProps, null, libertyFiles);
-            if (rootOption != null) {
-                if (processor.hasProductExtentions() && rootOption.trim().equalsIgnoreCase("")) {
-                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid"),
-                                                            serverName));
-                } else {
-                    processor.setArchivePrefix(rootOption);
-                }
+        }
+
+        if (rootOption != null) {
+            if (processor.hasProductExtentions() && rootOption.trim().equalsIgnoreCase("")) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid"),
+                                                        serverName));
+            } else {
+                processor.setArchivePrefix(rootOption);
             }
         }
 

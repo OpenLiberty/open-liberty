@@ -73,7 +73,7 @@ public class PackageProcessor implements ArchiveProcessor {
     final String wlpPropertyBackup = "WebSphereApplicationServer.properties.bak";
 
     private static final String PACKAGE_ARCHIVE_PREFIX = "wlp/";
-    public static String packageArchiveEntryPrefix = PACKAGE_ARCHIVE_PREFIX;
+    public String packageArchiveEntryPrefix = PACKAGE_ARCHIVE_PREFIX;
 
     public PackageProcessor(String processName, File packageFile, BootstrapConfig bootProps, List<Pair<PackageOption, String>> options, Set<String> processContent) {
         this.processName = processName;
@@ -571,7 +571,7 @@ public class PackageProcessor implements ArchiveProcessor {
                 looseConfig = ProcessorUtils.convertToLooseConfig(lf);
                 if (looseConfig != null) {
                     try {
-                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps);
+                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix);
                         entryConfigs.add(looseArchiveEntryConfig);
                     } catch (FileNotFoundException e) {
                         // If any exception occurs when creating loose file archive, just skip it and create the next one.
