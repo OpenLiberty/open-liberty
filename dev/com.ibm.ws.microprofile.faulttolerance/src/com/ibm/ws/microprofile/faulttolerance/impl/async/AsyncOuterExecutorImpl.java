@@ -225,8 +225,8 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
 
                 try {
                     //begin the queuedFuture execution
-                    queuedFuture.start(executorService);
                     executionContext.onQueued();
+                    queuedFuture.start(executorService);
                     metricRecorder.incrementBulkeadAcceptedCount();
                 } catch (RejectedExecutionException e) {
                     //if the execution was rejected then end the execution and throw a BulkheadException
