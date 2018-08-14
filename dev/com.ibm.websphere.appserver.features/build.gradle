@@ -195,7 +195,7 @@ task createFeatureResources {
         edition(baseEdition: "core",
                 validEditions: "")
         edition(baseEdition: "base",
-                validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
+                validEditions: "BASE,BASE_ILAN,BLUEMIX,DEVELOPERS,EXPRESS,ND,zOS")
         edition(baseEdition: "nd",
                 validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
         edition(baseEdition: "zos",
