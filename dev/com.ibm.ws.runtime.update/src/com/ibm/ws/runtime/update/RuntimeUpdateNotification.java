@@ -37,6 +37,7 @@ public interface RuntimeUpdateNotification {
     public final String APPLICATIONS_STARTING = "ApplicationsStarting";
     public final String APPLICATIONS_INSTALL_CALLED = "ApplicationsInstallCalled";
     public final String ORB_STARTED = "ORBStarting";
+    public final String QUIESCING = "Quiescing";
 
     /**
      * Get the name of this notification

@@ -21,11 +21,13 @@ import com.ibm.ws.kernel.filemonitor.FileNotification;
 import com.ibm.ws.kernel.filemonitor.internal.CoreServiceImpl;
 import com.ibm.ws.kernel.filemonitor.internal.MonitorHolder;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 /**
  * The traditional core service, used when we're below Java 1.7
  */
-@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, configurationPid = "com.ibm.ws.kernel.filemonitor", service = { FileNotification.class },
+@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL, configurationPid = "com.ibm.ws.kernel.filemonitor",
+           service = { FileNotification.class, ServerQuiesceListener.class },
            property = { "service.vendor=IBM" })
 public class ScanningCoreServiceImpl extends CoreServiceImpl {
 

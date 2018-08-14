@@ -59,6 +59,7 @@ instrument.disabled: true
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.event;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.ws.messaging.common;version=latest,\
 	com.ibm.ws.messaging.comms.client;version=latest,\

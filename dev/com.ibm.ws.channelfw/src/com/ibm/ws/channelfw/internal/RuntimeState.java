@@ -35,6 +35,7 @@ public class RuntimeState implements Comparable<RuntimeState> {
     /*
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @Override
     public int compareTo(RuntimeState o) {
         if (o == null) {
             return -1;
@@ -45,6 +46,7 @@ public class RuntimeState implements Comparable<RuntimeState> {
     /*
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -58,6 +60,7 @@ public class RuntimeState implements Comparable<RuntimeState> {
     /*
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return this.ordinal;
     }
@@ -85,4 +88,6 @@ public class RuntimeState implements Comparable<RuntimeState> {
      * has been called, but the stop isn't complete.
      */
     public final static RuntimeState QUIESCED = new RuntimeState();
+
+    public final static RuntimeState PAUSED = new RuntimeState();
 }

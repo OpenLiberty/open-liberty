@@ -2965,6 +2965,11 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
         }
     }
 
+    synchronized void pauseChain(Chain chain) {
+        RuntimeState chainState = chain.getState();
+        Channel[] chainChannels = chain.getChannels();
+    }
+
     /**
      * This method stops both inbound and outbound chains.
      *

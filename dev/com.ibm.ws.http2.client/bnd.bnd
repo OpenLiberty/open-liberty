@@ -65,4 +65,5 @@ Import-Package: \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest

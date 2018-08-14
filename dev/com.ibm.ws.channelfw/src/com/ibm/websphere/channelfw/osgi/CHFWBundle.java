@@ -11,8 +11,11 @@
 package com.ibm.websphere.channelfw.osgi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -45,6 +48,8 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkImpl;
 import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
+import com.ibm.ws.kernel.launch.service.PauseableComponent;
+import com.ibm.ws.kernel.launch.service.PauseableComponentException;
 import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.ws.tcpchannel.internal.TCPChannelFactory;
 import com.ibm.ws.udpchannel.internal.UDPChannelFactory;
@@ -61,13 +66,13 @@ import com.ibm.wsspi.timer.QuickApproxTime;
  * dependency to be defined against the framework and provides proper access to
  * the framework itself.
  */
-@Component(service = { CHFWBundle.class, ServerQuiesceListener.class },
+@Component(service = { CHFWBundle.class, PauseableComponent.class },
            name = "com.ibm.ws.channelfw",
            configurationPid = "com.ibm.ws.channelfw",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            immediate = true,
            property = { "service.vendor=IBM" })
-public class CHFWBundle implements ServerQuiesceListener {
+public class CHFWBundle implements PauseableComponent {
 
     /** Trace service */
     private static final TraceComponent tc = Tr.register(CHFWBundle.class,
@@ -191,33 +196,6 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     protected void unsetAsyncIOHelper(AsyncIOHelper asyncIOHelper) {
         chfw.setAsyncIOHelper(null);
-    }
-
-    /**
-     * When notified that the server is going to stop, pre-quiesce all chains in the runtime.
-     * This will be called before services start getting torn down..
-     *
-     * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
-     */
-    @Override
-    public void serverStopping() {
-        // If the system is configured to quiesce connections..
-        long timeout = chfw.getDefaultChainQuiesceTimeout();
-        if (timeout > 0) {
-            ChainData[] runningChains = chfw.getRunningChains();
-
-            // build list of chain names to pass to stop, use ChannelUtils.stopChains so as to not return until the
-            // channels are inactive or the quiesce timeout has hit.
-            List<String> names = new ArrayList<String>();
-            for (int i = 0; i < runningChains.length; i++) {
-                if (FlowType.INBOUND.equals(runningChains[i].getType())) {
-                    names.add(runningChains[i].getName());
-                }
-            }
-
-            ChannelUtils.stopChains(names, -1, null);
-
-        }
     }
 
     /**
@@ -536,5 +514,101 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     public EndPointMgr getEndpointManager() {
         return EndPointMgrImpl.getRef();
+    }
+
+    /*
+     * /**
+     *
+     * @Override
+     * public void serverStopping() {
+     * // If the system is configured to quiesce connections..
+     * long timeout = chfw.getDefaultChainQuiesceTimeout();
+     * if (timeout > 0) {
+     * ChainData[] runningChains = chfw.getRunningChains();
+     *
+     * // build list of chain names to pass to stop, use ChannelUtils.stopChains so as to not return until the
+     * // channels are inactive or the quiesce timeout has hit.
+     * List<String> names = new ArrayList<String>();
+     * for (int i = 0; i < runningChains.length; i++) {
+     * if (FlowType.INBOUND.equals(runningChains[i].getType())) {
+     * names.add(runningChains[i].getName());
+     * }
+     * }
+     *
+     * ChannelUtils.stopChains(names, -1, null);
+     *
+     * }
+     * }
+     */
+
+    private static final Object pauseAction = new Object();
+    private final Set<String> pausedChains = new HashSet<String>();
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#getExtendedInfo()
+     */
+    @Override
+    public HashMap<String, String> getExtendedInfo() {
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#getName()
+     */
+    @Override
+    public String getName() {
+        return "Channel Framework";
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#isPaused()
+     */
+    @Override
+    public boolean isPaused() {
+        return !pausedChains.isEmpty();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#pause()
+     */
+    @Override
+    public void pause() throws PauseableComponentException {
+        synchronized (pauseAction) {
+            ChainData[] runningChains = chfw.getRunningChains();
+
+            // build list of chain names to pass to stop, use ChannelUtils.stopChains so as to not return until the
+            // channels are inactive or the quiesce timeout has hit.
+            List<String> names = new ArrayList<String>();
+            for (int i = 0; i < runningChains.length; i++) {
+                if (FlowType.INBOUND.equals(runningChains[i].getType())) {
+                    names.add(runningChains[i].getName());
+                }
+            }
+
+            ChannelUtils.stopChains(names, -1, null);
+            pausedChains.addAll(names);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.launch.service.PauseableComponent#resume()
+     */
+    @Override
+    public void resume() throws PauseableComponentException {
+        synchronized (pauseAction) {
+            for (String name : pausedChains) {
+                //TODO resume
+            }
+        }
     }
 }

@@ -54,6 +54,7 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.event;version=latest, \
