@@ -11,8 +11,6 @@
 package com.ibm.websphere.simplicity.config;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  *
@@ -20,9 +18,6 @@ import javax.xml.bind.annotation.XmlType;
 public class mpMetricsElement {
 
     private Boolean authentication;
-
-    @XmlElement(name = "webModuleDoc")
-    private ConfigElementList<WebModuleDocElement> webModuleDocs;
 
     public Boolean getAuthentication() {
         return authentication;
@@ -33,44 +28,11 @@ public class mpMetricsElement {
         this.authentication = authentication;
     }
 
-    public ConfigElementList<WebModuleDocElement> getWebModuleDocs() {
-        if (this.webModuleDocs == null) {
-            this.webModuleDocs = new ConfigElementList<WebModuleDocElement>();
-        }
-        return this.webModuleDocs;
-    }
-
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("mpMetricsElement [");
         sb.append("authentication=").append(authentication);
-        sb.append(", webModuleDocs=[");
-        if (webModuleDocs != null) {
-            for (WebModuleDocElement webModuleDoc : webModuleDocs) {
-                sb.append(webModuleDoc.toString()).append(", ");
-            }
-        }
         sb.append("]]");
         return sb.toString();
-    }
-
-    @XmlType(name = "mpMetricsWebModuleDoc")
-    public static class WebModuleDocElement extends ConfigElement {
-
-        private Boolean authentication;
-
-        public Boolean getAuthentication() {
-            return authentication;
-        }
-
-        @XmlAttribute(name = "authentication")
-        public void setAuthentication(Boolean authentication) {
-            this.authentication = authentication;
-        }
-
-        @Override
-        public String toString() {
-            return "WebModuleDoc [authentication=" + authentication + "]";
-        }
     }
 }
