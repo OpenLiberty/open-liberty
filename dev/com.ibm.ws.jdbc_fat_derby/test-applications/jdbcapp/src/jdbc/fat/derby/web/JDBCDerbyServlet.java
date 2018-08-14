@@ -159,7 +159,7 @@ public class JDBCDerbyServlet extends FATServlet {
      * Data Source - ds4 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that a data source configured with an isolation level of TRANSACTION_NONE
-     * and transactional = false fails during creation.
+     * and transactional = true fails during creation.
      */
     @Test
     @ExpectedFFDC({ "java.sql.SQLException" })

@@ -298,7 +298,16 @@ public class TranNoneConnection implements Connection {
 
     @Override
     public void setTransactionIsolation(int arg0) throws SQLException {
-        impl.setTransactionIsolation(arg0);
+        switch (arg0) {
+            case 0: //TRANSACTION_NONE
+                throw new SQLException("setTransactionIsolation called with " + arg0);
+            case 4: //TRANSACTION_REPEATABLE_READ WAS default
+                throw new SQLException("setTransactionIsolation called with " + arg0);
+            default:
+                impl.setTransactionIsolation(arg0);
+                break;
+
+        }
     }
 
     @Override
