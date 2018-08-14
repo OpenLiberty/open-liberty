@@ -1284,15 +1284,24 @@ public final class InjectionUtils {
 
         if (resource.contextsAvailable()) {
 
-            Class clz = requestObject.getClass();
+            final Class clz;
 
             if (((resource instanceof ProviderInfo)) && !(resource instanceof ApplicationInfo) && resource.getConstructorProxies() == null) {
 
                 ProviderInfo<?> pi = (ProviderInfo<?>) resource;
 
-                clz = pi.getOldProvider().getClass();
+                Object oldProvider = pi.getOldProvider();
+                clz = oldProvider.getClass();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "injectContexts pre: oldProvider=" + oldProvider + " clz=" + clz + " loader="+clz.getClassLoader());
+                }
+            } else {
+                clz = requestObject.getClass();
             }
 
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "injectContexts post: clz=" + clz + " loader="+clz.getClassLoader());
+            }
             JaxRsFactoryBeanCustomizer beanCustomizer = InjectionRuntimeContextHelper.findBeanCustomizer(clz, resource.getBus());
             if (beanCustomizer != null)
             {
