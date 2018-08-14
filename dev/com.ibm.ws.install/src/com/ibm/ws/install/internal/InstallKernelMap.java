@@ -522,7 +522,7 @@ public class InstallKernelMap implements Map {
             Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
             Collection<String> featuresAlreadyPresent = new ArrayList<String>();
             for (ProvisioningFeatureDefinition feature : installedFeatures) {
-                if (this.containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
                     alreadyInstalled += 1;
                     if (feature.getIbmShortName() == null) {
                         featuresAlreadyPresent.add(feature.getFeatureName());
