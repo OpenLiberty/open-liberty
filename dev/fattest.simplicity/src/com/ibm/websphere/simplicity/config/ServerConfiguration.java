@@ -614,6 +614,10 @@ public class ServerConfiguration implements Cloneable {
         return this.openAPIElement;
     }
 
+    public void setMetricsElement(mpMetricsElement element) {
+        this.MetricsElement = element;
+    }
+
     public mpMetricsElement getMetricsElement() {
         if (this.MetricsElement == null) {
             this.MetricsElement = new mpMetricsElement();

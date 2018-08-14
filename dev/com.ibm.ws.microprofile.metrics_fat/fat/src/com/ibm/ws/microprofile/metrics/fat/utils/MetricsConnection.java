@@ -39,6 +39,7 @@ public class MetricsConnection {
     public static final String WRONG_SERVER_PASSWORD = "user";
     public static final String WRONG_SERVER_USERNAME = "user";
     private int expectedResponseCode = HttpURLConnection.HTTP_OK;
+    private final int[] allowedUnexpectedResponseCodes = new int[] { HttpURLConnection.HTTP_MOVED_TEMP };
     private final Map<String, String> headers = new HashMap<>();
     private final Map<String, String> queryParams = new HashMap<>();
     private InputStream streamToWrite = null;
@@ -106,7 +107,7 @@ public class MetricsConnection {
      * @throws ProtocolException
      */
     public HttpURLConnection getConnection() throws IOException, ProtocolException {
-        HttpURLConnection conn = HttpUtils.getHttpConnection(constructUrl(), expectedResponseCode, null, 30, method, headers, streamToWrite);
+        HttpURLConnection conn = HttpUtils.getHttpConnection(constructUrl(), expectedResponseCode, allowedUnexpectedResponseCodes, 30, method, headers, streamToWrite);
         return conn;
     }
 
