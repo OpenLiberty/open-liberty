@@ -116,7 +116,7 @@ Import-Package: \
 Include-Resource: \
    @lib/bsf.jar, \
    @${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2}, \
-   @${repo;com.ibm.ws.org.apache:xalan;2.7.0}!/!META-INF/*, \
+   @${repo;com.ibm.ws.org.apache:xalan;2.7.2}!/!META-INF/*, \
    standard.jar=${repo;com.ibm.ws.javax.j2ee:standardtld;1.2}, \
    ard.jar=lib/ard.jar, \
    OSGI-INF=resources/OSGI-INF, \
