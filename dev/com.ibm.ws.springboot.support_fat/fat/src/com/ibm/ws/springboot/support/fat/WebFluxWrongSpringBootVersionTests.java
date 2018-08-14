@@ -25,10 +25,16 @@ import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-public class WebFluxApplicationNotSupportedTest extends AbstractSpringTests {
+public class WebFluxWrongSpringBootVersionTests extends AbstractSpringTests {
     @Override
     public boolean expectApplicationSuccess() {
         return false;
+    }
+
+    @Test
+    public void testWrongSpringBootVersion() throws Exception {
+        assertNotNull("No error message was found about the wrong Spring Boot version", server.waitForStringInLog("CWWKC0263E"));
+        stopServer(true, "CWWKC0263E", "CWWKZ0002E");
     }
 
     @Override
@@ -38,12 +44,7 @@ public class WebFluxApplicationNotSupportedTest extends AbstractSpringTests {
 
     @Override
     public String getApplication() {
-        return SPRING_BOOT_20_APP_WEBFLUX;
+        return SPRING_BOOT_20_APP_WEBFLUX_WRONG_VERSION;
     }
 
-    @Test
-    public void testWebfluxApplicationNotSupported() throws Exception {
-        assertNotNull("No error message was found for webflux application not supported ", server.waitForStringInLog("CWWKC0260E"));
-        stopServer(true, "CWWKC0260E", "CWWKZ0002E");
-    }
 }

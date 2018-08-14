@@ -8,10 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.web.server.version20.container;
+package com.ibm.ws.springboot.support.web.server.version15.container;
 
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.ADDRESS;
-import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.HTTP2;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.LIBERTY_USE_DEFAULT_HOST;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.NEED;
 import static com.ibm.ws.springboot.support.web.server.initializer.ServerConfigurationFactory.PORT;
@@ -40,11 +39,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.springframework.boot.web.server.MimeMappings;
-import org.springframework.boot.web.server.Ssl;
-import org.springframework.boot.web.server.Ssl.ClientAuth;
-import org.springframework.boot.web.server.WebServer;
-import org.springframework.boot.web.server.WebServerException;
+import org.springframework.boot.context.embedded.EmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerException;
+import org.springframework.boot.context.embedded.MimeMappings;
+import org.springframework.boot.context.embedded.Ssl;
+import org.springframework.boot.context.embedded.Ssl.ClientAuth;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.SocketUtils;
@@ -60,24 +59,24 @@ import com.ibm.ws.springboot.support.web.server.initializer.WebInitializer;
 /**
  *
  */
-public class LibertyServletContainer implements WebServer {
+public class LibertyWebServer implements EmbeddedServletContainer {
     private static final Object token = new Object() {};
     private final SpringBootConfig springBootConfig;
-    private final LibertyServletContainerFactory factory;
+    private final LibertyServletWebServerFactory factory;
     private final AtomicInteger port = new AtomicInteger();
 
-    public LibertyServletContainer(LibertyServletContainerFactory factory, ServletContextInitializer[] initializers) {
+    public LibertyWebServer(LibertyServletWebServerFactory factory, ServletContextInitializer[] initializers) {
         this.factory = factory;
         port.set(factory.getPort());
         // The Internet Assigned Numbers Authority (IANA) suggests the range 49152 to 65535 (215+214 to 216−1) for dynamic or private ports
         if (port.get() == 0) {
             port.set(SocketUtils.findAvailableTcpPort(49152));
         }
+
         SpringBootConfigFactory configFactory = SpringBootConfigFactory.findFactory(token);
         springBootConfig = configFactory.createSpringBootConfig();
         ServerConfiguration serverConfig = getServerConfiguration(factory, configFactory, this);
         SpringConfiguration additionalConfig = collectAdditionalConfig(factory);
-
         final CountDownLatch initDone = new CountDownLatch(1);
         final AtomicReference<Throwable> exception = new AtomicReference<>();
         springBootConfig.configure(serverConfig, new WebInitializer(factory.getContextPath(), (sc) -> {
@@ -100,25 +99,26 @@ public class LibertyServletContainer implements WebServer {
             initDone.await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new WebServerException("Initialization of ServletContext got interrupted.", e);
+            throw new EmbeddedServletContainerException("Initialization of ServletContext got interrupted.", e);
         }
         if (exception.get() != null) {
-            throw new WebServerException("Error occured initializing the ServletContext.", exception.get());
+            throw new EmbeddedServletContainerException("Error occured initializing the ServletContext.", exception.get());
         }
     }
 
-    private SpringConfiguration collectAdditionalConfig(LibertyServletContainerFactory factory) {
+    private SpringConfiguration collectAdditionalConfig(LibertyServletWebServerFactory factory) {
         final boolean DEFAULT_COMPRESSION_ENABLED_SETTING = false;
         final boolean DEFAULT_SESSION_PERSISTENT_SETTING = false;
         final int DEFAULT_SESSION_TIMEOUT_SECONDS = 30 * 60;
         SpringConfiguration configHolder = new SpringConfiguration();
+
         //check if spring compression configured so a not-supported warning may be issued.
         configHolder.setCompression_configured_in_spring_app(factory.getCompression().getEnabled() != DEFAULT_COMPRESSION_ENABLED_SETTING);
-        // check if spring session config changes made so that a not-supported warning may be issued.
-        configHolder.setSession_configured_in_spring_app(factory.getSession().getTimeout().getSeconds() != DEFAULT_SESSION_TIMEOUT_SECONDS ||
-                                                         factory.getSession().isPersistent() != DEFAULT_SESSION_PERSISTENT_SETTING);
-        Set<org.springframework.boot.web.server.ErrorPage> errorPages = factory.getErrorPages();
-        for (org.springframework.boot.web.server.ErrorPage spring_ep : errorPages) {
+        // check if check if spring session config changes made so that a not-supported warning may be issued.
+        configHolder.setSession_configured_in_spring_app(factory.getSessionTimeout() != DEFAULT_SESSION_TIMEOUT_SECONDS
+                                                     || factory.isPersistSession() != DEFAULT_SESSION_PERSISTENT_SETTING);
+        Set<org.springframework.boot.web.servlet.ErrorPage> errorPages = factory.getErrorPages();
+        for (org.springframework.boot.web.servlet.ErrorPage spring_ep : errorPages) {
             SpringErrorPageData ibm_spring_errpg = new SpringErrorPageData();
             ibm_spring_errpg.setLocation(spring_ep.getPath());
             if (spring_ep.getStatus() != null) {
@@ -143,12 +143,12 @@ public class LibertyServletContainer implements WebServer {
     }
 
     @Override
-    public void start() throws WebServerException {
+    public void start() throws EmbeddedServletContainerException {
         springBootConfig.start();
     }
 
     @Override
-    public void stop() throws WebServerException {
+    public void stop() throws EmbeddedServletContainerException {
         try {
             springBootConfig.stop();
         } finally {
@@ -156,7 +156,7 @@ public class LibertyServletContainer implements WebServer {
         }
     }
 
-    private static ServerConfiguration getServerConfiguration(LibertyServletContainerFactory factory, SpringBootConfigFactory configFactory, LibertyServletContainer container) {
+    private static ServerConfiguration getServerConfiguration(LibertyServletWebServerFactory factory, SpringBootConfigFactory configFactory, LibertyWebServer container) {
         Map<String, Object> serverProperties = getServerProperties(factory, container);
         return ServerConfigurationFactory.createServerConfiguration(serverProperties, configFactory, (s) -> {
             try {
@@ -167,11 +167,12 @@ public class LibertyServletContainer implements WebServer {
         });
     }
 
-    private static Map<String, Object> getServerProperties(LibertyServletContainerFactory factory, LibertyServletContainer container) {
+    private static Map<String, Object> getServerProperties(LibertyServletWebServerFactory factory, LibertyWebServer container) {
         Map<String, Object> serverProperties = new HashMap<>();
         if (factory.shouldUseDefaultHost(container)) {
             serverProperties.put(LIBERTY_USE_DEFAULT_HOST, Boolean.TRUE);
         }
+
         serverProperties.put(PORT, factory.getPort());
 
         if (factory.getAddress() != null) {
@@ -203,10 +204,6 @@ public class LibertyServletContainer implements WebServer {
             serverProperties.put(SSL_TRUST_STORE_PASSWORD, ssl.getTrustStorePassword());
             serverProperties.put(SSL_TRUST_STORE_PROVIDER, ssl.getTrustStoreProvider());
             serverProperties.put(SSL_TRUST_STORE_TYPE, ssl.getTrustStoreType());
-        }
-
-        if (factory.getHttp2() != null) {
-            serverProperties.put(HTTP2, factory.getHttp2().isEnabled());
         }
         return serverProperties;
     }

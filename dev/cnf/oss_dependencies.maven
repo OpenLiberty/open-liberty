@@ -308,6 +308,15 @@ org.springframework.security:spring-security-web:4.2.3.RELEASE
 org.springframework.security:spring-security-config:4.2.3.RELEASE
 org.springframework.security:spring-security-core:4.2.3.RELEASE
 org.springframework:spring-webmvc:4.3.13.RELEASE
+org.springframework:spring-core:5.0.8.RELEASE
+org.springframework:spring-beans:5.0.8.RELEASE
+org.springframework:spring-context:5.0.8.RELEASE
+org.springframework:spring-web:5.0.8.RELEASE
+org.springframework:spring-webflux:5.0.8.RELEASE
+org.springframework.boot:spring-boot:2.0.4.RELEASE
+org.springframework.boot:spring-boot-autoconfigure:2.0.4.RELEASE
+org.reactivestreams:reactive-streams:1.0.2
+io.projectreactor:reactor-core:3.1.8.RELEASE
 xalan:xalan:2.7.1
 xerces:xercesImpl:2.11.0
 commons-collections:commons-collections:3.2.2
