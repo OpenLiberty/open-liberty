@@ -470,7 +470,7 @@ public class InstallKernelMap implements Map {
         }
     }
 
-    public boolean containsIgnoreCase(Collection<String> featureToInstall, String existingFeature) {
+    private static boolean containsIgnoreCase(Collection<String> featureToInstall, String existingFeature) {
         for (String current : featureToInstall) {
             if (current.equalsIgnoreCase(existingFeature)) {
                 return true;
