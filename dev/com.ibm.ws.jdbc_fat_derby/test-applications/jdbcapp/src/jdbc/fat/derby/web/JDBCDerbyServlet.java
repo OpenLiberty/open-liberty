@@ -148,8 +148,8 @@ public class JDBCDerbyServlet extends FATServlet {
             con = ds0.getConnection();
             con.setTransactionIsolation(Connection.TRANSACTION_NONE);
             fail("Exception should have been thrown when switching isolation level to TRANSACTION_NONE.");
-        } catch (SQLException sql0) {
-            assertTrue("Exception message should have contained", sql0.getMessage().contains("DSRA4011E"));
+        } catch (SQLException sql) {
+            assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4011E"));
 
             //ensure desired behavior
             assertEquals("Transaction isolation level should not have been changed: ", expected, con.getTransactionIsolation());
