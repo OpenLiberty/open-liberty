@@ -43,7 +43,6 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.repository.common.enums.AttachmentLinkType;
 import com.ibm.ws.repository.common.enums.AttachmentType;
 import com.ibm.ws.repository.common.enums.FilterableAttribute;
@@ -1056,7 +1055,7 @@ public class RestClient extends AbstractRepositoryClient implements RepositoryRe
      */
     private static String encode(byte[] bytes) {
         try {
-            if (JavaInfo.majorVersion() < 8) {
+            if (System.getProperty("java.version").startsWith("1.")) {
                 // return DatatypeConverter.printBase64Binary(str);
                 Class<?> DatatypeConverter = Class.forName("javax.xml.bind.DatatypeConverter");
                 return (String) DatatypeConverter.getMethod("printBase64Binary", byte[].class).invoke(null, bytes);
