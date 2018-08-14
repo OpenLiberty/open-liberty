@@ -42,9 +42,10 @@ public class MetricsAuthenticationTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.startServer("MetricsAuthenticationServer.log", true);
 
         HttpUtils.trustAllCertificates();
+
+        server.startServer("MetricsAuthenticationServer.log", true);
 
     }
 
