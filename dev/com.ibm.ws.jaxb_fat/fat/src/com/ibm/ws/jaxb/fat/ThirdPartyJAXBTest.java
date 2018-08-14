@@ -26,14 +26,14 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jaxb.web.ThirdPartyJAXBTestServlet;
+import jaxb.thirdparty.web.ThirdPartyJAXBTestServlet;
 
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 8) // Do not run these tests on JDK 9+ where there is no JAX-B api/impl in the JDK
 public class ThirdPartyJAXBTest extends FATServletClient {
 
     private static final String SERVER = "jaxb_fat.no-jaxb-feature";
-    private static final String APP_NAME = "jaxbApp";
+    private static final String APP_NAME = "thirdPartyJaxbApp";
 
     // Iterate over some features that tend to use JAX-B internally to ensure they don't leak into the app classloader space
     @ClassRule
@@ -47,7 +47,7 @@ public class ThirdPartyJAXBTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "jaxb.web");
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "jaxb.thirdparty.web");
         server.startServer(RepeatTestFilter.CURRENT_REPEAT_ACTION + ".log");
     }
 

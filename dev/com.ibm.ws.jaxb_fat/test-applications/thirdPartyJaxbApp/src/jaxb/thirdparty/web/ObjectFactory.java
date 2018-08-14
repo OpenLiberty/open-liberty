@@ -8,15 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxb.fat;
+package jaxb.thirdparty.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.xml.bind.annotation.XmlRegistry;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                LibertyJAXBTest.class,
-                ThirdPartyJAXBTest.class,
-})
-public class FATSuite {}
+@XmlRegistry
+public class ObjectFactory {
+
+}

@@ -21,6 +21,7 @@ Require-Bundle: com.ibm.ws.jaxrs.2.0.tools; version="[1,1.0.100)", \
  com.ibm.websphere.javaee.jaxrs.2.0; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.ws.jaxrs.2.0.common; version ="[1,1.0.100)", \
  com.ibm.ws.jaxb.tools.2.2.10; version="[1,1.0.100)", \
+ com.ibm.websphere.javaee.activation.1.1; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.websphere.javaee.jaxb.2.2; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.ws.logging; version="[1,1.0.100)", \
  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3; version="[1,1.0.100)", \
