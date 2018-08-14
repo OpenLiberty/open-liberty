@@ -253,12 +253,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setDescription(feature.getDescription());
 		model.setPackaging(type.getType());
 		setLicense(model, coordinates.getVersion(), true, feature.isRestrictedLicense(), Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID.equals(coordinates.getGroupId()));
-		
-		Developer dev = new Developer();
-		dev.setId(Constants.ERICGLAU_DEV_ID);
-		dev.setName(Constants.ERICGLAU_DEV_NAME);
-		dev.setEmail(Constants.ERICGLAU_DEV_EMAIL);
-		setScmDevUrl(model, dev);
+		setScmDevUrl(model);
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		model.setDependencies(dependencies);
@@ -302,13 +297,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setVersion(coordinates.getVersion());
 		model.setPackaging(Constants.ArtifactType.POM.getType());
 		setLicense(model,version, false, false,isWebsphereLiberty);
-		
-		//set scm, url, and developers section 
-		Developer dev = new Developer();
-		dev.setId(Constants.ERICGLAU_DEV_ID);
-		dev.setName(Constants.ERICGLAU_DEV_NAME);
-		dev.setEmail(Constants.ERICGLAU_DEV_EMAIL);
-		setScmDevUrl(model, dev);
+		setScmDevUrl(model);
 		
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -364,13 +353,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setVersion(coordinates.getVersion());
 		model.setPackaging(Constants.ArtifactType.JSON.getType());
 		setLicense(model, version, false, false, isWebsphereLiberty);
-		
-		//set scm, url, and developers section 
-		Developer dev = new Developer();
-		dev.setId(Constants.ERICGLAU_DEV_ID);
-		dev.setName(Constants.ERICGLAU_DEV_NAME);
-		dev.setEmail(Constants.ERICGLAU_DEV_EMAIL);
-		setScmDevUrl(model, dev);
+		setScmDevUrl(model);
 		
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -852,7 +835,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 	 * 
 	 * @param model
 	 */
-	private static void setScmDevUrl(Model model, Developer dev){
+	private static void setScmDevUrl(Model model){
 		model.setScm(new Scm());
 		model.getScm().setConnection(Constants.OPEN_LIBERTY_SCM_CONNECTION);
 		model.getScm().setDeveloperConnection(Constants.OPEN_LIBERTY_SCM_CONNECTION);
@@ -860,6 +843,10 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.getScm().setTag(Constants.OPEN_LIBERTY_SCM_TAG);
 		model.setUrl(Constants.OPEN_LIBERTY_URL);
 		
+		Developer dev = new Developer();
+		dev.setId(Constants.DEV_ID);
+		dev.setName(Constants.DEV_NAME);
+		dev.setEmail(Constants.DEV_EMAIL);
 		List<Developer> developers = new ArrayList<Developer>();
 		developers.add(dev);
 		model.setDevelopers(developers);

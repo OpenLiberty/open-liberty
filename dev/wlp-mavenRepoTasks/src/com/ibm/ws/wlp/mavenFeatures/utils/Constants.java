@@ -65,9 +65,9 @@ public class Constants {
 	public static final String OPEN_LIBERTY_SCM_TAG = "HEAD";
 	public static final String OPEN_LIBERTY_URL = "https://openliberty.io/";
 	
-	public static final String ERICGLAU_DEV_ID = "ericglau";
-	public static final String ERICGLAU_DEV_NAME = "Eric Lau";
-	public static final String ERICGLAU_DEV_EMAIL = "ericglau@ca.ibm.com"; 
+	public static final String DEV_ID = "ericglau";
+	public static final String DEV_NAME = "Eric Lau";
+	public static final String DEV_EMAIL = "ericglau@ca.ibm.com"; 
 	
 	public static final String SHORT_NAME_KEY = "shortName";
 	
