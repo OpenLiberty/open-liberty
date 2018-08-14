@@ -1,0 +1,18 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.org.jboss.classfilewriter" default="build">
+    <import file="../ant_build/public_imports/standard_imports.xml"/>
+    <import file="../ant_build/public_imports/rejar_imports.xml"/>
+    
+    <target name="package"> 
+    	<bndPackage version="1.0" original.jar.name="org.jboss.classfilewriter" original.jar.version="1.2.3" bnd.classpath="lib/jboss-classfilewriter-1.2.3.Final.jar" bnd.file="bnd.bnd"  />
+    </target>
+</project>

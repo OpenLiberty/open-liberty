@@ -14,11 +14,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.security.AccessController;
 import java.security.KeyStoreException;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
+//import java.util.Base64;  // or could use 
+import org.apache.commons.codec.binary.Base64;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -56,6 +61,11 @@ import com.ibm.wsspi.ssl.SSLSupport;
 public class JwKRetriever {
 	private static final TraceComponent tc = Tr.register(JwKRetriever.class);
 
+	final static String PEM_BEGIN_TOKEN="-----BEGIN";
+	final static String PEM_END_TOKEN="--END--";
+	final static String JWKS="keys";
+	final static String JSON_START="{";
+	
 	String configId = null;
 	String sslConfigurationName = null;
 	String jwkEndpointUrl = null; // jwksUri
@@ -73,6 +83,9 @@ public class JwKRetriever {
 	String jwkClientId = null;
 	
 	String jwkClientSecret = null;
+	
+	String keyLocation = null;
+	String keyFile = null;
 
 	/**
 	 *
@@ -96,6 +109,20 @@ public class JwKRetriever {
 		this.jwkClientId = jwkClientId;
 		this.jwkClientSecret = jwkClientSecret;
 	}
+	
+	   public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret,
+	           String keyLocation, String keyFile) {
+	        this.configId = configId;
+	        this.sslConfigurationName = sslConfigurationName;
+	        this.jwkEndpointUrl = jwkEndpointUrl;
+	        this.jwkSet = jwkSet; // get the JWKSet from the Config
+	        this.sslSupport = sslSupport;
+	        this.hostNameVerificationEnabled = hnvEnabled;
+	        this.jwkClientId = jwkClientId;
+	        this.jwkClientSecret = jwkClientSecret;
+	        this.keyFile = keyFile;
+	        this.keyLocation = keyLocation;
+	    }
 
 //	public JwKRetriever(JwtConsumerConfig config) {
 //		configId = config.getId();
@@ -124,8 +151,13 @@ public class JwKRetriever {
 		KeyStoreException errKeyStoreException = null;
 		InterruptedException errInterruptedException = null;
 		if (key == null) {
+		    boolean isHttp = remoteHttpCall (this.jwkEndpointUrl, this.keyFile, this.keyLocation);
 			try {
-				key = this.getJwkRemote(kid, x5t);
+			    if (isHttp) {
+			        key = this.getJwkRemote(kid, x5t);
+			    } else {
+			        key = this.getJwkLocal(kid, x5t, keyFile, keyLocation);
+			    }
 			} catch (KeyStoreException e) {
 				errKeyStoreException = e;
 			} catch (InterruptedException e) {
@@ -151,51 +183,63 @@ public class JwKRetriever {
 		}
 		return jwkSet.getPublicKeyByKid(null);
 	}
+	
+	protected boolean remoteHttpCall(String jwksUri, String keyFile, String keyLocation){
+	   boolean isHttp = true;
+	   if (jwksUri == null){
+	       if (keyFile != null){
+	           isHttp = false;
+	       } else if (keyLocation != null && !keyLocation.startsWith("http")){
+	           isHttp = false;
+	       }
+	   }
+	   return isHttp;
+	}
 
-	protected PublicKey getJwkLocal(String kid, String x5t) throws PrivilegedActionException, IOException {
-		// JWKSet jwkset = clientConfig.getJwkSet();
-		try {
-			final String keyFile = keyFileName;// clientConfig.getJsonWebKey();
-			if (keyFile == null) {
-				return null;
-			}
-
-			FileInputStream inputStream = (FileInputStream) AccessController
-					.doPrivileged(new PrivilegedExceptionAction<Object>() {
-						@Override
-						public Object run() throws Exception {
-							File fileJwk = new File(keyFile);
-							if (fileJwk.exists()) {
-								return new FileInputStream(fileJwk);
-							} else {
-								return null;
-							}
-						}
-					});
-			if (inputStream == null) {
-				return null;
-			}
-			parseJwk(null, inputStream, jwkSet, sigAlg);
-
-			// Object obj = parser.parse(fileReader);
-
-			// JsonObject jsonObject = (JsonObject) obj;
-			// for (JsonElement element : jsonObject.getAsJsonArray("keys")) {
-			// JsonObject keyObject = element.getAsJsonObject();
-			// JWK jwk = Jose4jRsaJWK.getInstance(keyObject);
-			// if (jwk != null) {
-			// jwk.parse();
-			// jwkset.addJWK(jwk);
-			// if (tc.isDebugEnabled()) {
-			// Tr.debug(tc, "add local key for keyid: ", jwk.getKeyID());
-			// }
-			// }
-			// }
-			// fileReader.close();
-		} catch (PrivilegedActionException e) {
-			throw e;
+	protected String getKeyStringLocal(String location){
+	    String keyString = null;
+        InputStream inputStream = null;
+	       try {
+	            final String keyFile = location;
+	            try {
+	             inputStream = (FileInputStream) AccessController
+	                    .doPrivileged(new PrivilegedExceptionAction<Object>() {
+	                        @Override
+	                        public Object run() throws Exception {
+	                            File fileJwk = new File(keyFile);
+	                            if (fileJwk.exists()) {
+	                                return new FileInputStream(fileJwk);
+	                            } else {
+	                                return null;
+	                            }
+	                        }
+	                    });
+	            } catch (PrivilegedActionException e1){
+	                inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(location);
+	            }
+	            if (inputStream == null) {
+	                inputStream=Thread.currentThread().getContextClassLoader().getResourceAsStream(location);
+	            }
+	            
+	            if (inputStream != null){
+	                keyString= getKeyAsString(inputStream) ;
+	            }
+	       } catch (Exception e2){
+	       }
+	       return keyString;	    
+	}
+	
+	protected PublicKey getJwkLocal(String kid, String x5t, String rawkey, String location)  {
+		String keyString = rawkey;
+		if (keyString == null && location != null){
+		    keyString = getKeyStringLocal (location);
 		}
-
+	    if (keyString == null) {
+	        return null;
+	    }
+	    
+		parseJwk(keyString, null, jwkSet, sigAlg);
+		
 		PublicKey key = null;
 		if (kid != null) {
 			key = jwkSet.getPublicKeyByKid(kid);
@@ -206,6 +250,33 @@ public class JwKRetriever {
 		}
 
 		return key;
+
+	}
+	
+	protected String getKeyAsString( InputStream fis ) {
+	    StringBuilder sb = new StringBuilder();
+	    try {
+    	    InputStreamReader r = new InputStreamReader(fis, "UTF-8");  
+    	    int ch = r.read();
+    	    while(ch >= 0) {
+    	        sb.append(ch);
+    	        ch = r.read();
+    	    }
+	    } catch (UnsupportedEncodingException UEE){
+	        
+	    } catch (IOException ioe)
+	    {	        
+	    }
+	    return sb.toString();
+	}
+	
+	protected boolean isPEM (String key){
+	    if (key!=null &&
+	        key.startsWith(PEM_BEGIN_TOKEN) )
+	    {
+	        return true;
+	    }
+	    return false;
 
 	}
 
@@ -280,7 +351,21 @@ public class JwKRetriever {
 
 		JSONObject jsonObject = null;
 		if (jsonString != null) {
-			jsonObject = parseJsonObject(jsonString);
+		    if (isPEM(jsonString) && "RS256".equals(signatureAlgorithm)){
+		        try {
+		            RSAPublicKey pubKey= (RSAPublicKey) PemKeyUtil.getPublicKey(jsonString);
+		            Jose4jRsaJWK jwk = new Jose4jRsaJWK(pubKey);
+		            jwk.setAlgorithm(signatureAlgorithm);
+		            jwk.setUse(JwkConstants.sig);
+		            jwkset.add(jwk);
+		            return false;
+		        } catch (Exception e){
+		            
+		        }
+		    }
+		    else {
+		        jsonObject = parseJsonObject(jsonString);
+		    }
 		} else if (inputStream != null) {
 			jsonObject = parseJsonObject(inputStream);
 		}
@@ -292,20 +377,30 @@ public class JwKRetriever {
 			Tr.debug(tc, "Parsed JSON object: " + jsonObject.toString());
 		}
 
-		Object keysEntry = jsonObject.get("keys");
+		Object keysEntry = jsonObject.get(JWKS);
+		/*
 		if (keysEntry == null) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "Failed to find keys array in provided JSON object");
 			}
 			return false;
 		}
-		JSONArray keyArray = parseJsonArray(keysEntry.toString());
+		*/
+		JSONArray keyArray = new JSONArray();
+		if (keysEntry != null){ //jwks
+		    keyArray = parseJsonArray(keysEntry.toString());
+		} else {
+		     keyArray.add(jsonObject); //jwk
+		}
+		
+		/*
 		if (keyArray == null) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "Failed to parse keys array in provided JSON object");
 			}
 			return false;
 		}
+		*/
 		for (Object element : keyArray) {
 			JSONObject jElement = parseJsonObject(element.toString());
 			if (jElement == null) {
@@ -323,6 +418,10 @@ public class JwKRetriever {
 	JSONObject parseJsonObject(String jsonString) {
 		JSONObject jsonObject = null;
 		try {
+		    if (!jsonString.startsWith(JSON_START)){ //convert Base64 encoded String to JSON string		       
+		       // jsonString=new String (Base64.getDecoder().decode(jsonString), "UTF-8");
+		        jsonString=new String (Base64.decodeBase64(jsonString), "UTF-8");
+		    }
 			jsonObject = JSONObject.parse(jsonString);
 		} catch (Exception e) {
 			if (tc.isDebugEnabled()) {

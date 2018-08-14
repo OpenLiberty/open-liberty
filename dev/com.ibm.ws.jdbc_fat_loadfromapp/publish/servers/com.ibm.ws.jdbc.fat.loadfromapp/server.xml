@@ -24,12 +24,12 @@
     </dataSource>
 
     <dataSource id="MiniDataSource" jndiName="jdbc/miniDataSource" ibm.internal.nonship.function="true">
-      <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true" internal.nonship.function="This is for internal development only. Never use this in production"/> <!-- TODO remove libraryRef -->
+      <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
       <properties databaseName="minidb" loginTimeout="330"/>
     </dataSource>
 
     <dataSource id="MiniDriver" jndiName="jdbc/miniDriver" ibm.internal.nonship.function="true">
-      <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true" internal.nonship.function="This is for internal development only. Never use this in production"/> <!-- TODO remove libraryRef -->
+      <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
       <properties url="jdbc:mini://localhost:3456/driverdb"/>
     </dataSource>
 

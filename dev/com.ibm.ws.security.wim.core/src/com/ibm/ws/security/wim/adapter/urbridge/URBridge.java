@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeEntity;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeEntityFactory;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeHelper;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeXPathHelper;
+import com.ibm.ws.security.wim.util.AuditConstants;
 import com.ibm.ws.security.wim.util.ControlsHelper;
 import com.ibm.ws.security.wim.util.SchemaConstantsInternal;
 import com.ibm.wsspi.security.wim.SchemaConstants;
@@ -396,10 +397,8 @@ public class URBridge implements Repository {
     public Root get(Root root) throws WIMException {
         Root returnRoot = new Root();
         String uniqueName = null;
-        boolean restRequest = true;
+        String auditName = null;
         AuditManager auditManager = new AuditManager();
-        if (auditManager.getRESTRequest() == null)
-            restRequest = false;
 
         try {
             List<String> attrList = null;
@@ -423,8 +422,18 @@ public class URBridge implements Repository {
             // Get a list of all the entities.
             List<Entity> entities = root.getEntities();
             for (Entity entity : entities) {
-                String memberType = validateEntity(entity);
                 uniqueName = entity.getIdentifier().getUniqueName();
+                if (uniqueName == null) { // find a name that we can use for audit purposes
+                    if (entity.getIdentifier().getUniqueId() != null) {
+                        auditName = entity.getIdentifier().getUniqueId();
+                    } else if (entity.getIdentifier().getExternalName() != null) {
+                        auditName = entity.getIdentifier().getExternalName();
+                    } else if (entity.getIdentifier().getExternalId() != null) {
+                        auditName = entity.getIdentifier().getExternalId();
+                    }
+                }
+
+                String memberType = validateEntity(entity);
 
                 Entity returnEntity = null;
                 if (Service.DO_GROUP.equalsIgnoreCase(memberType))
@@ -469,9 +478,11 @@ public class URBridge implements Repository {
                 }
             }
         } catch (EntityNotFoundException e) {
-            if (restRequest)
-                Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "get", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
-                            Integer.valueOf("212"));
+            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.GET_AUDIT, reposId,
+                        uniqueName == null ? auditName : uniqueName,
+                        userRegistry.getRealm(),
+                        returnRoot,
+                        Integer.valueOf("212"), AuditConstants.URBRIDGE);
 
             throw e;
         } catch (Exception e) {
@@ -480,10 +491,11 @@ public class URBridge implements Repository {
 
         setReturnContext(root, returnRoot);
         auditManager.setRealm(userRegistry.getRealm());
-        if (isURBridgeResult(returnRoot) && restRequest)
-            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "get", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
-                        Integer.valueOf("200"));
-
+        if (returnRoot != null && !returnRoot.getEntities().isEmpty()) {
+            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.GET_AUDIT, reposId, uniqueName, userRegistry.getRealm(),
+                        returnRoot,
+                        Integer.valueOf("200"), AuditConstants.URBRIDGE);
+        }
         return returnRoot;
     }
 
@@ -769,9 +781,11 @@ public class URBridge implements Repository {
             }
 
             String expression = searchControl.getExpression();
-            if (expression == null || expression.length() == 0) {
-                Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
-                            Integer.valueOf("217"));
+            if (expression == null || expression.trim().length() == 0) {
+                Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.SEARCH_AUDIT, reposId, uniqueName,
+                            userRegistry.getRealm(),
+                            returnRoot,
+                            Integer.valueOf("217"), AuditConstants.URBRIDGE);
                 throw new SearchControlException(WIMMessageKey.MISSING_SEARCH_EXPRESSION, Tr.formatMessage(tc, WIMMessageKey.MISSING_SEARCH_EXPRESSION));
             }
 
@@ -889,17 +903,19 @@ public class URBridge implements Repository {
         } catch (WIMException we) {
             throw we;
         } catch (Exception e) {
-            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
-                        Integer.valueOf("221"));
+            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.SEARCH_AUDIT, reposId, uniqueName, userRegistry.getRealm(),
+                        returnRoot,
+                        Integer.valueOf("221"), AuditConstants.URBRIDGE);
             throw new WIMApplicationException(WIMMessageKey.ENTITY_SEARCH_FAILED, Tr.formatMessage(tc, WIMMessageKey.ENTITY_SEARCH_FAILED,
                                                                                                    WIMMessageHelper.generateMsgParms(e.toString())));
         }
 
-        auditManager.setRealm(userRegistry.getRealm());
-        if (isURBridgeResult(returnRoot))
-            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "search", reposId, uniqueName, userRegistry.getRealm(), returnRoot,
-                        Integer.valueOf("200"));
-
+        if (returnRoot != null && !returnRoot.getEntities().isEmpty()) {
+            auditManager.setRealm(userRegistry.getRealm());
+            Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.SEARCH_AUDIT, reposId, uniqueName, userRegistry.getRealm(),
+                        returnRoot,
+                        Integer.valueOf("200"), AuditConstants.URBRIDGE);
+        }
         return returnRoot;
     }
 
@@ -1201,8 +1217,9 @@ public class URBridge implements Repository {
     @Override
     public Root delete(Root root) throws WIMException {
         AuditManager auditManager = new AuditManager();
-        Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "delete", auditManager.getRepositoryId(), auditManager.getRepositoryUniqueName(),
-                    userRegistry.getRealm(), root, Integer.valueOf("209"));
+        Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.DELETE_AUDIT, auditManager.getRepositoryId(),
+                    auditManager.getRepositoryUniqueName(),
+                    userRegistry.getRealm(), root, Integer.valueOf("209"), AuditConstants.URBRIDGE);
 
         throw new WIMApplicationException(WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY, Tr.formatMessage(tc, WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
                                                                                                                WIMMessageHelper.generateMsgParms(reposId)));
@@ -1211,8 +1228,9 @@ public class URBridge implements Repository {
     @Override
     public Root create(Root root) throws WIMException {
         AuditManager auditManager = new AuditManager();
-        Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "create", auditManager.getRepositoryId(), auditManager.getRepositoryUniqueName(),
-                    userRegistry.getRealm(), root, Integer.valueOf("209"));
+        Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.CREATE_AUDIT, auditManager.getRepositoryId(),
+                    auditManager.getRepositoryUniqueName(),
+                    userRegistry.getRealm(), root, Integer.valueOf("209"), AuditConstants.URBRIDGE);
 
         throw new WIMApplicationException(WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY, Tr.formatMessage(tc, WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
                                                                                                                WIMMessageHelper.generateMsgParms(reposId)));
@@ -1221,8 +1239,9 @@ public class URBridge implements Repository {
     @Override
     public Root update(Root root) throws WIMException {
         AuditManager auditManager = new AuditManager();
-        Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), "update", auditManager.getRepositoryId(), auditManager.getRepositoryUniqueName(),
-                    userRegistry.getRealm(), root, Integer.valueOf("209"));
+        Audit.audit(Audit.EventID.SECURITY_MEMBER_MGMT_01, auditManager.getRESTRequest(), AuditConstants.UPDATE_AUDIT, auditManager.getRepositoryId(),
+                    auditManager.getRepositoryUniqueName(),
+                    userRegistry.getRealm(), root, Integer.valueOf("209"), AuditConstants.URBRIDGE);
 
         throw new WIMApplicationException(WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY, Tr.formatMessage(tc, WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
                                                                                                                WIMMessageHelper.generateMsgParms(reposId)));

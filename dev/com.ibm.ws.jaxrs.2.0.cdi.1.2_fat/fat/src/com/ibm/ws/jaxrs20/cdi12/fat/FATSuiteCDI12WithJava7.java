@@ -23,6 +23,7 @@ import com.ibm.ws.jaxrs20.cdi12.fat.test.DisableTest;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycle12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycleMismatch12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LoadOnStartup12Test;
+import com.ibm.ws.jaxrs20.cdi12.fat.test.ResourceInfoAtStartupTest;
 
 import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 
@@ -35,6 +36,7 @@ import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
                 LifeCycleMismatch12Test.class,
                 LoadOnStartup12Test.class,
                 Complex12Test.class,
+                ResourceInfoAtStartupTest.class
 })
 public class FATSuiteCDI12WithJava7 {
     @ClassRule
