@@ -8,8 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0.0
- */
-@org.osgi.annotation.versioning.Version("1.0.0")
-package com.ibm.ws.security.mp.jwt.v11;
+package com.ibm.ws.security.mp.jwt;
+
+import java.util.NoSuchElementException;
+public interface MpConfigProxyService {
+
+    /**
+     * @return
+     */
+    public String getVersion();
+
+    /**
+     * @return
+     */
+    public boolean isMpConfigAvailable();
+
+    /**
+     * @return
+     */
+    public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException;
+}

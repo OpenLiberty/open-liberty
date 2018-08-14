@@ -111,7 +111,7 @@ public class JwKRetriever {
 	}
 	
 	   public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret,
-	           String keyLocation, String keyFile) {
+	           String keyFile, String keyLocation) {
 	        this.configId = configId;
 	        this.sslConfigurationName = sslConfigurationName;
 	        this.jwkEndpointUrl = jwkEndpointUrl;
@@ -283,6 +283,9 @@ public class JwKRetriever {
 	@FFDCIgnore({ KeyStoreException.class })
 	protected PublicKey getJwkRemote(String kid, String x5t) throws KeyStoreException, InterruptedException {
 		String jwkUrl = jwkEndpointUrl;
+		if (jwkUrl==null){
+		    jwkUrl = this.keyLocation;
+		}
 		if (jwkUrl == null || !jwkUrl.startsWith("http")) {
 			return null;
 		}
@@ -305,6 +308,10 @@ public class JwKRetriever {
 
 		String jsonString = null;
 		String jwkUrl = jwkEndpointUrl;
+		if (jwkUrl == null)
+		{
+		    jwkUrl = this.keyLocation;
+		}
 
 		try {
 			// TODO - validate url
