@@ -53,6 +53,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
+import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
 import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
@@ -106,7 +107,7 @@ public class InstallKernelMap implements Map {
     private static final String INDIVIDUAL_ESAS = "individual.esas";
 
     //Headers in Manifest File
-    private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
+    private static final String SYMBOLIC_NAME_HEADER_NAME = "Subsystem-SymbolicName";
 
     // Return code
     private static final Integer OK = Integer.valueOf(0);
@@ -555,23 +556,19 @@ public class InstallKernelMap implements Map {
             if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
                 Path tempDir = Files.createTempDirectory("generatedJson");
                 tempDir.toFile().deleteOnExit();
-                Map<String, String> shortNameMap = new HashMap<String, String>();
-                File individualEsaJson = individualESAInstall(tempDir, shortNameMap);
+                Map<String, String> symbolicNameMap = new HashMap<String, String>();
+                File individualEsaJson = individualESAInstall(tempDir, symbolicNameMap);
                 //File individualEsaJson = individualESAInstall(jsonDir);
                 RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
                 repoList.add(repo);
                 //repoList.add(individualESAInstall(tempDir));
                 for (String feature : featureToInstall) {
                     if (feature.endsWith(".esa")) {
-                        if (shortNameMap.containsKey(feature)) {
-                            String shortName = shortNameMap.get(feature);
+                        if (symbolicNameMap.containsKey(feature)) {
+                            String symbolicName = symbolicNameMap.get(feature);
                             featureToInstall.remove(feature);
-                            System.out.println("This is the shortname" + shortName);
-                            featureToInstall.add(shortName);
-                        } else {
-                            //TODO
-                            //throw error???
-
+                            System.out.println("This is the symbolic name" + symbolicName);
+                            featureToInstall.add(symbolicName);
                         }
                     }
                 }
@@ -770,7 +767,7 @@ public class InstallKernelMap implements Map {
         return OK;
     }
 
-    private static void getShortNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
+    private static void getSymbolicNameFromManifest(File esa, Map<String, String> symbolicNameMap) throws IOException {
         String esaLocation = esa.getAbsolutePath();
         ZipFile zip = null;
         try {
@@ -789,8 +786,8 @@ public class InstallKernelMap implements Map {
             } else {
                 Manifest m = ManifestProcessor.parseManifest(zip.getInputStream(subsystemEntry));
                 Attributes manifestAttrs = m.getMainAttributes();
-                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
-                shortNameMap.put(esa.getAbsolutePath(), shortNameAttr);
+                String symbolicNameAttr = manifestAttrs.getValue(SYMBOLIC_NAME_HEADER_NAME);
+                symbolicNameMap.put(esa.getAbsolutePath(), symbolicNameAttr);
             }
         } finally {
             if (zip != null) {
@@ -800,7 +797,7 @@ public class InstallKernelMap implements Map {
     }
 
     //accept List of Files
-    private File individualESAInstall(Path generatedJson, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException {
+    private File individualESAInstall(Path generatedJson, Map<String, String> symbolicNameMap) throws IOException, BuildException, RepositoryException {
 
         String dir = generatedJson.toString();
         System.out.println("This is the directory " + dir);
@@ -810,7 +807,7 @@ public class InstallKernelMap implements Map {
 
         for (File esa : esas) {
 
-            getShortNameFromManifest(esa, shortNameMap);
+            getSymbolicNameFromManifest(esa, symbolicNameMap);
 
             SingleFileRepositoryConnection mySingleFileRepo = null;
             if (singleJson.exists()) {
