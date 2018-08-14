@@ -298,7 +298,7 @@ public class TranNoneConnection implements Connection {
 
     @Override
     public void setTransactionIsolation(int arg0) throws SQLException {
-        throw new SQLException("setTransactionIsolation called with " + arg0);
+        impl.setTransactionIsolation(arg0);
     }
 
     @Override
