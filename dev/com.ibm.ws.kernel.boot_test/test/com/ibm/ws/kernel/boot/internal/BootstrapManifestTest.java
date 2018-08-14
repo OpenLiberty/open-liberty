@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -136,13 +135,14 @@ public class BootstrapManifestTest {
         index = (index == -1) ? javaVersion.indexOf('-') : index;
         javaVersion = (index == -1) ? javaVersion : javaVersion.substring(0, index);
 
-        // Only continue if JDK 1.7 or 1.8
-        Assume.assumeTrue(javaVersion.startsWith("1."));
+//        // Only continue if JDK 1.7 or 1.8
+//        Assume.assumeTrue(javaVersion.startsWith("1."));
 
         //validate the system packages obtained match the running java.version file name
         assertTrue("The system packages being used do not match the running java.version: "
                    + javaVersion
-                   + " . This is normal if you are running the test on a version of Java that we support for running the server, but do not fully support. If we are intending to fully support a new Java version then new files are required in /com.ibm.ws.kernel.boot/resources/OSGI-OPT/websphere/system-packages_*.properties for production and /com.ibm.ws.kernel.boot_test/resources/system-packages_*.properties for test.",
+                   + " . This is normal if you are running the test on a version of Java that we support for running the server, but do not fully support. If we are intending to fully support a new Java version then new files are required in /com.ibm.ws.kernel.boot/resources/OSGI-OPT/websphere/system-packages_*.properties for production and /com.ibm.ws.kernel.boot_test/resources/system-packages_*.properties for test."
+                   + "  Sys packages are: " + sysPkgs,
                    sysPkgs.contains(javaVersion));
 
         String versionsToCheck = null;
@@ -152,6 +152,13 @@ public class BootstrapManifestTest {
             versionsToCheck = "1.7.0,1.6.0";
         } else if (javaVersion.equals("1.8.0")) {
             versionsToCheck = "1.8.0,1.7.0,1.6.0";
+        } else if (javaVersion.equals("9")) {
+            // Some packages were removed from the JDK in Java 9, so the JDK 9 packages do not inherit previous java versions
+            versionsToCheck = "9";
+        } else if (javaVersion.equals("10")) {
+            versionsToCheck = "10,9";
+        } else if (javaVersion.equals("11")) {
+            versionsToCheck = "11,10,9";
         } else {
             fail("The running java version: " + javaVersion + " is newer than we have properties files for, system-packages udpates are required");
         }

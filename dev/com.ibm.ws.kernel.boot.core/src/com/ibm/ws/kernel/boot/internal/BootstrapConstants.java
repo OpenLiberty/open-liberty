@@ -47,6 +47,12 @@ public final class BootstrapConstants {
     public static final String OSGI_CLEAN_VALUE = "onFirstInit";
 
     /**
+     * Property key designating if system packages from previous java versions should be inherited
+     * Default value is 'true'
+     */
+    public static final String INITPROP_WAS_INHERIT_SYSTEM_PACKAGES = "websphere.inherit.system.packages";
+
+    /**
      * Property key designating packages exported into the framework by the
      * system bundle
      */
