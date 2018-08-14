@@ -436,7 +436,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
                 if (type == null){
                     vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
-                               ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps)
+                               ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps, id)
                                : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
                     ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                         : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
@@ -444,13 +444,13 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                         : Driver.class;
                 } else if (ConnectionPoolDataSource.class.getName().equals(type)) {
                     ifc = ConnectionPoolDataSource.class;
-                    vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps);
+                    vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps, id);
                 } else if (XADataSource.class.getName().equals(type)) {
                     ifc = XADataSource.class;
-                    vendorImpl = jdbcDriverSvc.createXADataSource(vProps);
+                    vendorImpl = jdbcDriverSvc.createXADataSource(vProps, id);
                 } else if (DataSource.class.getName().equals(type)) {
                     ifc = DataSource.class;
-                    vendorImpl = jdbcDriverSvc.createDataSource(vProps);
+                    vendorImpl = jdbcDriverSvc.createDataSource(vProps, id);
                 } else if (Driver.class.getName().equals(type)) {
                     ifc = Driver.class;
                     String url = vProps.getProperty("URL", vProps.getProperty("url"));
@@ -587,7 +587,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
 
             if(type == null){
                 vendorImpl = id != null && id.contains("dataSource[DefaultDataSource]")
-                                ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps)
+                                ? jdbcDriverSvc.createDefaultDataSourceOrDriver(vProps, id)
                                 : jdbcDriverSvc.createAnyDataSourceOrDriver(vProps, id);
                 ifc = vendorImpl instanceof XADataSource ? XADataSource.class
                     : vendorImpl instanceof ConnectionPoolDataSource ? ConnectionPoolDataSource.class
@@ -595,13 +595,13 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     : Driver.class;
             } else if (ConnectionPoolDataSource.class.getName().equals(type)) {
                 ifc = ConnectionPoolDataSource.class;
-                vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps);
+                vendorImpl = jdbcDriverSvc.createConnectionPoolDataSource(vProps, id);
             } else if (XADataSource.class.getName().equals(type)) {
                 ifc = XADataSource.class;
-                vendorImpl = jdbcDriverSvc.createXADataSource(vProps);
+                vendorImpl = jdbcDriverSvc.createXADataSource(vProps, id);
             } else if (DataSource.class.getName().equals(type)) {
                 ifc = DataSource.class;
-                vendorImpl = jdbcDriverSvc.createDataSource(vProps);
+                vendorImpl = jdbcDriverSvc.createDataSource(vProps, id);
             } else if (Driver.class.getName().equals(type)) {
                 ifc = Driver.class;
                 String url = vProps.getProperty("URL", vProps.getProperty("url"));
