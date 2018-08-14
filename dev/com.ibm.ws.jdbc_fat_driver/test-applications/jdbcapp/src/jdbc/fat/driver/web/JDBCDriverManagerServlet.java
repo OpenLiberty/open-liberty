@@ -12,15 +12,20 @@ package jdbc.fat.driver.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
@@ -31,7 +36,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -40,18 +47,23 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @DataSourceDefinitions({
-                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-infer-driver-class",
-                                               className = "",
-                                               isolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED,
-                                               maxPoolSize = 2,
+                         @DataSourceDefinition(name = "java:comp/env/jdbc/dsd-driver-class",
+                                               className = "org.apache.derby.jdbc.AutoloadedDriver",
+                                               url = "jdbc:derby:memory:jdbcdriver1",
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                                              "createDatabase=create",
+                                               }),
+                         @DataSourceDefinition(name = "java:comp/env/jdbc/dsd-driver-interface",
+                                               className = "java.sql.Driver",
                                                url = "jdbc:fatdriver:memory:jdbcdriver1",
                                                user = "dbuser1",
                                                password = "{xor}Oz0vKDtu",
                                                properties = {
                                                               "internal.nonship.function=This is for internal development only. Never use this in production",
                                                               "createDatabase=create",
-                                                              "onConnect=insert into address values ('Rochester International Airport', 7600, 'Helgerson Dr SW', 'Rochester', 'MN', 55902)",
-                                                              "queryTimeout=1m16s"
                                                }),
                          @DataSourceDefinition(name = "java:module/env/jdbc/dsd-infer-datasource-class",
                                                className = "",
@@ -67,7 +79,23 @@ import componenttest.app.FATServlet;
                                                url = "jdbc:fatdriver:memory:jdbcdriver1",
                                                properties = {
                                                               "internal.nonship.function=This is for internal development only. Never use this in production"
-                                               })
+                                               }),
+                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-datasource-interface",
+                                               className = "javax.sql.DataSource",
+                                               databaseName = "memory:jdbcdriver1;create=true",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                               },
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu"),
+                         @DataSourceDefinition(name = "java:app/env/jdbc/dsd-with-xadatasource-interface",
+                                               className = "javax.sql.XADataSource",
+                                               databaseName = "memory:jdbcdriver1;create=true",
+                                               properties = {
+                                                              "internal.nonship.function=This is for internal development only. Never use this in production",
+                                               },
+                                               user = "dbuser1",
+                                               password = "{xor}Oz0vKDtu")
 })
 
 @SuppressWarnings("serial")
@@ -196,6 +224,31 @@ public class JDBCDriverManagerServlet extends FATServlet {
     }
 
     /**
+     * Verify a data source backed by javax.sql.ConnectionPoolDataSource can be discovered based on the
+     * Driver package and class name.
+     */
+    @Test
+    public void testConnectionPoolDataSource() throws Exception {
+        DataSource proxypoolds = InitialContext.doLookup("jdbc/proxypoolds");
+
+        // Confirm that value configured in server.xml is set on the data source
+        assertEquals(200, proxypoolds.getLoginTimeout());
+
+        Connection con = proxypoolds.getConnection("pxuser2", "pxpwd2");
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("Proxy Pool Driver", mdata.getDriverName());
+            assertEquals("pxuser2", mdata.getUserName());
+
+            // Properties configured in server.xml:
+            assertEquals("proxydb", con.getCatalog());
+            assertEquals("pxschema2", con.getSchema());
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
      * Verify the exception path where ConnectionPoolDataSource is requested but no
      * ConnectionPoolDataSource implementation is available from the driver.
      */
@@ -208,6 +261,131 @@ public class JDBCDriverManagerServlet extends FATServlet {
                  "when the JDBC driver doesn't provide an implementation of one. " + cpds);
         } catch (NamingException x) {
             // expected - unfortunately the cause is not chained
+        }
+    }
+
+    /**
+     * Verify that DataSourceDefinition can specify a java.sql.Driver implementation by its class name,
+     * and it will be loaded and used, regardless of whether the driver class is present in
+     * META-INF/services/java.sql.Driver
+     */
+    @Test
+    public void testDataSourceDefinitionWithDerbyDriver() throws Exception {
+        DataSource derbyds = InitialContext.doLookup("java:comp/env/jdbc/dsd-driver-class");
+        Connection con = derbyds.getConnection();
+        try {
+            con.createStatement().executeUpdate("insert into address values ('Quarry Hill Nature Center', 701, 'Silver Creek Road NE', 'Rochester', 'MN', 55906)");
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Verify a data source backed by java.sql.Driver that isn't available on the application class loader,
+     * and is only available in the shared library that is supplied to the dataSource/jdbcDriver in server config.
+     */
+    @Test
+    public void testDriverUnvailableToApplicationClassLoader() throws Exception {
+        DataSource proxyds = InitialContext.doLookup("jdbc/proxydriver");
+        Connection con = proxyds.getConnection("user1", "pwd1");
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("Proxy Driver", mdata.getDriverName());
+            assertEquals("user1", mdata.getUserName());
+
+            // Properties configured in server.xml:
+            assertEquals("proxydb", con.getCatalog());
+            assertEquals("pxschema1", con.getSchema());
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Verify that DataSourceDefinitions can specify javax.sql.DataSource and javax.sql.XADataSource as the class name,
+     * and Liberty will discover a data source implementation class of the specified type. In order to confirm that the
+     * correct implementation is chosen, attempt to enlist multiple non-shared connections from the javax.sql.DataSource,
+     * requiring the second to fail, but show that enlisting another resource from the javax.sql.XADataSource succeeds.
+     */
+    @ExpectedFFDC({
+                    "java.lang.IllegalStateException", // intentional failure to enlist second resource that isn't two-phase capable
+                    "java.sql.SQLException", // intentional failure to enlist second resource that isn't two-phase capable
+                    "javax.resource.ResourceException" // intentional failure to enlist second resource that isn't two-phase capable
+    })
+    @Test
+    public void testInterfaceAsClassNameInDataSourceDefinition() throws Exception {
+        DataSource dsd_ds = InitialContext.doLookup("java:app/env/jdbc/dsd-with-datasource-interface");
+
+        int txStatus;
+        tx.begin();
+        try {
+            Connection con1 = dsd_ds.getConnection();
+            con1.createStatement().executeUpdate("insert into address values ('University of Minnesota Rochester', 111, 'S Broadway #300', 'Rochester', 'MN', 55904)");
+
+            // If dsd_ds is backed by javax.sql.DataSource, we will not be able to enlist a second connection,
+            try {
+                Connection con2 = dsd_ds.getConnection("newUser", "newPassword");
+                con2.createStatement().executeUpdate("insert into address values ('Apache Mall', 52, 'US-14', 'Rochester', 'MN', 55902)");
+            } catch (SQLException x) {
+                boolean causedByEnlistmentFailure = false;
+                for (Throwable c = x; !causedByEnlistmentFailure && c != null; c = c.getCause())
+                    causedByEnlistmentFailure |= c instanceof IllegalStateException;
+                if (!causedByEnlistmentFailure)
+                    throw x;
+            }
+        } finally {
+            txStatus = tx.getStatus();
+            tx.rollback();
+        }
+
+        assertEquals(Status.STATUS_MARKED_ROLLBACK, txStatus);
+
+        tx.begin();
+        try {
+            Connection con1 = dsd_ds.getConnection();
+            con1.createStatement().executeUpdate("insert into address values ('Mayo Civic Center', 30, 'Civic Center Dr SE', 'Rochester', 'MN', 55904)");
+
+            // If dsd_xa is backed by javax.sql.XADataSource, then another connection can be enlisted,
+            DataSource dsd_xa = InitialContext.doLookup("java:app/env/jdbc/dsd-with-xadatasource-interface");
+            Connection con2 = dsd_xa.getConnection();
+            con2.createStatement().executeUpdate("insert into address values ('Indian Heights Park', 1800, 'Terracewood Dr NW', 'Rochester', 'MN', 55901)");
+        } finally {
+            tx.commit();
+        }
+    }
+
+    /**
+     * Verify that DataSourceDefinition can specify java.sql.Driver as the class name,
+     * and Liberty will use the ServiceLoader to select a driver based on the URL.
+     */
+    @Test
+    public void testJavaSqlDriverInDataSourceDefinition() throws Exception {
+        DataSource derbyds = InitialContext.doLookup("java:comp/env/jdbc/dsd-driver-interface");
+        Connection con = derbyds.getConnection();
+        try {
+            con.createStatement().executeUpdate("insert into address values ('Silver Lake Park', 840, '7th St NE', 'Rochester', 'MN', 55906)");
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Verify that a JDBC vendor (Derby) that Liberty has built-in knowledge of
+     * can also be used as a java.sql.Driver rather than as a data source impl class if so configured.
+     */
+    @Test
+    public void testServerConfiguredDerbyDriver() throws Exception {
+        DataSource derbyds = InitialContext.doLookup("jdbc/derby");
+        Connection con = derbyds.getConnection();
+        try {
+            DatabaseMetaData mdata = con.getMetaData();
+            String url = mdata.getURL();
+            assertTrue(url, url.startsWith("jdbc:derby:"));
+
+            String user = mdata.getUserName();
+            assertEquals("dbuser1", user);
+        } finally {
+            con.close();
         }
     }
 
@@ -297,7 +475,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
 
     /**
      * Verify that className is optional in DataSourceDefinition (can be assigned to empty string),
-     * in which case, in the absence of a url propety, we infer the data source class from the Driver class,
+     * in which case, in the absence of a url property, we infer the data source class from the Driver class,
      * giving highest precedence to XADataSource.
      */
     @Test
@@ -395,6 +573,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
         }
     }
 
+    //Test that setting the LoginTimeout via URL or properties for DataSources using Driver is rejected and that getLoginTimeout always returns 0.
     @Test
     @ExpectedFFDC({ "java.sql.SQLNonTransientException" })
     public void testGetSetLoginTimeout() throws Exception {
@@ -411,10 +590,39 @@ public class JDBCDriverManagerServlet extends FATServlet {
             fail("loginTimeout property not allowed when using Driver");
         } catch (Exception e) {
         } //expected
-          //Datasource using a driver should return DriverManager value of loginTimeout
+          //Datasource using a driver should return 0 (which means use defaults) for loginTimeout, regardless of value set on DriverManager
         DriverManager.setLoginTimeout(10 * 60); //10 minutes
 
         assertEquals("Login timeout should be 0 regardless of what is done to DriverManager", 0, fatDriverDS.getLoginTimeout());
+    }
+
+    //Test that you are unable to set the logwriter on the DataSource and that the getLogWriter method returns null
+    @Test
+    public void testGetSetLogWriter() throws Exception {
+        try {
+            fatDriverDS.setLogWriter(new PrintWriter(System.out));
+        } catch (SQLFeatureNotSupportedException ex) {
+        } //expected
+        assertNull("The getLogWriter method should always return null when using Driver", fatDriverDS.getLogWriter());
+    }
+
+    //Test that ensures unwrapping a DataSource backed by Driver to the underlying Driver interface is not possible
+    @Test
+    @ExpectedFFDC({ "java.sql.SQLException" })
+    public void testUnwrapDriver() throws Exception {
+        assertFalse("fatDriverDS should not wrap Driver", fatDriverDS.isWrapperFor(Driver.class));
+        try {
+            fatDriverDS.unwrap(Driver.class);
+            fail("Should not be able to unwrap to the Driver interface");
+        } catch (SQLException ex) {
+            if (!ex.getMessage().contains("DSRA9122E"))
+                throw ex;
+        }
+
+        //It should however still be able to be unwrapped to an interface impl'd by WsJdbcDataSource
+        assertTrue("fatDriverDS should wrap CommonDataSource", fatDriverDS.isWrapperFor(CommonDataSource.class));
+        CommonDataSource ds = fatDriverDS.unwrap(CommonDataSource.class);
+        assertSame("The WSJdbcDataSource instance should have been returned by the call to unwrap", fatDriverDS, ds);
     }
 
 }

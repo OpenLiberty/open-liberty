@@ -16,13 +16,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
@@ -35,8 +38,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.InvocationCallback;
+import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
@@ -374,5 +381,32 @@ public class JAXRSExecutorTestServlet extends FATServlet {
             throw new Exception("Unxpected failure for InvocationCallback lookup attempt. See cause.", (Throwable) r);
         else
             fail("Should not be able to look up servlet's java:comp from InvocationCallback thread: " + r);
+    }
+
+    @Test
+    public void testClientBuilderAsyncResponseOnThreadFromSpecifiedExecutorService(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/info";
+        ClientBuilder builder = ClientBuilder.newBuilder()
+                                             .executorService(Executors.newFixedThreadPool(1, new ThreadFactory(){
+
+                                        @Override
+                                        public Thread newThread(Runnable r) {
+                                            Thread t = new Thread(r);
+                                            t.setDaemon(true);
+                                            t.setName("MyThread");
+                                            return t;
+                                        }}))
+                                             .register(new ClientResponseFilter(){
+
+            @Override
+            public void filter(ClientRequestContext reqCtx, ClientResponseContext respCtx) throws IOException {
+                respCtx.getHeaders().putSingle("ThreadName", Thread.currentThread().getName());
+                
+            }});
+        Client client = builder.build();
+        Future<Response> f = client.target(uri).request("text/plain").async().get();
+        Response r = f.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("MyThread", r.getHeaderString("ThreadName"));
+        client.close();
     }
 }

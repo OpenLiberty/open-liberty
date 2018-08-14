@@ -54,7 +54,10 @@ public class JDBCLoadFromAppTest extends FATServletClient {
         WebArchive otherApp = ShrinkWrap.create(WebArchive.class, "otherApp.war")
                         .addPackage("web.other") //
                         .addPackage("jdbc.driver.mini") // barely usable, fake jdbc driver included in app
+                        .addPackage("jdbc.driver.mini.jse") // java.sql.Driver implementation for the above
+                        .addAsServiceProvider(java.sql.Driver.class, jdbc.driver.mini.jse.DriverImpl.class)
                         .addPackage("jdbc.driver.proxy"); // delegates to the "mini" JDBC driver
+
         ShrinkHelper.exportAppToServer(server, otherApp);
 
         server.addInstalledAppForValidation("derbyApp");

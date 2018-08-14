@@ -29,7 +29,7 @@
         <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
         <AD id="keyName" name="%trustAliasName" description="%trustAliasName.desc" required="false" type="String" />   
-        <AD id="issuer" name="%issuer" description="%issuer.desc" required="true" type="String" />               
+        <AD id="issuer" name="%issuer" description="%issuer.desc" required="false" type="String" />               
         <AD id="groupNameAttribute" name="%groupNameAttribute" description="%groupNameAttribute.desc"
             required="false"  type="String" default="groups" />
         <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"

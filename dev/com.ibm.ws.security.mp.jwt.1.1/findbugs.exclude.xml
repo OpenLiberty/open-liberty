@@ -1,0 +1,27 @@
+<!--
+    Copyright (c) 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+	<!--See http://findbugs.sourceforge.net/manual/filter.html for details of 
+		the syntax of this file -->
+	<!--This file was generated from the list of known bugs for this project -->
+	<Match>
+		<Class name="~.*\.resources\..*" />
+		<Method name="getContents" />
+		<Bug code="EI" />
+	</Match>
+
+</FindBugsFilter>

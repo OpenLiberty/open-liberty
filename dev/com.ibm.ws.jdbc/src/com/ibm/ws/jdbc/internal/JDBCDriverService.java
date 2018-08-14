@@ -342,9 +342,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * 
      * @param props typed data source properties
      * @return the data source or driver instance
-     * @throws SQLException if an error occurs
+     * @throws Exception if an error occurs
      */
-    public Object createAnyDataSourceOrDriver(Properties props, String dataSourceID) throws SQLException {
+    public Object createAnyDataSourceOrDriver(Properties props, String dataSourceID) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -385,7 +385,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
-                    Driver driver = loadDriver(url, classloader, props, dataSourceID);
+                    Driver driver = loadDriver(null, url, classloader, props, dataSourceID);
                     if (driver != null)
                         return driver;
                 }
@@ -420,9 +420,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * 
      * @param props typed data source properties
      * @return the data source or driver instance
-     * @throws SQLException if an error occurs
+     * @throws Exception if an error occurs
      */
-    public Object createDefaultDataSourceOrDriver(Properties props) throws SQLException {
+    public Object createDefaultDataSourceOrDriver(Properties props) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -463,7 +463,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             if (nonshipFunction) {
                 String url = props.getProperty("URL", props.getProperty("url"));
                 if (url != null) {
-                    Driver driver = loadDriver(url, classloader, props, "dataSource[DefaultDataSource]");
+                    Driver driver = loadDriver(null, url, classloader, props, "dataSource[DefaultDataSource]");
                     if (driver != null)
                         return driver;
                 }
@@ -645,9 +645,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * 
      * @param url JDBC driver URL.
      * @return the driver
-     * @throws SQLException if an error occurs
+     * @throws Exception if an error occurs
      */
-    public Object getDriver(String url, Properties props, String dataSourceID) throws SQLException {
+    public Object getDriver(String url, Properties props, String dataSourceID) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -666,8 +666,12 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.readLock().lock();
                     lock.writeLock().unlock();
                 }
-            
-            return loadDriver(url, classloader, props, dataSourceID);
+
+            final String className = (String) properties.get(Driver.class.getName());
+            Driver driver = loadDriver(className, url, classloader, props, dataSourceID);
+            if (driver == null)
+               throw classNotFound(Driver.class.getName(), Collections.singleton("META-INF/services/java.sql.Driver"), null);
+            return driver;
         } finally {
             lock.readLock().unlock();
         }
@@ -746,18 +750,20 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
 
     /**
-     * Load java.sql.Driver implementations available to the specific class loader and return
-     * the first that accepts the URL that is specified in the vendor properties.
+     * Load java.sql.Driver implementations available to the specific class loader.
+     * If className is specified, return an instance of that class.
+     * Otherwise return the first that accepts the URL.
      *
+     * @param className pre-computed Driver implementation class name to load. This will only ever be available on the DataSourceDefinition path.
      * @param url the JDBC driver URL.
-     * @param classloader class loader from which to load JDBC drivers.
+     * @param classloader class loader from which to load JDBC drivers. NULL to load from the application's thread context class loader.
      * @return Driver instance that accepts the URL. NULL if no such Driver can be loaded.
-     * @throws SQLException if an error occurs.
+     * @throws Exception if an error occurs.
      */
-    private Driver loadDriver(String url, ClassLoader classloader, Properties props, String dataSourceID) throws SQLException {
+    private Driver loadDriver(final String className, String url, final ClassLoader classloader, Properties props, String dataSourceID) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
-            Tr.entry(this, tc, "loadDriver", url, classloader);
+            Tr.entry(this, tc, "loadDriver", className, url, classloader);
         int index = url.toLowerCase().indexOf("logintimeout");
         if(index != -1) {
             int length = url.length();
@@ -773,14 +779,30 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 Tr.debug(this, tc, "Allowing value of 0 for loginTimeout in URL");
         }
         
-        
         Object loginTimeout = props.get("loginTimeout");
         if(loginTimeout != null && !loginTimeout.toString().equals("0")) {
             throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4005.invalid.logintimeout", dataSourceID));
         }
 
+        Iterable<Driver> drivers;
+        if (className == null) {
+            if (classloader == null)
+                drivers = ServiceLoader.load(Driver.class); // use thread context class loader of application
+            else
+                drivers = ServiceLoader.load(Driver.class, classloader);
+        } else { // load explicitly specified class
+            Driver driver = AccessController.doPrivileged(new PrivilegedExceptionAction<Driver>() {
+                public Driver run() throws Exception {
+                    ClassLoader loader = classloader == null ? Thread.currentThread().getContextClassLoader() : classloader;
+                    Class<Driver> driverClass = (Class<Driver>) loader.loadClass(className);
+                    return driverClass.newInstance();
+                }
+            });
+            drivers = Collections.singleton(driver);
+        }
+
         SQLException failure = null;
-        for (Driver driver : ServiceLoader.load(Driver.class, classloader)) {
+        for (Driver driver : drivers) {
             boolean acceptsURL;
             try {
                 acceptsURL = driver.acceptsURL(url);

@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.mpJwt-1.0
 visibility=public
+singleton=true
 IBM-ShortName: mpJwt-1.0
 IBM-API-Package: \
   org.eclipse.microprofile.jwt; type="stable", \

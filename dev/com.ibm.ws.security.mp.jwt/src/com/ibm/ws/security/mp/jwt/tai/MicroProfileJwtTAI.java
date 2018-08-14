@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 IBM Corporation and others.
+ * Copyright (c) 2016, 2017, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,9 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
+import com.ibm.ws.security.mp.jwt.MpJwtExtensionService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
+import com.ibm.ws.security.mp.jwt.config.MpConfigUtil;
 import com.ibm.ws.security.mp.jwt.error.ErrorHandlerImpl;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
@@ -67,17 +69,20 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     public static final String KEY_MP_JWT_CONFIG = "microProfileJwtConfig";
     public static final String ATTRIBUTE_TAI_REQUEST = "MPJwtTaiRequest";
     public static final String JTI_CLAIM = "jti";
-
+    public static final String KEY_MP_JWT_EXTENSION_SERVICE = "mpJwtExtensionService";
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
     static final ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig> mpJwtConfigRef = new ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig>(KEY_MP_JWT_CONFIG);
+    static final AtomicServiceReference<MpJwtExtensionService> mpJwtExtensionServiceRef = new AtomicServiceReference<MpJwtExtensionService>(KEY_MP_JWT_EXTENSION_SERVICE);
 
     TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
 
     ReferrerURLCookieHandler referrerURLCookieHandler = null;
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
+    MpConfigUtil mpConfigUtil = null;
 
     public MicroProfileJwtTAI() {
+        mpConfigUtil = new MpConfigUtil(mpJwtExtensionServiceRef);
     }
 
     @Reference(service = SecurityService.class, name = KEY_SECURITY_SERVICE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -168,6 +173,15 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         return mpJwtConfigRef.getServices();
     }
 
+    @Reference(service = MpJwtExtensionService.class, name = KEY_MP_JWT_EXTENSION_SERVICE, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setMpJwtExtensionService(ServiceReference<MpJwtExtensionService> reference) {
+        mpJwtExtensionServiceRef.setReference(reference);
+    }
+
+    protected void unsetMpJwtExtensionService(ServiceReference<MpJwtExtensionService> reference) {
+        mpJwtExtensionServiceRef.unsetReference(reference);
+    }
+
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         synchronized (authFilterServiceRef) {
@@ -178,6 +192,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             mpJwtConfigRef.activate(cc);
         }
         securityServiceRef.activate(cc);
+        mpJwtExtensionServiceRef.activate(cc);
     }
 
     @Modified
@@ -204,6 +219,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             mpJwtConfigRef.deactivate(cc);
         }
         securityServiceRef.deactivate(cc);
+        mpJwtExtensionServiceRef.deactivate(cc);
     }
 
     @Override
@@ -348,7 +364,12 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         if (token != null) {
             // Create JWT from access token / id token
             try {
-                jwtToken = taiJwtUtils.createJwt(token, clientConfig.getUniqueId());
+                Map mpCfg = mpConfigUtil.getMpConfig(req);
+//                if (!mpCfg.isEmpty()) {
+//                    jwtToken = clientConfig.getConsumerUtils().parseJwt(token, clientConfig, mpCfg);
+//                } else {
+                    jwtToken = taiJwtUtils.createJwt(token, clientConfig.getUniqueId());
+//                }
             } catch (MpJwtProcessingException e) {
                 Tr.error(tc, "ERROR_CREATING_JWT_USING_TOKEN_IN_REQ", new Object[] { e.getLocalizedMessage() });
                 return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));

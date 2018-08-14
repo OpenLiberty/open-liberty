@@ -29,6 +29,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.fat.driver.derby.FATDriver;
 import jdbc.fat.driver.web.JDBCDriverManagerServlet;
+import jdbc.fat.proxy.driver.ProxyDrivr;
 
 @RunWith(FATRunner.class)
 public class JDBCDriverManagerTest extends FATServletClient {
@@ -55,7 +56,12 @@ public class JDBCDriverManagerTest extends FATServletClient {
                         .merge(derbyJar)
                         .addAsServiceProvider(java.sql.Driver.class, FATDriver.class);
 
+        JavaArchive proxyDriver = ShrinkWrap.create(JavaArchive.class, "ProxyDriver.jar")
+                        .addPackage("jdbc.fat.proxy.driver")
+                        .addAsServiceProvider(java.sql.Driver.class, ProxyDrivr.class);
+
         ShrinkHelper.exportToServer(server, "derby", fatDriver);
+        ShrinkHelper.exportToServer(server, "proxydriver", proxyDriver);
 
         server.startServer();
     }
@@ -63,6 +69,8 @@ public class JDBCDriverManagerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWWKE0701E", // ResourceFactoryTrackerData error for data source that intentionally lacks ConnectionPoolDataSource class
+                          "J2CA0030E", // Test intentionally makes illegal attempt to enlist multiple one-phase resources
+                          "WTRN0062E", // Test intentionally makes illegal attempt to enlist multiple one-phase resources
                           "DSRA8020E.*internal.nonship.function"); // TODO remove once the capability becomes GA
     }
 }
