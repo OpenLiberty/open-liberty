@@ -16,6 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.jmx.connector.server.rest
 Bundle-Description: Project for JMX Connector; version=${bVersion}
 
 Web-ContextPath: /IBMJMXConnectorREST
+OL-VirtualHost: ${admin.virtual.host}
 
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true

@@ -19,6 +19,7 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.health
 Bundle-Description:MicroProfile Health Check; version ${bVersion}
 
 Web-ContextPath: health
+OL-VirtualHost: ${admin.virtual.host}
 
 WS-TraceGroup: HEALTH
 
@@ -53,12 +54,12 @@ Private-Package: \
 Include-Resource: \
     META-INF/services=resources/META-INF/services, \
     WEB-INF=resources/WEB-INF
-  
+
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src,resources
 testsrc: test/src
-  
+
 -buildpath: \
         com.ibm.websphere.javaee.annotation.1.2;version=latest,\
         com.ibm.websphere.javaee.servlet.3.1; version=latest,\
@@ -81,7 +82,7 @@ testsrc: test/src
         com.ibm.ws.webcontainer;version=latest,\
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
         org.eclipse.osgi;version=latest,\
-        
+
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
         com.ibm.ws.junit.extensions;version=latest, \
