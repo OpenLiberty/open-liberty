@@ -26,7 +26,7 @@ public class PasswordExpiredException extends AuthenticationException {
      * @param e
      */
     public PasswordExpiredException(String message, Exception e) {
-        super(message);
+        super(message, e);
     }
 
 }
