@@ -1,0 +1,9 @@
+<server description="mpMetrics authentication server">
+    <featureManager />
+    
+    <include location="../fatTestPorts.xml" />
+
+	<quickStartSecurity userName="admin" userPassword="adminpwd"/>
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+</server>
