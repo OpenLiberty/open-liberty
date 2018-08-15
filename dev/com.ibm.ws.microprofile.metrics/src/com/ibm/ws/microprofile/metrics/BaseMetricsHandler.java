@@ -13,16 +13,8 @@ package com.ibm.ws.microprofile.metrics;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -32,7 +24,6 @@ import com.ibm.ws.microprofile.metrics.exceptions.HTTPMethodNotAllowedException;
 import com.ibm.ws.microprofile.metrics.exceptions.HTTPNotAcceptableException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchRegistryException;
-import com.ibm.ws.microprofile.metrics.helper.Util;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetadataWriter;
 import com.ibm.ws.microprofile.metrics.writer.JSONMetricWriter;
@@ -42,36 +33,12 @@ import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
 
-@Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, property = { "service.vendor=IBM",
-                                                                                                                             RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "="
-                                                                                                                                                   + Constants.PATH_METRICS,
-                                                                                                                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_ROOT,
-                                                                                                                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_SUB,
-                                                                                                                             RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=" + Constants.PATH_SUB_ATTRIBUTE
-})
-public class MetricsHandler implements RESTHandler {
+public abstract class BaseMetricsHandler implements RESTHandler {
 
-    private static final TraceComponent tc = Tr.register(MetricsHandler.class);
+    private static final TraceComponent tc = Tr.register(BaseMetricsHandler.class);
 
-    BaseMetrics bm;
-    SharedMetricRegistries sharedMetricRegistry;
-
-    @Activate
-    protected void activate(ComponentContext context, Map<String, Object> properties) {
-        bm = BaseMetrics.getInstance(sharedMetricRegistry);
-        for (String registry : Constants.REGISTRY_NAMES_LIST) {
-            sharedMetricRegistry.getOrCreate(registry);
-        }
-        Util.SHARED_METRIC_REGISTRIES = sharedMetricRegistry;
-    }
-
-    @Reference
-    public void getSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
-        this.sharedMetricRegistry = sharedMetricRegistry;
-    }
-
-    @Deactivate
-    protected void deactivate(ComponentContext context, int reason) {}
+    protected BaseMetrics bm;
+    protected SharedMetricRegistries sharedMetricRegistry;
 
     @Override
     @FFDCIgnore({ EmptyRegistryException.class, NoSuchMetricException.class, NoSuchRegistryException.class, HTTPNotAcceptableException.class, HTTPMethodNotAllowedException.class })
