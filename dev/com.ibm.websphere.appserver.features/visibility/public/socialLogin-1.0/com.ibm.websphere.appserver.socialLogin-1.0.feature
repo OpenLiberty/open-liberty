@@ -1,0 +1,22 @@
+-include= ~${workspace}/cnf/resources/bnd/feature.props
+symbolicName=com.ibm.websphere.appserver.socialLogin-1.0
+visibility=public
+IBM-ShortName: socialLogin-1.0
+Subsystem-Name: Social Media Login
+-features=\
+  com.ibm.websphere.appserver.authFilter-1.0, \
+  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0", \
+  com.ibm.websphere.appserver.jwt-1.0, \
+  com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:=1.1, \
+  com.ibm.websphere.appserver.httpcommons-1.0, \
+  com.ibm.wsspi.appserver.webBundle-1.0, \
+  com.ibm.wsspi.appserver.webBundleSecurity-1.0
+-bundles=\
+  com.ibm.ws.security.social, \
+  com.ibm.ws.org.apache.commons.codec.1.4, \
+  com.ibm.ws.org.apache.commons.logging.1.0.3
+IBM-API-Package: com.ibm.websphere.security.social; type="ibm-api"
+-jars=com.ibm.websphere.appserver.api.social; location:=dev/api/ibm/
+-files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.social_1.0-javadoc.zip
+kind=ga
+edition=core
