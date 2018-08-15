@@ -103,6 +103,8 @@ public class MetricsAuthenticationTest {
 
         //check that opening connection to /metrics requires authentication by default
 
+        Thread.sleep(10000);
+
         MetricsConnection authenticationNotSpecified = MetricsConnection.privateConnection(server);
         authenticationNotSpecified.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
