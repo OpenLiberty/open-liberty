@@ -15,7 +15,7 @@ IBM-API-Package: io.opentracing;  type="third-party",\
 -bundles=com.ibm.ws.require.java8, \
          com.ibm.ws.opentracing, \
          com.ibm.ws.opentracing.cdi, \
-         com.ibm.websphere.appserver.thirdparty.opentracing; location:="dev/api/third-party/,lib/"
+         com.ibm.websphere.appserver.thirdparty.opentracing; location:="dev/api/third-party/,lib/"; mavenCoordinates="io.opentracing:opentracing-api:0.30.0"
 -jars=com.ibm.websphere.appserver.spi.opentracing; location:=dev/spi/ibm/
 -files= dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.opentracing_1.0-javadoc.zip
 kind=ga

@@ -1,9 +1,0 @@
-*.log
-dist
-/coverage.ec
-/ffdc.log*
-/junit*.properties
-/lib
-/reports
-/serverTrace.log*
-/trace.log*

@@ -14,6 +14,7 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 
 import javax.sql.ConnectionPoolDataSource;
@@ -508,27 +511,37 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
 
         // determine if we need to search for an implementation class, and if so, of which type(s)
         int[] dsTypeSearchOrder;
+        Set<String> searchedLibraryFiles = new TreeSet<String>();
+        Set<String> searchedPackages;
+        
         boolean hasImplClassName = className != null && className.length() > 0;
         if (hasImplClassName) {
             if (XADataSource.class.getName().equals(className)) {
                 dsTypeSearchOrder = new int[] { JDBCDrivers.XA_DATA_SOURCE };
+                searchedPackages = new TreeSet<String>();
                 hasImplClassName = false;
             } else if (ConnectionPoolDataSource.class.getName().equals(className)) {
                 dsTypeSearchOrder = new int[] { JDBCDrivers.CONNECTION_POOL_DATA_SOURCE };
+                searchedPackages = new TreeSet<String>();
                 hasImplClassName = false;
             } else if (DataSource.class.getName().equals(className)) {
                 dsTypeSearchOrder = new int[] { JDBCDrivers.DATA_SOURCE };
+                searchedPackages = new TreeSet<String>();
                 hasImplClassName = false;
             } else if (Driver.class.getName().equals(className)) {
                 dsTypeSearchOrder = null;
+                searchedPackages = Collections.singleton("META-INF/services/java.sql.Driver");
                 hasImplClassName = false;
             } else {
                 dsTypeSearchOrder = null; // if we know the impl class, there is no need to search for one
+                searchedPackages = null;
             }
         } else if (url == null) {
             dsTypeSearchOrder = new int[] { JDBCDrivers.XA_DATA_SOURCE, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE, JDBCDrivers.DATA_SOURCE };
+            searchedPackages = new TreeSet<String>();
         } else { // assume java.sql.Driver due to presence of URL
             dsTypeSearchOrder = null;
+            searchedPackages = Collections.singleton("META-INF/services/java.sql.Driver");
         }
 
         // Determine which shared library can load className
@@ -551,6 +564,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                                  : DataSource.class.isAssignableFrom(cl) ? DataSource.class.getName()
                                  : Driver.class.getName();
                         } else {
+                            searchedLibraryFiles.addAll(JDBCDriverService.getClasspath(library, false));
                             if (dsTypeSearchOrder == null) {
                                 type = Driver.class.getName();
                                 for (Iterator<Driver> it = ServiceLoader.load(Driver.class, loader).iterator(); it.hasNext(); ) {
@@ -574,7 +588,7 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                                 }
                             } else {
                                 SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(loader,
-                                                                                                                  new LinkedHashSet<String>(), // TODO
+                                                                                                                  searchedPackages,
                                                                                                                   dsTypeSearchOrder);
                                 if (dsEntry != null) {
                                     int dsType = dsEntry.getKey();
@@ -599,10 +613,12 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                     } catch (ClassNotFoundException x) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(tc, className + " not found in", libraryPid);
+                        searchedLibraryFiles.addAll(JDBCDriverService.getClasspath(library, false));
                     } catch (Exception x) {
                         FFDCFilter.processException(x, DataSourceResourceFactoryBuilder.class.getName(), "444", new Object[] { libraryRef });
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(tc, libraryRef.toString(), x);
+                        searchedLibraryFiles.addAll(JDBCDriverService.getClasspath(library, false));
                         // Continue to try other libraryRefs
                     }
                 }
@@ -627,10 +643,25 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                 return dsClassInfo[dsType][CLASS_NAME];
             }
 
-        // className couldn't be found in any of the shared libraries
-        SQLNonTransientException x = new SQLNonTransientException(ConnectorService.getMessage("MISSING_LIBRARY_J2CA8022", declaringApplication, className, DataSourceService.DATASOURCE,
-                                                                                              dsSvcProps.get(DataSourceService.JNDI_NAME)));
-        
+        String message;
+        if (searchedPackages == null) {
+            // className couldn't be found in any of the shared libraries
+            message = ConnectorService.getMessage("MISSING_LIBRARY_J2CA8022", declaringApplication, className, DataSourceService.DATASOURCE,
+                                                  dsSvcProps.get(DataSourceService.JNDI_NAME));
+        } else {
+            List<String> types = dsTypeSearchOrder == null ? Collections.singletonList("java.sql.Driver"): new ArrayList<String>(dsTypeSearchOrder.length);
+            if (dsTypeSearchOrder != null)
+                for (int dsType : dsTypeSearchOrder)
+                    switch (dsType) {
+                        case JDBCDrivers.DATA_SOURCE: types.add("javax.sql.DataSource"); break;
+                        case JDBCDrivers.CONNECTION_POOL_DATA_SOURCE : types.add("javax.sql.ConnectionPoolDataSource"); break;
+                        case JDBCDrivers.XA_DATA_SOURCE : types.add("javax.sql.XADataSource"); break;
+                    }
+            message = AdapterUtil.getNLSMessage("DSRA4001.no.suitable.driver.nested", types, dsSvcProps.get(DataSourceService.JNDI_NAME),
+                                                searchedLibraryFiles, searchedPackages);
+        }
+        SQLNonTransientException x = new SQLNonTransientException(message);
+
         if (trace && tc.isEntryEnabled())
             Tr.exit(tc, "updateWithLibraries", x);
         throw x;

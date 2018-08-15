@@ -15,11 +15,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.junit.Test;
 
@@ -27,9 +31,13 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
- * 
+ *
  */
 public class PackageCommandTest {
+    private static final Class<?> c = PackageCommandTest.class;
+
+    private static String serverName = "com.ibm.ws.kernel.boot.root.fat";
+    private static String archivePackage = "MyPackage.zip";
 
     /**
      * The package command requires that the lib/extract directory exists, as this directory
@@ -44,7 +52,7 @@ public class PackageCommandTest {
      * FAT environment's installation of WLP does not include this directory. If we end up creating that
      * directory in the FAT environment, then we'll need to find another way to run this test - as we
      * probably don't want to delete a directory in the FAT environment's installation.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -69,7 +77,7 @@ public class PackageCommandTest {
      * This test is not run if:
      * 1) platform is z/OS (jar archive not supported)
      * 2) wlp/lib/extract directory does not exist
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -98,7 +106,7 @@ public class PackageCommandTest {
             Manifest mf = jarFile.getManifest();
             assertNotNull("There should be a manifest in the jar file", mf);
 
-            // make sure it'a a runnable jar 
+            // make sure it'a a runnable jar
             assertEquals(mainClass, mf.getMainAttributes().getValue("Main-Class"));
 
             // Check that the self-extract and the server's entries are in the jar
@@ -139,7 +147,7 @@ public class PackageCommandTest {
 
         String stdout = server.executeServerScript("package",
                                                    new String[] { "--archive=" + jarFileName,
-                                                                 "--include=usr" }).getStdout();
+                                                                  "--include=usr" }).getStdout();
 
         JarFile jarFile = new JarFile(server.getFileFromLibertyServerRoot(jarFileName).getAbsolutePath());
 
@@ -165,6 +173,72 @@ public class PackageCommandTest {
 
         assertTrue(foundServerEntry);
         assertTrue(foundSelfExtractEntry);
+    }
+
+    @Test
+    public void testCorrectErrorMessageWhenProductExtensionsInstalledAndServerRootSpecified() throws Exception {
+
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+
+        try {
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            // Make sure we have the /wlp/etc/extension directory which indicates Product Extensions are installed
+            File prodExtensionDir = null;
+            try {
+                server.getFileFromLibertyInstallRoot("etc/extension/");
+            } catch (FileNotFoundException ex) {
+                // The /etc/extension directory does not exist - so create it for this test.
+                String pathToProdExt = server.getInstallRoot() + "/etc" + "/extension/";
+                prodExtensionDir = new File(pathToProdExt);
+                prodExtensionDir.mkdirs();
+            }
+
+            String[] cmd = new String[] { "--archive=" + archivePackage,
+                                          "--include=minify",
+                                          "--server-root= " };
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+
+            assertTrue("Did not find expected failure message, CWWKE0947W.  STDOUT = " + stdout, stdout.contains("CWWKE0947W"));
+
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
+    }
+
+    @Test
+    public void testServerRootSpecified() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+        try {
+
+            server.getFileFromLibertyInstallRoot("lib/extract");
+
+            String[] cmd = new String[] { "--archive=" + archivePackage,
+                                          "--include=minify",
+                                          "--server-root=MyRoot" };
+            // Ensure package completes
+            String stdout = server.executeServerScript("package", cmd).getStdout();
+            assertTrue("The package command did not complete as expected. STDOUT = " + stdout, stdout.contains("package complete"));
+
+            // Ensure root is correct in the .zip
+            ZipFile zipFile = new ZipFile(server.getServerRoot() + "/" + archivePackage);
+            try {
+
+                for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+                    ZipEntry entry = en.nextElement();
+                    String entryName = entry.getName();
+                    assertTrue("The package did not contain MyRoot as expected. Entry Name is = " + entryName, entryName.contains("MyRoot"));
+                }
+
+            } finally {
+                try {
+                    zipFile.close();
+                } catch (IOException ex) {
+                }
+            }
+        } catch (FileNotFoundException ex) {
+            assumeTrue(false); // the directory does not exist, so we skip this test.
+        }
     }
 
 }

@@ -56,6 +56,7 @@ public class PackageCommand {
     final BootstrapConfig bootProps;
     final String includeOption;
     final String archiveOption;
+    final String rootOption;
 
     public PackageCommand(BootstrapConfig bootProps, LaunchArguments launchArgs) {
         this.serverName = bootProps.getProcessName();
@@ -69,11 +70,13 @@ public class PackageCommand {
         osRequest = launchArgs.getOption("os");
         includeOption = launchArgs.getOption(BootstrapConstants.CLI_PACKAGE_INCLUDE_VALUE);
         archiveOption = launchArgs.getOption(BootstrapConstants.CLI_ARG_ARCHIVE_TARGET);
+        rootOption = launchArgs.getOption(BootstrapConstants.CLI_ROOT_PACKAGE_NAME);
+
     }
 
     /**
      * Package the server
-     * 
+     *
      * @return
      */
     public ReturnCode doPackage() {
@@ -154,7 +157,7 @@ public class PackageCommand {
 
     /**
      * Package the server
-     * 
+     *
      * @return
      */
     public ReturnCode doPackageRuntimeOnly() {
@@ -177,7 +180,7 @@ public class PackageCommand {
      * Return true for include values of:
      * include=minify
      * include=minify,runnable
-     * 
+     *
      * Otherwise return false.
      */
     private boolean includeMinifyorMinifyRunnable(String val) {
@@ -221,12 +224,22 @@ public class PackageCommand {
         }
 
         PackageProcessor processor;
+
         if (null != includeValue) {
             List<Pair<PackageOption, String>> options = new ArrayList<Pair<PackageOption, String>>();
             options.add(new Pair<PackageOption, String>(PackageOption.INCLUDE, includeValue));
             processor = new PackageProcessor(serverName, packageFile, bootProps, options, libertyFiles);
         } else {
             processor = new PackageProcessor(serverName, packageFile, bootProps, null, libertyFiles);
+        }
+
+        if (rootOption != null) {
+            if (processor.hasProductExtentions() && rootOption.trim().equalsIgnoreCase("")) {
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.package.root.invalid"),
+                                                        serverName));
+            } else {
+                processor.setArchivePrefix(rootOption);
+            }
         }
 
         //this will now go onto do the package, libertyFiles will be non-null in the minify case only.
@@ -258,7 +271,7 @@ public class PackageCommand {
 
     /**
      * Determine the default package format for the current operating system.
-     * 
+     *
      * @return "pax" on z/OS and "zip" for all others
      */
     private String getDefaultPackageFormat() {
@@ -271,13 +284,13 @@ public class PackageCommand {
         if (PackageProcessor.IncludeOption.RUNNABLE.matches(includeOption)) {
             return "jar";
         }
-        
+
         return "zip";
     }
 
     /**
      * Normalize the packageTarget ext Name if the user specify a wrong one.
-     * 
+     *
      * @param packageTarget
      * @return
      */
@@ -290,10 +303,10 @@ public class PackageCommand {
             //FIXME we need improve this to print message when we auto modify the extension name as following
             if (ext.equalsIgnoreCase(".zip") || ext.equalsIgnoreCase(".pax")) {
                 return packageTarget.substring(0, poz) + "." + defaultExt;
-            } else if (ext.equalsIgnoreCase(".jar") && 
-                        ("zip".equals(defaultExt) || "jar".equals(defaultExt))) {
+            } else if (ext.equalsIgnoreCase(".jar") &&
+                       ("zip".equals(defaultExt) || "jar".equals(defaultExt))) {
                 //allow jar format packaging for zip defaulting platforms.
-                //this method overall currently prevents creation of zip on non-zip platforms, 
+                //this method overall currently prevents creation of zip on non-zip platforms,
                 //prevents pax on non-pax platforms, this may be an error, but if we wish to create
                 //jar on a pax platform, there will be codepage issues to resolve for the scripts
                 return packageTarget;
@@ -321,10 +334,7 @@ public class PackageCommand {
         //tell user we are collecting.
         System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverPackagingCollectingInformation"),
                                                 serverName));
-        EmbeddedServerImpl server = (EmbeddedServerImpl) (new ServerBuilder())
-                        .setName(serverName)
-                        .setOutputDir(new File(serverOutputDir).getParentFile())
-                        .setUserDir(bootProps.getUserRoot())
+        EmbeddedServerImpl server = (EmbeddedServerImpl) (new ServerBuilder()).setName(serverName).setOutputDir(new File(serverOutputDir).getParentFile()).setUserDir(bootProps.getUserRoot())
                         //.setServerEventListener(this)
                         .build();
 

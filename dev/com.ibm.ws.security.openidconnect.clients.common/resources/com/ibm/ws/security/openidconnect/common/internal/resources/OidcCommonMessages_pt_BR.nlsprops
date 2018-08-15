@@ -1,0 +1,178 @@
+###############################################################################
+# Copyright (c) 2013, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+#do not translate issuerIdentifier, iss
+#
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: A valida\u00e7\u00e3o falhou para o token de ID solicitado por [{0}] porque o emissor (iss) [{1}] especificado no token n\u00e3o corresponde ao atributo [issuerIdentifier] [{2}] do provedor especificado na configura\u00e7\u00e3o do cliente OpenID Connect. Verifique o atributo issuerIdentifier na configura\u00e7\u00e3o do cliente.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=A valida\u00e7\u00e3o do token de ID falhou porque o emissor especificado na configura\u00e7\u00e3o do cliente OpenID Connect (relying party ou RP) e o emissor no token n\u00e3o correspondem.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Certifique-se de que o atributo [issuerIdentifier] especificado na configura\u00e7\u00e3o do cliente OpenID Connect (RP) corresponda ao emissor do provedor OpenID Connect (OP) que est\u00e1 sendo usado.
+
+#
+OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Ocorreu um erro ao tentar assinar um token de ID usando o algoritmo [{0}]: [{1}].
+OIDC_IDTOKEN_SIGNATURE_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel criar um token de ID porque ele n\u00e3o p\u00f4de ser assinado. O motivo do erro \u00e9 mostrado depois da mensagem.
+OIDC_IDTOKEN_SIGNATURE_ERR.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para a mensagem que aparece ap\u00f3s este erro.
+
+#
+OIDC_IDTOKEN_INVALID_KEY_ERR=CWWKS1753E: Ocorreu um erro ao tentar assinar um token de ID usando o algoritmo [{0}]: [{1}].
+OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel criar um token de ID porque ele n\u00e3o p\u00f4de ser assinado.  O motivo do erro \u00e9 mostrado depois da mensagem.
+OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Se estiver usando a assinatura assim\u00e9trica, verifique se uma chave privada v\u00e1lida \u00e9 usada para assinar o token. Por exemplo, verifique se uma chave expirou. Verifique o elemento keyStore referenciado pelo SSL padr\u00e3o em server.xml para localizar informa\u00e7\u00f5es sobre o arquivo de armazenamento de chaves que cont\u00e9m a chave privada.  Al\u00e9m disso, consulte a a\u00e7\u00e3o do usu\u00e1rio para a mensagem que aparece ap\u00f3s este erro.
+
+#do not translate clientId, aud
+OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: A valida\u00e7\u00e3o falhou para o token de ID solicitado por [{1}] porque o p\u00fablico (aud) [{0}] especificado no token n\u00e3o corresponde ao clientId [{1}] especificado na configura\u00e7\u00e3o do cliente OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=O p\u00fablico no token do ID deve corresponder ao ID do cliente.  Neste caso, o p\u00fablico (aud) no token do ID n\u00e3o correspondeu ao ID do cliente, portanto, a valida\u00e7\u00e3o do token do ID falhou.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Certifique-se de que o atributo [clientId] especificado na configura\u00e7\u00e3o do cliente OpenID Connect (relying party ou RP) esteja correto. O valor faz distin\u00e7\u00e3o entre mai\u00fasculas e min\u00fasculas.
+
+#do not translate clientId, azp
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: A valida\u00e7\u00e3o falhou para o token de ID solicitado por [{1}] porque a parte autorizada (azp) [{0}] especificada no token n\u00e3o corresponde ao clientId [{1}] especificado na configura\u00e7\u00e3o do cliente OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=A parte autorizada no token do ID deve corresponder ao ID do cliente. Neste caso, a parte autorizada (azp) no token do ID n\u00e3o correspondeu ao ID do cliente, portanto, a valida\u00e7\u00e3o do token do ID falhou.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Certifique-se de que o atributo [clientId] especificado na configura\u00e7\u00e3o do cliente OpenID Connect (relying party ou RP) esteja correto. O valor faz distin\u00e7\u00e3o entre mai\u00fasculas e min\u00fasculas.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1756E: A valida\u00e7\u00e3o falhou para o token de ID solicitado por [{0}] ao usar o algoritmo [{2}] devido a uma falha na verifica\u00e7\u00e3o da assinatura: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel validar um token de ID porque a assinatura n\u00e3o p\u00f4de ser verificada. Isso pode ter sido causado por uma incompatibilidade no algoritmo de assinatura ou por uma chave compartilhada entre o cliente do OpenID Connect e o provedor do OpenID Connect.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=Verifique a configura\u00e7\u00e3o do servidor para assegurar que o algoritmo de assinatura configurado e a chave compartilhada configurada sejam compat\u00edveis com aqueles do provedor do OpenID Connect.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: A valida\u00e7\u00e3o falhou para o token de ID solicitado por [{0}] ao usar o algoritmo [{2}] devido a uma falha na verifica\u00e7\u00e3o da assinatura: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel validar um token de ID porque a assinatura n\u00e3o p\u00f4de ser verificada.  O motivo do erro \u00e9 mostrado depois da mensagem.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Se estiver usando a assinatura assim\u00e9trica, assegure-se de que a chave p\u00fablica no certificado possa ser usada com prop\u00f3sitos de assinatura digital.  Verifique o elemento keyStore referenciado pela configura\u00e7\u00e3o de SSL padr\u00e3o em server.xml para localizar informa\u00e7\u00f5es sobre o armazenamento de chaves que cont\u00e9m a chave. Al\u00e9m disso, consulte a a\u00e7\u00e3o do usu\u00e1rio para a mensagem que aparece ap\u00f3s este erro.
+ 
+#
+OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: A valida\u00e7\u00e3o falhou para o token de ID solicitado pelo [{0}] devido a [{1}]. Isso pode ter sido causado pelo hor\u00e1rio atual [{2}] ser posterior ao prazo de expira\u00e7\u00e3o do token [{3}] ou o hor\u00e1rio de emiss\u00e3o [{4}] ser muito longe do hor\u00e1rio atual [{2}].
+OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel validar um token de ID porque o hor\u00e1rio atual mostrado n\u00e3o est\u00e1 entre o hor\u00e1rio de emiss\u00e3o e o prazo de expira\u00e7\u00e3o do token.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Certifique-se de que os rel\u00f3gios do sistema do cliente OpenID Connect (relying party ou RP) e do provedor OpenID Connect (OP) estejam em sincroniza\u00e7\u00e3o (se estiverem em dois sistemas).
+
+#do not translate at_hash
+#
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: A valida\u00e7\u00e3o falhou para o token de ID solicitado pelo [{0}] devido \u00e0 incompatibilidade de hash do token de acesso [{1}] e a solicita\u00e7\u00e3o at_hash [{2}] no token de ID. 
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=O at_hash no Token do ID permite que clientes OpenID Connect evitem ataques de substitui\u00e7\u00e3o do token. O valor at_hash deve corresponder ao valor do hash do token de acesso recebido pelo cliente OpenID Connect.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Assegure-se de que a comunica\u00e7\u00e3o entre o cliente OpenID Connect (relying party ou RP) e o provedor OpenID Connect (OP) seja segura para evitar viola\u00e7\u00e3o do token de acesso recebido pelo RP.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: A valida\u00e7\u00e3o falhou para o token de ID solicitado pelo [{0}] devido \u00e0 aus\u00eancia de assinatura no token de ID. A configura\u00e7\u00e3o do cliente OpenID Connect (relying party ou RP) especificou o algoritmo [{1}] e espera um token de ID assinado.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel validar um token de ID porque o token n\u00e3o foi assinado. O cliente OpenID Connect (relying party ou RP) est\u00e1 esperando um token assinado.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Assegure-se de que o provedor OpenID Connect permita que o token seja assinado.
+
+#do not translate signatureAlgorithm
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: A valida\u00e7\u00e3o falhou para o token de ID solicitado pelo [{0}] devido a uma incompatibilidade de algoritmos de assinatura entre o cliente OpenID Connect [{1}] e o provedor OpenID Connect [{2}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=N\u00e3o \u00e9 poss\u00edvel validar um token de ID porque o cliente OpenID Connect (relying party ou RP) e o provedor OpenID Connect (OP) est\u00e3o usando algoritmos de assinatura diferentes para assinar/verificar o token.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Assegure-se de que o signatureAlgorithm especificado por RP corresponda ao algoritmo de assinatura de OP.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: A solicita\u00e7\u00e3o de terminal de token falhou. N\u00e3o \u00e9 poss\u00edvel validar o token JWT solicitado pelo [{0}] devido a uma assinatura ausente no token JWT. O provedor OpenID Connect especificou o algoritmo [{1}] e espera que o token JWT seja assinado.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=N\u00e3o \u00e9 poss\u00edvel verificar o Token JWT porque o token n\u00e3o est\u00e1 assinado. O provedor OpenID Connect est\u00e1 esperando que o token seja assinado.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Verifique a configura\u00e7\u00e3o do cliente OpenID Connect para certificar-se de que ela assine o Token JWT.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: A solicita\u00e7\u00e3o de terminal de token falhou. N\u00e3o \u00e9 poss\u00edvel validar o token JWT solicitado pelo [{0}] devido a uma incompatibilidade de algoritmos de assinatura entre o provedor OpenID Connect [{1}] e o cliente OpenID Connect [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=N\u00e3o \u00e9 poss\u00edvel verificar o token JWT porque o provedor e cliente OpenID Connect est\u00e3o usando algoritmos de assinatura diferentes para assinar/verificar o token.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Verifique a configura\u00e7\u00e3o do cliente OpenID Connect para especificar um algoritmo de assinatura que corresponda ao provedor OpenID Connect.
+
+#
+JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: A solicita\u00e7\u00e3o de terminal de token falhou. Ocorreu um erro ao tentar assinar um token JWT usando o algoritmo [{0}]: [{1}].
+JWT_JWTTOKEN_INVALID_KEY_ERR.explanation=Um token JWT n\u00e3o pode ser criado porque ele n\u00e3o p\u00f4de ser assinado.  O motivo do erro \u00e9 mostrado na mensagem.
+JWT_JWTTOKEN_INVALID_KEY_ERR.useraction=Se estiver usando uma assinatura assim\u00e9trica, verifique se uma chave privada v\u00e1lida \u00e9 usada para assinar o token. Por exemplo, verifique se uma chave expirou. Verifique o elemento keyStore referenciado pela configura\u00e7\u00e3o de SSL padr\u00e3o no arquivo server.xml para localizar informa\u00e7\u00f5es sobre o arquivo keystore que cont\u00e9m a chave privada.  Al\u00e9m disso, consulte a a\u00e7\u00e3o do usu\u00e1rio para a mensagem que aparece ap\u00f3s este erro.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1765E: A solicita\u00e7\u00e3o de terminal de token falhou. A valida\u00e7\u00e3o falhou para o token JWT solicitado de [{0}] devido a uma exce\u00e7\u00e3o na verifica\u00e7\u00e3o da assinatura: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.explanation=Um token JWT n\u00e3o \u00e9 v\u00e1lido porque a verifica\u00e7\u00e3o de assinatura falhou.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.useraction=Certifique-se de que o token JWT foi assinado corretamente.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1766E: A solicita\u00e7\u00e3o de terminal de token falhou. A valida\u00e7\u00e3o falhou para o token JWT solicitado por [{0}] ao usar o algoritmo [{2}] devido a uma falha na verifica\u00e7\u00e3o da assinatura: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Um token JWT n\u00e3o pode ser validado porque a assinatura n\u00e3o p\u00f4de ser verificada.  O motivo do erro \u00e9 mostrado depois da mensagem.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Se estiver usando uma assinatura assim\u00e9trica, assegure-se de que a chave p\u00fablica no certificado possa ser usada com prop\u00f3sitos de assinatura digital.  Verifique o elemento keyStore referenciado pela configura\u00e7\u00e3o de SSL padr\u00e3o no arquivo server.xml para localizar informa\u00e7\u00f5es sobre o keystore que cont\u00e9m a chave. Al\u00e9m disso, consulte a a\u00e7\u00e3o do usu\u00e1rio para a mensagem que aparece ap\u00f3s este erro.
+ 
+#
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: A solicita\u00e7\u00e3o de terminal de token falhou. Um token JWT assinado precisa ter 3 segmentos separados por ''.'', mas esse token JWT possui [{0}] segmentos.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Um token JWT assinado precisa ter exatamente 3 segmentos separados por '.'. Esse token JWT possui um n\u00famero do segmento inv\u00e1lido.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Certifique-se de que o token JWT \u00e9 v\u00e1lido e possui 3 segmentos.
+
+#
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: A solicita\u00e7\u00e3o de terminal de token falhou. A valida\u00e7\u00e3o do token JWT solicitada pelo [{0}] falhou. Ele tem um IllegalStateException com a mensagem:[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Um token JWT n\u00e3o pode ser validado devido a um IllegalStatException que \u00e9 indicado na mensagem.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrija o erro que \u00e9 indicado na mensagem.
+
+#
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: A solicita\u00e7\u00e3o de terminal de token falhou. Um token JWT requerido n\u00e3o foi localizado na solicita\u00e7\u00e3o.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=A solicita\u00e7\u00e3o precisa fornecer um token JWT, mas n\u00e3o pode localizar o token JWT na solicita\u00e7\u00e3o de terminal de token.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Forne\u00e7a um token JWT v\u00e1lido na solicita\u00e7\u00e3o de terminal de token.
+
+#
+JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: A configura\u00e7\u00e3o do cliente do OpenID Connect precisa de um atributo jwkEndpointUrl.
+JWK_ENDPOINT_MISSING_ERR.explanation=O atributo jwkEndpointUrl n\u00e3o foi fornecido na configura\u00e7\u00e3o do cliente do OpenID Connect.
+JWK_ENDPOINT_MISSING_ERR.useraction=Configure o atributo jwkEndpointUrl para a URL do JSON Web Key do OpenID Connect Provider.
+
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Ocorreu uma exce\u00e7\u00e3o ao tentar obter o RunAsSubject. A exce\u00e7\u00e3o era: [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Ocorreu uma exce\u00e7\u00e3o ao obter o RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Certifique-se de que o servidor tenha sido configurado e iniciado corretamente.
+
+#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: A valida\u00e7\u00e3o falhou para o token solicitado por [{0}] porque o token est\u00e1 fora de seu intervalo v\u00e1lido. Isso pode ter sido causado pelo hor\u00e1rio atual [{1}] ser posterior ao prazo de expira\u00e7\u00e3o do token [{2}] ou o hor\u00e1rio de emiss\u00e3o [{3}] ser muito longe do hor\u00e1rio atual [{1}].
+OIDC_JWT_VERIFY_STATE_ERR.explanation=Um token n\u00e3o pode ser validado porque o hor\u00e1rio atual mostrado n\u00e3o est\u00e1 entre os hor\u00e1rios de emiss\u00e3o e expira\u00e7\u00e3o do token.
+OIDC_JWT_VERIFY_STATE_ERR.useraction=Certifique-se de que os rel\u00f3gios do sistema do cliente OpenID Connect (relying party ou RP) e do provedor OpenID Connect (OP) estejam em sincroniza\u00e7\u00e3o (se estiverem em dois sistemas).
+
+# Do not translate clientId, aud
+#0=aud claim, 1=OIDC client ID, 2=audiences of the oidc client
+OIDC_JWT_VERIFY_AUD_ERR=CWWKS1774E: A valida\u00e7\u00e3o falhou para o token solicitado por [{1}] porque a solicita\u00e7\u00e3o de p\u00fablico [{0}] no token n\u00e3o est\u00e1 contida no atributo de p\u00fablicos [{2}] da configura\u00e7\u00e3o do cliente OpenID Connect.
+OIDC_JWT_VERIFY_AUD_ERR.explanation=A solicita\u00e7\u00e3o de p\u00fablico no token deve ser especificada no atributo de p\u00fablicos da configura\u00e7\u00e3o do cliente OpenID Connect, ou todos os p\u00fablicos devem ser permitidos pela especifica\u00e7\u00e3o do valor ALL_AUDIENCES no atributo de p\u00fablicos da configura\u00e7\u00e3o do cliente.
+OIDC_JWT_VERIFY_AUD_ERR.useraction=Assegure-se de que o atributo de p\u00fablicos especificado na configura\u00e7\u00e3o do cliente OpenID Connect esteja correto. Se desejar permitir todas as solicita\u00e7\u00f5es de p\u00fablico, o valor ALL_AUDIENCES dever\u00e1 ser especificado para o atributo de p\u00fablicos na configura\u00e7\u00e3o do cliente OpenID Connect. Caso contr\u00e1rio, a solicita\u00e7\u00e3o de p\u00fablico fornecida no token dever\u00e1 estar contida no valor do atributo de p\u00fablicos na configura\u00e7\u00e3o do cliente OpenID Connect. O valor faz distin\u00e7\u00e3o entre mai\u00fasculas e min\u00fasculas.
+
+# do not translate iat
+# 0= oidc client id.
+OIDC_ID_VERIFY_IAT_ERR=CWWKS1775E: A valida\u00e7\u00e3o falhou para o token solicitado por [{0}] porque a solicita\u00e7\u00e3o iat necess\u00e1ria n\u00e3o est\u00e1 presente no token.
+OIDC_ID_VERIFY_IAT_ERR.explanation=O token deve conter uma solicita\u00e7\u00e3o iat (emitida em).
+OIDC_ID_VERIFY_IAT_ERR.useraction=Obtenha um token v\u00e1lido do provedor OpenId Connect.
+
+
+#0=OIDC client ID, 1=exception, 2=signature algorithm
+OIDC_JWT_SIGNATURE_VERIFY_ERR=CWWKS1776E: A valida\u00e7\u00e3o falhou para o token solicitado por [{0}] usando o algoritmo [{2}] devido a uma falha de verifica\u00e7\u00e3o de assinatura: [{1}]
+OIDC_JWT_SIGNATURE_VERIFY_ERR.explanation=O token n\u00e3o pode ser validado porque a assinatura n\u00e3o p\u00f4de ser verificada. A raz\u00e3o para esse erro \u00e9 exibida na mensagem. As causas poss\u00edveis desse erro podem ser uma incompatibilidade no algoritmo de assinatura ou na chave compartilhada entre o cliente OpenID Connect e o provedor OpenID Connect.
+OIDC_JWT_SIGNATURE_VERIFY_ERR.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para a causa exibida na mensagem. Se a causa parecer ter ocorrido devido a uma incompatibilidade de chave, verifique a configura\u00e7\u00e3o do servidor para assegurar que o algoritmo de assinatura configurado e a chave compartilhada configurada sejam compat\u00edveis com os do provedor OpenID Connect.
+
+# Do not translate signatureAlgorithm
+#0= OIDC client ID, 1=client's signature algorithm (such as RS256, HS256), 2=provider's signature algorithm (RS256, HS256, etc.)
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1777E: A valida\u00e7\u00e3o falhou para o token solicitado por [{0}] devido a uma incompatibilidade de algoritmos de assinatura entre o cliente OpenID Connect e o provedor OpenID Connect. O algoritmo de assinatura para o cliente \u00e9 [{1}] e o algoritmo de assinatura para o provedor \u00e9 [{2}].
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=O token n\u00e3o pode ser validado porque o cliente OpenID Connect (parte dependente ou RP) e o provedor OpenID Connect (OP) est\u00e3o usando algoritmos de assinatura diferentes.
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Certifique-se de que o atributo signatureAlgorithm especificado na configura\u00e7\u00e3o de RP corresponda ao algoritmo de assinatura para o OP.
+
+# Do not translate signatureAlgorithm
+#0=OIDC client ID, 1=signature algorithm (none, RS256, HS256)
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1778E: O token solicitado por [{0}] falhou na valida\u00e7\u00e3o porque a assinatura est\u00e1 ausente do token. O atributo signatureAlgorithm para o cliente OpenID Connect est\u00e1 configurado como [{1}]. Essa configura\u00e7\u00e3o de algoritmo de assinatura requer uma assinatura.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=O token n\u00e3o pode ser validado porque n\u00e3o foi assinado. A configura\u00e7\u00e3o do algoritmo de assinatura para o cliente OpenID Connect requer que os tokens sejam assinados.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Execute um dos seguintes procedimentos: 1) Configure o atributo signatureAlgorithm na configura\u00e7\u00e3o do cliente OpenID Connect como "none". 2) Envie um token assinado.
+
+# Do not translate aud, audiences (only when followed by "attribute", i.e. "audiences attribute" or "audiences configuration attribute")
+#0=OIDC client ID, 1=audiences of the oidc client
+OIDC_JWT_MISSING_AUD=CWWKS1779E: A valida\u00e7\u00e3o falhou para o token solicitado por [{0}] porque o token n\u00e3o continha uma solicita\u00e7\u00e3o de p\u00fablico. O cliente OpenID Connect [{0}] est\u00e1 configurado para somente confiar nos seguintes p\u00fablicos: [{1}]
+OIDC_JWT_MISSING_AUD.explanation=O cliente OpenID Connect que est\u00e1 validando o token configurou o atributo de p\u00fablicos para confiar em determinados p\u00fablicos, portanto, todos os tokens validados por esse cliente devem conter uma solicita\u00e7\u00e3o de p\u00fablico. A solicita\u00e7\u00e3o de p\u00fablico no token tamb\u00e9m deve corresponder a um dos p\u00fablicos configurados como confi\u00e1veis para o cliente no atributo de configura\u00e7\u00e3o de p\u00fablicos.
+OIDC_JWT_MISSING_AUD.useraction=Assegure-se de que o token fornecido ao cliente OpenID Connect contenha uma solicita\u00e7\u00e3o de p\u00fablico. Se voc\u00ea n\u00e3o desejar validar os p\u00fablicos do token, remova o atributo de p\u00fablicos da configura\u00e7\u00e3o do cliente OpenID Connect.
+
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1780E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token que est\u00e1 na solicita\u00e7\u00e3o n\u00e3o pode ser usado. O hor\u00e1rio n\u00e3o anterior ("nbf") [{0}] \u00e9 posterior ao hor\u00e1rio atual [{1}] e essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+PROPAGATION_TOKEN_NBF_ERR.explanation=A solicita\u00e7\u00e3o not before time no token \u00e9 posterior ao hor\u00e1rio atual e o tempo de execu\u00e7\u00e3o n\u00e3o pode usar o token no presente.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Certifique-se de que o token n\u00e3o tenha uma solicita\u00e7\u00e3o "nbf" configurada para um hor\u00e1rio futuro e/ou sincronize o hor\u00e1rio entre os sistemas ou reenvie a solicita\u00e7\u00e3o posteriormente.
+
+# 0=OIDC client ID, 1="issuer" value (typically a URL), 2=Trusted issuer list, 3=OIDC client configuration attribute that specifies trusted issuers
+TOKEN_ISSUER_NOT_TRUSTED=CWWKS1781E: A valida\u00e7\u00e3o falhou para o token solicitado pelo cliente [{0}] porque o emissor (iss) [{1}] que \u00e9 especificada no token n\u00e3o corresponde a nenhum dos emissores confi\u00e1veis [{2}] que s\u00e3o especificados pelo atributo [{3}] da configura\u00e7\u00e3o do cliente OpenID Connect.
+TOKEN_ISSUER_NOT_TRUSTED.explanation=O token cont\u00e9m um valor do emissor que n\u00e3o \u00e9 especificado como um emissor confi\u00e1vel na configura\u00e7\u00e3o do cliente OpenID Connect. Os tokens que s\u00e3o validados por este cliente OpenID Connect devem ser emitidos por um emissor confi\u00e1vel.
+TOKEN_ISSUER_NOT_TRUSTED.useraction=Verifique se o valor da solicita\u00e7\u00e3o do emissor que est\u00e1 no token \u00e9 inclu\u00eddo no atributo especificado na configura\u00e7\u00e3o do cliente OpenID Connect.
+
+# 0=Claim name that should not be in the token, 1=OIDC client configuration attribute
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: O servidor de recurso falhou na solicita\u00e7\u00e3o de autentica\u00e7\u00e3o porque o token cont\u00e9m uma solicita\u00e7\u00e3o [{0}], mas o valor do atributo de configura\u00e7\u00e3o do cliente [{1}] indica que o token n\u00e3o deve conter a solicita\u00e7\u00e3o.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=O token n\u00e3o pode conter a solicita\u00e7\u00e3o especificada devido ao valor do atributo de configura\u00e7\u00e3o especificado.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Obtenha um novo token que n\u00e3o cont\u00e9m a solicita\u00e7\u00e3o especificada ou mude o valor de atributo de configura\u00e7\u00e3o especificado para permitir que a solicita\u00e7\u00e3o seja inclu\u00edda no token.
