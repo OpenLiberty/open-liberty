@@ -1,0 +1,543 @@
+###############################################################################
+# Copyright (c) 2016, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5400 - CWWKS5499
+ADD_ID={0} ({1})
+ADD_ID.explanation=Somente uso interno.
+ADD_ID.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# HTML title of the social media selection page
+SELECTION_PAGE_TITLE=Formul\u00e1rio de sele\u00e7\u00e3o de m\u00eddia social
+
+# Text that appears above the social media options to choose from on the social media selection page
+SELECTION_PAGE_HEADER=Registrar
+
+# Text that indicates a user can sign in using social media "or" with a username and password ("or" being the text that appears on the web page)
+SELECTION_PAGE_ALTERNATE_TEXT=Or
+
+SELECTION_PAGE_USERNAME=Nome de usu\u00e1rio
+
+SELECTION_PAGE_PASSWORD=Senha
+
+SELECTION_PAGE_SUBMIT=Enviar
+
+SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
+SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.
+SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+SOCIAL_LOGIN_CONFIG_MODIFIED=CWWKS5401I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
+SOCIAL_LOGIN_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.
+SOCIAL_LOGIN_CONFIG_MODIFIED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+SOCIAL_LOGIN_CONFIG_DEACTIVATED=CWWKS5402I: A configura\u00e7\u00e3o de login social [{0}] foi desativada com \u00eaxito.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.explanation=A configura\u00e7\u00e3o de login social indicada foi desativada com \u00eaxito.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# 0=exception class name, 1=exception message, 2=stack trace
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR=CWWKS5403E: Ocorreu um erro do servidor interno ao processar uma solicita\u00e7\u00e3o de login social [{0}]. Causa:[{1}], StackTrace: [{2}].
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.explanation=Ao processar uma solicita\u00e7\u00e3o de login social, ocorreu um erro do servidor interno.
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.useraction=Procure por erros nos arquivos de log do servidor e assegure-se de que sua configura\u00e7\u00e3o esteja correta. Se o problema persistir, consulte as informa\u00e7\u00f5es de determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# 
+SOCIAL_LOGIN_AUTHENTICATION_FAIL=CWWKS5404E: Exce\u00e7\u00e3o de login social: provedor de servi\u00e7o de login social com falha ao processar a solicita\u00e7\u00e3o de autentica\u00e7\u00e3o.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.explanation=O processo de autentica\u00e7\u00e3o n\u00e3o foi bem-sucedido, porque algum outro erro ocorreu antes desta mensagem.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.useraction=Consulte a a\u00e7\u00e3o do usu\u00e1rio para o erro que aparece antes dessa mensagem.
+
+# Do not translate "social_login_hint"
+# 0=Social login configuration ID
+SOCIAL_LOGIN_NO_SUCH_PROVIDER=CWWKS5405E: A configura\u00e7\u00e3o de login social [{0}] especificada na solicita\u00e7\u00e3o est\u00e1 ausente ou n\u00e3o est\u00e1 configurada para entregar essa solicita\u00e7\u00e3o.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.explanation=A solicita\u00e7\u00e3o inclui um par\u00e2metro ou um cabe\u00e7alho 'social_login_hint' que especifica um ID de configura\u00e7\u00e3o de login social para usar para essa solicita\u00e7\u00e3o. Entretanto, uma configura\u00e7\u00e3o de login social que corresponda ao ID est\u00e1 ausente ou o filtro de autentica\u00e7\u00e3o usado para a configura\u00e7\u00e3o de login social n\u00e3o est\u00e1 configurado para entregar essa solicita\u00e7\u00e3o.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.useraction=Verifique se um servi\u00e7o de login social com o ID indicado est\u00e1 configurado. Se um filtro de autentica\u00e7\u00e3o estiver configurado para o servi\u00e7o de login social, verifique se o filtro est\u00e1 configurado para entregar a solicita\u00e7\u00e3o.
+
+# web RequestFilter
+# 0=url
+SOCIAL_LOGIN_INVALID_URL=CWWKS5406E: O terminal de solicita\u00e7\u00e3o de [{0}] n\u00e3o \u00e9 suportado neste provedor de servi\u00e7o de login social.
+SOCIAL_LOGIN_INVALID_URL.explanation=A URL indicada n\u00e3o \u00e9 um terminal de login social v\u00e1lido. Isso pode ser causado por uma configura\u00e7\u00e3o incorreta no servidor de login social.
+SOCIAL_LOGIN_INVALID_URL.useraction=Certifique-se de que o login social esteja configurado corretamente.
+
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED=CWWKS5407I: O servi\u00e7o de terminal do Login Social Vers\u00e3o 1.0 est\u00e1 ativado.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.explanation=O servi\u00e7o de terminal do Login Social Vers\u00e3o 1.0 est\u00e1 ativado.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.useraction=N\u00e3o \u00e9 necess\u00e1ria nenhuma a\u00e7\u00e3o.
+
+# EndpointServlet
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5408E: Uma solicita\u00e7\u00e3o de login social n\u00e3o pode ser processada porque n\u00e3o h\u00e1 um recurso de login social dispon\u00edvel.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Uma solicita\u00e7\u00e3o de login social foi recebida pelo servidor, mas o recurso socialLogin-1.0 n\u00e3o est\u00e1 ativado em server.xml ou n\u00e3o est\u00e1 dispon\u00edvel.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Certifique-se de que o recurso ssocialLogin-1.0 e suas depend\u00eancias estejam configurados no featureManager do arquivo server.xml.
+
+# Do not translate RFC
+# 0=Exception message
+TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: A assinatura de uma solicita\u00e7\u00e3o do Twitter autorizada n\u00e3o pode ser criada: {0}
+TWITTER_ERROR_CREATING_SIGNATURE.explanation=As solicita\u00e7\u00f5es do Twitter autorizadas devem ser assinadas usando o algoritmo de assinatura HMAC-SHA1. Ou houve um problema ao obter o algoritmo de assinatura necess\u00e1rio ou a chave fornecida n\u00e3o p\u00f4de ser usada para inicializar o algoritmo de assinatura.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Verifique se o seu sistema suporta o algoritmo de assinatura HMAC-SHA1. Verifique o segredo do consumidor e os valores secretos do token de solicita\u00e7\u00e3o. Esses dois valores s\u00e3o usados como parte da chave para o algoritmo de assinatura. Se o valor foi malformado ou contiver caracteres que n\u00e3o podem ser codificados em conformidade com o RFC 3986, poder\u00e1 ser necess\u00e1rio obter um novo valor.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: A resposta do terminal do Twitter [{0}] n\u00e3o continha nenhum par\u00e2metro no formato esperado. A resposta era: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation= A resposta do terminal do Twitter provavelmente era nula ou vazia. A solicita\u00e7\u00e3o inicial pode ter sido direcionada para o terminal errado. As respostas de terminais do Twitter devem ser uma sequ\u00eancia de pares de chave e valor. A chave e o valor devem ser separados por um caractere de sinal de igual ("=") e m\u00faltiplos pares de chave e valor devem ser separados por um caractere e comercial ("&").
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction= Verifique se a solicita\u00e7\u00e3o foi direcionada para o terminal do Twitter correto. Verifique se todos os par\u00e2metros necess\u00e1rios foram inclu\u00eddos na solicita\u00e7\u00e3o inicial e se a solicita\u00e7\u00e3o foi autorizada incluindo um cabe\u00e7alho de Autoriza\u00e7\u00e3o v\u00e1lido. Um cabe\u00e7alho de Autoriza\u00e7\u00e3o v\u00e1lido \u00e9 criado usando a chave do consumidor para o aplicativo do Twitter, al\u00e9m de uma URL de retorno de chamada ou um token de solicita\u00e7\u00e3o OAuth. Verifique a configura\u00e7\u00e3o do servidor para certificar-se de que a chave do consumidor e a URL de retorno de chamada corretas estejam configuradas.
+
+# Do not translate "Authorization"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: A resposta do terminal do Twitter [{0}] n\u00e3o continha um ou mais par\u00e2metros necess\u00e1rios. Os par\u00e2metros necess\u00e1rios que est\u00e3o ausentes da resposta s\u00e3o [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER.explanation= As respostas de cada terminal no Twitter retornam seus pr\u00f3prios conjuntos de par\u00e2metros. A resposta do Twitter recebida n\u00e3o continha os par\u00e2metros necess\u00e1rios que s\u00e3o listados na mensagem. A solicita\u00e7\u00e3o inicial pode ter sido direcionada para o terminal errado.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction= Verifique se a solicita\u00e7\u00e3o foi direcionada para o terminal do Twitter correto. Verifique se todos os par\u00e2metros necess\u00e1rios foram inclu\u00eddos na solicita\u00e7\u00e3o inicial e se a solicita\u00e7\u00e3o foi autorizada incluindo um cabe\u00e7alho de Autoriza\u00e7\u00e3o v\u00e1lido. Um cabe\u00e7alho de Autoriza\u00e7\u00e3o v\u00e1lido \u00e9 criado usando a chave do consumidor para o aplicativo do Twitter, al\u00e9m de uma URL de retorno de chamada ou um token de solicita\u00e7\u00e3o OAuth. Verifique a configura\u00e7\u00e3o do servidor para certificar-se de que a chave do consumidor e a URL de retorno de chamada corretas estejam configuradas.
+
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: O valor do par\u00e2metro [{0}] na resposta do terminal do Twitter [{1}] n\u00e3o correspondeu ao valor esperado [{2}]. O valor na resposta era [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation= O par\u00e2metro que \u00e9 especificado na mensagem deve ter um valor que corresponde ao valor esperado. Este \u00e9 um cen\u00e1rio improv\u00e1vel em que o Twitter processou com sucesso uma solicita\u00e7\u00e3o, mas retornou um valor inesperado para o par\u00e2metro.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=Verifique a configura\u00e7\u00e3o do servidor para assegurar que a URL de retorno de chamada configurada para este aplicativo aponte para uma URL v\u00e1lida para a qual o Twitter pode redirecionar um usu\u00e1rio quando uma autoriza\u00e7\u00e3o for concedida.
+
+# Do not translate "Authorization"
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: O par\u00e2metro [{0}] estava vazio na resposta do terminal do Twitter [{1}]. Um valor para esse par\u00e2metro deve ser fornecido para processar a solicita\u00e7\u00e3o de autoriza\u00e7\u00e3o.
+TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=A resposta do terminal do Twitter continha o par\u00e2metro especificado na mensagem, mas n\u00e3o forneceu um valor para o par\u00e2metro.
+TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Verifique se a resposta do terminal do Twitter continha todos os par\u00e2metros e valores esperados para esses par\u00e2metros. Verifique se todos os par\u00e2metros necess\u00e1rios foram inclu\u00eddos na solicita\u00e7\u00e3o inicial e se a solicita\u00e7\u00e3o foi autorizada incluindo um cabe\u00e7alho de Autoriza\u00e7\u00e3o v\u00e1lido. Um cabe\u00e7alho de Autoriza\u00e7\u00e3o v\u00e1lido \u00e9 criado usando a chave do consumidor para o aplicativo do Twitter, al\u00e9m de uma URL de retorno de chamada ou um token de solicita\u00e7\u00e3o OAuth. Verifique a configura\u00e7\u00e3o do servidor para certificar-se de que a chave do consumidor e a URL de retorno de chamada corretas estejam configuradas.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: A resposta do terminal do Twitter [{0}] n\u00e3o pode ser avaliada porque n\u00e3o h\u00e1 conte\u00fado no corpo de resposta.
+TWITTER_EMPTY_RESPONSE_BODY.explanation= A solicita\u00e7\u00e3o inicial pode ter sido direcionada para o terminal do Twitter errado ou houve um erro ao processar a resposta do terminal.
+TWITTER_EMPTY_RESPONSE_BODY.useraction=Verifique os logs do servidor para obter quaisquer outras mensagens que possam indicar uma falha. Verifique se a solicita\u00e7\u00e3o inicial foi direcionada para o terminal apropriado.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: A solicita\u00e7\u00e3o de terminal do Twitter [{0}] falhou. O status de resposta era [{1}] e o conte\u00fado de resposta era: [{2}]
+TWITTER_ENDPOINT_REQUEST_FAILED.explanation= A solicita\u00e7\u00e3o inicial provavelmente continha dados de autoriza\u00e7\u00e3o incorretos ou foi proibida de executar a opera\u00e7\u00e3o solicitada. Os terminais do Twitter que requerem autoriza\u00e7\u00e3o devem ter um cabe\u00e7alho de Autoriza\u00e7\u00e3o que corresponda a um formato espec\u00edfico. Para solicita\u00e7\u00f5es autorizadas, \u00e9 prov\u00e1vel que uma parte dos dados utilizados para criar o cabe\u00e7alho de Autoriza\u00e7\u00e3o, como a assinatura ou o token OAuth, foi malformada ou estava incorreta. O c\u00f3digo de status fornecido na mensagem deve indicar um motivo mais espec\u00edfico para a falha da solicita\u00e7\u00e3o.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Se a solicita\u00e7\u00e3o estava desautorizada, verifique se a solicita\u00e7\u00e3o continha um cabe\u00e7alho de Autoriza\u00e7\u00e3o com dados de autoriza\u00e7\u00e3o precisos. Se os dados de autoriza\u00e7\u00e3o inclu\u00edrem um token OAuth, verifique se o token ainda \u00e9 v\u00e1lido ou considere obter um novo token. Verifique se a solicita\u00e7\u00e3o n\u00e3o \u00e9 id\u00eantica a uma solicita\u00e7\u00e3o anterior comparando as assinaturas nos cabe\u00e7alhos de Autoriza\u00e7\u00e3o das solicita\u00e7\u00f5es. Se a solicita\u00e7\u00e3o estava proibida, verifique se o aplicativo do Twitter permite a opera\u00e7\u00e3o solicitada.
+
+# 0=Outgoing request URL, 1=Parameter name
+OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: A solicita\u00e7\u00e3o realizada para [{0}] n\u00e3o pode ser bem-sucedida porque o par\u00e2metro [{1}] est\u00e1 ausente ou vazio.
+OUTGOING_REQUEST_MISSING_PARAMETER.explanation=O par\u00e2metro especificado \u00e9 necess\u00e1rio para a autentica\u00e7\u00e3o OAuth. A solicita\u00e7\u00e3o que est\u00e1 sendo direcionada para o terminal especificado pode falhar porque informa\u00e7\u00f5es que s\u00e3o necess\u00e1rias est\u00e3o ausentes.
+OUTGOING_REQUEST_MISSING_PARAMETER.useraction=Verifique se o atributo de configura\u00e7\u00e3o que corresponde ao par\u00e2metro especificado est\u00e1 configurado para cada provedor de login social na configura\u00e7\u00e3o do servidor.
+
+# 0=URL string, 1=Exception message text
+EXCEPTION_INITIALIZING_URL=CWWKS5417E: Ocorreu um erro ao inicializar o URI [{0}]: {1}
+EXCEPTION_INITIALIZING_URL.explanation=A sequ\u00eancia especificada na mensagem pode n\u00e3o ser um URI v\u00e1lido ou o sistema pode n\u00e3o ter permiss\u00e3o para executar a a\u00e7\u00e3o de inicializa\u00e7\u00e3o de um URI.
+EXCEPTION_INITIALIZING_URL.useraction=Verifique se a sequ\u00eancia especificada \u00e9 uma URL v\u00e1lida. Verifique se a sequ\u00eancia n\u00e3o \u00e9 nula e se o protocolo utilizado na URL \u00e9 um protocolo v\u00e1lido, como http ou https. Certifique-se de que o c\u00f3digo base tenha permiss\u00e3o adequada para inicializar um objeto de URI.
+
+# Do not translate "GET" or "POST"
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: Ocorreu um erro ao processar a solicita\u00e7\u00e3o para o terminal do Twitter [{0}]: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=Uma das situa\u00e7\u00f5es a seguir provavelmente ocorreu: 1. Ocorreu um erro ao abrir uma conex\u00e3o para a r\u00e9plica especificada. 2. O m\u00e9todo de solicita\u00e7\u00e3o usado para a solicita\u00e7\u00e3o n\u00e3o era um protocolo conhecido, como GET ou POST. 3. Ocorreu um erro ao gravar dados POST na conex\u00e3o. 4. Ocorreu um erro ao ler a resposta a partir do terminal do Twitter.
+TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=Consulte o texto do erro na mensagem para obter mais informa\u00e7\u00f5es sobre a falha. Verifique se o sistema mant\u00e9m conectividade durante a solicita\u00e7\u00e3o. Verifique se um m\u00e9todo de solicita\u00e7\u00e3o conhecido, como GET ou POST, foi usado para a solicita\u00e7\u00e3o.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: A solicita\u00e7\u00e3o de autoriza\u00e7\u00e3o falhou porque ocorreu um erro ao criar o resultado a partir do terminal do Twitter [{0}].
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation= Nenhum resultado foi retornado ou um resultado vazio foi retornado a partir da solicita\u00e7\u00e3o especificada. Um erro deve ter ocorrido ao enviar ou processar a solicita\u00e7\u00e3o.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction= Verifique os logs do servidor para obter mensagens de erro adicionais que indicam onde a falha ocorreu.
+
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: Ocorreu um erro ao redirecionar a resposta a partir do terminal do Twitter [{0}]: {1}
+TWITTER_REDIRECT_IOEXCEPTION.explanation=A URL para a qual a resposta foi redirecionada pode n\u00e3o ter sido v\u00e1lida ou n\u00e3o podia atender \u00e0 solicita\u00e7\u00e3o.
+TWITTER_REDIRECT_IOEXCEPTION.useraction= Verifique se o destino de redirecionamento est\u00e1 dispon\u00edvel e se \u00e9 capaz de atender \u00e0 solicita\u00e7\u00e3o. Consulte a mensagem de erro para obter mais informa\u00e7\u00f5es sobre a falha. 
+
+# Do not translate OAuth
+TWITTER_TOKEN_DOES_NOT_MATCH=CWWKS5421E: A solicita\u00e7\u00e3o de autoriza\u00e7\u00e3o falhou porque o token fornecido na solicita\u00e7\u00e3o n\u00e3o corresponde ao token que foi usado para a solicita\u00e7\u00e3o de autoriza\u00e7\u00e3o inicial.
+TWITTER_TOKEN_DOES_NOT_MATCH.explanation=A solicita\u00e7\u00e3o de entrada deve incluir um valor de token de solicita\u00e7\u00e3o OAuth que \u00e9 id\u00eantico ao token de solicita\u00e7\u00e3o OAuth que foi obtido na primeira etapa do processo de autoriza\u00e7\u00e3o. Os valores devem corresponder para confirmar que a solicita\u00e7\u00e3o de entrada corresponde \u00e0 solicita\u00e7\u00e3o inicial que come\u00e7ou o processo de autoriza\u00e7\u00e3o.
+TWITTER_TOKEN_DOES_NOT_MATCH.useraction= Verifique se a solicita\u00e7\u00e3o de entrada corresponde a uma solicita\u00e7\u00e3o anterior para um token de solicita\u00e7\u00e3o OAuth. Considere iniciar o fluxo de autoriza\u00e7\u00e3o novamente para obter um novo token de solicita\u00e7\u00e3o OAuth.
+
+# 0=Endpoint ("oauth/access_token"), 1=Parameter name
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: A solicita\u00e7\u00e3o destinada para o terminal do Twitter [{0}] requer um par\u00e2metro necess\u00e1rio. Os par\u00e2metros necess\u00e1rios que est\u00e3o ausentes da solicita\u00e7\u00e3o s\u00e3o:{1}.
+TWITTER_REQUEST_MISSING_PARAMETER.explanation=A solicita\u00e7\u00e3o deve conter todos os par\u00e2metros mostrados na mensagem. A solicita\u00e7\u00e3o n\u00e3o continha nenhum dos par\u00e2metros mostrados na mensagem.
+TWITTER_REQUEST_MISSING_PARAMETER.useraction=Verifique se a solicita\u00e7\u00e3o inclui todos os par\u00e2metros necess\u00e1rios.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: O status de resposta do terminal do Twitter [{0}] n\u00e3o p\u00f4de ser determinado. Ocorreu um erro provavelmente ao enviar ou processar a solicita\u00e7\u00e3o.
+TWITTER_RESPONSE_STATUS_MISSING.explanation=Espera-se que um campo de status de resposta determine o resultado da solicita\u00e7\u00e3o de autoriza\u00e7\u00e3o.
+TWITTER_RESPONSE_STATUS_MISSING.useraction=Verifique os logs do servidor para mensagens de erro adicionais que indicam onde outro erro ocorreu.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: N\u00e3o \u00e9 poss\u00edvel processar a resposta a partir do terminal do Twitter [{0}].{1}
+TWITTER_RESPONSE_FAILURE.explanation=O status de resposta inclu\u00eddo no resultado n\u00e3o indicou um resultado bem-sucedido. Uma falha deve ter ocorrido ao enviar ou processar a solicita\u00e7\u00e3o.
+TWITTER_RESPONSE_FAILURE.useraction= Se a mensagem contiver outra mensagem de erro, consulte a a\u00e7\u00e3o do usu\u00e1rio para essa mensagem. Caso contr\u00e1rio, verifique os logs do servidor para obter mensagens de erro adicionais que possam indicar onde outro erro ocorreu.
+
+# web EndpointServices 
+# 0=qualified config IDs
+SOCIAL_LOGIN_MANY_PROVIDERS=CWWKS5425E: Muitos servi\u00e7os de login social [{0}] s\u00e3o qualificados para manipular a solicita\u00e7\u00e3o.
+SOCIAL_LOGIN_MANY_PROVIDERS.explanation=Quando mais de um servi\u00e7o de login social for qualificado, n\u00e3o ser\u00e1 poss\u00edvel selecionar qual servi\u00e7o de login social deve manipular a solicita\u00e7\u00e3o.
+SOCIAL_LOGIN_MANY_PROVIDERS.useraction=Certifique-se de que n\u00e3o mais de um servi\u00e7o de login social no server.xml esteja configurado para manipular a solicita\u00e7\u00e3o.
+
+# Do not translate "JSON"
+# 0=Endpoint ("/1.1/accounts/verify_credentials"), 1=Error message, 2=Endpoint response content
+TWITTER_RESPONSE_NOT_JSON=CWWKS5426E: A resposta do terminal do Twitter [{0}] n\u00e3o estava no formato JSON esperado. O erro era: [{1}]. O conte\u00fado de resposta era: [{2}]
+TWITTER_RESPONSE_NOT_JSON.explanation=O terminal especificado pode n\u00e3o estar funcionando conforme esperado ou o comportamento do terminal pode ter mudado para retornar respostas em um formato diferente. Alguns dados podem ter sido omitidos ao ler a resposta.
+TWITTER_RESPONSE_NOT_JSON.useraction=Verifique se o servidor leu toda a resposta do terminal especificado. Verifique se a solicita\u00e7\u00e3o foi enviada ao terminal do Twitter correto e se a resposta est\u00e1 formatada conforme esperado.
+
+SIGN_IN_NO_CONFIGS=CWWKS5427E: A p\u00e1gina de conex\u00e3o da m\u00eddia social n\u00e3o pode ser exibida porque o recurso de login social n\u00e3o conseguiu localizar nenhuma configura\u00e7\u00e3o de login social definida para autenticar essa solicita\u00e7\u00e3o.
+SIGN_IN_NO_CONFIGS.explanation=Pelo menos uma configura\u00e7\u00e3o de login social deve estar presente para a p\u00e1gina de conex\u00e3o ser exibida. O cookie que cont\u00e9m a lista de correspond\u00eancia de configura\u00e7\u00f5es de login social est\u00e1 ausente ou vazio ou as configura\u00e7\u00f5es de login social especificadas pelo cookie n\u00e3o podem ser localizadas.
+SIGN_IN_NO_CONFIGS.useraction=Assegure-se de que pelo menos um servi\u00e7o de login social esteja configurado para autenticar essa solicita\u00e7\u00e3o.
+
+# 0=Config element ID
+SIGN_IN_MISSING_EXPECTED_CONFIG=CWWKS5428W: O recurso de login social n\u00e3o conseguiu localizar uma configura\u00e7\u00e3o de login social que corresponda ao ID [{0}]. Uma configura\u00e7\u00e3o de login social com o ID especificado deve estar presente e configurado para autenticar essa solicita\u00e7\u00e3o.
+SIGN_IN_MISSING_EXPECTED_CONFIG.explanation=O ID especificado est\u00e1 inclu\u00eddo em um cookie que \u00e9 utilizado para registrar quais configura\u00e7\u00f5es de login social est\u00e3o definidas para autenticar essa solicita\u00e7\u00e3o. No entanto, uma configura\u00e7\u00e3o de login social que corresponda a esse ID n\u00e3o p\u00f4de ser localizada. O ID est\u00e1 malformado ou a configura\u00e7\u00e3o de login social correspondente foi removida.
+SIGN_IN_MISSING_EXPECTED_CONFIG.useraction=Verifique se uma configura\u00e7\u00e3o de login social com o ID especificado est\u00e1 presente na configura\u00e7\u00e3o do servidor.
+
+# 0=Specific error message describing why the page cannot be displayed
+ERROR_DISPLAYING_SIGN_IN_PAGE=CWWKS5429E: A p\u00e1gina de conex\u00e3o padr\u00e3o da m\u00eddia social n\u00e3o pode ser exibida. {0}
+ERROR_DISPLAYING_SIGN_IN_PAGE.explanation=Ocorreu um erro ao processar a p\u00e1gina de conex\u00e3o padr\u00e3o. A mensagem inclui uma explica\u00e7\u00e3o espec\u00edfica sobre o motivo de a p\u00e1gina de conex\u00e3o n\u00e3o poder ser exibida.
+ERROR_DISPLAYING_SIGN_IN_PAGE.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# 0=Selection page URL configured in server.xml, 1=Specific error message
+SELECTION_PAGE_URL_NOT_VALID=CWWKS5430W: A URL da p\u00e1gina de sele\u00e7\u00e3o de m\u00eddia social [{0}] que \u00e9 especificada pela configura\u00e7\u00e3o de aplicativos da web de login social n\u00e3o \u00e9 um URI v\u00e1lido. A p\u00e1gina de sele\u00e7\u00e3o padr\u00e3o ser\u00e1 usada.{1}
+SELECTION_PAGE_URL_NOT_VALID.explanation=A URL da p\u00e1gina de sele\u00e7\u00e3o que \u00e9 definida pela configura\u00e7\u00e3o de aplicativos da web de login social n\u00e3o \u00e9 uma sequ\u00eancia de URI v\u00e1lida. A URL da p\u00e1gina de sele\u00e7\u00e3o deve estar de acordo com o RFC 3986 (https://tools.ietf.org/html/rfc3986) e pode conter somente determinados caracteres.
+SELECTION_PAGE_URL_NOT_VALID.useraction=Verifique se a URL da p\u00e1gina de sele\u00e7\u00e3o configurada n\u00e3o \u00e9 nula e se cont\u00e9m somente os caracteres permitidos pelo RFC 3986.
+
+# 0=Selection page URL configured in server.xml
+SELECTION_PAGE_URL_NOT_HTTP=CWWKS5431E: A URL da p\u00e1gina de sele\u00e7\u00e3o de m\u00eddia social {0} que \u00e9 especificada pela configura\u00e7\u00e3o de aplicativos da web de login social n\u00e3o \u00e9 um caminho relativo e n\u00e3o usa o esquema HTTP ou HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.explanation=O valor da URL da p\u00e1gina de sele\u00e7\u00e3o de m\u00eddia social deve ser um caminho relativo ou uma URL que usa o esquema HTTP ou HTTPS. A URL fornecida \u00e9 nula ou usa um esquema URL diferente de HTTP ou HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.useraction=Assegure-se de que o valor da URL da p\u00e1gina de sele\u00e7\u00e3o de m\u00eddia social seja um caminho relativo ou que o valor da URL use o esquema HTTP ou HTTPS. 
+
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG=CWWKS5432W: O recurso de login social n\u00e3o pode redirecionar a solicita\u00e7\u00e3o para a p\u00e1gina de sele\u00e7\u00e3o de m\u00eddia social customizada porque a configura\u00e7\u00e3o do aplicativo da web de login social n\u00e3o est\u00e1 dispon\u00edvel. A p\u00e1gina de sele\u00e7\u00e3o padr\u00e3o ser\u00e1 usada.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.explanation=O servi\u00e7o de aplicativo da web de login social n\u00e3o est\u00e1 dispon\u00edvel. \u00c9 prov\u00e1vel que configura\u00e7\u00e3o do aplicativo da web esteja ausente da configura\u00e7\u00e3o do servidor.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.useraction=Verifique se uma configura\u00e7\u00e3o de aplicativos da web de login social est\u00e1 especificada na configura\u00e7\u00e3o do servidor. Verifique os logs do servidor para assegurar que o servi\u00e7o de aplicativos da web esteja pronto e dispon\u00edvel.
+
+# 0=Endpoint URL
+REDIRECT_NO_MATCHING_CONFIG=CWWKS5433E: A solicita\u00e7\u00e3o direcionada a [{0}] n\u00e3o tem uma configura\u00e7\u00e3o de login social com a qual possa ser associada.
+REDIRECT_NO_MATCHING_CONFIG.explanation=A solicita\u00e7\u00e3o deve ser enviada para um terminal que inclui um ID de configura\u00e7\u00e3o de login social na URL. No entanto, a URL n\u00e3o inclui o ID de uma configura\u00e7\u00e3o de login social conhecida.
+REDIRECT_NO_MATCHING_CONFIG.useraction=Verifique se a URL de redirecionamento \u00e9 uma URL bem-formada que inclui o ID de uma configura\u00e7\u00e3o de login social que exista na configura\u00e7\u00e3o do servidor.
+
+# 0=Specific exception or error message
+ERROR_PROCESSING_REDIRECT=CWWKS5434E: O recurso de login social encontrou um erro ao processar a solicita\u00e7\u00e3o de redirecionamento. {0}
+ERROR_PROCESSING_REDIRECT.explanation=Um provedor de m\u00eddia social redirecionou uma solicita\u00e7\u00e3o para este terminal para continuar a autentica\u00e7\u00e3o ou a autoriza\u00e7\u00e3o de um usu\u00e1rio. No entanto, a solicita\u00e7\u00e3o n\u00e3o pode ser conclu\u00edda devido ao motivo que \u00e9 exibido na mensagem de erro.
+ERROR_PROCESSING_REDIRECT.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais. 
+
+USERNAME_NOT_FOUND=CWWKS5435E: O nome do usu\u00e1rio n\u00e3o p\u00f4de ser extra\u00eddo do token que foi obtido da plataforma de m\u00eddia social.
+USERNAME_NOT_FOUND.explanation=O atributo que define o nome do usu\u00e1rio varia pela plataforma de m\u00eddia social. O valor que \u00e9 configurado para userNameAttribute pode estar incorreto.
+USERNAME_NOT_FOUND.useraction=Verifique se o valor do userNameAttribute corresponde ao valor usado pela plataforma de m\u00eddia social para definir o nome do usu\u00e1rio.
+
+REALM_NOT_FOUND=CWWKS5436E: A regi\u00e3o n\u00e3o p\u00f4de ser extra\u00edda do token que foi obtido da plataforma de m\u00eddia social.
+REALM_NOT_FOUND.explanation=O atributo que define o nome da regi\u00e3o varia por plataforma de m\u00eddia social. O valor que est\u00e1 configurado para o atributo realmName pode estar incorreto.
+REALM_NOT_FOUND.useraction=Verifique se o valor do atributo realmName corresponde ao valor usado pela plataforma de m\u00eddia social para definir a regi\u00e3o.
+
+# "subject" refers to a Java Authentication and Authorization Service (JAAS) subject
+# 0=socialLogin element ID, 1=Error message (if present)
+TWITTER_ERROR_CREATING_RESULT=CWWKS5437E: O recurso de login social n\u00e3o pode criar um assunto para o usu\u00e1rio usando informa\u00e7\u00f5es de perfil do Twitter e configura\u00e7\u00e3o de login social [{0}]. {1}
+TWITTER_ERROR_CREATING_RESULT.explanation=Algumas das informa\u00e7\u00f5es de perfil que foram usadas para criar o assunto para o usu\u00e1rio podem estar ausentes ou malformadas.
+TWITTER_ERROR_CREATING_RESULT.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN=CWWKS5438E: O recurso de login social n\u00e3o pode criar um token de acesso criptografado para a configura\u00e7\u00e3o de login social [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.explanation=Ocorreu um erro quando o recurso estava usando um dos algoritmos de criptografia para criar um token de acesso criptografado com base no token de acesso fornecido. A mensagem deve incluir uma raz\u00e3o mais espec\u00edfica pela qual o token criptografado n\u00e3o pode ser criado.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL=CWWKS5439E: O token de acesso que foi fornecido para o recurso de login social \u00e9 nulo, portanto o token n\u00e3o pode ser criptografado.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.explanation=Um token de acesso nulo n\u00e3o p\u00f4de ser criptografado.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=Forne\u00e7a um token de acesso n\u00e3o nulo para ser criptografado.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: O recurso de login social n\u00e3o pode criptografar o token de acesso fornecido usando a chave p\u00fablica especificada pela configura\u00e7\u00e3o de login social [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=A chave p\u00fablica usada para criptografar o token de acesso pode estar malformada ou n\u00e3o pode ser v\u00e1lida, ou o algoritmo de criptografia RSA requerido pode n\u00e3o estar dispon\u00edvel.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Verifique se a chave p\u00fablica que \u00e9 configurada para a configura\u00e7\u00e3o de login social especificada \u00e9 v\u00e1lida e pode ser usada para criptografia RSA.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES=CWWKS5441E: O recurso de login social n\u00e3o pode criptografar o token de acesso fornecido usando a chave secreta especificada pela configura\u00e7\u00e3o de login social [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.explanation=A chave secreta que \u00e9 usada para criptografar o token de acesso pode estar malformada ou n\u00e3o ser v\u00e1lida. Um erro pode ter ocorrido ao obter o vetor de inicializa\u00e7\u00e3o para o algoritmo de criptografia ou o algoritmo de criptografia AES requerido pode n\u00e3o estar dispon\u00edvel.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.useraction=Verifique se a chave secreta que est\u00e1 configurada para a configura\u00e7\u00e3o de login social especificada na mensagem \u00e9 v\u00e1lida e pode ser usada para criptografia AES.
+
+# 0=socialLogin element ID
+TWITTER_STATE_MISSING=CWWKS5442E: O recurso de login social n\u00e3o pode concluir a solicita\u00e7\u00e3o usando a configura\u00e7\u00e3o de login social [{0}] porque o valor de estado est\u00e1 ausente.
+TWITTER_STATE_MISSING.explanation=Um valor de estado \u00e9 gerado para cada solicita\u00e7\u00e3o de autentica\u00e7\u00e3o exclusiva e armazenada em um cookie. Esse valor \u00e9 requerido para verificar e processar cada solicita\u00e7\u00e3o de autentica\u00e7\u00e3o. O cookie de estado n\u00e3o foi criado ou foi exclu\u00eddo.
+TWITTER_STATE_MISSING.useraction=Verifique se o valor de estado foi armazenado com \u00eaxito em um cookie e se o cookie n\u00e3o foi exclu\u00eddo.
+
+# 0=socialLogin element ID
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY=CWWKS5443E: O recurso de login social n\u00e3o pode concluir a solicita\u00e7\u00e3o usando a configura\u00e7\u00e3o de login social [{0}] porque o valor para a URL de solicita\u00e7\u00e3o original est\u00e1 ausente ou vazio. O valor da URL de solicita\u00e7\u00e3o original deve estar presente para redirecionar o usu\u00e1rio novamente para o recurso protegido que foi solicitado originalmente.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.explanation=A URL de solicita\u00e7\u00e3o original \u00e9 armazenada em um cookie no come\u00e7o do processo de autentica\u00e7\u00e3o. Esse cookie est\u00e1 ausente ou seu valor \u00e9 vazio.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.useraction=Verifique se a URL de solicita\u00e7\u00e3o original foi armazenada com \u00eaxito em um cookie e se o cookie n\u00e3o foi exclu\u00eddo.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA=CWWKS5444E: O token de acesso fornecido para o recurso de login social n\u00e3o pode ser decriptografado usando a chave privada especificada pela configura\u00e7\u00e3o de login social [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.explanation=Ocorreu um erro que evitou que o algoritmo de criptografia RSA decriptografasse o token de acesso. A chave privada que \u00e9 usada para decriptografar o token de acesso pode estar malformada ou pode n\u00e3o ser v\u00e1lida, o token criptografado pode n\u00e3o estar formatado corretamente ou o algoritmo de criptografia RSA requerido pode n\u00e3o estar dispon\u00edvel.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.useraction=Verifique se a configura\u00e7\u00e3o de login social especifica uma chave privada que tenha uma configura\u00e7\u00e3o v\u00e1lida e possa ser usada para decriptografia RSA. Verifique se o token criptografado est\u00e1 formatado corretamente e se o algoritmo de decriptografia est\u00e1 dispon\u00edvel.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES=CWWKS5445E: O token de acesso fornecido para o recurso de login social n\u00e3o pode ser decriptografado usando a chave secreta especificada pela configura\u00e7\u00e3o de login social [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.explanation=Ocorreu um erro que evitou que o algoritmo de criptografia AES decriptografasse o token de acesso. A chave secreta que \u00e9 usada para decriptografar o token de acesso pode estar malformada ou n\u00e3o ser v\u00e1lida. O token criptografado pode n\u00e3o estar formatado corretamente. Um erro pode ter ocorrido ao recuperar o vetor de inicializa\u00e7\u00e3o para o algoritmo de decriptografia ou o algoritmo de criptografia AES requerido pode n\u00e3o estar dispon\u00edvel.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.useraction=Verifique se a configura\u00e7\u00e3o de login social especifica uma chave secreta que tenha uma configura\u00e7\u00e3o v\u00e1lida e possa ser usada para decriptografia AES. Verifique se o token criptografado est\u00e1 formatado corretamente e se o algoritmo de decriptografia est\u00e1 dispon\u00edvel.
+
+# Intended to be a child of ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA or ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES
+VALUE_NOT_HEXADECIMAL=CWWKS5446E: O valor fornecido n\u00e3o est\u00e1 no formato hexadecimal, portanto n\u00e3o pode ser decodificado.
+VALUE_NOT_HEXADECIMAL.explanation=O valor para um token criptografado deve ser codificado em formato hexadecimal.
+VALUE_NOT_HEXADECIMAL.useraction=Verifique se o valor est\u00e1 codificado corretamente no formato hexadecimal.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT=CWWKS5447E: A solicita\u00e7\u00e3o n\u00e3o pode ser redirecionada para o terminal de autoriza\u00e7\u00e3o que est\u00e1 configurado para a configura\u00e7\u00e3o de login social [{0}]. {1}
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.explanation=Houve provavelmente um erro ao construir a URL de redirecionamento de terminal de autoriza\u00e7\u00e3o. Alternativamente, ocorreu um erro ao redirecionar a solicita\u00e7\u00e3o.
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se a URL de redirecionamento para o terminal de autoriza\u00e7\u00e3o \u00e9 uma URL v\u00e1lida. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'state', OAuth
+# 0=socialLogin element ID
+STATE_IS_NULL=CWWKS5448E: Uma sequ\u00eancia de consultas v\u00e1lida n\u00e3o pode ser criada para o terminal de autoriza\u00e7\u00e3o da configura\u00e7\u00e3o de login social [{0}] porque o valor de estado que foi fornecido \u00e9 nulo.
+STATE_IS_NULL.explanation=Um par\u00e2metro 'state' \u00e9 necess\u00e1rio em solicita\u00e7\u00f5es para terminais de autoriza\u00e7\u00e3o OAuth. Uma solicita\u00e7\u00e3o de terminal de autoriza\u00e7\u00e3o v\u00e1lida n\u00e3o pode ser criada sem um valor de estado.
+STATE_IS_NULL.useraction=Verifique se um valor de estado n\u00e3o nulo foi gerado para esta solicita\u00e7\u00e3o.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'redirect_uri', OAuth
+# 0=socialLogin element ID
+REDIRECT_URL_IS_NULL=CWWKS5449E: Uma sequ\u00eancia de consultas v\u00e1lida n\u00e3o pode ser criada para o terminal de autoriza\u00e7\u00e3o da configura\u00e7\u00e3o de login social [{0}] porque a URI de redirecionamento que foi fornecida \u00e9 nula.
+REDIRECT_URL_IS_NULL.explanation=Um par\u00e2metro 'redirect_uri' \u00e9 necess\u00e1rio em solicita\u00e7\u00f5es para terminais de autoriza\u00e7\u00e3o OAuth. Uma solicita\u00e7\u00e3o de terminal de autoriza\u00e7\u00e3o v\u00e1lida n\u00e3o pode ser criada sem um valor de URI de redirecionamento.
+REDIRECT_URL_IS_NULL.useraction=Verifique se um valor de URI de redirecionamento n\u00e3o nulo foi criado para esta solicita\u00e7\u00e3o.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_SSL_CONTEXT=CWWKS5450E: A solicita\u00e7\u00e3o n\u00e3o pode chamar o terminal do token porque um erro ocorreu ao recuperar informa\u00e7\u00f5es de SSL para a configura\u00e7\u00e3o de login social [{0}]. {1}
+AUTH_CODE_ERROR_SSL_CONTEXT.explanation=A solicita\u00e7\u00e3o inclui um c\u00f3digo de autoriza\u00e7\u00e3o que \u00e9 usado para obter informa\u00e7\u00f5es sobre o usu\u00e1rio de um terminal do token OAuth. As informa\u00e7\u00f5es de SSL s\u00e3o necess\u00e1rias para chamar o terminal do token. Ocorreu um erro ao carregar as informa\u00e7\u00f5es de SSL, portanto o terminal do token n\u00e3o pode ser chamado.
+AUTH_CODE_ERROR_SSL_CONTEXT.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se a configura\u00e7\u00e3o de login social especificada referencia uma configura\u00e7\u00e3o de SSL v\u00e1lida ou verifique se a configura\u00e7\u00e3o de SSL padr\u00e3o para o servidor est\u00e1 configurada corretamente.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_GETTING_TOKENS=CWWKS5451E: O recurso de login social encontrou um problema ao obter informa\u00e7\u00f5es de token do terminal do token configurado para a configura\u00e7\u00e3o de login social [{0}]. {1}
+AUTH_CODE_ERROR_GETTING_TOKENS.explanation=O recurso de login social deve fazer uma solicita\u00e7\u00e3o para o terminal do token para obter um token de acesso e um token de ID opcional. A URL de terminal do token pode estar malformada ou ausente, a resposta do terminal do token pode n\u00e3o estar formatada corretamente ou houve um erro ao chamar o terminal do token.
+AUTH_CODE_ERROR_GETTING_TOKENS.useraction=Verifique se a URL de terminal do token configurada para a configura\u00e7\u00e3o de login social especificada \u00e9 uma URL v\u00e1lida. Verifique os logs do servidor para mensagens de erro adicionais.
+
+# 0=socialLogin element ID
+USER_API_RESPONSE_NULL_OR_EMPTY=CWWKS5452E: O recurso de login social n\u00e3o pode autenticar o usu\u00e1rio porque a resposta da API do usu\u00e1rio configurada para a configura\u00e7\u00e3o de login social [{0}] \u00e9 nula ou vazia.
+USER_API_RESPONSE_NULL_OR_EMPTY.explanation=Os dados do usu\u00e1rio devem ser retornados da API do usu\u00e1rio configurada. O usu\u00e1rio n\u00e3o pode ser autenticado sem os dados do usu\u00e1rio da API do usu\u00e1rio.
+USER_API_RESPONSE_NULL_OR_EMPTY.useraction=Verifique se pelo menos uma API do usu\u00e1rio est\u00e1 configurada para a configura\u00e7\u00e3o de login social especificada. Verifique os logs do servidor para mensagens de erro adicionais.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_FAILED_TO_CREATE_JWT=CWWKS5453E: O recurso de login social encontrou um problema ao criar um JSON Web Token (JWT) do token de acesso fornecido para a configura\u00e7\u00e3o de login social [{0}]. {1}
+AUTH_CODE_FAILED_TO_CREATE_JWT.explanation=Um erro pode ter ocorrido ao obter informa\u00e7\u00f5es sobre o usu\u00e1rio com o token de acesso fornecido ou um erro pode ter ocorrido ao construir um JWT do token de ID fornecido.
+AUTH_CODE_FAILED_TO_CREATE_JWT.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique os logs do servidor para mensagens de erro adicionais.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_CREATING_RESULT=CWWKS5454E: O recurso de login social n\u00e3o pode criar um assunto para o usu\u00e1rio com o c\u00f3digo de autoriza\u00e7\u00e3o fornecido usando a configura\u00e7\u00e3o de login social [{0}]. {1}
+AUTH_CODE_ERROR_CREATING_RESULT.explanation=Alguns dos dados que s\u00e3o usados para criar o assunto para o usu\u00e1rio especificado podem estar ausentes ou malformados.
+AUTH_CODE_ERROR_CREATING_RESULT.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# 0=socialLogin element ID, 1=User name
+ACCESS_TOKEN_MISSING=CWWKS5455E: O recurso de login social n\u00e3o pode autenticar o usu\u00e1rio [{0}] porque um token de acesso n\u00e3o pode ser localizado.
+ACCESS_TOKEN_MISSING.explanation=Um assunto n\u00e3o pode ser criado para o usu\u00e1rio porque o token de acesso est\u00e1 ausente. Os dados que foram retornados da m\u00eddia social devem incluir um token de acesso.
+ACCESS_TOKEN_MISSING.useraction=Verifique os logs do servidor para mensagens de erro adicionais. Verifique se um token de acesso foi retornado da m\u00eddia social.
+
+USER_PROFILE_ACCESS_TOKEN_NULL=CWWKS5456E: Um perfil do usu\u00e1rio n\u00e3o pode ser criado porque o token de acesso fornecido \u00e9 nulo.
+USER_PROFILE_ACCESS_TOKEN_NULL.explanation=Um token de acesso v\u00e1lido deve ser fornecido para recuperar a configura\u00e7\u00e3o de login social associada ao token de acesso.
+USER_PROFILE_ACCESS_TOKEN_NULL.useraction=Forne\u00e7a um token de acesso v\u00e1lido para criar um perfil do usu\u00e1rio.
+
+ACCESS_TOKEN_NOT_IN_CACHE=CWWKS5457E: Um perfil do usu\u00e1rio n\u00e3o pode ser criado porque o token de acesso fornecido n\u00e3o foi localizado no cache do token.
+ACCESS_TOKEN_NOT_IN_CACHE.explanation=A chave de token calculada pode estar malformada ou esse token de acesso n\u00e3o foi usado em uma solicita\u00e7\u00e3o autenticada recente. O token pode ter sido removido do cache porque era muito antigo.
+ACCESS_TOKEN_NOT_IN_CACHE.useraction=Assegure-se de que o token fornecido seja um token de acesso v\u00e1lido e que corresponda a um token de acesso que foi usado em uma solicita\u00e7\u00e3o autenticada com \u00eaxito. Verifique se o cache de token n\u00e3o foi limpo desde que o token foi inclu\u00eddo.
+
+# 0=socialLogin element ID
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND=CWWKS5458E: A configura\u00e7\u00e3o de login social [{0}] que est\u00e1 associada ao token em cache n\u00e3o pode ser localizada.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.explanation=O servi\u00e7o de login social especificado n\u00e3o pode ser localizado na configura\u00e7\u00e3o do servidor. O ID de configura\u00e7\u00e3o de login social associado ao token de acesso est\u00e1 ausente ou a configura\u00e7\u00e3o de login social especificada n\u00e3o existe.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.useraction=Assegure-se de que uma configura\u00e7\u00e3o de login social com o ID especificado exista na configura\u00e7\u00e3o do servidor. Verifique se a configura\u00e7\u00e3o de login social foi carregada com \u00eaxito.
+
+# 0=socialLogin element ID
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN=CWWKS5459E: Um token de acesso n\u00e3o pode ser localizado no conjunto de tokens fornecidos para o recurso de login social.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.explanation=Um token de acesso deve ser fornecido para criar um perfil do usu\u00e1rio. O token pode n\u00e3o estar no cache de token ou o token pode estar ausente das informa\u00e7\u00f5es sobre o usu\u00e1rio que foram retornadas da m\u00eddia social.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.useraction=Verifique se um token de acesso foi inclu\u00eddo no conjunto de dados que foram retornados da m\u00eddia social. Verifique se o objeto de token especificou um token de acesso v\u00e1lido no momento em que o objeto de token foi armazenado em cache.
+
+# 0=socialLogin element ID
+NO_USER_API_CONFIGS_PRESENT=CWWKS5460W: N\u00e3o h\u00e1 configura\u00e7\u00f5es de API do usu\u00e1rio especificadas para a configura\u00e7\u00e3o de login social [{0}].
+NO_USER_API_CONFIGS_PRESENT.explanation=Pelo menos uma configura\u00e7\u00e3o de API do usu\u00e1rio deve ser especificada para obter informa\u00e7\u00f5es sobre o usu\u00e1rio.
+NO_USER_API_CONFIGS_PRESENT.useraction=Assegure-se de que a configura\u00e7\u00e3o de login social especificada contenha pelo menos uma configura\u00e7\u00e3o de API do usu\u00e1rio.
+
+# 0=User API string, 1=socialLogin element ID, 2=Error message
+ERROR_GETTING_USER_API_RESPONSE=CWWKS5461E: O recurso de login social encontrou um erro ao obter informa\u00e7\u00f5es sobre o usu\u00e1rio da API do usu\u00e1rio [{0}] configurada para a configura\u00e7\u00e3o de login social [{1}]. {2}
+ERROR_GETTING_USER_API_RESPONSE.explanation=A API do usu\u00e1rio especificado pode n\u00e3o estar configurada corretamente. Pode haver um problema com o token de acesso que foi usado para chamar a API do usu\u00e1rio. A resposta da API do usu\u00e1rio pode n\u00e3o estar no formato esperado.
+ERROR_GETTING_USER_API_RESPONSE.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+TOKEN_ENDPOINT_NULL_OR_EMPTY=CWWKS5462E: O valor da URL de terminal do token \u00e9 nulo ou vazio.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.explanation=Uma URL de terminal do token v\u00e1lida deve ser fornecida para obter tokens de acesso ou tokens de ID para usu\u00e1rios.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.useraction=Assegure-se de que uma URL de terminal do token v\u00e1lida seja configurada para cada configura\u00e7\u00e3o de login social.
+
+# Intended to be a child of AUTH_CODE_ERROR_SSL_CONTEXT
+# 0=socialLogin element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5463E: O contexto de SSL para a configura\u00e7\u00e3o de login social [{0}] n\u00e3o pode ser carregado. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=A configura\u00e7\u00e3o de SSL usada pela configura\u00e7\u00e3o de login social especificada pode estar ausente ou incorreta.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Veja o erro na mensagem para obter mais informa\u00e7\u00f5es. Verifique se as informa\u00e7\u00f5es de SSL para a configura\u00e7\u00e3o de login social especificada est\u00e3o exatas. Se o atributo de configura\u00e7\u00e3o 'sslRef' for especificado na configura\u00e7\u00e3o de login social, verifique se a configura\u00e7\u00e3o de SSL correspondente est\u00e1 correta. Caso contr\u00e1rio, verifique se a configura\u00e7\u00e3o de SSL padr\u00e3o para o servidor est\u00e1 configurada corretamente.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=socialLogin element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5464E: A funcionalidade do consumidor de JSON Web Token (JWT) pode n\u00e3o estar dispon\u00edvel para a configura\u00e7\u00e3o de login social [{0}] porque o servi\u00e7o para a configura\u00e7\u00e3o de login social especificada n\u00e3o pode ser localizada.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=A configura\u00e7\u00e3o de login social especificada pode n\u00e3o estar dispon\u00edvel ainda ou o servi\u00e7o para a configura\u00e7\u00e3o de login social foi interrompido.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Verifique se a configura\u00e7\u00e3o de login social especificada est\u00e1 configurada e dispon\u00edvel.
+
+# 0=Context path string from webapp configuration
+INVALID_CONTEXT_PATH_CHARS=CWWKS5465E: O caminho do contexto [{0}] especificado pela configura\u00e7\u00e3o de aplicativos da web de login social cont\u00e9m caracteres que n\u00e3o podem ser inclu\u00eddos em um caminho de URI v\u00e1lido. O recurso de login social n\u00e3o funciona com um caminho de contexto que n\u00e3o \u00e9 v\u00e1lido.
+INVALID_CONTEXT_PATH_CHARS.explanation=O caminho do contexto configurado pela configura\u00e7\u00e3o de aplicativo da web de login social n\u00e3o \u00e9 uma sequ\u00eancia de caminho de URI v\u00e1lida. O caminho do contexto deve estar adequado ao RFC 3986 (https://tools.ietf.org/html/rfc3986) e pode conter somente determinados caracteres.
+INVALID_CONTEXT_PATH_CHARS.useraction=Verifique se o caminho do contexto configurado cont\u00e9m somente os caracteres permitidos pelo RFC 3986 para componentes de caminho de URI.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5466E: As informa\u00e7\u00f5es de refer\u00eancia de SSL para o recurso de login social n\u00e3o podem ser carregadas porque um erro foi encontrado ao carregar as propriedades de SSL. {0}
+ERROR_LOADING_SSL_PROPS.explanation=A configura\u00e7\u00e3o de SSL usada pela configura\u00e7\u00e3o de login social pode n\u00e3o estar dispon\u00edvel ou ocorreu um erro ao carregar as propriedades para a configura\u00e7\u00e3o de SSL.
+ERROR_LOADING_SSL_PROPS.useraction=Verifique se a configura\u00e7\u00e3o de SSL usada pelo servi\u00e7o de login social est\u00e1 configurada corretamente e foi iniciada com \u00eaxito.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5467E: As chaves p\u00fablicas n\u00e3o podem ser carregadas do keystore porque o servi\u00e7o de keystore n\u00e3o pode ser localizado.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=O servi\u00e7o de keystore para o recurso de login social pode n\u00e3o estar dispon\u00edvel.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Verifique se o servi\u00e7o de keystore usado pelo servi\u00e7o de login social est\u00e1 configurado corretamente e foi iniciado com \u00eaxito.
+
+# 0=Truststore ID, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5468E: Ocorreu um erro ao carregar os certificados confi\u00e1veis do armazenamento confi\u00e1vel [{0}]. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=O armazenamento confi\u00e1vel pode n\u00e3o ter sido inicializado ainda ou o armazenamento confi\u00e1vel especificado n\u00e3o existe na configura\u00e7\u00e3o do servidor.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Verifique se um armazenamento confi\u00e1vel com o ID especificado est\u00e1 presente na configura\u00e7\u00e3o do servidor e foi processado com \u00eaxito.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5469E: Um certificado com o alias [{0}] n\u00e3o pode ser carregado por meio do armazenamento confi\u00e1vel [{1}]. {2}
+ERROR_LOADING_CERTIFICATE.explanation=Um certificado com o alias especificado pode n\u00e3o estar presente no armazenamento confi\u00e1vel, o armazenamento confi\u00e1vel pode n\u00e3o ter sido inicializado ainda ou o armazenamento confi\u00e1vel n\u00e3o existe na configura\u00e7\u00e3o do servidor.
+ERROR_LOADING_CERTIFICATE.useraction=Verifique se um certificado com o alias especificado est\u00e1 inclu\u00eddo no armazenamento confi\u00e1vel. Verifique se um armazenamento confi\u00e1vel com o ID especificado est\u00e1 presente na configura\u00e7\u00e3o do servidor e foi processado com \u00eaxito.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_GETTING_PUBLIC_KEYS=CWWKS5470E: O certificado com o alias [{0}] n\u00e3o pode ser carregado por meio do armazenamento confi\u00e1vel [{1}] porque ocorreu um erro ao obter as chaves p\u00fablicas do armazenamento confi\u00e1vel. {2}
+ERROR_LOADING_GETTING_PUBLIC_KEYS.explanation=O servi\u00e7o de keystore pode n\u00e3o estar dispon\u00edvel, os certificados no armazenamento confi\u00e1vel n\u00e3o podem ser carregados ou o certificado com o alias especificado n\u00e3o pode ser carregado.
+ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# 0=Private key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: Uma chave privada com o alias [{0}] n\u00e3o pode ser carregada por meio do keystore [{1}]. {2}
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=Uma chave privada com o alias especificado pode n\u00e3o estar presente no keystore, a chave privada pode n\u00e3o ser o tipo correto, o keystore pode n\u00e3o ter sido inicializado ainda ou o keystore n\u00e3o existe na configura\u00e7\u00e3o do servidor.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Verifique se uma chave privada com o alias especificado est\u00e1 inclu\u00edda no keystore e se a chave privada \u00e9 o tipo correto. Verifique se um keystore com o ID especificado est\u00e1 presente na configura\u00e7\u00e3o do servidor e foi processado com \u00eaxito.
+
+# 0=Keystore ID, 1=Exception message
+ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: Uma chave privada n\u00e3o pode ser carregada por meio do keystore [{0}]. {1}
+ERROR_LOADING_PRIVATE_KEY.explanation=A chave privada que foi selecionada do keystore pode n\u00e3o ser o tipo correto, o keystore pode n\u00e3o ter sido inicializado ainda ou o keystore n\u00e3o existe na configura\u00e7\u00e3o do servidor.
+ERROR_LOADING_PRIVATE_KEY.useraction=Verifique se as chaves privadas no keystore s\u00e3o o tipo correto. Verifique se um keystore com o ID especificado est\u00e1 presente na configura\u00e7\u00e3o do servidor e foi processado com \u00eaxito.
+
+# 0=Secret key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SECRET_KEY=CWWKS5473E: Uma chave secreta com o alias [{0}] n\u00e3o pode ser carregada por meio do keystore [{1}]. {2}
+ERROR_LOADING_SECRET_KEY.explanation=Uma chave secreta com o alias especificado pode n\u00e3o estar presente no keystore, a chave secreta pode n\u00e3o ser o tipo correto, o keystore pode n\u00e3o ter sido inicializado ainda ou o keystore n\u00e3o existe na configura\u00e7\u00e3o do servidor.
+ERROR_LOADING_SECRET_KEY.useraction=Verifique se uma chave secreta com o alias especificado est\u00e1 inclu\u00edda no keystore e se a chave secreta \u00e9 o tipo correto. Verifique se um keystore com o ID especificado est\u00e1 presente na configura\u00e7\u00e3o do servidor e foi processado com \u00eaxito.
+
+# 0=HttpResponse entity
+ERROR_PARSING_RESPONSE_ENTITY=CWWKS5474E: Os tokens n\u00e3o podem ser extra\u00eddos da resposta porque um erro foi encontrado ao analisar a resposta. [ {0} ]
+ERROR_PARSING_RESPONSE_ENTITY.explanation=A resposta do terminal de m\u00eddia social pode n\u00e3o estar no formato esperado. Um erro pode ter ocorrido ao executar a resposta ou a m\u00eddia social pode ter retornado um erro.
+ERROR_PARSING_RESPONSE_ENTITY.useraction=Verifique o conte\u00fado da resposta da m\u00eddia social. Verifique se o conte\u00fado de resposta est\u00e1 formatado corretamente e se a resposta n\u00e3o incluiu uma mensagem de erro.
+
+NULL_OR_EMPTY_REQUEST_URL=CWWKS5475E: Uma solicita\u00e7\u00e3o de HTTP n\u00e3o pode ser feita porque a URL fornecida \u00e9 nula ou vazia.
+NULL_OR_EMPTY_REQUEST_URL.explanation=Uma solicita\u00e7\u00e3o de HTTP n\u00e3o pode ser feita com uma URL nula ou vazia. Uma URL de terminal na configura\u00e7\u00e3o de login social pode estar ausente ou vazia.
+NULL_OR_EMPTY_REQUEST_URL.useraction=Verifique se cada URL de terminal especificada em uma configura\u00e7\u00e3o de login social tem um valor que \u00e9 uma URL v\u00e1lida.
+
+# Do not translate "POST"
+# 0=URL to which the request was submitted, 1=Error message
+ERROR_EXECUTING_REQUEST=CWWKS5476E: Ocorreu um erro ao fazer uma solicita\u00e7\u00e3o para a URL fornecida [{0}]. {1}
+ERROR_EXECUTING_REQUEST.explanation=A URL fornecida pode estar malformada ou cont\u00e9m um protocolo que n\u00e3o \u00e9 v\u00e1lido ou um erro pode ter evitado que a solicita\u00e7\u00e3o fosse entregue.
+ERROR_EXECUTING_REQUEST.useraction=Veja a mensagem para uma descri\u00e7\u00e3o mais detalhada do erro. Verifique se a URL \u00e9 uma URL bem formada e se n\u00e3o houve problemas de conex\u00e3o com o servidor de destino.
+
+# 0=Response status
+RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: O status de resposta n\u00e3o pode ser localizado ou a resposta retornou um erro. O status de resposta foi [{0}].
+RESPONSE_STATUS_MISSING_OR_ERROR.explanation=A solicita\u00e7\u00e3o provavelmente falhou porque eram informa\u00e7\u00f5es n\u00e3o autorizadas ou ausentes, como um par\u00e2metro ou um cabe\u00e7alho de solicita\u00e7\u00e3o necess\u00e1rio. Se o status de resposta n\u00e3o for nulo, o c\u00f3digo de status de resposta e a raz\u00e3o estar\u00e3o inclu\u00eddos na mensagem.
+RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Verifique o c\u00f3digo de status de resposta na mensagem, se presente. Verifique se todos os par\u00e2metros e os cabe\u00e7alhos necess\u00e1rios foram inclu\u00eddos na solicita\u00e7\u00e3o.
+
+# 0=URL to which the request was submitted, 1=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: A solicita\u00e7\u00e3o para o terminal [{0}] falhou. O erro era: {1}
+RESPONSE_STATUS_UNSUCCESSFUL.explanation=A solicita\u00e7\u00e3o provavelmente falhou porque eram informa\u00e7\u00f5es n\u00e3o autorizadas ou ausentes, como um par\u00e2metro ou um cabe\u00e7alho de solicita\u00e7\u00e3o necess\u00e1rio. A solicita\u00e7\u00e3o pode ter sido direcionada para o terminal errado.
+RESPONSE_STATUS_UNSUCCESSFUL.useraction=Verifique se a solicita\u00e7\u00e3o foi direcionada para o terminal correto. Verifique se todos os par\u00e2metros e os cabe\u00e7alhos necess\u00e1rios foram inclu\u00eddos na solicita\u00e7\u00e3o.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS5479E: O atributo de configura\u00e7\u00e3o [{0}] necess\u00e1rio na configura\u00e7\u00e3o de login social [{1}] est\u00e1 ausente ou vazio. Verifique se o atributo est\u00e1 configurado, se ele n\u00e3o est\u00e1 vazio e se ele n\u00e3o consiste somente em caracteres de espa\u00e7o em branco.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=O atributo de configura\u00e7\u00e3o especificado pode estar ausente da configura\u00e7\u00e3o do servidor. Se um valor for especificado, o espa\u00e7o em branco no in\u00edcio e no t\u00e9rmino do valor ser\u00e1 removido quando o valor for processado, portanto o valor na configura\u00e7\u00e3o poder\u00e1 estar vazio ou consistir somente em caracteres de espa\u00e7o em branco.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Assegure-se de que o atributo de configura\u00e7\u00e3o especificado esteja configurado, que ele n\u00e3o esteja vazio e que ele n\u00e3o consista somente em caracteres de espa\u00e7o em branco.
+
+STATE_NULL_OR_MISMATCHED=CWWKS5480E: Uma solicita\u00e7\u00e3o de login social falhou porque o elemento de estado da solicita\u00e7\u00e3o estava vazio ou era incompat\u00edvel.
+STATE_NULL_OR_MISMATCHED.explanation=Um elemento de estado vazio ou ausente em uma solicita\u00e7\u00e3o de login social causou um erro. 
+STATE_NULL_OR_MISMATCHED.useraction=Verifique se a configura\u00e7\u00e3o de login social est\u00e1 correta e se o servi\u00e7o remoto est\u00e1 operando corretamente.
+
+REQUEST_URL_NULL_OR_EMPTY=CWWKS5481E: Uma solicita\u00e7\u00e3o de login social falhou porque o atributo de URL de solicita\u00e7\u00e3o da solicita\u00e7\u00e3o era nulo ou vazio.
+REQUEST_URL_NULL_OR_EMPTY.explanation=Um atributo de URL de solicita\u00e7\u00e3o vazio ou ausente na solicita\u00e7\u00e3o de login social causou um erro.
+REQUEST_URL_NULL_OR_EMPTY.useraction=Verifique se a configura\u00e7\u00e3o de login social para o atributo de URL est\u00e1 correta e se o servi\u00e7o remoto est\u00e1 operando corretamente.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_REQUEST_TOKEN_URL=CWWKS5482E: O recurso de login social n\u00e3o pode obter um token de solicita\u00e7\u00e3o do Twitter porque a URL [{0}] que \u00e9 especificada pelo atributo de configura\u00e7\u00e3o [{1}] na configura\u00e7\u00e3o do Twitter [{2}] n\u00e3o \u00e9 v\u00e1lida. {3}
+TWITTER_BAD_REQUEST_TOKEN_URL.explanation=O valor para o atributo de configura\u00e7\u00e3o especificado n\u00e3o \u00e9 uma URL v\u00e1lida. Uma URL v\u00e1lida, que pode atender \u00e0s solicita\u00e7\u00f5es para tokens de solicita\u00e7\u00e3o do Twitter, deve ser especificada.
+TWITTER_BAD_REQUEST_TOKEN_URL.useraction=Assegure-se de que uma URL v\u00e1lida seja configurada para o atributo de configura\u00e7\u00e3o especificado e que a URL seja capaz de atender \u00e0s solicita\u00e7\u00f5es para tokens de solicita\u00e7\u00e3o do Twitter. Para usar o terminal padr\u00e3o do Twitter, remova o atributo de configura\u00e7\u00e3o especificado da configura\u00e7\u00e3o do Twitter que est\u00e1 especificada na mensagem.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_ACCESS_TOKEN_URL=CWWKS5483E: O recurso de login social n\u00e3o pode obter um token de acesso no Twitter porque a URL [{0}] que \u00e9 especificada pelo atributo de configura\u00e7\u00e3o [{1}] na configura\u00e7\u00e3o do Twitter [{2}] n\u00e3o \u00e9 v\u00e1lida. {3}
+TWITTER_BAD_ACCESS_TOKEN_URL.explanation=O valor para o atributo de configura\u00e7\u00e3o especificado n\u00e3o \u00e9 uma URL v\u00e1lida. Uma URL v\u00e1lida, que pode atender \u00e0s solicita\u00e7\u00f5es para tokens de acesso do Twitter, deve ser especificada.
+TWITTER_BAD_ACCESS_TOKEN_URL.useraction=Assegure-se de que uma URL v\u00e1lida seja configurada para o atributo de configura\u00e7\u00e3o especificado e que a URL seja capaz de atender \u00e0s solicita\u00e7\u00f5es para tokens de acesso do Twitter. Para usar o terminal padr\u00e3o do Twitter, remova o atributo de configura\u00e7\u00e3o especificado da configura\u00e7\u00e3o do Twitter que est\u00e1 especificada na mensagem.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_USER_API_URL=CWWKS5484E: O recurso de login social n\u00e3o pode obter dados da conta do usu\u00e1rio do Twitter porque a URL [{0}] que \u00e9 especificada pelo atributo de configura\u00e7\u00e3o [{1}] na configura\u00e7\u00e3o do Twitter [{2}] n\u00e3o \u00e9 v\u00e1lida. {3}
+TWITTER_BAD_USER_API_URL.explanation=O valor para o atributo de configura\u00e7\u00e3o especificado n\u00e3o \u00e9 uma URL v\u00e1lida. Uma URL v\u00e1lida, que pode atender \u00e0s solicita\u00e7\u00f5es de dados da conta do usu\u00e1rio do Twitter, deve ser especificada.
+TWITTER_BAD_USER_API_URL.useraction=Assegure-se de que uma URL v\u00e1lida seja configurada para o atributo de configura\u00e7\u00e3o especificado e que a URL seja capaz de atender \u00e0s solicita\u00e7\u00f5es de dados da conta do usu\u00e1rio do Twitter. Para usar o terminal padr\u00e3o do Twitter, remova o atributo de configura\u00e7\u00e3o especificado da configura\u00e7\u00e3o do Twitter que est\u00e1 especificada na mensagem.
+
+# 0=Configuration attribute name
+TWITTER_MISSING_REQ_ATTR=CWWKS5485W: As solicita\u00e7\u00f5es de autentica\u00e7\u00e3o do Twitter podem n\u00e3o ser bem-sucedidas porque o valor de configura\u00e7\u00e3o [{0}] fornecido pode ser nulo ou vazio. Verifique se todas as configura\u00e7\u00f5es de login social do Twitter especificam um valor n\u00e3o vazio para o atributo de configura\u00e7\u00e3o [{0}].
+TWITTER_MISSING_REQ_ATTR.explanation=O atributo de configura\u00e7\u00e3o que \u00e9 especificado na mensagem est\u00e1 ausente da configura\u00e7\u00e3o ou o valor para o atributo est\u00e1 vazio ou consiste em apenas caracteres de espa\u00e7o em branco. \u00c9 necess\u00e1rio um valor n\u00e3o vazio para este atributo.
+TWITTER_MISSING_REQ_ATTR.useraction=Verifique se todos os elementos de login social do Twitter na configura\u00e7\u00e3o do servidor configuraram o atributo que \u00e9 especificado na mensagem e se os seus valores n\u00e3o est\u00e3o vazios.
+
+# 0=Endpoint URL, 1=Map of data about the endpoint response
+POST_RESPONSE_NULL=CWWKS5486W: Os tokens n\u00e3o podem ser extra\u00eddos da resposta do terminal [{0}]. O mapa de resposta do terminal era [{1}].
+POST_RESPONSE_NULL.explanation=A solicita\u00e7\u00e3o pode ser direcionada para um terminal incorreto ou ela n\u00e3o inclui informa\u00e7\u00f5es suficientes.
+POST_RESPONSE_NULL.useraction=Verifique se o terminal da URL \u00e9 preciso e se a solicita\u00e7\u00e3o inclui todos os cabe\u00e7alhos ou par\u00e2metros necess\u00e1rios. Verifique os logs do servidor para mensagens de erro adicionais.
+
+# Do not translate "JSON"
+# 0=Endpoint URL, 1=Error message, 2=Endpoint response content
+ENDPOINT_RESPONSE_NOT_JSON=CWWKS5487W: A resposta do terminal [{0}] n\u00e3o estava no formato JSON esperado. O erro foi [{1}]. O conte\u00fado de resposta foi [{2}].
+ENDPOINT_RESPONSE_NOT_JSON.explanation=O terminal especificado pode n\u00e3o estar ativo ou pode retornar respostas em um formato diferente.
+ENDPOINT_RESPONSE_NOT_JSON.useraction=Verifique se o servidor leu toda a resposta do terminal especificado. Verifique se a solicita\u00e7\u00e3o foi enviada para o terminal correto e se a resposta est\u00e1 formatada conforme o esperado.
+
+# 0=URI value
+URI_CONTAINS_INVALID_CHARS=CWWKS5488W: O valor fornecido [{0}] cont\u00e9m pelo menos um caractere que n\u00e3o pode ser inclu\u00eddo em um URI v\u00e1lido.
+URI_CONTAINS_INVALID_CHARS.explanation=O valor do terminal que \u00e9 especificado na mensagem n\u00e3o \u00e9 considerado um URI v\u00e1lido porque cont\u00e9m caracteres que n\u00e3o s\u00e3o v\u00e1lidos. O conjunto de caracteres de URI v\u00e1lido \u00e9 definido pelo RFC 3986.
+URI_CONTAINS_INVALID_CHARS.useraction=Atualize a sequ\u00eancia de URI para conter somente caracteres de URI v\u00e1lidos.
+
+SOCIAL_LOGIN_FRONT_END_ERROR=CWWKS5489E: Um erro foi encontrado ao autenticar um usu\u00e1rio usando a m\u00eddia social.
+SOCIAL_LOGIN_FRONT_END_ERROR.explanation=Ocorreu um problema ao autenticar um usu\u00e1rio. Pode ter sido um problema de conex\u00e3o entre o aplicativo e um provedor de servi\u00e7os de terceiros.
+SOCIAL_LOGIN_FRONT_END_ERROR.useraction=Entre em contato com o administrador do sistema para resolver o problema.
+
+# 0=User API URL, 1=HTTP response status, 2=Error code, 3=Error description
+USERAPI_RESP_INVALID_STATUS=CWWKS5490E: N\u00e3o \u00e9 poss\u00edvel processar a resposta por meio do terminal de API do usu\u00e1rio [{0}]. O status de resposta foi [{1}], o erro foi [{2}] e a descri\u00e7\u00e3o do erro foi [{3}].
+USERAPI_RESP_INVALID_STATUS.explanation=O status de resposta especificado n\u00e3o indicou um resultado bem-sucedido. O erro e a descri\u00e7\u00e3o do erro fornecidos na mensagem podem conter informa\u00e7\u00f5es adicionais.
+USERAPI_RESP_INVALID_STATUS.useraction=Tome a a\u00e7\u00e3o necess\u00e1ria para corrigir o erro na resposta.
+
+# 0=User API URL, 1=Error message
+USERAPI_ERROR_RESPONSE=CWWKS5491E: N\u00e3o \u00e9 poss\u00edvel processar a resposta do erro por meio do terminal de API do usu\u00e1rio [{0}]. O erro foi: [{1}]
+USERAPI_ERROR_RESPONSE.explanation=O terminal de API do usu\u00e1rio especificado n\u00e3o retornou um status de resposta v\u00e1lido e um erro foi encontrado ao processar a resposta.
+USERAPI_ERROR_RESPONSE.useraction=Verifique se o terminal especificado est\u00e1 correto e se \u00e9 um terminal v\u00e1lido capaz de processar as solicita\u00e7\u00f5es de API de informa\u00e7\u00f5es sobre o usu\u00e1rio.
+
+# 0=User API URL, 1=Error message
+USERAPI_RESP_PROCESS_ERR=CWWKS5492E: N\u00e3o \u00e9 poss\u00edvel processar a resposta por meio do terminal de API do usu\u00e1rio [{0}]. O erro foi: [{1}]
+USERAPI_RESP_PROCESS_ERR.explanation=O terminal de API do usu\u00e1rio especificado retornou um status de resposta v\u00e1lido, mas o tempo de execu\u00e7\u00e3o encontrou um erro ao processar o conte\u00fado de resposta.
+USERAPI_RESP_PROCESS_ERR.useraction=Verifique se o terminal especificado est\u00e1 correto e se o conte\u00fado de resposta est\u00e1 formatado corretamente. Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem.
+
+# 0=User API URL
+USERAPI_NULL_RESP_STR=CWWKS5493E: O conte\u00fado de resposta por meio do terminal de API do usu\u00e1rio [{0}] n\u00e3o \u00e9 v\u00e1lido. 
+USERAPI_NULL_RESP_STR.explanation=O terminal de API do usu\u00e1rio especificado n\u00e3o retornou uma resposta v\u00e1lida para a solicita\u00e7\u00e3o de API do usu\u00e1rio. 
+USERAPI_NULL_RESP_STR.useraction=Verifique se o terminal especificado est\u00e1 correto e se \u00e9 um terminal v\u00e1lido capaz de processar as solicita\u00e7\u00f5es de API de informa\u00e7\u00f5es sobre o usu\u00e1rio.
+
+# do not translate CODE
+CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: Uma solicita\u00e7\u00e3o de login social falhou porque o atributo CODE da solicita\u00e7\u00e3o era nulo ou vazio.
+CODE_PARAMETER_NULL_OR_EMPTY.explanation=Um atributo CODE vazio ou ausente na solicita\u00e7\u00e3o de login social causou um erro. 
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Verifique se a configura\u00e7\u00e3o de login social para o atributo CODE est\u00e1 correta e se o servi\u00e7o remoto est\u00e1 operando corretamente.
+
+# 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
+REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: Uma solicita\u00e7\u00e3o de autentica\u00e7\u00e3o de login social falhou porque a m\u00eddia social retornou o erro {0} a seguir: {1}. O URI do erro era [{2}].
+REDIRECT_REQUEST_CONTAINED_ERROR.explanation=O status da resposta especificado indicou que a autentica\u00e7\u00e3o n\u00e3o foi bem-sucedida. O erro e a descri\u00e7\u00e3o do erro fornecidos na mensagem cont\u00eam informa\u00e7\u00f5es adicionais.
+REDIRECT_REQUEST_CONTAINED_ERROR.useraction=Verifique se o login social est\u00e1 configurado corretamente na configura\u00e7\u00e3o do servidor e verifique se os valores na configura\u00e7\u00e3o do servidor correspondem aos valores que s\u00e3o definidos na m\u00eddia social remota.
+
+# 0=URI value
+HTTP_URI_DOES_NOT_START_WITH_HTTP=CWWKS5496W: O valor fornecido [{0}] deve ser um URI HTTP. O valor n\u00e3o \u00e9 iniciado com um protocolo HTTP.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.explanation=O valor deve ser um URI HTTP, portanto, o valor deve come\u00e7ar com http:// ou https://.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.useraction=Atualize o URI para que ele especifique o protocolo HTTP ou HTTPS.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=User API value, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_USER_API=CWWKS5497E: O recurso de login social n\u00e3o pode criar um JSON Web Token (JWT) usando informa\u00e7\u00f5es da API do usu\u00e1rio configurado [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_USER_API.explanation=O erro que \u00e9 exibido na mensagem deve fornecer um motivo mais espec\u00edfico para a JWT n\u00e3o ter sido criada. A solicita\u00e7\u00e3o de API do usu\u00e1rio est\u00e1 malformada ou tem informa\u00e7\u00f5es ausentes. Ocorreu um erro depois que a solicita\u00e7\u00e3o de API do usu\u00e1rio foi enviada ou n\u00e3o \u00e9 poss\u00edvel usar a resposta da API do usu\u00e1rio para criar um JWT.
+FAILED_TO_CREATE_JWT_FROM_USER_API.useraction=Verifique se o valor da API do usu\u00e1rio est\u00e1 correto. Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=JWT configuration element ID, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN=CWWKS5498E: O recurso de login social n\u00e3o pode criar um JSON Web Token (JWT) usando o token de ID e a configura\u00e7\u00e3o do JWT fornecidos [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.explanation=A configura\u00e7\u00e3o do JWT que \u00e9 especificada na mensagem pode ter sido definida incorretamente, o token de ID pode se malformado ou ter informa\u00e7\u00f5es ausentes ou ocorreu outro erro ao criar o JWT.
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verifique se a configura\u00e7\u00e3o do JWT que \u00e9 especificada na mensagem est\u00e1 definida corretamente. Veja a a\u00e7\u00e3o do usu\u00e1rio em rela\u00e7\u00e3o ao erro exibido na mensagem. Verifique se nos logs do servidor h\u00e1 mensagens de erro adicionais.
+
+# 0=Request URL value, 1=Error message
+REQUEST_URL_NOT_VALID=CWWKS5499E: O recurso de login social n\u00e3o pode redirecionar a solicita\u00e7\u00e3o de volta para a URL de solicita\u00e7\u00e3o original [{0}] porque a URL n\u00e3o \u00e9 v\u00e1lida. {1}
+REQUEST_URL_NOT_VALID.explanation=A URL de solicita\u00e7\u00e3o original n\u00e3o \u00e9 uma URL v\u00e1lida. A URL pode incluir caracteres que n\u00e3o s\u00e3o v\u00e1lidos ou a URL pode estar malformada.
+REQUEST_URL_NOT_VALID.useraction=Verifique se a URL de solicita\u00e7\u00e3o que \u00e9 especificada na mensagem corresponde \u00e0 URL de solicita\u00e7\u00e3o de recurso protegido original. Verifique se a URL est\u00e1 bem-formada e se ela cont\u00e9m somente caracteres de URI v\u00e1lido.
