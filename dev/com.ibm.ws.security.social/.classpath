@@ -36,4 +36,5 @@
 	<classpathentry kind="src" path="/com.ibm.ws.security.common.jsonwebkey"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="output" path="build/classes"/>
+        <classpathentry kind="src" output="bin_test" path="test"/>
 </classpath>
