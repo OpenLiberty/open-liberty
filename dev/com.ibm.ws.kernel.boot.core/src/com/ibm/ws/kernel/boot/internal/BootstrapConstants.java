@@ -33,6 +33,8 @@ public final class BootstrapConstants {
 
     public static final String CLI_PACKAGE_INCLUDE_VALUE = "include";
 
+    public static final String CLI_ROOT_PACKAGE_NAME = "server-root";
+
     /** Store command line arguments for the CommandLine service */
     public static final String INTERNAL_COMMAND_LINE_ARG_LIST = "commandline.args";
 
