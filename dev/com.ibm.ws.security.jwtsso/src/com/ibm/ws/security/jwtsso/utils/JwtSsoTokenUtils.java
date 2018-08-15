@@ -214,13 +214,18 @@ public class JwtSsoTokenUtils {
 		int mpJwtConfigs = 0;
 		String mpjwtids = "";
 		String mpJwtConfigId = null;
+		boolean jwtsso = false;
+		int jwtssoConfigs = 0;
+		
 		while (it.hasNext()) {
 			MicroProfileJwtConfig mpJwtConfig = it.next();
 			if (!(mpJwtConfig.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent"))) {
-				mpjwt = true;
-				mpJwtConfigId = mpJwtConfig.getUniqueId();
-				mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
-				mpJwtConfigs++;
+				 if (!isMpJwtDefaultConfig(mpJwtConfig)) {
+					    mpjwt = true;
+						mpJwtConfigId = mpJwtConfig.getUniqueId();
+						mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
+						mpJwtConfigs++;
+				 }	
 			}
 		}
 		if (mpJwtConfigs > 1) {
@@ -238,6 +243,15 @@ public class JwtSsoTokenUtils {
 			throw new MpJwtProcessingException(msg);
 		}
 		return mpjwtconfig;
+	}
+
+	private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
+		boolean isDefault = false;
+		if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
+			isDefault = true;
+		}
+		return isDefault;
+		
 	}
 
 	public boolean isJwtValid(String tokenstr) {

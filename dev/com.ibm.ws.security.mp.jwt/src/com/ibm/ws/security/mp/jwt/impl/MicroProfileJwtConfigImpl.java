@@ -151,7 +151,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             Tr.entry(tc, methodName, cc, props);
         }
 
-        this.issuer = configUtils.getRequiredConfigAttribute(props, KEY_ISSUER);
+        this.issuer = configUtils.getConfigAttribute(props, KEY_ISSUER);//configUtils.getRequiredConfigAttribute(props, KEY_ISSUER);
 
         this.audience = configUtils.getStringArrayConfigAttribute(props, KEY_AUDIENCE);
         this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);

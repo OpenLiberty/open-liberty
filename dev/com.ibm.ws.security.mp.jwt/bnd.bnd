@@ -28,7 +28,7 @@ WS-TraceGroup: \
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
-
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package: \
    com.ibm.ws.security.mp.jwt, \
