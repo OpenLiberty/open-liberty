@@ -33,7 +33,6 @@ import com.ibm.ws.security.common.web.CommonWebConstants;
 import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.OidcLoginConfigImpl;
 import com.ibm.ws.security.social.internal.TwitterLoginConfigImpl;
 import com.ibm.ws.security.social.internal.utils.ClientConstants;
 import com.ibm.ws.security.social.internal.utils.SocialLoginRequest;
@@ -158,10 +157,6 @@ public class EndpointServicesTest extends CommonTestClass {
     /************************************** activate **************************************/
 
     @Test
-    public void test() {
-    	
-    }
-    //@Test
     public void activate() {
         try {
             services.activate(cc);
@@ -176,7 +171,7 @@ public class EndpointServicesTest extends CommonTestClass {
 
     /************************************** handleSocialLoginRequest **************************************/
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_noSocLoginReqArg_missingRequiredAttribute() {
         try {
             mockery.checking(new Expectations() {
@@ -204,7 +199,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_noSocLoginReqArg_exceptionThrown() {
         try {
             services = new EndpointServices() {
@@ -237,7 +232,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_noSocLoginReqArg_valid() {
         try {
             services = new EndpointServices() {
@@ -263,7 +258,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_redirect_noConfig() {
         try {
             services = new EndpointServices() {
@@ -297,7 +292,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_redirect_exceptionThrown() {
         try {
             services = new EndpointServices() {
@@ -332,7 +327,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_redirect_nonTwitterConfig() {
         try {
             services = new EndpointServices() {
@@ -361,7 +356,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_redirect_twitterConfig_throwsException() {
         try {
             services = new EndpointServices() {
@@ -396,7 +391,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_redirect_twitterConfig() {
         try {
             services = new EndpointServices() {
@@ -425,7 +420,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_logout() {
         try {
             mockery.checking(new Expectations() {
@@ -447,7 +442,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_wellKnown() {
         try {
             services = new EndpointServices() {
@@ -478,7 +473,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_unknown() {
         try {
             mockery.checking(new Expectations() {
@@ -510,7 +505,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void handleSocialLoginRequest_reqTypeNotDefined() {
         try {
             // Request type doesn't match any of the expected values (should not really ever occur since we're the ones building the request type)
@@ -539,7 +534,7 @@ public class EndpointServicesTest extends CommonTestClass {
     /**************************************** getParameterMap ****************************************/
 
     @SuppressWarnings("static-access")
-    //@Test
+    @Test
     public void getParameterMap_noSecurityService() {
         try {
             services.setActivatedSecurityServiceRef(null);
@@ -557,7 +552,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void getParameterMap_withSecurityService() {
         try {
             mockery.checking(new Expectations() {
@@ -580,7 +575,7 @@ public class EndpointServicesTest extends CommonTestClass {
 
     /**************************************** doTwitter ****************************************/
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_nullResponse() {
         try {
             mockery.checking(new Expectations() {
@@ -602,7 +597,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_missingState() {
         try {
             // Request must have a non-empty state cookie value to be valid; set the state cookie value to null
@@ -632,7 +627,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_emptyState() {
         try {
             // Request must have a non-empty state cookie value to be valid; set the state cookie value to be an empty string
@@ -662,7 +657,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_nullRequestUrlCookie() {
         try {
             // Request URL stored in cookie must be present and non-empty; set its value to null
@@ -693,7 +688,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_emptyRequestUrlCookie() {
         try {
             // Request URL stored in cookie must be present and non-empty; set its value to an empty string
@@ -724,7 +719,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_invalidReqUrlCookie() {
         try {
             // Request URL stored in cookie must be present, non-empty, and a valid URL
@@ -757,7 +752,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_emptyMap() {
         try {
             final Cookie[] cookies = new Cookie[] { cookie1, cookie2 };
@@ -787,7 +782,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_successful_redirectUrlContainsQuery() {
         try {
             final String urlWithQuery = url + "?and=query&string=vals";
@@ -824,7 +819,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doTwitter_getAccessToken_successful() {
         try {
             final Cookie[] cookies = new Cookie[] { cookie1, cookie2 };
@@ -861,7 +856,7 @@ public class EndpointServicesTest extends CommonTestClass {
 
     /**************************************** doRedirect ****************************************/
 
-    //@Test
+    @Test
     public void doRedirect_paramsIncludeError_missingValues() {
         try {
             // "error" parameter should result in an error response
@@ -890,7 +885,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_paramsIncludeError_includesValues() {
         try {
             // "error" parameter should result in an error response
@@ -922,7 +917,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_missingState() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -949,7 +944,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_emptyState() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -976,7 +971,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_noCookies() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -994,7 +989,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_noStateCookie() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -1021,7 +1016,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_stateMismatch() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -1042,7 +1037,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_missingReqUrlCookie() {
         try {
             // Include only the state cookie
@@ -1063,7 +1058,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_emptyReqUrlCookie() {
         try {
             // Include request URL cookie
@@ -1085,7 +1080,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_invalidReqUrl() {
         try {
             // Include request URL cookie
@@ -1111,7 +1106,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_missingCode() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -1138,7 +1133,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_emptyCode() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -1165,7 +1160,7 @@ public class EndpointServicesTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void doRedirect_validCode() {
         try {
             final Map<String, String[]> paramMap = new HashMap<String, String[]>();
@@ -1202,7 +1197,7 @@ public class EndpointServicesTest extends CommonTestClass {
     /**************************************** getAllSocialLoginConfigs ****************************************/
 
     @SuppressWarnings("static-access")
-    //@Test
+    @Test
     public void getAllSocialLoginConfigs_noConfigRef() {
         try {
             services.socialLoginConfigRef = null;
@@ -1220,7 +1215,7 @@ public class EndpointServicesTest extends CommonTestClass {
     }
 
     @SuppressWarnings("static-access")
-    //@Test
+    @Test
     public void getAllSocialLoginConfigs_noConfigs() {
         try {
             services.socialLoginConfigRef = socialLoginConfigRef;
@@ -1250,7 +1245,7 @@ public class EndpointServicesTest extends CommonTestClass {
     }
 
     @SuppressWarnings("static-access")
-    //@Test
+    @Test
     public void getAllSocialLoginConfigs_withConfigs() {
         try {
             services.socialLoginConfigRef = socialLoginConfigRef;
@@ -1287,7 +1282,7 @@ public class EndpointServicesTest extends CommonTestClass {
     }
 
     @SuppressWarnings("static-access")
-    //@Test
+    @Test
     public void getAllSocialLoginConfigs_withConfigsAndOptionalData() {
         try {
             services.socialLoginConfigRef = socialLoginConfigRef;

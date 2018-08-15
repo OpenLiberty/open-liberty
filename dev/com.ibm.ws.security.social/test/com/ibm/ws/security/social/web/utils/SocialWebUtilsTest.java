@@ -106,11 +106,6 @@ public class SocialWebUtilsTest extends CommonTestClass {
     /****************************************** doClientSideRedirect ******************************************/
 
     @Test
-    public void test() {
-    	
-    }
-    
-    //@Test
     public void doClientSideRedirect() throws Exception {
         mockery.checking(new Expectations() {
             {
@@ -131,7 +126,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** createJavaScriptForRedirect ******************************************/
 
-    //@Test
+    @Test
     public void createJavaScriptForRedirect() throws Exception {
         String scriptStart = "<script type=\"text/javascript\" language=\"javascript\">";
         String scriptEnd = "</script>";
@@ -157,7 +152,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getAndClearCookie ******************************************/
 
-    //@Test
+    @Test
     public void getAndClearCookie() throws Exception {
         final String MY_COOKIE_NAME = "MyCookie";
         final String MY_COOKIE_VALUE = "Some cookie value";
@@ -182,7 +177,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertEquals("Cookie value did not match the expected value.", MY_COOKIE_VALUE, result);
     }
 
-    //@Test
+    @Test
     public void getAndClearCookie_cookieDoesNotExist() throws Exception {
         final String MY_COOKIE_NAME = "MyCookie";
         final Cookie[] cookies = new Cookie[] { cookie1, cookie2 };
@@ -201,7 +196,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getRequestUrlWithEncodedQueryString ******************************************/
 
-    //@Test
+    @Test
     public void getRequestUrlWithEncodedQueryString_nullQueryString() throws Exception {
         final String url = LOGIN_URL;
         mockery.checking(new Expectations() {
@@ -217,7 +212,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertEquals("Result did not match expected value.", url, result);
     }
 
-    //@Test
+    @Test
     public void getRequestUrlWithEncodedQueryString_withQueryString() throws Exception {
         utils = new SocialWebUtils() {
             public String getUrlEncodedQueryString(HttpServletRequest req) {
@@ -243,7 +238,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getUrlEncodedQueryString ******************************************/
 
-    //@Test
+    @Test
     public void getUrlEncodedQueryString_noParams() throws Exception {
         final Map<String, String[]> params = new HashMap<String, String[]>();
         mockery.checking(new Expectations() {
@@ -257,7 +252,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertTrue("Result should have been empty, but was: [" + result + "].", result.isEmpty());
     }
 
-    //@Test
+    @Test
     public void getUrlEncodedQueryString_withParams() throws Exception {
         utils = new SocialWebUtils() {
             public String getUrlEncodedQueryStringFromParameterMap(Map<String, String[]> params) {
@@ -284,7 +279,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getUrlEncodedQueryStringFromParameterMap ******************************************/
 
-    //@Test
+    @Test
     public void getUrlEncodedQueryStringFromParameterMap_noParams() throws Exception {
         final Map<String, String[]> params = new HashMap<String, String[]>();
 
@@ -292,7 +287,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertTrue("Result should have been empty but was: [" + result + "].", result.isEmpty());
     }
 
-    //@Test
+    @Test
     public void getUrlEncodedQueryStringFromParameterMap_oneParams() throws Exception {
         utils = new SocialWebUtils() {
             public String getUrlEncodedParameterAndValues(String key, String[] values) {
@@ -315,7 +310,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertEquals("Result did not match expected value.", encodedQuery, result);
     }
 
-    //@Test
+    @Test
     public void getUrlEncodedQueryStringFromParameterMap_multipleParams() throws Exception {
         utils = new SocialWebUtils() {
             public String getUrlEncodedParameterAndValues(String key, String[] values) {
@@ -348,7 +343,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getUrlEncodedParameterAndValues ******************************************/
 
-    //@Test
+    @Test
     public void getUrlEncodedParameterAndValues_noValue() throws Exception {
         final String key = "key";
 
@@ -356,7 +351,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertEquals("Result did not match expected value.", key, result);
     }
 
-    //@Test
+    @Test
     public void getUrlEncodedParameterAndValues_withOneValue() throws Exception {
         String key = "key";
         String value = "value";
@@ -365,7 +360,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertEquals("Result did not match expected value.", key + "=" + value, result);
     }
 
-    //@Test
+    @Test
     public void getUrlEncodedParameterAndValues_withOneValue_specialChars() throws Exception {
         String key = " k e y\t\r\n ";
         String value = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?";
@@ -377,7 +372,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         assertEquals("Result did not match expected value.", expectedResult, result);
     }
 
-    //@Test
+    @Test
     public void getUrlEncodedParameterAndValues_withMultipleValue() throws Exception {
         String key = "key 1";
         String value1 = "value1";
@@ -395,7 +390,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getLoginHint ******************************************/
 
-    //@Test
+    @Test
     public void test_getLoginHint_hintInHeader() throws Exception {
         final String hintValue = "my hint value";
         utils = new SocialWebUtils() {
@@ -411,7 +406,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHint_hintInCookie() throws Exception {
         final String hintValue = "my hint value";
         utils = new SocialWebUtils() {
@@ -431,7 +426,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHint_hintInParameter() throws Exception {
         final String hintValue = "my hint value";
         utils = new SocialWebUtils() {
@@ -455,7 +450,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHint_hintNotFound() throws Exception {
         utils = new SocialWebUtils() {
             String getLoginHintFromHeader(HttpServletRequest request) {
@@ -480,7 +475,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getLoginHintFromHeader ******************************************/
 
-    //@Test
+    @Test
     public void test_getLoginHintFromHeader_null() throws Exception {
         final String hintValue = null;
         try {
@@ -497,7 +492,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromHeader_empty() throws Exception {
         final String hintValue = "";
         try {
@@ -514,7 +509,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromHeader_nonEmpty() throws Exception {
         final String hintValue = "\t my\n\r \r header..... value ";
         try {
@@ -533,7 +528,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getLoginHintFromCookie ******************************************/
 
-    //@Test
+    @Test
     public void test_getLoginHintFromCookie_nullCookies() throws Exception {
         try {
             mockery.checking(new Expectations() {
@@ -549,7 +544,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromCookie_noCookies() throws Exception {
         try {
             final Cookie[] cookies = new Cookie[0];
@@ -566,7 +561,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromCookie_noHintCookie() throws Exception {
         try {
             final Cookie[] cookies = new Cookie[] { cookie1 };
@@ -585,7 +580,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromCookie_hintCookiePartialNameMatch() throws Exception {
         try {
             final Cookie[] cookies = new Cookie[] { cookie1 };
@@ -604,7 +599,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromCookie_emptyHintCookie() throws Exception {
         try {
             final Cookie[] cookies = new Cookie[] { cookie1 };
@@ -626,7 +621,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromCookie_nonEmptyHintCookie() throws Exception {
         try {
             final Cookie[] cookies = new Cookie[] { cookie1 };
@@ -650,7 +645,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** getLoginHintFromParameter ******************************************/
 
-    //@Test
+    @Test
     public void test_getLoginHintFromParameter_null() throws Exception {
         final String hintValue = null;
         try {
@@ -667,7 +662,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromParameter_empty() throws Exception {
         final String hintValue = "";
         try {
@@ -684,7 +679,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_getLoginHintFromParameter_nonEmpty() throws Exception {
         final String hintValue = "\t my\n\r \r parameter..... value ";
         try {
@@ -703,7 +698,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** saveRequestUrlAndParameters ******************************************/
 
-    //@Test
+    @Test
     public void test_saveRequestUrlAndParameters() throws Exception {
         final String reqUrlAndQuery = LOGIN_URL + "?param=value";
         utils = new SocialWebUtils() {
@@ -736,7 +731,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** removeRequestUrlAndParameters ******************************************/
 
-    //@Test
+    @Test
     public void test_removeRequestUrlAndParameters_postDataInCookie() throws Exception {
         utils = new SocialWebUtils() {
             protected ReferrerURLCookieHandler getCookieHandler() {
@@ -764,7 +759,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_removeRequestUrlAndParameters_postDataNotInCookie() throws Exception {
         utils = new SocialWebUtils() {
             protected ReferrerURLCookieHandler getCookieHandler() {
@@ -794,7 +789,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** deleteCookie ******************************************/
 
-    //@Test
+    @Test
     public void test_deleteCookie() throws Exception {
         final String cookieName = "myCookie";
         utils = new SocialWebUtils() {
@@ -823,7 +818,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
 
     /****************************************** createExpiredCookie ******************************************/
 
-    //@Test
+    @Test
     public void test_createExpiredCookie_notHttpOnly_notSecure() throws Exception {
         final String cookieName = "myCookie";
         final String requestUri = "some uri value";
@@ -850,7 +845,7 @@ public class SocialWebUtilsTest extends CommonTestClass {
         }
     }
 
-    //@Test
+    @Test
     public void test_createExpiredCookie_gttpOnly_secure() throws Exception {
         final String cookieName = "myCookie";
         final String requestUri = LOGIN_URL;
