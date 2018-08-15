@@ -31,7 +31,7 @@ import java.util.concurrent.Executor;
 
 public class TranNoneConnection implements Connection {
     private final Connection impl;
-    private int isolationLevel = -1;
+    private int isolationLevel = Connection.TRANSACTION_NONE;
 
     public TranNoneConnection(Connection conn) {
         impl = conn;
@@ -154,11 +154,7 @@ public class TranNoneConnection implements Connection {
 
     @Override
     public int getTransactionIsolation() throws SQLException {
-        if (isolationLevel != -1) {
-            return isolationLevel;
-        } else {
-            return Connection.TRANSACTION_NONE;
-        }
+        return isolationLevel;
     }
 
     @Override
