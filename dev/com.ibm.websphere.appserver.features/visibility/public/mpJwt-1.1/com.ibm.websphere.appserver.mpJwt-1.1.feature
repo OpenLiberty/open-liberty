@@ -20,5 +20,5 @@ Subsystem-Name: MicroProfile JSON Web Token 1.1
   com.ibm.ws.org.apache.commons.codec.1.4, \
   com.ibm.ws.org.apache.commons.logging.1.0.3, \
   com.ibm.ws.security.mp.jwt.1.1.config
-kind=noship
-edition=full
+kind=ga
+edition=core
