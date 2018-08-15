@@ -10,20 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import org.w3c.dom.Node;
 
 /**
  * Representation of the &lt;offering&gt; XML element in an iFix XML file.
  */
 public class Offering {
 
+    public static Offering fromNode(Node n) {
+        String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
+        String tolerance = n.getAttributes().getNamedItem("tolerance") == null ? null : n.getAttributes().getNamedItem("tolerance").getNodeValue();
+        return new Offering(id, tolerance);
+    }
+
     private String id;
 
     private String tolerance;
-
-    public Offering() {
-        //required empty constructor for jaxb
-    }
 
     public Offering(String id, String tolerance) {
         this.id = id;
@@ -34,7 +36,6 @@ public class Offering {
         return this.id;
     }
 
-    @XmlAttribute
     public void setId(String id) {
         this.id = id;
     }
@@ -43,7 +44,6 @@ public class Offering {
         return this.tolerance;
     }
 
-    @XmlAttribute
     public void setTolerance(String tolerance) {
         this.tolerance = tolerance;
     }

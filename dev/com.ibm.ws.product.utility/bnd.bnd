@@ -48,7 +48,4 @@ instrument.disabled: true
 	com.ibm.ws.kernel.security.thread;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.logging.core;version=latest,\
-    javax.activation:activation;version=1.1,\
-    com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-    com.sun.xml.bind:jaxb-core;version=2.2.10,\
-    com.sun.xml.bind:jaxb-impl;version=2.2.10
+    javax.activation:activation;version=1.1
