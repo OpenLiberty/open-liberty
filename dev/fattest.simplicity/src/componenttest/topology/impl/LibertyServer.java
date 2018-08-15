@@ -906,6 +906,7 @@ public class LibertyServer implements LogMonitorClient {
 
         if (preClean) {
             // Tidy up any pre-existing logs
+            Log.info(c, method, "Tidying logs");
             preStartServerLogsTidy();
             clearLogMarks();
         } else {
@@ -921,6 +922,7 @@ public class LibertyServer implements LogMonitorClient {
             if (traceLog != null && traceLog.exists()) {
                 setTraceMarkToEndOfDefaultTrace();
             }
+            Log.info(c, method, "Saving marks");
             logMonitor.setOriginLogMarks();
         }
 
@@ -4298,6 +4300,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param log files to mark. If none are specified, the default log file is marked.
      */
     public void setMarkToEndOfLog(RemoteFile... logFiles) throws Exception {
+        Log.info(c, "setMarkToEndOfLog", "Setting mark to the end of logs (if null, messages.log): " + logFiles);
         logMonitor.setMarkToEndOfLog(logFiles);
     }
 
@@ -4307,6 +4310,7 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception
      */
     public void setTraceMarkToEndOfDefaultTrace() throws Exception {
+        Log.info(c, "setTraceMarkToEndOfDefaultTrace", "Setting mark to the end of trace.log");
         setMarkToEndOfLog(getDefaultTraceFile());
     }
 
@@ -5669,7 +5673,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see componenttest.topology.impl.LogMonitorClient#lmcResetLogOffsets()
      */
     @Override
@@ -5679,7 +5683,7 @@ public class LibertyServer implements LogMonitorClient {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see componenttest.topology.impl.LogMonitorClient#lmcSetOriginLogOffsets()
      */
     @Override

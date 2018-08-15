@@ -58,7 +58,7 @@ public class LogMonitor {
     public void resetLogMarks() {
         client.lmcResetLogOffsets();
         logMarks = new HashMap<String, Long>(originMarks);
-        Log.finer(c, "resetLogMarks", "reset log offsets");
+        Log.info(c, "resetLogMarks", "reset log offsets " + logMarks);
     }
 
     /**
@@ -72,7 +72,7 @@ public class LogMonitor {
         logMarks.clear();
         originMarks.clear();
 
-        Log.finer(c, "clearLogMarks", "cleared marks");
+        Log.info(c, "clearLogMarks", "cleared log marks");
     }
 
     /**
@@ -83,7 +83,7 @@ public class LogMonitor {
         client.lmcSetOriginLogOffsets();
         originMarks = new HashMap<String, Long>(logMarks);
 
-        Log.finer(c, "setOriginLogMarks", "set origin marks");
+        Log.info(c, "setOriginLogMarks", "set origin log marks " + originMarks);
     }
 
     /**
@@ -111,7 +111,7 @@ public class LogMonitor {
             }
 
             Long oldMarkOffset = logMarks.put(path, offset);
-            Log.finer(c, "setMarkToEndOfLog", path + ", old mark offset=" + oldMarkOffset + ", new mark offset=" + offset);
+            Log.info(c, "setMarkToEndOfLog", path + ", old mark offset=" + oldMarkOffset + ", new mark offset=" + offset + " for " + logFile);
         }
     }
 
@@ -128,7 +128,7 @@ public class LogMonitor {
             logMarks.put(logFile, 0L);
         }
 
-        Log.finer(c, "getMarkOffset", "mark offset=" + logMarks.get(logFile));
+        Log.info(c, "getMarkOffset", "mark offset=" + logMarks.get(logFile) + " for " + logFile);
         return logMarks.get(logFile);
     }
 
