@@ -8,9 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-tools-common;3.2.4}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-tools-common;3.2.6}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-tools-common;3.2.4}!/!META-INF/*
+   @${repo;org.apache.cxf:cxf-tools-common;3.2.6}!/!META-INF/*
 
--buildpath: org.apache.cxf:cxf-tools-common;version=3.2.4
+-buildpath: org.apache.cxf:cxf-tools-common;version=3.2.6
