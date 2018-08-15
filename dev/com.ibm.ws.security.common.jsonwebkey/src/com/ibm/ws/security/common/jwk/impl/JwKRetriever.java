@@ -404,9 +404,11 @@ public class JwKRetriever {
             jwk = parsePEMFormat(keyText, signatureAlgorithm);
         } else {
             JSONObject jsonObject = parseJsonObject(keyText);
-            jwk = parseJwkFormat(jsonObject, signatureAlgorithm);
-            if (jwk == null && jsonObject.containsKey(JWKS)) {
-                jwks.addAll(parseJwksFormat(jsonObject, signatureAlgorithm));
+            if (jsonObject != null) {
+                jwk = parseJwkFormat(jsonObject, signatureAlgorithm);
+                if (jwk == null && jsonObject.containsKey(JWKS)) {
+                    jwks.addAll(parseJwksFormat(jsonObject, signatureAlgorithm));
+                }
             }
         }
 

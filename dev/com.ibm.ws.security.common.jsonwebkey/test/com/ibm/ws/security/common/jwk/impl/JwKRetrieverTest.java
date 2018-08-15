@@ -111,7 +111,7 @@ public class JwKRetrieverTest {
 
         assertNotNull("There must a public key.", publicKey);
     }
-    
+
     @Test
     public void testGetPublicKeyFromJwk_publicKeyTextPEM() throws Exception {
         publickey = PemKeyUtilTest.PEM_KEY_TEXT;
@@ -123,10 +123,18 @@ public class JwKRetrieverTest {
         assertNotNull("There must a public key.", publicKey);
     }
 
-    // TODO: Test caching
+    @Test
+    public void testGetPublicKeyFromJwk_publicKeyTextInvalid() throws Exception {
+        publickey = "notAValidKeyText";
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null);
+
+        assertNull("There must not be a public key.", publicKey);
+    }
 
     // TODO: Test Base64 encoded JWK
-    // TODO: Test Base64 encoded JWKS
-    // TODO: Test other URL schemes 
+    // TODO: Test Base64 encoded JWKS 
 
 }
