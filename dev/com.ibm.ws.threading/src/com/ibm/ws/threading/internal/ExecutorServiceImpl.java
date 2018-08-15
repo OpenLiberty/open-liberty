@@ -81,7 +81,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * Indicates whether any interceptors are currently being used. This is for performance
      * reasons, to avoid getting an iterator over an empty set for every task that is submitted.
      */
-    boolean interceptorsActive = true;
+    boolean interceptorsActive = false;
 
     /**
      * A Set of interceptors that are all given a chance to wrap tasks that are submitted
@@ -217,6 +217,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         RunnableWrapper(Runnable r) {
             this.wrappedTask = r;
+
             phaser.register();
         }
 
@@ -230,6 +231,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
             try {
                 this.wrappedTask.run();
             } finally {
+
                 phaser.arriveAndDeregister();
             }
         }
@@ -237,7 +239,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     }
 
     // Used to keep track of the number of threads that are not finished
-    private final Phaser phaser = new Phaser(1);
+    protected final Phaser phaser = new Phaser(1);
 
     private class CallableWrapper<T> implements Callable<T> {
         private final Callable<T> callable;
@@ -325,35 +327,35 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     @Override
     public <T> Future<T> submit(Callable<T> task) {
         threadPoolController.resumeIfPaused();
-        return threadPool.submit(interceptorsActive ? wrap(task) : task);
+        return threadPool.submit(createWrappedCallable(task));
     }
 
     /** {@inheritDoc} */
     @Override
     public Future<?> submit(Runnable task) {
         threadPoolController.resumeIfPaused();
-        return threadPool.submit(interceptorsActive ? wrap(task) : task);
+        return threadPool.submit(createWrappedRunnable(task));
     }
 
     /** {@inheritDoc} */
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
         threadPoolController.resumeIfPaused();
-        return threadPool.submit(interceptorsActive ? wrap(task) : task, result);
+        return threadPool.submit(createWrappedRunnable(task), result);
     }
 
     /** {@inheritDoc} */
     @Override
     public void execute(Runnable command) {
         threadPoolController.resumeIfPaused();
-        threadPool.execute(interceptorsActive ? wrap(command) : command);
+        threadPool.execute(createWrappedRunnable(command));
     }
 
     /** {@inheritDoc} */
     @Override
     public void executeGlobal(Runnable command) {
         threadPoolController.resumeIfPaused();
-        threadPool.execute(interceptorsActive ? wrap(command) : command);
+        threadPool.execute(createWrappedRunnable(command));
     }
 
     /**
@@ -442,16 +444,29 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         }
     }
 
+    private Runnable createWrappedRunnable(Runnable in) {
+        Runnable r = interceptorsActive ? wrap(in) : in;
+        if (serverStopping)
+            return r;
+
+        return new RunnableWrapper(r);
+    }
+
     Runnable wrap(Runnable r) {
         Iterator<ExecutorServiceTaskInterceptor> i = interceptors.iterator();
         while (i.hasNext()) {
             r = i.next().wrap(r);
         }
 
-        if (serverStopping)
-            return r;
+        return r;
+    }
 
-        return new RunnableWrapper(r);
+    private <T> Callable<T> createWrappedCallable(Callable<T> in) {
+
+        Callable<T> c = interceptorsActive ? wrap(in) : in;
+        if (serverStopping)
+            return c;
+        return new CallableWrapper<T>(c);
     }
 
     <T> Callable<T> wrap(Callable<T> c) {
@@ -460,11 +475,10 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
             c = i.next().wrap(c);
         }
 
-        if (serverStopping)
-            return c;
-        return new CallableWrapper<T>(c);
+        return c;
     }
 
+    // This is private, so handling both interceptors and wrapping in this method for simplicity
     private <T> Collection<? extends Callable<T>> wrap(Collection<? extends Callable<T>> tasks) {
         List<Callable<T>> wrappedTasks = new ArrayList<Callable<T>>();
         Iterator<? extends Callable<T>> i = tasks.iterator();
