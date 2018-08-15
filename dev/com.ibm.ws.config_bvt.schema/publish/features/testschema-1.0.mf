@@ -1,7 +1,0 @@
-Subsystem-ManifestVersion: 1
-IBM-ShortName:testschema-1.0
-Subsystem-SymbolicName: testschema-1.0; visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Content: test.server.schema; version="[1,1.0.100)"
-Subsystem-Type: osgi.subsystem.feature
-IBM-Feature-Version: 2
