@@ -272,8 +272,6 @@ public class TAIRequestHelperTest extends CommonTestClass {
                     will(returnValue(authFilter));
                     one(authFilter).isAccepted(request);
                     will(returnValue(true));
-                    one(config).getUniqueId();
-                    will(returnValue(uniqueId));
                 }
             });
 

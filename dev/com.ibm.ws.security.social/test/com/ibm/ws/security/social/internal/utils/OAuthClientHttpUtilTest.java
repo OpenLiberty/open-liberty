@@ -17,6 +17,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -54,6 +55,7 @@ public class OAuthClientHttpUtilTest extends CommonTestClass {
     private final HttpResponse httpResponse = mockery.mock(HttpResponse.class);
     private final HttpClient httpClient = mockery.mock(HttpClient.class);
     private final StatusLine statusLine = mockery.mock(StatusLine.class);
+    private final Header header = mockery.mock(Header.class);
 
     private final String clientId = "myClientId";
     private final String clientSecret = "myClientSecret";
@@ -217,7 +219,11 @@ public class OAuthClientHttpUtilTest extends CommonTestClass {
                 {
                     one(httpResponse).getEntity();
                     will(returnValue(httpEntity));
-                    allowing(httpEntity).getContent();
+                    one(httpEntity).getContentType();
+                    will(returnValue(header));
+                    one(header).getElements();
+                    will(returnValue(new HeaderElement[0]));
+                    one(httpEntity).getContent();
                     will(returnValue(null));
                 }
             });
@@ -677,6 +683,10 @@ public class OAuthClientHttpUtilTest extends CommonTestClass {
                     will(returnValue(reasonPhrase));
                     one(httpResponse).getEntity();
                     will(returnValue(httpEntity));
+                    one(httpEntity).getContentType();
+                    will(returnValue(header));
+                    one(header).getElements();
+                    will(returnValue(new HeaderElement[0]));
                     one(httpEntity).getContent();
                     will(throwException(new IOException(defaultExceptionMsg)));
                 }
@@ -1839,7 +1849,7 @@ public class OAuthClientHttpUtilTest extends CommonTestClass {
 
     /************************************** Helper methods **************************************/
 
-    void commonEndpointInvocationExpectations() throws Exception {
+    private void commonEndpointInvocationExpectations() throws Exception {
         mockery.checking(new Expectations() {
             {
                 allowing(mockInterface).createHTTPClient();
@@ -1851,7 +1861,7 @@ public class OAuthClientHttpUtilTest extends CommonTestClass {
         });
     }
 
-    void verifyEndpointResult(Map<String, Object> result) {
+    private void verifyEndpointResult(Map<String, Object> result) {
         assertNotNull("Result from posting to endpoint should not have been null.", result);
         assertEquals("Number of entries in result did not match expected value. Result was " + result, 2, result.size());
         assertNotNull("Result is missing " + ClientConstants.RESPONSEMAP_CODE + " entry. Result was " + result, result.get(ClientConstants.RESPONSEMAP_CODE));
@@ -1868,7 +1878,7 @@ public class OAuthClientHttpUtilTest extends CommonTestClass {
      * @param expectAuthzHeader
      *            Boolean indicating whether the request object is expected to include an Authorization header.
      */
-    void verifyEndpointRequest(Map<String, Object> result, String requestMethod, int numHeaders, boolean expectAuthzHeader) {
+    private void verifyEndpointRequest(Map<String, Object> result, String requestMethod, int numHeaders, boolean expectAuthzHeader) {
         assertNotNull("Result is missing " + ClientConstants.RESPONSEMAP_METHOD + " entry. Result was " + result, result.get(ClientConstants.RESPONSEMAP_METHOD));
         // Get the request method object from the result
         HttpRequestBase request = null;

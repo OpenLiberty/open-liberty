@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -1404,6 +1405,10 @@ public class OAuthClientUtilTest extends CommonTestClass {
                     will(returnValue(false));
                     one(httpResponse).getEntity();
                     will(returnValue(httpEntity));
+                    one(httpEntity).getContentType();
+                    will(returnValue(header));
+                    one(header).getElements();
+                    will(returnValue(new HeaderElement[0]));
                     one(httpEntity).getContent();
                     will(throwException(new IOException(defaultExceptionMsg)));
                 }
