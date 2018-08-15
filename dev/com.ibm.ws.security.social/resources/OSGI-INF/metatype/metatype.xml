@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2016, 2018 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+    <!-- if you add to or change this, consider changing oidc conf too --> 
+    <OCD id="com.ibm.ws.security.social.google.metatype" name="%social.google.conf" description="%social.google.conf.desc" 
+         ibm:alias="googleLogin">
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="googleLogin" ibm:final="true" ibm:unique="uniqueId"/>
+        <AD id="clientId" name="%clientId" description="%clientId.desc"
+            required="true" type="String" /> 
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
+            required="true" type="String" ibm:type="password" /> 
+        <!-- AD id="userApi" required="false" type="String" not defined --> 
+        <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
+            required="false" type="String" default="https://accounts.google.com/o/oauth2/v2/auth"/>
+        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" default="https://www.googleapis.com/oauth2/v4/token"/>  
+        <AD id="jwksUri" name="%jwksUri" description="%jwksUri.desc"
+            required="false" type="String" default="https://www.googleapis.com/oauth2/v3/certs"/>
+        <AD id="scope" name="%scope" description="%scope.desc"
+            required="false" type="String" default="openid profile email" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="email"/>
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" />
+        <AD id="displayName" name="%displayName" description="%displayName.desc"
+            required="false" type="String" default="Google" />
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://accounts.google.com" />
+        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+             type="String" default="client_secret_post" >
+               <Option label="client_secret_basic" value="client_secret_basic" />
+               <Option label="client_secret_post"  value="client_secret_post" /> 
+        </AD>
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        
+        <AD id="issuer" name="%issuer" description="%issuer.desc" required="false" type="String"
+            default="https://accounts.google.com" />            
+        <AD id="realmNameAttribute" name="%realmNameAttribute" description="%realmNameAttribute.desc"
+            required="false" type="String" default="iss" />
+        <AD id="groupNameAttribute" name="%groupNameAttribute" description="%groupNameAttribute.desc"
+            required="false" type="String" />
+        <AD id="userUniqueIdAttribute" name="%userUniqueIdAttribute" description="%userUniqueIdAttribute.desc"
+            required="false" type="String" />
+        <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc"
+            required="false" type="Integer" default="300000" />
+        <AD id="signatureAlgorithm" name="%signatureAlgorithm"  description="%signatureAlgorithm.desc"
+            required="false" type="String" default="RS256" /> 
+            
+            
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.google">
+        <Object ocdref="com.ibm.ws.security.social.google.metatype" />
+    </Designate> 
+    
+    <OCD id="com.ibm.ws.security.social.twitter.metatype" name="%social.twitter.conf" description="%social.twitter.conf.desc" 
+         ibm:alias="twitterLogin">
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="twitterLogin" ibm:final="true" ibm:unique="uniqueId"/>
+        <AD id="consumerKey" name="%consumerKey" description="%consumerKey.desc"
+            required="true" type="String" /> 
+        <AD id="consumerSecret" name="%consumerSecret" description="%consumerSecret.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="requestTokenUrl" name="%requestTokenUrl" description="%requestTokenUrl.desc"
+            required="false" type="String" default="https://api.twitter.com/oauth/request_token"/>             
+        <AD id="userAuthorizationUrl" name="%userAuthorizationUrl" description="%userAuthorizationUrl.desc"
+            required="false" type="String" default="https://api.twitter.com/oauth/authenticate"/>
+        <AD id="accessTokenUrl" name="%accessTokenUrl" description="%accessTokenUrl.desc"
+            required="false" type="String" default="https://api.twitter.com/oauth/access_token"/>
+        <AD id="userApi" name="%userApi" description="%userApi.desc"
+            required="false" type="String" default="https://api.twitter.com/1.1/account/verify_credentials.json"/>                                
+        <!-- not defined AD id="scope" name="%scope" description="%scope.desc"
+            required="false" type="String" default="openid profile email" / -->
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="email"/>
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />            
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" />                                                         
+        <AD id="displayName" name="%displayName" description="%displayName.desc"
+            required="false" type="String" default="Twitter" />
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://twitter.com" />
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.twitter">
+        <Object ocdref="com.ibm.ws.security.social.twitter.metatype" />
+    </Designate>   
+
+    <OCD id="com.ibm.ws.security.social.facebook.metatype" name="%social.facebook.conf" description="%social.facebook.conf.desc" 
+         ibm:alias="facebookLogin">
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="facebookLogin" ibm:final="true"  ibm:unique="uniqueId"/>
+        <AD id="clientId" name="%clientId" description="%clientId.desc"
+            required="true" type="String" /> 
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="loginDialogEndpoint" name="%loginDialogEndpoint" description="%loginDialogEndpoint.desc"
+            required="false" type="String" default="https://www.facebook.com/v2.8/dialog/oauth"/>
+        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" default="https://graph.facebook.com/v2.8/oauth/access_token"/>
+        <AD id="userApi" name="%userApi" description="%userApi.desc"
+            required="false" type="String" default="https://graph.facebook.com/v2.8/me?fields=id\,name\,email"/>                 
+        <AD id="permissions" name="%permissions" description="%permissions.desc"
+            required="false" type="String" default="public_profile email" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="email"/>
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />            
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" />                                                  
+        <AD id="displayName" name="%displayName" description="%displayName.desc"
+            required="false" type="String" default="Facebook" /> 
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://www.facebook.com" />
+        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+             type="String" default="client_secret_post" >
+                <Option label="client_secret_basic" value="client_secret_basic" />
+                <Option label="client_secret_post"  value="client_secret_post" /> 
+        </AD>        
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />                     
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.facebook">
+        <Object ocdref="com.ibm.ws.security.social.facebook.metatype" />
+    </Designate> 
+
+    <OCD id="com.ibm.ws.security.social.github.metatype" name="%social.github.conf" description="%social.github.conf.desc" 
+         ibm:alias="githubLogin">
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="githubLogin" ibm:final="true"  ibm:unique="uniqueId"/>
+        <AD id="clientId" name="%clientId" description="%clientId.desc"
+            required="true" type="String" /> 
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
+            required="false" type="String" default="https://github.com/login/oauth/authorize"/>
+        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" default="https://github.com/login/oauth/access_token"/>  
+        <AD id="userApi" name="%userApi" description="%userApi.desc"
+            required="false" type="String" default="https://api.github.com/user/emails"/>                    
+        <AD id="scope" name="%scope" description="%scope.desc"
+            required="false" type="String" default="user" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="email"/>
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />            
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" />
+        <AD id="displayName" name="%displayName" description="%displayName.desc"
+            required="false" type="String" default="GitHub" /> 
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://github.com" />
+        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+             type="String" default="client_secret_post" >
+               <Option label="client_secret_basic" value="client_secret_basic" />
+               <Option label="client_secret_post"  value="client_secret_post" />
+        </AD>        
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />                                                                  
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.github">
+        <Object ocdref="com.ibm.ws.security.social.github.metatype" />
+    </Designate>
+     
+    <OCD id="com.ibm.ws.security.social.linkedin.metatype" name="%social.linkedin.conf" description="%social.linkedin.conf.desc" 
+         ibm:alias="linkedinLogin">
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="linkedinLogin" ibm:final="true"  ibm:unique="uniqueId"/>
+        <AD id="clientId" name="%clientId" description="%clientId.desc"
+            required="true" type="String" /> 
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
+            required="true" type="String" ibm:type="password" />
+        <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
+            required="false" type="String" default="https://www.linkedin.com/oauth/v2/authorization"/>
+        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" default="https://www.linkedin.com/oauth/v2/accessToken"/>  
+        <AD id="userApi" name="%userApi" description="%userApi.desc"
+            required="false" type="String" default="https://api.linkedin.com/v1/people/~:(firstName\,id\,lastName\,email-address)"/>                    
+        <AD id="scope" name="%scope" description="%scope.desc"
+            required="false" type="String" default="r_emailaddress r_basicprofile" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="emailAddress"/>
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />            
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" />                                 
+        <AD id="displayName" name="%displayName" description="%displayName.desc"
+            required="false" type="String" default="Linkedin" /> 
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://www.linkednin.com" />
+        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+             type="String" default="client_secret_post" >
+                <Option label="client_secret_basic" value="client_secret_basic" />
+                <Option label="client_secret_post"  value="client_secret_post" />
+        </AD> 
+        <AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false" 
+             type="Boolean" default="true" />
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />                                     
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.social.linkedin">
+        <Object ocdref="com.ibm.ws.security.social.linkedin.metatype" />
+    </Designate>
+        
+    <OCD id="com.ibm.ws.security.social.oauth2login.metatype" name="%social.oauth2login.conf" description="%social.oauth2login.conf.desc" 
+         ibm:alias="oauth2Login">
+        <AD id="id" name="%uniqueId" description="%uniqueId.desc"
+            required="true" type="String" ibm:unique="uniqueId"/>
+        <AD id="displayName" name="%displayName" description="%displayName.desc" required="false" type="String" />
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" />
+        <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
+            required="true" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
+        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
+        <AD id="jwksUri" name="internal" description="internal use only"
+            required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
+        <AD id="responseType" name="internal" description="internal use only"
+            required="false" type="String" default="code"  />
+               <!-- future
+                <Option label="%responseType.code" value="code" />
+            	<Option label="%responseType.idToken" value="id_token" />
+            	<Option label="%responseType.idTokenToken" value="id_token token" />
+            	<Option label="%responseType.Token" value="token" />
+            	 </AD>
+            	-->
+       
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false" 
+             type="String" default="client_secret_post" >
+                <Option label="client_secret_basic" value="client_secret_basic" />
+                <Option label="client_secret_post"  value="client_secret_post" />               
+        </AD>
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="scope" name="%scope" description="%scope.desc"
+            required="true" type="String" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+            ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />             
+        <AD id="clientId" name="%clientId" description="%clientId.desc"  required="true" type="String" /> 
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc" required="true" type="String" ibm:type="password" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc" required="false" type="String" ibm:type="token" default="email"/>
+        <AD id="userApi" name="%userApi" description="%userApi.desc" required="false" type="String"/>
+        <AD id="realmName" name="%realmName" description="%realmName.desc" required="false" type="String" ibm:type="token" />
+        <AD id="realmNameAttribute" name="%realmNameAttribute" description="%realmNameAttribute.desc" required="false" type="String" ibm:type="token" />
+        <AD id="groupNameAttribute" name="%groupNameAttribute" description="%groupNameAttribute.desc" required="false" type="String" ibm:type="token" />
+        <AD id="userUniqueIdAttribute" name="%userUniqueIdAttribute" description="%userUniqueIdAttribute.desc" required="false" type="String" ibm:type="token" />
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc" required="false" type="Boolean" default="false" />
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" /> 
+  		<AD id="nonce" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>     
+  		<AD id="userApiNeedsSpecialHeader" name="internal" description="internal use only" required="false" 
+             type="Boolean" default="false" />        
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.security.social.oauth2login">
+        <Object ocdref="com.ibm.ws.security.social.oauth2login.metatype" />
+    </Designate>
+    
+      <!-- Default for use with other OIDC services.  Like google except most of the defaults
+           have been removed. If you add to or change this, consider changing google conf too -->                             
+     <Designate factoryPid="com.ibm.ws.security.social.oidclogin">
+        <Object ocdref="com.ibm.ws.security.social.oidc.metatype" />
+     </Designate>           
+     <OCD id="com.ibm.ws.security.social.oidc.metatype" name="%social.oidc.conf" description="%social.oidc.conf.desc" 
+         ibm:alias="oidcLogin">    
+         <AD id="id" name="%uniqueId" description="%uniqueId.desc"
+            required="true" type="String" ibm:unique="uniqueId"/>   
+        <!--
+        <AD id="id" name="internal" description="internal use only"
+            required="false" type="String" default="oidcLogin" ibm:final="true" ibm:unique="uniqueId"/>
+        --> 
+        <AD id="clientId" name="%clientId" description="%clientId.desc"
+            required="true" type="String" /> 
+        <AD id="clientSecret" name="%clientSecret" description="%clientSecret.desc"
+            required="true" type="String" ibm:type="password" /> 
+        <!-- AD id="userApi" required="false" type="String" not defined --> 
+        <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
+            required="false" type="String" />
+        <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" />  
+        <AD id="jwksUri" name="%jwksUri" description="%jwksUri.desc"
+            required="false" type="String" />
+        <AD id="scope" name="%scope" description="%scope.desc"
+            required="false" type="String" default="openid profile email" />
+        <AD id="userNameAttribute" name="%userNameAttribute" description="%userNameAttribute.desc"
+            required="false" type="String" default="sub" />
+        <AD id="mapToUserRegistry" name="%mapToUserRegistry" description="%mapToUserRegistry.desc"
+            required="false" type="Boolean" default="false" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+        <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" ibm:type="pid" 
+             ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+        <AD id="trustAliasName" name="%trustAliasName" description="%trustAliasName.desc" required="false" type="String" />
+        <AD id="jwt" ibm:type="pid" ibm:reference="com.ibm.ws.security.social.login.jwt" 
+             required="false" type="String" />
+        <AD id="isClientSideRedirectSupported" name="%isClientSideRedirectSupported" description="%isClientSideRedirectSupported.desc"
+            required="false" type="Boolean" default="true" />
+        <AD id="displayName" name="%displayName" description="%displayName.desc"
+            required="false" type="String" default="oidcLogin" />
+        <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" />         
+         
+        <AD id="issuer" name="%issuer" description="%issuer.desc" required="false" type="String" />            
+        <AD id="realmNameAttribute" name="%realmNameAttribute" description="%realmNameAttribute.desc"
+            required="false" type="String"  />
+        <AD id="groupNameAttribute" name="%groupNameAttribute" description="%groupNameAttribute.desc"
+            required="false"  type="String" />
+        <AD id="userUniqueIdAttribute" name="%userUniqueIdAttribute" description="%userUniqueIdAttribute.desc"
+            required="false"  type="String" />
+        <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc"
+            required="false"  type="Integer" default="300000" />
+        <AD id="signatureAlgorithm" name="%signatureAlgorithm"  description="%signatureAlgorithm.desc"
+            required="false" type="String"  default="RS256" /> 
+        <!-- todo: might need a name for this next one in metatype.properties after 2q --> 
+        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+             type="String" default="client_secret_post" >
+               <Option label="client_secret_basic" value="client_secret_basic" />
+               <Option label="client_secret_post"  value="client_secret_post" /> 
+         </AD>
+        <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
+        <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="true"/>       
+    </OCD>
+
+     <!-- 238750, configurable context root.
+          The alias or name is the name of the element in server.xml. 
+          contextPath is the attribute that will define the context root, ex:
+          <socialLoginWebapp contextPath="/some/place" />
+      -->
+     <OCD description="%socialLoginWebapp.desc" name="%socialLoginWebapp.name" 
+         id="com.ibm.ws.security.social.webapp" 
+         ibm:alias="socialLoginWebapp" ibmui:localization="OSGI-INF/l10n/metatype">   <!-- alias has to match bnd file -->                         
+         <AD id="contextPath" name="%socialLoginWebapp.contextPath.name" description="%socialLoginWebapp.contextPath.desc"
+            required="true" type="String" default="/ibm/api/social-login" />
+         <AD id="contextName" name="internal" description="internal use only"
+            ibm:final="true" type="String" default="socialLoginWebapp" />
+        <AD id="socialMediaSelectionPageUrl" name="%socialMediaSelectionPageUrl" description="%socialMediaSelectionPageUrl.desc"
+            required="false" type="String" ibm:type="token" /> <!-- trim the beginning and ending spaces-->
+         <AD id="enableLocalAuthentication" name="internal" description="internal use only" type="Boolean" default="false" />
+    </OCD>    
+    <Designate pid="com.ibm.ws.security.social.webapp"> <!--  needs to match pid in WabConfiguration impl -->        
+        <Object ocdref="com.ibm.ws.security.social.webapp"/> <!--  just needs to ref the id in the OCD element. -->
+    </Designate>
+    <!--  see also WABConfiguration javadoc -->
+    <OCD id="com.ibm.ws.security.social.login.jwt.metatype" name="%jwtBuilder" description="%jwtBuilder.desc" 
+         ibmui:localization="OSGI-INF/l10n/metatype" >
+     	 <AD id="builder" name="%jwtRef"    description="%jwtRef.desc"     required="false" type="String" ibm:type="token" />
+         <AD id="claims"  name="%jwtClaims" description="%jwtClaims.desc"  required="false" type="String" cardinality="400" />
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.security.social.login.jwt">
+        <Object ocdref="com.ibm.ws.security.social.login.jwt.metatype" />
+    </Designate>
+               
+</metatype:MetaData>
