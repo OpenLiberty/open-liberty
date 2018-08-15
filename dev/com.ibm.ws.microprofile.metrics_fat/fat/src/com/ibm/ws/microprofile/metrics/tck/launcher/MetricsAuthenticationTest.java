@@ -14,8 +14,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.HttpURLConnection;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,8 +40,8 @@ public class MetricsAuthenticationTest {
     @Server("MetricsAuthenticationServer")
     public static LibertyServer server;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
         HttpUtils.trustAllCertificates();
 
@@ -49,46 +49,51 @@ public class MetricsAuthenticationTest {
 
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         server.stopServer();
+        MetricsAuthTestUtil.removeFeature(server, "mpMetrics-1.0");
+        MetricsAuthTestUtil.removeFeature(server, "mpMetrics-1.1");
     }
 
     @Test
     public void testMetrics10Auth() throws Exception {
-
-        MetricsAuthTestUtil.removeFeature(server, "mpMetrics-1.1");
-        MetricsAuthTestUtil.addFeature(server, "mpMetrics-1.0");
-
-        //Check that /metrics endpoint is available
-        assertNotNull("Web application is not available at available */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT, server.getDefaultLogFile()));
+        switchFeatureAndWait(false);
 
         testMetricsAuth();
     }
 
     @Test
     public void testMetrics11Auth() throws Exception {
-
-        MetricsAuthTestUtil.removeFeature(server, "mpMetrics-1.0");
-        MetricsAuthTestUtil.addFeature(server, "mpMetrics-1.1");
-
-        //Check that /metrics endpoint is available
-        assertNotNull("Web application is not available at available */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT, server.getDefaultLogFile()));
+        switchFeatureAndWait(true);
 
         testMetricsAuth();
     }
 
-    private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication, boolean waitForLogMessages) throws Exception {
-        if (waitForLogMessages) {
-            server.setMarkToEndOfLog();
+    private void switchFeatureAndWait(boolean enable11) throws Exception {
+        server.setMarkToEndOfLog();
+
+        if (enable11) {
+            MetricsAuthTestUtil.addFeature(server, "mpMetrics-1.1");
+        } else {
+            MetricsAuthTestUtil.addFeature(server, "mpMetrics-1.0");
         }
+
+        waitForMetricsEndpoint(server);
+    }
+
+    private void waitForMetricsEndpoint(LibertyServer server) throws Exception {
+        assertNotNull("Web application is not available at available */metrics/", server.waitForStringInLog("CWWKT0016I.*/metrics/", TIMEOUT, server.getDefaultLogFile()));
+    }
+
+    private static void setMetricsAuthConfig(LibertyServer server, Boolean authentication) throws Exception {
+        server.setMarkToEndOfLog();
+
         ServerConfiguration config = server.getServerConfiguration();
-        config.getMetricsElement().setAuthentication(authentication);
+        config.getMPMetricsElement().setAuthentication(authentication);
         server.updateServerConfiguration(config);
-        if (waitForLogMessages) {
-            assertNotNull("Config wasn't updated successfully",
-                          server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*", TIMEOUT));
-        }
+        assertNotNull("Config wasn't updated successfully",
+                      server.waitForStringInLogUsingMark("CWWKG0017I.* | CWWKG0018I.*", TIMEOUT));
     }
 
     private void testMetricsAuth() throws Exception {
@@ -109,22 +114,23 @@ public class MetricsAuthenticationTest {
         //2. When authentication is explicitly set to true in server.xml, metrics endpoint requires authentication,
         //  i.e. is private
 
-        setMetricsAuthConfig(server, true, true);
+        setMetricsAuthConfig(server, true);
         MetricsConnection authenticationTrue = MetricsConnection.privateConnection(server);
         authenticationTrue.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         //3. When authentication is explicitly set to false in server.xml, metrics enpoint does not require authentication,
         // i.e. is public
 
-        setMetricsAuthConfig(server, false, true);
+        setMetricsAuthConfig(server, false);
+        waitForMetricsEndpoint(server);
         MetricsConnection authenticationFalse = MetricsConnection.publicConnection(server);
         authenticationFalse.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
 
         //4. When mpMetrics authentication option is removed from the server.xml,
         // the default metrics endpoint requires authentication
 
-        setMetricsAuthConfig(server, null, true);
-
+        setMetricsAuthConfig(server, null);
+        waitForMetricsEndpoint(server);
         MetricsConnection authenticationRemoved = MetricsConnection.privateConnection(server);
         authenticationRemoved.expectedResponseCode(HttpURLConnection.HTTP_OK).getConnection();
     }

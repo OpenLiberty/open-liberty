@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 /**
  *
  */
-public class mpMetricsElement {
+public class MPMetricsElement {
 
     private Boolean authentication;
 
@@ -32,7 +32,7 @@ public class mpMetricsElement {
     public String toString() {
         StringBuffer sb = new StringBuffer("mpMetricsElement [");
         sb.append("authentication=").append(authentication);
-        sb.append("]]");
+        sb.append("]");
         return sb.toString();
     }
 }

@@ -238,7 +238,7 @@ public class ServerConfiguration implements Cloneable {
     private OpenAPIElement openAPIElement;
 
     @XmlElement(name = "mpMetrics")
-    private mpMetricsElement MetricsElement;
+    private MPMetricsElement mpMetricsElement;
 
     @XmlElement(name = "federatedRepository")
     private FederatedRepository federatedRepository;
@@ -614,16 +614,12 @@ public class ServerConfiguration implements Cloneable {
         return this.openAPIElement;
     }
 
-    public void setMetricsElement(mpMetricsElement element) {
-        this.MetricsElement = element;
-    }
-
-    public mpMetricsElement getMetricsElement() {
-        if (this.MetricsElement == null) {
-            this.MetricsElement = new mpMetricsElement();
+    public MPMetricsElement getMPMetricsElement() {
+        if (this.mpMetricsElement == null) {
+            this.mpMetricsElement = new MPMetricsElement();
         }
 
-        return this.MetricsElement;
+        return this.mpMetricsElement;
     }
 
     /**
