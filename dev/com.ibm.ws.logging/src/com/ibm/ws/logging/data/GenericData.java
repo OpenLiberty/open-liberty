@@ -14,42 +14,38 @@ import java.util.ArrayList;
 
 public class GenericData {
 
-    private final ArrayList<KeyValuePair> pairs;
+    private final GDArrayList pairs;
 
     private String sourceType;
 
     private String jsonMessage = null;
 
     public GenericData() {
-        pairs = new ArrayList<KeyValuePair>();
+        pairs = new GDArrayList();
     }
 
-    public GenericData(int size) {
-        pairs = new ArrayList<KeyValuePair>(size);
-    }
-
-    public void modifyPair(int index, String key, String value) {
-        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
-        pairs.set(index, kvp);
+    public GenericData(int initialCapacity) {
+        pairs = new GDArrayList(initialCapacity);
     }
 
     public void setPair(int index, String key, String value) {
         KeyValueStringPair kvp = new KeyValueStringPair(key, value);
-        pairs.add(index, kvp);
+        pairs.setAt(index, kvp);
+
     }
 
     public void setPair(int index, String key, int value) {
         KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
-        pairs.add(index, kvp);
+        pairs.setAt(index, kvp);
     }
 
     public void setPair(int index, String key, long value) {
         KeyValueLongPair kvp = new KeyValueLongPair(key, value);
-        pairs.add(index, kvp);
+        pairs.setAt(index, kvp);
     }
 
     public void setPair(int index, KeyValuePairList kvps) {
-        pairs.add(index, kvps);
+        pairs.setAt(index, kvps);
     }
 
     public void addPair(String key, String value) {

@@ -126,19 +126,9 @@ public class TraceSource implements Source {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
             }
-        } else {
-            traceData.setCorrelationId(null);
-            traceData.setOrg(null);
-            traceData.setProduct(null);
-            traceData.setComponent(null);
-            extensions = null;
         }
 
         traceData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());
-        traceData.setSequence(null);
-
-        traceData.setThrowable(null);
-        traceData.setThrowableLocalized(null);
 
         String verboseMessage = routedMessage.getFormattedVerboseMsg();
         if (verboseMessage == null) {
@@ -147,15 +137,11 @@ public class TraceSource implements Source {
             traceData.setMessage(verboseMessage);
         }
 
-        traceData.setFormattedMsg(null);
-
         traceData.setExtensions(extensions);
 
         if (id != null) {
             int objid = System.identityHashCode(id);
             traceData.setObjectId(objid);
-        } else {
-            // cannot pass null to traceData.setObjectId(int i)
         }
 
         traceData.setSourceType(sourceName);
