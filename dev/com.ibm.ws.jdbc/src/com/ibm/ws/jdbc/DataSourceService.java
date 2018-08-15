@@ -707,7 +707,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         lock.writeLock().lock();
         try {
             componentContext = context;
-
             if (!AdapterUtil.match(jndiName, properties.get(JNDI_NAME))) {
                 // To change JNDI name, must re-run the activate code
                 deactivate(context);
@@ -735,7 +734,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                     destroyConnectionFactories(isDerbyEmbedded);
                 } else {
                     parseIsolationLevel(wProps, vendorImplClassName);
-
+                    
                     // Swap the reference to the configuration - the WAS data source will start honoring it
                     dsConfigRef.set(new DSConfig(config, wProps));
                 }
