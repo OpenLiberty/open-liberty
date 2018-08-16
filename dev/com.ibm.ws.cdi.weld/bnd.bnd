@@ -25,7 +25,8 @@ javac.target: 1.7
   com.ibm.ws.cdi.liberty.CDIRuntimeImpl,\
   com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService,\
   com.ibm.ws.cdi.impl.inject.InjectProcessorProvider,\
-  com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig
+  com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig,\
+  com.ibm.ws.cdi.liberty.CDIDeferredMetaDataFactoryImpl
 
 Service-Component: \
  com.ibm.ws.cdi.weld.deserializationClassProvider;\
