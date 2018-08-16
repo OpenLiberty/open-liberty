@@ -507,7 +507,7 @@ public class OidcLoginConfigImplTest extends CommonConfigTestClass {
 
     /************************************** getJwkSet **************************************/
 
-    @Test
+    //@Test
     public void getJwkSet_configNotInitialized() {
         try {
             JWKSet result = configImpl.getJwkSet();
