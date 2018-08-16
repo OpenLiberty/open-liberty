@@ -104,6 +104,7 @@ import org.apache.cxf.transport.MessageObserver;
  *
  */
 public abstract class AbstractClient implements Client {
+    protected static final String EXECUTOR_SERVICE_PROPERTY = "executorService"; //Liberty change for MP Rest Client 1.1
     protected static final String REQUEST_CONTEXT = "RequestContext";
     protected static final String RESPONSE_CONTEXT = "ResponseContext";
     protected static final String KEEP_CONDUIT_ALIVE = "KeepConduitAlive";

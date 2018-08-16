@@ -26,7 +26,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.CookieParam;
@@ -86,27 +86,28 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Proxy-based client implementation
  *
  */
-public class ClientProxyImpl extends AbstractClient implements InvocationHandlerAware, InvocationHandler {
+public class ClientProxyImpl extends AbstractClient implements
+    InvocationHandlerAware, InvocationHandler {
 
-    private static final Logger LOG = LogUtils.getL7dLogger(ClientProxyImpl.class);
-    private static final ResourceBundle BUNDLE = BundleUtils.getBundle(ClientProxyImpl.class);
-    private static final String SLASH = "/";
-    private static final String BUFFER_PROXY_RESPONSE = "buffer.proxy.response";
-    private static final String PROXY_METHOD_PARAM_BODY_INDEX = "proxy.method.parameter.body.index";
+    protected static final Logger LOG = LogUtils.getL7dLogger(ClientProxyImpl.class);
+    protected static final ResourceBundle BUNDLE = BundleUtils.getBundle(ClientProxyImpl.class);
+    protected static final String SLASH = "/";
+    protected static final String BUFFER_PROXY_RESPONSE = "buffer.proxy.response";
+    protected static final String PROXY_METHOD_PARAM_BODY_INDEX = "proxy.method.parameter.body.index";
 
-    private final ClassResourceInfo cri;
-    private final ClassLoader proxyLoader;
-    private final boolean inheritHeaders;
-    private final boolean isRoot;
-    private Map<String, Object> valuesMap = Collections.emptyMap();
-    private final BodyWriter bodyWriter = new BodyWriter();
-    private Client proxy;
-
+    protected ClassResourceInfo cri;
+    protected ClassLoader proxyLoader;
+    protected boolean inheritHeaders;
+    protected boolean isRoot;
+    protected Map<String, Object> valuesMap = Collections.emptyMap();
+    protected BodyWriter bodyWriter = new BodyWriter();
+    protected Client proxy;
     public ClientProxyImpl(URI baseURI,
                            ClassLoader loader,
                            ClassResourceInfo cri,
@@ -138,13 +139,14 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
     private void initValuesMap(Object... varValues) {
         if (isRoot) {
             List<String> vars = cri.getURITemplate().getVariables();
-            valuesMap = new LinkedHashMap<String, Object>();
+            valuesMap = new LinkedHashMap<>();
             for (int i = 0; i < vars.size(); i++) {
                 if (varValues.length > 0) {
                     if (i < varValues.length) {
                         valuesMap.put(vars.get(i), varValues[i]);
                     } else {
-                        org.apache.cxf.common.i18n.Message msg = new org.apache.cxf.common.i18n.Message("ROOT_VARS_MISMATCH", BUNDLE, vars.size(), varValues.length);
+                        org.apache.cxf.common.i18n.Message msg = new org.apache.cxf.common.i18n.Message(
+                             "ROOT_VARS_MISMATCH", BUNDLE, vars.size(), varValues.length);
                         LOG.info(msg.toString());
                         break;
                     }
@@ -161,8 +163,8 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
      * method is invoked. Can throw an expected exception if ResponseExceptionMapper
      * is registered
      */
-    @Trivial
     @Override
+    @Trivial //Liberty change - required to avoid tracing StackOverflowException
     public Object invoke(Object o, Method m, Object[] params) throws Throwable {
 
         Class<?> declaringClass = m.getDeclaringClass();
@@ -195,7 +197,7 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         URI uri = builder.buildFromEncoded(pathParams.toArray()).normalize();
 
         MultivaluedMap<String, String> headers = getHeaders();
-        MultivaluedMap<String, String> paramHeaders = new MetadataMap<String, String>();
+        MultivaluedMap<String, String> paramHeaders = new MetadataMap<>();
         handleHeaders(m, params, paramHeaders, beanParamsList, types);
         handleCookies(m, params, paramHeaders, beanParamsList, types);
 
@@ -211,8 +213,9 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
             }
 
             ClientState newState = getState().newState(uri, subHeaders,
-                                                       getTemplateParametersMap(ori.getURITemplate(), pathParams));
-            ClientProxyImpl proxyImpl = new ClientProxyImpl(newState, proxyLoader, subCri, false, inheritHeaders);
+                 getTemplateParametersMap(ori.getURITemplate(), pathParams));
+            ClientProxyImpl proxyImpl =
+                new ClientProxyImpl(newState, proxyLoader, subCri, false, inheritHeaders);
             proxyImpl.setConfiguration(getConfiguration());
             return JAXRSClientFactory.createProxy(m.getReturnType(), proxyLoader, proxyImpl);
         }
@@ -226,14 +229,14 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
             if (body == null) {
                 bodyIndex = -1;
             }
-        } else if (types.containsKey(ParameterType.FORM)) {
+        } else if (types.containsKey(ParameterType.FORM))  {
             body = handleForm(m, params, types, beanParamsList);
-        } else if (types.containsKey(ParameterType.REQUEST_BODY)) {
+        } else if (types.containsKey(ParameterType.REQUEST_BODY))  {
             body = handleMultipart(types, ori, params);
         }
 
         setRequestHeaders(headers, ori, types.containsKey(ParameterType.FORM),
-                          body == null ? null : body.getClass(), m.getReturnType());
+            body == null ? null : body.getClass(), m.getReturnType());
 
         try {
             return doChainedInvocation(uri, headers, ori, params, body, bodyIndex, null, null);
@@ -243,18 +246,18 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
 
     }
 
-    private void addNonEmptyPath(UriBuilder builder, String pathValue) {
+    protected void addNonEmptyPath(UriBuilder builder, String pathValue) {
         if (!SLASH.equals(pathValue)) {
             builder.path(pathValue);
         }
     }
 
-    private MultivaluedMap<ParameterType, Parameter> getParametersInfo(Method m,
-                                                                              Object[] params, OperationResourceInfo ori) {
-        MultivaluedMap<ParameterType, Parameter> map = new MetadataMap<ParameterType, Parameter>();
+    protected MultivaluedMap<ParameterType, Parameter> getParametersInfo(Method m,
+        Object[] params, OperationResourceInfo ori) {
+        MultivaluedMap<ParameterType, Parameter> map = new MetadataMap<>();
 
         List<Parameter> parameters = ori.getParameters();
-        if (parameters.size() == 0) {
+        if (parameters.isEmpty()) {
             return map;
         }
         int requestBodyParam = 0;
@@ -288,10 +291,10 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
             return true;
         }
         return p.getType() == ParameterType.REQUEST_BODY
-               && m.getParameterTypes()[p.getIndex()] == AsyncResponse.class;
+            && m.getParameterTypes()[p.getIndex()] == AsyncResponse.class;
     }
 
-    private static int getBodyIndex(MultivaluedMap<ParameterType, Parameter> map,
+    protected static int getBodyIndex(MultivaluedMap<ParameterType, Parameter> map,
                                     OperationResourceInfo ori) {
         List<Parameter> list = map.get(ParameterType.REQUEST_BODY);
         int index = list == null || list.size() > 1 ? -1 : list.get(0).getIndex();
@@ -308,7 +311,7 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         if (status >= 300) {
             Class<?>[] exTypes = m.getExceptionTypes();
             if (exTypes.length == 0) {
-                exTypes = new Class[] { WebApplicationException.class };
+                exTypes = new Class<?>[]{WebApplicationException.class};
             }
             for (Class<?> exType : exTypes) {
                 ResponseExceptionMapper<?> mapper = findExceptionMapper(inMessage, exType);
@@ -343,12 +346,12 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         }
     }
 
-    private static ResponseExceptionMapper<?> findExceptionMapper(Message message, Class<?> exType) {
+    protected static ResponseExceptionMapper<?> findExceptionMapper(Message message, Class<?> exType) {
         ClientProviderFactory pf = ClientProviderFactory.getInstance(message);
         return pf.createResponseExceptionMapper(message, exType);
     }
 
-    private MultivaluedMap<String, String> setRequestHeaders(MultivaluedMap<String, String> headers,
+    protected MultivaluedMap<String, String> setRequestHeaders(MultivaluedMap<String, String> headers,
                                                              OperationResourceInfo ori,
                                                              boolean formParams,
                                                              Class<?> bodyClass,
@@ -370,10 +373,12 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
 
         List<MediaType> accepts = getAccept(headers);
         if (accepts == null) {
-            boolean produceWildcard = ori.getProduceTypes().size() == 0
-                                      || ori.getProduceTypes().get(0).equals(MediaType.WILDCARD_TYPE);
+            boolean produceWildcard = ori.getProduceTypes().isEmpty()
+                || ori.getProduceTypes().get(0).equals(MediaType.WILDCARD_TYPE);
             if (produceWildcard) {
-                accepts = InjectionUtils.isPrimitive(responseClass) ? Collections.singletonList(MediaType.TEXT_PLAIN_TYPE) : Collections.singletonList(MediaType.APPLICATION_XML_TYPE);
+                accepts = InjectionUtils.isPrimitive(responseClass)
+                    ? Collections.singletonList(MediaType.TEXT_PLAIN_TYPE)
+                    : Collections.singletonList(MediaType.APPLICATION_XML_TYPE);
             } else if (responseClass == Void.class || responseClass == Void.TYPE) {
                 accepts = Collections.singletonList(MediaType.WILDCARD_TYPE);
             } else {
@@ -388,35 +393,32 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         return headers;
     }
 
-    private List<MediaType> getAccept(MultivaluedMap<String, String> allHeaders) {
+    protected List<MediaType> getAccept(MultivaluedMap<String, String> allHeaders) {
         List<String> headers = allHeaders.get(HttpHeaders.ACCEPT);
-        if (headers == null || headers.size() == 0) {
+        if (headers == null || headers.isEmpty()) {
             return null;
         }
-        List<MediaType> types = new ArrayList<MediaType>();
-        for (String s : headers) {
-            types.addAll(JAXRSUtils.parseMediaTypes(s));
-        }
-        return types;
+        return headers.stream().
+                flatMap(header -> JAXRSUtils.parseMediaTypes(header).stream()).collect(Collectors.toList());
     }
 
-    private List<Object> getPathParamValues(Method m,
+    protected List<Object> getPathParamValues(Method m,
                                             Object[] params,
                                             MultivaluedMap<ParameterType, Parameter> map,
                                             List<Parameter> beanParams,
                                             OperationResourceInfo ori,
                                             int bodyIndex) {
-        List<Object> list = new LinkedList<Object>();
+        List<Object> list = new LinkedList<>();
 
         List<String> methodVars = ori.getURITemplate().getVariables();
         List<Parameter> paramsList = getParameters(map, ParameterType.PATH);
-        Map<String, BeanPair> beanParamValues = new HashMap<String, BeanPair>(beanParams.size());
-        for (Parameter p : beanParams) {
+        Map<String, BeanPair> beanParamValues = new HashMap<>(beanParams.size());
+        beanParams.forEach(p -> {
             beanParamValues.putAll(getValuesFromBeanParam(params[p.getIndex()], PathParam.class));
-        }
+        });
         if (!beanParamValues.isEmpty() && !methodVars.containsAll(beanParamValues.keySet())) {
             List<String> classVars = ori.getClassResourceInfo().getURITemplate().getVariables();
-            for (String classVar : classVars) {
+            classVars.forEach(classVar -> {
                 BeanPair pair = beanParamValues.get(classVar);
                 if (pair != null) {
                     Object paramValue = convertParamValue(pair.getValue(), pair.getAnns());
@@ -426,44 +428,45 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
                         list.add(paramValue);
                     }
                 }
-            }
+            });
         }
         if (isRoot) {
             list.addAll(valuesMap.values());
         }
 
-        Map<String, Parameter> paramsMap = new LinkedHashMap<String, Parameter>();
-        for (Parameter p : paramsList) {
+
+        Map<String, Parameter> paramsMap = new LinkedHashMap<>();
+        paramsList.forEach(p -> {
             if (p.getName().length() == 0) {
                 MultivaluedMap<String, Object> values = InjectionUtils.extractValuesFromBean(params[p.getIndex()], "");
-                for (String var : methodVars) {
+                methodVars.forEach(var -> {
                     list.addAll(values.get(var));
-                }
+                });
             } else {
                 paramsMap.put(p.getName(), p);
             }
-        }
+        });
 
         Object requestBody = bodyIndex == -1 ? null : params[bodyIndex];
-        for (String varName : methodVars) {
+        methodVars.forEach(varName -> {
             Parameter p = paramsMap.remove(varName);
             if (p != null) {
                 list.add(convertParamValue(params[p.getIndex()],
-                                           m.getParameterTypes()[p.getIndex()],
-                                           getParamAnnotations(m, p)));
+                        m.getParameterTypes()[p.getIndex()],
+                        getParamAnnotations(m, p)));
             } else if (beanParamValues.containsKey(varName)) {
                 BeanPair pair = beanParamValues.get(varName);
                 list.add(convertParamValue(pair.getValue(), pair.getAnns()));
             } else if (requestBody != null) {
                 try {
-                    Method getter = requestBody.getClass().getMethod("get" + StringUtils.capitalize(varName),
-                                                                     new Class<?>[] {});
-                    list.add(getter.invoke(requestBody, new Object[] {}));
+                    Method getter = requestBody.getClass().
+                            getMethod("get" + StringUtils.capitalize(varName), new Class<?>[]{});
+                    list.add(getter.invoke(requestBody, new Object[]{}));
                 } catch (Exception ex) {
                     // continue
                 }
             }
-        }
+        });
 
         for (Parameter p : paramsMap.values()) {
             if (valuesMap.containsKey(p.getName())) {
@@ -478,49 +481,50 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
             }
         }
 
+
         return list;
     }
 
-    private static Annotation[] getParamAnnotations(Method m, Parameter p) {
+    protected static Annotation[] getParamAnnotations(Method m, Parameter p) {
         return m.getParameterAnnotations()[p.getIndex()];
     }
 
-    @SuppressWarnings("unchecked")
-    private static List<Parameter> getParameters(MultivaluedMap<ParameterType, Parameter> map,
-                                                 ParameterType key) {
-        return map.get(key) == null ? Collections.EMPTY_LIST : map.get(key);
+    protected static List<Parameter> getParameters(MultivaluedMap<ParameterType, Parameter> map,
+                                           ParameterType key) {
+        return map.get(key) == null ? Collections.emptyList() : map.get(key);
     }
 
-    private void handleQueries(Method m,
+    protected void handleQueries(Method m,
                                Object[] params,
                                MultivaluedMap<ParameterType, Parameter> map,
                                List<Parameter> beanParams,
                                UriBuilder ub) {
         List<Parameter> qs = getParameters(map, ParameterType.QUERY);
-        for (Parameter p : qs) {
-            if (params[p.getIndex()] != null) {
-                addMatrixQueryParamsToBuilder(ub, p.getName(), ParameterType.QUERY,
-                                              getParamAnnotations(m, p), params[p.getIndex()]);
-            }
-        }
-        for (Parameter p : beanParams) {
-            Map<String, BeanPair> values = getValuesFromBeanParam(params[p.getIndex()], QueryParam.class);
-            for (Map.Entry<String, BeanPair> entry : values.entrySet()) {
-                if (entry.getValue() != null) {
-                    addMatrixQueryParamsToBuilder(ub, entry.getKey(), ParameterType.QUERY,
-                                                  entry.getValue().getAnns(), entry.getValue().getValue());
-                }
-            }
-        }
+        qs.stream().
+                filter(p -> params[p.getIndex()] != null).
+                forEachOrdered(p -> {
+                    addMatrixQueryParamsToBuilder(ub, p.getName(), ParameterType.QUERY,
+                            getParamAnnotations(m, p), params[p.getIndex()]);
+                });
+        beanParams.stream().
+                map(p -> getValuesFromBeanParam(params[p.getIndex()], QueryParam.class)).
+                forEachOrdered(values -> {
+                    values.forEach((key, value) -> {
+                        if (value != null) {
+                            addMatrixQueryParamsToBuilder(ub, key, ParameterType.QUERY,
+                                    value.getAnns(), value.getValue());
+                        }
+                    });
+                });
     }
 
-    private Map<String, BeanPair> getValuesFromBeanParam(Object bean, Class<? extends Annotation> annClass) {
-        Map<String, BeanPair> values = new HashMap<String, BeanPair>();
+    protected Map<String, BeanPair> getValuesFromBeanParam(Object bean, Class<? extends Annotation> annClass) {
+        Map<String, BeanPair> values = new HashMap<>();
         getValuesFromBeanParam(bean, annClass, values);
         return values;
     }
 
-    private Map<String, BeanPair> getValuesFromBeanParam(Object bean,
+    protected Map<String, BeanPair> getValuesFromBeanParam(Object bean,
                                                          Class<? extends Annotation> annClass,
                                                          Map<String, BeanPair> values) {
         boolean completeFieldIntrospectionNeeded = false;
@@ -531,8 +535,8 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
                     Annotation methodAnnotation = m.getAnnotation(annClass);
                     boolean beanParam = m.getAnnotation(BeanParam.class) != null;
                     if (methodAnnotation != null || beanParam) {
-                        Method getter = bean.getClass().getMethod("get" + propertyName, new Class[] {});
-                        Object value = getter.invoke(bean, new Object[] {});
+                        Method getter = bean.getClass().getMethod("get" + propertyName, new Class<?>[]{});
+                        Object value = getter.invoke(bean, new Object[]{});
                         if (value != null) {
                             if (methodAnnotation != null) {
                                 String annotationValue = AnnotationUtils.getAnnotationValue(methodAnnotation);
@@ -575,7 +579,7 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         return values;
     }
 
-    private boolean getValuesFromBeanParamField(Object bean,
+    protected boolean getValuesFromBeanParamField(Object bean,
                                                 Field f,
                                                 Class<? extends Annotation> annClass,
                                                 Map<String, BeanPair> values) {
@@ -592,73 +596,76 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         return jaxrsParamAnnAvailable;
     }
 
-    private void handleMatrixes(Method m,
+    protected void handleMatrixes(Method m,
                                 Object[] params,
                                 MultivaluedMap<ParameterType, Parameter> map,
                                 List<Parameter> beanParams,
                                 UriBuilder ub) {
         List<Parameter> mx = getParameters(map, ParameterType.MATRIX);
-        for (Parameter p : mx) {
-            if (params[p.getIndex()] != null) {
-                addMatrixQueryParamsToBuilder(ub, p.getName(), ParameterType.MATRIX,
-                                              getParamAnnotations(m, p), params[p.getIndex()]);
-            }
-        }
-        for (Parameter p : beanParams) {
-            Map<String, BeanPair> values = getValuesFromBeanParam(params[p.getIndex()], MatrixParam.class);
-            for (Map.Entry<String, BeanPair> entry : values.entrySet()) {
-                if (entry.getValue() != null) {
-                    addMatrixQueryParamsToBuilder(ub, entry.getKey(), ParameterType.MATRIX,
-                                                  entry.getValue().getAnns(), entry.getValue().getValue());
-                }
-            }
-        }
+        mx.stream().
+                filter(p -> params[p.getIndex()] != null).
+                forEachOrdered(p -> {
+                    addMatrixQueryParamsToBuilder(ub, p.getName(), ParameterType.MATRIX,
+                            getParamAnnotations(m, p), params[p.getIndex()]);
+                });
+        beanParams.stream().
+                map(p -> getValuesFromBeanParam(params[p.getIndex()], MatrixParam.class)).
+                forEachOrdered(values -> {
+                    values.forEach((key, value) -> {
+                        if (value != null) {
+                            addMatrixQueryParamsToBuilder(ub, key, ParameterType.MATRIX,
+                                    value.getAnns(), value.getValue());
+                        }
+                    });
+                });
     }
 
-    private MultivaluedMap<String, String> handleForm(Method m,
+    protected MultivaluedMap<String, String> handleForm(Method m,
                                                       Object[] params,
                                                       MultivaluedMap<ParameterType, Parameter> map,
                                                       List<Parameter> beanParams) {
 
-        MultivaluedMap<String, String> form = new MetadataMap<String, String>();
+        MultivaluedMap<String, String> form = new MetadataMap<>();
 
         List<Parameter> fm = getParameters(map, ParameterType.FORM);
-        for (Parameter p : fm) {
+        fm.forEach(p -> {
             addFormValue(form, p.getName(), params[p.getIndex()], getParamAnnotations(m, p));
-        }
-        for (Parameter p : beanParams) {
-            Map<String, BeanPair> values = getValuesFromBeanParam(params[p.getIndex()], FormParam.class);
-            for (Map.Entry<String, BeanPair> entry : values.entrySet()) {
-                addFormValue(form, entry.getKey(), entry.getValue().getValue(), entry.getValue().getAnns());
-            }
-        }
+        });
+        beanParams.stream().
+                map(p -> getValuesFromBeanParam(params[p.getIndex()], FormParam.class)).
+                forEachOrdered(values -> {
+                    values.forEach((key, value) -> {
+                        addFormValue(form, key, value.getValue(), value.getAnns());
+                    });
+                });
 
         return form;
     }
 
-    private void addFormValue(MultivaluedMap<String, String> form, String name,
-                              Object pValue, Annotation[] anns) {
+    protected void addFormValue(MultivaluedMap<String, String> form, String name, Object pValue, Annotation[] anns) {
         if (pValue != null) {
             if (InjectionUtils.isSupportedCollectionOrArray(pValue.getClass())) {
-                Collection<?> c = pValue.getClass().isArray() ? Arrays.asList((Object[]) pValue) : (Collection<?>) pValue;
+                Collection<?> c = pValue.getClass().isArray()
+                    ? Arrays.asList((Object[]) pValue) : (Collection<?>) pValue;
                 for (Iterator<?> it = c.iterator(); it.hasNext();) {
                     FormUtils.addPropertyToForm(form, name, convertParamValue(it.next(), anns));
                 }
             } else {
-                FormUtils.addPropertyToForm(form, name, name.isEmpty() ? pValue : convertParamValue(pValue, anns));
+                FormUtils.addPropertyToForm(form, name, name.isEmpty()
+                                            ? pValue : convertParamValue(pValue, anns));
             }
 
         }
 
     }
 
-    private List<Attachment> handleMultipart(MultivaluedMap<ParameterType, Parameter> map,
+    protected List<Attachment> handleMultipart(MultivaluedMap<ParameterType, Parameter> map,
                                              OperationResourceInfo ori,
                                              Object[] params) {
 
-        List<Attachment> atts = new LinkedList<Attachment>();
+        List<Attachment> atts = new LinkedList<>();
         List<Parameter> fm = getParameters(map, ParameterType.REQUEST_BODY);
-        for (Parameter p : fm) {
+        fm.forEach(p -> {
             Multipart part = getMultipart(ori, p.getIndex());
             if (part != null) {
                 Object partObject = params[p.getIndex()];
@@ -666,66 +673,64 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
                     atts.add(new Attachment(part.value(), part.type(), partObject));
                 }
             }
-        }
+        });
         return atts;
     }
 
-    private void handleHeaders(Method m,
+    protected void handleHeaders(Method m,
                                Object[] params,
                                MultivaluedMap<String, String> headers,
                                List<Parameter> beanParams,
                                MultivaluedMap<ParameterType, Parameter> map) {
         List<Parameter> hs = getParameters(map, ParameterType.HEADER);
-        for (Parameter p : hs) {
-            if (params[p.getIndex()] != null) {
-                headers.add(p.getName(), convertParamValue(params[p.getIndex()], getParamAnnotations(m, p)));
-            }
-        }
-        for (Parameter p : beanParams) {
-            Map<String, BeanPair> values = getValuesFromBeanParam(params[p.getIndex()], HeaderParam.class);
-            for (Map.Entry<String, BeanPair> entry : values.entrySet()) {
-                if (entry.getValue() != null) {
-                    headers.add(entry.getKey(),
-                                convertParamValue(entry.getValue().getValue(), entry.getValue().getAnns()));
-                }
-            }
-        }
+        hs.stream().
+                filter(p -> params[p.getIndex()] != null).
+                forEachOrdered(p -> {
+                    headers.add(p.getName(), convertParamValue(params[p.getIndex()], getParamAnnotations(m, p)));
+                });
+        beanParams.stream().
+                map(p -> getValuesFromBeanParam(params[p.getIndex()], HeaderParam.class)).
+                forEachOrdered(values -> {
+                    values.forEach((key, value) -> {
+                        if (value != null) {
+                            headers.add(key, convertParamValue(value.getValue(), value.getAnns()));
+                        }
+                    });
+                });
     }
 
-    private static Multipart getMultipart(OperationResourceInfo ori, int index) {
+    protected static Multipart getMultipart(OperationResourceInfo ori, int index) {
         Method aMethod = ori.getAnnotatedMethod();
         return aMethod != null ? AnnotationUtils.getAnnotation(
-                                                               aMethod.getParameterAnnotations()[index], Multipart.class) : null;
+            aMethod.getParameterAnnotations()[index], Multipart.class) : null;
     }
 
-    private void handleCookies(Method m,
+    protected void handleCookies(Method m,
                                Object[] params,
                                MultivaluedMap<String, String> headers,
                                List<Parameter> beanParams,
                                MultivaluedMap<ParameterType, Parameter> map) {
         List<Parameter> cs = getParameters(map, ParameterType.COOKIE);
-        for (Parameter p : cs) {
-            if (params[p.getIndex()] != null) {
-                headers.add(HttpHeaders.COOKIE,
-                            p.getName() + '='
-                                                + convertParamValue(params[p.getIndex()].toString(), getParamAnnotations(m, p)));
-            }
-        }
-        for (Parameter p : beanParams) {
-            Map<String, BeanPair> values = getValuesFromBeanParam(params[p.getIndex()], CookieParam.class);
-            for (Map.Entry<String, BeanPair> entry : values.entrySet()) {
-                if (entry.getValue() != null) {
+        cs.stream().
+                filter(p -> params[p.getIndex()] != null).
+                forEachOrdered(p -> {
                     headers.add(HttpHeaders.COOKIE,
-                                entry.getKey() + "="
-                                                    + convertParamValue(entry.getValue().getValue(),
-                                                                        entry.getValue().getAnns()));
-                }
-            }
-        }
+                            p.getName() + '='
+                            + convertParamValue(params[p.getIndex()].toString(), getParamAnnotations(m, p)));
+                });
+        beanParams.stream().
+                map(p -> getValuesFromBeanParam(params[p.getIndex()], CookieParam.class)).
+                forEachOrdered(values -> {
+                    values.forEach((key, value) -> {
+                        if (value != null) {
+                            headers.add(HttpHeaders.COOKIE,
+                                    key + "=" + convertParamValue(value.getValue(), value.getAnns()));
+                        }
+                    });
+                });
     }
-
     //CHECKSTYLE:OFF
-    private Object doChainedInvocation(URI uri,
+    protected Object doChainedInvocation(URI uri,
                                        MultivaluedMap<String, String> headers,
                                        OperationResourceInfo ori,
                                        Object[] methodParams,
@@ -733,7 +738,7 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
                                        int bodyIndex,
                                        Exchange exchange,
                                        Map<String, Object> invocationContext) throws Throwable {
-        //CHECKSTYLE:ON
+    //CHECKSTYLE:ON
         Bus configuredBus = getConfiguration().getBus();
         Bus origBus = BusFactory.getAndSetThreadDefaultBus(configuredBus);
         ClassLoaderHolder origLoader = null;
@@ -805,7 +810,7 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         if (callbackProp != null) {
             if (callbackProp instanceof Collection) {
                 @SuppressWarnings("unchecked")
-                Collection<InvocationCallback<Object>> callbacks = (Collection<InvocationCallback<Object>>) callbackProp;
+                Collection<InvocationCallback<Object>> callbacks = (Collection<InvocationCallback<Object>>)callbackProp;
                 for (InvocationCallback<Object> callback : callbacks) {
                     if (doCheckAsyncCallback(ori, callback) != null) {
                         return callback;
@@ -813,15 +818,14 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
                 }
             } else {
                 @SuppressWarnings("unchecked")
-                InvocationCallback<Object> callback = (InvocationCallback<Object>) callbackProp;
+                InvocationCallback<Object> callback = (InvocationCallback<Object>)callbackProp;
                 return doCheckAsyncCallback(ori, callback);
             }
         }
         return null;
-
     }
 
-    private InvocationCallback<Object> doCheckAsyncCallback(OperationResourceInfo ori,
+    protected InvocationCallback<Object> doCheckAsyncCallback(OperationResourceInfo ori,
                                                             InvocationCallback<Object> callback) {
         Type callbackOutType = getCallbackType(callback);
         Class<?> callbackRespClass = getCallbackClass(callbackOutType);
@@ -831,17 +835,17 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
             || callbackRespClass.isAssignableFrom(methodReturnType)
             || PrimitiveUtils.canPrimitiveTypeBeAutoboxed(methodReturnType, callbackRespClass)) {
             return callback;
-        } else {
-            return null;
         }
+        return null;
     }
 
-    protected Object doInvokeAsync(OperationResourceInfo ori, Message outMessage,
-                                 InvocationCallback<Object> asyncCallback) {
+    protected Object doInvokeAsync(OperationResourceInfo ori, 
+                                   Message outMessage,
+                                   InvocationCallback<Object> asyncCallback) {
         outMessage.getExchange().setSynchronous(false);
-        JaxrsClientCallback<?> cb = newJaxrsClientCallback(asyncCallback, outMessage,
-                                                           ori.getMethodToInvoke().getReturnType(),
-                                                           ori.getMethodToInvoke().getGenericReturnType());
+        setAsyncMessageObserverIfNeeded(outMessage.getExchange());
+        JaxrsClientCallback<?> cb = newJaxrsClientCallback(asyncCallback, outMessage, // Liberty change
+            ori.getMethodToInvoke().getReturnType(), ori.getMethodToInvoke().getGenericReturnType());
         outMessage.getExchange().put(JaxrsClientCallback.class, cb);
         doRunInterceptorChain(outMessage);
 
@@ -849,10 +853,10 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
     }
 
     protected JaxrsClientCallback<?> newJaxrsClientCallback(InvocationCallback<Object> asyncCallback,
-                                                            Message outMessage,
+                                                            Message outMessage, //Liberty change
                                                             Class<?> responseClass,
                                                             Type outGenericType) {
-        return new JaxrsClientCallback<Object>(asyncCallback, responseClass, outGenericType);
+        return new JaxrsClientCallback<>(asyncCallback, responseClass, outGenericType);
     }
 
     @Override
@@ -862,17 +866,19 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
                                  Exchange exchange,
                                  Map<String, Object> invContext) throws Throwable {
 
-        Map<String, Object> reqContext = CastUtils.cast((Map<?, ?>) invContext.get(REQUEST_CONTEXT));
-        int bodyIndex = body != null ? (Integer) reqContext.get(PROXY_METHOD_PARAM_BODY_INDEX) : -1;
-        OperationResourceInfo ori = (OperationResourceInfo) reqContext.get(OperationResourceInfo.class.getName());
+        Map<String, Object> reqContext = CastUtils.cast((Map<?, ?>)invContext.get(REQUEST_CONTEXT));
+        int bodyIndex = body != null ? (Integer)reqContext.get(PROXY_METHOD_PARAM_BODY_INDEX) : -1;
+        OperationResourceInfo ori =
+            (OperationResourceInfo)reqContext.get(OperationResourceInfo.class.getName());
         return doChainedInvocation(newRequestURI, headers, ori, null,
                                    body, bodyIndex, exchange, invContext);
     }
 
-    protected Object handleResponse(Message outMessage, Class<?> serviceCls) throws Throwable {
+    protected Object handleResponse(Message outMessage, Class<?> serviceCls)
+        throws Throwable {
         try {
             Response r = setResponseBuilder(outMessage, outMessage.getExchange()).build();
-            ((ResponseImpl) r).setOutMessage(outMessage);
+            ((ResponseImpl)r).setOutMessage(outMessage);
             getState().setResponse(r);
 
             Method method = outMessage.getExchange().get(Method.class);
@@ -882,7 +888,7 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
             }
             if (method.getReturnType() == Response.class
                 && (r.getEntity() == null || InputStream.class.isAssignableFrom(r.getEntity().getClass())
-                                             && ((InputStream) r.getEntity()).available() == 0)) {
+                    && ((InputStream)r.getEntity()).available() == 0)) {
                 return r;
             }
             if (PropertyUtils.isTrue(super.getConfiguration().getResponseContext().get(BUFFER_PROXY_RESPONSE))) {
@@ -890,9 +896,10 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
             }
 
             Class<?> returnType = getReturnType(method, outMessage);
-            Type genericType = InjectionUtils.processGenericTypeIfNeeded(serviceCls,
-                                                                         returnType,
-                                                                         method.getGenericReturnType());
+            Type genericType =
+                InjectionUtils.processGenericTypeIfNeeded(serviceCls,
+                                                          returnType,
+                                                          method.getGenericReturnType());
             returnType = InjectionUtils.updateParamClassToTypeIfNeeded(returnType, genericType);
             return readBody(r,
                             outMessage,
@@ -908,22 +915,26 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
         return method.getReturnType();
     }
 
-    @Override
     public Object getInvocationHandler() {
         return this;
     }
 
     protected static void reportInvalidResourceMethod(Method m, String name) {
-        org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, m.getDeclaringClass().getName(), m.getName());
+        org.apache.cxf.common.i18n.Message errorMsg =
+            new org.apache.cxf.common.i18n.Message(name,
+                                                   BUNDLE,
+                                                   m.getDeclaringClass().getName(),
+                                                   m.getName());
         LOG.severe(errorMsg.toString());
         throw new ProcessingException(errorMsg.toString());
     }
 
     protected static Annotation[] getMethodAnnotations(Method aMethod, int bodyIndex) {
-        return aMethod == null || bodyIndex == -1 ? new Annotation[0] : aMethod.getParameterAnnotations()[bodyIndex];
+        return aMethod == null || bodyIndex == -1 ? new Annotation[0]
+            : aMethod.getParameterAnnotations()[bodyIndex];
     }
 
-    private class BodyWriter extends AbstractBodyWriter {
+    protected class BodyWriter extends AbstractBodyWriter {
 
         @Override
         protected void doWriteBody(Message outMessage,
@@ -932,25 +943,28 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
                                    Annotation[] customAnns,
                                    OutputStream os) throws Fault {
 
+
             OperationResourceInfo ori = outMessage.getContent(OperationResourceInfo.class);
             if (ori == null) {
                 return;
             }
 
             Method method = ori.getMethodToInvoke();
-            int bodyIndex = (Integer) outMessage.get(PROXY_METHOD_PARAM_BODY_INDEX);
+            int bodyIndex = (Integer)outMessage.get(PROXY_METHOD_PARAM_BODY_INDEX);
 
-            Annotation[] anns = customAnns != null ? customAnns : getMethodAnnotations(ori.getAnnotatedMethod(), bodyIndex);
+            Annotation[] anns = customAnns != null ? customAnns
+                : getMethodAnnotations(ori.getAnnotatedMethod(), bodyIndex);
             try {
                 if (bodyIndex != -1) {
                     Class<?> paramClass = method.getParameterTypes()[bodyIndex];
-                    Class<?> bodyClass = paramClass.isAssignableFrom(body.getClass()) ? paramClass : body.getClass();
+                    Class<?> bodyClass =
+                        paramClass.isAssignableFrom(body.getClass()) ? paramClass : body.getClass();
                     Type genericType = method.getGenericParameterTypes()[bodyIndex];
                     if (bodyType != null) {
                         genericType = bodyType;
                     }
                     genericType = InjectionUtils.processGenericTypeIfNeeded(
-                                                                            ori.getClassResourceInfo().getServiceClass(), bodyClass, genericType);
+                        ori.getClassResourceInfo().getServiceClass(), bodyClass, genericType);
                     bodyClass = InjectionUtils.updateParamClassToTypeIfNeeded(bodyClass, genericType);
                     writeBody(body, outMessage, bodyClass, genericType, anns, os);
                 } else {
@@ -969,31 +983,28 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
 
     }
 
-    private static class BeanPair {
-        private final Object value;
-        private final Annotation[] anns;
-
+    protected static class BeanPair {
+        protected Object value;
+        protected Annotation[] anns;
         BeanPair(Object value, Annotation[] anns) {
             this.value = value;
             this.anns = anns;
         }
-
         public Object getValue() {
             return value;
         }
-
         public Annotation[] getAnns() {
             return anns;
         }
     }
-
     class ClientAsyncResponseInterceptor extends AbstractClientAsyncResponseInterceptor {
+        @FFDCIgnore(Throwable.class)
         @Override
         protected void doHandleAsyncResponse(Message message, Response r, JaxrsClientCallback<?> cb) {
             try {
                 Object entity = handleResponse(message.getExchange().getOutMessage(),
                                                cb.getResponseClass());
-                cb.handleResponse(message, new Object[] { entity });
+                cb.handleResponse(message, new Object[] {entity});
             } catch (Throwable t) {
                 cb.handleException(message, t);
             } finally {
