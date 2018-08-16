@@ -37,6 +37,7 @@ import com.ibm.websphere.security.WebTrustAssociationException;
 import com.ibm.websphere.security.WebTrustAssociationFailedException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
@@ -229,11 +230,20 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             Tr.entry(tc, methodName, request);
         }
         MicroProfileJwtTaiRequest mpJwtTaiRequest = taiRequestHelper.createMicroProfileJwtTaiRequestAndSetRequestAttribute(request);
-        boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest);
+        boolean defaultMpJwtConfigExists = false;
+        defaultMpJwtConfigExists = isNewMpJwtFeature();
+        boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest, defaultMpJwtConfigExists);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    /**
+     * @return
+     */
+    private boolean isNewMpJwtFeature() {     
+        return mpConfigProxyServiceRef.getService() != null ? true : false;
     }
 
     @Override
@@ -382,6 +392,9 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         try {
             authnResult = createResult(res, clientConfig, jwtToken, decodedPayload, addJwtPrincipal);
         } catch (Exception e) {
+            if (e instanceof MpJwtProcessingException) {
+                FFDCFilter.processException(e, MicroProfileJwtTAI.class.getName(), "387");
+            }
             Tr.error(tc, "ERROR_CREATING_RESULT", new Object[] { clientConfig.getUniqueId(), e.getLocalizedMessage() });
             return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
         }
