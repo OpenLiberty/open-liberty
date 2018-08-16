@@ -49,7 +49,8 @@ public class ContextBasedThreadPoolServiceImpl implements IBatchThreadPoolServic
     @SuppressWarnings("unchecked")
     private static final Map<String, ?>[] CapturedContexts = new Map[] { Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER, "com.ibm.ws.security.context.provider"),
     	Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER, "com.ibm.ws.javaee.metadata.context.provider"),
-    	Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER, "com.ibm.ws.classloader.context.provider")};
+    	Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER, "com.ibm.ws.classloader.context.provider"),
+	Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,"com.ibm.ws.security.thread.zos.context.provider")};
 	
 	
     /**
