@@ -86,6 +86,7 @@ Import-Package: \
    javax.servlet.jsp.resources;version=2.2, \
    javax.servlet.jsp.jstl*;version=1.2, \
    javax.servlet.jsp.tagext;version=2.2, \
+   !javax.swing*, \
    com.ibm.websphere.servlet.*;version=0, \
    com.ibm.wsspi.webcontainer.osgi.*;version=1.0, \
    com.ibm.wsspi.webcontainer;version=0, \
@@ -103,6 +104,7 @@ Import-Package: \
    org.apache.el.parser;version="2.2", \
    org.apache.el.util;version="2.2", \
    org.apache.jasper.el;version="2.2", \
+   !org.apache.xerces*, \
    com.ibm.wsspi.el;version="2.2", \
    org.eclipse.jdt.core.compiler;version="3.10.2";usage="JSP", \
    org.eclipse.jdt.internal.compiler;version="3.10.2";usage="JSP", \
@@ -116,7 +118,7 @@ Import-Package: \
 Include-Resource: \
    @lib/bsf.jar, \
    @${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2}, \
-   @${repo;com.ibm.ws.org.apache:xalan;2.7.0}!/!META-INF/*, \
+   @${repo;com.ibm.ws.org.apache:xalan;2.7.2}!/!META-INF/*, \
    standard.jar=${repo;com.ibm.ws.javax.j2ee:standardtld;1.2}, \
    ard.jar=lib/ard.jar, \
    OSGI-INF=resources/OSGI-INF, \
