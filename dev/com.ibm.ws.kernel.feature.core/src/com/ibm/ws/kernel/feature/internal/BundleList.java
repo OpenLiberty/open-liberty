@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.osgi.framework.Bundle;
@@ -209,13 +210,8 @@ public class BundleList {
                 RuntimeFeatureResource other = (RuntimeFeatureResource) obj;
                 if (bundle == other.bundle && bundle != null)
                     return true;
-                String thisRepo = getBundleRepositoryType();
-                String otherRepo = other.getBundleRepositoryType();
-                if (thisRepo != null && !thisRepo.equals(otherRepo)) {
+                if (!Objects.equals(getBundleRepositoryType(), other.getBundleRepositoryType()))
                     return false;
-                } else if (otherRepo != null && !otherRepo.equals(thisRepo)) {
-                    return false;
-                }
 
                 if (bundle != other.bundle && (bundle == null || other.bundle == null)) {
                     Bundle b = (bundle == null) ? other.bundle : bundle;
@@ -226,6 +222,8 @@ public class BundleList {
                     }
                 }
                 if (!fr.getMatchString().equals(other.fr.getMatchString()))
+                    return false;
+                if (!Objects.equals(getRequiredOSGiEE(), other.getRequiredOSGiEE()))
                     return false;
             } else {
                 return false;
