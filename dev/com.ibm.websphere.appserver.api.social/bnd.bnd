@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.1
+bVersion: 1.0
 
 Bundle-Name: WebSphere Security Social Media 1.0 API
 Bundle-Description: WebSphere Security Social Media 1.0 API, version ${bVersion}
