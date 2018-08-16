@@ -2,7 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.javaeeClient-8.0
 visibility=public
 IBM-ShortName: javaeeClient-8.0
-Subsystem-Name: Java EE V8 Application Client
+Subsystem-Name: Java EE 8 Application Client
 IBM-API-Package: \
   com.ibm.ws.ejb.portable; type="internal", \
   javax.xml.ws; type="internal"

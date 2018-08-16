@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: The application failed to start because it r
 error.missing.websocket.explanation=The application is a web socket application, and it requires a websocket feature to be configured in the server.xml file.
 error.missing.websocket.useraction=Configure a websocket feature in the server.xml file.
 
-error.webflux.not.supported=CWWKC0260E: Unable to start the application because Spring WebFlux is not supported.
-error.webflux.not.supported.explanation=The application is a WebFlux application. The reactive programming support provided by Spring WebFlux is not supported.
-error.webflux.not.supported.useraction=Configure an application that does not use Spring WebFlux with the server.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: Compression has been enabled by the application. Compression is not supported and the setting will be ignored.
 warning.spring_config.ignored.compression.explanation=Compression is not supported and the setting will be ignored, but the application will continue to function otherwise.
@@ -78,3 +76,7 @@ warning.spring_config.ignored.compression.useraction=No user action is necessary
 warning.spring_config.ignored.session=CWWKC0262W: Session timeout or session persistence has been configured by the application. These session settings must be configured in the server.xml file.
 warning.spring_config.ignored.session.explanation=Session timeout and session persistence must be configured in the server.xml file. These application session settings will be ignored.
 warning.spring_config.ignored.session.useraction=Configure session timeout and session persistence in the server.xml file.
+
+error.wrong.spring.boot.version=CWWKC0263E: The Spring Boot version {0} is not supported. A Spring Boot version within the range {1} is required.
+error.wrong.spring.boot.version.explanation=A Spring Boot version has been detected that is not supported by the server.
+error.wrong.spring.boot.version.useraction=Update the Spring Boot application to use a version of Spring Boot that is within the required version range.

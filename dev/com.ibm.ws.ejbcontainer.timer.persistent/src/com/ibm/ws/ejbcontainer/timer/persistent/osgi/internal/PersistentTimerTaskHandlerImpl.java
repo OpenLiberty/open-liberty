@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2015 IBM Corporation and others.
+ * Copyright (c) 2003, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -147,6 +147,13 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
             nextTimeout = parsedSchedule.getNextTimeout(lastExecution.getTime());
         } else {
             nextTimeout = parsedSchedule.getFirstTimeout();
+
+            // A timer would never be scheduled if getFirstTimeout() had originally returned
+            // -1, therefore the first (and only) timeout has passed while creating the timer.
+            // In this scenario, run the timer immediately by returning the creation time.
+            if (nextTimeout == -1) {
+                return timerCreationTime;
+            }
         }
         if (nextTimeout == -1) {
             return null;

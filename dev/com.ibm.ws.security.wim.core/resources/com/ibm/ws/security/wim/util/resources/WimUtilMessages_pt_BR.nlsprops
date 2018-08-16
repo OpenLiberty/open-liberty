@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ FEDERATED_MANAGER_SERVICE_READY.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: O servi\u00e7o de federa\u00e7\u00e3o de registro do usu\u00e1rio est\u00e1 interrompido.
 FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Essa mensagem \u00e9 apenas informativa.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MISSING_REGISTRY_DEFINITION=CWIMK0011E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. Um registro de usu\u00e1rio v\u00e1lido n\u00e3o foi localizado. Inclua ou corrija a defini\u00e7\u00e3o de registro no arquivo server.xml.
+MISSING_REGISTRY_DEFINITION.explanation=N\u00e3o foi poss\u00edvel definir ou inicializar um registro de usu\u00e1rio devido a um erro de configura\u00e7\u00e3o. Um registro de usu\u00e1rio v\u00e1lido inclui um registro LDAP ou outros reposit\u00f3rios ou registros suportados.
+MISSING_REGISTRY_DEFINITION.useraction=Se um registro de usu\u00e1rio foi definido no arquivo de configura\u00e7\u00e3o, revise os logs em busca de erros de configura\u00e7\u00e3o durante a inicializa\u00e7\u00e3o do servidor. Inclua ou corrija a defini\u00e7\u00e3o de registro de usu\u00e1rio no arquivo server.xml.
 
 ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. O identificador da entidade n\u00e3o foi localizado. Especifique o identificador correto como o par\u00e2metro de entrada. 
 ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=O identificador da entidade n\u00e3o foi especificado. O sistema n\u00e3o pode localizar a entidade. A opera\u00e7\u00e3o de registro do usu\u00e1rio n\u00e3o pode continuar sem localizar essa entidade. 

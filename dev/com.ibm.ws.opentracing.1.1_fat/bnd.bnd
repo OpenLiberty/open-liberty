@@ -1,0 +1,45 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+javac.source: 1.8
+javac.target: 1.8
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+src: \
+    fat/src,\
+    test-applications/serviceApp/src, \
+    test-applications/jaxrsHelloWorld/src, \
+    test-applications/mpOpenTracing/src, \
+    test-bundles/opentracing.mock/src
+    
+-sub: *.bnd
+
+fat.project: true
+
+tested.features: opentracing-1.1
+
+-buildpath: \
+    com.ibm.websphere.org.eclipse.microprofile.opentracing.1.1;version=latest,\
+    com.ibm.ws.opentracing.1.1;version=latest, \
+    com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+    com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
+    com.ibm.websphere.javaee.cdi.1.2;version=latest, \
+    com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
+    com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest, \
+    io.opentracing:opentracing-mock;version=0.31.0, \
+    io.opentracing:opentracing-util;version=0.31.0, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+    com.ibm.ws.cdi.interfaces;version=latest

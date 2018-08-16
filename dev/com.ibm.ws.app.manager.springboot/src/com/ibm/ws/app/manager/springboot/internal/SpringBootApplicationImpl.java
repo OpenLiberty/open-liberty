@@ -950,4 +950,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         this.applicationActivated = applicationActivated;
     }
 
+    protected final ClassLoadingService getClassLoadingService() {
+    	return this.classLoadingService;
+    }
 }

@@ -53,18 +53,18 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
  com.ibm.websphere.appserver.javax.jsf-2.3, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
  com.ibm.websphere.appserver.contextService-1.0
--bundles=com.ibm.ws.org.jboss.weld.3.0.3, \
+-bundles=com.ibm.ws.org.jboss.weld.3.0.5, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.jboss.logging.3.3.0, \
- com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
+ com.ibm.ws.org.jboss.classfilewriter.1.2.3, \
  com.ibm.ws.cdi.weld, \
  com.ibm.ws.cdi.internal, \
  com.ibm.ws.cdi.2.0.weld, \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.servlet:jstl:1.2", \
  com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.websocket:javax.websocket-api:1.1", \
  com.ibm.ws.cdi.interfaces
--jars=com.ibm.websphere.appserver.thirdparty.cdi-2.0; location:="dev/api/third-party/,lib/"
+-jars=com.ibm.websphere.appserver.thirdparty.cdi-2.0; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:3.0.3.Final"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
 kind=ga

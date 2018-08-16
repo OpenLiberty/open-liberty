@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2016 IBM Corporation and others.
+# Copyright (c) 2011, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -123,6 +123,19 @@ MESSAGE_FORMAT_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 CONSOLE_FORMAT_UPDATED=TRAS3003I: Formatul de ie\u015fire al consolei a fost actualizat acum la ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Formatul de ie\u015fire pentru consol\u0103 a fost actualizat acum.
 CONSOLE_FORMAT_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+MESSAGES_CONFIGURED_HIDDEN_HPEL=TRAS3004I: Urm\u0103toarele mesaje sunt ascunse pentru fi\u015fierul console.log: {0}
+MESSAGES_CONFIGURED_HIDDEN_HPEL.explanation=Mesajele care sunt configurate pentru a fi ascunse nu sunt scrise \u00een fi\u015fierul console.log. Ele sunt scrise \u00een istoric \u015fi magaziile de date pentru urm\u0103rire jurnalizarea binar\u0103. 
+MESSAGES_CONFIGURED_HIDDEN_HPEL.useraction=Nu este necesar\u0103 nicio ac\u0163iune
+
+FAILED_TO_WRITE_LOG=TRAS3005E: A e\u015fuat scrierea mesajelor \u00een fi\u015fierul {0}.
+FAILED_TO_WRITE_LOG.explanation=A ap\u0103rut o eroare la \u00eencercarea de a scrie mesajul \u00een fi\u015fier. 
+FAILED_TO_WRITE_LOG.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul exist\u0103, este inscriptibil \u015fi are spa\u0163iu de disc suficient.
+
+LOG_FILE_RESUMED=TRAS3006I: A fost reluat\u0103 jurnalizarea mesajelor \u00een fi\u015fierul {0}.
+LOG_FILE_RESUMED.explanation=Mesaje pot fi scrise \u00een fi\u015fier.
+LOG_FILE_RESUMED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

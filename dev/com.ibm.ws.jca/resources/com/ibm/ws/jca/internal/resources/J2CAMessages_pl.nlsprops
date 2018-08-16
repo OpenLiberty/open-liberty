@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -130,6 +130,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=Przypisz unikalne identyfikato
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: Atrybut identyfikatora elementu resourceAdapter dla modu\u0142u adaptera zasob\u00f3w {0} nie mo\u017ce by\u0107 jednym z identyfikator\u00f3w zarezerwowanych {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=Identyfikator okre\u015blony w konfiguracji lub pochodz\u0105cy z nazwy modu\u0142u jest identyfikatorem zarezerwowanym. Identyfikatory zarezerwowane s\u0105 przeznaczone tylko do u\u017cytku wewn\u0119trznego.
 J2CA8816.reserved.resource.adapter.id.useraction=Podaj niezarezerwowan\u0105 warto\u015b\u0107 dla atrybutu identyfikatora elementu resourceAdapter lub dla nazwy modu\u0142u w konfiguracji serwera.
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: Adapter zasob\u00f3w {0} napotka\u0142 b\u0142\u0105d analizowania podczas przetwarzania deskryptora wdra\u017cania w \u015bcie\u017cce {1}: {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora wdra\u017cania przez adapter zasob\u00f3w. Adapter zasob\u00f3w nie b\u0119dzie dost\u0119pny.
+J2CA8817.parse.deployment.descriptor.failed.useraction=Informacje o wyj\u0105tku zawieraj\u0105 dodatkowe szczeg\u00f3\u0142y. Przejrzyj tre\u015b\u0107 deskryptora wdra\u017cania, aby upewni\u0107 si\u0119, \u017ce s\u0105 to poprawne dane XML. W razie potrzeby skontaktuj si\u0119 z dostawc\u0105 adaptera zasob\u00f3w, aby naprawi\u0107 niepoprawne dane XML.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"

@@ -33,6 +33,8 @@ public final class BootstrapConstants {
 
     public static final String CLI_PACKAGE_INCLUDE_VALUE = "include";
 
+    public static final String CLI_ROOT_PACKAGE_NAME = "server-root";
+
     /** Store command line arguments for the CommandLine service */
     public static final String INTERNAL_COMMAND_LINE_ARG_LIST = "commandline.args";
 
@@ -45,6 +47,12 @@ public final class BootstrapConstants {
     public static final String INITPROP_OSGI_CLEAN = "org.osgi.framework.storage.clean";
 
     public static final String OSGI_CLEAN_VALUE = "onFirstInit";
+
+    /**
+     * Property key designating if system packages from previous java versions should be inherited
+     * Default value is 'true'
+     */
+    public static final String INITPROP_WAS_INHERIT_SYSTEM_PACKAGES = "websphere.inherit.system.packages";
 
     /**
      * Property key designating packages exported into the framework by the

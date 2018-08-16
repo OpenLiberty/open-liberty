@@ -20,7 +20,7 @@ public class ServerHelpActions implements HelpActions {
         helpCmd(Category.help),
         javadumpCmd(Category.service, "include"),
         listCmd(Category.help),
-        packageCmd(Category.misc, "archive", "include", "os"),
+        packageCmd(Category.misc, "archive", "include", "os", "server-root"),
         pauseCmd(Category.misc, "target"),
         registerWinServiceCmd(Category.win),
         resumeCmd(Category.misc, "target"),

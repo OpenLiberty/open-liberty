@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -130,6 +130,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=Rendeljen hozz\u00e1 egyedi az
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 modul resourceAdapter elem\u00e9nek id attrib\u00fatuma nem lehet fenntartott azonos\u00edt\u00f3 {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=A konfigur\u00e1ci\u00f3ban megadott vagy moduln\u00e9vb\u0151l sz\u00e1rmaztatott id egy fenntartott azonos\u00edt\u00f3. Fenntartott azonos\u00edt\u00f3k csak bels\u0151 haszn\u00e1latra szolg\u00e1lnak.
 J2CA8816.reserved.resource.adapter.id.useraction=Adjon meg nem fenntartott \u00e9rt\u00e9ket a resourceAdapter elem id attrib\u00fatumak\u00e9nt vagy moduln\u00e9vk\u00e9nt a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1saiban.
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: A(z) {0} er\u0151forr\u00e1s-illeszt\u0151 \u00e9rtelmez\u00e9si hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) {1} \u00fatvonalon tal\u00e1lhat\u00f3 telep\u00edt\u00e9si le\u00edr\u00f3 feldolgoz\u00e1sa sor\u00e1n: {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=Hiba t\u00f6rt\u00e9nt, mik\u00f6zben az er\u0151forr\u00e1s-illeszt\u0151 a telep\u00edt\u00e9si le\u00edr\u00f3t \u00e9rtelmezte. Az er\u0151forr\u00e1s-illeszt\u0151 nem lesz el\u00e9rhet\u0151.
+J2CA8817.parse.deployment.descriptor.failed.useraction=Tov\u00e1bbi r\u00e9szletek\u00e9rt n\u00e9zze meg a kiv\u00e9tel inform\u00e1ci\u00f3it. Tekintse \u00e1t a telep\u00edt\u00e9si le\u00edr\u00f3 tartalm\u00e1t \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes XML adatokat tartalmaz. Sz\u00fcks\u00e9g eset\u00e9n az er\u0151forr\u00e1s-illeszt\u0151 sz\u00e1ll\u00edt\u00f3j\u00e1val egy\u00fctt oldj\u00e1k meg az \u00e9rv\u00e9nytelen XML adatok probl\u00e9m\u00e1j\u00e1t.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"

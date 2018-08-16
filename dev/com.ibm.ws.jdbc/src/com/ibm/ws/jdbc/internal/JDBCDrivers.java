@@ -14,7 +14,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
 import java.sql.Driver;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -36,6 +40,7 @@ import javax.sql.XADataSource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
 /**
@@ -47,7 +52,7 @@ public class JDBCDrivers {
     /**
      * Constants for the positions of each type of data source within the classNames arrays.
      */
-    static final int DATA_SOURCE = 0, CONNECTION_POOL_DATA_SOURCE = 1, XA_DATA_SOURCE = 2, NUM_TYPES = 3;
+    public static final int DATA_SOURCE = 0, CONNECTION_POOL_DATA_SOURCE = 1, XA_DATA_SOURCE = 2, NUM_DATA_SOURCE_INTERFACES = 3;
 
     /**
      * Ordered map of upper-case key to data source implementation class names.
@@ -237,6 +242,8 @@ public class JDBCDrivers {
         classNamesByKey.put("H2-", classes);
     }
 
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
+
     /**
      * Utility method that determines if some text is found as a substring within the contents of a list.
      * 
@@ -348,33 +355,32 @@ public class JDBCDrivers {
      * <li>swapping Driver --> [type]DataSource and seeing if it loads
      * <li>scanning JAR file for class names that contain DataSource and comparing against the desired type(s)
      * 
-     * @param loader class loader from which to load JDBC driver classes 
+     * @param loader class loader from which to load JDBC driver classes. Null to load from application's thread context class loader
+     * @param searched list to which this method must add any packages that it searches  
      * @param ordered list of data source types (see type constants in this class) indicating precedence
-     * @return name of vendor data source implementation class. Null if unknown.
+     * @return pair of data source type constant and name of vendor data source implementation class. Null if unknown.
      */
-    static String inferDataSourceClassFromDriver(ClassLoader loader, int... types) {
+    public static SimpleEntry<Integer, String> inferDataSourceClassFromDriver(ClassLoader loader, Set<String> searched, int... types) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
             Tr.debug(tc, "infer from driver", loader, Arrays.toString(types));
 
-        String[] found = new String[NUM_TYPES];
+        if (loader == null)
+            loader = priv.getContextClassLoader();
+
+        String[] found = new String[NUM_DATA_SOURCE_INTERFACES];
         int preferredType = types[0];
 
         // Load JDBC driver class from service registry and use the package to infer the data source class
-        ServiceLoader<Driver> serviceLoader = loader == null ? ServiceLoader.load(Driver.class) : ServiceLoader.load(Driver.class, loader);
+        ServiceLoader<Driver> serviceLoader = ServiceLoader.load(Driver.class, loader);
         if (serviceLoader != null) {
-            // In order to give preference to JDBC drivers supplied by the user,
-            // move to the end of the list any JDBC drivers that are packaged with Java
+            // In order to give preference to JDBC drivers supplied by the user, omit JDBC drivers that are packaged with Java
             List<Driver> drivers = new ArrayList<Driver>();
-            List<Driver> builtInDrivers = new ArrayList<Driver>();
             for (Iterator<Driver> it = serviceLoader.iterator(); it.hasNext(); ) {
                 Driver driver = it.next();
-                if (driver.getClass().getName().startsWith("sun."))
-                    builtInDrivers.add(driver);
-                else
+                if (!driver.getClass().getName().startsWith("sun."))
                     drivers.add(driver);
             }
-            drivers.addAll(builtInDrivers);
 
             for (Iterator<Driver> it = drivers.iterator(); found[preferredType] == null && it.hasNext(); ) {
                 Driver driver = it.next();
@@ -388,6 +394,7 @@ public class JDBCDrivers {
                     int dot = driverClassName.lastIndexOf('.', lastDot - 1);
                     dot = dot <= 10 ? lastDot : dot; // avoid packages that are so short they might be generic (org.apache.) 
                     driverPackage = driverClassName.substring(0, dot);
+                    searched.add(driverPackage);
 
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(tc, "infer from " + driverClassName, driverPackage);
@@ -441,8 +448,8 @@ public class JDBCDrivers {
                             try {
                                 for (ZipEntry entry; found[preferredType] == null && (entry = zin.getNextEntry()) != null; ) { 
                                     String name = entry.getName();
-                                    if (name.startsWith(driverPackage) && name.contains("DataSource") && name.endsWith(".class")) {
-                                        name = name.substring(0, name.lastIndexOf('.')).replace('/', '.');
+                                    if (name.contains(driverPackage) && name.contains("DataSource") && name.endsWith(".class")) {
+                                        name = name.substring(name.indexOf(driverPackage), name.lastIndexOf('.')).replace('/', '.');
                                         try {
                                             Class<?> c = loader.loadClass(name);
                                             if (CommonDataSource.class.isAssignableFrom(c)) {
@@ -479,7 +486,8 @@ public class JDBCDrivers {
 
         for (int type : types)
             if (found[type] != null)
-                return found[type];
+                return new SimpleEntry<Integer, String>(type, found[type]);
+
         return null;
     }
 

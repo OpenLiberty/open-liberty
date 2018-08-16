@@ -1,0 +1,543 @@
+###############################################################################
+# Copyright (c) 2016, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5400 - CWWKS5499
+ADD_ID={0} ({1})
+ADD_ID.explanation=Nur zur internen Verwendung.
+ADD_ID.useraction=Es ist keine Aktion erforderlich.
+
+# HTML title of the social media selection page
+SELECTION_PAGE_TITLE=Auswahlformular f\u00fcr Social Media
+
+# Text that appears above the social media options to choose from on the social media selection page
+SELECTION_PAGE_HEADER=Anmelden
+
+# Text that indicates a user can sign in using social media "or" with a username and password ("or" being the text that appears on the web page)
+SELECTION_PAGE_ALTERNATE_TEXT=Oder
+
+SELECTION_PAGE_USERNAME=Benutzername
+SELECTION_PAGE_PASSWORD=Kennwort
+
+SELECTION_PAGE_SUBMIT=\u00dcbergeben
+
+SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Die Social Login-Konfiguration [{0}] wurde erfolgreich verarbeitet.
+SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Die angegebene Social Login-Konfiguration wurde erfolgreich verarbeitet.
+SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Es ist keine Aktion erforderlich.
+
+SOCIAL_LOGIN_CONFIG_MODIFIED=CWWKS5401I: Die Social Login-Konfiguration [{0}] wurde erfolgreich verarbeitet.
+SOCIAL_LOGIN_CONFIG_MODIFIED.explanation=Die angegebene Social Login-Konfiguration wurde erfolgreich verarbeitet.
+SOCIAL_LOGIN_CONFIG_MODIFIED.useraction=Es ist keine Aktion erforderlich.
+
+SOCIAL_LOGIN_CONFIG_DEACTIVATED=CWWKS5402I: Die Social Login-Konfiguration [{0}] wurde erfolgreich inaktiviert.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.explanation=Die angegebene Social Login-Konfiguration wurde erfolgreich inaktiviert.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.useraction=Es ist keine Aktion erforderlich.
+
+# 0=exception class name, 1=exception message, 2=stack trace
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR=CWWKS5403E: Bei der Verarbeitung der Social Login-Anforderung [{0}] ist ein interner Serverfehler aufgetreten. Ursache: [{1}], Stack-Trace: [{2}].
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.explanation=W\u00e4hrend der Verarbeitung einer Social Login-Anforderung ist ein interner Serverfehler aufgetreten.
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.useraction=Suchen Sie nach Fehlern in den Serverprotokolldateien und stellen Sie sicher, dass Ihre Konfiguration korrekt ist. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+# 
+SOCIAL_LOGIN_AUTHENTICATION_FAIL=CWWKS5404E: Social Login-Ausnahme: Der Social Login-Service-Provider konnte die Authentifizierungsanforderung nicht verarbeiten.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.explanation=Der Authentifizierungsprozess war nicht erfolgreich, weil vor dieser Nachricht ein Fehler aufgetreten ist.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.useraction=Sehen Sie sich die empfohlene Benutzeraktion zu dem Fehler an, der vor dieser Nachricht angezeigt wird.
+
+# Do not translate "social_login_hint"
+# 0=Social login configuration ID
+SOCIAL_LOGIN_NO_SUCH_PROVIDER=CWWKS5405E: Die Social Login-Konfiguration [{0}], die in der Anforderung angegeben ist, fehlt oder sie ist nicht f\u00fcr die Verarbeitung dieser Anforderung konfiguriert.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.explanation=Die Anforderung enth\u00e4lt einen Parameter 'social_login_hint' oder einen Header, in dem eine f\u00fcr diese Anforderung zu verwendende Social Login-Konfigurations-ID angegeben ist. Es ist jedoch keine Social Login-Konfiguration, die der ID entspricht, vorhanden oder der Authentifizierungsfilter, der f\u00fcr die Social Login-Konfiguration verwendet wird, ist nicht f\u00fcr die Verarbeitung dieser Anforderung konfiguriert.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.useraction=Vergewissern Sie sich, dass ein Social Login-Service mit der angegebenen ID konfiguriert ist. Wenn ein Authentifizierungsfilter f\u00fcr den Social Login-Service konfiguriert ist, vergewissern Sie sich, dass der Filter f\u00fcr die Verarbeitung dieser Anforderung konfiguriert ist.
+
+# web RequestFilter
+# 0=url
+SOCIAL_LOGIN_INVALID_URL=CWWKS5406E: Der angeforderte Endpunkt [{0}] wird in diesem Social Login-Service-Provider nicht unterst\u00fctzt.
+SOCIAL_LOGIN_INVALID_URL.explanation=Die angegebene URL ist kein g\u00fcltiger Social Login-Endpunkt. Dies ist m\u00f6glicherweise auf eine falsche Konfiguration im Social Login-Server zur\u00fcckzuf\u00fchren.
+SOCIAL_LOGIN_INVALID_URL.useraction=Stellen Sie sicher, dass Social Login ordnungsgem\u00e4\u00df konfiguriert ist.
+
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED=CWWKS5407I: Der Endpunktservice f\u00fcr Social Login Version 1.0 ist aktiviert.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.explanation=Der Endpunktservice f\u00fcr Social Login Version 1.0 ist aktiviert.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.useraction=Es ist keine Aktion erforderlich.
+
+# EndpointServlet
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5408E: Die Social Login-Anforderung kann nicht verarbeitet werden, weil kein Social Login-Feature verf\u00fcgbar ist.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Es wurde eine Social Login-Anforderung vom Server empfangen, aber das Feature socialLogin-1.0 ist in der Datei server.xml nicht aktiviert oder es ist nicht verf\u00fcgbar.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Stellen Sie sicher, dass das Feature ssocialLogin-1.0 und dessen Abh\u00e4ngigkeiten im featureManager der Datei server.xml konfiguriert sind.
+
+# Do not translate RFC
+# 0=Exception message
+TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: Die Signatur f\u00fcr eine berechtigte Twitter-Anforderung kann nicht erstellt werden: {0}
+TWITTER_ERROR_CREATING_SIGNATURE.explanation=Berechtigte Twitter-Anforderungen m\u00fcssen mit dem HMAC-SHA1-Signaturalgorithmus signiert werden. Entweder ist ein Problem beim Abrufen des erforderlichen Signaturalgorithmus aufgetreten oder der Signaturalgorithmus konnte mit dem angegebenen Schl\u00fcssel nicht initialisiert werden.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Vergewissern Sie sich, dass Ihr System den HMAC-SHA1-Signaturalgorithmus unterst\u00fctzt. \u00dcberpr\u00fcfen Sie die Werte f\u00fcr die geheimen Schl\u00fcssel f\u00fcr den Konsumenten und das Anforderungstoken. Diese beiden Werte werden als Teil des Schl\u00fcssels f\u00fcr den Signaturalgorithmus verwendet. Wenn einer der Werte fehlerhaft ist oder Zeichen enth\u00e4lt, die nicht gem\u00e4\u00df RFC 3986 codiert werden k\u00f6nnen, m\u00fcssen Sie m\u00f6glicherweise einen neuen Wert anfordern.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: Die Antwort des Twitter-Endpunkts [{0}] enth\u00e4lt keine Parameter im erwarteten Format. Antwort: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=Die Antwort des Twitter-Endpunkts war wahrscheinlich null oder leer. Die urspr\u00fcngliche Anforderung wurde m\u00f6glicherweise an den falschen Endpunkt \u00fcbertragen. Antworten von Twitter-Endpunkten m\u00fcssen eine Zeichenfolge von Schl\u00fcssel/Wert-Paaren sein. Der Schl\u00fcssel und der Wert m\u00fcssen durch ein Gleichheitszeichen ("=") getrennt und mehrere Schl\u00fcssel/Wert-Paare durch ein Et-Zeichen ("&") voneinander getrennt werden.
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Vergewissern Sie sich, dass die Anforderung an den richtigen Twitter-Endpunkt \u00fcbertragen wurde. Vergewissern Sie sich, dass alle erforderlichen Parameter in der urspr\u00fcnglichen Anforderung enthalten waren und dass die Anforderung durch Einschluss eines g\u00fcltigen Authorization-Headers autorisiert wurde. Ein g\u00fcltiger Authorization-Header wird mit dem Konsumentenschl\u00fcssel f\u00fcr die Twitter-Anwendung und einer Callback-URL oder einem OAuth-Anforderungstoken erstellt. \u00dcberpr\u00fcfen Sie Ihre Serverkonfiguration, um sicherzustellen, dass der richtige Konsumentenschl\u00fcssel und die richtige Callback-URL konfiguriert sind.
+
+# Do not translate "Authorization"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: Die Antwort des Twitter-Endpunkts [{0}] enth\u00e4lt mindestens einen der erforderlichen Parameter nicht. Die folgenden erforderlichen Parameter fehlen in der Antwort: [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER.explanation=In den Antworten der einzelnen Twitter-Endpunkte wird jeweils ein eigener Satz von Parametern zur\u00fcckgegeben. Die empfangene Twitter-Antwort enth\u00e4lt die in der Nachricht aufgelisteten erforderlichen Parameter nicht. Die urspr\u00fcngliche Anforderung wurde m\u00f6glicherweise an den falschen Endpunkt \u00fcbertragen.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Vergewissern Sie sich, dass die Anforderung an den richtigen Twitter-Endpunkt \u00fcbertragen wurde. Vergewissern Sie sich, dass alle erforderlichen Parameter in der urspr\u00fcnglichen Anforderung enthalten waren und dass die Anforderung durch Einschluss eines g\u00fcltigen Authorization-Headers autorisiert wurde. Ein g\u00fcltiger Authorization-Header wird mit dem Konsumentenschl\u00fcssel f\u00fcr die Twitter-Anwendung und einer Callback-URL oder einem OAuth-Anforderungstoken erstellt. \u00dcberpr\u00fcfen Sie Ihre Serverkonfiguration, um sicherzustellen, dass der richtige Konsumentenschl\u00fcssel und die richtige Callback-URL konfiguriert sind.
+
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: Der Wert des Parameters [{0}] in der Antwort des Twitter-Endpunkts [{1}] stimmt nicht mit dem erwarteten Wert [{2}] \u00fcberein. Die Antwort enth\u00e4lt den folgenden Wert: [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=Der in der Nachricht angegebene Parameter muss einen Wert haben, der mit dem erwarteten Wert \u00fcbereinstimmt. In diesem sehr unwahrscheinlichen Szenario hat Twitter eine Anforderung erfolgreich verarbeitet, aber einen unerwarteten Wert f\u00fcr den Parameter zur\u00fcckgegeben.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=\u00dcberpr\u00fcfen Sie Ihre Serverkonfiguration, um sicherzustellen, dass die f\u00fcr diese Anwendung konfigurierte Callback-URL auf eine g\u00fcltige URL verweist, an die Twitter einen Benutzer umleiten kann, nachdem die Berechtigung erteilt wurde.
+
+# Do not translate "Authorization"
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: Der Parameter [{0}] in der Antwort des Twitter-Endpunkts [{1}] ist leer. Es muss eine Wert f\u00fcr diesen Parameter angegeben werden, damit die Berechtigungsanforderung verarbeitet wird.
+TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=Die Antwort des Twitter-Endpunkts enth\u00e4lt zwar den in der Nachricht angegebenen Parameter, aber keinen Wert f\u00fcr den Parameter.
+TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Vergewissern Sie sich, dass die Antwort des Twitter-Endpunkts alle erwarteten Parameter und Werte f\u00fcr diese Parameter enth\u00e4lt. Vergewissern Sie sich, dass alle erforderlichen Parameter in der urspr\u00fcnglichen Anforderung enthalten waren und dass die Anforderung durch Einschluss eines g\u00fcltigen Authorization-Headers autorisiert wurde. Ein g\u00fcltiger Authorization-Header wird mit dem Konsumentenschl\u00fcssel f\u00fcr die Twitter-Anwendung und einer Callback-URL oder einem OAuth-Anforderungstoken erstellt. \u00dcberpr\u00fcfen Sie Ihre Serverkonfiguration, um sicherzustellen, dass der richtige Konsumentenschl\u00fcssel und die richtige Callback-URL konfiguriert sind.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: Die Antwort des Twitter-Endpunkts [{0}] kann nicht ausgewertet werden, weil der Antworthauptteil keinen Inhalt enth\u00e4lt.
+TWITTER_EMPTY_RESPONSE_BODY.explanation=Die urspr\u00fcngliche Anforderung wurde m\u00f6glicherweise an den falschen Endpunkt \u00fcbertragen oder bei der Verarbeitung der Antwort des Endpunkts ist ein Fehler aufgetreten.
+TWITTER_EMPTY_RESPONSE_BODY.useraction=Suchen Sie in den Serverprotokollen nach anderen Nachrichten, die auf einen Fehler hinweisen k\u00f6nnten. Vergewissern Sie sich, dass die urspr\u00fcngliche Anforderung an den richtigen Twitter-Endpunkt \u00fcbertragen wurde.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: Die Anforderung an den Twitter-Endpunkt [{0}] ist fehlgeschlagen. Der Antwortstatuscode ist [{1}] und der Antwortinhalt ist [{2}].
+TWITTER_ENDPOINT_REQUEST_FAILED.explanation=Die urspr\u00fcngliche Anforderung enth\u00e4lt wahrscheinlich falsche Berechtigungsdaten oder die angeforderte Operation ist nicht zul\u00e4ssig. Twitter-Endpunkte, die eine Berechtigung erfordern, m\u00fcssen einen Authorization-Header in einem bestimmten Format haben. Bei berechtigten Anforderungen ist wahrscheinlich ein Teil der zum Erstellen des Authorization-Headers verwendeten Daten, wie z. B. die Signatur oder das OAuth-Token, fehlerhaft oder falsch. Der in der Nachricht angegebene Statuscode sollte einen genaueren Grund f\u00fcr das Fehlschlagen der Anforderung enthalten.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Wenn die Anforderung nicht berechtigt war, vergewissern Sie sich, dass die Anforderung einen Authorization-Header mit korrekten Berechtigungsdaten enth\u00e4lt. Falls die Berechtigungsdaten ein OAuth-Token enthalten, vergewissern Sie sich, dass das Token noch g\u00fcltig ist, oder fordern Sie ein neues Token an. Vergewissern Sie sich, dass die Anforderung nicht mit einer fr\u00fcheren Anforderung identisch ist, indem Sie die Signaturen in den Authorization-Headern der Anforderungen vergleichen. Falls die Anforderung nicht zugelassen wurde, vergewissern Sie sich, dass die Twitter-Anwendung die angeforderte Operation zul\u00e4sst.
+
+# 0=Outgoing request URL, 1=Parameter name
+OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: Die abgehende Anforderung [{0}] ist m\u00f6glicherweise nicht erfolgreich, weil der Parameter [{1}] fehlt oder leer ist.
+OUTGOING_REQUEST_MISSING_PARAMETER.explanation=Der angegebene Parameter ist f\u00fcr die OAuth-Authentifizierung erforderlich. Die Anforderung, die an den angegebenen Endpunkt \u00fcbertragen wird, schl\u00e4gt m\u00f6glicherweise fehl, weil erforderliche Informationen fehlen.
+OUTGOING_REQUEST_MISSING_PARAMETER.useraction=Vergewissern Sie sich, dass das Konfigurationsattribut, das dem angegebenen Parameter entspricht, f\u00fcr jeden Social Login-Provider in der Serverkonfiguration konfiguriert ist.
+
+# 0=URL string, 1=Exception message text
+EXCEPTION_INITIALIZING_URL=CWWKS5417E: Bei der Initialisierung des URI [{0}] ist ein Fehler aufgetreten: {1}
+EXCEPTION_INITIALIZING_URL.explanation=Die in der Nachricht angegebene Zeichenfolge ist m\u00f6glicherweise kein g\u00fcltiger URI oder das System hat m\u00f6glicherweise nicht die erforderlichen Berechtigungen zum Initialisieren eines URI.
+EXCEPTION_INITIALIZING_URL.useraction=Vergewissern Sie sich, dass die angegebene Zeichenfolge eine g\u00fcltige URL ist. Vergewissern Sie sich, dass die Zeichenfolge nicht null und das in der URL verwendete Protokoll ein g\u00fcltiges Protokoll wie http oder https ist. Stellen Sie sicher, dass die Codebasis die erforderlichen Berechtigungen zum Initialisieren eines URI-Objekts hat.
+
+# Do not translate "GET" or "POST"
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: Bei der Verarbeitung der Anforderung an den Twitter-Endpunkt [{0}] ist ein Fehler aufgetreten: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=Wahrscheinlich ist eine der folgenden Situationen eingetreten: 1. Beim \u00d6ffnen einer Verbindung zum angegebenen Endpunkt ist ein Fehler aufgetreten. 2. Die f\u00fcr die Anforderung verwendete Anforderungsmethode ist kein bekanntes Protokoll wie GET oder POST. 3. Beim Schreiben von POST-Daten in die Verbindung ist ein Fehler aufgetreten. 4. Beim Lesen der Antwort des Twitter-Endpunkts ist ein Fehler aufgetreten.
+TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=Weitere Informationen zu dem Fehler finden Sie im Fehlertext in der Nachricht. Vergewissern Sie sich, dass das System w\u00e4hrend der Anforderung die Verbindung aufrecht erhalten hat. Vergewissern Sie sich, dass eine bekannte Anforderungsmethode wie GET oder POST f\u00fcr die Anforderung verwendet wurde.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: Die Berechtigungsanforderung ist fehlgeschlagen, weil beim Erstellen des Ergebnisses vom Twitter-Endpunkt [{0}] ein Fehler aufgetreten ist.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation=Entweder wurde kein Ergebnis oder ein leeres Ergebnis von der angegebenen Anforderung zur\u00fcckgegeben. Beim \u00dcbergeben oder Verarbeiten der Anforderung muss ein Fehler aufgetreten sein.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction=Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten, die anzeigen, wo der Fehler aufgetreten ist.
+
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: Bei der Umleitung der Antwort vom Twitter-Endpunkt [{0}] ist ein Fehler aufgetreten: {1}
+TWITTER_REDIRECT_IOEXCEPTION.explanation=Die URL, an die die Antwort umgeleitet wurde, ist m\u00f6glicherweise nicht g\u00fcltig oder sie konnte die Anforderung nicht bedienen.
+TWITTER_REDIRECT_IOEXCEPTION.useraction=Vergewissern Sie sich, dass das Umleitungsziel verf\u00fcgbar ist und die Anforderung bedienen kann. Suchen Sie in der Fehlernachricht nach weiteren Informationen zu dem Fehler.
+
+# Do not translate OAuth
+TWITTER_TOKEN_DOES_NOT_MATCH=CWWKS5421E: Die Berechtigungsanforderung ist fehlgeschlagen, weil das in der Anforderung angegebene Token nicht mit dem Token \u00fcbereinstimmt, das f\u00fcr die urspr\u00fcngliche Berechtigungsanforderung verwendet wurde.
+TWITTER_TOKEN_DOES_NOT_MATCH.explanation=Die eingehende Anforderung muss ein OAuth-Anforderungstoken enthalten, das mit dem OAuth-Anforderungstoken \u00fcbereinstimmt, das im ersten Schritt des Berechtigungsprozesses angefordert wurde. Die Werte m\u00fcssen \u00fcbereinstimmen, um sicherzustellen, dass die eingehende Anforderung der urspr\u00fcnglichen Anforderung, \u00fcber die der Berechtigungsprozess gestartet wurde, entspricht.
+TWITTER_TOKEN_DOES_NOT_MATCH.useraction=Vergewissern Sie sich, dass die eingehende Anforderung einer fr\u00fcheren Anforderung f\u00fcr ein OAuth-Anforderungstoken entspricht. Sie k\u00f6nnen den Berechtigungsablauf erneut starten, um ein neues OAuth-Anforderungstoken abzurufen.
+
+# 0=Endpoint ("oauth/access_token"), 1=Parameter name
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: In der f\u00fcr den Twitter-Endpunkt [{0}] bestimmte Anforderung fehlt ein erforderlicher Parameter. Die folgenden erforderlichen Parameter fehlen in der Anforderung: {1}
+TWITTER_REQUEST_MISSING_PARAMETER.explanation=Die Anforderung muss alle in der Nachricht angegebenen Parameter enthalten. Die Anforderung enth\u00e4lt nicht alle in der Nachricht angegebenen Parameter.
+TWITTER_REQUEST_MISSING_PARAMETER.useraction=Vergewissern Sie sich, dass die Anforderung alle erforderlichen Parameter enth\u00e4lt.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: Der Antwortstatus vom Twitter-Endpunkt [{0}] konnte nicht bestimmt werden. Beim \u00dcbergeben oder Verarbeiten der Anforderung ist wahrscheinlich  ein Fehler aufgetreten.
+TWITTER_RESPONSE_STATUS_MISSING.explanation=Es wird ein Antwortstatusfeld erwartet, um das Ergebnis der Berechtigungsanforderung zu bestimmen.
+TWITTER_RESPONSE_STATUS_MISSING.useraction=Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten, die anzeigen, wo ein weiterer Fehler aufgetreten ist.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: Die Antwort des Twitter-Endpunkts [{0}] kann nicht verarbeitet werden. {1}
+TWITTER_RESPONSE_FAILURE.explanation=Der im Ergebnis enthaltene Antwortstatus zeigt keinen Erfolg an. Beim \u00dcbergeben oder Verarbeiten der Anforderung muss ein Fehler aufgetreten sein.
+TWITTER_RESPONSE_FAILURE.useraction=Wenn die Nachricht eine weitere Fehlernachricht enth\u00e4lt, sehen Sie sich die Benutzeraktion f\u00fcr diese Nachricht an. Suchen Sie andernfalls in den Serverprotokollen nach weiteren Fehlernachrichten, die anzeigen, wo ein weiterer Fehler aufgetreten ist.
+
+# web EndpointServices 
+# 0=qualified config IDs
+SOCIAL_LOGIN_MANY_PROVIDERS=CWWKS5425E: Es sind zu viele Social Login-Services [{0}] f\u00fcr die Verarbeitung der Anforderung qualifiziert.
+SOCIAL_LOGIN_MANY_PROVIDERS.explanation=Wenn mehrere Social Login-Services qualifiziert sind, kann nicht bestimmt werden, welcher Social Login-Service die Anforderung verarbeiten soll.
+SOCIAL_LOGIN_MANY_PROVIDERS.useraction=Stellen Sie sicher, dass nur ein einziger Social Login-Service in der Datei server.xml f\u00fcr die Verarbeitung der Anforderung konfiguriert ist.
+
+# Do not translate "JSON"
+# 0=Endpoint ("/1.1/accounts/verify_credentials"), 1=Error message, 2=Endpoint response content
+TWITTER_RESPONSE_NOT_JSON=CWWKS5426E: Die Antwort des Twitter-Endpunkts [{0}] hat nicht das erwartete JSON-Format. Fehler: [{1}]. Antwortinhalt: [{2}]
+TWITTER_RESPONSE_NOT_JSON.explanation=Der angegebene Endpunkt funktioniert m\u00f6glicherweise nicht wie erwartet oder das Endpunktverhalten hat sich ge\u00e4ndert, sodass Antworten in einem anderen Format zur\u00fcckgegeben werden. Einige Daten k\u00f6nnten beim Lesen der Antwort ausgelassen worden sein.
+TWITTER_RESPONSE_NOT_JSON.useraction=\u00dcberpr\u00fcfen Sie, ob der Server die gesamte Antwort von dem angegebenen Endpunkt lesen konnte. \u00dcberpr\u00fcfen Sie au\u00dferdem, ob die Anforderung an den richtigen Twitter-Endpunkt gesendet wurde und die Antwort wie erwartet formatiert ist.
+
+SIGN_IN_NO_CONFIGS=CWWKS5427E: Die Social Media-Anmeldeseite kann nicht angezeigt werden, da das Social Login-Feature keine Social Login-Konfigurationen finden kann, die f\u00fcr die Authentifizierung dieser Anforderung konfiguriert wurden.
+SIGN_IN_NO_CONFIGS.explanation=Es muss mindestens eine Social Login-Konfiguration zum Anzeigen der Anmeldeseite vorhanden sein. Entweder fehlt das Cookie, das die Liste der \u00fcbereinstimmenden Social Login-Konfigurationen enth\u00e4lt, oder es ist leer, oder die \u00fcber das Cookie angegebenen Social Login-Konfigurationen wurden nicht gefunden.
+SIGN_IN_NO_CONFIGS.useraction=Stellen Sie sicher, dass mindestens ein Social Login-Service konfiguriert ist, um diese Anforderung zu authentifizieren.
+
+# 0=Config element ID
+SIGN_IN_MISSING_EXPECTED_CONFIG=CWWKS5428W: Das Social Login-Feature kann keine Social Login-Konfiguration finden, die der ID [{0}] entspricht. Es wird erwartet, dass eine Social Login-Konfiguration mit der angegebenen ID vorhanden und f\u00fcr die Authentifizierung dieser Anforderung konfiguriert ist.
+SIGN_IN_MISSING_EXPECTED_CONFIG.explanation=Die angegebene ID ist in einem Cookie enthalten, das verwendet wird, um zu erfassen, welche Social Login-Konfigurationen f\u00fcr die Authentifizierung dieser Anforderung konfiguriert sind. Es wurde jedoch keine Social Login-Konfiguration gefunden, die dieser ID entspricht. Die ID ist entweder fehlerhaft oder die entsprechende Social Login-Konfiguration wurde entfernt.
+SIGN_IN_MISSING_EXPECTED_CONFIG.useraction=Vergewissern Sie sich, dass eine Social Login-Konfiguration mit der angegebenen ID in der Serverkonfiguration vorhanden ist.
+
+# 0=Specific error message describing why the page cannot be displayed
+ERROR_DISPLAYING_SIGN_IN_PAGE=CWWKS5429E: Die Social-Media-Standardanmeldeseite kann nicht angezeigt werden. {0}
+ERROR_DISPLAYING_SIGN_IN_PAGE.explanation=Beim Verarbeiten der Standardanmeldeseite ist ein Fehler aufgetreten. Die Nachricht enth\u00e4lt eine bestimmte Erl\u00e4uterung dazu, dass die Anmeldeseite nicht angezeigt werden kann.
+ERROR_DISPLAYING_SIGN_IN_PAGE.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=Selection page URL configured in server.xml, 1=Specific error message
+SELECTION_PAGE_URL_NOT_VALID=CWWKS5430W: Die in der Konfiguration der Social Login-Webanwendung angegebene URL f\u00fcr die Social Media-Auswahlseite [{0}] ist kein g\u00fcltiger URI. Es wird stattdessen die Standardauswahlseite verwendet. {1}
+SELECTION_PAGE_URL_NOT_VALID.explanation=Die in der Konfiguration der Social Login-Webanwendung konfigurierte URL f\u00fcr die Auswahlseite ist keine g\u00fcltige URI-Zeichenfolge. Die URL f\u00fcr die Auswahlseite muss RFC 3986 (https://tools.ietf.org/html/rfc3986) entsprechen und darf nur bestimmte Zeichen enthalten.
+SELECTION_PAGE_URL_NOT_VALID.useraction=Vergewissern Sie sich, dass die konfigurierte URL f\u00fcr die Auswahlseite nicht null ist und nur die Zeichen enth\u00e4lt, die laut RFC 3986 zul\u00e4ssig sind.
+
+# 0=Selection page URL configured in server.xml
+SELECTION_PAGE_URL_NOT_HTTP=CWWKS5431E: Die in der Konfiguration der Social Login-Webanwendung angegebene URL f\u00fcr die Social Media-Auswahlseite [{0}] ist kein relativer Pfad und enth\u00e4lt weder das HTTP- noch das HTTPS-Schema.
+SELECTION_PAGE_URL_NOT_HTTP.explanation=Die URL f\u00fcr die Social Media-Auswahlseite muss ein relativer Pfad sein oder eine URL, die das HTTP- oder das HTTPS-Schema verwendet. Die angegebene URL ist entweder null oder verwendet ein anderes URL-Schema als HTTP oder HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.useraction=Stellen Sie sicher, dass die URL f\u00fcr die Social Media-Auswahlseite ein relativer Pfad ist oder dass der URL-Wert das HTTP- oder das HTTPS-Schema enth\u00e4lt.
+
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG=CWWKS5432W: Das Social Login-Feature kann die Anforderung nicht an die angepasste Social Media-Auswahlseite umleiten, weil die Konfiguration f\u00fcr die Social Login-Webanwendung nicht verf\u00fcgbar ist. Es wird stattdessen die Standardauswahlseite verwendet.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.explanation=Der Social Login-Webanwendungsservice ist nicht verf\u00fcgbar. Die Webanwendungskonfiguration ist wahrscheinlich nicht in der Serverkonfiguration enthalten.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.useraction=Vergewissern Sie sich, dass in der Serverkonfiguration eine Social Login-Webanwendungskonfiguration enthalten ist. \u00dcberpr\u00fcfen Sie die Serverprotokolle, um sicherzustellen, dass der Webanwendungsservice bereit und verf\u00fcgbar ist.
+
+# 0=Endpoint URL
+REDIRECT_NO_MATCHING_CONFIG=CWWKS5433E: Die an [{0}] weitergeleitete Anforderung hat keine Social Login-Konfiguration, der sie zugeordnet werden kann.
+REDIRECT_NO_MATCHING_CONFIG.explanation=Es wird erwartet, dass die Anforderung an einen Endpunkt gesendet wird, der eine Social Login-Konfigurations-ID in der URL enth\u00e4lt. Die URL enth\u00e4lt jedoch nicht die ID einer bekannten Social Login-Konfiguration.
+REDIRECT_NO_MATCHING_CONFIG.useraction=Vergewissern Sie sich, dass die Umleitungs-URL eine korrekt formatierte URL ist, die die ID einer Social Login-Konfiguration enth\u00e4lt, die in der Serverkonfiguration vorhanden ist.
+
+# 0=Specific exception or error message
+ERROR_PROCESSING_REDIRECT=CWWKS5434E: Im Social Login-Feature ist beim Verarbeiten der Umleitungsanforderung ein Fehler aufgetreten. {0}
+ERROR_PROCESSING_REDIRECT.explanation=Ein Social Media-Provider hat eine Anforderung an diesen Endpunkt umgeleitet, um den Authentifizierungsvorgang fortzusetzen oder um einen Benutzer zu authentifizieren. Die Anforderung kann jedoch aufgrund der in der Fehlernachricht genannten Ursache nicht abgeschlossen werden.
+ERROR_PROCESSING_REDIRECT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+
+USERNAME_NOT_FOUND=CWWKS5435E: Der Benutzername konnte nicht aus dem Token extrahiert werden, das von der Social Media-Plattform abgerufen wurde.
+USERNAME_NOT_FOUND.explanation=Das Attribut, das den Benutzernamen definiert, variiert je nach Social Media-Plattform. Der f\u00fcr das Attribut userName konfigurierte Wert ist m\u00f6glicherweise falsch.
+USERNAME_NOT_FOUND.useraction=Vergewissern Sie sich, dass der Wert des Attributs userName mit dem Wert \u00fcbereinstimmt, der von der Social Media-Plattform f\u00fcr die Definition des Benutzernamens verwendet wird.
+
+REALM_NOT_FOUND=CWWKS5436E: Der Realm konnte nicht aus dem Token extrahiert werden, das von der Social Media-Plattform abgerufen wurde.
+REALM_NOT_FOUND.explanation=Das Attribut, das den Realmnamen definiert, variiert je nach Social Media-Plattform. Der f\u00fcr das Attribut realmName konfigurierte Wert ist m\u00f6glicherweise falsch.
+REALM_NOT_FOUND.useraction=Vergewissern Sie sich, dass der Wert des Attributs realmName mit dem Wert \u00fcbereinstimmt, der von der Social Media-Plattform f\u00fcr die Definition des Realms verwendet wird.
+
+# "subject" refers to a Java Authentication and Authorization Service (JAAS) subject
+# 0=socialLogin element ID, 1=Error message (if present)
+TWITTER_ERROR_CREATING_RESULT=CWWKS5437E: Das Social Login-Feature kann anhand der Twitter-Profilinformationen und der Social Login-Konfiguration [{0}] kein Subjekt f\u00fcr den Benutzer erstellen. {1}
+TWITTER_ERROR_CREATING_RESULT.explanation=Einige der Profilinformationen, die zum Erstellen des Subjekts f\u00fcr den Benutzer verwendet wurden, k\u00f6nnten fehlen oder fehlerhaft sein.
+TWITTER_ERROR_CREATING_RESULT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN=CWWKS5438E: Das Social Login-Feature kann kein verschl\u00fcsseltes Zugriffstoken f\u00fcr die Social Login-Konfiguration [{0}] erstellen. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.explanation=Es ist ein Fehler aufgetreten, als dass Feature versucht hat, mit einem der Verschl\u00fcsselungsalgorithmen auf der Basis des bereitgestellten Zugriffstokens ein verschl\u00fcsseltes Zugriffstoken zu erstellen. Die Nachricht sollte genauer beschreiben, warum das verschl\u00fcsselte Token nicht erstellt werden konnte.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL=CWWKS5439E: Das dem Social Login-Feature bereitgestellte Zugriffstoken ist null. Deshalb kann das Token nicht verschl\u00fcsselt werden.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.explanation=Ein Zugriffstoken mit Nullwert kann nicht verschl\u00fcsselt werden.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=Geben Sie ein zu verschl\u00fcsselndes Zugriffstoken ungleich null an.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: Das Social Login-Feature kann das bereitgestellte Zugriffstoken anhand des in der Social Login-Konfiguration [{0}] angegebenen \u00f6ffentlichen Schl\u00fcssels nicht verschl\u00fcsseln. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=Der \u00f6ffentliche Schl\u00fcssel, der zum Verschl\u00fcsseln des Zugriffstokens verwendet wird, k\u00f6nnte fehlerhaft oder nicht g\u00fcltig sein oder der erforderliche RSA-Verschl\u00fcsselungsalgorithmus ist nicht verf\u00fcgbar.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Vergewissern Sie sich, dass der f\u00fcr die angegebene Social Login-Konfiguration konfigurierte \u00f6ffentliche Schl\u00fcssel g\u00fcltig ist und f\u00fcr die RSA-Verschl\u00fcsselung verwendet werden kann.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES=CWWKS5441E: Das Social Login-Feature kann das bereitgestellte Zugriffstoken anhand des in der Social Login-Konfiguration [{0}] angegebenen geheimen Schl\u00fcssels nicht verschl\u00fcsseln. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.explanation=Der geheime Schl\u00fcssel, der zum Verschl\u00fcsseln des Zugriffstokens verwendet wird, k\u00f6nnte fehlerhaft oder nicht g\u00fcltig sein. M\u00f6glicherweise ist beim Abrufen des Initialisierungsvektors f\u00fcr den Verschl\u00fcsselungsalgorithmus ein Fehler aufgetreten oder der erforderliche AES-Verschl\u00fcsselungsalgorithmus ist nicht verf\u00fcgbar.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.useraction=Vergewissern Sie sich, dass der geheime Schl\u00fcssel, der f\u00fcr die in der Nachricht angegebene Social Login-Konfiguration konfiguriert ist, g\u00fcltig ist und f\u00fcr die AES-Verschl\u00fcsselung verwendet werden kann.
+
+# 0=socialLogin element ID
+TWITTER_STATE_MISSING=CWWKS5442E: Das Social Login-Feature kann die Anforderung mit der Social Login-Konfiguration [{0}] nicht ausf\u00fchren, weil der Statuswert fehlt.
+TWITTER_STATE_MISSING.explanation=Der Statuswert wird f\u00fcr jede eindeutige Authentifizierungsanforderung generiert und in einem Cookie gespeichert. Dieser Wert ist f\u00fcr die Verifizierung und Verarbeitung jeder Authentifizierungsanforderung erforderlich. Das Statuscookie wurde nicht erstellt oder es wurde gel\u00f6scht.
+TWITTER_STATE_MISSING.useraction=Vergewissern Sie sich, dass der Statuswert in einem Cookie gespeichert wurde und dass das Cookie nicht gel\u00f6scht wurde.
+
+# 0=socialLogin element ID
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY=CWWKS5443E: Das Social Login-Feature kann die Anforderung mit der Social Login-Konfiguration [{0}] nicht ausf\u00fchren, weil der Wert f\u00fcr die urspr\u00fcngliche Anforderungs-URL fehlt oder leer ist. Der urspr\u00fcngliche Anforderungs-URL-Wert muss vorhanden sein, damit der Benutzer an die gesch\u00fctzte Ressource, die urspr\u00fcnglich angefordert wurde, zur\u00fcckgeleitet wird.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.explanation=Die urspr\u00fcngliche Anforderungs-URL wird zu Beginn des Authentifizierungsprozesses in einem Cookie gespeichert. Dieses Cookie fehlt oder oder der Cookiewert ist leer.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.useraction=Vergewissern Sie sich, dass die urspr\u00fcngliche Anforderungs-URL in einem Cookie gespeichert wurde und dass das Cookie nicht gel\u00f6scht wurde.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA=CWWKS5444E: Das dem Social Login-Feature bereitgestellte Zugriffstoken kann anhand des in der Social Login-Konfiguration [{0}] angegebenen privaten Schl\u00fcssels nicht entschl\u00fcsselt werden. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.explanation=Es ist ein Fehler aufgetreten, der die Entschl\u00fcsselung des Zugriffstokens durch den RSA-Verschl\u00fcsselungsalgorithmus verhindert hat. Der private Schl\u00fcssel, der zum Entschl\u00fcsseln des Zugriffstokens verwendet wird, k\u00f6nnte fehlerhaft oder nicht g\u00fcltig sein, das verschl\u00fcsselte Token k\u00f6nnte nicht ordnungsgem\u00e4\u00df formatiert sein oder der erforderliche RSA-Verschl\u00fcsselungsalgorithmus k\u00f6nnte nicht verf\u00fcgbar sein.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.useraction=Vergewissern Sie sich, dass in der Social Login-Konfiguration ein privater Schl\u00fcssel angegeben ist, der eine g\u00fcltige Konfiguration hat und f\u00fcr die RSA-Entschl\u00fcsselung verwendet werden kann. Vergewissern Sie sich, dass das verschl\u00fcsselte Token ordnungsgem\u00e4\u00df konfiguriert und der Entschl\u00fcsselungsalgorithmus verf\u00fcgbar ist.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES=CWWKS5445E: Das dem Social Login-Feature bereitgestellte Zugriffstoken kann anhand des in der Social Login-Konfiguration [{0}] angegebenen geheimen Schl\u00fcssels nicht entschl\u00fcsselt werden. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.explanation=Es ist ein Fehler aufgetreten, der die Entschl\u00fcsselung des Zugriffstokens durch den AES-Verschl\u00fcsselungsalgorithmus verhindert hat. Der geheime Schl\u00fcssel, der zum Entschl\u00fcsseln des Zugriffstokens verwendet wird, k\u00f6nnte fehlerhaft oder nicht g\u00fcltig sein. Das verschl\u00fcsselte Token ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df konfiguriert. M\u00f6glicherweise ist beim Abrufen des Initialisierungsvektors f\u00fcr den Entschl\u00fcsselungsalgorithmus ein Fehler aufgetreten oder der erforderliche AES-Entschl\u00fcsselungsalgorithmus ist nicht verf\u00fcgbar.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.useraction=Vergewissern Sie sich, dass in der Social Login-Konfiguration ein geheimer Schl\u00fcssel angegeben ist, der eine g\u00fcltige Konfiguration hat und f\u00fcr die AES-Entschl\u00fcsselung verwendet werden kann. Vergewissern Sie sich, dass das verschl\u00fcsselte Token ordnungsgem\u00e4\u00df konfiguriert und der Entschl\u00fcsselungsalgorithmus verf\u00fcgbar ist.
+
+# Intended to be a child of ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA or ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES
+VALUE_NOT_HEXADECIMAL=CWWKS5446E: Der angegebene Wert hat kein Hexadezimalformat und kann deshalb nicht decodiert werden.
+VALUE_NOT_HEXADECIMAL.explanation=Es wird erwartet, dass ein verschl\u00fcsseltes Token im Hexadezimalformat codiert ist.
+VALUE_NOT_HEXADECIMAL.useraction=Vergewissern Sie sich, dass der Wert ordnungsgem\u00e4\u00df im Hexadezimalformat codiert ist.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT=CWWKS5447E: Die Anforderung kann nicht an den Berechtigungsendpunkt umgeleitet werden, der f\u00fcr die Social Login-Konfiguration [{0}] konfiguriert ist. {1}
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.explanation=Es ist wahrscheinlich ein Fehler bei der Erstellung der Umleitungs-URL f\u00fcr den Berechtigungsendpunkt aufgetreten. Alternativ k\u00f6nnte ein Fehler bei der Umleitung der Anforderung aufgetreten sein.
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Vergewissern Sie sich, dass die Umleitungs-URL f\u00fcr den Berechtigungsendpunkt eine g\u00fcltige URL ist. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'state', OAuth
+# 0=socialLogin element ID
+STATE_IS_NULL=CWWKS5448E: Es kann keine g\u00fcltige Abfragezeichenfolge f\u00fcr den Berechtigungsendpunkt der Social Login-Konfiguration [{0}] erstellt werden, weil der angegebene Statuswert null ist.
+STATE_IS_NULL.explanation=In Anforderungen an OAuth-Berechtigungsendpunkte muss der Parameter 'state' angegeben werden. Es kann keine g\u00fcltige Berechtigungsendpunktanforderung ohne Statuswert erstellt werden.
+STATE_IS_NULL.useraction=Vergewissern Sie sich, dass ein Statuswert ungleich null f\u00fcr diese Anforderung generiert wurde.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'redirect_uri', OAuth
+# 0=socialLogin element ID
+REDIRECT_URL_IS_NULL=CWWKS5449E: Es kann keine g\u00fcltige Abfragezeichenfolge f\u00fcr den Berechtigungsendpunkt der Social Login-Konfiguration [{0}] erstellt werden, weil die angegebene Umleitungs-URI null ist.
+REDIRECT_URL_IS_NULL.explanation=In Anforderungen an OAuth-Berechtigungsendpunkte muss der Parameter 'redirect_uri' angegeben werden. Es kann keine g\u00fcltige Berechtigungsendpunktanforderung ohne Umleitungs-URI erstellt werden.
+REDIRECT_URL_IS_NULL.useraction=Vergewissern Sie sich, dass ein Umleitungs-URI-Wert ungleich null f\u00fcr diese Anforderung generiert wurde.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_SSL_CONTEXT=CWWKS5450E: Die Anforderung kann den Tokenendpunkt nicht aufrufen, weil beim Abrufen der SSL-Informationen f\u00fcr die Social Login-Konfiguration [{0}] ein Fehler aufgetreten ist. {1}
+AUTH_CODE_ERROR_SSL_CONTEXT.explanation=Die Anforderung enth\u00e4lt einen Berechtigungscode, der zum Abrufen von Benutzerinformationen von einem OAuth-Tokenendpunkt verwendet wird. Zum Aufrufen des Tokenendpunkts sind die SSL-Informationen erforderlich. Beim Laden der SSL-Informationen ist ein Fehler aufgetreten und deshalb kann der Tokenendpunkt nicht aufgerufen werden.
+AUTH_CODE_ERROR_SSL_CONTEXT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Vergewissern Sie sich, dass die angegebene Social Login-Konfiguration auf eine g\u00fcltige SSL-Konfiguration verweist bzw. dass die Standard-SSL-Konfiguration f\u00fcr den Server ordnungsgem\u00e4\u00df konfiguriert ist.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_GETTING_TOKENS=CWWKS5451E: Im Social Login-Feature ist ein Problem beim Abrufen der Tokeninformationen von dem Tokenendpunkt, der f\u00fcr die Social Login-Konfiguration [{0}] konfiguriert ist, aufgetreten. {1}
+AUTH_CODE_ERROR_GETTING_TOKENS.explanation=Ein Social Login-Feature muss eine Anforderung an den Tokenendpunkt absetzen, um ein Zugriffstoken und ein optionales ID-Token abzurufen. Die Tokenendpunkt-URL k\u00f6nnte fehlerhaft sein oder fehlen, die Antwort des Tokenendpunkts k\u00f6nnte nicht ordnungsgem\u00e4\u00df formatiert sein oder beim Aufruf des Tokenendpunkts k\u00f6nnte ein Fehler aufgetreten sein.
+AUTH_CODE_ERROR_GETTING_TOKENS.useraction=Vergewissern Sie sich, dass die f\u00fcr die angegebene Social Login-Konfiguration konfigurierte Tokenendpunkt-URL g\u00fcltig ist. Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten.
+
+# 0=socialLogin element ID
+USER_API_RESPONSE_NULL_OR_EMPTY=CWWKS5452E: Das Social Login-Feature kann den Benutzer nicht authentifizieren, weil die Antwort von der f\u00fcr die Social Login-Konfiguration [{0}] konfigurierten Benutzer-API null oder leer ist.
+USER_API_RESPONSE_NULL_OR_EMPTY.explanation=Benutzerdaten m\u00fcssen von der konfigurierten Benutzer-API zur\u00fcckgegeben werden. Der Benutzer kann ohne die Benutzerdaten von der Benutzer-API nicht authentifiziert werden.
+USER_API_RESPONSE_NULL_OR_EMPTY.useraction=Vergewissern Sie sich, dass mindestens eine Benutzer-API f\u00fcr die angegebene Social Login-Konfiguration konfiguriert ist. Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_FAILED_TO_CREATE_JWT=CWWKS5453E: Im Social Login-Feature ist beim Erstellen eines JSON Web Token (JWT) aus dem bereitgestellten Zugriffstoken f\u00fcr die Social Login-Konfiguration [{0}] ein Problem aufgetreten. {1}
+AUTH_CODE_FAILED_TO_CREATE_JWT.explanation=Es k\u00f6nnte ein Fehler beim Abrufen der Benutzerinformationen mit dem bereitgestellten Zugriffstoken oder ein Fehler beim Erstellen eines JWT aus dem bereitgestellten ID-Token aufgetreten sein.
+AUTH_CODE_FAILED_TO_CREATE_JWT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_CREATING_RESULT=CWWKS5454E: Das Social Login-Feature kann mit dem bereitgestellten Berechtigungscode f\u00fcr die Social Login-Konfiguration [{0}] keinen Betreff f\u00fcr den Benutzer erstellen. {1}
+AUTH_CODE_ERROR_CREATING_RESULT.explanation=Einige der Daten, die zum Erstellen des Subjekts f\u00fcr den angegebenen Benutzer verwendet wurden, k\u00f6nnten fehlen oder fehlerhaft sein.
+AUTH_CODE_ERROR_CREATING_RESULT.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=socialLogin element ID, 1=User name
+ACCESS_TOKEN_MISSING=CWWKS5455E: Das Social Login-Feature kann den Benutzer [{0}] nicht authentifizieren, weil kein Zugriffstoken gefunden wurde.
+ACCESS_TOKEN_MISSING.explanation=Es kann kein Subjekt f\u00fcr den Benutzer erstellt werden, weil das Zugriffstoken fehlt. Die von den sozialen Medien zur\u00fcckgegeben Daten m\u00fcssen ein Zugriffstoken enthalten.
+ACCESS_TOKEN_MISSING.useraction=Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten. Vergewissern Sie sich, dass ein Zugriffstoken von den sozialen Medien zur\u00fcckgegeben wurde.
+
+USER_PROFILE_ACCESS_TOKEN_NULL=CWWKS5456E: Es kann kein Benutzerprofil erstellt werden, weil das bereitgestellte Zugriffstoken null ist.
+USER_PROFILE_ACCESS_TOKEN_NULL.explanation=Es muss ein g\u00fcltiges Zugriffstoken bereitgestellt werden, um die Social Login-Konfiguration abzurufen, die dem Zugriffstoken zugeordnet ist.
+USER_PROFILE_ACCESS_TOKEN_NULL.useraction=Geben Sie zum Erstellen eines Benutzerprofils ein g\u00fcltiges Zugriffstoken an.
+
+ACCESS_TOKEN_NOT_IN_CACHE=CWWKS5457E: Es kann kein Benutzerprofil erstellt werden, weil das bereitgestellte Zugriffstoken nicht im Token-Cache gefunden wurde.
+ACCESS_TOKEN_NOT_IN_CACHE.explanation=M\u00f6glicherweise ist der berechnete Tokenschl\u00fcssel fehlerhaft oder das Zugriffstoken wurde nicht in einer k\u00fcrzlich authentifizierten Anforderung verwendet. Das Token k\u00f6nnte aus dem Cache entfernt worden sein, weil es zu alt ist.
+ACCESS_TOKEN_NOT_IN_CACHE.useraction=Stellen Sie sicher, dass das bereitgestellte Zugriffstoken g\u00fcltig ist und einem Zugriffstoken entspricht, das in einer erfolgreich authentifizierten Anforderung verwendet wurde. Vergewissern Sie sich, dass der Token-Cache nach dem Hinzuf\u00fcgen des Tokens nicht gel\u00f6scht wurde.
+
+# 0=socialLogin element ID
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND=CWWKS5458E: Die Social Login-Konfiguration [{0}], die dem zwischengespeicherten Token zugeordnet ist, wurde nicht gefunden.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.explanation=Der angegebene Social Login-Service wurde nicht in der Serverkonfiguration gefunden. Die Social Login-Konfigurations-ID, die dem Zugriffstoken zugeordnet ist, fehlt oder die angegebene Social Login-Konfiguration ist nicht vorhanden.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.useraction=Stellen Sie sicher, dass eine Social Login-Konfiguration mit der angegebenen ID in der Serverkonfiguration vorhanden ist. Vergewissern Sie sich, dass die Social Login-Konfiguration erfolgreich geladen wurde.
+
+# 0=socialLogin element ID
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN=CWWKS5459E: Es wurde kein Zugriffstoken in der f\u00fcr das Social Login-Feature bereitgestellten Tokengruppe gefunden.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.explanation=Zum Erstellen eines Benutzerprofils muss ein Zugriffstoken bereitgestellt werden. Das Token ist m\u00f6glicherweise nicht im Token-Cache vorhanden oder das Token fehlt in den Benutzerinformationen, die von den sozialen Medien zur\u00fcckgegeben wurden.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.useraction=Vergewissern Sie sich, dass ein Zugriffstoken in den Daten enthalten ist, die von den sozialen Medien zur\u00fcckgegeben wurden. Vergewissern Sie sich, dass im Tokenobjekt ein g\u00fcltiges Zugriffstoken angeben war, als es zwischengespeichert wurde.
+
+# 0=socialLogin element ID
+NO_USER_API_CONFIGS_PRESENT=CWWKS5460W: Es sind keine Benutzer-API-Konfigurationen f\u00fcr die Social Login-Konfiguration [{0}] angegeben.
+NO_USER_API_CONFIGS_PRESENT.explanation=Es muss mindestens eine Benutzer-API-Konfiguration angegeben werden, um Benutzerinformationen abzurufen.
+NO_USER_API_CONFIGS_PRESENT.useraction=Stellen Sie sicher, dass die angegebene Social Login-Konfiguration mindestens eine Benutzer-API-Konfiguration enth\u00e4lt.
+
+# 0=User API string, 1=socialLogin element ID, 2=Error message
+ERROR_GETTING_USER_API_RESPONSE=CWWKS5461E: Im Social Login-Feature ist beim Abrufen der Benutzerinformation von der Benutzer-API [{0}], die f\u00fcr die Social Login-Konfiguration [{1}] konfiguriert ist, ein Fehler aufgetreten. {2}
+ERROR_GETTING_USER_API_RESPONSE.explanation=Die angegebene Benutzer-API ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df konfiguriert. M\u00f6glicherweise liegt ein Problem mit dem Zugriffstoken vor, das zum Aufruf der Benutzer-API verwendet wurde. Die Antwort der Benutzer-API hat m\u00f6glicherweise nicht das erwartete Format.
+ERROR_GETTING_USER_API_RESPONSE.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+TOKEN_ENDPOINT_NULL_OR_EMPTY=CWWKS5462E: Der Wert f\u00fcr die Tokenendpunkt-URL ist null oder leer.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.explanation=Es muss eine g\u00fcltige Tokenendpunkt-URL angegeben werden, um Zugriffstoken oder ID-Token f\u00fcr Benutzer abzurufen.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.useraction=Stellen Sie sicher, dass eine g\u00fcltige Tokenendpunkt-URL f\u00fcr jede Social Login-Konfiguration konfiguriert ist.
+
+# Intended to be a child of AUTH_CODE_ERROR_SSL_CONTEXT
+# 0=socialLogin element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5463E: Der SSL-Kontext f\u00fcr die Social Login-Konfiguration [{0}] kann nicht geladen werden. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=Die von der angegebenen Social Login-Konfiguration angegebene SSL-Konfiguration fehlt m\u00f6glicherweise oder sie ist falsch.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen. Vergewissern Sie sich, dass die SSL-Informationen f\u00fcr die angegebene Social Login-Konfiguration korrekt sind. Wenn das Konfigurationsattribut 'sslRef' in der Social Login-Konfiguration angegeben ist, vergewissern Sie sich, dass die entsprechende SSL-Konfiguration korrekt ist. Stellen Sie andernfalls sicher, dass die Standard-SSL-Konfiguration f\u00fcr den Server ordnungsgem\u00e4\u00df konfiguriert ist.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=socialLogin element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5464E: Die JWT-Konsumentenfunktion (JSON Web Token) ist f\u00fcr die Social Login-Konfiguration [{0}] m\u00f6glicherweise nicht verf\u00fcgbar, weil der Service f\u00fcr die angegebene Social Login-Konfiguration nicht gefunden wurde.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Die angegebene Social Login-Konfiguration ist m\u00f6glicherweise noch nicht verf\u00fcgbar oder der Service f\u00fcr die Social Login-Konfiguration wurde gestoppt.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Vergewissern Sie sich, dass die angegebene Social Login-Konfiguration konfiguriert und verf\u00fcgbar ist.
+
+# 0=Context path string from webapp configuration
+INVALID_CONTEXT_PATH_CHARS=CWWKS5465E: Der in der Konfiguration der Social Login-Webanwendung angegebene Kontextpfad [{0}] enth\u00e4lt Zeichen, die in einem g\u00fcltigen URI-Pfad nicht angegeben werden d\u00fcrfen. Das Social Login-Feature funktioniert nicht f\u00fcr Kontextpfade, die nicht g\u00fcltig sind.
+INVALID_CONTEXT_PATH_CHARS.explanation=Der in der Konfiguration der Social Login-Webanwendung konfigurierte Kontextpfad ist keine g\u00fcltige URI-Pfadzeichenfolge. Der Kontextpfad muss RFC 3986 (https://tools.ietf.org/html/rfc3986) entsprechen und darf nur bestimmte Zeichen enthalten.
+INVALID_CONTEXT_PATH_CHARS.useraction=Vergewissern Sie sich, dass der konfigurierte Kontextpfad nur die Zeichen enth\u00e4lt, die laut RFC 3986 f\u00fcr URI-Pfadkomponenten zul\u00e4ssig sind.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5466E: Die SSL-Referenzinformationen f\u00fcr das Social Login-Feature k\u00f6nnen nicht geladen werden, weil beim Laden der SSL-Eigenschaften ein Fehler aufgetreten ist. {0}
+ERROR_LOADING_SSL_PROPS.explanation=Die von der Social Login-Konfiguration verwendete SSL-Konfiguration ist m\u00f6glicherweise nicht verf\u00fcgbar oder beim Laden der Eigenschaften f\u00fcr die SSL-Konfiguration ist ein Fehler aufgetreten.
+ERROR_LOADING_SSL_PROPS.useraction=Vergewissern Sie sich, dass die vom Social Login-Service verwendete SSL-Konfiguration ordnungsgem\u00e4\u00df konfiguriert ist und erfolgreich gestartet wurde.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5467E: Es k\u00f6nnen keine \u00f6ffentlichen Schl\u00fcssel aus dem Keystore geladen werden, weil der Keystore-Service nicht gefunden wurde.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=Der Keystore-Service f\u00fcr das Social Login-Feature ist m\u00f6glicherweise nicht verf\u00fcgbar.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Vergewissern Sie sich, dass der vom Social Login-Service verwendete Keystore-Service ordnungsgem\u00e4\u00df konfiguriert ist und erfolgreich gestartet wurde.
+
+# 0=Truststore ID, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5468E: Es ist ein Fehler beim Laden der anerkannten Zertifikate aus dem Truststore [{0}] aufgetreten. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=M\u00f6glicherweise ist der Truststore noch nicht initialisiert oder der angegebene Truststore ist nicht in der Serverkonfiguration vorhanden.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Vergewissern Sie sich, dass ein Truststore mit der angegebenen ID in der Serverkonfiguration vorhanden und erfolgreich verarbeitet wurde.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5469E: Das Zertifikat mit dem Alias [{0}] kann nicht aus dem Truststore [{1}] geladen werden. {2}
+ERROR_LOADING_CERTIFICATE.explanation=Es ist m\u00f6glicherweise kein Zertifikat mit dem angegebenen Alias im Truststore vorhanden, der Truststore wurde m\u00f6glicherweise noch nicht initialisiert oder der Truststore ist m\u00f6glicherweise nicht in der Serverkonfiguration vorhanden.
+ERROR_LOADING_CERTIFICATE.useraction=Vergewissern Sie sich, dass ein Zertifikat mit dem angegebenen Alias im Truststore enthalten ist. Vergewissern Sie sich, dass ein Truststore mit der angegebenen ID in der Serverkonfiguration vorhanden und erfolgreich verarbeitet wurde.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_GETTING_PUBLIC_KEYS=CWWKS5470E: Das Zertifikat mit dem Alias [{0}] kann nicht aus dem Truststore [{1}] geladen werden, weil beim Abrufen der \u00f6ffentlichen Schl\u00fcssel aus dem Truststore ein Fehler aufgetreten ist. {2}
+ERROR_LOADING_GETTING_PUBLIC_KEYS.explanation=Der Keystore-Service ist m\u00f6glicherweise nicht verf\u00fcgbar, die Zertifikate im Truststore k\u00f6nnen m\u00f6glicherweise nicht geladen werden oder das Zertifikat mit dem angegebenen Alias kann m\u00f6glicherweise nicht geladen werden.
+ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=Private key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: Der private Schl\u00fcssel mit dem Alias [{0}] kann nicht aus dem Keystore [{1}] geladen werden. {2}
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=Es ist m\u00f6glicherweise kein privater Schl\u00fcssel mit dem angegebenen Alias im Keystore vorhanden, der private Schl\u00fcssel hat m\u00f6glicherweise nicht den richten Typ, der Keystore wurde m\u00f6glicherweise noch nicht initialisiert oder der Keystore ist m\u00f6glicherweise nicht in der Serverkonfiguration vorhanden.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Vergewissern Sie sich, dass ein privater Schl\u00fcssel mit dem angegebenen Alias im Keystore vorhanden ist und dass der private Sch\u00fcssel den richtigen Typ hat. Vergewissern Sie sich, dass ein Keystore mit der angegebenen ID in der Serverkonfiguration vorhanden und erfolgreich verarbeitet wurde.
+
+# 0=Keystore ID, 1=Exception message
+ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: Ein privater Schl\u00fcssel konnte nicht aus dem Keystore [{0}] geladen werden. {1}
+ERROR_LOADING_PRIVATE_KEY.explanation=Der aus dem Keystore ausgew\u00e4hlte private Schl\u00fcssel hat m\u00f6glicherweise nicht den richtigen Typ, der Keystore wurde m\u00f6glicherweise noch nicht initialisiert oder der Keystore ist m\u00f6glicherweise nicht in der Serverkonfiguration enthalten.
+ERROR_LOADING_PRIVATE_KEY.useraction=Vergewissern Sie sich, dass die privaten Schl\u00fcssel im Keystore den richtigen Typ haben. Vergewissern Sie sich, dass ein Keystore mit der angegebenen ID in der Serverkonfiguration vorhanden und erfolgreich verarbeitet wurde.
+
+# 0=Secret key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SECRET_KEY=CWWKS5473E: Der geheime Schl\u00fcssel mit dem Alias [{0}] kann nicht aus dem Keystore [{1}] geladen werden. {2}
+ERROR_LOADING_SECRET_KEY.explanation=Es ist m\u00f6glicherweise kein geheimer Schl\u00fcssel mit dem angegebenen Alias im Keystore vorhanden, der geheime Schl\u00fcssel hat m\u00f6glicherweise nicht den richten Typ, der Keystore wurde m\u00f6glicherweise noch nicht initialisiert oder der Keystore ist m\u00f6glicherweise nicht in der Serverkonfiguration vorhanden.
+ERROR_LOADING_SECRET_KEY.useraction=Vergewissern Sie sich, dass ein geheimer Schl\u00fcssel mit dem angegebenen Alias im Keystore vorhanden ist und dass der geheime Schl\u00fcssel den richtigen Typ hat. Vergewissern Sie sich, dass ein Keystore mit der angegebenen ID in der Serverkonfiguration vorhanden und erfolgreich verarbeitet wurde.
+
+# 0=HttpResponse entity
+ERROR_PARSING_RESPONSE_ENTITY=CWWKS5474E: Es k\u00f6nnen keine Token aus der Antwort extrahiert werden, weil beim Parsen der Antwort ein Fehler aufgetreten ist. [{0}]
+ERROR_PARSING_RESPONSE_ENTITY.explanation=Die Antwort des Endpunkts der sozialen Medien hat m\u00f6glicherweise nicht das erwartete Format. M\u00f6glicherweise ist beim Ausf\u00fchren der Antwort ein Fehler aufgetreten oder die sozialen Medien haben einen Fehler zur\u00fcckgegeben.
+ERROR_PARSING_RESPONSE_ENTITY.useraction=\u00dcberpr\u00fcfen Sie den Inhalt der Antwort der sozialen Medien. Vergewissern Sie sich, dass der Antwortinhalt ordnungsgem\u00e4\u00df formatiert ist und dass die Antwort keine Fehlernachricht enth\u00e4lt.
+
+NULL_OR_EMPTY_REQUEST_URL=CWWKS5475E: Es kann keine HTTP-Anforderung abgesetzt werden, weil die angegebene URL null oder leer ist.
+NULL_OR_EMPTY_REQUEST_URL.explanation=Es kann keine HTTP-Anforderung mit einer URL abgesetzt werden, die null oder leer ist. Eine Endpunkt-URL in der Social Login-Konfiguration ist m\u00f6glicherweise nicht vorhanden oder leer.
+NULL_OR_EMPTY_REQUEST_URL.useraction=Vergewissern Sie sich, dass jede in einer Social Login-Konfiguration angegebene Endpunkt-URL einen Wert hat, der eine g\u00fcltige URL ist.
+
+# Do not translate "POST"
+# 0=URL to which the request was submitted, 1=Error message
+ERROR_EXECUTING_REQUEST=CWWKS5476E: Es ist ein Fehler beim Absetzen einer Anforderung an die angegebene URL [{0}] aufgetreten. {1}
+ERROR_EXECUTING_REQUEST.explanation=Die angegebene URL ist m\u00f6glicherweise fehlerhaft oder sie enth\u00e4lt ein nicht g\u00fcltiges Protokoll oder es ist ein Fehler aufgetreten, der die Verarbeitung der Anforderung verhindert.
+ERROR_EXECUTING_REQUEST.useraction=Suchen Sie in der Nachricht nach einer ausf\u00fchrlicheren Fehlerbeschreibung. Vergewissern Sie sich, dass die URL korrekt formatiert ist und dass keine Verbindungsprobleme mit dem Zielserver vorliegen.
+
+# 0=Response status
+RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: Der Antwortstatus wurde nicht gefunden oder die Antwort hat einen Fehler zur\u00fcckgegeben. Der Antwortstatus ist [{0}].
+RESPONSE_STATUS_MISSING_OR_ERROR.explanation=Die Anforderung ist wahrscheinlich fehlgeschlagen, weil sie nicht berechtigt ist oder weil sie Informationen wie einen erforderlichen Anforderungsparameter oder Anforderungsheader nicht enth\u00e4lt. Wenn ein Antwortstatus ungleich null zur\u00fcckgegeben wurde, sind der Antwortstatuscode und die Ursache in der Nachricht enthalten.
+RESPONSE_STATUS_MISSING_OR_ERROR.useraction=\u00dcberpr\u00fcfen Sie den Antwortstatuscode in der Nachricht, sofern vorhanden. Vergewissern Sie sich, dass alle erforderlichen Parameter und Header in der Anforderung enthalten sind.
+
+# 0=URL to which the request was submitted, 1=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: Die Anforderung an den Endpunkt [{0}] ist fehlgeschlagen. Fehler: {1}
+RESPONSE_STATUS_UNSUCCESSFUL.explanation=Die Anforderung ist wahrscheinlich fehlgeschlagen, weil sie nicht berechtigt ist oder weil sie Informationen wie einen erforderlichen Anforderungsparameter oder Anforderungsheader nicht enth\u00e4lt. Die Anforderung wurde m\u00f6glicherweise an den falschen Endpunkt \u00fcbertragen.
+RESPONSE_STATUS_UNSUCCESSFUL.useraction=Vergewissern Sie sich, dass die Anforderung an den richtigen Endpunkt \u00fcbertragen wurde. Vergewissern Sie sich, dass alle erforderlichen Parameter und Header in der Anforderung enthalten sind.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS5479E: Das erforderliche Konfigurationsattribut [{0}] in der Social Login-Konfiguration [{1}] fehlt oder es ist leer. Wenn das Attribut konfiguriert ist, vergewissern Sie sich, dass es nicht leer ist und dass es nicht ausschlie\u00dflich aus Leerzeichen besteht.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Das angegebene Konfigurationsattribut fehlt in der Serverkonfiguration. Wenn ein Wert angegeben ist, werden Leerzeichen am Anfang und am Ende des Werts entfernt, wenn der Wert verarbeitet wird, sodass der Wert in der Konfiguration leer sein oder ausschlie\u00dflich aus Leerzeichen bestehen kann.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Stellen Sie sicher, dass das angegebene Konfigurationsattribut konfiguriert ist, dass es nicht leer ist und dass es nicht ausschlie\u00dflich aus Leerzeichen besteht.
+
+STATE_NULL_OR_MISMATCHED=CWWKS5480E: Eine Social Login-Anforderung ist fehlgeschlagen, weil das Statuselement der Anforderung leer ist oder fehlt.
+STATE_NULL_OR_MISMATCHED.explanation=Ein leeres oder fehlendes Statuselement in der Social Login-Anforderung hat einen Fehler verursacht. 
+STATE_NULL_OR_MISMATCHED.useraction=Vergewissern Sie sich, dass die Social Login-Konfiguration korrekt ist und dass der ferne Service ordnungsgem\u00e4\u00df funktioniert.
+
+REQUEST_URL_NULL_OR_EMPTY=CWWKS5481E: Eine Social Login-Anforderung ist fehlgeschlagen, weil das Anforderungs-URL-Attribut der Anforderung null oder leer ist.
+REQUEST_URL_NULL_OR_EMPTY.explanation=Ein leeres oder fehlendes Anforderungs-URL-Element in der Social Login-Anforderung hat einen Fehler verursacht.
+REQUEST_URL_NULL_OR_EMPTY.useraction=Vergewissern Sie sich, dass die Social Login-Konfiguration f\u00fcr das URL-Attribut korrekt ist und dass der ferne Service ordnungsgem\u00e4\u00df funktioniert.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_REQUEST_TOKEN_URL=CWWKS5482E: Das Social Login-Feature kann kein Anforderungstoken aus Twitter abrufen, weil die URL [{0}], die \u00fcber das Konfigurationsattribut [{1}] in der Twitterkonfiguration [{2}] angegeben ist, nicht g\u00fcltig ist. {3}
+TWITTER_BAD_REQUEST_TOKEN_URL.explanation=Der Wert f\u00fcr das angegebene Konfigurationsattribut ist keine g\u00fcltige URL. Es muss eine g\u00fcltige URL angegeben werden, die Anforderungen f\u00fcr Twitter-Anforderungstoken bedienen kann.
+TWITTER_BAD_REQUEST_TOKEN_URL.useraction=Stellen Sie sicher, dass eine g\u00fcltige URL f\u00fcr das angegebene Konfigurationsattribut konfiguriert ist und die URL Anforderungen f\u00fcr Twitter-Anforderungstoken bedienen kann. Wenn Sie den Twitter-Standardendpunkt verwenden m\u00f6chten, entfernen Sie das angegebene Konfigurationsattribut aus der Twitter-Konfiguration, die in der Nachricht angegeben ist.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_ACCESS_TOKEN_URL=CWWKS5483E: Das Social Login-Feature kann kein Zugriffstoken aus Twitter abrufen, weil die URL [{0}], die \u00fcber das Konfigurationsattribut [{1}] in der Twitterkonfiguration [{2}] angegeben ist, nicht g\u00fcltig ist. {3}
+TWITTER_BAD_ACCESS_TOKEN_URL.explanation=Der Wert f\u00fcr das angegebene Konfigurationsattribut ist keine g\u00fcltige URL. Es muss eine g\u00fcltige URL angegeben werden, die Anforderungen f\u00fcr Twitter-Anforderungstoken bedienen kann.
+TWITTER_BAD_ACCESS_TOKEN_URL.useraction=Stellen Sie sicher, dass eine g\u00fcltige URL f\u00fcr das angegebene Konfigurationsattribut konfiguriert ist und die URL Anforderungen f\u00fcr Twitter-Zugriffstoken bedienen kann. Wenn Sie den Twitter-Standardendpunkt verwenden m\u00f6chten, entfernen Sie das angegebene Konfigurationsattribut aus der Twitter-Konfiguration, die in der Nachricht angegeben ist.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_USER_API_URL=CWWKS5484E: Das Social Login-Feature kann keine Benutzerkontendaten aus Twitter abrufen, weil die URL [{0}], die \u00fcber das Konfigurationsattribut [{1}] in der Twitterkonfiguration [{2}] angegeben ist, nicht g\u00fcltig ist. {3}
+TWITTER_BAD_USER_API_URL.explanation=Der Wert f\u00fcr das angegebene Konfigurationsattribut ist keine g\u00fcltige URL. Es muss eine g\u00fcltige URL angegeben werden, die Anforderungen f\u00fcr Twitter-Benutzerkontendaten bedienen kann.
+TWITTER_BAD_USER_API_URL.useraction=Stellen Sie sicher, dass eine g\u00fcltige URL f\u00fcr das angegebene Konfigurationsattribut konfiguriert ist und die URL Anforderungen f\u00fcr Twitter-Benutzerkontendaten bedienen kann. Wenn Sie den Twitter-Standardendpunkt verwenden m\u00f6chten, entfernen Sie das angegebene Konfigurationsattribut aus der Twitter-Konfiguration, die in der Nachricht angegeben ist.
+
+# 0=Configuration attribute name
+TWITTER_MISSING_REQ_ATTR=CWWKS5485W: Twitter-Authentifizierungsanforderungen sind m\u00f6glicherweise nicht erfolgreich, weil der angegebene Konfigurationswert [{0}] entweder null oder leer ist. Vergewissern Sie sich, dass alle Social Login-Konfigurationen f\u00fcr Twitter f\u00fcr das Konfigurationsattribut [{0}] einen nicht leeren Wert enthalten.
+TWITTER_MISSING_REQ_ATTR.explanation=Das in der Nachricht angegebene Konfigurationsattribut fehlt in der Konfiguration oder der Wert f\u00fcr das Attribut ist leer oder es enth\u00e4lt nur Leerzeichen. F\u00fcr dieses Attribut ist ein nicht leerer Wert erforderlich.
+TWITTER_MISSING_REQ_ATTR.useraction=Vergewissern Sie sich, dass das in der Nachricht angegebene Attribut in der Serverkonfiguration f\u00fcr alle Social Login-Elemente f\u00fcr Twitter konfiguriert ist und die entsprechenden Werte nicht leer sind.
+
+# 0=Endpoint URL, 1=Map of data about the endpoint response
+POST_RESPONSE_NULL=CWWKS5486W: Es k\u00f6nnen keine Token aus der Antwort des Endpunkts [{0}] extrahiert werden. Die Antwortzuordnung aus dem Endpunkt war [{1}].
+POST_RESPONSE_NULL.explanation=Die Anforderung wird m\u00f6glicherweise an einen falschen Endpunkt umgeleitet, oder die Anforderung enth\u00e4lt nicht gen\u00fcgend Informationen.
+POST_RESPONSE_NULL.useraction=Vergewissern Sie sich, dass die Endpunkt-URL korrekt ist, und die Anforderung alle erforderlichen Header oder Parameter enth\u00e4lt. Suchen Sie in den Serverprotokollen nach weiteren Fehlernachrichten.
+
+# Do not translate "JSON"
+# 0=Endpoint URL, 1=Error message, 2=Endpoint response content
+ENDPOINT_RESPONSE_NOT_JSON=CWWKS5487W: Die Antwort des Endpunkts [{0}] hat nicht das erwartete JSON-Format. Fehler: [{1}]. Antwortinhalt: [{2}].
+ENDPOINT_RESPONSE_NOT_JSON.explanation=Der angegebene Endpunkt ist m\u00f6glicherweise nicht aktiv oder der Endpunkt gibt m\u00f6glicherweise Antworten in einem anderen Format zur\u00fcck.
+ENDPOINT_RESPONSE_NOT_JSON.useraction=\u00dcberpr\u00fcfen Sie, ob der Server die gesamte Antwort von dem angegebenen Endpunkt lesen konnte. Vergewissern Sie sich, dass die Anforderung an den richtigen Endpunkt gesendet wurde und dass die Antwort erwartungsgem\u00e4\u00df formatiert ist.
+
+# 0=URI value
+URI_CONTAINS_INVALID_CHARS=CWWKS5488W: Der angegebene Wert [{0}] enth\u00e4lt mindestens ein Zeichen, das nicht in einen g\u00fcltigen URI eingeschlossen werden kann.
+URI_CONTAINS_INVALID_CHARS.explanation=Der in der Nachricht angegebene Endpunktwert gilt nicht als zul\u00e4ssiger URI aufgrund enthaltener ung\u00fcltiger Zeichen. Der Satz der g\u00fcltigen URI-Zeichen ist in RFC 3986 definiert.
+URI_CONTAINS_INVALID_CHARS.useraction=Aktualisieren Sie die URI-Zeichenfolge, damit nur g\u00fcltige URI-Zeichen enthalten sind.
+
+SOCIAL_LOGIN_FRONT_END_ERROR=CWWKS5489E: Es ist ein Fehler bei der Authentifizierung eines Benutzers \u00fcber soziale Medien aufgetreten.
+SOCIAL_LOGIN_FRONT_END_ERROR.explanation=Bei der Authentifizierung eines Benutzers ist ein Problem aufgetreten. M\u00f6glicherweise liegt ein Verbindungsproblem zwischen der Anwendung und dem Service-Provider eines anderen Anbieters vor.
+SOCIAL_LOGIN_FRONT_END_ERROR.useraction=Bitten Sie Ihren Systemadministrator, das Problem zu beheben.
+
+# 0=User API URL, 1=HTTP response status, 2=Error code, 3=Error description
+USERAPI_RESP_INVALID_STATUS=CWWKS5490E: Die Antwort des Benutzer-API-Endpunkts [{0}] kann nicht verarbeitet werden. Der Antwortstatus ist [{1}], der Fehler ist [{2}] und die Fehlerbeschreibung ist [{3}].
+USERAPI_RESP_INVALID_STATUS.explanation=Der angegebene Antwortstatus zeigt kein erfolgreiches Ergebnis an. Der Fehler und die Fehlerbeschreibung in der Nachricht k\u00f6nnen weitere Informationen enthalten.
+USERAPI_RESP_INVALID_STATUS.useraction=F\u00fchren Sie die erforderlichen Aktionen aus, um den in der Antwort angegebenen Fehler zu beheben.
+
+# 0=User API URL, 1=Error message
+USERAPI_ERROR_RESPONSE=CWWKS5491E: Die Fehlerantwort des Benutzer-API-Endpunkts [{0}] kann nicht verarbeitet werden. Fehler: [{1}]
+USERAPI_ERROR_RESPONSE.explanation=Der angegebene Benutzer-API-Endpunkt hat keinen g\u00fcltigen Antwortstatus zur\u00fcckgegeben und bei der Verarbeitung der Antwort ist ein Fehler aufgetreten.
+USERAPI_ERROR_RESPONSE.useraction=Vergewissern Sie sich, dass der angegebene Endpunkt korrekt ist und dass es sich um einen g\u00fcltigen Endpunkt handelt, der in der Lage ist, Benutzer-API-Anforderungen zu verarbeiten.
+
+# 0=User API URL, 1=Error message
+USERAPI_RESP_PROCESS_ERR=CWWKS5492E: Die Antwort des Benutzer-API-Endpunkts [{0}] kann nicht verarbeitet werden. Fehler: [{1}]
+USERAPI_RESP_PROCESS_ERR.explanation=Der angegebene Benutzer-API-Endpunkt hat zwar einen g\u00fcltigen Antwortstatus zur\u00fcckgegeben, aber in der Laufzeitumgebung ist bei der Verarbeitung des Antwortinhalts ein Fehler aufgetreten.
+USERAPI_RESP_PROCESS_ERR.useraction=Vergewissern Sie sich, der angegebene Endpunkt korrekt und dass der Antwortinhalt ordnungsgem\u00e4\u00df formatiert ist. Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. 
+# 0=User API URL
+USERAPI_NULL_RESP_STR=CWWKS5493E: Der Antwortinhalt vom Benutzer-API-Endpunkt [{0}] ist nicht g\u00fcltig. 
+USERAPI_NULL_RESP_STR.explanation=Der angegebene Benutzer-API-Endpunkt hat keinen g\u00fcltigen Antwortstatus auf die Benutzer-API-Anforderung hin zur\u00fcckgegeben. 
+USERAPI_NULL_RESP_STR.useraction=Vergewissern Sie sich, dass der angegebene Endpunkt korrekt ist und dass es sich um einen g\u00fcltigen Endpunkt handelt, der in der Lage ist, Benutzer-API-Anforderungen zu verarbeiten.
+
+# do not translate CODE
+CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: Eine Social Login-Anforderung ist fehlgeschlagen, weil das CODE-Attribut der Anforderung null oder leer ist.
+CODE_PARAMETER_NULL_OR_EMPTY.explanation=Ein leeres oder fehlendes CODE-Attribut in der Social Login-Anforderung hat einen Fehler verursacht.
+
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Vergewissern Sie sich, dass die Social Login-Konfiguration f\u00fcr das CODE-Attribut korrekt ist und dass der ferne Service ordnungsgem\u00e4\u00df funktioniert.
+
+# 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
+REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: Eine Social Login-Authentifizierungsanforderung ist fehlgeschlagen, weil Social Media den folgenden {0}-Fehler zur\u00fcckgegeben hat: {1}. Fehler-URI: [{2}].
+REDIRECT_REQUEST_CONTAINED_ERROR.explanation=Der angegebene Antwortstatus gibt an, dass die Authentifizierung nicht erfolgreich war. Der Fehler und die Fehlerbeschreibung in der Nachricht enthalten weitere Informationen.
+REDIRECT_REQUEST_CONTAINED_ERROR.useraction=Vergewissern Sie sich, dass das Social Login ordnungsgem\u00e4\u00df in der Serverkonfiguration konfiguriert ist und stellen Sie sicher, dass die Werte in der Serverkonfiguration mit den im fernen Social Media definierten Werten \u00fcbereinstimmen.
+
+# 0=URI value
+HTTP_URI_DOES_NOT_START_WITH_HTTP=CWWKS5496W: Es wird erwartet, dass der angegebene Wert [{0}] ein HTTP-URI ist. Der Wert beginnt nicht mit einem HTTP-Protokoll.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.explanation=Es wird erwartet, dass der Wert ein HTTP-URI ist, daher muss der Wert entweder mit der Angabe http:// oder https:// beginnen.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.useraction=Aktualisieren Sie den URI so, dass entweder das HTTP-Protokoll oder das HTTPS-Protokoll angegeben wird.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=User API value, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_USER_API=CWWKS5497E: Das Social Login-Feature kann kein JSON Web Token (JWT) mithilfe der in der konfigurierten Benutzer-API [{0}] enthaltenen Informationen erstellen. {1}
+FAILED_TO_CREATE_JWT_FROM_USER_API.explanation=Der in der Nachricht angezeigte Fehler sollte einen genaueren Grund daf\u00fcr angeben, warum das JWT nicht erstellt werden kann. Entweder ist die Benutzer-API-Anforderung fehlerhaft oder es fehlen Informationen, nach der \u00dcbergabe der Benutzer-API-Anforderung ist ein Fehler aufgetreten, oder die Antwort von der Benutzer-API kann nicht zum Erstellen eines JWT verwendet werden.
+FAILED_TO_CREATE_JWT_FROM_USER_API.useraction=Vergewissern Sie sich, dass der Benutzer-API-Wert korrekt ist. Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=JWT configuration element ID, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN=CWWKS5498E: Das Social Login-Feature kann kein JSON Web Token (JWT) mithilfe des angegebenen ID-Token und der JWT-Konfiguration [{0}] erstellen. {1}
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.explanation=Die in der Nachricht angegebene JWT-Konfiguration ist m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df konfiguriert, das ID-Token ist m\u00f6glicherweise fehlerhaft oder es fehlen Informationen, oder beim Erstellen des JWT ist ein anderer Fehler aufgetreten.
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Vergewissern Sie sich, dass die in der Nachricht angegebene JWT-Konfiguration ordnungsgem\u00e4\u00df konfiguriert ist. Sehen Sie sich die Benutzeraktion f\u00fcr den Fehler an, der in der Nachricht angezeigt wird. Suchen Sie in den Serverprotokollen nach zus\u00e4tzlichen Fehlernachrichten.
+
+# 0=Request URL value, 1=Error message
+REQUEST_URL_NOT_VALID=CWWKS5499E: Das Social Login-Feature kann die Anforderung nicht an die urspr\u00fcngliche Anforderungs-URL [{0}] umleiten, weil die URL nicht g\u00fcltig ist. {1}
+REQUEST_URL_NOT_VALID.explanation=Die urspr\u00fcngliche Anforderungs-URL ist keine g\u00fcltige URL. Die URL enth\u00e4lt m\u00f6glicherweise ung\u00fcltige Zeichen oder die URL ist fehlerhaft.
+REQUEST_URL_NOT_VALID.useraction=Vergewissern Sie sich, dass die in der Nachricht angegebene Anforderungs-URL mit der urspr\u00fcnglichen Anforderungs-URL f\u00fcr die gesch\u00fctzte Ressource \u00fcbereinstimmt. Stellen Sie sicher, dass die URL korrekt formatiert ist und nur g\u00fcltige URI-Zeichen enth\u00e4lt.

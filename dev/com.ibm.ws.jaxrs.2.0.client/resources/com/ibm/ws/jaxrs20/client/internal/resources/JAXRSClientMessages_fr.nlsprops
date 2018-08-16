@@ -56,3 +56,7 @@ warn_missing_mpjwt_token.useraction=V\u00e9rifiez l'action utilisateur en cas d'
 warn_mpjwt_prop_service_notavail=CWWKW0708W: Le service MicroProfile JWT Propagation n'est pas disponible. L'environnement d'ex\u00e9cution ne peut pas acc\u00e9der au jeton pour l'inclure dans l'en-t\u00eate Authorization.
 warn_mpjwt_prop_service_notavail.explanation=Le service MicroProfile JWT Propagation requiert la fonction mpJwt-1.0. 
 warn_mpjwt_prop_service_notavail.useraction=V\u00e9rifiez que le serveur op\u00e8re avec la fonction requise.
+
+warn_unknown_keepalive_setting=CWWKW0709W: La valeur {0} de la propri\u00e9t\u00e9 de d\u00e9lai d''activit\u00e9 de la connexion n''est pas une option valide. Cette propri\u00e9t\u00e9 doit avoir l''une des valeurs suivantes : {1}. La valeur par d\u00e9faut de la dur\u00e9e d''activit\u00e9 sera utilis\u00e9e.
+warn_unknown_keepalive_setting.explanation=Le code d'application a d\u00e9fini une valeur incorrecte pour la propri\u00e9t\u00e9 com.ibm.ws.jaxrs.client.keepalive.connection dans un client JAX-RS.
+warn_unknown_keepalive_setting.useraction=Modifiez le code pour qu'il utilise une valeur de propri\u00e9t\u00e9 valide telle que keep-alive ou close.

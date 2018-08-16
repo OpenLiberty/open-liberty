@@ -10,32 +10,32 @@
  -->
 <server>
     <featureManager>
-      <feature>componenttest-1.0</feature>
-      <feature>servlet-3.1</feature>
-      <feature>localConnector-1.0</feature>
-      <feature>jdbc-4.1</feature>
-      <feature>jndi-1.0</feature>
-      <feature>jsp-2.2</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>jndi-1.0</feature>
+        <feature>jsp-2.2</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
 
     <application location="basicfat.war" >
-      <classloader commonLibraryRef="DerbyLib"/>
+        <classloader commonLibraryRef="DerbyLib"/>
     </application>
     
     <dataSource id="DefaultDataSource" fat.modify="true">
-    	<jdbcDriver libraryRef="DerbyLib"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
     <library id="DerbyLib" fat.modify="true">
-    	<fileset dir="${server.config.dir}/derby" includes="derby.jar,slowdriver.jar"/>
+        <fileset dir="${server.config.dir}/derby" includes="derby.jar,slowdriver.jar"/>
     </library>
     
     <dataSource id="ds1" jndiName="jdbc/${id}" fat.modify="true">
         <jdbcDriver libraryRef="DerbyLib" fat.modify="true"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
     <dataSource id="ds2" jndiName="jdbc/${id}" fat.modify="true">
@@ -55,12 +55,16 @@
     </dataSource>
     
     <dataSource id="slowDS" jndiName="jdbc/${id}" type="javax.sql.DataSource">
-    	<!-- The TimeoutDataSourceImpl class is found inside DerbyLib, but we need to specify it as the desired javax.sql.DataSource impl -->
-    	<jdbcDriver id="SlowDriver" libraryRef="DerbyLib" javax.sql.DataSource="jdbc.fat.v41.slowdriver.TimeoutDataSourceImpl"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+        <!-- The TimeoutDataSourceImpl class is found inside DerbyLib, but we need to specify it as the desired javax.sql.DataSource impl -->
+        <jdbcDriver id="SlowDriver" libraryRef="DerbyLib" javax.sql.DataSource="jdbc.fat.v41.slowdriver.TimeoutDataSourceImpl"/>
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
     </dataSource>
     
     <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission className="java.sql.SQLPermission" name="callAbort"/>
+    <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
 
     <!--  Permissions for application to access mbeans -->
     <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="javax.management.MBeanPermission" actions="queryNames"/>

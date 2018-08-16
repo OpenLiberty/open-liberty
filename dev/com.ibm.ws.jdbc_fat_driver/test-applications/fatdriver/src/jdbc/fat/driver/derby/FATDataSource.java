@@ -63,6 +63,10 @@ public class FATDataSource implements DataSource {
         return derbyds.getParentLogger();
     }
 
+    public String getServerName() {
+        return "localhost";
+    }
+
     public void setAutoCreate(boolean value) throws Exception {
         derbyds.getClass().getMethod("setCreateDatabase", String.class).invoke(derbyds, value ? "create" : "false");
     }
@@ -83,6 +87,13 @@ public class FATDataSource implements DataSource {
 
     public void setPassword(String value) throws Exception {
         derbyds.getClass().getMethod("setPassword", String.class).invoke(derbyds, value);
+    }
+
+    // @DataSourceDefinition supplies default value of 'localhost' for serverName.
+    // Accept this value so that warnings are not generated in the logs.
+    public void setServerName(String value) throws Exception {
+        if (!"localhost".equals(value))
+            throw new IllegalArgumentException(value);
     }
 
     public void setUser(String value) throws Exception {

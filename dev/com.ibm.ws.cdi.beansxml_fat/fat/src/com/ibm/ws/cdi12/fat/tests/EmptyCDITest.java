@@ -16,11 +16,12 @@ import java.util.List;
 
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -29,6 +30,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * with no errors. As CDI on its own doesn't actually do anything, the test is just a framework
  * to start the server up and check that there are no errors. There is intentionally no test code
  */
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class EmptyCDITest extends LoggingTest {
 

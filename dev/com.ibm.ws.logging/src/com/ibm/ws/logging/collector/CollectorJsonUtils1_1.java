@@ -142,20 +142,20 @@ public class CollectorJsonUtils1_1 {
 
         StringBuilder sb = CollectorJsonHelpers.startGCJson1_1(hostName, wlpUserDir, serverName);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey1_1(), Long.toString(gcData.getHeap()), false, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey1_1(), Long.toString(gcData.getUsedHeap()), false, false, false, false, false);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey1_1(), Long.toString(gcData.getMaxHeap()), false, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getHeapKey1_1(), Long.toString(gcData.getHeap()), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getUsedHeapKey1_1(), Long.toString(gcData.getUsedHeap()), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getMaxHeapKey1_1(), Long.toString(gcData.getMaxHeap()), false, false, false, false, true);
 
         long duration = gcData.getDuration() * 1000;
         CollectorJsonHelpers.addToJSON(sb, gcData.getDurationKey1_1(), Long.toString(duration), false, false, false, false, true);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey1_1(), gcData.getGcType(), false, false, false, false, true);
-        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey1_1(), gcData.getReason(), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getGcTypeKey1_1(), gcData.getGcType(), false, false, false, false, false);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getReasonKey1_1(), gcData.getReason(), false, false, false, false, false);
 
         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(gcData.getDatetime());
         CollectorJsonHelpers.addToJSON(sb, gcData.getDatetimeKey1_1(), datetime, false, false, false, false, false);
 
-        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey1_1(), gcData.getSequence(), false, false, false, false, true);
+        CollectorJsonHelpers.addToJSON(sb, gcData.getSequenceKey1_1(), gcData.getSequence(), false, false, false, false, false);
 
         if (tags != null) {
             addTagNameForVersion(sb).append(CollectorJsonHelpers.jsonifyTags(tags));
@@ -330,25 +330,24 @@ public class CollectorJsonUtils1_1 {
                     key = kvp.getKey();
 
                     /*
-                     * Skip GDO KVP if the key is 'eventTime' or 'eventSequenceNumber' - this is not valid for our use.
-                     * This is reserved for AuditFileHandler.
-                     *
                      * Explicitly parse for ibm_datetime/loggingEventTime for special processing.
                      *
                      * Explicitly parse for ibm_sequence/loggingSequenceNumber for special processing.
+                     *
+                     * Explicitly parse for ibm_threadid for special processing.
                      *
                      * Audit is currently not using the logging constants for the datetime and sequence keys,
                      * we need to format the json output with the appropriate logging values for the keys.
                      *
                      * Parse the rest of audit GDO KVP - They are strings.
                      */
-                    if (key.equals("eventTime") || key.equals("eventSequenceNumber")) {
-                        continue;
-                    } else if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
+                    if (key.equals(LogFieldConstants.IBM_DATETIME) || key.equals("loggingEventTime")) {
                         String datetime = CollectorJsonHelpers.dateFormatTL.get().format(kvp.getLongValue());
                         CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_DATETIME, datetime, false, true, false, false, false);
                     } else if (key.equals(LogFieldConstants.IBM_SEQUENCE) || key.equals("loggingSequenceNumber")) {
                         CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_SEQUENCE, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                    } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
+                        CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
                     } else {
                         CollectorJsonHelpers.addToJSON(sb, key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
                     }

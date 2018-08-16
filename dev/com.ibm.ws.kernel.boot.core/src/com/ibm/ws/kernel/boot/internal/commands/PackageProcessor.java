@@ -56,8 +56,6 @@ public class PackageProcessor implements ArchiveProcessor {
 
     private final Map<PackageOption, String> options;
 
-    public static final String PACKAGE_ARCHIVE_ENTRY_PREFIX = "wlp/";
-
     protected static final String DEFAULT_CONFIG_LOCATION_KEY = "configLocation";
 
     private final File wlpUserDir;
@@ -73,6 +71,9 @@ public class PackageProcessor implements ArchiveProcessor {
     final File installRoot;
     final String wlpProperty = "/lib/versions/WebSphereApplicationServer.properties";
     final String wlpPropertyBackup = "WebSphereApplicationServer.properties.bak";
+
+    private static final String PACKAGE_ARCHIVE_PREFIX = "wlp/";
+    public String packageArchiveEntryPrefix = PACKAGE_ARCHIVE_PREFIX;
 
     public PackageProcessor(String processName, File packageFile, BootstrapConfig bootProps, List<Pair<PackageOption, String>> options, Set<String> processContent) {
         this.processName = processName;
@@ -300,7 +301,7 @@ public class PackageProcessor implements ArchiveProcessor {
         /*
          * Create an empty (includeByDefault==false) config for the root dir of liberty
          */
-        DirEntryConfig rootDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX, bootProps.getInstallRoot(), false, PatternStrategy.ExcludePreference);
+        DirEntryConfig rootDirConfig = new DirEntryConfig(packageArchiveEntryPrefix, bootProps.getInstallRoot(), false, PatternStrategy.ExcludePreference);
         entryConfigs.add(rootDirConfig);
 
         List<DirEntryConfig> extensionDirConfigs = new ArrayList<DirEntryConfig>();
@@ -334,7 +335,7 @@ public class PackageProcessor implements ArchiveProcessor {
          */
         File lafilesDir = new File(bootProps.getInstallRoot(), "lafiles");
         if (lafilesDir.exists()) {
-            DirEntryConfig lafilesDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX + "lafiles", lafilesDir, true, PatternStrategy.IncludePreference);
+            DirEntryConfig lafilesDirConfig = new DirEntryConfig(packageArchiveEntryPrefix + "lafiles", lafilesDir, true, PatternStrategy.IncludePreference);
             entryConfigs.add(lafilesDirConfig);
         }
 
@@ -343,7 +344,7 @@ public class PackageProcessor implements ArchiveProcessor {
          * (these are orphans that need resolution still)
          */
         File templatesDir = new File(bootProps.getInstallRoot(), "templates");
-        DirEntryConfig templatesDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX + "templates", templatesDir, true, PatternStrategy.IncludePreference);
+        DirEntryConfig templatesDirConfig = new DirEntryConfig(packageArchiveEntryPrefix + "templates", templatesDir, true, PatternStrategy.IncludePreference);
         entryConfigs.add(templatesDirConfig);
 
         /*
@@ -368,7 +369,7 @@ public class PackageProcessor implements ArchiveProcessor {
     private void addLibExtractDir(List<ArchiveEntryConfig> entryConfigs) throws IOException {
         try {
             File libExtractDir = new File(bootProps.getInstallRoot(), "lib/extract");
-            DirEntryConfig libExtractDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX + "lib/extract", libExtractDir, true, PatternStrategy.IncludePreference);
+            DirEntryConfig libExtractDirConfig = new DirEntryConfig(packageArchiveEntryPrefix + "lib/extract", libExtractDir, true, PatternStrategy.IncludePreference);
             entryConfigs.add(libExtractDirConfig);
         } catch (FileNotFoundException ex) {
             System.out.println(BootstrapConstants.messages.getString("error.package.missingLibExtractDir"));
@@ -385,7 +386,7 @@ public class PackageProcessor implements ArchiveProcessor {
         /*
          * Add wlp's root directory
          */
-        DirEntryConfig rootDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX, bootProps.getInstallRoot(), true, PatternStrategy.IncludePreference);
+        DirEntryConfig rootDirConfig = new DirEntryConfig(packageArchiveEntryPrefix, bootProps.getInstallRoot(), true, PatternStrategy.IncludePreference);
         entryConfigs.add(rootDirConfig);
 
         // include all underneath install-root except usr directory
@@ -421,7 +422,7 @@ public class PackageProcessor implements ArchiveProcessor {
         // Add product extensions
         File prodExtDir = ProcessorUtils.getFileFromDirectory(wlpUserDir.getParentFile(), "/etc/extensions");
         if (prodExtDir.exists()) {
-            DirEntryConfig prodExtDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX + "etc/extensions", prodExtDir, true, PatternStrategy.IncludePreference);
+            DirEntryConfig prodExtDirConfig = new DirEntryConfig(packageArchiveEntryPrefix + "etc/extensions", prodExtDir, true, PatternStrategy.IncludePreference);
             entryConfigs.add(prodExtDirConfig);
         }
         for (ProductExtensionInfo info : ProductExtension.getProductExtensions()) {
@@ -453,10 +454,18 @@ public class PackageProcessor implements ArchiveProcessor {
         if (bootProps.getProcessType() == BootstrapConstants.LOC_PROCESS_TYPE_CLIENT) {
             locAreaName = BootstrapConstants.LOC_AREA_NAME_CLIENTS;
         }
-        DirEntryConfig processConfigDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX
-                                                                   + BootstrapConstants.LOC_AREA_NAME_USR + "/"
-                                                                   + locAreaName + "/"
-                                                                   + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
+        DirEntryConfig processConfigDirConfig = null;
+        if (packageArchiveEntryPrefix.equalsIgnoreCase(PACKAGE_ARCHIVE_PREFIX)) {
+            processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                        + BootstrapConstants.LOC_AREA_NAME_USR + "/"
+                                                        + locAreaName + "/"
+                                                        + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
+        } else {
+            // if --server-root set, then don't add /usr/ in path
+            processConfigDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
+                                                        + locAreaName + "/"
+                                                        + processName + "/", processConfigDir, true, PatternStrategy.IncludePreference);
+        }
         entryConfigs.add(processConfigDirConfig);
         // avoid any special characters in processName when construct patterns
         String regexProcessName = Pattern.quote(processName);
@@ -493,7 +502,7 @@ public class PackageProcessor implements ArchiveProcessor {
          */
         File sharedDir = ProcessorUtils.getFileFromDirectory(wlpUserDir, "shared");
         if (sharedDir.exists()) {
-            DirEntryConfig serverSharedDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX
+            DirEntryConfig serverSharedDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
                                                                       + BootstrapConstants.LOC_AREA_NAME_USR + "/"
                                                                       + BootstrapConstants.LOC_AREA_NAME_SHARED + "/", sharedDir, true, PatternStrategy.IncludePreference);
             entryConfigs.add(serverSharedDirConfig);
@@ -517,7 +526,7 @@ public class PackageProcessor implements ArchiveProcessor {
         if (addUsrExtension) {
             File extensionDir = ProcessorUtils.getFileFromDirectory(wlpUserDir, BootstrapConstants.LOC_AREA_NAME_EXTENSION);
             if (extensionDir.exists()) {
-                DirEntryConfig serverExtensionDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX
+                DirEntryConfig serverExtensionDirConfig = new DirEntryConfig(packageArchiveEntryPrefix
                                                                              + BootstrapConstants.LOC_AREA_NAME_USR + "/"
                                                                              + BootstrapConstants.LOC_AREA_NAME_EXTENSION
                                                                              + "/", extensionDir, true, PatternStrategy.IncludePreference);
@@ -535,7 +544,7 @@ public class PackageProcessor implements ArchiveProcessor {
         // avoid any special characters in processName when construct patterns
         String regexProcessName = Pattern.quote(processName);
         // Include the package_<timestamp>.txt that generated in server output dir, and must be move into lib/versions
-        DirEntryConfig processPkgInfoConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX
+        DirEntryConfig processPkgInfoConfig = new DirEntryConfig(packageArchiveEntryPrefix
                                                                  + BootstrapConstants.LOC_AREA_NAME_LIB + "/"
                                                                  + "versions" + "/", bootProps.getOutputFile(null), false, PatternStrategy.IncludePreference);
         entryConfigs.add(processPkgInfoConfig);
@@ -562,7 +571,7 @@ public class PackageProcessor implements ArchiveProcessor {
                 looseConfig = ProcessorUtils.convertToLooseConfig(lf);
                 if (looseConfig != null) {
                     try {
-                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps);
+                        ArchiveEntryConfig looseArchiveEntryConfig = ProcessorUtils.createLooseArchiveEntryConfig(looseConfig, lf, bootProps, packageArchiveEntryPrefix);
                         entryConfigs.add(looseArchiveEntryConfig);
                     } catch (FileNotFoundException e) {
                         // If any exception occurs when creating loose file archive, just skip it and create the next one.
@@ -702,5 +711,18 @@ public class PackageProcessor implements ArchiveProcessor {
             }
             return false;
         }
+    }
+
+    public boolean hasProductExtentions() {
+        File prodExtDir = ProcessorUtils.getFileFromDirectory(wlpUserDir.getParentFile(), "/etc/extension");
+        if (prodExtDir.exists()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setArchivePrefix(String prefix) {
+        packageArchiveEntryPrefix = prefix + "/";
     }
 }

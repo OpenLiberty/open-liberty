@@ -145,12 +145,13 @@ option-key.include=\ \ \ \ --include=valoare,valoare,...
 option-desc.javadump.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide sunt: heap, system \n\
 \tthread.
 option-desc.package.include=\tO list\u0103 de valori delimitate prin virgule. Valorile valide sunt: all*, usr,   \n\
-\tminify, runnable. Dac\u0103 specifica\u0163i rulabil, pachetul rezultat va fi \n\
-\tun executabil jar care ruleaz\u0103 serverul. Op\u0163iunea minify produce\n\
-\tcea mai mic\u0103 imagine posibil\u0103 pentru server. Op\u0163iunea usr creeaz\u0103 un \n\
-\tpachet care con\u0163ine serverul \u015fi aplica\u0163ia, dar nu \u015fi        \n\
-\truntime-ul. Op\u0163iunea implicit\u0103 all produce un pachet de server care       \n\
-\tcon\u0163ine totul.
+\tminify, runnable, wlp. Dac\u0103 specifica\u0163i runnable, pachetul rezultat  \n\
+\tva fi un jar executabil ce ruleaz\u0103 pe server. Op\u0163iunea minify        \n\
+\tproduce pe server cea mai mic\u0103 imagine posibil\u0103. Aceast\u0103 op\u0163iune     \n\
+\tcreeaz\u0103 un pachet care con\u0163ine serverul \u015fi aplica\u0163ia, dar nu \u015fi      \n\
+\truntime-ul. Op\u0163iunea wlp produce un runtime care nu con\u0163ine          \n\
+\tconfigura\u0163ia de server. Op\u0163iunea implicit\u0103 all produce un pachet     \n\
+\tde server care con\u0163ine totul.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="templateName"
 option-desc.template=\tSpecifica\u0163i numele \u015fablonului de folosit la crearea unui nou server. 

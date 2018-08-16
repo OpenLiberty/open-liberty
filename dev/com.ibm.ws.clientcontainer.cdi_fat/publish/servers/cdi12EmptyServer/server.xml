@@ -4,6 +4,6 @@
 
     <featureManager>
         <feature>cdi-1.2</feature>
-	</featureManager>
+    </featureManager>
 
 </server>

@@ -1,0 +1,10 @@
+IBM-Feature-Version: 2
+IBM-ShortName: opentracingMock-0.31
+Subsystem-Content: com.ibm.websphere.appserver.opentracing-1.1; type="osgi.subsystem.feature",
+ com.ibm.ws.opentracing.mock-0.31; version="[1.0.0,1.0.200)"
+Subsystem-License: https://www.eclipse.org/legal/epl-v10.html
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.ws.opentracing.mock-0.31; visibility:=public; singleton:=true
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Version: 1.0.0
+

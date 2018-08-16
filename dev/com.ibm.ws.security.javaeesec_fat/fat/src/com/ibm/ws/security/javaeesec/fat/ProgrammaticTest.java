@@ -105,7 +105,7 @@ public class ProgrammaticTest extends JavaEESecTestBase {
         verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
         response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString + "?method=authenticate", Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
                                                    HttpServletResponse.SC_OK);
-        verifyAuthenticatedResponse(response, Constants.getAuthTypeJSR375Basic, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser,
+        verifyAuthenticatedResponse(response, Constants.getAuthTypeBasic, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser,
                                     Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
     }
 

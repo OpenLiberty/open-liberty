@@ -94,7 +94,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
     private void invokeSpringMain(Future<Boolean> mainInvokeResult, SpringBootModuleInfo springBootModuleInfo) {
         final SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
         final Method main;
-        ClassLoader newTccl = springBootModuleInfo.getClassLoader();
+        ClassLoader newTccl = springBootModuleInfo.getThreadContextClassLoader();
         ClassLoader previousTccl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
             Thread.currentThread().setContextClassLoader(newTccl);
@@ -132,26 +132,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                 Throwable target = e.getTargetException();
                 String msgKey = null;
                 if (target instanceof ApplicationError) {
-                    switch (((ApplicationError) target).getType()) {
-                        case NEED_SPRING_BOOT_VERSION_15:
-                            msgKey = "error.need.springboot.version.15";
-                            break;
-                        case NEED_SPRING_BOOT_VERSION_20:
-                            msgKey = "error.need.springboot.version.20";
-                            break;
-                        case MISSING_SERVLET_FEATURE:
-                            msgKey = "error.missing.servlet";
-                            break;
-                        case MISSING_WEBSOCKET_FEATURE:
-                            msgKey = "error.missing.websocket";
-                            break;
-                        case WEBFLUX_NOT_SUPPORTED:
-                            msgKey = "error.webflux.not.supported";
-                            break;
-                        default:
-                            break;
-
-                    }
+                    msgKey = ((ApplicationError) target).getType().getMessageKey();
                     Tr.error(tc, msgKey);
                     futureMonitor.setResult(mainInvokeResult, target);
                 } else {
@@ -179,6 +160,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
         SpringBootModuleInfo springBootModuleInfo = (SpringBootModuleInfo) moduleInfo;
         springBootModuleInfo.getSpringBootApplication().unregisterSpringConfigFactory();
         springBootModuleInfo.getSpringBootApplication().callShutdownHooks();
+        springBootModuleInfo.destroyThreadContextClassLoader();
     }
 
 }

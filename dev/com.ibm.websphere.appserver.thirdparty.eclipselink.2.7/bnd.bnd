@@ -40,7 +40,7 @@ Import-Package: \
             com.ibm.websphere.ras, \
             com.ibm.ws.Transaction;resolution:=optional, \
             com.ibm.ws.jpa.container.eclipselink.logging;resolution:=optional, \
-            javax.activation;resolution:=optional, \
+            !javax.activation, \
             javax.crypto;resolution:=optional, \
             javax.crypto.spec;resolution:=optional, \
             javax.enterprise.context.spi;resolution:=optional, \
@@ -91,6 +91,7 @@ Import-Package: \
 # those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
 # bundle will be always used due to JAXB 2.2 API is not resolved
 DynamicImport-Package: \
+ javax.activation,\
  javax.xml.bind, \
  javax.xml.bind.annotation, \
  javax.xml.bind.annotation.adapters, \

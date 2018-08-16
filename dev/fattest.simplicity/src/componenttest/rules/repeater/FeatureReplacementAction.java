@@ -235,22 +235,30 @@ public class FeatureReplacementAction implements RepeatTestAction {
         File filesFolder = new File(pathToAutoFVTTestFiles);
         if (servers.contains(ALL_SERVERS)) {
             // Find all *.xml in this test project
-            serverConfigs.addAll(findFile(serverFolder, ".xml"));
             serverConfigs.addAll(findFile(filesFolder, ".xml"));
-        } else {
-            for (String serverName : servers)
-                serverConfigs.add(new File(pathToAutoFVTTestServers + serverName + "/server.xml"));
+            servers.remove(ALL_SERVERS);
+            if (serverFolder.exists())
+                for (File f : serverFolder.listFiles())
+                    if (f.isDirectory())
+                        servers.add(f.getName());
         }
+        for (String serverName : servers)
+            serverConfigs.add(new File(pathToAutoFVTTestServers + serverName + "/server.xml"));
+
         // Find all of the client configurations to replace features in
         Set<File> clientConfigs = new HashSet<>();
         File clientFolder = new File(pathToAutoFVTTestClients);
         if (clients.contains(ALL_CLIENTS)) {
             // Find all *.xml in this test project
             clientConfigs.addAll(findFile(clientFolder, ".xml"));
-        } else {
-            for (String clientName : clients)
-                clientConfigs.add(new File(pathToAutoFVTTestClients + clientName));
+            clients.remove(ALL_CLIENTS);
+            if (clientFolder.exists())
+                for (File f : clientFolder.listFiles())
+                    if (f.isDirectory())
+                        clients.add(f.getName());
         }
+        for (String clientName : clients)
+            clientConfigs.add(new File(pathToAutoFVTTestClients + clientName + "/client.xml"));
 
         // Make sure that XML file we find is a server config file, by checking if it contains the <server> tag
         Log.info(c, m, "Replacing features in files: " + serverConfigs.toString() + "  and  " + clientConfigs.toString());
@@ -314,25 +322,16 @@ public class FeatureReplacementAction implements RepeatTestAction {
             if (isServerConfig) {
                 Log.info(c, m, "Config: " + serverConfig);
                 ServerConfigurationFactory.toFile(configFile, serverConfig);
-            } else
+            } else {
                 ClientConfigurationFactory.toFile(configFile, clientConfig);
-        }
-
-        // Make sure config update is pushed to the wlp version of the server & client
-        if (serverConfigs.size() > 0) {
-            for (String serverName : servers) {
-                if (!serverName.equals(ALL_SERVERS))
-                    LibertyServerFactory.getLibertyServer(serverName);
             }
         }
 
-        if (clientConfigs.size() > 0) {
-            for (String clientName : clients) {
-                if (!clientName.equals(ALL_CLIENTS))
-                    LibertyClientFactory.getLibertyClient(clientName);
-            }
-        }
-
+        // Make sure config updates are pushed to the liberty install's copy of the servers & clients
+        for (String serverName : servers)
+            LibertyServerFactory.getLibertyServer(serverName);
+        for (String clientName : clients)
+            LibertyClientFactory.getLibertyClient(clientName);
     }
 
     private static String getReplacementFeature(String originalFeature, Set<String> featuresToAdd) {

@@ -26,7 +26,7 @@ public class UserRevokedException extends AuthenticationException {
      * @param e
      */
     public UserRevokedException(String message, Exception e) {
-        super(message);
+        super(message, e);
     }
 
 }

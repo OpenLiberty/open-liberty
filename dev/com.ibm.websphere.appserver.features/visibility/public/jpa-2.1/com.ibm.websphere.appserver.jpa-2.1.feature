@@ -227,7 +227,7 @@ Subsystem-Name: Java Persistence API 2.1
  com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2", \
  com.ibm.websphere.appserver.jpaContainer-2.1, \
  com.ibm.websphere.appserver.org.eclipse.persistence-2.6
--bundles=com.ibm.websphere.appserver.thirdparty.eclipselink; location:=dev/api/third-party/, \
+-bundles=com.ibm.websphere.appserver.thirdparty.eclipselink; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:2.6.0", \
  com.ibm.ws.jpa.container.eclipselink
 kind=ga
 edition=core

@@ -28,6 +28,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -87,6 +89,7 @@ import org.w3c.dom.Element;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public final class ResourceUtils {
     private static final TraceComponent tc = Tr.register(ResourceUtils.class);
@@ -299,6 +302,22 @@ public final class ResourceUtils {
         return getAncestorWithSameServiceClass(parent.getParent(), subClass);
     }
 
+    private static Class<? extends Annotation> loadCDIInjectClass() {
+        return AccessController.doPrivileged(new PrivilegedAction<Class<? extends Annotation>>() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            @FFDCIgnore(ClassNotFoundException.class)
+            public Class<? extends Annotation> run() {
+                try {
+                    return (Class<? extends Annotation>) Thread.currentThread().getContextClassLoader().loadClass("javax.inject.Inject");
+                } catch (ClassNotFoundException ex) {
+                    return null;
+                }
+            }
+        });
+    }
+
     public static Constructor<?> findResourceConstructor(Class<?> resourceClass, boolean perRequest) {
         List<Constructor<?>> cs = new LinkedList<Constructor<?>>();
         for (Constructor<?> c : resourceClass.getConstructors()) {
@@ -308,15 +327,21 @@ public final class ResourceUtils {
             Class<?>[] params = c.getParameterTypes();
             Annotation[][] anns = c.getParameterAnnotations();
             boolean match = true;
-            for (int i = 0; i < params.length; i++) {
-                if (!perRequest) {
-                    if (AnnotationUtils.getAnnotation(anns[i], Context.class) == null) {
+            // If CDI is in use and the constructor contains an @Inject annotation, then
+            // we can ignore the rule where @Context/@*Param must prefix each param.
+            // Ref section 3.1.2 of the spec.
+            Class<? extends Annotation> injectAnnotation = loadCDIInjectClass();
+            if (injectAnnotation == null || c.getAnnotation(injectAnnotation) == null) {
+                for (int i = 0; i < params.length; i++) {
+                    if (!perRequest) {
+                        if (AnnotationUtils.getAnnotation(anns[i], Context.class) == null) {
+                            match = false;
+                            break;
+                        }
+                    } else if (!AnnotationUtils.isValidParamAnnotations(anns[i])) {
                         match = false;
                         break;
                     }
-                } else if (!AnnotationUtils.isValidParamAnnotations(anns[i])) {
-                    match = false;
-                    break;
                 }
             }
             if (match) {

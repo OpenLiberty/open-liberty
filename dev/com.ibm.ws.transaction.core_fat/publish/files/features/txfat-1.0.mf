@@ -1,0 +1,11 @@
+Subsystem-ManifestVersion: 1
+IBM-Test-Feature: true
+Subsystem-SymbolicName: txfat-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.ws.transactions.fat.utils; version="[1,1.0.100)",
+ com.ibm.websphere.javaee.transaction.1.2; version="[1,1.0.100)"; location:="dev/api/spec/,lib/", 
+ com.ibm.ws.tx.embeddable;  version="[1,1.1.100)", 
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: com.ibm.tx.jta.ut.util; type="internal",
+ com.ibm.ws.tx.jta.embeddable; type="internal"

@@ -291,6 +291,12 @@ public class EmbeddedApacheDS {
         entry.add("m-must", "sAMAccountName");
         entry.add("m-may", "memberOf");
         add(entry);
+
+        /*
+         * Initialize some WIM specific schema.
+         */
+        this.initWimAttributes();
+        this.initWimObjectClasses();
     }
 
     /**
@@ -407,5 +413,399 @@ public class EmbeddedApacheDS {
 
     public boolean isStarted() {
         return server.isStarted();
+    }
+
+    /**
+     * Initialize some WIM specific attributes in the LDAP schema.
+     *
+     * @throws LdapException If there was a failure initialize the attributes.
+     */
+    private void initWimAttributes() throws LdapException {
+
+        /*
+         * Initialize some branches to hold the attributes.
+         */
+        Entry entry = newEntry("cn=ibm, ou=schema");
+        entry.add("objectclass", "metaSchema");
+        entry.add("objectclass", "top");
+        entry.add("cn", "ibm");
+        add(entry);
+
+        entry = newEntry("ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "organizationalUnit");
+        entry.add("objectclass", "top");
+        entry.add("ou", "attributetypes");
+        add(entry);
+
+        /*
+         * Attributes will start with the OID 1.3.6.1.4.1.18060.0.4.3.2.1 and increment
+         * for each attribute. This OID is one that was assigned to Apache and that they
+         * use for their examples.
+         */
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.1, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.1");
+        entry.add("m-name", "photoUrl");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.2, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.2");
+        entry.add("m-name", "photoURLThumbnail");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.3, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.3");
+        entry.add("m-name", "homeStreet");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.4, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.4");
+        entry.add("m-name", "homeCity");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.5, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.5");
+        entry.add("m-name", "homeStateOrProvinceName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.6, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.6");
+        entry.add("m-name", "homePostalCode");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.7, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.7");
+        entry.add("m-name", "homeCountryName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.8, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.8");
+        entry.add("m-name", "businessStreet");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.9, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.9");
+        entry.add("m-name", "businessCity");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.10, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.10");
+        entry.add("m-name", "businessStateOrProvinceName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.11, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.11");
+        entry.add("m-name", "businessPostalCode");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.12, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.12");
+        entry.add("m-name", "businessCountryName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.13, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.13");
+        entry.add("m-name", "middleName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.14, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.14");
+        entry.add("m-name", "honorificSuffix");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.15, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.15");
+        entry.add("m-name", "honorificPrefix");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.16, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.16");
+        entry.add("m-name", "nickName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.17, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.17");
+        entry.add("m-name", "profileUrl");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.18, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.18");
+        entry.add("m-name", "locale");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.19, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.19");
+        entry.add("m-name", "timezone");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.20, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.20");
+        entry.add("m-name", "active");
+        entry.add("m-equality", "booleanMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.7");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.21, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.21");
+        entry.add("m-name", "ims");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "FALSE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.22, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.22");
+        entry.add("m-name", "extendedProperty1");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.2.23, ou=attributetypes, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.2.23");
+        entry.add("m-name", "extendedProperty2");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "FALSE");
+        add(entry);
+
+    }
+
+    /**
+     * Initialize some WIM specific object classes in the WIM schema. These classes include an
+     * extension of inetOrgPerson (wimInetOrgPerson) and groupOfNames (wimGroupOfNames). These
+     * extensions contain extra attributes that generally match up with the WIM property names
+     * for PersonAccounta and Group respectively as well as some extended properties.
+     *
+     * @throws LdapException If there was a failure initialize the object classes.
+     */
+    private void initWimObjectClasses() throws LdapException {
+
+        /*
+         * Create the ou=objectclasses,cn=ibm,ou=schema branch.
+         */
+        Entry entry = newEntry("ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "organizationalUnit");
+        entry.add("objectclass", "top");
+        entry.add("ou", "objectClasses");
+        add(entry);
+
+        /*
+         * Object classes will start with the OID 1.3.6.1.4.1.18060.0.4.3.1.1 and increment
+         * for each object class. This OID is one that was assigned to Apache and that they
+         * use for their examples.
+         */
+
+        /**
+         * <pre>
+         * ObjectClass:
+         *    wimInetOrgPerson            - 1.3.6.1.4.1.18060.0.4.3.1.1
+         *
+         * Attributes:
+         *    photoUrl                    - 1.3.6.1.4.1.18060.0.4.3.2.1
+         *    photoURLThumbnail           - 1.3.6.1.4.1.18060.0.4.3.2.2
+         *    homeStreet                  - 1.3.6.1.4.1.18060.0.4.3.2.3
+         *    homeCity                    - 1.3.6.1.4.1.18060.0.4.3.2.4
+         *    homeStateOrProvinceName     - 1.3.6.1.4.1.18060.0.4.3.2.5
+         *    homePostalCode              - 1.3.6.1.4.1.18060.0.4.3.2.6
+         *    homeCountryName             - 1.3.6.1.4.1.18060.0.4.3.2.7
+         *    businessStreet              - 1.3.6.1.4.1.18060.0.4.3.2.8
+         *    businessCity                - 1.3.6.1.4.1.18060.0.4.3.2.9
+         *    businessStateOrProvinceName - 1.3.6.1.4.1.18060.0.4.3.2.10
+         *    businessPostalCode          - 1.3.6.1.4.1.18060.0.4.3.2.11
+         *    businessCountryName         - 1.3.6.1.4.1.18060.0.4.3.2.12
+         *    middleName                  - 1.3.6.1.4.1.18060.0.4.3.2.13
+         *    honorificSuffix             - 1.3.6.1.4.1.18060.0.4.3.2.14
+         *    honorificPrefix             - 1.3.6.1.4.1.18060.0.4.3.2.15
+         *    nickName                    - 1.3.6.1.4.1.18060.0.4.3.2.16
+         *    profileUrl                  - 1.3.6.1.4.1.18060.0.4.3.2.17
+         *    locale                      - 1.3.6.1.4.1.18060.0.4.3.2.18
+         *    timezone                    - 1.3.6.1.4.1.18060.0.4.3.2.19
+         *    active                      - 1.3.6.1.4.1.18060.0.4.3.2.20
+         *    ims                         - 1.3.6.1.4.1.18060.0.4.3.2.21
+         *    extendedProperty1           - 1.3.6.1.4.1.18060.0.4.3.2.22
+         *    extendedProperty2           - 1.3.6.1.4.1.18060.0.4.3.2.23
+         * </pre>
+         */
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.1.1, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.1.1");
+        entry.add("m-name", "wimInetOrgPerson");
+        entry.add("m-supObjectClass", "inetOrgPerson");
+        entry.add("m-typeObjectClass", "STRUCTURAL");
+        entry.add("m-may", "photoUrl");
+        entry.add("m-may", "photoURLThumbnail");
+        entry.add("m-may", "homeStreet");
+        entry.add("m-may", "homeCity");
+        entry.add("m-may", "homeStateOrProvinceName");
+        entry.add("m-may", "homePostalCode");
+        entry.add("m-may", "homeCountryName");
+        entry.add("m-may", "businessStreet");
+        entry.add("m-may", "businessCity");
+        entry.add("m-may", "businessStateOrProvinceName");
+        entry.add("m-may", "businessPostalCode");
+        entry.add("m-may", "businessCountryName");
+        entry.add("m-may", "middleName");
+        entry.add("m-may", "honorificSuffix");
+        entry.add("m-may", "honorificPrefix");
+        entry.add("m-may", "nickName");
+        entry.add("m-may", "profileUrl");
+        entry.add("m-may", "locale");
+        entry.add("m-may", "timezone");
+        entry.add("m-may", "active");
+        entry.add("m-may", "ims");
+        entry.add("m-may", "extendedProperty1");
+        entry.add("m-may", "extendedProperty2");
+        add(entry);
+
+        /**
+         * <pre>
+         * ObjectClass:
+         *    wimGroupOfNames             - 1.3.6.1.4.1.18060.0.4.3.1.2
+         *
+         * Attributes:
+         *    extendedProperty1           - 1.3.6.1.4.1.18060.0.4.3.2.22
+         *    extendedProperty2           - 1.3.6.1.4.1.18060.0.4.3.2.23
+         * </pre>
+         */
+        entry = newEntry("m-oid=1.3.6.1.4.1.18060.0.4.3.1.2, ou=objectclasses, cn=ibm, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.3.6.1.4.1.18060.0.4.3.1.2");
+        entry.add("m-name", "wimGroupOfNames");
+        entry.add("m-supObjectClass", "groupOfNames");
+        entry.add("m-typeObjectClass", "STRUCTURAL");
+        entry.add("m-may", "extendedProperty1");
+        entry.add("m-may", "extendedProperty2");
+        add(entry);
     }
 }

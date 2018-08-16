@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Avoid using the feature, or switch to a drive
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: A valid JDBC driver implementation class was not found for the jdbcDriver {0} using the library {1}.
-DSRA4000.no.suitable.driver.explanation=A valid JDBC driver implementation class was not found.
-DSRA4000.no.suitable.driver.useraction=Update the configuration so that either the library contains a path to a recognized JDBC driver or the implementation class is specified on the data source.
+DSRA4000.no.suitable.driver=DSRA4000E: No implementations of {0} are found for {1} with library {2}. The name or location of JDBC driver JAR files might be incorrect or inaccessible. Searched in: {3}. Searched under packages: {4}.
+DSRA4000.no.suitable.driver.explanation=A data source or driver implementation might not be found for several reasons. The name or location of JDBC driver JAR files might be incorrect or inaccessible. The JDBC driver might not properly identify its java.sql.Driver implementation, or it might not have a java.sql.Driver implementation. Or, the built-in logic of the server to identify data source implementation classes does not apply to all drivers.
+DSRA4000.no.suitable.driver.useraction=Verify that the configurations of the JDBC driver and library are correct. If the implementation classes are still not found, manually specify them in the configuration.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: A valid JDBC driver implementation class was not found in the nested library used by jdbcDriver {0}.
-DSRA4001.no.suitable.driver.nested.explanation=A valid JDBC driver implementation class was not found.
-DSRA4001.no.suitable.driver.nested.useraction=Update the configuration so that either the nested library contains a path to a recognized JDBC driver or the implementation class is specified on the data source.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: No implementations of {0} are found for {1}. Searched in: {2}. The name or location of JDBC driver JAR files might be incorrect or inaccessible. Searched under packages: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=A data source or driver implementation might not be found for several reasons. The name or location of JDBC driver JAR files might be incorrect or inaccessible. The JDBC driver might not properly identify its java.sql.Driver implementation, or it might not have a java.sql.Driver implementation. Or, the built-in logic of the server to identify data source implementation classes does not apply to all drivers.
+DSRA4001.no.suitable.driver.nested.useraction=Verify that the configurations of the JDBC driver and library are correct. If the implementation classes are still not found, manually specify them in the configuration.
 
 DSRA4003.driver.null=DSRA4003E: A valid jdbcDriver element could not be found for the dataSource {0}.
 DSRA4003.driver.null.explanation=A valid jdbcDriver element could not be found the specified dataSource.
@@ -244,6 +244,32 @@ DSRA4003.driver.null.useraction=Update the configuration to include either a val
 DSRA4004.onconnect.sql=DSRA4004E: Unable to execute onConnect SQL command \"{0}\" on connection obtained from dataSource {1}. Refer to the cause exception for more information.
 DSRA4004.onconnect.sql.explanation=An error occurred while attempting to execute the specified SQL command.
 DSRA4004.onconnect.sql.useraction=Refer to the exception message to help determine the cause of the problem.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: The server does not support the loginTimeout property that is specified in the URL or in the properties of the {0} DataSource.
+DSRA4005.invalid.logintimeout.explanation=The loginTimeout property is not supported when it is specified for a DataSource that is backed by a java.sql.Driver implementation because the server is unable to call getLoginTimeout on the java.sql.Driver class.
+DSRA4005.invalid.logintimeout.useraction=Modify the DataSource configuration to use a DataSource implementation instead of a java.sql.Driver implementation, or remove the loginTimeout property.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: DataSource {0} is unable to connect to the database because {1} returned a null connection for the URL beginning with {2}. This indicates the JDBC driver is in violation of the JDBC specification.
+DSRA4006.null.connection.explanation=Although the java.sql.Driver indicated that it accepted the supplied URL, it returned a null connection. This error indicates a bug in the JDBC driver.
+DSRA4006.null.connection.useraction=Report the error to the JDBC driver vendor and ensure that the JDBC driver and DataSource configuration are correct.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: The JDBC driver does not support an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
+DSRA4008.tran.none.unsupported.explanation=The TRANSACTION_NONE isolation level that is configured on the data source is not supported by the JDBC driver.
+DSRA4008.tran.none.unsupported.useraction=Either update the data source configuration to use an isolation level that is supported by the driver, or use a driver that supports an isolation level of TRANSACTION_NONE. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: The data source {0} cannot be configured with an isolation level of TRANSACTION_NONE and transactional=true.
+DSRA4009.tran.none.transactional.unsupported.explanation=A JDBC driver that is configured with an isolation level of TRANSACTION_NONE will not support transactions.
+DSRA4009.tran.none.transactional.unsupported.useraction=Set transactional=false on the data source.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: Auto commit is required when using an isolation level of TRANSACTION_NONE, which is configured on data source {0}.
+DSRA4010.tran.none.autocommit.required.explanation=The JDBC driver is configured with an isolation level of TRANSACTION_NONE, and requires the use of auto commit.
+DSRA4010.tran.none.autocommit.required.useraction=Keep auto commit set to true.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: The JDBC driver does not support switching to an isolation level of TRANSACTION_NONE on data source {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=The JDBC specification does not support switching to an isolation level of TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Avoid switching to an isolation level of TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 
@@ -594,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= The Application Server does not supp
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Disable Kerberos, or use a DB2 backend with the DB2 universal JDBC driver.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

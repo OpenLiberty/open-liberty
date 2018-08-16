@@ -29,6 +29,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
@@ -50,6 +51,7 @@ import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
+import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.LibertyProcess;
@@ -92,9 +94,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private final AtomicServiceReference<InjectionEngine> injectionEngineServiceRef = new AtomicServiceReference<InjectionEngine>("injectionEngine");
     private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
     private final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>("executorService");
+    private final AtomicServiceReference<ExecutorService> managedExecutorServiceRef = new AtomicServiceReference<ExecutorService>("managedExecutorService");
 
     private final AtomicServiceReference<CDIContainerConfig> containerConfigRef = new AtomicServiceReference<CDIContainerConfig>("containerConfig");
     private final AtomicServiceReference<ResourceRefConfigFactory> resourceRefConfigFactoryRef = new AtomicServiceReference<ResourceRefConfigFactory>("resourceRefConfigFactory");
+
+    private final AtomicServiceReference<DeferredMetaDataFactory> deferredMetaDataFactoryRef = new AtomicServiceReference<DeferredMetaDataFactory>("cdiDeferredMetaDataFactoryImpl");
 
     private MetaDataSlot applicationSlot;
     private boolean isClientProcess;
@@ -117,6 +122,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         adaptableModuleFactorySRRef.activate(cc);
         injectionEngineServiceRef.activate(cc);
         resourceRefConfigFactoryRef.activate(cc);
+        managedExecutorServiceRef.activate(cc);
+        deferredMetaDataFactoryRef.activate(cc);
 
         this.runtimeFactory = new RuntimeFactory(this);
         this.proxyServices = new ProxyServicesImpl();
@@ -143,6 +150,8 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         injectionEngineServiceRef.deactivate(cc);
         containerConfigRef.deactivate(cc);
         resourceRefConfigFactoryRef.deactivate(cc);
+        managedExecutorServiceRef.deactivate(cc);
+        deferredMetaDataFactoryRef.deactivate(cc);
     }
 
     @Reference(name = "containerConfig", service = CDIContainerConfig.class)
@@ -154,6 +163,16 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         containerConfigRef.unsetReference(ref);
     }
 
+    @Reference(name = "cdiDeferredMetaDataFactoryImpl", service = DeferredMetaDataFactory.class, target = "(deferredMetaData=CDI)") 
+    protected void setCDIDeferredMetaDataFactoryImpl(ServiceReference<DeferredMetaDataFactory> ref) {
+        deferredMetaDataFactoryRef.setReference(ref);
+    }
+
+    protected void unsetCDIDeferredMetaDataFactoryImpl(ServiceReference<DeferredMetaDataFactory> ref) {
+        deferredMetaDataFactoryRef.unsetReference(ref);
+    }
+
+
     @Reference(name = "executorService", service = ExecutorService.class)
     protected void setExecutorService(ServiceReference<ExecutorService> ref) {
         executorServiceRef.setReference(ref);
@@ -161,6 +180,15 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     protected void unsetExecutorService(ServiceReference<ExecutorService> ref) {
         executorServiceRef.unsetReference(ref);
+    }
+
+    @Reference(name = "managedExecutorService", service = ExecutorService.class, target="(id=DefaultManagedExecutorService)", policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
+    protected void setManagedExecutorService(ServiceReference<ExecutorService> ref) {
+        managedExecutorServiceRef.setReference(ref);
+    }
+
+    protected void unsetManagedExecutorService(ServiceReference<ExecutorService> ref) {
+        managedExecutorServiceRef.unsetReference(ref);
     }
 
     @Reference(name = "scheduledExecutorService", service = ScheduledExecutorService.class, target = "(deferrable=false)")
@@ -345,7 +373,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     @Override
     public ExecutorService getExecutorService() {
-        return executorServiceRef.getService();
+        ExecutorService managedExecutorService = managedExecutorServiceRef.getService(); 
+        if (managedExecutorService != null) {
+            return managedExecutorService;
+        } else {
+            return executorServiceRef.getService();
+        }
     }
 
     @Override
@@ -397,6 +430,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                 beginContext(archive);
                 setContext = true;
             }
+
+            for (CDIArchive archive : application.getModuleArchives()) {
+                registerDeferedMetaData(archive);
+            }
+
             WebSphereCDIDeployment webSphereCDIDeployment = getCDIContainer().startInitialization(application);
             if (webSphereCDIDeployment != null) { 
                 getCDIContainer().endInitialization(webSphereCDIDeployment);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere. 
@@ -425,6 +463,16 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             getCDIContainer().applicationStopped(application);
         } catch (CDIException e) {
             //FFDC and carry on
+        } finally { 
+            try {
+                for (CDIArchive archive : application.getModuleArchives()) {
+                    DeferredMetaDataFactory metaDataFactory = deferredMetaDataFactoryRef.getService();
+                    CDIDeferredMetaDataFactoryImpl cdiMetaDataFactory = (CDIDeferredMetaDataFactoryImpl) metaDataFactory;
+                    cdiMetaDataFactory.removeComponentMetaData(archive);
+                }
+            } catch (CDIException e) {
+                //FFDC and carry on
+            }
         }
     }
 
@@ -481,10 +529,36 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         } else {
             ApplicationMetaData applicationMetaData = (ApplicationMetaData) metaData;
             cmd = new JndiHelperComponentMetaData(applicationMetaData);
+
         }
 
         ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
         accessor.beginContext(cmd);
+    }
+
+    private void registerDeferedMetaData(CDIArchive archive) throws CDIException {
+
+        JndiHelperComponentMetaData cmd = null;
+
+        MetaData metaData = archive.getMetaData();
+        if (archive.isModule()) {
+            ModuleMetaData moduleMetaData = (ModuleMetaData) metaData;
+            cmd = new JndiHelperComponentMetaData(moduleMetaData);
+        } else {
+            ApplicationMetaData applicationMetaData = (ApplicationMetaData) metaData;
+            cmd = new JndiHelperComponentMetaData(applicationMetaData);
+
+        }
+
+        DeferredMetaDataFactory metaDataFactory = deferredMetaDataFactoryRef.getService();
+        CDIDeferredMetaDataFactoryImpl cdiMetaDataFactory = (CDIDeferredMetaDataFactoryImpl) metaDataFactory;
+
+        //To ensure even delayed async calls can find this, this gets cleaned up in ApplicationStopped, not endContext().
+        //However which factory is uesd is controlled by ComponentMetaDataAccessorImpl, if a JndiHelperComponentMetaData
+        //is on the thread CDIDeferredMetaDataFactoryImpl will be used, otherwise something else will. 
+        //So leaving the data inside CDIDeferredMetaDataFactoryImpl is just a precaution encase a very long lived thread
+        //holds onto a JndiHelperComponentMetaData beyond application startup. 
+        cdiMetaDataFactory.registerComponentMetaData(archive, cmd);
     }
 
     /**

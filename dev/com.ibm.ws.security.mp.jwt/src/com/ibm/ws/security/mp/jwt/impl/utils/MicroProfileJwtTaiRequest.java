@@ -206,19 +206,37 @@ public class MicroProfileJwtTaiRequest {
                 throw new MpJwtProcessingException(msg);
             }
         } else if (this.genericConfigs != null) {
-            if (this.genericConfigs.size() <= 2) {
-                if (this.genericConfigs.size() == 2) {
-                    if (!handleTwoConfigurations()) {
-                        // if we have two jwtsso or two mpjwt configurations, then we cannot process
-                        handleTooManyConfigurations();
-                    }
-                } else {
-                    this.microProfileJwtConfig = this.genericConfigs.get(0);
+            if (this.genericConfigs.size() < 2) {
+                this.microProfileJwtConfig = this.genericConfigs.get(0); 
+            } else if (this.genericConfigs.size() <= 3) {
+                if (!handleMultipleConfigurations()) {
+                    // if we have two jwtsso or two mpjwt configurations, then we cannot process
+                    handleTooManyConfigurations();
                 }
-
+//                if (this.genericConfigs.size() == 3) {
+//                    
+//                } else if (this.genericConfigs.size() == 2) {
+//                    if (!handleTwoConfigurations()) {
+//                        // if we have two jwtsso or two mpjwt configurations, then we cannot process
+//                        handleTooManyConfigurations();
+//                    }
+//                }
             } else {
                 handleTooManyConfigurations();
             }
+//            if (this.genericConfigs.size() <= 2) {
+//                if (this.genericConfigs.size() == 2) {
+//                    if (!handleTwoConfigurations()) {
+//                        // if we have two jwtsso or two mpjwt configurations, then we cannot process
+//                        handleTooManyConfigurations();
+//                    }
+//                } else {
+//                    this.microProfileJwtConfig = this.genericConfigs.get(0);
+//                }
+//
+//            } else {
+//                handleTooManyConfigurations();
+//            }
         }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, this.microProfileJwtConfig);
@@ -234,6 +252,8 @@ public class MicroProfileJwtTaiRequest {
         Iterator it = this.genericConfigs.iterator();
         boolean jwtsso = false;
         boolean mpjwt = false;
+        boolean defaultmpjwt = true;
+   
         while (it.hasNext()) {
             MicroProfileJwtConfig mpJwtConfig = (MicroProfileJwtConfig) it.next();
             if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
@@ -244,6 +264,40 @@ public class MicroProfileJwtTaiRequest {
             }
         }
         return jwtsso && mpjwt;
+    }
+    
+    private boolean handleMultipleConfigurations() {
+
+        Iterator it = this.genericConfigs.iterator();
+        int jwtsso = 0;
+        int mpjwt = 0;
+        int defaultmpjwt = 0;
+        
+        MicroProfileJwtConfig mpjwtConfiguration = null;
+        
+        while (it.hasNext()) {
+            MicroProfileJwtConfig mpJwtConfig = (MicroProfileJwtConfig) it.next();
+            if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
+                jwtsso ++;
+                this.microProfileJwtConfig = mpJwtConfig;
+            } else if (!isMpJwtDefaultConfig(mpJwtConfig)) {
+                mpjwt ++;
+                mpjwtConfiguration = mpJwtConfig;
+            }
+        }
+        if (jwtsso < 1 && mpjwt == 1) {
+            this.microProfileJwtConfig = mpjwtConfiguration;
+        }
+        return jwtsso <= 1 && mpjwt <= 1;
+    }
+    
+    private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
+        boolean isDefault = false;
+        if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
+            isDefault = true;
+        }
+        return isDefault;
+        
     }
 
     void handleTooManyConfigurations() throws MpJwtProcessingException {

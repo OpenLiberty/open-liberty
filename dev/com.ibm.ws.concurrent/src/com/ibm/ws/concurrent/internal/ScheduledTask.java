@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -537,7 +538,11 @@ public class ScheduledTask<T> extends AbstractTask<T> {
             // taskAborted or taskDone fails
             // Liberty scheduled executor unavailable, or it fails to schedule
 
-            Tr.error(tc, "CWWKC1101.task.failed", getName(), managedExecSvc.name, x);
+            if (contextAppliedToThread == null && x instanceof IllegalStateException && FrameworkState.isStopping()) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Task not started due to server shutdown", getName(), x);
+            } else
+                Tr.error(tc, "CWWKC1101.task.failed", getName(), managedExecSvc.name, x);
 
             status = result.getStatus();
             if (!status.finalExecutionIsComplete) {

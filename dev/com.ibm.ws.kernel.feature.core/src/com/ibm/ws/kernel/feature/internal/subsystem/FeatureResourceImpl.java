@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,9 +29,6 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
 
-/**
- *
- */
 public class FeatureResourceImpl implements FeatureResource {
     private static final TraceComponent tc = Tr.register(FeatureResourceImpl.class);
 
@@ -42,7 +40,6 @@ public class FeatureResourceImpl implements FeatureResource {
     private String matchString = null;
 
     private final AtomicReference<VersionRange> _range = new AtomicReference<VersionRange>();
-    private final AtomicReference<String> _location = new AtomicReference<String>();
     private final AtomicReference<List<String>> _osList = new AtomicReference<List<String>>();
     private final AtomicReference<Map<String, String>> _attributes = new AtomicReference<Map<String, String>>();
     private final AtomicReference<Map<String, String>> _directives = new AtomicReference<Map<String, String>>();
@@ -51,10 +48,6 @@ public class FeatureResourceImpl implements FeatureResource {
 
     private volatile SubsystemContentType _type = null;
 
-    /**
-     * @param key
-     * @param value
-     */
     public FeatureResourceImpl(String key, Map<String, String> value, String bundleRepositoryType, String featureName) {
         _symbolicName = key;
         _rawAttributes = value;
@@ -137,23 +130,7 @@ public class FeatureResourceImpl implements FeatureResource {
     /** {@inheritDoc} */
     @Override
     public String getLocation() {
-        String result = _location.get();
-        if (result == null) {
-            // Directive names are in the attributes map, but end with a colon
-            result = _rawAttributes.get("location:");
-            if (result == null) {
-                result = "";
-            }
-
-            if (!!!_location.compareAndSet(null, result)) {
-                result = _location.get();
-            }
-        }
-
-        if ("".equals(result)) {
-            result = null;
-        }
-        return result;
+        return _rawAttributes.get("location:");
     }
 
     /** {@inheritDoc} */
@@ -285,8 +262,8 @@ public class FeatureResourceImpl implements FeatureResource {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getLocation() == null) ? 0 : _location.get().hashCode());
-        result = prime * result + ((getVersionRange() == null) ? 0 : _range.get().hashCode());
+        result = prime * result + ((getLocation() == null) ? 0 : getLocation().hashCode());
+        result = prime * result + ((getVersionRange() == null) ? 0 : getVersionRange().hashCode());
         result = prime * result + ((_symbolicName == null) ? 0 : _symbolicName.hashCode());
         result = prime * result + ((_type == null) ? 0 : _type.hashCode());
         return result;
@@ -302,35 +279,13 @@ public class FeatureResourceImpl implements FeatureResource {
         if (getClass() != obj.getClass())
             return false;
         FeatureResourceImpl other = (FeatureResourceImpl) obj;
-        if (getLocation() == null) {
-            if (other.getLocation() != null)
-                return false;
-        } else if (!_location.get().equals(other._location.get()))
-            return false;
-        if (getVersionRange() == null) {
-            if (other.getVersionRange() != null)
-                return false;
-        } else if (!_range.get().equals(other._range.get()))
-            return false;
-        if (_symbolicName == null) {
-            if (other._symbolicName != null)
-                return false;
-        } else if (!_symbolicName.equals(other._symbolicName))
-            return false;
-        if (_type != other._type)
-            return false;
-        if (getOsList() == null) {
-            if (other.getOsList() != null)
-                return false;
-        } else if (!_osList.get().equals(other.getOsList()))
-            return false;
-        if (getTolerates() == null) {
-            if (other.getTolerates() != null)
-                return false;
-        } else if (!_tolerates.get().equals(other.getTolerates())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(_symbolicName, other._symbolicName)
+               && _type == other._type
+               && Objects.equals(getVersionRange(), other.getVersionRange())
+               && Objects.equals(getLocation(), other.getLocation())
+               && Objects.equals(getOsList(), other.getOsList())
+               && Objects.equals(getTolerates(), other.getTolerates())
+               && Objects.equals(getRequiredOSGiEE(), other.getRequiredOSGiEE());
     }
 
     /** {@inheritDoc} */
@@ -373,4 +328,9 @@ public class FeatureResourceImpl implements FeatureResource {
         return result;
     }
 
+    @Override
+    public String getRequiredOSGiEE() {
+        // Directive names are in the attributes map, but end with a colon
+        return _rawAttributes.get("required-osgi-ee:");
+    }
 }

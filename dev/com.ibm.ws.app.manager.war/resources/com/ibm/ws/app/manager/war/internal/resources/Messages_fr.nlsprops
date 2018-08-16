@@ -215,4 +215,8 @@ error.client.not.installed.useraction=V\u00e9rifiez l'emplacement cit\u00e9 dans
 #{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
 warning.could.not.expand.application=CWWKZ0131W: Impossible de d\u00e9velopper l''application {0} en raison de l''exception {1}.
 warning.could.not.expand.application.explanation=L'application n'a pas pu \u00eatre d\u00e9velopp\u00e9e dans un r\u00e9pertoire temporaire. L'application continuera de s'ex\u00e9cuter mais le comportement de certaines m\u00e9thodes qui acc\u00e8dent aux fichiers d'application peut \u00eatre affect\u00e9. 
-warning.could.not.expand.application.useraction=Essayez de r\u00e9soudre le probl\u00e8me dans le message d'exception, puis red\u00e9marrez le serveur ou mettez \u00e0 jour l'application. 
+warning.could.not.expand.application.useraction=Essayez de r\u00e9soudre le probl\u00e8me dans le message d'exception, puis red\u00e9marrez le serveur ou mettez \u00e0 jour l'application.
+
+error.file.outside.archive=CWWKZ0132W: Le fichier {0} dans l''archive {1} ne sera pas extrait car le chemin ne se trouve pas dans l''archive.
+error.file.outside.archive.explanation=Le chemin d'acc\u00e8s au fichier sp\u00e9cifie un r\u00e9pertoire relatif. L'extraction du fichier entra\u00eenerait son placement hors du r\u00e9pertoire racine de l'archive.
+error.file.outside.archive.useraction=Retirez de l'archive tous les fichiers associ\u00e9s \u00e0 des chemins d'acc\u00e8s relatifs.

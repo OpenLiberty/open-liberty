@@ -20,11 +20,13 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -33,7 +35,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#bean_discovery
  * http://docs.jboss.org/cdi/spec/1.1/cdi-spec.html#what_classes_are_beans
  */
-
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ClassExclusionTest extends LoggingTest {
 

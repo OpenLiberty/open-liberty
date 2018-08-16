@@ -266,8 +266,8 @@ public class PluginUtilityMergeTest {
     }
     
     /**
-     * Test to ensure that if a directory is specified to --sourcePath and there are not at least two
-     * plugin-cfg.xml files present in that directory an error message is given and processing is aborted.
+     * Test to ensure that if a directory is specified to --sourcePath and there is just one
+     * plugin-cfg.xml file present in that directory then no error message is reported.
      * 
      * This test case was included in PluginUtilityMergeTest vs PluginUtilityOutputTest since it copies a file
      * and this test already contains the appropriate @Before method to ensure the files are cleaned up 
@@ -275,17 +275,50 @@ public class PluginUtilityMergeTest {
      * 
      * @throws Exception
      */
+    @Test
+    public void testPluginUtilityMergeOneFile() throws Exception {
+        String methodName = "testPluginUtilityMergeOneFile";
+        Log.entering(c, methodName);
+        
+        String targetDir = defaultServer.getServerRoot();
+        String workDir = defaultServer.getServerRoot();
+        
+        File testFile = new File(targetDir + "/" + TEST_MERGED_PLUGIN_CFG_FILENAME );
+        
+        // Copy just one plugin-cfg.xml file to the ServerRoot directory
+        defaultServer.copyFileToLibertyServerRoot("plugin-cfg1.xml");
+        
+        // Use workingDir as the working directory and specify the targetPath to be a fully qualified path
+        // to ensure that the merged plugin-cfg.xml is created in the targetPath specified vs the 
+        // current working directory using the name given and not the default merged-plugin-cfg.xml.
+        ProgramOutput po = machine.execute(defaultServerInstallRoot + "/bin/pluginUtility",
+                new String[] {"merge",
+                    "--sourcePath=" + workDir,
+                    "--targetPath=" + testFile.getAbsolutePath()
+                }, workDir);
+
+        Log.info(c, methodName, "-merge result:\n" + po.getStdout());
+        assertEquals("pluginUtility task should complete with return code as 0.", 0, po.getReturnCode());
+        assertTrue("Merged plugin-cfg.xml does not exist: " + testFile.getAbsolutePath() , testFile.exists());
+        
+        Log.exiting(c,methodName);
+    }
+    
+    /**
+     * Test to ensure that if a directory is specified to --sourcePath and there is not at least one
+     * plugin-cfg.xml file present in that directory an error message is given and processing is aborted.
+     * 
+     * @throws Exception
+     */
     @Mode(TestMode.FULL)
     @Test
-    public void testPluginUtilityMergeAtLeastTwoFiles() throws Exception {
-        String methodName = "testPluginUtilityMergeAtLeastTwoFiles";
+    public void testPluginUtilityMergeAtLeastOneFile() throws Exception {
+        String methodName = "testPluginUtilityMergeAtLeastOneFile";
         Log.entering(c, methodName);
         
         String workDir = defaultServer.getServerRoot();
         
-        // Copy just one plugin-cfg.xml file to the ServerRoot directory to test error condition
-        defaultServer.copyFileToLibertyServerRoot("plugin-cfg1.xml");
-        
+        // Don't copy any files to the working directory and invoke utility, expecting error   
         ProgramOutput po = machine.execute(defaultServerInstallRoot + "/bin/pluginUtility",
                 new String[] {"merge",
                     "--sourcePath=" + workDir
@@ -295,7 +328,7 @@ public class PluginUtilityMergeTest {
 
         assertEquals("pluginUtility task should complete with return code as 0.", 0, po.getReturnCode());
         assertTrue("An error message should have been printed if only one file was in the directory and the merge action was invoked." ,
-                po.getStdout().contains("Provide at least two plug-in configuration files to do the merge."));
+                po.getStdout().contains("Provide at least one plug-in configuration file to do the merge."));
         
         Log.exiting(c,methodName);
     }

@@ -14,48 +14,59 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * This is a representation of an iFix XML file on disk
  */
-@XmlRootElement(name = "fix")
 public class IFixInfo implements MetadataOutput {
+
+    public static IFixInfo fromDocument(Document doc) {
+        if (doc == null)
+            return null;
+
+        Element e = doc.getDocumentElement();
+        e.normalize();
+        if (!"fix".equals(e.getNodeName()))
+            return null;
+
+        IFixInfo ifi = new IFixInfo(e.getAttribute("id"), e.getAttribute("version"));
+        ifi.applicability = Applicability.fromNodeList(e.getElementsByTagName("applicability"));
+        ifi.information = Information.fromNodeList(e.getElementsByTagName("information"));
+        ifi.properties = Property.fromNodeList(e.getElementsByTagName("properties"));
+        ifi.resolves = Resolves.fromNodeList(e.getElementsByTagName("resolves"));
+        ifi.updates = Updates.fromNodeList(e.getElementsByTagName("updates"));
+
+        return ifi;
+    }
 
     private final String aparIdPrefix = "com.ibm.ws.apar.";
 
     //XmlAttribute - defined on setter below
     private String id;
 
-    @XmlAttribute
-    private String version;
+    private final String version;
 
-    @XmlElement
     private Applicability applicability;
 
-    @XmlElement
     private final Categories categories = new Categories();//unused for now but we need it in xml as a self-closing element
 
-    @XmlElement
     private Information information;
 
-    @XmlElement(name = "property")
     private List<Property> properties;
 
-    @XmlElement
     private Resolves resolves;
 
-    @XmlElement
     private Updates updates;
 
-    public IFixInfo() {
-        //needed as Jaxb needs a blank constructor
+    public IFixInfo(String id, String version) {
+        this.id = id;
+        this.version = version;
     }
 
     /**
-     * 
+     *
      * @param setId
      * @param setVersion
      * @param aparList
@@ -107,7 +118,6 @@ public class IFixInfo implements MetadataOutput {
     /**
      * @param id the id to set
      */
-    @XmlAttribute
     public void setId(String id) {
         this.id = id;
     }

@@ -1,0 +1,26 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: jboss-classfilewriter.1.2
+Bundle-SymbolicName: com.ibm.ws.org.jboss.classfilewriter.1.2.3
+
+Bundle-Description: A bytecode writer that creates .class files at runtime, jboss-classfilewriter 1.2.3.Final
+Export-Package: org.jboss.classfilewriter;version="1.2.3.Final";uses:="o\
+ rg.jboss.classfilewriter.annotations,org.jboss.classfilewriter.code,org\
+ .jboss.classfilewriter.constpool,org.jboss.classfilewriter.util",org.jb\
+ oss.classfilewriter.annotations;version="1.2.3.Final";uses:="org.jboss.\
+ classfilewriter,org.jboss.classfilewriter.attributes,org.jboss.classfil\
+ ewriter.constpool,org.jboss.classfilewriter.util",org.jboss.classfilewr\
+ iter.attributes;version="1.2.3.Final";uses:="org.jboss.classfilewriter,\
+ org.jboss.classfilewriter.constpool,org.jboss.classfilewriter.util",org\
+ .jboss.classfilewriter.code;version="1.2.3.Final";uses:="org.jboss.clas\
+ sfilewriter,org.jboss.classfilewriter.attributes,org.jboss.classfilewri\
+ ter.constpool,org.jboss.classfilewriter.util",org.jboss.classfilewriter\
+ .constpool;version="1.2.3.Final";uses:="org.jboss.classfilewriter,org.j\
+ boss.classfilewriter.util",org.jboss.classfilewriter.util;version="1.2.\
+ 3.Final";uses:="org.jboss.classfilewriter.code"
+Import-Package: !sun.misc,*
+Dynamic-Import: sun.misc
+
+Include-Resource: \
+  @${repo;org.jboss.classfilewriter:jboss-classfilewriter;1.2.3.Final;EXACT}!/!META-INF/maven/*

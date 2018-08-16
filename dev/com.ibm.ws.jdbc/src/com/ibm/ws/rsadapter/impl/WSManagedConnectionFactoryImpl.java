@@ -23,6 +23,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
@@ -33,7 +34,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -58,6 +61,7 @@ import javax.resource.spi.ValidatingManagedConnectionFactory;
 import javax.resource.spi.security.GenericCredential;
 import javax.resource.spi.security.PasswordCredential;
 
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
@@ -853,17 +857,66 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         try {
             conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
                 public Connection run() throws Exception {
-                    Properties props = (Properties) dsConfig.get().vendorProps.clone(); //TODO would be nice if we could avoid cloning here
-                    String url = (String) props.remove("URL");
-                    if(user != null) {
-                        props.setProperty("user", user);
-                        props.setProperty("password", pwd);
+                    Hashtable<?, ?> vProps = dsConfig.get().vendorProps;
+                    Properties conProps = new Properties();
+                    String url = null;
+                    // convert property values to String and decode passwords 
+                    for (Map.Entry<?, ?> prop : vProps.entrySet()) {
+                        String name = (String) prop.getKey();
+                        Object value = prop.getValue();
+                        if (value instanceof String) {
+                            String str = (String) value;
+                            if ("URL".equals(name) || "url".equals(name)) {
+                                url = str;
+                                if (isTraceOn && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, name + '=' + str); // TODO obscure values of any possible passwords in URL value?
+                            } else if ((user == null || !"user".equals(name)) && (pwd == null || !"password".equals(name))) {
+                                // Decode passwords
+                                if (PropertyService.isPassword(name) && PasswordUtil.getCryptoAlgorithm(str) != null) {
+                                    if (isTraceOn && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "prop " + name + '=' + (str == null ? null : "***"));
+                                    str = PasswordUtil.decode(str);
+                                } else {
+                                    if (isTraceOn && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "prop " + name + '=' + str);
+                                }
+                                conProps.setProperty(name, str);
+                            }
+                        } else {
+                            if (isTraceOn && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "prop " + name + '=' + value);
+                            // Convert to String value
+                            conProps.setProperty(name, value.toString());
+                        }
                     }
-                        return ((Driver) dataSourceOrDriver).connect(url, props);
+
+                    if (user != null) {
+                        conProps.setProperty("user", user);
+                        conProps.setProperty("password", pwd);
+                        if (isTraceOn && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "prop user=" + user);
+                            Tr.debug(this, tc, "prop password=" + (pwd == null ? null : "***"));
+                        }
+                    }
+                    Connection conn = ((Driver) dataSourceOrDriver).connect(url, conProps);
+                    
+                    //Although possible, this shouldn't happen since the JDBC Driver has indicated it can accept the URL
+                    if(conn == null) {
+                        //return beginning on JDBC url (ex jdbc:db2:
+                        String urlPrefix = "";
+                        int first = url.indexOf(":");
+                        int second = url.indexOf(":", first+1);
+                        if(first < 0 || second < 0) {
+                            //TODO URL format with doesn't follow JDBC spec, return URL with stripped passwords after that logic has been added
+                        } else {
+                            urlPrefix = url.substring(0, second);
+                            //TODO run the URL stub through the URL password detection logic just in case there is an uncomplient driver that has two colons
+                        }
+                        throw new ResourceException(AdapterUtil.getNLSMessage("DSRA4006.null.connection", dsConfig.get().id, vendorImplClass.getName(), urlPrefix));
+                    }
+                    return conn;
                 }
             });
-            
-            //TODO need to handle null connection here, otherwise we'll get a null pointer below
 
             try {
                 postGetConnectionHandling(conn);
@@ -1310,7 +1363,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         if(!Driver.class.equals(type)) {
                             ((CommonDataSource) dataSourceOrDriver).setLogWriter(out);
                         } else {
-                            //TODO behavior for java.sql.Driver
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "Unable to set logwriter on Driver type");
                         }
                         return null;
                     }
@@ -1370,7 +1424,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             if(!Driver.class.equals(type)) {
                 return ((CommonDataSource) dataSourceOrDriver).getLogWriter();
             }
-            //TODO behavior for java.sql.driver
+            //Return null for Driver since that is the default value which can't be modified
             return null;
         } catch (SQLException se) {
             FFDCFilter.processException(se, getClass().getName(), "1656", this);
@@ -1388,7 +1442,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             if(!Driver.class.equals(type)) {
                 return ((CommonDataSource) dataSourceOrDriver).getLoginTimeout();
             }
-            //TODO behavior for java.sql.Driver
+            //Return that the default value is being used when using the Driver type
             return 0;
         } catch (SQLException sqlX) {
             FFDCFilter.processException(sqlX, getClass().getName(), "1670", this);

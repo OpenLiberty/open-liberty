@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -130,6 +130,13 @@ J2CA8815.duplicate.resource.adapter.id.useraction=Assegnare identificativi univo
 J2CA8816.reserved.resource.adapter.id=J2CA8816E: L''attributo ID dell''elemento resourceAdapter per il modulo dell''adattatore di risorse {0} non pu\u00f2 essere uno degli identificativi riservati {1}.
 J2CA8816.reserved.resource.adapter.id.explanation=L'ID specificato nella configurazione o derivato dal nome del modulo \u00e8 un identificativo riservato. Gli identificativi riservati sono solo per uso interno.
 J2CA8816.reserved.resource.adapter.id.useraction=Fornire un valore non riservato per l'attributo ID dell'elemento resourceAdapter o per il nome del modulo nella configurazione del server.
+
+#{0} is the resource adapter name
+#{1} is the relative path to the deployment descriptor
+#{2} is the exception message
+J2CA8817.parse.deployment.descriptor.failed=J2CA8817E: L''adattatore di risorse {0} ha rilevato un errore di analisi durante l''elaborazione del descrittore di distribuzione nel percorso {1}: {2}
+J2CA8817.parse.deployment.descriptor.failed.explanation=Si \u00e8 verificato un errore durante l'analisi del descrittore di distribuzione da parte dell'adattatore di risorse. L'adattatore di risorse non sar\u00e0 disponibile.
+J2CA8817.parse.deployment.descriptor.failed.useraction=Consultare le informazioni di eccezione per ulteriori dettagli. Esaminare il contenuto del descrittore di distribuzione per assicurarsi che il contenuto sia valido come dati XML. Se necessario, collaborare con il fornitore dell'adattatore di risorse per correggere i dati XML non validi.
 
 # Do not translate the term "Bean Validation"
 # Do not translate the term "Validator"

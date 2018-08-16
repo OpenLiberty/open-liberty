@@ -1,7 +1,0 @@
-Subsystem-ManifestVersion: 1
-Subsystem-SymbolicName: filesetfatlibertyinternals-1.0;visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Type: osgi.subsystem.feature
-IBM-API-Package: com.ibm.wsspi.config; type="internal",
- org.osgi.framework; type="spec"
-IBM-Feature-Version: 2

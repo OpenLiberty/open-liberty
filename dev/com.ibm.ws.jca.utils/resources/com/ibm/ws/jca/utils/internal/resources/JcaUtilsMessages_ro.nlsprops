@@ -162,10 +162,6 @@ J2CA9934.not.a.valid.option=J2CA9934E: Valoarea {0} nu este o op\u0163iune valid
 J2CA9934.not.a.valid.option.explanation=Valoarea configurat\u0103 este \u00een afara intervalului de op\u0163iuni valide pentru atribut.
 J2CA9934.not.a.valid.option.useraction=Alege\u0163i o valoare din lista de op\u0163iuni valide.
 
-J2CA9935.secperm.not.supported=J2CA9935I: Permisiunile de securitate Java 2 specificate \u00een descriptorul de implementare pentru adaptorul de resurse {0} nu vor fi impuse.
-J2CA9935.secperm.not.supported.explanation=Securitatea Java 2 nu este activat\u0103 \u00een profilul Liberty, astfel \u00eenc\u00e2t verific\u0103rile de securitate Java 2 nu sunt realizate pentru adaptorul de resurse.
-J2CA9935.secperm.not.supported.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
-
 J2CA9936.default.value.error=J2CA9936W: Valoarea implicit\u0103 pentru proprietatea {0} nu a putut fi ob\u0163inut\u0103 dintr-o instan\u0163\u0103 de clas\u0103 {1} \u00een adaptorul de resurse {2} deoarece a ap\u0103rut o eroare: {3}
 J2CA9936.default.value.error.explanation=A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a accesa valoarea implicit\u0103 a propriet\u0103\u0163ii JavaBean a adaptorului de resurse.
 J2CA9936.default.value.error.useraction=Examina\u0163i eroarea \u015fi ajusta\u0163i adaptorul de resurse dup\u0103 cum este necesar.

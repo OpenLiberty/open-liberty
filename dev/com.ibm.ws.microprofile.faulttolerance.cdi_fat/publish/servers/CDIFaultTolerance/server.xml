@@ -19,7 +19,7 @@
 		<feature>appSecurity-3.0</feature>
 		<feature>cdi-2.0</feature>
 		<feature>servlet-4.0</feature>
-		<feature>mpFaultTolerance-1.0</feature>
+		<feature>mpFaultTolerance-1.1</feature>
 	</featureManager>
 
 	<!-- Usually, we recommend customers not to change this, however our Async 
@@ -31,5 +31,7 @@
 		We could increase the size of the timing window instead, but that would make 
 		the test run take longer, so instead I'm setting a minimum number of threads. -->
 	<executor coreThreads="20"/>
+	
+	<logging traceSpecification="FAULTTOLERANCE=all=enabled:METRICS=all=enabled"/>
 	
 </server>

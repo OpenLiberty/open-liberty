@@ -297,7 +297,7 @@ public class AdapterUtil {
 
             case Connection.TRANSACTION_SERIALIZABLE:
                 return "SERIALIZABLE (" + level + ')'; 
-
+               
             case TRANSACTION_SNAPSHOT: 
             case TRANSACTION_SS_SNAPSHOT: 
                 return "SNAPSHOT (" + level + ')'; 

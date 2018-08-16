@@ -1,0 +1,542 @@
+###############################################################################
+# Copyright (c) 2016, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5400 - CWWKS5499
+ADD_ID={0} ({1})
+ADD_ID.explanation=Csak bels\u0151 haszn\u00e1latra.
+ADD_ID.useraction=Nincs teend\u0151.
+
+# HTML title of the social media selection page
+SELECTION_PAGE_TITLE=K\u00f6z\u00f6ss\u00e9gi m\u00e9dia kiv\u00e1laszt\u00e1si \u0171rlap
+
+# Text that appears above the social media options to choose from on the social media selection page
+SELECTION_PAGE_HEADER=Bejelentkez\u00e9s
+
+# Text that indicates a user can sign in using social media "or" with a username and password ("or" being the text that appears on the web page)
+SELECTION_PAGE_ALTERNATE_TEXT=Vagy
+
+SELECTION_PAGE_USERNAME=Felhaszn\u00e1l\u00f3n\u00e9v
+
+SELECTION_PAGE_PASSWORD=Jelsz\u00f3
+
+SELECTION_PAGE_SUBMIT=Elk\u00fcld\u00e9s
+SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
+SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A jelzett k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
+SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nincs teend\u0151.
+
+SOCIAL_LOGIN_CONFIG_MODIFIED=CWWKS5401I: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
+SOCIAL_LOGIN_CONFIG_MODIFIED.explanation=A jelzett k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
+SOCIAL_LOGIN_CONFIG_MODIFIED.useraction=Nincs teend\u0151.
+
+SOCIAL_LOGIN_CONFIG_DEACTIVATED=CWWKS5402I: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 [{0}] sikeresen hat\u00e1stalan\u00edt\u00e1sra ker\u00fclt.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.explanation=A jelzett k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 sikeresen hat\u00e1stalan\u00edt\u00e1sra ker\u00fclt.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.useraction=Nincs teend\u0151.
+
+# 0=exception class name, 1=exception message, 2=stack trace
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR=CWWKS5403E: Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. Ok: [{1}], Verem nyomk\u00f6vet\u00e9s: [{2}].
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.explanation=Bels\u0151 kiszolg\u00e1l\u00f3hiba t\u00f6rt\u00e9nt egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben.
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.useraction=Ellen\u0151rizze a hib\u00e1kat a kiszolg\u00e1l\u00f3 napl\u00f3f\u00e1jljaiban, \u00e9s gy\u0151z\u0151dj\u00f6n meg a konfigur\u00e1ci\u00f3 helyess\u00e9g\u00e9r\u0151l. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# 
+SOCIAL_LOGIN_AUTHENTICATION_FAIL=CWWKS5404E: K\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s kiv\u00e9tel: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00f3 nem tudta feldolgozni a hiteles\u00edt\u00e9si k\u00e9r\u00e9st.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.explanation=A hiteles\u00edt\u00e9si folyamat sikertelen volt, mert valamilyen m\u00e1s hiba t\u00f6rt\u00e9nt ezen \u00fczenet el\u0151tt.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.useraction=Tekintse meg az \u00fczenet el\u0151tt megjelen\u0151 hiba felhaszn\u00e1l\u00f3i int\u00e9zked\u00e9s\u00e9t.
+
+# Do not translate "social_login_hint"
+# 0=Social login configuration ID
+SOCIAL_LOGIN_NO_SUCH_PROVIDER=CWWKS5405E: A k\u00e9r\u00e9sben megadott [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 hi\u00e1nyzik vagy nincs konfigur\u00e1lva ennek a k\u00e9r\u00e9snek a kiszolg\u00e1l\u00e1s\u00e1ra.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.explanation=A k\u00e9r\u00e9s tartalmaz egy 'social_login_hint' param\u00e9tert vagy fejl\u00e9cet, amely megadja a k\u00e9r\u00e9shez haszn\u00e1land\u00f3 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3t. Azonban az azonos\u00edt\u00f3nak megfelel\u0151 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 hi\u00e1nyzik, vagy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3hoz haszn\u00e1lt hiteles\u00edt\u00e9si sz\u0171r\u0151 nincs konfigur\u00e1lva a k\u00e9r\u00e9s kiszolg\u00e1l\u00e1s\u00e1ra.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.useraction=Ellen\u0151rizze, hogy van-e konfigur\u00e1lva egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s a megjel\u00f6lt azonos\u00edt\u00f3val. Ha a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1shoz van konfigur\u00e1lva egy hiteles\u00edt\u00e9si sz\u0171r\u0151, akkor ellen\u0151rizze, hogy a sz\u0171r\u0151 konfigur\u00e1lva van-e a k\u00e9r\u00e9s kiszolg\u00e1l\u00e1s\u00e1ra.
+
+# web RequestFilter
+# 0=url
+SOCIAL_LOGIN_INVALID_URL=CWWKS5406E: A k\u00e9rt [{0}] v\u00e9gpont nem t\u00e1mogatott ebben a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00f3ban.
+SOCIAL_LOGIN_INVALID_URL.explanation=A jelzett URL nem \u00e9rv\u00e9nyes k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s v\u00e9gpont. Ezt okozhatja a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s kiszolg\u00e1l\u00f3 helytelen be\u00e1ll\u00edt\u00e1sa.
+SOCIAL_LOGIN_INVALID_URL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s megfelel\u0151en van be\u00e1ll\u00edtva.
+
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED=CWWKS5407I: A Social Login 1.0 verzi\u00f3sz\u00e1m\u00fa v\u00e9gpont szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.explanation=A Social Login 1.0 verzi\u00f3sz\u00e1m\u00fa v\u00e9gpont szolg\u00e1ltat\u00e1s aktiv\u00e1lva van.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.useraction=Nincs teend\u0151.
+
+# EndpointServlet
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5408E: Egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s k\u00e9r\u00e9s nem dolgozhat\u00f3 fel, mert nem \u00e1ll rendelkez\u00e9sre k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.explanation=A kiszolg\u00e1l\u00f3 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9st kapott, de a socialLogin-1.0 szolg\u00e1ltat\u00e1s nincs enged\u00e9lyezve a server.xml f\u00e1jlban vagy nem \u00e9rhet\u0151 el.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a ssocialLogin-1.0 szolg\u00e1ltat\u00e1s \u00e9s a f\u00fcgg\u0151s\u00e9gei konfigur\u00e1lva vannak a server.xml f\u00e1jl featureManager elem\u00e9ben.
+
+# Do not translate RFC
+# 0=Exception message
+TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: Egy felhatalmazott Twitter k\u00e9r\u00e9s al\u00e1\u00edr\u00e1s\u00e1t nem lehet l\u00e9trehozni: {0}
+TWITTER_ERROR_CREATING_SIGNATURE.explanation=A felhatalmazott Twitter k\u00e9r\u00e9seket HMAC-SHA1 al\u00e1\u00edr\u00e1si algoritmus seg\u00edts\u00e9g\u00e9vel kell al\u00e1\u00edrni. Probl\u00e9ma volt a sz\u00fcks\u00e9ges al\u00e1\u00edr\u00e1si algoritmus beszerz\u00e9s\u00e9vel vagy a megadott kulcs nem haszn\u00e1lhat\u00f3 az al\u00e1\u00edr\u00e1si algoritmus inicializ\u00e1l\u00e1s\u00e1ra.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Ellen\u0151rizze, hogy a rendszer t\u00e1mogatja-e a HMAC-SHA1 al\u00e1\u00edr\u00e1si algoritmust. Ellen\u0151rizze a fogyaszt\u00f3i titok \u00e9s a k\u00e9r\u00e9stoken titok \u00e9rt\u00e9k\u00e9t. Ezt a k\u00e9t \u00e9rt\u00e9ket az al\u00e1\u00edr\u00e1si algoritmus kulcs\u00e1nak r\u00e9szek\u00e9nt haszn\u00e1lj\u00e1k. Ha b\u00e1rmelyik \u00e9rt\u00e9k rossz form\u00e1tum\u00fa vagy nem k\u00f3dolhat\u00f3 az RFC 3986 szabv\u00e1nynak megfelel\u0151en, akkor lehets\u00e9ges, hogy \u00faj \u00e9rt\u00e9ket kell beszereznie.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: A(z) [{0}] Twitter v\u00e9gpont v\u00e1lasza egyetlen elv\u00e1rt form\u00e1tum\u00fa param\u00e9tert sem tartalmazott. A v\u00e1lasz a k\u00f6vetkez\u0151 volt: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=A Twitter v\u00e9gpont v\u00e1lasza val\u00f3sz\u00edn\u0171leg null\u00e9rt\u00e9k\u0171 vagy \u00fcres volt. Lehet, hogy az eredeti k\u00e9r\u00e9st rossz v\u00e9gpontra tov\u00e1bb\u00edtott\u00e1k. A Twitter v\u00e9gpontok v\u00e1lasz\u00e1nak kulcs \u00e9s \u00e9rt\u00e9k p\u00e1rokat tartalmaz\u00f3 karaktersorozatnak kell lennie. A kulcsot \u00e9s az \u00e9rt\u00e9ket egyenl\u0151s\u00e9gjel ("=") karakterrel kell elv\u00e1lasztani, t\u00f6bb kulcs-\u00e9rt\u00e9k p\u00e1relv\u00e1laszt\u00e1s\u00e1hoz pedig az \u00e9s-jel ("&") karaktert kell haszn\u00e1lni.
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s a helyes Twitter v\u00e9gpontra lett-e tov\u00e1bb\u00edtva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kezdeti k\u00e9r\u00e9s az \u00f6sszes k\u00f6telez\u0151 param\u00e9tert tartalmazta \u00e9s a k\u00e9r\u00e9s fel volt hatalmazva \u00e9rv\u00e9nyes Authorization fejl\u00e9c hozz\u00e1ad\u00e1s\u00e1val. \u00c9rv\u00e9nyes Authorization fejl\u00e9c \u00fagy j\u00f6n l\u00e9tre, hogy a Twitter alkalmaz\u00e1s fogyaszt\u00f3i kulcs\u00e1t hozz\u00e1adj\u00e1k egy visszah\u00edv\u00e1si URL c\u00edmhez vagy OAuth k\u00e9r\u00e9stokenhez. Ellen\u0151rizze a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sai k\u00f6z\u00f6tt, hogy a helyes fogyaszt\u00f3i kulcs \u00e9s visszah\u00edv\u00e1si URL ker\u00fclt-e be\u00e1ll\u00edt\u00e1sra.
+
+# Do not translate "Authorization"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: A(z) [{0}] Twitter v\u00e9gpont v\u00e1lasza legal\u00e1bb egy k\u00f6telez\u0151 param\u00e9tert nem tartalmazott. A v\u00e1laszf\u00e1jlb\u00f3l hi\u00e1nyz\u00f3 k\u00f6telez\u0151 param\u00e9terek a k\u00f6vetkez\u0151k: [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER.explanation=Mindegyik Twitter v\u00e9gpont v\u00e1lasza saj\u00e1t param\u00e9terk\u00e9szletet adott vissza. A kapott Twitter v\u00e1lasz nem tartalmazta az \u00fczenetben felsorolt k\u00f6telez\u0151 param\u00e9tereket. Lehet, hogy az eredeti k\u00e9r\u00e9st rossz v\u00e9gpontra tov\u00e1bb\u00edtott\u00e1k.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s a helyes Twitter v\u00e9gpontra lett-e tov\u00e1bb\u00edtva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kezdeti k\u00e9r\u00e9s az \u00f6sszes k\u00f6telez\u0151 param\u00e9tert tartalmazta \u00e9s a k\u00e9r\u00e9s fel volt hatalmazva \u00e9rv\u00e9nyes Authorization fejl\u00e9c hozz\u00e1ad\u00e1s\u00e1val. \u00c9rv\u00e9nyes Authorization fejl\u00e9c \u00fagy j\u00f6n l\u00e9tre, hogy a Twitter alkalmaz\u00e1s fogyaszt\u00f3i kulcs\u00e1t hozz\u00e1adj\u00e1k egy visszah\u00edv\u00e1si URL c\u00edmhez vagy OAuth k\u00e9r\u00e9stokenhez. Ellen\u0151rizze a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sai k\u00f6z\u00f6tt, hogy a helyes fogyaszt\u00f3i kulcs \u00e9s visszah\u00edv\u00e1si URL ker\u00fclt-e be\u00e1ll\u00edt\u00e1sra.
+
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: A(z) [{0}] param\u00e9ter \u00e9rt\u00e9ke a(z) [{1}] Twitter v\u00e9gpont v\u00e1lasz\u00e1ban nem egyezett az elv\u00e1rt [{2}] \u00e9rt\u00e9kkel. A v\u00e1laszban szerepl\u0151 \u00e9rt\u00e9k a k\u00f6vetkez\u0151 volt: [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=Az \u00fczenetben megadott param\u00e9ter \u00e9rt\u00e9k\u00e9nek meg kell felelnie az elv\u00e1rt \u00e9rt\u00e9knek. Ez egy olyan val\u00f3sz\u00edn\u0171tlen forgat\u00f3k\u00f6nyv, ahol a Twitter sikeresen feldolgozta a k\u00e9r\u00e9st, de a param\u00e9terhez nem v\u00e1rt \u00e9rt\u00e9ket adott vissza.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=A kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sait megvizsg\u00e1lva gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1shoz be\u00e1ll\u00edtott visszah\u00edv\u00e1si URL olyan \u00e9rv\u00e9nyes URL c\u00edmre mutat, amelyre a Twitter a felhatalmaz\u00e1s megad\u00e1sa ut\u00e1n k\u00e9pes felhaszn\u00e1l\u00f3kat \u00e1tir\u00e1ny\u00edtani.
+
+# Do not translate "Authorization"
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: A(z) [{0}] param\u00e9ter a(z) [{1}] Twitter v\u00e9gpont v\u00e1lasz\u00e1ban \u00fcres volt. A felhatalmaz\u00e1si k\u00e9r\u00e9s feldolgoz\u00e1s\u00e1hoz meg kell adni a param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=A Twitter v\u00e9gpont v\u00e1lasza tartalmazta az \u00fczenetben megadott param\u00e9tert, de nem adta meg a param\u00e9ter \u00e9rt\u00e9k\u00e9t.
+TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Ellen\u0151rizze, hogy a Twitter v\u00e9gpont v\u00e1lasza tartalmazta-e az \u00f6sszes elv\u00e1rt param\u00e9tert \u00e9s azok \u00e9rt\u00e9keit. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kezdeti k\u00e9r\u00e9s az \u00f6sszes k\u00f6telez\u0151 param\u00e9tert tartalmazta \u00e9s a k\u00e9r\u00e9s fel volt hatalmazva \u00e9rv\u00e9nyes Authorization fejl\u00e9c hozz\u00e1ad\u00e1s\u00e1val. \u00c9rv\u00e9nyes Authorization fejl\u00e9c \u00fagy j\u00f6n l\u00e9tre, hogy a Twitter alkalmaz\u00e1s fogyaszt\u00f3i kulcs\u00e1t hozz\u00e1adj\u00e1k egy visszah\u00edv\u00e1si URL c\u00edmhez vagy OAuth k\u00e9r\u00e9stokenhez. Ellen\u0151rizze a kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1sai k\u00f6z\u00f6tt, hogy a helyes fogyaszt\u00f3i kulcs \u00e9s visszah\u00edv\u00e1si URL ker\u00fclt-e be\u00e1ll\u00edt\u00e1sra.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: A(z) [{0}] Twitter v\u00e9gpont v\u00e1lasza nem \u00e9rt\u00e9kelhet\u0151 ki, mert nincs tartalom a v\u00e1lasz t\u00f6rzs\u00e9ben.
+TWITTER_EMPTY_RESPONSE_BODY.explanation=Lehet, hogy az eredeti k\u00e9r\u00e9st rossz Twitter v\u00e9gpontra tov\u00e1bb\u00edtott\u00e1k vagy hiba t\u00f6rt\u00e9nt a v\u00e9gpontt\u00f3l \u00e9rkezett v\u00e1lasz feldolgoz\u00e1sa k\u00f6zben.
+TWITTER_EMPTY_RESPONSE_BODY.useraction=Keressen olyan tov\u00e1bbi \u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek hib\u00e1t jelezhetnek. Ellen\u0151rizze, hogy a kezdeti k\u00e9r\u00e9s a megfelel\u0151 v\u00e9gpontra lett-e tov\u00e1bb\u00edtva.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: A(z) [{0}] Twitter v\u00e9gpont k\u00e9r\u00e9s meghi\u00fasult. A v\u00e1lasz \u00e1llapota [{1}] \u00e9s a v\u00e1lasz tartalma a k\u00f6vetkez\u0151: [{2}]
+TWITTER_ENDPOINT_REQUEST_FAILED.explanation=A kezdeti k\u00e9r\u00e9s val\u00f3sz\u00edn\u0171leg helytelen felhatalmaz\u00e1si adatokat tartalmazott vagy a k\u00e9rt m\u0171velet v\u00e9grehajt\u00e1sa tiltott volt. A felhatalmaz\u00e1st ig\u00e9nyl\u0151 Twitter v\u00e9gpontoknak rendelkezni\u00fck kell bizonyos form\u00e1tum\u00fa Authorization fejl\u00e9ccel. Felhatalmazott k\u00e9r\u00e9sek eset\u00e9ben val\u00f3sz\u00edn\u0171, hogy az Authorization fejl\u00e9c l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt adat (p\u00e9ld\u00e1ul az al\u00e1\u00edr\u00e1s vagy az OAuth token) rossz form\u00e1tum\u00fa. Az \u00fczenetben szerepl\u0151 \u00e1llapotk\u00f3dnak kell jeleznie a k\u00e9r\u00e9s meghi\u00fasul\u00e1s\u00e1nak r\u00e9szletes ok\u00e1t.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Ha a k\u00e9r\u00e9s jogosulatlan volt, akkor ellen\u0151rizze, hogy a k\u00e9r\u00e9sben szerepl\u0151 Authorization fejl\u00e9c pontos felhatalmaz\u00e1si adatokat tartalmazott-e. Ha a felhatalmaz\u00e1si adatok OAuth tokent tartalmaznak, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a token m\u00e9g mindig \u00e9rv\u00e9nyes vagy fontolja meg \u00faj token beszerz\u00e9s\u00e9t. Ellen\u0151rizze, hogy a k\u00e9r\u00e9s nem azonos-e egy kor\u00e1bbi k\u00e9r\u00e9ssel; ehhez hasonl\u00edtsa \u00f6sszes a k\u00e9r\u00e9sek Authorization fejl\u00e9ceiben szerepl\u0151 al\u00e1\u00edr\u00e1sokat. Ha a k\u00e9r\u00e9st letilt\u00e1sra ker\u00fclt, akkor ellen\u0151rizze, hogy a Twitter alkalmaz\u00e1s enged\u00e9lyezi-e a k\u00e9rt m\u0171veletet.
+
+# 0=Outgoing request URL, 1=Parameter name
+OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: Lehet, hogy a(z) [{0}] fel\u00e9 k\u00fcld\u00f6tt kimen\u0151 k\u00e9r\u00e9s sikertelen lesz, mert a(z) [{1}] param\u00e9ter hi\u00e1nyzik vagy \u00fcres.
+OUTGOING_REQUEST_MISSING_PARAMETER.explanation=A megadott param\u00e9ter OAuth hiteles\u00edt\u00e9s eset\u00e9n k\u00f6telez\u0151. A megadott v\u00e9gpontra tov\u00e1bb\u00edtott k\u00e9r\u00e9s meghi\u00fasulhat, mivel k\u00f6telez\u0151 inform\u00e1ci\u00f3k hi\u00e1nyoznak.
+OUTGOING_REQUEST_MISSING_PARAMETER.useraction=Ellen\u0151rizze, hogy a megadott param\u00e9ternek megfelel\u0151 konfigur\u00e1ci\u00f3s attrib\u00fatum minden k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00f3hoz be van-e \u00e1ll\u00edtva a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+
+# 0=URL string, 1=Exception message text
+EXCEPTION_INITIALIZING_URL=CWWKS5417E: Hiba t\u00f6rt\u00e9nt a(z) [{0}] URI inicializ\u00e1l\u00e1sa k\u00f6zben: {1}
+EXCEPTION_INITIALIZING_URL.explanation=Lehet, hogy az \u00fczenetben megadott karaktersorozat nem \u00e9rv\u00e9nyes URI, vagy elk\u00e9pzelhet\u0151, hogy a rendszernek nincs enged\u00e9lye az URI inicializ\u00e1l\u00e1si m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra.
+EXCEPTION_INITIALIZING_URL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott karaktersorozat \u00e9rv\u00e9nyes URL c\u00edm. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a karaktersorozat \u00e9rt\u00e9ke nem null \u00e9s az URL c\u00edmben haszn\u00e1lt protokoll \u00e9rv\u00e9nyes protokoll, p\u00e9ld\u00e1ul http vagy https. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f3dalap megfelel\u0151 enged\u00e9llyel rendelkezik az URI objektum inicializ\u00e1l\u00e1s\u00e1hoz.
+
+# Do not translate "GET" or "POST"
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: Hiba t\u00f6rt\u00e9nt a(z) [{0}] Twitter v\u00e9gpontnak k\u00fcld\u00f6tt k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=A k\u00f6vetkez\u0151 helyzetek valamelyik\u00e9r\u0151l lehet sz\u00f3: 1. Hiba t\u00f6rt\u00e9nt a megadott v\u00e9gpont kapcsolat\u00e1nak megnyit\u00e1sakor. 2. A k\u00e9r\u00e9shez haszn\u00e1lt k\u00e9r\u00e9smet\u00f3dus nem ismert protokoll (p\u00e9ld\u00e1ul GET vagy POST) volt. 3. Hiba t\u00f6rt\u00e9nt a POST adatok kapcsolaton kereszt\u00fcli ki\u00edr\u00e1sa k\u00f6zben. 4. Hiba t\u00f6rt\u00e9nt a Twitter v\u00e9gpont v\u00e1lasz\u00e1nak beolvas\u00e1sa k\u00f6zben.
+TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=A hib\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3kat az \u00fczenet hibasz\u00f6veg\u00e9ben tal\u00e1l. Ellen\u0151rizze, hogy a k\u00e9r\u00e9s sor\u00e1n nem szakadt-e meg a rendszer kapcsolata. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9shez ismert k\u00e9r\u00e9smet\u00f3dust (p\u00e9ld\u00e1ul GET vagy POST) haszn\u00e1ltak.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: A felhatalmaz\u00e1si k\u00e9r\u00e9s meghi\u00fasult, mert hiba t\u00f6rt\u00e9nt az eredm\u00e9ny l\u00e9trehoz\u00e1sa k\u00f6zben a(z) [{0}] Twitter v\u00e9gpontr\u00f3l.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation=A megadott k\u00e9r\u00e9sb\u0151l \u00fcres eredm\u00e9ny vagy semmif\u00e9le eredm\u00e9ny nem \u00e9rkezett vissza. Hiba t\u00f6rt\u00e9nhetett a k\u00e9r\u00e9s elk\u00fcld\u00e9se vagy feldolgoz\u00e1sa k\u00f6zben.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction=Keressen olyan tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek jelzik a hiba hely\u00e9t.
+
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: Hiba t\u00f6rt\u00e9nt a(z) [{0}] Twitter v\u00e9gpontr\u00f3l \u00e9rkezett v\u00e1lasz \u00e1tir\u00e1ny\u00edt\u00e1sa k\u00f6zben: {1}
+TWITTER_REDIRECT_IOEXCEPTION.explanation=Lehet, hogy az URL, amelyre a v\u00e1laszt \u00e1tir\u00e1ny\u00edtott\u00e1k nem volt \u00e9rv\u00e9nyes vagy a k\u00e9r\u00e9st nem lehetett kiszolg\u00e1lni.
+TWITTER_REDIRECT_IOEXCEPTION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1tir\u00e1ny\u00edt\u00e1si c\u00e9l el\u00e9rhet\u0151 \u00e9s k\u00e9pes a k\u00e9r\u00e9st kiszolg\u00e1lni. A hib\u00e1val kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3kat a hiba\u00fczenetben tal\u00e1l.
+
+# Do not translate OAuth
+TWITTER_TOKEN_DOES_NOT_MATCH=CWWKS5421E: A felhatalmaz\u00e1si k\u00e9r\u00e9s meghi\u00fasult, mert a k\u00e9r\u00e9sben megadott token nem egyezik meg a kezdeti felhatalmaz\u00e1si k\u00e9r\u00e9sben haszn\u00e1lt tokennel.
+TWITTER_TOKEN_DOES_NOT_MATCH.explanation=A be\u00e9rkez\u0151 k\u00e9r\u00e9snek olyan OAuth k\u00e9r\u00e9stoken \u00e9rt\u00e9ket kell tartalmaznia, amely megegyezik a felhatalmaz\u00e1si folyamat els\u0151 l\u00e9p\u00e9s\u00e9ben beszerzett OAuth k\u00e9r\u00e9stokennel. Az \u00e9rt\u00e9keknek az\u00e9rt kell megegyezni\u00fck, mert ez er\u0151s\u00edti meg, hogy a be\u00e9rkez\u0151 k\u00e9r\u00e9s megfelel a felhatalmaz\u00e1si folyamatot kezdem\u00e9nyez\u0151 kezdeti k\u00e9r\u00e9snek.
+TWITTER_TOKEN_DOES_NOT_MATCH.useraction=Ellen\u0151rizze, hogy a be\u00e9rkez\u0151 k\u00e9r\u00e9s megfelel-e egy OAuth k\u00e9r\u00e9stoken kor\u00e1bbi k\u00e9r\u00e9s\u00e9nek. Fontolja meg a felhatalmaz\u00e1si folyamat \u00fajrakezd\u00e9s\u00e9t \u00e9s \u00faj OAuth k\u00e9r\u00e9stoken beszerz\u00e9s\u00e9t.
+
+# 0=Endpoint ("oauth/access_token"), 1=Parameter name
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: A(z) [{0}] Twitter v\u00e9gpontnak sz\u00e1nt k\u00e9r\u00e9sb\u0151l hi\u00e1nyzik legal\u00e1bb egy k\u00f6telez\u0151 param\u00e9ter. A k\u00e9r\u00e9sb\u0151l hi\u00e1nyz\u00f3 k\u00f6telez\u0151 param\u00e9terek a k\u00f6vetkez\u0151k: {1}
+TWITTER_REQUEST_MISSING_PARAMETER.explanation=A k\u00e9r\u00e9snek az \u00fczenetben l\u00e1that\u00f3 \u00f6sszes param\u00e9tert tartalmaznia kell. A k\u00e9r\u00e9s az \u00fczenetben megjelen\u00edtett param\u00e9terek egyik\u00e9t sem tartalmazta.
+TWITTER_REQUEST_MISSING_PARAMETER.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s minden k\u00f6telez\u0151 param\u00e9tert tartalmaz-e.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: A(z) [{0}] Twitter v\u00e9gpont v\u00e1lasz\u00e1nak \u00e1llapota nem \u00e1llap\u00edthat\u00f3 meg. Val\u00f3sz\u00edn\u0171leg hiba t\u00f6rt\u00e9nt a k\u00e9r\u00e9s elk\u00fcld\u00e9se vagy feldolgoz\u00e1sa k\u00f6zben.
+TWITTER_RESPONSE_STATUS_MISSING.explanation=A felhatalmaz\u00e1si k\u00e9r\u00e9s eredm\u00e9ny\u00e9nek meg\u00e1llap\u00edt\u00e1s\u00e1hoz a rendszer v\u00e1lasz\u00e1llapot mez\u0151t v\u00e1r el.
+TWITTER_RESPONSE_STATUS_MISSING.useraction=Keressen olyan tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek jelzik, hogy hol t\u00f6rt\u00e9nhetett m\u00e1s hiba.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: A(z) [{0}] Twitter v\u00e9gpont v\u00e1lasza nem dolgozhat\u00f3 fel. {1}
+TWITTER_RESPONSE_FAILURE.explanation=Az eredm\u00e9nyben szerepl\u0151 v\u00e1lasz\u00e1llapot sikertelen \u00e1llapotot jelez. Hiba t\u00f6rt\u00e9nhetett a k\u00e9r\u00e9s elk\u00fcld\u00e9se vagy feldolgoz\u00e1sa k\u00f6zben.
+TWITTER_RESPONSE_FAILURE.useraction=Ha az \u00fczenet m\u00e1sik hiba\u00fczenetet is tartalmaz, akkor n\u00e9zze meg annak az \u00fczenetnek a felhaszn\u00e1l\u00f3i teend\u0151j\u00e9t. Egy\u00e9bk\u00e9nt pedig keressen olyan tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban, amelyek jelezik, hogy hol t\u00f6rt\u00e9nhetett m\u00e1s hiba.
+
+# web EndpointServices 
+# 0=qualified config IDs
+SOCIAL_LOGIN_MANY_PROVIDERS=CWWKS5425E: T\u00fal sok k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s [{0}] alkalmas a k\u00e9r\u00e9s kezel\u00e9s\u00e9re.
+SOCIAL_LOGIN_MANY_PROVIDERS.explanation=Ha t\u00f6bb k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s is megfelel, akkor nem lehet kiv\u00e1lasztani a k\u00e9r\u00e9s kezel\u00e9s\u00e9re haszn\u00e1land\u00f3 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1st.
+SOCIAL_LOGIN_MANY_PROVIDERS.useraction=Gondoskodjon arr\u00f3l, hogy a server.xml f\u00e1jlban legfeljebb egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s legyen be\u00e1ll\u00edtva a k\u00e9r\u00e9s kezel\u00e9s\u00e9re.
+
+# Do not translate "JSON"
+# 0=Endpoint ("/1.1/accounts/verify_credentials"), 1=Error message, 2=Endpoint response content
+TWITTER_RESPONSE_NOT_JSON=CWWKS5426E: A(z) [{0}] Twitter v\u00e9gpont v\u00e1lasza nem az elv\u00e1rt JSON form\u00e1tum. A hiba: [{1}]. A v\u00e1lasz tartalma a k\u00f6vetkez\u0151: [{2}]
+TWITTER_RESPONSE_NOT_JSON.explanation=Lehet, hogy a megadott v\u00e9gpont nem az elv\u00e1rtnak megfelel\u0151en m\u0171k\u00f6dik, vagy m\u00f3dos\u00edtott viselked\u00e9s k\u00f6vetkezt\u00e9ben m\u00e1s form\u00e1tumban k\u00fcldi vissza a v\u00e1laszokat. A v\u00e1lasz olvas\u00e1sa sor\u00e1n egyes adatok kimaradhattak.
+TWITTER_RESPONSE_NOT_JSON.useraction=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3 a teljes v\u00e1laszt olvassa-e a megadott v\u00e9gpontr\u00f3l. Ellen\u0151rizze, hogy a k\u00e9r\u00e9s a megfelel\u0151 Twitter v\u00e9gpontra lett-e elk\u00fcldve, \u00e9s hogy a v\u00e1lasz form\u00e1tuma megfelel-e az elv\u00e1rtnak.
+
+SIGN_IN_NO_CONFIGS=CWWKS5427E: A k\u00f6z\u00f6ss\u00e9gi m\u00e9dia bejelentkez\u00e9si oldala nem jelen\u00edthet\u0151 meg, mert a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tal\u00e1l olyan k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3t, amely be van \u00e1ll\u00edtva a k\u00e9r\u00e9s hiteles\u00edt\u00e9s\u00e9hez.
+SIGN_IN_NO_CONFIGS.explanation=A bejelentkez\u00e9si oldal megjelen\u00edt\u00e9s\u00e9hez legal\u00e1bb egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3nak jelen kell lennie. A megfelel\u0151 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3k list\u00e1j\u00e1t tartalmaz\u00f3 cookie hi\u00e1nyzik vagy \u00fcres, vagy a cookie \u00e1ltal megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3k nem tal\u00e1lhat\u00f3k.
+SIGN_IN_NO_CONFIGS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s be van \u00e1ll\u00edtva a k\u00e9r\u00e9s hiteles\u00edt\u00e9s\u00e9hez.
+
+# 0=Config element ID
+SIGN_IN_MISSING_EXPECTED_CONFIG=CWWKS5428W: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tal\u00e1l a(z) [{0}] azonos\u00edt\u00f3nak megfelel\u0151 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3t. A k\u00e9r\u00e9s hiteles\u00edt\u00e9s\u00e9hez a megadott azonos\u00edt\u00f3j\u00fa, konfigur\u00e1lt k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 jelenl\u00e9te sz\u00fcks\u00e9ges.
+SIGN_IN_MISSING_EXPECTED_CONFIG.explanation=A megadott azonos\u00edt\u00f3t olyan cookie tartalmazza, amelyet annak r\u00f6gz\u00edt\u00e9s\u00e9hez haszn\u00e1lnak, hogy milyen k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3k vannak be\u00e1ll\u00edtva a k\u00e9r\u00e9s hiteles\u00edt\u00e9s\u00e9hez. Azonban az azonos\u00edt\u00f3nak megfelel\u0151 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 nem tal\u00e1lhat\u00f3. Az azonos\u00edt\u00f3 rossz form\u00e1tum\u00fa vagy a megfelel\u0151 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3t elt\u00e1vol\u00edtott\u00e1k.
+SIGN_IN_MISSING_EXPECTED_CONFIG.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 l\u00e9tezik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban.
+
+# 0=Specific error message describing why the page cannot be displayed
+ERROR_DISPLAYING_SIGN_IN_PAGE=CWWKS5429E: Az alap\u00e9rtelmezett k\u00f6z\u00f6ss\u00e9gi m\u00e9dia bejelentkez\u00e9si oldal nem jelen\u00edthet\u0151 meg. {0}
+ERROR_DISPLAYING_SIGN_IN_PAGE.explanation=Hiba t\u00f6rt\u00e9nt az alap\u00e9rtelmezett bejelentkez\u00e9si oldal feldolgoz\u00e1sa k\u00f6zben. Az \u00fczenet tartalmaz egy magyar\u00e1zatot, hogy mi\u00e9rt nem lehet a bejelentkez\u00e9si oldalt megjelen\u00edteni.
+ERROR_DISPLAYING_SIGN_IN_PAGE.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=Selection page URL configured in server.xml, 1=Specific error message
+SELECTION_PAGE_URL_NOT_VALID=CWWKS5430W: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s webalkalmaz\u00e1s konfigur\u00e1ci\u00f3ja \u00e1ltal megadott [{0}] k\u00f6z\u00f6ss\u00e9gi m\u00e9diav\u00e1laszt\u00f3 oldal URL nem \u00e9rv\u00e9nyes URI. Az alap\u00e9rtelmezett v\u00e1laszt\u00f3oldal ker\u00fcl felhaszn\u00e1l\u00e1sra. {1}
+SELECTION_PAGE_URL_NOT_VALID.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s webalkalmaz\u00e1s konfigur\u00e1ci\u00f3 \u00e1ltal be\u00e1ll\u00edtott v\u00e1laszt\u00f3oldal URL nem egy \u00e9rv\u00e9nyes URI karaktersorozat. A v\u00e1laszt\u00f3oldal URL-c\u00edmnek meg kell felelnie az RFC 3986 szabv\u00e1nynak (https://tools.ietf.org/html/rfc3986) \u00e9s csak bizonyos karaktereket tartalmazhat.
+SELECTION_PAGE_URL_NOT_VALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1lt v\u00e1laszt\u00f3oldal URL csak az RFC 3986 \u00e1ltal enged\u00e9lyezett karaktereket tartalmazza.
+
+# 0=Selection page URL configured in server.xml
+SELECTION_PAGE_URL_NOT_HTTP=CWWKS5431E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s webalkalmaz\u00e1s konfigur\u00e1ci\u00f3ja \u00e1ltal megadott [{0}] k\u00f6z\u00f6ss\u00e9gi m\u00e9diav\u00e1laszt\u00f3 oldal URL nem relat\u00edv \u00fatvonal, \u00e9s nem HTTP vagy HTTPS s\u00e9m\u00e1t haszn\u00e1l.
+SELECTION_PAGE_URL_NOT_HTTP.explanation=A k\u00f6z\u00f6ss\u00e9gi m\u00e9diav\u00e1laszt\u00f3 oldal URL \u00e9rt\u00e9k\u00e9nek relat\u00edv \u00fatvonalnak kell lennie, illetve HTTP vagy HTTPS s\u00e9m\u00e1t haszn\u00e1l\u00f3 URL-nek. A megadott URL null\u00e9rt\u00e9k, illetve nem HTTP vagy HTTPS URL s\u00e9m\u00e1t haszn\u00e1l.
+SELECTION_PAGE_URL_NOT_HTTP.useraction=Gondoskodjon r\u00f3la, hogy a k\u00f6z\u00f6ss\u00e9gi m\u00e9diav\u00e1laszt\u00f3 oldal URL \u00e9rt\u00e9ke relat\u00edv \u00fatvonal legyen, illetve az URL \u00e9rt\u00e9ke HTTP vagy HTTPS s\u00e9m\u00e1t haszn\u00e1ljon.
+
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG=CWWKS5432W: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tudja visszak\u00fcldeni a k\u00e9r\u00e9st az egy\u00e9ni k\u00f6z\u00f6ss\u00e9gi m\u00e9diav\u00e1laszt\u00f3 oldalra, mert a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s webalkalmaz\u00e1s konfigur\u00e1ci\u00f3ja nem el\u00e9rhet\u0151. Az alap\u00e9rtelmezett v\u00e1laszt\u00f3oldal ker\u00fcl felhaszn\u00e1l\u00e1sra.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s webalkalmaz\u00e1s szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. A webalkalmaz\u00e1s konfigur\u00e1ci\u00f3 val\u00f3sz\u00edn\u0171leg hi\u00e1nyzik a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3b\u00f3l.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si webalkalmaz\u00e1s konfigur\u00e1ci\u00f3ja meg van-e adva a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban. Ellen\u0151rizze a kiszolg\u00e1l\u00f3napl\u00f3kat, hogy biztos\u00edtsa a webalkalmaz\u00e1s szolg\u00e1ltat\u00e1s k\u00e9szen \u00e1ll\u00e1s\u00e1t \u00e9s el\u00e9rhet\u0151s\u00e9g\u00e9t.
+
+# 0=Endpoint URL
+REDIRECT_NO_MATCHING_CONFIG=CWWKS5433E: A(z) [{0}] helyre tov\u00e1bb\u00edtott k\u00e9r\u00e9s nem rendelkezik olyan k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3val, amelyhez t\u00e1rs\u00edtani lehetne.
+REDIRECT_NO_MATCHING_CONFIG.explanation=A k\u00e9r\u00e9st olyan v\u00e9gpontra kell k\u00fcldeni, amelynek URL c\u00edm\u00e9ben szerepel egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 azonos\u00edt\u00f3ja. Az URL azonban nem tartalmazza egyetlen ismert k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 azonos\u00edt\u00f3j\u00e1t sem.
+REDIRECT_NO_MATCHING_CONFIG.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1tir\u00e1ny\u00edt\u00e1sa URL szab\u00e1lyosan form\u00e1zott URL, amely tartalmazza egy kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megl\u00e9v\u0151 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 azonos\u00edt\u00f3j\u00e1t.
+
+# 0=Specific exception or error message
+ERROR_PROCESSING_REDIRECT=CWWKS5434E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az \u00e1tir\u00e1ny\u00edt\u00e1si k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben. {0}
+ERROR_PROCESSING_REDIRECT.explanation=Egy k\u00f6z\u00f6ss\u00e9gi m\u00e9dia szolg\u00e1ltat\u00f3 k\u00e9r\u00e9st ir\u00e1ny\u00edtott \u00e1t erre a v\u00e9gpontra, hogy folytassa egy felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9s\u00e9t vagy felhatalmaz\u00e1s\u00e1t. A k\u00e9r\u00e9s azonban a hiba\u00fczenetben l\u00e1that\u00f3 ok miatt nem hajthat\u00f3 v\u00e9gre.
+ERROR_PROCESSING_REDIRECT.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban. 
+
+USERNAME_NOT_FOUND=CWWKS5435E: A felhaszn\u00e1l\u00f3nevet nem lehet a k\u00f6z\u00f6ss\u00e9gi m\u00e9dia platformr\u00f3l beszerzett tokenb\u0151l kibontani.
+USERNAME_NOT_FOUND.explanation=A felhaszn\u00e1l\u00f3nevet meghat\u00e1roz\u00f3 attrib\u00fatum k\u00f6z\u00f6ss\u00e9gi m\u00e9dia platformonk\u00e9nt k\u00fcl\u00f6nb\u00f6z\u0151. Lehet, hogy a userNameAttribute be\u00e1ll\u00edtott \u00e9rt\u00e9ke nem megfelel\u0151.
+USERNAME_NOT_FOUND.useraction=Ellen\u0151rizze, hogy a userNameAttribute \u00e9rt\u00e9ke megfelel-e a k\u00f6z\u00f6ss\u00e9gi m\u00e9dia platform \u00e1ltal alkalmazott felhaszn\u00e1l\u00f3n\u00e9v meghat\u00e1roz\u00e1snak.
+
+REALM_NOT_FOUND=CWWKS5436E: A tartom\u00e1nyt nem lehet a k\u00f6z\u00f6ss\u00e9gi m\u00e9dia platformr\u00f3l beszerzett tokenb\u0151l kibontani.
+REALM_NOT_FOUND.explanation=A tartom\u00e1nynevet meghat\u00e1roz\u00f3 attrib\u00fatum k\u00f6z\u00f6ss\u00e9gi m\u00e9dia platformonk\u00e9nt k\u00fcl\u00f6nb\u00f6z\u0151. Lehet, hogy a realName attrib\u00fatum be\u00e1ll\u00edtott \u00e9rt\u00e9ke nem megfelel\u0151.
+REALM_NOT_FOUND.useraction=Ellen\u0151rizze, hogy a realmName attrib\u00fatum \u00e9rt\u00e9ke megfelel-e a k\u00f6z\u00f6ss\u00e9gi m\u00e9dia platform \u00e1ltal alkalmazott tartom\u00e1nymeghat\u00e1roz\u00e1snak.
+
+# "subject" refers to a Java Authentication and Authorization Service (JAAS) subject
+# 0=socialLogin element ID, 1=Error message (if present)
+TWITTER_ERROR_CREATING_RESULT=CWWKS5437E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tud l\u00e9trehozni t\u00e1rgyat a felhaszn\u00e1l\u00f3hoz a Twitter profil inform\u00e1ci\u00f3kkal \u00e9s a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3val. {1}
+TWITTER_ERROR_CREATING_RESULT.explanation=A felhaszn\u00e1l\u00f3 eset\u00e9n az alany l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt egyes profilinform\u00e1ci\u00f3k hi\u00e1nyoznak vagy hib\u00e1s form\u00e1tum\u00faak.
+TWITTER_ERROR_CREATING_RESULT.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN=CWWKS5438E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tud l\u00e9trehozni egy titkos\u00edtott hozz\u00e1f\u00e9r\u00e9si tokent a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.explanation=Hiba t\u00f6rt\u00e9nt, amikor a szolg\u00e1ltat\u00e1s a megadott token alapj\u00e1n haszn\u00e1lt egy titkos\u00edt\u00e1si algoritmust a titkos\u00edtott hozz\u00e1f\u00e9r\u00e9si token l\u00e9trehoz\u00e1s\u00e1ra. Az \u00fczenet r\u00e9szletesebb inform\u00e1ci\u00f3t tartalmaz arr\u00f3l, hogy mi\u00e9rt nem lehet a titkos\u00edtott tokent l\u00e9trehozni.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL=CWWKS5439E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1shoz biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token null\u00e9rt\u00e9k\u0171, ez\u00e9rt a token nem titkos\u00edthat\u00f3.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.explanation=Null\u00e9rt\u00e9k\u0171 hozz\u00e1f\u00e9r\u00e9si token nem titkos\u00edthat\u00f3.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=Biztos\u00edtson titkos\u00edt\u00e1sra alkalmas, nem null\u00e9rt\u00e9k\u0171 tokent.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tudja titkos\u00edtani a biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si tokent a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3 \u00e1ltal megadott nyilv\u00e1nos kulccsal. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=Lehet, hogy a hozz\u00e1f\u00e9r\u00e9si kulcs titkos\u00edt\u00e1s\u00e1ra haszn\u00e1lt nyilv\u00e1nos kulcs hib\u00e1s form\u00e1tum\u00fa vagy \u00e9rv\u00e9nytelen, illetve a sz\u00fcks\u00e9ges RSA titkos\u00edt\u00e1si algoritmus nem \u00e1ll rendelkez\u00e9sre.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Ellen\u0151rizze, hogy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3hoz be\u00e1ll\u00edtott nyilv\u00e1nos kulcs \u00e9rv\u00e9nes-e, \u00e9s haszn\u00e1lhat\u00f3-e RSA titkos\u00edt\u00e1sra.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES=CWWKS5441E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tudja titkos\u00edtani a biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si tokent a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3 \u00e1ltal megadott titkos kulcs haszn\u00e1lat\u00e1val. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.explanation=Lehet, hogy a hozz\u00e1f\u00e9r\u00e9si kulcs titkos\u00edt\u00e1s\u00e1ra haszn\u00e1lt titkos kulcs hib\u00e1s form\u00e1tum\u00fa vagy \u00e9rv\u00e9nytelen. Hiba t\u00f6rt\u00e9nhetett a titkos\u00edt\u00e1si algoritmus inicializ\u00e1l\u00e1si vektor\u00e1nak lek\u00e9r\u00e9se sor\u00e1n, vagy a sz\u00fcks\u00e9ges AES titkos\u00edt\u00e1si algoritmus nem \u00e1ll rendelkez\u00e9sre.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.useraction=Ellen\u0151rizze, hogy az \u00fczenetben szerepl\u0151 k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3hoz be\u00e1ll\u00edtott titkos kulcs \u00e9rv\u00e9nes-e, \u00e9s haszn\u00e1lhat\u00f3-e AES titkos\u00edt\u00e1sra.
+
+# 0=socialLogin element ID
+TWITTER_STATE_MISSING=CWWKS5442E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tudja elv\u00e9gezni a k\u00e9r\u00e9st a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 haszn\u00e1lat\u00e1val, mert az \u00e1llapot\u00e9rt\u00e9k hi\u00e1nyzik.
+TWITTER_STATE_MISSING.explanation=Minden egyedi hiteles\u00edt\u00e9si k\u00e9r\u00e9s eset\u00e9n l\u00e9trehoz\u00e1sra ker\u00fcl egy, a cookie-ban t\u00e1rolt \u00e1llapot\u00e9rt\u00e9k. Erre az \u00e9rt\u00e9kre az egyes hiteles\u00edt\u00e9si k\u00e9r\u00e9sek ellen\u0151rz\u00e9s\u00e9hez \u00e9s feldolgoz\u00e1s\u00e1hoz van sz\u00fcks\u00e9g. Az \u00e1llapot cookie nem j\u00f6tt l\u00e9tre, illetve t\u00f6r\u00f6lve lett.
+TWITTER_STATE_MISSING.useraction=Ellen\u0151rizze, hogy az \u00e1llapot\u00e9rt\u00e9k sikeresen elt\u00e1rol\u00e1sra ker\u00fclt-e a cookie-ban, \u00e9s a cookie nincs t\u00f6r\u00f6lve.
+
+# 0=socialLogin element ID
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY=CWWKS5443E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tudja elv\u00e9gezni a k\u00e9r\u00e9st a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 haszn\u00e1lat\u00e1val, mert az eredeti k\u00e9r\u00e9s URL \u00e9rt\u00e9ke hi\u00e1nyzik vagy \u00fcres. Az eredeti k\u00e9r\u00e9s URL-c\u00edm\u00e9nek \u00e9rt\u00e9ke rendelkez\u00e9sre kell \u00e1llnia, hogy a felhaszn\u00e1l\u00f3t visszair\u00e1ny\u00edthassa az eredetileg k\u00e9rt v\u00e9dett er\u0151forr\u00e1shoz.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.explanation=Az eredeti k\u00e9r\u00e9s URL egy cookie-ban ker\u00fcl t\u00e1rol\u00e1sra a hiteles\u00edt\u00e9si folyamat elej\u00e9n. Ez a cookie hi\u00e1nyzik, vagy az \u00e9rt\u00e9ke \u00fcres.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.useraction=Ellen\u0151rizze, hogy az eredeti k\u00e9r\u00e9s URL-c\u00edme sikeresen elt\u00e1rol\u00e1sra ker\u00fclt-e a cookie-ban, \u00e9s a cookie nincs-e t\u00f6r\u00f6lve.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA=CWWKS5444E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token nem fejthet\u0151 vissza a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 \u00e1ltal megadott priv\u00e1t kulcs haszn\u00e1lat\u00e1val. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.explanation=Hiba t\u00f6rt\u00e9nt, amely megakad\u00e1lyozta, hogy az RSA titkos\u00edt\u00e1si algoritmus visszafejtse a hozz\u00e1f\u00e9r\u00e9si tokent. Lehets\u00e9ges, hogy a hozz\u00e1f\u00e9r\u00e9si token visszafejt\u00e9s\u00e9hez haszn\u00e1lt priv\u00e1t kulcs helytelen\u00fcl van form\u00e1zva vagy \u00e9rv\u00e9nytelen, vagy a titkos\u00edtott titkos\u00edtott token form\u00e1z\u00e1sa nem megfelel\u0151, vagy pedig a sz\u00fcks\u00e9ges RSA titkos\u00edt\u00e1si algoritmus nem \u00e9rhet\u0151 el.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3hoz megadott priv\u00e1t kulcs konfigur\u00e1ci\u00f3ja \u00e9rv\u00e9nyes-e, \u00e9s haszn\u00e1lhat\u00f3-e RSA visszafejt\u00e9shez. Ellen\u0151rizze, hogy a titkos\u00edtott token megfelel\u0151en van-e form\u00e1zva, \u00e9s hogy a visszafejt\u00e9si algoritmus el\u00e9rhet\u0151-e.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES=CWWKS5445E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token nem fejthet\u0151 vissza a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 \u00e1ltal megadott titkos kulcs haszn\u00e1lat\u00e1val. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.explanation=Hiba t\u00f6rt\u00e9nt, amely megakad\u00e1lyozta, hogy az AES titkos\u00edt\u00e1si algoritmus visszafejtse a hozz\u00e1f\u00e9r\u00e9si tokent. Lehet, hogy a hozz\u00e1f\u00e9r\u00e9si kulcs visszafejt\u00e9s\u00e9hez haszn\u00e1lt titkos kulcs hib\u00e1s form\u00e1tum\u00fa vagy \u00e9rv\u00e9nytelen. Lehets\u00e9ges, hogy a titkos\u00edtott token helytelen\u00fcl van form\u00e1zva. Hiba t\u00f6rt\u00e9nhetett a visszafejt\u00e9si algoritmus inicializ\u00e1l\u00e1si vektor\u00e1nak lek\u00e9r\u00e9se sor\u00e1n, vagy a sz\u00fcks\u00e9ges AES titkos\u00edt\u00e1si algoritmus nem \u00e1ll rendelkez\u00e9sre.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3hoz megadott titkos kulcs konfigur\u00e1ci\u00f3ja \u00e9rv\u00e9nyes-e, \u00e9s haszn\u00e1lhat\u00f3-e AES visszafejt\u00e9shez. Ellen\u0151rizze, hogy a titkos\u00edtott token megfelel\u0151en van-e form\u00e1zva, \u00e9s hogy a visszafejt\u00e9si algoritmus el\u00e9rhet\u0151-e.
+
+# Intended to be a child of ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA or ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES
+VALUE_NOT_HEXADECIMAL=CWWKS5446E: A biztos\u00edtott \u00e9rt\u00e9k nem hexadecim\u00e1lis form\u00e1tumban van, \u00edgy nem dek\u00f3dolhat\u00f3.
+VALUE_NOT_HEXADECIMAL.explanation=Egy titkos\u00edtott token \u00e9rt\u00e9ke eset\u00e9n a rendszer hexadecim\u00e1lis k\u00f3dol\u00e1si form\u00e1tumot v\u00e1r.
+VALUE_NOT_HEXADECIMAL.useraction=Ellen\u0151rizze, hogy az \u00e9rt\u00e9k helyesen van-e k\u00f3dolva, hexadecim\u00e1lis form\u00e1tumban.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT=CWWKS5447E: A k\u00e9r\u00e9s nem ir\u00e1ny\u00edthat\u00f3 \u00e1t a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz be\u00e1ll\u00edtott hiteles\u00edt\u00e9si v\u00e9gpontra. {1}
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.explanation=Val\u00f3sz\u00edn\u0171leg hiba t\u00f6rt\u00e9nt a felhatalmaz\u00e1si v\u00e9gpont \u00e1tir\u00e1ny\u00edt\u00e1si URL \u00f6ssze\u00e1ll\u00edt\u00e1sakor. Vagy pedig hiba t\u00f6rt\u00e9nt a k\u00e9r\u00e9s \u00e1tir\u00e1ny\u00edt\u00e1sa sor\u00e1n.
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Ellen\u0151rizze, hogy a felhatalmaz\u00e1si v\u00e9gpont \u00e1tir\u00e1ny\u00edt\u00e1si URL c\u00edme egy \u00e9rv\u00e9nyes URL c\u00edm-e. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'state', OAuth
+# 0=socialLogin element ID
+STATE_IS_NULL=CWWKS5448E: Nem hozhat\u00f3 l\u00e9tre \u00e9rv\u00e9nyes lek\u00e9rdez\u00e9si karaktersorozat a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 felhatalmaz\u00e1si v\u00e9gpontj\u00e1hoz, mert a biztos\u00edtott \u00e1llapot\u00e9rt\u00e9k null.
+STATE_IS_NULL.explanation=A 'state' param\u00e9ter sz\u00fcks\u00e9ges az OAuth felhatalmaz\u00e1si v\u00e9gpontokra k\u00fcld\u00f6tt k\u00e9r\u00e9sekben. \u00c1llapot\u00e9rt\u00e9k n\u00e9lk\u00fcl nem hozhat\u00f3 l\u00e9tre \u00e9rv\u00e9nyes felhatalmaz\u00e1si v\u00e9gpont k\u00e9r\u00e9s.
+STATE_IS_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9shez egy nem-null \u00e1llapot\u00e9rt\u00e9k lett el\u0151\u00e1ll\u00edtva.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'redirect_uri', OAuth
+# 0=socialLogin element ID
+REDIRECT_URL_IS_NULL=CWWKS5449E: Nem hozhat\u00f3 l\u00e9tre \u00e9rv\u00e9nyes lek\u00e9rdez\u00e9si karaktersorozat a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 felhatalmaz\u00e1si v\u00e9gpontj\u00e1hoz, mert a biztos\u00edtott \u00e1tir\u00e1ny\u00edt\u00e1si URI null.
+REDIRECT_URL_IS_NULL.explanation=A 'redirect_uri' param\u00e9ter sz\u00fcks\u00e9ges az OAuth felhatalmaz\u00e1si v\u00e9gpontokra k\u00fcld\u00f6tt k\u00e9r\u00e9sekben. \u00c1tir\u00e1ny\u00edt\u00e1si URI \u00e9rt\u00e9k n\u00e9lk\u00fcl nem hozhat\u00f3 l\u00e9tre \u00e9rv\u00e9nyes felhatalmaz\u00e1si v\u00e9gpont k\u00e9r\u00e9s.
+REDIRECT_URL_IS_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9shez egy nem-null \u00e1tir\u00e1ny\u00edt\u00e1si URI \u00e9rt\u00e9k lett l\u00e9trehozva.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_SSL_CONTEXT=CWWKS5450E: A k\u00e9r\u00e9s nem tudja megh\u00edvni a token v\u00e9gpontot, mert hiba t\u00f6rt\u00e9nt az SSL inform\u00e1ci\u00f3k lek\u00e9r\u00e9sekor a(z) [{0}]  k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz. {1}
+AUTH_CODE_ERROR_SSL_CONTEXT.explanation=A k\u00e9r\u00e9s tartalmaz egy jogosults\u00e1gk\u00f3dot, amely a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k beszerz\u00e9s\u00e9re szolg\u00e1l egy OAuth token v\u00e9gpontt\u00f3l. A token v\u00e9gpont megh\u00edv\u00e1s\u00e1hoz SSL inform\u00e1ci\u00f3k sz\u00fcks\u00e9gesek. Hiba t\u00f6rt\u00e9nt az SSL inform\u00e1ci\u00f3k bet\u00f6lt\u00e9se sor\u00e1n, \u00edgy a token v\u00e9gpont nem h\u00edvhat\u00f3 meg.
+AUTH_CODE_ERROR_SSL_CONTEXT.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Ellen\u0151rizze, hogy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 egy \u00e9rv\u00e9nyes SSL konfigur\u00e1ci\u00f3ra hivatkozik-e, vagy ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3 alap\u00e9rtelmezett SSL konfigur\u00e1ci\u00f3ja megfelel\u0151en van-e be\u00e1ll\u00edtva.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_GETTING_TOKENS=CWWKS5451E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt, mik\u00f6zben beszerezte a token inform\u00e1ci\u00f3kat a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz be\u00e1ll\u00edtott token v\u00e9gpontt\u00f3l. {1}
+AUTH_CODE_ERROR_GETTING_TOKENS.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1snak k\u00e9r\u00e9st kell k\u00fcldenie a token v\u00e9gpontnak egy hozz\u00e1f\u00e9r\u00e9si token \u00e9s egy elhagyhat\u00f3 azonos\u00edt\u00f3 token beszerz\u00e9se \u00e9rdek\u00e9ben. Lehets\u00e9ges, hogy a token v\u00e9gpont URL helytelen\u00fcl van form\u00e1zva vagy hi\u00e1nyzik, a token v\u00e9gpontt\u00f3l \u00e9rkezett v\u00e1lasz helytelen\u00fcl van form\u00e1zva, vagy hiba t\u00f6rt\u00e9nt a token v\u00e9gpont megh\u00edv\u00e1sakor.
+AUTH_CODE_ERROR_GETTING_TOKENS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz megadott token v\u00e9gpont URL egy \u00e9rv\u00e9nyes URL. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=socialLogin element ID
+USER_API_RESPONSE_NULL_OR_EMPTY=CWWKS5452E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tudja hiteles\u00edteni a felhaszn\u00e1l\u00f3t, mert a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz konfigur\u00e1lt felhaszn\u00e1l\u00f3i API-t\u00f3l \u00e9rkezett v\u00e1lasz null vagy \u00fcres.
+USER_API_RESPONSE_NULL_OR_EMPTY.explanation=A konfigur\u00e1lt felhaszn\u00e1l\u00f3i API-b\u00f3l vissza kell adni felhaszn\u00e1l\u00f3i adatokat. A felhaszn\u00e1l\u00f3 nem hiteles\u00edthet\u0151 a felhaszn\u00e1l\u00f3i API-b\u00f3l sz\u00e1rmaz\u00f3 felhaszn\u00e1l\u00f3i adatok n\u00e9lk\u00fcl.
+USER_API_RESPONSE_NULL_OR_EMPTY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy legal\u00e1bb egy felhaszn\u00e1l\u00f3 API konfigur\u00e1lva van a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3hoz. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_FAILED_TO_CREATE_JWT=CWWKS5453E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s probl\u00e9m\u00e1ba \u00fctk\u00f6z\u00f6tt, mik\u00f6zben l\u00e9trehozott egy JSON web tokent (JWT) a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si tokenb\u0151l. {1}
+AUTH_CODE_FAILED_TO_CREATE_JWT.explanation=Lehets\u00e9ges, hogy hiba t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k lek\u00e9rdez\u00e9sekor a biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si tokennel, vagy hiba t\u00f6rt\u00e9nhetett egy JWT \u00f6ssze\u00e1ll\u00edt\u00e1sakor a biztos\u00edtott azonos\u00edt\u00f3 tokenb\u0151l.
+AUTH_CODE_FAILED_TO_CREATE_JWT.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_CREATING_RESULT=CWWKS5454E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tudott l\u00e9trehozni egy t\u00e1rgyat a felhaszn\u00e1l\u00f3hoz a megadott jogosults\u00e1gk\u00f3ddal, a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 haszn\u00e1lat\u00e1val. {1}
+AUTH_CODE_ERROR_CREATING_RESULT.explanation=A megadott felhaszn\u00e1l\u00f3 eset\u00e9n a t\u00e1rgy l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt n\u00e9h\u00e1ny adat hi\u00e1nyozhat vagy hib\u00e1s form\u00e1tum\u00fa lehet.
+AUTH_CODE_ERROR_CREATING_RESULT.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=socialLogin element ID, 1=User name
+ACCESS_TOKEN_MISSING=CWWKS5455E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tudja hiteles\u00edteni [{0}] felhaszn\u00e1l\u00f3t, mert nem tal\u00e1lhat\u00f3 hozz\u00e1f\u00e9r\u00e9si token.
+ACCESS_TOKEN_MISSING.explanation=Nem hozhat\u00f3 l\u00e9tre t\u00e1rgy a felhaszn\u00e1l\u00f3hoz, mert a hozz\u00e1f\u00e9r\u00e9si token hi\u00e1nyzik. A k\u00f6z\u00f6ss\u00e9gi m\u00e9diumb\u00f3l visszakapott adatoknak tartalmaznia kell hozz\u00e1f\u00e9r\u00e9si tokent.
+ACCESS_TOKEN_MISSING.useraction=Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban. Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi m\u00e9dium adott-e vissza hozz\u00e1f\u00e9r\u00e9si tokent.
+
+USER_PROFILE_ACCESS_TOKEN_NULL=CWWKS5456E: Nem hozhat\u00f3 l\u00e9tre felhaszn\u00e1l\u00f3i profil, mert a biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token null.
+USER_PROFILE_ACCESS_TOKEN_NULL.explanation=A hozz\u00e1f\u00e9r\u00e9si tokennel t\u00e1rs\u00edtott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 lek\u00e9r\u00e9s\u00e9hez egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent kell biztos\u00edtani.
+USER_PROFILE_ACCESS_TOKEN_NULL.useraction=A felhaszn\u00e1l\u00f3i profil l\u00e9trehoz\u00e1s\u00e1hoz adjon meg \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent.
+
+ACCESS_TOKEN_NOT_IN_CACHE=CWWKS5457E: Nem hozhat\u00f3 l\u00e9tre felhaszn\u00e1l\u00f3i profil, mert a biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token nem tal\u00e1lhat\u00f3 a token gyors\u00edt\u00f3t\u00e1rban.
+ACCESS_TOKEN_NOT_IN_CACHE.explanation=Lehets\u00e9ges, hogy a kisz\u00e1m\u00edtott token kulcs helytelen\u00fcl van form\u00e1zva, vagy ez a hozz\u00e1f\u00e9r\u00e9si token nem ker\u00fclt felhaszn\u00e1l\u00e1sra egy \u00fajkelet\u0171 hiteles\u00edtett k\u00e9r\u00e9sben. Lehets\u00e9ges, hogy a token az\u00e9rt ker\u00fclt elt\u00e1vol\u00edt\u00e1sra a gyors\u00edt\u00f3t\u00e1rb\u00f3l, mert t\u00fal r\u00e9gi volt.
+ACCESS_TOKEN_NOT_IN_CACHE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a biztos\u00edtott hozz\u00e1f\u00e9r\u00e9si token egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si token, \u00e9s hogy megegyezik egy sikeresen hiteles\u00edtett k\u00e9r\u00e9sben haszn\u00e1lt hozz\u00e1f\u00e9r\u00e9si tokennel. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a token gyors\u00edt\u00f3t\u00e1r nem lett ki\u00fcr\u00edtve a token hozz\u00e1ad\u00e1sa \u00f3ta.
+
+# 0=socialLogin element ID
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND=CWWKS5458E: A gyors\u00edt\u00f3t\u00e1razott tokennel t\u00e1rs\u00edtott [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 nem tal\u00e1lhat\u00f3.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.explanation=A megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3 a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban. A hozz\u00e1f\u00e9r\u00e9si tokennel t\u00e1rs\u00edtott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 azonos\u00edt\u00f3 hi\u00e1nyzik, vagy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 nem l\u00e9tezik.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 l\u00e9tezik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban. Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 sikeresen bet\u00f6lt\u00e9sre ker\u00fclt-e.
+
+# 0=socialLogin element ID
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN=CWWKS5459E: Nem tal\u00e1lhat\u00f3 hozz\u00e1f\u00e9r\u00e9si token a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra biztos\u00edtott tokenek k\u00e9szlet\u00e9ben.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.explanation=Egy felhaszn\u00e1l\u00f3i profil l\u00e9trehoz\u00e1s\u00e1hoz biztos\u00edtani kell egy hozz\u00e1f\u00e9r\u00e9si tokent. Lehets\u00e9ges, hogy a token nem tal\u00e1lhat\u00f3 a token gyors\u00edt\u00f3t\u00e1rban, vagy a token hi\u00e1nyzik a k\u00f6z\u00f6ss\u00e9gi m\u00e9diumb\u00f3l visszaadott felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3kb\u00f3l.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi m\u00e9dium \u00e1ltal visszaadott adatok k\u00e9szlete tartalmazott-e hozz\u00e1f\u00e9r\u00e9si tokent. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a token objektum egy \u00e9rv\u00e9nyes hozz\u00e1f\u00e9r\u00e9si tokent adott meg a token objektum gyors\u00edt\u00f3t\u00e1raz\u00e1sakor.
+
+# 0=socialLogin element ID
+NO_USER_API_CONFIGS_PRESENT=CWWKS5460W: Nincsenek megadva felhaszn\u00e1l\u00f3 API konfigur\u00e1ci\u00f3k a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz.
+NO_USER_API_CONFIGS_PRESENT.explanation=A felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k beszerz\u00e9s\u00e9hez legal\u00e1bb egy felhaszn\u00e1l\u00f3 API konfigur\u00e1ci\u00f3t meg kell adni.
+NO_USER_API_CONFIGS_PRESENT.useraction=Biztos\u00edtsa, hogy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 tartalmazzon legal\u00e1bb egy felhaszn\u00e1l\u00f3i API konfigur\u00e1ci\u00f3t.
+
+# 0=User API string, 1=socialLogin element ID, 2=Error message
+ERROR_GETTING_USER_API_RESPONSE=CWWKS5461E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s hib\u00e1ba \u00fctk\u00f6z\u00f6tt a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k lek\u00e9rdez\u00e9sekor a(z) [{1}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz be\u00e1ll\u00edtott [{0}] felhaszn\u00e1l\u00f3i API-b\u00f3l. {2}
+ERROR_GETTING_USER_API_RESPONSE.explanation=Lehets\u00e9ges, hogy a megadott felhaszn\u00e1l\u00f3 API nincs megfelel\u0151en konfigur\u00e1lva. Probl\u00e9ma mer\u00fclhetett fel a felhaszn\u00e1l\u00f3 API megh\u00edv\u00e1s\u00e1hoz haszn\u00e1lt hozz\u00e1f\u00e9r\u00e9si tokennel kapcsolatban. Lehets\u00e9ges, hogy a felhaszn\u00e1l\u00f3i API-t\u00f3l kapott v\u00e1lasz nem a v\u00e1rt form\u00e1tumban van.
+ERROR_GETTING_USER_API_RESPONSE.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+TOKEN_ENDPOINT_NULL_OR_EMPTY=CWWKS5462E: A token v\u00e9gpont URL \u00e9rt\u00e9k null vagy \u00fcres.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.explanation=Egy \u00e9rv\u00e9nyes token v\u00e9gpont URL c\u00edmet kell biztos\u00edtani hozz\u00e1f\u00e9r\u00e9si tokenek vagy azonos\u00edt\u00f3 tokenek beszerz\u00e9s\u00e9hez a felhaszn\u00e1l\u00f3k sz\u00e1m\u00e1ra.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy van konfigur\u00e1lva egy \u00e9rv\u00e9nyes token v\u00e9gpont URL minden k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3hoz.
+
+# Intended to be a child of AUTH_CODE_ERROR_SSL_CONTEXT
+# 0=socialLogin element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5463E: A(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 SSL kontextusa nem t\u00f6lthet\u0151 be. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=Lehets\u00e9ges, hogy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt SSL konfigur\u00e1ci\u00f3 hi\u00e1nyzik vagy helytelen.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 SSL inform\u00e1ci\u00f3i pontosak. Ha a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3ban meg van adva az 'sslRef' konfigur\u00e1ci\u00f3s attrib\u00fatum, akkor ellen\u0151rizze, hogy a megfelel\u0151 SSL konfigur\u00e1ci\u00f3 helyes-e. M\u00e1sk\u00fcl\u00f6nben ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3 alap\u00e9rtelmezett SSL konfigur\u00e1ci\u00f3ja megfelel\u0151en van-e konfigur\u00e1lva.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=socialLogin element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5464E: Lehets\u00e9ges, hogy a JSON web token (JWT) fogyaszt\u00f3 funkcionalit\u00e1s nem \u00e9rhet\u0151 el a(z) [{0}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz, mert a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3hoz tartoz\u00f3 szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Lehets\u00e9ges, hogy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 m\u00e9g nem \u00e9rhet\u0151 el, vagy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 szolg\u00e1ltat\u00e1sa le lett \u00e1ll\u00edtva.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 be van \u00e1ll\u00edtva \u00e9s el\u00e9rhet\u0151.
+
+# 0=Context path string from webapp configuration
+INVALID_CONTEXT_PATH_CHARS=CWWKS5465E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s webalkalmaz\u00e1s konfigur\u00e1ci\u00f3ja \u00e1ltal megadott [{0}] kontextus \u00fatvonal olyan karaktereket tartalmaz, amelyek nem szerepelhetnek egy \u00e9rv\u00e9nyes URI \u00fatvonalban. A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s nem m\u0171k\u00f6dik \u00e9rv\u00e9nytelen kontextus \u00fatvonallal.
+INVALID_CONTEXT_PATH_CHARS.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s webalkalmaz\u00e1s konfigur\u00e1ci\u00f3 \u00e1ltal be\u00e1ll\u00edtott kontextus \u00fatvonal nem egy \u00e9rv\u00e9nyes URI \u00fatvonal karaktersorozat. A kontextus \u00fatvonalnak meg kell felelnie az RFC 3986 szabv\u00e1nynak (https://tools.ietf.org/html/rfc3986) \u00e9s csak bizonyos karaktereket tartalmazhat.
+INVALID_CONTEXT_PATH_CHARS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1lt kontextus \u00fatvonal csak az RFC 3986 \u00e1ltal az URI \u00fatvonal \u00f6sszetev\u0151kh\u00f6z enged\u00e9lyezett karaktereket tartalmazza.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5466E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s SSL hivatkoz\u00e1s inform\u00e1ci\u00f3i nem t\u00f6lthet\u0151k be, mert hiba t\u00f6rt\u00e9nt az SSL tulajdons\u00e1gok bet\u00f6lt\u00e9sekor. {0}
+ERROR_LOADING_SSL_PROPS.explanation=Lehets\u00e9ges, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt SSL konfigur\u00e1ci\u00f3 nem \u00e9rhet\u0151 el, vagy hiba t\u00f6rt\u00e9nt az SSL konfigur\u00e1ci\u00f3 tulajdons\u00e1gainak bet\u00f6lt\u00e9sekor.
+ERROR_LOADING_SSL_PROPS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt SSL konfigur\u00e1ci\u00f3 helyesen van be\u00e1ll\u00edtva \u00e9s sikeresen elindult.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5467E: Nem t\u00f6lthet\u0151k be nyilv\u00e1nos kulcsok a kulcst\u00e1rol\u00f3b\u00f3l, mert a kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=Lehets\u00e9ges, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si szolg\u00e1ltat\u00e1s kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1sa nem \u00e9rhet\u0151 el.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 \u00e1ltal haszn\u00e1lt kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s helyesen van be\u00e1ll\u00edtva \u00e9s sikeresen elindult.
+
+# 0=Truststore ID, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5468E: Hiba t\u00f6rt\u00e9nt a megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1nyok bet\u00f6lt\u00e9sekor a(z) [{0}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=Lehets\u00e9ges, hogy a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 m\u00e9g nincs inicializ\u00e1lva, vagy a megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 jelen van a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban, \u00e9s sikeresen fel lett dolgozva.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5469E: A(z) [{0}] \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny nem t\u00f6lthet\u0151 be a(z) [{1}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {2}
+ERROR_LOADING_CERTIFICATE.explanation=Lehets\u00e9ges, hogy a megadott \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny nincs jelen a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban, vagy a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nincs m\u00e9g inicializ\u00e1lva, vagy pedig a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban.
+ERROR_LOADING_CERTIFICATE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny megtal\u00e1lhat\u00f3 a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 jelen van a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban, \u00e9s sikeresen fel lett dolgozva.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_GETTING_PUBLIC_KEYS=CWWKS5470E: A(z) [{0}] \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny nem t\u00f6lthet\u0151 be a(z) [{1}] tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l, mert hiba t\u00f6rt\u00e9nt a nyilv\u00e1nos kulcsok lek\u00e9rdez\u00e9sekor a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3b\u00f3l. {2}
+ERROR_LOADING_GETTING_PUBLIC_KEYS.explanation=Lehets\u00e9ges, hogy a kulcst\u00e1rol\u00f3 szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el, a tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban l\u00e9v\u0151 tan\u00fas\u00edtv\u00e1nyok nem t\u00f6lthet\u0151k be, vagy a megadott \u00e1ln\u00e9vvel rendelkez\u0151 tan\u00fas\u00edtv\u00e1ny nem t\u00f6lthet\u0151 be.
+ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=\u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=Private key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: A(z) [{0}] \u00e1ln\u00e9vvel rendelkez\u0151 priv\u00e1t kulcs nem t\u00f6lthet\u0151 be a(z) [{1}] kulcst\u00e1rol\u00f3b\u00f3l. {2}
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=Lehets\u00e9ges, hogy a megadott \u00e1ln\u00e9vvel rendelkez\u0151 priv\u00e1t kulcs nincs jelen a kulcst\u00e1rol\u00f3ban, a priv\u00e1t kulcs t\u00edpusa nem megfelel\u0151, a kulcst\u00e1rol\u00f3 nincs m\u00e9g inicializ\u00e1lva, vagy pedig a kulcst\u00e1rol\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00e1ln\u00e9vvel rendelkez\u0151 priv\u00e1t kulcs megtal\u00e1lhat\u00f3 a kulcst\u00e1rol\u00f3ban, \u00e9s hogy a priv\u00e1t kulcs t\u00edpusa helyes. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa kulcst\u00e1rol\u00f3 jelen van a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban, \u00e9s sikeresen fel lett dolgozva.
+
+# 0=Keystore ID, 1=Exception message
+ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: Egy priv\u00e1t kulcs nem t\u00f6lthet\u0151 be a(z) [{0}] kulcst\u00e1rol\u00f3b\u00f3l. {1}
+ERROR_LOADING_PRIVATE_KEY.explanation=Lehets\u00e9ges, hogy a kulcst\u00e1rol\u00f3b\u00f3l kiv\u00e1lasztott priv\u00e1t kulcs t\u00edpusa nem megfelel\u0151, a kulcst\u00e1rol\u00f3 m\u00e9g nincs inicializ\u00e1lva, vagy a kulcst\u00e1rol\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban.
+ERROR_LOADING_PRIVATE_KEY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcst\u00e1rol\u00f3ban l\u00e9v\u0151 priv\u00e1t kulcsok t\u00edpusa helyes. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa kulcst\u00e1rol\u00f3 jelen van a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban, \u00e9s sikeresen fel lett dolgozva.
+
+# 0=Secret key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SECRET_KEY=CWWKS5473E: A(z) [{0}] \u00e1ln\u00e9vvel rendelkez\u0151 titkos kulcs nem t\u00f6lthet\u0151 be a(z) [{1}] kulcst\u00e1rol\u00f3b\u00f3l. {2}
+ERROR_LOADING_SECRET_KEY.explanation=Lehets\u00e9ges, hogy a megadott \u00e1ln\u00e9vvel rendelkez\u0151 titkos kulcs nincs jelen a kulcst\u00e1rol\u00f3ban, a titkos kulcs t\u00edpusa nem megfelel\u0151, a kulcst\u00e1rol\u00f3 nincs m\u00e9g inicializ\u00e1lva, vagy pedig a kulcst\u00e1rol\u00f3 nem l\u00e9tezik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban.
+ERROR_LOADING_SECRET_KEY.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott \u00e1ln\u00e9vvel rendelkez\u0151 titkos kulcs megtal\u00e1lhat\u00f3 a kulcst\u00e1rol\u00f3ban, \u00e9s hogy a titkos kulcs t\u00edpusa helyes. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott azonos\u00edt\u00f3j\u00fa kulcst\u00e1rol\u00f3 jelen van a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban, \u00e9s sikeresen fel lett dolgozva.
+
+# 0=HttpResponse entity
+ERROR_PARSING_RESPONSE_ENTITY=CWWKS5474E: A v\u00e1laszb\u00f3l nem nyerhet\u0151k ki tokenek, mert egy hiba t\u00f6rt\u00e9nt a v\u00e1lasz \u00e9rtelmez\u00e9sekor. [ {0} ]
+ERROR_PARSING_RESPONSE_ENTITY.explanation=Lehets\u00e9ges, hogy a k\u00f6z\u00f6ss\u00e9gi m\u00e9dium v\u00e9gpontt\u00f3l kapott v\u00e1lasz nem a v\u00e1rt form\u00e1tumban van. Lehets\u00e9ges, hogy hiba t\u00f6rt\u00e9nt a v\u00e1lasz v\u00e9grehajt\u00e1sa sor\u00e1n,  vagy a k\u00f6z\u00f6ss\u00e9gi m\u00e9dium hib\u00e1t adott vissza.
+ERROR_PARSING_RESPONSE_ENTITY.useraction=Ellen\u0151rizze a k\u00f6z\u00f6ss\u00e9gi m\u00e9dium v\u00e1lasz\u00e1nak tartalm\u00e1t. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a v\u00e1lasz helyesen van form\u00e1zva, \u00e9s hogy a v\u00e1lasz nem tartalmazott hiba\u00fczenetet.
+
+NULL_OR_EMPTY_REQUEST_URL=CWWKS5475E: Nem v\u00e9gezhet\u0151 el egy HTTP k\u00e9r\u00e9s, mert a biztos\u00edtott URL null vagy \u00fcres.
+NULL_OR_EMPTY_REQUEST_URL.explanation=Null vagy \u00fcres URL c\u00edmmel nem v\u00e9gezhet\u0151 el egy HTTP k\u00e9r\u00e9s. Lehets\u00e9ges, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3b\u00f3l hi\u00e1nyzik egy v\u00e9gpont URL vagy az \u00fcres.
+NULL_OR_EMPTY_REQUEST_URL.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3ban megadott \u00f6sszes v\u00e9gpont URL \u00e9rt\u00e9ke \u00e9rv\u00e9nyes URL c\u00edm.
+
+# Do not translate "POST"
+# 0=URL to which the request was submitted, 1=Error message
+ERROR_EXECUTING_REQUEST=CWWKS5476E: Hiba t\u00f6rt\u00e9nt egy k\u00e9r\u00e9s elk\u00fcld\u00e9sekor a biztos\u00edtott [{0}] URL c\u00edmre. {1}
+ERROR_EXECUTING_REQUEST.explanation=Lehets\u00e9ges, hogy a biztos\u00edtott URL helytelen\u00fcl van form\u00e1zva vagy egy \u00e9rv\u00e9nytelen protokollt tartalmaz, vagy pedig egy hiba megakad\u00e1lyozta a k\u00e9r\u00e9s kiszolg\u00e1l\u00e1s\u00e1t.
+ERROR_EXECUTING_REQUEST.useraction=A hiba r\u00e9szletesebb le\u00edr\u00e1s\u00e1\u00e9rt tekintse meg az \u00fczenetet. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URL egy szab\u00e1lyosan form\u00e1zott URL, \u00e9s hogy nem voltak kapcsolati probl\u00e9m\u00e1k a c\u00e9lkiszolg\u00e1l\u00f3val.
+
+# 0=Response status
+RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: Nem tal\u00e1lhat\u00f3 a v\u00e1lasz \u00e1llapot, vagy a v\u00e1lasz hib\u00e1t adott vissza. A v\u00e1lassza \u00e1llapot [{0}] volt.
+RESPONSE_STATUS_MISSING_OR_ERROR.explanation=A k\u00e9r\u00e9s val\u00f3sz\u00edn\u0171leg az\u00e9rt hi\u00fasult meg, nem volt felhatalmazva, vagy hi\u00e1nyoztak inform\u00e1ci\u00f3k, mint p\u00e9ld\u00e1ul egy k\u00f6telez\u0151 k\u00e9r\u00e9s param\u00e9ter vagy fejl\u00e9c. Ha a v\u00e1lasz \u00e1llapot null volt, akkor a v\u00e1lasz \u00e1llapotk\u00f3dja \u00e9s oka szerepel az \u00fczenetben.
+RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Ellen\u0151rizze az \u00fczenetben l\u00e9v\u0151 v\u00e1lasz \u00e1llapotk\u00f3dot, ha jelen van. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s tartalmazza az \u00f6sszes k\u00f6telez\u0151 param\u00e9tert \u00e9s fejl\u00e9cet.
+
+# 0=URL to which the request was submitted, 1=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: A(z) [{0}] v\u00e9gpontra k\u00fcld\u00f6tt k\u00e9r\u00e9s sikertelen volt. A hiba: {1}
+RESPONSE_STATUS_UNSUCCESSFUL.explanation=A k\u00e9r\u00e9s val\u00f3sz\u00edn\u0171leg az\u00e9rt hi\u00fasult meg, nem volt felhatalmazva, vagy hi\u00e1nyoztak inform\u00e1ci\u00f3k, mint p\u00e9ld\u00e1ul egy k\u00f6telez\u0151 k\u00e9r\u00e9s param\u00e9ter vagy fejl\u00e9c. Lehet, hogy a k\u00e9r\u00e9st rossz v\u00e9gpontra tov\u00e1bb\u00edtott\u00e1k.
+RESPONSE_STATUS_UNSUCCESSFUL.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s a helyes v\u00e9gpontra lett-e tov\u00e1bb\u00edtva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00e9r\u00e9s tartalmazza az \u00f6sszes k\u00f6telez\u0151 param\u00e9tert \u00e9s fejl\u00e9cet.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS5479E: A sz\u00fcks\u00e9ges [{0}] konfigur\u00e1ci\u00f3s attrib\u00fatum a(z) [{1}] k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3ban hi\u00e1nyzik vagy \u00fcres. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az attrib\u00fatum konfigur\u00e1lva van, nem \u00fcres, \u00e9s hogy nem csak sz\u00f3k\u00f6zszer\u0171 karakterekb\u0151l \u00e1ll.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=Lehets\u00e9ges, hogy a megadott konfigur\u00e1ci\u00f3s attrib\u00fatum hi\u00e1nyzik a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3b\u00f3l. Ha meg van adva egy \u00e9rt\u00e9k, akkor az \u00e9rt\u00e9k elej\u00e9n \u00e9s v\u00e9g\u00e9n l\u00e9v\u0151 sz\u00f3k\u00f6zszer\u0171 karakterek elt\u00e1vol\u00edt\u00e1sra ker\u00fcltek az \u00e9rt\u00e9k feldolgoz\u00e1sakor, \u00edgy a konfigur\u00e1ci\u00f3ban l\u00e9v\u0151 \u00e9rt\u00e9k \u00fcres lehet vagy csak sz\u00f3k\u00f6zszer\u0171 karaktereket tartalmazhat.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott konfigur\u00e1ci\u00f3s attrib\u00fatum be van \u00e1ll\u00edtva, nem \u00fcres, \u00e9s hogy nem csak sz\u00f3k\u00f6zszer\u0171 karakterekb\u0151l \u00e1ll.
+
+STATE_NULL_OR_MISMATCHED=CWWKS5480E: Egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9s meghi\u00fasult, mert a k\u00e9r\u00e9s \u00e1llapot eleme \u00fcres volt vagy nem egyezett.
+STATE_NULL_OR_MISMATCHED.explanation=Egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9sben l\u00e9v\u0151 \u00fcres vagy hi\u00e1nyz\u00f3 elem hib\u00e1t okozott. 
+STATE_NULL_OR_MISMATCHED.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 helyes-e, \u00e9s hogy a t\u00e1voli szolg\u00e1ltat\u00e1s megfelel\u0151en m\u0171k\u00f6dik-e.
+
+REQUEST_URL_NULL_OR_EMPTY=CWWKS5481E: Egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9s meghi\u00fasult, mert a k\u00e9r\u00e9sben megadott k\u00e9r\u00e9s URL attrib\u00fatum null vagy \u00fcres volt.
+REQUEST_URL_NULL_OR_EMPTY.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9sben l\u00e9v\u0151 \u00fcres vagy hi\u00e1nyz\u00f3 k\u00e9r\u00e9s URL attrib\u00fatum hib\u00e1t okozott.
+REQUEST_URL_NULL_OR_EMPTY.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 URL attrib\u00fatuma helyes-e, \u00e9s hogy a t\u00e1voli szolg\u00e1ltat\u00e1s megfelel\u0151en m\u0171k\u00f6dik-e.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_REQUEST_TOKEN_URL=CWWKS5482E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tud k\u00e9r\u00e9stokent beszerezni a Twitter-t\u0151l, mivel a(z) [{0}] URL, amely a(z) [{2}] Twitter konfigur\u00e1ci\u00f3 [{1}] konfigur\u00e1ci\u00f3s attrib\u00fatum\u00e1ban van megadva, \u00e9rv\u00e9nytelen. {3}
+TWITTER_BAD_REQUEST_TOKEN_URL.explanation=A megadott konfigur\u00e1ci\u00f3 attrib\u00fatum \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes URL. Olyan \u00e9rv\u00e9nyes URL c\u00edmet kell megadni, amely k\u00e9pes a Twitter k\u00e9r\u00e9stokenek k\u00e9r\u00e9seit kiszolg\u00e1lni.
+TWITTER_BAD_REQUEST_TOKEN_URL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott konfigur\u00e1ci\u00f3s attrib\u00fatumhoz \u00e9rv\u00e9nyes URL van be\u00e1ll\u00edtva, \u00e9s hogy az URL k\u00e9pes a Twitter k\u00e9r\u00e9stokenek k\u00e9r\u00e9seit kiszolg\u00e1lni. Az alap\u00e9rtelmezett Twitter v\u00e9gpont haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a megadott konfigur\u00e1ci\u00f3s attrib\u00fatumot az \u00fczenetben megadott Twitter konfigur\u00e1ci\u00f3b\u00f3l.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_ACCESS_TOKEN_URL=CWWKS5483E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tud hozz\u00e1f\u00e9r\u00e9si tokent beszerezni a Twitter-t\u0151l, mivel a(z) [{0}] URL, amely a(z) [{2}] Twitter konfigur\u00e1ci\u00f3 [{1}] konfigur\u00e1ci\u00f3s attrib\u00fatum\u00e1ban van megadva, \u00e9rv\u00e9nytelen. {3}
+TWITTER_BAD_ACCESS_TOKEN_URL.explanation=A megadott konfigur\u00e1ci\u00f3 attrib\u00fatum \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes URL. Olyan \u00e9rv\u00e9nyes URL c\u00edmet kell megadni, amely k\u00e9pes a Twitter hozz\u00e1f\u00e9r\u00e9si tokenek k\u00e9r\u00e9seit kiszolg\u00e1lni.
+TWITTER_BAD_ACCESS_TOKEN_URL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott konfigur\u00e1ci\u00f3s attrib\u00fatumhoz \u00e9rv\u00e9nyes URL van be\u00e1ll\u00edtva, \u00e9s hogy az URL k\u00e9pes a Twitter hozz\u00e1f\u00e9r\u00e9si tokenek k\u00e9r\u00e9seit kiszolg\u00e1lni. Az alap\u00e9rtelmezett Twitter v\u00e9gpont haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a megadott konfigur\u00e1ci\u00f3s attrib\u00fatumot az \u00fczenetben megadott Twitter konfigur\u00e1ci\u00f3b\u00f3l.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_USER_API_URL=CWWKS5484E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tud felhaszn\u00e1l\u00f3i fi\u00f3k adatokat beszerezni a Twitter-t\u0151l, mivel a(z) [{0}] URL, amely a(z) [{2}] Twitter konfigur\u00e1ci\u00f3 [{1}] konfigur\u00e1ci\u00f3s attrib\u00fatum\u00e1ban van megadva, \u00e9rv\u00e9nytelen. {3}
+TWITTER_BAD_USER_API_URL.explanation=A megadott konfigur\u00e1ci\u00f3 attrib\u00fatum \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes URL. Olyan \u00e9rv\u00e9nyes URL c\u00edmet kell megadni, amely k\u00e9pes a Twitter felhaszn\u00e1l\u00f3i fi\u00f3k adatok k\u00e9r\u00e9seit kiszolg\u00e1lni.
+TWITTER_BAD_USER_API_URL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott konfigur\u00e1ci\u00f3s attrib\u00fatumhoz \u00e9rv\u00e9nyes URL van be\u00e1ll\u00edtva, \u00e9s hogy az URL k\u00e9pes a Twitter felhaszn\u00e1l\u00f3i fi\u00f3k adatok k\u00e9r\u00e9seit kiszolg\u00e1lni. Az alap\u00e9rtelmezett Twitter v\u00e9gpont haszn\u00e1lat\u00e1hoz t\u00e1vol\u00edtsa el a megadott konfigur\u00e1ci\u00f3s attrib\u00fatumot az \u00fczenetben megadott Twitter konfigur\u00e1ci\u00f3b\u00f3l.
+
+# 0=Configuration attribute name
+TWITTER_MISSING_REQ_ATTR=CWWKS5485W: Lehet, hogy a Twitter hiteles\u00edt\u00e9si k\u00e9r\u00e9s sikeretlen volt, mert a biztos\u00edtott [{0}] konfigur\u00e1ci\u00f3s \u00e9rt\u00e9k null vagy \u00fcres. Ellen\u0151rizze, hogy minden Twitter k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 nem-\u00fcres \u00e9rt\u00e9ket ad-e meg a(z) [{0}konfigur\u00e1ci\u00f3s attrib\u00fatumhoz.
+TWITTER_MISSING_REQ_ATTR.explanation=Az \u00fczenetben megadott konfigur\u00e1ci\u00f3s attrib\u00fatum hi\u00e1nyzik a konfigur\u00e1ci\u00f3b\u00f3l, illetve az attrib\u00fatum \u00e9rt\u00e9ke \u00fcres vagy csak sz\u00f3k\u00f6zszer\u0171 karaktereket tartalmaz. Az attrib\u00fatumhoz nem-\u00fcres \u00e9rt\u00e9ket kell megadni.
+TWITTER_MISSING_REQ_ATTR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban minden Twitter k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s elem be\u00e1ll\u00edtotta az \u00fczenetben megadott attrib\u00fatumot \u00e9s az attrib\u00fatumok \u00e9rt\u00e9ke nem \u00fcres.
+
+# 0=Endpoint URL, 1=Map of data about the endpoint response
+POST_RESPONSE_NULL=CWWKS5486W: A(z) [{0}] v\u00e9gpont v\u00e1lasz\u00e1b\u00f3l nem nyerhet\u0151 ki token. A v\u00e9gpontt\u00f3l kapott v\u00e1laszlek\u00e9pez\u00e9s a k\u00f6vetkez\u0151 volt: [{1}].
+POST_RESPONSE_NULL.explanation=Lehet, hogy a k\u00e9r\u00e9st helytelen v\u00e9gpontra tov\u00e1bb\u00edtj\u00e1k, vagy a k\u00e9r\u00e9s nem tartalmaz elegend\u0151 inform\u00e1ci\u00f3t.
+POST_RESPONSE_NULL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a v\u00e9gpont URL c\u00edme pontos \u00e9s k\u00e9r\u00e9s minden sz\u00fcks\u00e9ges fejl\u00e9cet \u00e9s param\u00e9tert tartalmaz. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# Do not translate "JSON"
+# 0=Endpoint URL, 1=Error message, 2=Endpoint response content
+ENDPOINT_RESPONSE_NOT_JSON=CWWKS5487W: A(z) [{0}] v\u00e9gpont v\u00e1lasza nem az elv\u00e1rt JSON form\u00e1tum\u00fa. A hiba: [{1}]. A v\u00e1lasz tartalma: [{2}].
+ENDPOINT_RESPONSE_NOT_JSON.explanation=Lehet, hogy a megadott v\u00e9gpont nem akt\u00edv vagy elt\u00e9r\u0151 form\u00e1tumban adja vissza a v\u00e1laszokat.
+ENDPOINT_RESPONSE_NOT_JSON.useraction=Ellen\u0151rizze, hogy a kiszolg\u00e1l\u00f3 a teljes v\u00e1laszt olvassa-e a megadott v\u00e9gpontr\u00f3l. Ellen\u0151rizze, hogy a k\u00e9r\u00e9s a megfelel\u0151 v\u00e9gpontra lett-e elk\u00fcldve, \u00e9s hogy a v\u00e1lasz form\u00e1tuma megfelel-e az elv\u00e1rtnak.
+
+# 0=URI value
+URI_CONTAINS_INVALID_CHARS=CWWKS5488W: A megadott [{0}] \u00e9rt\u00e9k legal\u00e1bb egy olyan karaktert tartalmaz, amely nem szerepelhet \u00e9rv\u00e9nyes URI c\u00edmben.
+URI_CONTAINS_INVALID_CHARS.explanation=Az \u00fczenetben megadott v\u00e9gpont \u00e9rt\u00e9k nem tekinthet\u0151 \u00e9rv\u00e9nyes URI c\u00edmnek, mert \u00e9rv\u00e9nytelen karaktereket tartalmaz. Az \u00e9rv\u00e9nyes URI karakterek k\u00e9szlet\u00e9t az RFC 3986 szabv\u00e1ny hat\u00e1rozza meg.
+URI_CONTAINS_INVALID_CHARS.useraction=M\u00f3dos\u00edtsa az URI karaktersorozatot, hogy csak \u00e9rv\u00e9nyes URI karaktereket tartalmazzon.
+
+SOCIAL_LOGIN_FRONT_END_ERROR=CWWKS5489E: Hiba t\u00f6rt\u00e9nt egy felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9sekor k\u00f6z\u00f6ss\u00e9gi m\u00e9dia haszn\u00e1lat\u00e1val.
+SOCIAL_LOGIN_FRONT_END_ERROR.explanation=Probl\u00e9ma mer\u00fclt fel egy felhaszn\u00e1l\u00f3 hiteles\u00edt\u00e9sekor. Lehets\u00e9ges, hogy kapcsolati probl\u00e9ma l\u00e9pett fel az alkalmaz\u00e1s \u00e9s egy k\u00fcls\u0151 szolg\u00e1ltat\u00f3 k\u00f6z\u00f6tt.
+SOCIAL_LOGIN_FRONT_END_ERROR.useraction=A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.
+
+# 0=User API URL, 1=HTTP response status, 2=Error code, 3=Error description
+USERAPI_RESP_INVALID_STATUS=CWWKS5490E: A(z) [{0}] felhaszn\u00e1l\u00f3 API v\u00e9gpont v\u00e1lasza nem dolgozhat\u00f3 fel. A v\u00e1lasz \u00e1llapota [{1}], a hiba [{2}] \u00e9s a hibale\u00edr\u00e1s [{3}] volt.
+USERAPI_RESP_INVALID_STATUS.explanation=A megadott v\u00e1lasz \u00e1llapot nem sikeres eredm\u00e9ny jelez. Az \u00fczenetben megadott hiba \u00e9s hibale\u00edr\u00e1s tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmazhat.
+USERAPI_RESP_INVALID_STATUS.useraction=V\u00e9gezze el a sz\u00fcks\u00e9ges m\u0171veletet a v\u00e1laszban foglalt hiba jav\u00edt\u00e1s\u00e1hoz.
+
+# 0=User API URL, 1=Error message
+USERAPI_ERROR_RESPONSE=CWWKS5491E: A(z) [{0}] felhaszn\u00e1l\u00f3 API v\u00e9gpont hibav\u00e1lasza nem dolgozhat\u00f3 fel. A hiba: [{1}].
+USERAPI_ERROR_RESPONSE.explanation=A megadott felhaszn\u00e1l\u00f3 API v\u00e9gpont nem egy \u00e9rv\u00e9nyes v\u00e1lasz \u00e1llapotot adott vissza, \u00e9s hiba t\u00f6rt\u00e9nt a v\u00e1lasz feldolgoz\u00e1sa sor\u00e1n.
+USERAPI_ERROR_RESPONSE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott v\u00e9gpont helyes, \u00e9s hogy a v\u00e9gpont \u00e9rv\u00e9nyes \u00e9s k\u00e9pes feldolgozni a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3 API k\u00e9r\u00e9seket.
+
+# 0=User API URL, 1=Error message
+USERAPI_RESP_PROCESS_ERR=CWWKS5492E: A(z) [{0}] felhaszn\u00e1l\u00f3 API v\u00e9gpont v\u00e1lasza nem dolgozhat\u00f3 fel. A hiba: [{1}].
+USERAPI_RESP_PROCESS_ERR.explanation=A megadott felhaszn\u00e1l\u00f3 API v\u00e9gpont egy \u00e9rv\u00e9nyes v\u00e1lasz \u00e1llapotot adott vissza, azonban a fut\u00e1si k\u00f6rnyezet hib\u00e1ba \u00fctk\u00f6z\u00f6tt a v\u00e1lasz tartalm\u00e1nak feldolgoz\u00e1sakor.
+USERAPI_RESP_PROCESS_ERR.useraction=Ellen\u0151rizze, hogy a megadott v\u00e9gpont helyes-e, \u00e9s hogy a v\u00e1lasz tartalma helyesen van form\u00e1zva. \u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet.
+
+# 0=User API URL
+USERAPI_NULL_RESP_STR=CWWKS5493E: A(z) [{0}] felhaszn\u00e1l\u00f3 API v\u00e9gpontt\u00f3l \u00e9rkezett v\u00e1lasz tartalom \u00e9rv\u00e9nytelen. 
+USERAPI_NULL_RESP_STR.explanation=A megadott felhaszn\u00e1l\u00f3 API v\u00e9gpont nem egy \u00e9rv\u00e9nyes v\u00e1lasz \u00e1llapotot adott vissza a felhaszn\u00e1l\u00f3 API k\u00e9r\u00e9sre. 
+USERAPI_NULL_RESP_STR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott v\u00e9gpont helyes, \u00e9s hogy a v\u00e9gpont \u00e9rv\u00e9nyes \u00e9s k\u00e9pes feldolgozni a felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3 API k\u00e9r\u00e9seket.
+
+# do not translate CODE
+CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: Egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9s meghi\u00fasult, mert a k\u00e9r\u00e9sben megadott CODE attrib\u00fatum null vagy \u00fcres volt.
+CODE_PARAMETER_NULL_OR_EMPTY.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si k\u00e9r\u00e9sben l\u00e9v\u0151 \u00fcres vagy hi\u00e1nyz\u00f3 CODE attrib\u00fatum hib\u00e1t okozott. 
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9si konfigur\u00e1ci\u00f3 CODE attrib\u00fatuma helyes-e, \u00e9s hogy a t\u00e1voli szolg\u00e1ltat\u00e1s megfelel\u0151en m\u0171k\u00f6dik-e.
+
+# 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
+REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: Egy k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s hiteles\u00edt\u00e9si k\u00e9r\u00e9s meghi\u00fasult, mert a k\u00f6z\u00f6ss\u00e9gi m\u00e9dia a k\u00f6vetkez\u0151 {0} hib\u00e1t adta vissza: {1}. A hiba URI c\u00edme: [{2}].
+REDIRECT_REQUEST_CONTAINED_ERROR.explanation=A megadott v\u00e1lasz\u00e1llapot azt jelezte, hogy a hiteles\u00edt\u00e9s nem volt sikeres. Az \u00fczenetben megadott hiba \u00e9s hibale\u00edr\u00e1s tov\u00e1bbi inform\u00e1ci\u00f3kat tartalmaz.
+REDIRECT_REQUEST_CONTAINED_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s helyesen van be\u00e1ll\u00edtva a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban, tov\u00e1bb\u00e1 gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban szerepl\u0151 \u00e9rt\u00e9kek meg vannak hat\u00e1rozva a t\u00e1voli k\u00f6z\u00f6ss\u00e9gi m\u00e9di\u00e1ban.
+
+# 0=URI value
+HTTP_URI_DOES_NOT_START_WITH_HTTP=CWWKS5496W: A biztos\u00edtott [{0}] \u00e9rt\u00e9knek HTTP URI c\u00edmnek kell lennie. Az \u00e9rt\u00e9k nem HTTP protokollal kezd\u0151dik.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.explanation=Az \u00e9rt\u00e9knek HTTP URI c\u00edmnek kell lennie, ez\u00e9rt a http:// vagy a https:// karakterekkel kell kezd\u0151dnie.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.useraction=M\u00f3dos\u00edtsa az URI c\u00edmet \u00fagy, hogy az megadja a HTTP vagy HTTPS protokollt.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=User API value, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_USER_API=CWWKS5497E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tud JSON webtokent (JWT) l\u00e9trehozni a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i API [{0}] inform\u00e1ci\u00f3inak felhaszn\u00e1l\u00e1s\u00e1val. {1}
+FAILED_TO_CREATE_JWT_FROM_USER_API.explanation=Az \u00fczenetben l\u00e1that\u00f3 hib\u00e1b\u00f3l megtudja a pontos okot, ami\u00e9rt a JWT nem hozhat\u00f3 l\u00e9tre. A felhaszn\u00e1l\u00f3i API k\u00e9r\u00e9s rossz form\u00e1tum\u00fa vagy hi\u00e1nyoznak bel\u0151le bizonyos inform\u00e1ci\u00f3k, hiba t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i API k\u00e9r\u00e9s elk\u00fcld\u00e9se ut\u00e1n, vagy a felhaszn\u00e1l\u00f3i API-t\u00f3l kapott v\u00e1lasz nem haszn\u00e1lhat\u00f3 JWT l\u00e9trehoz\u00e1s\u00e1hoz.
+FAILED_TO_CREATE_JWT_FROM_USER_API.useraction=Ellen\u0151rizze a felhaszn\u00e1l\u00f3i API \u00e9rt\u00e9k helyess\u00e9g\u00e9t. \u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=JWT configuration element ID, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN=CWWKS5498E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tud JSON webtokent (JWT) l\u00e9trehozni a megadott azonos\u00edt\u00f3 token \u00e9s JWT konfigur\u00e1ci\u00f3 [{0}] felhaszn\u00e1l\u00e1s\u00e1val. {1}
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.explanation=Lehet, hogy az \u00fczenetben megadott JWT konfigur\u00e1ci\u00f3 rosszul van be\u00e1ll\u00edtva, az azonos\u00edt\u00f3 token rossz form\u00e1tum\u00fa vagy hi\u00e1nyoznak bel\u0151le bizonyos inform\u00e1ci\u00f3k, vagy egy\u00e9b hiba t\u00f6rt\u00e9nt a JWT l\u00e9trehoz\u00e1sa k\u00f6zben.
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott JWT konfigur\u00e1ci\u00f3 helyesen van be\u00e1ll\u00edtva. \u00c1ll\u00edtsa be az \u00fczenetben megjelen\u00edtett hib\u00e1hoz tartoz\u00f3 felhaszn\u00e1l\u00f3i m\u0171veletet. Keressen tov\u00e1bbi hiba\u00fczeneteket a kiszolg\u00e1l\u00f3napl\u00f3kban.
+
+# 0=Request URL value, 1=Error message
+REQUEST_URL_NOT_VALID=CWWKS5499E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tudja visszak\u00fcldeni a k\u00e9r\u00e9st az eredeti k\u00e9r\u00e9s URL c\u00edmre ([{0}]), mert az URL \u00e9rv\u00e9nytelen. {1}
+REQUEST_URL_NOT_VALID.explanation=Az eredeti k\u00e9r\u00e9s URL \u00e9rv\u00e9nytelen URL c\u00edm. Az URL \u00e9rv\u00e9nytelen karaktereket tartalmazhat vagy lehet, hogy az URL rossz form\u00e1tum\u00fa.
+REQUEST_URL_NOT_VALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott k\u00e9r\u00e9s URL megegyezik az eredeti v\u00e9dett er\u0151forr\u00e1sk\u00e9r\u00e9s URL c\u00edm\u00e9vel. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URL szab\u00e1lyosan form\u00e1zott \u00e9s csak \u00e9rv\u00e9nyes URI karaktereket tartalmaz.

@@ -485,8 +485,23 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             cri = WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri);
         cri.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);
 
-
-        //  - synchronize the connectionproperties
+        // Check to make sure a datasource configured with 'NONE (0)' is compatible with the driver being used. 
+        if(config.isolationLevel == Connection.TRANSACTION_NONE) {
+            try {
+                if(conn.getTransactionIsolation() == Connection.TRANSACTION_NONE) {
+                    //Expected behavior
+                    if(isTraceOn && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "DataSource configured with an isolation level of 'NONE (0)' and the driver's isolation level is already 'NONE (0)'."); 
+                    }
+                } else {
+                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4008.tran.none.unsupported", config.id));
+                }
+            } catch (SQLException sqle) {
+                throw AdapterUtil.translateSQLException(sqle, this, true, getClass());
+            }
+        }
+ 
+        //  - synchronize the connection properties
         synchronizePropertiesWithCRI();
 
         //Create the stmt cache if cachesize > 0
@@ -1160,9 +1175,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     }
 
     /**
-     * This method checks if transaction enlistment is enaabled on the MC
+     * This method checks if transaction enlistment is enabled on the MC
      * 
-     * @return true if transaction enlistment is enabled, false otherwise.
+     * @return true if transaction enlistment is enabled and supported, false otherwise.
      */
     public final boolean isTransactional() {
         // Take a snapshot of the value with first use (or reuse from pool) of the managed connection.
@@ -2046,8 +2061,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             previousTransactionIsolation = getTransactionIsolation();
             previousHoldability = currentHoldability;
 
-            if (currentTransactionIsolation != cri.ivIsoLevel) 
-            {
+            if (currentTransactionIsolation != cri.ivIsoLevel) {
                 setTransactionIsolation(cri.ivIsoLevel);
             }
 
@@ -3821,6 +3835,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     {
         if (value != currentAutoCommit || helper.alwaysSetAutoCommit()) 
         {
+            if( (dsConfig.get().isolationLevel == Connection.TRANSACTION_NONE) && (value == false) )
+                throw new SQLException(AdapterUtil.getNLSMessage("DSRA4010.tran.none.autocommit.required", dsConfig.get().id));
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Set AutoCommit to " + value); 
 
@@ -3842,13 +3858,18 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
     public final void setTransactionIsolation(int isoLevel) throws SQLException 
     {
-        if (currentTransactionIsolation != isoLevel) {
+        if (currentTransactionIsolation != isoLevel) {            
+            // Reject switching to an isolation level of TRANSACTION_NONE
+            if (isoLevel == Connection.TRANSACTION_NONE) {
+                    throw new SQLException(AdapterUtil.getNLSMessage("DSRA4011.tran.none.iso.switch.unsupported", dsConfig.get().id));
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "Set Isolation Level to " + AdapterUtil.getIsolationLevelString(isoLevel));
-
+            
             // Don't update the isolation level until AFTER the operation completes
             // succesfully on the underlying Connection. 
-
+            
             sqlConn.setTransactionIsolation(isoLevel); 
             currentTransactionIsolation = isoLevel; 
             isolationChanged = true; 
@@ -3860,7 +3881,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     /**
      * Get the transactionIsolation level
      **/
-
     public final int getTransactionIsolation() 
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
