@@ -47,8 +47,8 @@ public class DisableEnableTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .with(new FeatureReplacementAction("mpFaultTolerance-1.1").removeFeature("mpFaultTolerance-1.0").forServers(SERVER_NAME))
-                    .andWith(new FeatureReplacementAction("mpFaultTolerance-1.0").removeFeature("mpFaultTolerance-1.1").forServers(SERVER_NAME));
+                    .with(new FeatureReplacementAction("mpFaultTolerance-1.0").removeFeature("mpFaultTolerance-1.1").forServers(SERVER_NAME))
+                    .andWith(new FeatureReplacementAction("mpFaultTolerance-1.1").removeFeature("mpFaultTolerance-1.0").forServers(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {
