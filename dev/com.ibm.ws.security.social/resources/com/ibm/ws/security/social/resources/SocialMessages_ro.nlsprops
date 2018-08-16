@@ -1,0 +1,543 @@
+###############################################################################
+# Copyright (c) 2016, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5400 - CWWKS5499
+ADD_ID={0} ({1})
+ADD_ID.explanation=Numai utilizare intern\u0103.
+ADD_ID.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# HTML title of the social media selection page
+SELECTION_PAGE_TITLE=Formatul de selec\u0163ie Social Media
+
+# Text that appears above the social media options to choose from on the social media selection page
+SELECTION_PAGE_HEADER=Semnare
+
+# Text that indicates a user can sign in using social media "or" with a username and password ("or" being the text that appears on the web page)
+SELECTION_PAGE_ALTERNATE_TEXT=Sau
+
+SELECTION_PAGE_USERNAME=Nume utilizator
+
+SELECTION_PAGE_PASSWORD=Parol\u0103
+
+SELECTION_PAGE_SUBMIT=Trimitere
+
+SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Configurarea de logare social\u0103 [{0}] a fost procesat\u0103 cu succes.
+SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Configurarea indicat\u0103 de logare social\u0103 a fost procesat\u0103 cu succes.
+SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+SOCIAL_LOGIN_CONFIG_MODIFIED=CWWKS5401I: Configurarea de logare social\u0103 [{0}] a fost procesat\u0103 cu succes.
+SOCIAL_LOGIN_CONFIG_MODIFIED.explanation=Configurarea indicat\u0103 de logare social\u0103 a fost procesat\u0103 cu succes.
+SOCIAL_LOGIN_CONFIG_MODIFIED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+SOCIAL_LOGIN_CONFIG_DEACTIVATED=CWWKS5402I: Configurarea de logare social\u0103 [{0}] a fost dezactivat\u0103 cu succes.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.explanation=Configurarea indicat\u0103 de logare social\u0103 a fost dezactivat\u0103 cu succes.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# 0=exception class name, 1=exception message, 2=stack trace
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR=CWWKS5403E: A ap\u0103rut o eroare intern\u0103 de server \u00een timpul proces\u0103rii cererii de logare social\u0103 [{0}]. Cauz\u0103:[{1}], StackTrace: [{2}].
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.explanation=\u00cen timpul proces\u0103rii unei cereri de logare social\u0103, a ap\u0103rut o eroare intern\u0103 de server.
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.useraction=Verifica\u0163i pentru erori \u00een fi\u015fierele istoric ale serverului \u015fi asigura\u0163i-v\u0103 c\u0103 configura\u0163ia dumneavoastr\u0103 este corect\u0103. Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# 
+SOCIAL_LOGIN_AUTHENTICATION_FAIL=CWWKS5404E: Excep\u0163ie la logarea social\u0103: Furnizorul de servicii de logare social\u0103 a e\u015fuat procesarea cererii de autentificare.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.explanation=Procesul de autentificare nu a avut succes deoarece s-a petrecut alt\u0103 eroare anterior acestui mesaj.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea care apare \u00eenainte de acest mesaj.
+
+# Do not translate "social_login_hint"
+# 0=Social login configuration ID
+SOCIAL_LOGIN_NO_SUCH_PROVIDER=CWWKS5405E: Configura\u0163ia de logare social\u0103 [{0}] care este specificat\u0103 \u00een cerere fie lipse\u015fte fie nu este configurat\u0103 s\u0103 serveasc\u0103 aceast\u0103 cerere.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.explanation=Cererea include un parametru 'social_login_hint' sau un antet care specific\u0103 un ID de configura\u0163ie de logare social\u0103 de utilizat pentru aceast\u0103 cerere. Totu\u015fi, lipse\u015fte o configura\u0163ie de logare social\u0103 care s\u0103 se potriveasc\u0103 cu ID-ul sau filtrul de autentificare care este utilizat pentru configura\u0163ia de logare social\u0103 nu este configurat pentru a servi aceast\u0103 cerere.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.useraction=Verifica\u0163i c\u0103 este configurat un serviciu de logare social\u0103 cu ID-ul indicat. Dac\u0103 este configurat un filtru de autentificare pentru serviciul de logare social\u0103, verifica\u0163i c\u0103 filtrul este configurat pentru a servi cererea.
+
+# web RequestFilter
+# 0=url
+SOCIAL_LOGIN_INVALID_URL=CWWKS5406E: Punctul final cerut de [{0}] nu este suportat \u00een acest furnizor de servicii de logare social\u0103.
+SOCIAL_LOGIN_INVALID_URL.explanation=URL-ul indicat nu este un punct final valid de logare social\u0103. Acest lucru a putut fi cauzat de o configura\u0163ie incorect\u0103 \u00een serverul de logare social\u0103.
+SOCIAL_LOGIN_INVALID_URL.useraction=Asigura\u0163i-v\u0103 c\u0103 logarea social\u0103 este configurat\u0103 corespunz\u0103tor.
+
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED=CWWKS5407I: Este activat serviciul de punct final Social Login Versiunea 1.0.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.explanation=Este activat serviciul de punct final Social Login Versiunea 1.0.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# EndpointServlet
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5408E: Nu poate fi procesat\u0103 o cerere de logare social\u0103 deoarece nu exist\u0103 nicio caracteristic\u0103 disponibil\u0103 de logare social\u0103.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.explanation=A fost primit\u0103 o cerere de logare social\u0103 de server, dar caracteristica socialLogin-1.0 nu este activat\u0103 \u00een server.xml sau nu este disponibil\u0103.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Asigura\u0163i-v\u0103 c\u0103 sunt configurate caracteristica ssocialLogin-1.0 \u015fi dependen\u0163ele sale \u00een featureManager a fi\u015fierului server.xml.
+
+# Do not translate RFC
+# 0=Exception message
+TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: Semn\u0103tura pentru o cerere Twitter autorizat\u0103 nu poate fi creat\u0103: {0}
+TWITTER_ERROR_CREATING_SIGNATURE.explanation=Cererile Twitter autorizate trebuie s\u0103 fie semnate folosind algoritmul de semn\u0103tur\u0103 HMAC-SHA1. Fie a fost o problem\u0103 la ob\u0163inerea algoritmului de semn\u0103tur\u0103 necesar sau cheia furnizat\u0103 nu a putut fi folosit\u0103 la ini\u0163ializarea algoritmului de semn\u0103tur\u0103.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Verifica\u0163i faptul c\u0103 sistemul dumneavoastr\u0103 suport\u0103 algoritmul de semn\u0103tur\u0103 HMAC-SHA1. Verifica\u0163i secretul consumatorului \u015fi valorile secrete de jeton cerere. Aceste dou\u0103 valori sunt utilizate ca parte din cheia pentru algoritmul de semn\u0103tur\u0103. Dac\u0103 o valoare este format\u0103 gre\u015fit sau con\u0163ine caractere care nu poate fi codificate \u00een compatibilitate cu RFC 3986, ar putea fi nevoie s\u0103 ob\u0163ine\u0163i o nou\u0103 valoare.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: R\u0103spunsul de la punctul final [{0}] Twitter nu a con\u0163inut niciun parametru \u00een formatul a\u015fteptat. R\u0103spunsul a fost: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=R\u0103spunsul de la punctul final Twitter a fost probabil nul sau gol. Cererea ini\u0163ial\u0103 s-ar putea s\u0103 fi fost direc\u0163ionat\u0103 la punctul final gre\u015fit. R\u0103spunsurile de la punctele finale Twitter ar trebui s\u0103 fie un \u015fir de perechi de cheie \u015fi valoare. Cheia \u015fi valoarea sunt a\u015fteptate s\u0103 fie separate printr-un semn egal ("=") \u015fi mai multe perechi cheie \u015fi valoare sunt a\u015fteptate s\u0103 fie separate de un caracter ampersand ("&").
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 c\u0103tre punctele finale Twitter corecte. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 cheia consumator \u015fi URL-ul apel invers corecte sunt configurate.
+
+# Do not translate "Authorization"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: R\u0103spunsul de la punctul final [{0}] Twitter nu a con\u0163inut unul sau mai mul\u0163i parametri necesari. Parametrii necesari care lipsesc din r\u0103spuns sunt [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER.explanation=R\u0103spunsurile de la fiecare punct final Twitter au returnat propriul set de parametri. R\u0103spunsul Twitter primit nu con\u0163ine parametrii necesari care sunt lista\u0163i \u00een mesaj. Cererea ini\u0163ial\u0103 s-ar putea s\u0103 fi fost direc\u0163ionat\u0103 la punctul final gre\u015fit.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 c\u0103tre punctele finale Twitter corecte. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 cheia consumator \u015fi URL-ul apel invers corecte sunt configurate.
+
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: Valoarea parametrului [{0}] din r\u0103spunsul de la punctul final [{1}] Twitter nu s-a potrivit cu valoarea a\u015fteptat\u0103 [{2}]. Valoarea din r\u0103spuns a fost [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=Parametrul care este specificat \u00een mesaj trebuie s\u0103 aib\u0103 o valoare care s\u0103 se potriveasc\u0103 cu valoarea a\u015fteptat\u0103. Acesta este un scenariu pu\u0163in probabil unde Twitter a procesat cu succes o cerere dar a returnat o valoare nea\u015fteptat\u0103 pentru parametru.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 URL-ul apel invers configurat pentru aplica\u0163ie arat\u0103 un URL valid pe care Twitter \u00eel poate redirec\u0163iona o dat\u0103 ce autorizarea este acordat\u0103.
+
+# Do not translate "Authorization"
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: Parametrul [{0}] a fost gol \u00een r\u0103spunsul de la punctul final [{1}] Twitter. O valoare pentru acest parametru trebuie s\u0103 fie furnizat\u0103 pentru a procesa cererea de autoriza\u0163ie.
+TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=R\u0103spunsul de la punctul final Twitter a con\u0163inut parametrul specificat \u00een mesaj dar nu a furnizat o valoare pentru parametru.
+TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Verifica\u0163i faptul c\u0103 r\u0103spunsul de la punctul final Twitter a con\u0163inut to\u0163i parametrii a\u015ftepta\u0163i \u015fi valorile pentru acei parametri. Verifica\u0163i c\u0103 to\u0163i parametrii necesari au fost inclu\u015fi \u00een cererea ini\u0163ial\u0103 \u015fi c\u0103 cererea a fost autorizat\u0103 prin includerea unui antet Authorization valid. Un antet Authorization valid este creat folosind cheia consumator pentru aplica\u0163ia Twitter \u00een plus la un URL apel invers sau un jeton cerere OAuth. Verifica\u0163i configura\u0163ia serverului dumneavoastr\u0103 pentru a v\u0103 asigura c\u0103 cheia consumator \u015fi URL-ul apel invers corecte sunt configurate.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: R\u0103spunsul de la punctul final [{0}] Twitter nu a putut fi evaluat deoarece nu exist\u0103 niciun con\u0163inut \u00een corpul r\u0103spunsului.
+TWITTER_EMPTY_RESPONSE_BODY.explanation=Cererea ini\u0163ial\u0103 s-ar putea s\u0103 fi fost direc\u0163ionat\u0103 la punctul final gre\u015fit Twitter sau a existat o eroare la procesarea r\u0103spunsului de la punctul final.
+TWITTER_EMPTY_RESPONSE_BODY.useraction=Verifica\u0163i istoricele serverului pentru orice alte mesaje ce ar putea indica o e\u015fuare. Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 la punctul final corespunz\u0103tor.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: Cererea punctului final [{0}] Twitter a e\u015fuat. Statusul r\u0103spunsului a fost [{1}] \u015fi con\u0163inutul r\u0103spunsului a fost: [{2}]
+TWITTER_ENDPOINT_REQUEST_FAILED.explanation=Cererea ini\u0163ial\u0103 probabil a con\u0163inut date de autorizare incorecte sau a fost interzis\u0103 de la realizarea opera\u0163iei cerute. Punctele finale Twitter care necesit\u0103 autorizare trebuie s\u0103 aib\u0103 un antet Authorization care se potrive\u015fte cu un formatul specific. Pentru cererile autorizate, este probabil ca o parte din datele utilizate pentru a crea antetul Authorization, cum ar fi semn\u0103tura sau jetonul OAuth, a fost formatat gre\u015fit sau incorect. Codul de stare furnizat \u00een mesaj trebuie s\u0103 indice o cauz\u0103 specific\u0103 de ce a e\u015fuat cererea.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=Dac\u0103 cererea a fost neautorizat\u0103, verifica\u0163i c\u0103 cererea con\u0163ine un antet Authorization cu datele de autorizare corecte. Dac\u0103 datele de autorizare includ un jeton OAuth, verifica\u0163i c\u0103 jetonul este \u00eenc\u0103 valid sau lua\u0163i \u00een considerare ob\u0163inerea un nou jeton. Verifica\u0163i c\u0103 cererea nu este identic\u0103 cu o cerere anterioar\u0103 prin compararea semn\u0103turilor din antetele Authorization ale cererilor. Dac\u0103 cererea a fost interzis\u0103, verifica\u0163i c\u0103 aplica\u0163ia Twitter permite opera\u0163ia cerut\u0103.
+
+# 0=Outgoing request URL, 1=Parameter name
+OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: Cererea de ie\u015fire la [{0}] ar putea s\u0103 nu aib\u0103 succes deoarece parametrul [{1}] lipse\u015fte sau este gol.
+OUTGOING_REQUEST_MISSING_PARAMETER.explanation=Parametrul specificat este necesar pentru autentificarea OAuth. Cererea care este direc\u0163ionat\u0103 la punctul final specificat ar putea e\u015fua deoarece lipsesc informa\u0163iile care sunt necesare.
+OUTGOING_REQUEST_MISSING_PARAMETER.useraction=Verifica\u0163i c\u0103 atributul de configurare care corespunde parametrului specificat este configurat de fiecare furnizor de logare social\u0103 \u00een configura\u0163ia serverului.
+
+# 0=URL string, 1=Exception message text
+EXCEPTION_INITIALIZING_URL=CWWKS5417E: O eroare a fost \u00eent\u00e2lnit\u0103 la ini\u0163ializarea URI-ului [{0}]: {1}
+EXCEPTION_INITIALIZING_URL.explanation=\u015eirul specificat \u00een mesaj s-ar putea s\u0103 nu fie un URI valid sau sistemul poate s\u0103 nu aib\u0103 permisiunea de a realiza ac\u0163iunea de ini\u0163ializare a URI-ului.
+EXCEPTION_INITIALIZING_URL.useraction=Verifica\u0163i c\u0103 \u015firul specificat este un URL valid. Verifica\u0163i c\u0103 \u015firul nu este nul \u015fi c\u0103 protocolul utilizat \u00een URL este un protocol valid precum http sau https. Asigura\u0163i-v\u0103 c\u0103 baza codului are permisiunea adecvat\u0103 de a ini\u0163ializa un obiect URI.
+
+# Do not translate "GET" or "POST"
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: O eroare a fost \u00eent\u00e2lnit\u0103 la procesarea cererii la punctul final [{0}] Twitter: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=Una dintre urm\u0103toarele situa\u0163ii a ap\u0103rut probabil: 1. A existat o eroare la deschiderea unei conexiuni la punctul final specificat. 2. Metoda cererii pentru cerere nu a fost un protocol cunoscut, cum ar fi GET sau POST. 3. A exista o eroare la scrierea datelor POST la conexiune. 4. A existat o eroare la citirea r\u0103spunsului de la punctul final Twitter.
+TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=Vede\u0163i textul erorii din mesaj pentru informa\u0163ii suplimentare despre e\u015fuare. Verifica\u0163i faptul c\u0103 sistemul a men\u0163inut conectivitatea \u00een timpul cererii. Verifica\u0163i c\u0103 o metod\u0103 de cerere cunoscut\u0103, cum ar fi GET sau POST, a fost utilizat\u0103 pentru cerere.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: Cererea de autorizare a e\u015fuat deoarece a existat o eroare la crearea rezultatului de la punctul final [{0}] Twitter.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation=Fie niciun rezultat nu a fost returnat sau a fost returnat un rezultat gol de la cererea specificat\u0103. O eroare trebuie s\u0103 fi survenit \u00een timpul lans\u0103rii sau proces\u0103rii cererii.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction=Verifica\u0163i istoricul serverului pentru mesajele de eroare suplimentare care indic\u0103 unde a ap\u0103rut e\u015fuarea.
+
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: O eroare a fost \u00eent\u00e2lnit\u0103 la redirec\u0163ionarea r\u0103spunsului de la punctul final [{0}] Twitter: {1}
+TWITTER_REDIRECT_IOEXCEPTION.explanation=URL-ul la care r\u0103spunsul a fost redirec\u0163ionat s-ar putea s\u0103 nu fi fost valid sau nu a fost capabil s\u0103 serveasc\u0103 cererea.
+TWITTER_REDIRECT_IOEXCEPTION.useraction=Verifica\u0163i c\u0103 \u0163inta de redirec\u0163ionare este disponibil\u0103 \u015fi poate servi cererea. Vede\u0163i mesajul erorii pentru informa\u0163ii suplimentare despre e\u015fuare.
+
+# Do not translate OAuth
+TWITTER_TOKEN_DOES_NOT_MATCH=CWWKS5421E: Cererea de autorizare a e\u015fuat deoarece jetonul din cerere nu se potrive\u015fte cu jetonul care a fost utilizat pentru cererea de autorizare ini\u0163ial\u0103.
+TWITTER_TOKEN_DOES_NOT_MATCH.explanation=Cererea de intrare trebuie s\u0103 includ\u0103 o valoare de jeton cerere OAuth care este identic\u0103 cu jetonul cerere OAuth care a fost ob\u0163inut \u00een primul pas al procesului de autorizare. Valorile trebuie s\u0103 se potriveasc\u0103 pentru a confirma c\u0103 cererea de intrare corespunde cererii ini\u0163iale a \u00eenceput procesul de autorizare.
+TWITTER_TOKEN_DOES_NOT_MATCH.useraction=Verifica\u0163i c\u0103 cererea de intrare corespunde unei cereri anterioare pentru un jeton cerere OAuth. Lua\u0163i \u00een considerare \u00eenceperea fluxului de autorizare din nou pentru a ob\u0163ine un nou jeton cerere OAuth.
+
+# 0=Endpoint ("oauth/access_token"), 1=Parameter name
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: Cererea inten\u0163ionat\u0103 pentru punctul final [{0}] Twitter are lips\u0103 un parametru necesar. Parametrii necesari care lipsesc din cerere sunt: {1}.
+TWITTER_REQUEST_MISSING_PARAMETER.explanation=Cererea trebuie s\u0103 con\u0163in\u0103 to\u0163i parametrii afi\u015fa\u0163i \u00een mesaj. Cererea nu con\u0163ine niciun parametru afi\u015fat \u00een mesaj.
+TWITTER_REQUEST_MISSING_PARAMETER.useraction=Verifica\u0163i dac\u0103 cererea include to\u0163i parametrii necesari.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: R\u0103spunsul de la punctul final [{0}] Twitter nu a putu fi determinat. O eroare cel mai probabil a survenit \u00een timpul lans\u0103rii sau proces\u0103rii cererii.
+TWITTER_RESPONSE_STATUS_MISSING.explanation=Un c\u00e2mp al st\u0103rii r\u0103spunsului este a\u015fteptat pentru a determina rezultatul cererii de autorizare.
+TWITTER_RESPONSE_STATUS_MISSING.useraction=Verifica\u0163i istoricul serverului pentru mesajele de eroare suplimentare care indic\u0103 unde a ap\u0103rut alt\u0103 eroare.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: Nu s-a putut procesa r\u0103spunsul de la punctul final [{0}] Twitter. {1}
+TWITTER_RESPONSE_FAILURE.explanation=Starea r\u0103spunsului inclus\u0103 \u00een mesaj nu a indicat un rezultat cu succes. O e\u015fuare trebuie s\u0103 fi survenit \u00een timpul lans\u0103rii sau proces\u0103rii cererii.
+TWITTER_RESPONSE_FAILURE.useraction=Dac\u0103 mesajul con\u0163ine alt mesaj de eroare, verifica\u0163i ac\u0163iunea utilizatorului pentru acel mesaj. Altfel, verifica\u0163i istoricul serverului pentru mesajele de eroare suplimentare care pot s\u0103 indice unde a ap\u0103rut alt\u0103 eroare.
+
+# web EndpointServices 
+# 0=qualified config IDs
+SOCIAL_LOGIN_MANY_PROVIDERS=CWWKS5425E: Sunt calificate prea multe servicii de logare social\u0103 [{0}] pentru a trata cererea.
+SOCIAL_LOGIN_MANY_PROVIDERS.explanation=C\u00e2nd sunt calificate mai mult de un serviciu de logare social\u0103, nu se poate selecta ce serviciu de logare social\u0103 s\u0103 trateze cererea.
+SOCIAL_LOGIN_MANY_PROVIDERS.useraction=Asigura\u0163i-v\u0103 c\u0103 nu este configurat mai mult de un serviciu de logare social\u0103 \u00een server.xml pentru a trata cererea.
+
+# Do not translate "JSON"
+# 0=Endpoint ("/1.1/accounts/verify_credentials"), 1=Error message, 2=Endpoint response content
+TWITTER_RESPONSE_NOT_JSON=CWWKS5426E: R\u0103spunsul de la punctul final Twitter [{0}] nu este \u00een formatul JSON a\u015fteptat. Eroarea a fost: [{1}]. Con\u0163inutul r\u0103spunsului a fost: [{2}]
+TWITTER_RESPONSE_NOT_JSON.explanation=E posibil ca punctul final specificat s\u0103 nu func\u0163ioneze cum era de a\u015fteptat sau ca comportamentul punctului final s\u0103 se fi schimbat pentru a returna r\u0103spunsuri \u00eentr-un format diferit. Unele date ar putea s\u0103 fi fost omise la citirea r\u0103spunsului.
+TWITTER_RESPONSE_NOT_JSON.useraction=Verifica\u0163i c\u0103 serverul cite\u015fte \u00eentregul r\u0103spuns din punctul final specificat. Verifica\u0163i c\u0103 cererea a fost trimis\u0103 la punctul final Twitter corect \u015fi c\u0103 r\u0103spunsul este formatat cum era de a\u015fteptat.
+
+SIGN_IN_NO_CONFIGS=CWWKS5427E: Nu se poate afi\u015fa \u00een pagin\u0103 semn\u0103tura media social\u0103 deoarece caracteristica de logare social\u0103 nu poate g\u0103si nicio caracteristic\u0103 de logare social\u0103 configurat\u0103 pentru a autentifica aceast\u0103 cerere.
+SIGN_IN_NO_CONFIGS.explanation=Cel pu\u0163in o configura\u0163ie de logare social\u0103 trebuie s\u0103 fie prezent\u0103 pentru a afi\u015fa semn\u0103tura \u00een pagin\u0103. Fie lipse\u015fte sau este gol cookie-ul care con\u0163ine lista configura\u0163iilor de logare sociale care se potrivesc, fie nu pot fi g\u0103site configura\u0163iile de logare sociale specificate de cookie.
+SIGN_IN_NO_CONFIGS.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat cel pu\u0163in un serviciu de logare social\u0103 pentru a autentifica aceast\u0103 cerere.
+
+# 0=Config element ID
+SIGN_IN_MISSING_EXPECTED_CONFIG=CWWKS5428W: Caracteristica de logare social\u0103 nu poate g\u0103si o configura\u0163ie de logare social\u0103 care s\u0103 se potriveasc\u0103 cu ID-ul [{0}]. O configura\u0163ie de logare social\u0103 cu ID-ul specificat este a\u015fteptat\u0103 s\u0103 fie prezent\u0103 \u015fi configurat\u0103 pentru a autentifica aceast\u0103 cerere.
+SIGN_IN_MISSING_EXPECTED_CONFIG.explanation=ID-ul specificat este inclus \u00eentr-un cookie care este utilizat pentru \u00eenregistrarea configura\u0163iilor de logare sociale care sunt configurate pentru a autentifica aceast\u0103 cerere. Totu\u015fi, nu poate fi g\u0103sit\u0103 o configura\u0163ie de logare social\u0103 care se potrive\u015fte cu acel ID. ID-ul este fie malformat fie a fost \u00eenl\u0103turat\u0103 configura\u0163ia de logare social\u0103 corespunz\u0103toare.
+SIGN_IN_MISSING_EXPECTED_CONFIG.useraction=Verifica\u0163i c\u0103 este prezent\u0103 o configura\u0163ie de logare social\u0103 cu ID-ul specificat \u00een configura\u0163ia de server.
+
+# 0=Specific error message describing why the page cannot be displayed
+ERROR_DISPLAYING_SIGN_IN_PAGE=CWWKS5429E: Nu se poate afi\u015fa semnarea implicit\u0103 social\u0103 media \u00een pagin\u0103. ''{0}''
+ERROR_DISPLAYING_SIGN_IN_PAGE.explanation=A ap\u0103rut o eroare la procesarea semn\u0103turii implicite \u00een pagin\u0103. Mesajul include o anumit\u0103 explica\u0163ie pentru motivul pentru care nu poate fi afi\u015fat\u0103 semn\u0103tura \u00een pagin\u0103.
+ERROR_DISPLAYING_SIGN_IN_PAGE.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea specificat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# 0=Selection page URL configured in server.xml, 1=Specific error message
+SELECTION_PAGE_URL_NOT_VALID=CWWKS5430W: URL-ul paginii de selec\u0163ie din media social\u0103 [{0}] care este specificat de configura\u0163ia aplica\u0163iei web de logare social\u0103 nu este un URI valid. Va fi utilizat\u0103 pagina de selec\u0163ie implicit\u0103. {1}
+SELECTION_PAGE_URL_NOT_VALID.explanation=URL-ul paginii de selec\u0163ie care este configurat de configura\u0163ia aplica\u0163iei web de logare social\u0103 nu este un \u015fir de URI valid. URL-ul paginii de selec\u0163ie trebuie s\u0103 fie conform cu RFC 3986 (https://tools.ietf.org/html/rfc3986) \u015fi poate con\u0163ine numai anumite caractere.
+SELECTION_PAGE_URL_NOT_VALID.useraction=Verifica\u0163i c\u0103 URL-ul configurat al paginii de selec\u0163ie nu este nul \u015fi c\u0103 con\u0163ine numai acele caractere permise de RFC 3986.
+
+# 0=Selection page URL configured in server.xml
+SELECTION_PAGE_URL_NOT_HTTP=CWWKS5431E: URL-ul paginii de selec\u0163ie din media social\u0103 [{0}] care este specificat de configura\u0163ia aplica\u0163iei web de logare social\u0103 nu este o cale relativ\u0103 \u015fi nu utilizeaz\u0103 niciuna dintre schemele HTTP sau HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.explanation=Valoarea URL-ului paginii de selec\u0163ie din media social\u0103 trebuie s\u0103 fie o cale relativ\u0103 sau un URL care utilizeaz\u0103 schema HTTP sau HTTPS. URL-ul furnizat fie este nul, fie utilizeaz\u0103 o schem\u0103 de URL alta dec\u00e2t HTTP sau HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.useraction=Asigura\u0163i-v\u0103 c\u0103 valoarea URL-ului paginii de selec\u0163ie din media social\u0103 este o cale relativ\u0103 sau c\u0103 valoarea URL-ului utilizeaz\u0103 o schem\u0103 HTTP sau HTTPS.
+
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG=CWWKS5432W: Caracteristica de logare social\u0103 nu poate redirec\u0163iona cererea la pagina personalizat\u0103 de selec\u0163ie din media social\u0103 deoarece nu este disponibil\u0103 configura\u0163ia aplica\u0163iei web de logare social\u0103. Va fi utilizat\u0103 pagina de selec\u0163ie implicit\u0103.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.explanation=Serviciul aplica\u0163iei web de logare social\u0103 nu este disponibil\u0103. Configura\u0163ia aplica\u0163iei web lipse\u015fte din configura\u0163ia serverului.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.useraction=Verifica\u0163i c\u0103 este specificat\u0103 o configura\u0163ie de aplica\u0163ie web de logare social\u0103 \u00een configura\u0163ia serverului. Verifica\u0163i istoricele serverului pentru a v\u0103 asigura c\u0103 serviciul de aplica\u0163ie web este gata \u015fi disponibil.
+
+# 0=Endpoint URL
+REDIRECT_NO_MATCHING_CONFIG=CWWKS5433E: Cererea direc\u0163ionat\u0103 c\u0103tre [{0}] nu are o configura\u0163ie de logare social\u0103 cu care poat\u0103 fi asociat\u0103.
+REDIRECT_NO_MATCHING_CONFIG.explanation=Se a\u015fteapt\u0103 ca cererea s\u0103 fie trimis\u0103 la un punct final care include un ID de configura\u0163ie de logare social\u0103 \u00een URL. Totu\u015fi, URL-ul nu include ID-ul unei configura\u0163ii cunoscute de logare social\u0103.
+REDIRECT_NO_MATCHING_CONFIG.useraction=Verifica\u0163i c\u0103 URL-ul redirec\u0163ionat este un URL format corect care include ID-ul unei configura\u0163ii de logare social\u0103 care exist\u0103 \u00een configura\u0163ia serverului.
+
+# 0=Specific exception or error message
+ERROR_PROCESSING_REDIRECT=CWWKS5434E: Caracteristica de logare social\u0103 a \u00eent\u00e2lnit o eroare \u00een timpul proces\u0103rii cererii de redirec\u0163ionare. ''{0}''
+ERROR_PROCESSING_REDIRECT.explanation=Un furnizor de mediu social a redirec\u0163ionat o cerere la acest punct final pentru a continua autentificarea sau autorizarea unui utilizator. Totu\u015fi, cererea nu poate fi finalizat\u0103 din cauza motivului care este afi\u015fat \u00een mesajul de eroare.
+ERROR_PROCESSING_REDIRECT.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare. 
+
+USERNAME_NOT_FOUND=CWWKS5435E: Numele de utilizator nu a putut fi extras din jetonul ce a fost ob\u0163inut din platforma de mediu social.
+USERNAME_NOT_FOUND.explanation=Atributul care define\u015fte numele de utilizator variaz\u0103 \u00een func\u0163ie de platforma de mediu social. Valoarea care este configurat\u0103 pentru userNameAttribute ar putea fi incorect\u0103.
+USERNAME_NOT_FOUND.useraction=Verifica\u0163i c\u0103 valoarea de userNameAttribute se potrive\u015fte cu valoarea utilizat\u0103 de platforma de mediu social pentru a defini numele de utilizator.
+
+REALM_NOT_FOUND=CWWKS5436E: Regiunea nu a putut fi extras\u0103 din jetonul ce a fost ob\u0163inut din platforma de mediu social.
+REALM_NOT_FOUND.explanation=Atributul care define\u015fte numele de regiune variaz\u0103 \u00een func\u0163ie de platforma de mediu social. Valoarea care este configurat\u0103 realmName ar putea fi incorect\u0103.
+REALM_NOT_FOUND.useraction=Verifica\u0163i c\u0103 valoarea atributului realmName se potrive\u015fte cu valoarea utilizat\u0103 de platforma de mediu social pentru a defini regiunea.
+
+# "subject" refers to a Java Authentication and Authorization Service (JAAS) subject
+# 0=socialLogin element ID, 1=Error message (if present)
+TWITTER_ERROR_CREATING_RESULT=CWWKS5437E: Caracteristica de logare social\u0103 nu poate crea un subiect pentru utilizator folosind informa\u0163iile de profil de Twitter \u015fi configura\u0163ia de logare social\u0103 [{0}]. {1}
+TWITTER_ERROR_CREATING_RESULT.explanation=Unele dintre informa\u0163iile din profil care au fost folosite pentru a crea subiectul pentru utilizator pot lipsi sau pot fi malformate.
+TWITTER_ERROR_CREATING_RESULT.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN=CWWKS5438E: Caracteristica de logare social\u0103 nu poate crea un jeton criptat de acces pentru configura\u0163ia de logare social\u0103 [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.explanation=A ap\u0103rut o eroare \u00een timp ce caracteristica utiliza unul dintre algoritmii de criptare pentru a crea un jeton de acces criptat pe baza jetonului de acces furnizat. Mesajul ar trebui s\u0103 includ\u0103 un motiv mai specific de ce nu a putut fi creat un jeton criptat.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL=CWWKS5439E: Jetonul de acces care a fost furnizat c\u0103tre caracteristica de logare social\u0103 este nul, astfel \u00eenc\u00e2t jetonul nu poate fi criptat.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.explanation=Un jeton de acces nul nu poate fi criptat.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=Furniza\u0163i un jeton de acces nenul de criptat.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: Caracteristica de logare social\u0103 nu poate cripta jetonul de acces furnizat utiliz\u00e2nd cheia public\u0103 specificat\u0103 de configura\u0163ia de logare social\u0103 [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=Cheia public\u0103 care este folosit\u0103 pentru a cripta jetonul de acces ar putea fi malformat\u0103 sau nevalid\u0103 sau algoritmul de criptare RSA cerul ar putea fi indisponibil.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Verifica\u0163i c\u0103 cheia public\u0103 care este configurat\u0103 pentru configura\u0163ia de logare social\u0103 specificat\u0103 este valid\u0103 \u015fi poate fi utilizat\u0103 pentru criptarea RSA.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES=CWWKS5441E: Caracteristica de logare social\u0103 nu poate cripta jetonul de acces furnizat utiliz\u00e2nd cheia secret\u0103 specificat\u0103 de configura\u0163ia de logare social\u0103 [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.explanation=Cheia secret\u0103 care este folosit\u0103 pentru a cripta jetonul de acces ar putea fi malformat\u0103 sau nevalid\u0103. E posibil s\u0103 fi ap\u0103rut o eroare \u00een timpul ob\u0163inerii vectorului de ini\u0163ializare pentru algoritmul de criptare, sau algoritmul de criptare AES necesar ar putea fi indisponibil.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.useraction=Verifica\u0163i c\u0103 cheia secret\u0103 care este configurat\u0103 pentru configura\u0163ia de logare social\u0103 specificat\u0103 \u00een mesaj este valid\u0103 \u015fi poate fi utilizat\u0103 pentru criptarea AES.
+
+# 0=socialLogin element ID
+TWITTER_STATE_MISSING=CWWKS5442E: Caracteristica de logare social\u0103 nu poate finaliza cererea utiliz\u00e2nd configura\u0163ia de logare social\u0103 [{0}] deoarece lipse\u015fte valoarea de stare.
+TWITTER_STATE_MISSING.explanation=Este generat\u0103 o valoare de stare pentru fiecare cerere de autentificare \u015fi este stocat\u0103 \u00eentr-un cookie. Acea valoare este necesar\u0103 pentru a verifica \u015fi procesa fiecare cerere de autentificare. Cookie-ul de staze fie nu a fost creat sau a fost \u015fters.
+TWITTER_STATE_MISSING.useraction=Verifica\u0163i c\u0103 valoarea de stare a fost stocat\u0103 cu succes \u00eentr-un cookie \u015fi c\u0103 cookie-ul nu a fost \u015fters.
+
+# 0=socialLogin element ID
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY=CWWKS5443E: Caracteristica de logare social\u0103 nu poate finaliza cererea utiliz\u00e2nd configura\u0163ia de logare social\u0103 [{0}] deoarece lipse\u015fte sau este goal\u0103 valoarea pentru URL-ul original de cerere. URL-ul original de cerere trebuie s\u0103 fie prezent pentru a redirec\u0163iona utilizatorul \u00eenapoi la resursa protejat\u0103 care a fost cerut\u0103 ini\u0163ial.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.explanation=URL-ul original de cerere este stocat \u00eentr-un cookie la \u00eenceputul procesului de autentificare. Acel cookie fie lipse\u015fte fie valoarea sa este goal\u0103.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.useraction=Verifica\u0163i c\u0103 URL-ul original de cerere a fost stocat cu succes \u00eentr-un cookie \u015fi c\u0103 cookie-ul nu a fost \u015fters.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA=CWWKS5444E: Jetonul de acces furnizat la caracteristica de logare social\u0103 nu poate fi decriptat utiliz\u00e2nd cheia privat\u0103 specificat\u0103 de configura\u0163ia de logare social\u0103 [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.explanation=A ap\u0103rut o eroare care \u00eempiedic\u0103 algoritmul de criptare RSA s\u0103 decripteze jetonul de acces. Cheia privat\u0103 care este folosit\u0103 pentru a decripta jetonul de acces ar putea fi malformat\u0103 sau nevalid\u0103, jetonul criptat poate s\u0103 nu fie formatat corespunz\u0103tor sau algoritm de codare RSA cerut ar putea fi indisponibil.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.useraction=Verifica\u0163i c\u0103 configura\u0163ia de logare social\u0103 specific\u0103 o cheie privat\u0103 care are o configura\u0163ie valid\u0103 \u015fi poate fi folosit\u0103 pentru decriptarea RSA. Verifica\u0163i c\u0103 jetonul de criptare este formatat corect \u015fi c\u0103 este disponibil algoritmul de decriptare.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES=CWWKS5445E: Jetonul de acces furnizat la caracteristica de logare social\u0103 nu poate fi decriptat utiliz\u00e2nd cheia secret\u0103 specificat\u0103 de configura\u0163ia de logare social\u0103 [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.explanation=A ap\u0103rut o eroare care \u00eempiedic\u0103 algoritmul de criptare AES s\u0103 decripteze jetonul de acces. Cheia secret\u0103 care este folosit\u0103 pentru a decripta jetonul de acces ar putea fi malformat\u0103 sau nevalid\u0103. Jetonul criptat ar putea fi formatat necorespunz\u0103tor. E posibil s\u0103 fi ap\u0103rut o eroare \u00een timpul ob\u0163inerii vectorului de ini\u0163ializare pentru algoritmul de criptare sau ar putea fi indisponibil algoritmul de criptare AES necesar.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.useraction=Verifica\u0163i c\u0103 configura\u0163ia de logare social\u0103 specific\u0103 o cheie secret\u0103 care are o configura\u0163ie valid\u0103 \u015fi poate fi folosit\u0103 pentru decriptarea AES. Verifica\u0163i c\u0103 jetonul de criptare este formatat corect \u015fi c\u0103 este disponibil algoritmul de decriptare.
+
+# Intended to be a child of ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA or ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES
+VALUE_NOT_HEXADECIMAL=CWWKS5446E: Valoarea furnizat\u0103 nu este \u00een format hexazecimal, deci nu poate fi decodat\u0103.
+VALUE_NOT_HEXADECIMAL.explanation=Se a\u015fteapt\u0103 ca valoarea pentru un jeton criptat s\u0103 fie codat\u0103 \u00een format hexazecimal.
+VALUE_NOT_HEXADECIMAL.useraction=Verifica\u0163i c\u0103 valoarea este codat\u0103 corect \u00een format hexazecimal.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT=CWWKS5447E: Cererea nu poate fi redirec\u0163ionat\u0103 la punctul final de autorizare care este configurat pentru configura\u0163ia de logare social\u0103 [{0}]. {1}
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.explanation=Probabil a fost o eroare la construirea URL-ului de redirec\u0163ionare pentru punctul final de autorizare. Sau, a ap\u0103rut o eroare \u00een timpul redirec\u0163ion\u0103rii cererii.
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i c\u0103 URL de redirec\u0163ionare pentru punctul final de autorizare este un URL valid. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'state', OAuth
+# 0=socialLogin element ID
+STATE_IS_NULL=CWWKS5448E: Nu poate fi creat un \u015fir valid de interogare pentru punctul final de autorizare al configura\u0163iei de logare social\u0103 [{0}] pentru c\u0103 valoarea furnizat\u0103 de stare este nul\u0103.
+STATE_IS_NULL.explanation=Este necesar un parametru 'state' \u00een cereri la punctele finale de autorizare OAuth. Nu poate fi creat\u0103 o cerere valid\u0103 la punctele finale de autorizare f\u0103r\u0103 o valoare de stare.
+STATE_IS_NULL.useraction=Verifica\u0163i c\u0103 a fost generat\u0103 o valoare nenul\u0103 de stare pentru aceast\u0103 cerere.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'redirect_uri', OAuth
+# 0=socialLogin element ID
+REDIRECT_URL_IS_NULL=CWWKS5449E: Nu poate fi creat un \u015fir valid de interogare pentru punctul final de autorizare al configura\u0163iei de logare social\u0103 [{0}] pentru c\u0103 URI-ul redirec\u0163ionat furnizat este nul.
+REDIRECT_URL_IS_NULL.explanation=Este necesar un parametru 'redirect_uri' \u00een cereri la punctele finale de autorizare OAuth. Nu poate fi creat\u0103 o cerere valid\u0103 la punctele finale de autorizare f\u0103r\u0103 o valoare de URI de redirectare.
+REDIRECT_URL_IS_NULL.useraction=Verifica\u0163i c\u0103 a fost generat\u0103 o valoare nenul\u0103 de URI redirec\u0163ionat pentru aceast\u0103 cerere.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_SSL_CONTEXT=CWWKS5450E: Cererea nu poate invoca punctul final de jeton deoarece a ap\u0103rut o eroare \u00een timpul extragerii informa\u0163iilor SSL pentru configura\u0163ia de logare social\u0103 [{0}]. {1}
+AUTH_CODE_ERROR_SSL_CONTEXT.explanation=Cererea include un cod de autorizare care este folosit pentru a ob\u0163ine informa\u0163ii despre utilizator de la un punct final de jeton OAuth. Informa\u0163iile SSL sunt necesare pentru a invoca punctul final de jeton. A ap\u0103rut o eroare \u00een timpul \u00eenc\u0103rc\u0103rii informa\u0163iilor SSL, astfel \u00eenc\u00e2t nu poate fi invocat punctul final de jeton.
+AUTH_CODE_ERROR_SSL_CONTEXT.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i c\u0103 configura\u0163ia de logare social\u0103 specificat\u0103 se refer\u0103 la o configura\u0163ie SSL valid\u0103 sau verifica\u0163i c\u0103 configura\u0163ia SSL implicit\u0103 pentru server este configurat\u0103 corespunz\u0103tor.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_GETTING_TOKENS=CWWKS5451E: Caracteristica de logare social\u0103 a \u00eent\u00e2lnit o problem\u0103 \u00een timpul ob\u0163inerii informa\u0163iilor de jeton din punctul final de jeton configurat pentru configura\u0163ia de logare social\u0103 [{0}]. {1}
+AUTH_CODE_ERROR_GETTING_TOKENS.explanation=Caracteristica de logare social\u0103 trebuie s\u0103 fac\u0103 o cerere la punctul final de jeton pentru a ob\u0163ine un jeton de acces \u015fi un ID op\u0163ional de jeton. URL-ul punctului final de jeton ar putea fi formatat gre\u015fit sau ar putea lipsi, r\u0103spunsul de la punctul final de jeton ar putea s\u0103 nu fie formatat corect sau a existat o eroare la apelarea punctului final de jeton.
+AUTH_CODE_ERROR_GETTING_TOKENS.useraction=Verifica\u0163i c\u0103 URL-ul punctului final de jeton configurat pentru configura\u0163ia de logare social\u0103 specificat\u0103 este un URL valid. Verifica\u0163i istoricele serverului pentru mesajele de eroare suplimentare.
+
+# 0=socialLogin element ID
+USER_API_RESPONSE_NULL_OR_EMPTY=CWWKS5452E: Caracteristica de logare social\u0103 nu poate autentifica utilizatorul deoarece r\u0103spunsul de la API-ul de utilizator configurat pentru configura\u0163ia de logare social\u0103 [{0}] este nul sau gol.
+USER_API_RESPONSE_NULL_OR_EMPTY.explanation=Datele de utilizator trebuie s\u0103 fie returnate de la API-ul de utilizator configurat. Utilizatorul nu poate fi autentificat f\u0103r\u0103 datele de utilizator de la API-ul de utilizator.
+USER_API_RESPONSE_NULL_OR_EMPTY.useraction=Verifica\u0163i c\u0103 este configurat cel pu\u0163in un API de utilizator pentru configura\u0163ia de logare social\u0103 specificat\u0103. Verifica\u0163i istoricele serverului pentru mesajele de eroare suplimentare.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_FAILED_TO_CREATE_JWT=CWWKS5453E: Caracteristica de logare social\u0103 a \u00eent\u00e2lnit o problem\u0103 \u00een timpul cre\u0103rii unui JSON Web Token (JWT) din jetonul de acces furnizat pentru configura\u0163ia de logare social\u0103 [{0}]. {1}
+AUTH_CODE_FAILED_TO_CREATE_JWT.explanation=E posibil s\u0103 fi ap\u0103rut o eroare \u00een timpul ob\u0163inerii informa\u0163iilor de utilizator cu jetonul de acces furnizat sau o eroare \u00een timpul construirii unui JWT din ID-ul de jeton furnizat.
+AUTH_CODE_FAILED_TO_CREATE_JWT.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru mesajele de eroare suplimentare.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_CREATING_RESULT=CWWKS5454E: Caracteristica de logare social\u0103 nu poate crea un subiect pentru utilizatorul cu codul de autorizare furnizat utiliz\u00e2nd configura\u0163ia de logare social\u0103 [{0}]. {1}
+AUTH_CODE_ERROR_CREATING_RESULT.explanation=Unele dintre datele utilizate pentru a crea subiectul pentru utilizatorul specificat pot lipsi sau pot fi malformate.
+AUTH_CODE_ERROR_CREATING_RESULT.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# 0=socialLogin element ID, 1=User name
+ACCESS_TOKEN_MISSING=CWWKS5455E: Caracteristica de logare social\u0103 nu poate autentifica utilizatorul [{0}] pentru c\u0103 nu poate fi g\u0103sit un jeton de acces.
+ACCESS_TOKEN_MISSING.explanation=Nu poate fi creat un subiect pentru utilizator deoarece lipse\u015fte jetonul de acces. Datele care au fost returnate de la mediul social ar trebui s\u0103 includ\u0103 un jeton de acces.
+ACCESS_TOKEN_MISSING.useraction=Verifica\u0163i istoricele serverului pentru mesajele de eroare suplimentare. Verifica\u0163i c\u0103 a fost returnat un jeton de acces de la mediul social.
+
+USER_PROFILE_ACCESS_TOKEN_NULL=CWWKS5456E: Nu poate fi creat un profil de utilizator deoarece jetonul de acces furnizat este nul.
+USER_PROFILE_ACCESS_TOKEN_NULL.explanation=Trebuie s\u0103 fie furnizat un jeton de acces nenul pentru a extrage configura\u0163ia de logare social\u0103 care este asociat\u0103 cu jetonul de acces.
+USER_PROFILE_ACCESS_TOKEN_NULL.useraction=Furniza\u0163i un jeton de acces valid pentru a crea un profil de utilizator.
+
+ACCESS_TOKEN_NOT_IN_CACHE=CWWKS5457E: Nu poate fi creat un profil de utilizator deoarece jetonul de acces furnizat nu a fost g\u0103sit \u00een cache-ul de jetoane.
+ACCESS_TOKEN_NOT_IN_CACHE.explanation=Cheia de jeton care este calculat\u0103 ar putea fi malformat\u0103 sau acest jeton de acces nu a fost utilizat \u00eentr-o cerere autentificat\u0103 recent. Jetonul ar putea s\u0103 fi fost \u00eenl\u0103turat din cache deoarece era prea vechi.
+ACCESS_TOKEN_NOT_IN_CACHE.useraction=Asigura\u0163i-v\u0103 c\u0103 jetonul furnizat este un jeton de acces valid \u015fi c\u0103 se potrive\u015fte cu un jeton de acces care a fost utilizat \u00eentr-o cerere autentificat\u0103 cu succes. Verifica\u0163i c\u0103 cache-ul de jetoane nu a fost cur\u0103\u0163at din moment ce jetonul a fost ad\u0103ugat.
+
+# 0=socialLogin element ID
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND=CWWKS5458E: Nu poate fi g\u0103sit\u0103 configura\u0163ia de logare social\u0103 [{0}] care este asociat\u0103 cu jetonul memorat \u00een cache.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.explanation=Nu poate fi g\u0103sit serviciul de logare social\u0103 specificat \u00een configura\u0163ia de server. ID-ul de configura\u0163ie de logare social\u0103 care este asociat cu jetonul de acces fie lipse\u015fte, fie configura\u0163ia de logare social\u0103 specificat\u0103 nu exist\u0103.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 o configura\u0163ie de logare social\u0103 cu ID-ul specificat \u00een configura\u0163ia de server. Verifica\u0163i c\u0103 configura\u0163ia de logare social\u0103 a fost \u00eenc\u0103rcat\u0103 cu succes.
+
+# 0=socialLogin element ID
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN=CWWKS5459E: Nu poate fi g\u0103sit un jeton de acces \u00een setul de jetoane furnizat la caracteristica de logare social\u0103.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.explanation=Trebuie s\u0103 fie furnizat un jeton de acces pentru a crea un profil de utilizator. E posibil ca jetonul s\u0103 nu fie \u00een cache-ul de jetoane sau e posibil ca jetonul s\u0103 lipseasc\u0103 din informa\u0163iile de utilizator care au fost returnate de la mediul social.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.useraction=Verifica\u0163i c\u0103 a fost inclus un jeton de acces a fost inclus \u00een setul de date ce a fost returnat de la mediul social. Verifica\u0163i c\u0103 obiectul de jeton a specificat un jeton de acces valid la momentul c\u00e2nd obiectul de jeton a fost memorat \u00een cache.
+
+# 0=socialLogin element ID
+NO_USER_API_CONFIGS_PRESENT=CWWKS5460W: Nu exist\u0103 nici o configura\u0163ie de API de utilizator specificat\u0103 pentru configura\u0163ia de logare social\u0103 [{0}].
+NO_USER_API_CONFIGS_PRESENT.explanation=Trebuie s\u0103 fie specificat\u0103 cel pu\u0163in o configura\u0163ie de API de utilizator pentru a ob\u0163ine informa\u0163iile de utilizator.
+NO_USER_API_CONFIGS_PRESENT.useraction=Asigura\u0163i-v\u0103 c\u0103 configura\u0163ia de logare social\u0103 specificat\u0103 con\u0163ine cel pu\u0163in configura\u0163ie de API de utilizator.
+
+# 0=User API string, 1=socialLogin element ID, 2=Error message
+ERROR_GETTING_USER_API_RESPONSE=CWWKS5461E: Caracteristica de logare social\u0103 n \u00eent\u00e2lnit o eroare \u00een timpul ob\u0163inerii informa\u0163iilor de utilizator de la API-ul de utilizator [{0}] configurat pentru configura\u0163ia de logare social\u0103 [{1}]. {2}
+ERROR_GETTING_USER_API_RESPONSE.explanation=E posibil ca API-ul de utilizator specificat s\u0103 nu fi fost configurat corect. E posibil s\u0103 fie o problem\u0103 cu jetonul de acces care a fost utilizat pentru a invoca API-ul de utilizator. R\u0103spunsul de la API-ul de utilizator ar putea s\u0103 nu fie \u00een formatul a\u015fteptat.
+ERROR_GETTING_USER_API_RESPONSE.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+TOKEN_ENDPOINT_NULL_OR_EMPTY=CWWKS5462E: Valoarea URL-ului de punct final jeton este nul sau gol.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.explanation=Trebuie s\u0103 fie furnizat un URL valid de punct final jetoane pentru a ob\u0163ine jetoane de acces sau jetoane de ID pentru utilizatori.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat un URL valid de punct final pentru fiecare configura\u0163ie de logare social\u0103.
+
+# Intended to be a child of AUTH_CODE_ERROR_SSL_CONTEXT
+# 0=socialLogin element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5463E: Nu poate fi \u00eenc\u0103rcat contextul SSL pentru configura\u0163ia de logare social\u0103 [{0}]. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=Configura\u0163ia SSL care este utilizat\u0103 de configura\u0163ia de logare social\u0103 specificat\u0103 poate lipsi sau poate fi incorect\u0103.
+FAILED_TO_GET_SSL_CONTEXT.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 informa\u0163iile SSL pentru configura\u0163ia de logare social\u0103 specificat\u0103 sunt corecte. Dac\u0103 este specificat atributul de configura\u0163ie 'sslRef' \u00een configura\u0163ia de logare social\u0103, verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia SSL corespunz\u0103toare. Altfel, verifica\u0163i c\u0103 configura\u0163ia SSL implicit\u0103 pentru server este configurat\u0103 corespunz\u0103tor.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=socialLogin element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5464E: Func\u0163ionalitatea de consumator JWT (JSON Web Token) ar putea s\u0103 nu fie disponibil\u0103 pentru configura\u0163ia de logare social\u0103 [{0}] pentru c\u0103 nu poate fi g\u0103sit serviciul pentru configura\u0163ia de logare social\u0103 specificat\u0103.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=Configura\u0163ia de logare social\u0103 specificat\u0103 ar putea s\u0103 nu fie disponibil\u0103 \u00eenc\u0103 sau s-a oprit serviciul pentru configura\u0163ia de logare social\u0103.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Verifica\u0163i c\u0103 este configurat\u0103 \u015fi disponibil\u0103 configura\u0163ia de logare social\u0103 specificat\u0103.
+
+# 0=Context path string from webapp configuration
+INVALID_CONTEXT_PATH_CHARS=CWWKS5465E: Calea de context [{0}] specificat\u0103 de configura\u0163ia aplica\u0163iei web de logare social\u0103 con\u0163ine caractere care nu pot fi incluse \u00eentr-o cale valid\u0103 de URI. Caracteristica de logare social\u0103 nu va func\u0163iona cu o cale de context care nu este valid\u0103.
+INVALID_CONTEXT_PATH_CHARS.explanation=Calea de context care este configurat\u0103 de configura\u0163ia aplica\u0163iei web de logare social\u0103 nu este un \u015fir valid de cale de URI. Calea de context trebuie s\u0103 fie conform RFC 3986 (https://tools.ietf.org/html/rfc3986) \u015fi poate con\u0163ine numai anumite caractere.
+INVALID_CONTEXT_PATH_CHARS.useraction=Verifica\u0163i c\u0103 calea de context configurat\u0103 con\u0163ine doar acele caractere permise de RFC 3986 pentru componentele c\u0103ilor de URI.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5466E: Informa\u0163iile de referin\u0163\u0103 SSL pentru caracteristica de logare social\u0103 nu pot fi \u00eenc\u0103rcate deoarece a ap\u0103rut o eroare \u00een timpul \u00eenc\u0103rc\u0103rii propriet\u0103\u0163ilor SSL. ''{0}''
+ERROR_LOADING_SSL_PROPS.explanation=E posibil ca configura\u0163ia SSL care este utilizat\u0103 de configura\u0163ia de logare social\u0103 s\u0103 nu fie disponibil\u0103 sau a ap\u0103rut o eroare la \u00eenc\u0103rcarea propriet\u0103\u0163ilor pentru configura\u0163ia SSL.
+ERROR_LOADING_SSL_PROPS.useraction=Verifica\u0163i c\u0103 configura\u0163ia SSL utilizat\u0103 de serviciul de logare social\u0103 este configurat corect \u015fi a pornit cu succes.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5467E: Cheile publice nu pot fi \u00eenc\u0103rcate din depozitul de chei deoarece nu poate fi g\u0103sit serviciul de depozit de chei.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=E posibil s\u0103 nu fie disponibil serviciul de depozit de chei pentru caracteristica de logare social\u0103.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Verifica\u0163i c\u0103 serviciul de depozit de chei care este utilizat de c\u0103tre serviciul de logare social\u0103 este configurat corect \u015fi a pornit cu succes.
+
+# 0=Truststore ID, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5468E: A ap\u0103rut o eroare \u00een timpul \u00eenc\u0103rc\u0103rii certificatelor de \u00eencredere din depozitul de \u00eencrederi [{0}]. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=E posibil ca depozitul de \u00eencrederi s\u0103 nu fie ini\u0163ializat \u00eenc\u0103 sau ca depozitul de \u00eencrederi specificat s\u0103 nu existe \u00een configura\u0163ia serverului.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Verifica\u0163i c\u0103 este prezent un depozit de \u00eencrederi cu ID-ul specificat \u00een configura\u0163ia serverului \u015fi c\u0103 a fost procesat cu succes.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5469E: Nu poate fi \u00eenc\u0103rcat un certificat cu aliasul [{0}] din depozitul de \u00eencrederi [{1}]. {2}
+ERROR_LOADING_CERTIFICATE.explanation=E posibil s\u0103 nu fie prezent un certificat cu aliasul specificat \u00een depozitul de \u00eencrederi, e posibil ca depozitul de \u00eencrederi s\u0103 nu fie ini\u0163ializat \u00eenc\u0103 sau ca depozitul de \u00eencrederi s\u0103 nu existe \u00een configura\u0163ia serverului.
+ERROR_LOADING_CERTIFICATE.useraction=Verifica\u0163i c\u0103 este inclus \u00een depozitul de \u00eencrederi un certificat cu alias-ul specificat. Verifica\u0163i c\u0103 este prezent un depozit de \u00eencrederi cu ID-ul specificat \u00een configura\u0163ia serverului \u015fi c\u0103 a fost procesat cu succes.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_GETTING_PUBLIC_KEYS=CWWKS5470E: Nu poate fi \u00eenc\u0103rcat certificatul cu aliasul [{0}] din depozitul de \u00eencrederi [{1}] pentru c\u0103 a ap\u0103rut o eroare \u00een timpul ob\u0163inerii cheilor publice din depozitul de \u00eencrederi. {2}
+ERROR_LOADING_GETTING_PUBLIC_KEYS.explanation=E posibil s\u0103 nu fie disponibil serviciul de depozit de chei, certificatele din depozitul de \u00eencrederi s\u0103 nu poate fi \u00eenc\u0103rcate sau ca certificatul cu aliasul specificat s\u0103 nu poate fi \u00eenc\u0103rcat.
+ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# 0=Private key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: Nu poate fi \u00eenc\u0103rcat\u0103 o cheie privat\u0103 cu aliasul [{0}] din depozitul de chei [{1}]. {2}
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=E posibil s\u0103 nu fie prezent\u0103 o cheie privat\u0103 cu aliasul specificat \u00een depozitul de chei, cheia privat\u0103 ar putea s\u0103 nu fie de tipul corect, e posibil ca depozitul de chei s\u0103 nu fie ini\u0163ializat \u00eenc\u0103 sau ca depozitul de chei s\u0103 nu existe \u00een configura\u0163ia serverului.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Verifica\u0163i c\u0103 este inclus\u0103 o cheie privat\u0103 cu alias-ul specificat \u00een depozitul de chei \u015fi cheia privat\u0103 este de tipul corect. Verifica\u0163i c\u0103 este prezent un depozit de \u00eencrederi cu ID-ul specificat \u00een configura\u0163ia serverului \u015fi c\u0103 a fost procesat cu succes.
+
+# 0=Keystore ID, 1=Exception message
+ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: Nu poate fi \u00eenc\u0103rcat\u0103 o cheie privat\u0103 din depozitul de chei [{0}]. {1}
+ERROR_LOADING_PRIVATE_KEY.explanation=Cheia privat\u0103 care a fost selectat\u0103 din depozitul de chei ar putea s\u0103 nu fie de tipul corect, e posibil ca depozitul de chei s\u0103 nu fie ini\u0163ializat \u00eenc\u0103 sau ca depozitul de chei s\u0103 nu existe \u00een configura\u0163ia serverului.
+ERROR_LOADING_PRIVATE_KEY.useraction=Verifica\u0163i c\u0103 cheile private din depozitul de chei sunt de tipul corect. Verifica\u0163i c\u0103 este prezent un depozit de chei cu ID-ul specificat \u00een configura\u0163ia serverului \u015fi c\u0103 a fost procesat cu succes.
+
+# 0=Secret key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SECRET_KEY=CWWKS5473E: Nu poate fi \u00eenc\u0103rcat\u0103 o cheie secret\u0103 cu aliasul [{0}] din depozitul de chei [{1}]. {2}
+ERROR_LOADING_SECRET_KEY.explanation=E posibil s\u0103 nu fie prezent\u0103 o cheie secret\u0103 cu aliasul specificat \u00een depozitul de chei, cheia secret\u0103 ar putea s\u0103 nu fie de tipul corect, e posibil ca depozitul de chei s\u0103 nu fie ini\u0163ializat \u00eenc\u0103 sau ca depozitul de chei s\u0103 nu existe \u00een configura\u0163ia serverului.
+ERROR_LOADING_SECRET_KEY.useraction=Verifica\u0163i c\u0103 este inclus\u0103 o cheie secret\u0103 cu alias-ul specificat \u00een depozitul de chei \u015fi cheia secret\u0103 este de tipul corect. Verifica\u0163i c\u0103 este prezent un depozit de chei cu ID-ul specificat \u00een configura\u0163ia serverului \u015fi c\u0103 a fost procesat cu succes.
+
+# 0=HttpResponse entity
+ERROR_PARSING_RESPONSE_ENTITY=CWWKS5474E: Jetoanele nu pot fi extrase din r\u0103spuns deoarece a fost \u00eent\u00e2lnit\u0103 o eroare la parsarea r\u0103spunsului. [ {0} ]
+ERROR_PARSING_RESPONSE_ENTITY.explanation=R\u0103spunsul de la punctul final al mediului social ar putea s\u0103 nu fie \u00een formatul a\u015fteptat. E posibil s\u0103 fi ap\u0103rut o eroare \u00een timpul execut\u0103rii r\u0103spunsului sau ca mediul social s\u0103 fi returnat o eroare.
+ERROR_PARSING_RESPONSE_ENTITY.useraction=Verifica\u0163i con\u0163inutul r\u0103spunsului din mediul social. Verifica\u0163i c\u0103 con\u0163inutul r\u0103spunsului este formatat corect \u015fi c\u0103 r\u0103spunsul nu a inclus un mesaj de eroare.
+
+NULL_OR_EMPTY_REQUEST_URL=CWWKS5475E: Nu poate fi f\u0103cut\u0103 o cerere HTTP deoarece URL-ul furnizat este nul sau gol.
+NULL_OR_EMPTY_REQUEST_URL.explanation=Nu poate fi f\u0103cut\u0103 o cerere HTTP cu un URL nul sau gol. E posibil s\u0103 lipseasc\u0103 sau s\u0103 fie gol un URL de punct final din configura\u0163ia de logare social\u0103.
+NULL_OR_EMPTY_REQUEST_URL.useraction=Verifica\u0163i c\u0103 fiecare URL de punct final care este specificat \u00eentr-o configura\u0163ie de logare social\u0103 are o valoare care este un URL valid.
+
+# Do not translate "POST"
+# 0=URL to which the request was submitted, 1=Error message
+ERROR_EXECUTING_REQUEST=CWWKS5476E: A ap\u0103rut o eroare \u00een timpul realiz\u0103rii unei cereri la URL-ul furnizat [{0}]. {1}
+ERROR_EXECUTING_REQUEST.explanation=E posibil ca URL-ul furnizat s\u0103 fie malformat sau s\u0103 con\u0163in\u0103 un protocol care nu este valid sau ca o eroare s\u0103 fi \u00eempiedicat servirea cererii.
+ERROR_EXECUTING_REQUEST.useraction=Vede\u0163i mesajul pentru o descriere mai detaliat\u0103 a erorilor. Verifica\u0163i c\u0103 URL-ul este un URL bine format \u015fi c\u0103 nu exist\u0103 nicio problem\u0103 de conexiune cu serverul \u0163int\u0103.
+
+# 0=Response status
+RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: Nu poate fi g\u0103sit\u0103 starea r\u0103spunsului sau r\u0103spunsul a returnat o eroare. Starea r\u0103spunsului a fost [{0}].
+RESPONSE_STATUS_MISSING_OR_ERROR.explanation=Cererea probabil a e\u015fuat deoarece a fost neautorizat\u0103 sau lipsesc informa\u0163ii cum ar fi un parametru sau antet necesar de cerere. Dac\u0103 starea r\u0103spunsului nu a fost null, motivul \u015fi codul de stare r\u0103spuns sunt incluse \u00een mesaj.
+RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Verifica\u0163i codul de stare r\u0103spuns din mesaj, dac\u0103 este prezent. Verifica\u0163i c\u0103 au fost inclu\u015fi to\u0163i parametrii \u015fi toate anteturile necesare \u00een cerere.
+
+# 0=URL to which the request was submitted, 1=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: A e\u015fuat cererea la punctul final [{0}]. Eroarea a fost: {1}
+RESPONSE_STATUS_UNSUCCESSFUL.explanation=Cererea probabil a e\u015fuat deoarece a fost neautorizat\u0103 sau lipsesc informa\u0163ii cum ar fi un parametru sau antet necesar de cerere. E posibil ca cererea s\u0103 fi fost direc\u0163ionat\u0103 la un punct final gre\u015fit.
+RESPONSE_STATUS_UNSUCCESSFUL.useraction=Verifica\u0163i c\u0103 cererea a fost direc\u0163ionat\u0103 la punctul final corect. Verifica\u0163i c\u0103 au fost inclu\u015fi to\u0163i parametrii \u015fi toate anteturile necesare \u00een cerere.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS5479E: Atributul de configurare [{0}] care este cerut \u00een configura\u0163ia de logare social\u0103 [{1}] lipse\u015fte sau este gol. Verifica\u0163i c\u0103 atributul este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163ii albe.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=E posibil ca atributul de configurare specificat s\u0103 lipseasc\u0103 din configura\u0163ia serverului. Dac\u0103 este specificat\u0103 o valoare, spa\u0163iul alb de la \u00eenceputul \u015fi sf\u00e2r\u015fitul valorii este \u00eenl\u0103turat c\u00e2nd este procesat\u0103 valoarea, astfel \u00eenc\u00e2t \u00een configura\u0163ie s\u0103 poat\u0103 fi goal\u0103 sau s\u0103 con\u0163in\u0103 doar caractere spa\u0163ii albe.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul de configurare specificat este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163ii albe.
+
+STATE_NULL_OR_MISMATCHED=CWWKS5480E: A e\u015fuat o cerere de logare social\u0103 pentru c\u0103 elementul de stare de cerere a fost gol sau nepotrivit.
+STATE_NULL_OR_MISMATCHED.explanation=Un element de stare gol sau lips\u0103 dintr-o cerere de logare social\u0103 a cauzat o eroare. 
+STATE_NULL_OR_MISMATCHED.useraction=Verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia de logare social\u0103 \u015fi c\u0103 serviciul la distan\u0163\u0103 func\u0163ioneaz\u0103 corect.
+
+REQUEST_URL_NULL_OR_EMPTY=CWWKS5481E: A e\u015fuat o cerere de logare social\u0103 pentru c\u0103 atributul de URL de cerere a fost nul sau gol.
+REQUEST_URL_NULL_OR_EMPTY.explanation=Un atribut de URL de cerere gol sau lips\u0103 din cererea de logare social\u0103 a cauzat o eroare.
+REQUEST_URL_NULL_OR_EMPTY.useraction=Verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia de logare social\u0103 pentru URL-ul atributului \u015fi c\u0103 serviciul la distan\u0163\u0103 func\u0163ioneaz\u0103 corect.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_REQUEST_TOKEN_URL=CWWKS5482E: Caracteristica de logare social\u0103 nu poate ob\u0163ine un jeton de cerere din Twitter pentru c\u0103 URL-ul [{0}] care este specificat de c\u0103tre atributul de configurare [{1}] \u00een configura\u0163ia Twitter [{2}] nu este valid. {3}
+TWITTER_BAD_REQUEST_TOKEN_URL.explanation=Valoarea pentru atributul de configura\u0163ie specificat nu este un URL valid. Trebuie s\u0103 fie specificat un URL valid care poate servi cereri pentru jetoanele de cereri pe Twitter.
+TWITTER_BAD_REQUEST_TOKEN_URL.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat un URL valid pentru atributul de configurare specificat \u015fi c\u0103 URL-ul poate  servi cereri pentru jetoane de cereri pe Twitter. Pentru a utiliza punctele finale implicite pe Twitter, \u00eenl\u0103tura\u0163i atributul de configurare specificat din configura\u0163ia Twitter care este specificat\u0103 \u00een mesaj.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_ACCESS_TOKEN_URL=CWWKS5483E: Caracteristica de logare social\u0103 nu poate ob\u0163ine un jeton de acces de la Twitter pentru c\u0103 URL-ul [{0}] care este specificat de c\u0103tre atributul de configurare [{1}] \u00een configura\u0163ia Twitter [{2}] nu este valid. {3}
+TWITTER_BAD_ACCESS_TOKEN_URL.explanation=Valoarea pentru atributul de configura\u0163ie specificat nu este un URL valid. Trebuie s\u0103 fie specificat un URL care poate servi cereri pentru jetoanele de cereri pe Twitter.
+TWITTER_BAD_ACCESS_TOKEN_URL.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat un URL valid pentru atributul de configurare specificat \u015fi c\u0103 URL-ul poate servi cereri pentru jetoane de cereri pe Twitter. Pentru a utiliza punctele finale implicite pe Twitter, \u00eenl\u0103tura\u0163i atributul de configurare specificat din configura\u0163ia Twitter care este specificat\u0103 \u00een mesaj.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_USER_API_URL=CWWKS5484E: Caracteristica de logare social\u0103 nu poate ob\u0163ine date de cont de utilizator din Twitter pentru c\u0103 URL-ul [{0}] care este specificat de c\u0103tre atributul de configurare [{1}] \u00een configura\u0163ia Twitter [{2}] nu este valid. {3}
+TWITTER_BAD_USER_API_URL.explanation=Valoarea pentru atributul de configura\u0163ie specificat nu este un URL valid. Trebuie s\u0103 fie specificat un URL valid care poate servi cereri pentru datele de conturi de utilizatori Twitter.
+TWITTER_BAD_USER_API_URL.useraction=Asigura\u0163i-v\u0103 c\u0103 este configurat un URL valid pentru atributul de configurare specificat \u015fi c\u0103 URL-ul poate servi cereri pentru datele de conturi de utilizatori Twitter. Pentru a utiliza punctele finale implicite pe Twitter, \u00eenl\u0103tura\u0163i atributul de configurare specificat din configura\u0163ia Twitter care este specificat\u0103 \u00een mesaj.
+
+# 0=Configuration attribute name
+TWITTER_MISSING_REQ_ATTR=CWWKS5485W: Cererile de autentificare Twitter ar putea s\u0103 nu aib\u0103 succes deoarece valoarea de configura\u0163ie [{0}] furnizat\u0103 este nul\u0103 sau goal\u0103. Verifica\u0163i c\u0103 toate configura\u0163iile de logare social\u0103 pe specific\u0103 o valoare non-goal\u0103 pentru atributul de configurare [{0}].
+TWITTER_MISSING_REQ_ATTR.explanation=Atributul de configurare care este specificat \u00een mesaj lipse\u015fte din configura\u0163ie sau valoarea pentru atribut este goal\u0103 sau const\u0103 numai din caractere spa\u0163ii albe. Este necesar\u0103 o valoare care nu este goal\u0103 pentru acest atribut.
+TWITTER_MISSING_REQ_ATTR.useraction=Verifica\u0163i c\u0103 toate elementele de logare social\u0103 la Twitter din configura\u0163ia de server au configurat acest atribut care este specificat \u00een mesaj \u015fi c\u0103 valorile lor nu sunt goale.
+
+# 0=Endpoint URL, 1=Map of data about the endpoint response
+POST_RESPONSE_NULL=CWWKS5486W: Jetoanele nu pot fi extrase din r\u0103spuns din punctul final [{0}]. Maparea r\u0103spunsului din punctul final a fost [{1}].
+POST_RESPONSE_NULL.explanation=Cererea ar putea fi direc\u0163ionate c\u0103tre un punct final incorect sau cererea nu include informa\u0163ii suficiente.
+POST_RESPONSE_NULL.useraction=Verifica\u0163i c\u0103 URL-ului punctului final este corect \u015fi c\u0103 cererea a inclus toate anteturile necesare sau to\u0163i parametrii necesari. Verifica\u0163i istoricele serverului pentru mesajele de eroare suplimentare.
+
+# Do not translate "JSON"
+# 0=Endpoint URL, 1=Error message, 2=Endpoint response content
+ENDPOINT_RESPONSE_NOT_JSON=CWWKS5487W: R\u0103spunsul de la punctul final [{0}] nu a fost \u00een formatul JSON a\u015fteptat. Eroarea a fost [{1}]. Con\u0163inutul r\u0103spunsului a fost [{2}].
+ENDPOINT_RESPONSE_NOT_JSON.explanation=E posibil ca punctul final specificat s\u0103 nu fie activ sau e posibil ca punctul final specificat s\u0103 returneze r\u0103spunsuri \u00eentr-un format diferit.
+ENDPOINT_RESPONSE_NOT_JSON.useraction=Verifica\u0163i c\u0103 serverul cite\u015fte \u00eentregul r\u0103spuns din punctul final specificat. Verifica\u0163i c\u0103 cererea a fost trimis\u0103 la punctul final corect \u015fi c\u0103 r\u0103spunsul este formatat dup\u0103 cum este a\u015fteptat.
+
+# 0=URI value
+URI_CONTAINS_INVALID_CHARS=CWWKS5488W: Valoarea furnizat\u0103 [{0}] con\u0163ine cel pu\u0163in un caracter care nu poate fi inclus \u00eentr-un URI valid.
+URI_CONTAINS_INVALID_CHARS.explanation=Valoarea punctului final care este specificat\u0103 \u00een mesaj nu este considerat\u0103 un URI valid deoarece con\u0163ine caractere care nu sunt valide. Setul de caractere URI valide este definit de RFC 3986.
+URI_CONTAINS_INVALID_CHARS.useraction=Actualiza\u0163i \u015firul URI pentru a con\u0163ine numai caractere URI valide.
+
+SOCIAL_LOGIN_FRONT_END_ERROR=CWWKS5489E: A survenit o eroare \u00een timpul autentific\u0103rii unui utilizator folosind mediul social.
+SOCIAL_LOGIN_FRONT_END_ERROR.explanation=A ap\u0103rut o problem\u0103 \u00een timpul autentific\u0103rii unui utilizator. E posibil s\u0103 ave\u0163i o problem\u0103 de conexiune \u00eentre aplica\u0163ie \u015fi un furnizor de servicii de ter\u0163\u0103 parte.
+SOCIAL_LOGIN_FRONT_END_ERROR.useraction=Contacta\u0163i administratorul de sistem pentru a rezolva problema.
+
+# 0=User API URL, 1=HTTP response status, 2=Error code, 3=Error description
+USERAPI_RESP_INVALID_STATUS=CWWKS5490E: Nu se poate procesa r\u0103spunsul din punctul final al API-ului de utilizator [{0}]. Starea r\u0103spunsului a fost [{1}], eroarea a fost [{2}] \u015fi descrierea erorii a fost [{3}].
+USERAPI_RESP_INVALID_STATUS.explanation=Starea r\u0103spunsului specificat\u0103 nu a indicat un rezultat reu\u015fit. Eroarea \u015fi descrierea erorii furnizat\u0103 \u00een mesaj pot con\u0163ine informa\u0163ii suplimentare.
+USERAPI_RESP_INVALID_STATUS.useraction=Efectua\u0163i ac\u0163iunea necesar\u0103 pentru a corecta eroarea \u00een r\u0103spuns.
+
+# 0=User API URL, 1=Error message
+USERAPI_ERROR_RESPONSE=CWWKS5491E: Nu se poate procesa r\u0103spunsul de eroare din punctul final al API-ului de utilizator [{0}]. Eroarea a fost: [{1}]
+USERAPI_ERROR_RESPONSE.explanation=Punctul final al API-ului de utilizator specificat nu a returnat o stare valid\u0103 de r\u0103spuns \u015fi a fost \u00eent\u00e2lnit\u0103 o eroare \u00een timpul proces\u0103rii r\u0103spunsului.
+USERAPI_ERROR_RESPONSE.useraction=Verifica\u0163i c\u0103 punctul final specificat este corect \u015fi c\u0103 este un punct final valid care este capabil s\u0103 proceseze cererile API-urilor pentru informa\u0163iile de utilizator.
+
+# 0=User API URL, 1=Error message
+USERAPI_RESP_PROCESS_ERR=CWWKS5492E: Nu se poate procesa r\u0103spunsul din punctul final al API-ului de utilizator [{0}]. Eroarea a fost: [{1}]
+USERAPI_RESP_PROCESS_ERR.explanation=Punctul final al API-ului de utilizator specificat a returnat o stare valid\u0103 de r\u0103spuns, dar runtime-ul a \u00eent\u00e2lnit o eroare \u00een timpul proces\u0103rii con\u0163inutului r\u0103spunsului.
+USERAPI_RESP_PROCESS_ERR.useraction=Verifica\u0163i c\u0103 punctul final specificat este corect \u015fi c\u0103 con\u0163inutul r\u0103spunsului este formatat corect. Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj.
+
+# 0=User API URL
+USERAPI_NULL_RESP_STR=CWWKS5493E: Con\u0163inutul r\u0103spunsului de la punctul final al API-ului de utilizator [{0}] nu este valid. 
+USERAPI_NULL_RESP_STR.explanation=Punctul final al API-ului de utilizator specificat nu a returnat un r\u0103spuns valid la cererea API-ului de utilizator. 
+USERAPI_NULL_RESP_STR.useraction=Verifica\u0163i c\u0103 punctul final specificat este corect \u015fi c\u0103 este un punct final valid care este capabil s\u0103 proceseze cererile API-urilor pentru informa\u0163iile de utilizator.
+
+# do not translate CODE
+CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: A e\u015fuat o cerere de logare social\u0103 pentru c\u0103 atributul CODE de cerere a fost nul sau gol.
+CODE_PARAMETER_NULL_OR_EMPTY.explanation=Un atribut CODE gol sau lips\u0103 din cererea de logare social\u0103 a cauzat o eroare. 
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia de logare social\u0103 pentru atributul CODE \u015fi c\u0103 serviciul la distan\u0163\u0103 func\u0163ioneaz\u0103 corect.
+
+# 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
+REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: O cerere de autentificare pentru logarea social\u0103 a e\u015fuat deoarece mediul social a returnat urm\u0103toarea eroare {0}: {1}. URI-ul de eroare a fost [{2}].
+REDIRECT_REQUEST_CONTAINED_ERROR.explanation=Starea r\u0103spunsului specificat a indicat c\u0103 autentificarea nu a avut succes. Eroarea \u015fi descrierea erorii furnizatr \u00een mesaj pot con\u0163ine informa\u0163ii suplimentare.
+REDIRECT_REQUEST_CONTAINED_ERROR.useraction=Verifica\u0163i c\u0103 logarea social\u0103 este configurat\u0103 corect \u00een configura\u0163ia serverului \u015fi verifica\u0163i c\u0103 valorile din configura\u0163ia serverului se potrivesc cu valorile care sunt definite \u00een mediule social la distan\u0163\u0103.
+
+# 0=URI value
+HTTP_URI_DOES_NOT_START_WITH_HTTP=CWWKS5496W: Este de a\u015fteptat ca valoarea furnizat\u0103 [{0}] s\u0103 fie un URI HTTP. Valoarea nu \u00eencepe cu un protocol HTTP.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.explanation=Este de a\u015fteptat ca valoarea s\u0103 fie un URI HTTP, deci valoarea trebuie s\u0103 \u00eenceap\u0103 fie cu http:// fie cu https://.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.useraction=Actualiza\u0163i URI-ul astfel \u00eenc\u00e2t s\u0103 specifice fie protocolul HTTP fie HTTPS.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=User API value, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_USER_API=CWWKS5497E: Caracteristica de logare social\u0103 nu poate crea un JSON Web Token (JWT) folosind informa\u0163iile de la API-ul de utilizator configurat [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_USER_API.explanation=Eroarea care este afi\u015fat\u0103 \u00een mesaj ar trebui s\u0103 furnizeze un motiv anume pentru care JWT-ul nu poate fi creat. Fie cererea API-ului de utilizator este format\u0103 gre\u015fit fie lipsesc informa\u0163ii, a ap\u0103rut o eroare dup\u0103 ce a fost lansat\u0103 cererea API-ului de utilizator, fie r\u0103spunsul de la API-ul de utilizator nu poate fi utilizat pentru a crea un JWT.
+FAILED_TO_CREATE_JWT_FROM_USER_API.useraction=Verifica\u0163i c\u0103 valoarea API-ului de utilizator este corect\u0103. Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=JWT configuration element ID, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN=CWWKS5498E: Caracteristica de logare social\u0103 nu poate crea un JSON Web Token (JWT) folosind jetonul de ID furnizat \u015fi configura\u0163ia JWT [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.explanation=Configura\u0163ia de JWT care este specificat\u0103 \u00een mesaj ar putea fi configurat\u0103 incorect, jetonul de ID ar putea fi format gre\u015fit sau pot lipsi informa\u0163ii, sau a survenit o alt\u0103 eroare \u00een timpul cre\u0103rii JWT-ului.
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verifica\u0163i c\u0103 configura\u0163ia de JWT specificat\u0103 \u00een mesaj este configurat\u0103 corect. Vede\u0163i ac\u0163iunea de utilizator pentru eroarea afi\u015fat\u0103 \u00een mesaj. Verifica\u0163i istoricele serverului pentru toate mesajele de eroare suplimentare.
+
+# 0=Request URL value, 1=Error message
+REQUEST_URL_NOT_VALID=CWWKS5499E: Caracteristica de logare social\u0103 nu poate redirec\u0163iona cererea \u00eenapoi la URL-ul original al cererii [{0}] deoarece URL-ul nu este valid. {1}
+REQUEST_URL_NOT_VALID.explanation=URL-ul original de cerere nu este un URL valid. URL-ul ar putea include caractere care nu sunt valide sau e posibil ca URL-ul s\u0103 fie format gre\u015fit.
+REQUEST_URL_NOT_VALID.useraction=Verifica\u0163i c\u0103 URL-ul de cerere care este specificat \u00een mesaj se potrive\u015fte cu URL-ul de cerere de resurs\u0103 protejat\u0103 original\u0103. Verifica\u0163i c\u0103 URL-ul este bine format \u015fi con\u0163ine doar caractere URI valide.
