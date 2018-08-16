@@ -8,15 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.cdi20.fat;
+package jaxrs21.fat.interceptor;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.HashSet;
+import java.util.Set;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AtInjectTest.class,
-                InterceptorTest.class
-})
-public class FATSuite {}
+/**
+ *
+ */
+public class BagOfInterceptors {
+
+    public static ThreadLocal<Set<String>> businessInterceptors = ThreadLocal.withInitial(HashSet::new);
+
+    public static ThreadLocal<Set<String>> lifecycleInterceptors = ThreadLocal.withInitial(HashSet::new);
+}

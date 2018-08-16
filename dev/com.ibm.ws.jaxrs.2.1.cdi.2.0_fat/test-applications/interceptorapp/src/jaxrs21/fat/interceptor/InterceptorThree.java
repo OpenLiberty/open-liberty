@@ -8,15 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.cdi20.fat;
+package jaxrs21.fat.interceptor;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AtInjectTest.class,
-                InterceptorTest.class
-})
-public class FATSuite {}
+@InterceptableThree
+@Interceptor
+public class InterceptorThree {
+
+    @AroundInvoke
+    public Object intercept(InvocationContext ctx) throws Exception {
+        BagOfInterceptors.businessInterceptors.get().add(InterceptorThree.class.getSimpleName());
+        return ctx.proceed();
+    }
+}

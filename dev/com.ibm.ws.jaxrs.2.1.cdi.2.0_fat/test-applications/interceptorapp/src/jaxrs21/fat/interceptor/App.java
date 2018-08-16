@@ -8,15 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.cdi20.fat;
+package jaxrs21.fat.interceptor;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AtInjectTest.class,
-                InterceptorTest.class
-})
-public class FATSuite {}
+@ApplicationPath("/")
+public class App extends Application {
+
+}
