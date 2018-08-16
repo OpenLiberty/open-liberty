@@ -133,6 +133,17 @@ public class JwKRetrieverTest {
 
         assertNull("There must not be a public key.", publicKey);
     }
+    
+    @Test
+    public void testGetPublicKeyFromJwk_publicKeyLocationInvalid() throws Exception {
+        keyLocation = "badKeyLocation";
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null);
+
+        assertNull("There must not be a public key.", publicKey);
+    }
 
     // TODO: Test Base64 encoded JWK
     // TODO: Test Base64 encoded JWKS 

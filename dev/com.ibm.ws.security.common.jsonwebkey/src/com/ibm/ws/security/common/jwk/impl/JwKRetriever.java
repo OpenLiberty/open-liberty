@@ -92,6 +92,7 @@ public class JwKRetriever {
 
     String keyLocation = null;
     String publicKeyText = null;
+    String locationUsed = null;
 
     /**
      *
@@ -211,11 +212,11 @@ public class JwKRetriever {
         return isHttp;
     }
 
+    @FFDCIgnore({PrivilegedActionException.class, Exception.class})
     protected PublicKey getPublicKeyFromFile(String location, String kid, String x5t) {
         PublicKey publicKey = null;
         String keyString = null;
         InputStream inputStream = null;
-        String normalizedLocation = null;
 
         try {
 
@@ -239,29 +240,32 @@ public class JwKRetriever {
                         }
                     }
                 });
-                normalizedLocation = jwkFile.getCanonicalPath();
+                locationUsed = jwkFile.getCanonicalPath();
             } catch (PrivilegedActionException e1) {
-                URL resourceURL = Thread.currentThread().getContextClassLoader().getResource(location);
-                normalizedLocation = resourceURL.getPath();
-                inputStream = resourceURL.openStream();
             }
+
             if (inputStream == null) {
                 URL resourceURL = Thread.currentThread().getContextClassLoader().getResource(location);
-                normalizedLocation = resourceURL.getPath();
-                inputStream = resourceURL.openStream();
+                if (resourceURL != null) {
+                    locationUsed = resourceURL.getPath();
+                    inputStream = resourceURL.openStream();
+                }
             }
 
             if (inputStream != null) {
                 synchronized (jwkSet) {
-                    publicKey = getJwkFromJWKSet(normalizedLocation, kid, x5t);
+                    publicKey = getJwkFromJWKSet(locationUsed, kid, x5t);
                     if (publicKey == null) {
                         keyString = getKeyAsString(inputStream);
-                        parse(keyString, normalizedLocation, jwkSet, sigAlg);
-                        publicKey = getJwkFromJWKSet(normalizedLocation, kid, x5t);
+                        parseJwk(keyString, null, jwkSet, sigAlg);
+                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t);
                     }
                 }
             }
         } catch (Exception e2) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception opening file from location [" + location + "]: " + e2.getMessage());
+            }
         }
         return publicKey;
     }
@@ -275,7 +279,7 @@ public class JwKRetriever {
             synchronized (jwkSet) {
                 PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t);
                 if (publicKey == null) {
-                    parse(publicKeyText, null, jwkSet, sigAlg);
+                    parseJwk(publicKeyText, null, jwkSet, sigAlg);
                     publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t);
                 }
                 return publicKey;
@@ -310,17 +314,17 @@ public class JwKRetriever {
 
     @FFDCIgnore({ KeyStoreException.class })
     protected PublicKey getJwkRemote(String kid, String x5t) throws KeyStoreException, InterruptedException {
-        String jwkUrl = jwkEndpointUrl;
-        if (jwkUrl == null) {
-            jwkUrl = this.keyLocation;
+        locationUsed = jwkEndpointUrl;
+        if (locationUsed == null) {
+            locationUsed = keyLocation;
         }
-        if (jwkUrl == null || !jwkUrl.startsWith("http")) {
+        if (locationUsed == null || !locationUsed.startsWith("http")) {
             return null;
         }
         PublicKey key = null;
         try {
             synchronized (jwkSet) {
-                key = getJwkFromJWKSet(jwkUrl, kid, x5t);
+                key = getJwkFromJWKSet(locationUsed, kid, x5t);
                 if (key == null) {
                     key = doJwkRemote(kid, x5t);
                 }
@@ -335,17 +339,17 @@ public class JwKRetriever {
     protected PublicKey doJwkRemote(String kid, String x5t) throws KeyStoreException {
 
         String jsonString = null;
-        String jwkUrl = jwkEndpointUrl;
-        if (jwkUrl == null) {
-            jwkUrl = this.keyLocation;
+        locationUsed = jwkEndpointUrl;
+        if (locationUsed == null) {
+            locationUsed = keyLocation;
         }
 
         try {
             // TODO - validate url
-            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(jwkUrl, sslConfigurationName, sslSupport);
-            HttpClient client = createHTTPClient(sslSocketFactory, jwkUrl, hostNameVerificationEnabled);
-            jsonString = getHTTPRequestAsString(client, jwkUrl);
-            boolean bJwk = parse(jsonString, jwkUrl, jwkSet, sigAlg);
+            SSLSocketFactory sslSocketFactory = getSSLSocketFactory(locationUsed, sslConfigurationName, sslSupport);
+            HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled);
+            jsonString = getHTTPRequestAsString(client, locationUsed);
+            boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
 
             if (!bJwk) {
                 // can not get back any JWK from OP
@@ -353,7 +357,7 @@ public class JwKRetriever {
                 // will be handled in the parent callers
                 // debug here only
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "No JWK can be found through '" + jwkUrl + "'");
+                    Tr.debug(tc, "No JWK can be found through '" + locationUsed + "'");
                 }
             }
 
@@ -369,28 +373,18 @@ public class JwKRetriever {
             }
         }
 
-        return getJwkFromJWKSet(jwkUrl, kid, x5t);
+        return getJwkFromJWKSet(locationUsed, kid, x5t);
     }
 
     // separate to be an independent method for unit tests
-    //    public boolean parseJwk(String keyText, FileInputStream inputStream, JWKSet jwkset, String signatureAlgorithm) {
-    //        boolean bJwk = false;
-    //
-    //        if (keyText != null) {
-    //            bJwk = parseKeyText(keyText, jwkset, signatureAlgorithm);
-    //        } else if (inputStream != null) {
-    //            String keyAsString = getKeyAsString(inputStream);
-    //            bJwk = parseKeyText(keyAsString, jwkset, signatureAlgorithm);
-    //        }
-    //
-    //        return bJwk;
-    //    }
-
-    public boolean parse(String keyText, String location, JWKSet jwkset, String signatureAlgorithm) {
+    public boolean parseJwk(String keyText, FileInputStream inputStream, JWKSet jwkset, String signatureAlgorithm) {
         boolean bJwk = false;
 
         if (keyText != null) {
-            bJwk = parseKeyText(keyText, location, jwkset, signatureAlgorithm);
+            bJwk = parseKeyText(keyText, locationUsed, jwkset, signatureAlgorithm);
+        } else if (inputStream != null) {
+            String keyAsString = getKeyAsString(inputStream);
+            bJwk = parseKeyText(keyAsString, locationUsed, jwkset, signatureAlgorithm);
         }
 
         return bJwk;
