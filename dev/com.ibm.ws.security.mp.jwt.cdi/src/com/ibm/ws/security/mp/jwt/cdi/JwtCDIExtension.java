@@ -46,7 +46,7 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 /**
  *
  */
-@Component(service = WebSphereCDIExtension.class, property = { "api.classes=org.eclipse.microprofile.jwt.Claim;org.eclipse.microprofile.jwt.Claims;org.eclipse.microprofile.jwt.ClaimValue;org.eclipse.microprofile.jwt.JsonWebToken;javax.json.JsonValue;javax.json.JsonNumber;javax.json.JsonString;javax.json.JsonStructure;javax.json.JsonArray;javax.json.JsonObject, java.security.Principal" }, immediate = true)
+@Component(service = WebSphereCDIExtension.class, property = { "api.classes=org.eclipse.microprofile.jwt.Claim;org.eclipse.microprofile.jwt.Claims;org.eclipse.microprofile.jwt.ClaimValue;org.eclipse.microprofile.jwt.JsonWebToken;javax.json.JsonValue;javax.json.JsonNumber;javax.json.JsonString;javax.json.JsonStructure;javax.json.JsonArray;javax.json.JsonObject;java.security.Principal" }, immediate = true)
 public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(JwtCDIExtension.class);

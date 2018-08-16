@@ -39,7 +39,7 @@ import com.ibm.ws.security.context.SubjectManager;
  */
 @Alternative
 @Priority(100)
-@RequestScoped
+//@RequestScoped
 //@Specializes
 public class PrincipalBean implements Bean<Principal>, PassivationCapable {
 
