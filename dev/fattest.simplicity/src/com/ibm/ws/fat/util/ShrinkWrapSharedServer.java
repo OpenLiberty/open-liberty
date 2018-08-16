@@ -56,7 +56,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
     }
 
     private void getArchivesViaAnnotation(String serverName, Class testClass) {
-        String dropinsPath = "publish/servers/"+serverName+"/dropins";
+        String dropinsPath = "/dropins";
 
         for (Method method : testClass.getDeclaredMethods()){
             if (method.isAnnotationPresent(BuildShrinkWrap.class)){
@@ -164,7 +164,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
         super(serverName);
 
         archivesAndPaths = new HashMap<Archive,List<String>>();
-        String dropinsPath = "publish/servers/"+serverName+"/dropins";
+        String dropinsPath = "/dropins";
         
         for (Archive archive : shirnkWrapArchives) {
             archivesAndPaths.put(archive, Arrays.asList(dropinsPath));
@@ -198,7 +198,11 @@ public class ShrinkWrapSharedServer extends SharedServer {
             //This takes place before the servers are copied, so we do not need to worry about
             //moving archives ourselves beyond this. 
             for (String path : archivesAndPaths.get(archive)) { 
-                ShrinkHelper.exportArtifact(archive, path);
+                try {
+                    ShrinkHelper.exportToServer(getLibertyServer(), path, archive);
+                } catch (Exception e) {
+                    throw new RuntimeException(e); //TODO something better here. 
+                }
             }
         }
         super.before();
@@ -209,7 +213,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
     //Ported from WS-CD open. TODO, investigate this further. 
     @Override 
     protected void after() {
-       if (shutdownAfterTest &&getLibertyServer().isStarted()) {
+       if (shutdownAfterTest && getLibertyServer().isStarted()) {
             try { 
                 getLibertyServer().stopServer();
             } catch (Exception e) {
