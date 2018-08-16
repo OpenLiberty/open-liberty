@@ -29,8 +29,13 @@ public class PemKeyUtil {
     -----END PUBLIC KEY-----
      */
 
+
     protected final static String BEGIN = "-----BEGIN PUBLIC KEY-----";
     protected final static String END = "-----END PUBLIC KEY-----";
+    protected final static String BEGIN2 = "-----BEGIN RSA PUBLIC KEY-----";
+    protected final static String END2 = "-----END RSA PUBLIC KEY-----";
+
+
     protected final static String LINE_SEPARATOR_UNIX = "\n";
     protected final static String LINE_SEPARATOR_MAC = "\r";
     protected final static String LINE_SEPARATOR_WINDOW = "\r\n";
@@ -47,6 +52,8 @@ public class PemKeyUtil {
     private static String removeDelimiter(String pem) {
         pem = pem.replaceAll(BEGIN, "");
         pem = pem.replaceAll(END, "");
+        pem = pem.replaceAll(BEGIN2, "");
+        pem = pem.replaceAll(END2, "");
         //Can not call System.getProperty("line.separator"), as client and server could have different OS
         pem = pem.replaceAll(LINE_SEPARATOR_UNIX, "");
         pem = pem.replaceAll(LINE_SEPARATOR_MAC, "");
