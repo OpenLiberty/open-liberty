@@ -49,6 +49,7 @@ import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
+import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.ComponentContext;
 
@@ -83,6 +84,7 @@ import test.utils.TestUtils;
 import test.utils.TestUtils.TestBundleRevision;
 import test.utils.TestUtils.TestBundleStartLevel;
 import test.utils.TestUtils.TestFrameworkStartLevel;
+import test.utils.TestUtils.TestFrameworkWiring;
 
 /**
  *
@@ -150,6 +152,7 @@ public class FeatureManagerTest {
     final TestBundleRevision mockBundleRevision = context.mock(TestBundleRevision.class);
     final TestBundleStartLevel mockBundleStartLevel = context.mock(TestBundleStartLevel.class);
     final TestFrameworkStartLevel testFrameworkStartLevel = new TestFrameworkStartLevel();
+    final TestFrameworkWiring testFrameworkWiring = new TestFrameworkWiring();
 
     FeatureManager fm;
     Provisioner provisioner;
@@ -205,6 +208,9 @@ public class FeatureManagerTest {
 
                     one(mockBundle).adapt(FrameworkStartLevel.class);
                     will(returnValue(testFrameworkStartLevel));
+
+                    one(mockBundle).adapt(FrameworkWiring.class);
+                    will(returnValue(testFrameworkWiring));
 
                     allowing(mockBundleContext).getProperty(with("com.ibm.ws.liberty.content.request"));
                     will(returnValue(null));
@@ -460,6 +466,9 @@ public class FeatureManagerTest {
 
                     one(mockBundle).adapt(FrameworkStartLevel.class);
                     will(returnValue(testFrameworkStartLevel));
+
+                    one(mockBundle).adapt(FrameworkWiring.class);
+                    will(returnValue(testFrameworkWiring));
 
                     allowing(executorService).execute(with(any(Runnable.class)));
                     one(variableRegistry).addVariable(with("feature:usr"), with("${usr.extension.dir}/lib/features/"));
