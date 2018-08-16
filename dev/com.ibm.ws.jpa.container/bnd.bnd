@@ -60,6 +60,7 @@ Import-Package: \
  javax.persistence.criteria;version="[1.1.0, 2.3.0)", \
  javax.persistence.metamodel;version="[1.1.0, 2.3.0)", \
  javax.persistence.spi;version="[1.1.0, 2.3.0)", \
+ !javax.activation,\
  !javax.xml.bind.*, \
  *
  
@@ -67,6 +68,7 @@ Import-Package: \
 # those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
 # bundle will be always used due to JAXB 2.2 API is not resolved
 DynamicImport-Package: \
+ javax.activation,\
  javax.xml.bind, \
  javax.xml.bind.annotation, \
  javax.xml.bind.annotation.adapters, \

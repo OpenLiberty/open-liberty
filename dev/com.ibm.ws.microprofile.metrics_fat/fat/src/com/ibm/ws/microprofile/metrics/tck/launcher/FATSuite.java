@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 MetricsClassLoaderTest_10.class,
-                MetricsClassLoaderTest_11.class
+                MetricsClassLoaderTest_11.class,
+                MetricsAuthenticationTest.class
 })
 
 public class FATSuite {}
