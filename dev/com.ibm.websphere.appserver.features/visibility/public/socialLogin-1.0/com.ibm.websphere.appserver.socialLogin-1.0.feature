@@ -4,7 +4,6 @@ visibility=public
 IBM-ShortName: socialLogin-1.0
 Subsystem-Name: Social Media Login 1.0
 -features=\
-  com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:="1.2,2.0"; apiJar=false, \
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0", \
   com.ibm.websphere.appserver.jwt-1.0, \
   com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:=1.1, \
@@ -18,7 +17,6 @@ Subsystem-Name: Social Media Login 1.0
   com.ibm.ws.security.common.jsonwebkey, \
   com.ibm.ws.org.apache.commons.codec.1.4, \
   com.ibm.ws.com.google.gson.2.2.4, \
-  com.ibm.ws.com.google.guava.14.0.1, \
   com.ibm.json4j, \
   com.ibm.ws.org.joda.time.1.6.2, \
   com.ibm.ws.org.apache.commons.logging.1.0.3
