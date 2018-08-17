@@ -19,7 +19,7 @@ dependencies {
 
 task addAppLibs(type: Copy) {
   from configurations.appLibs
-  into "${buildDir}/autoFVT/test-applications/jaxbApp/resources/WEB-INF/lib"
+  into "${buildDir}/autoFVT/test-applications/thirdPartyJaxbApp/resources/WEB-INF/lib"
 }
 
 addRequiredLibraries {

@@ -37,7 +37,7 @@ import net.jodah.failsafe.CircuitBreakerOpenException;
  * <li>{@link #onRetry(Throwable)} called when we've determined that a method is going to be retried</li>
  * <li>{@link #onMainExecutionComplete(Throwable)} called when all processing apart from fallback is complete</li>
  * <li>{@link #onFullExecutionComplete(Throwable)} called when all processing including fallback is complete</li>
- * <li>{@link #onQueued()} called when the execution task is added to the queue of an async bulkhead</li>
+ * <li>{@link #onQueued()} called just before the execution task is added to the queue of an async bulkhead</li>
  * <li>{@link #onUnqueued()} called when the execution task is removed from the queue of an async bulkhead</li>
  * </ul>
  * <p>
@@ -115,7 +115,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
     /**
      * Returns any failure of the method executed or null
      *
-     * @return Any Throwable thrown from the user's method or null 
+     * @return Any Throwable thrown from the user's method or null
      *         No @Override as not in 1.0
      */
     public Throwable getFailure() {
@@ -337,7 +337,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
     }
 
     /**
-     * Called when an execution task enqueued on the bulkhead
+     * Called just before an execution task enqueued on the bulkhead
      */
     public void onQueued() {
         try {

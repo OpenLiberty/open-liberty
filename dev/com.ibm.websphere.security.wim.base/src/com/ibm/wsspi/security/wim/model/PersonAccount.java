@@ -2164,6 +2164,14 @@ public class PersonAccount extends LoginAccount {
 
     @Override
     public Object get(String propName) {
+
+        /*
+         * Require a property name.
+         */
+        if (propName == null || propName.trim().isEmpty()) {
+            return null;
+        }
+
         if (propName.equals(PROP_UID)) {
             return getUid();
         }
@@ -2353,6 +2361,14 @@ public class PersonAccount extends LoginAccount {
 
     @Override
     public boolean isSet(String propName) {
+
+        /*
+         * Require a property name.
+         */
+        if (propName == null || propName.trim().isEmpty()) {
+            return false;
+        }
+
         if (propName.equals(PROP_UID)) {
             return isSetUid();
         }
@@ -2542,6 +2558,14 @@ public class PersonAccount extends LoginAccount {
 
     @Override
     public void set(String propName, Object value) {
+
+        /*
+         * Require a property name.
+         */
+        if (propName == null || propName.trim().isEmpty()) {
+            return;
+        }
+
         if (propName.equals(PROP_UID)) {
             setUid(((String) value));
         }
@@ -2731,6 +2755,13 @@ public class PersonAccount extends LoginAccount {
 
     @Override
     public void unset(String propName) {
+        /*
+         * Require a property name.
+         */
+        if (propName == null || propName.trim().isEmpty()) {
+            return;
+        }
+
         if (propName.equals(PROP_DISPLAY_NAME)) {
             unsetDisplayName();
         }

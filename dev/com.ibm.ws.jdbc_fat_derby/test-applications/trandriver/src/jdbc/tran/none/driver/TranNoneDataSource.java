@@ -25,6 +25,7 @@ import org.apache.derby.jdbc.EmbeddedDataSource;
  */
 public class TranNoneDataSource implements DataSource {
     private final EmbeddedDataSource impl;
+    private String serverName;
 
     /* Methods for wrapping Derby Embedded */
     public void setCreateDatabase(String create) {
@@ -45,6 +46,14 @@ public class TranNoneDataSource implements DataSource {
 
     public TranNoneDataSource() {
         impl = new EmbeddedDataSource();
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
+
+    public String getServerName() {
+        return this.serverName;
     }
 
     @Override

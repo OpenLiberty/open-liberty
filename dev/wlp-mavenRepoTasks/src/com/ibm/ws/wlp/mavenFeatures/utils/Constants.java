@@ -55,8 +55,20 @@ public class Constants {
 	public static final String LICENSE_URL_MAVEN = "http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/";
 	public static final String LICENSE_COMMENTS_MAVEN = "Additional notices http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/notices.html";
 	
+	public static final String WEBSPHERE_LIBERTY_BOM = "WebSphere Liberty features bill of materials";
+	public static final String WEBSPHERE_LIBERTY_JSON = "WebSphere Liberty features JSON";
+	public static final String OPEN_LIBERTY_BOM = "Open Liberty features bill of materials";
+	public static final String OPEN_LIBERTY_JSON = "Open Liberty features JSON";
 
-
+	public static final String OPEN_LIBERTY_SCM_CONNECTION = "scm:git:git@github.com:OpenLiberty/open-liberty.git";
+	public static final String OPEN_LIBRETY_SCM_URL = "git@github.com:OpenLiberty/open-liberty.git";
+	public static final String OPEN_LIBERTY_SCM_TAG = "HEAD";
+	public static final String OPEN_LIBERTY_URL = "https://openliberty.io/";
+	
+	public static final String DEV_ID = "ericglau";
+	public static final String DEV_NAME = "Eric Lau";
+	public static final String DEV_EMAIL = "ericglau@ca.ibm.com"; 
+	
 	public static final String SHORT_NAME_KEY = "shortName";
 	
 	public static final String MAVEN_MODEL_VERSION = "4.0.0";

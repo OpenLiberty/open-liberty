@@ -684,6 +684,10 @@ warning.server.status.invalid.targets=CWWKE0946W: A status request was received 
 warning.server.status.invalid.targets.explanation=A user issued a status request with an empty target list on the target option. The request completed but no action was taken.
 warning.server.status.invalid.targets.useraction=Specify on the target option a list of components to check their status. To check the cumulative status of all pause capable components in the server, issue status request without the target option.
 
+warning.package.root.invalid=CWWKE0947W: A --server-root option with an empty argument is not allowed when Product Extensions are installed. The default argument of wlp will be used.
+warning.package.root.invalid.explanation=The user performed a package request with a --server-root option specifying an empty argument and Product Extensions were detected. The default server root of wlp will be used.
+warning.package.root.invalid.useraction=No action is required.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.

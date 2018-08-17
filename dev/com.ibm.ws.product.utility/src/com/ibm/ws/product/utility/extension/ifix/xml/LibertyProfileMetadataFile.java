@@ -13,22 +13,24 @@ package com.ibm.ws.product.utility.extension.ifix.xml;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-@XmlRootElement(name = "libertyFixMetadata")
 public class LibertyProfileMetadataFile implements MetadataOutput {
 
-    @XmlElement(name = "bundles")
-    private Bundles bundles;
-
-    @XmlElement(name = "newFeatureManifests")
-    private FeatureManifests manifests;
-
-    public LibertyProfileMetadataFile() {
-        //no-op
-        //default constructor required by jaxb
+    public static LibertyProfileMetadataFile fromDocument(Document doc) {
+        if (doc == null)
+            return null;
+        Element e = doc.getDocumentElement();
+        e.normalize();
+        if (!"libertyFixMetadata".equals(e.getNodeName()))
+            return null;
+        return new LibertyProfileMetadataFile(Bundles.fromNodeList(e.getElementsByTagName("bundles")), FeatureManifests.fromNodeList(e.getElementsByTagName("newFeatureManifests")));
     }
+
+    private final Bundles bundles;
+
+    private final FeatureManifests manifests;
 
     public LibertyProfileMetadataFile(List<BundleFile> bundleFiles, Set<FeatureManifestFile> manifestFiles) {
         this.bundles = new Bundles(bundleFiles);

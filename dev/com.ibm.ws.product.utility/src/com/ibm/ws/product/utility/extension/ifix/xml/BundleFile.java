@@ -10,19 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import org.w3c.dom.Node;
 
 public class BundleFile extends UpdatedFile {
 
-    @XmlAttribute
-    private String symbolicName;
-    @XmlAttribute
-    private String version;
-    @XmlAttribute
-    private boolean isBaseBundle;
+    private final String symbolicName;
 
-    public BundleFile() {
-        //required blank constructor for jaxb
+    private final String version;
+
+    private final boolean isBaseBundle;
+
+    public static BundleFile fromNode(Node n) {
+        String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
+        long size = n.getAttributes().getNamedItem("size") == null ? null : Long.parseLong(n.getAttributes().getNamedItem("size").getNodeValue());
+        String date = n.getAttributes().getNamedItem("date") == null ? null : n.getAttributes().getNamedItem("date").getNodeValue();
+        String hash = n.getAttributes().getNamedItem("hash") == null ? n.getAttributes().getNamedItem("MD5hash") == null ? null : n.getAttributes().getNamedItem("MD5hash").getNodeValue() : n.getAttributes().getNamedItem("hash").getNodeValue();
+
+        return new BundleFile(id, size, date, hash, n.getAttributes().getNamedItem("symbolicName").getNodeValue(), n.getAttributes().getNamedItem("version").getNodeValue(), Boolean.parseBoolean(n.getAttributes().getNamedItem("isBaseBundle").getNodeValue()));
     }
 
     public BundleFile(String id, long size, String date, String hash, String symbolicName, String version, boolean isBaseBundle) {

@@ -1,0 +1,178 @@
+###############################################################################
+# Copyright (c) 2013, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+#do not translate issuerIdentifier, iss
+#
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: La validation a \u00e9chou\u00e9 pour l''ID jeton demand\u00e9 par [{0}] car l''\u00e9metteur (iss) [{1}] indiqu\u00e9 dans le jeton ne correspond pas \u00e0 l''attribut [issuerIdentifier] [{2}] pour le fournisseur indiqu\u00e9 dans la configuration client OpenId Connect. V\u00e9rifiez l''attribut issuerIdentifier dans la configuration client.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=La validation de jeton d'ID a \u00e9chou\u00e9 car l'\u00e9metteur sp\u00e9cifi\u00e9 dans la configuration client OpenID Connect (partie utilisatrice ou RP) et l'\u00e9metteur ne correspondent pas.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Assurez-vous que l'attribut [issuerIdentifier] indiqu\u00e9 dans la configuration du client OpenID Connect (RP) correspond \u00e0 l'\u00e9metteur pour le fournisseur OpenID Connect (OP) utilis\u00e9.
+
+#
+OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Une erreur s''est produite lors de la tentative de signature d''un jeton d''ID \u00e0 l''aide de l''algorithme [{0}] : [{1}].
+OIDC_IDTOKEN_SIGNATURE_ERR.explanation=Un jeton d'ID ne peut pas \u00eatre cr\u00e9\u00e9 car il n'a pas pu \u00eatre sign\u00e9. La raison de cette erreur est affich\u00e9e apr\u00e8s le message.
+OIDC_IDTOKEN_SIGNATURE_ERR.useraction=Consultez l'action utilisateur pour le message qui appara\u00eet apr\u00e8s cette erreur.
+
+#
+OIDC_IDTOKEN_INVALID_KEY_ERR=CWWKS1753E: Une erreur s''est produite lors de la tentative de signature d''un jeton d''ID \u00e0 l''aide de l''algorithme [{0}] : [{1}].
+OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=Un jeton d'ID ne peut pas \u00eatre cr\u00e9\u00e9 car il n'a pas pu \u00eatre sign\u00e9.  La raison de cette erreur est affich\u00e9e apr\u00e8s le message.
+OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Si vous utilisez une signature asym\u00e9trique, v\u00e9rifiez qu'une cl\u00e9 priv\u00e9e valide est utilis\u00e9e pour signer le jeton. Par exemple, v\u00e9rifiez si la cl\u00e9 est arriv\u00e9e \u00e0 expiration. V\u00e9rifiez que l'\u00e9l\u00e9ment de fichier de cl\u00e9s r\u00e9f\u00e9renc\u00e9 par SSL par d\u00e9faut dans server.xml pour rechercher des informations sur le fichier de magasin de cl\u00e9s contenant la cl\u00e9 priv\u00e9e.  Consultez \u00e9galement l'action utilisateur pour le message qui appara\u00eet apr\u00e8s cette erreur.
+
+#do not translate clientId, aud
+OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: La validation a \u00e9chou\u00e9 pour l''ID jeton demand\u00e9 par [{1}] car l''audience (aud) [{0}] indiqu\u00e9e dans le jeton ne correspond pas \u00e0 l''ID client [{1}] indiqu\u00e9 dans la configuration du client OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=L'audience du jeton d'ID doit correspondre \u00e0 l'ID client.  Dans ce cas, l'audience (aud) dans le jeton d'ID ne correspondait pas \u00e0 l'ID client, par cons\u00e9quent la validation du jeton d'ID a \u00e9chou\u00e9.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Assurez-vous que l'attribut [clientId] indiqu\u00e9 dans la configuration du client OpenID Connect (partie utilisatrice ou RP) est correct. La valeur est sensible \u00e0 la casse.
+
+#do not translate clientId, azp
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: La validation a \u00e9chou\u00e9 pour l''ID jeton demand\u00e9 par [{1}] car (azp) la partie autoris\u00e9e [{0}] indiqu\u00e9e dans le jeton ne correspond pas \u00e0 l''ID client [{1}] indiqu\u00e9 dans la configuration du client OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=La partie autoris\u00e9e du jeton d'ID doit correspondre \u00e0 l'ID client. Dans ce cas, la partie autoris\u00e9 (azp) dans le jeton d'ID ne correspondait pas \u00e0 l'ID client, par cons\u00e9quent la validation du jeton d'ID a \u00e9chou\u00e9.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Assurez-vous que l'attribut [clientId] indiqu\u00e9 dans la configuration du client OpenID Connect (partie utilisatrice ou RP) est correct. La valeur est sensible \u00e0 la casse.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1756E: La validation a \u00e9chou\u00e9 pour l''ID jeton demand\u00e9 \u00e0 l''aide de l''algorithme [{0}] [{2}] en raison d''un \u00e9chec de v\u00e9rification de signature : [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=Un jeton d'ID ne peut pas \u00eatre valid\u00e9 car la signature n'a pas pu \u00eatre v\u00e9rifi\u00e9e. Ceci peut \u00eatre d\u00fb \u00e0 une non concordance de l'algorithme de signature ou de la une cl\u00e9 partag\u00e9e entre le client OpenID Connect et le fournisseur OpenID Connect.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=V\u00e9rifiez dans le configuration serveur que l'algorithme de signature et la cl\u00e9 partag\u00e9e configur\u00e9s sont compatibles avec ceux du fournisseur OpenID Connect.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: La validation a \u00e9chou\u00e9 pour l''ID jeton demand\u00e9 \u00e0 l''aide de l''algorithme [{0}] [{2}] en raison d''un \u00e9chec de v\u00e9rification de signature : [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Un jeton d'ID ne peut pas \u00eatre valid\u00e9 car la signature n'a pas pu \u00eatre v\u00e9rifi\u00e9e.  La raison de cette erreur est affich\u00e9e apr\u00e8s le message.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Si vous utilisez la signature asym\u00e9trique, v\u00e9rifiez que la cl\u00e9 publique du certificat peut \u00eatre utilis\u00e9e \u00e0 des fins de signature num\u00e9rique.  V\u00e9rifiez l'\u00e9l\u00e9ment de fichier de cl\u00e9s r\u00e9f\u00e9renc\u00e9 par la configuration SSL par d\u00e9faut dans server.xml pour rechercher des informations sur le fichier de cl\u00e9s contenant la cl\u00e9. Consultez \u00e9galement l'action utilisateur pour le message qui appara\u00eet apr\u00e8s cette erreur.
+ 
+#
+OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: La validation a \u00e9chou\u00e9 pour le jeton d''ID demand\u00e9 par [{0}] ; raison : [{1}]. Cela peut \u00eatre d\u00fb au fait que l''heure en cours [{2}] est post\u00e9rieure \u00e0 l''heure d''expiration du jeton [{3}] ou l''heure du probl\u00e8me [{4}] est trop \u00e9loign\u00e9e de l''heure en cours [{2}].
+OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=Un jeton d'ID ne peut pas \u00eatre valid\u00e9 car l'heure en cours affich\u00e9e ne se trouve pas entre l'heure du probl\u00e8me de jeton et l'heure d'expiration du jeton.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Assurez-vous que les horloges syst\u00e8me du client OpenID Connect (partie utilisatrice ou RP) et du fournisseur OpenID Connect (OP) sont synchronis\u00e9s (si elles se trouvent sur deux syst\u00e8mes).
+
+#do not translate at_hash
+#
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: La validation a \u00e9chou\u00e9 pour le jeton d''ID demand\u00e9 par [{0}] en raison d''une non concordance entre le jeton d''acc\u00e8s [{1}] et la r\u00e9clamation at_hash [{2}] dans le jeton d''ID. 
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=La revendication at_hash dans le jeton d'ID permet aux clients OpenID Connect d'emp\u00eacher les attaques par substitution de jeton. La valeur at_hash doit correspondre \u00e0 la valeur de hachage du jeton d'acc\u00e8s re\u00e7u par le client OpenID Connect.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Assurez-vous que la communication entre le client OpenID Connect (partie utilisatrice ou RP) et le fournisseur OpenID Connect (OP) est s\u00e9curis\u00e9e afin d'\u00e9viter la contrefa\u00e7on du jeton d'acc\u00e8s re\u00e7u par la RP.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: La validation a \u00e9chou\u00e9 pour le jeton d''ID demand\u00e9 par [{0}] en raison d''une signature manquante du jeton d''ID. La configuration du client OpenID Connect (partie utilisatrice ou RP) a indiqu\u00e9 l''algorithme [{1}] et attend un jeton d''ID sign\u00e9.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Un jeton d'ID ne peut pas \u00eatre valid\u00e9 car le jeton n'a pas \u00e9t\u00e9 sign\u00e9. Le client OpenID Connect (partie utilisatrice ou RP) attend un jeton sign\u00e9.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Assurez-vous que le fournisseur OpenID Connect permet la signature de jeton.
+
+#do not translate signatureAlgorithm
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: La validation a \u00e9chou\u00e9 pour le jeton d''ID demand\u00e9 par [{0}] en raison d''une non-concordance d''algorithmes de signature entre le client OpenID Connect [{1}] et le fournisseur OpenID Connect [{2}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Un jeton d'ID ne peut pas \u00eatre valid\u00e9 car le client OpenID Connect (partie utilisatrice ou RP) et le fournisseur OpenID Connect (OP) utilisent diff\u00e9rents algorithmes de signature pour signer/v\u00e9rifier le jeton.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Assurez-vous que la RP a indiqu\u00e9 un algorithme de signature qui correspond l'algorithme de signature OP.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: La demande de noeud final de jeton a \u00e9chou\u00e9. Impossible de valider le jeton JWT demand\u00e9 par le [{0}] en raison d''une signature manquante dans le jeton JWT. Le fournisseur OpenID Connect a sp\u00e9cifi\u00e9 l''algorithme [{1}] et s''attend \u00e0 ce que le jeton JWT soit sign\u00e9.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Impossible de v\u00e9rifier le jeton JWT car le jeton n'est pas sign\u00e9. Le fournisseur OpenID Connect s'attend \u00e0 ce que le jeton soit sign\u00e9.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=V\u00e9rifiez la configuration du client OpenID Connect pour vous assurer qu'il signe le jeton JWT.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: La demande de noeud final de jeton a \u00e9chou\u00e9. Impossible de valider le jeton JWT demand\u00e9 par le [{0}] en raison d''une non concordance des algorithmes de signature entre le fournisseur OpenID Connect [{1}] et le client OpenID Connect [{2}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Impossible de v\u00e9rifier le jeton JWT vu que le fournisseur et le client OpenID Connect utilisent des algorithmes de signature diff\u00e9rents pour signer/v\u00e9rifier le jeton.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Corrigez la configuration du client OpenID Connect en sp\u00e9cifiant un algorithme de signature correspondant \u00e0 celui du fournisseur OpenID Connect.
+
+#
+JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: La demande de noeud final de jeton a \u00e9chou\u00e9. Une erreur s''est produite lors de la tentative de signature d''un jeton JWT \u00e0 l''aide de l''algorithme [{0}] : [{1}].
+JWT_JWTTOKEN_INVALID_KEY_ERR.explanation=Un jeton JWT n'a pas pu \u00eatre cr\u00e9\u00e9 car il ne pouvait pas \u00eatre sign\u00e9.  La cause de cette erreur est indiqu\u00e9e dans le message.
+JWT_JWTTOKEN_INVALID_KEY_ERR.useraction=Si vous utilisez une signature asym\u00e9trique, v\u00e9rifiez qu'une cl\u00e9 priv\u00e9e valide est utilis\u00e9e pour signer le jeton. Par exemple, v\u00e9rifiez si la cl\u00e9 est arriv\u00e9e \u00e0 expiration. Examinez l'\u00e9l\u00e9ment keyStore r\u00e9f\u00e9renc\u00e9 par la configuration SSL par d\u00e9faut dans le fichier server.xml pour rechercher des informations sur le fichier de cl\u00e9s h\u00e9bergeant la cl\u00e9 priv\u00e9e.  Consultez \u00e9galement l'action utilisateur pour le message qui appara\u00eet apr\u00e8s cette erreur.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1765E: La demande de noeud final de jeton a \u00e9chou\u00e9. La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 \u00e0 [{0}] en raison d''une exception lors de la v\u00e9rification de la signature : [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.explanation=Un jeton JWT n'est pas valide car la v\u00e9rification de sa signature a \u00e9chou\u00e9.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.useraction=V\u00e9rifiez que le jeton est sign\u00e9 comme il se doit.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1766E: La demande de noeud final de jeton a \u00e9chou\u00e9. La validation a \u00e9chou\u00e9 pour le jeton JWT demand\u00e9 par [{0}] \u00e0 l''aide de l''algorithme [{2}] en raison d''un \u00e9chec de la v\u00e9rification de la signature : [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Un jeton JWT n'a pas pu \u00eatre valid\u00e9 car sa signature n'a pas pu \u00eatre v\u00e9rifi\u00e9e.  La raison de cette erreur est affich\u00e9e apr\u00e8s le message.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Si vous utilisez une signature asym\u00e9trique, v\u00e9rifiez que la cl\u00e9 publique du certificat peut \u00eatre utilis\u00e9e \u00e0 des fins de signature num\u00e9rique.  Examinez l'\u00e9l\u00e9ment keyStore r\u00e9f\u00e9renc\u00e9 par la configuration SSL par d\u00e9faut dans le fichier server.xml pour rechercher des informations sur le fichier de cl\u00e9s h\u00e9bergeant la cl\u00e9. Consultez \u00e9galement l'action utilisateur pour le message qui appara\u00eet apr\u00e8s cette erreur.
+ 
+#
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: La demande de noeud final de jeton a \u00e9chou\u00e9. Un jeton JWT sign\u00e9 doit comporter 3 segments s\u00e9par\u00e9s par le signe ''.'', mais ce jeton JWT en comporte [{0}].
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Un jeton JWT sign\u00e9 doit comporter exactement 3 segments s\u00e9par\u00e9s par un signe '.'. Ce jeton JWT a un nombre de segments non conforme.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=V\u00e9rifiez que le jeton JWT est valide et comporte 3 segments.
+
+#
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: La demande de noeud final de jeton a \u00e9chou\u00e9. La validation du jeton JWT demand\u00e9 par le [{0}] a \u00e9chou\u00e9. Une exception IllegalStateException a \u00e9t\u00e9 renvoy\u00e9e avec le message :[{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Un jeton JWT n'a pas pu \u00eatre valid\u00e9 en raison d'une exception IllegalStatException indiqu\u00e9e dans le message.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrigez l'erreur signal\u00e9e dans le message.
+
+#
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: La demande de noeud final de jeton a \u00e9chou\u00e9. Un jeton JWT requis n'a pas \u00e9t\u00e9 d\u00e9tect\u00e9 dans la demande.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=La demande doit fournir un jeton JWT mais celui-ci est introuvable dans la demande de noeud final de jeton.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Fournissez un jeton JWT valide dans la demande de noeud final de jeton.
+
+#
+JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: La configuration client OpenID Connect a besoin d'un attribut jwkEndpointUrl.
+JWK_ENDPOINT_MISSING_ERR.explanation=L'attribut jwkEndpointUrl n'a pas \u00e9t\u00e9 fourni dans la configuration client OpenID Connect.
+JWK_ENDPOINT_MISSING_ERR.useraction=D\u00e9finissez l'attribut jwkEndpointUrl sur l'URL de la cl\u00e9 Web JSON du fournisseur OpenID Connect.
+
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Une exception s''est produite lors de la tentative d''ex\u00e9cution de RunAsSubject. L''exception \u00e9tait : [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Une exception s'est produite lors de l'obtention de RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=V\u00e9rifiez que le serveur est configur\u00e9 et a d\u00e9marr\u00e9 correctement.
+
+#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{0}] vu que le jeton est en dehors de sa plage valide. Cela peut \u00eatre d\u00fb au fait que l''heure en cours [{1}] est post\u00e9rieure \u00e0 l''heure d''expiration du jeton [{2}] ou l''heure du probl\u00e8me [{3}] est trop \u00e9loign\u00e9e de l''heure en cours [{1}].
+OIDC_JWT_VERIFY_STATE_ERR.explanation=Un jeton n'a pas pu \u00eatre valid\u00e9 vu que l'heure actuelle affich\u00e9e n'est pas comprise entre son heure d'\u00e9mission et son heure d'expiration.
+OIDC_JWT_VERIFY_STATE_ERR.useraction=Assurez-vous que les horloges syst\u00e8me du client OpenID Connect (partie utilisatrice ou RP) et du fournisseur OpenID Connect (OP) sont synchronis\u00e9s (si elles se trouvent sur deux syst\u00e8mes).
+
+# Do not translate clientId, aud
+#0=aud claim, 1=OIDC client ID, 2=audiences of the oidc client
+OIDC_JWT_VERIFY_AUD_ERR=CWWKS1774E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{1}] car la r\u00e9clamation aud [{0}] dans le jeton n''est pas contenue dans l''attribut audiences [{2}] de la configuration du client OpenID Connect.
+OIDC_JWT_VERIFY_AUD_ERR.explanation=La revendication aud dans le jeton doit \u00eatre sp\u00e9cifi\u00e9e dans l'attribut audiences de la configuration du client OpenID Connect, ou toutes les audiences doivent \u00eatre autoris\u00e9es en sp\u00e9cifiant la valeur ALL_AUDIENCES dans l'attribut audiences de la configuration du client.
+OIDC_JWT_VERIFY_AUD_ERR.useraction=Assurez-vous que l'attribut audiences sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect est correct. Si vous souhaitez autoriser toutes les revendications aud, la valeur ALL_AUDIENCES doit \u00eatre sp\u00e9cifi\u00e9e pour l'attribut audiences dans la configuration du client OpenID Connect. Sinon, la revendication aud fournie dans le jeton doit \u00eatre contenue dans la valeur d'attribut audiences de la configuration du client OpenID Connect. La valeur est sensible \u00e0 la casse.
+
+# do not translate iat
+# 0= oidc client id.
+OIDC_ID_VERIFY_IAT_ERR=CWWKS1775E: La validation du jeton demand\u00e9 par [{0}] a \u00e9chou\u00e9 car la revendication iat n''est pas pr\u00e9sente dans le jeton.
+OIDC_ID_VERIFY_IAT_ERR.explanation=Le jeton doit contenir une revendication iat (\u00e9mis \u00e0).
+OIDC_ID_VERIFY_IAT_ERR.useraction=Procurez-vous un jeton valide aupr\u00e8s du fournisseur OpenId Connect.
+
+
+#0=OIDC client ID, 1=exception, 2=signature algorithm
+OIDC_JWT_SIGNATURE_VERIFY_ERR=CWWKS1776E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{0}] \u00e0 l''ide de l''algorithme [{2}] en raison d''un \u00e9chec de la v\u00e9rification de la signature : [{1}]
+OIDC_JWT_SIGNATURE_VERIFY_ERR.explanation=Le jeton ne peut pas \u00eatre valid\u00e9 car la signature n'a pas pu \u00eatre v\u00e9rifi\u00e9e. La cause de cette erreur est affich\u00e9e dans le message. Ceci peut \u00eatre d\u00fb \u00e0 une non concordance de l'algorithme de signature ou de la une cl\u00e9 partag\u00e9e entre le client OpenID Connect et le fournisseur OpenID Connect.
+OIDC_JWT_SIGNATURE_VERIFY_ERR.useraction=Consultez l'action utilisateur \u00e0 engager pour l'erreur indiqu\u00e9e dans le message. Si l'erreur semble provenir d'une non concordance de cl\u00e9, v\u00e9rifiez la configuration du serveur pour vous assurer que l'algorithme de signature configur\u00e9 et la cl\u00e9 partag\u00e9e configur\u00e9e sont compatibles avec ceux du fournisseur OpenID Connect.
+
+# Do not translate signatureAlgorithm
+#0= OIDC client ID, 1=client's signature algorithm (such as RS256, HS256), 2=provider's signature algorithm (RS256, HS256, etc.)
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1777E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{0}] en raison d''une non concordance des algorithmes de signature entre le client OpenID Connect et le fournisseur OpenID Connect. L''algorithme de signature du client est [{1}] et l''algorithme de signature du fournisseur est [{2}].
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Le jeton ne peut pas \u00eatre valid\u00e9 car le client OpenID Connect (partie utilisatrice ou RP) et le fournisseur OpenID Connect (OP) utilisent des algorithmes de signature diff\u00e9rents.
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Assurez-vous que l'attribut signatureAlgorithm sp\u00e9cifi\u00e9 dans la configuration RP correspond \u00e0 l'algorithme de signature du fournisseur OP.
+
+# Do not translate signatureAlgorithm
+#0=OIDC client ID, 1=signature algorithm (none, RS256, HS256)
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1778E: La validation du jeton demand\u00e9 par [{0}] a \u00e9chou\u00e9 car la signature est manquante dans le jeton. L''attribut signatureAlgorithm pour le client OpenID Connect est d\u00e9fini \u00e0 [{1}]. Ce param\u00e8tre d''algorithme de signature requiert une signature.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Le jeton n'a pas pu \u00eatre valid\u00e9 car le jeton n'est pas sign\u00e9. Le param\u00e8tre d'algorithme de signature du client OpenID Connect requiert que les jetons soient sign\u00e9s.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Effectuez l'une des op\u00e9rations suivantes : 1) D\u00e9finissez l'attribut signatureAlgorithm dans la configuration du client OpenID Connect \u00e0 "aucun". 2) Envoyez un jeton sign\u00e9.
+
+# Do not translate aud, audiences (only when followed by "attribute", i.e. "audiences attribute" or "audiences configuration attribute")
+#0=OIDC client ID, 1=audiences of the oidc client
+OIDC_JWT_MISSING_AUD=CWWKS1779E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{0}] car le jeton ne contenait pas de r\u00e9clamation aud. Le client OpenID Connect [{0}] est configur\u00e9 pour ne faire confiance qu''aux audiences suivantes : [{1}]
+OIDC_JWT_MISSING_AUD.explanation=Le client OpenID Connect validant le jeton a configur\u00e9 l'attribut audiences pour qu'il fasse confiance \u00e0 certaines audiences. En cons\u00e9quence, tous les jetons valid\u00e9s par ce client doivent contenir une revendication aud. La revendication aud dans le jeton doit \u00e9galement correspondre \u00e0 l'une des audiences configur\u00e9es pour \u00eatre dignes de confiance par le client dans l'attribut de configuration audiences.
+OIDC_JWT_MISSING_AUD.useraction=V\u00e9rifiez que le jeton fourni \u00e0 votre client OpenID Connect contient une revendication aud. Si vous ne souhaitez pas valider les audiences de jeton, supprimez l'attribut audiences de votre configuration du client OpenID Connect.
+
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1780E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le jeton soumis dans la requ\u00eate ne peut pas \u00eatre utilis\u00e9. La revendication nbf (pas avant) [{0}] est post\u00e9rieure \u00e0 l''heure actuelle, [{1}], et cette condition n''est pas autoris\u00e9e.
+PROPAGATION_TOKEN_NBF_ERR.explanation=La revendication nbf (pas avant) dans le jeton est post\u00e9rieure \u00e0 l'heure en cours et l'environnement d'ex\u00e9cution ne peut pas utiliser le jeton \u00e0 l'heure actuelle.
+PROPAGATION_TOKEN_NBF_ERR.useraction=V\u00e9rifiez que le jeton ne contient pas de revendication "nbf" sp\u00e9cifiant une heure post\u00e9rieure et/ou synchronisez les horloges syst\u00e8me ou resoumettez la requ\u00eate \u00e0 une heure post\u00e9rieure.
+
+# 0=OIDC client ID, 1="issuer" value (typically a URL), 2=Trusted issuer list, 3=OIDC client configuration attribute that specifies trusted issuers
+TOKEN_ISSUER_NOT_TRUSTED=CWWKS1781E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par le client [{0}] car l''\u00e9metteur (iss) [{1}] sp\u00e9cifi\u00e9 dans le jeton ne correspond \u00e0 aucun des \u00e9metteurs [{2}] s\u00e9curis\u00e9s sp\u00e9cifi\u00e9s par l''attribut [{3}] de la configuration client OpenID Connect.
+TOKEN_ISSUER_NOT_TRUSTED.explanation=Le jeton contient une valeur d'\u00e9metteur non sp\u00e9cifi\u00e9e comme correspondant \u00e0 un \u00e9metteur s\u00e9curis\u00e9 dans la configuration client OpenID Connect. Les jetons qui sont valid\u00e9s par ce client OpenID Connect doivent \u00eatre \u00e9mis par un \u00e9metteur fiable.
+TOKEN_ISSUER_NOT_TRUSTED.useraction=V\u00e9rifiez que la valeur de sp\u00e9cification d'\u00e9metteur figurant dans le jeton est incluse dans l'attribut sp\u00e9cifi\u00e9 dans la configuration client OpenID Connect.
+
+# 0=Claim name that should not be in the token, 1=OIDC client configuration attribute
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: Le serveur de ressources a rejet\u00e9 la requ\u00eate d''authentification car le jeton contient une assertion [{0}] alors que la valeur de l''attribut de configuration client [{1}] indique que le jeton ne doit pas contenir cette assertion.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Le jeton ne peut pas contenir l'assertion sp\u00e9cifi\u00e9e en raison de la valeur de l'attribut de configuration sp\u00e9cifi\u00e9e.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Vous devez obtenir un nouveau jeton ne contenant pas l'assertion sp\u00e9cifi\u00e9e ou modifier l'attribut de configuration indiqu\u00e9 pour lui permettre de figurer dans le jeton.

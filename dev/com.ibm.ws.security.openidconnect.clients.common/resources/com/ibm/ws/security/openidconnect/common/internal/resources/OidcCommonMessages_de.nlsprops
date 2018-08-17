@@ -1,0 +1,178 @@
+###############################################################################
+# Copyright (c) 2013, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+#do not translate issuerIdentifier, iss
+#
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Die Validierung f\u00fcr das von [{0}] angeforderte ID-Token ist fehlgeschlagen, weil der im Token angegebene Aussteller (iss) [{1}] nicht mit dem [issuerIdentifier]-Attribut  [{2}] f\u00fcr den in der OpenID Connect-Clientkonfiguration angegebenen Provider \u00fcbereinstimmt. \u00dcberpr\u00fcfen Sie das Attribut issuerIdentifier in der Clientkonfiguration.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Die Validierung des ID-Tokens ist fehlgeschlagen, weil der in der OpenID Connect-Clientkonfiguration (RP, Relying Party) angegebene Aussteller und der Aussteller im Token nicht \u00fcbereinstimmen.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Stellen Sie sicher, dass das in der OpenID Connect-Clientkonfiguration (RP) angegebene [issuerIdentifier]-Attribut mit dem Aussteller f\u00fcr den verwendeten OpenID Connect-Provider (OP) \u00fcbereinstimmt.
+
+#
+OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Beim Versuch, ein ID-Token mit dem Algorithmus [{0}] zu signieren, ist ein Fehler aufgetreten: [{1}].
+OIDC_IDTOKEN_SIGNATURE_ERR.explanation=Es kann kein ID-Token erstellt werden, weil es nicht signiert werden konnte. Die Fehlerursache ist hinter der Nachricht angegeben:
+OIDC_IDTOKEN_SIGNATURE_ERR.useraction=Lesen Sie die empfohlene Benutzeraktion zu der Nachricht, die hinter diesem Fehler angezeigt wird.
+
+#
+OIDC_IDTOKEN_INVALID_KEY_ERR=CWWKS1753E: Beim Versuch, ein ID-Token mit dem Algorithmus [{0}] zu signieren, ist ein Fehler aufgetreten: [{1}].
+OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=Es kann kein ID-Token erstellt werden, weil es nicht signiert werden konnte. Die Fehlerursache ist hinter der Nachricht angegeben:
+OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Wenn Sie eine asymmetrische Signatur verwenden, vergewissern Sie sich, dass ein g\u00fcltiger privater Schl\u00fcssel zum Signieren des Tokens verwendet wird. Pr\u00fcfen Sie beispielsweise, ob der Schl\u00fcssel abgelaufen ist. \u00dcberpr\u00fcfen Sie das Element keyStore, das von der Standard-SSL in der Datei server.xml referenziert wird, um Informationen zu der Keystore-Datei zu erhalten, die den privaten Schl\u00fcssel enth\u00e4lt. Lesen Sie auch die empfohlene Benutzeraktion zu der Nachricht, die hinter diesem Fehler angezeigt wird.
+
+#do not translate clientId, aud
+OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: Die Validierung f\u00fcr das von [{1}] angeforderte ID-token ist fehlgeschlagen, weil die im Token angegebene Zielgruppe (aud) [{0}] nicht mit der in der OpenID Connect-Clientkonfiguration angegebenen Client-ID [{1}] \u00fcbereinstimmt.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=Die Zielgruppe im ID-Token muss mit der Client-ID \u00fcbereinstimmen. In diesem Fall stimmt die Zielgruppe (aud) im ID-Token nicht mit der Client-ID \u00fcberein, und deshalb ist die Validierung des ID-Tokens fehlgeschlagen.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Stellen Sie sicher, dass das Attribut [clientId], das in der Konfiguration des OpenID Connect-Clients (Relying Party, RP) angegeben ist, korrekt ist. Bei der Eingabe des Werts muss die Gro\u00df-/Kleinschreibung beachtet werden.
+
+#do not translate clientId, azp
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: Die Validierung f\u00fcr das von [{1}] angeforderte ID-token ist fehlgeschlagen, weil der im Token angegebene berechtigte Teilnehmer (azp) [{0}] nicht mit der in der OpenID Connect-Clientkonfiguration angegebenen Client-ID [{1}] \u00fcbereinstimmt.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=Die berechtigte Teilnehmer im ID-Token muss mit der Client-ID \u00fcbereinstimmen. In diesem Fall stimmt der berechtigte Teilnehmer (azp) im ID-Token nicht mit der Client-ID \u00fcberein, und deshalb ist die Validierung des ID-Tokens fehlgeschlagen.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Stellen Sie sicher, dass das Attribut [clientId], das in der Konfiguration des OpenID Connect-Clients (Relying Party, RP) angegeben ist, korrekt ist. Bei der Eingabe des Werts muss die Gro\u00df-/Kleinschreibung beachtet werden.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1756E: Die Validierung f\u00fcr das von [{0}] mit dem Algorithmus [{2}] angeforderte ID-Token ist wegen eines Fehlers bei der Signaturpr\u00fcfung fehlgeschlagen: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=Ein ID-Token kann nicht validiert werden, weil die Signatur nicht gepr\u00fcft werden konnte. Dies kann auf eine Abweichung beim Signaturalgorithmus oder gemeinsamen Schl\u00fcssel zwischen dem OpenID Connect-Client und dem OpenID Connect-Provider zur\u00fcckzuf\u00fchren sein.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, um sicherzustellen, dass der konfigurierte Signaturalgorithmus und der konfigurierte gemeinsame Schl\u00fcssel mit denen des OpenID Connect-Providers kompatibel sind.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: Die Validierung f\u00fcr das von [{0}] mit dem Algorithmus [{2}] angeforderte ID-Token ist wegen eines Fehlers bei der Signaturpr\u00fcfung fehlgeschlagen: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Ein ID-Token kann nicht validiert werden, weil die Signatur nicht gepr\u00fcft werden konnte. Die Fehlerursache ist hinter der Nachricht angegeben.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Wenn Sie eine asymmetrische Signatur verwenden, stellen Sie sicher, dass der \u00f6ffentliche Schl\u00fcssel im Zertifikat f\u00fcr die digitale Signatur verwendet werden kann. \u00dcberpr\u00fcfen Sie das Element keyStore, das von der SSL-Standardkonfiguration in der Datei server.xml referenziert wird, um Informationen zu dem Keystore zu erhalten, die den Schl\u00fcssel enth\u00e4lt. Lesen Sie auch die empfohlene Benutzeraktion zu der Nachricht, die hinter diesem Fehler angezeigt wird.
+ 
+#
+OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: Die Validierung f\u00fcr das von [{0}] angeforderte ID-Token ist aus dem folgenden Grund fehlgeschlagen: [{1}]. M\u00f6glicherweise liegt die aktuelle Zeit ({2}) nach der Ablaufzeit des Tokens ({3}) oder die Zeitspanne zwischen der Ausstellungszeit {4} und der aktuellen Zeit [{2}] ist zu lang.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=Ein ID-Token kann nicht validiert werden, weil die angezeigte aktuelle Zeit nicht zwischen der Ausstellungszeit und der Ablaufzeit des Tokens liegt.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Stellen Sie sicher, dass die Systemuhren des OpenID Connect-Clients (Relying Party, RP) und des OpenID Connect-Providers (OP) synchronisiert sind (sofern sie sich auf zwei unterschiedlichen Systemen befinden).
+
+#do not translate at_hash
+#
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: Die Validierung f\u00fcr das von [{0}] angeforderte ID-Token ist aufgrund abweichender Hashwerte des Zugriffstokens [{1}] und des at_hash-Anspruchs [{2}] im ID_Token fehlgeschlagen. 
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=Der at_hash-Anspruch im ID-Token erm\u00f6glicht OpenID Connect-Clients, Tokenersetzungsattacken zu verhindern. Der at_hash-Wert muss mit dem Hashwert des vom OpenID Connect-Client empfangenen Zugriffstoken \u00fcbereinstimmen.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Stellen Sie sicher, dass die Kommunikation zwischen dem OpenID Connect-Client (Relying Party, RP) und dem OpenID Connect-Provider (OP) sicher ist, um eine Manipulation des von der RP empfangenen Tokens zu verhindern.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: Die Validierung f\u00fcr das von [{0}] angeforderte ID-Token ist fehlgeschlagen, weil die Signatur im ID-Token fehlt. In der OpenID Connect-Clientkonfiguration (Relying Party, RP) ist der Algorithmus [{1}] angegeben, und es wird ein signiertes ID-Token erwartet.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Ein ID-Token kann nicht validiert werden, weil das Token nicht signiert ist. Der OpenID Connect-Client (Relying Party, RP) erwartet ein signiertes Token.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider die Signatur des Tokens zul\u00e4sst.
+
+#do not translate signatureAlgorithm
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: Die Validierung f\u00fcr das von [{0}] angeforderte ID-Token ist aufgrund abweichender Signaturalgorithmen des OpenID Connect-Clients [{1}] und des OpenID Connect-Providers [{2}] fehlgeschlagen.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Ein ID-Token kann nicht validiert werden, weil der OpenID Connect-Client (Relying Party, RP) und der OpenID Connect-Provider (OP) unterschiedliche Signaturalgorithmen zum Signieren/Pr\u00fcfen des Tokens verwenden.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Stellen Sie sicher, dass der von der RP angegebene Signaturalgorithmus dem Signaturalgorithmus des OP entspricht.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das von [{0}] angeforderte JWT-Token kann nicht validiert werden, weil die Signatur im JWT-Token fehlt. Der OpenID Connect-Provider gibt den Algorithmus [{1}] an und erwartet, dass das JWT-Token signiert ist.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Das JWT kann nicht gepr\u00fcft werden, weil das JWT-Token nicht signiert ist. Der OpenID Connect-Provider erwartet, dass das Token signiert ist.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Clientkonfiguration, um sicherzustellen, dass das JWT-Token signiert wird.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das von [{0}] angeforderte JWT-Token kann nicht validiert werden, weil die Signaturalgorithmen des OpenID Connect-Providers [{1}] und des OpenID Connect-Clients [{2}] nicht \u00fcbereinstimmen.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Das JWT-Token kann nicht gepr\u00fcft werden, weil Provider und Client unterschiedliche Signaturalgorithmen f\u00fcr die Signatur und die \u00dcberpr\u00fcfung des Tokens verwenden.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Clientkonfiguration und geben Sie den Signaturalgorithmus an, der dem OpenID Connect-Provider entspricht.
+
+#
+JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: Die Tokenendpunktanforderung ist fehlgeschlagen. Beim Versuch, ein JWT-Token mit dem Algorithmus [{0}] zu signieren, ist ein Fehler aufgetreten: [{1}].
+JWT_JWTTOKEN_INVALID_KEY_ERR.explanation=Es kann kein JWT-Token erstellt werden, weil es nicht signiert werden konnte. Die Fehlerursache ist in der Nachricht angegeben.
+JWT_JWTTOKEN_INVALID_KEY_ERR.useraction=Wenn Sie eine asymmetrische Signatur verwenden, vergewissern Sie sich, dass ein g\u00fcltiger privater Schl\u00fcssel zum Signieren des Tokens verwendet wird. Pr\u00fcfen Sie beispielsweise, ob der Schl\u00fcssel abgelaufen ist. \u00dcberpr\u00fcfen Sie das Element keyStore, das von der SSL-Standardkonfiguration in der Datei server.xml referenziert wird, um Informationen zu der Keystore-Datei zu erhalten, die den privaten Schl\u00fcssel enth\u00e4lt. Lesen Sie auch die empfohlene Benutzeraktion zu der Nachricht, die hinter diesem Fehler angezeigt wird.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1765E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Validierung f\u00fcr das aus [{0}] angeforderte JWT-Token ist wegen einer Ausnahme bei der Signaturpr\u00fcfung fehlgeschlagen: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.explanation=Ein JWT-Token ist nicht g\u00fcltig, weil die Signaturpr\u00fcfung fehlgeschlagen ist.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.useraction=Stellen Sie sicher, dass das JWT-Token ordnungsgem\u00e4\u00df signiert ist.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1766E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Validierung f\u00fcr das von [{0}] mit dem Algorithmus [{2}] angeforderte JWT-Token ist wegen eines Fehlers bei der Signaturpr\u00fcfung fehlgeschlagen: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Ein JWT-Token kann nicht validiert werden, weil die Signatur nicht gepr\u00fcft werden konnte. Die Fehlerursache ist hinter der Nachricht angegeben.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Wenn Sie eine asymmetrische Signatur verwenden, stellen Sie sicher, dass der \u00f6ffentliche Schl\u00fcssel im Zertifikat f\u00fcr die digitale Signatur verwendet werden kann. \u00dcberpr\u00fcfen Sie das Element keyStore, das von der SSL-Standardkonfiguration in der Datei server.xml referenziert wird, um Informationen zu dem Keystore zu erhalten, die den Schl\u00fcssel enth\u00e4lt. Lesen Sie auch die empfohlene Benutzeraktion zu der Nachricht, die hinter diesem Fehler angezeigt wird.
+ 
+#
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: Die Tokenendpunktanforderung ist fehlgeschlagen. Ein signiertes JWT-Token muss drei, jeweils durch einen Punkt (''.'') getrennte Segmente haben, aber dieses JWT-Token hat [{0}] Segmente.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Ein signiertes JWT-Token muss exakt drei, jeweils durch einen Punkt ('.') getrennte Segmente haben. Dieses JWT-Token hat jedoch eine ung\u00fcltige Anzahl von Segmenten.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Stellen Sie sicher, dass das JWT-Token g\u00fcltig ist und drei Segmente hat.
+
+#
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Validierung von [{0}] angeforderten JWT-Tokens ist fehlgeschlagen. Es wurde eine Ausnahme des Typs IllegalStateException mit der folgenden Nachricht ausgegeben: [{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Das JWT-Token kann nicht validiert werden, weil die in der Nachricht angegebene Ausnahme des Typs IllegalStatException eingetreten ist.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Korrigieren Sie den in der Nachricht angegebenen Fehler.
+
+#
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: Die Tokenendpunktanforderung ist fehlgeschlagen. Ein erforderliches JWT-Token wurde nicht in der Anforderung gefunden.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=Die Anforderung muss ein JWT-Token enthalten, aber das JWT-Token wurde nicht in der Tokenendpunktanforderung gefunden.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Geben Sie ein g\u00fcltiges JWT-Token in der Tokenendpunktanforderung an.
+
+#
+JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: Die OpenID Connect-Clientkonfiguration erfordert ein jwkEndpointUrl-Attribut.
+JWK_ENDPOINT_MISSING_ERR.explanation=Das Attribut jwkEndpointUrl wurde nicht in der OpenID Connect-Clientkonfiguration angegeben.
+JWK_ENDPOINT_MISSING_ERR.useraction=Setzen Sie das Attribut jwkEndpointUrl auf die URL mit dem JSON-Webschl\u00fcssel des OpenID Connect-Providers.
+
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten. Ausnahme: [{0}]
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Stellen Sie sicher, dass der Server ordnungsgem\u00e4\u00df konfiguriert und gestartet ist.
+
+#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Die Validierung f\u00fcr das von [{0}] angeforderte Token ist fehlgeschlagen, weil das Token au\u00dferhalb des g\u00fcltigen Bereichs liegt. M\u00f6glicherweise liegt die aktuelle Zeit ({1}) nach der Ablaufzeit des Tokens ({2}) oder die Zeitspanne zwischen der Ausstellungszeit {3} und der aktuellen Zeit [{1}] ist zu lang.
+OIDC_JWT_VERIFY_STATE_ERR.explanation=Ein Token kann nicht validiert werden, weil die angezeigte aktuelle Zeit nicht zwischen der Ausstellungszeit und der Ablaufzeit des Tokens liegt.
+OIDC_JWT_VERIFY_STATE_ERR.useraction=Stellen Sie sicher, dass die Systemuhren des OpenID Connect-Clients (Relying Party, RP) und des OpenID Connect-Providers (OP) synchronisiert sind (sofern sie sich auf zwei unterschiedlichen Systemen befinden).
+
+# Do not translate clientId, aud
+#0=aud claim, 1=OIDC client ID, 2=audiences of the oidc client
+OIDC_JWT_VERIFY_AUD_ERR=CWWKS1774E: Die Validierung f\u00fcr das von [{1}] angeforderte Token ist fehlgeschlagen, weil der aud-Anspruch [{0}] im Token nicht im Attribut audiences [{2}] der OpenID Connect-Clientkonfiguration enthalten ist.
+OIDC_JWT_VERIFY_AUD_ERR.explanation=Der aud-Anspruch im Token muss im Attribut audiences der OpenID Connect-Clientkonfiguration angegeben sein oder alle Zielgruppen m\u00fcssen den ALL_AUDIENCES-Wert im Attribut audiences der Clientkonfiguration angeben d\u00fcrfen.
+OIDC_JWT_VERIFY_AUD_ERR.useraction=Stellen Sie sicher, dass das in der OpenID Connect-Clientkonfiguration angegebene Attribut audiences korrekt ist. Wenn Sie alle aud-Anspr\u00fcche zulassen m\u00f6chten, muss der Wert ALL_AUDIENCES f\u00fcr das Attribut audiences in der OpenID Connect-Clientkonfiguration angegeben werden. Andernfalls muss der im Token angegebene aud-Anspruch im Wert des Attributs audiences in der OpenID Connect-Clientkonfiguration enthalten sein. Bei der Eingabe des Werts muss die Gro\u00df-/Kleinschreibung beachtet werden.
+
+# do not translate iat
+# 0= oidc client id.
+OIDC_ID_VERIFY_IAT_ERR=CWWKS1775E: Die Validierung f\u00fcr das von [{0}] angeforderte Token ist fehlgeschlagen, weil der erforderliche Anspruch iat nicht im Token enthalten ist.
+OIDC_ID_VERIFY_IAT_ERR.explanation=Das Token muss einen iat-Anspruch (issued at) enthalten.
+OIDC_ID_VERIFY_IAT_ERR.useraction=Fordern Sie ein g\u00fcltiges Token vom OpenId Connect-Provider an.
+
+
+#0=OIDC client ID, 1=exception, 2=signature algorithm
+OIDC_JWT_SIGNATURE_VERIFY_ERR=CWWKS1776E: Die Validierung f\u00fcr das von [{0}] mit dem Algorithmus [{2}] angeforderte Token ist wegen eines Fehlers bei der Signaturpr\u00fcfung fehlgeschlagen: [{1}]
+OIDC_JWT_SIGNATURE_VERIFY_ERR.explanation=Das Token kann nicht validiert werden, weil die Signatur nicht gepr\u00fcft werden konnte. Die Fehlerursache ist in der Nachricht angegeben. Dies kann auf eine Abweichung beim Signaturalgorithmus oder gemeinsamen Schl\u00fcssel zwischen dem OpenID Connect-Client und dem OpenID Connect-Provider zur\u00fcckzuf\u00fchren sein.
+OIDC_JWT_SIGNATURE_VERIFY_ERR.useraction=Sehen Sie sich die Benutzeraktion f\u00fcr die in der Nachricht angegebene Ursache an. Wenn eine Schl\u00fcsselabweichung die Ursache f\u00fcr das Problem zu sein scheint, \u00fcberpr\u00fcfen Sie die Serverkonfiguration, um sicherzustellen, dass der konfigurierte Signaturalgorithmus und der konfigurierte gemeinsame Schl\u00fcssel mit denen des OpenID Connect-Providers kompatibel sind.
+
+# Do not translate signatureAlgorithm
+#0= OIDC client ID, 1=client's signature algorithm (such as RS256, HS256), 2=provider's signature algorithm (RS256, HS256, etc.)
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1777E: Die Validierung f\u00fcr das von [{0}] angeforderte Token ist fehlgeschlagen, weil die Signaturalgorithmen des OpenID Connect-Clients und des OpenID Connect-Providers nicht \u00fcbereinstimmen. Der Signaturalgorithmus f\u00fcr den Client ist [{1}] und der Signaturalgorithmus f\u00fcr den Provider ist [{2}].
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Das Token kann nicht validiert werden, weil der OpenID Connect-Client (Relying Party oder RP) und der OpenID Connect-Provider (OP) verschiedene Signaturalgorithmen verwenden.
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Stellen Sie sicher, dass das in der RP-Konfiguration angegebene Attribut signatureAlgorithm mit dem Signaturalgorithmus f\u00fcr den OP \u00fcbereinstimmt.
+
+# Do not translate signatureAlgorithm
+#0=OIDC client ID, 1=signature algorithm (none, RS256, HS256)
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1778E: Die Validierung des von [{0}] angeforderten Tokens ist fehlgeschlagen, weil das Token keine Signatur enth\u00e4lt. Das Attribut signatureAlgorithm f\u00fcr den OpenID Connect-Client ist auf [{1}] gesetzt. Diese Signaturalgorithmuseinstellung setzt eine Signatur voraus.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Das Token kann nicht validiert werden, weil das Token nicht signiert ist. Die Signaturalgorithmuseinstellung f\u00fcr den OpenID Connect-Client setzt die Signatur der Token voraus.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Setzen Sie das Attribut signatureAlgorithm in der Konfiguration des OpenID Connect-Clients auf "none". 2) Senden Sie ein signiertes Token.
+
+# Do not translate aud, audiences (only when followed by "attribute", i.e. "audiences attribute" or "audiences configuration attribute")
+#0=OIDC client ID, 1=audiences of the oidc client
+OIDC_JWT_MISSING_AUD=CWWKS1779E: Die Validierung f\u00fcr das von [{0}] angeforderte Token ist fehlgeschlagen, weil das Token keinen aud-Anspruch enth\u00e4lt. Der OpenID Connect-Client [{0}] ist so konfiguriert, dass nur die folgenden Zielgruppen als vertrauensw\u00fcrdig eingestuft werden: [{1}]
+OIDC_JWT_MISSING_AUD.explanation=Im OpenID Connect-Client, der das Token validiert, ist das Attribut audiences so konfiguriert, dass nur bestimmte Zielgruppen als vertrauensw\u00fcrdig eingestuft werden. Deshalb m\u00fcssen alle vom Client validierten Token einen aud-Anspruch enthalten. Au\u00dferdem muss der aud-Anspruch im Token einer der Zielgruppen entsprechen, die vom Client im Konfigurationsattribut audiences als vertrauensw\u00fcrdig konfiguriert wurden.
+OIDC_JWT_MISSING_AUD.useraction=Stellen Sie sicher, dass das an Ihren OpenID Connect-Client \u00fcbergebene Token einen aud-Anspruch enth\u00e4lt. Wenn Sie die im Token angegebenen Zielgruppen nicht validieren m\u00f6chten, entfernen Sie das Attribut audiences aus Ihrer OpenID Connect-Clientkonfiguration.
+
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1780E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Token in der Anforderung nicht verwendet werden kann. Die nbf-Zeit (Not Before Time) [{0}] liegt nach der aktuellen Zeit [{1}] und diese Bedingung ist nicht zul\u00e4ssig.
+PROPAGATION_TOKEN_NBF_ERR.explanation=Die nbf-Zeit (Not Before Claim Time, Nicht vor Anspruch) im Token liegt nach der aktuellen Zeit und die Laufzeitumgebung kann das Token momentan nicht verwenden.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Stellen Sie sicher, dass der nbf-Anspruch im Token nicht auf eine k\u00fcnftige Zeit gesetzt ist, und/oder synchronisieren Sie die Zeiten der Systeme oder \u00fcbergeben Sie die Anforderung zu einem sp\u00e4teren Zeitpunkt erneut.
+
+# 0=OIDC client ID, 1="issuer" value (typically a URL), 2=Trusted issuer list, 3=OIDC client configuration attribute that specifies trusted issuers
+TOKEN_ISSUER_NOT_TRUSTED=CWWKS1781E: Die Validierung des vom Client [{0}] angeforderten Token ist fehlgeschlagen, weil der Aussteller (iss) [{1}], der im Token angegeben ist, mit keinem der anerkannten Aussteller [{2}], die im Attribut [{3}] der OpenID Connect-Clientkonfiguration angegeben sind, \u00fcbereinstimmt.
+TOKEN_ISSUER_NOT_TRUSTED.explanation=Das Token enth\u00e4lt einen Ausstellerwert, der nicht als anerkannter Aussteller in der OpenID Connect-Clientkonfiguration angegeben ist. Token, die mit diesem OpenID Connect-Client validiert werden, m\u00fcssen von einem anerkannten Aussteller ausgestellt werden.
+TOKEN_ISSUER_NOT_TRUSTED.useraction=Vergewissern Sie sich, dass der Anspruchswert f\u00fcr den Aussteller, der im Token angegeben ist, im angegebenen Attribut in der OpenID Connect-Clientkonfiguration enthalten ist.
+
+# 0=Claim name that should not be in the token, 1=OIDC client configuration attribute
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht ausf\u00fchren, weil das Token den Anspruch [{0}] enth\u00e4lt, aber der Wert des Clientkonfigurationsattributs [{1}] angibt, dass das Token den Anspruch nicht enthalten darf.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Das Token darf wegen des Werts des angegebenen Konfigurationsattributs den angegebenen Anspruch nicht enthalten.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Fordern Sie ein neues Token an, das den angegebenen Anspruch nicht enth\u00e4lt, oder \u00e4ndern Sie den angegebenen Konfigurationsattributwert so, dass der Anspruch in das Token eingeschlossen werden kann.

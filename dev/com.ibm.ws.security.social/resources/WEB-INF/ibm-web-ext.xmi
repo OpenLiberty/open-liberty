@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webappext:WebAppExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webappext="webappext.xmi" xmi:id="WebAppExtension_1314751283552" reloadInterval="3" reloadingEnabled="true" additionalClassPath="" fileServingEnabled="true" directoryBrowsingEnabled="false" >
+  <webApp href="WEB-INF/web.xml#WebApp_ID"/>
+  <jspAttributes xmi:id="JSPAttribute_1318820843637" name="jdkSourceLevel" value="15"/>
+</webappext:WebAppExtension>
