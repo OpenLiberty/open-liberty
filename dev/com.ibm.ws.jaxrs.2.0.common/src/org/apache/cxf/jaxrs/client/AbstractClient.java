@@ -40,6 +40,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -1093,6 +1095,35 @@ public abstract class AbstractClient implements Client {
         exchange.put(StaxInEndingInterceptor.STAX_IN_NOCLOSE, Boolean.TRUE);
         m.setExchange(exchange);
         return exchange;
+    }
+
+    protected void setAsyncMessageObserverIfNeeded(Exchange exchange) {
+        if (!exchange.isSynchronous()) {
+            final ExecutorService executor = (ExecutorService) cfg.getRequestContext().get(EXECUTOR_SERVICE_PROPERTY);
+            if (executor != null) {
+                exchange.put(Executor.class, executor);
+
+                final ClientMessageObserver observer = new ClientMessageObserver(cfg);
+
+                exchange.put(MessageObserver.class, new MessageObserver() {
+                    @Override
+                    public void onMessage(final Message message) {
+                        if (!message.getExchange()
+                            .containsKey(Executor.class.getName() + ".USING_SPECIFIED")) {
+
+                            executor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    observer.onMessage(message);
+                                }
+                            });
+                        } else {
+                            observer.onMessage(message);
+                        }
+                    }
+                });
+            }
+        }
     }
 
     protected void setContexts(Message message, Exchange exchange,
