@@ -13,6 +13,7 @@ bVersion=1.0
 
 src: \
   fat/src,\
+  test-applications/asyncApp/src,\
   test-applications/basicClientApp/src,\
   test-applications/basicCdiClientApp/src,\
   test-applications/basicRemoteApp/src,\
@@ -29,6 +30,7 @@ javac.target: 1.8
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.websphere.javaee.jsonp.1.0;version=latest
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0;version=latest
