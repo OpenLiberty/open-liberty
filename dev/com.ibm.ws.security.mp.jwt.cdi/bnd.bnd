@@ -14,7 +14,8 @@ Import-Package: \
 
 Export-Package: \
     !com.ibm.ws.security.mp.jwt.cdi.resources, \
-    com.ibm.ws.security.mp.jwt.cdi*
+    com.ibm.ws.security.mp.jwt.cdi*, \
+    com.ibm.ws.security.mp.jwt.principal
 
 Private-Package: \
     com.ibm.ws.security.mp.jwt.cdi.resources

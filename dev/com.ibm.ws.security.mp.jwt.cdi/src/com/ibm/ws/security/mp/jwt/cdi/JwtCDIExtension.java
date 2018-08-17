@@ -157,7 +157,7 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
             abd.addBean(new JsonWebTokenBean(beanManager));
         }
         if (addPrincipalBean || injectionTypes.isEmpty() == false) {
-            abd.addBean(new PrincipalBean(beanManager));
+//            abd.addBean(new PrincipalBean(beanManager));
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
