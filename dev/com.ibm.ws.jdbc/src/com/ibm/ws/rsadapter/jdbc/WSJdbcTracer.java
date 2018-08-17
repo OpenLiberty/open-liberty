@@ -44,6 +44,7 @@ import javax.sql.XADataSource;
 import javax.transaction.xa.XAResource;
 
 import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.ws.jdbc.internal.PropertyService;
 
 /**
  * This class provides generic JDBC method level tracing for JDBC drivers (like the
@@ -147,7 +148,7 @@ public class WSJdbcTracer implements InvocationHandler
         // Trace entry
 
         if (TraceComponent.isAnyTracingEnabled() && tracer.isDebugEnabled()) {
-            boolean hasPassword = methName.equals("getPooledConnection") || methName.equals("getXAConnection");
+            boolean hasPassword = methName.equals("getPooledConnection") || methName.equals("getXAConnection") || methName.equals("connect");
 
             StringBuilder buffer = new StringBuilder(120);
 
@@ -155,6 +156,11 @@ public class WSJdbcTracer implements InvocationHandler
 
             if (tracer.getLevel() <= 1 /* LevelConstants.LEVEL_ALL */&& args != null)
                 for (int i = 0; i < args.length; i++) {
+                    if(methName.equals("connect") && i == 0) {
+                        buffer.append(PropertyService.filterURL(toString(args[i])));
+                        continue;
+                    }
+                    
                     if (i != 0)
                         buffer.append(", ");
                     buffer.append(hasPassword && i == 1 ? "***" : toString(args[i]));

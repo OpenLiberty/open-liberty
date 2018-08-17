@@ -318,6 +318,7 @@ org.springframework.boot:spring-boot-autoconfigure:2.0.4.RELEASE
 org.reactivestreams:reactive-streams:1.0.2
 io.projectreactor:reactor-core:3.1.8.RELEASE
 xalan:xalan:2.7.1
+xalan:xalan:2.7.2
 xerces:xercesImpl:2.11.0
 commons-collections:commons-collections:3.2.2
 org.reactivestreams:reactive-streams:1.0.2

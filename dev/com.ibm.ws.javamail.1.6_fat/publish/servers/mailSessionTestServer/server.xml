@@ -52,7 +52,7 @@
     <include location="../fatTestPorts.xml"/>
     
     <application id="testingApp" name="TestingApp" type="war" location="TestingApp.war">
-  		<classloader apiTypeVisibility="spec, ibm-api, third-party"/>
+  		<classloader apiTypeVisibility="+third-party"/>
     </application>
     
     <!-- Needed due to missing doPriv in javax.mail.Session.getService() -->

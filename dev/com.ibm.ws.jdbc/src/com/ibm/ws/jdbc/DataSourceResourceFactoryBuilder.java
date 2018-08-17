@@ -574,16 +574,16 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
                                     try {
                                         if (driver.acceptsURL(url)) {
                                             if (trace && tc.isDebugEnabled())
-                                                Tr.debug(this, tc, driver + " accepts " + url);
+                                                Tr.debug(this, tc, driver + " accepts " + PropertyService.filterURL(url));
                                             className = driver.getClass().getName();
                                             break;
                                         } else {
                                             if (trace && tc.isDebugEnabled())
-                                                Tr.debug(this, tc, driver + " does not accept " + url);
+                                                Tr.debug(this, tc, driver + " does not accept " + PropertyService.filterURL(url));
                                         }
                                     } catch (SQLException x) {
                                         if (trace && tc.isDebugEnabled())
-                                            Tr.debug(this, tc, driver + " does not accept " + url, x);
+                                            Tr.debug(this, tc, driver + " does not accept " + PropertyService.filterURL(url), x);
                                     }
                                 }
                             } else {
