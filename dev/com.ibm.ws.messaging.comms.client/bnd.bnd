@@ -74,7 +74,6 @@ instrument.disabled: true
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.messaging.common;version=latest,\
 	com.ibm.ws.messaging.utils;version=latest,\
