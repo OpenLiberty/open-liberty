@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
- *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
 import java.security.KeyFactory;
@@ -28,9 +18,8 @@ public class PemKeyUtil {
     OQIDAQAB
     -----END PUBLIC KEY-----
      */
-
-    protected final static String BEGIN = "-----BEGIN PUBLIC KEY-----";
-    protected final static String END = "-----END PUBLIC KEY-----";
+    protected final static String BEGIN = "-----BEGIN (.*)-----";
+    protected final static String END = "-----END (.*)-----";
     protected final static String LINE_SEPARATOR_UNIX = "\n";
     protected final static String LINE_SEPARATOR_MAC = "\r";
     protected final static String LINE_SEPARATOR_WINDOW = "\r\n";
