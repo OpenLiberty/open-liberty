@@ -78,7 +78,7 @@
 
         <AD id="ssoRequiresSSL" name="%ssoRequiresSSL" description="%ssoRequiresSSL.desc"
             required="false" type="Boolean"
-            default="false" />
+            default="true" />
 
         <AD id="ssoUseDomainFromURL" name="%ssoUseDomainFromURL" description="%ssoUseDomainFromURL.desc"
             required="false" type="Boolean"
