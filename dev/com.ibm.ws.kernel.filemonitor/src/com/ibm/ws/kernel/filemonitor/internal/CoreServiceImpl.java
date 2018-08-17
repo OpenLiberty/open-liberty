@@ -328,14 +328,11 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification, 
             mh.externalScan(absoluteCreated, absoluteDeleted, absoluteModified);
     }
 
-    private final Object pauseLock = new Object();
-
     @Override
     public void serverStopping() {
-        synchronized (pauseLock) {
-            for (MonitorHolder mh : fileMonitors.values()) {
-                mh.serverStopping();
-            }
+
+        for (MonitorHolder mh : fileMonitors.values()) {
+            mh.serverStopping();
         }
 
     }
