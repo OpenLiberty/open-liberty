@@ -231,7 +231,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         }
         MicroProfileJwtTaiRequest mpJwtTaiRequest = taiRequestHelper.createMicroProfileJwtTaiRequestAndSetRequestAttribute(request);
         boolean defaultMpJwtConfigExists = false;
-        defaultMpJwtConfigExists = isNewMpJwtFeature();
+        defaultMpJwtConfigExists = isNewMpJwtAndMpConfig(request);
         boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest, defaultMpJwtConfigExists);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
@@ -240,10 +240,16 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
     }
 
     /**
+     * @param request 
      * @return
      */
-    private boolean isNewMpJwtFeature() {     
-        return mpConfigProxyServiceRef.getService() != null ? true : false;
+    private boolean isNewMpJwtAndMpConfig(HttpServletRequest request) { 
+        boolean newMpjwtAndMpConfig = false;
+        Map mpCfg = mpConfigUtil.getMpConfig(request);
+        if (!mpCfg.isEmpty()) {
+            newMpjwtAndMpConfig = true;
+        }
+        return newMpjwtAndMpConfig;
     }
 
     @Override

@@ -280,7 +280,7 @@ public class MicroProfileJwtTaiRequest {
             if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
                 jwtsso ++;
                 this.microProfileJwtConfig = mpJwtConfig;
-            } else if (!isMpJwtDefaultConfig(mpJwtConfig)) {
+            } else if (!taiRequestHelper.isMpJwtDefaultConfig(mpJwtConfig)) {
                 mpjwt ++;
                 mpjwtConfiguration = mpJwtConfig;
             }
@@ -291,14 +291,14 @@ public class MicroProfileJwtTaiRequest {
         return jwtsso <= 1 && mpjwt <= 1;
     }
     
-    private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
-        boolean isDefault = false;
-        if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
-            isDefault = true;
-        }
-        return isDefault;
-        
-    }
+//    private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
+//        boolean isDefault = false;
+//        if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
+//            isDefault = true;
+//        }
+//        return isDefault;
+//        
+//    }
 
     void handleTooManyConfigurations() throws MpJwtProcessingException {
         // error handling -- multiple mpJwtConfig qualified and we do not know how to select
