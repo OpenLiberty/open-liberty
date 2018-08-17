@@ -213,30 +213,10 @@ public class MicroProfileJwtTaiRequest {
                     // if we have two jwtsso or two mpjwt configurations, then we cannot process
                     handleTooManyConfigurations();
                 }
-//                if (this.genericConfigs.size() == 3) {
-//                    
-//                } else if (this.genericConfigs.size() == 2) {
-//                    if (!handleTwoConfigurations()) {
-//                        // if we have two jwtsso or two mpjwt configurations, then we cannot process
-//                        handleTooManyConfigurations();
-//                    }
-//                }
+
             } else {
                 handleTooManyConfigurations();
             }
-//            if (this.genericConfigs.size() <= 2) {
-//                if (this.genericConfigs.size() == 2) {
-//                    if (!handleTwoConfigurations()) {
-//                        // if we have two jwtsso or two mpjwt configurations, then we cannot process
-//                        handleTooManyConfigurations();
-//                    }
-//                } else {
-//                    this.microProfileJwtConfig = this.genericConfigs.get(0);
-//                }
-//
-//            } else {
-//                handleTooManyConfigurations();
-//            }
         }
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, this.microProfileJwtConfig);
@@ -271,7 +251,6 @@ public class MicroProfileJwtTaiRequest {
         Iterator it = this.genericConfigs.iterator();
         int jwtsso = 0;
         int mpjwt = 0;
-        int defaultmpjwt = 0;
         
         MicroProfileJwtConfig mpjwtConfiguration = null;
         
@@ -291,14 +270,6 @@ public class MicroProfileJwtTaiRequest {
         return jwtsso <= 1 && mpjwt <= 1;
     }
     
-//    private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
-//        boolean isDefault = false;
-//        if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
-//            isDefault = true;
-//        }
-//        return isDefault;
-//        
-//    }
 
     void handleTooManyConfigurations() throws MpJwtProcessingException {
         // error handling -- multiple mpJwtConfig qualified and we do not know how to select

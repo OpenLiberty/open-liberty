@@ -247,15 +247,6 @@ public class JwtSsoTokenUtils {
 		return mpjwtconfig;
 	}
 
-//	private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
-//		boolean isDefault = false;
-//		if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
-//			isDefault = true;
-//		}
-//		return isDefault;
-//		
-//	}
-
 	public boolean isJwtValid(String tokenstr) {
 		try {
 			if (recreateJwt(tokenstr) == null) {
