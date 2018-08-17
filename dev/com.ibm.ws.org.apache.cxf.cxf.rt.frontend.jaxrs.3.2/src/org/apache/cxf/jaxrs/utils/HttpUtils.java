@@ -25,8 +25,8 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -119,7 +119,6 @@ public final class HttpUtils {
 
     private static String componentEncode(String reservedChars, String value) {
 
-        // Liberty Change for CXF Begin
         StringBuilder buffer = null;
         int length = value.length();
         int startingIndex = 0;
@@ -144,7 +143,6 @@ public final class HttpUtils {
         if (startingIndex < length) {
             buffer.append(urlEncode(value.substring(startingIndex, length)));
         }
-        // Liberty Change for CXF Begin
 
         return buffer.toString();
     }
@@ -196,7 +194,6 @@ public final class HttpUtils {
         }
         Matcher m = ENCODE_PATTERN.matcher(encoded);
 
-        // Liberty Change for CXF Begin
         if (!m.find()) {
             return query ? HttpUtils.queryEncode(encoded) : HttpUtils.pathEncode(encoded);
         }
@@ -211,7 +208,6 @@ public final class HttpUtils {
             i = m.end();
         } while (m.find());
         String tail = encoded.substring(i, length);
-        // Liberty Change for CXF End
         sb.append(query ? HttpUtils.queryEncode(tail) : HttpUtils.pathEncode(tail));
         return sb.toString();
     }
@@ -315,12 +311,14 @@ public final class HttpUtils {
         if (index == 0 || index == value.length() - 1) {
             throw new IllegalArgumentException("Illegal locale value : " + value);
         }
+
         if (index > 0) {
             language = value.substring(0, index);
             locale = value.substring(index + 1);
         } else {
             language = value;
         }
+
         if (locale == null) {
             return new Locale(language);
         }
