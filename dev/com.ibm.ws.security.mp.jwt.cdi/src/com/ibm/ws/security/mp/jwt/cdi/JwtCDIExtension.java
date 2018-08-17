@@ -53,7 +53,6 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
 
     private final Map<Claim, Set<Type>> injectionTypes = new HashMap<Claim, Set<Type>>();
     private boolean addJsonWebTokenBean = false;
-    private boolean addPrincipalBean = false;
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<ClaimProducer> producer = bm.createAnnotatedType(ClaimProducer.class);
@@ -155,9 +154,6 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
 
         if (addJsonWebTokenBean || injectionTypes.isEmpty() == false) {
             abd.addBean(new JsonWebTokenBean(beanManager));
-        }
-        if (addPrincipalBean || injectionTypes.isEmpty() == false) {
-//            abd.addBean(new PrincipalBean(beanManager));
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -301,7 +297,6 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
         }
 
         addJsonWebTokenBean = true;
-        addPrincipalBean = true;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "processInjectionPoint");
