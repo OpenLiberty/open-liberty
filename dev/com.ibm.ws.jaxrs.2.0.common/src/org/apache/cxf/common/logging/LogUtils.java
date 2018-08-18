@@ -23,8 +23,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -106,7 +104,7 @@ public final class LogUtils {
 //                    Class<?> fcls = cls.getMethod("getILoggerFactory").invoke(null).getClass();
 //                    String clsName = fcls.getName();
 //                    if (clsName.contains("NOPLogger")) {
-//                        //no real slf4j implementation, use j.u.l 
+//                        //no real slf4j implementation, use j.u.l
 //                        cname = null;
 //                    } else if (clsName.contains("Log4j")) {
 //                        cname = "org.apache.cxf.common.logging.Log4jLogger";
@@ -118,7 +116,7 @@ public final class LogUtils {
 //                        }
 //                    } else if (clsName.contains("JDK14")
 //                               || clsName.contains("pax.logging")) {
-//                        //both of these we can use the appropriate j.u.l API's 
+//                        //both of these we can use the appropriate j.u.l API's
 //                        //directly and have it work properly
 //                        cname = null;
 //                    } else {
@@ -157,32 +155,32 @@ public final class LogUtils {
 
     /**
      * Get a Logger with the associated default resource bundle for the class.
-     * 
+     *
      * @param cls the Class to contain the Logger
      * @return an appropriate Logger
      */
     public static Logger getLogger(Class<?> cls) {
-        //Liberty Change for CXF Begain
+        //Liberty Change for CXF Begin
         return createLogger(cls, null, cls.getName() + cls.getClassLoader());
         //Liberty Change for CXF End
     }
 
     /**
      * Get a Logger with an associated resource bundle.
-     * 
+     *
      * @param cls the Class to contain the Logger
      * @param resourcename the resource name
      * @return an appropriate Logger
      */
     public static Logger getLogger(Class<?> cls, String resourcename) {
-        //Liberty Change for CXF Begain
+        //Liberty Change for CXF Begin
         return createLogger(cls, resourcename, cls.getName() + cls.getClassLoader());
         //Liberty Change for CXF End
     }
 
     /**
      * Get a Logger with an associated resource bundle.
-     * 
+     *
      * @param cls the Class to contain the Logger (to find resources)
      * @param resourcename the resource name
      * @param loggerName the full name for the logger
@@ -196,32 +194,32 @@ public final class LogUtils {
 
     /**
      * Get a Logger with the associated default resource bundle for the class.
-     * 
+     *
      * @param cls the Class to contain the Logger
      * @return an appropriate Logger
      */
     public static Logger getL7dLogger(Class<?> cls) {
-        //Liberty Change for CXF Begain
-        return createLogger(cls, null, cls.getName() + cls.getClassLoader());
+        //Liberty Change for CXF Begin
+        return createLogger(cls, null, cls.getName() + getClassLoader(cls));
         //Liberty Change for CXF End
     }
 
     /**
      * Get a Logger with an associated resource bundle.
-     * 
+     *
      * @param cls the Class to contain the Logger
      * @param resourcename the resource name
      * @return an appropriate Logger
      */
     public static Logger getL7dLogger(Class<?> cls, String resourcename) {
-        //Liberty Change for CXF Begain
+        //Liberty Change for CXF Begin
         return createLogger(cls, resourcename, cls.getName() + cls.getClassLoader());
         //Liberty Change for CXF End
     }
 
     /**
      * Get a Logger with an associated resource bundle.
-     * 
+     *
      * @param cls the Class to contain the Logger (to find resources)
      * @param resourcename the resource name
      * @param loggerName the full name for the logger
@@ -250,7 +248,7 @@ public final class LogUtils {
             Logger logger = null;
             ResourceBundle b = null;
             if (bundleName == null) {
-                //grab the bundle prior to the call to Logger.getLogger(...) so the 
+                //grab the bundle prior to the call to Logger.getLogger(...) so the
                 //ResourceBundle can be loaded outside the big sync block that getLogger really is
                 bundleName = BundleUtils.getBundleName(cls);
                 try {
@@ -336,6 +334,7 @@ public final class LogUtils {
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
                 public ClassLoader run() {
                     return Thread.currentThread().getContextClassLoader();
                 }
@@ -348,6 +347,7 @@ public final class LogUtils {
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
                 public ClassLoader run() {
                     return clazz.getClassLoader();
                 }
@@ -357,7 +357,7 @@ public final class LogUtils {
     }
     /**
      * Allows both parameter substitution and a typed Throwable to be logged.
-     * 
+     *
      * @param logger the Logger the log to
      * @param level the severity level
      * @param message the log message
@@ -378,7 +378,7 @@ public final class LogUtils {
 
     /**
      * Allows both parameter substitution and a typed Throwable to be logged.
-     * 
+     *
      * @param logger the Logger the log to
      * @param level the severity level
      * @param message the log message
@@ -399,7 +399,7 @@ public final class LogUtils {
 
     /**
      * Checks log level and logs
-     * 
+     *
      * @param logger the Logger the log to
      * @param level the severity level
      * @param message the log message
@@ -412,7 +412,7 @@ public final class LogUtils {
 
     /**
      * Checks log level and logs
-     * 
+     *
      * @param logger the Logger the log to
      * @param level the severity level
      * @param message the log message
@@ -427,7 +427,7 @@ public final class LogUtils {
 
     /**
      * Checks log level and logs
-     * 
+     *
      * @param logger the Logger the log to
      * @param level the severity level
      * @param message the log message
@@ -442,7 +442,7 @@ public final class LogUtils {
 
     /**
      * Checks log level and logs
-     * 
+     *
      * @param logger the Logger the log to
      * @param level the severity level
      * @param message the log message
@@ -492,7 +492,7 @@ public final class LogUtils {
     /**
      * Retrieve localized message retrieved from a logger's resource
      * bundle.
-     * 
+     *
      * @param logger the Logger
      * @param message the message to be localized
      */
