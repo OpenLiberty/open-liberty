@@ -46,7 +46,6 @@ public class AsyncMethodTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
         ShrinkHelper.defaultApp(server, appName, "mpRestClient11.async");
         server.startServer();
     }

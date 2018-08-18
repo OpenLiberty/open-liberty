@@ -14,6 +14,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/atinjectapp/src,\
+  test-applications/interceptorapp/src,\
 
 fat.project: true
 
@@ -24,3 +25,4 @@ javac.target: 1.8
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+  com.ibm.websphere.javaee.interceptor.1.2;version=latest

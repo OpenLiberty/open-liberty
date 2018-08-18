@@ -869,13 +869,15 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                             if ("URL".equals(name) || "url".equals(name)) {
                                 url = str;
                                 if (isTraceOn && tc.isDebugEnabled())
-                                    Tr.debug(this, tc, name + '=' + str); // TODO obscure values of any possible passwords in URL value?
+                                    Tr.debug(this, tc, name + '=' + PropertyService.filterURL(str));
                             } else if ((user == null || !"user".equals(name)) && (pwd == null || !"password".equals(name))) {
                                 // Decode passwords
-                                if (PropertyService.isPassword(name) && PasswordUtil.getCryptoAlgorithm(str) != null) {
+                                if (PropertyService.isPassword(name)) {
                                     if (isTraceOn && tc.isDebugEnabled())
                                         Tr.debug(this, tc, "prop " + name + '=' + (str == null ? null : "***"));
-                                    str = PasswordUtil.decode(str);
+                                    if (PasswordUtil.getCryptoAlgorithm(str) != null) {
+                                        str = PasswordUtil.decode(str);
+                                    }
                                 } else {
                                     if (isTraceOn && tc.isDebugEnabled())
                                         Tr.debug(this, tc, "prop " + name + '=' + str);
@@ -907,10 +909,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         int first = url.indexOf(":");
                         int second = url.indexOf(":", first+1);
                         if(first < 0 || second < 0) {
-                            //TODO URL format with doesn't follow JDBC spec, return URL with stripped passwords after that logic has been added
+                            urlPrefix = url.substring(0, 10);
                         } else {
                             urlPrefix = url.substring(0, second);
-                            //TODO run the URL stub through the URL password detection logic just in case there is an uncomplient driver that has two colons
                         }
                         throw new ResourceException(AdapterUtil.getNLSMessage("DSRA4006.null.connection", dsConfig.get().id, vendorImplClass.getName(), urlPrefix));
                     }

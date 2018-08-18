@@ -28,32 +28,32 @@
 	<res-auth>Container</res-auth>
   </resource-ref>
   
+   <resource-ref>
+	<res-ref-name>jdbc/dsfat1ref</res-ref-name>
+	<res-type>javax.sql.DataSource</res-type>
+	<res-auth>Container</res-auth>
+  </resource-ref>
+  
   <resource-ref>
 	<res-ref-name>jdbc/dsfat2ref</res-ref-name>
 	<res-type>javax.sql.DataSource</res-type>
 	<res-auth>Container</res-auth>
   </resource-ref>
-
-  <resource-ref>
-	<res-ref-name>jdbc/dsfat3ref</res-ref-name>
-	<res-type>javax.sql.DataSource</res-type>
-	<res-auth>Container</res-auth>
-  </resource-ref>
   
   <resource-ref>
-    <res-ref-name>jdbc/dsfat7ref</res-ref-name>
+    <res-ref-name>jdbc/dsfat5ref</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth> 
   </resource-ref>
   
   <resource-ref>
-    <res-ref-name>jdbc/dsfat8ref</res-ref-name>
+    <res-ref-name>jdbc/dsfat6ref</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
   
   <resource-ref>
-    <res-ref-name>jdbc/dsfat9ref</res-ref-name>
+    <res-ref-name>jdbc/dsfat7ref</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>

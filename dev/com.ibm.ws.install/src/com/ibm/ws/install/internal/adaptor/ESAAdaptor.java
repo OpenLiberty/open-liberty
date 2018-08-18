@@ -204,13 +204,15 @@ public class ESAAdaptor extends ArchiveAdaptor {
                                     featureDefinition, fr, processedEntries, checksumInput, checksumOutput, executableFiles, extattrFiles, checksumsManager);
 
                 }
-            } else if (SubsystemContentType.FEATURE_TYPE == type && !skipFeatureDependencyCheck) {
-                // Look to see if the feature already exists and try to find it in the same place as the current ESA if we don't have it
-                String symName = fr.getSymbolicName();
-                if (!product.containsFeature(symName) && !product.containsFeatureCollection(symName) && !featuresToBeInstalled.contains(symName)) {
-                    throw new InstallException(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.missing.feature", featureDefinition.getSymbolicName(), symName));
+            } else if (SubsystemContentType.FEATURE_TYPE == type) {
+                if (!skipFeatureDependencyCheck) {
+                    // Look to see if the feature already exists and try to find it in the same place as the current ESA if we don't have it
+                    String symName = fr.getSymbolicName();
+                    if (!product.containsFeature(symName) && !product.containsFeatureCollection(symName) && !featuresToBeInstalled.contains(symName)) {
+                        throw new InstallException(Messages.PROVISIONER_MESSAGES.getLogMessage("tool.install.missing.feature", featureDefinition.getSymbolicName(), symName));
+                    }
                 }
-            } else if (ibmFeature && !skipFeatureDependencyCheck) {
+            } else if (ibmFeature) {
                 String resourceLoc = fr.getLocation();
                 if (resourceLoc == null || resourceLoc.contains(",")) {
                     // we can't deal with this because we don't know the location.
