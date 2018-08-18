@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -34,6 +33,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.UserApiConfig;
@@ -1498,7 +1498,7 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
         try {
             String payload = "aGVsbG8g"; //hello
             String idToken = "xxx." + payload + ".zzz";
-            String decodedPayload = new String(Base64.getDecoder().decode(payload.getBytes("UTF-8")), "UTF-8");
+            String decodedPayload = new String(Base64Coder.base64Decode(payload.getBytes("UTF-8")), "UTF-8");
 
             authenticator.createUserApiResponseFromIdToken(idToken);
 
