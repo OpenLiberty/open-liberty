@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere Security Social Media 1.0 API
+Bundle-Description: WebSphere Security Social Media 1.0 API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.social
+
+Import-Package: com.ibm.websphere.security.social
+
+Export-Package: com.ibm.websphere.security.social
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.social/pom.xml=com.ibm.websphere.appserver.api.social.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+	com.ibm.ws.security.social;version=latest

@@ -225,7 +225,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", AdapterUtil.toString(properties));
+            Tr.entry(this, tc, "activate", PropertyService.hidePasswords(properties));
 
         String jndiName = (String) properties.get(JNDI_NAME);
         id = (String) properties.get("config.displayId");
@@ -792,8 +792,14 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
                         }
                         if (DataSourceDef.password.name().equals(key))
                             ConnectorService.logMessage(Level.INFO, "RECOMMEND_AUTH_ALIAS_J2CA8050", id);
-                    } else if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Found vendor property: " + key + '=' + value);
+                    } else if (trace && tc.isDebugEnabled()) {
+                        if(key.toLowerCase().equals("url")) {
+                            if(value instanceof String)
+                                Tr.debug(this, tc, "Found vendor property: " + key + '=' + PropertyService.filterURL((String) value));
+                        } else {
+                            Tr.debug(this, tc, "Found vendor property: " + key + '=' + value);
+                        }
+                    }
 
                     vProps.put(key, value);
                 }

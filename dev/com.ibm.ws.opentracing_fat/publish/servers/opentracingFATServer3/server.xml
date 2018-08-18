@@ -11,7 +11,7 @@
   <include location="../fatTestPorts.xml"/>
 
   <application location="mpOpenTracing.war">
-    <classloader apiTypeVisibility="spec, ibm-api, third-party, stable"/>
+    <classloader apiTypeVisibility="+third-party"/>
   </application>
 
   <logging traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all:CDI=all:com.ibm.ws.cdi*=all" maxFileSize="100" maxFiles="1" />

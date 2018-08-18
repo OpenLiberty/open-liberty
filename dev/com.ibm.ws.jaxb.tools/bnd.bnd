@@ -25,6 +25,7 @@ app-resources= \
   META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
 
 Import-Package: \
+    !javax.activation,\
     javax.xml.bind.*; version="[2.2,3)", \
     com.ibm.wsspi.classloading, \
     org.apache.xml.*; resolution:=optional, \
@@ -39,8 +40,11 @@ Import-Package: \
     !com.sun.xml.fastinfoset.stax.*, \
     !sun.nio.cs*, \
     !com.sun.org.apache.xml.internal.resolver, \
-     !com.sun.org.apache.xml.internal.resolver.tools, \
+    !com.sun.org.apache.xml.internal.resolver.tools, \
     *
+    
+DynamicImport-Package: \
+    javax.activation
 
 Export-Package: \
     com.sun.xml.bind*;version="2.2.10";thread-context=true

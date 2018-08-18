@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.derby;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -69,11 +68,11 @@ public class JDBCDerbyTest extends FATServletClient {
 
     /**
      * Update the data source configuration while the server is running.
-     * Ensure that when using a data source with isolation level of TRANSACTION_NONE
-     * that when switching to a data source with Transactional = true the change is prevented
+     * Ensure when using a data source configured with an isolation level of TRANSACTION_NONE
+     * that when updating to a data source with Transactional = true the change is prevented.
      */
     @Test
-    @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException", "javax.servlet.UnavailableException", "java.sql.SQLException" })
+    @ExpectedFFDC({ "java.sql.SQLException" })
     public void testTNConfigTnsl() throws Throwable {
         String method = "testTNConfigTnsl";
         Log.info(c, method, "Executing " + method);
@@ -82,10 +81,10 @@ public class JDBCDerbyTest extends FATServletClient {
         runTest(server, jdbcappfat, "testTNTransationEnlistment");
 
         ServerConfiguration config = server.getServerConfiguration();
-        DataSource ds12 = config.getDataSources().getBy("id", "dsfat12");
+        DataSource ds8 = config.getDataSources().getBy("id", "dsfat8");
 
         try {
-            ds12.setTransactional("true");
+            ds8.setTransactional("true");
 
             //Update config
             server.setMarkToEndOfLog();
@@ -93,13 +92,12 @@ public class JDBCDerbyTest extends FATServletClient {
             server.waitForConfigUpdateInLogUsingMark(new TreeSet<String>(Arrays.asList(jdbcapp)));
 
             //Ensure that updating the config results in servlet class being found, but a resource injection failure to occur.
-            int responseCode = runTestForResponseCode(server, jdbcappfat, "testTNTransationEnlistment");
-            assertEquals("Reponse from servlet should have been", 404, responseCode);
+            runTest(server, jdbcappfat, "testTNTransationEnlistmentModified");
         } catch (Exception e) {
             fail("Exception should not have been thrown when switching transactional property.");
         } finally {
             //Attempt to switch back
-            ds12.setTransactional("false");
+            ds8.setTransactional("false");
 
             //Update config
             server.setMarkToEndOfLog();
@@ -113,7 +111,7 @@ public class JDBCDerbyTest extends FATServletClient {
 
     /**
      * Update the data source configuration while the server is running.
-     * Ensure that switching from a data source configured with an isolation level of TRANSACTION_NONE
+     * Ensure that updating from a data source configured with an isolation level of TRANSACTION_NONE
      * to a data source configured with a different isolation level does not fail.
      * And, ensure that switching the other way is prevented.
      */
@@ -127,10 +125,10 @@ public class JDBCDerbyTest extends FATServletClient {
         runTest(server, jdbcappfat, "testTNOriginalIsoLvl");
 
         ServerConfiguration config = server.getServerConfiguration();
-        DataSource ds11 = config.getDataSources().getBy("id", "dsfat11");
+        DataSource dsX = config.getDataSources().getBy("id", "dsfatX");
 
         try {
-            ds11.setIsolationLevel("TRANSACTION_SERIALIZABLE");
+            dsX.setIsolationLevel("TRANSACTION_SERIALIZABLE");
 
             //Update config
             server.setMarkToEndOfLog();
@@ -145,7 +143,7 @@ public class JDBCDerbyTest extends FATServletClient {
 
         try {
             //Attempt to switch back to TRANSACTION_NONE
-            ds11.setIsolationLevel("TRANSACTION_NONE");
+            dsX.setIsolationLevel("TRANSACTION_NONE");
 
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);

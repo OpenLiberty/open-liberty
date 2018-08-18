@@ -36,34 +36,25 @@ import componenttest.app.FATServlet;
 
 @DataSourceDefinitions(value = {
                                  @DataSourceDefinition(
-                                                       name = "java:module/env/jdbc/dsfat6",
+                                                       name = "java:module/env/jdbc/dsfat5",
                                                        className = "jdbc.tran.none.driver.TranNoneDataSource",
-                                                       databaseName = "memory:ds6",
+                                                       databaseName = "memory:ds5",
                                                        isolationLevel = Connection.TRANSACTION_NONE,
                                                        transactional = false,
+                                                       properties = {
+                                                                      "createDatabase=create"
+                                                       }),
+                                 @DataSourceDefinition(
+                                                       name = "java:module/env/jdbc/dsfat6",
+                                                       className = "org.apache.derby.jdbc.EmbeddedDataSource40",
+                                                       databaseName = "memory:ds6",
                                                        properties = {
                                                                       "createDatabase=create"
                                                        }),
                                  @DataSourceDefinition(
                                                        name = "java:module/env/jdbc/dsfat7",
-                                                       className = "jdbc.tran.none.driver.TranNoneDataSource",
+                                                       className = "org.apache.derby.jdbc.EmbeddedDataSource40",
                                                        databaseName = "memory:ds7",
-                                                       isolationLevel = Connection.TRANSACTION_NONE,
-                                                       transactional = false,
-                                                       properties = {
-                                                                      "createDatabase=create"
-                                                       }),
-                                 @DataSourceDefinition(
-                                                       name = "java:module/env/jdbc/dsfat8",
-                                                       className = "org.apache.derby.jdbc.EmbeddedDataSource40",
-                                                       databaseName = "memory:ds8",
-                                                       properties = {
-                                                                      "createDatabase=create"
-                                                       }),
-                                 @DataSourceDefinition(
-                                                       name = "java:module/env/jdbc/dsfat9",
-                                                       className = "org.apache.derby.jdbc.EmbeddedDataSource40",
-                                                       databaseName = "memory:ds9",
                                                        isolationLevel = Connection.TRANSACTION_SERIALIZABLE,
                                                        properties = {
                                                                       "createDatabase=create"
@@ -76,53 +67,46 @@ public class JDBCDerbyServlet extends FATServlet {
     private static final String CITYSCHEMA = "name varchar(50) not null primary key, population int, county varchar(30)";
 
     @Resource(name = "jdbc/dsfat0ref", lookup = "jdbc/dsfat0")
-    DataSource ds0; //DSConfig (TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE) + Normal JDBC Driver
+    DataSource ds0ref; //DSConfig (TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE) + Normal JDBC Driver
 
     @Resource(lookup = "jdbc/dsfat1")
     DataSource ds1; //DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
 
+    @Resource(name = "jdbc/dsfat1ref", lookup = "jdbc/dsfat1")
+    DataSource ds1ref; //DSConfig (TRAN_NONE) + Res-ref (TRAN_NONE) + TRAN_NONE JDBC Driver
+
     @Resource(name = "jdbc/dsfat2ref", lookup = "jdbc/dsfat2")
-    DataSource ds2; //DSConfig (no iso lvl) + Res-ref (TRAN_NONE) + Normal JDBC Driver
+    DataSource ds2ref; //DSConfig (no iso lvl) + Res-ref (TRAN_NONE) + Normal JDBC Driver
 
-    @Resource(name = "jdbc/dsfat3ref", lookup = "jdbc/dsfat3")
-    DataSource ds3; //DSConfig (TRAN_NONE) + Res-ref (TRAN_NONE) + TRAN_NONE JDBC Driver
+    @Resource(name = "jdbc/dsfat5", lookup = "java:module/env/jdbc/dsfat5")
+    DataSource dsd5; //DataSourceDef (TRAN_NONE) + No Res-ref
 
-    @Resource(name = "jdbc/dsfat5")
-    DataSource ds5; //DSConfig (TRAN_NONE) + No Res-ref + Normal JDBC Driver
+    @Resource(name = "jdbc/dsfat5ref", lookup = "java:module/env/jdbc/dsfat5")
+    DataSource dsd5ref; //DataSourceDef (TRAN_NONE) + Res-ref (TRAN_NONE)
 
-    @Resource(name = "jdbc/dsfat6", lookup = "java:module/env/jdbc/dsfat6")
-    DataSource ds6; //DataSourceDef (TRAN_NONE) + No Res-ref
+    @Resource(name = "jdbc/dsfat6ref", lookup = "java:module/env/jdbc/dsfat6")
+    DataSource dsd6ref; //DataSourceDef(no iso lvl) + Res-ref (TRAN_NONE)
 
     @Resource(name = "jdbc/dsfat7ref", lookup = "java:module/env/jdbc/dsfat7")
-    DataSource ds7; //DataSourceDef (TRAN_NONE) + Res-ref (TRAN_NONE)
-
-    @Resource(name = "jdbc/dsfat8ref", lookup = "java:module/env/jdbc/dsfat8")
-    DataSource ds8; //DataSourceDef(no iso lvl) + Res-ref (TRAN_NONE)
-
-    @Resource(name = "jdbc/dsfat9ref", lookup = "java:module/env/jdbc/dsfat9")
-    DataSource ds9; //DataSourceDef(TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE)
-
-    @Resource(lookup = "jdbc/dsfat11")
-    DataSource ds11; //DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
-
-    @Resource(lookup = "jdbc/dsfat12")
-    DataSource ds12; //DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+    DataSource dsd7ref; //DataSourceDef(TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE)
 
     @Resource
     private UserTransaction tran;
 
     /**
-     * Data Source - ds5 = dsConfig (TRAN_NONE) + No Res-ref + Normal JDBC Driver
+     * Data Source - ds4 = dsConfig (TRAN_NONE) + No Res-ref + Normal JDBC Driver
      *
-     * Ensure that when data source is configured with TRANSACTION_NONE that
+     * Ensure that when a data source is configured with TRANSACTION_NONE that
      * a JDBC driver that does not support this configuration throws an error.
      */
     @Test
     @ExpectedFFDC({ "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testTNUnsupported() throws Throwable {
+        InitialContext ctx = new InitialContext();
         try {
+            DataSource ds4 = (DataSource) ctx.lookup("jdbc/dsfat4");
             @SuppressWarnings("unused")
-            Connection con = ds5.getConnection();
+            Connection con = ds4.getConnection();
             fail("Connection should have thrown an exception since the JDBC driver does not support an isolation level of TRANSACTION_NONE.");
         } catch (SQLException sql) {
             assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4008E"));
@@ -130,7 +114,7 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     /**
-     * Data Source - ds0 = DSConfig (TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE) + Normal JDBC Driver
+     * Data Source - ds0ref = DSConfig (TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE) + Normal JDBC Driver
      *
      * Ensure that if we try to change Transaction Isolation to TRANSACTION_NONE that we throw an exception
      * and prevent isolation level from being changed.
@@ -142,7 +126,7 @@ public class JDBCDerbyServlet extends FATServlet {
         int expected = Connection.TRANSACTION_SERIALIZABLE;
 
         try {
-            con = ds0.getConnection();
+            con = ds0ref.getConnection();
             con.setTransactionIsolation(Connection.TRANSACTION_NONE);
             fail("Exception should have been thrown when switching isolation level to TRANSACTION_NONE.");
         } catch (SQLException sql) {
@@ -156,7 +140,7 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     /**
-     * Data Source - ds4 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     * Data Source - ds3 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that a data source configured with an isolation level of TRANSACTION_NONE
      * and transactional = true fails during creation.
@@ -167,7 +151,7 @@ public class JDBCDerbyServlet extends FATServlet {
         InitialContext ctx = new InitialContext();
         try {
             @SuppressWarnings("unused")
-            DataSource ds4 = (DataSource) ctx.lookup("jdbc/dsfat4");
+            DataSource ds3 = (DataSource) ctx.lookup("jdbc/dsfat3");
             fail("Lookup should have failed due to bad config.");
         } catch (Exception e) {
             assertTrue("Exception message should have contained", e.getMessage().contains("CWWKN0008E"));
@@ -176,19 +160,23 @@ public class JDBCDerbyServlet extends FATServlet {
 
     /**
      * Called by testTNConfigTnsl in JDBCDerbyTest but also useful as a stand-alone test
-     * Data Sources - ds12 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     * Data Sources - ds8 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure connection is not enlisted in transaction by beginning a global transaction and doing work.
      * Then roll-back the transaction and ensure work was not rolled-back.
      */
     @Test
     public void testTNTransationEnlistment() throws Throwable {
-        createTable(ds12, CITYTABLE, CITYSCHEMA);
         Connection con = null;
         ResultSet result = null;
+        InitialContext ctx = new InitialContext();
+
+        DataSource ds8 = (DataSource) ctx.lookup("jdbc/dsfat8");
+        createTable(ds8, CITYTABLE, CITYSCHEMA);
 
         try {
-            con = ds12.getConnection();
+            con = ds8.getConnection();
+
             tran.begin();
             Statement stmt = con.createStatement();
             stmt.executeUpdate("insert into cities values ('Rochester', 106769, 'Olmsted')");
@@ -204,7 +192,7 @@ public class JDBCDerbyServlet extends FATServlet {
         }
 
         try {
-            con = ds12.getConnection();
+            con = ds8.getConnection();
             Statement stmt = con.createStatement();
             result = stmt.executeQuery("select county from cities where name='Rochester'");
             if (!result.next()) {
@@ -222,19 +210,20 @@ public class JDBCDerbyServlet extends FATServlet {
 
     /**
      * Called by testTNConfigTnsl in JDBCDerbyTest
-     * Data Sources - ds12 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     * Data Sources - ds8 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Data source has been updated to Transactional = true in JDBCDerbyTest
-     * ensure that the configuration of TRANSACTION_NONE prevents a connection
+     * ensure that the configuration of TRANSACTION_NONE prevents the data source
      * from being created.
      */
     public void testTNTransationEnlistmentModified() throws Throwable {
+        InitialContext ctx = new InitialContext();
         try {
             @SuppressWarnings("unused")
-            Connection con = ds12.getConnection();
-            fail("Connection should have thrown an exception since a config with Isolation Level = TRANSACTION_NONE and Transactional = true should be rejected.");
-        } catch (SQLException sql) {
-            assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA0080E"));
+            DataSource ds8 = (DataSource) ctx.lookup("jdbc/dsfat8");
+            fail("Creation of data source should have thrown an exception since a config with Isolation Level = TRANSACTION_NONE and Transactional = true should be rejected.");
+        } catch (Exception e) {
+            assertTrue("Exception message should have contained", e.getMessage().contains("CWWKN0008E"));
         }
     }
 
@@ -278,10 +267,10 @@ public class JDBCDerbyServlet extends FATServlet {
 
     /**
      * Data Source - ds1 = DSConfig(TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
-     * Data Source - ds3 = DSConfig(TRAN_NONE) + Res-ref (TRAN_NONE) + TRAN_NONE JDBC Driver
+     * Data Source - ds1ref = DSConfig(TRAN_NONE) + Res-ref (TRAN_NONE) + TRAN_NONE JDBC Driver
      *
-     * Test with and without resource references that conn.getTransactionIsolation() returns
-     * Driver's isolation level when server config is set to TRANSACTION_NONE.
+     * Test with and without resource references that con.getTransactionIsolation() returns
+     * TRANSACTION_NONE when using a TRAN_NONE JDBC Driver and a data source set to TRAN_NONE.
      */
     @Test
     public void testTNResRefBehavior() throws Throwable {
@@ -295,7 +284,7 @@ public class JDBCDerbyServlet extends FATServlet {
         }
 
         try {
-            con = ds3.getConnection();
+            con = ds1ref.getConnection();
             assertEquals("Connection with dsConfig = TRAN_NONE and res-ref = TRAN_NONE should use driver default iso lvl: ", expected, con.getTransactionIsolation());
         } finally {
             con.close();
@@ -303,8 +292,33 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     /**
-     * Data Source - ds2 = dsConfig (no iso lvl) + Res-ref (TRAN_NONE) + Normal JDBC Driver
-     * Data Source - ds0 = dsConfig (TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE) + Normal JDBC Driver
+     * Data Source - dsd5 = DataSourceDef (TRAN_NONE) + No Res-ref
+     * Data Source - dsd5ref = DataSourceDef (TRAN_NONE) + Res-ref (TRAN_NONE)
+     *
+     * Test with and without a resource reference that conn.getTransactionIsolation() returns
+     * TRANSACTION_NONE when using a TRAN_NONE JDBC Driver and a data source definition set to TRAN_NONE.
+     */
+    @Test
+    public void testTNResRefBehaviorDSDef() throws Throwable {
+        Connection con = null;
+        int expected = Connection.TRANSACTION_NONE;
+        try {
+            con = dsd5.getConnection();
+            assertEquals("Connection with dsConfig = TRAN_NONE and no res-ref should use driver default iso lvl: ", expected, con.getTransactionIsolation());
+        } finally {
+            con.close();
+        }
+        try {
+            con = dsd5ref.getConnection();
+            assertEquals("Connection with dsConfig = TRAN_NONE and res-ref = TRAN_NONE should use driver default iso lvl: ", expected, con.getTransactionIsolation());
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Data Source - ds2ref = dsConfig (no iso lvl) + Res-ref (TRAN_NONE) + Normal JDBC Driver
+     * Data Source - ds0ref = dsConfig (TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE) + Normal JDBC Driver
      *
      * Test that when resource reference isolation level is TRANSACTION_NONE that our behavior is unchanged if the
      * data source config isolation level is unspecified or is something other than TRANSACTAION_NONE.
@@ -314,7 +328,7 @@ public class JDBCDerbyServlet extends FATServlet {
         Connection con = null;
         try {
             int expected = Connection.TRANSACTION_REPEATABLE_READ; //WAS default
-            con = ds2.getConnection();
+            con = ds2ref.getConnection();
             assertEquals("Connection with no dsConfig and res-ref = TRAN_NONE should use WAS default iso lvl: ", expected, con.getTransactionIsolation());
         } finally {
             con.close();
@@ -322,7 +336,7 @@ public class JDBCDerbyServlet extends FATServlet {
 
         try {
             int expected = Connection.TRANSACTION_SERIALIZABLE; //dsConfig
-            con = ds0.getConnection();
+            con = ds0ref.getConnection();
             assertEquals("Connection with dsConfig = TRAN_SERIALIZABLE and res-ref = TRAN_NONE should use dsConfig iso lvl: ", expected, con.getTransactionIsolation());
         } finally {
             con.close();
@@ -330,35 +344,8 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     /**
-     * Data Source - ds6 = DataSourceDef (TRAN_NONE) + No Res-ref
-     * Data Source - ds7 = DataSourceDef (TRAN_NONE) + Res-ref (TRAN_NONE)
-     *
-     * Test with and without a resource reference that conn.getTransactionIsolation() returns
-     * Driver's isolation level when data source definition is set to an isolation level of TRANSACTION_NONE.
-     */
-    @Test
-    public void testTNResRefBehaviorDSDef() throws Throwable {
-        Connection con = null;
-        int expected = Connection.TRANSACTION_NONE;
-
-        try {
-            con = ds6.getConnection();
-            assertEquals("Connection with dsConfig = TRAN_NONE and no res-ref should use driver default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
-        }
-
-        try {
-            con = ds7.getConnection();
-            assertEquals("Connection with dsConfig = TRAN_NONE and res-ref = TRAN_NONE should use driver default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
-        }
-    }
-
-    /**
-     * Data Source - ds8 = DataSourceDef(no iso lvl) + Res-ref (TRAN_NONE)
-     * Data Source - ds9 = DataSourceDef(TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE)
+     * Data Source - dsd6ref = DataSourceDef(no iso lvl) + Res-ref (TRAN_NONE)
+     * Data Source - dsd7ref = DataSourceDef(TRAN_SERIALIZABLE) + Res-ref (TRAN_NONE)
      *
      * Test that when resource reference isolation level is TRANSACTION_NONE that our behavior is unchanged if the
      * data source definition isolation level is unspecified or is something other than TRANSACTION_NONE
@@ -368,7 +355,7 @@ public class JDBCDerbyServlet extends FATServlet {
         Connection con = null;
         try {
             int expected = Connection.TRANSACTION_REPEATABLE_READ; //WAS default
-            con = ds8.getConnection();
+            con = dsd6ref.getConnection();
             assertEquals("Connection with no dsConfig and res-ref = TRAN_NONE should use WAS default iso lvl: ", expected, con.getTransactionIsolation());
         } finally {
             con.close();
@@ -376,7 +363,7 @@ public class JDBCDerbyServlet extends FATServlet {
 
         try {
             int expected = Connection.TRANSACTION_SERIALIZABLE; //dsConfig
-            con = ds9.getConnection();
+            con = dsd7ref.getConnection();
             assertEquals("Connection with dsConfig = TRAN_SERIALIZABLE and res-ref = TRAN_NONE should use dsConfig iso lvl: ", expected, con.getTransactionIsolation());
         } finally {
             con.close();
@@ -385,13 +372,17 @@ public class JDBCDerbyServlet extends FATServlet {
 
     /**
      * Called by testTNConfigIsoLvl in JDBCDerbyTest
-     * Data Source - ds11 = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     * Data Source - dsX = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that the unmodified data source has the expected isolation level.
      */
     public void testTNOriginalIsoLvl() throws Throwable {
         int expected = Connection.TRANSACTION_NONE;
-        final Connection con = ds11.getConnection();
+
+        InitialContext ctx = new InitialContext();
+        DataSource dsX = (DataSource) ctx.lookup("jdbc/dsfatX");
+        final Connection con = dsX.getConnection();
+
         try {
             int actual = con.getTransactionIsolation();
             assertEquals("Connection should have had an isolation level of: ", expected, actual);
@@ -402,13 +393,17 @@ public class JDBCDerbyServlet extends FATServlet {
 
     /**
      * Called by testTNConfigIsoLvl in JDBCDerbyTest
-     * Data Source - ds11 = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     * Data Source - dsX = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that the modified data source has the expected isolation level.
      */
     public void testTNModifiedIsoLvl() throws Throwable {
         int expected = Connection.TRANSACTION_SERIALIZABLE; //Modified isolation level
-        final Connection con = ds11.getConnection();
+
+        InitialContext ctx = new InitialContext();
+        DataSource dsX = (DataSource) ctx.lookup("jdbc/dsfatX");
+        final Connection con = dsX.getConnection();
+
         try {
             int actual = con.getTransactionIsolation();
             assertEquals("Connection should have had a modified isolation level of: ", expected, actual);
@@ -419,14 +414,16 @@ public class JDBCDerbyServlet extends FATServlet {
 
     /**
      * Called by testTNConfigIsoLvl in JDBCDerbyTest
-     * Data Source - ds11 = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
+     * Data Source - dsX = DSConfig (TRAN_NONE) + No Res-ref + TRAN_NONE JDBC Driver
      *
      * Ensure that the attempt to switch back to TRANSACTION_NONE results in an error when attempting to get connection.
      */
     public void testTNRevertedIsoLvl() throws Throwable {
         try {
+            InitialContext ctx = new InitialContext();
+            DataSource dsX = (DataSource) ctx.lookup("jdbc/dsfatX");
             @SuppressWarnings("unused")
-            Connection con = ds11.getConnection();
+            final Connection con = dsX.getConnection();
             fail("Connection should have thrown an exception since the JDBC driver does not support setting isolation level to TRANSACTION_NONE.");
         } catch (SQLException sql) {
             assertTrue("Exception message should have contained", sql.getMessage().contains("DSRA4011E"));

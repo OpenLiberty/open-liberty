@@ -5,24 +5,24 @@
   	<resource-ref name="jdbc/dsfat0ref" binding-name="jdbc/dsfat0">
 		<authentication-alias name="derbyAuth" />
 	</resource-ref>
+	
+	<resource-ref name="jdbc/dsfat1ref" binding-name="jdbc/dsfat1">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
   
 	<resource-ref name="jdbc/dsfat2ref" binding-name="jdbc/dsfat2">
 		<authentication-alias name="derbyAuth" />
 	</resource-ref>
 	
-	<resource-ref name="jdbc/dsfat3ref" binding-name="jdbc/dsfat3">
+	<resource-ref name="jdbc/dsfat5ref" binding-name="java:module/env/jdbc/dsfat5">
+		<authentication-alias name="derbyAuth" />
+	</resource-ref>
+	
+	<resource-ref name="jdbc/dsfat6ref" binding-name="java:module/env/jdbc/dsfat6">
 		<authentication-alias name="derbyAuth" />
 	</resource-ref>
 	
 	<resource-ref name="jdbc/dsfat7ref" binding-name="java:module/env/jdbc/dsfat7">
-		<authentication-alias name="derbyAuth" />
-	</resource-ref>
-	
-	<resource-ref name="jdbc/dsfat8ref" binding-name="java:module/env/jdbc/dsfat8">
-		<authentication-alias name="derbyAuth" />
-	</resource-ref>
-	
-	<resource-ref name="jdbc/dsfat9ref" binding-name="java:module/env/jdbc/dsfat9">
 		<authentication-alias name="derbyAuth" />
 	</resource-ref>
 </web-bnd>

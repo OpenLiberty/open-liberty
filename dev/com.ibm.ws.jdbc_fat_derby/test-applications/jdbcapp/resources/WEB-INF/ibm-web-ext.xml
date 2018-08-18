@@ -4,14 +4,14 @@
   
   <resource-ref name="jdbc/dsfat0ref" isolation-level="TRANSACTION_NONE" />
   
+  <resource-ref name="jdbc/dsfat1ref" isolation-level="TRANSACTION_NONE" />
+  
   <resource-ref name="jdbc/dsfat2ref" isolation-level="TRANSACTION_NONE" />
   
-  <resource-ref name="jdbc/dsfat3ref" isolation-level="TRANSACTION_NONE" />
+  <resource-ref name="jdbc/dsfat5ref" isolation-level="TRANSACTION_NONE" />
+  
+  <resource-ref name="jdbc/dsfat6ref" isolation-level="TRANSACTION_NONE" />
   
   <resource-ref name="jdbc/dsfat7ref" isolation-level="TRANSACTION_NONE" />
-  
-  <resource-ref name="jdbc/dsfat8ref" isolation-level="TRANSACTION_NONE" />
-  
-  <resource-ref name="jdbc/dsfat9ref" isolation-level="TRANSACTION_NONE" />
 
 </web-ext>

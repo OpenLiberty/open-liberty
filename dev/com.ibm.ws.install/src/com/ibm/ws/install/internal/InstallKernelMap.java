@@ -470,6 +470,15 @@ public class InstallKernelMap implements Map {
         }
     }
 
+    private static boolean containsIgnoreCase(Collection<String> featureToInstall, String existingFeature) {
+        for (String current : featureToInstall) {
+            if (current.equalsIgnoreCase(existingFeature)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     public Collection<String> singleFileResolve() {
         data.put(ACTION_INSTALL, null);
@@ -513,7 +522,7 @@ public class InstallKernelMap implements Map {
             Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
             Collection<String> featuresAlreadyPresent = new ArrayList<String>();
             for (ProvisioningFeatureDefinition feature : installedFeatures) {
-                if (featureToInstall.contains(feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
                     alreadyInstalled += 1;
                     if (feature.getIbmShortName() == null) {
                         featuresAlreadyPresent.add(feature.getFeatureName());
