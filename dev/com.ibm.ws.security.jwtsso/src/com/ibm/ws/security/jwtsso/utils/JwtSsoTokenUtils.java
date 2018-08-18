@@ -29,6 +29,7 @@ import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
 import com.ibm.ws.security.mp.jwt.tai.MicroProfileJwtTAI;
 import com.ibm.ws.security.mp.jwt.tai.TAIJwtUtils;
+import com.ibm.ws.security.mp.jwt.tai.TAIRequestHelper;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 
@@ -44,6 +45,7 @@ public class JwtSsoTokenUtils {
 	boolean isValid = true;
 	MicroProfileJwtTAI mpjwttai = null;
 	TAIJwtUtils taiJwtUtils = new TAIJwtUtils();
+	TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
 
 	public JwtSsoTokenUtils() {
 
@@ -220,7 +222,7 @@ public class JwtSsoTokenUtils {
 		while (it.hasNext()) {
 			MicroProfileJwtConfig mpJwtConfig = it.next();
 			if (!(mpJwtConfig.toString().contains("com.ibm.ws.security.jwtsso.internal.JwtSsoComponent"))) {
-				 if (!isMpJwtDefaultConfig(mpJwtConfig)) {
+				 if (!taiRequestHelper.isMpJwtDefaultConfig(mpJwtConfig)) {
 					    mpjwt = true;
 						mpJwtConfigId = mpJwtConfig.getUniqueId();
 						mpjwtids = mpjwtids.concat(mpJwtConfigId).concat(" ");
@@ -243,15 +245,6 @@ public class JwtSsoTokenUtils {
 			throw new MpJwtProcessingException(msg);
 		}
 		return mpjwtconfig;
-	}
-
-	private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
-		boolean isDefault = false;
-		if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
-			isDefault = true;
-		}
-		return isDefault;
-		
 	}
 
 	public boolean isJwtValid(String tokenstr) {

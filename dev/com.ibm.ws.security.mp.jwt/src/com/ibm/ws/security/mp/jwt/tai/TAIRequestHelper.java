@@ -314,7 +314,7 @@ public class TAIRequestHelper {
         return mpJwtTaiRequest;
     }
     
-    private boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
+    public boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
         boolean isDefault = false;
         if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
             isDefault = true;
