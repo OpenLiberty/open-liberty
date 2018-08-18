@@ -11,12 +11,12 @@
 package com.ibm.ws.security.mp.jwt.principal;
 
 import java.security.Principal;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
-import javax.enterprise.inject.Produces;
 import javax.security.auth.Subject;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -24,6 +24,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.context.SubjectManager;
+import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
 
 /**
  * When JsonWebToken feature is enabled, this PrincipalBean will overwrite the built-in PrincipalBean
@@ -32,7 +33,7 @@ import com.ibm.ws.security.context.SubjectManager;
 @Priority(100)
 @RequestScoped
 public class PrincipalBean implements JsonWebToken {
-    @Produces
+    /**  */
     private static final TraceComponent tc = Tr.register(PrincipalBean.class);
     Principal principal = null;
     JsonWebToken jsonWebToken = null;
@@ -47,6 +48,7 @@ public class PrincipalBean implements JsonWebToken {
             Set<JsonWebToken> jsonWebTokens = subject.getPrincipals(JsonWebToken.class);
             if (!jsonWebTokens.isEmpty()) {
                 principal = jsonWebToken = jsonWebTokens.iterator().next();
+                jsonWebToken = new DefaultJsonWebTokenImpl(convertToEncoded(jsonWebToken), "JWT", jsonWebToken.getName());
             }
 
             if (jsonWebToken == null) {
@@ -68,10 +70,9 @@ public class PrincipalBean implements JsonWebToken {
 
     /** {@inheritDoc} */
     @Override
-    public String getName() {
-        if (principal != null)
-            return principal.getName();
-        return null;
+    public <T> Optional<T> claim(String claimName) {
+        T claim = (T) getClaim(claimName);
+        return Optional.ofNullable(claim);
     }
 
     /** {@inheritDoc} */
@@ -87,6 +88,47 @@ public class PrincipalBean implements JsonWebToken {
     public Set<String> getClaimNames() {
         if (jsonWebToken != null)
             return jsonWebToken.getClaimNames();
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName() {
+        if (principal != null)
+            return principal.getName();
+        return null;
+    }
+
+    @Override
+    public Set<String> getAudience() {
+        if (jsonWebToken != null)
+            return jsonWebToken.getAudience();
+        return null;
+    }
+
+    @Override
+    public Set<String> getGroups() {
+        if (jsonWebToken != null)
+            return jsonWebToken.getGroups();
+        return null;
+    }
+
+    /**
+     * @param next
+     */
+    private String convertToEncoded(JsonWebToken jwtprincipal) {
+        return getRawJwtToken(jwtprincipal); // this is already encoded
+
+    }
+
+    /**
+     * @param jwtprincipal
+     * @return
+     */
+    private String getRawJwtToken(JsonWebToken jwtprincipal) {
+        if (jwtprincipal != null) {
+            return jwtprincipal.getRawToken();
+        }
         return null;
     }
 }
