@@ -26,7 +26,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.context.SubjectManager;
 
 /**
- * When JsonWebToken feature is enabled, this PrincipalBean will overwrite the built-in PrincipalBean
+ * When JsonWebToken feature is enabled, this PrincipalBean provide the following:
+ * 1) Overwrite the built-in PrincipalBean
+ * 2) Handle @Inject private JsonWebToken jsonWebton
  */
 @Alternative
 @Priority(100)
