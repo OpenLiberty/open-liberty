@@ -119,6 +119,10 @@ public class PrincipalBean implements JsonWebToken {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return jsonWebToken.toString();
+        if (jsonWebToken != null)
+            return jsonWebToken.toString();
+        else if (principal != null)
+            return principal.toString();
+        return null;
     }
 }
