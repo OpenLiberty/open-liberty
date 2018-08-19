@@ -24,7 +24,6 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.context.SubjectManager;
-import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
 
 /**
  * When JsonWebToken feature is enabled, this PrincipalBean will overwrite the built-in PrincipalBean
@@ -48,7 +47,7 @@ public class PrincipalBean implements JsonWebToken {
             Set<JsonWebToken> jsonWebTokens = subject.getPrincipals(JsonWebToken.class);
             if (!jsonWebTokens.isEmpty()) {
                 principal = jsonWebToken = jsonWebTokens.iterator().next();
-                jsonWebToken = new DefaultJsonWebTokenImpl(jsonWebToken.getRawToken(), "JWT", jsonWebToken.getName());
+                //jsonWebToken = new DefaultJsonWebTokenImpl(jsonWebToken.getRawToken(), "JWT", jsonWebToken.getName());
             }
 
             if (principal == null) {
