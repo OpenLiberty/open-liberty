@@ -48,10 +48,10 @@ public class PrincipalBean implements JsonWebToken {
             Set<JsonWebToken> jsonWebTokens = subject.getPrincipals(JsonWebToken.class);
             if (!jsonWebTokens.isEmpty()) {
                 principal = jsonWebToken = jsonWebTokens.iterator().next();
-                jsonWebToken = new DefaultJsonWebTokenImpl(convertToEncoded(jsonWebToken), "JWT", jsonWebToken.getName());
+                jsonWebToken = new DefaultJsonWebTokenImpl(jsonWebToken.getRawToken(), "JWT", jsonWebToken.getName());
             }
 
-            if (jsonWebToken == null) {
+            if (principal == null) {
                 Set<Principal> principals = subject.getPrincipals(Principal.class);
                 if (!principals.isEmpty()) {
                     principal = principals.iterator().next();
@@ -99,6 +99,7 @@ public class PrincipalBean implements JsonWebToken {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<String> getAudience() {
         if (jsonWebToken != null)
@@ -106,6 +107,7 @@ public class PrincipalBean implements JsonWebToken {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<String> getGroups() {
         if (jsonWebToken != null)
@@ -113,22 +115,9 @@ public class PrincipalBean implements JsonWebToken {
         return null;
     }
 
-    /**
-     * @param next
-     */
-    private String convertToEncoded(JsonWebToken jwtprincipal) {
-        return getRawJwtToken(jwtprincipal); // this is already encoded
-
-    }
-
-    /**
-     * @param jwtprincipal
-     * @return
-     */
-    private String getRawJwtToken(JsonWebToken jwtprincipal) {
-        if (jwtprincipal != null) {
-            return jwtprincipal.getRawToken();
-        }
-        return null;
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return jsonWebToken.toString();
     }
 }
