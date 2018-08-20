@@ -32,7 +32,6 @@ import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 
-import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -77,8 +76,17 @@ public class JsonTokenUtil {
     }
 
     public static String toDotFormat(String... parts) {
-        return Joiner.on('.').useForNull("").join(parts);
-
+        StringBuffer result = new StringBuffer();
+        if (parts != null) {
+            for (int i = 0; i < parts.length; i++) {
+                if (i > 0 && i < parts.length) {
+                    result.append(".");
+                }
+                String part = parts[i];
+                result.append((part == null) ? "" : part);
+            }
+        }
+        return result.toString();
     }
 
     public static boolean isCurrentTimeInInterval(long clockSkewInSeconds, long issuedAtMsec, long expirationMsec) {
