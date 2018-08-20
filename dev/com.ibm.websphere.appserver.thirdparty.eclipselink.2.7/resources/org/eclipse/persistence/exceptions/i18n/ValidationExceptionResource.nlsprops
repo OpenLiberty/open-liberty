@@ -153,13 +153,13 @@
 
 7093=In the query named [{0}], the class [{2}] for query argument named [{1}] cannot be found. Include the missing class on your classpath.
 
-7095=The sessions.xml resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the SessionManager.getSession are correct.  The sessions.xml should be included in the root of the application''s deployed jar, if the sessions.xml is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "\" is used.
+7095=The sessions.xml resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the SessionManager.getSession are correct.  The sessions.xml should be included in the root of the application''s deployed jar, if the sessions.xml is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "" is used.
 
 7096=Cannot use commit() method to commit UnitOfWork again.
 
 7097=Operation not supported: [{0}].
 
-7099=The deployment project XML resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the XMLProjectReader are correct.  The project XML should be included in the root of the application''s deployed jar, if the project XML is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "\" is used.
+7099=The deployment project XML resource [{0}] was not found on the resource path.  Check that the resource name/path and classloader passed to the XMLProjectReader are correct.  The project XML should be included in the root of the application''s deployed jar, if the project XML is deployed in a sub-directory in the application''s jar ensure that the correct resource path using "/" not "" is used.
 
 7100=Could not find the session with the name [{0}] in the session.xml file [{1}]
 
