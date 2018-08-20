@@ -22,7 +22,12 @@ public class ExtensionArchiveImpl extends CDIArchiveImpl implements ExtensionArc
 
     public ExtensionArchiveImpl(ExtensionContainerInfo extensionContainerInfo,
                                 RuntimeFactory factory) throws CDIException {
-        super(null, extensionContainerInfo, ArchiveType.RUNTIME_EXTENSION, extensionContainerInfo.getClassLoader(), factory);
+        super(null, // ApplicationImpl
+        	  extensionContainerInfo,
+        	  ArchiveType.RUNTIME_EXTENSION,
+        	  extensionContainerInfo.getClassLoader(),
+        	  factory);
+
         this.extensionContainerInfo = extensionContainerInfo;
     }
 

@@ -12,22 +12,34 @@ package com.ibm.ws.container.service.annotations;
 
 import java.util.Set;
 
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
 /**
- *
+ * Annotations data from a scan of specific classes.
  */
+// Used by:
+//
+// com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/container/config/WebAppConfiguratorHelper.java
+// -- used to detect WebServlet, WebListener, WebFilter, and MultipartConfig annotations
+//    on single specified classes
+//
+
 public interface SpecificAnnotations {
+	/**
+	 * Answer the targets table which holds the specific annotation
+	 * data.
+	 * 
+	 * @return The underlying targets table.
+	 */
+	AnnotationTargets_Targets getTargets();
 
     /**
-     * <p>Target helper: Select the classes which are recorded as having
-     * the specified annotation as a class annotation.</p>
+     * Target helper: Select the classes which are recorded as having
+     * the specified annotation as a class annotation.
      * 
      * @param annotationClass The class annotation to use for the selection.
      * 
      * @return The names of classes having the annotation as a class annotation.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
      */
-    Set<String> selectAnnotatedClasses(Class<?> annotationClass) throws UnableToAdaptException;
+    Set<String> selectAnnotatedClasses(Class<?> annotationClass);
 }
