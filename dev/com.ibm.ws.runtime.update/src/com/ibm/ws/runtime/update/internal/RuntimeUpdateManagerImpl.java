@@ -12,6 +12,7 @@ package com.ibm.ws.runtime.update.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,7 +20,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,12 +40,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.FutureMonitor;
+import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -85,11 +86,21 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
     private WsLocationAdmin locationService;
 
+    private LibertyProcess libertyProcess;
+
+    private ExecutorService executorService;
+
     @Activate
     protected void activate(BundleContext ctx) {
         bundleCtx = ctx;
         bundleCtx.addBundleListener(this);
 
+    }
+
+    @Reference(service = ExecutorService.class,
+               cardinality = ReferenceCardinality.MANDATORY)
+    protected void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
     @Reference(service = FutureMonitor.class)
@@ -137,6 +148,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         this.locationService = null;
     }
 
+    @Reference(policy = ReferencePolicy.STATIC)
+    protected void setProcess(LibertyProcess process) {
+        this.libertyProcess = process;
+    }
+
     protected void cleanupNotifications() {
         synchronized (notifications) {
             // Check that all notifications are completed
@@ -163,14 +179,6 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         private final FutureMonitor futureMonitor;
         private final AtomicBoolean waitForPendingNotifications;
         private final boolean ignoreOnQuiesce;
-
-        NotificationImpl(String name, Future<Boolean> future, FutureMonitor futureMonitor, AtomicBoolean waitForPendingNotifications) {
-            this.name = name;
-            this.future = future;
-            this.futureMonitor = futureMonitor;
-            this.waitForPendingNotifications = waitForPendingNotifications;
-            this.ignoreOnQuiesce = false;
-        }
 
         NotificationImpl(String name, Future<Boolean> future, FutureMonitor futureMonitor, AtomicBoolean waitForPendingNotifications, boolean ignoreQuiesce) {
             this.name = name;
@@ -287,7 +295,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                 // NICE / NORMAL STOP
                 // Find all ServerQueisceListeners and notify them
                 try {
-                    queisceListeners(bundleCtx.getServiceReferences(ServerQuiesceListener.class, null));
+                    quiesceListeners(bundleCtx.getServiceReferences(ServerQuiesceListener.class, null));
                 } catch (InvalidSyntaxException e) {
                     // not going to happen with a null filter.
                 }
@@ -302,8 +310,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
      *
      * @param listenerRefs Collection of {@code ServiceReference}s for {@code ServerQuiesceListener}s
      */
-    @FFDCIgnore(InterruptedException.class)
-    private void queisceListeners(Collection<ServiceReference<ServerQuiesceListener>> listenerRefs) {
+
+    private void quiesceListeners(Collection<ServiceReference<ServerQuiesceListener>> listenerRefs) {
         // Make a copy of existing notifications: we can't hold the lock around notifications
         // to iterate while waiting for the existing notifications to complete because that would
         // lock-out cleanupNotifications.
@@ -315,17 +323,14 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         if (listenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
-        // Thread pool for stopping bits of the server (so it doesn't compete with running work.. )
-        ExecutorService threadPool = Executors.newFixedThreadPool(3);
-
         if (isServer())
             Tr.audit(tc, "quiesce.begin");
         else
             Tr.audit(tc, "client.quiesce.begin");
 
-        // Add one more for allowing existing config operations to finish
+        // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
-            threadPool.execute(new Runnable() {
+            executorService.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -340,18 +345,17 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             });
         }
 
-        //Create list of threads to check who is alive in the case of a quiesce failure
-        final ConcurrentLinkedQueue<Thread> listeners = new ConcurrentLinkedQueue<Thread>();
-
         // Queue the notification of each listener (unbounded queue)
+        final ConcurrentLinkedQueue<ServerQuiesceListener> listeners = new ConcurrentLinkedQueue<ServerQuiesceListener>();
         for (ServiceReference<ServerQuiesceListener> ref : listenerRefs) {
             final ServerQuiesceListener listener = bundleCtx.getService(ref);
             if (listener != null) {
-                threadPool.execute(new Runnable() {
+
+                executorService.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            listeners.add(Thread.currentThread());
+                            listeners.add(listener);
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Invoking serverStopping() on listener: " + listener);
                             }
@@ -359,57 +363,33 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "serverStopping() method completed on listener: " + listener);
                             }
+
                         } catch (Throwable t) {
                             // Auto-FFDC here..
+                        } finally {
+                            listeners.remove(listener);
                         }
                     }
                 });
+
             }
         }
 
-        // Now that we have notified all listeners, shutdown the executor
-        threadPool.shutdown();
-
-        boolean finished = false;
-        // And wait for all of that queued work to complete
-        try {
-            finished = threadPool.awaitTermination(30, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            // boooo. Stop waiting for notifications to finish...
-            finished = false;
-        }
-
-        if (finished) {
+        // Notify the executor service that we are quiescing
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
+        if (tq.quiesceThreads()) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
                 Tr.info(tc, "client.quiesce.end");
         } else {
+
+            // If debug is enabled, dump threads
             if (tc.isDebugEnabled()) {
-                // for which notifications are not done yet
-                for (RuntimeUpdateNotification notification : existingNotifications.values()) {
-                    if (!!!notification.isDone()) {
-                        Tr.debug(tc, "Notification is not done yet: " + notification);
-                    }
-                }
-                // Check which threads are still alive
-                for (Thread t : listeners) {
-                    int liveThreads = 0;
-                    if (t.isAlive()) {
-                        liveThreads++;
-                        Tr.debug(tc, "For thread " + liveThreads + " the stack trace is as follows: ");
-                        StackTraceElement stackTrace[] = t.getStackTrace();
-                        int sizeOfStack = stackTrace.length;
-                        //Print the first several traces from the stack
-                        for (int i = 0; (i < sizeOfStack) || (i < 5); i++) {
-                            Tr.debug(tc, "\t \t at " + stackTrace[i].getMethodName() + "(" + stackTrace[i].getFileName() + "" + stackTrace[i].getLineNumber() + ")");
-                        }
-                        if (sizeOfStack >= 5) {
-                            Tr.debug(tc, "...");
-                        }
-                    }
-                }
+                libertyProcess.createJavaDump(Collections.singleton("thread"));
             }
+
+            int count = tq.getActiveThreads();
 
             // we timed out - we now have to stop waiting for existing notifications to finish...
             // we set the normal stop to false and issue the timeout warning after the diagnostics to
@@ -417,7 +397,37 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             // finish right after we issue the warning - then we wouldn't see them in the diagnostics).
             normalServerStop.set(false);
             Tr.warning(tc, "quiece.warning");
+
+            int notificationCount = 0;
+
+            for (RuntimeUpdateNotification notification : existingNotifications.values()) {
+                if (!!!notification.isDone()) {
+                    notificationCount++;
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Notification did not complete during quiesce: ", notification.getName());
+                    }
+                }
+            }
+            if (notificationCount > 0) {
+                Tr.warning(tc, "notifications.not.complete", notificationCount);
+            }
+
+            if (listeners.size() > 0) {
+                Tr.warning(tc, "quiesce.listeners.not.complete", listeners.size());
+            }
+
+            if (tc.isDebugEnabled()) {
+                for (ServerQuiesceListener sql : listeners) {
+                    Tr.debug(tc, "Quiesce listener did not complete during quiesce: ", sql.getClass().getName());
+                }
+            }
+
+            count = count - notificationCount - listeners.size();
+            if (count > 0) {
+                Tr.warning(tc, "quiesce.waiting.on.threads", count);
+            }
         }
+
     }
 
     private boolean isServer() {

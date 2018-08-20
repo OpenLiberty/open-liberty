@@ -35,6 +35,7 @@ instrument.classesExcludes: com/ibm/ws/concurrency/policy/resources/*.class
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations, \
