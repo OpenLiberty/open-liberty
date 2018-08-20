@@ -16,7 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
@@ -40,6 +42,7 @@ import org.junit.Test;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
+import componenttest.topology.utils.FATServletClient;
 
 @DataSourceDefinitions(value = {
                                  @DataSourceDefinition(
@@ -364,6 +367,10 @@ public class JDBCDerbyServlet extends FATServlet {
         }
     }
 
+    /**
+     * Get a connection and leave it open while getting and using other connections.
+     * Return to open connection and attempt to use.
+     */
     @Test
     public void testLongRunningConnection() throws Throwable {
         Connection con1 = null;
@@ -376,43 +383,39 @@ public class JDBCDerbyServlet extends FATServlet {
                     for (int i = 0; i < 5; i++) {
                         Connection con = null;
                         try {
-                            System.out.println("KJA1017LRC GET CONNECTION" + i); //REMOVE
                             con = ds9.getConnection();
-                            Thread.sleep(5000);
+                            Thread.sleep(500);
                             basicQuery(con);
                         } finally {
-                            if (con != null)
-                                System.out.println("KJA1017LRC CLOSE CONNECTION" + i); //REMOVE
-                            con.close();
+                            if (con != null) {
+                                con.close();
+                            }
                         }
                     } //end for-loop
                     return true;
                 }
             });
 
-            System.out.println("KJA1017LRC GET NORMAL CONNECTION"); //REMOVE
             con1 = ds9.getConnection();
-            System.out.println("KJA1017LRC GOT NORMAL CONNECTION"); //REMOVE
             future.get();
             basicQuery(con1);
 
         } finally {
             dropTable(con1, CITYTABLE);
-            System.out.println("KJA1017LRC CLOSE NORMAL CONNECTION"); //REMOVE
             con1.close();
         }
     }
 
-    //TODO
+    //TODO Currently produces a Java 2 security issue.
     /**
-     *
+     * Gets a connection that will remain open and then redirect to the testSuspendedLTCHelper servlet.
+     * Then return to open connection and attempt to use it.
      */
     @Test
     public void testSuspendedLTC() throws Throwable {
         Connection openConnection = null;
         createTable(ds9, CITYTABLE, CITYSCHEMA);
         try {
-            System.out.println("KJA1017LTC get open connection"); //REMOVE
             openConnection = ds9.getConnection();
             openConnection.setAutoCommit(false);
 
@@ -424,24 +427,22 @@ public class JDBCDerbyServlet extends FATServlet {
                 httpCon.setDoOutput(true);
                 httpCon.setUseCaches(false);
                 httpCon.setRequestMethod("POST");
-                System.out.println("KJAPermission + " + httpCon.getPermission());
-                httpCon.getPermission();
                 InputStream is = httpCon.getInputStream();
-//                InputStreamReader isr = new InputStreamReader(is);
-//                BufferedReader br = new BufferedReader(isr);
-//
-//                String sep = System.getProperty("line.separator");
-//                StringBuilder lines = new StringBuilder();
-//
-//                // Send output from servlet to console output
-//                for (String line = br.readLine(); line != null; line = br.readLine()) {
-//                    lines.append(line).append(sep);
-//                }
-//                // Look for success message, otherwise fail test
-//                if (lines.indexOf(FATServletClient.SUCCESS) < 0) {
-//                    fail("Missing success message in output. " + lines);
-//                }
-//                System.out.println(lines);
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+
+                String sep = System.getProperty("line.separator");
+                StringBuilder lines = new StringBuilder();
+
+                // Send output from servlet to console output
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    lines.append(line).append(sep);
+                }
+                // Look for success message, otherwise fail test
+                if (lines.indexOf(FATServletClient.SUCCESS) < 0) {
+                    fail("Missing success message in output. " + lines);
+                }
+                System.out.println(lines);
             } finally {
                 httpCon.disconnect();
             }
@@ -458,7 +459,6 @@ public class JDBCDerbyServlet extends FATServlet {
     }
 
     public void testSuspendedLTCHelper() throws Throwable {
-        System.out.println("KJA1017LTC helper method started"); //REMOVE
         Connection con = ds9.getConnection();
         try {
             basicQuery(con);
@@ -467,7 +467,6 @@ public class JDBCDerbyServlet extends FATServlet {
         } finally {
             con.commit();
             con.close();
-            System.out.println("KJA1017LTC helper method end"); //REMOVE
         }
     }
 
