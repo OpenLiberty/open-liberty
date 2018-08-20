@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,18 +11,15 @@
 package com.ibm.ws.container.service.annotations;
 
 import java.util.List;
-import java.util.Set;
 
+import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
+import com.ibm.ws.container.service.config.WebFragmentsInfo;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
-import com.ibm.wsspi.anno.info.ClassInfo;
-import com.ibm.wsspi.anno.info.InfoStore;
-import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
 /**
- * Main link for web module annotation related services.
- * 
+ * Annotations data for web type modules.
+ *
  * The annotation services type acts as a Future<ClassSource_Aggregate>,
  * as a Future<AnnotationTargets_Targets>, and as a Future<InfoStore>, with
  * the sharing of a single class source between the other two futures.
@@ -47,9 +44,9 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
  * Informational messages are generated for the initiation of a scan, and for the
  * completion of a scan.
  * 
- * <p>Note on fragment paths:
+ * Note on fragment paths:
  * 
- * <p>These are specified through a complete, ordered, list,
+ * These are specified through a complete, ordered, list,
  * and through the partition of that list into <b>included</b>
  * <b>partial</b> and <b>excluded</b> locations. Seed locations
  * are fragment jars which are neither metadata-complete nor
@@ -59,196 +56,106 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
  * are those which were omitted because an absolute ordering is
  * specified, and no others element is specified. The excluded
  * locations are those which were not specified in the absolute
- * ordering explicit listing.</p>
+ * ordering explicit listing.
  * 
- * <p>Note that exclusion has precedence over metadata-complete.</p>
+ * Note that exclusion has precedence over metadata-complete.
  * 
- * <p>Fragment paths are relative to the "WEB-INF/lib" folder, not
- * to the rot web module container.</p>
+ * Fragment paths are relative to the "WEB-INF/lib" folder, not
+ * to the rot web module container.
  * 
- * <p>Included locations are scanned for annotations and for class
+ * Included locations are scanned for annotations and for class
  * relationship information. Partial locations are scanned only for
  * class relationship information. Excluded locations are scanned only
  * for class relationship information, and only as required to complete
- * class relationship information for referenced classes.</p>
+ * class relationship information for referenced classes.
  * 
- * <p>Class relationship information is the class to superclass and
- * the class to implements relationships.</p>
+ * Class relationship information is the class to superclass and
+ * the class to implements relationships.
  */
-public interface WebAnnotations {
 
-    // Intermediate values ...
+// Used by:
+//
+// com.ibm.ws.container.service/src/com/ibm/ws/container/service/config/ServletConfigurator.java
+// com.ibm.ws.ejbcontainer/src/com/ibm/ws/ejbcontainer/osgi/internal/ModuleInitDataAdapter.java
+// com.ibm.ws.jaxrs.2.0.common/src/com/ibm/ws/jaxrs20/utils/JaxRsUtils.java
+// com.ibm.ws.jaxrs.2.0.common/src/org/apache/cxf/jaxrs/utils/InjectionUtils.java
+// com.ibm.ws.jaxrs.2.0.server/src/com/ibm/ws/jaxrs20/server/component/JaxRsExtensionFactory.java
+// com.ibm.ws.jaxrs.2.0.server/src/com/ibm/ws/jaxrs20/server/component/JaxRsWebModuleInfoBuilder.java
+// com.ibm.ws.jaxws.clientcontainer/src/com/ibm/ws/jaxws/utils/JaxWsUtils.java
+// com.ibm.ws.jaxws.common/src/com/ibm/ws/jaxws/utils/JaxWsUtils.java
+// com.ibm.ws.jaxws.ejb/src/com/ibm/ws/jaxws/ejb/EJBInWarJaxWsModuleInfoBuilderExtension.java
+// com.ibm.ws.jaxws.web/src/com/ibm/ws/jaxws/web/WebJaxWsModuleInfoBuilder.java
+// com.ibm.ws.jaxws.webcontainer/src/com/ibm/ws/jaxws/webcontainer/JaxWsExtensionFactory.java
+// com.ibm.ws.jsf.2.2/src/com/ibm/ws/jsf/config/annotation/WASMyFacesAnnotationProvider.java
+// com.ibm.ws.jsf.shared/src/com/ibm/ws/jsf/shared/util/JSFInjectionClassListCollaborator.java
+// com.ibm.ws.microprofile.openapi/src/com/ibm/ws/microprofile/openapi/AnnotationScanner.java
+// com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2/src/com/ibm/ws/jaxrs20/utils/JaxRsUtils.java
+// com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2/src/org/apache/cxf/jaxrs/utils/InjectionUtils.java
+// com.ibm.ws.org.apache.myfaces.2.3/src/com/ibm/ws/jsf/config/annotation/WASMyFacesAnnotationProvider.java
+// com.ibm.ws.springboot.support_fat/fat/src/com/ibm/ws/springboot/support/fat/CommonWebServerTests15.java
+// com.ibm.ws.springboot.support_fat/fat/src/com/ibm/ws/springboot/support/fat/WebAnnotationTests.java
+// com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/container/config/WebAppConfigurationAdapter.java
+// com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/container/config/WebAppConfigurator.java
+// com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/container/config/WebAppConfiguratorHelper.java
+// com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/osgi/webapp/WebApp.java
+// com.ibm.ws.webcontainer/src/com/ibm/ws/webcontainer/webapp/WebApp.java
+// com.ibm.ws.webcontainer.security/src/com/ibm/ws/webcontainer/security/metadata/SecurityServletConfiguratorHelper.java
+// com.ibm.ws.webcontainer.security/test/com/ibm/ws/webcontainer/security/metadata/SecurityServletConfiguratorHelperTest.java
+// com.ibm.ws.webcontainer.servlet.3.1/src/com/ibm/ws/webcontainer31/util/ServletInjectionClassListCollaborator.java
+// com.ibm.ws.webcontainer.servlet.3.1.factories/test/com/ibm/ws/webcontainer/webapp/config/ServletConfigMock.java
+// com.ibm.ws.wsoc.cdi.weld/src/com/ibm/ws/wsoc/cdi/weld/WebSocketInjectionClassListCollaborator.java
 
-    /**
-     * Answer the ordered list of fragment items.
-     * 
-     * @return The ordered list of fragment items.
-     * 
-     * @throws UnableToAdaptException Thrown in case of an error processing fragment metadata.
-     */
-    List<WebFragmentInfo> getOrderedItems() throws UnableToAdaptException;
+public interface WebAnnotations extends ModuleAnnotations {
 
-    /**
-     * Answer the list of excluded fragment items.
-     * 
-     * @return The list of excluded fragment items.
-     * 
-     * @throws UnableToAdaptException Thrown in case of an error processing fragment metadata.
-     */
-    List<WebFragmentInfo> getExcludedItems() throws UnableToAdaptException;
+	/**
+	 * Override: The module information of web annotations is known
+	 * to be web module information.
+	 * 
+	 * @return The web module information of the web module annotations.
+	 */
+	WebModuleInfo getModuleInfo();
 
-    /**
-     * <p>Answer the class source of the module. This includes the WEB-INF/classes
-     * location and all fragments, in their proper order. Only WEB-INF/classes and
-     * included fragments paths are marked as seed locations.</p>
-     * 
-     * @return The web module class source.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
-     * 
-     * @see #getOrderedFragmentPaths()
-     * @see #getIncludedFragmentPaths()
-     * @see #getExcludedFragmentPaths()
-     * @see #getExternalFragmentPaths()
-     */
-    ClassSource_Aggregate getClassSource() throws UnableToAdaptException;
+	/**
+	 * Answer the name of the web module.
+	 * 
+	 * @return The name of the web module.
+	 */
+	String getWebModuleName();
 
-    // Step three is to complete the adapt call.  Several completions are available:
-
-    /**
-     * <p>Answer the main annotation targets of the module. This uses the common
-     * web module class source.</p>
-     * 
-     * @return The main annotation targets for the module.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
-     * 
-     * @see #getClassSource()
-     */
-    AnnotationTargets_Targets getAnnotationTargets() throws UnableToAdaptException;
-
-    /**
-     * <p>Tell if the target class was scanned from an included fragment.</p>
-     * 
-     * @param className The name of the target class.
-     * 
-     * @return True if the target class was scanned from an included fragment. Otherwise, false.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
-     */
-    public boolean isIncludedClass(String className) throws UnableToAdaptException;
+	/**
+	 * Answer all of the fragments of the module.
+	 * 
+	 * @return All of the fragments of the module.
+	 */
+	WebFragmentsInfo getWebFragments();
 
     /**
-     * <p>Tell if the target class was scanned from a partial (metadata-complete) fragment.</p>
-     * 
-     * @param className The name of the target class.
-     * 
-     * @return True if the target class was scanned from a partial fragment. Otherwise, false.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
+     * Answer the ordered list of fragments of the module.
+     *
+     * @return The ordered list of fragments of the module.
      */
-    public boolean isPartialClass(String className) throws UnableToAdaptException;
+    List<WebFragmentInfo> getOrderedItems();
 
     /**
-     * <p>Tell if the target class was scanned from an excluded location.</p>
-     * 
-     * @param className The name of the target class.
-     * 
-     * @return True if the target class was scanned from an excluded location. Otherwise, false.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
+     * Answer the list of excluded fragments of the module.
+     *
+     * @return The list of excluded fragments of the module.
      */
-    public boolean isExcludedClass(String className) throws UnableToAdaptException;
-
-    /**
-     * <p>Tell if the target class was scanned from an external location.</p>
-     * 
-     * @param className The name of the target class.
-     * 
-     * @return True if the target class was scanned from an external location. Otherwise, false.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
-     */
-    public boolean isExternalClass(String className) throws UnableToAdaptException;
+    List<WebFragmentInfo> getExcludedItems();
 
     //
 
     /**
-     * <p>Answer annotation targets generated from the module class source. Scan only the
-     * classes in the specified fragment.</p>
-     * 
-     * <p>Use the common class source for this scan.</p>
-     * 
-     * @param webFragmentItem The fragment which is to be scanned.
-     * 
+     * Answer annotation targets generated from the module class source. Scan only the
+     * classes in the specified fragment.
+     *
+     * Use the common class source for this scan.
+     *
+     * @param fragment The fragment which is to be scanned.
+     *
      * @return Class list specific annotation targets for the module.
-     * 
+     *
      * @throws UnableToAdaptException Thrown by an error processing fragment paths.
      */
-    FragmentAnnotations getFragmentAnnotations(WebFragmentInfo webFragmentItem) throws UnableToAdaptException;
-
-    /**
-     * <p>Answer annotation targets generated from the module class source. Scan only the
-     * specific extra classes.</p>
-     * 
-     * <p>Use the common class source for this scan.</p>
-     * 
-     * <p>The specific targets is not stored in the non-persistent cache!</p>
-     * 
-     * @param specificClassNames The names of the specific class which are to be scanned.
-     * 
-     * @return Class list specific annotation targets for the module.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
-     * 
-     * @see #getClassSource()
-     */
-    SpecificAnnotations getSpecificAnnotations(Set<String> specificClassNames) throws UnableToAdaptException;
-
-    // Info access ...
-
-    /**
-     * <p>Answer the common info store for the module. This uses the common web module
-     * class source.</p>
-     * 
-     * @return The common info store for the module.
-     * 
-     * @throws UnableToAdaptException Thrown by an error processing fragment paths.
-     */
-    InfoStore getInfoStore() throws UnableToAdaptException;
-
-    /**
-     * <p>Helper to open the info store. This is recommended if many calls
-     * are expected to {@link #getClassInfo(String)}. Opening the info store
-     * speeds class lookups, with a cost of retaining resources in the underlying
-     * file access layer.</p>
-     * 
-     * <p>A call to open the info store requires a call to close the info store
-     * following all accesses.</p>
-     * 
-     * @throws UnableToAdaptException Thrown if the open failed. Often, because of
-     *             a problem opening a ZIP or a JAR file.
-     */
-    void openInfoStore() throws UnableToAdaptException;
-
-    /**
-     * <p>Helper to close the info store. This is required at the completion of
-     * using the info store.</p>
-     * 
-     * @throws UnableToAdaptException Thrown if the open failed. Often, because of
-     *             a problem opening a ZIP or a JAR file.
-     */
-    void closeInfoStore() throws UnableToAdaptException;
-
-    /**
-     * <p>Answer a class info object from the web module info store.</p>
-     * 
-     * @param className The name of the class for which to retrieve a class info object.
-     * 
-     * @return The class info object for the named class.
-     * 
-     * @throws UnableToAdaptException Thrown if a non-recoverable error occurred while
-     *             retrieving the class info object.
-     */
-    ClassInfo getClassInfo(String className) throws UnableToAdaptException;
+    FragmentAnnotations getFragmentAnnotations(WebFragmentInfo fragment) throws UnableToAdaptException;
 }
