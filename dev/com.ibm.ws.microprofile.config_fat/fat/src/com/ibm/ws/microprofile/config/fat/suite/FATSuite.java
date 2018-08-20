@@ -28,6 +28,7 @@ import com.ibm.ws.microprofile.config.fat.tests.ConvertersTest;
 import com.ibm.ws.microprofile.config.fat.tests.CustomSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DynamicSourcesTest;
+import com.ibm.ws.microprofile.config.fat.tests.IllegalOptionalTest;
 import com.ibm.ws.microprofile.config.fat.tests.OrdinalsForDefaultsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SimultaneousRequestsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
@@ -52,6 +53,7 @@ import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
                 CustomSourcesTest.class,
                 DefaultSourcesTest.class,
                 DynamicSourcesTest.class,
+                IllegalOptionalTest.class,
                 OrdinalsForDefaultsTest.class,
                 SimultaneousRequestsTest.class,
                 SharedLibTest.class,
