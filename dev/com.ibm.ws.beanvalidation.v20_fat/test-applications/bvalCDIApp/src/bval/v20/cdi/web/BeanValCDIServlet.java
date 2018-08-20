@@ -25,6 +25,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.validation.ClockProvider;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.Email;
@@ -38,7 +39,6 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import javax.xml.bind.ValidationException;
 
 import org.junit.Test;
 
