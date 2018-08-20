@@ -72,7 +72,11 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
                 if (type instanceof ParameterizedType) {
                     ParameterizedType pType = (ParameterizedType) type;
                     configException = processParameterizedType(injectionPoint, pType, classLoader);
-                } else {
+                } else if (Optional.class.isAssignableFrom((Class) type)) { 
+                    // If we have an Optional without type arguments we will not know which converter to use. 
+                    configException = new IllegalArgumentException("A property was set to Optional without type arguments."); //TODO Just a test. use a proper error message. Do we need NLS translations? 
+                }
+                else {
                     configException = processConversionType(injectionPoint, type, classLoader, false);
                 }
                 if (configException != null) {
