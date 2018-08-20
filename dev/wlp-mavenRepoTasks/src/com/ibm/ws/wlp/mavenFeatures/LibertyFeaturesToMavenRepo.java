@@ -357,8 +357,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setVersion(coordinates.getVersion());
 		model.setPackaging(Constants.ArtifactType.JSON.getType());
 		setLicense(model, version, false, false, isWebsphereLiberty);
-		setScmDevUrl(model);
-		
+	
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		model.setDependencies(dependencies);
