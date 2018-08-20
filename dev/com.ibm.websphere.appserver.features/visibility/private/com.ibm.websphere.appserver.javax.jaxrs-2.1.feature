@@ -5,11 +5,15 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 Subsystem-Name: Java RESTful Services API 2.1
--features=com.ibm.websphere.appserver.javax.servlet-4.0, \
- com.ibm.websphere.appserver.javax.annotation-1.3; apiJar=false, \
- com.ibm.websphere.appserver.javaeeCompatible-8.0
--bundles=com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
- com.ibm.websphere.javaee.jaxrs.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.ws.rs:javax.ws.rs-api:2.1"
+-features=\
+  com.ibm.websphere.appserver.javax.servlet-4.0, \
+  com.ibm.websphere.appserver.javax.annotation-1.3; apiJar=false, \
+  com.ibm.websphere.appserver.javaeeCompatible-8.0
+-bundles=\
+  com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
+  com.ibm.websphere.javaee.activation.1.1; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.activation:activation:1.1",\
+  com.ibm.websphere.javaee.jaxb.2.2; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.bind:jaxb-api:2.2.12", \
+  com.ibm.websphere.javaee.jaxrs.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.ws.rs:javax.ws.rs-api:2.1"
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jaxrs20_1.0-javadoc.zip
 kind=ga
 edition=core
