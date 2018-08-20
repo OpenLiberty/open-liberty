@@ -187,7 +187,7 @@ public class DefaultJsonWebTokenImpl implements JsonWebToken, Serializable {
                 Tr.warning(tc, "CLAIM_MALFORMED", new Object[] { "aud", e.getLocalizedMessage() });
             }
         }
-        return audSet;
+        return audSet.size() == 0 ? null : audSet;
     }
 
     @Override
