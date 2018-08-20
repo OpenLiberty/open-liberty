@@ -174,7 +174,7 @@ public class Jose4jValidator {
             if (issuedAt.isAfter(expiration) ||
                     !JsonTokenUtil.isCurrentTimeInInterval(clockSkewInSeconds, issuedAt.getMillis(), expiration.getMillis())) {
 
-                Object[] objects = new Object[] { this.clientId, System.currentTimeMillis(), expiration, issuedAt };
+                Object[] objects = new Object[] { this.clientId, new Instant(System.currentTimeMillis()), expiration, issuedAt };
 
                 String failMsg = Tr.formatMessage(tc, "OIDC_JWT_VERIFY_STATE_ERR", objects);
                 oidcClientRequest.setRsFailMsg(OidcCommonClientRequest.EXPIRED_TOKEN, failMsg);
