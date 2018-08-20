@@ -50,7 +50,7 @@ public class HibernateValidatorMessageTest {
         assertTrue((buildDir.exists()));
         File wsHibernateFile = null;
         for (File f : buildDir.listFiles()) {
-            if (f.getName().endsWith(".jar") && f.getName().contains("hibernate.validator.6")) {
+            if (f.getName().endsWith(".jar") && f.getName().contains("com.ibm.ws.org.hibernate.validator")) {
                 wsHibernateFile = f;
                 break;
             }

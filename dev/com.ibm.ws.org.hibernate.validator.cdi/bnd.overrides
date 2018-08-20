@@ -1,8 +1,7 @@
 -include= ~../cnf/resources/bnd/rejar.props
 
 bVersion=1.0
-
-Bundle-SymbolicName: com.ibm.ws.org.hibernate.validator.cdi.6.0.9.Final
+Bundle-SymbolicName: com.ibm.ws.org.hibernate.validator.cdi
 
 # Something that wildfly/thorntail apparently uses but blows up on Liberty
 Fragment-Host:
@@ -12,8 +11,8 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.hibernate.validator.cdi.*;version="6.0.9.Final"
+  org.hibernate.validator.cdi.*;version="6.0.12.Final"
 
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator-cdi;6.0.9.Final}!/META-INF/services/*,\
+  @${repo;org.hibernate.validator:hibernate-validator-cdi;6.0.12.Final}!/META-INF/services/*,\
   META-INF=resources/META-INF
