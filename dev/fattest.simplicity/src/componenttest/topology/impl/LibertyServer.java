@@ -3969,7 +3969,7 @@ public class LibertyServer implements LogMonitorClient {
         //Set path to server log assuming the default setting.
         // ALWAYS RETURN messages.log -- tests assume they can look for INFO+ messages.
         RemoteFile file = LibertyFileManager.getLibertyFile(machine, messageAbsPath);
-        if (file == null) {
+        if (file == null && throwIfMissing) {
             throw new IllegalStateException("Unable to find default log file, path=" + messageAbsPath);
         }
         return file;
