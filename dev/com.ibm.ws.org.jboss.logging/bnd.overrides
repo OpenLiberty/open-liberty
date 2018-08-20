@@ -2,11 +2,12 @@
 bVersion=1.0
 
 Bundle-Name: jboss-logging
-Bundle-SymbolicName: com.ibm.ws.org.jboss.logging.3.3.0
+Bundle-SymbolicName: com.ibm.ws.org.jboss.logging
 
-Bundle-Description: jboss-logging-3.3.0.Final, version 3.3.0.Final
+Bundle-Description: The JBoss Logging Framework, version 3.3.2.Final
 
-Export-Package: org.jboss.logging;version="3.3.0.Final";packageType=was_internal
+Export-Package: \
+  org.jboss.logging;version="3.3.2.Final";packageType=was_internal
 Import-Package: \
   org.apache.log4j;resolution:=optional, \
   org.apache.logging.log4j;version="[2.0,3)";resolution:=optional, \
@@ -17,4 +18,4 @@ Import-Package: \
   org.slf4j.spi;version="[1.7,2)";resolution:=optional
 
 Include-Resource: \
-  @${repo;org.jboss.logging:jboss-logging;3.3.0.Final}!/!META-INF/*
+  @${repo;org.jboss.logging:jboss-logging;3.3.2.Final}!/!META-INF/*
