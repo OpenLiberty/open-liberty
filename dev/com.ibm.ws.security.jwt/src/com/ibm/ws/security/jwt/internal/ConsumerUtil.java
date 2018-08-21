@@ -587,7 +587,7 @@ public class ConsumerUtil {
         }
     }
 
-    JwtContext processJwtStringWithConsumer(JwtConsumer jwtConsumer, String jwtString) throws InvalidTokenException, Exception {
+    JwtContext processJwtStringWithConsumer(JwtConsumer jwtConsumer, String jwtString) throws InvalidTokenException, InvalidJwtException {
         JwtContext validatedJwtContext = null;
         try {
             validatedJwtContext = jwtConsumer.process(jwtString);
