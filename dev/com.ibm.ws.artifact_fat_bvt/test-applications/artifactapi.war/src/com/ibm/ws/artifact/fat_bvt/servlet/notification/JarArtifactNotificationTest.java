@@ -145,7 +145,7 @@ public class JarArtifactNotificationTest extends ArtifactNotificationTestImpl {
         if ( !removeFile(testJar) ) {
             println("Initial remove failed [ " + testJarPath + " ]");
 
-            long maxInterval = ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX / ZipCachingProperties.ONE_MILLI_SEC_IN_NANO_SEC;
+            long maxInterval = ZipCachingProperties.ZIP_CACHE_REAPER_SLOW_PEND_MAX / ZipCachingProperties.NANO_IN_MILLI;
 
             println("Zip Cache Long Interval [ " + Long.valueOf(maxInterval) + " ] ms");
 
