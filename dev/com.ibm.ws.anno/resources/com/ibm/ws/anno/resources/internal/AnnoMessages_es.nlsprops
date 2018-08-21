@@ -50,7 +50,7 @@ ANNO_CLASSSOURCE_CLOSE2_EXCEPTION.useraction=Consulte la excepci\u00f3n y el men
 # # {1} The name of the resource, includes the full path to the class
 # # {2} the name of the class associated with the resource
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION=CWWKC0003W: [ {0} ]: La apertura del recurso [{1}] para la clase {2}] ha fallado.
-ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Se ha generado una excepci\u00f3n al abrir la corriente de entrada para el recurso.
+ANNO_CLASSSOURCE_OPEN1_EXCEPTION.explanation=Se ha generado una excepci\u00f3n al abrir una corriente de entrada para el recurso.
 ANNO_CLASSSOURCE_OPEN1_EXCEPTION.useraction=Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
 
 # # {0} A hashcode id used to identify the object emitting the message
@@ -344,7 +344,7 @@ ANNO_TARGETS_SCAN_CLASS_EXCEPTION=CWWKC0048W: Se ha producido una excepci\u00f3n
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Se ha producido un problema durante la exploraci\u00f3n de una clase para obtener informaci\u00f3n de clase e informaci\u00f3n de anotaciones.  Revise la clase visualizada para asegurarse de que se puede leer y de que contiene bytes de clases v\u00e1lidos.
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
 
-ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Se ha producido una excepci\u00f3n al crear un lector de c\u00f3digos de  bytes de clases para la clase [ {0} ].
+ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Se ha producido una excepci\u00f3n al crear un lector de c\u00f3digos de bytes de clases para la clase [ {0} ].
 ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Se ha producido un problema durante la preparaci\u00f3n de un lector de c\u00f3digos de bytes de clases.  Los valores de c\u00f3digos de bytes para dicha clase pueden no ser v\u00e1lidos o es posible que no se pueda leer el archivo de clases.  Como resultado, la informaci\u00f3n de clase y de anotaciones para dicha clase no estar\u00e1n disponibles y el m\u00f3dulo hace que la clase no funcione correctamente.
 ANNO_TARGETS_FAILED_TO_CREATE_READER.useraction=Revise el contenido del archivo de clases que ha ocasionado el error.  Si es necesario, sustituya el archivo de clase por uno que tenga c\u00f3digos de bytes v\u00e1lidos.  Asimismo, consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
 
@@ -380,7 +380,7 @@ ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Incoherencia de datos internos: La c
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
-ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: La tabla de serie [ {0} ] ha encontrado un error al procesar el valor [ {1} ] de tipo [ {2} ].  El valor no debe contener una barra invertida (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: La tabla de serie [ {0} ] ha encontrado un error al procesar el valor [ {1} ] de tipo [ {2} ].  El valor no debe contener una barra invertida (''\\'').
 ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=El valor tiene un contenido no v\u00e1lido para su uso esperado.  El valor puede no procesarse correctamente.  Es posible que el m\u00f3dulo asociado no funcione correctamente.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Los datos del m\u00f3dulo se deben examinar para verificar que el valor suministrado es v\u00e1lido.
 
@@ -524,28 +524,28 @@ ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Consulte la excepci\u00f3n y e
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] La apertura del recurso de \u00edndice de Jandex [{1}] ha fallado. Mensaje de error: {2}.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] La apertura del recurso de \u00edndice de Jandex [{1}] ha fallado.  Mensaje de error: {2}.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=El intento de apertura del recurso de \u00edndice de Jandex ha producido una excepci\u00f3n.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] La lectura del recurso de \u00edndice de Jandex [{1}] ha fallado. Mensaje de error: {2}.
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] La lectura del recurso de \u00edndice de Jandex [{1}] ha fallado.  Mensaje de error: {2}.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=El intento de lectura del \u00edndice de Jandex ha fallado con una excepci\u00f3n.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] La apertura del archivo de \u00edndices de Jandex [{1}] ha fallado. Mensaje de error: {2}.
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] La apertura del archivo de \u00edndices de Jandex [{1}] ha fallado.  Mensaje de error: {2}.
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=El intento de apertura del recurso de \u00edndice de Jandex ha producido una excepci\u00f3n.
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] La lectura del archivo de \u00edndices de Jandex [{1}] ha fallado. Mensaje de error: {2}.
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] La lectura del archivo de \u00edndices de Jandex [{1}] ha fallado.  Mensaje de error: {2}.
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=El intento de lectura del \u00edndice de Jandex ha fallado con una excepci\u00f3n.
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Consulte la excepci\u00f3n y el mensaje FFDC asociado para obtener m\u00e1s informaci\u00f3n.
 
@@ -561,6 +561,6 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {4} The name of a file or the name of a directory
 # # Read - Past tense. 
 ANNO_JANDEX_USAGE=CWWKC0092I: Se han le\u00eddo los \u00edndices Jandex de {0} de los archivadores {1} ({2} de {3} clases) en {4}. 
-ANNO_JANDEX_USAGE.explanation=Esto muestra el n\u00famero de archivadores del m\u00f3dulo que se han procesado al leer los \u00edndices Jandex en lugar de explorar los archivos de clases reales. Tambi\u00e9n muestra el n\u00famero total de clases de la aplicaci\u00f3n que se han procesado mediante la lectura de los \u00edndices Jandex.
-ANNO_JANDEX_USAGE.useraction=Si est\u00e1 previsto que los \u00edndices Jandex los lea la aplicaci\u00f3n, no es necesaria ninguna acci\u00f3n. Si los \u00edndices Jandex no se van a leer en la aplicaci\u00f3n, establezca el atributo useJandex="false" del elemento de la aplicaci\u00f3n en server.xml. De forma alternativa, establezca useJandex="false" en el elemento applicationManger en server.xml para ignorar los \u00edndices Jandex de todas las aplicaciones.
+ANNO_JANDEX_USAGE.explanation=Esto muestra el n\u00famero de archivadores del m\u00f3dulo que se han procesado al leer los \u00edndices Jandex en lugar de explorar los archivos de clases reales.  Tambi\u00e9n muestra el n\u00famero total de clases de la aplicaci\u00f3n que se han procesado mediante la lectura de los \u00edndices Jandex.
+ANNO_JANDEX_USAGE.useraction=Si est\u00e1 previsto que los \u00edndices Jandex los lea la aplicaci\u00f3n, no es necesaria ninguna acci\u00f3n.  Si los \u00edndices Jandex no se van a leer en la aplicaci\u00f3n, establezca el atributo useJandex="false" del elemento de la aplicaci\u00f3n en server.xml. De forma alternativa, establezca useJandex="false" en el elemento applicationManger en server.xml para ignorar los \u00edndices Jandex de todas las aplicaciones.
 

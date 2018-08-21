@@ -380,7 +380,7 @@ ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Incongruenza dati interni: l''associ
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
-ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: La tabella di stringhe [ {0} ] ha rilevato un errore durante l''elaborazione del valore [ {1} ] di tipo [ {2} ].  Il valore non deve contenere una barra retroversa (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: La tabella di stringhe [ {0} ] ha rilevato un errore durante l''elaborazione del valore [ {1} ] di tipo [ {2} ].  Il valore non deve contenere una barra retroversa (''\\'').
 ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=Il valore ha un contenuto non valido per l'uso previsto.  \u00c8 possibile che il valore non venga elaborato correttamente.  Il modulo associato potrebbe non funzionare correttamente.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=I dati del modulo devono essere esaminati per verificare che il valore fornito sia valido.
 

@@ -92,7 +92,7 @@ ANNO_CLASSSOURCE_CLOSE3_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548
 # # {2} the path for the directory
 ANNO_CLASSSOURCE_EMPTY_DIR=CWWKC0008W: [ {0} ]\uff1a\u5728\u6839 [{2}] \u7684 [{1}] \u4e2d\u627e\u4e0d\u5230\u6587\u4ef6\u3002
 ANNO_CLASSSOURCE_EMPTY_DIR.explanation=\u5df2\u9488\u5bf9\u76ee\u6807\u76ee\u5f55\u8c03\u7528\u6ce8\u91ca\u626b\u63cf\uff0c\u4f46\u5728\u8be5\u4f4d\u7f6e\u627e\u4e0d\u5230\u7c7b\u6587\u4ef6\u3002
-ANNO_CLASSSOURCE_EMPTY_DIR.useraction=\u8bf7\u68c0\u67e5\u8be5\u76ee\u5f55\u662f\u5426\u5e94\u5305\u542b\u7c7b\u3002\u4ece\u5e94\u7528\u7a0b\u5e8f\u4e2d\u9664\u53bb\u7a7a\u76ee\u5f55\u3002
+ANNO_CLASSSOURCE_EMPTY_DIR.useraction=\u8bf7\u68c0\u67e5\u8be5\u76ee\u5f55\u662f\u5426\u5e94\u5305\u542b\u7c7b\u3002\u4ece\u5e94\u7528\u7a0b\u5e8f\u4e2d\u79fb\u9664\u7a7a\u76ee\u5f55\u3002
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} the resource name, class name plus path
@@ -161,13 +161,13 @@ ANNO_CLASSSOURCE_CLOSE6_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548
 # # {2} a method name
 ANNO_ANNOINFO_NO_METHOD=CWWKC0017W: \u6ce8\u91ca\u7c7b [{1}] \u7684\u6ce8\u91ca [{0}] \u672a\u5305\u542b\u65b9\u6cd5 [{2}]\u3002
 ANNO_ANNOINFO_NO_METHOD.explanation=\u5728\u5df2\u7f16\u7801\u6ce8\u91ca\u4e0a\u627e\u4e0d\u5230\u53c2\u6570\u7684\u5339\u914d\u65b9\u6cd5\u3002
-ANNO_ANNOINFO_NO_METHOD.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64cd\u4f5c\u3002                
+ANNO_ANNOINFO_NO_METHOD.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64cd\u4f5c\u3002
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS1=CWWKC0018W: [{0}] \u5df2\u6709 [{1}] \u4f5c\u4e3a\u4e0d\u540c\u7684 Java \u7c7b [{2}]\u3002
 ANNO_CLASSINFO_EXISTS1.explanation=\u8be5\u7c7b\u7684\u7c7b\u4fe1\u606f\u5bf9\u8c61\u5df2\u5b58\u5728\u4e8e\u9ad8\u901f\u7f13\u5b58\u4e2d\u3002
-ANNO_CLASSINFO_EXISTS1.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64cd\u4f5c\u3002            
+ANNO_CLASSINFO_EXISTS1.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64cd\u4f5c\u3002
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS2=CWWKC0019W: [{0}] \u5df2\u6709 [{1}] \u4f5c\u4e3a Java \u7c7b\u3002
@@ -178,7 +178,7 @@ ANNO_CLASSINFO_EXISTS2.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64
 # # {2} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS3=CWWKC0020W: [{0}] \u5df2\u6709 [{1}] \u4f5c\u4e3a\u4e0d\u540c\u7684\u6ce8\u91ca\u7c7b [{2}]\u3002
 ANNO_CLASSINFO_EXISTS3.explanation=\u8be5\u7c7b\u7684\u7c7b\u4fe1\u606f\u5bf9\u8c61\u5df2\u5b58\u5728\u4e8e\u9ad8\u901f\u7f13\u5b58\u4e2d\u3002
-ANNO_CLASSINFO_EXISTS3.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64cd\u4f5c\u3002            
+ANNO_CLASSINFO_EXISTS3.useraction=\u6ca1\u6709\u53ef\u7528\u7684\u7528\u6237\u64cd\u4f5c\u3002
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} a hash id used to identify the object
 ANNO_CLASSINFO_EXISTS4=CWWKC0021W: [ {0} ] \u5df2\u6709 [{1}] \u4f5c\u4e3a\u6ce8\u91ca\u7c7b\u3002
@@ -403,7 +403,7 @@ ANNO_CLASSSOURCE_CLOSE_EXCEPTION.useraction=\u8bf7\u67e5\u770b\u5f02\u5e38\u548c
 # # {1} The name of the JAR file the class is in.
 ANNO_TARGETS_CORRUPT_CLASS=CWWKC0064I: \u65e0\u6cd5\u5904\u7406\u6ce8\u91ca\u7684 {1} \u4e2d\u7684\u7c7b {0}\uff0c\u56e0\u4e3a\u5b83\u770b\u8d77\u6765\u5df2\u635f\u574f\u3002
 ANNO_TARGETS_CORRUPT_CLASS.explanation=\u8bfb\u53d6\u7c7b\u6587\u4ef6\u4ee5\u786e\u5b9a\u662f\u5426\u6709\u60a8\u5173\u5fc3\u7684\u4efb\u4f55\u6ce8\u91ca\u65f6\uff0c\u53d1\u751f\u4e86\u95ee\u9898\u3002\u8be5\u7c7b\u53ef\u80fd\u662f\u65e0\u6548\u7c7b\u6587\u4ef6\u3002\u56e0\u6b64\uff0c\u5c06\u4e0d\u4f1a\u8bc6\u522b\u6b64\u7c7b\u4e2d\u7684\u6ce8\u91ca\u3002
-ANNO_TARGETS_CORRUPT_CLASS.useraction=\u6839\u636e\u8be5\u7c7b\u5bf9\u5e94\u7528\u7a0b\u5e8f\u6b63\u5e38\u8fd0\u884c\u7684\u91cd\u8981\u6027\uff0c\u53ef\u66ff\u6362\u3001\u9664\u53bb\u8be5\u7c7b\u6216\u5ffd\u7565\u6b64\u6d88\u606f\u3002
+ANNO_TARGETS_CORRUPT_CLASS.useraction=\u6839\u636e\u8be5\u7c7b\u5bf9\u5e94\u7528\u7a0b\u5e8f\u6b63\u5e38\u8fd0\u884c\u7684\u91cd\u8981\u6027\uff0c\u53ef\u66ff\u6362\u3001\u79fb\u9664\u8be5\u7c7b\u6216\u5ffd\u7565\u6b64\u6d88\u606f\u3002
 
 #### Added 07-Feb-2018:
 
