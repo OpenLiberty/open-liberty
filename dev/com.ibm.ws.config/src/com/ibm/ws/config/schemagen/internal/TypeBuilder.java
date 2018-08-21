@@ -250,6 +250,22 @@ class TypeBuilder {
         }
     }
 
+    public boolean processAttributes(ObjectClassDefinition ocd) {
+        boolean response = false;
+
+        AttributeDefinition[] attributeList = ocd.getAttributeDefinitions(ObjectClassDefinition.ALL);
+        for (AttributeDefinition ad : attributeList) {
+            String[] defaultValue = ad.getDefaultValue();
+            ExtendedAttributeDefinition ead = new ExtendedAttributeDefinitionImpl(ad);
+
+            if (ad.getID().equalsIgnoreCase("id") && ead.isFinal() && (defaultValue != null && defaultValue.length > 0)) {
+                response = true;
+            }
+
+        }
+        return response;
+    }
+
     private void processPidReferences() {
         for (Map.Entry<String, TypeBuilder.OCDTypeReference> pidEntry : pidTypeMap.entrySet()) {
             ExtendedObjectClassDefinition ocd = pidEntry.getValue().getOCDType().getObjectClassDefinition();
@@ -493,6 +509,14 @@ class TypeBuilder {
 
         public void setHasFactoryReference(boolean hasFactoryReference) {
             this.hasFactoryReference = hasFactoryReference;
+        }
+
+        public boolean getHasIBMFinalWithDefault() {
+            return hasIBMFinalWithDefault;
+        }
+
+        public void setHasIBMFinalWithDefault(boolean hasIBMFinalWithDefault) {
+            this.hasIBMFinalWithDefault = hasIBMFinalWithDefault;
         }
 
         public String getAliasName() {
