@@ -45,7 +45,8 @@ public class ServerClasspathTest {
                                                         "com.ibm.virtualization.management", "com.ibm.wsspi.kernel",
                                                         "com.ibm.ws.staticvalue", "com.ibm.java.lang.management.internal",
                                                         "org.ietf.jgss", "jdk", // Java 9
-                                                        "com.ibm.sharedclasses.spi" // Open JDK 9
+                                                        "com.ibm.sharedclasses.spi", // Open JDK 9
+                                                        "openj9"
     };
 
     @BeforeClass
