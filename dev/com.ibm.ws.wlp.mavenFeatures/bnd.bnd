@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: LibertyFeaturesToMavenRepo
+Bundle-SymbolicName: com.ibm.ws.wlp.mavenFeatures
+Bundle-Description: Tool for creating mavenArtifact from Liberty Features.
+
+javac.source: 1.7
+javac.target: 1.7
+
+Export-Package: \
+    com.ibm.ws.wlp.mavenFeatures;version=1.0
+    
+-buildpath: \
+	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest,\
+   	com.ibm.ws.commons-io:commons-io;version=latest,\
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
+    com.ibm.ws.org.apache.aries.util;version=latest, \
+    com.ibm.ws.org.apache.ant;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.ws.org.glassfish.json.1.0;version=latest,\
+    org.eclipse.osgi;version=latest
