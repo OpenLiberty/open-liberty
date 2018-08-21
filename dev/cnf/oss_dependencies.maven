@@ -72,6 +72,7 @@ javax.interceptor:javax.interceptor-api:1.2
 javax.jms:javax.jms-api:2.0
 javax.json:javax.json-api:1.1.2
 javax.json.bind:javax.json.bind-api:1.0
+javax.jws:jsr181-api:1.0-MR1
 javax.mail:javax.mail-api:1.5.0
 javax.mail:javax.mail-api:1.6.0
 javax.persistence:javax.persistence-api:2.2
@@ -89,6 +90,7 @@ javax.websocket:javax.websocket-api:1.1
 javax.ws.rs:javax.ws.rs-api:2.0
 javax.ws.rs:javax.ws.rs-api:2.1-m09
 javax.xml.bind:jaxb-api:2.2.12-b140109.1041
+javax.xml.soap:javax.xml.soap-api:1.4.0
 joda-time:joda-time:1.6.2
 net.jodah:failsafe:1.0.4
 net.minidev:json-smart:1.3.1
@@ -318,6 +320,7 @@ org.springframework.boot:spring-boot-autoconfigure:2.0.4.RELEASE
 org.reactivestreams:reactive-streams:1.0.2
 io.projectreactor:reactor-core:3.1.8.RELEASE
 xalan:xalan:2.7.1
+xalan:xalan:2.7.2
 xerces:xercesImpl:2.11.0
 commons-collections:commons-collections:3.2.2
 org.reactivestreams:reactive-streams:1.0.2

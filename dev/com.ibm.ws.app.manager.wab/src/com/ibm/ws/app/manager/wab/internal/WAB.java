@@ -76,6 +76,8 @@ class WAB implements BundleTrackerCustomizer<WAB> {
     private final Version wabBundleVersion;
     private final String wabContextPath;
     private final WABInstaller installer;
+    private final String rawVirtualHost;
+    private final String resolvedVirtualHost;
 
     private final WABTracker<WAB> trackerForThisWAB;
 
@@ -92,6 +94,8 @@ class WAB implements BundleTrackerCustomizer<WAB> {
         this.wabBundleVersion = wabBundle.getVersion();
         this.wabContextPath = wabContextPath;
         this.installer = installer;
+        this.rawVirtualHost = wabBundle.getHeaders().get("OL-VirtualHost");
+        this.resolvedVirtualHost = resolveVirtualHost();
         trackerForThisWAB = installer.getTracker(this);
     }
 
@@ -218,6 +222,34 @@ class WAB implements BundleTrackerCustomizer<WAB> {
 
     State getState() {
         return state.get();
+    }
+
+    String getVirtualHost() {
+        return this.resolvedVirtualHost;
+    }
+
+    boolean isResolvedVirtualHostValid() {
+        String reResolvedVirtualHost = resolveVirtualHost();
+
+        if (resolvedVirtualHost == null) {
+            return reResolvedVirtualHost == null;
+        }
+
+        return resolvedVirtualHost.equals(reResolvedVirtualHost);
+    }
+
+    private String resolveVirtualHost() {
+        if (rawVirtualHost == null) return null;
+    
+        if (rawVirtualHost.startsWith("${")) {
+            String resolvedVirtHost = installer.resolveVariable(rawVirtualHost);
+            if (rawVirtualHost.equals(resolvedVirtHost)) {
+                return null;
+            } else {
+                return resolvedVirtHost;
+            }
+        }
+        return rawVirtualHost;
     }
 
     /**

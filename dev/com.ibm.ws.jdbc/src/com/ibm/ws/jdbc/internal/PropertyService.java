@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -152,8 +153,40 @@ public class PropertyService extends Properties {
         Map.Entry entry : map.entrySet())
             if (entry.getKey() instanceof String && PropertyService.isPassword((String) entry.getKey()))
                 entry.setValue("******");
-
+            else if(entry.getKey() instanceof String && entry.getValue() instanceof String && ((String) entry.getKey()).toLowerCase().contains("url"))
+                entry.setValue(filterURL((String) entry.getValue()));
         return map;
+    }
+    
+    public static String filterURL(String url) {
+        int first = url.indexOf(":");
+        int second = url.indexOf(":", first + 1);
+        int third = url.indexOf(":", second + 1);
+        StringBuilder sb = new StringBuilder(url.length());
+        
+        Pattern alphanumericPattern = Pattern.compile("[\\w]*");
+        
+        if(first < 0 || second < 0) {
+            //This is a violation of the JDBC specification, so we shouldn't ever get here
+        } else {
+            if(third < 0) {
+                //JDBC driver does not have more detailed info, just append first and second for now
+                sb.append(url.substring(0, second+1));
+            } else {
+                String subString = url.substring(second+1, third);
+                if(alphanumericPattern.matcher(subString).matches()) {
+                    //String between second : and third : is all alphanumeric, so append it
+                    sb.append(url.substring(0, third+1));
+                } else {
+                    //String between second : and third : contains non-alphanumeric value(s) so it is not safe to append
+                    //append to second : and proceed
+                    sb.append(url.substring(0, second+1));
+                }
+            }
+        }
+                
+        sb.append("****");
+        return sb.toString();
     }
 
     /**

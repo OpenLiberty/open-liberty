@@ -380,7 +380,7 @@ ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Bels\u0151 adatinkonzisztencia: A(z)
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
-ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: A(z) [ {0} ] karaktersorozat-t\u00e1bl\u00e1zat hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) [ {2} ] t\u00edpus\u00fa [ {1} ] \u00e9rt\u00e9k feldolgoz\u00e1sakor.  Az \u00e9rt\u00e9k nem tartalmazhat ford\u00edtott t\u00f6rtvonalat (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: A(z) [ {0} ] karaktersorozat-t\u00e1bl\u00e1zat hib\u00e1ba \u00fctk\u00f6z\u00f6tt a(z) [ {2} ] t\u00edpus\u00fa [ {1} ] \u00e9rt\u00e9k feldolgoz\u00e1sakor.  Az \u00e9rt\u00e9k nem tartalmazhat ford\u00edtott t\u00f6rtvonalat (''\\'').
 ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=Az \u00e9rt\u00e9k a v\u00e1rhat\u00f3 felhaszn\u00e1l\u00e1sa szempontj\u00e1b\u00f3l \u00e9rv\u00e9nytelen r\u00e9szeket tartalmaz.  Lehets\u00e9ges, hogy az \u00e9rt\u00e9kek nem ker\u00fclnek megfelel\u0151en feldolgoz\u00e1sra.  A t\u00e1rs\u00edtott modul helytelen\u00fcl m\u0171k\u00f6dhet.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=A modul adatait meg kell vizsg\u00e1lni, \u00e9s ellen\u0151rizni kell, hogy a megadott \u00e9rt\u00e9k \u00e9rv\u00e9nyes-e.
 
@@ -524,7 +524,7 @@ ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u0
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] A(z) [{1}] Jandex index er\u0151forr\u00e1s megnyit\u00e1sa meghi\u00fasult. Hiba\u00fczenet: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] A(z) [{1}] Jandex index er\u0151forr\u00e1s megnyit\u00e1sa meghi\u00fasult.  Hiba\u00fczenet: {2}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=A Jandex index er\u0151forr\u00e1s megnyit\u00e1s\u00e1ra tett k\u00eds\u00e9rlet kiv\u00e9telt okozott.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9telt \u00e9s a t\u00e1rs\u00edtott FFDC \u00fczenetet.
 
@@ -561,6 +561,6 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {4} The name of a file or the name of a directory
 # # Read - Past tense. 
 ANNO_JANDEX_USAGE=CWWKC0092I: Jandex indexek beolvasva {0} / {1} arch\u00edvumhoz ({2} / {3} oszt\u00e1ly) {4} alatt. 
-ANNO_JANDEX_USAGE.explanation=Megjelen\u00edti a modulban l\u00e9v\u0151 arch\u00edvumok sz\u00e1m\u00e1t, amelyek a Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva, \u00e9s nem a t\u00e9nyleges oszt\u00e1lyf\u00e1jlok elemz\u00e9s\u00e9vel. Megjelen\u00edti az alkalmaz\u00e1sban l\u00e9v\u0151 oszt\u00e1lyok sz\u00e1m\u00e1t is, amelyek Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva.
-ANNO_JANDEX_USAGE.useraction=Ha a Jandex indexek beolvas\u00e1sa az alkalmaz\u00e1shoz sz\u00e1nd\u00e9kos, akkor nincs teend\u0151. Ha a Jandex indexeket nem kellene beolvasni az alkalmaz\u00e1shoz, akkor \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot a server.xml f\u00e1jl application elem\u00e9ben. Ennek alternat\u00edv\u00e1jak\u00e9nt \u00e1ll\u00edtsa be a useJandex="false" tulajdons\u00e1got a server.xml f\u00e1jl applicationManger elem\u00e9ben a Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz az alkalmaz\u00e1shoz.
+ANNO_JANDEX_USAGE.explanation=Megjelen\u00edti a modulban l\u00e9v\u0151 arch\u00edvumok sz\u00e1m\u00e1t, amelyek a Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva, \u00e9s nem a t\u00e9nyleges oszt\u00e1lyf\u00e1jlok elemz\u00e9s\u00e9vel.  Megjelen\u00edti az alkalmaz\u00e1sban l\u00e9v\u0151 oszt\u00e1lyok sz\u00e1m\u00e1t is, amelyek Jandex indexek beolvas\u00e1s\u00e1val lettek feldolgozva.
+ANNO_JANDEX_USAGE.useraction=Ha a Jandex indexek beolvas\u00e1sa az alkalmaz\u00e1shoz sz\u00e1nd\u00e9kos, akkor nincs teend\u0151.  Ha a Jandex indexeket nem kellene beolvasni az alkalmaz\u00e1shoz, akkor \u00e1ll\u00edtsa be a useJandex="false" attrib\u00fatumot a server.xml f\u00e1jl application elem\u00e9ben. Ennek alternat\u00edv\u00e1jak\u00e9nt \u00e1ll\u00edtsa be a useJandex="false" tulajdons\u00e1got a server.xml f\u00e1jl applicationManger elem\u00e9ben a Jandex indexek figyelmen k\u00edv\u00fcl hagy\u00e1s\u00e1hoz az alkalmaz\u00e1shoz.
 

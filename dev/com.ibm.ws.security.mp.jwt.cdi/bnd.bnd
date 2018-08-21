@@ -14,7 +14,8 @@ Import-Package: \
 
 Export-Package: \
     !com.ibm.ws.security.mp.jwt.cdi.resources, \
-    com.ibm.ws.security.mp.jwt.cdi*
+    com.ibm.ws.security.mp.jwt.cdi*, \
+    com.ibm.ws.security.mp.jwt.principal
 
 Private-Package: \
     com.ibm.ws.security.mp.jwt.cdi.resources
@@ -39,5 +40,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.mp.jwt;version=latest,\
+    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
 

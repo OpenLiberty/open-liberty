@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2016, 2018
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.social.tai;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +16,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -34,6 +32,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.UserApiConfig;
@@ -1498,7 +1497,7 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
         try {
             String payload = "aGVsbG8g"; //hello
             String idToken = "xxx." + payload + ".zzz";
-            String decodedPayload = new String(Base64.getDecoder().decode(payload.getBytes("UTF-8")), "UTF-8");
+            String decodedPayload = new String(Base64Coder.base64Decode(payload.getBytes("UTF-8")), "UTF-8");
 
             authenticator.createUserApiResponseFromIdToken(idToken);
 

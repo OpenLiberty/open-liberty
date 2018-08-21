@@ -380,7 +380,7 @@ ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Inconsist\u00eancia de dados interno
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
-ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: A tabela da sequ\u00eancia [ {0} ] encontrou um erro ao processar o valor [ {1} ] do tipo [ {2} ].  O valor n\u00e3o deve conter uma barra invertida (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: A tabela da sequ\u00eancia [ {0} ] encontrou um erro ao processar o valor [ {1} ] do tipo [ {2} ].  O valor n\u00e3o deve conter uma barra invertida (''\\'').
 ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=O valor tem conte\u00fado n\u00e3o v\u00e1lido para seu uso esperado.  O valor pode n\u00e3o ser processado corretamente.  O m\u00f3dulo associado pode funcionar incorretamente.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Os dados do m\u00f3dulo devem ser examinados para verificar se o valor fornecido \u00e9 v\u00e1lido.
 
@@ -524,28 +524,28 @@ ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Consulte a exce\u00e7\u00e3o e
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] A abertura do recurso de \u00edndice Jandex [{1}] falhou. Mensagem de erro: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] A abertura do recurso de \u00edndice Jandex [{1}] falhou.  Mensagem de erro: {2}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=A tentativa de abrir o recurso de \u00edndice Jandex causou uma exce\u00e7\u00e3o.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Consulte a exce\u00e7\u00e3o e a mensagem de FFDC associada para obter informa\u00e7\u00f5es adicionais.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] A leitura do recurso de \u00edndice Jandex [{1}] falhou. Mensagem de erro: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] A leitura do recurso de \u00edndice Jandex [{1}] falhou.  Mensagem de erro: {2}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=A tentativa de ler o \u00edndice Jandex falhou com uma exce\u00e7\u00e3o.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Consulte a exce\u00e7\u00e3o e a mensagem de FFDC associada para obter informa\u00e7\u00f5es adicionais.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] A abertura do arquivo de \u00edndice Jandex [{1}] falhou. Mensagem de erro: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] A abertura do arquivo de \u00edndice Jandex [{1}] falhou.  Mensagem de erro: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=A tentativa de abrir o recurso de \u00edndice Jandex causou uma exce\u00e7\u00e3o.
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Consulte a exce\u00e7\u00e3o e a mensagem de FFDC associada para obter informa\u00e7\u00f5es adicionais.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] A leitura do arquivo de \u00edndice Jandex [{1}] falhou. Mensagem de erro: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] A leitura do arquivo de \u00edndice Jandex [{1}] falhou.  Mensagem de erro: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=A tentativa de ler o \u00edndice Jandex falhou com uma exce\u00e7\u00e3o.
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Consulte a exce\u00e7\u00e3o e a mensagem de FFDC associada para obter informa\u00e7\u00f5es adicionais.
 
@@ -561,6 +561,6 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {4} The name of a file or the name of a directory
 # # Read - Past tense. 
 ANNO_JANDEX_USAGE=CWWKC0092I: Leia os \u00edndices Jandex para {0} de {1} arquivos ({2} fora de {3} classes) em {4}. 
-ANNO_JANDEX_USAGE.explanation=Isto mostra o n\u00famero de archives no m\u00f3dulo que foram processados por meio da leitura de \u00edndices Jandex em vez de por meio da varredura dos arquivos de classe reais. Tamb\u00e9m mostra o n\u00famero total de classes no aplicativo que foram processadas por meio da leitura de \u00edndices Jandex.
-ANNO_JANDEX_USAGE.useraction=Se os \u00edndices Jandex devem ser lidos para o aplicativo, ent\u00e3o n\u00e3o h\u00e1 a\u00e7\u00e3o. Caso os \u00edndices Jandex n\u00e3o devam ser lidos para o aplicativo, configure o atributo useJandex="false" no elemento do aplicativo em server.xml. Como alternativa, configure useJandex="false" no elemento applicationManger em server.xml para ignorar os \u00edndices Jandex em todos os aplicativos.
+ANNO_JANDEX_USAGE.explanation=Isto mostra o n\u00famero de archives no m\u00f3dulo que foram processados por meio da leitura de \u00edndices Jandex em vez de por meio da varredura dos arquivos de classe reais.  Tamb\u00e9m mostra o n\u00famero total de classes no aplicativo que foram processadas por meio da leitura de \u00edndices Jandex.
+ANNO_JANDEX_USAGE.useraction=Se os \u00edndices Jandex devem ser lidos para o aplicativo, ent\u00e3o n\u00e3o h\u00e1 a\u00e7\u00e3o.  Caso os \u00edndices Jandex n\u00e3o devam ser lidos para o aplicativo, configure o atributo useJandex="false" no elemento do aplicativo em server.xml. Como alternativa, configure useJandex="false" no elemento applicationManger em server.xml para ignorar os \u00edndices Jandex em todos os aplicativos.
 

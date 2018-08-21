@@ -4,7 +4,7 @@ releaseTypeGA=true
 libertyBaseVersion=18.0.0
 libertyFixpackVersion=3
 libertyServiceVersion=${libertyBaseVersion}.${libertyFixpackVersion}
-libertyBetaVersion=2018.9.0.0
+libertyBetaVersion=2018.8.0.1
 libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
 
 libertyBundleMicroVersion=22
