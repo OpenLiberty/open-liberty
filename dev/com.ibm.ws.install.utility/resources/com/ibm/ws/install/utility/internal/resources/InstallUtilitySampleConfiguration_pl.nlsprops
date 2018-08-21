@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## U\u017cywanie repozytorium elektronicznego IBM WebSphere Liberty ##\n\
+## Ustaw w\u0142a\u015bciwo\u015b\u0107 useDefaultRepository na warto\u015b\u0107 false, aby\n\
+## program installUtility nie uzyskiwa\u0142 dost\u0119pu do Internetu w celu\n\
+## nawi\u0105zania po\u0142\u0105czenia z repozytorium IBM WebSphere Liberty. Domy\u015blnie\n\
+## dost\u0119p jest w\u0142\u0105czony. \n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## U\u017cywanie repozytori\u00f3w niestandardowych ##\n\
+## Za pomoc\u0105 programu installUtility mo\u017cna instalowa\u0107 zasoby ze skompresowanych\n\
+## lub nieskompresowanych repozytori\u00f3w opartych na katalogach lub udost\u0119pnianych\n\
+## instancji us\u0142ugi Liberty Asset Repository Service. Podaj nazw\u0119 repozytorium\n\
+## i \u015bcie\u017ck\u0119 do katalogu, \u015bcie\u017ck\u0119 do pliku lub adres URL do ka\u017cdego\n\
+## repozytorium niestandardowego zawieraj\u0105cego zasoby serwera Liberty.\n\
+## Dost\u0119p do repozytori\u00f3w jest uzyskiwany w kolejno\u015bci ich podania. \n\
+\n\
+## Podaj nazw\u0119 i \u015bcie\u017ck\u0119 do katalogu, \u015bcie\u017ck\u0119 do pliku archiwum lub adres URL\n\
+## repozytori\u00f3w opartych na katalogach. \n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## Podaj nazw\u0119 i adres URL udost\u0119pnianych repozytori\u00f3w.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.firma.com/repository\n\
+#hostedRepositoryName2.url=https://w3.firma.com/secure/repository\n\
+\n\
+## Podaj referencje dla ka\u017cdego repozytorium, je\u015bli jest to wymagane.\n\
+## Aby zwi\u0119kszy\u0107 zabezpieczenia, zakoduj warto\u015b\u0107 w\u0142a\u015bciwo\u015bci .password\n\
+## przy u\u017cyciu dzia\u0142ania securityUtility encode. \n\
+## Je\u015bli nazwa u\u017cytkownika i has\u0142o nie zostan\u0105 ustawione, \n\
+## zostanie wy\u015bwietlona pro\u015bba o ich podanie. \n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=nazwa_u\u017cytkownika\n\
+#hostedRepositoryName2.password=has\u0142o\n\
+\n\
+######################################################################\n\
+## ## U\u017cywanie serwera proxy (opcjonalnie) ##\n\
+## Je\u015bli do uzyskiwania dost\u0119pu do Internetu u\u017cywany jest serwer proxy, \n\
+## nale\u017cy poda\u0107 warto\u015bci w\u0142a\u015bciwo\u015bci ustawie\u0144 proxy.\n\
+## Aby zwi\u0119kszy\u0107 zabezpieczenia, zakoduj warto\u015b\u0107 w\u0142a\u015bciwo\u015bci proxyPassword\n\
+## przy u\u017cyciu dzia\u0142ania securityUtility encode. \n\
+## Je\u015bli warto\u015bci atrybut\u00f3w proxyUser i proxyPassword nie zostan\u0105 podane, \n\
+## zostanie wy\u015bwietlona pro\u015bba o ich podanie. \n\
+## -------------------------------------------------------------------\n\
+#proxyHost=nazwa_hosta\n\
+#proxyPort=3128\n\
+#proxyUser=nazwa_u\u017cytkownika_proxy\n\
+#proxyPassword=has\u0142o_proxy

@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## A l''aide du r\u00e9f\u00e9rentiel Liberty IBM WebSphere Liberty  ##\n\
+## d\u00e9finissez la propri\u00e9t\u00e9 useDefaultRepository sur false afin d''emp\u00eacher\n\
+## installUtility d''acc\u00e9der \u00e0 Internet pour se connecter au r\u00e9f\u00e9rentiel \n\
+## Liberty IBM WebSphere Liberty. Par d\u00e9faut, l''acc\u00e8s est \n\
+## est activ\u00e9.\n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## Utilisation de r\u00e9f\u00e9rentiels personnalis\u00e9s ##\n\
+## installUtility peut installer des actifs depuis des r\u00e9f\u00e9rentiels compress\u00e9s ou non \n\
+## bas\u00e9s r\u00e9pertoire et depuis des instances h\u00e9berg\u00e9es du service de r\u00e9f\u00e9rentiel d''actifs \n\
+## Liberty. Indiquez le nom de r\u00e9f\u00e9rentiel et le \n\
+## chemin de r\u00e9pertoire, le chemin de fichier ou l''URL de chaque r\u00e9f\u00e9rentiel personnalis\u00e9 \n\
+## contenant des actifs Liberty.\n\
+## Les r\u00e9f\u00e9rentiels sont accessibles dans l''ordre o\u00f9 ils indiqu\u00e9s.\n\
+\n\
+## Indiquez le nom et le chemin de r\u00e9pertoire, le chemin de fichier archive ou l''URL\n\
+## des r\u00e9f\u00e9rentiels bas\u00e9s r\u00e9pertoire.\n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## Indiquez le nom et l''URL des r\u00e9f\u00e9rentiels h\u00e9berg\u00e9s.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#hostedRepositoryName2.url=https://w3.mycompany.com/secure/repository\n\
+\n\
+## Indiquez les donn\u00e9es d''identification de chaque r\u00e9f\u00e9rentiel, si n\u00e9cessaire.\n\
+## Pour une s\u00e9curit\u00e9 am\u00e9lior\u00e9e, codez la valeur de la propri\u00e9t\u00e9 .password\n\
+## \u00e0 l''aide de l''action de codage securityUtility.\n\
+## Si vous ne d\u00e9finissez pas l''utilisateur et le mot de passe, une \n\
+## invite s''affiche pour vous demander de les fournir.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=username\n\
+#hostedRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilisation d''un serveur proxy (facultatif) ##\n\
+## Si vous utilisez un serveur proxy pour acc\u00e9der \u00e0 Internet,\n\
+## indiquez des valeurs pour les propri\u00e9t\u00e9s de param\u00e8tres proxy.\n\
+## Pour une s\u00e9curit\u00e9 am\u00e9lior\u00e9e, codez la valeur de la propri\u00e9t\u00e9 proxyPassword\n\
+## \u00e0 l''aide de l''action de codage securityUtility.\n\
+## Si vous ne d\u00e9finissez pas proxyUser et proxyPassword, une invite s''affiche\n\
+## pour vous demander des les indiquer.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword
