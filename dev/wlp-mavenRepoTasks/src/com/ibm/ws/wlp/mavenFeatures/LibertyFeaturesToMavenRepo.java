@@ -253,7 +253,10 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setDescription(feature.getDescription());
 		model.setPackaging(type.getType());
 		setLicense(model, coordinates.getVersion(), true, feature.isRestrictedLicense(), Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID.equals(coordinates.getGroupId()));
-		setScmDevUrl(model);
+		boolean isWebsphereLiberty = Constants.WEBSPHERE_LIBERTY_FEATURES_GROUP_ID.equals(coordinates.getGroupId());
+		if (!isWebsphereLiberty){
+			setScmDevUrl(model);
+		}
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		model.setDependencies(dependencies);
@@ -297,7 +300,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setVersion(coordinates.getVersion());
 		model.setPackaging(Constants.ArtifactType.POM.getType());
 		setLicense(model,version, false, false,isWebsphereLiberty);
-		setScmDevUrl(model);
+		
 		
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
@@ -321,6 +324,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		} else{
 			model.setName(Constants.OPEN_LIBERTY_BOM);
 			model.setDescription(Constants.OPEN_LIBERTY_BOM);
+			setScmDevUrl(model);
 		}
 		
 		File artifactDir = new File(outputDir, Utils.getRepositorySubpath(coordinates));
@@ -353,8 +357,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		model.setVersion(coordinates.getVersion());
 		model.setPackaging(Constants.ArtifactType.JSON.getType());
 		setLicense(model, version, false, false, isWebsphereLiberty);
-		setScmDevUrl(model);
-		
+	
 		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		model.setDependencies(dependencies);
@@ -368,6 +371,7 @@ public class LibertyFeaturesToMavenRepo extends Task {
 		} else {
 			model.setName(Constants.OPEN_LIBERTY_JSON);
 			model.setDescription(Constants.OPEN_LIBERTY_JSON);
+			setScmDevUrl(model);
 		}
 				
 		File artifactDir = new File(outputDir, Utils.getRepositorySubpath(coordinates));
