@@ -50,7 +50,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/security/internal/resources/*.class
 	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
 	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653,\
 	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\

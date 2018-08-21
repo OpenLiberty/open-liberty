@@ -8,7 +8,7 @@ com.ibm.ws.org.apache.cxf:cxf-rt-databinding-jaxb:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-frontend-jaxws:2.6.2.ibm-s20180529-1900
 com.ibm.ws.org.apache.cxf:cxf-rt-frontend-simple:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-management:2.6.2.ibm-s20170216-1739
-com.ibm.ws.org.apache.cxf:cxf-rt-transports-http:2.6.2.ibm-s20180529-1900
+com.ibm.ws.org.apache.cxf:cxf-rt-transports-http:2.6.2.ibm-s20180821-1653
 com.ibm.ws.org.apache.cxf:cxf-rt-ws-addr:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-ws-policy:2.6.2.ibm-s20180529-1900
 com.ibm.ws.org.apache.cxf:cxf-core:3.2.0.20170815-181006-518
