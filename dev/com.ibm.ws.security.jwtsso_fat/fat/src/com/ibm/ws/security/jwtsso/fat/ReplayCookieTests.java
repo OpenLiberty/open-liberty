@@ -199,7 +199,9 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_jwtCookieWithEmptySignature() throws Exception {
+        server.restartServer();
         server.reconfigureServer(DEFAULT_CONFIG);
+        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
@@ -238,7 +240,9 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_signatureRemovedFromJwtCookie() throws Exception {
+        server.restartServer();
         server.reconfigureServer(DEFAULT_CONFIG);
+        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
 
@@ -423,7 +427,9 @@ public class ReplayCookieTests extends CommonJwtFat {
     @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_missingClaims_accessProtectedResource() throws Exception {
+        server.restartServer();
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
+        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
         String builderId = "builder_defaults";
         Cookie jwtCookie = buildThirdPartyJwtCookieUsingBuilderApp(builderId);
@@ -452,7 +458,9 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_accessProtectedResource_defaultMpJwtConsumer() throws Exception {
+        server.restartServer();
         server.reconfigureServer(DEFAULT_CONFIG);
+        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
         String builderId = "builder_defaults";
         Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
@@ -509,7 +517,9 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_signedWithNonDefaultKey_accessProtectedResource() throws Exception {
+        server.restartServer();
         server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
+        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
         String builderId = "builder_signWithUniqueKey";
         Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
