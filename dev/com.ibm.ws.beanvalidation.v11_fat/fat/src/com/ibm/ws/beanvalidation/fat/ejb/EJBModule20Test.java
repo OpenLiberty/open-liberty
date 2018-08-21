@@ -18,6 +18,7 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * Run ejb module tests on bval-2.0.
@@ -36,6 +37,7 @@ public class EJBModule20Test extends EJBModule_Common {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
         createAndExportEJBWARs(server);
         server.startServer();
     }
