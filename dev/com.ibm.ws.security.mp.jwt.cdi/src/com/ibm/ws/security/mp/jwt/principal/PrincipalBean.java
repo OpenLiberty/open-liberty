@@ -23,7 +23,8 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.context.SubjectManager;
+import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSSubject;
 
 /**
  * When JsonWebToken feature is enabled, this PrincipalBean provide the following:
@@ -44,7 +45,15 @@ public class PrincipalBean implements JsonWebToken {
             Tr.entry(tc, "PrincipalBean");
         }
 
-        Subject subject = new SubjectManager().getCallerSubject();
+        Subject subject = null;
+        try {
+            subject = WSSubject.getCallerSubject();
+        } catch (WSSecurityException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to get caller subject", e);
+            }
+        }
+
         if (subject != null) {
             Set<JsonWebToken> jsonWebTokens = subject.getPrincipals(JsonWebToken.class);
             if (!jsonWebTokens.isEmpty()) {
@@ -52,16 +61,19 @@ public class PrincipalBean implements JsonWebToken {
                 //jsonWebToken = new DefaultJsonWebTokenImpl(jsonWebToken.getRawToken(), "JWT", jsonWebToken.getName());
             }
 
-            if (principal == null) {
+            if (jsonWebToken == null) {
                 Set<Principal> principals = subject.getPrincipals(Principal.class);
                 if (!principals.isEmpty()) {
                     principal = principals.iterator().next();
                 }
+
             }
         }
 
         if (principal == null) {
             Tr.error(tc, "MPJWT_CDI_PRINCIPAL_UNAVAILABLE"); // CWWKS5604E
+            // limit info passed back to app.
+            // throw new javax.enterprise.inject.CreationException();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
