@@ -45,7 +45,7 @@ src: src,resources
         com.ibm.ws.microprofile.faulttolerance;version=latest, \
         com.ibm.ws.microprofile.faulttolerance.spi;version=latest, \
         com.ibm.websphere.org.eclipse.microprofile.metrics.1.1.1;version=latest, \
-        com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
+        com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
         com.ibm.ws.microprofile.metrics;version=latest
 
