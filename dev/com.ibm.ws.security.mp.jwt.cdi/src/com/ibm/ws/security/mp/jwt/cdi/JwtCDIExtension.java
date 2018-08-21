@@ -34,8 +34,8 @@ import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.inject.Provider;
 
 import org.eclipse.microprofile.jwt.Claim;
-import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.ClaimValue;
+import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.osgi.service.component.annotations.Component;
 
@@ -46,13 +46,12 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 /**
  *
  */
-@Component(service = WebSphereCDIExtension.class, property = { "api.classes=org.eclipse.microprofile.jwt.Claim;org.eclipse.microprofile.jwt.Claims;org.eclipse.microprofile.jwt.ClaimValue;org.eclipse.microprofile.jwt.JsonWebToken;javax.json.JsonValue;javax.json.JsonNumber;javax.json.JsonString;javax.json.JsonStructure;javax.json.JsonArray;javax.json.JsonObject" }, immediate = true)
+@Component(service = WebSphereCDIExtension.class, property = { "api.classes=org.eclipse.microprofile.jwt.Claim;org.eclipse.microprofile.jwt.Claims;org.eclipse.microprofile.jwt.ClaimValue;javax.json.JsonValue;javax.json.JsonNumber;javax.json.JsonString;javax.json.JsonStructure;javax.json.JsonArray;javax.json.JsonObject" }, immediate = true)
 public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(JwtCDIExtension.class);
 
     private final Map<Claim, Set<Type>> injectionTypes = new HashMap<Claim, Set<Type>>();
-    private boolean addJsonWebTokenBean = false;
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<ClaimProducer> producer = bm.createAnnotatedType(ClaimProducer.class);
@@ -81,13 +80,13 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
                 Throwable configException = null;
                 AnnotatedType<?> annotatedType = pit.getAnnotatedType();
                 Class<?> annotatedClass = annotatedType.getJavaClass();
-                
+
                 if (type instanceof ParameterizedType) {
                     ParameterizedType pType = (ParameterizedType) type;
                     configException = processParameterizedType(pit, annotatedClass, injectionPoint, pType, classLoader, claim);
                 } else {
                     if (ClaimValue.class.isAssignableFrom((Class<?>) type) == false && (annotatedClass.getAnnotationsByType(ApplicationScoped.class).length != 0 ||
-                                    annotatedClass.getAnnotationsByType(SessionScoped.class).length != 0)) {
+                                                                                        annotatedClass.getAnnotationsByType(SessionScoped.class).length != 0)) {
                         String translatedMsg = Tr.formatMessage(tc, "MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE", injectionPoint);
                         pit.addDefinitionError(new DeploymentException(translatedMsg));
                     } else {
@@ -152,16 +151,13 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
 //            }
 //        }
 
-        if (addJsonWebTokenBean || injectionTypes.isEmpty() == false) {
-            abd.addBean(new JsonWebTokenBean(beanManager));
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "afterBeanDiscovery");
         }
     }
 
-    private Throwable processParameterizedType(ProcessInjectionTarget<?> pit, Class<?> annotatedClass, InjectionPoint injectionPoint, ParameterizedType injectionType, ClassLoader classLoader, Claim claim) {
+    private Throwable processParameterizedType(ProcessInjectionTarget<?> pit, Class<?> annotatedClass, InjectionPoint injectionPoint, ParameterizedType injectionType,
+                                               ClassLoader classLoader, Claim claim) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "processParameterizedType", pit, annotatedClass, injectionPoint, injectionType, classLoader, claim);
         }
@@ -175,14 +171,14 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
         } else if (Optional.class.isAssignableFrom((Class<?>) rawType)) {
             Type[] aTypes = injectionType.getActualTypeArguments();
             returnType = aTypes[0];
-            
+
             Type type = returnType;
             if (type instanceof ParameterizedType) {
                 type = ((ParameterizedType) type).getRawType();
             }
-            
+
             if (ClaimValue.class.isAssignableFrom((Class<?>) type) == false && (annotatedClass.getAnnotationsByType(ApplicationScoped.class).length != 0 ||
-                            annotatedClass.getAnnotationsByType(SessionScoped.class).length != 0)) {
+                                                                                annotatedClass.getAnnotationsByType(SessionScoped.class).length != 0)) {
                 String translatedMsg = Tr.formatMessage(tc, "MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE", injectionPoint);
                 pit.addDefinitionError(new DeploymentException(translatedMsg));
             } else {
@@ -194,7 +190,7 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
             }
 
             if (ClaimValue.class.isAssignableFrom((Class<?>) rawType) == false && (annotatedClass.getAnnotationsByType(ApplicationScoped.class).length != 0 ||
-                            annotatedClass.getAnnotationsByType(SessionScoped.class).length != 0)) {
+                                                                                   annotatedClass.getAnnotationsByType(SessionScoped.class).length != 0)) {
                 String translatedMsg = Tr.formatMessage(tc, "MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE", injectionPoint);
                 pit.addDefinitionError(new DeploymentException(translatedMsg));
             } else {
@@ -294,8 +290,6 @@ public class JwtCDIExtension implements Extension, WebSphereCDIExtension {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "processInjectionPoint", pip, beanManager);
         }
-
-        addJsonWebTokenBean = true;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "processInjectionPoint");

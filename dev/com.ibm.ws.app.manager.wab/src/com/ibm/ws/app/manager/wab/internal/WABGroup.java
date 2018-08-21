@@ -12,6 +12,7 @@ package com.ibm.ws.app.manager.wab.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
@@ -43,6 +44,10 @@ final class WABGroup {
         //if the group is uninstalled, this is a late wab addition, so clean it up.
         if (groupUninstalled)
             uninstallGroup(installer);
+    }
+
+    Queue<WAB> getWABs() {
+      return wabs;
     }
 
     //this method MUST NOT be called with the wabgroup locked.. (and must not lock the wabGroup)

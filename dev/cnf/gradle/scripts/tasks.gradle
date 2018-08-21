@@ -333,6 +333,7 @@ compileJava {
 }
 
 test {
+  ignoreFailures = Boolean.valueOf(rootProject.ext.generatedProps.getProperty("gradle.test.ignoreFailures", "false"))
   environment("WLP_INSTALL_DIR", buildImage.file('wlp'))
   jvmArgs "-Dtest.buildDir=${buildDir}"
   jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"

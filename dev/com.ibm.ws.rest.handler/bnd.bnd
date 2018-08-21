@@ -16,6 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.rest.handler
 Bundle-Description: Project for REST handler; version=${bVersion}
 
 Web-ContextPath: ibm/api
+OL-VirtualHost: ${admin.virtual.host}
 
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true

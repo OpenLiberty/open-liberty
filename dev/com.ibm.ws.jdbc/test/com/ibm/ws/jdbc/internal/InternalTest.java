@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -164,5 +165,36 @@ public class InternalTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
         }
+    }
+    
+    @Test
+    public void testURLFiltering() {
+        //URL with descriptor beyond vendor
+        assertEquals("Test1", "jdbc:oracle:thin:****", 
+                     PropertyService.filterURL("jdbc:oracle:thin:username/pass123!@localhost:1521:oracle"));
+
+        //URL with no descriptor beyond vendor, no properties
+        assertEquals("Test2", "jdbc:vendor:****", 
+                     PropertyService.filterURL("jdbc:vendor:username/pass123!@localhost:1521:oracle"));
+
+        //Test with password in URL, with qualifier following, using semicolon
+        assertEquals("Test4", "jdbc:sqlserver:****", 
+                     PropertyService.filterURL("jdbc:sqlserver:!@pass://localhost;user=username;password=ab9&*&^*#(*;"));
+
+        //Test with password at very end of URL, using semicolon
+        assertEquals("Test5", "jdbc:sqlserver:****", 
+                     PropertyService.filterURL("jdbc:sqlserver://localhost/;user=username;password=ab9&*&^*#(*"));
+        
+        //Driver using mutliple tokens
+        assertEquals("Test15", "jdbc:driver:****", 
+                     PropertyService.filterURL("jdbc:driver:database5,host=localhost:user=bob,foo=bar,test=2"));
+        
+        //Uncompliant driver without property
+        assertEquals("Test16", "****", 
+                     PropertyService.filterURL("this_is_a_very_non_complient_jdbc_url"));
+        
+        //Uncompliant driver with property
+        assertEquals("Test17", "****", 
+                     PropertyService.filterURL("this_is_a_very_non_complient_jdbc_url;password=12jsadf")); 
     }
 }

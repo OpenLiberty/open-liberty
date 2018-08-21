@@ -238,7 +238,7 @@ CUSTOM_REGISTRY_EXCEPTION.useraction=Revise a mensagem de motivo e o arquivo de 
 
 ENTITY_GET_FAILED=CWIML4505E: O registro do usu\u00e1rio n\u00e3o p\u00f4de obter a entidade {0} devido a um erro subjacente: {1}
 ENTITY_GET_FAILED.explanation=A entidade n\u00e3o pode ser recuperada por causa do motivo especificado pelo reposit\u00f3rio subjacente.
-ENTITY_GET_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha.  Corrija o erro e tente novamente.
+ENTITY_GET_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha. Corrija o erro e tente novamente.
 
 PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: N\u00e3o foi poss\u00edvel concluir a opera\u00e7\u00e3o de registro do usu\u00e1rio. A propriedade {0} n\u00e3o \u00e9 definida por {1}
 PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=A propriedade especificada n\u00e3o \u00e9 definida para tipo de entidade determinado.
@@ -250,7 +250,7 @@ MALFORMED_SEARCH_EXPRESSION.useraction=Forne\u00e7a uma express\u00e3o de procur
 
 ENTITY_SEARCH_FAILED=CWIML4506E: A opera\u00e7\u00e3o do registro do usu\u00e1rio n\u00e3o p\u00f4de ser conclu\u00edda, pois o registro do usu\u00e1rio encontrou o erro subjacente: {1}
 ENTITY_SEARCH_FAILED.explanation=A entidade n\u00e3o pode ser procurada por causa do motivo especificado pelo registro subjacente.
-ENTITY_SEARCH_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha.  Corrija o erro e tente novamente.
+ENTITY_SEARCH_FAILED.useraction=Revise a mensagem de motivo e o arquivo de rastreio para determinar a causa da falha. Corrija o erro e tente novamente.
 
 MISSING_OR_EMPTY_PASSWORD=CWIML4541E: A opera\u00e7\u00e3o de login n\u00e3o p\u00f4de ser conclu\u00edda, pois a senha estava ausente ou vazia.
 MISSING_OR_EMPTY_PASSWORD.explanation=Se o nome do principal for especificado durante o processo de login, a senha n\u00e3o poder\u00e1 ser nula ou vazia.

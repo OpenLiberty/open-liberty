@@ -13,6 +13,6 @@
 		<feature>localConnector-1.0</feature>
 	</featureManager>
 	<application id="deltaspikeTest" name="deltaspikeTest" type="war" location="deltaspikeTest.war">
-  		<classloader apiTypeVisibility="spec, ibm-api, third-party"  />
+  		<classloader apiTypeVisibility="+third-party"  />
 	</application>
  </server>

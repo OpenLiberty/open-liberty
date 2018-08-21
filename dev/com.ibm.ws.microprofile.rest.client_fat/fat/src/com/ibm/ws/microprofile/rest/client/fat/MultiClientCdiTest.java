@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.rest.client.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,12 +21,18 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpRestClient10.multiClientCdi.MultiClientCdiTestServlet;
 
 @RunWith(FATRunner.class)
 public class MultiClientCdiTest extends FATServletClient {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+        .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1").forServers("mpRestClient10.multi.client.cdi"));
 
     private static final String appName = "multiClientCdiApp";
 
@@ -48,11 +55,11 @@ public class MultiClientCdiTest extends FATServletClient {
     // The following tests verify that the second app can do the same as the first app.
     @Test
     public void testCanInvokeDifferentClients() throws Exception {
-        runTest(server, appName + "2/MultiClientCdiTestServlet", testName);
+        runTest(server, appName + "2/MultiClientCdiTestServlet", "testCanInvokeDifferentClients");
     }
 
     @Test
     public void testSameClientsGetSameResults() throws Exception {
-        runTest(server, appName + "2/MultiClientCdiTestServlet", testName);
+        runTest(server, appName + "2/MultiClientCdiTestServlet", "testSameClientsGetSameResults");
     }
 }

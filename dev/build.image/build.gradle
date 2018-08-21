@@ -147,6 +147,11 @@ def javaee8Features() {
     features
 }
 
+def microProfile2Features() {
+    String features = project.file('profiles/microProfile2/features.xml').readLines()
+    features
+}
+
 task packageOpenLiberty(type: PackageLibertyWithFeatures) {
     enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
     dependsOn parent.subprojects.assemble
@@ -234,6 +239,29 @@ task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
     }
 }
 
+task packageOpenLibertyMicroProfile2(type: PackageLibertyWithFeatures) {
+    doFirst {
+        excludedFeatures.each {
+            this.&removeFeature("${it}")
+        }
+    }
+
+    enabled props["ghe.build.type"] == null || !props["ghe.build.type"].contains("ifix")
+    dependsOn parent.subprojects.assemble
+    dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+    withFeatures this.&microProfile2Features
+    outputTo packageDir
+    doLast {
+        copy {
+            from "$packageDir/wlp/templates/servers/microProfile2/server.xml" 
+            into "$packageDir/wlp/templates/servers/defaultServer" 
+        }
+        excludedFeatures.each {
+            this.&restoreFeature("${it}")
+        }
+    }
+}
+
 // Includes only kind=ga features.
 task zipOpenLiberty(type: Zip) {
     dependsOn packageOpenLiberty
@@ -273,6 +301,15 @@ task zipOpenLibertyJavaee8(type: Zip) {
     version releaseVersion
 }
 publish.dependsOn zipOpenLibertyJavaee8
+
+task zipOpenLibertyMicroProfile2(type: Zip) {
+    dependsOn packageOpenLibertyMicroProfile2
+    baseName 'openliberty-microProfile2'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+}
+publish.dependsOn zipOpenLibertyMicroProfile2
 
 // Includes all features.
 task zipOpenLibertyAll(type: Zip) {

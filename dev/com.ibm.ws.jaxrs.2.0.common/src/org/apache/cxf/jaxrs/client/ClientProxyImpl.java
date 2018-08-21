@@ -86,6 +86,7 @@ import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Proxy-based client implementation
@@ -839,11 +840,21 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
     protected Object doInvokeAsync(OperationResourceInfo ori, Message outMessage,
                                  InvocationCallback<Object> asyncCallback) {
         outMessage.getExchange().setSynchronous(false);
-        JaxrsClientCallback<?> cb = new JaxrsClientCallback<Object>(asyncCallback, ori.getMethodToInvoke().getReturnType(), ori.getMethodToInvoke().getGenericReturnType());
+        setAsyncMessageObserverIfNeeded(outMessage.getExchange());
+        JaxrsClientCallback<?> cb = newJaxrsClientCallback(asyncCallback, outMessage,
+                                                           ori.getMethodToInvoke().getReturnType(),
+                                                           ori.getMethodToInvoke().getGenericReturnType());
         outMessage.getExchange().put(JaxrsClientCallback.class, cb);
         doRunInterceptorChain(outMessage);
 
         return null;
+    }
+
+    protected JaxrsClientCallback<?> newJaxrsClientCallback(InvocationCallback<Object> asyncCallback,
+                                                            Message outMessage, //Liberty change
+                                                            Class<?> responseClass,
+                                                            Type outGenericType) {
+        return new JaxrsClientCallback<Object>(asyncCallback, responseClass, outGenericType);
     }
 
     @Override
@@ -979,6 +990,7 @@ public class ClientProxyImpl extends AbstractClient implements InvocationHandler
     }
 
     class ClientAsyncResponseInterceptor extends AbstractClientAsyncResponseInterceptor {
+        @FFDCIgnore(Throwable.class)
         @Override
         protected void doHandleAsyncResponse(Message message, Response r, JaxrsClientCallback<?> cb) {
             try {

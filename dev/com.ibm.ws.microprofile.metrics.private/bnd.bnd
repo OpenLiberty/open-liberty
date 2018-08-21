@@ -23,6 +23,7 @@ IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
 Web-ContextPath: @privateMetricsURL
+OL-VirtualHost: ${admin.virtual.host}
 
 Private-Package: \
 	com.ibm.ws.microprofile.metrics.privateapi,\
@@ -47,4 +48,3 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
- 
