@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.threading.internal.ExecutorServiceImpl;
 import com.ibm.ws.threading.internal.PolicyExecutorImpl;
-import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 /**
  * <p>Provider class which can programmatically create policy executors.
@@ -42,8 +41,8 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
  * executor = PolicyExecutorProvider.create("AtMost3ConcurrentPolicy").maxConcurrency(3).maxQueueSize(20);
  * </code>
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = { PolicyExecutorProvider.class, ServerQuiesceListener.class })
-public class PolicyExecutorProvider implements ServerQuiesceListener {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = { PolicyExecutorProvider.class })
+public class PolicyExecutorProvider {
     @Reference(target = "(component.name=com.ibm.ws.threading)")
     private ExecutorService globalExecutor;
 
@@ -86,22 +85,5 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
         for (PolicyExecutorImpl executor : policyExecutors.values()) {
             executor.introspect(out);
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
-     */
-    @Override
-    public void serverStopping() {
-        ConcurrentHashMap<String, PolicyExecutor> existingExecutors = new ConcurrentHashMap<String, PolicyExecutor>();
-        synchronized (policyExecutors) {
-            existingExecutors.putAll(policyExecutors);
-        }
-        for (PolicyExecutor pe : existingExecutors.values()) {
-            pe.shutdown();
-        }
-
     }
 }
