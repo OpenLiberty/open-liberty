@@ -14,6 +14,7 @@ com.fasterxml.jackson.core:jackson-databind:2.9.1
 com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.1
 com.google.code.gson:gson:2.2.4
 com.google.guava:guava:14.0.1
+com.google.guava:guava:26.0-jre
 com.google.inject:guice:2.0
 com.ibm.ws.componenttest:com.ibm.componenttest.common:1.0.0
 com.ibm.ws.componenttest:com.ibm.ws.topology.helper:1.0.0
