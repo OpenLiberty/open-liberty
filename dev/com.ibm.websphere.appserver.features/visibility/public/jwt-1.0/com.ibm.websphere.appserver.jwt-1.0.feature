@@ -13,7 +13,7 @@ Subsystem-Name: JSON Web Token 1.0
   com.ibm.ws.security.common, \
   com.ibm.ws.security.common.jsonwebkey, \
   com.ibm.ws.org.apache.commons.codec.1.4, \
-  com.ibm.ws.org.jose4j.0.6.4, \
+  com.ibm.ws.org.jose4j, \
   com.ibm.ws.com.google.gson.2.2.4, \
   com.ibm.ws.org.slf4j.api.1.7.7, \
   com.ibm.ws.org.slf4j.jdk14.1.7.7, \
