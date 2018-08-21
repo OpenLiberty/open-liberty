@@ -94,6 +94,7 @@ public class MetricsMonitorTest {
     	String testName = "testEnableDisableFeatures";
     	
     	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
+    	server.setServerConfigurationFile("server_mpMetric11.xml");
     	server.startServer();
     	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, "------- server started -----");
