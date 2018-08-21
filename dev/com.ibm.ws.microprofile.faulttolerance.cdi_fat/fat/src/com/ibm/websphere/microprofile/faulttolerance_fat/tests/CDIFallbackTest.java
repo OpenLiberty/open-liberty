@@ -31,7 +31,7 @@ public class CDIFallbackTest extends LoggingTest {
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("FTFallback");
 
-    //run against both EE8 and EE7 features
+    //run against both MP13 (EE7) and MP20 (EE8) features
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new RepeatMicroProfile13(SHARED_SERVER.getServerName()))
                     .andWith(new RepeatMicroProfile20(SHARED_SERVER.getServerName()));
