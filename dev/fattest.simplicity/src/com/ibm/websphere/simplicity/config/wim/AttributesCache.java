@@ -25,19 +25,17 @@ import com.ibm.websphere.simplicity.config.ConfigElement;
 public class AttributesCache extends ConfigElement {
 
     private Boolean enabled;
-    private String serverTTLAttribute;
     private Integer size;
     private Integer sizeLimit;
     private String timeout;
 
     public AttributesCache() {}
 
-    public AttributesCache(Boolean enabled, Integer size, Integer sizeLimit, String timeout, String serverTTLAttribute) {
+    public AttributesCache(Boolean enabled, Integer size, Integer sizeLimit, String timeout) {
         this.enabled = enabled;
         this.size = size;
         this.sizeLimit = sizeLimit;
         this.timeout = timeout;
-        this.serverTTLAttribute = serverTTLAttribute;
     }
 
     /**
@@ -45,13 +43,6 @@ public class AttributesCache extends ConfigElement {
      */
     public Boolean getEnabled() {
         return enabled;
-    }
-
-    /**
-     * @return the serverTTLAttribute
-     */
-    public String getServerTTLAttribute() {
-        return serverTTLAttribute;
     }
 
     /**
@@ -81,14 +72,6 @@ public class AttributesCache extends ConfigElement {
     @XmlAttribute(name = "enabled")
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
-    }
-
-    /**
-     * @param serverTTLAttribute the serverTTLAttribute to set
-     */
-    @XmlAttribute(name = "serverTTLAttribute")
-    public void setServerTTLAttribute(String serverTTLAttribute) {
-        this.serverTTLAttribute = serverTTLAttribute;
     }
 
     /**
@@ -123,9 +106,6 @@ public class AttributesCache extends ConfigElement {
 
         if (enabled != null) {
             sb.append("enabled=\"").append(enabled).append("\" ");
-        }
-        if (serverTTLAttribute != null) {
-            sb.append("serverTTLAttribute=\"").append(serverTTLAttribute).append("\" ");;
         }
         if (size != null) {
             sb.append("size=\"").append(size).append("\" ");;

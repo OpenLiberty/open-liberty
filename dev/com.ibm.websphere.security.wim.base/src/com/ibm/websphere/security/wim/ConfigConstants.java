@@ -437,7 +437,6 @@ public interface ConfigConstants {
     String CONFIG_PROP_CACHE_SIZE = "size";
     String CONFIG_PROP_CACHE_TIME_OUT = "timeout";
     String CONFIG_PROP_ATTRIBUTE_SIZE_LIMIT = "sizeLimit";
-    String CONFIG_PROP_SERVER_TTL_ATTRIBUTE = "serverTTLAttribute";
     String CONFIG_PROP_CACHE_DIST_POLICY = "cacheDistPolicy";
 
     String CONFIG_DO_SEARCH_RESULTS_CACHE = "searchResultsCache";
