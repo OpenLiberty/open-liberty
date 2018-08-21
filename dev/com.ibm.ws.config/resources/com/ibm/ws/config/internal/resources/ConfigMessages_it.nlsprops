@@ -460,6 +460,10 @@ info.config.conflict=CWWKG0102I: {0}
 info.config.conflict.explanation=Specificati pi\u00f9 valori per la stessa propriet\u00e0\u00a0 di configurazione. 
 info.config.conflict.useraction=Non \u00e8 richiesta alcuna azione. \u00c8 possibile evitare il messaggio informativo modificando la configurazione del server per rimuovere il conflitto.
  
+warning.supplied.config.not.valid=CWWKG0103W: Il nome attributo {0} con valore {1} viene ignorato in quanto \u00e8 definito come ibm:final. Il sistema utilizza il valore predefinito dell''attributo.
+warning.supplied.config.not.valid.explanation= Un attributo di configurazione contrassegnato come ibm:final e predefinito non \u00e8 valido. Rimuovere l'attributo configurato dalla configurazione.
+warning.supplied.config.not.valid.useraction=Aggiornare la configurazione del server per rimuovere il valore dell'attributo non corretto.
+
 
 # Non-TR message
 error.invalidOCDRef=ERRORE: il PID metatipo [{0}] specifica un ID di definizione della classe oggetto inesistente [{1}]

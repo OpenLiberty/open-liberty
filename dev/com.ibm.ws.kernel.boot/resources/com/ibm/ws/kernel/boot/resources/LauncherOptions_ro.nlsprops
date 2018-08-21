@@ -172,4 +172,7 @@ option-desc.os=\tSpecific\u0103 sistemele de operare pe care dori\u0163i s\u0103
 \tAceast\u0103 op\u0163iune este valabil\u0103 numai pentru opera\u015fia de \u00eempachetare \u015fi poate fi utilizat\u0103\n\
 \tnumai cu op\u0163iunea --include=minify. Dac\u0103 exclude\u0163i un sistem de  \n\
 \toperare, nu-l pute\u0163i include ulterior dac\u0103 repeta\u0163i opera\u0163ia minify  \n\
-\tpentru arhiv\u0103. 
+\tpentru arhiv\u0103.
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\ \ \ \ --no-password
+option-desc.no-password=\tDezactiva\u0163i generarea parolei de depozit de chei implicite

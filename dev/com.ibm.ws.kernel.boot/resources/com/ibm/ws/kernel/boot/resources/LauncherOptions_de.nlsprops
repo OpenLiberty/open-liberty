@@ -180,3 +180,6 @@ option-desc.os=\tGibt die Betriebssysteme an, die der gepackte Server unterst\u0
 \tOption --include=minify verwendet werden. Wenn Sie ein Betriebssystem\n\
 \tausschlie\u00dfen, ist es nicht m\u00f6glich, es sp\u00e4ter durch Wiederholung einer \n\
 \tminify-Operation wieder in das Archiv einzuschlie\u00dfen. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\ \ \ \ --no-password
+option-desc.no-password=\tInaktiviert die Generierung des Standard-Keystore-Kennworts.

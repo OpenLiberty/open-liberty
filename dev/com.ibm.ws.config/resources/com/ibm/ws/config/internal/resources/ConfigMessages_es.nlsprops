@@ -460,6 +460,10 @@ info.config.conflict=CWWKG0102I: {0}
 info.config.conflict.explanation=Se han especificado varios valores para la misma propiedad de configuraci\u00f3n. 
 info.config.conflict.useraction=No se requiere ninguna acci\u00f3n. El mensaje informativo se puede evitar si se edita la configuraci\u00f3n del servidor para eliminar el conflicto.
  
+warning.supplied.config.not.valid=CWWKG0103W: El nombre de atributo {0} con el valor {1} se omite porque est\u00e1 definido como ibm:final. El sistema utiliza el valor predeterminado del atributo.
+warning.supplied.config.not.valid.explanation= Un atributo de configuraci\u00f3n marcado como ibm:final y valor predeterminado no es v\u00e1lido. Elimine el atributo configurado de la configuraci\u00f3n.
+warning.supplied.config.not.valid.useraction=Actualice la configuraci\u00f3n de servidor para eliminar el valor de atributo incorrecto.
+
 
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

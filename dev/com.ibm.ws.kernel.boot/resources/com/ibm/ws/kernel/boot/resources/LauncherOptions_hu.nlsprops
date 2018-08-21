@@ -151,7 +151,7 @@ option-desc.package.include=\t\u00c9rt\u00e9kek vessz\u0151vel elv\u00e1lasztott
 \ta kiszolg\u00e1l\u00f3t futtat\u00f3 v\u00e9grehajthat\u00f3 jar lesz. A "minify" param\u00e9ter \n\
 \ta lehet\u0151 legkisebb k\u00e9pf\u00e1jlt \u00e1ll\u00edtja el\u0151 a kiszolg\u00e1l\u00f3 sz\u00e1m\u00e1ra. A "usr" param\u00e9ter olyan\n\
 \tcsomagot hoz l\u00e9tre, amely a kiszolg\u00e1l\u00f3t \u00e9s az alkalmaz\u00e1st tartalmazza, de a fut\u00e1si \n\
-\tk\u00f6rnyezetet nem.A wlp param\u00e9ter olyan fut\u00e1si k\u00f6rnyezetet hoz l\u00e9tre, amely nem \n\
+\tk\u00f6rnyezetet nem. A wlp param\u00e9ter olyan fut\u00e1si k\u00f6rnyezetet hoz l\u00e9tre, amely nem \n\
 \ttartalmazza a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t. Az alap\u00e9rtelmezett all param\u00e9ter egy mindent\n\
 \ttartalmaz\u00f3 kiszolg\u00e1l\u00f3csomagot hoz l\u00e9tre.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -175,4 +175,7 @@ option-desc.os=\t Megadja az oper\u00e1ci\u00f3s rendszereket, amelyeket a csoma
 \tEz a param\u00e9ter csak a package m\u0171velethez \u00e9rv\u00e9nyes, \u00e9s kiz\u00e1r\u00f3lag az   \n\
 \t--include=minify param\u00e9terrel haszn\u00e1lhat\u00f3. Ha kiz\u00e1r egy oper\u00e1ci\u00f3s    \n\
 \trendszert, akkor k\u00e9s\u0151bb nem foglalhatja azt bele, ha megism\u00e9tli a    \n\
-\tminify m\u0171veletet az arch\u00edvumon. 
+\tminify m\u0171veletet az arch\u00edvumon.
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\ \ \ \ --no-password
+option-desc.no-password=\tAlap\u00e9rtelmezett kulcst\u00e1rol\u00f3 jelsz\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1nak letilt\u00e1sa

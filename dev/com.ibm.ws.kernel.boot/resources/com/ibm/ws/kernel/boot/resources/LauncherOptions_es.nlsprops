@@ -17,6 +17,7 @@
 briefUsage=Uso: java [opciones de JVM ] -javaagent:bin/tools/ws-javaagent.jar \\      \n\
 \t-jar bin/tools/ws-server.jar serverName {0} [opciones]  
 scriptUsage=Uso: {0} {1} serverName [opciones]
+
 use.actions=Acciones:
 use.options=Opciones:
 use.options.gen.desc=\ \ \ \ Utilice help [nombreAcci\u00f3n] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
@@ -158,10 +159,9 @@ option-desc.target=\tEspecifica una lista delimitada por comas de componentes qu
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.os=\ \ \ \ --os=valor,valor,...
 option-desc.os=\tEspecifica los sistemas operativos a los que debe dar soporte el servidor.\n\
-\t \
-Proporcione una lista separada por comas. El valor predeterminado es any,    \n\
+\t Proporcione una lista separada por comas. El valor predeterminado es any,    \n\
 \tque indica que el servidor se debe poder desplegar en cualquier sistema   \n\
-\toperativo soportado por el origen.                                     \n\
+\toperativo soportado por el origen.                                      \n\
 \tPara especificar que un sistema operativo no debe estar soportado, anteponga\n\
 \tun signo menos ("-") como prefijo. Para obtener una lista de valores de sistema operativo,\n\
 \tconsulte el sitio web de OSGi Alliance situado en este URL:                  \n\
@@ -169,4 +169,7 @@ Proporcione una lista separada por comas. El valor predeterminado es any,    \n\
 \tEsta opci\u00f3n s\u00f3lo es aplicable a la operaci\u00f3n de empaquetado, y solamente \n\
 \tse puede utilizar con la opci\u00f3n --include=minify. Si excluye un sistema operativo,\n\
 \tno puede incluirlo m\u00e1s tarde si repite la operaci\u00f3n minify en el \n\
-\tarchivo. 
+\tarchivo.
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\ \ \ \ --no-password
+option-desc.no-password=\tInhabilitar la generaci\u00f3n de contrase\u00f1a de almac\u00e9n de claves predeterminada
