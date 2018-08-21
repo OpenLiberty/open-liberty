@@ -1,0 +1,163 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Pou\u017eit\u00ed: {0}
+
+global.description=Popis:
+global.actions=Akce:
+global.options=Volby:
+global.options.lower=volby
+global.usage=Pou\u017eit\u00ed:
+global.options.statement=\tPomoc\u00ed p\u0159\u00edkazu help [n\u00e1zev_akce] z\u00edsk\u00e1te podrobn\u00e9 informace o volb\u00e1ch jednotliv\u00fdch akc\u00ed.
+task.unknown=Nezn\u00e1m\u00e1 akce: {0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tVytisknout informace n\u00e1pov\u011bdy pro ur\u010denou akci.
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\tSt\u00e1hn\u011bte aktiva z \u00falo\u017ei\u0161\u0165.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\ \ \ \ name ...
+download.option-desc.name...=\tZadejte jeden \u010di v\u00edce n\u00e1zv\u016f aktiv odd\u011blen\u00fdch mezerami. Chcete-li naj\u00edt aktiva \n\
+\tke sta\u017een\u00ed, spus\u0165te vyhled\u00e1vac\u00ed p\u0159\u00edkaz installUtility find. V p\u0159\u00edpad\u011b \n\
+\tfunkc\u00ed a p\u0159\u00eddavn\u00fdch modul\u016f m\u016f\u017eete zadat kr\u00e1tk\u00fd n\u00e1zev (n\u00e1zevFunkce-1.0)\n\
+\tnebo symbolick\u00fd n\u00e1zev (com.ibm.websphere.n\u00e1zevFunkce-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\ \ \ \ --overwrite
+download.option-desc.--overwrite=\tPomoc\u00ed t\u00e9to volby p\u0159ep\u00ed\u0161ete p\u0159i stahov\u00e1n\u00ed do lok\u00e1ln\u00edho adres\u00e1\u0159e \n\
+\texistuj\u00edc\u00ed soubory. Nen\u00ed-li tato volba pou\u017eita, je v\u00fdchoz\u00edm \n\
+\tchov\u00e1n\u00edm ignorovat v\u0161echny existuj\u00edc\u00ed soubory. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\ \ \ \ --location=cesta_k_adres\u00e1\u0159i
+download.option-desc.--location=\tPomoc\u00ed t\u00e9to volby ur\u010d\u00edte c\u00edlov\u00fd adres\u00e1\u0159 pro         \n\
+\tsta\u017een\u00e1 aktiva.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\ \ \ \ --verbose
+download.option-desc.--verbose=\tTato volba se pou\u017e\u00edv\u00e1 k zobrazen\u00ed v\u0161ech dostupn\u00fdch dopl\u0148uj\u00edc\u00edch informac\u00ed v\n\
+\tpr\u016fb\u011bhu akce.
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tNajd\u011bte aktiva z \u00falo\u017ei\u0161\u0165.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tPomoc\u00ed hledan\u00e9ho \u0159et\u011bzce najd\u011bte aktiva v \u00falo\u017ei\u0161t\u00edch.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\tZobrazte popis pro v\u0161echny funkce nalezen\u00e9 p\u0159i hled\u00e1n\u00ed.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\tVyhledejte ur\u010den\u00fd typ aktiv.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\ \ \ \ --name
+find.option-desc.--name=\tUr\u010duje n\u00e1zev aktiv, kter\u00e9 chcete vyhledat \n\
+\tv hledan\u00e9m \u0159et\u011bzci.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\ \ \ \ --from=filePath
+find.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k \u00falo\u017ei\u0161ti s jedin\u00fdm adres\u00e1\u0159em\n\
+\tjako k jedin\u00e9mu zdroji pro vyhled\u00e1v\u00e1n\u00ed aktiv obslu\u017en\u00fdm programem installUtility. Tato\n\
+\tcesta k souboru m\u016f\u017ee odkazovat na adres\u00e1\u0159 nebo archivn\u00ed soubor. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tTato volba se pou\u017e\u00edv\u00e1 k zobrazen\u00ed v\u0161ech dostupn\u00fdch dopl\u0148uj\u00edc\u00edch informac\u00ed v\n\
+\tpr\u016fb\u011bhu akce.
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\tNainstalujte aktiva nebo soubor ESA (archiv podnikov\u00e9ho subsyst\u00e9mu) \n\
+\tdo b\u011bhov\u00e9ho prost\u0159ed\u00ed, nebo naimplementujte bal\u00edk serveru a nainstalujte nezbytn\u00e9 \n\
+\tfunkce bal\u00edku.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\ \ \ \ name ...
+install.option-desc.name...=\tM\u016f\u017eete zadat tyto n\u00e1zvy:                                 \n\
+\t - Jeden \u010di v\u00edce n\u00e1zv\u016f aktiv odd\u011blen\u00fdch mezerami. Chcete-li naj\u00edt aktiva, \n\
+\t kter\u00e1 je mo\u017en\u00e9 nainstalovat, spus\u0165te vyhled\u00e1vac\u00ed p\u0159\u00edkaz installUtility find. V p\u0159\u00edpad\u011b funkc\u00ed \n\
+\t   a p\u0159\u00eddavn\u00fdch modul\u016f m\u016f\u017eete zadat kr\u00e1tk\u00fd n\u00e1zev (n\u00e1zevFunkce-1.0) nebo \n\
+\t   symbolick\u00fd n\u00e1zev (com.ibm.websphere.n\u00e1zevFunkce-1.0).            \n\
+\t - N\u00e1zev serveru                                                     \n\
+\t - Lok\u00e1ln\u00ed soubor server.xml                                           \n\
+\t - Lok\u00e1ln\u00ed soubor ESA                                                   \n\
+\t - Archivn\u00ed soubor bal\u00edku lok\u00e1ln\u00edho serveru, kter\u00fd byl vytvo\u0159en akc\u00ed server\n\
+\t   package s volbou --include=usr.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\tUr\u010dete, kam m\u00e1 b\u00fdt funkce nainstalov\u00e1na. Funkci lze nainstalovat do libovoln\u00e9ho\n\
+\tum\u00edst\u011bn\u00ed roz\u0161\u00ed\u0159en\u00ed konfigurovan\u00e9ho produktu nebo jako u\u017eivatelskou funkci. Pokud  \n\
+\ttato volba nen\u00ed zadan\u00e1, funkce bude nainstalov\u00e1na jako u\u017eivatelsk\u00e1 \n\
+\tfunkce.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\tPokud ji\u017e soubor, kter\u00fd je sou\u010d\u00e1st\u00ed ESA, v syst\u00e9mu existuje, \n\
+\tmus\u00edte ur\u010dit, jak\u00e9 akce se maj\u00ed prov\u00e9st. Platn\u00e9 volby jsou: fail - p\u0159ed\u010dasn\u00e9   \n\
+\tukon\u010den\u00ed instalace; ignore - pokra\u010dovat v instalaci a ignorovat existuj\u00edc\u00ed \n\
+\tsoubor; replace - p\u0159epsat existuj\u00edc\u00ed soubor. Nepou\u017e\u00edvejte \n\
+\tvolbu replace k p\u0159einstalaci funkc\u00ed.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\tChcete-li automaticky st\u00e1hnout v\u0161echny extern\u00ed z\u00e1vislosti uk\u00e1zek nebo \n\
+\tintegrac\u00ed typu open source, nastavte hodnotu true. Pokud extern\u00ed z\u00e1vislosti stahovat\n\
+\tnechcete, nastavte hodnotu false. Pokud jsou extern\u00ed z\u00e1vislosti nutn\u00e9 a \n\
+\ttato volba nen\u00ed ur\u010dena, budete vyzv\u00e1ni k \n\
+\tjejich sta\u017een\u00ed. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\ \ \ \ --from=filePath
+install.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete ur\u010dit cestu k \u00falo\u017ei\u0161ti s jedin\u00fdm adres\u00e1\u0159em\n \tjako k jedin\u00e9mu zdroji aktiv pro instalaci aktiv obslu\u017en\u00fdm programem installUtility. \n\
+\tTato cesta k souboru m\u016f\u017ee odkazovat na adres\u00e1\u0159 nebo archivn\u00ed soubor. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tTato volba se pou\u017e\u00edv\u00e1 k zobrazen\u00ed v\u0161ech dostupn\u00fdch dopl\u0148uj\u00edc\u00edch informac\u00ed v\n\
+\tpr\u016fb\u011bhu akce.
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\tOdinstalujte funkci z b\u011bhov\u00e9ho prost\u0159ed\u00ed.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\ \ \ \ n\u00e1zev
+uninstall.option-desc.name...=\tZadejte jednu \u010di v\u00edce funkc\u00ed odd\u011blen\u00fdch mezerami. M\u016f\u017eete zadat \n\
+\t kr\u00e1tk\u00fd n\u00e1zev (n\u00e1zevFunkce-1.0) nebo symbolick\u00fd n\u00e1zev \n\
+\t(com.ibm.websphere.n\u00e1zevFunkce-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tP\u0159esko\u010dit potvrzen\u00ed u\u017eivatele a odinstalovat funkci.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\tOdinstalovat funkci nez\u00e1visle na tom, zda jsou na n\u00ed z\u00e1visl\u00e9\n\
+\tdal\u0161\u00ed nainstalovan\u00e9 funkce. Odinstalov\u00e1n\u00ed funkce vy\u017eadovan\u00e9 jin\u00fdmi\n\
+\tnainstalovan\u00fdmi funkcemi m\u016f\u017ee zp\u016fsobit, \u017ee tyto funkce p\u0159estanou fungovat a servery\n\
+\tnebudou spr\u00e1vn\u011b pracovat.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tTato volba se pou\u017e\u00edv\u00e1 k zobrazen\u00ed v\u0161ech dostupn\u00fdch dopl\u0148uj\u00edc\u00edch informac\u00ed v\n\
+\tpr\u016fb\u011bhu akce.
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tZobrazte \u00falo\u017ei\u0161t\u011b a nastaven\u00ed serveru proxy. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete zobrazit podrobn\u00e9 zpr\u00e1vy z \n\
+\tov\u011b\u0159en\u00ed platnosti nakonfigurovan\u00e9ho souboru repositories.properties.           \n\
+\tKa\u017ed\u00e1 zpr\u00e1va obsahuje k\u00f3d chyby, \u010d\u00edslo \u0159\u00e1dku, kde se tato chyba \n\
+\tvyskytla a jej\u00ed p\u0159\u00ed\u010dinu. \n
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\tOtestujte p\u0159ipojen\u00ed \u00falo\u017ei\u0161t\u011b. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\ \ \ \ repoName
+testConnection.option-desc.[repoName]=\tUr\u010dete n\u00e1zev \u00falo\u017ei\u0161t\u011b, kter\u00e9 se m\u00e1 testovat. Chcete-li odkazovat na produkt IBM        \n\
+\tWebSphere Liberty Repository, pou\u017eijte v\u00fdchoz\u00ed n\u00e1zev.                  \n\
+\tNen\u00ed-li n\u00e1zev \u00falo\u017ei\u0161t\u011b ur\u010den, budou otestov\u00e1na \n\
+\tv\u0161echna zkonfigurovan\u00e1 \u00falo\u017ei\u0161t\u011b.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\tTato volba se pou\u017e\u00edv\u00e1 k zobrazen\u00ed v\u0161ech dostupn\u00fdch dopl\u0148uj\u00edc\u00edch informac\u00ed v\n\
+\tpr\u016fb\u011bhu akce.
+

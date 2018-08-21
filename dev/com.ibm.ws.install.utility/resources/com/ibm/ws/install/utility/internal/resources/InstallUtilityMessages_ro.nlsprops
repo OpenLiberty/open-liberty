@@ -1,0 +1,230 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+ERROR_DEPENDENCIES_INVALID_OPTION=CWWKF1401E: Valoarea {0} nu este valid\u0103 pentru --dependencies.
+ERROR_DEPENDENCIES_INVALID_OPTION.explanation=Trebuie s\u0103 folosi\u0163i valori valide pentru op\u0163iunea --dependencies.
+ERROR_DEPENDENCIES_INVALID_OPTION.useraction=Rula\u0163i comanda cu o valoare valid\u0103 pentru --dependencies, cum ar fi all.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1402E: Urm\u0103toarele caracteristici nu au fost desc\u0103rcate pentru c\u0103 acestea sunt deja instalate: {0}. Utiliza\u0163i alt\u0103 valoare pentru op\u0163iunea --dependencies, cum ar fi toate sau niciuna.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=Caracteristicile specificate au fost deja instalate.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Rula\u0163i din nou comanda cu alt\u0103 valoare pentru op\u0163iunea --dependencies, cum ar fi toate sau niciuna.
+
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST=CWWKF1404E: Fi\u015fierul {0} nu exist\u0103.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.explanation=Fi\u015fierul de arhiv\u0103 pachet server furnizat \u00een ac\u0163iunea de instalare nu exist\u0103.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.useraction=Asigura\u0163i-v\u0103 c\u0103 numele fi\u015fierului de arhiv\u0103 pachet server a fost furnizat corect \u015fi rula\u0163i din nou ac\u0163iunea de instalare.
+
+ERROR_ARCHIVE_NOT_SUPPORT=CWWKF1405E: Tipul de fi\u015fier {0} nu este suportat de ac\u0163iunea de instalare.
+ERROR_ARCHIVE_NOT_SUPPORT.explanation=Fi\u015fierul de arhiv\u0103 al pachetului de servere ar trebui s\u0103 fie un fi\u015fier de arhivare.
+ERROR_ARCHIVE_NOT_SUPPORT.useraction=Asigura\u0163i-v\u0103 c\u0103 numele fi\u015fierului de arhiv\u0103 pachet server a fost furnizat corect \u015fi rula\u0163i din nou ac\u0163iunea de instalare.
+
+ERROR_REPO_INVALID_URL=CWWKF1409E: URL-ul {0} este invalid. Rula\u0163i din nou comanda cu un URL valid.
+ERROR_REPO_INVALID_URL.explanation=URL-ul specificat nu este valid.
+ERROR_REPO_INVALID_URL.useraction=Rula\u0163i din nou comanda cu un URL valid.
+
+ERROR_REPO_UNSUPPORT_PROTOCOL=CWWKF1416E: Protocolul URL-ului {0} nu este suportat. Sunt suportate numai protocoale http, https \u015fi de fi\u015fier.
+ERROR_REPO_UNSUPPORT_PROTOCOL.explanation=Protocolul URL-ului nesuportat utilizat.
+ERROR_REPO_UNSUPPORT_PROTOCOL.useraction=Rula\u0163i din nou comanda cu un URL valid.
+
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION=CWWKF1417E: \u00cen versiunea beta, comanda installUtility nu suport\u0103 mai multe directoare locale sau un director local amestecat cu o magazie la sediu.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.explanation=Configura\u0163ia \u00een curs de setare nu este suportat\u0103 de comanda installUtility.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.useraction=\u00cenl\u0103tura\u0163i magazia de care nu ave\u0163i nevoie \u015fi ad\u0103uga\u0163i magazia de care ave\u0163i nevoie.
+
+ERROR_REPO_NOT_IN_LIST=CWWKF1418E: Numele magaziei {0} nu este configurat \u00een fi\u015fierul de configura\u0163ie {1}. Verifica\u0163i fi\u015fierul de configura\u0163ie sau utiliza\u0163i ac\u0163iunea viewSettings pentru a g\u0103si numele de magazii configurate.
+ERROR_REPO_NOT_IN_LIST.explanation=Numele de magazie specificat nu poate fi g\u0103sit \u00een configura\u0163ie.
+ERROR_REPO_NOT_IN_LIST.useraction=Utiliza\u0163i ac\u0163iunea viewSettings pentru a lista toate magaziile configurate \u015fi a rula din nou comanda cu un nume valid de magazie.
+
+ERROR_INVALID_URL=CWWKF1420E: URL-ul {0} al magaziei {1} este invalid. Utiliza\u0163i ac\u0163iunea de configurare pentru a corecta magazia.
+ERROR_INVALID_URL.explanation=URL-ul magaziei salvat \u00een configura\u0163ie nu este valid.
+ERROR_INVALID_URL.useraction=Corecta\u0163i configura\u0163ia \u015fi rula\u0163i comanda din nou.
+
+ERROR_REPO_IS_FILE=CWWKF1421E: URL-ul {0} al magaziei {1} este un fi\u015fier. Este necesar\u0103 o cale de director. Utiliza\u0163i ac\u0163iunea de configurare pentru a corecta magazia.
+ERROR_REPO_IS_FILE.explanation=Magazia nu poate fi un fi\u015fier.
+ERROR_REPO_IS_FILE.useraction=Corecta\u0163i configura\u0163ia \u015fi rula\u0163i comanda din nou.
+
+ERROR_REPO_URL_IS_FILE=CWWKF1422E: {0} este un fi\u015fier. Este necesar\u0103 o cale de director. 
+ERROR_REPO_URL_IS_FILE.explanation=URL-ul specificat nu este un director.
+ERROR_REPO_URL_IS_FILE.useraction=Rula\u0163i din nou comanda cu un director sau URL valid.
+
+ERROR_REPO_NOT_EXISTS=CWWKF1423E: URL-ul {0} al magaziei {1} nu exist\u0103. Utiliza\u0163i ac\u0163iunea de configurare pentru a corecta magazia.
+ERROR_REPO_NOT_EXISTS.explanation=Magazia nu exist\u0103.
+ERROR_REPO_NOT_EXISTS.useraction=Corecta\u0163i configura\u0163ia \u015fi rula\u0163i comanda din nou.
+
+ERROR_NO_ARGUMENT=CWWKF1424E: Ac\u0163iunea {0} are nevoie de cel pu\u0163in un nume de element.
+ERROR_NO_ARGUMENT.explanation=S-a folosit num\u0103rul gre\u015fit de argumente pentru a invoca ac\u0163iunea.
+ERROR_NO_ARGUMENT.useraction=Rula\u0163i din nou comanda cu argumentele corecte.
+
+ERROR_TYPE_INVALID_OPTION=CWWKF1427E: Valoarea {0} nu este valid\u0103 pentru --type. Valoarea valid\u0103 este addon, feature, opensource, sample sau all.
+ERROR_TYPE_INVALID_OPTION.explanation=Valoarea invalid\u0103 utilizat\u0103 pentru op\u0163iunea --type.
+ERROR_TYPE_INVALID_OPTION.useraction=Rula\u0163i comanda cu o valoare valid\u0103 pentru --type, cum ar fi addon, feature, opensource, sample sau all.
+
+ERROR_NO_SEARCHSTRING_NAME_OPTION=CWWKF1428E: \u015eirul de c\u0103utare nu este specificat.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.explanation=\u015eirul de c\u0103utare este necesar la utilizarea op\u0163iunii --name.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.useraction=Rula\u0163i din nou comanda cu un \u015fir de c\u0103utare.
+
+ERROR_FAILED_TO_CONNECT_REPO=CWWKF1429E: Nu se poate ajunge la serverul magaziei. Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa internetul \u015fi magazia configurat\u0103.
+ERROR_FAILED_TO_CONNECT_REPO.explanation=A ap\u0103rut o eroare la conectarea la magazie.
+ERROR_FAILED_TO_CONNECT_REPO.useraction=Asigura\u0163i-v\u0103 c\u0103 sistemul poate accesa Internetul \u015fi magazia corespunz\u0103toare.
+
+ERROR_REPO_REQUIRES_AUTH=CWWKF1430E: Acredit\u0103rile pentru magazia configurat\u0103 nu pot fi autentificate. Asigura\u0163i-v\u0103 c\u0103 acredit\u0103rile valide pentru magazia configurat\u0103 sunt setate \u00een urm\u0103torul fi\u015fier de configura\u0163ie: {0}
+ERROR_REPO_REQUIRES_AUTH.explanation=Serverul depozit configurat necesit\u0103 autentificare, dar acredit\u0103rile valide nu au fost specificate \u00een fi\u015fierul de configurare.
+ERROR_REPO_REQUIRES_AUTH.useraction=Specifica\u0163i acredit\u0103rile serverului depozit valide \u00een fi\u015fierul de configurare \u015fi rula\u0163i comanda din nou.
+
+ERROR_NO_CONNECTION=CWWKF1431E: Nu se poate stabili o conexiune la serverul de magazie configurat.
+ERROR_NO_CONNECTION.explanation=Conexiunea la serverul de magazie nu poate fi stabilit\u0103.
+ERROR_NO_CONNECTION.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS=CWWKF1432E: {0} are nevoie de cel pu\u0163in 1 argument, dar au fost furnizate {1}.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.explanation=S-a folosit num\u0103rul gre\u015fit de argumente pentru a invoca ac\u0163iunea.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.useraction=Rula\u0163i din nou comanda cu argumentele corecte.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWK1433E: Acredit\u0103rile pentru serverul proxy configurat nu pot fi autentificate. Asigura\u0163i-v\u0103 c\u0103 sunt setate acredit\u0103rile valide pentru serverul proxy \u00een urm\u0103torul fi\u015fier de configura\u0163ie: {0}
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=Serverul proxy configurat necesit\u0103 autentificare, dar acredit\u0103rile nu pot fi autentificate.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Specifica\u0163i acredit\u0103rile serverului proxy valide server \u00een fi\u015fierul de configurare \u015fi rula\u0163i comanda din nou.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWK1434E: Nu se poate localiza fi\u015fierul server.xml \u00een directorul {0}. Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 este accesibil.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=Fi\u015fierul server.xml pentru serverul specificat nu poate fi localizat \u00een directorul serverului.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Asigura\u0163i-v\u0103 c\u0103 fi\u015fierul exist\u0103 \u015fi c\u0103 este accesibil, iar apoi rula\u0163i din nou comanda.
+
+ERROR_UNABLE_TO_ACCESS_SERVER_XML=CWWK1435E: Nu s-a putut accesa fi\u015fierul {0}. Asigura\u0163i-v\u0103 c\u0103 utilizatorul poate accesa \u015fi citi fi\u015fierul.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.explanation=Contul de utilizator nu are permisiunile necesare de citire a fi\u015fierului server.xml.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.useraction=Asigura\u0163i-v\u0103 c\u0103 utilizatorul poate accesa \u015fi citi fi\u015fierul \u015fi rula\u0163i comanda din nou.
+
+MSG_REPO_FILE_NOT_FOUND=Nu s-a detectat nici o configura\u0163ie de utilizatori. IBM WebSphere Liberty Repository este magazia de aseturi implicit\u0103.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Pentru a personaliza set\u0103rile installUtility, crea\u0163i un fi\u015fier repositories.properties \u00een urm\u0103toarea loca\u0163ie: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Utiliza\u0163i urm\u0103torul exemplu ca un \u015fablon pentru a crea propriul dumneavoastr\u0103 fi\u015fier repositories.properties. \u015eterge\u0163i comentariile la liniile marcate de un singur caracter # \u015fi \u00eenlocui\u0163i valorile propriile dumneavoastr\u0103 valori personalizate.
+
+ERROR_UNINSTALL_FEATURES_FAIL=CWWK1436E: Una sau mai multe caracteristici nu poate fi dezinstalat\u0103: {0}
+ERROR_UNINSTALL_FEATURES_FAIL.explanation=S-a detectat o eroare intern\u0103 la procesarea metadatelor. 
+ERROR_UNINSTALL_FEATURES_FAIL.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina Web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE=CWWK1437E: Valoarea {0} nu este valid\u0103 pentru --downloadDependencies. Valoarea valid\u0103 este true sau false.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.explanation=A fost utilizat\u0103 o valoare invalid\u0103 pentru op\u0163iunea --downloadDependencies.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.useraction=Rula\u0163i comanda cu o valoare valid\u0103 pentru --downloadDependencies, cum ar fi true sau false.
+
+ERROR_ALL_CONFIG_REPOS_FAIL=CWWKF1440E: Nu se poate ajunge la toate magaziile configurate care sunt specificate \u00een urm\u0103torul fi\u015fier de configura\u0163ie sau acredit\u0103rile nu pot fi validate: {0}. Asigura\u0163i-v\u0103 c\u0103 magaziile sunt configurate corect \u00een fi\u015fierul de configurare \u015fi c\u0103 utiliza\u0163i ac\u0163iunile viewSettings \u015fi testConnection pentru a verifica conexiunea.
+ERROR_ALL_CONFIG_REPOS_FAIL.explanation=Comanda installUtility nu poate stabili o conexiune la niciuna din magaziile configurate.
+ERROR_ALL_CONFIG_REPOS_FAIL.useraction=Verifica\u0163i c\u0103 sistemul poate accesa internetul. Asigura\u0163i-v\u0103 c\u0103 magaziile sunt configurate corect \u00een fi\u015fierul de configurare. Utiliza\u0163i ac\u0163iunea viewSettings pentru a verifica magaziile configurate \u015fi apoi utiliza\u0163i ac\u0163iunile testConnection pentru a testa conexiunea.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1441E: Serverul magazie nu poate fi accesat deoarece JRE (Java runtime environment) nu are \u00eencredere \u00een certificatul serverului. Ad\u0103uga\u0163i certificatul serverului magazie ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=O excep\u0163ie java.security.cert.CertPathBuilderException a p\u0103rut la conectarea la o magazie deoarece JRE-ul nu recunoa\u015fte certificatul de securitate al serverului magazie ca un certificat de \u00eencredere. Un certificat de \u00eencredere este necesar pentru a verifica identitatea serverului magazie.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=Ad\u0103uga\u0163i certificatul serverului magazie ca un certificat de \u00eencredere \u00een JRE-ul dumneavoastr\u0103.
+
+ERROR_REPO_IS_INVALID=CWWKF1442E: {0} nu este o magazie bazat\u0103 pe director valid\u0103. Rula\u0163i din nou comanda cu o magazie bazat\u0103 pe director valid\u0103.   
+ERROR_REPO_IS_INVALID.explanation=Calea de fi\u015fier specificat\u0103 nu este o magazie bazat\u0103 pe director valid\u0103. Pute\u0163i crea o magazie bazat\u0103 pe director valid\u0103 prin utilizarea comenzii de desc\u0103rcare installUtility sau prin desc\u0103rcarea fi\u015fierului wlp-featureRepo-<version>.zip din IBM Fix Central.
+ERROR_REPO_IS_INVALID.useraction=Verifica\u0163i c\u0103 calea specificat\u0103 conduce la o magazie bazat\u0103 pe director valid\u0103 \u015fi rula\u0163i comanda din nou.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1443E: Dezinstalarea op\u0163iunii --force poate fi specificat\u0103 numai pentru o caracteristic\u0103 la un moment dat. Rula\u0163i comanda de dezinstalare cu op\u0163iunea --force pentru o singur\u0103 caracteristic\u0103.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=Op\u0163iunea --force a fost specificat\u0103 la dezinstalarea a mai mult de o caracteristic\u0103.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Rula\u0163i comanda de dezinstalare cu op\u0163iunea --force pentru o singur\u0103 caracteristic\u0103.
+
+MSG_DEPLOY_SERVER_OK=Serverul s-a implementat cu succes.
+MSG_DEPLOY_SERVER_PACKAGE_OK=Pachetul de server s-a implementat cu succes.
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=Serverul nu are nevoie de nicio caracteristic\u0103 suplimentar\u0103.  Nu a fost instalat\u0103 nicio caracteristic\u0103.
+MSG_SERVER_NEW_FEATURES_REQUIRED=Serverul are nevoie de urm\u0103toarele caracteristici suplimentare: {0}.  Instalarea caracteristicilor din magazie...
+MSG_INSTALLED_FEATURES=Una sau mai multe caracteristici au fost instalate cu succes: {0}.
+MSG_INSTALLED_SAMPLES=Unul sau mai multe e\u015fantioane au fost instalate cu succes: {0}.
+MSG_INSTALLED_OPENSOURCE=Una sau mai multe integr\u0103ri de surs\u0103 deschis\u0103 au fost instalate cu succes: {0}.
+MSG_INSTALLED_ADDONS=Unul sau mai multe add-on-uri au fost instalate cu succes: {0}.
+
+MSG_DOWNLOADED_FEATURES=Una sau mai multe caracteristici au fost desc\u0103rcate cu succes: {0}.
+MSG_DOWNLOADED_SAMPLES=Una sau mai multe e\u015fantioane au fost desc\u0103rcate cu succes: {0}.
+MSG_DOWNLOADED_OPENSOURCE=Una sau mai multe integr\u0103ri cu surs\u0103 deschis\u0103 au fost desc\u0103rcate cu succes: {0}.
+MSG_DOWNLOADED_ADDONS=Unul sau mai multe add-on-uri au fost desc\u0103rcate cu succes: {0}.
+MSG_UNINSTALL_FEATURES=Una sau mai multe caracteristici au fost instalate cu succes: {0}.
+
+MSG_DISABLED_REPO=Magazii dezactivate
+MSG_NO_ASSET_FIND=Nu a fost g\u0103sit niciun aset.
+MSG_CONNECT_REPO_SUCCESS=S-a f\u0103cut conexiunea la magazia configurat\u0103.
+MSG_CONNECT_ALL_REPO_SUCCESS=S-a reu\u015fit conexiunea la toate magaziile configurate.\n
+MSG_CONNECT_REPO_FAILED=A e\u015fuat conectarea la magazia configurat\u0103.
+MSG_CONNECT_NOT_TESTED=Conexiunea la magazie nu este testat\u0103.
+MSG_DEFAULT_NOT_ENABLED=Magazia implicit\u0103 de aseturi nu este activat\u0103 \u00een urm\u0103torul fi\u015fier de configura\u0163ie: {0}
+MSG_DEFAULT_REPO_LABEL=IBM WebSphere Liberty Repository (Magazia implicit\u0103 de aseturi)
+MSG_SAVE_CONFIG_CONFIRMATION=Configura\u0163ia a fost modificat\u0103. Salva\u0163i modific\u0103rile la {0} (Y/N)?
+MSG_UPDATE_CONFIGURATION=S-a actualizat cu succes configura\u0163ia.
+MSG_VIEW_EXAMPLE=Pentru a afi\u015fa un exemplu de fi\u015fier repositories.props, ap\u0103sa\u0163i Enter. Pentru a s\u0103ri aceast\u0103 op\u0163iune, ap\u0103sa\u0163i 'x'.
+MSG_SEARCHING=Se caut\u0103 aseturi. Acest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
+MSG_ASSETMGR_SETTINGS=Set\u0103ri installUtility
+MSG_CONFIG_REPO_LABEL=Magazii configurate
+MSG_NO_CONFIG_REPO=Nu sunt configurate magazii
+MSG_NO_CONFIG_PROXY=Nu este configurat proxy
+MSG_DEFAULT_REPO_NAME=IBM WebSphere Liberty Repository
+MSG_PROXY_LABEL=Set\u0103ri proxy
+MSG_TRUE=Adev\u0103rat
+MSG_FALSE=Fals
+MSG_UNSPECIFIED=<Nespecificat>
+MSG_INAPPLICABLE=<Neaplicabil>
+MSG_TESTING=Testarea conexiunii la magazia {0}...\nAcest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.\n 
+MSG_TESTING_ALL=Testarea conexiunii la toate magaziile configurate...\nAcest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.\n
+MSG_REQUIRE_DOWNLOAD_DEPENDENCIES=Unul sau mai multe e\u015fantioane necesit\u0103 biblioteci cerin\u0163\u0103 preliminar\u0103 cu surs\u0103 deschis\u0103. 
+MSG_DOWNLOAD_DEPENDENCIES=Argumentul {0} a fost setat la {1}. Aceasta indic\u0103 faptul c\u0103 a\u0163i acceptat licen\u0163ele, pentru a transmite programului de instalare comanda s\u0103 descarce bibliotecile cerin\u0163\u0103 preliminar\u0103 cu surs\u0103 deschis\u0103.
+MSG_NOT_DOWNLOAD_DEPENDENCIES=Argumentul {0} a fost setat la {1}. Aceasta indic\u0103 faptul c\u0103 nu dori\u0163i ca programul de instalare s\u0103 descarce bibliotecile cerin\u0163\u0103 preliminar\u0103 cu surs\u0103 deschis\u0103.
+MSG_CONNECTING=Stabilirea unei conexiuni la magazia configurat\u0103...\nAcest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.\n
+MSG_AUTHENTICATION_PROMPT=Este necesar\u0103 autentificarea. Introduce\u0163i acredit\u0103rile pentru urm\u0103torul server.
+MSG_AUTHENTICATION_RETRY=Autentificarea a e\u015fuat deoarece acredit\u0103rile specificate sunt incorecte. \nVerifica\u0163i c\u0103 acredit\u0103rile sunt corecte \u015fi \u00eencerca\u0163i din nou. \nNum\u0103rul de re\u00eencerc\u0103ri r\u0103mase este: {0} \nIntroduce\u0163i acredit\u0103rile pentru urm\u0103torul server.
+MSG_AUTHENTICATION_FAIL=A e\u015fuat autentificarea cu urm\u0103toarea magazie: {0}
+MSG_PROXY_AUTHENTICATION_FAIL=A e\u015fuat autentificarea cu urm\u0103torul server proxy: {0}
+MSG_REACHED_MAX_RETRIES=Num\u0103rul maxim de re\u00eencerc\u0103ri a fost dep\u0103\u015fit. Pute\u0163i continua f\u0103r\u0103 autentificare, dar aceast\u0103 magazie va fi exclus\u0103 din opera\u0163ie. Opera\u0163ia de {0} va fi \u00eencercat\u0103 utiliz\u00e2nd alte magazii valide. 
+MSG_REACHED_MAX_PROXY_RETRIES=Num\u0103rul maxim de re\u00eencerc\u0103ri a fost dep\u0103\u015fit. Pute\u0163i continua f\u0103r\u0103 autentificare, opera\u0163ia {0} va fi \u00eencercat\u0103 utiliz\u00e2nd alte magazii locale care sunt definite \u00een fi\u015fierul de configurare: {1} 
+MSG_WARNING_SKIPPED_REPOS=Avertisment: Urm\u0103toarele magazii configurate au fost s\u0103rite \u00een aceast\u0103 opera\u0163ie deoarece nu poate fi stabilit\u0103 nicio conexiune sau acredit\u0103rile nu pot fi validate: {0}
+MSG_VERIFY_REPO_CONNECTION=Dac\u0103 dori\u0163i s\u0103 utiliza\u0163i aceste magazii, asigura\u0163i-v\u0103 c\u0103 magaziile sunt configurate corect \u00een configura\u0163ie. Utiliza\u0163i ac\u0163iunea testConnection pentru a verifica conexiunea la magaziile configurate. Opera\u0163ia {0} va continua utiliz\u00e2nd alte magazii valide din configura\u0163ie.
+MSG_PASSWORD_NOT_ENCODED=Parola pentru aceast\u0103 magazie nu este codificat\u0103. Pute\u0163i codifica parolele prin rularea comenzii securityUtility cu op\u0163iunea de codificare --encoding setat\u0103 la un tip de codificare suportat\u0103, care sunt xor (implicit), aes \u015fi hash.
+MSG_PASSWORD_NOT_ENCODED_PROXY=Parola pentru acest proxy nu este codificat\u0103. Pute\u0163i codifica parola prin rularea comenzii de codificare securityUtility cu op\u0163iunea --encoding setat\u0103 la un tip de codificare suportat\u0103, care sunt xor (implicit), aes \u015fi hash.
+MSG_DIRECTORY_REPO_CONFIGURED=\nDirectorul {0} este deja configurat ca magazie utilizabil\u0103 \u00een fi\u015fierul repositories.properties.
+MSG_DIRECTORY_REPO_NOT_CONFIGURED=\nPute\u0163i ad\u0103uga urm\u0103torul URL la repositories.properties pentru a-l utiliza ca magazie pentru comanda installUtility: {0}
+MSG_ALL_DOWNLOADING_FILES_EXISTS=\nToate aseturile exist\u0103 deja \u00een urm\u0103toarea magazie: {0}
+MSG_ADDITIONAL_FEATURES_FOR_SERVER_PACKAGE=Pentru a instala acest pachet de server, trebuie s\u0103 fie de asemenea instalate caracteristici suplimentare Liberty.
+MSG_ADDITIONAL_FEATURES_FOR_SERVER=Trebuie s\u0103 fie instalate caracteristici suplimentare Liberty pentru acest server.
+MSG_INSTALL_ADDITIONAL_FEATURES_FOR_SAMPLES=Trebuie s\u0103 fie instalate caracteristici suplimentare Liberty pentru a instala urm\u0103toarele exemple sau integr\u0103ri cu surs\u0103 deschis\u0103: {0}
+MSG_INSTALL_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Pentru a instala caracteristicile suplimentare, examina\u0163i \u015fi accepta\u0163i acordul de licen\u0163\u0103 caracteristici:
+MSG_DOWNLOAD_ADDITIONAL_FEATURES_FOR_SAMPLES=Trebuie s\u0103 fie desc\u0103rcate caracteristici suplimentare Liberty pentru a desc\u0103rca urm\u0103toarele exemple sau integr\u0103ri cu surs\u0103 deschis\u0103: {0}
+MSG_DOWNLOAD_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=Pentru a desc\u0103rca caracteristicile suplimentare, examina\u0163i \u015fi accepta\u0163i acordul de licen\u0163\u0103 caracteristici:
+MSG_VALIDATION_SUCCESSFUL=Fi\u015fierul de propriet\u0103\u0163i a transmis cu succes validarea.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Fi\u015fierul de propriet\u0103\u0163i a e\u015fuat validarea. Utiliza\u0163i op\u0163iunea --viewValidationMessages pentru a vizualiza mesajele de validare detaliate.
+MSG_VALIDATION_NUM_OF_ERRORS=Num\u0103rul de erori: {0}
+MSG_VALIDATION_MESSAGES=Validarea fi\u015fierului de propriet\u0103\u0163i
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Nume: {0}
+FIELD_REPO_LOCATION=Loca\u0163ie: {0}
+FIELD_REPO_STATUS=Stare: {0}
+FIELD_REPO_REASON=Motiv: {0}
+FIELD_REPO_WARNING=Avertisment: {0}
+FIELD_NAME=Nume:
+FIELD_PORT=Port:
+FIELD_LOCATION=Loca\u0163ie:
+FIELD_PROXY_SERVER=Serverul proxy
+FIELD_USER=Nume utilizator:
+FIELD_PASS=Parol\u0103:
+FIELD_PROPS_FILE=Fi\u015fierul de propriet\u0103\u0163i: {0}
+FIELD_REPO=Server magazie: {0} ({1})
+FIELD_PROXY=Server proxy: {0}
+FIELD_VALIDATION_RESULTS=Rezultate de validare: {0}
+FIELD_VALIDATION_LINE=Linie: {0}
+MSG_DEFAULT_REPO_USEAGE_LABEL=Utilizare magazie implicit\u0103:
+MSG_DEFAULT_REPO_NAME_LABEL=Magazie de aseturi implicit\u0103:
+
+
+MSG_NO_NAME=<Nume>
+
+TOOL_PROMPT_USERNAME=Introduce\u0163i numele de utilizator:
+TOOL_PROMPT_PASSWORD=Introduce\u0163i parola:
+TOOL_PROMPT_CONTINUE_OR_QUIT=Ap\u0103sa\u0163i Enter pentru a continua sau ap\u0103sa\u0163i "x" pentru a renun\u0163a la opera\u0163ia {0}.
+
+LOG_PROMPT_PROXY_AUTHENTICATION=Autentificarea la serverul proxy cu acredit\u0103rile specificate.
+LOG_PROMPT_PROXY_SUCCESS=S-a reu\u015fit autentificarea cu serverul proxy: {0}\n
+LOG_PROMPT_REPO_AUTHENTICATION=Autentificarea la magazia {0} cu acredit\u0103rile specificate.
+LOG_PROMPT_REPO_SUCCESS=S-a reu\u015fit autentificarea la magazia {0}.\n
+LOG_REPO_CONNECTION_EXCEPTION=Conexiunea la magazia {0} a e\u015fuat cu urm\u0103toarea excep\u0163ie: {1}
+LOG_HTTP_SERVER_RESPONSE_CODE=Serverul a returnat un cod de r\u0103spuns HTTP {0} pentru urm\u0103torul URL: {1}
+LOG_PASSWORD_NOT_ENCODED=Parolele pentru urm\u0103toarele magazii nu sunt codificate: {0}. Pute\u0163i codifica parolele prin rularea comenzii securityUtility cu op\u0163iunea de codificare --encoding setat\u0103 la un tip de codificare suportat, care sunt xor (implicit), aes \u015fi hash. De exemplu: securityUtility encode --encoding=aes repoPassword
+LOG_VALIDATION_FAILED=Fi\u015fierul de propriet\u0103\u0163i a e\u015fuat validarea. Rula\u0163i comanda viewSettings cu op\u0163iunea --viewValidationMessages pentru a vizualiza mesajele de validare detaliate.

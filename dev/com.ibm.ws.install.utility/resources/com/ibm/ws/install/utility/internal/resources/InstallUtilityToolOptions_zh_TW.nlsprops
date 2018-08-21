@@ -1,0 +1,166 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=\u7528\u6cd5\uff1a{0}
+
+global.description=\u8aaa\u660e\uff1a
+global.actions=\u52d5\u4f5c\uff1a
+global.options=\u9078\u9805\uff1a
+global.options.lower=\u9078\u9805
+global.usage=\u7528\u6cd5\uff1a
+global.options.statement=\t\u8acb\u4f7f\u7528 help [actionName] \u4ee5\u53d6\u5f97\u6bcf\u4e00\u500b\u52d5\u4f5c\u7684\u8a73\u7d30\u9078\u9805\u8cc7\u8a0a\u3002
+task.unknown=\u4e0d\u660e\u7684\u52d5\u4f5c\uff1a{0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\t\u5217\u5370\u6307\u5b9a\u52d5\u4f5c\u7684\u8aaa\u660e\u8cc7\u8a0a\u3002
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\t\u5f9e\u5132\u5b58\u5eab\u4e0b\u8f09\u8cc7\u7522\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\ \ \ \ name ...
+download.option-desc.name...=\t\u6307\u5b9a\u4e00\u6216\u591a\u500b\u8cc7\u7522\u540d\u7a31\uff0c\u4e26\u4ee5\u7a7a\u683c\u5340\u9694\u3002\u5982\u679c\u8981\u5c0b\u627e\u60a8\u53ef\u4ee5\u4e0b\u8f09\u7684\u8cc7\u7522\uff0c\n\
+\t\u8acb\u57f7\u884c installUtility find \u6307\u4ee4\u3002\u5c0d\u65bc\u7279\u6027\u548c\u9644\u52a0\u7a0b\u5f0f\uff0c\n\
+\t\u60a8\u53ef\u4ee5\u6307\u5b9a\u7c21\u7a31 (featureName-1.0)\n\
+\t\u6216\u8005\u7b26\u865f\u540d\u7a31 (com.ibm.websphere.featureName-1.0)\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\ \ \ \ --overwrite
+download.option-desc.--overwrite=\t\u4f7f\u7528\u9019\u500b\u9078\u9805\uff0c\u6703\u5728\u4e0b\u8f09\u81f3\n\
+\t\u4e0b\u8f09\u76ee\u9304\u6642\u6703\u6539\u5beb\u73fe\u6709\u7684\u6a94\u6848\u3002\u5982\u679c\u6c92\u6709\u6307\u5b9a\u9019\u500b\u9078\u9805\uff0c\n\
+\t\u9810\u8a2d\u884c\u70ba\u662f\u5ffd\u7565\u6240\u6709\u73fe\u6709\u7684\u6a94\u6848\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\ \ \ \ --location=directoryPath
+download.option-desc.--location=\t\u4f7f\u7528\u9019\u500b\u9078\u9805\u4f86\u6307\u5b9a\u6240\u4e0b\u8f09\u8cc7\u7522\u7684         \n\
+\t\u76ee\u7684\u5730\u76ee\u9304\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\ \ \ \ --verbose
+download.option-desc.--verbose=\t\u4f7f\u7528\u9019\u500b\u9078\u9805\u6642\uff0c\u6703\u5728\u52d5\u4f5c\u57f7\u884c\u671f\u9593\n\
+\t\u986f\u793a\u4efb\u4f55\u53ef\u7528\u7684\u5176\u4ed6\u8cc7\u8a0a\u3002
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\t\u5f9e\u5132\u5b58\u5eab\u4e2d\u5c0b\u627e\u8cc7\u7522\u3002
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\t\u4f7f\u7528\u641c\u5c0b\u5b57\u4e32\u5728\u5132\u5b58\u5eab\u4e2d\u5c0b\u627e\u8cc7\u7522\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\t\u986f\u793a\u641c\u5c0b\u627e\u5230\u4e4b\u6bcf\u500b\u7279\u6027\u7684\u8aaa\u660e\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\t\u641c\u5c0b\u6307\u5b9a\u985e\u578b\u7684\u8cc7\u7522\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\ \ \ \ --name
+find.option-desc.--name=\t\u6307\u5b9a\u8981\u5728 searchString \u4e2d\u641c\u5c0b\u7684  \n\
+\t\u8cc7\u7522\u540d\u7a31\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\ \ \ \ --from=filePath
+find.option-desc.--from=\t\u9019\u500b\u9078\u9805\u7528\u4f86\u6307\u5b9a\u55ae\u4e00\u76ee\u9304\u578b\u5132\u5b58\u5eab\u7684\u6a94\u6848\u8def\u5f91\uff0c\n\
+\t\u4ee5\u4f5c\u70ba installUtility \u5c0b\u627e\u8cc7\u7522\u6642\u7684\u552f\u4e00\u4f86\u6e90\u3002\n\
+\t\u9019\u500b\u6a94\u6848\u8def\u5f91\u53ef\u4ee5\u662f\u76ee\u9304\u6216\u4fdd\u5b58\u6a94\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\t\u4f7f\u7528\u9019\u500b\u9078\u9805\u6642\uff0c\u6703\u5728\u52d5\u4f5c\u57f7\u884c\u671f\u9593\n\
+\t\u986f\u793a\u4efb\u4f55\u53ef\u7528\u7684\u5176\u4ed6\u8cc7\u8a0a\u3002
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\t\u5c07\u8cc7\u7522\u6216\u4f01\u696d\u5b50\u7cfb\u7d71\u4fdd\u5b58\u6a94 (ESA)\n\
+\t\u5b89\u88dd\u5230\u57f7\u884c\u6642\u671f\uff0c\u6216\u90e8\u7f72\u4f3a\u670d\u5668\u5957\u4ef6\uff0c\n\
+\t\u4e26\u5b89\u88dd\u5fc5\u8981\u7684\u5957\u4ef6\u7279\u6027\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\ \ \ \ name ...
+install.option-desc.name...=\t\u60a8\u53ef\u4ee5\u6307\u5b9a\u4e0b\u5217\u540d\u7a31\uff1a\n\
+\t - \u4e00\u6216\u591a\u500b\u8cc7\u7522\u540d\u7a31\uff0c\u4e26\u4ee5\u7a7a\u683c\u5340\u9694\u3002\u5982\u679c\u8981\u5c0b\u627e\u53ef\u4ee5\u5b89\u88dd\u7684\u8cc7\u7522\uff0c\n\
+\t   \u8acb\u57f7\u884c installUtility find \u6307\u4ee4\u3002\u5c0d\u65bc\u7279\u6027\u548c\u9644\u52a0\u7a0b\u5f0f\uff0c\n\
+\t   \u60a8\u53ef\u4ee5\u6307\u5b9a\u7c21\u7a31 (featureName-1.0)\n\
+\t   \u6216\u8005\u7b26\u865f\u540d\u7a31 (com.ibm.websphere.featureName-1.0)\u3002           \n\
+\t - \u4f3a\u670d\u5668\u540d\u7a31                                                     \n\
+\t - \u672c\u7aef server.xml \u6a94                                           \n\
+\t - \u672c\u7aef ESA \u6a94\u6848                                                  \n\
+\t - \u7531\u542b\u6709 --include=usr \u9078\u9805\u7684\u4f3a\u670d\u5668\u5957\u4ef6\u52d5\u4f5c\u6240\u5efa\u7acb\u7684\n\
+\t   \u672c\u7aef\u4f3a\u670d\u5668\u5957\u4ef6\u4fdd\u5b58\u6a94
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\t\u6307\u5b9a\u7279\u6027\u7684\u5b89\u88dd\u4f4d\u7f6e\u3002\u7279\u6027\u53ef\u4ee5\u5b89\u88dd\u5230\u6240\u914d\u7f6e\u7684\n\
+\t\u4efb\u4f55\u5ef6\u4f38\u7522\u54c1\u4f4d\u7f6e\uff0c\u6216\u5b89\u88dd\u6210\u4f7f\u7528\u8005\u7279\u6027\u3002\u5982\u679c\n\
+\t\u6c92\u6709\u6307\u5b9a\u9019\u500b\u9078\u9805\uff0c\u5247\u6703\u5c07\u7279\u6027\u5b89\u88dd\u6210\u4f7f\u7528\u8005\n\
+\t\u7279\u6027\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\t\u5982\u679c\u6709\u5c6c\u65bc ESA \u4e00\u90e8\u5206\u7684\u6a94\u6848\u5df2\u7d93\u5b58\u5728\u7cfb\u7d71\u4e0a\uff0c\n\
+\t\u60a8\u5fc5\u9808\u6307\u5b9a\u8981\u63a1\u53d6\u7684\u52d5\u4f5c\u3002\u6709\u6548\u9078\u9805\u5982\u4e0b\uff1afail - \u4e2d\u65b7\u5b89\u88dd\uff1b\n\
+\tignore - \u7e7c\u7e8c\u5b89\u88dd\uff0c\u4e26\u5ffd\u7565\u5df2\u5b58\u5728\u7684\u6a94\u6848\uff1b\n\
+\treplace - \u6539\u5beb\u73fe\u6709\u7684\u6a94\u6848\u3002\
+\u8acb\u52ff\u4f7f\u7528\n\
+\treplace \u9078\u9805\u4f86\u91cd\u65b0\u5b89\u88dd\u7279\u6027\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\t\u5982\u679c\u8981\u81ea\u52d5\u4e0b\u8f09\u7bc4\u4f8b\u6216\u958b\u653e\u7a0b\u5f0f\u78bc\u6574\u5408\u7684\n\
+\t\u4efb\u4f55\u5916\u90e8\u76f8\u4f9d\u9805\uff0c\u8acb\u8a2d\u70ba true\u3002\u5982\u679c\u60a8\u4e0d\u60f3\u4e0b\u8f09\n\
+\t\u5916\u90e8\u76f8\u4f9d\u9805\uff0c\u8acb\u8a2d\u70ba false\u3002\u5982\u679c\u5916\u90e8\u76f8\u4f9d\u9805\u662f\u5fc5\u8981\u7684\uff0c\n\
+\t\u4f46\u6c92\u6709\u6307\u5b9a\u9019\u500b\u9078\u9805\uff0c\u6703\u63d0\u793a\u60a8\n\
+\t\u4e0b\u8f09\u5b83\u5011\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\ \ \ \ --from=filePath
+install.option-desc.--from=\t\u9019\u500b\u9078\u9805\u7528\u4f86\u6307\u5b9a\u55ae\u4e00\u76ee\u9304\u578b\u5132\u5b58\u5eab\u7684\u6a94\u6848\u8def\u5f91\uff0c\n\
+\t\u4ee5\u4f5c\u70ba installUtility \u5b89\u88dd\u8cc7\u7522\u6642\u7684\u552f\u4e00\u4f86\u6e90\u3002\n\
+\t\u9019\u500b\u6a94\u6848\u8def\u5f91\u53ef\u4ee5\u662f\u76ee\u9304\u6216\u4fdd\u5b58\u6a94\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\t\u4f7f\u7528\u9019\u500b\u9078\u9805\u6642\uff0c\u6703\u5728\u52d5\u4f5c\u57f7\u884c\u671f\u9593\n\
+\t\u986f\u793a\u4efb\u4f55\u53ef\u7528\u7684\u5176\u4ed6\u8cc7\u8a0a\u3002
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\t\u5f9e\u57f7\u884c\u6642\u671f\u89e3\u9664\u5b89\u88dd\u7279\u6027\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\ \ \ \ name
+uninstall.option-desc.name...=\t\u6307\u5b9a\u4e00\u6216\u591a\u9805\u7279\u6027\uff0c\u4e26\u4ee5\u7a7a\u683c\u5340\u9694\u3002\u60a8\u53ef\u4ee5\u6307\u5b9a\n\
+\t\u7c21\u7a31 (featureName-1.0) \u6216\u7b26\u865f\u540d\u7a31\n\
+\t(com.ibm.websphere.featureName-1.0)\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\t\u8df3\u904e\u4f7f\u7528\u8005\u78ba\u8a8d\u4e26\u89e3\u9664\u5b89\u88dd\u7279\u6027\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\t\u4e0d\u8ad6\u5176\u4ed6\u5df2\u5b89\u88dd\u7684\u7279\u6027\u662f\u5426\u8207\u8a72\u7279\u6027\u76f8\u4f9d\uff0c\n\
+\t\u90fd\u8981\u89e3\u9664\u5b89\u88dd\u8a72\u7279\u6027\u3002\u89e3\u9664\u5b89\u88dd\u5176\u4ed6\u5df2\u5b89\u88dd\u7279\u6027\u6240\u9700\u8981\u7684\u7279\u6027\uff0c\n\
+\t\u53ef\u80fd\u9020\u6210\u90a3\u4e9b\u7279\u6027\u505c\u6b62\u904b\u4f5c\uff0c\n\
+\t\u4e26\u53ef\u80fd\u5c0e\u81f4\u4f3a\u670d\u5668\u7121\u6cd5\u6b63\u78ba\u57f7\u884c\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\t\u4f7f\u7528\u9019\u500b\u9078\u9805\u6642\uff0c\u6703\u5728\u52d5\u4f5c\u57f7\u884c\u671f\u9593\n\
+\t\u986f\u793a\u4efb\u4f55\u53ef\u7528\u7684\u5176\u4ed6\u8cc7\u8a0a\u3002
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\t\u6aa2\u8996\u5132\u5b58\u5eab\u548c Proxy \u8a2d\u5b9a\u3002
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\t\u9019\u500b\u9078\u9805\u7528\u4f86\u986f\u793a\u6240\u914d\u7f6e\u7684 repositories.properties \u6a94\n\
+\t\u7684\u8a73\u7d30\u9a57\u8b49\u8a0a\u606f\u3002          \n\
+\t\u6bcf\u4e00\u5247\u8a0a\u606f\u90fd\u542b\u6709\u932f\u8aa4\u78bc\u3001\u767c\u73fe\u932f\u8aa4\u7684\u884c\u865f\uff0c\n\
+\t\u4ee5\u53ca\u932f\u8aa4\u539f\u56e0\u3002\n
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\t\u6e2c\u8a66\u5132\u5b58\u5eab\u7684\u9023\u7dda\u3002
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\ \ \ \ repoName
+testConnection.option-desc.[repoName]=\t\u6307\u5b9a\u8981\u6e2c\u8a66\u7684\u5132\u5b58\u5eab\u540d\u7a31\u3002\u82e5\u8981\u53c3\u7167\n\
+\tIBM WebSphere Liberty Repository\uff0c\u8acb\u4f7f\u7528\u540d\u7a31\u9810\u8a2d\u503c\u3002                 \n\
+\t\u5982\u679c\u672a\u6307\u5b9a\u5132\u5b58\u5eab\u540d\u7a31\uff0c\u5c07\u6703\u6e2c\u8a66\u6240\u6709\u5df2\u914d\u7f6e\u7684\u5132\u5b58\u5eab\u3002\n\
+\t
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\t\u4f7f\u7528\u9019\u500b\u9078\u9805\u6642\uff0c\u6703\u5728\u52d5\u4f5c\u57f7\u884c\u671f\u9593\n\
+\t\u986f\u793a\u4efb\u4f55\u53ef\u7528\u7684\u5176\u4ed6\u8cc7\u8a0a\u3002
+

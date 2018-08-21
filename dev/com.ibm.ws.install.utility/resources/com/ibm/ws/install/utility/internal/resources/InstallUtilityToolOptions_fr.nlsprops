@@ -1,0 +1,165 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntaxe : {0}
+
+global.description=Description :
+global.actions=Actions :
+global.options=Options :
+global.options.lower=options
+global.usage=Syntaxe :
+global.options.statement=\tUtilisez help [actionName] pour obtenir des informations \
+d\u00e9taill\u00e9es sur les options de chaque action.
+task.unknown=Action inconnue : {0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tImprimer des informations d'aide pour l'action sp\u00e9cifi\u00e9e.
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\tT\u00e9l\u00e9charger des actifs des r\u00e9f\u00e9rentiels.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\ \ \ \ name ...
+download.option-desc.name...=\tIndiquer un ou plusieurs noms d'actif s\u00e9par\u00e9s par un espace. Pour trouver des actifs \n\
+\tque vous pouvez t\u00e9l\u00e9charger, ex\u00e9cutez la commande installUtility find. Pour les      \n\
+\tfonctions et les modules compl\u00e9mentaires, vous pouvez indiquer le nom abr\u00e9g\u00e9 \n\
+\t(featureName-1.0) ou le nom symbolique (com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\ \ \ \ --overwrite
+download.option-desc.--overwrite=\tUtiliser cette option pour remplacer les fichiers existants lors du  \n\
+\tt\u00e9l\u00e9chargement vers le r\u00e9pertoire local. Si cette option n'est pas sp\u00e9cifi\u00e9e, le comportement \n\
+\tpar d\u00e9faut consiste \u00e0 ignorer tous les fichiers existants.       
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\ \ \ \ --location=chemin_r\u00e9pertoire
+download.option-desc.--location=\tUtiliser cette option pour indiquer le r\u00e9pertoire de destination pour les actifs \n\
+\tt\u00e9l\u00e9charg\u00e9s.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\ \ \ \ --verbose
+download.option-desc.--verbose=\tUtiliser cette option pour afficher toute information suppl\u00e9mentaire lorsque\n\
+\tl'action est en cours d'ex\u00e9cution.
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tRechercher les actifs des r\u00e9f\u00e9rentiels.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tUtiliser la cha\u00eene de recherche pour rechercher les actifs dans les r\u00e9f\u00e9rentiels.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\tAfficher la description de chacune des fonctions trouv\u00e9es par la recherche.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\tRechercher le type d'actifs sp\u00e9cifi\u00e9.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\ \ \ \ --name
+find.option-desc.--name=\tIndique le nom de l'actif \u00e0 rechercher dans \n\
+\tla cha\u00eene de recherche (searchString).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\ \ \ \ --from=filePath
+find.option-desc.--from=\tUtiliser cette option pour indiquer le chemin de fichier d'un seul r\u00e9f\u00e9rentiel \n\
+\tbas\u00e9 sur un r\u00e9pertoire comme source unique pour la recherche d'actifs par installUtility. Ce\n\
+\tchemin d'acc\u00e8s au fichier peut \u00eatre un r\u00e9pertoire ou un fichier archive.              
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tUtiliser cette option pour afficher toute information suppl\u00e9mentaire lorsque\n\
+\tl'action est en cours d'ex\u00e9cution.
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\tInstaller des actifs ou un fichier ESA (Enterprise Subsystem Archive) dans  \n\
+\tl'environnement d'ex\u00e9cution ou d\u00e9ployer un package serveur et installer les fonctions        \n\
+\trequises du package.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\ \ \ \ name ...
+install.option-desc.name...=\tVous pouvez sp\u00e9cifier les noms suivants :                                 \n\
+\t - Un ou plusieurs noms d'actif s\u00e9par\u00e9s par un espace. Pour trouver des actifs que \n\
+\t   vous pouvez installer, ex\u00e9cutez la commande installUtility find. Pour les fonctions \n\
+\t   et les modules compl\u00e9mentaires, vous pouvez indiquer le nom abr\u00e9g\u00e9 (featureName-1.0) \n\
+\t   ou le nom symbolique (com.ibm.websphere.featureName-1.0).            \n\
+\t - Un nom de serveur                                                     \n\
+\t - Un fichier ESA local                                                  \n\
+\t - Un fichier d'archive de package serveur local cr\u00e9\u00e9 par l'action de package\n\
+\t   serveur avec l'option --include=usr
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to=\tIndiquez o\u00f9 installer la fonction. La fonction peut \u00eatre install\u00e9e \u00e0\n\
+\tn'importe quel emplacement d'extension de produit configur\u00e9 ou en tant que fonction utilisateur. Si \n\
+\tcette option n'est pas indiqu\u00e9e, la fonction sera install\u00e9e en tant que fonction \n\
+\tutilisateur.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\tSi un fichier faisant partie de l'ESA existe d\u00e9j\u00e0 sur le syst\u00e8me, vous \n\
+\tdevez sp\u00e9cifier les actions \u00e0 effectuer. Les options valides sont : fail - abandonner   \n\
+\tl'installation ; ignore - continuer l'installation et ignorer le  \n\
+\tfichier qui existes  ; replace - remplacer le fichier existant. Ne pas \n\
+\tutiliser l'option de remplacement pour r\u00e9installer les fonctions.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\tIndiquez la valeur true pour t\u00e9l\u00e9charger   \n\
+\tautomatiquement toute d\u00e9pendance externe pour les exemples ou les int\u00e9grations \u00e0 source ouverte. \n\
+\tSi vous ne souhaitez pas t\u00e9l\u00e9charger de d\u00e9pendance externe, indiquez la valeur false. Si des  \n\
+\td\u00e9pendances externes sont requises et que cette option n'est pas sp\u00e9cifi\u00e9e, vous \u00eates invit\u00e9  \n\
+\t\u00e0 les t\u00e9l\u00e9charger.                                                                             \n\
+\t  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\ \ \ \ --from=filePath
+install.option-desc.--from=\tUtiliser cette option pour indiquer le chemin de fichier d'un seul r\u00e9f\u00e9rentiel \n\
+\tbas\u00e9 sur un r\u00e9pertoire comme source unique pour l'installation d'actifs par installUtility. \n\
+\tCe chemin d'acc\u00e8s au fichier peut \u00eatre un r\u00e9pertoire ou un fichier archive.         
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tUtiliser cette option pour afficher toute information suppl\u00e9mentaire lorsque\n\
+\tl'action est en cours d'ex\u00e9cution.
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\tD\u00e9sinstalle une fonction de l'environnement d'ex\u00e9cution.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\ \ \ \ nom
+uninstall.option-desc.name...=\tIndiquer un ou plusieurs noms de fonction s\u00e9par\u00e9s par un espace. Vous pouvez indiquer \n\
+\tle nom abr\u00e9g\u00e9 (featureName-1.0) ou le nom symbolique \n\
+\t(com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tOmettre la confirmation utilisateur et d\u00e9sinstaller la fonction.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\tD\u00e9sinstaller la fonction m\u00eame si d'autres fonctions install\u00e9es ont \n\
+\tdes d\u00e9pendances.  La d\u00e9sinstallation d'une fonction qui est requise par d'autres fonctions install\u00e9es\n\
+\tpeut provoquer l'arr\u00eat de ces fonctions et emp\u00eacher un fonctionnement correct \n\
+\tdes serveurs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tUtiliser cette option pour afficher toute information suppl\u00e9mentaire lorsque\n\
+\tl'action est en cours d'ex\u00e9cution.
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tAfficher les r\u00e9f\u00e9rentiels et les param\u00e8tres de proxy.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tUtilisez cette option pour afficher les messages d\u00e9taill\u00e9s depuis la\n\
+\tvalidation des fichier repositories.properties configur\u00e9.           \n\
+\tChaque message contient un code d'erreur, le num\u00e9ro de ligne o\u00f9 l'erreur \n\
+\ta \u00e9t\u00e9 d\u00e9tect\u00e9e, ainsi que la cause de l'erreur.							   \n
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\tTester la connexion du r\u00e9f\u00e9rentiel.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\ \ \ \ repoName
+testConnection.option-desc.[repoName]=\tIndiquez le nom de r\u00e9f\u00e9rentiel \u00e0 tester. Pour faire r\u00e9f\u00e9rence au  \n\
+\tr\u00e9f\u00e9rentiel IBM WebSphere Liberty, utilisez le nom par d\u00e9faut.                  \n\
+\tSi aucun nom de r\u00e9f\u00e9rentiel n'est sp\u00e9cifi\u00e9, tous les r\u00e9f\u00e9rentiels configur\u00e9s    \n\
+\tsont test\u00e9s.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\tUtiliser cette option pour afficher toute information suppl\u00e9mentaire lorsque\n\
+\tl'action est en cours d'ex\u00e9cution.
+

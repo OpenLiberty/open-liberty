@@ -1,0 +1,173 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Syntax: {0}
+
+global.description=Beschreibung:
+global.actions=Aktionen:
+global.options=Optionen:
+global.options.lower=Optionen
+global.usage=Syntax:
+global.options.statement=\tVerwenden Sie den Befehl help [Aktionsname], um detaillierte Optionsinformationen f\u00fcr jede Aktion anzuzeigen.
+task.unknown=Unbekannte Aktion: {0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tGibt die Hilfeinformationen zur angegebenen Aktion aus.
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\tL\u00e4dt Assets aus den Repositorys herunter.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\ \ \ \ Name ...
+download.option-desc.name...=\tGeben Sie eine durch Leerzeichen getrennte Liste mit Assetnamen\n\
+\tan. F\u00fchren Sie zum Ermitteln der Assets, die Sie herunterladen\n\
+\tk\u00f6nnen, den installUtility-Befehl find aus. F\u00fcr Features und \n\
+\tAdd-ons k\u00f6nnen Sie den Kurznamen (featureName-1.0) oder den \n\
+\tsymbolischen Namen (com.ibm.websphere.featureName-1.0) angeben.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\ \ \ \ --overwrite
+download.option-desc.--overwrite=\tVerwenden Sie diese Option, wenn vorhandene Dateien beim Download in das\n\
+\tlokale Verzeichnis \u00fcberschrieben werden sollen. Wenn Sie diese Option nicht angeben, \n\
+\twerden standardm\u00e4\u00dfig alle vorhandenen Dateien ignoriert. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\ \ \ \ --location=Verzeichnispfad
+download.option-desc.--location=\tVerwenden Sie diese Option, um das Zielverzeichnis f\u00fcr \n\
+\tdie heruntergeladenen Assets anzugeben.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\ \ \ \ --verbose
+download.option-desc.--verbose=\tVerwenden Sie diese Option, wenn alle verf\u00fcgbaren zus\u00e4tzlichen\n\
+\tInformationen w\u00e4hrend der Ausf\u00fchrung der Aktion angezeigt werden sollen.
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tSucht Assets aus den Repositorys.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tVerwenden Sie den Suchbegriff, um Assets in den Repositorys zu suchen.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\tZeigt die Beschreibung f\u00fcr jedes der bei der Suche gefundene Feature an.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\tSucht Assets des angegebenen Typs.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\ \ \ \ --name
+find.option-desc.--name=\tGibt den Namen des zu suchenden Assets im \n\
+\tSuchbegriff an.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\ \ \ \ --from=Dateipfad
+find.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines einzelnen verzeichnisbasierten\n\
+\tRepositorys als einzige Quelle anzugeben, in der installUtility nach Assets suchen soll. Dieser \n\
+\tDateipfad kann ein Verzeichnis oder eine Archivdatei sein. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tVerwenden Sie diese Option, wenn alle verf\u00fcgbaren zus\u00e4tzlichen\n\
+\tInformationen w\u00e4hrend der Ausf\u00fchrung der Aktion angezeigt werden sollen.
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\tInstalliert Assets oder eine ESA-Datei (Enterprise Subsystem Archive)\n\
+\tin der Laufzeitimplementierung oder implementiert ein Serverpaket und installiert die \n\
+\terforderlichen Features des Pakets.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\ \ \ \ Name ...
+install.option-desc.name...=\tSie k\u00f6nnen die folgenden Namen angeben:                             \n\
+\t - Einen oder mehrere Assetnamen (mehrere Assetnamen m\u00fcssen durch \n\
+\t   Leerzeichen voneinander getrennt werden). F\u00fchren Sie zum \n\
+\t   Ermitteln der Assets, die Sie installieren k\u00f6nnen, den\n\
+\t   installUtility-Befehl find aus. F\u00fcr Features und \n\
+\t   Add-ons k\u00f6nnen Sie den Kurznamen (featureName-1.0) oder \n\
+\t   den symbolischen Namen (com.ibm.websphere.featureName-1.0)\n\
+\t   angeben. \
+           \n\
+\t - Einen Servernamen.  \n\
+\t - Eine lokale Datei server.xml. \n\
+\t - Eine lokale ESA-Datei. \n\
+\t - Eine lokale Archivdatei mit dem Serverpaket, die mit der \n\
+\t   Serverpaketaktion mit der Option --include=usr erstellt wurde.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[usr|extension]
+install.option-desc.--to= \
+\tGibt an, wo das Feature installiert werden soll. Das Feature kann an\n\
+\tjeder konfigurierten Produkterweiterungsposition oder als\n\
+\tBenutzerfeature installiert werden. Wenn diese Option nicht angegeben \n\
+\twird, wird das Feature als Benutzerfeature installiert.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\tWenn bereits eine zum ESA geh\u00f6rende Datei auf dem System vorhanden ist, \n\
+\tm\u00fcssen Sie die auszuf\u00fchrenden Aktionen angeben. G\u00fcltige Optionen: fail (Installation abbrechen);\n\
+\tignore (Installation fortsetzen und vorhandene Datei ignorieren);\n\
+\treplace (vorhandene Datei \u00fcberschreiben). Verwenden Sie die Option \n\
+\treplace nicht zur erneuten Installation von Features.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\tWenn alle externen Abh\u00e4ngigkeiten f\u00fcr Beispiele oder Open-Source-Integrationen\n\
+\tautomatisch heruntergeladen werden sollen, setzen Sie diese Option auf true. Setzen Sie die\n\
+\tOption auf false, wenn keine externen Abh\u00e4ngigkeiten heruntergeladen werden sollen. Falls\n\
+\texterne Abh\u00e4ngigkeiten erforderlich sind und diese Option nicht angegeben wird, werden Sie\n\
+\taufgefordert, die Abh\u00e4ngigkeiten manuell herunterzuladen. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\ \ \ \ --from=Dateipfad
+install.option-desc.--from=\tVerwenden Sie diese Option, um den Dateipfad eines einzelnen verzeichnisbasierten\n\
+\tRepositorys als einzige Quelle anzugeben, aus der installUtility nach Assets installieren soll.\n\
+\tDieser Dateipfad kann ein Verzeichnis oder eine Archivdatei sein. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tVerwenden Sie diese Option, wenn alle verf\u00fcgbaren zus\u00e4tzlichen\n\
+\tInformationen w\u00e4hrend der Ausf\u00fchrung der Aktion angezeigt werden sollen.
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\tDeinstalliert ein Feature in der Laufzeitumgebung.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\ \ \ \ name
+uninstall.option-desc.name...= \
+\tGeben Sie eine durch Leerzeichen getrennte Liste mit Features an. Sie\n\
+\tk\u00f6nnen den Kurznamen (featureName-1.0) oder den symbolischen\n\
+\tNamen (com.ibm.websphere.featureName-1.0) angeben.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\t\u00dcberspringt die Benutzerbest\u00e4tigung und deinstalliert das Feature.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\tDeinstalliert das Feature unabh\u00e4ngig davon, ob andere installierte\n\
+\tFeatures von diesem Feature abh\u00e4ngig sind. Die Deinstallation eines\n\
+\tFeatures, das von anderen installieren Features ben\u00f6tigt wird, kann\n\
+\tdazu f\u00fchren, dass diese Features nicht mehr funktionieren und dass\n\
+\tServer nicht mehr ordnungsgem\u00e4\u00df ausgef\u00fchrt werden.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tVerwenden Sie diese Option, wenn alle verf\u00fcgbaren zus\u00e4tzlichen\n\
+\tInformationen w\u00e4hrend der Ausf\u00fchrung der Aktion angezeigt werden sollen.
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tZeigt die Repositorys und Proxy-Einstellungen an. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tVerwenden Sie diese Option, um die detaillierten Nachrichten der \n\
+\tValidierung der konfigurierten Datei repositories.properties anzuzeigen.           \n\
+\tJede Nachricht enth\u00e4lt einen Fehlercode, die Nummer der Zeile, in der der\n\
+\tFehler gefunden wurde, und die Fehlerursache. \n
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\tTestet die Repository-Verbindung.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\ \ \ \ repoName
+testConnection.option-desc.[repoName]=\tGeben Sie den Namen des zu testenden Repositorys an. Verwenden Sie \n\
+\tzum Referenzieren von WebSphere Liberty Repository den Namen default. \n\
+\tWenn Sie keinen Repository-Namen angeben, werden alle konfigurierten \n\
+\tRepositorys getestet.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\tVerwenden Sie diese Option, wenn alle verf\u00fcgbaren zus\u00e4tzlichen\n\
+\tInformationen w\u00e4hrend der Ausf\u00fchrung der Aktion angezeigt werden sollen.
+

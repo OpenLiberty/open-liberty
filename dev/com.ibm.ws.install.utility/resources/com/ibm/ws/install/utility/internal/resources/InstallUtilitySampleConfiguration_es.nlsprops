@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## Utilizaci\u00f3n de IBM WebSphere Liberty Repository en l\u00ednea ##\n\
+## Establezca la propiedad useDefaultRepository en false para impedir que\n\
+## installUtility acceda a internet para conectarse al\n\
+## repositorio IBM WebSphere Liberty Repository. De forma predeterminada, el acceso\n\
+## est\u00e1 habilitado.\n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## Utilizaci\u00f3n de repositorios personalizados ##\n\
+## installUtility puede instalar activos procedentes de repositorios comprimidos o\n\
+## no comprimidos, basados en directorios, e instancias alojadas de Liberty\n\
+## Asset Repository Service. Proporcione un nombre de repositorio y la v\u00eda de acceso\n\
+## de directorio, la v\u00eda de acceso de archivo o el URL de cada repositorio personalizado\n\
+## que contenga activos de Liberty.\n\
+## El acceso a los repositorios se realiza en el orden en que est\u00e1n especificados.\n\
+\n\
+## Especifique el nombre y la v\u00eda de acceso de directorio, la v\u00eda de acceso del archivo de archivado\n\
+## o el URL de los repositorios basados en directorios.\n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## Especifique el nombre y URL de los repositorios alojados.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#hostedRepositoryName2.url=https://w3.mycompany.com/secure/repository\n\
+\n\
+## Especifique las credenciales de cada repositorio, si es necesario.\n\
+## Para obtener una mayor seguridad, codifique el valor de la propiedad .password\n\
+## utilizando la acci\u00f3n de codificaci\u00f3n securityUtility.\n\
+## Si no establece el usuario y la contrase\u00f1a, recibir\u00e1 una solicitud\n\
+## para que los proporcione.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=username\n\
+#hostedRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilizaci\u00f3n de un servidor proxy (opcional) ##\n\
+## Si utiliza un servidor proxy para acceder a internet,\n\
+## especifique valores para las propiedades de valores de proxy.\n\
+## Para obtener una mayor seguridad, codifique el valor de la propiedad proxyPassword\n\
+## utilizando la acci\u00f3n de codificaci\u00f3n securityUtility.\n\
+## Si no establece proxyUser y proxyPassword, recibir\u00e1\n\
+## una solicitud para que los proporcione.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword

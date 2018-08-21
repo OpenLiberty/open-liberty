@@ -1,0 +1,67 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords does not needed to be translated.
+#   'IBM WebSphere Liberty Repository', 'securityUtility',  'useDefaultRepository'
+#   'installUtility', '.password', 'proxyUser', 'proxyPassword'
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## Utilizzo di IBM WebSphere Liberty Repository online##\n\
+## Impostare la propriet\u00e0\u00a0useDefaultRepository su false per impedire\n\
+## a installUtility di accedere a internet per connettersi al\n\
+## repository IBM WebSphere Liberty Repository. Per impostazione predefinita\n\
+## l''accesso \u00e8 abilitato.\n\
+## -------------------------------------------------------------------\n\
+#useDefaultRepository=false\n\
+\n\
+######################################################################\n\
+## ## Utilizzo dei repository personalizzati ##\n\
+## installUtility pu\u00f2 installare asset da repository basati su directory\n\
+## compressi o meno e istanze ospitate del servizio Liberty\n\
+## Asset Repository. Fornire un nome repository e il percorso\n\
+## directory, il percorso file o l''URL a ciascun repository personalizzato\n\
+## contenente asset Liberty.\n\
+## Si accede ai repository nell''ordine in cui sono specificati.\n\
+\n\
+## Specificare nome e percorso directory, percorso file archivio o l''URL\n\
+## ai repository basati sulla directory.\n\
+## -------------------------------------------------------------------\n\
+#localRepositoryName1.url={0}\n\
+#localRepositoryName2.url={1}\n\
+#localRepositoryName3.url={2}\n\
+\n\
+## Specificare il nome e l''URL ai repository ospitati.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#hostedRepositoryName2.url=https://w3.mycompany.com/secure/repository\n\
+\n\
+## Specificare le credenziali di ciascun repository, se richiesto.\n\
+## Per la sicurezza avanzata, codificare il valore della propriet\u00e0\u00a0.password\n\
+## utilizzando l''azione encode di securityUtility.\n\
+## Se non si impostano utente e password, si riceve la richiesta\n\
+## di fornirli.\n\
+## -------------------------------------------------------------------\n\
+#hostedRepositoryName2.user=username\n\
+#hostedRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilizzo di un server proxy (facoltativo) ##\n\
+## Se si utilizza un server proxy per accedere a internet,\n\
+## specificare i valori di impostazione proxy.\n\
+## Per la sicurezza avanzata, codificare il valore della propriet\u00e0\u00a0proxyPassword\n\
+## utilizzando l''azione encode di securityUtility.\n\
+## Se non si impostano proxyUser e proxyPassword, si riceve\n\
+## la richiesta di fornirli.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword

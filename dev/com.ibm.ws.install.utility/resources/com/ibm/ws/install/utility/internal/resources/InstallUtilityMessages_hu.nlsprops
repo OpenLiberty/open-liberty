@@ -1,0 +1,230 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+ERROR_DEPENDENCIES_INVALID_OPTION=CWWKF1401E: A(z) {0} \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes a --dependencies param\u00e9terhez.
+ERROR_DEPENDENCIES_INVALID_OPTION.explanation=\u00c9rv\u00e9nyes \u00e9rt\u00e9keket kell haszn\u00e1lnia a --dependencies param\u00e9terhez.
+ERROR_DEPENDENCIES_INVALID_OPTION.useraction=Futtassa a parancsot a --dependencies param\u00e9ter \u00e9rv\u00e9nyes \u00e9rt\u00e9k\u00e9vel, p\u00e9ld\u00e1ul: all.
+
+ERROR_DOWNLOAD_ALREADY_INSTALLED=CWWKF1402E: A k\u00f6vetkez\u0151 szolg\u00e1ltat\u00e1sok nem ker\u00fcltek let\u00f6lt\u00e9sre, mert azok m\u00e1r telep\u00edtve vannak: {0}. A --dependencies param\u00e9terrel haszn\u00e1ljon m\u00e1s \u00e9rt\u00e9ket, p\u00e9ld\u00e1ul: all vagy none.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.explanation=A megadott szolg\u00e1ltat\u00e1sok m\u00e1r telep\u00edtve vannak.
+ERROR_DOWNLOAD_ALREADY_INSTALLED.useraction=Futtassa \u00fajra a parancsot a --dependencies param\u00e9ter m\u00e1s \u00e9rt\u00e9k\u00e9vel, p\u00e9ld\u00e1ul: all vagy none.
+
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST=CWWKF1404E: A(z) {0} f\u00e1jl nem l\u00e9tezik.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.explanation=A telep\u00edt\u00e9si m\u0171velethez megadott kiszolg\u00e1l\u00f3 csomag arch\u00edvumf\u00e1jl nem l\u00e9tezik.
+ERROR_DEPOLY_SERVER_PACKAGE_FILE_NOTEXIST.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 csomag arch\u00edvum f\u00e1jl neve helyesen van megadva, majd futtassa \u00fajra a telep\u00edt\u00e9si m\u0171veletet.
+
+ERROR_ARCHIVE_NOT_SUPPORT=CWWKF1405E: A(z) {0} f\u00e1jlt\u00edpust a telep\u00edt\u00e9si m\u0171velet nem t\u00e1mogatja.
+ERROR_ARCHIVE_NOT_SUPPORT.explanation=A kiszolg\u00e1l\u00f3 csomag arch\u00edvumf\u00e1jlnak egy zip f\u00e1jlnak kell lennie.
+ERROR_ARCHIVE_NOT_SUPPORT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 csomag arch\u00edvum f\u00e1jl neve helyesen van megadva, majd futtassa \u00fajra a telep\u00edt\u00e9si m\u0171veletet.
+
+ERROR_REPO_INVALID_URL=CWWKF1409E: A(z) {0} URL \u00e9rv\u00e9nytelen. Futtassa \u00fajra a parancsot egy \u00e9rv\u00e9nyes URL c\u00edmmel.
+ERROR_REPO_INVALID_URL.explanation=A megadott URL nem \u00e9rv\u00e9nyes.
+ERROR_REPO_INVALID_URL.useraction=Futtassa \u00fajra a parancsot egy \u00e9rv\u00e9nyes URL c\u00edmmel.
+
+ERROR_REPO_UNSUPPORT_PROTOCOL=CWWKF1416E: A(z) {0} URL protokollja nem t\u00e1mogatott. Csak a http, https \u00e9s file protokoll t\u00e1mogatott.
+ERROR_REPO_UNSUPPORT_PROTOCOL.explanation=Nem t\u00e1mogatott URL protokoll haszn\u00e1lat.
+ERROR_REPO_UNSUPPORT_PROTOCOL.useraction=Futtassa \u00fajra a parancsot egy \u00e9rv\u00e9nyes URL c\u00edmmel.
+
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION=CWWKF1417E: A b\u00e9ta v\u00e1ltozatban az installUtility parancs nem t\u00e1mogat t\u00f6bb ter\u00fcleti be\u00e1ll\u00edt\u00e1ssal rendelkez\u0151 k\u00f6nyvt\u00e1rat, vagy felt\u00e9teles lerakattal kevert helyi k\u00f6nyvt\u00e1rakat.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.explanation=Az installUtility parancs nem t\u00e1mogatja a be\u00e1ll\u00edtand\u00f3 konfigur\u00e1ci\u00f3t.
+MSG_BETA_ERROR_LOCAL_DIR_LIMITATION.useraction=T\u00e1vol\u00edtsa el a lerakatot, amelyre nincs sz\u00fcks\u00e9ge, \u00e9s adja hozz\u00e1 a lerakatot, amelyre sz\u00fcks\u00e9ge van.
+
+ERROR_REPO_NOT_IN_LIST=CWWKF1418E: A(z) {0} lerakatn\u00e9v nincs be\u00e1ll\u00edtva a(z) {1} konfigur\u00e1ci\u00f3s f\u00e1jlban. Ellen\u0151rizze a konfigur\u00e1ci\u00f3s f\u00e1jlt, vagy a viewSettings m\u0171velettel keresse ki a be\u00e1ll\u00edtott lerakatneveket.
+ERROR_REPO_NOT_IN_LIST.explanation=A megadott lerakatn\u00e9v nem tal\u00e1lhat\u00f3 a konfigur\u00e1ci\u00f3ban.
+ERROR_REPO_NOT_IN_LIST.useraction=A viewSettings m\u0171velettel list\u00e1zhatja az \u00f6sszes be\u00e1ll\u00edtott lerakatot, majd \u00fajrafuttathatja a parancsot egy \u00e9rv\u00e9nyes lerakatn\u00e9vvel.
+
+ERROR_INVALID_URL=CWWKF1420E: A(z) {1} lerakat {0} URL c\u00edme \u00e9rv\u00e9nytelen. Haszn\u00e1lja a configure m\u0171veletet a lerakat jav\u00edt\u00e1s\u00e1hoz.
+ERROR_INVALID_URL.explanation=A lerakat konfigur\u00e1ci\u00f3ban mentett URL c\u00edme \u00e9rv\u00e9nytelen.
+ERROR_INVALID_URL.useraction=Jav\u00edtsa a konfigur\u00e1ci\u00f3t, majd futtassa \u00fajra a parancsot.
+
+ERROR_REPO_IS_FILE=CWWKF1421E: A(z) {1} lerakat {0} URL c\u00edme egy f\u00e1jl. Egy k\u00f6nyvt\u00e1r el\u00e9r\u00e9si utat kell megadni. Haszn\u00e1lja a configure m\u0171veletet a lerakat jav\u00edt\u00e1s\u00e1hoz.
+ERROR_REPO_IS_FILE.explanation=A lerakat nem lehet egy f\u00e1jl.
+ERROR_REPO_IS_FILE.useraction=Jav\u00edtsa a konfigur\u00e1ci\u00f3t, majd futtassa \u00fajra a parancsot.
+
+ERROR_REPO_URL_IS_FILE=CWWKF1422E: A(z) {0} egy f\u00e1jl. Egy k\u00f6nyvt\u00e1r el\u00e9r\u00e9si utat kell megadni. 
+ERROR_REPO_URL_IS_FILE.explanation=A megadott URL nem k\u00f6nyvt\u00e1r.
+ERROR_REPO_URL_IS_FILE.useraction=Futtassa \u00fajra a parancsot egy k\u00f6nyvt\u00e1rral vagy egy \u00e9rv\u00e9nyes URL c\u00edmmel.
+
+ERROR_REPO_NOT_EXISTS=CWWKF1423E: A(z) {1} lerakat {0} URL c\u00edme nem l\u00e9tezik. Haszn\u00e1lja a configure m\u0171veletet a lerakat jav\u00edt\u00e1s\u00e1hoz.
+ERROR_REPO_NOT_EXISTS.explanation=A lerakat nem l\u00e9tezik.
+ERROR_REPO_NOT_EXISTS.useraction=Jav\u00edtsa a konfigur\u00e1ci\u00f3t, majd futtassa \u00fajra a parancsot.
+
+ERROR_NO_ARGUMENT=CWWKF1424E: A(z) {0} m\u0171velet legal\u00e1bb egy elemnevet ig\u00e9nyel.
+ERROR_NO_ARGUMENT.explanation=A m\u0171velet megh\u00edv\u00e1s\u00e1hoz nem a megfelel\u0151 sz\u00e1m\u00fa argumentum ker\u00fclt felhaszn\u00e1l\u00e1sra.
+ERROR_NO_ARGUMENT.useraction=Futtassa \u00fajra a parancsot a helyes argumentumokkal.
+
+ERROR_TYPE_INVALID_OPTION=CWWKF1427E: A(z) {0} \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes a --type param\u00e9terhez. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek a k\u00f6vetkez\u0151k: addon, feature, opensource, sample \u00e9s all.
+ERROR_TYPE_INVALID_OPTION.explanation=\u00c9rv\u00e9nytelen \u00e9rt\u00e9k ker\u00fclt felhaszn\u00e1l\u00e1sra a --type param\u00e9terhez.
+ERROR_TYPE_INVALID_OPTION.useraction=Futtassa a parancsot a --type egy \u00e9rv\u00e9nyes \u00e9rt\u00e9k\u00e9vel, mint p\u00e9ld\u00e1ul a k\u00f6vetkez\u0151: addon, feature, opensource, sample vagy all.
+
+ERROR_NO_SEARCHSTRING_NAME_OPTION=CWWKF1428E: A keres\u00e9si karaktersorozat nincs megadva.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.explanation=A --name param\u00e9ter haszn\u00e1latakor a keres\u00e9si karaktersorozat megad\u00e1sa k\u00f6telez\u0151.
+ERROR_NO_SEARCHSTRING_NAME_OPTION.useraction=Futtassa \u00fajra a parancsot egy keres\u00e9si karaktersorozattal.
+
+ERROR_FAILED_TO_CONNECT_REPO=CWWKF1429E: A lerakatkiszolg\u00e1l\u00f3t nem lehet el\u00e9rni. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendszer el\u00e9ri az Internetet \u00e9s a be\u00e1ll\u00edtott lerakatot.
+ERROR_FAILED_TO_CONNECT_REPO.explanation=Hiba t\u00f6rt\u00e9nt a lerakat csatlakoztat\u00e1sakor.
+ERROR_FAILED_TO_CONNECT_REPO.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a rendszer el\u00e9ri az Internetet \u00e9s a megfelel\u0151 lerakatot.
+
+ERROR_REPO_REQUIRES_AUTH=CWWKF1430E: A be\u00e1ll\u00edtott lerakat hiteles\u00edt\u00e9si adatai nem hiteles\u00edthet\u0151k. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a be\u00e1ll\u00edtott lerakathoz \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si adatok vannak be\u00e1ll\u00edtva a k\u00f6vetkez\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban: {0}.
+ERROR_REPO_REQUIRES_AUTH.explanation=A be\u00e1ll\u00edtott lerakatkiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9st ig\u00e9nyel, azonban a konfigur\u00e1ci\u00f3s f\u00e1jlban nem ker\u00fcltek \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si adatok megad\u00e1sra.
+ERROR_REPO_REQUIRES_AUTH.useraction=Hat\u00e1rozza meg a konfigur\u00e1ci\u00f3s f\u00e1jlban a lerakatkiszolg\u00e1l\u00f3 \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si adatait, majd futtassa \u00fajra a parancsot.
+
+ERROR_NO_CONNECTION=CWWKF1431E: Nem lehet l\u00e9trehozni a kapcsolatot a be\u00e1ll\u00edtott lerakatkiszolg\u00e1l\u00f3val.
+ERROR_NO_CONNECTION.explanation=A kapcsolatot a lerakatkiszolg\u00e1l\u00f3hoz nem lehet l\u00e9trehozni.
+ERROR_NO_CONNECTION.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS=CWWKF1432E: A(z) {0} legfeljebb 1 argumentumot ig\u00e9nyel, de {1} lett megadva.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.explanation=A m\u0171velet megh\u00edv\u00e1s\u00e1hoz nem a megfelel\u0151 sz\u00e1m\u00fa argumentum ker\u00fclt felhaszn\u00e1l\u00e1sra.
+ERROR_MORE_THAN_0_OR_1_ARGUMENTS.useraction=Futtassa \u00fajra a parancsot a helyes argumentumokkal.
+
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS=CWWK1433E: A be\u00e1ll\u00edtott proxykiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9si adatai nem hiteles\u00edthet\u0151k. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a proxykiszolg\u00e1l\u00f3hoz \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si adatok vannak be\u00e1ll\u00edtva a k\u00f6vetkez\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban: {0}.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.explanation=A be\u00e1ll\u00edtott proxykiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9st ig\u00e9nyel, de a hiteles\u00edt\u00e9si adatok nem hiteles\u00edthet\u0151k.
+ERROR_TOOL_INCORRECT_PROXY_CREDENTIALS.useraction=Hat\u00e1rozza meg a konfigur\u00e1ci\u00f3s f\u00e1jlban a proxykiszolg\u00e1l\u00f3 \u00e9rv\u00e9nyes hiteles\u00edt\u00e9si adatait, majd futtassa \u00fajra a parancsot.
+
+ERROR_UNABLE_TO_FIND_SERVER_XML=CWWK1434E: Nem tal\u00e1lhat\u00f3 a server.xml f\u00e1jl a(z) {0} k\u00f6nyvt\u00e1rban. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl l\u00e9tezik \u00e9s el\u00e9rhet\u0151.
+ERROR_UNABLE_TO_FIND_SERVER_XML.explanation=A megadott kiszolg\u00e1l\u00f3 server.xml f\u00e1jlja nem tal\u00e1lhat\u00f3 a kiszolg\u00e1l\u00f3 k\u00f6nyvt\u00e1r\u00e1ban.
+ERROR_UNABLE_TO_FIND_SERVER_XML.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a f\u00e1jl l\u00e9tezik \u00e9s el\u00e9rhet\u0151, majd futtassa \u00fajra a parancsot.
+
+ERROR_UNABLE_TO_ACCESS_SERVER_XML=CWWK1435E: A(z) {0} f\u00e1jl nem \u00e9rhet\u0151 el. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i fi\u00f3k k\u00e9pes el\u00e9rni \u00e9s olvasni a f\u00e1jlt.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.explanation=A felhaszn\u00e1l\u00f3i fi\u00f3knak nincsenek meg a sz\u00fcks\u00e9ges enged\u00e9lyei a server.xml f\u00e1jl olvas\u00e1s\u00e1hoz.
+ERROR_UNABLE_TO_ACCESS_SERVER_XML.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a felhaszn\u00e1l\u00f3i fi\u00f3k k\u00e9pes el\u00e9rni \u00e9s olvasni a f\u00e1jlt, majd futtassa \u00fajra a parancsot.
+
+MSG_REPO_FILE_NOT_FOUND=Nem tal\u00e1lhat\u00f3 felhaszn\u00e1l\u00f3konfigur\u00e1ci\u00f3. Az IBM WebSphere Liberty Repository az alap\u00e9rtelmezett eszk\u00f6zlerakat.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Az installUtility be\u00e1ll\u00edt\u00e1sainak szem\u00e9lyre szab\u00e1s\u00e1hoz hozza l\u00e9tre a repositories.properties f\u00e1jlt a k\u00f6vetkez\u0151 helyen: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Saj\u00e1t repositories.properties f\u00e1jlj\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lja az al\u00e1bbi mint\u00e1t sablonk\u00e9nt. Sz\u00fcntesse meg az egyetlen # karakterrel jel\u00f6lt sorok megjegyz\u00e9ss\u00e9 alak\u00edt\u00e1s\u00e1t, majd az \u00e9rt\u00e9keket cser\u00e9lje saj\u00e1t egy\u00e9ni \u00e9rt\u00e9keire.
+
+ERROR_UNINSTALL_FEATURES_FAIL=CWWK1436E: Legal\u00e1bb egy \u00f6sszetev\u0151t nem lehet elt\u00e1vol\u00edtani: {0}
+ERROR_UNINSTALL_FEATURES_FAIL.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt a metaadatok feldolgoz\u00e1sa k\u00f6zben. 
+ERROR_UNINSTALL_FEATURES_FAIL.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u00f3kat a WebSphere Application Server term\u00e9kt\u00e1mogat\u00e1si weboldalon: http://www.ibm.com/software/webservers/appserv/was/support/.
+
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE=CWWK1437E: A(z) {0} \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes a --downloadDependencies param\u00e9terhez. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek a true vagy a false.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.explanation=\u00c9rv\u00e9nytelen \u00e9rt\u00e9k ker\u00fclt felhaszn\u00e1l\u00e1sra a --downloadDependencies param\u00e9terhez.
+ERROR_INVALID_DOWNLOAD_DEPENDENCIES_VALUE.useraction=Futtassa a parancsot a --downloadDependencies param\u00e9ter \u00e9rv\u00e9nyes \u00e9rt\u00e9k\u00e9vel, vagyis a true vagy a false \u00e9rt\u00e9kkel.
+
+ERROR_ALL_CONFIG_REPOS_FAIL=CWWKF1440E: A k\u00f6vetkez\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban megadott be\u00e1ll\u00edtott lerakatok egyike sem \u00e9rthet\u0151 el, vagy a hiteles\u00edt\u00e9si adatok nem \u00e9rv\u00e9nyes\u00edthet\u0151k: {0}. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lerakatok megfelel\u0151en be\u00e1ll\u00edt\u00e1sra ker\u00fcltek a konfigur\u00e1ci\u00f3s f\u00e1jlban, a kapcsolat ellen\u0151rz\u00e9s\u00e9hez pedig haszn\u00e1lja a viewSettings \u00e9s testConnection m\u0171veleteket.
+ERROR_ALL_CONFIG_REPOS_FAIL.explanation=Az installUtility parancs a be\u00e1ll\u00edtott lerakatok egyik\u00e9vel sem tud kapcsolatot l\u00e9tes\u00edteni.
+ERROR_ALL_CONFIG_REPOS_FAIL.useraction=Ellen\u0151rizze, hogy a rendszer hozz\u00e1 tud-e f\u00e9rni az internethez. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lerakatok megfelel\u0151en be\u00e1ll\u00edt\u00e1sra ker\u00fcltek a konfigur\u00e1ci\u00f3s f\u00e1jlban. A konfigur\u00e1lt lerakatok ellen\u0151rz\u00e9s\u00e9hez haszn\u00e1lja a viewSettings m\u0171veletet, majd testConnection m\u0171veletek haszn\u00e1lat\u00e1val tesztelje a kapcsolatot.
+
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT=CWWKF1441E: A lerakatkiszolg\u00e1l\u00f3 nem \u00e9rhet\u0151 el, mert a Java fut\u00e1si k\u00f6rnyezet (JRE) nem tartja megb\u00edzhat\u00f3nak a kiszolg\u00e1l\u00f3tan\u00fas\u00edtv\u00e1nyt. Adja hozz\u00e1 a lerakat kiszolg\u00e1l\u00f3tan\u00fas\u00edtv\u00e1ny\u00e1t megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1nyk\u00e9nt a JRE k\u00f6rnyezethez.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.explanation=Java.security.cert.CertPathBuilderException kiv\u00e9tel t\u00f6rt\u00e9nt a lerakathoz val\u00f3 csatlakoz\u00e1skor, mert a JR nem ismerte fel lerakatkiszolg\u00e1l\u00f3 biztons\u00e1gi tan\u00fas\u00edtv\u00e1ny\u00e1t megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1nyk\u00e9nt. A lerakatkiszolg\u00e1l\u00f3 azonoss\u00e1g\u00e1nak ellen\u0151rz\u00e9s\u00e9hez egy megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1ny sz\u00fcks\u00e9ges.
+ERROR_FAILED_TO_CONNECT_REPO_CAUSED_BY_CERT.useraction=Adja hozz\u00e1 a lerakat kiszolg\u00e1l\u00f3tan\u00fas\u00edtv\u00e1ny\u00e1t megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1nyk\u00e9nt a JRE k\u00f6rnyezethez.
+
+ERROR_REPO_IS_INVALID=CWWKF1442E: A(z) {0} nem \u00e9rv\u00e9nyes k\u00f6nyvt\u00e1r alap\u00fa lerakat. Futtassa \u00fajra a parancsot \u00e9rv\u00e9nyes k\u00f6nyvt\u00e1r alap\u00fa lerakattal.   
+ERROR_REPO_IS_INVALID.explanation=A megadott f\u00e1jl\u00fatvonal nem \u00e9rv\u00e9nyes k\u00f6nyvt\u00e1r alap\u00fa lerakat. \u00c9rv\u00e9nyes k\u00f6nyvt\u00e1r alap\u00fa lerakatot az installUtility let\u00f6lt\u00e9si parancs haszn\u00e1lat\u00e1val vagy a wlp-featureRepo-<version>.zip f\u00e1jlt az IBM Fix Central webhelyr\u0151l let\u00f6ltve hozhat l\u00e9tre.
+ERROR_REPO_IS_INVALID.useraction=Ellen\u0151rizze, hogy a megadott \u00fatvonal \u00e9rv\u00e9nyes k\u00f6nyvt\u00e1r alap\u00fa lerakat el\u00e9r\u00e9si \u00fatja, majd futtassa \u00fajra a parancsot.
+
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL=CWWKF1443E: Az uninstall parancs --force param\u00e9ter\u00e9t egyszerre csak egy \u00f6sszetev\u0151h\u00f6z lehet megadni. Az uninstall parancsot csak egyetlen \u00f6sszetev\u0151re futtassa a --force param\u00e9terrel.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.explanation=A --force param\u00e9tert adt\u00e1k meg t\u00f6bb \u00f6sszetev\u0151 elt\u00e1vol\u00edt\u00e1sakor.
+ERROR_INVALID_NUMBER_OF_FEATURES_FORCE_UNINSTALL.action=Az uninstall parancsot csak egyetlen \u00f6sszetev\u0151re futtassa a --force param\u00e9terrel.
+
+MSG_DEPLOY_SERVER_OK=A kiszolg\u00e1l\u00f3 telep\u00edt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt.
+MSG_DEPLOY_SERVER_PACKAGE_OK=A kiszolg\u00e1l\u00f3csomag telep\u00edt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt.
+MSG_SERVER_NEW_FEATURES_NOT_REQUIRED=A kiszolg\u00e1l\u00f3 nem ig\u00e9nyel tov\u00e1bbi szolg\u00e1ltat\u00e1sokat.  Nem ker\u00fcltek szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9sre.
+MSG_SERVER_NEW_FEATURES_REQUIRED=A kiszolg\u00e1l\u00f3 a k\u00f6vetkez\u0151 kieg\u00e9sz\u00edt\u0151 szolg\u00e1ltat\u00e1sokat ig\u00e9nyli: {0}.  Szolg\u00e1ltat\u00e1sok telep\u00edt\u00e9se a lerakatb\u00f3l...
+MSG_INSTALLED_FEATURES=Legal\u00e1bb egy szolg\u00e1ltat\u00e1s sikeresen telep\u00edtve: {0}.
+MSG_INSTALLED_SAMPLES=Legal\u00e1bb egy minta sikeresen telep\u00edtve: {0}.
+MSG_INSTALLED_OPENSOURCE=Legal\u00e1bb egy ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3 sikeresen telep\u00edtve: {0}.
+MSG_INSTALLED_ADDONS=Legal\u00e1bb egy kieg\u00e9sz\u00edt\u0151 sikeresen telep\u00edtve: {0}.
+
+MSG_DOWNLOADED_FEATURES=Legal\u00e1bb egy szolg\u00e1ltat\u00e1s let\u00f6lt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt: {0}.
+MSG_DOWNLOADED_SAMPLES=Legal\u00e1bb egy minta let\u00f6lt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt: {0}.
+MSG_DOWNLOADED_OPENSOURCE=Legal\u00e1bb egy ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3 let\u00f6lt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt: {0}.
+MSG_DOWNLOADED_ADDONS=Legal\u00e1bb egy kieg\u00e9sz\u00edt\u0151 let\u00f6lt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt: {0}.
+MSG_UNINSTALL_FEATURES=Legal\u00e1bb egy szolg\u00e1ltat\u00e1s sikeresen elt\u00e1vol\u00edtva: {0}.
+
+MSG_DISABLED_REPO=Tiltott lerakatok
+MSG_NO_ASSET_FIND=Nem tal\u00e1lhat\u00f3k eszk\u00f6z\u00f6k.
+MSG_CONNECT_REPO_SUCCESS=Sikeresen csatlakozott a be\u00e1ll\u00edtott lerakathoz.
+MSG_CONNECT_ALL_REPO_SUCCESS=Sikeresen csatlakozott az \u00f6sszes be\u00e1ll\u00edtott lerakathoz.\n
+MSG_CONNECT_REPO_FAILED=Nem siker\u00fclt csatlakozni a be\u00e1ll\u00edtott lerakathoz.
+MSG_CONNECT_NOT_TESTED=A kapcsolat a lerakattal nincs tesztelve.
+MSG_DEFAULT_NOT_ENABLED=Az alap\u00e9rtelmezett eszk\u00f6zlerakat nincs enged\u00e9lyezve a k\u00f6vetkez\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban: {0}
+MSG_DEFAULT_REPO_LABEL=IBM WebSphere Liberty Repository (Alap\u00e9rtelmezett eszk\u00f6zlerakat)
+MSG_SAVE_CONFIG_CONFIRMATION=A konfigur\u00e1ci\u00f3 megv\u00e1ltozott. Menti a(z) {0} m\u00f3dos\u00edt\u00e1sait (I/N)?
+MSG_UPDATE_CONFIGURATION=A konfigur\u00e1ci\u00f3 friss\u00edt\u00e9se siker\u00fclt.
+MSG_VIEW_EXAMPLE=Egy p\u00e9lda repositories.props f\u00e1jl megjelen\u00edt\u00e9s\u00e9hez nyomja meg az Entert. A lehet\u0151s\u00e9g kihagy\u00e1s\u00e1hoz nyomja meg az 'x' billenty\u0171t.
+MSG_SEARCHING=Eszk\u00f6z\u00f6k keres\u00e9se folyamatban. Ez a folyamat ak\u00e1r t\u00f6bb percet is ig\u00e9nybe vehet.
+MSG_ASSETMGR_SETTINGS=installUtility be\u00e1ll\u00edt\u00e1sai
+MSG_CONFIG_REPO_LABEL=Konfigur\u00e1lt lerakatok
+MSG_NO_CONFIG_REPO=Nincs be\u00e1ll\u00edtott lerakat
+MSG_NO_CONFIG_PROXY=Nincs be\u00e1ll\u00edtott proxy
+MSG_DEFAULT_REPO_NAME=IBM WebSphere Liberty lerakat
+MSG_PROXY_LABEL=Proxybe\u00e1ll\u00edt\u00e1sok
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_UNSPECIFIED=<Nincs megadva>
+MSG_INAPPLICABLE=<Nem megfelel\u0151>
+MSG_TESTING=Kapcsolat tesztel\u00e9se a(z) {0} lerakattal...\nEz a folyamat t\u00f6bb percig is eltarthat.\n 
+MSG_TESTING_ALL=Kapcsolat tesztel\u00e9se az \u00f6sszes be\u00e1ll\u00edtott lerakattal...\nEz a folyamat t\u00f6bb percig is eltarthat.\n
+MSG_REQUIRE_DOWNLOAD_DEPENDENCIES=Legal\u00e1bb egy minta ny\u00edlt forr\u00e1s\u00fa el\u0151felt\u00e9tel k\u00f6nyvt\u00e1rakat ig\u00e9nyel. 
+MSG_DOWNLOAD_DEPENDENCIES=A(z) {0} argumentum be\u00e1ll\u00edt\u00e1sra ker\u00fclt a k\u00f6vetkez\u0151re: {1}. Ez jelzi, hogy elfogadta a licenceket, hogy a telep\u00edt\u0151 utas\u00edtva legyen a ny\u00edlt forr\u00e1s\u00fa el\u0151felt\u00e9tel k\u00f6nyvt\u00e1rak let\u00f6lt\u00e9s\u00e9re.
+MSG_NOT_DOWNLOAD_DEPENDENCIES=A(z) {0} argumentum be\u00e1ll\u00edt\u00e1sra ker\u00fclt a k\u00f6vetkez\u0151re: {1}. Ez jelzi, hogy nem szeretn\u00e9, ha a telep\u00edt\u0151 let\u00f6lten\u00e9 a ny\u00edlt forr\u00e1s\u00fa el\u0151felt\u00e9tel k\u00f6nyvt\u00e1rakat.
+MSG_CONNECTING=Kapcsolat l\u00e9tes\u00edt\u00e9se a be\u00e1ll\u00edtott lerakatokkal...\nEz a folyamat t\u00f6bb percig is eltarthat.\n
+MSG_AUTHENTICATION_PROMPT=Hiteles\u00edt\u00e9s sz\u00fcks\u00e9ges. Adja meg a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9si adatait.
+MSG_AUTHENTICATION_RETRY=A hiteles\u00edt\u00e9s meghi\u00fasult, mivel a megadott hiteles\u00edt\u00e9si adatok helytelenek. \nEllen\u0151rizze, hogy helyesek-e a hiteles\u00edt\u00e9si adatok, majd pr\u00f3b\u00e1lkozzon \u00fajra. \nAz \u00fajrapr\u00f3b\u00e1lkoz\u00e1si k\u00eds\u00e9rletek h\u00e1tral\u00e9v\u0151 sz\u00e1ma: {0} \nAdja meg a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9si adatait.
+MSG_AUTHENTICATION_FAIL=A hiteles\u00edt\u00e9s a k\u00f6vetkez\u0151 lerakattal meghi\u00fasult: {0}
+MSG_PROXY_AUTHENTICATION_FAIL=A hiteles\u00edt\u00e9s a k\u00f6vetkez\u0151 proxykiszolg\u00e1l\u00f3val meghi\u00fasult: {0}
+MSG_REACHED_MAX_RETRIES=T\u00fall\u00e9pte az \u00fajrapr\u00f3b\u00e1lkoz\u00e1sok megengedett maxim\u00e1lis sz\u00e1m\u00e1t. Hiteles\u00edt\u00e9s n\u00e9lk\u00fcl folytathatja, ez a lerakat azonban kiz\u00e1r\u00e1sra ker\u00fcl a m\u0171veletb\u0151l. A(z) {0} m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra a rendszer m\u00e1s \u00e9rv\u00e9nyes lerakatokkal tesz majd k\u00eds\u00e9rletet. 
+MSG_REACHED_MAX_PROXY_RETRIES=T\u00fall\u00e9pte az \u00fajrapr\u00f3b\u00e1lkoz\u00e1sok megengedett maxim\u00e1lis sz\u00e1m\u00e1t. Hiteles\u00edt\u00e9s n\u00e9lk\u00fcl folytathatja, a rendszer a k\u00f6vetkez\u0151 konfigur\u00e1ci\u00f3s f\u00e1jlban meghat\u00e1rozott egy\u00e9b helyi lerakatokkal tesz majd k\u00eds\u00e9rletet a(z) {0} m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra: {1} 
+MSG_WARNING_SKIPPED_REPOS=Figyelmeztet\u00e9s: A k\u00f6vetkez\u0151 be\u00e1ll\u00edtott lerakatok kihagy\u00e1sra ker\u00fcltek a m\u0171veletb\u0151l, mivel nem l\u00e9tes\u00edthet\u0151 kapcsolat vagy a hiteles\u00edt\u00e9si adatok nem \u00e9rv\u00e9nyes\u00edthet\u0151k: {0}
+MSG_VERIFY_REPO_CONNECTION=Ha ezeket a lerakatokat k\u00edv\u00e1nja haszn\u00e1lni, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lerakatok megfelel\u0151en vannak be\u00e1ll\u00edtva a konfigur\u00e1ci\u00f3ban. A testConnection m\u0171velet seg\u00edts\u00e9g\u00e9vel ellen\u0151rizze a be\u00e1ll\u00edtott lerakatok kapcsolat\u00e1t. A(z) {0} m\u0171velet folytatni fogja a konfigur\u00e1ci\u00f3 egy\u00e9b \u00e9rv\u00e9nyes lerakatainak haszn\u00e1lat\u00e1t.
+MSG_PASSWORD_NOT_ENCODED=A lerakat jelszava nincs k\u00f3dolva. A jelszavak k\u00f3dol\u00e1s\u00e1hoz futtassa a securityUtility encode parancsot az --encoding param\u00e9ter be\u00e1ll\u00edt\u00e1s\u00e1val egy t\u00e1mogatott k\u00f3dol\u00e1si t\u00edpusra, ami xor (alap\u00e9rtelmez\u00e9s), aes, \u00e9s hash lehet.
+MSG_PASSWORD_NOT_ENCODED_PROXY=A proxy jelszava nincs k\u00f3dolva. A jelsz\u00f3 k\u00f3dol\u00e1s\u00e1hoz futtassa a securityUtility encode parancsot az --encoding param\u00e9ter be\u00e1ll\u00edt\u00e1s\u00e1val egy t\u00e1mogatott k\u00f3dol\u00e1si t\u00edpusra, ami xor (alap\u00e9rtelmez\u00e9s), aes, \u00e9s hash lehet.
+MSG_DIRECTORY_REPO_CONFIGURED=\nA(z) {0} k\u00f6nyvt\u00e1r m\u00e1r be\u00e1ll\u00edt\u00e1sra ker\u00fclt haszn\u00e1lhat\u00f3 lerakatk\u00e9nt a repositories.properties f\u00e1jlban.
+MSG_DIRECTORY_REPO_NOT_CONFIGURED=\nHozz\u00e1adhatja a k\u00f6vetkez\u0151 URL c\u00edmet a repositories.properties f\u00e1jlhoz, ha azt lerakatk\u00e9nt k\u00edv\u00e1nja haszn\u00e1lni az installUtility parancsban: {0}
+MSG_ALL_DOWNLOADING_FILES_EXISTS=\nMinden eszk\u00f6z l\u00e9tezik m\u00e1r a k\u00f6vetkez\u0151 lerakatban: {0}
+MSG_ADDITIONAL_FEATURES_FOR_SERVER_PACKAGE=A kiszolg\u00e1l\u00f3csomag telep\u00edt\u00e9s\u00e9hez tov\u00e1bbi Liberty \u00f6sszetev\u0151k telep\u00edt\u00e9s\u00e9re van sz\u00fcks\u00e9g.
+MSG_ADDITIONAL_FEATURES_FOR_SERVER=Tov\u00e1bbi Liberty \u00f6sszetev\u0151k telep\u00edt\u00e9s\u00e9re van sz\u00fcks\u00e9g a kiszolg\u00e1l\u00f3n.
+MSG_INSTALL_ADDITIONAL_FEATURES_FOR_SAMPLES=A k\u00f6vetkez\u0151 mint\u00e1k vagy ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3k telep\u00edt\u00e9s\u00e9hez tov\u00e1bbi Liberty \u00f6sszetev\u0151k telep\u00edt\u00e9se sz\u00fcks\u00e9ges: {0}
+MSG_INSTALL_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=A tov\u00e1bbi \u00f6sszetev\u0151k telep\u00edt\u00e9s\u00e9hez olvassa el \u00e9s fogadja el az \u00f6sszetev\u0151 licencszerz\u0151d\u00e9s\u00e9t:
+MSG_DOWNLOAD_ADDITIONAL_FEATURES_FOR_SAMPLES=A k\u00f6vetkez\u0151 mint\u00e1k vagy ny\u00edlt forr\u00e1s\u00fa integr\u00e1ci\u00f3k let\u00f6lt\u00e9s\u00e9hez tov\u00e1bbi Liberty \u00f6sszetev\u0151k let\u00f6lt\u00e9se sz\u00fcks\u00e9ges: {0}
+MSG_DOWNLOAD_ACCEPT_LICENSE_FOR_ADDITIONAL_FEATURES=A tov\u00e1bbi \u00f6sszetev\u0151k let\u00f6lt\u00e9s\u00e9hez olvassa el \u00e9s fogadja el az \u00f6sszetev\u0151 licencszerz\u0151d\u00e9s\u00e9t:
+MSG_VALIDATION_SUCCESSFUL=A tulajdons\u00e1gf\u00e1jl sikeresen \u00e1tesett az \u00e9rv\u00e9nyes\u00edt\u00e9sen.
+MSG_VALIDATION_FAILED_NO_MESSAGES=A tulajdons\u00e1gf\u00e1jl \u00e9rv\u00e9nyes\u00edt\u00e9se sikertelen. A r\u00e9szletes \u00e9rv\u00e9nyes\u00edt\u00e9si \u00fczenetek megjelen\u00edt\u00e9s\u00e9hez haszn\u00e1lja a --viewValidationMessages param\u00e9tert.
+MSG_VALIDATION_NUM_OF_ERRORS=Hib\u00e1k sz\u00e1ma: {0}
+MSG_VALIDATION_MESSAGES=Tulajdons\u00e1gf\u00e1jl-\u00e9rv\u00e9nyes\u00edt\u00e9s
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=N\u00e9v: {0}
+FIELD_REPO_LOCATION=Hely: {0}
+FIELD_REPO_STATUS=\u00c1llapot: {0}
+FIELD_REPO_REASON=Ok: {0}
+FIELD_REPO_WARNING=Figyelmeztet\u00e9s: {0}
+FIELD_NAME=N\u00e9v:
+FIELD_PORT=Port:
+FIELD_LOCATION=Helysz\u00edn:
+FIELD_PROXY_SERVER=Proxykiszolg\u00e1l\u00f3:
+FIELD_USER=Felhaszn\u00e1l\u00f3n\u00e9v:
+FIELD_PASS=Jelsz\u00f3:
+FIELD_PROPS_FILE=Tulajdons\u00e1gf\u00e1jl: {0}
+FIELD_REPO=Lerakatkiszolg\u00e1l\u00f3: {0} ({1})
+FIELD_PROXY=Proxykiszolg\u00e1l\u00f3: {0}
+FIELD_VALIDATION_RESULTS=\u00c9rv\u00e9nyes\u00edt\u00e9si eredm\u00e9nyek: {0}
+FIELD_VALIDATION_LINE=Sor: {0}
+MSG_DEFAULT_REPO_USEAGE_LABEL=Alap\u00e9rtelmezett lerakat haszn\u00e1lata:
+MSG_DEFAULT_REPO_NAME_LABEL=Alap\u00e9rtelmezett eszk\u00f6zlerakat:
+
+
+MSG_NO_NAME=<N\u00e9v>
+
+TOOL_PROMPT_USERNAME=Adja meg a felhaszn\u00e1l\u00f3nevet:
+TOOL_PROMPT_PASSWORD=Adja meg a jelsz\u00f3t:
+TOOL_PROMPT_CONTINUE_OR_QUIT=A folytat\u00e1shoz nyomja meg az Entert, az "x" megnyom\u00e1s\u00e1val pedig kil\u00e9phet a(z) {0} m\u0171veletb\u0151l.
+
+LOG_PROMPT_PROXY_AUTHENTICATION=A proxykiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9sre ker\u00fcl a megadott hiteles\u00edt\u00e9si adatokkal.
+LOG_PROMPT_PROXY_SUCCESS=A proxykiszolg\u00e1l\u00f3 hiteles\u00edt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt: {0}\n
+LOG_PROMPT_REPO_AUTHENTICATION=A(z) {0} lerakat hiteles\u00edt\u00e9sre ker\u00fcl a megadott hiteles\u00edt\u00e9si adatokkal.
+LOG_PROMPT_REPO_SUCCESS=A(z) {0} lerakat hiteles\u00edt\u00e9se sikeresen v\u00e9grehajt\u00e1sra ker\u00fclt.\n
+LOG_REPO_CONNECTION_EXCEPTION=A(z) {0} lerakathoz val\u00f3 csatlakoz\u00e1s a k\u00f6vetkez\u0151 kiv\u00e9tellel meghi\u00fasult: {1}
+LOG_HTTP_SERVER_RESPONSE_CODE=A kiszolg\u00e1l\u00f3 a k\u00f6vetkez\u0151 URL c\u00edm eset\u00e9ben {0} \u00e9rt\u00e9k\u0171 HTTP v\u00e1laszk\u00f3dot adott vissza: {1}
+LOG_PASSWORD_NOT_ENCODED=A k\u00f6vetkez\u0151 lerakatok jelszavai nincsenek k\u00f3dolva: {0}. A jelszavak k\u00f3dol\u00e1s\u00e1hoz futtassa a securityUtility encode parancsot az --encoding param\u00e9ter be\u00e1ll\u00edt\u00e1s\u00e1val egy t\u00e1mogatott k\u00f3dol\u00e1si t\u00edpusra, ami xor (alap\u00e9rtelmez\u00e9s), aes, \u00e9s hash lehet. P\u00e9ld\u00e1ul: securityUtility encode --encoding=aes repoPassword
+LOG_VALIDATION_FAILED=A tulajdons\u00e1gf\u00e1jl \u00e9rv\u00e9nyes\u00edt\u00e9se sikertelen. A r\u00e9szletes \u00e9rv\u00e9nyes\u00edt\u00e9si \u00fczenetek megjelen\u00edt\u00e9s\u00e9hez futtassa a viewSettings parancsot a --viewValidationMessages param\u00e9terrel.

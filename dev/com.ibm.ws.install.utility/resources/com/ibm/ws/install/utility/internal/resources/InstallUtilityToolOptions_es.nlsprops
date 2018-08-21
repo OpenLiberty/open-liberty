@@ -1,0 +1,164 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2014, 2015.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.utility/resources/com/ibm/ws/install/utility/internal/resources/InstallUtilityToolOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Uso: {0}
+
+global.description=Descripci\u00f3n:
+global.actions=Acciones:
+global.options=Opciones:
+global.options.lower=opciones
+global.usage=Uso:
+global.options.statement=\tUtilice help [nombreAcci\u00f3n] para obtener informaci\u00f3n de opciones detalladas de cada acci\u00f3n.
+task.unknown=Acci\u00f3n desconocida: {0}
+
+#--------- ACTIONS ----------------------------------------------------#
+# List of descriptive text for actions. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+help.desc=\tImprimir informaci\u00f3n de ayuda para la acci\u00f3n especificada.
+
+#--------- DOWNLOAD ACTION --------------------------------------------#
+download.desc=\tDescargar activos de los repositorios.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.name...=\ \ \ \ nombre ...
+download.option-desc.name...=\tEspecifique uno o m\u00e1s nombres de activos separados por un espacio. Para encontrar los activos \n\
+\ttque ha cargado, ejecute el mandato installUtility find. Para las \n\
+\tfunciones y los complementos, puede especificar el nombre abreviado (featureName-1.0)\n\
+\to el nombre simb\u00f3lico (com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--overwrite=\ \ \ \ --overwrite
+download.option-desc.--overwrite=\tUtilice esta opci\u00f3n para sobrescribir los archivos existentes cuando descargue \n\
+\ten el directorio local. Si esta opci\u00f3n no se especifica, el comportamiento \n\
+\tpredeterminado es omitir todos los archivos existentes.       
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--location=\ \ \ \ --location=rutaDirectorio
+download.option-desc.--location=\tUtilice esta opci\u00f3n para especificar el directorio de destino para los \n\
+\tactivos descargados.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+download.option-key.--verbose=\ \ \ \ --verbose
+download.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tBuscar activos en los repositorios.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tUtilizar la serie de b\u00fasqueda para buscar activos en los repositorios.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--showDescriptions=\ \ \ \ --showDescriptions
+find.option-desc.--showDescriptions=\tMostrar la descripci\u00f3n para cada una de las caracter\u00edsticas que la b\u00fasqueda haya encontrado.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--type=\ \ \ \ --type=[feature|sample|opensource|addon|all*]
+find.option-desc.--type=\tBuscar el tipo especificado de activos.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--name=\ \ \ \ --name
+find.option-desc.--name=\tEspecifica el nombre del activo que desea buscar en \n\
+\tsearchString.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
+find.option-desc.--from=\tUtilice esta opci\u00f3n para especificar la v\u00eda de acceso de archivo un solo repositorio \n\
+\tbasado en directorio como el \u00fanico origen para que installUtility busque activos. Esta\n\
+\tv\u00eda de acceso de archivo puede ser un directorio o un archivo de archivado.              
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+find.option-key.--verbose=\ \ \ \ --verbose
+find.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+
+#--------- INSTALL ACTION ---------------------------------------------#
+install.desc=\tInstale activos o un archivo ESA (Enterprise Subsystem Archive)\n\
+\ten el tiempo de ejecuci\u00f3n o despliegue un paquete de servidor e \n\
+\tinstale las caracter\u00edsticas necesarias del paquete.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.name...=\ \ \ \ nombre ...
+install.option-desc.name...=\tPuede especificar los nombres siguientes:                            \n\
+\t - Uno o m\u00e1s nombres de activos separados por un espacio. Para encontrar activos que \n\
+\t   pueda instalar, ejecute el mandato installUtility find. Para las funciones\n\
+\t   y los complementos, puede especificar el nombre abreviado (featureName-1.0) o   \n\
+\t   el nombre simb\u00f3lico (com.ibm.websphere.featureName-1.0).            \n\
+\t - Un nombre de servidor                                             \n\
+\t - Un archivo server.xml local                                       \n\
+\t - Un archivo ESA local                                              \n\
+\t - Un archivo archivado de paquete del servidor local creado por la  \n\
+\t   acci\u00f3n de paquete de servidor con la opci\u00f3n --include=usr
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--to=\ \ \ \ --to=[extensi\u00f3n|usr]
+install.option-desc.--to=\tEspecifique d\u00f3nde debe instalarse la caracter\u00edstica. La caracter\u00edstica puede instalarse en\n\
+\tuna ubicaci\u00f3n de ampliaci\u00f3n de producto configurada, o como una caracter\u00edstica de usuario. Si\n\
+\testa opci\u00f3n no se especifica, la caracter\u00edstica se instalar\u00e1 como una\n\
+\tcaracter\u00edstica de usuario.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--whenContentExists=\ \ \ \ --whenContentExists=[fail|ignore|replace]
+install.option-desc.--whenContentExists=\tSi ya existe un archivo que es parte del ESA en el sistema, \n\
+\tdebe especificar las acciones que se deben realizar. Las opciones v\u00e1lidas son: fail - terminar \n \tde forma an\u00f3mala la instalaci\u00f3n, ignore - continuar con la instalaci\u00f3n e ignorar que el \n\
+\tarchivo existe; replace - sobrescribir el archivo existente. No utilice \n\
+\tla opci\u00f3n replace para reinstalar las caracter\u00edsticas.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--downloadDependencies=\ \ \ \ --downloadDependencies=[true|false]
+install.option-desc.--downloadDependencies=\tPara descargar autom\u00e1ticamente las dependencias externas para ejemplos o   \n\
+\tintegraciones de c\u00f3digo abierto, establecer en true. Si no se desea descargar\n\
+\tdependencias externas, establecer en false. Si las dependencias externas son \n\
+\tnecesarias y no se especifica esta opci\u00f3n, se le solicitar\u00e1 que \n\
+\tlas descargue.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--from=\ \ \ \ --from=V\u00edaccesoArchivo
+install.option-desc.--from=\tUtilice esta opci\u00f3n para especificar la v\u00eda de acceso de archivo un solo repositorio \n\
+\tbasado en directorio como el \u00fanico origen para que installUtility instale activos.  \n\
+\tEsta v\u00eda de acceso de archivo puede ser un directorio o un archivo de archivado.         
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+install.option-key.--verbose=\ \ \ \ --verbose
+install.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+
+#--------- UNINSTALL ACTION -------------------------------------------#
+uninstall.desc=\tDesinstalar una caracter\u00edstica del tiempo de ejecuci\u00f3n.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.name...=\ \ \ \ nombre
+uninstall.option-desc.name...=\tEspecifique una o m\u00e1s caracter\u00edsticas separadas por un espacio. Puede especificar \n\
+\tel nombre abreviado (featureName-1.0) o el nombre simb\u00f3lico                \n\
+\t(com.ibm.websphere.featureName-1.0).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--noPrompts=\ \ \ \ --noPrompts
+uninstall.option-desc.--noPrompts=\tOmitir la confirmaci\u00f3n del usuario y desinstalar la caracter\u00edstica.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--force=\ \ \ \ --force
+uninstall.option-desc.--force=\t Desinstale la caracter\u00edstica independientemente de si otras caracter\u00edsticas\n\
+\tinstalas tienen dependencias sobre la misma. La desinstalaci\u00f3n de una\n\
+\tcaracter\u00edstica que es necesaria para otras caracter\u00edsticas instaladas\n\
+\tpodr\u00eda hacer que dichas caracter\u00edsticas dejen de funcionar e impedir\n\
+\tque los servidores se ejecuten correctamente.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+uninstall.option-key.--verbose=\ \ \ \ --verbose
+uninstall.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tVer los valores de proxy y repositorios.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tUtilice esta opci\u00f3n para visualizar los mensajes detallados de la           \n\
+\tvalidaci\u00f3n del archivo repositories.properties configurado.           \n\
+\tCada mensaje contiene un c\u00f3digo de error, el n\u00famero de l\u00ednea donde se ha encontrado \n\
+\tel error y la causa del error.							   \n
+#--------- TESTCONNECTION ACTION --------------------------------------#
+testConnection.desc=\tProbar la conexi\u00f3n al repositorio.  
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.[repoName]=\ \ \ \ NombreRepos
+testConnection.option-desc.[repoName]=\tEspecifique el nombre de repositorio que debe probarse. Para hacer referencia a IBM\n\
+\tWebSphere Liberty Repository, utilice el nombre predeterminado.                  \n\
+\tSi no se especifica un nombre de repositorio, se probar\u00e1n todos los \n\
+\trepositorios configurados.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+testConnection.option-key.--verbose=\ \ \ \ --verbose
+testConnection.option-desc.--verbose=\tUtilice esta opci\u00f3n para mostrar cualquier informaci\u00f3n adicional\n\
+\tdisponible mientras se ejecuta la acci\u00f3n.
+
