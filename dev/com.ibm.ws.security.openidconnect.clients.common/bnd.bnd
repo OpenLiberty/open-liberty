@@ -70,7 +70,7 @@ Private-Package: \
     com.ibm.ws.org.joda.time.1.6.2,\
     com.ibm.ws.security.authentication.filter;version=latest,\
     com.ibm.ws.security.common;version=latest,\
-    com.ibm.ws.org.jose4j.0.5.1;version=latest,\
+    com.ibm.ws.org.jose4j;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.security.common.jsonwebkey;version=latest,\
     com.ibm.ws.org.apache.commons.codec.1.4;version=latest
@@ -85,7 +85,7 @@ Private-Package: \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.org.jose4j.0.5.1;version=latest, \
+    com.ibm.ws.org.jose4j;version=latest, \
     fattest.simplicity;version=latest, \
     com.ibm.ws.security.registry;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \

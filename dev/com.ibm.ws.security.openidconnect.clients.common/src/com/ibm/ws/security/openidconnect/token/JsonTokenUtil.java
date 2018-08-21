@@ -27,7 +27,6 @@ import org.apache.commons.codec.binary.StringUtils;
 import org.joda.time.Duration;
 import org.jose4j.jwa.AlgorithmConstraints;
 import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
-import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
@@ -345,9 +344,9 @@ public class JsonTokenUtil {
      * @param key
      * @param secondsClockSkew
      * @param forSignatureOnly
-     * @throws InvalidJwtException
+     * @throws Exception
      */
-    public static void validateTokenString(String tokenString, String alg, @Sensitive Key key, long secondsClockSkew, boolean forSignatureOnly) throws InvalidJwtException {
+    public static void validateTokenString(String tokenString, String alg, @Sensitive Key key, long secondsClockSkew, boolean forSignatureOnly) throws Exception {
 
         // alg is HS256 or RS256 which is consistent with AlgorithmIdentifiers
         AlgorithmConstraints algorithmConstraints = new AlgorithmConstraints(ConstraintType.WHITELIST,

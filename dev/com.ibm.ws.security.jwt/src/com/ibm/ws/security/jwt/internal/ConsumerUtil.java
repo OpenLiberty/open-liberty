@@ -236,11 +236,11 @@ public class ConsumerUtil {
         return signingKey;
     }
 
-    JsonWebStructure getJwtHeader(JwtContext jwtContext) throws InvalidJwtException {
+    JsonWebStructure getJwtHeader(JwtContext jwtContext) throws Exception {
         List<JsonWebStructure> jsonStructures = jwtContext.getJoseObjects();
         if (jsonStructures == null || jsonStructures.isEmpty()) {
             // TODO - NLS message
-            throw new InvalidJwtException("Invalid JsonWebStructure");
+            throw new Exception("Invalid JsonWebStructure");
         }
         JsonWebStructure jwtHeader = jsonStructures.get(0);
         debugJwtHeader(jwtHeader);
@@ -587,14 +587,14 @@ public class ConsumerUtil {
         }
     }
 
-    JwtContext processJwtStringWithConsumer(JwtConsumer jwtConsumer, String jwtString) throws InvalidTokenException, InvalidJwtException {
+    JwtContext processJwtStringWithConsumer(JwtConsumer jwtConsumer, String jwtString) throws InvalidTokenException, Exception {
         JwtContext validatedJwtContext = null;
         try {
             validatedJwtContext = jwtConsumer.process(jwtString);
         } catch (InvalidJwtSignatureException e) {
             String msg = Tr.formatMessage(tc, "JWT_INVALID_SIGNATURE", new Object[] { e.getLocalizedMessage() });
             throw new InvalidTokenException(msg, e);
-        } catch (InvalidJwtException e) {
+        } catch (Exception e) {
             Throwable cause = getRootCause(e);
             if (cause != null && cause instanceof InvalidKeyException) {
                 throw e;
@@ -617,7 +617,7 @@ public class ConsumerUtil {
         JsonWebStructure jwtHeader = null;
         try {
             jwtHeader = getJwtHeader(jwtContext);
-        } catch (InvalidJwtException e) {
+        } catch (Exception e) {
             // TODO - NLS message?
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to obtain JWT header");
