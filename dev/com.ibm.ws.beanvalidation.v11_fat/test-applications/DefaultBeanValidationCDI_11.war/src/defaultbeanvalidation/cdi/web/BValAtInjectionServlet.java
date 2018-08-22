@@ -17,9 +17,9 @@ import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import javax.xml.bind.ValidationException;
 
 import componenttest.app.FATServlet;
 import defaultbeanvalidation.cdi.beans.TestBean;
