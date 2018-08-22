@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi;
+package com.ibm.ws.microprofile.faulttolerance11.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -37,13 +37,6 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.FTGlobalConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
@@ -51,6 +44,13 @@ import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.AsynchronousConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.BulkheadConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.CircuitBreakerConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.FTGlobalConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.FallbackConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.RetryConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.TimeoutConfig;
 
 @FaultTolerance
 @Interceptor

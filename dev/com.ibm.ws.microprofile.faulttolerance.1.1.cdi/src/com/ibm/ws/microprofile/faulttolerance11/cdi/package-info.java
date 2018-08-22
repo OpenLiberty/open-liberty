@@ -13,6 +13,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "FAULTTOLERANCE", messageBundle = "com.ibm.ws.microprofile.faulttolerance.cdi.resources.FaultToleranceCDI")
-package com.ibm.ws.microprofile.faulttolerance.cdi;
+package com.ibm.ws.microprofile.faulttolerance11.cdi;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

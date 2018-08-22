@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.mpFaultTolerance1.0-cdi1.2
+symbolicName=com.ibm.websphere.appserver.mpFaultTolerance1.1-cdi1.2
 visibility=private
 singleton=true
 IBM-Provision-Capability: \

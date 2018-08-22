@@ -8,19 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi;
-
-import java.lang.annotation.Annotation;
-
 /**
- *
+ * @version 1.0
  */
-public class FaultToleranceAnnotation implements Annotation {
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "FAULTTOLERANCE", messageBundle = "com.ibm.ws.microprofile.faulttolerance.cdi.resources.FaultToleranceCDI")
+package com.ibm.ws.microprofile.faulttolerance11.cdi.config;
 
-    /** {@inheritDoc} */
-    @Override
-    public Class<? extends Annotation> annotationType() {
-        return FaultTolerance.class;
-    }
-
-}
+import com.ibm.websphere.ras.annotation.TraceOptions;

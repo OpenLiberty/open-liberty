@@ -8,11 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0
- */
-@org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "FAULTTOLERANCE", messageBundle = "com.ibm.ws.microprofile.faulttolerance.cdi.resources.FaultToleranceCDI")
-package com.ibm.ws.microprofile.faulttolerance.cdi.config;
+package com.ibm.ws.microprofile.faulttolerance11.cdi;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.interceptor.InterceptorBinding;
+
+@Inherited
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ METHOD, TYPE })
+public @interface FaultTolerance {
+
+}
