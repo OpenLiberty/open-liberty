@@ -24,6 +24,7 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * Collection of tests to be run when both cdi-2.0 and beanValidation-2.0 are enabled
@@ -39,6 +40,7 @@ public class BeanValidation20CDITest extends BeanValidationCDI_Common {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
         bvalVersion = 20;
         createAndExportCommonWARs(server);
         createAndExportCDIWARs(server);
