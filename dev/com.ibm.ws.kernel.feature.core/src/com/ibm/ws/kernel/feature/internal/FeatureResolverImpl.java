@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.framework.Version;
 
@@ -62,6 +63,16 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
  * one run to the next.
  */
 public class FeatureResolverImpl implements FeatureResolver {
+
+    /**
+     * An exception that happens when copying a Chains object
+     * to indicate that the chains within the Chains object
+     * have no more valid options to try.
+     */
+    static class DeadEndChain extends Exception {
+        private static final long serialVersionUID = 1L;
+    }
+
     private static final Object tc;
 
     static {
@@ -143,11 +154,15 @@ public class FeatureResolverImpl implements FeatureResolver {
                 selectionContext.primeSelected(autoFeaturesToInstall);
                 // and use the resolved as the preResolved
                 preResolved = resolved;
+                // A new resolution process will happen now along with the auto-features that match;
+                // need to save off the current conflicts to be the pre resolved conflicts
+                // otherwise they would get lost
+                selectionContext.saveCurrentPreResolvedConflicts();
             }
             resolved = doResolveFeatures(rootFeatures, preResolved, selectionContext);
         } while (!!!(autoFeaturesToInstall = processAutoFeatures(kernelFeatures, resolved, seenAutoFeatures, selectionContext)).isEmpty());
-        // Finally set the resolved features in the final result and return it.
-        return selectionContext.getResult().setResolvedFeatures(resolved);
+        // Finally return the selected result
+        return selectionContext.getResult();
     }
 
     private List<String> checkRootsAreAccessibleAndSetFullName(List<String> rootFeatures, SelectionContext selectionContext, Set<String> preResolved) {
@@ -218,14 +233,10 @@ public class FeatureResolverImpl implements FeatureResolver {
      * 5) Otherwise use the first permutation and report the original conflicts
      */
     private Set<String> doResolveFeatures(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
-        // first pass; process to roots until we have selected all the candidates for multiple versions
-        Set<String> result;
-        int numBlacklisted;
-        do {
-            selectionContext.processPostponed();
-            numBlacklisted = selectionContext.getBlackListCount();
-            result = processRoots(rootFeatures, preResolved, selectionContext);
-        } while (selectionContext.hasPostponed() || numBlacklisted != selectionContext.getBlackListCount());
+        // first pass; process the roots until we have selected all the candidates for multiple versions;
+        // need to reset the initial black list count so we can recalculate it during the first pass
+        selectionContext.resetInitialBlackListCount();
+        Set<String> result = processCurrentPermutation(rootFeatures, preResolved, selectionContext);
 
         // if the first pass resulted in no conflicts return the results (optimistic)
         if (selectionContext.getResult().getConflicts().isEmpty()) {
@@ -233,29 +244,38 @@ public class FeatureResolverImpl implements FeatureResolver {
             return result;
         }
 
-        // oh oh, we have conflicts; save off the original results incase we need to restore them and return
-        Set<String> origResult = result;
-        // As long as there are conflicts and there is a different permutation to try do another pass
-        while (!selectionContext.getResult().getConflicts().isEmpty() && selectionContext.popPermutation()) {
-            // Note this loop does NOT continue the permutation in the face of conflicts; it just moves onto the next permutation
-            do {
-                selectionContext.processPostponed();
-                if (selectionContext.getBlackListCount() == 0) {
-                    // only continue if there are no black listed features (conflicts)
-                    result = processRoots(rootFeatures, preResolved, selectionContext);
-                }
-            } while (selectionContext.hasPostponed() && selectionContext.getBlackListCount() == 0);
+        // oh oh, we have conflicts;
+        // NOTE, if the current solution has more conflicts than the initial count (black list)
+        // then that means one of the toleration (postponed) choices we made introduced an
+        // addition conflict.  That implies that a better solution may be available.
+        // As long as there are more conflicts than the number of initial root conflicts
+        // and there is a different permutation to try do another pass
+        while (selectionContext.currentHasMoreThanInitialBlackListCount() && selectionContext.popPermutation()) {
+            result = processCurrentPermutation(rootFeatures, preResolved, selectionContext);
         }
 
-        if (selectionContext.getResult().getConflicts().isEmpty()) {
-            // great found a solution with no conflicts return the result; select it and discard other permutations
-            selectionContext.selectCurrentPermutation();
-            return result;
-        } else {
-            // oh oh, no solution found.  Rewind to the first permutation and return the original results
-            selectionContext.restoreFirstPermutation();
-            return origResult;
-        }
+        // Return the best solution found
+        selectionContext.restoreBestSolution();
+        return selectionContext.getResult().getResolvedFeatures();
+    }
+
+    Set<String> processCurrentPermutation(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
+        Set<String> result;
+        // The number of black listed is checked each time we process a postponed decision.
+        // A check is done each time we process the roots after doing a postponed decision
+        // to see if more features got black listed.  If more got black listed then we
+        // re-process the roots again.
+        // This is necessary to ensure the final result does not include one of the black list features
+        int numBlacklisted;
+        do {
+            selectionContext.processPostponed();
+            numBlacklisted = selectionContext.getBlackListCount();
+            result = processRoots(rootFeatures, preResolved, selectionContext);
+        } while (selectionContext.hasPostponed() || numBlacklisted != selectionContext.getBlackListCount());
+        // Save the result in the current permutation
+        selectionContext._current._result.setResolvedFeatures(result);
+        selectionContext.checkForBestSolution();
+        return result;
     }
 
     private Set<String> processRoots(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
@@ -279,6 +299,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                 processSelected(rootFeatureDef, null, chain, result, selectionContext);
             }
         }
+        // Note that this only saves the black list count on the first call during doResolveFeatures;
+        // Any conflicts here will be due to hard failures with no alternative toleration choices.
+        // In other words, it is the best conflict count we will ever achieve.
+        selectionContext.setInitialRootBlackListCount();
         return result;
     }
 
@@ -552,18 +576,26 @@ public class FeatureResolverImpl implements FeatureResolver {
             final Set<String> _blacklistFeatures = new HashSet<String>();
             final ResultImpl _result = new ResultImpl();
 
-            Permutation copy() {
+            Permutation copy(Map<String, Collection<Chain>> preResolveConflicts) throws DeadEndChain {
                 Permutation copy = new Permutation();
                 copy._selected.putAll(_selected);
-                copy._blacklistFeatures.addAll(_blacklistFeatures);
+
+                // The conflicts should get populated from the preResolveConflicts (if any);
+                // other conflicts will get recalculated
+                copy._result._conflicts.putAll(preResolveConflicts);
+
                 // Only copy the missing and nonPublicRoots from the result.
-                // The conflicts and wrongProcessTypes will get recalculated; the resolved are set at the very end
+                // The wrongProcessTypes will get recalculated;
+                // The resolved are set at the end of processing the permutation;
                 copy._result._missing.addAll(_result.getMissing());
                 copy._result._nonPublicRoots.addAll(_result.getNonPublicRoots());
+
                 // now we need to copy each postponed Chains
                 for (Map.Entry<String, Chains> chainsEntry : _postponed.entrySet()) {
                     copy._postponed.put(chainsEntry.getKey(), chainsEntry.getValue().copy());
                 }
+
+                // NOTE the black list features are NOT copied; they get recalculated
                 return copy;
             }
         }
@@ -572,6 +604,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final Deque<Permutation> _permutations = new ArrayDeque<Permutation>(Arrays.asList(new Permutation()));
         private final boolean _allowMultipleVersions;
         private final EnumSet<ProcessType> _supportedProcessTypes;
+        private final AtomicInteger _initialBlackListCount = new AtomicInteger(-1);
+        private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
 
         SelectionContext(FeatureResolver.Repository repository, boolean allowMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
@@ -580,14 +614,43 @@ public class FeatureResolverImpl implements FeatureResolver {
             this._supportedProcessTypes = supportedProcessTypes;
         }
 
-        public void restoreFirstPermutation() {
+        void saveCurrentPreResolvedConflicts() {
+            _preResolveConflicts.clear();
+            _preResolveConflicts.putAll(_current._result.getConflicts());
+        }
+
+        void resetInitialBlackListCount() {
+            _initialBlackListCount.set(-1);
+        }
+
+        boolean currentHasMoreThanInitialBlackListCount() {
+            return getBlackListCount() > _initialBlackListCount.get();
+        }
+
+        void setInitialRootBlackListCount() {
+            // only set this once
+            _initialBlackListCount.compareAndSet(-1, getBlackListCount());
+        }
+
+        void restoreBestSolution() {
+            // NOTE that the best solution is kept as the last permutation
             while (popPermutation());
             _current = _permutations.getFirst();
         }
 
-        public void selectCurrentPermutation() {
+        void selectCurrentPermutation() {
             _permutations.clear();
             _permutations.addFirst(_current);
+        }
+
+        void checkForBestSolution() {
+            // check if the current best (store as the last permutation) has more conflicts
+            // than the current solution.
+            if (_permutations.getLast()._result.getConflicts().size() > _current._result.getConflicts().size()) {
+                // Replace the current best (stored as the last permutation)
+                _permutations.pollLast();
+                _permutations.addLast(_current);
+            }
         }
 
         boolean popPermutation() {
@@ -600,11 +663,16 @@ public class FeatureResolverImpl implements FeatureResolver {
             return false;
         }
 
+        @FFDCIgnore(DeadEndChain.class)
         void pushPermutation() {
             // We only want to backtrack this decision if the current
-            // permutation does not contain conflicts
-            if (_current._result.getConflicts().isEmpty()) {
-                _permutations.addFirst(_current.copy());
+            // permutation does not add more black list conflicts to the initial root conflicts
+            if (_initialBlackListCount.get() == getBlackListCount()) {
+                try {
+                    _permutations.addFirst(_current.copy(_preResolveConflicts));
+                } catch (DeadEndChain e) {
+                    // expected if we are at the end of our options on a chain
+                }
             }
         }
 
@@ -782,7 +850,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     static class Chains implements Comparator<Chain> {
-        private final Set<String> _firstAttempt = new HashSet<String>();
+        private final Set<String> _attempted = new HashSet<String>();
         private final List<Chain> _chains = new ArrayList<Chain>();
 
         void add(Chain chain) {
@@ -793,11 +861,40 @@ public class FeatureResolverImpl implements FeatureResolver {
             _chains.add(insertion, chain);
         }
 
-        public Chains copy() {
+        public Chains copy() throws DeadEndChain {
+            // make sure the chains have more options left to try
+            if (noMoreCandidatesToTry()) {
+                throw new DeadEndChain();
+            }
             Chains copy = new Chains();
             copy._chains.addAll(_chains);
-            copy._firstAttempt.addAll(_firstAttempt);
+            copy._attempted.addAll(_attempted);
+
             return copy;
+        }
+
+        /**
+         * Returns true if one or more chains have no more options
+         * to try (a DeadEndChain).
+         *
+         * @return true if one or more chains have no more options to try.
+         */
+        private boolean noMoreCandidatesToTry() {
+            // check each chain to see if all their candidates have been attempted.
+            for (Chain chain : _chains) {
+                boolean allAttempted = true;
+                for (String candidate : chain.getCandidates()) {
+
+                    allAttempted &= _attempted.contains(candidate);
+                    if (!allAttempted) {
+                        break;
+                    }
+                }
+                if (allAttempted) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /*
@@ -817,7 +914,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // where their first candidate is the preferred one
             for (Chain selectedChain : _chains) {
                 String preferredCandidate = selectedChain.getCandidates().get(0);
-                if (_firstAttempt.add(preferredCandidate)) {
+                if (_attempted.add(preferredCandidate)) {
                     Chain match = match(preferredCandidate, selectedChain, selectionContext);
                     if (match != null) {
                         return match;
@@ -827,7 +924,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             for (Chain selectedChain : _chains) {
                 // now check every candidate since the preferred ones did not give a match
                 for (String candidate : selectedChain.getCandidates()) {
-                    if (_firstAttempt.add(candidate)) {
+                    if (_attempted.add(candidate)) {
                         Chain match = match(candidate, selectedChain, selectionContext);
                         if (match != null) {
                             return match;
