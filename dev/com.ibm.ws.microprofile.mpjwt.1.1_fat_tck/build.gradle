@@ -10,7 +10,7 @@
  *******************************************************************************/
 //the tck jar should be removed once we can run the tck unaltered. Also need to hit pom.xml
 dependencies {
-  requiredLibs 'org.hamcrest:hamcrest-all:1.3'
+  
   requiredLibs 'org.eclipse.microprofile.jwt:microprofile-jwt-auth-tck:1.2-20180821.143915-1'
 }
 

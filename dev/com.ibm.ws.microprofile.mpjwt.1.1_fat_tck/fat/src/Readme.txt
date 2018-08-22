@@ -59,7 +59,7 @@ Debugging:
 Todo:
   We're running a slightly modified version of the tests while changes are made
   to the master copy.  Once that's done, we need to pull from the master copy directly. 
-  Update pom.xml to do that.    
+  Update pom.xml and build.gradle to do that.    
    
    
    
