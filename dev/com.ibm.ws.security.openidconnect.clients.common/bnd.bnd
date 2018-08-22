@@ -36,6 +36,7 @@ Export-Package: \
 
 Import-Package: \
     !*.internal.*, \
+    org.jose4j.json; version="[0.5,1)", \
     *
 
 Private-Package: \

@@ -37,6 +37,7 @@ Export-Package: \
 Import-Package: \
    com.ibm.ws.security.mp.jwt, \
    org.eclipse.microprofile.config;version="[1.0,2)", \
+   org.jose4j.json; version="[0.5,1)", \
    *
 
 Private-Package: \

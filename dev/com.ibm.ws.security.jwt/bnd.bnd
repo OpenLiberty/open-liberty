@@ -58,7 +58,7 @@ Import-Package: \
     com.ibm.wsspi.kernel.service.utils, \
     com.ibm.websphere.kernel.server, \
     org.osgi.framework.wiring, \
-    org.jose4j.*, \
+    org.jose4j.*; version="[0.5,1)" \
     org.apache.commons.codec.binary, \
     javax.management, \
     javax.servlet, \
@@ -74,7 +74,7 @@ Import-Package: \
     com.ibm.websphere.ssl;version="[1.0.0, 2.0)";resolution:=optional, \
     com.ibm.ws.ssl;version="[1.0.0, 2.0)";resolution:=optional, \
     com.ibm.ws.security.wim;version="[1.0.0, 2.0)";resolution:=optional, \
-    com.ibm.wsspi.security.wim.model;version="[1.0.0, 2.0)";resolution:=optional
+    com.ibm.wsspi.security.wim.model;version="[1.0.0, 2.0)";resolution:=optional, \
 
 Private-Package: \
     com.ibm.ws.security.jwt.internal.*, \

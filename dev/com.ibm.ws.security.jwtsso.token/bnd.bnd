@@ -23,6 +23,7 @@ Export-Package: com.ibm.ws.security.jwtsso.token
 
 Import-Package: !*.internal.*, \
   org.eclipse.microprofile.jwt, \
+  org.jose4j.json; version="[0.5,1)", \
   *
   
 Private-Package: \
