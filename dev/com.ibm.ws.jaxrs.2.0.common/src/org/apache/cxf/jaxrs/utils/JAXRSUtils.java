@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1300,11 +1299,11 @@ public final class JAXRSUtils {
             List<String> parts = Arrays.asList(StringUtils.split(query, sep));
             for (String part : parts) {
                 int index = part.indexOf('=');
-                String name = null;
+                final String name;
                 String value = null;
                 if (index == -1) {
                     name = part;
-                    value = "";
+                    value = ""; //Liberty change - this probably shouldn't have been removed from CXF
                 } else {
                     name = part.substring(0, index);
                     value = index < part.length() ? part.substring(index + 1) : "";
@@ -1327,12 +1326,13 @@ public final class JAXRSUtils {
                                                boolean decode,
                                                boolean decodePlus) {
 
-        if (decodePlus && value.contains("+")) {
-            value = value.replace('+', ' ');
-        }
-        if (decode) {
-            value = (";".equals(sep))
-                ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
+        if (value != null) {
+            if (decodePlus && value.contains("+")) {
+                value = value.replace('+', ' ');
+            }
+            if (decode) {
+                value = (";".equals(sep)) ? HttpUtils.pathDecode(value) : HttpUtils.urlDecode(value);
+            }
         }
 
         queries.add(HttpUtils.urlDecode(name), value);
@@ -1534,19 +1534,6 @@ public final class JAXRSUtils {
         return acceptValues;
     }
 
-    /**
-     * intersect two mime types
-     *
-     * @param mimeTypesA
-     * @param mimeTypesB
-     * @return return a list of intersected mime types
-     */
-    public static List<MediaType> intersectMimeTypes(List<MediaType> requiredMediaTypes,
-                                                     List<MediaType> userMediaTypes,
-                                                     boolean addRequiredParamsIfPossible) {
-        return intersectMimeTypes(requiredMediaTypes, userMediaTypes, addRequiredParamsIfPossible, false);
-    }
-
     // Liberty change begin
     public static boolean doMimeTypesIntersect(List<MediaType> requiredMediaTypes,
                                                List<MediaType> userMediaTypes) {
@@ -1583,11 +1570,30 @@ public final class JAXRSUtils {
     }
     // Liberty change end
 
+    /**
+     * intersect two mime types
+     *
+     * @param mimeTypesA
+     * @param mimeTypesB
+     * @return return a list of intersected mime types
+     */
+    public static List<MediaType> intersectMimeTypes(List<MediaType> requiredMediaTypes,
+                                                     List<MediaType> userMediaTypes,
+                                                     boolean addRequiredParamsIfPossible) {
+        return intersectMimeTypes(requiredMediaTypes, userMediaTypes, addRequiredParamsIfPossible, false);
+    }
+
     public static List<MediaType> intersectMimeTypes(List<MediaType> requiredMediaTypes,
                                                      List<MediaType> userMediaTypes,
                                                      boolean addRequiredParamsIfPossible,
                                                      boolean addDistanceParameter) {
-        Set<MediaType> supportedMimeTypeList = new LinkedHashSet<MediaType>();
+        final AccumulatingIntersector intersector = new AccumulatingIntersector(addRequiredParamsIfPossible, addDistanceParameter);
+        intersectMimeTypes(requiredMediaTypes, userMediaTypes, intersector);
+        return new ArrayList<>(intersector.getSupportedMimeTypeList());
+    }
+
+    private static void intersectMimeTypes(List<MediaType> requiredMediaTypes, List<MediaType> userMediaTypes,
+                                           MimeTypesIntersector intersector) {
 
         for (MediaType requiredType : requiredMediaTypes) {
             for (MediaType userType : userMediaTypes) {
@@ -1596,10 +1602,9 @@ public final class JAXRSUtils {
                     boolean parametersMatched = true;
                     for (Map.Entry<String, String> entry : userType.getParameters().entrySet()) {
                         String value = requiredType.getParameters().get(entry.getKey());
-                        if (value != null && entry.getValue() != null
-                            && !(stripDoubleQuotesIfNeeded(value).equals(stripDoubleQuotesIfNeeded(entry.getValue())))) {
-                            if (HTTP_CHARSET_PARAM.equals(entry.getKey())
-                                && value.equalsIgnoreCase(entry.getValue())) {
+                        if (value != null && entry.getValue() != null && !(stripDoubleQuotesIfNeeded(value).equals(stripDoubleQuotesIfNeeded(entry.getValue())))) {
+
+                            if (HTTP_CHARSET_PARAM.equals(entry.getKey()) && value.equalsIgnoreCase(entry.getValue())) {
                                 continue;
                             }
                             parametersMatched = false;
@@ -1609,38 +1614,13 @@ public final class JAXRSUtils {
                     if (!parametersMatched) {
                         continue;
                     }
-                    boolean requiredTypeWildcard = requiredType.getType().equals(MediaType.MEDIA_TYPE_WILDCARD);
-                    boolean requiredSubTypeWildcard = requiredType.getSubtype().contains(MediaType.MEDIA_TYPE_WILDCARD);
 
-                    String type = requiredTypeWildcard ? userType.getType() : requiredType.getType();
-                    String subtype = requiredSubTypeWildcard ? userType.getSubtype() : requiredType.getSubtype();
-
-                    Map<String, String> parameters = userType.getParameters();
-                    if (addRequiredParamsIfPossible) {
-                        parameters = new LinkedHashMap<String, String>(parameters);
-                        for (Map.Entry<String, String> entry : requiredType.getParameters().entrySet()) {
-                            if (!parameters.containsKey(entry.getKey())) {
-                                parameters.put(entry.getKey(), entry.getValue());
-                            }
-                        }
+                    if (!intersector.intersect(requiredType, userType)) {
+                        return;
                     }
-                    if (addDistanceParameter) {
-                        int distance = 0;
-                        if (requiredTypeWildcard) {
-                            distance++;
-                        }
-                        if (requiredSubTypeWildcard) {
-                            distance++;
-                        }
-                        parameters.put(MEDIA_TYPE_DISTANCE_PARAM, Integer.toString(distance));
-                    }
-                    supportedMimeTypeList.add(new MediaType(type, subtype, parameters));
                 }
             }
         }
-
-        return new ArrayList<MediaType>(supportedMimeTypeList);
-
     }
 
     private static String stripDoubleQuotesIfNeeded(String value) {
@@ -1787,7 +1767,7 @@ public final class JAXRSUtils {
     public static boolean runContainerRequestFilters(ServerProviderFactory pf,
                                                      Message m,
                                                      boolean preMatch,
-                                                     Set<String> names) {
+                                                     Set<String> names) throws IOException {
         //Liberty Defect 170924: Check @NameBinding on Application first
         Set<String> appNameBindings = AnnotationUtils.getNameBindings(pf.getApplicationProvider().getResourceClass().getAnnotations());
         if (names != null) {
@@ -1800,12 +1780,8 @@ public final class JAXRSUtils {
         if (!containerFilters.isEmpty()) {
             ContainerRequestContext context = new ContainerRequestContextImpl(m, preMatch, false);
             for (ProviderInfo<ContainerRequestFilter> filter : containerFilters) {
-                try {
-                    InjectionUtils.injectContexts(filter.getProvider(), filter, m);
-                    filter.getProvider().filter(context);
-                } catch (IOException ex) {
-                    throw ExceptionUtils.toInternalServerErrorException(ex, null);
-                }
+                InjectionUtils.injectContexts(filter.getProvider(), filter, m);
+                filter.getProvider().filter(context);
                 Response response = m.getExchange().get(Response.class);
                 if (response != null) {
                     setMessageContentType(m, response);

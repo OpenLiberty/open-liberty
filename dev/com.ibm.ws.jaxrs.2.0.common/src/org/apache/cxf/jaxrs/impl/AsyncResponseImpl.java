@@ -46,7 +46,6 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.component.LibertyJaxRsThreadPoolAdapter;
 
 public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
@@ -102,7 +101,8 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
         }
         return doResumeFinal(response);
     }
-    private boolean doResumeFinal(Object response) {
+
+    private synchronized boolean doResumeFinal(Object response) {
         inMessage.getExchange().put(AsyncResponse.class, this);
         cont.setObject(response);
         resumedByApplication = true;
@@ -171,7 +171,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     }
 
     @Override
-    public boolean setTimeout(long time, TimeUnit unit) throws IllegalStateException {
+    public synchronized boolean setTimeout(long time, TimeUnit unit) throws IllegalStateException {
         if (isCancelledOrNotSuspended()) {
             return false;
         }
@@ -221,7 +221,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     }
 
     @Override
-    public Map<Class<?>, Collection<Class<?>>> register(Class<?> callback, Class<?>... callbacks) 
+    public Map<Class<?>, Collection<Class<?>>> register(Class<?> callback, Class<?>... callbacks)
         throws NullPointerException {
         try {
             Object[] extraCallbacks = new Object[callbacks.length];
@@ -243,15 +243,15 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     }
 
     @Override
-    public Map<Class<?>, Collection<Class<?>>> register(Object callback, Object... callbacks) 
+    public Map<Class<?>, Collection<Class<?>>> register(Object callback, Object... callbacks)
         throws NullPointerException {
-        Map<Class<?>, Collection<Class<?>>> map = 
+        Map<Class<?>, Collection<Class<?>>> map =
             new HashMap<Class<?>, Collection<Class<?>>>();
 
         Object[] allCallbacks = new Object[1 + callbacks.length];
         allCallbacks[0] = callback;
         System.arraycopy(callbacks, 0, allCallbacks, 1, callbacks.length);
-        
+
         for (int i = 0; i < allCallbacks.length; i++) {
             if (allCallbacks[i] == null) {
                 throw new NullPointerException();
@@ -352,7 +352,7 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
     }
 
     private void initContinuation() {
-        ContinuationProvider provider = 
+        ContinuationProvider provider =
             (ContinuationProvider)inMessage.get(ContinuationProvider.class.getName());
         cont = provider.getContinuation();
         initialSuspend = true;

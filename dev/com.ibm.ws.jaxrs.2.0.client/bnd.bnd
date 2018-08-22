@@ -26,7 +26,7 @@ Export-Package: \
   com.ibm.ws.jaxrs20.client.security
 
 Import-Package: \
-   org.apache.cxf.*;version=3.1.14, \
+   org.apache.cxf.*;version=3.1.16, \
    com.ibm.websphere.security.saml2;resolution:=optional, \
    com.ibm.ws.jaxrs20.appsecurity.security;resolution:=optional, \
    *
@@ -50,10 +50,10 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/client/internal/resources/*.class
     
 -buildpath: \
 	com.ibm.ws.jaxrs.2.0.common;version=latest,\
-	org.apache.cxf.cxf-core;strategy=exact;version=3.1.14,\
-	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.14,\
-	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version=3.1.14,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.16,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.16,\
+	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version=3.1.16,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.16,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
