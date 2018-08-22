@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Evite usar o recurso ou v\u00e1 para uma vers
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: Uma classe de implementa\u00e7\u00e3o de driver JDBC v\u00e1lida n\u00e3o foi localizada para o jdbcDriver {0} usando a biblioteca {1}.
-DSRA4000.no.suitable.driver.explanation=Uma classe de implementa\u00e7\u00e3o de driver JDBC v\u00e1lida n\u00e3o foi localizada.
-DSRA4000.no.suitable.driver.useraction=Atualize a configura\u00e7\u00e3o para que a biblioteca contenha um caminho para um driver JDBC reconhecido ou a classe de implementa\u00e7\u00e3o seja especificada na origem de dados.
+DSRA4000.no.suitable.driver=DSRA4000E: N\u00e3o foi encontrada nenhuma implementa\u00e7\u00e3o de {0} para {1} com a biblioteca {2}. O nome ou o local dos arquivos JAR do driver JDBC pode estar incorreto ou inacess\u00edvel. Procurado em: {3}. Procurado em pacotes: {4}.
+DSRA4000.no.suitable.driver.explanation=Uma origem de dados ou uma implementa\u00e7\u00e3o do driver pode n\u00e3o ser localizada por diversas raz\u00f5es. O nome ou o local dos arquivos JAR do driver JDBC pode estar incorreto ou inacess\u00edvel. O driver JDBC pode n\u00e3o identificar corretamente sua implementa\u00e7\u00e3o java.sql.Driver ou pode n\u00e3o ter uma implementa\u00e7\u00e3o java.sql.Driver. Ou a l\u00f3gica integrada do servidor para identificar classes de implementa\u00e7\u00e3o de origem de dados n\u00e3o se aplica a todos os drivers.
+DSRA4000.no.suitable.driver.useraction=Verifique se as configura\u00e7\u00f5es do driver JDBC e da biblioteca est\u00e3o corretas. Se as classes de implementa\u00e7\u00e3o ainda n\u00e3o foram localizadas, especifique-as manualmente na configura\u00e7\u00e3o.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: Uma classe de implementa\u00e7\u00e3o de driver JDBC v\u00e1lida n\u00e3o foi localizada na biblioteca aninhada usada por jdbcDriver {0}.
-DSRA4001.no.suitable.driver.nested.explanation=Uma classe de implementa\u00e7\u00e3o de driver JDBC v\u00e1lida n\u00e3o foi localizada.
-DSRA4001.no.suitable.driver.nested.useraction=Atualize a configura\u00e7\u00e3o para que a biblioteca aninhada contenha um caminho para um driver JDBC reconhecido ou a classe de implementa\u00e7\u00e3o seja especificada na origem de dados.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: N\u00e3o foram localizadas implementa\u00e7\u00f5es de {0} para {1}. Procurado em: {2}. O nome ou o local dos arquivos JAR do driver JDBC pode estar incorreto ou inacess\u00edvel. Procurado em pacotes: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=Uma origem de dados ou uma implementa\u00e7\u00e3o de driver pode n\u00e3o ser localizada por diversas raz\u00f5es. O nome ou o local dos arquivos JAR do driver JDBC pode estar incorreto ou inacess\u00edvel. O driver JDBC pode n\u00e3o identificar corretamente sua implementa\u00e7\u00e3o java.sql.Driver ou pode n\u00e3o ter uma implementa\u00e7\u00e3o java.sql.Driver. Ou a l\u00f3gica integrada do servidor para identificar classes de implementa\u00e7\u00e3o de origem de dados n\u00e3o se aplica a todos os drivers.
+DSRA4001.no.suitable.driver.nested.useraction=Verifique se as configura\u00e7\u00f5es do driver JDBC e da biblioteca est\u00e3o corretas. Se as classes de implementa\u00e7\u00e3o ainda n\u00e3o forem localizadas, especifique-as manualmente na configura\u00e7\u00e3o.
 
 DSRA4003.driver.null=DSRA4003E: Um elemento jdbcDriver v\u00e1lido n\u00e3o p\u00f4de ser localizado para o dataSource {0}.
 DSRA4003.driver.null.explanation=Um elemento jdbcDriver v\u00e1lido n\u00e3o p\u00f4de ser localizado para o dataSource especificado.
@@ -244,6 +244,32 @@ DSRA4003.driver.null.useraction=Atualize a configura\u00e7\u00e3o para incluir u
 DSRA4004.onconnect.sql=DSRA4004E: N\u00e3o \u00e9 poss\u00edvel executar o comando SQL \"{0}\" do onConnect na conex\u00e3o obtida de dataSource {1}. Consulte a exce\u00e7\u00e3o de causa para obter informa\u00e7\u00f5es adicionais.
 DSRA4004.onconnect.sql.explanation=Ocorreu um erro ao tentar executar o comando SQL especificado.
 DSRA4004.onconnect.sql.useraction=Consulte a mensagem de exce\u00e7\u00e3o para ajud\u00e1-lo a determinar a causa do problema.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: O servidor n\u00e3o suporta a propriedade loginTimeout especificada na URL ou nas propriedades do DataSource {0}.
+DSRA4005.invalid.logintimeout.explanation=A propriedade loginTimeout n\u00e3o \u00e9 suportada quando especificada para um DataSource cujo backup \u00e9 feito por uma implementa\u00e7\u00e3o java.sql.Driver porque o servidor n\u00e3o pode chamar getLoginTimeout na classe java.sql.Driver.
+DSRA4005.invalid.logintimeout.useraction=Modifique a configura\u00e7\u00e3o do DataSource para utilizar uma implementa\u00e7\u00e3o DataSource ao inv\u00e9s de uma implementa\u00e7\u00e3o java.sql.Driver ou remova a propriedade loginTimeout.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: O DataSource {0} n\u00e3o se conectou ao banco de dados porque {1} retornou uma conex\u00e3o nula para a URL que come\u00e7a com {2}. Isso indica que o driver JDBC est\u00e1 violando a especifica\u00e7\u00e3o JDBC.
+DSRA4006.null.connection.explanation=Embora o java.sql.Driver tenha indicado que aceitou a URL fornecida, retornou uma conex\u00e3o nula. Isso indica um erro no driver JDBC.
+DSRA4006.null.connection.useraction=Relate o erro ao fornecedor do driver JDBC e garanta que o driver JDBC e a configura\u00e7\u00e3o do DataSource estejam corretos.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: O driver JDBC n\u00e3o suporta um n\u00edvel de isolamento de TRANSACTION_NONE, configurado na origem de dados {0}.
+DSRA4008.tran.none.unsupported.explanation=O n\u00edvel de isolamento TRANSACTION_NONE configurado na origem de dados n\u00e3o \u00e9 suportado pelo driver JDBC.
+DSRA4008.tran.none.unsupported.useraction=Atualize a configura\u00e7\u00e3o da origem de dados para usar um n\u00edvel de isolamento que seja suportado pelo driver ou use um driver que suporte um n\u00edvel de isolamento de TRANSACTION_NONE. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: N\u00e3o \u00e9 poss\u00edvel configurar a origem de dados {0} com um n\u00edvel de isolamento de TRANSACTION_NONE e com transactional=true.
+DSRA4009.tran.none.transactional.unsupported.explanation=Um driver JDBC configurado com um n\u00edvel de isolamento de TRANSACTION_NONE n\u00e3o suportar\u00e1 transa\u00e7\u00f5es.
+DSRA4009.tran.none.transactional.unsupported.useraction=Configure transactional=false na origem de dados.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: A confirma\u00e7\u00e3o autom\u00e1tica \u00e9 necess\u00e1ria ao usar um n\u00edvel de isolamento de TRANSACTION_NONE, configurado na origem de dados {0}.
+DSRA4010.tran.none.autocommit.required.explanation=O driver JDBC est\u00e1 configurado com um n\u00edvel de isolamento de TRANSACTION_NONE e requer o uso da confirma\u00e7\u00e3o autom\u00e1tica.
+DSRA4010.tran.none.autocommit.required.useraction=Manter a confirma\u00e7\u00e3o autom\u00e1tica configurada como true.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: O driver JDBC n\u00e3o suporta alternar para um n\u00edvel de isolamento de TRANSACTION_NONE na origem de dados {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=O driver JDBC n\u00e3o suporta alternar para um n\u00edvel de isolamento de TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Evite alternar para um n\u00edvel de isolamento de TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 
@@ -594,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= O Application Server n\u00e3o suport
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Desative o Kerberos ou use um backend DB2 com o driver JDBC DB2 Universal.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

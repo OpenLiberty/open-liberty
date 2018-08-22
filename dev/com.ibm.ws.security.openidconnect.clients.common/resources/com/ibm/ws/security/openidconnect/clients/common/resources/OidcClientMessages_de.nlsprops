@@ -1,14 +1,10 @@
-###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
-#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/client/internal/resources/OidcClientMessages.nlsprops
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2013.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/clients/common/resources/OidcClientMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
 #ISMESSAGEFILE TRUE
@@ -16,24 +12,22 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS1700 - CWWKS1750
-OIDC_CLIENT_CONFIG_PROCESSED=CWWKS1700I: Die OpenID Connect-Clientkonfiguration {0} wurde erfolgreich verarbeitet.
-OIDC_CLIENT_CONFIG_PROCESSED.explanation=Die Konfiguration des OpenID Connect-Clients (Relying Party oder Ressourenserver) wurde erfolgreich verarbeitet.
-OIDC_CLIENT_CONFIG_PROCESSED.useraction=Keine.
 
-OIDC_CLIENT_CONFIG_MODIFIED=CWWKS1701I: Die \u00c4nderung der OpenID Connect-Clientkonfiguration {0} wurde erfolgreich verarbeitet.
-OIDC_CLIENT_CONFIG_MODIFIED.explanation=Die Konfiguration des OpenID Connect-Clients (Relying Party oder Ressourenserver) wurde erfolgreich ge\u00e4ndert.
-OIDC_CLIENT_CONFIG_MODIFIED.useraction=Keine.
 
+# used by clients project
 OIDC_CLIENT_AUTHORIZE_ERR=CWWKS1702E: Der OpenID Connect-Client [{0}] mit der Codierung [{2}] kann die Verarbeitung aus dem folgenden Grund nicht weiter verarbeiten: [{1}].
 OIDC_CLIENT_AUTHORIZE_ERR.explanation=Im OpenID Connect-Client (Relying Party, RP) ist bei der Verarbeitung einer Anforderung ein Fehler aufgetreten. Bei dem Fehler handelt es sich wahrscheinlich um einen Codierungsfehler. Die Fehlerursache ist hinter der Nachricht angegeben. 
 OIDC_CLIENT_AUTHORIZE_ERR.useraction=Wiederholen Sie die Anforderung mit anderen OpenID Connect-Clientkonfigurationsattributen wie Client-ID oder Geltungsbereich. Lesen Sie die empfohlene Benutzeraktion zu dem Fehler, der hinter dieser Fehlernachricht angezeigt wird.
 
+
 #do not translate enforceHTTPS
+
+# used_by_client_project and clients project
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Der OpenID Connect-Client setzt SSL (HTTPS) voraus, aber die OpenID Connect-Provider-URL verwendet HTTP: [{0}]. Aktualisieren Sie die Konfiguration so, dass das Attribut [enforceHTTPS] dem Schema der Ziel-URL entspricht. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) setzt SSL (HTTPS) voraus, aber das in der OpenID Connect-Clientkonfiguration angegebene URL-Protokoll des OpenID Connect-Providers (OP) ist nicht HTTPS.
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Stellen Sie sicher, dass der OpenID Connect-Provider SSL unterst\u00fctzt. 2) Wenn der OpenID Connector-Provider SSL nicht unterst\u00fctzt, setzen Sie enforceHTTPS in der OpenID Connect-Clientkonfiguration auf false.
 
-#
+# unused
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Der aktuelle Status [{0}] f\u00fcr den OpenID Connect-Client [{2}] und der Statusparameter [{1}] in der Antwort des OpenID Connect-Providers stimmen nicht \u00fcberein. Diese Bedingung ist nicht zul\u00e4ssig.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=Der OpenID Connect-Client (Relying Party, RP) hat eine Anforderung an einen OpenID Connect-Provider (OP) gesendet und der OP hat eine Antwort mit einem Statusparameter zur\u00fcckgesendet, der nicht mit dem Status der RP zu dem Zeitpunkt \u00fcbereinstimmt, zu dem die Anforderung gesendet wurde. Der OP muss in der Antwort denselben Status zur\u00fccksenden, der gesendet wurde. Der Status wird auf diese Weise verwendet, um Cross-Site Request Forgery zu verhindern. 
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.useraction=Stellen Sie sicher, dass Ihre OP-URL korrekt ist. \u00dcberpr\u00fcfen Sie die Protokolle in Ihrem OP, um sicherzustellen, dass er die Anforderung empfangen hat.
@@ -43,211 +37,144 @@ OIDC_CLIENT_MISSING_PRINCIPAL_ERR=CWWKS1705E: Der OpenID Connect-Client [{0}] ko
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.explanation=Zum Authentifizieren eines ID-Tokens muss der OpenID Connect-Client (Relying Party, RP) eine Subjekt-ID haben. Das in der Antwort des OpenID Connect-Providers (OP) empfangene ID-Token enth\u00e4lt keine Subjekt-ID und deshalb ist die Authentifizierung fehlgeschlagen. 
 OIDC_CLIENT_MISSING_PRINCIPAL_ERR.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider (OP) ein ID-Token zur\u00fcckgibt, das eine Subjekt-ID enth\u00e4lt.
 
-#
+#used_by_client_project and clients project
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR=CWWKS1706E: Der OpenID Connect-Client [{1}] konnte das ID-Token aus dem folgenden Grund nicht validieren: [{0}].
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.explanation=Der OpenID Connect-Client (Relying Party, RP) konnte das ID-Token nicht validieren. Dies kann auf einen Fehler bei der Validierung der erforderlichen Anspr\u00fcche zur\u00fcckzuf\u00fchren sein. Zu den f\u00fcr das ID-Token erforderlichen Anspr\u00fcchen geh\u00f6ren der Aussteller, die Zielgruppe und die Ausstellungszeit. 
 OIDC_CLIENT_IDTOKEN_VERIFY_ERR.useraction=Stellen Sie sicher, dass die Systemuhr des OpenID Connect-Clients mit der Systemuhr des OpenID Connect-Providers (OP) synchronisiert ist (falls sich Client und Provider auf zwei verschiedenen Systemen befinden). Sehen Sie sich auch die empfohlene Benutzeraktion zu dem Fehler an, der hinter dieser Fehlernachricht angezeigt wird.
 
-#
+#used_by_client_project and clients proje
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL=CWWKS1707E: Der OpenID Connect-Client [{1}] konnte aus dem folgenden Grund keinen SSL-Kontext erstellen: [{0}]. Stellen Sie sicher, dass Ihr SSL-Feature ordnungsgem\u00e4\u00df konfiguriert ist.
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) ist f\u00fcr die Verwendung des HTTPS-Schemas konfiguriert, aber es konnte keine HTTPS-Verbindung aufgebaut werden. Das SSL-Feature ist m\u00f6glicherweise nicht aktiviert. M\u00f6glicherweise fehlt das Element keyStore oder es ist falsch angegeben. 
 OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL.useraction=Stellen Sie sicher, dass die richtigen Informationen in der Datei server.xml enthalten sind. Sehen Sie sich die empfohlene Benutzeraktion zu dem Fehler an, der vor dieser Nachricht angezeigt wird.
 
-#
+#used_by_clients
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE=CWWKS1708E: Der OpenID Connect-Client [{1}] kann keine Verbindung zum OpenID Connect-Provider unter [{2}] herstellen, um ein ID-Token zu empfangen. Ursache: [{0}].
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.explanation=Der OpenID Connect-Client (Relying Party, RP) konnte kein ID-Token vom OpenID Connect-Provider (OP) abrufen, weil keine Verbindung zum Provider hergestellt werden konnte. M\u00f6gliche Ursachen sind, dass der OP zum Zeitpunkt der Anforderung nicht verf\u00fcgbar war, dass die Anforderung nicht an einen g\u00fcltigen Endpunkt umgeleitet wurde oder dass die Konfigurationen von OP und RP voneinander abweichen. Die Fehlerursache ist hinter der Nachricht angegeben.
 OIDC_CLIENT_TOKEN_REQUEST_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, um sicherzustellen, dass die konfigurierte Tokenendpunkt-URL eine g\u00fcltige URL ist und auf den Tokenendpunkt eines aktiven OpenID Connect-Providers verweist. Sehen Sie sich die Aktionen zu dem Fehler an, der hinter dieser Nachricht angezeigt wird.
 
-#
+# used by clients
 OIDC_CLIENT_INVALID_HTTP_RESPONSE=CWWKS1709E: Im OpenID Connect-Client [{1}] ist bei der Verarbeitung der HTTP-Antwort vom OpenID Connect-Provider ein Fehler aufgetreten. Ursache: [{0}].
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.explanation=Der OpenID Connect-Client (Relying Party oder Ressourcenserver) hat eine Antwort vom OpenID Connect-Provider (OP) empfangen, aber bei der Verarbeitung der Antwort durch die Relying Party oder den Ressourcenserver ist ein Fehler aufgetreten. Die Fehlerursache ist hinter der Nachricht angegeben.
 OIDC_CLIENT_INVALID_HTTP_RESPONSE.useraction=Sehen Sie sich die Aktionen zu dem Fehler an, der nach dieser Nachricht angezeigt wird.
 
-#
+#used_by_client_project
 OAUTH_REQUEST_ACCESS_DENIED=CWWKS1710E: Die OpenID Connect-Anforderung wurde vom Benutzer abgelehnt, oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
 OAUTH_REQUEST_ACCESS_DENIED.explanation=Der Benutzer hat die OpenID Connect-Anforderung durch Abbrechen der Anforderung im Formular f\u00fcr die Geltungsbereichsgenehmigung abgelehnt oder es ist ein anderer Fehler aufgetreten, der den Zugriff auf die OpenID Connect-Anforderung verhindert.
 OAUTH_REQUEST_ACCESS_DENIED.useraction=Der Benutzer muss dem OpenID Connect-Provider erlauben, die Geltungsbereiche gemeinsam zu nutzen, die der Client erfordert, damit die OpenID Connect-Anforderung erfolgreich verarbeitet werden kann. Wenn der Benutzer die Anforderung genehmigt hat, \u00fcberpr\u00fcfen Sie die Protokolle im OP nach weiteren Fehlern.
 
-#
-OAUTH_REQUEST_ACCESS_DENIED_ENDUSER=CWWKS1711E: Die Anforderung wurde vom Benutzer abgelehnt, oder es ist ein anderer Fehler aufgetreten, der zu Ablehnung der Anforderung gef\u00fchrt hat.
-OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.explanation=Der Benutzer hat die OpenID Connect-Anforderung durch Abbrechen der Anforderung im Formular f\u00fcr die Geltungsbereichsgenehmigung abgelehnt oder es ist ein anderer Fehler aufgetreten, der den Zugriff auf die OpenID Connect-Anforderung verhindert.
-OAUTH_REQUEST_ACCESS_DENIED_ENDUSER.useraction=Der Benutzer muss dem OpenID Connect-Provider erlauben, die Geltungsbereiche gemeinsam zu nutzen, die der Client erfordert, damit die OpenID Connect-Anforderung erfolgreich verarbeitet werden kann. Wenn der Benutzer die Anforderung genehmigt hat, \u00fcberpr\u00fcfen Sie die Protokolle im OP nach weiteren Fehlern.
 
 #
+#used by clients project
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE=CWWKS1712E: Der OpenID Connect-Client [{0}] hat kein ID-Token vom OpenID Connect-Provider [{1}] empfangen.
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.explanation=Der OpenID Connect-Client (Relying Party, RP) konnte kein ID-Token vom OpenID Connect-Provider (OP) abrufen. M\u00f6gliche Ursachen sind, dass der OP zum Zeitpunkt der Anforderung nicht verf\u00fcgbar war, dass die Anforderung nicht an einen g\u00fcltigen Endpunkt umgeleitet wurde oder dass die Konfigurationen von OP und RP voneinander abweichen. 
 OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration, um sicherzustellen, dass die konfigurierte Tokenendpunkt-URL eine g\u00fcltige URL ist und auf den Tokenendpunkt eines aktiven OpenID Connect-Providers verweist. Sehen Sie sich auch die Aktionen f\u00fcr die Fehler an, die vor dieser Nachricht angezeigt werden.
 
-#
+# used by clients
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE=CWWKS1713E: Die Anforderung des OpenID Connect-Clients [{0}] setzt den Geltungsbereich [openid] voraus, aber der definierte Geltungsbereich [{1}] in der OpenID Connect-Clientkonfiguration hat den erforderlichen Geltungsbereich nicht.
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.explanation=Der OpenID Connect-Client erfordert die Definition des Geltungsbereichs [openid]. Wenn dieser Geltungsbereich in der OpenID Connect-Clientkonfiguration fehlt, schlagen die Anforderungen fehl.
 OIDC_CLIENT_REQUEST_MISSING_OPENID_SCOPE.useraction=Stellen Sie sicher, dass der erforderliche Geltungsbereich [openid] in der OpenID Connect-Clientkonfiguration angegeben ist.
 
+# used by clients project
 OIDC_CLIENT_REQUEST_NONCE_FAILED=CWWKS1714E: Im OpenID Connect-Client [{0}] ist die Nonce aktiviert, aber die Verfizierung der Nonce ist fehlgeschlagen. Die Nonce [{1}] im Token stimmt nicht mit der Nonce \u00fcberein, die in der Anforderung an den OpenID Connect-Provider angegeben wurde.
 OIDC_CLIENT_REQUEST_NONCE_FAILED.explanation=OpenID Connect-Clientanforderungen setzen eine ordnungsgem\u00e4\u00dfe Behandlung der Nonce im Anforderungsablauf voraus, um Attacken durch Nachrichtenaufzeichnung und -wiederholung zu mindern. Die im Token enthaltene Nonce stimmt nicht mit der Nonce \u00fcberein, die dieser Anforderung zugeordnet ist, daher ist die Anforderung nicht g\u00fcltig.
 OIDC_CLIENT_REQUEST_NONCE_FAILED.useraction=Stellen Sie sicher, dass der OpenID Connect-Provider Token mit der Nonce generiert, die in der urspr\u00fcnglichen OpenID Connect-Clientanforderung angegebene wurde.
 
-OSGI_SERVICE_ERROR=CWWKS1715E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
-OSGI_SERVICE_ERROR.explanation=Der angegebene OSGi-Service ist nicht verf\u00fcgbar.
-OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option "clean" erneut.
 
-PROPAGATION_TOKEN_EXPIRED_ERR=CWWKS1716E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung abgelaufen ist. Die Verfallszeit ("exp") ist [{0}] und die aktuelle Zeit ist [{1}].
-PROPAGATION_TOKEN_EXPIRED_ERR.explanation=Das Zugriffstoken ist abgelaufen und die Laufzeitumgebung kann nicht mit der Weitergabe des Zugriffstokens fortfahren.
-PROPAGATION_TOKEN_EXPIRED_ERR.useraction=Stellen Sie sicher, dass Sie ein g\u00fcltiges Zugriffstoken bereitstellen und die Zeiten der Systeme synchronisieren.
-
-PROPAGATION_TOKEN_FUTURE_TOKEN_ERR=CWWKS1717E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung nicht g\u00fcltig ist. Die iat-Zeit (Issue at Time) [{0}] liegt nach der aktuellen Zeit [{1}] und diese Bedingung ist nicht zul\u00e4ssig.
-PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.explanation=Die iat-Zeit (Issue at Claim Time, Ausstellung bei Anspruch) im Zugriffstoken liegt nach der aktuellen Zeit. Dies ist nicht zul\u00e4ssig.
-PROPAGATION_TOKEN_FUTURE_TOKEN_ERR.useraction=Stellen Sie sicher, dass die Ausstellungszeit des Zugriffstokens nicht in der Zukunft liegt, und synchronisieren Sie die Zeiten der Systeme.
-
-PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR=CWWKS1718E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung den Anspruch [{0}] nicht enth\u00e4lt. Die erforderlichen Anspr\u00fcche sind [{1}].
-PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.explanation=Das Zugriffstoken enth\u00e4lt nicht alle erforderlichen Anspr\u00fcche. 
-PROPAGATION_TOKEN_MISSING_REQUIRED_CLAIM_ERR.useraction=Stellen Sie sicher, dass das bereitgestellte Zugriffstoken den erforderlichen Anspruch enth\u00e4lt.
-
-PROPAGATION_TOKEN_NBF_ERR=CWWKS1719E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung nicht verwendet werden kann. Die nbf-Zeit (Not Before Time) [{0}] liegt nach der aktuellen Zeit [{1}] und diese Bedingung ist nicht zul\u00e4ssig.
-PROPAGATION_TOKEN_NBF_ERR.explanation=Die nbf-Zeit (Not Before Claim Time, Nicht vor Anspruch) im Zugriffstoken liegt nach der aktuellen Zeit und die Laufzeitumgebung kann das Zugriffstoken momentan nicht verwenden.
-PROPAGATION_TOKEN_NBF_ERR.useraction=Stellen Sie sicher, dass der nbf-Anspruch im Zugriffstoken nicht auf eine k\u00fcnftige Zeit gesetzt ist, und/oder synchronisieren Sie die Zeiten der Systeme oder \u00fcbergeben Sie die Anforderung zu einem sp\u00e4teren Zeitpunkt erneut.
-
-PROPAGATION_TOKEN_NOT_ACTIVE=CWWKS1720E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken in der Anforderung nicht aktiv ist. Die Validierungsmethode ist [{0}] und die URL des Validierungsendpunkts ist [{1}].
-PROPAGATION_TOKEN_NOT_ACTIVE.explanation=Das bereitgestellte Zugriffstoken ist nicht aktiv und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen.
-PROPAGATION_TOKEN_NOT_ACTIVE.useraction=Stellen Sie sicher, dass das bereitgestellte Zugriffstoken g\u00fcltig ist, und suchen Sie, sofern m\u00f6glich, in den Protokollen des OpenID Connector-Providers (OP) nach weiteren Details. Vergewissern Sie sich auch, dass die angegebene Validierungsmethode und die angegebene Endpunkt-URL in der OpenID Connect-Clientkonfiguration korrekt sind.
-
-OIDC_PROPAGATION_FAIL=CWWKS1721E: Der Ressourcenserver hat einen Fehler [{0}] empfangen, als er versucht hat, das Zugriffstoken zu validieren. Das Token ist entweder abgelaufen oder es wird vom Validierungsendpunkt [{1}] nicht erkannt.
-OIDC_PROPAGATION_FAIL.explanation=Das bereitgestellte Zugriffstoken kann wegen der Fehlerantwort vom OpenID Connect-Provider nicht validiert werden.
-OIDC_PROPAGATION_FAIL.useraction=Stellen Sie sicher, dass das Weitergabetoken g\u00fcltig ist, und suchen Sie, sofern m\u00f6glich, in den Protokollen des OpenID Connect-Providers nach weiteren Einzelheiten zu dem Fehler.
-
+# used by clients proj
 PROPAGATION_TOKEN_MISSING_USERID=CWWKS1722E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken den Anspruch [{0}], der mit dem Attribut [{1}] angegeben wurde, nicht enth\u00e4lt.
 PROPAGATION_TOKEN_MISSING_USERID.explanation=Das bereitgestellte Zugriffstoken enth\u00e4lt den angegebenen Anspruch nicht und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen.
 PROPAGATION_TOKEN_MISSING_USERID.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Vergewissern Sie sich, dass in der OpenID Connect-Clientkonfiguration der richtige Anspruchsname angegeben ist. 2) Vergewissern Sie sich, dass der OpenID Connect-Provider (OP) das Zugriffstoken mit dem angegebenen Anspruch ausgibt.
 
-PROPAGATION_TOKEN_INVALID_CLIENTID=CWWKS1723E: Es ist ein Fehler des Typs invalid_client aufgetreten, als der Ressourcenserver versucht hat, das Zugriffstoken mit der Client-ID [{0}] und der Validierungs-URL [{1}] zu validieren.
-PROPAGATION_TOKEN_INVALID_CLIENTID.explanation=Das bereitgestellte Zugriffstoken kann nicht verifiziert werden, weil der OpenID Connect-Provider einen Fehler des Typs invalid_client ausgegeben hat und die Laufzeitumgebung den Authentifizierungsprozess nicht fortsetzen kann.
-PROPAGATION_TOKEN_INVALID_CLIENTID.useraction=Vergewissern Sie sich, dass in der OpenID Connect-Clientkonfiguration die Client-ID angegeben ist, die mit der Client-ID in der OpenID Connect-Providerkonfiguration \u00fcbereinstimmt, oder suchen Sie in den Protokollen des OpenID Connect-Providers nach weiteren Informationen.
-
-PROPAGATION_TOKEN_ISS_ERROR=CWWKS1724E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil der issuerIdentifier-Wert [{0}] in der Konfiguration nicht den "iss"-Anspruch [{1}] im Zugriffstoken enth\u00e4lt.
-PROPAGATION_TOKEN_ISS_ERROR.explanation=Das bereitgestellte Zugriffstoken kann nicht verifiziert werden, weil der "iss"-Anspruch im Zugriffstoken nicht mit dem Konfigurationsattribut issuerIdentifier \u00fcbereinstimmt und die Laufzeitumgebung den Authentifizierungsprozess nicht fortsetzen kann.
-PROPAGATION_TOKEN_ISS_ERROR.useraction=Vergewissern Sie sich, dass die OpenID Connect-Clientkonfiguration den issuerIdentifier-Wert enth\u00e4lt, der den "iss"-Anspruch im Zugriffstoken enth\u00e4lt. 
-
-PROPAGATION_TOKEN_INVALID_VALIDATION_URL=CWWKS1725E: Der Ressourcenserver konnte das Zugriffstoken nicht validieren, weil der validationEndpointUrl-Wert [{0}] keine g\u00fcltige URL ist oder weil die Validierung nicht durchgef\u00fchrt werden konnte.
-PROPAGATION_TOKEN_INVALID_VALIDATION_URL.explanation=Das bereitgestellte Zugriffstoken kann nicht validiert werden, weil der in der OpenID Connect-Clientkonfiguration angegebene validationEndpointUrl-Wert ung\u00fcltig ist und die Laufzeitumgebung den Authentifizierungsprozess nicht fortsetzen kann.
-PROPAGATION_TOKEN_INVALID_VALIDATION_URL.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Wert f\u00fcr das Attribut validationEndpointUrl in der OpenID Connect-Clientkonfiguration angegeben wird.
-
-PROPAGATION_TOKEN_MISSING_ACCESSTOKEN=CWWKS1726E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil die Anforderung ein erforderliches Weitergabetoken nicht enth\u00e4lt, z. B. ein Zugriffstoken oder ein jwt-Token.
-PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.explanation=Die Anforderung muss ein erforderliches Weitergabetoken, wie z. B. ein Zugriffstoken oder ein jwt-Token, enthalten, damit der Ressourcenserver die Authentifizierung und Weitergabe des Tokens durchf\u00fchren kann.
-PROPAGATION_TOKEN_MISSING_ACCESSTOKEN.useraction=Stellen Sie sicher, dass die Anforderung ein g\u00fcltiges Weitergabetoken enth\u00e4lt.
-
-PROPAGATION_TOKEN_INTERNAL_ERR=CWWKS1727E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht ausf\u00fchren, weil er das Zugriffstoken wegen eines Fehlers [{0}] nicht validieren konnte. Die Validierungsmethode ist [{1}] und die URL des Validierungsendpunkts ist [{2}].
-PROPAGATION_TOKEN_INTERNAL_ERR.explanation=Das bereitgestellte Zugriffstoken konnte wegen eines internen Fehlers nicht validiert werden und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen. 
-PROPAGATION_TOKEN_INTERNAL_ERR.useraction=\u00dcberpr\u00fcfen Sie die Protokolle des Ressourcenservers, um festzustellen, ob vor diesem Fehler andere Fehler protokolliert wurden.
 
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR=CWWKS1728E: The resource server failed the authentication request because the issuerIdentifier [{0}] in the configuration does not match the "iss" claim [{1}] in the UserInfo.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.explanation=The provided access token cannot be verified because the "iss" claim in the UserInfo does not match the issuerIdentifier configuration attribute, and the runtime cannot continue with the authentication process.
 # PROPAGATION_TOKEN_USERINFO_ISS_ERROR.useraction=Verify that the OpenID Connect client configuration has the issuerIdentifier that matches the "iss" claim in the UserInfo.
 
+#unused
 PROPAGATION_TOKEN_VALIDATION_MISMATCH=CWWKS1729E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht ausf\u00fchren, weil die Validierungsmethode [{0}] f\u00fcr die Validierungsendpunkt-URL [{1}] nicht g\u00fcltig ist.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.explanation=Der in der OpenID Connect-Clientkonfiguration angegebene validationEndpointUrl-Wert ist nicht der richtige Endpunkt f\u00fcr den angegebenen validationMethod-Wert.
 PROPAGATION_TOKEN_VALIDATION_MISMATCH.useraction=Aktualisieren Sie die OpenID Connect-Clientkonfiguration, indem Sie den validationMethod-Wert oder den validationEndpointUrl-Wert \u00e4ndern.
  
+#used by clients proj 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE=CWWKS1730E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht ausf\u00fchren, weil der Datentyp des Anspruchs [{0}] in dem Zugriffstoken, das dem Konfigurationsattribut [{1}] zugeordnet ist, nicht g\u00fcltig ist. 
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.explanation=Das bereitgestellte Zugriffstoken hat keinen g\u00fcltigen Anspruchsdatentyp und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen.
 PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE.useraction=Vergewissern Sie sich, dass in der OpenID Connect-Clientkonfiguration der richtige Anspruchsname f\u00fcr das Attribut angegeben ist.
 
+#unused
 PROPAGATION_TOKEN_MISSING_REALM=CWWKS1731E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil das Zugriffstoken den Anspruch [{0}], der mit dem Attribut [{1}] angegeben wurde, nicht enth\u00e4lt.
 PROPAGATION_TOKEN_MISSING_REALM.explanation=Das bereitgestellte Zugriffstoken enth\u00e4lt den angegebenen Anspruch f\u00fcr die Identifizierung des Realms nicht und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen.
 PROPAGATION_TOKEN_MISSING_REALM.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Vergewissern Sie sich, dass in der OpenID Connect-Clientkonfiguration das Attribut realmName angegeben ist. 2) Vergewissern Sie sich, dass der OpenID Connect-Provider (OP) das Zugriffstoken mit dem angegebenen Anspruch ausstellt. 3) Vergewissern Sie sich, dass der OpenID Connect-Provider das Zugriffstoken mit dem Anspruch "iss" ausstellen kann. 
 
-# do not translate the quoted "required"
-BAD_INBOUND_PRPAGATION_REQUIRED=CWWKS1732E: Die Konfiguration des OpenID Connect-Clients [{0}] ist inaktiviert, weil der validationEndpointUrl-Wert [{1}] nicht g\u00fcltig ist und inboundPropagation den Wert "required" hat.
-BAD_INBOUND_PRPAGATION_REQUIRED.explanation=Im angegebenen OpenID Connect-Client ist inboundPropagation auf "required" gesetzt, aber der konfigurierte validationEndpointUrl-Wert ist nicht g\u00fcltig. validationEndpointUrl muss auf einen g\u00fcltigen URI mit dem URI-Schema http oder https gesetzt werden. Der als Ressourcenserver agierende OpenID Connect-Client kann keine Anforderungen verarbeiten.
-BAD_INBOUND_PRPAGATION_REQUIRED.useraction=Stellen Sie sicher, dass in der Konfiguration des OpenID Connect-Clients ein nicht leerer validationEndpointUrl-Wert angegeben wird, der das URI-Schema http oder https verwendet.
 
-# do not translate the quoted "supported" and "none"
-BAD_INBOUND_PRPAGATION_SUPPORTED=CWWKS1733W: Der validationEndpointUrl-Wert [{0}] ist nicht g\u00fcltig, aber das Attribut inboundPropagation ist auf "supported" gesetzt. F\u00fcr die Unterst\u00fctzung der eingehenden Weitergabe muss ein g\u00fcltiger validationEndpointUrl-Wert angegeben werden, sodass sich der OpenID Connect-Client [{1}] wie bei Angabe des Werts "none" f\u00fcr inboundPropagation verh\u00e4lt.
-BAD_INBOUND_PRPAGATION_SUPPORTED.explanation=Der in der angegebenen OpenID Connect-Clientkonfiguration angegebene validationEndpointUrl-Wert ist nicht g\u00fcltig. F\u00fcr die Unterst\u00fctzung der eingehenden Weitergabe ist ein g\u00fcltiger validationEndpointUrl-Wert erforderlich. Der validationEndpointUrl-Wert muss ein nicht leerer Wert sein, der das URI-Schema http oder https verwendet. Der OpenID Connect-Client verh\u00e4lt sich wie bei Angabe des Werts "none" f\u00fcr inboundPropagation.
-BAD_INBOUND_PRPAGATION_SUPPORTED.useraction=Stellen Sie sicher, dass in der Konfiguration des OpenID Connect-Clients ein nicht leerer validationEndpointUrl-Wert angegeben wird, der das URI-Schema http oder https verwendet.
-
-
+#used by clients project
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM=CWWKS1734E: Der OpenID Connect-Client [{0}] konnte das ID-Token nicht authentifizieren, weil der Anspruch [{1}], der mit dem Konfigurationsattribut [{2}] angegeben wurde, nicht im Token enthalten ist.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.explanation=Das angegebene Konfigurationsattribut definiert den beim Erstellen eines Benutzersubjekts zu verwendenden ID-Token-Anspruch. Der angegebene Anspruch wurde nicht im ID-Token gefunden und deshalb konnte das ID-Token nicht authentifiziert und kein Benutzersubjekt erstellt werden.
 OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM.useraction=Konfigurieren Sie das angegebene Attribut so, dass es auf einen im ID-Token vorhandenen Anspruch verweist und zum Erstellen eines Subjekts verwendet werden kann.
 
+#used_by_client_project
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1735E: Der Ressourcenserver konnte die Authentifizierungsanforderung nicht verarbeiten, weil die Antwort des Validierungsendpunkts [{0}] den Anspruch [{1}] hat, aber das Attribut [{2}] auf true gesetzt ist.
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Da in der OpenID Connect-Clientkonfiguration "disableIssChecking" angegeben ist, erwartet der Ressourcenserver, dass die JSON-Antwort des Validierungsendpunkts keinen "iss"-Anspruch enth\u00e4lt. 
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Aktualisieren Sie die OpenID Connect-Clientkonfiguration und setzen Sie "disableIssChecking" auf "false". 2) Sorgen Sie daf\u00fcr, dass der Validierungsendpunkt nicht den Anspruch "iss" ausgibt.
 
 # Do not translate "JSON Web Token"
 #0=Java runtime level, 1=Minimum Java level required by JWT library
+#unused
 OIDC_CLIENT_JWT_JDK7=CWWKS1736E: Die von dieser Laufzeitumgebung [{0}] verwendete Java-Version wird von der JSON-Web-Token-Bibliothek nicht unterst\u00fctzt. Die unterst\u00fctzte Java-Version ist [{1}] oder h\u00f6her.
 OIDC_CLIENT_JWT_JDK7.explanation=Die Open-Source-Bibliotheken f\u00fcr die Verarbeitung von JSON-Web-Token unterst\u00fctzt die Java-Version, die der Liberty-Server momentan verwendet, nicht.
 OIDC_CLIENT_JWT_JDK7.useraction=Installieren Sie eine Java-Version, die gr\u00f6\u00dfer-gleich der in der Nachricht angezeigten Java-Version ist.
 
 # Do not translate "JSON Web Token"
 #0=Exception, 1=OIDC client ID
+# used by clients project
 OIDC_CLIENT_JWT_VERIFY_ERR=CWWKS1737E: Der OpenID Connect-Client [{1}] konnte das JSON-Web-Token nicht validieren. Fehlerursache: [{0}]
 OIDC_CLIENT_JWT_VERIFY_ERR.explanation=Der OpenID Connect-Client (Relying Party oder RP) kann das JSON-Web-Token nicht validieren. Dies kann auf einen Fehler bei der Validierung der erforderlichen Anspr\u00fcche zur\u00fcckzuf\u00fchren sein. Zu den f\u00fcr das JSON-Web-Token erforderlichen Anspr\u00fcchen geh\u00f6ren der Aussteller, die Zielgruppe und die Ausstellungszeit.
 OIDC_CLIENT_JWT_VERIFY_ERR.useraction=Sehen Sie sich die Benutzeraktion zu dem Fehler an, der in dieser Nachricht angezeigt wird.
 
 # Do not translate "JSON Web Token"
 #0=OIDC client ID, 1=JWT claim (such as aud, iat, exp), 2=Client config attribute (userIdentifier or userIdentityToCreateSubject)
+#used by clients proje
 OIDC_CLIENT_JWT_MISSING_CLAIM=CWWKS1738E: Der OpenID Connect-Client [{0}] konnte das JSON-Web-Token nicht authentifizieren, weil der Anspruch [{1}], der mit dem Konfigurationsattribut [{2}] angegeben wurde, nicht im Token enthalten ist.
 OIDC_CLIENT_JWT_MISSING_CLAIM.explanation=Das angegebene Konfigurationsattribut definiert den beim Erstellen eines Benutzersubjekts zu verwendenden JSON-Web-Token-Anspruch. Der angegebene Anspruch wurde nicht im JSON-Web-Token gefunden und deshalb konnte das JSON-Web-Token nicht authentifiziert und kein Benutzersubjekt erstellt werden.
 OIDC_CLIENT_JWT_MISSING_CLAIM.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) \u00c4ndern Sie die Konfiguration des angegebenen Attributs so, dass auf einen Anspruch verwiesen wird, der im JSON-Web-Token enthalten ist. 2) \u00c4ndern Sie das JSON-Web-Token und f\u00fcgen Sie das angegebene Attribut ein.
 
 #0=signatureAlgorithm, 1=exception or error message if any
+#used_by_client_project and clients project
 OIDC_CLIENT_NO_VERIFYING_KEY=CWWKS1739E: Der vom Signaturalgorithmus [{0}] geforderte Signierschl\u00fcssel ist nicht verf\u00fcgbar. {1}
 OIDC_CLIENT_NO_VERIFYING_KEY.explanation=Es wurde kein Signierschl\u00fcssel gefunden oder es wurde kein Schl\u00fcssel gefunden, der den konfigurierten Signaturalgorithmus verwendet. Dies k\u00f6nnte auf fehlende, falsch formatierte oder fehlerhafte Informationen in der Clientkonfiguration oder im Token zur\u00fcckzuf\u00fchren sein.
 OIDC_CLIENT_NO_VERIFYING_KEY.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Wenn Sie JWK f\u00fcr das Signieren und Validieren von Token verwenden, stellen Sie sicher, dass das Token jwkEndpointUrl ordnungsgem\u00e4\u00df konfiguriert ist und dass die JWT- und JWK-Anspr\u00fcche korrekt sind. 2) Wenn Sie X.509-Zertifikate f\u00fcr das Signieren und Validieren von Token verwenden, stellen Sie sicher, dass die Attribute signatureAlgorithm, trustStoreRef und trustStoreAlias ordnungsgem\u00e4\u00df konfiguriert sind. 3) Wenn Sie gemeinsam genutzte Schl\u00fcssel f\u00fcr das Signieren und Validieren von Token verwenden, stellen Sie sicher, dass die Attribute clientId und clientSecret ordnungsgem\u00e4\u00df konfiguriert sind.
-
-#0=More specific error message, 1=clientId
-OIDC_CLIENT_BAD_RS_TOKEN=CWWKS1740W: Die Weitergabe eingehender Token f\u00fcr den Client [{1}] ist nicht g\u00fcltig. Ursache: [{0}]. Die Anforderung wird mit OpenID Connect authentifiziert.
-OIDC_CLIENT_BAD_RS_TOKEN.explanation=Das Token f\u00fcr die Anforderung zur Tokenweitergabe kann nicht verifiziert werden. Dieser Client versucht, die Authentifizierung mit OpenID Connect durchzuf\u00fchren.
-OIDC_CLIENT_BAD_RS_TOKEN.useraction=Wenn der Fehler erwartet wurde, ist keine Aktion erforderlich. Sollte der Fehler unerwartet sein, stellen Sie sicher, dass die Umgebung f\u00fcr eingehende Weitergabe ordnungsgem\u00e4\u00df eingerichtet ist.
-
-# Do not translate "signatureAlgorithm"
-#0=OIDC client ID, 1="none"
-OIDC_CLIENT_NONE_ALG=CWWKS1741W: Das Attribut signatureAlgorithm des OpenID Connect-Clients [{0}] ist auf [{1}] gesetzt.
-OIDC_CLIENT_NONE_ALG.explanation=Da das Attribut signatureAlgorithm auf "none" gesetzt ist, wird ein nicht signiertes Token erwartet, was nicht g\u00e4ngig ist.
-OIDC_CLIENT_NONE_ALG.useraction=Wenn eingehende Token nicht signiert sein m\u00fcssen, ist keine Aktion erforderlich. Andernfalls m\u00fcssen Sie einen unterst\u00fctzten signatureAlgorithm-Wert wie RS256 oder HS256 ausw\u00e4hlen.
 
 # CWWKS1742E
 #JWK_RETRIVE_FAILED=CWWKS1742E: Cannot get the Json Web Key(JWK) from the URL [{0}]. Response status [{1}]. Message:[{2}] 
 
 #0: the issuer, 1:jti
+#used by clients
 JWT_DUP_JTI_ERR=CWWKS1743E: Die Tokenvalidierung ist fehlgeschlagen. Es wurde bereits ein anderes JWT-Token (JSON Web Token) mit denselben ''iss'':[{0}]- und ''jti'':[{1}]-Claims empfangen.
-JWT_DUP_JTI_ERR.explanation=Ein JWT mit "iss"- und "jti"-Claims kann nur ein einziges Mal verwendet werden. Der jti-Claim stellt eine eindeutige ID f\u00fcr ein Token dar und kann daher in einem anderen Token mit demselben Aussteller nicht identisch sein.
+JWT_DUP_JTI_ERR.explanation=Ein JWT mit "iss"- und "jti"-Anspr\u00fcchen kann nur ein einziges Mal verwendet werden. Der jti-Anspruch stellt eine eindeutige ID f\u00fcr ein Token dar und kann daher in einem anderen Token mit demselben Aussteller nicht identisch sein.
 JWT_DUP_JTI_ERR.useraction=Stellen Sie sicher, dass jeder JWT-Token, das von demselben Aussteller ausgestellt wird, einen eindeutigen jti-Wert hat.
 
 # 0: the response state, 1: client ID
+# used by clients proj
 OIDC_CLIENT_RESPONSE_STATE_ERR=CWWKS1744E: Der aktuelle Status [{0}] einer Antwort an den OpenID Connect-Client [{1}] ist nicht g\u00fcltig. Der Statuswert ist entweder abgelaufen oder wird bereits verwendet.
 OIDC_CLIENT_RESPONSE_STATE_ERR.explanation=Der OpenID Connect-Client (Relying Party, RP) hat eine Antwort vom OpenID Connect-Provider (OP) empfangen, aber der Statusparameter in der Antwort ist nicht g\u00fcltig. Er ist entweder abgelaufen oder wird bereits verwendet.
 OIDC_CLIENT_RESPONSE_STATE_ERR.useraction=Stellen Sie sicher, dass die Uhren auf allen Systemen synchronisiert werden, um zu verhindern, dass Statuswerte vorzeitig ablaufen. Vergewissern Sie sich, dass die Statuswerte nur ein einziges Mal verwendet werden.
 
 # do not translate WASOidcCode
 # 0: the content of WASOidcCode, 1: client ID
+#used_by_client_project and clients project
 OIDC_CLIENT_BAD_PARAM_COOKIE=CWWKS1745E: Das WASOidcCode-Cookie [{0}] in der Anforderung an den OpenID Connect-Client [{1}] ist nicht g\u00fcltig. Der zugeh\u00f6rige Wert wurde m\u00f6glicherweise ge\u00e4ndert.
 OIDC_CLIENT_BAD_PARAM_COOKIE.explanation=Der OpenID Connect-Client (Relying Party, RP) hat ein WASOidcCode-Cookie empfangen, das nicht g\u00fcltig ist. Der zugeh\u00f6rige Wert wurde m\u00f6glicherweise ge\u00e4ndert.
 OIDC_CLIENT_BAD_PARAM_COOKIE.useraction=\u00dcberpr\u00fcfen Sie, dass das Cookie nicht ge\u00e4ndert wurde und dass der decodierte Inhalt des Cookies mit einem ordnungsgem\u00e4\u00df formatierten JSON-Objekt beginnt.
 
+# used by clients
 OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG=CWWKS1746E: Es konnten keine Token aus der HTTP-Antwort extrahiert werden. \u00dcberpr\u00fcfen Sie das Format der Antwort.
 OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG.explanation=Das Format der Antwort ist nicht g\u00fcltig und kann nicht verarbeitet werden. 
 OIDC_CLIENT_INVALID_HTTP_RESPONSE_NO_MSG.useraction=\u00dcberpr\u00fcfen Sie das Format der Antwort und wenden Sie sich an den Partner, der die Nachricht gesendet hat.
 
 # 0=JWK URL, 1=Response status, 2=Response content
+# used by clients
 JWK_RETRIEVE_FAILED=CWWKS1747E: Es wurde kein JSON Web Key (JWK) \u00fcber die URL [{0}] zur\u00fcckgegeben. Der Antwortstatus [{1}] und Inhalt [{2}] wurden zur\u00fcckgegeben.
 JWK_RETRIEVE_FAILED.explanation=\u00dcber die angegebene URL kann kein JSON Web Key zur\u00fcckgegeben werden. Die m\u00f6glichen Ursachen sind folgende: Die URL ist nicht g\u00fcltig, die URL ist nicht f\u00fcr die R\u00fcckgabe eines JWK konfiguriert, die Antwort von der URL ist leer oder es ist ein unbekannter Fehler aufgetreten.
 JWK_RETRIEVE_FAILED.useraction=Vergewissern Sie sich, dass die URL ordnungsgem\u00e4\u00df formatiert ist und eine Position angibt, die JSON Web Keys zur\u00fcckgeben kann. \u00dcberpr\u00fcfen Sie den Statuscode und den Inhalt der Antwort, um weitere Informationen zu erhalten.
 
-# do not translate GET
-OIDC_CLIENT_BAD_GET_REQUEST=CWWKS1748E: Eine GET-Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Es wurde der Antwortcode 500 zur\u00fcckgegeben.
-OIDC_CLIENT_BAD_GET_REQUEST.explanation=Es wurde eine Anforderung empfangen, die keinem erwarteten URL entspricht oder nicht die erforderlichen Parameter enth\u00e4lt.
-OIDC_CLIENT_BAD_GET_REQUEST.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration. Diese Nachricht kann auch auf einen Snooping-Angriff mit einem Browser zur\u00fcckzuf\u00fchren sein.
- 
-OIDC_CLIENT_BAD_REQUEST_NO_STATE=CWWKS1749E: Eine Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Der erforderliche Statusparameter fehlt. Es wurde der Antwortcode 500 zur\u00fcckgegeben.
-OIDC_CLIENT_BAD_REQUEST_NO_STATE.explanation=Es wurde eine Anforderung empfangen, die den erforderlichen Statusparameter nicht enth\u00e4lt.
-OIDC_CLIENT_BAD_REQUEST_NO_STATE.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration. Diese Nachricht kann auch auf einen Snooping-Angriff mit einem Browser zur\u00fcckzuf\u00fchren sein.
-
-# do not translate hostname 
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS1750E: Eine Anforderung f\u00fcr [{0}] ist nicht g\u00fcltig. Ein erforderliches Cookie, dessen Name mit WASReqURLOidc beginnt, fehlt. Der f\u00fcr den Zugriff auf den Client verwendete Hostname stimmt m\u00f6glicherweise nicht mit dem Namen \u00fcberein, der beim Provider registriert ist. Es wurde der Antwortcode 500 zur\u00fcckgegeben.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Es wurde eine Anforderung empfangen, die ein erforderliches Cookie nicht enth\u00e4lt.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration und die OpenID Connect-Clientkonfiguration. Das Cookie kann fehlen, weil mit einem Hostnamen auf den Client zugegriffen wurde, der von dem Hostnamen der beim Provider registrierten Umleitung abweicht.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

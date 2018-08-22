@@ -139,3 +139,16 @@ slf.no.acf.useraction=Vede\u0163i informa\u0163iile pentru determinarea probleme
 slf.failed.delete=CWWKL0072W: Fi\u015fierul cache [{0}] nu poate fi \u015fters. Acest rezultat poate duce la coruperea arhivelor imbricate.
 slf.failed.delete.explanation=Sistemul nu a reu\u015fit s\u0103 \u015ftearg\u0103 fi\u015fierul de cache. Deoarece fi\u015fierul \u00eenc\u0103 exist\u0103 \u00een sistem, poate fi cauzat\u0103 coruperea arhivelor imbricate.
 slf.failed.delete.useraction=Verifica\u0163i c\u0103 fi\u015fierul de cache nu este \u00eentr-o stare de blocare, care ar putea cauza e\u015fuarea \u015ftergerii fi\u015fierului.
+
+cls.classloader.config.duplicate=CWWKL0080E: Tipul de API [{0}] a fost deja folosit \u00een aceast\u0103 list\u0103 [{1}].  \u00cenl\u0103tura\u0163i tipul de API duplicat.
+cls.classloader.config.duplicate.explanation=Fiecare tip de API poate fi specificat maxim o dat\u0103.
+cls.classloader.config.duplicate.useraction=Verifica\u0163i configura\u0163ia serverului pentru tipul de API duplicat pentru a v\u0103 asigura c\u0103 tipurile de API sunt corecte.
+cls.classloader.config.not.allowed=CWWKL0081E: Tipul de API [{0}] este deja ad\u0103ugat la list\u0103 c\u00e2nd se folose\u015fte prefixul + sau -.  \u00cenl\u0103tura\u0163i [{0}] din lista [{1}].
+cls.classloader.config.not.allowed.explanation=Toate tipurile de API implicite sunt ad\u0103ugate, \u00eenl\u0103tura\u0163i duplicatele.
+cls.classloader.config.not.allowed.useraction=Verifica\u0163i configura\u0163ia serverului \u015fi \u00eenl\u0103tura\u0163i tipul de API implicit pentru a v\u0103 asigura c\u0103 tipurile de API sunt corecte.
+cls.classloader.config.typo=CWWKL0082E: Tipul de API [{0}] nu este valid \u00een aceast\u0103 list\u0103 [{1}] \u015fi trebuie modificat la unul din tipurile API {2} valide.
+cls.classloader.config.typo.explanation=Modifica\u0163i tipul de API invalid la un tip de API valid.
+cls.classloader.config.typo.useraction=Verifica\u0163i configura\u0163ia serverului pentru tipul de API invalid pentru a v\u0103 asigura c\u0103 tipurile de API sunt corecte.
+cls.classloader.config.typo2=CWWKL0083E: Atunci c\u00e2nd se utilizeaz\u0103 prefixul + sau -, tipul de API [{0}] nu este valid \u00een aceast\u0103 list\u0103 [{1}].  Toate tipurile de API trebuie s\u0103 aib\u0103 un prefix de + sau -
+cls.classloader.config.typo2.explanation=Modifica\u0163i tipul de API invalid la un tip de API valid cu + sau -.
+cls.classloader.config.typo2.useraction=Verifica\u0163i configura\u0163ia serverului pentru tipul de API invalid pentru a v\u0103 asigura c\u0103 tipurile de API sunt corecte.

@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/v11/resources/MpConfigProxyMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT 1.1 Config Proxy
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5775 - CWWKS5799
+
+MPJWT_11_CONFIG_PROXY_PROCESSED=CWWKS5775I: MicroProfile JWT \ubc84\uc804 1.1 mpConfigProxy\uac00 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MPJWT_11_CONFIG_PROXY_PROCESSED.explanation=\ud45c\uc2dc\ub41c \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MPJWT_11_CONFIG_PROXY_PROCESSED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+MPJWT_11_CONFIG_PROXY_MODIFIED=CWWKS5776I: MicroProfile JWT \ubc84\uc804 1.1 mpConfigProxy\uac00 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MPJWT_11_CONFIG_PROXY_MODIFIED.explanation=\ud45c\uc2dc\ub41c \uad6c\uc131\uc774 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MPJWT_11_CONFIG_PROXY_MODIFIED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+MPJWT_11_CONFIG_PROXY_DEACTIVATED=CWWKS5777I: MicroProfile JWT \ubc84\uc804 1.1 mpConfigProxy\uac00 \ube44\ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MPJWT_11_CONFIG_PROXY_DEACTIVATED.explanation=\ud45c\uc2dc\ub41c \uad6c\uc131\uc774 \ube44\ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MPJWT_11_CONFIG_PROXY_DEACTIVATED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+

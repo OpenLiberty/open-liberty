@@ -1,13 +1,9 @@
-###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2013.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
@@ -35,12 +31,12 @@ OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Wenn Sie eine asymmetrische Signatur ver
 
 #do not translate clientId, aud
 OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: Die Validierung f\u00fcr das von [{1}] angeforderte ID-token ist fehlgeschlagen, weil die im Token angegebene Zielgruppe (aud) [{0}] nicht mit der in der OpenID Connect-Clientkonfiguration angegebenen Client-ID [{1}] \u00fcbereinstimmt.
-OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=Die Zielgruppe im ID-Token muss mit der Client-ID \u00fcbereinstimmen. In diesem Fall stimmt die Zielgruppe (aud) im ID-Token nicht mit der Client-ID \u00fcberein, und deshalb ist die Validierung des ID-Tokens fehlgeschlagen.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=Die Zielgruppe im ID-Token muss mit der Client-ID \u00fcbereinstimmen. In diesem Fall stimmt die Zielgruppe (aud) im ID-Token nicht mit der Client-ID \u00fcberein und deshalb ist die Validierung des ID-Tokens fehlgeschlagen.
 OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Stellen Sie sicher, dass das Attribut [clientId], das in der Konfiguration des OpenID Connect-Clients (Relying Party, RP) angegeben ist, korrekt ist. Bei der Eingabe des Werts muss die Gro\u00df-/Kleinschreibung beachtet werden.
 
 #do not translate clientId, azp
 OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: Die Validierung f\u00fcr das von [{1}] angeforderte ID-token ist fehlgeschlagen, weil der im Token angegebene berechtigte Teilnehmer (azp) [{0}] nicht mit der in der OpenID Connect-Clientkonfiguration angegebenen Client-ID [{1}] \u00fcbereinstimmt.
-OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=Die berechtigte Teilnehmer im ID-Token muss mit der Client-ID \u00fcbereinstimmen. In diesem Fall stimmt der berechtigte Teilnehmer (azp) im ID-Token nicht mit der Client-ID \u00fcberein, und deshalb ist die Validierung des ID-Tokens fehlgeschlagen.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=Die berechtigte Teilnehmer im ID-Token muss mit der Client-ID \u00fcbereinstimmen. In diesem Fall stimmt der berechtigte Teilnehmer (azp) im ID-Token nicht mit der Client-ID \u00fcberein und deshalb ist die Validierung des ID-Tokens fehlgeschlagen.
 OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Stellen Sie sicher, dass das Attribut [clientId], das in der Konfiguration des OpenID Connect-Clients (Relying Party, RP) angegeben ist, korrekt ist. Bei der Eingabe des Werts muss die Gro\u00df-/Kleinschreibung beachtet werden.
 
 #
@@ -75,13 +71,15 @@ OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: Die Validierung f\u00
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Ein ID-Token kann nicht validiert werden, weil der OpenID Connect-Client (Relying Party, RP) und der OpenID Connect-Provider (OP) unterschiedliche Signaturalgorithmen zum Signieren/Pr\u00fcfen des Tokens verwenden.
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Stellen Sie sicher, dass der von der RP angegebene Signaturalgorithmus dem Signaturalgorithmus des OP entspricht.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das von [{0}] angeforderte JWT-Token kann nicht validiert werden, weil die Signatur im JWT-Token fehlt. Der OpenID Connect-Provider gibt den Algorithmus [{1}] an und erwartet, dass das JWT-Token signiert ist.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Das JWT kann nicht gepr\u00fcft werden, weil das JWT-Token nicht signiert ist. Der OpenID Connect-Provider erwartet, dass das Token signiert ist.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Clientkonfiguration, um sicherzustellen, dass das JWT-Token signiert wird.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a signature missing from the JWT token. The OpenID Connect provider specified [{1}] algorithm and expects the JWT Token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Cannot verify the JWT Token because the token is not signed. The OpenID Connect provider is expecting the token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Check the OpenID Connect client configuration to make sure that it signs the JWT Token.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: Die Tokenendpunktanforderung ist fehlgeschlagen. Das von [{0}] angeforderte JWT-Token kann nicht validiert werden, weil die Signaturalgorithmen des OpenID Connect-Providers [{1}] und des OpenID Connect-Clients [{2}] nicht \u00fcbereinstimmen.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Das JWT-Token kann nicht gepr\u00fcft werden, weil Provider und Client unterschiedliche Signaturalgorithmen f\u00fcr die Signatur und die \u00dcberpr\u00fcfung des Tokens verwenden.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Clientkonfiguration und geben Sie den Signaturalgorithmus an, der dem OpenID Connect-Provider entspricht.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a mismatch of signing algorithms between the OpenID Connect provider [{1}] and the OpenID Connect client [{2}].
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Cannot verify the JWT Token because the OpenID Connect provider and client are using different signature algorithms to sign/verify the token.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Check the OpenID Connect client configuration to specify a signature algorithm that matches with the OpenID Connect provider.
 
 #
 JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: Die Tokenendpunktanforderung ist fehlgeschlagen. Beim Versuch, ein JWT-Token mit dem Algorithmus [{0}] zu signieren, ist ein Fehler aufgetreten: [{1}].
@@ -99,28 +97,32 @@ JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Ein JWT-Token kann nich
 JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Wenn Sie eine asymmetrische Signatur verwenden, stellen Sie sicher, dass der \u00f6ffentliche Schl\u00fcssel im Zertifikat f\u00fcr die digitale Signatur verwendet werden kann. \u00dcberpr\u00fcfen Sie das Element keyStore, das von der SSL-Standardkonfiguration in der Datei server.xml referenziert wird, um Informationen zu dem Keystore zu erhalten, die den Schl\u00fcssel enth\u00e4lt. Lesen Sie auch die empfohlene Benutzeraktion zu der Nachricht, die hinter diesem Fehler angezeigt wird.
  
 #
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: Die Tokenendpunktanforderung ist fehlgeschlagen. Ein signiertes JWT-Token muss drei, jeweils durch einen Punkt (''.'') getrennte Segmente haben, aber dieses JWT-Token hat [{0}] Segmente.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Ein signiertes JWT-Token muss exakt drei, jeweils durch einen Punkt ('.') getrennte Segmente haben. Dieses JWT-Token hat jedoch eine ung\u00fcltige Anzahl von Segmenten.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Stellen Sie sicher, dass das JWT-Token g\u00fcltig ist und drei Segmente hat.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: The token endpoint request failed. A signed JWT token needs to have 3 segments separated by ''.'', but this JWT Token has [{0}] segments.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=A signed JWT token needs to have exactly 3 segments separated by '.'. This JWT Token has a bad segment number.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Make sure the JWT Token is valid and has 3 segments.
 
 #
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: Die Tokenendpunktanforderung ist fehlgeschlagen. Die Validierung von [{0}] angeforderten JWT-Tokens ist fehlgeschlagen. Es wurde eine Ausnahme des Typs IllegalStateException mit der folgenden Nachricht ausgegeben: [{1}].
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Das JWT-Token kann nicht validiert werden, weil die in der Nachricht angegebene Ausnahme des Typs IllegalStatException eingetreten ist.
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Korrigieren Sie den in der Nachricht angegebenen Fehler.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: The token endpoint request failed. Validation of the JWT token requested by the [{0}] failed. It got an InvalidJwtException with message:[{1}].
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=A JWT token cannot be validated because of an InvalidJwtException which is indicated in the message.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Correct the error which is indicated in the message.
 
 #
-JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: Die Tokenendpunktanforderung ist fehlgeschlagen. Ein erforderliches JWT-Token wurde nicht in der Anforderung gefunden.
-JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=Die Anforderung muss ein JWT-Token enthalten, aber das JWT-Token wurde nicht in der Tokenendpunktanforderung gefunden.
-JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Geben Sie ein g\u00fcltiges JWT-Token in der Tokenendpunktanforderung an.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: The token endpoint request failed. A required JWT Token is not found in the request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=The request needs to provide a JWT Token but can not find the JWT Token in the token endpoint request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Provide a valid JWT Token in the token endpoint request.
 
 #
 JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: Die OpenID Connect-Clientkonfiguration erfordert ein jwkEndpointUrl-Attribut.
 JWK_ENDPOINT_MISSING_ERR.explanation=Das Attribut jwkEndpointUrl wurde nicht in der OpenID Connect-Clientkonfiguration angegeben.
 JWK_ENDPOINT_MISSING_ERR.useraction=Setzen Sie das Attribut jwkEndpointUrl auf die URL mit dem JSON-Webschl\u00fcssel des OpenID Connect-Providers.
 
-OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten. Ausnahme: [{0}]
-OIDC_FAILED_RUN_AS_SUBJCET.explanation=Beim Abrufen des RunAsSubject ist eine Ausnahme eingetreten.
-OIDC_FAILED_RUN_AS_SUBJCET.useraction=Stellen Sie sicher, dass der Server ordnungsgem\u00e4\u00df konfiguriert und gestartet ist.
+# now in openidconnect.common project, no longer used here.
+#OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: An exception occurred while attempting to get the RunAsSubject. The exception was: [{0}].
+#OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
+#OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
 #0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
 OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Die Validierung f\u00fcr das von [{0}] angeforderte Token ist fehlgeschlagen, weil das Token au\u00dferhalb des g\u00fcltigen Bereichs liegt. M\u00f6glicherweise liegt die aktuelle Zeit ({1}) nach der Ablaufzeit des Tokens ({2}) oder die Zeitspanne zwischen der Ausstellungszeit {3} und der aktuellen Zeit [{1}] ist zu lang.

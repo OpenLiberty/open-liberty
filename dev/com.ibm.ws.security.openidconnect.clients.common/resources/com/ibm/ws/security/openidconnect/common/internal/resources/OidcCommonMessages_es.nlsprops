@@ -1,13 +1,9 @@
-###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2013.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
@@ -75,13 +71,15 @@ OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: La validaci\u00f3n ha
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Una se\u00f1al de ID no puede validarse porque el cliente OpenID Connect (parte dependiente o RP) y el proveedor de OpenID Connect (OP) est\u00e1n utilizando algoritmos de firma diferentes para firmar/verificar la se\u00f1al.
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Aseg\u00farese de que el algoritmo de firma especificado por RP coincide con el algoritmo de firma de OP.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: La solicitud de punto final de se\u00f1al ha fallado. No se puede validar la se\u00f1al de JWT solicitada por {0} debido a que falta una firma en la se\u00f1al de JWT. El proveedor de OpenID Connect ha especificado el algoritmo {1} y espera que la se\u00f1al JWT est\u00e9 firmada.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=No se puede verificar la se\u00f1al de JWT porque la se\u00f1al no est\u00e1 firmada. El proveedor de OpenID Connect espera que la se\u00f1al est\u00e9 firmada.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Compruebe la configuraci\u00f3n del cliente de OpenID Connect para asegurarse de que firma la se\u00f1al JWT.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a signature missing from the JWT token. The OpenID Connect provider specified [{1}] algorithm and expects the JWT Token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Cannot verify the JWT Token because the token is not signed. The OpenID Connect provider is expecting the token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Check the OpenID Connect client configuration to make sure that it signs the JWT Token.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: La solicitud de punto final de se\u00f1al ha fallado. No se puede validar la se\u00f1al de JWT solicitada por [{0}] debido a una discrepancia de algoritmos de firma entre el proveedor OpenID Connect [{1}] y el cliente de OpenID Connect [{2}].
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=No se puede verificar la se\u00f1al de JWT porque el proveedor y el cliente est\u00e1n utilizando algoritmos de firma diferentes para firmar o verificar la se\u00f1al.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Compruebe que la configuraci\u00f3n del cliente de OpenID Connect especifique un algoritmo de firma que coincida con la del proveedor de OpenID Connect.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a mismatch of signing algorithms between the OpenID Connect provider [{1}] and the OpenID Connect client [{2}].
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Cannot verify the JWT Token because the OpenID Connect provider and client are using different signature algorithms to sign/verify the token.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Check the OpenID Connect client configuration to specify a signature algorithm that matches with the OpenID Connect provider.
 
 #
 JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: La solicitud de punto final de se\u00f1al ha fallado. Se ha producido un error al intentar firmar una se\u00f1al de JWT utilizando el algoritmo [{0}]: [{1}].
@@ -99,28 +97,32 @@ JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Una se\u00f1al de JWT n
 JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Si utiliza una firma asim\u00e9trica, aseg\u00farese de que la clave p\u00fablica del certificado puede utilizarse a efectos de firma digital.  Compruebe el elemento keyStore al que hace referencia la configuraci\u00f3n SSL predeterminada en el archivo server.xml para encontrar informaci\u00f3n sobre el almac\u00e9n de claves que contiene la clave. Adem\u00e1s, consulte la acci\u00f3n del usuario para el mensaje que aparece despu\u00e9s de este error.
  
 #
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: La solicitud de punto final de se\u00f1al ha fallado. Una se\u00f1al de JWT necesita tener 3 segmentos separados por ''.'', pero esta se\u00f1al de JWT tiene {0}] segmentos.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Una se\u00f1al de JWT necesita tener 3 segmentos separados por '.'. Esta se\u00f1al de JWT tiene un n\u00famero de segmentos err\u00f3neo.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Aseg\u00farese de que la se\u00f1al de JWT sea v\u00e1lida y tenga 3 segmentos.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: The token endpoint request failed. A signed JWT token needs to have 3 segments separated by ''.'', but this JWT Token has [{0}] segments.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=A signed JWT token needs to have exactly 3 segments separated by '.'. This JWT Token has a bad segment number.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Make sure the JWT Token is valid and has 3 segments.
 
 #
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: La solicitud de punto final de se\u00f1al ha fallado. Ha fallado la validaci\u00f3n de la se\u00f1al JWT solicitada por [{0}]. Ha recibido una IllegalStateException con el mensaje:[{1}].
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=No se puede validar una se\u00f1al de JWT debido a una IllegalStatException indicada en el mensaje.
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrija el error indicado en el mensaje.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: The token endpoint request failed. Validation of the JWT token requested by the [{0}] failed. It got an InvalidJwtException with message:[{1}].
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=A JWT token cannot be validated because of an InvalidJwtException which is indicated in the message.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Correct the error which is indicated in the message.
 
 #
-JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: La solicitud de punto final de se\u00f1al ha fallado. No se ha encontrado una se\u00f1al de JWT v\u00e1lida en la solicitud.
-JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=La solicitud debe proporcionar una se\u00f1al de JWT pero no se ha encontrado la se\u00f1al de JWT en la solicitud de punto final de se\u00f1al.
-JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Proporcione una se\u00f1al de JWT v\u00e1lida en la solicitud de punto final de se\u00f1al.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: The token endpoint request failed. A required JWT Token is not found in the request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=The request needs to provide a JWT Token but can not find the JWT Token in the token endpoint request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Provide a valid JWT Token in the token endpoint request.
 
 #
 JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: La configuraci\u00f3n del cliente de OpenID Connect necesita un atributo jwkEndpointUrl.
 JWK_ENDPOINT_MISSING_ERR.explanation=El atributo jwkEndpointUrl no se ha especificado en la configuraci\u00f3n del cliente de OpenID Connect.
 JWK_ENDPOINT_MISSING_ERR.useraction=Establezca el atributo jwkEndpointUrl en la clave web JSON del URL del proveedor de OpenID Connect.
 
-OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Se ha producido una excepci\u00f3n al intentar obtener el RunAsSubject. La excepci\u00f3n era: [{0}]
-OIDC_FAILED_RUN_AS_SUBJCET.explanation=Se ha producido una excepci\u00f3n al obtener el RunAsSubject.
-OIDC_FAILED_RUN_AS_SUBJCET.useraction=Aseg\u00farese de que el servidor est\u00e9 configurado y se inicie correctamente.
+# now in openidconnect.common project, no longer used here.
+#OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: An exception occurred while attempting to get the RunAsSubject. The exception was: [{0}].
+#OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
+#OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
 #0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
 OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] porque la se\u00f1al est\u00e1 fuera del rango v\u00e1lido. Esto puede deberse a que la hora actual [{1}] es posterior a la hora de caducidad de la se\u00f1al [{2}] o a que la hora de emisi\u00f3n [{3}] est\u00e1 demasiado alejada de la hora actual [{1}].
@@ -137,7 +139,7 @@ OIDC_JWT_VERIFY_AUD_ERR.useraction=Aseg\u00farese de que el atributo audiences e
 # 0= oidc client id.
 OIDC_ID_VERIFY_IAT_ERR=CWWKS1775E: La validaci\u00f3n ha fallado para la se\u00f1al solicitada por [{0}] porque la reclamaci\u00f3n de iat necesaria no est\u00e1 presente en la se\u00f1al.
 OIDC_ID_VERIFY_IAT_ERR.explanation=La se\u00f1al debe contener una reclamaci\u00f3n de iat (fecha de emisi\u00f3n).
-OIDC_ID_VERIFY_IAT_ERR.useraction=Obtenga una se\u00f1al v\u00e1lida del proveedor d OpenId Connect.
+OIDC_ID_VERIFY_IAT_ERR.useraction=Obtenga una se\u00f1al v\u00e1lida del proveedor de OpenId Connect.
 
 
 #0=OIDC client ID, 1=exception, 2=signature algorithm

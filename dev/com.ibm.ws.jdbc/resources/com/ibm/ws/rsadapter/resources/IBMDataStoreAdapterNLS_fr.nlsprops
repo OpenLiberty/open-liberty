@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Evitez d'utiliser cette fonction ou si possib
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: Une classe d''impl\u00e9mentation de pilote JDBC valide n''a pas pu \u00eatre trouv\u00e9e pour le pilote JDBC {0} \u00e0 l''aide de la biblioth\u00e8que {1}.
-DSRA4000.no.suitable.driver.explanation=Aucune classe d'impl\u00e9mentation de pilote JDBC valide n'a \u00e9t\u00e9 trouv\u00e9e.
-DSRA4000.no.suitable.driver.useraction=Mettez \u00e0 jour la configuration pour que la biblioth\u00e8que contienne un chemin d'acc\u00e8s \u00e0 un pilote JDBC reconnu ou que la classe d'impl\u00e9mentation soit indiqu\u00e9e sur la source de donn\u00e9es.
+DSRA4000.no.suitable.driver=DSRA4000E: Aucune impl\u00e9mentation de {0} n''a \u00e9t\u00e9 trouv\u00e9e pour {1} avec la biblioth\u00e8que {2}. Il se peut que le nom ou l''emplacement des fichiers JAR du pilote JDBC soit incorrect ou inaccessible. Recherche dans : {3}. Recherche sous les packages : {4}.
+DSRA4000.no.suitable.driver.explanation=Une source de donn\u00e9es ou une impl\u00e9mentation de pilote peut \u00eatre introuvable pour plusieurs raisons. Il se peut que le nom ou l'emplacement des fichiers JAR du pilote JDBC soit incorrect ou inaccessible. Il se peut que le pilote JDBC n'identifie pas correctement son impl\u00e9mentation java.sql.Driver ou qu'il ne poss\u00e8de pas d'impl\u00e9mentation java.sql.Driver. Ou bien, la logique int\u00e9gr\u00e9e du serveur pour l'identification des classes d'impl\u00e9mentation de source de donn\u00e9es ne s'applique pas \u00e0 tous les pilotes.
+DSRA4000.no.suitable.driver.useraction=V\u00e9rifiez que les configurations du pilote JDBC et de la biblioth\u00e8que sont correctes. Si les classes d'impl\u00e9mentation restent introuvables, sp\u00e9cifiez-les manuellement dans la configuration.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: Une classe d''impl\u00e9mentation du pilote JDBC valide est introuvable dans la biblioth\u00e8que imbriqu\u00e9e utilis\u00e9e par le pilote JDBC {0}.
-DSRA4001.no.suitable.driver.nested.explanation=Aucune classe d'impl\u00e9mentation de pilote JDBC valide n'a \u00e9t\u00e9 trouv\u00e9e.
-DSRA4001.no.suitable.driver.nested.useraction=Mettez \u00e0 jour la configuration pour que la biblioth\u00e8que imbriqu\u00e9e contienne un chemin d'acc\u00e8s \u00e0 un pilote JDBC reconnu ou que la classe d'impl\u00e9mentation soit indiqu\u00e9e sur la source de donn\u00e9es.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Aucune impl\u00e9mentation de {0} n''a \u00e9t\u00e9 trouv\u00e9e pour {1}. Recherche dans : {2}. Il se peut que le nom ou l''emplacement des fichiers JAR du pilote JDBC soit incorrect ou inaccessible. Recherche sous les packages : {3}.
+DSRA4001.no.suitable.driver.nested.explanation=Une source de donn\u00e9es ou une impl\u00e9mentation de pilote peut \u00eatre introuvable pour plusieurs raisons. Il se peut que le nom ou l'emplacement des fichiers JAR du pilote JDBC soit incorrect ou inaccessible. Il se peut que le pilote JDBC n'identifie pas correctement son impl\u00e9mentation java.sql.Driver ou qu'il ne poss\u00e8de pas d'impl\u00e9mentation java.sql.Driver. Ou bien, la logique int\u00e9gr\u00e9e du serveur pour l'identification des classes d'impl\u00e9mentation de source de donn\u00e9es ne s'applique pas \u00e0 tous les pilotes.
+DSRA4001.no.suitable.driver.nested.useraction=V\u00e9rifiez que les configurations du pilote JDBC et de la biblioth\u00e8que sont correctes. Si les classes d'impl\u00e9mentation restent introuvables, sp\u00e9cifiez-les manuellement dans la configuration.
 
 DSRA4003.driver.null=DSRA4003E: Aucun \u00e9l\u00e9ment jdbcDriver n''a \u00e9t\u00e9 trouv\u00e9 pour la source de donn\u00e9es {0}.
 DSRA4003.driver.null.explanation=Aucun \u00e9l\u00e9ment jdbcDriver valide n'a \u00e9t\u00e9 trouv\u00e9 pour la source de donn\u00e9es indiqu\u00e9e.
@@ -244,6 +244,32 @@ DSRA4003.driver.null.useraction=Mettez \u00e0 jour la configuration pour inclure
 DSRA4004.onconnect.sql=DSRA4004E: Impossible d''ex\u00e9cuter la commande SQL onConnect \"{0}\" lors de la connexion obtenue de dataSource {1}. Pour plus d''informations, consultez l''exception source.
 DSRA4004.onconnect.sql.explanation=Une erreur s'est produite lors de la tentative d'ex\u00e9cution de la commande SQL sp\u00e9cifi\u00e9e.
 DSRA4004.onconnect.sql.useraction=Veuillez vous r\u00e9f\u00e9rer au message d'exception pour d\u00e9terminer la cause du probl\u00e8me.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: Le serveur ne prend pas en charge la propri\u00e9t\u00e9 loginTimeout qui est sp\u00e9cifi\u00e9e dans l''URL ou dans les propri\u00e9t\u00e9s de la source de donn\u00e9es {0}.
+DSRA4005.invalid.logintimeout.explanation=La propri\u00e9t\u00e9 loginTimeout n'est pas prise en charge lorsqu'elle est sp\u00e9cifi\u00e9e pour une source de donn\u00e9es soutenue par une impl\u00e9mentation java.sql.Driver car le serveur ne peut pas appeler getLoginTimeout sur la classe java.sql.Driver.
+DSRA4005.invalid.logintimeout.useraction=Modifiez la configuration de la source de donn\u00e9es en vue de l'utilisation d'une impl\u00e9mentation de source de donn\u00e9es \u00e0 la place d'une impl\u00e9mentation java.sql.Driver ou retirez la propri\u00e9t\u00e9 loginTimeout.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: La source de donn\u00e9es {0} ne peut pas se connecter \u00e0 la base de donn\u00e9es car {1} a renvoy\u00e9 une connexion de valeur null pour l''URL commen\u00e7ant par {2}. Cette erreur indique que le pilote JDBC ne respecte pas la sp\u00e9cification JDBC.
+DSRA4006.null.connection.explanation=Bien que java.sql.Driver ait indiqu\u00e9 qu'il a accept\u00e9 l'URL fournie, il a renvoy\u00e9 une connexion de valeur null. Cette erreur indique un bogue dans le pilote JDBC.
+DSRA4006.null.connection.useraction=Signalez l'erreur au fournisseur du pilote JDBC et assurez-vous que la configuration du pilote JDBC et la configuration de la source de donn\u00e9es sont correctes.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: Le pilote JDBC ne prend pas en charge le niveau d''isolement TRANSACTION_NONE, qui est configur\u00e9 dans la source de donn\u00e9es {0}.
+DSRA4008.tran.none.unsupported.explanation=Le niveau d'isolement TRANSACTION_NONE qui est configur\u00e9 dans la source de donn\u00e9es n'est pas pris en charge par le pilote JDBC.
+DSRA4008.tran.none.unsupported.useraction=Mettez \u00e0 jour la configuration de la source de donn\u00e9es en vue de l'utilisation d'un niveau d'isolement pris en charge par le pilote JDBC ou utilisez un pilote qui prend en charge le niveau d'isolement TRANSACTION_NONE. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: La source de donn\u00e9es {0} ne peut pas \u00eatre configur\u00e9e avec le niveau d''isolement TRANSACTION_NONE et transactional=true.
+DSRA4009.tran.none.transactional.unsupported.explanation=Un pilote JDBC qui est configur\u00e9 avec le niveau d'isolement TRANSACTION_NONE ne prendra pas en charge les transactions.
+DSRA4009.tran.none.transactional.unsupported.useraction=D\u00e9finissez transactional=false pour la source de donn\u00e9es.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: La validation automatique est requise lors de l''utilisation du niveau d''isolement TRANSACTION_NONE, qui est configur\u00e9 pour la source de donn\u00e9es {0}.
+DSRA4010.tran.none.autocommit.required.explanation=Le pilote JDBC est configur\u00e9 avec le niveau d'isolement TRANSACTION_NONE et requiert l'utilisation de la validation automatique.
+DSRA4010.tran.none.autocommit.required.useraction=Conservez la valeur true pour la validation automatique.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Le pilote JDBC ne prend pas en charge le passage au niveau d''isolement TRANSACTION_NONE pour la source de donn\u00e9es {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=La sp\u00e9cification JDBC ne prend pas en charge le passage au niveau d'isolement TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Evitez de passer au niveau d'isolement TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 
@@ -594,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Le serveur d'applications ne prend p
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= D\u00e9sactivez Kerberos ou utilisez un programme d'arri\u00e8re plan DB2 avec le pilote JDBC DB2 Universal.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

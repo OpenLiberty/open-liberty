@@ -139,3 +139,19 @@ slf.no.acf.useraction=Sehen Sie sich die Informationen zur Fehlerbestimmung auf 
 slf.failed.delete=CWWKL0072W: Die Cachedatei [{0}] kann nicht gel\u00f6scht werden. Dieses Ergebnis kann zur Besch\u00e4digung verschachtelter Archive f\u00fchren.
 slf.failed.delete.explanation=Das System konnte die Cachedatei nicht l\u00f6schen. Weil die Datei immer noch im System vorhanden ist, kann dies zu einer Besch\u00e4digung der verschachtelten Archive f\u00fchren.
 slf.failed.delete.useraction=Vergewissern Sie sich, dass die Cachedatei nicht gesperrt ist, weil dies dazu f\u00fchrt, dass das L\u00f6schen der Datei fehlschl\u00e4gt. 
+
+cls.classloader.config.duplicate=CWWKL0080E: Der API-Typ [{0}] wird bereits in der Liste [{1}] verwendet. Entfernen Sie den doppelten API-Typ.
+cls.classloader.config.duplicate.explanation=Jeder API-Typ kann nur ein einziges Mal angegeben werden.
+cls.classloader.config.duplicate.useraction=Suchen Sie in der Serverkonfiguration nach dem doppelten API-Typ und stellen Sie sicher, dass der richtige API-Typ verwendet wird.
+
+cls.classloader.config.not.allowed=CWWKL0081E: Der API-Typ [{0}] wird der Liste bereits hinzugef\u00fcgt, wenn das Pr\u00e4fix + oder - verwendet wird. Entfernen Sie [{0}] aus der Liste [{1}].
+cls.classloader.config.not.allowed.explanation=Es werden alle Standard-API-Typen hinzugef\u00fcgt. Entfernen Sie Duplikate.
+cls.classloader.config.not.allowed.useraction=\u00dcberpr\u00fcfen Sie die Serverkonfiguration und entfernen Sie den Standard-API-Typ, um sicherzustellen, dass der API-Typ korrekt ist.
+
+cls.classloader.config.typo=CWWKL0082E: Der API-Typ [{0}] ist in dieser Liste [{1}] nicht g\u00fcltig und muss in einen der g\u00fcltigen API-Typen ({2}) ge\u00e4ndert werden.
+cls.classloader.config.typo.explanation=\u00c4ndern Sie den ung\u00fcltigen API-Typ in einen g\u00fcltigen API-Typ.
+cls.classloader.config.typo.useraction=Suchen Sie in der Serverkonfiguration nach dem ung\u00fcltigen API-Typ und stellen Sie sicher, dass der richtige API-Typ verwendet wird.
+
+cls.classloader.config.typo2=CWWKL0083E: Wenn das Pr\u00e4fix + oder - verwendet wird, ist der API-Typ [{0}] in der dieser Liste [{1}] nicht g\u00fcltig. Alle API-Typen m\u00fcssen ein Pr\u00e4fix + oder - haben.
+cls.classloader.config.typo2.explanation=\u00c4ndern Sie den ung\u00fcltigen API-Typ in einen g\u00fcltigen API-Typ mit dem Pr\u00e4fix + oder -.
+cls.classloader.config.typo2.useraction=Suchen Sie in der Serverkonfiguration nach dem ung\u00fcltigen API-Typ und stellen Sie sicher, dass der richtige API-Typ verwendet wird.

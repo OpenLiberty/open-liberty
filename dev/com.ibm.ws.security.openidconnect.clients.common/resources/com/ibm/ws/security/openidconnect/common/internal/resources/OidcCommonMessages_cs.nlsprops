@@ -1,13 +1,9 @@
-###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2013.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
@@ -20,8 +16,8 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd po\u017eaduje [{0}], se nezda\u0159ilo, proto\u017ee vydavatel (iss) [{1}] uveden\u00fd v tokenu neodpov\u00edd\u00e1 atributu [issuerIdentifier] [{2}] poskytovatele uveden\u00e9ho v konfiguraci klienta OpenID Connect. Zkontrolujte atribut issuerIdentifier v konfiguraci klienta.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Ov\u011b\u0159en\u00ed tokenu ID se nezda\u0159ilo, proto\u017ee vydavatel ur\u010den\u00fd v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e1 strana - RP) neodpov\u00edd\u00e1 vydavateli uveden\u00e9mu v tokenu.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Zkontrolujte, zda atribut [issuerIdentifier] uveden\u00fd v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID (RP) odpov\u00edd\u00e1 vydavateli pou\u017e\u00edvan\u00e9ho poskytovatele OpenID (OP).
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Ov\u011b\u0159en\u00ed tokenu ID se nezda\u0159ilo, proto\u017ee vydavatel ur\u010den\u00fd v konfiguraci klienta OpenID Connect (z\u00e1visl\u00e1 strana - RP) neodpov\u00edd\u00e1 vydavateli uveden\u00e9mu v tokenu.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Zkontrolujte, zda atribut [issuerIdentifier] uveden\u00fd v konfiguraci klienta OpenID Connect (RP) odpov\u00edd\u00e1 vydavateli pou\u017e\u00edvan\u00e9ho poskytovatele OpenID (OP).
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: P\u0159i pokusu o podeps\u00e1n\u00ed tokenu ID s pomoc\u00ed algoritmu [{0}] do\u0161lo k chyb\u011b: [{1}].
@@ -36,17 +32,17 @@ OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Pokud pou\u017e\u00edv\u00e1te asymetric
 #do not translate clientId, aud
 OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd po\u017eaduje [{1}], se nezda\u0159ilo, proto\u017ee p\u0159\u00edjemce (aud) [{0}] uveden\u00fd v tokenu neodpov\u00edd\u00e1 identifik\u00e1toru clientId [{1}] uveden\u00e9mu v konfiguraci klienta OpenID Connect.
 OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=P\u0159\u00edjemce v tokenu ID by m\u011bl odpov\u00eddat ID klienta. V tomto p\u0159\u00edpad\u011b p\u0159\u00edjemce (aud) v tokenu ID neodpov\u00edd\u00e1 ID klienta, tak\u017ee se ov\u011b\u0159en\u00ed tokenu ID nezda\u0159ilo.
-OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Ujist\u011bte se, zda je spr\u00e1vn\u00fd atribut [clientId] uveden\u00fd v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e9 strany neboli RP). Tato hodnota rozli\u0161uje mal\u00e1 a velk\u00e1 p\u00edsmena.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Ujist\u011bte se, zda je spr\u00e1vn\u00fd atribut [clientId] uveden\u00fd v konfiguraci klienta OpenID Connect (z\u00e1visl\u00e9 strany neboli RP). Tato hodnota rozli\u0161uje mal\u00e1 a velk\u00e1 p\u00edsmena.
 
 #do not translate clientId, azp
 OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd po\u017eaduje [{1}] se nezda\u0159ilo, proto\u017ee autorizovan\u00e1 strana (azp) [{0}] uveden\u00e1 v tokenu neodpov\u00edd\u00e1 identifik\u00e1toru clientId [{1}] uveden\u00e9mu v konfiguraci klienta OpenID Connect.
 OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=Autorizovan\u00e1 strana v tokenu ID by m\u011bla odpov\u00eddat ID klienta. V tomto p\u0159\u00edpad\u011b autorizovan\u00e1 strana (azp) v tokenu ID neodpov\u00edd\u00e1 ID klienta, tak\u017ee se ov\u011b\u0159en\u00ed tokenu ID nezda\u0159ilo.
-OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Ujist\u011bte se, zda je spr\u00e1vn\u00fd atribut [clientId] uveden\u00fd v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e9 strany neboli RP). Tato hodnota rozli\u0161uje mal\u00e1 a velk\u00e1 p\u00edsmena.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Ujist\u011bte se, zda je spr\u00e1vn\u00fd atribut [clientId] uveden\u00fd v konfiguraci klienta OpenID Connect (z\u00e1visl\u00e9 strany neboli RP). Tato hodnota rozli\u0161uje mal\u00e1 a velk\u00e1 p\u00edsmena.
 
 #
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1756E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd vy\u017eaduje [{0}], pomoc\u00ed algoritmu [{2}] se nezda\u0159ilo kv\u016fli selh\u00e1n\u00ed ov\u011b\u0159en\u00ed podpisu: [{1}].
-OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=Token ID nelze ov\u011b\u0159it, proto\u017ee nelze ov\u011b\u0159it podpis. To mohlo b\u00fdt zp\u016fsobeno neshodou v podpisov\u00e9m algoritmu nebo sd\u00edlen\u00e9m kl\u00ed\u010di mezi klientem p\u0159ipojen\u00ed OpenID a poskytovatelem p\u0159ipojen\u00ed OpenID.
-OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee nakonfigurovan\u00fd podpisov\u00fd algoritmus a nakonfigurovan\u00fd sd\u00edlen\u00fd kl\u00ed\u010d je kompatibiln\u00ed s t\u011bmi na poskytovateli p\u0159ipojen\u00ed OpenID.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=Token ID nelze ov\u011b\u0159it, proto\u017ee nelze ov\u011b\u0159it podpis. To mohlo b\u00fdt zp\u016fsobeno neshodou v podpisov\u00e9m algoritmu nebo sd\u00edlen\u00e9m kl\u00ed\u010di mezi klientem OpenID Connect a poskytovatelem OpenID Connect.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=Zkontrolujte konfiguraci serveru a ujist\u011bte se, \u017ee nakonfigurovan\u00fd podpisov\u00fd algoritmus a nakonfigurovan\u00fd sd\u00edlen\u00fd kl\u00ed\u010d je kompatibiln\u00ed s t\u011bmi na poskytovateli OpenID Connect.
 
 #
 OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd vy\u017eaduje [{0}], pomoc\u00ed algoritmu [{2}] se nezda\u0159ilo kv\u016fli selh\u00e1n\u00ed ov\u011b\u0159en\u00ed podpisu: [{1}].
@@ -56,32 +52,34 @@ OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Pokud pou\u017e\u00edv\u
 #
 OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd vy\u017eaduje [{0}], se nezda\u0159ilo. P\u0159\u00ed\u010dina: [{1}]. M\u016f\u017ee to b\u00fdt zp\u016fsobeno t\u00edm, \u017ee v aktu\u00e1ln\u00edm \u010dase [{2}] ji\u017e vypr\u0161ela platnost tokenu platn\u00e9ho do [{3}], nebo \u017ee je \u010das vyd\u00e1n\u00ed [{4}] p\u0159\u00edli\u0161 vzd\u00e1len\u00fd od \u010dasu aktu\u00e1ln\u00edho [{2}].
 OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=Token ID nelze ov\u011b\u0159it, proto\u017ee zobrazovan\u00fd aktu\u00e1ln\u00ed \u010das se nenach\u00e1z\u00ed mezi \u010dasem vyd\u00e1n\u00edm tokenu a vypr\u0161en\u00edm jeho platnosti.
-OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Ujist\u011bte se, \u017ee jsou syst\u00e9mov\u00e9 hodiny klienta pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e9 strany (RP)) synchronizovan\u00e9 s hodinami syst\u00e9mu poskytovatele p\u0159ipojen\u00ed OpenID (OP) (pokud se nach\u00e1z\u00ed v r\u016fzn\u00fdch syst\u00e9mech).
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Ujist\u011bte se, \u017ee jsou syst\u00e9mov\u00e9 hodiny klienta OpenID Connect (z\u00e1visl\u00e9 strany (RP)) synchronizovan\u00e9 s hodinami syst\u00e9mu poskytovatele OpenID Connect (OP) (pokud se nach\u00e1z\u00ed v r\u016fzn\u00fdch syst\u00e9mech).
 
 #do not translate at_hash
 #
 OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd vy\u017eaduje [{0}], se nezda\u0159ilo kv\u016fli neshod\u011b ha\u0161ov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho prvku [{1}] a prvku at_hash [{2}] v tokenu ID. 
-OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=Prvek at_hash v tokenu ID umo\u017e\u0148uje klient\u016fm pro p\u0159ipojen\u00ed OpenID zabr\u00e1nit \u00fatok\u016fm pomoc\u00ed nahrazen\u00ed token\u016f. Hodnota prvku at_hash by m\u011bla odpov\u00eddat hodnot\u011b ha\u0161ov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho prvku p\u0159ijat\u00e9ho klientem pro p\u0159ipojen\u00ed OpenID.
-OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Ujist\u011bte se, \u017ee je komunikace mezi klientem pro p\u0159ipojen\u00ed OpenID (z\u00e1vislou stranou (RP)) a poskytovatelem p\u0159ipojen\u00ed OpenID (OP) bezpe\u010dn\u00e1, aby nedoch\u00e1zelo k manipulaci s p\u0159\u00edstupov\u00fdmi prvky, kter\u00e9 RP p\u0159ij\u00edm\u00e1.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=Prvek at_hash v tokenu ID umo\u017e\u0148uje klient\u016fm OpenID Connect zabr\u00e1nit \u00fatok\u016fm pomoc\u00ed nahrazen\u00ed token\u016f. Hodnota prvku at_hash by m\u011bla odpov\u00eddat hodnot\u011b ha\u0161ov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho tokenu p\u0159ijat\u00e9ho klientem OpenID Connect.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Ujist\u011bte se, \u017ee je komunikace mezi klientem OpenID Connect (z\u00e1vislou stranou (RP)) a poskytovatelem OpenID Connect (OP) bezpe\u010dn\u00e1, aby nedoch\u00e1zelo k manipulaci s p\u0159\u00edstupov\u00fdmi tokeny, kter\u00e9 RP p\u0159ij\u00edm\u00e1.
 
 #
 OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd vy\u017eaduje [{0}], se nezda\u0159ilo, proto\u017ee v tokenu ID chyb\u00ed podpis. Konfigurace klienta OpenID Connect (z\u00e1visl\u00e9 strany (RP)) ur\u010dila algoritmus [{1}] a o\u010dek\u00e1v\u00e1 podepsan\u00fd token ID.
-OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Token ID nelze ov\u011b\u0159it, proto\u017ee nebyl podeps\u00e1n. Klient pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e1 strana (RP)) o\u010dek\u00e1v\u00e1 podepsan\u00fd token.
-OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Zkontrolujte, zda poskytovatel p\u0159ipojen\u00ed OpenID umo\u017e\u0148uje podeps\u00e1n\u00ed tokenu.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Token ID nelze ov\u011b\u0159it, proto\u017ee nebyl podeps\u00e1n. Klient OpenID Connect (z\u00e1visl\u00e1 strana (RP)) o\u010dek\u00e1v\u00e1 podepsan\u00fd token.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Zkontrolujte, zda poskytovatel OpenID Connect umo\u017e\u0148uje podeps\u00e1n\u00ed tokenu.
 
 #do not translate signatureAlgorithm
 #
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: Ov\u011b\u0159en\u00ed tokenu ID, kter\u00fd vy\u017eaduje [{0}], se nezda\u0159ilo kv\u016fli neshod\u011b podpisov\u00fdch algoritm\u016f mezi klientem OpenID Connect [{1}] a poskytovatelem OpenID Connect [{2}].
-OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Token ID nelze ov\u011b\u0159it, proto\u017ee klient pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e1 strana (RP)) a poskytovatel p\u0159ipojen\u00ed OpenID (OP) pou\u017e\u00edvaj\u00ed k podeps\u00e1n\u00ed/ov\u011b\u0159en\u00ed tokenu jin\u00e9 podpisov\u00e9 algoritmy.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Token ID nelze ov\u011b\u0159it, proto\u017ee klient OpenID Connect (z\u00e1visl\u00e1 strana (RP)) a poskytovatel OpenID Connect (OP) pou\u017e\u00edvaj\u00ed k podeps\u00e1n\u00ed/ov\u011b\u0159en\u00ed tokenu jin\u00e9 podpisov\u00e9 algoritmy.
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Zkontrolujte, zda algoritmus signatureAlgorithm ur\u010den\u00fd RP odpov\u00edd\u00e1 podpisov\u00e9mu algoritmu OP.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Nelze ov\u011b\u0159it token JWT po\u017eadovan\u00fd [{0}] kv\u016fli chyb\u011bj\u00edc\u00edmu podpisu v tokenu JWT. Poskytovatel p\u0159ipojen\u00ed OpenID zadal algoritmus [{1}] a o\u010dek\u00e1val, \u017ee bude token JWT podepsan\u00fd.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Nelze ov\u011b\u0159it token JWT, proto\u017ee token nen\u00ed podepsan\u00fd. Poskytovatel p\u0159ipojen\u00ed OpenID o\u010dek\u00e1val, \u017ee bude token podepsan\u00fd.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Zkontrolujte konfiguraci klienta pro p\u0159ipojen\u00ed OpenID a ujist\u011bte se, \u017ee podepisuje token JWT.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a signature missing from the JWT token. The OpenID Connect provider specified [{1}] algorithm and expects the JWT Token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Cannot verify the JWT Token because the token is not signed. The OpenID Connect provider is expecting the token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Check the OpenID Connect client configuration to make sure that it signs the JWT Token.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Nelze ov\u011b\u0159it token JWT po\u017eadovan\u00fd [{0}], nebo\u0165 existuje neshoda v podpisov\u00fdch algoritmech mezi poskytovatelem p\u0159ipojen\u00ed OpenID [{1}] a klientem pro p\u0159ipojen\u00ed OpenID [{2}].
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Nelze ov\u011b\u0159it token JWT, proto\u017ee poskytovatel a klient pro p\u0159ipojen\u00ed OpenID pou\u017e\u00edvaj\u00ed r\u016fzn\u00e9 podpisov\u00e9 algoritmy k podeps\u00e1n\u00ed/ov\u011b\u0159en\u00ed tokenu.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Zkontrolujte konfiguraci klienta pro p\u0159ipojen\u00ed OpenID a zadejte podpisov\u00fd algoritmus, kter\u00fd odpov\u00edd\u00e1 poskytovateli p\u0159ipojen\u00ed OpenID.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a mismatch of signing algorithms between the OpenID Connect provider [{1}] and the OpenID Connect client [{2}].
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Cannot verify the JWT Token because the OpenID Connect provider and client are using different signature algorithms to sign/verify the token.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Check the OpenID Connect client configuration to specify a signature algorithm that matches with the OpenID Connect provider.
 
 #
 JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. P\u0159i pokusu podepsat token JWT pomoc\u00ed algoritmu [{0}] do\u0161lo k chyb\u011b: [{1}].
@@ -99,33 +97,37 @@ JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Token JWT nelze ov\u011
 JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Pou\u017e\u00edv\u00e1te-li asymetrick\u00fd podpis, ujist\u011bte se, \u017ee jste pro \u00fa\u010dely digit\u00e1ln\u00edho podpisu pou\u017eili ve\u0159ejn\u00fd kl\u00ed\u010d v certifik\u00e1tu. Zkontrolujte prvek keyStore, na kter\u00fd se odkazuje v\u00fdchoz\u00ed konfigurace SSL v souboru server.xml, a vyhledejte informace o \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f, kter\u00e9 tento kl\u00ed\u010d obsahuje. Tak\u00e9 v\u011bnujte pozornost akci u\u017eivatele t\u00fdkaj\u00edc\u00ed se zpr\u00e1vy, kter\u00e1 se zobraz\u00ed po t\u00e9to chyb\u011b.
  
 #
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Podepsan\u00fd token JWT mus\u00ed m\u00edt 3 segmenty odd\u011blen\u00e9 ''.'', ale tento token JWT m\u00e1 tento po\u010det segment\u016f: [{0}]
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Podepsan\u00fd token JWT mus\u00ed m\u00edt p\u0159esn\u011b 3 segmenty odd\u011blen\u00e9 znakem '.'. Tento token JWT m\u00e1 \u0161patn\u00fd po\u010det segment\u016f.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Ujist\u011bte se, \u017ee token JWT je platn\u00fd a \u017ee m\u00e1 3 segmenty.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: The token endpoint request failed. A signed JWT token needs to have 3 segments separated by ''.'', but this JWT Token has [{0}] segments.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=A signed JWT token needs to have exactly 3 segments separated by '.'. This JWT Token has a bad segment number.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Make sure the JWT Token is valid and has 3 segments.
 
 #
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Ov\u011b\u0159en\u00ed tokenu JWT po\u017eadovan\u00e9ho [{0}] se nezda\u0159ilo. Obdr\u017eelo v\u00fdjimku IllegalStateException se zpr\u00e1vou:[{1}].
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Token JWT nelze ov\u011b\u0159it, proto\u017ee do\u0161lo k v\u00fdjimce IllegalStatException, kter\u00e1 je uvedena ve zpr\u00e1v\u011b.
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Opravte chybu uvedenou ve zpr\u00e1v\u011b.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: The token endpoint request failed. Validation of the JWT token requested by the [{0}] failed. It got an InvalidJwtException with message:[{1}].
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=A JWT token cannot be validated because of an InvalidJwtException which is indicated in the message.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Correct the error which is indicated in the message.
 
 #
-JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: Po\u017eadavek koncov\u00e9ho bodu tokenu se nezda\u0159il. Po\u017eadovan\u00fd token JWT nebyl v po\u017eadavku nalezen.
-JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=Po\u017eadavek mus\u00ed poskytnout token JWT, ale v po\u017eadavku koncov\u00e9ho bodu tokenu nebyl nalezen \u017e\u00e1dn\u00fd token JWT.
-JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Zadejte platn\u00fd token JWT do po\u017eadavku koncov\u00e9ho bodu tokenu.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: The token endpoint request failed. A required JWT Token is not found in the request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=The request needs to provide a JWT Token but can not find the JWT Token in the token endpoint request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Provide a valid JWT Token in the token endpoint request.
 
 #
 JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: Konfigurace klienta pro p\u0159ipojen\u00ed OpenID vy\u017eaduje atribut jwkEndpointUrl.
 JWK_ENDPOINT_MISSING_ERR.explanation=Atribut jwkEndpointUrl nebyl v konfiguraci klienta pro p\u0159ipojen\u00ed OpenID zad\u00e1n.
 JWK_ENDPOINT_MISSING_ERR.useraction=Nastavte atribut jwkEndpointUrl na adresu URL webov\u00e9ho kl\u00ed\u010de JSON poskytovatele p\u0159ipojen\u00ed OpenID.
 
-OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Do\u0161lo k v\u00fdjimce p\u0159i pokusu z\u00edskat RunAsSubject. V\u00fdjimka: [{0}].
-OIDC_FAILED_RUN_AS_SUBJCET.explanation=Do\u0161lo k v\u00fdjimce p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed RunAsSubject.
-OIDC_FAILED_RUN_AS_SUBJCET.useraction=Ujist\u011bte se, \u017ee je server spr\u00e1vn\u011b nakonfigurov\u00e1n a spu\u0161t\u011bn.
+# now in openidconnect.common project, no longer used here.
+#OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: An exception occurred while attempting to get the RunAsSubject. The exception was: [{0}].
+#OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
+#OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
 #0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
 OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Nezda\u0159ilo se ov\u011b\u0159en\u00ed tokenu po\u017eadovan\u00e9ho [{0}], proto\u017ee token je mimo sv\u016fj platn\u00fd rozsah. M\u016f\u017ee to b\u00fdt zp\u016fsobeno t\u00edm, \u017ee v aktu\u00e1ln\u00edm \u010dase [{1}] ji\u017e vypr\u0161ela platnost tokenu platn\u00e9ho do [{2}], nebo \u017ee je \u010das vyd\u00e1n\u00ed [{3}] p\u0159\u00edli\u0161 vzd\u00e1len\u00fd od \u010dasu aktu\u00e1ln\u00edho [{1}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Token nelze ov\u011b\u0159it, proto\u017ee zobrazovan\u00fd aktu\u00e1ln\u00ed \u010das se nenach\u00e1z\u00ed mezi \u010dasem vyd\u00e1n\u00edm tokenu a vypr\u0161en\u00edm jeho platnosti.
-OIDC_JWT_VERIFY_STATE_ERR.useraction=Ujist\u011bte se, \u017ee jsou syst\u00e9mov\u00e9 hodiny klienta pro p\u0159ipojen\u00ed OpenID (z\u00e1visl\u00e9 strany (RP)) synchronizovan\u00e9 s hodinami syst\u00e9mu poskytovatele p\u0159ipojen\u00ed OpenID (OP) (pokud se nach\u00e1z\u00ed v r\u016fzn\u00fdch syst\u00e9mech).
+OIDC_JWT_VERIFY_STATE_ERR.useraction=Ujist\u011bte se, \u017ee jsou syst\u00e9mov\u00e9 hodiny klienta OpenID Connect (z\u00e1visl\u00e9 strany (RP)) synchronizovan\u00e9 s hodinami syst\u00e9mu poskytovatele OpenID Connect (OP) (pokud se nach\u00e1z\u00ed v r\u016fzn\u00fdch syst\u00e9mech).
 
 # Do not translate clientId, aud
 #0=aud claim, 1=OIDC client ID, 2=audiences of the oidc client
