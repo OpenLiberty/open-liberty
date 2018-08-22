@@ -48,9 +48,9 @@ Private-Package:\
 instrument.classesExcludes: com/ibm/ws/jaxrs20/server/internal/resources/*.class
 
 -buildpath: \
-	org.apache.cxf.cxf-core;strategy=exact;version=3.1.14,\
-	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.14,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.16,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.16,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.16,\
 	com.ibm.ws.jaxrs.2.0.common;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.anno;version=latest,\

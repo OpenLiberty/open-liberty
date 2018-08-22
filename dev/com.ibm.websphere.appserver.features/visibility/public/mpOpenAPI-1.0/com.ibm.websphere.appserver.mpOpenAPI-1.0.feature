@@ -2,7 +2,10 @@
 symbolicName=com.ibm.websphere.appserver.mpOpenAPI-1.0
 visibility=public
 singleton=true
-IBM-API-Package: org.eclipse.microprofile.openapi.annotations;  type="stable",\
+IBM-ShortName: mpOpenAPI-1.0
+Subsystem-Name: MicroProfile OpenAPI 1.0
+IBM-API-Package: \
+    org.eclipse.microprofile.openapi.annotations;  type="stable",\
 	org.eclipse.microprofile.openapi.annotations.callbacks; type="stable",\
 	org.eclipse.microprofile.openapi.annotations.enums; type="stable",\
 	org.eclipse.microprofile.openapi.annotations.extensions; type="stable",\
@@ -28,17 +31,17 @@ IBM-API-Package: org.eclipse.microprofile.openapi.annotations;  type="stable",\
 	org.eclipse.microprofile.openapi.models.security; type="stable",\
 	org.eclipse.microprofile.openapi.models.servers; type="stable",\
 	org.eclipse.microprofile.openapi.models.tags; type="stable"
-
-IBM-SPI-Package: org.eclipse.microprofile.openapi.spi; type="stable"
-		
-IBM-ShortName: mpOpenAPI-1.0
-Subsystem-Name: MicroProfile OpenAPI 1.0
--features=com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-1.0, \
+IBM-SPI-Package: \
+    org.eclipse.microprofile.openapi.spi; type="stable"
+-features=\
+ com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-1.0, \
  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
  com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:=1.3, \
+ com.ibm.websphere.appserver.internal.optional.jaxb-2.2,\
  com.ibm.wsspi.appserver.webBundle-1.0,\
  com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1
--bundles=com.ibm.ws.require.java8, \
+-bundles=\
+ com.ibm.ws.require.java8, \
  com.ibm.ws.microprofile.openapi,\
  com.ibm.ws.microprofile.openapi.ui,\
  com.ibm.ws.com.fasterxml.jackson.2.9.1

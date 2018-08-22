@@ -480,6 +480,10 @@ info.config.conflict=CWWKG0102I: {0}
 info.config.conflict.explanation=Sunt specificate mai multe valori pentru aceea\u015fi proprietate de configura\u0163ie. 
 info.config.conflict.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Mesajul informativ poate fi evitat prin editarea configura\u0163iei de server pentru a \u00eenl\u0103tura conflictul.
  
+warning.supplied.config.not.valid=CWWKG0103W: Numele de atribut {0} cu valoarea {1} este ignorat deoarece este definit ca ibm:final. Sistemul va folosi valoarea implicit\u0103 a atributului.
+warning.supplied.config.not.valid.explanation= Un atribut de configura\u0163ie este marcat ca ibm:final \u015fi valoarea implicit\u0103 nu este valid\u0103. \u00cenl\u0103tura\u0163i atributul configurat din configura\u0163ie.
+warning.supplied.config.not.valid.useraction=Actualiza\u0163i configura\u0163ia de server pentru a \u00eenl\u0103tura valoarea de atribut incorect\u0103.
+
 
 # Non-TR message
 error.invalidOCDRef=EROARE: PID-ul metatipului [{0}] specific\u0103 un ID al defini\u0163iei de clas\u0103 de obiecte inexistent [{1}]

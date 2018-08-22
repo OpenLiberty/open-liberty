@@ -461,6 +461,10 @@ info.config.conflict=CWWKG0102I: {0}
 info.config.conflict.explanation=Ugyanarra a konfigur\u00e1ci\u00f3s tulajdons\u00e1gra vonatkoz\u00f3an t\u00f6bb \u00e9rt\u00e9k is meg van adva. 
 info.config.conflict.useraction=Nem kell semmit tennie. Az inform\u00e1ci\u00f3s \u00fczenet elker\u00fclhet\u0151, ha a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 szerkeszt\u00e9s\u00e9vel elt\u00e1vol\u00edtja az \u00fctk\u00f6z\u00e9st.
  
+warning.supplied.config.not.valid=CWWKG0103W: A(z) {0} nev\u0171, {1} \u00e9rt\u00e9k\u0171 attrib\u00fatum figyelmen k\u00edv\u00fcl marad, mert a meghat\u00e1roz\u00e1sa ibm:final (v\u00e9gs\u0151). A rendszer az attrib\u00fatum alap\u00e9rtelmezett \u00e9rt\u00e9k\u00e9t alkalmazza.
+warning.supplied.config.not.valid.explanation= ibm:final \u00e9s alap\u00e9rtelmezett jel\u00f6l\u00e9ssel a konfigur\u00e1ci\u00f3s attrib\u00fatum nem \u00e9rv\u00e9nyes. T\u00e1vol\u00edtsa el a be\u00e1ll\u00edtott attrib\u00fatumot a konfigur\u00e1ci\u00f3b\u00f3l.
+warning.supplied.config.not.valid.useraction=Friss\u00edtse a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t a helytelen attrib\u00fatum\u00e9rt\u00e9k elt\u00e1vol\u00edt\u00e1s\u00e1val.
+
 
 # Non-TR message
 error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.

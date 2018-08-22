@@ -33,6 +33,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.common.util.SystemPropertyAction;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.PhaseInterceptorChain;
@@ -44,15 +45,15 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class MediaTypeHeaderProvider implements HeaderDelegate<MediaType> {
 
     private static final TraceComponent tc = Tr.register(MediaTypeHeaderProvider.class);
-    private static final String STRICT_MEDIA_TYPE_CHECK = 
+    private static final String STRICT_MEDIA_TYPE_CHECK =
         "org.apache.cxf.jaxrs.mediaTypeCheck.strict";
-    private static final Pattern COMPLEX_PARAMETERS = 
+    private static final Pattern COMPLEX_PARAMETERS =
         Pattern.compile("(([\\w-]+=\"[^\"]*\")|([\\w-]+=[\\w-/\\+]+))");
-    
+
 
     private static Map<String, MediaType> map = new ConcurrentHashMap<String, MediaType>();
-    private static final int MAX_MT_CACHE_SIZE = 
-        Integer.getInteger("org.apache.cxf.jaxrs.max_mediatype_cache_size", 200);
+    private static final int MAX_MT_CACHE_SIZE =
+                    SystemPropertyAction.getInteger("org.apache.cxf.jaxrs.max_mediatype_cache_size", 200);
 
     @Override
     public MediaType fromString(String mType) {
@@ -116,8 +117,8 @@ public class MediaTypeHeaderProvider implements HeaderDelegate<MediaType> {
             }
         }
 
-        return new MediaType(type.trim().toLowerCase(), 
-                             subtype.trim().toLowerCase(), 
+        return new MediaType(type.trim().toLowerCase(),
+                             subtype.trim().toLowerCase(),
                              parameters);
     }
 

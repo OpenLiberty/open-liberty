@@ -99,13 +99,10 @@ public class CreateCommandTest {
         assertTrue("Expected server.xml file to exist at " + serverXmlPath + ", but does not", LibertyFileManager.libertyFileExists(machine, serverXmlPath));
 
         String serverEnvPath = defaultServerPath + "/server.env";
-        if (JavaInfo.JAVA_VERSION >= 8) {
-            assertTrue("Expected server.env file to exist at " + serverEnvPath + ", but does not", LibertyFileManager.libertyFileExists(machine, serverEnvPath));
-            String serverEnvContents = FileUtils.readFile(serverEnvPath);
-            assertFalse("Expected server.env to NOT contain generated keystore password at " + serverEnvPath, serverEnvContents.contains("keystore_password="));
-            assertTrue("Expected server.env to contain WLP_SKIP_MAXPERMSIZE=true at: " + serverEnvPath, serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE=true"));
-        } else {
-            assertFalse("Expected server.env file to NOT exist at: " + serverEnvPath, LibertyFileManager.libertyFileExists(machine, serverEnvPath));
-        }
+        assertTrue("Expected server.env file to exist at " + serverEnvPath + ", but does not", LibertyFileManager.libertyFileExists(machine, serverEnvPath));
+        String serverEnvContents = FileUtils.readFile(serverEnvPath);
+        assertFalse("Expected server.env to NOT contain generated keystore password at " + serverEnvPath, serverEnvContents.contains("keystore_password="));
+        assertTrue("Expected server.env to " + (JavaInfo.JAVA_VERSION == 7 ? "not " : " ") + "contain WLP_SKIP_MAXPERMSIZE=true at: " + serverEnvPath,
+                   JavaInfo.JAVA_VERSION == 7 ? !serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE=true") : serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE=true"));
     }
 }

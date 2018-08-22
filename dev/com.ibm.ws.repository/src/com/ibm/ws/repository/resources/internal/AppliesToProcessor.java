@@ -42,6 +42,7 @@ public class AppliesToProcessor {
     private static final String ZOS = "z/OS";
     private static final String CORE = "Liberty Core";
     private static final String BETA = "Beta";
+    private static final String BLUEMIX = "Bluemix";
 
     /**
      * Open liberty features with an edition of OPEN in the appliesTo can be
@@ -81,6 +82,7 @@ public class AppliesToProcessor {
         editionsMap.put("BASE", Arrays.asList(BASE));
         editionsMap.put("DEVELOPERS", Arrays.asList(DEVELOPERS));
         editionsMap.put("EXPRESS", Arrays.asList(EXPRESS));
+        editionsMap.put("BLUEMIX", Arrays.asList(BLUEMIX));
         editionsMap.put("EARLY_ACCESS", Arrays.asList(BETA));
         editionsMap.put("zOS", Arrays.asList(ZOS));
         editionsMap.put("ND", Arrays.asList(ND));

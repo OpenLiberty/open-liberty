@@ -138,7 +138,7 @@ public class WSCredentialProvider implements CredentialProvider {
                 }
             }
         }
-        if (securityName == null) {
+        if (securityName == null || securityName.length() == 0) {
             securityName = principal.getName();
         }
         String accessId = principal.getAccessId();

@@ -11,6 +11,8 @@
 package com.ibm.ws.security.mp.jwt.principal;
 
 import java.security.Principal;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Optional;
 import java.util.Set;
 
@@ -44,15 +46,14 @@ public class PrincipalBean implements JsonWebToken {
             Tr.entry(tc, "PrincipalBean");
         }
 
-        Subject subject = new SubjectManager().getCallerSubject();
+        Subject subject = getCallerSubject();
         if (subject != null) {
             Set<JsonWebToken> jsonWebTokens = subject.getPrincipals(JsonWebToken.class);
             if (!jsonWebTokens.isEmpty()) {
                 principal = jsonWebToken = jsonWebTokens.iterator().next();
-                //jsonWebToken = new DefaultJsonWebTokenImpl(jsonWebToken.getRawToken(), "JWT", jsonWebToken.getName());
             }
 
-            if (principal == null) {
+            if (jsonWebToken == null) {
                 Set<Principal> principals = subject.getPrincipals(Principal.class);
                 if (!principals.isEmpty()) {
                     principal = principals.iterator().next();
@@ -62,6 +63,8 @@ public class PrincipalBean implements JsonWebToken {
 
         if (principal == null) {
             Tr.error(tc, "MPJWT_CDI_PRINCIPAL_UNAVAILABLE"); // CWWKS5604E
+            // limit info passed back to app.
+            // throw new javax.enterprise.inject.CreationException();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -125,4 +128,26 @@ public class PrincipalBean implements JsonWebToken {
             return principal.toString();
         return null;
     }
+
+    @SuppressWarnings("unchecked")
+    private Subject getCallerSubject() {
+        Subject s = null;
+        try {
+            s = (Subject) java.security.AccessController.doPrivileged(getCallerSubjectAction);
+        } catch (PrivilegedActionException pae) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "getCallerSubject(PrivilegedAction) Exception caught: " + pae);
+        }
+
+        return s;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private final PrivilegedExceptionAction getCallerSubjectAction = new PrivilegedExceptionAction() {
+        @Override
+        public Object run() throws Exception {
+            return new SubjectManager().getCallerSubject();
+        }
+    };
+
 }

@@ -45,7 +45,7 @@ import org.apache.cxf.phase.PhaseInterceptorChain;
 
 /**
  * TODO : deal with InvalidStateExceptions
- * 
+ *
  */
 
 public class RequestImpl implements Request {
@@ -65,45 +65,58 @@ public class RequestImpl implements Request {
         }
         List<MediaType> acceptMediaTypes = headers.getAcceptableMediaTypes();
         List<Locale> acceptLangs = headers.getAcceptableLanguages();
-        List<String> acceptEncs = parseAcceptEnc(
-                        headers.getRequestHeaders().getFirst(HttpHeaders.ACCEPT_ENCODING));
-
+        List<String> acceptEncs = parseAcceptEnc(headers.getRequestHeaders().getFirst(HttpHeaders.ACCEPT_ENCODING));
+        List<Variant> requestVariants = sortAllCombinations(acceptMediaTypes, acceptLangs, acceptEncs);
         List<Object> varyValues = new LinkedList<Object>();
+        for (Variant requestVar : requestVariants) {
+            for (Variant var : vars) {
+                MediaType mt = var.getMediaType();
+                Locale lang = var.getLanguage();
+                String enc = var.getEncoding();
 
-        List<Variant> matchingVars = new LinkedList<Variant>();
-        for (Variant var : vars) {
-            MediaType mt = var.getMediaType();
-            Locale lang = var.getLanguage();
-            String enc = var.getEncoding();
+                boolean mtMatched = mt == null || requestVar.getMediaType().isCompatible(mt);
+                if (mtMatched) {
+                    handleVaryValues(varyValues, HttpHeaders.ACCEPT);
+                }
 
-            boolean mtMatched = mt == null || acceptMediaTypes.isEmpty()
-                || JAXRSUtils.intersectMimeTypes(acceptMediaTypes, mt).size() != 0;
-            if (mtMatched) {
-                handleVaryValues(varyValues, HttpHeaders.ACCEPT);
+                boolean langMatched = lang == null || isLanguageMatched(requestVar.getLanguage(), lang);
+                if (langMatched) {
+                    handleVaryValues(varyValues, HttpHeaders.ACCEPT_LANGUAGE);
+                }
+
+                boolean encMatched = acceptEncs.isEmpty() || enc == null
+                                     || isEncMatached(requestVar.getEncoding(), enc);
+                if (encMatched) {
+                    handleVaryValues(varyValues, HttpHeaders.ACCEPT_ENCODING);
+                }
+
+                if (mtMatched && encMatched && langMatched) {
+                    addVaryHeader(varyValues);
+                    return var;
+                }
             }
-
-            boolean langMatched = lang == null || acceptLangs.isEmpty()
-                || isLanguageMatched(acceptLangs, lang);
-            if (langMatched) {
-                handleVaryValues(varyValues, HttpHeaders.ACCEPT_LANGUAGE);
-            }
-
-            boolean encMatched = acceptEncs.isEmpty() || enc == null
-                || isEncMatached(acceptEncs, enc);
-            if (encMatched) {
-                handleVaryValues(varyValues, HttpHeaders.ACCEPT_ENCODING);
-            }
-
-            if (mtMatched && encMatched && langMatched) {
-                matchingVars.add(var);
-            }
-        }
-        if (matchingVars.size() > 0) {
-            addVaryHeader(varyValues);
-            Collections.sort(matchingVars, new VariantComparator());
-            return matchingVars.get(0);
         }
         return null;
+    }
+
+    private static List<Variant> sortAllCombinations(List<MediaType> mediaTypes,
+                                                     List<Locale> langs,
+                                                     List<String> encs) {
+        List<Variant> requestVars = new LinkedList<>();
+        for (MediaType mt : mediaTypes) {
+            for (Locale lang : langs) {
+                if (encs.size() < 1) {
+                    requestVars.add(new Variant(mt, lang, null));
+                } else {
+                    for (String enc : encs) {
+                        requestVars.add(new Variant(mt, lang, enc));
+                    }
+                }
+
+            }
+        }
+        Collections.sort(requestVars, VariantComparator.INSTANCE);
+        return requestVars;
     }
 
     private static void handleVaryValues(List<Object> varyValues, String... values) {
@@ -135,28 +148,14 @@ public class RequestImpl implements Request {
         }
     }
 
-    private static boolean isLanguageMatched(List<Locale> locales, Locale l) {
+    private static boolean isLanguageMatched(Locale locale, Locale l) {
 
-        for (Locale locale : locales) {
-            String language = locale.getLanguage();
-            if ("*".equals(language)
-                || language.equalsIgnoreCase(l.getLanguage())) {
-                return true;
-            }
-        }
-        return false;
+        String language = locale.getLanguage();
+        return "*".equals(language) || language.equalsIgnoreCase(l.getLanguage());
     }
 
-    private static boolean isEncMatached(List<String> accepts, String enc) {
-        if (accepts.contains(enc)) {
-            return true;
-        }
-        for (String accept : accepts) {
-            if ("*".equals(accept)) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean isEncMatached(String accepts, String enc) {
+        return accepts == null || "*".equals(accepts) || accepts.contains(enc);
     }
 
     private static List<String> parseAcceptEnc(String acceptEnc) {
@@ -338,6 +337,8 @@ public class RequestImpl implements Request {
     }
 
     private static class VariantComparator implements Comparator<Variant> {
+
+        static final VariantComparator INSTANCE = new VariantComparator();
 
         @Override
         public int compare(Variant v1, Variant v2) {

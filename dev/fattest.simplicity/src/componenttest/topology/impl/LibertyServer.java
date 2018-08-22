@@ -196,8 +196,6 @@ public class LibertyServer implements LogMonitorClient {
 
     public static final String DISABLE_FAILURE_CHECKING = "DISABLE_CHECKING";
 
-    public boolean isJava2SecurityEnabled = false;
-
     private boolean isTidy = false;
 
     private boolean needsPostTestRecover = true;
@@ -988,15 +986,9 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
+        if (isJava2SecurityEnabled()) {
             RemoteFile f = getServerBootstrapPropertiesFile();
-            if (serverNeedsToRunWithJava2Security()) {
-                addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
-            } else {
-                LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT server " + getServerName() +
-                            " is exempt from Java 2 Security regression testing.");
-            }
-
+            addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
         }
@@ -1268,15 +1260,6 @@ public class LibertyServer implements LogMonitorClient {
         return newParms;
     }
 
-    private boolean serverNeedsToRunWithJava2Security() {
-        // Allow servers to opt-out of j2sec by setting
-        // websphere.java.security.exempt=true
-        // in their ${server.config.dir}/bootstrap.properties
-        boolean j2secEnabled = !("true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt")));
-        Log.info(c, "serverNeedsToRunWithJava2Security", "Will server " + getServerName() + " run with Java 2 Security enabled?  " + j2secEnabled);
-        return j2secEnabled;
-    }
-
     private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f, boolean debug) throws Exception {
         java.io.OutputStream w = f.openForWriting(true);
         try {
@@ -1295,8 +1278,6 @@ public class LibertyServer implements LogMonitorClient {
         }
         w.flush();
         w.close();
-
-        isJava2SecurityEnabled = true;
     }
 
     /**
@@ -5541,7 +5522,14 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public boolean isJava2SecurityEnabled() {
-        return isJava2SecurityEnabled;
+        boolean globalEnabled = GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY;
+        if (!globalEnabled)
+            return false;
+
+        // Allow servers to opt-out of j2sec by setting websphere.java.security.exempt=true in their ${server.config.dir}/bootstrap.properties
+        boolean isJava2SecExempt = "true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
+        Log.info(c, "isJava2SecurityEnabled", "Is server " + getServerName() + " Java 2 Security exempt?  " + isJava2SecExempt);
+        return !isJava2SecExempt;
     }
 
     public void configureForAnyDatabase() throws Exception {
