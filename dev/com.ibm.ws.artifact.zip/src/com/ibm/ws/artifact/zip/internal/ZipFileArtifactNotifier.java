@@ -28,6 +28,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.internal.ZipFileContainerUtils.ZipEntryData;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -50,6 +52,8 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
  *       guarantee that containers or container entries are unique.
  */
 public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, ArtifactListener {
+    static final TraceComponent tc = Tr.register(ZipFileArtifactNotifier.class);
+
     /**
      * Create a notifier for a zip file container which has an already
      * extracted archive file.  This can be a root-of-roots zip container
@@ -644,11 +648,19 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
 
         boolean isUpdate = !updatedFiles.isEmpty();
         if ( addedFiles.isEmpty() && !isUpdate && removedFiles.isEmpty() ) {
-            return;
+            return; // Ignore completely null updates
         }
-        validateNotification(addedFiles, updatedFiles, removedFiles);
 
-        notifyAllListeners(isUpdate);
+        // The net is to allow updates alone or removals alone.
+
+        String validationMessage = validateNotification(addedFiles, updatedFiles, removedFiles);
+        if ( validationMessage != null ) {
+            // TODO: Need to understand what is happening here.
+            // Tr.warning(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
+            Tr.debug(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
+        } else {
+            notifyAllListeners(isUpdate);
+        }
     }
 
     /**
@@ -691,12 +703,19 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
 
         boolean isUpdate = !updatedPaths.isEmpty();
         if ( addedPaths.isEmpty() && !isUpdate && removedPaths.isEmpty() ) {
-            return;
+            return; // Ignore completely null updates
         }
 
-        validateNotification(addedPaths, updatedPaths, removedPaths);
+        // The net is to allow updates alone or removals alone.
 
-        notifyAllListeners(isUpdate);
+        String validationMessage = validateNotification(addedPaths, updatedPaths, removedPaths);
+        if ( validationMessage != null ) {
+            // TODO: Need to understand what is happening here.
+            // Tr.warning(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
+            Tr.debug(tc,  "Unexpected notification on [ " + rootContainer + " ]: " + validationMessage);
+        } else {
+            notifyAllListeners(isUpdate);
+        }
     }
 
     /**
@@ -706,29 +725,35 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
      * Since the single root zip file is registered, the change is expected
      * to be a single element in exactly one of the change collections.
      *
-     * Addition is not supported, and is handled by throwing an exception.
+     * Null changes are unexpected. Additions are unexpected.  Updates with
+     * removals are unexpected.
      *
-     * Although unexpected, all three change collections being empty is
-     * supported, and is ignored.
+     * The net is to allow updates alone or removals alone.
      *
-     * Having a removal and an update is not expected, and is handled by
-     * throwing an exception.
+     * @return A validation message if unexpected changes are noted.
+     *     Null if the changes are expected.
      */
-    // @Trivial // Allow this to be logged: One entry in one change collection is expected.
-    private void validateNotification(Collection<?> added, Collection<?> removed, Collection<?> updated) {
+    @Trivial
+    private String validateNotification(Collection<?> added, Collection<?> removed, Collection<?> updated) {
         boolean isAddition = !added.isEmpty();
         boolean isRemoval = !removed.isEmpty();
         boolean isUpdate = !updated.isEmpty();
 
         if ( !isAddition && !isRemoval && !isUpdate ) {
-            // Allow this, since it was allowed before.
-            // throw new IllegalStateException("Disallowed null zip file modification");
+            // Should never occur:
+            // Completely null changes are detected and cause an early return
+            // before reaching the validation method.
+            return "null";
+
         } else if ( isAddition ) {
-            throw new IllegalStateException( "Disallowed zip file addition [ " + added.toString() + " ]" );
+            return "Addition of [ " + added.toString() + " ]";
+
         } else if ( isUpdate && isRemoval ) {
-            throw new IllegalStateException(
-                "Disallowed zip file update [ " + updated.toString() + " ]" +
-                " at the same time as a removal [ " + removed.toString() + " ]");
+            return "Update of [ " + updated.toString() + " ]" +
+                   " with removal of [ " + removed.toString() + " ]";
+
+        } else {
+            return null;
         }
     }
 
@@ -786,7 +811,7 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
 
     @Trivial // Don't log this: The paths collection could be very large.
     private void collectRegisteredPaths(String a_path, List<String> a_paths) {
-    	ZipEntryData[] allEntryData = rootContainer.getZipEntryData();
+        ZipEntryData[] allEntryData = rootContainer.getZipEntryData();
 
         if ( a_path.isEmpty() || ((a_path.length() == 1) && (a_path.charAt(0) == '/')) ) {
             for ( ZipEntryData entry : allEntryData ) {
