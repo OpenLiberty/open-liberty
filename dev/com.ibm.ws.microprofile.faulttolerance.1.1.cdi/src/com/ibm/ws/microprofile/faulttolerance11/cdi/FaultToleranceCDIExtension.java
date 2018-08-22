@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi;
+package com.ibm.ws.microprofile.faulttolerance11.cdi;
 
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
-import static com.ibm.ws.microprofile.faulttolerance.cdi.config.FTGlobalConfig.ALL_ANNOTATIONS;
+import static com.ibm.ws.microprofile.faulttolerance11.cdi.config.FTGlobalConfig.ALL_ANNOTATIONS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -42,13 +42,13 @@ import com.ibm.tx.jta.cdi.interceptors.TransactionalInterceptor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.CircuitBreakerConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.FTGlobalConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.FallbackConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.RetryConfig;
-import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.AsynchronousConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.BulkheadConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.CircuitBreakerConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.FTGlobalConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.FallbackConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.RetryConfig;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.config.TimeoutConfig;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtension {

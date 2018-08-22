@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi.config;
+package com.ibm.ws.microprofile.faulttolerance11.cdi.config;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -32,7 +32,7 @@ import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.faulttolerance.cdi.FTUtils;
+import com.ibm.ws.microprofile.faulttolerance11.cdi.FTUtils;
 
 public class FTGlobalConfig {
 

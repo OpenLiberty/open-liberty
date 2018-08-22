@@ -8,22 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi;
+package com.ibm.ws.microprofile.faulttolerance11.cdi;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
+import java.lang.annotation.Annotation;
 
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+/**
+ *
+ */
+public class FaultToleranceAnnotation implements Annotation {
 
-import javax.interceptor.InterceptorBinding;
-
-@Inherited
-@InterceptorBinding
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ METHOD, TYPE })
-public @interface FaultTolerance {
+    /** {@inheritDoc} */
+    @Override
+    public Class<? extends Annotation> annotationType() {
+        return FaultTolerance.class;
+    }
 
 }

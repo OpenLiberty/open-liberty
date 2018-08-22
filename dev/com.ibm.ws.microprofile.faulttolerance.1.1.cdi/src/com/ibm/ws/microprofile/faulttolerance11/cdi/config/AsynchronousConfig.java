@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi.config;
+package com.ibm.ws.microprofile.faulttolerance11.cdi.config;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Future;
