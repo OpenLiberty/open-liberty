@@ -975,12 +975,12 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     protected ZipFileEntry createEntry(
         ArtifactContainer nestedContainer,
         String entryName, String a_entryPath,
-        int entryOffset, ZipEntryData zipEntryData) {
+        ZipEntryData zipEntryData) {
 
         if ( (zipEntryData != null) && !zipEntryData.isDirectory() ) {
             return new ZipFileEntry(
                 this, nestedContainer,
-                entryOffset, zipEntryData,
+                zipEntryData,
                 entryName, a_entryPath);
 
         } else {
@@ -990,7 +990,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 if ( nestedContainerEntry == null ) {
                     nestedContainerEntry = new ZipFileEntry(
                         this, nestedContainer,
-                        entryOffset, zipEntryData,
+                        zipEntryData,
                         entryName, a_entryPath);                   
                     nestedContainerEntries.put(r_entryPath,  nestedContainerEntry);
                 }
@@ -1029,7 +1029,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         return createEntry(
             null,
             entryName, a_entryPath,
-            location, entryData);
+            entryData);
     }
 
     //
@@ -1150,7 +1150,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         return createEntry(
             null,
             entryName, a_entryPath,
-            location, zipEntryData);
+            zipEntryData);
     }
 
     @Override

@@ -43,7 +43,6 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
      * Nested zip file containers are created directly from zip file entries.
      *
      * @param rootContainer The root container of this nested container.
-     * @param location The location of the entry in the root zip container.
      * @param entryInEnclosingContainer The entry which was interpreted
      *     to create this container.
      * @param name The name of the entry from which the container was created.
@@ -52,12 +51,11 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
      */
     public ZipFileNestedDirContainer(
         ZipFileContainer rootContainer,
-        int location, ZipFileEntry entryInEnclosingContainer,
+        ZipFileEntry entryInEnclosingContainer,
         String name, String a_path) {
 
         this.rootContainer = rootContainer;
 
-        this.location = location;
         this.entryInEnclosingContainer = entryInEnclosingContainer;
 
         this.name = name;
@@ -139,13 +137,7 @@ public class ZipFileNestedDirContainer implements ArtifactContainer {
 
     //
 
-    private final int location;
     private final ZipFileEntry entryInEnclosingContainer;
-
-    @Trivial
-    protected int getLocation() {
-        return location;
-    }
 
     /**
      * Answer the immediately enclosing container.
