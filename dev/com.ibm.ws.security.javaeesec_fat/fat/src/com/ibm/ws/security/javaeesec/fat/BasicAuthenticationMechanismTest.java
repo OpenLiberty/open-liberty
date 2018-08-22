@@ -18,9 +18,12 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -188,6 +191,22 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
         assertCookie(cookieHeaderString, false, true);
         String response = redriveFlowWithCookieOnly(urlHttps + "/JavaEESecAnnotatedBasicAuthServlet/JavaEESecAnnotatedBasic", HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleLDAPUser, Constants.getRemoteUserFound + Constants.javaeesec_basicRoleLDAPUser);
+    }
+
+    // check SSL redirection test.
+    @Test
+    public void testRedirectToSSL() throws Exception {
+        String path = "/JavaEESecAnnotatedBasicAuthServlet/ForceSSL";
+        HttpParams httpParams = new BasicHttpParams();
+        httpParams.setParameter(ClientPNames.HANDLE_REDIRECTS, Boolean.FALSE);
+        DefaultHttpClient httpclient2 = new DefaultHttpClient(httpParams);
+        SSLHelper.establishSSLContext(httpclient2, 0, myServer, null, null, null, null, null);
+        try {
+            String location = accessPageNoChallenge(httpclient2, urlHttp + path, 302, null);
+            assertEquals("the request should be redirected to the SSL transport.", location, urlHttps + path);
+        } finally {
+            httpclient2.getConnectionManager().shutdown();
+        }
     }
 
     private String driveResourceFlow(String resource) throws Exception, IOException {

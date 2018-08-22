@@ -584,6 +584,13 @@ public class JavaEESecTestBase {
                 assertTrue("Response was not the expected error page: "
                            + Constants.LOGIN_ERROR_PAGE, content.contains(Constants.LOGIN_ERROR_PAGE));
                 return null;
+            } else if (expectedStatusCode == 302) {
+                int status = response.getStatusLine().getStatusCode();
+                assertTrue("Response was not the expected status code : " + status, status == 302);
+                Header header = response.getFirstHeader("Location");
+                String redirecturl = header.getValue();
+                Log.info(logClass, methodName, "Redirect URL:  " + redirecturl);
+                return redirecturl;
             } else {
                 return null;
             }

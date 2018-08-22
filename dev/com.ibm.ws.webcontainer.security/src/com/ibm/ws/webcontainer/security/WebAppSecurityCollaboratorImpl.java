@@ -661,7 +661,16 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                                  String uriName,
                                  WebRequest webRequest,
                                  WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
-        WebReply webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
+        WebReply webReply = null;
+        HttpServletRequest req = webRequest.getHttpServletRequest();
+        if (wasch.isSSLRequired(webRequest, uriName)) {
+            webReply = httpsRedirectHandler.getHTTPSRedirectWebReply(req);
+            AuthenticationResult authResult = new AuthenticationResult(AuthResult.FAILURE, receivedSubject, AuditEvent.CRED_TYPE_JASPIC, null, AuditEvent.OUTCOME_FAILURE);
+            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
+            return webReply;
+        }
+
+        webReply = unprotectedSpecialURI(webRequest, uriName, req.getMethod());
         if (webReply != null) {
             logAuditEntriesBeforeAuthn(webReply, receivedSubject, uriName, webRequest);
         } else {
