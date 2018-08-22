@@ -1,0 +1,144 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance CDI Auto Feature -  range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#An asynchronous message does not return Future.
+asynchronous.class.not.returning.future.CWMFT5000E=CWMFT5000E: The asynchronous method {0} does not have a return type of Future.
+asynchronous.class.not.returning.future.CWMFT5000E.explanation=All methods in a class that is annotated with org.eclipse.microprofile.faulttolerance.Asynchronous must have a return type that is assignable from java.util.concurrent.Future.
+asynchronous.class.not.returning.future.CWMFT5000E.useraction=Update the return type.
+
+asynchronous.method.not.returning.future.CWMFT5001E=CWMFT5001E: The asynchronous method {0} does not have a return type of Future.
+asynchronous.method.not.returning.future.CWMFT5001E.explanation=All methods that are annotated with org.eclipse.microprofile.faulttolerance.Asynchronous must have a return type that is assignable from java.util.concurrent.Future.
+asynchronous.method.not.returning.future.CWMFT5001E.useraction=Update the return type.
+
+#A fallback method does not match the return type of the method that falls back to it.
+fallback.policy.return.type.not.match.CWMFT5002E=CWMFT5002E: The fallback method {0} has the wrong return type. The return type must match the return type of the method {1}.
+fallback.policy.return.type.not.match.CWMFT5002E.explanation=A fallback method must have the same return type as the method it handles.
+fallback.policy.return.type.not.match.CWMFT5002E.useraction=Update the return type.
+
+#A fallback method that should exist cannot be found.
+fallback.method.not.found.CWMFT5003E=CWMFT5003E: The fallback method {0} with parameter types matching method {1} was not found in class {2}.
+fallback.method.not.found.CWMFT5003E.explanation=A fallback method was declared but it does not exist in the declaring class.
+fallback.method.not.found.CWMFT5003E.useraction=Either remove the fallback annotation or add the missing method.
+
+#A security exception was thrown while trying to create a fallback policy.
+security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: A security exception occurred when the application server tried to process fallback annotations.
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=To create a fallback policy, the application server requires permission to acquire and examine Java methods.
+security.exception.acquiring.fallback.method.CWMFT5004E.useraction=Review the security policy of your application server and provide the permissions.
+
+#A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E=CWMFT5005E: A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E.explanation=Any configuration values provided via system properties must be convertable to the appropriate type. e.g. using Long.valueOf(String)
+conversion.error.CWMFT5005E.useraction=Check that the specified value is in the correct format for the type of the property it is overriding.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E=CWMFT5006E: A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E.explanation=Any configuration values provided via system properties must be convertable to the appropriate type. e.g. using Long.valueOf(String)
+conversion.error.CWMFT5006E.useraction=Check that the specified value is in the correct format for the type of the property it is overriding.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E=CWMFT5007E: A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E.explanation=Any configuration values provided via system properties must be convertable to the appropriate type. e.g. using Long.valueOf(String)
+conversion.error.CWMFT5007E.useraction=Check that the specified value is in the correct format for the type of the property it is overriding.
+
+#The value parameter on the Fallback is not valid.
+fallback.policy.invalid.CWMFT5008E=CWMFT5008E: The fallback policy for the method {0} is not valid because the type of the FallbackHandler implementation class {1} must be compatible with the return type {2} on the original method {3}.
+fallback.policy.invalid.CWMFT5008E.explanation=The type of the FallbackHandler implementation must be compatible with the return type of the original method.
+fallback.policy.invalid.CWMFT5008E.useraction=Update the type of the FallbackHandler implementation class to be compatible with the return type of the original method.
+
+
+#The fallback policies are conflicting.
+fallback.policy.conflicts.CWMFT5009E=CWMFT5009E: The Fallback policy for the method {0} is not valid because both FallbackHandler class {1} and fallbackMethod {2} were specified. Specify only one of them.
+fallback.policy.conflicts.CWMFT5009E.explanation=Either the fallbackMethod or the value should be set, not both. 
+fallback.policy.conflicts.CWMFT5009E.useraction=Remove either the fallbackMethod or the value from the Fallback annotation.
+
+#Incorrect value on FT Retry parameters
+retry.parameter.invalid.value.CWMFT5010E=CWMFT5010E: The Retry policy parameter {0} value {1} for {2} is not valid because it must be greater than or equal to {3}.
+retry.parameter.invalid.value.CWMFT5010E.explanation=The specified value or the configured value, if configured for the Retry policy parameter, is not valid.
+retry.parameter.invalid.value.CWMFT5010E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT Timeout parameters
+timeout.parameter.invalid.value.CWMFT5011E=CWMFT5011E: The Timeout value {0} specified on {1} is not valid, because the value must be greater than or equal to 0.
+timeout.parameter.invalid.value.CWMFT5011E.explanation=The specified value or the configured value, if configured for the Timeout policy value parameter, is not valid.
+timeout.parameter.invalid.value.CWMFT5011E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: The CircuitBreaker policy parameter {0} value {1} for the {2} is not valid, because the parameter value must not be a negative number.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=The specified value or the configured value, if configured for the delay CircuitBreaker policy parameter, is not valid.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: The CircuitBreaker policy parameter {0} value {1} for the {2} is not valid, because the value must be between 0 and 1, inclusively.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=The specified value or the configured value, if configured for the failureRatio CircuitBreaker policy parameter, is not valid.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: The CircuitBreaker policy parameter {0} value {1} for the {2} is not valid, because the parameter must not be a negative number.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=The specified value or the configured value, if configured for the requestVolumeThreshold CircuitBreaker policy parameter, is not valid.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: The CircuitBreaker policy parameter {0} value {1} for the {2} is not valid, because the parameter must not be a negative number.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=The specified value or the configured value, if configured for the successThreshold CircuitBreaker policy parameter, is not valid.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT Bulkhead parameters
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: The Bulkhead policy parameter {0} value {1} for the {2} is not valid, because the parameter must be greater than or equal to 1.
+bulkhead.parameter.invalid.value.CWMFT5016E.explanation=The specified value or the configured value, if configured for the Bulkhead policy parameter, is not valid.
+bulkhead.parameter.invalid.value.CWMFT5016E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: The Retry policy maximum duration of {0} {1} for the {2} target is not valid as it must be greater than the delay duration of {3} {4}.
+retry.parameter.invalid.value.CWMFT5017E.explanation=The maximum duration must be greater than the delay. The maximum duration consists of the maxDuration parameter and the durationUnit parameter. The delay consists of the delay parameter and the delayUnit parameter.
+retry.parameter.invalid.value.CWMFT5017E.useraction=Correct the value of one or more of the parameters.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: The CircuitBreaker policy {0} parameter for {1} is not valid because its value is empty.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=The specified value or the value that is configured for the CircuitBreaker policy failOn parameter is not valid.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=Correct the value for the specified parameter.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: The Retry policy jitter delay of {0} {1} for the {2} target is not valid because the jitter delay must be less than the delay duration of {3} {4}.
+retry.parameter.invalid.value.CWMFT5019W.explanation=The jitter delay must be less than the delay. The jitter delay consists of the jitter parameter and the jitterDelayUnit parameter. The delay consists of the delay parameter and the delayUnit parameter.
+retry.parameter.invalid.value.CWMFT5019W.useraction=Correct the value of one or more of the parameters so that the duration for the jitter delay is less than the duration of the delay.
+
+#Generic error for internal failures. 
+internal.error.CWMFT5997E=CWMFT5997E: An internal error occurred. The exception is {0}.
+internal.error.CWMFT5997E.explanation=The application server experienced an internal error.
+internal.error.CWMFT5997E.useraction=Gather a set of traces and open a new issue against your application server.
+
+#Generic error for internal failures.
+internal.error.CWMFT5998E=CWMFT5998E: An internal error occurred.
+internal.error.CWMFT5998E.explanation=The application server experienced an internal error.
+internal.error.CWMFT5998E.useraction=Gather a set of traces and open a new issue against your application server.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E=CWMFT9999E: A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E.explanation=A Fault Tolerance API error has occurred that prevents normal operation.
+temporary.CWMFT5999E.useraction=Review the FFDC logs and exception text to identify the problem.

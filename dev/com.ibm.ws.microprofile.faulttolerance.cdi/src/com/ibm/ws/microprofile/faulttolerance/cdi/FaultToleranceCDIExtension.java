@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi;
 
-import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
-import static com.ibm.ws.microprofile.faulttolerance.cdi.config.FTGlobalConfig.ALL_ANNOTATIONS;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -29,7 +24,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
@@ -38,7 +32,6 @@ import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.tx.jta.cdi.interceptors.TransactionalInterceptor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
@@ -55,16 +48,14 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
 
     private static final TraceComponent tc = Tr.register(FaultToleranceCDIExtension.class);
 
-    private static final String shuffleInterceptorsPropertyName = "com.ibm.ws.microprofile.faulttolerance.before.transactional";
-
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         //register the interceptor binding and in the interceptor itself
         AnnotatedType<FaultTolerance> bindingType = beanManager.createAnnotatedType(FaultTolerance.class);
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<FaultToleranceInterceptor> interceptorType = beanManager.createAnnotatedType(FaultToleranceInterceptor.class);
-        beforeBeanDiscovery.addAnnotatedType(interceptorType, (interceptorType != null) ? interceptorType.getClass().getName() + ": " + interceptorType.getClass().hashCode() : "");
+        beforeBeanDiscovery.addAnnotatedType(interceptorType);
         AnnotatedType<FaultToleranceInterceptor.ExecutorCleanup> executorCleanup = beanManager.createAnnotatedType(FaultToleranceInterceptor.ExecutorCleanup.class);
-        beforeBeanDiscovery.addAnnotatedType(executorCleanup, (executorCleanup != null) ? executorCleanup.getClass().getName() + ": " + executorCleanup.getClass().hashCode() : "");
+        beforeBeanDiscovery.addAnnotatedType(executorCleanup);
     }
 
     public <T> void processAnnotatedType(@Observes @WithAnnotations({ Asynchronous.class, Fallback.class, Timeout.class, CircuitBreaker.class, Retry.class,
@@ -84,31 +75,25 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         //look at the class level annotations
         Set<Annotation> annotations = annotatedType.getAnnotations();
         for (Annotation annotation : annotations) {
-            if (ALL_ANNOTATIONS.contains(annotation.annotationType())) {
-                //if we find any of the fault tolerance annotations on the class then we will add the intereceptor binding to the class
-                if (FTGlobalConfig.isAnnotationEnabled(annotation, clazz)) {
-                    interceptedClass = true;
-                    if (annotation.annotationType() == Asynchronous.class) {
-                        AsynchronousConfig asynchronousConfig = new AsynchronousConfig(clazz, (Asynchronous) annotation);
-                        asynchronousConfig.validate();
-                        classLevelAsync = asynchronousConfig;
-                    } else if (annotation.annotationType() == Retry.class) {
-                        RetryConfig retry = new RetryConfig(clazz, (Retry) annotation);
-                        retry.validate();
-                    } else if (annotation.annotationType() == Timeout.class) {
-                        TimeoutConfig timeout = new TimeoutConfig(clazz, (Timeout) annotation);
-                        timeout.validate();
-                    } else if (annotation.annotationType() == CircuitBreaker.class) {
-                        CircuitBreakerConfig circuitBreaker = new CircuitBreakerConfig(clazz, (CircuitBreaker) annotation);
-                        circuitBreaker.validate();
-                    } else if (annotation.annotationType() == Bulkhead.class) {
-                        BulkheadConfig bulkhead = new BulkheadConfig(clazz, (Bulkhead) annotation);
-                        bulkhead.validate();
-                    }
-                } else {
-                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(), clazz.getCanonicalName());
-                    }
+            //if we find any of the fault tolerance annotations on the class then we will add the intereceptor binding to the class
+            if (FTGlobalConfig.getActiveAnnotations(clazz).contains(annotation.annotationType())) {
+                interceptedClass = true;
+                if (annotation.annotationType() == Asynchronous.class) {
+                    AsynchronousConfig asynchronousConfig = new AsynchronousConfig(clazz, (Asynchronous) annotation);
+                    asynchronousConfig.validate();
+                    classLevelAsync = asynchronousConfig;
+                } else if (annotation.annotationType() == Retry.class) {
+                    RetryConfig retry = new RetryConfig(clazz, (Retry) annotation);
+                    retry.validate();
+                } else if (annotation.annotationType() == Timeout.class) {
+                    TimeoutConfig timeout = new TimeoutConfig(clazz, (Timeout) annotation);
+                    timeout.validate();
+                } else if (annotation.annotationType() == CircuitBreaker.class) {
+                    CircuitBreakerConfig circuitBreaker = new CircuitBreakerConfig(clazz, (CircuitBreaker) annotation);
+                    circuitBreaker.validate();
+                } else if (annotation.annotationType() == Bulkhead.class) {
+                    BulkheadConfig bulkhead = new BulkheadConfig(clazz, (Bulkhead) annotation);
+                    bulkhead.validate();
                 }
             }
         }
@@ -116,9 +101,13 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         //now loop through the methods
         Set<AnnotatedMethod<? super T>> methods = annotatedType.getMethods();
         for (AnnotatedMethod<?> method : methods) {
-            boolean needsIntercepting = processMethod(method, clazz, classLevelAsync);
-            if (needsIntercepting) {
-                interceptedMethods.add(method);
+            validateMethod(method, clazz, classLevelAsync);
+
+            annotations = method.getAnnotations();
+            for (Annotation annotation : annotations) {
+                if (FTGlobalConfig.getActiveAnnotations(clazz).contains(annotation.annotationType())) {
+                    interceptedMethods.add(method);
+                }
             }
         }
 
@@ -131,15 +120,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         }
     }
 
-    /**
-     * Validate a method and return whether it has fault tolerance annotations which require us to add the FT interceptor
-     *
-     * @param method the method to process
-     * @param clazz the class which declares the method
-     * @param classLevelAsync whether the declaring class is annotated with {@code @Asynchronous}
-     * @return true if the method requries the FT interceptor, false otherwise
-     */
-    private <T> boolean processMethod(AnnotatedMethod<T> method, Class<?> clazz, Asynchronous classLevelAsync) {
+    private <T> void validateMethod(AnnotatedMethod<T> method, Class<?> clazz, Asynchronous classLevelAsync) {
         Method javaMethod = method.getJavaMember();
 
         if (javaMethod.isBridge()) {
@@ -150,7 +131,7 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
             // In these cases, the bridge method matches the signature of the overridden method after type erasure and delegates directly to the overriding method
             // In some cases, the signature of the overriding method is valid for some microprofile annotation, but the signature of the bridge method is not
             // However, the user's code is valid, and weld seems to make sure that any interceptors get called with the real method in the InvocationContext.
-            return false;
+            return;
         }
 
         if (classLevelAsync != null) {
@@ -158,79 +139,35 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
             asynchronous.validate();
         }
 
-        boolean needsIntercepting = false;
         Set<Annotation> annotations = method.getAnnotations();
         for (Annotation annotation : annotations) {
-            if (FTGlobalConfig.ALL_ANNOTATIONS.contains(annotation.annotationType())) {
-                if (FTGlobalConfig.isAnnotationEnabled(annotation, clazz, method.getJavaMember())) {
-                    needsIntercepting = true;
-                    if (annotation.annotationType() == Asynchronous.class) {
-                        AsynchronousConfig asynchronous = new AsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
-                        asynchronous.validate();
-                    } else if (annotation.annotationType() == Fallback.class) {
-                        FallbackConfig fallback = new FallbackConfig(javaMethod, clazz, (Fallback) annotation);
-                        fallback.validate();
-                    } else if (annotation.annotationType() == Retry.class) {
-                        RetryConfig retry = new RetryConfig(javaMethod, clazz, (Retry) annotation);
-                        retry.validate();
-                    } else if (annotation.annotationType() == Timeout.class) {
-                        TimeoutConfig timeout = new TimeoutConfig(javaMethod, clazz, (Timeout) annotation);
-                        timeout.validate();
-                    } else if (annotation.annotationType() == CircuitBreaker.class) {
-                        CircuitBreakerConfig circuitBreaker = new CircuitBreakerConfig(javaMethod, clazz, (CircuitBreaker) annotation);
-                        circuitBreaker.validate();
-                    } else if (annotation.annotationType() == Bulkhead.class) {
-                        BulkheadConfig bulkhead = new BulkheadConfig(javaMethod, clazz, (Bulkhead) annotation);
-                        bulkhead.validate();
-                    }
-                } else {
-                    if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Annotation {0} on {1} was disabled and will be ignored", annotation.annotationType().getSimpleName(),
-                                 clazz.getCanonicalName() + "." + method.getJavaMember().getName());
-                    }
+            if (FTGlobalConfig.getActiveAnnotations(clazz).contains(annotation.annotationType())) {
+                if (annotation.annotationType() == Asynchronous.class) {
+                    AsynchronousConfig asynchronous = new AsynchronousConfig(javaMethod, clazz, (Asynchronous) annotation);
+                    asynchronous.validate();
+                } else if (annotation.annotationType() == Fallback.class) {
+                    FallbackConfig fallback = new FallbackConfig(javaMethod, clazz, (Fallback) annotation);
+                    fallback.validate();
+                } else if (annotation.annotationType() == Retry.class) {
+                    RetryConfig retry = new RetryConfig(javaMethod, clazz, (Retry) annotation);
+                    retry.validate();
+                } else if (annotation.annotationType() == Timeout.class) {
+                    TimeoutConfig timeout = new TimeoutConfig(javaMethod, clazz, (Timeout) annotation);
+                    timeout.validate();
+                } else if (annotation.annotationType() == CircuitBreaker.class) {
+                    CircuitBreakerConfig circuitBreaker = new CircuitBreakerConfig(javaMethod, clazz, (CircuitBreaker) annotation);
+                    circuitBreaker.validate();
+                } else if (annotation.annotationType() == Bulkhead.class) {
+                    BulkheadConfig bulkhead = new BulkheadConfig(javaMethod, clazz, (Bulkhead) annotation);
+                    bulkhead.validate();
                 }
             }
         }
-
-        return needsIntercepting;
     }
 
     private <T> void addFaultToleranceAnnotation(BeanManager beanManager, ProcessAnnotatedType<T> processAnnotatedType, boolean interceptedClass,
                                                  Set<AnnotatedMethod<?>> interceptedMethods) {
         AnnotatedTypeWrapper<T> wrapper = new AnnotatedTypeWrapper<T>(beanManager, processAnnotatedType.getAnnotatedType(), interceptedClass, interceptedMethods);
         processAnnotatedType.setAnnotatedType(wrapper);
-    }
-
-    // Move the FaultToleranceInterceptor up before the Transactional interceptors if required
-    public void afterTypeDiscovery(@Observes AfterTypeDiscovery atd) {
-        if (ConfigProvider.getConfig().getOptionalValue(shuffleInterceptorsPropertyName, Boolean.class).orElse(false)) {
-
-            /* Run along the list of interceptors and find the indices of the first @Transactional one and the Fault Tolerance one */
-            int faultToleranceInterceptorIndex = -1;
-            int transactionalInterceptorIndex = -1;
-            int interceptorIndex = 0;
-            for (Iterator<Class<?>> iterator = atd.getInterceptors().iterator(); iterator.hasNext()
-                                                                                 && !(faultToleranceInterceptorIndex >= 0 && transactionalInterceptorIndex >= 0);) {
-                Class<?> i = iterator.next();
-                if (FaultToleranceInterceptor.class.equals(i)) {
-                    /* Found the Fault Tolerance interceptor */
-                    faultToleranceInterceptorIndex = interceptorIndex;
-                } else if (transactionalInterceptorIndex < 0) {
-                    if (TransactionalInterceptor.class.isAssignableFrom(i)) {
-                        /* Found the first @Transactional interceptor */
-                        transactionalInterceptorIndex = interceptorIndex;
-                    }
-                }
-                interceptorIndex++;
-            }
-
-            /* If we found both types of interceptor we need to move the Fault Tolerance one up before the @Transactional one */
-            if (faultToleranceInterceptorIndex >= 0 && transactionalInterceptorIndex >= 0) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Reordering fault tolerance with respect to @Transactional");
-                Class<?> c = atd.getInterceptors().remove(faultToleranceInterceptorIndex);
-                atd.getInterceptors().add(transactionalInterceptorIndex, c);
-            }
-        }
     }
 }
