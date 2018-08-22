@@ -1,0 +1,144 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance CDI Auto Feature -  range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#An asynchronous message does not return Future.
+asynchronous.class.not.returning.future.CWMFT5000E=CWMFT5000E: Die asynchrone Methode {0} hat nicht den R\u00fcckgabetyp Future.
+asynchronous.class.not.returning.future.CWMFT5000E.explanation=Alle Methoden in einer mit org.eclipse.microprofile.faulttolerance.Asynchronous annotierten Klasse m\u00fcssen einen R\u00fcckgabetyp haben, der \u00fcber java.util.concurrent.Future zuordnungsf\u00e4hig ist.
+asynchronous.class.not.returning.future.CWMFT5000E.useraction=Aktualisieren Sie den R\u00fcckgabetyp.
+
+asynchronous.method.not.returning.future.CWMFT5001E=CWMFT5001E: Die asynchrone Methode {0} hat nicht den R\u00fcckgabetyp Future.
+asynchronous.method.not.returning.future.CWMFT5001E.explanation=Alle mit org.eclipse.microprofile.faulttolerance.Asynchronous annotierten Methoden m\u00fcssen einen R\u00fcckgabetyp haben, der \u00fcber java.util.concurrent.Future zuordnungsf\u00e4hig ist.
+asynchronous.method.not.returning.future.CWMFT5001E.useraction=Aktualisieren Sie den R\u00fcckgabetyp.
+
+#A fallback method does not match the return type of the method that falls back to it.
+fallback.policy.return.type.not.match.CWMFT5002E=CWMFT5002E: Die Fallback-Methode {0} hat den falschen R\u00fcckgabetyp. Der R\u00fcckgabetyp muss mit dem R\u00fcckgabetyp der Methode {1} \u00fcbereinstimmen.
+fallback.policy.return.type.not.match.CWMFT5002E.explanation=Eine Fallback-Methode muss denselben R\u00fcckgabetyp wie die Methode haben, die diese Methode verarbeitet. 
+fallback.policy.return.type.not.match.CWMFT5002E.useraction=Aktualisieren Sie den R\u00fcckgabetyp.
+
+#A fallback method that should exist cannot be found.
+fallback.method.not.found.CWMFT5003E=CWMFT5003E: Die Fallback-Methode {1} mit den Parametern {2} wurde nicht in der Klasse {0} gefunden.
+fallback.method.not.found.CWMFT5003E.explanation=Es wurde eine Fallback-Methode f\u00fcr die Methode {1} deklariert. Diese Methode ist jedoch nicht in der Klasse {0} vorhanden.
+fallback.method.not.found.CWMFT5003E.useraction=Entfernen Sie die Fallback-Annotation oder f\u00fcgen Sie die fehlende Methode hinzu.
+
+#A security exception was thrown while trying to create a fallback policy.
+security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: Es ist eine Sicherheitsausnahme eingetreten, als der Anwendungsserver versucht hat, Fallback-Annotationen zu verarbeiten.
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=Zum Erstellen einer Fallback-Richtlinie ben\u00f6tigt der Anwendungsserver die Berechtigung, Java-Methoden anzufordern und zu untersuchen.
+security.exception.acquiring.fallback.method.CWMFT5004E.useraction=\u00dcberpr\u00fcfen Sie die Sicherheitsrichtlinie Ihres Anwendungsservers und geben Sie die Berechtigungen an.
+
+#A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E=CWMFT5005E: Beim Konvertieren der Systemeigenschaft {0} in den Typ {1} ist ein Problem aufgetreten. Der unformatierte Zeichenfolgewert ist {2}. Ausnahme: {3}
+conversion.error.CWMFT5005E.explanation=Alle \u00fcber Systemeigenschaften bereitgestellten Konfigurationswerte m\u00fcssen in den entsprechenden Typ konvertierbar sein, z. B. mit Long.valueOf(String).
+conversion.error.CWMFT5005E.useraction=Stellen Sie sicher, dass der angegebene Wert das richtige Format f\u00fcr den Typ der zu \u00fcberschreibenden Eigenschaft hat.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E=CWMFT5006E: Beim Konvertieren einer Systemeigenschaft in den Typ {0} ist ein Problem aufgetreten. Der unformatierte Zeichenfolgewert ist {1}. Ausnahme: {2}
+conversion.error.CWMFT5006E.explanation=Alle \u00fcber Systemeigenschaften bereitgestellten Konfigurationswerte m\u00fcssen in den entsprechenden Typ konvertierbar sein, z. B. mit Long.valueOf(String).
+conversion.error.CWMFT5006E.useraction=Stellen Sie sicher, dass der angegebene Wert das richtige Format f\u00fcr den Typ der zu \u00fcberschreibenden Eigenschaft hat.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E=CWMFT5007E: Beim Konvertieren einer Systemeigenschaft in den Typ {0} ist ein Problem aufgetreten. Der unformatierte Zeichenfolgewert ist {1}.
+conversion.error.CWMFT5007E.explanation=Alle \u00fcber Systemeigenschaften bereitgestellten Konfigurationswerte m\u00fcssen in den entsprechenden Typ konvertierbar sein, z. B. mit Long.valueOf(String).
+conversion.error.CWMFT5007E.useraction=Stellen Sie sicher, dass der angegebene Wert das richtige Format f\u00fcr den Typ der zu \u00fcberschreibenden Eigenschaft hat.
+
+#The value parameter on the Fallback is not valid.
+fallback.policy.invalid.CWMFT5008E=CWMFT5008E: Die Fallback-Richtlinie f\u00fcr die Methode {0} ist nicht g\u00fcltig, weil der Typ der FallbackHandler-Implementierungsklasse {1} mit dem R\u00fcckgabetyp {2} der urspr\u00fcnglichen Methode {3} kompatibel sein muss.
+fallback.policy.invalid.CWMFT5008E.explanation=Der Typ der FallbackHandler-Implementierung muss mit dem R\u00fcckgabetyp der urspr\u00fcnglichen Methode kompatibel sein.
+fallback.policy.invalid.CWMFT5008E.useraction=Aktualisieren Sie den Typ der FallbackHandler-Implementierungsklasse so, dass er mit dem R\u00fcckgabetyp der urspr\u00fcnglichen Methode kompatibel ist.
+
+
+#The fallback policies are conflicting.
+fallback.policy.conflicts.CWMFT5009E=CWMFT5009E: Die Fallback-Richtlinie f\u00fcr die Methode {0} ist nicht g\u00fcltig, weil sowohl die FallbackHandler-Klasse {1} als auch fallbackMethod {2} angegeben wurden. Geben Sie nur eines von beidem an.
+fallback.policy.conflicts.CWMFT5009E.explanation=Legen Sie entweder die fallbackMethod oder den Wert fest, nicht beides. 
+fallback.policy.conflicts.CWMFT5009E.useraction=Entfernen Sie entweder die fallbackMethod oder den Wert aus der Fallback-Annotation.
+
+#Incorrect value on FT Retry parameters
+retry.parameter.invalid.value.CWMFT5010E=CWMFT5010E: Der Retry-Richtlinienparameter {0} mit dem Wert {1} f\u00fcr {2} ist nicht g\u00fcltig, da der Wert gr\u00f6\u00dfer-gleich {3} sein muss.
+retry.parameter.invalid.value.CWMFT5010E.explanation=Der angegebene Wert bzw. der konfigurierte Wert, wenn der Wert f\u00fcr den Retry-Richtlinienparameter konfiguriert wurde, ist nicht g\u00fcltig.
+retry.parameter.invalid.value.CWMFT5010E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT Timeout parameters
+timeout.parameter.invalid.value.CWMFT5011E=CWMFT5011E: Der Timeout-Wert {0}, der f\u00fcr {1} angegeben ist, ist nicht g\u00fcltig, da er gr\u00f6\u00dfer-gleich 0 sein muss.
+timeout.parameter.invalid.value.CWMFT5011E.explanation=Der angegebene Wert bzw. der konfigurierte Wert, wenn der Wert f\u00fcr den Parameter value der Timeout-Richtlinie konfiguriert wurde, ist nicht g\u00fcltig.
+timeout.parameter.invalid.value.CWMFT5011E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: Der CircuitBreaker-Richtlinienparameter {0} mit dem Wert {1} f\u00fcr {2} ist nicht g\u00fcltig, da die Angabe einer negativen Zahl f\u00fcr den Parameter nicht zul\u00e4ssig ist.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=Der angegebene Wert bzw. der konfigurierte Wert, wenn der Wert f\u00fcr den Parameter delay der CircuitBreaker-Richtlinie konfiguriert wurde, ist nicht g\u00fcltig.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: Der CircuitBreaker-Richtlinienparameter {0} mit dem Wert {1} f\u00fcr {2} ist nicht g\u00fcltig, da er zwischen 0 und 1 einschlie\u00dflich liegen muss.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=Der angegebene Wert bzw. der konfigurierte Wert, wenn der Wert f\u00fcr den Parameter failureRatio der CircuitBreaker-Richtlinie konfiguriert wurde, ist nicht g\u00fcltig.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: Der CircuitBreaker-Richtlinienparameter {0} mit dem Wert {1} f\u00fcr {2} ist nicht g\u00fcltig, da die Angabe einer negativen Zahl f\u00fcr den Parameter nicht zul\u00e4ssig ist.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=Der angegebene Wert bzw. der konfigurierte Wert, wenn der Wert f\u00fcr den Parameter requestVolumeThreshold der CircuitBreaker-Richtlinie konfiguriert wurde, ist nicht g\u00fcltig.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: Der CircuitBreaker-Richtlinienparameter {0} mit dem Wert {1} f\u00fcr {2} ist nicht g\u00fcltig, da die Angabe einer negativen Zahl f\u00fcr den Parameter nicht zul\u00e4ssig ist.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=Der angegebene Wert bzw. der konfigurierte Wert, wenn der Wert f\u00fcr den Parameter successThreshold der CircuitBreaker-Richtlinie konfiguriert wurde, ist nicht g\u00fcltig.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT Bulkhead parameters
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: Der Bulkhead-Richtlinienparameter {0} mit dem Wert {1} f\u00fcr {2} ist nicht g\u00fcltig, da der Parameter gr\u00f6\u00dfer-gleich 1 sein muss.
+bulkhead.parameter.invalid.value.CWMFT5016E.explanation=Der angegebene Wert bzw. der konfigurierte Wert, wenn der Wert f\u00fcr den Bulkhead-Richtlinienparameter konfiguriert wurde, ist nicht g\u00fcltig.
+bulkhead.parameter.invalid.value.CWMFT5016E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: Die Wert des Retry-Richtlinienparameters f\u00fcr die maximale Dauer ist mit dem Wert {0} {1} f\u00fcr das Ziel {2} ist nicht g\u00fcltig, weil er gr\u00f6\u00dfer als der Wert f\u00fcr die Dauer der Verz\u00f6gerung {3} {4} sein muss.
+retry.parameter.invalid.value.CWMFT5017E.explanation=Der Wert f\u00fcr die maximale Dauer muss gr\u00f6\u00dfer sein als der Wert f\u00fcr die Dauer der Verz\u00f6gerung. Der Wert f\u00fcr die maximale Dauer setzt sich zusammen aus dem Parameter maxDuration und dem Parameter durationUnit. Der Wert f\u00fcr die Dauer der Verz\u00f6gerung setzt sich zusammen aus dem Parameter delay und dem Parameter delayUnit.
+retry.parameter.invalid.value.CWMFT5017E.useraction=Korrigieren Sie den Wert f\u00fcr einen oder mehrere der Parameter.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: Der CircuitBreaker-Richtlinienparameter {0} f\u00fcr {1} ist nicht g\u00fcltig, da der zugeh\u00f6rige Wert leer ist.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=Der angegebene Wert bzw. der f\u00fcr die CircuitBreaker-Richtlinie konfigurierte Parameter failOn ist nicht g\u00fcltig.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=Korrigieren Sie den Wert f\u00fcr den angegebenen Parameter.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: Die Dauer der jitter-Verz\u00f6gerung in der Retry-Richtlinie ist mit dem Wert {0} {1} f\u00fcr das Ziel {2} nicht g\u00fcltig, weil der Wert f\u00fcr die Dauer der jitter-Verz\u00f6gerung kleiner sein muss als der Wert f\u00fcr die Dauer der Verz\u00f6gerung mit dem Wert {3} {4}.
+retry.parameter.invalid.value.CWMFT5019W.explanation=Der Wert f\u00fcr die jitter-Verz\u00f6gerung muss kleiner sein als der Wert f\u00fcr die Verz\u00f6gerung. Der Wert f\u00fcr die Dauer der jitter-Verz\u00f6gerung setzt sich zusammen aus dem Parameter jitter und dem Parameter jitterDelayUnit. Der Wert f\u00fcr die Dauer der Verz\u00f6gerung setzt sich zusammen aus dem Parameter delay und dem Parameter delayUnit.
+retry.parameter.invalid.value.CWMFT5019W.useraction=Korrigieren Sie den Wert f\u00fcr einen oder mehrere der Parameter, sodass der Wert f\u00fcr die Dauer der jitter-Verz\u00f6gerung kleiner ist als der Wert f\u00fcr die Dauer der Verz\u00f6gerung.
+
+#Generic error for internal failures. 
+internal.error.CWMFT5997E=CWMFT5997E: Es ist ein interner Fehler aufgetreten. Ausnahme: {0}
+internal.error.CWMFT5997E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.
+internal.error.CWMFT5997E.useraction=Stellen Sie einen Satz von Traces zusammen und \u00f6ffnen Sie einen neuen Problembericht f\u00fcr Ihren Anwendungsserver.
+
+#Generic error for internal failures.
+internal.error.CWMFT5998E=CWMFT5998E: Es ist ein interner Fehler aufgetreten.
+internal.error.CWMFT5998E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.
+internal.error.CWMFT5998E.useraction=Stellen Sie einen Satz von Traces zusammen und \u00f6ffnen Sie einen neuen Problembericht f\u00fcr Ihren Anwendungsserver.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E=CWMFT9999E: Es ist ein Fehler in der Fault Tolerance-API aufgetreten: {0}
+temporary.CWMFT5999E.explanation=Es ist ein Fehler in der Fault Tolerance-API aufgetreten, der eine normale Ausf\u00fchrung verhindert.
+temporary.CWMFT5999E.useraction=Sehen Sie sich die FFDC-Protokolle und den Ausnahmetext an, um das Problem zu identifizieren.

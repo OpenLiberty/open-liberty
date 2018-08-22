@@ -1,0 +1,144 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance CDI Auto Feature -  range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#An asynchronous message does not return Future.
+asynchronous.class.not.returning.future.CWMFT5000E=CWMFT5000E: Metoda asincron\u0103 {0} nu are un tip de returnare de Future.
+asynchronous.class.not.returning.future.CWMFT5000E.explanation=Toate metodele dintr-o clas\u0103 care este adnotat\u0103 cu org.eclipse.microprofile.faulttolerance.Asynchronous trebuie s\u0103 aib\u0103 un tip de returnare care este asignabil din java.util.concurrent.Future.
+asynchronous.class.not.returning.future.CWMFT5000E.useraction=Actualiza\u0163i tipul de returnare.
+
+asynchronous.method.not.returning.future.CWMFT5001E=CWMFT5001E: Metoda asincron\u0103 {0} nu are un tip de returnare de Future.
+asynchronous.method.not.returning.future.CWMFT5001E.explanation=Toate metodele care sunt adnotate cu org.eclipse.microprofile.faulttolerance.Asynchronous trebuie s\u0103 aib\u0103 un tip de returnare care este asignabil din java.util.concurrent.Future.
+asynchronous.method.not.returning.future.CWMFT5001E.useraction=Actualiza\u0163i tipul de returnare.
+
+#A fallback method does not match the return type of the method that falls back to it.
+fallback.policy.return.type.not.match.CWMFT5002E=CWMFT5002E: Metoda regresiv\u0103 {0} are tipul de returnare gre\u015fit. Tipul de returnare trebuie s\u0103 se potriveasc\u0103 cu tipul de returnare al metodei {1}.
+fallback.policy.return.type.not.match.CWMFT5002E.explanation=O metod\u0103 regresiv\u0103 trebuie s\u0103 aib\u0103 acela\u015fi tip de returnare cu metoda pe care o manipuleaz\u0103. 
+fallback.policy.return.type.not.match.CWMFT5002E.useraction=Actualiza\u0163i tipul de returnare.
+
+#A fallback method that should exist cannot be found.
+fallback.method.not.found.CWMFT5003E=CWMFT5003E: Nu a fost g\u0103sit\u0103 metoda regresiv\u0103 {1} cu parametrii {2} \u00een clasa {0}.
+fallback.method.not.found.CWMFT5003E.explanation=A fost declarat\u0103 o metod\u0103 regresiv\u0103 pentru metoda {1}. Totu\u015fi, aceast\u0103 metod\u0103 nu exist\u0103 \u00een clasa {0}.
+fallback.method.not.found.CWMFT5003E.useraction=Fie \u00eenl\u0103tura\u0163i adnotarea regresiv\u0103, fie ad\u0103uga\u0163i metoda lips\u0103.
+
+#A security exception was thrown while trying to create a fallback policy.
+security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: A ap\u0103rut o excep\u0163ie de securitate c\u00e2nd serverul de aplica\u0163ii a \u00eencercat s\u0103 proceseze adnot\u0103rile regresive.
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=Pentru a crea o politic\u0103 regresiv\u0103, serverul de aplica\u0163ii are nevoie de permisiunea de a ob\u0163ine \u015fi examina metode Java.
+security.exception.acquiring.fallback.method.CWMFT5004E.useraction=Revede\u0163i politica de securitate a serverului dumneavoastr\u0103 de aplica\u0163ii \u015fi asigura\u0163i permisiunile.
+
+#A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E=CWMFT5005E: A ap\u0103rut o problem\u0103 \u00een timpul convertirii unei propriet\u0103\u0163i de sistem {0} la tipul {1}. Valoarea \u015firului brut este {2}. Excep\u0163ia este {3}.
+conversion.error.CWMFT5005E.explanation=Toate valorile de configurare furnizate prin intermediul propriet\u0103\u0163ilor de sistem trebuie s\u0103 fie convertibile la tipul corespunz\u0103tor. De ex. utiliz\u00e2nd Long.valueOf(String)
+conversion.error.CWMFT5005E.useraction=Verifica\u0163i c\u0103 valoarea specificat\u0103 este \u00een formatul corect pentru tipul de proprietate care este \u00eenlocuit\u0103.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E=CWMFT5006E: A ap\u0103rut o problem\u0103 \u00een timpul convertirii unei propriet\u0103\u0163i de sistem la tipul {0}. Valoarea \u015firului brut este {1}. Excep\u0163ia este {2}.
+conversion.error.CWMFT5006E.explanation=Toate valorile de configurare furnizate prin intermediul propriet\u0103\u0163ilor de sistem trebuie s\u0103 fie convertibile la tipul corespunz\u0103tor. De ex. utiliz\u00e2nd Long.valueOf(String)
+conversion.error.CWMFT5006E.useraction=Verifica\u0163i c\u0103 valoarea specificat\u0103 este \u00een formatul corect pentru tipul de proprietate care este \u00eenlocuit\u0103.
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E=CWMFT5007E: A ap\u0103rut o problem\u0103 \u00een timpul convertirii unei propriet\u0103\u0163i de sistem la tipul {0}. Valoarea \u015firului brut este {1}.
+conversion.error.CWMFT5007E.explanation=Toate valorile de configurare furnizate prin intermediul propriet\u0103\u0163ilor de sistem trebuie s\u0103 fie convertibile la tipul corespunz\u0103tor. De ex. utiliz\u00e2nd Long.valueOf(String)
+conversion.error.CWMFT5007E.useraction=Verifica\u0163i c\u0103 valoarea specificat\u0103 este \u00een formatul corect pentru tipul de proprietate care este \u00eenlocuit\u0103.
+
+#The value parameter on the Fallback is not valid.
+fallback.policy.invalid.CWMFT5008E=CWMFT5008E: Politica regresiv\u0103 pentru metoda {0} nu este valid\u0103 deoarece tipul FallbackHandler al clasei de implementare {1} trebuie s\u0103 fie compatibil cu tipul de returnare {2} de pe metoda original\u0103 {3}.
+fallback.policy.invalid.CWMFT5008E.explanation=Tipul implement\u0103rii FallbackHandler trebuie s\u0103 fie compatibil cu tipul de returnare al metodei originale.
+fallback.policy.invalid.CWMFT5008E.useraction=Actualiza\u0163i tipul clasei de implementare FallbackHandler pentru a fi compatibil\u0103 cu tipul de returnare al metodei originale.
+
+
+#The fallback policies are conflicting.
+fallback.policy.conflicts.CWMFT5009E=CWMFT5009E: Politica regresiv\u0103 pentru metoda {0} nu este valid\u0103 deoarece au fost specificate \u015fi clasa FallbackHandler {1} \u015fi fallbackMethod {2}. Specifica\u0163i numai una dintre ele.
+fallback.policy.conflicts.CWMFT5009E.explanation=Trebuie setat\u0103 fie fallbackMethod fie valoarea, nu ambele. 
+fallback.policy.conflicts.CWMFT5009E.useraction=\u00cenl\u0103tura\u0163i fie fallbackMethod sau valoarea din adnotarea regresiv\u0103.
+
+#Incorrect value on FT Retry parameters
+retry.parameter.invalid.value.CWMFT5010E=CWMFT5010E: Parametrul politicii de Re\u00eencercare {0} de valoare {1} pentru {2} nu este valid deoarece acesta trebuie s\u0103 fie mai mare sau egal cu {3}.
+retry.parameter.invalid.value.CWMFT5010E.explanation=Valoarea specificat\u0103 sau valoarea configurat\u0103, dac\u0103 este configurat\u0103 pentru parametrul politicii de Re\u00eencercare, nu este valid\u0103.
+retry.parameter.invalid.value.CWMFT5010E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT Timeout parameters
+timeout.parameter.invalid.value.CWMFT5011E=CWMFT5011E: Valoarea de Timeout {0} specificat\u0103 pe {1} nu este valid\u0103 deoarece aceasta trebuie s\u0103 fie mai mare sau egal\u0103 cu 0.
+timeout.parameter.invalid.value.CWMFT5011E.explanation=Valoarea specificat\u0103 sau valoarea configurat\u0103, dac\u0103 este configurat\u0103 pentru parametrul valoare al politicii Timeout, nu este valid\u0103.
+timeout.parameter.invalid.value.CWMFT5011E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: Parametrul politicii CircuitBreaker {0} de valoare {1} pentru {2} nu este valid deoarece valoarea parametrului nu trebuie s\u0103 fie un num\u0103r negativ.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=Valoarea specificat\u0103 sau valoarea configurat\u0103, dac\u0103 este configurat\u0103 pentru parametrul politicii de \u00eent\u00e2rziere CircuitBreaker, nu este valid\u0103.
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: Parametrul politicii CircuitBreaker {0} de valoare {1} pentru {2} inu este valid deoarece valoarea trebuie s\u0103 fie \u00eentre 0 \u015fi 1 inclusiv.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=Valoarea specificat\u0103 sau valoarea configurat\u0103, dac\u0103 este configurat\u0103 pentru parametrul politicii failureRatio CircuitBreaker, nu este valid\u0103.
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: Parametrul politicii CircuitBreaker {0} de valoare {1} pentru {2} nu este valid deoarece parametrul nu trebuie s\u0103 fie un num\u0103r negativ.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=Valoarea specificat\u0103 sau valoarea configurat\u0103, dac\u0103 este configurat\u0103 pentru parametrul politicii requestVolumeThreshold CircuitBreaker, nu este valid\u0103.
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: Parametrul politicii CircuitBreaker {0} de valoare {1} pentru {2} nu este valid deoarece parametrul nu trebuie s\u0103 fie un num\u0103r negativ.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=Valoarea specificat\u0103 sau valoarea configurat\u0103, dac\u0103 este configurat\u0103 pentru parametrul politicii successThreshold CircuitBreaker, nu este valid\u0103.
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT Bulkhead parameters
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: Parametrul politicii Bulkhead {0} de valoare {1} pentru {2}  nu este valid deoarece acesta trebuie s\u0103 fie mai mare sau egal cu 1.
+bulkhead.parameter.invalid.value.CWMFT5016E.explanation=Valoarea specificat\u0103 sau valoarea configurat\u0103, dac\u0103 este configurat\u0103 pentru parametrul politicii Bulkhead, nu este valid\u0103.
+bulkhead.parameter.invalid.value.CWMFT5016E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: Durata maxim\u0103 a politicii de re\u00eencercare a {0} {1} pentru \u0163inta {2} nu este valid\u0103 deoarece trebuie s\u0103 fie mai mare dec\u00e2t durata \u00eent\u00e2rzierii {3} {4}.
+retry.parameter.invalid.value.CWMFT5017E.explanation=Durata maxim\u0103 trebuie s\u0103 fie mai mare dec\u00e2t \u00eent\u00e2rzierea. Durata maxim\u0103 const\u0103 din parametrul maxDuration \u015fi parametrul durationUnit. \u00cent\u00e2rzierea con\u0163ine parametrul \u00eent\u00e2rziere \u015fi parametrul delayUnit.
+retry.parameter.invalid.value.CWMFT5017E.useraction=Corecta\u0163i valoarea unuia sau mai multor parametri.
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: Parametrul politicii CircuitBreaker {0} pentru {1} pentru c\u0103 valoarea sa este goal\u0103.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=Valoarea specificat\u0103 sau valoarea care este configurat\u0103 pentru parametrul failOn al politicii CircuitBreaker nu este valid\u0103.
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=Corecta\u0163i valoarea pentru parametrul specificat.
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: \u00cent\u00e2rzierea de jitter a politicii de re\u00eencercare a {0} {1} pentru \u0163inta {2} nu este valid\u0103 deoarece \u00eent\u00e2rzierea jitter trebuie s\u0103 fie mai mic\u0103 dec\u00e2t durata \u00eent\u00e2rzierii de {3} {4}.
+retry.parameter.invalid.value.CWMFT5019W.explanation=\u00cent\u00e2rzierea de jitter trebuie s\u0103 fie mai mic\u0103 dec\u00e2t \u00eent\u00e2rzierea. \u00cent\u00e2rzierea de jitter const\u0103 din parametrul jitter \u015fi parametrul jitterDelayUnit. \u00cent\u00e2rzierea con\u0163ine parametrul \u00eent\u00e2rziere \u015fi parametrul delayUnit.
+retry.parameter.invalid.value.CWMFT5019W.useraction=Corecta\u0163i valoarea unuia sau mai multor parametri astfel \u00eenc\u00e2t durata pentru \u00eent\u00e2rzierea de jitter s\u0103 fie mai mic\u0103 dec\u00e2t durata \u00eent\u00e2rzierii.
+
+#Generic error for internal failures. 
+internal.error.CWMFT5997E=CWMFT5997E: A ap\u0103rut o eroare intern\u0103. Excep\u0163ia este {0}.
+internal.error.CWMFT5997E.explanation=Serverul de aplica\u0163ii a avut o eroare intern\u0103.
+internal.error.CWMFT5997E.useraction=Str\u00e2nge\u0163i un set de urme \u015fi deschide\u0163i o problem\u0103 nou\u0103 asociat\u0103 serverului dumneavoastr\u0103 de aplica\u0163ii.
+
+#Generic error for internal failures.
+internal.error.CWMFT5998E=CWMFT5998E: A ap\u0103rut o eroare intern\u0103.
+internal.error.CWMFT5998E.explanation=Serverul de aplica\u0163ii a avut o eroare intern\u0103.
+internal.error.CWMFT5998E.useraction=Str\u00e2nge\u0163i un set de urme \u015fi deschide\u0163i o problem\u0103 nou\u0103 asociat\u0103 serverului dumneavoastr\u0103 de aplica\u0163ii.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E=CWMFT9999E: A ap\u0103rut o eroare Fault Tolerance API: {0}
+temporary.CWMFT5999E.explanation=A ap\u0103rut o eroare Fault Tolerance API care \u00eempiedic\u0103 func\u0163ionarea normal\u0103.
+temporary.CWMFT5999E.useraction=Examina\u0163i istoricele FFDC \u015fi textul excep\u0163iei pentru a identifica problema.
