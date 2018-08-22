@@ -77,29 +77,33 @@ public class FeatureResolverImpl implements FeatureResolver {
     @Override
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection, java.util.Set)
      */
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
         // Note that when no process type is passed we support all process types.
-        return resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition>emptySet(), rootFeatures, preResolved, allowMultipleVersions, EnumSet.allOf(ProcessType.class));
+        return resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved, allowMultipleVersions,
+                               EnumSet.allOf(ProcessType.class));
     }
-    
+
     @Override
     /*
      * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection, java.util.Collection, java.util.Set)
+     *
+     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
+     * java.util.Collection, java.util.Set)
      */
-    public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
+    public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
+                                  Set<String> preResolved, boolean allowMultipleVersions) {
         // Note that when no process type is passed we support all process types.
         return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions, EnumSet.allOf(ProcessType.class));
     }
 
     /*
      * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection, java.util.Collection, java.util.Set,
+     *
+     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
+     * java.util.Collection, java.util.Set,
      * boolean, java.util.EnumSet)
      * Here are the steps this uses to resolve:
      * 1) Primes the selected features with the pre-resolved and the root features (conflicts are reported, but no permutations for backtracking)
@@ -107,7 +111,8 @@ public class FeatureResolverImpl implements FeatureResolver {
      * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
      */
     @Override
-    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions,
+    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+                                  boolean allowMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
         SelectionContext selectionContext = new SelectionContext(repository, allowMultipleVersions, supportedProcessTypes);
 
@@ -123,8 +128,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         selectionContext.primeSelected(preResolved);
         selectionContext.primeSelected(rootFeatures);
 
-        // Even if the feature set hasn't changed, we still need to process the auto features and add any features that need to be 
-        // installed/uninstalled to the list. This recursively iterates over the auto Features, as previously installed features 
+        // Even if the feature set hasn't changed, we still need to process the auto features and add any features that need to be
+        // installed/uninstalled to the list. This recursively iterates over the auto Features, as previously installed features
         // may satisfy other auto features.
         Set<String> autoFeaturesToInstall = Collections.<String> emptySet();
         Set<String> seenAutoFeatures = new HashSet<String>();
@@ -197,8 +202,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             ProvisioningFeatureDefinition preResolvedDef = selectionContext.getRepository().getFeature(preResolvedFeatureName);
             if (preResolvedDef == null) {
                 return Collections.emptySet();
-            }
-            else {
+            } else {
                 preResolvedSymbolicNames.add(preResolvedDef.getSymbolicName());
             }
         }
@@ -411,7 +415,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (tolerates != null && (candidateNames.isEmpty() || isSingleton)) {
             for (String tolerate : tolerates) {
                 if (selectionContext._allowMultipleVersions) {
-                    // if we are in minify mode (_allowMultipleVersions) then we only want to continue to look for 
+                    // if we are in minify mode (_allowMultipleVersions) then we only want to continue to look for
                     // tolerated versions until we have found one candidate
                     if (!!!candidateNames.isEmpty()) {
                         break;
@@ -504,7 +508,8 @@ public class FeatureResolverImpl implements FeatureResolver {
      * We then need to recursively check the new set of features to see if other features have their capabilities satisfied by these auto features and keep
      * going round until we've got the complete list.
      */
-    private Set<String> processAutoFeatures(Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> result, Set<String> seenAutoFeatures, SelectionContext selectionContext) {
+    private Set<String> processAutoFeatures(Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> result, Set<String> seenAutoFeatures,
+                                            SelectionContext selectionContext) {
 
         Set<String> autoFeaturesToProcess = new HashSet<String>();
 
@@ -513,11 +518,11 @@ public class FeatureResolverImpl implements FeatureResolver {
             filteredFeatureDefs.add(selectionContext.getRepository().getFeature(feature));
         }
 
-        // Iterate over all of the auto-feature definitions... 
+        // Iterate over all of the auto-feature definitions...
         for (ProvisioningFeatureDefinition autoFeatureDef : selectionContext.getRepository().getAutoFeatures()) {
             String featureSymbolicName = autoFeatureDef.getSymbolicName();
 
-            // if we haven't been here before, check the capability header against the list of 
+            // if we haven't been here before, check the capability header against the list of
             // installed features to see if it should be auto-installed.
             if (!seenAutoFeatures.contains(featureSymbolicName))
                 if (autoFeatureDef.isCapabilitySatisfied(filteredFeatureDefs)) {
@@ -551,7 +556,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 Permutation copy = new Permutation();
                 copy._selected.putAll(_selected);
                 copy._blacklistFeatures.addAll(_blacklistFeatures);
-                // Only copy the missing and nonPublicRoots from the result.  
+                // Only copy the missing and nonPublicRoots from the result.
                 // The conflicts and wrongProcessTypes will get recalculated; the resolved are set at the very end
                 copy._result._missing.addAll(_result.getMissing());
                 copy._result._nonPublicRoots.addAll(_result.getNonPublicRoots());
@@ -712,7 +717,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 // no need to do any selecting when allowing multiple versions
                 return;
             }
-            // Need to prime each feature as a selected feature, while also checking that 
+            // Need to prime each feature as a selected feature, while also checking that
             // there are not any current conflicts in the collection.
             // Note that the features may include two versions of the same feature (e.g. servlet-3.0 and servlet-3.1)
             // this case needs to be handled by removing both versions from the features collection
@@ -797,7 +802,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
         @Override
@@ -877,7 +882,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#getResolvedFeatures()
          */
         @Override
@@ -913,7 +918,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#getNonPublicRoots()
          */
         @Override
@@ -929,7 +934,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#getWrongProcessTypes()
          */
         @Override
@@ -945,7 +950,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#hasErrors()
          */
         @Override
