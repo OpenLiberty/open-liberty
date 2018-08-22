@@ -10,16 +10,32 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.mpjwt11.tck;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                Mpjwt11TCKLauncher_aud_env.class,
-                Mpjwt11TCKLauncher_aud_noenv.class,
-                Mpjwt11TCKLauncher_noaud_env.class, // exits clean
-                DummyForQuarantine.class
-})
+import componenttest.custom.junit.runner.FATRunner;
 
-public class FATSuite {}
+/**
+ * This is a dummy test so the quarantined build won't fail for not having any tests.
+ */
+
+@RunWith(FATRunner.class)
+public class DummyForQuarantine {
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+
+    }
+
+    @Test
+    public void alwaysPass() throws Exception {
+
+    }
+}
