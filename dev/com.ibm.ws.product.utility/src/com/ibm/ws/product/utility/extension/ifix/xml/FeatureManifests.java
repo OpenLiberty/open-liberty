@@ -10,17 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
+import java.util.HashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlElement;
+import org.w3c.dom.NodeList;
 
 public class FeatureManifests {
-    @XmlElement(name = "manifest")
-    private Set<FeatureManifestFile> files;
+    private final Set<FeatureManifestFile> files;
 
-    public FeatureManifests() {
-        //no-op
-        //default constructor required by jaxb
+    public static Set<FeatureManifestFile> fromNodeList(NodeList nl) {
+        Set<FeatureManifestFile> manifests = new HashSet<FeatureManifestFile>();
+
+        for (int i = 0; i < nl.getLength(); i++) //newFeatureManifests Elements
+            for (int j = 0; j < nl.item(i).getChildNodes().getLength(); j++) //manifest Elements
+                if (nl.item(i).getChildNodes().item(j).getNodeName().equals("manifest"))
+                    manifests.add(FeatureManifestFile.fromNode(nl.item(i).getChildNodes().item(j)));
+        return manifests;
     }
 
     public FeatureManifests(Set<FeatureManifestFile> files) {

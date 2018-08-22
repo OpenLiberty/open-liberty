@@ -1,0 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'org.glassfish:javax.json:1.1'
+}
+
+autoFVT {
+  doLast {
+    // Manually clear out JSON-P 1.0 (automatically added to all FATs) because we want to use JSON-P 1.1
+    delete new File(buildDir, 'autoFVT/lib/com.ibm.ws.org.glassfish.json.1.0.jar')
+  }
+}
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
+  }
+}
+
+apply plugin: "net.ossindex.audit"
+
+audit {
+    failOnError = false
+}

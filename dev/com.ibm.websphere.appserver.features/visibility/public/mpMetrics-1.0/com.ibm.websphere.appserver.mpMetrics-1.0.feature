@@ -12,6 +12,9 @@ Subsystem-Name: MicroProfile Metrics 1.0
  com.ibm.websphere.appserver.restHandler-1.0, \
  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0
 -bundles=com.ibm.ws.require.java8, \
- com.ibm.ws.microprofile.metrics
+ com.ibm.ws.microprofile.metrics, \
+ com.ibm.ws.microprofile.metrics.1.0, \
+ com.ibm.ws.microprofile.metrics.private, \
+ com.ibm.ws.microprofile.metrics.public
 kind=ga
 edition=core

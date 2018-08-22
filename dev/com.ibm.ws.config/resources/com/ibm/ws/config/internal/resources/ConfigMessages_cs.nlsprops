@@ -465,6 +465,10 @@ info.config.conflict=CWWKG0102I: {0}
 info.config.conflict.explanation=Pro stejnou vlastnost konfigurace je ur\u010deno v\u00edce hodnot. 
 info.config.conflict.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Informa\u010dn\u00ed zpr\u00e1va nebude vytv\u00e1\u0159ena, pokud \u00fapravou konfigurace serveru odeberete konflikt, kter\u00fd ji zp\u016fsobuje.
  
+warning.supplied.config.not.valid=CWWKG0103W: N\u00e1zev atributu {0} s hodnotou {1} je ignorov\u00e1n, proto\u017ee je definov\u00e1n jako ibm:final. Syst\u00e9m pou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed hodnotu atributu.
+warning.supplied.config.not.valid.explanation= Atribut konfigurace ozna\u010den\u00fd jako ibm:final a v\u00fdchoz\u00ed nastaven\u00ed nejsou platn\u00e9. Odeberte nakonfigurovan\u00fd atribut z konfigurace.
+warning.supplied.config.not.valid.useraction=Aktualizujte konfiguraci serveru, abyste odebrali chybnou hodnotu atributu.
+
 
 # Non-TR message
 error.invalidOCDRef=CHYBA: PID metatypu [{0}] ur\u010duje neexistuj\u00edc\u00ed ID definice t\u0159\u00eddy objekt\u016f [{1}].

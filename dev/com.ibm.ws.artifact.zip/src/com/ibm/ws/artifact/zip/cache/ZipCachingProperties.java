@@ -335,28 +335,28 @@ public class ZipCachingProperties {
     public static final String ZIP_CACHE_REAPER_QUICK_PEND_MIN_PROPERTY_NAME =
         "zip.reaper.quick.pend.min";
     public static final long ZIP_CACHE_REAPER_QUICK_PEND_MIN_DEFAULT_VALUE =
-        ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 100; // 0.01s
+        ZipCachingProperties.NANO_IN_ONE / 100; // 0.01s
     public static final long ZIP_CACHE_REAPER_QUICK_PEND_MIN;
 
     /** The maximum time to wait before processing a pending close. */
     public static final String ZIP_CACHE_REAPER_QUICK_PEND_MAX_PROPERTY_NAME =
         "zip.reaper.quick.pend.max";
     public static final long ZIP_CACHE_REAPER_QUICK_PEND_MAX_DEFAULT_VALUE =
-        ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 50; // 0.02s
+        ZipCachingProperties.NANO_IN_ONE / 50; // 0.02s
     public static final long ZIP_CACHE_REAPER_QUICK_PEND_MAX;
 
     /** The minimum time to wait before processing a pending close. */
     public static final String ZIP_CACHE_REAPER_SLOW_PEND_MIN_PROPERTY_NAME =
         "zip.reaper.slow.pend.min";
     public static final long ZIP_CACHE_REAPER_SLOW_PEND_MIN_DEFAULT_VALUE =
-        ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 10; // 0.1s
+        ZipCachingProperties.NANO_IN_ONE / 10; // 0.1s
     public static final long ZIP_CACHE_REAPER_SLOW_PEND_MIN;
 
     /** The maximum time to wait before processing a pending close. */
     public static final String ZIP_CACHE_REAPER_SLOW_PEND_MAX_PROPERTY_NAME =
         "zip.reaper.slow.pend.max";
     public static final long ZIP_CACHE_REAPER_SLOW_PEND_MAX_DEFAULT_VALUE =
-        ZipCachingProperties.ONE_SEC_IN_NANO_SEC / 5; // 0.2s
+        ZipCachingProperties.NANO_IN_ONE / 5; // 0.2s
     public static final long ZIP_CACHE_REAPER_SLOW_PEND_MAX;
 
     static {
@@ -386,6 +386,7 @@ public class ZipCachingProperties {
     //
 
     private static final String PAD = "0000000000";
+    private static final int PAD_LEN = 10;
 
     @Trivial
     public static String toCount(int count) {
@@ -401,8 +402,8 @@ public class ZipCachingProperties {
         }
 
         int missing = pad - numDigits;
-        if ( missing > PAD.length() ) {
-            missing = PAD.length();
+        if ( missing > PAD_LEN ) {
+            missing = PAD_LEN;
         }
 
         return PAD.substring(0,  missing) + digits;
@@ -410,9 +411,16 @@ public class ZipCachingProperties {
 
     //
 
-    public static final long ONE_SEC_IN_NANO_SEC = 1000 * 1000 * 1000;
-    public static final long ONE_MILLI_SEC_IN_NANO_SEC = 1000 * 1000;
-    public static final long ONE_SEC_IN_MILLI_SEC = 1000;
+    public static final long NANO_IN_ONE = 1000 * 1000 * 1000;
+    public static final long NANO_IN_MILLI = 1000 * 1000;
+    public static final long MILLI_IN_ONE = 1000;
+
+    public static final int NANO_IN_ONE_DIGITS = 9;
+    public static final int NANO_IN_MILLI_DIGITS = 6;
+    public static final int MILLI_IN_ONE_DIGITS = 3;
+
+    public static final int PAD_LEFT = 6;
+    public static final int PAD_RIGHT = 6;
 
     //
 
@@ -420,7 +428,7 @@ public class ZipCachingProperties {
      * Display the difference between two nano-seconds values as a
      * decimal seconds value.
      *
-     * Display three places after the decimal point, and left
+     * Display six places after the decimal point, and left
      * the integer value with '0' to a minimum of six characters.
      *
      * @param baseNS The value to subtract from the second parameter.
@@ -430,7 +438,7 @@ public class ZipCachingProperties {
      */
     @Trivial
     public static String toRelSec(long baseNS, long actualNS) {
-        return toAbsSec(actualNS - baseNS, 6);
+        return toAbsSec(actualNS - baseNS, PAD_LEFT);
     }
 
     /**
@@ -469,52 +477,85 @@ public class ZipCachingProperties {
      */
     @Trivial
     public static String toAbsSec(long durationNS) {
-        return toAbsSec(durationNS, 6);
+        return toAbsSec(durationNS, PAD_LEFT);
     }
+
+// TODO: Move this into a unit test.
+//    public static void main(String[] args) {
+//        long[] testValues = {
+//            0L, 1L,
+//            998L, 999L, 1000L, 1001L,
+//            999998L, 999999L, 1000000L, 1000001L,
+//            999999998L, 999999999L, 1000000000L, 1000000001,
+//            10000000000L
+//        };
+//
+//        for ( long testValue : testValues ) {
+//            System.out.println("Test [ " + Long.toString(testValue) + " ]");
+//            System.out.println("     [ " + toAbsSec(testValue) + " ]");
+//        }
+//    }
 
     /**
      * Display a nano-seconds value as a decimal seconds value.
      *
-     * Display three places after the decimal point, and left
+     * Display six places after the decimal point, and left
      * the integer value with '0' to a minimum of the specified
      * number of pad characters.
      *
-     * Negative values are not handled.
+     * Negative values are handled by prepending '-' to the left of the
+     * display value of the positive nano-seconds value.  This will result
+     * in one extra character in the display output.
      *
-     * @param durationNS The duration in nano-seconds to display
+     * @param nano The duration in nano-seconds to display
      *    as a seconds value.
-     * @param pad The number of '0' character to pad to the integer
+     * @param padLeft The number of '0' character to pad to the integer
      *    part of the value.
      * @return The value as a seconds value.
      */
     @Trivial
-    public static String toAbsSec(long durationNS, int pad) {
-        String nanoSec = Long.toString(durationNS);
-        int nanoDigits = nanoSec.length();
-        if ( nanoDigits > 9 ) { // 1 000 000 000 == 1.000 sec
-            int secDigits = nanoDigits - 9;
-            if ( secDigits >= pad ) {
-                return nanoSec.substring(0, secDigits) + "." + nanoSec.substring(secDigits, secDigits + 3);
+    public static String toAbsSec(long nano, int padLeft) {
+        if ( nano < 0 ) {
+            return "-" + toAbsSec(-1 * nano, padLeft);
+        } else if ( nano == 0 ) {
+            return PAD.substring(0, padLeft) + "." + PAD.substring(PAD_RIGHT);
+        }
+
+        String nanoText = Long.toString(nano);
+        int nanoDigits = nanoText.length();
+
+        if ( nanoDigits > NANO_IN_ONE_DIGITS ) { // greater than 999,999,999
+            int secDigits = nanoDigits - NANO_IN_ONE_DIGITS;
+            if ( secDigits >= padLeft ) {
+                return nanoText.substring(0, secDigits) +
+                       "." +
+                       nanoText.substring(secDigits, secDigits + PAD_RIGHT);
             } else {
-                int padDigits = pad - secDigits;
-                if ( padDigits > PAD.length() ) {
-                    padDigits = PAD.length();
+                int padDigits = padLeft - secDigits;
+                if ( padDigits > PAD_LEN ) {
+                    padDigits = PAD_LEN;
                 }
-                return PAD.substring(0, padDigits) + nanoSec.substring(0, secDigits) + "." + nanoSec.substring(secDigits, secDigits + 3);
+                return PAD.substring(0, padDigits) + nanoText.substring(0, secDigits) +
+                       "." +
+                       nanoText.substring(secDigits, secDigits + PAD_RIGHT);
             }
 
-        } else if ( nanoDigits > 6 ) {
-            if ( pad > PAD.length() ) {
-                pad = PAD.length();
+        } else if ( nanoDigits > (NANO_IN_ONE_DIGITS - PAD_RIGHT) ) { // less than 1,000,000,000 and greater than 999
+            if ( padLeft > PAD_LEN ) {
+                padLeft = PAD_LEN;
             }
-            int missingDigits = 3 - (nanoDigits - 6);
-            return PAD.substring(0, pad) + "." + PAD.substring(0, missingDigits) + nanoSec.substring(0, nanoDigits - 6);
+            int missingDigits = NANO_IN_ONE_DIGITS - nanoDigits;
+            return PAD.substring(0, padLeft) +
+                   "." +
+                   PAD.substring(0, missingDigits) + nanoText.substring(0, PAD_RIGHT - missingDigits);
 
-        } else {
-            if ( pad > PAD.length() ) {
-                pad = PAD.length();
+        } else { // less than 1,000, but greater than 0.
+            if ( padLeft > PAD_LEN ) {
+                padLeft = PAD_LEN;
             }
-            return PAD.substring(0, pad) + "." + "000";
+            return PAD.substring(0, padLeft) +
+                   "." +
+                   PAD.substring(PAD_RIGHT - 1) + "*";
         }
     }
 

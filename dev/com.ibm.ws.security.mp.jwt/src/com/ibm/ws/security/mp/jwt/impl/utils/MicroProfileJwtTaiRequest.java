@@ -206,14 +206,12 @@ public class MicroProfileJwtTaiRequest {
                 throw new MpJwtProcessingException(msg);
             }
         } else if (this.genericConfigs != null) {
-            if (this.genericConfigs.size() <= 2) {
-                if (this.genericConfigs.size() == 2) {
-                    if (!handleTwoConfigurations()) {
-                        // if we have two jwtsso or two mpjwt configurations, then we cannot process
-                        handleTooManyConfigurations();
-                    }
-                } else {
-                    this.microProfileJwtConfig = this.genericConfigs.get(0);
+            if (this.genericConfigs.size() < 2) {
+                this.microProfileJwtConfig = this.genericConfigs.get(0); 
+            } else if (this.genericConfigs.size() <= 3) {
+                if (!handleMultipleConfigurations()) {
+                    // if we have two jwtsso or two mpjwt configurations, then we cannot process
+                    handleTooManyConfigurations();
                 }
 
             } else {
@@ -234,6 +232,8 @@ public class MicroProfileJwtTaiRequest {
         Iterator it = this.genericConfigs.iterator();
         boolean jwtsso = false;
         boolean mpjwt = false;
+        boolean defaultmpjwt = true;
+   
         while (it.hasNext()) {
             MicroProfileJwtConfig mpJwtConfig = (MicroProfileJwtConfig) it.next();
             if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
@@ -245,6 +245,31 @@ public class MicroProfileJwtTaiRequest {
         }
         return jwtsso && mpjwt;
     }
+    
+    private boolean handleMultipleConfigurations() {
+
+        Iterator it = this.genericConfigs.iterator();
+        int jwtsso = 0;
+        int mpjwt = 0;
+        
+        MicroProfileJwtConfig mpjwtConfiguration = null;
+        
+        while (it.hasNext()) {
+            MicroProfileJwtConfig mpJwtConfig = (MicroProfileJwtConfig) it.next();
+            if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
+                jwtsso ++;
+                this.microProfileJwtConfig = mpJwtConfig;
+            } else if (!taiRequestHelper.isMpJwtDefaultConfig(mpJwtConfig)) {
+                mpjwt ++;
+                mpjwtConfiguration = mpJwtConfig;
+            }
+        }
+        if (jwtsso < 1 && mpjwt == 1) {
+            this.microProfileJwtConfig = mpjwtConfiguration;
+        }
+        return jwtsso <= 1 && mpjwt <= 1;
+    }
+    
 
     void handleTooManyConfigurations() throws MpJwtProcessingException {
         // error handling -- multiple mpJwtConfig qualified and we do not know how to select

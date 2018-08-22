@@ -31,9 +31,9 @@ Include-Resource:\
 instrument.disabled: true
 
 -buildpath: \
-    org.apache.cxf.cxf-core;strategy=exact;version=3.1.14,\
-    org.apache.cxf.cxf-tools-common;strategy=exact;version=3.1.14,\
-    org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version=3.1.14,\
+    org.apache.cxf.cxf-core;strategy=exact;version=3.1.16,\
+    org.apache.cxf.cxf-tools-common;strategy=exact;version=3.1.16,\
+    org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version=3.1.16,\
     com.ibm.ws.jaxrs.2.0.common;version=latest,\
     com.ibm.ws.kernel.boot.core,\
     com.ibm.websphere.org.osgi.core

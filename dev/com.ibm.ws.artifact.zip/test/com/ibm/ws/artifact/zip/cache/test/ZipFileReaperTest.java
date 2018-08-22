@@ -898,7 +898,7 @@ public class ZipFileReaperTest {
                 long nextDelay = nextActAt - lastActAt;
                 if ( nextDelay != 0 ) {
                     try {
-                        Thread.sleep((nextDelay) / ZipCachingProperties.ONE_MILLI_SEC_IN_NANO_SEC);
+                        Thread.sleep((nextDelay) / ZipCachingProperties.NANO_IN_MILLI);
                     } catch ( InterruptedException e ) {
                         // Ignore
                     }

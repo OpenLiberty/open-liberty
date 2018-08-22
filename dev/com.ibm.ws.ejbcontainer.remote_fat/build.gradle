@@ -30,6 +30,7 @@ dependencies {
 task addEJBTools(type: Copy) {
   from configurations.ejbTools
   into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteServer/lib/global"
+  rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
 }
 
 addRequiredLibraries {

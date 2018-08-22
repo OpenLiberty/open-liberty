@@ -67,6 +67,42 @@ public class LoadFromAppServlet extends FATDatabaseServlet {
         // TODO catch expected failure for: DataSource ds = InitialContext.doLookup("jdbc/derby");
     }
 
+    // Use a data source that is backed by a java.sql.Driver which is packaged with the application.
+    @Test
+    public void testDriverLoadedFromApp() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/miniDriver");
+        Connection con = ds.getConnection("driveruser1", "driverpwd1");
+        try {
+            assertEquals("driverdb", con.getCatalog());
+
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("MiniJDBC", mdata.getDriverName());
+            assertEquals("driveruser1", mdata.getUserName());
+        } finally {
+            con.close();
+        }
+    }
+
+    // Use a data source that is backed by a data source that is packaged with the application,
+    // where no information is provided about the vendor data source class name such that it must
+    // be inferred from the detected java.sql.Driver impl class.
+    @Test
+    public void testInferDataSourceFromDriverPackage() throws Exception {
+        DataSource ds = InitialContext.doLookup("jdbc/miniDataSource");
+        assertEquals(330, ds.getLoginTimeout());
+
+        Connection con = ds.getConnection("dsuser1", "dspwd1");
+        try {
+            assertEquals("minidb", con.getCatalog());
+
+            DatabaseMetaData mdata = con.getMetaData();
+            assertEquals("MiniJDBC", mdata.getDriverName());
+            assertEquals("dsuser1", mdata.getUserName());
+        } finally {
+            con.close();
+        }
+    }
+
     // Obtain a connection with a user/password that is unique to this method and a corresponding method
     // in DerbyLoadFromAppServlet, and verify that the underlying JDBC driver loaded is the fake "Mini" JDBC driver
     // which is found in this application and not Derby from the other application.

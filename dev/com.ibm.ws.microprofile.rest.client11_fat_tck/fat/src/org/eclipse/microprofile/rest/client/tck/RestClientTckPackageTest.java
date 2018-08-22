@@ -11,13 +11,15 @@
 package org.eclipse.microprofile.rest.client.tck;
 
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -27,6 +29,11 @@ import componenttest.topology.utils.MvnUtils;
  */
 @RunWith(FATRunner.class)
 public class RestClientTckPackageTest {
+
+    @ClassRule
+    public static RepeatTests r = 
+        RepeatTests.withoutModification()
+                   .andWith(FeatureReplacementAction.EE8_FEATURES());
 
     @Server("FATServer")
     public static LibertyServer server;

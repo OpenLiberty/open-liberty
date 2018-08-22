@@ -109,7 +109,7 @@ import org.apache.cxf.transport.MessageObserver;
  *
  */
 public abstract class AbstractClient implements Client {
-    public static final String EXECUTOR_SERVICE_PROPERTY = "executorService";
+    public static final String EXECUTOR_SERVICE_PROPERTY = "executorService"; //Liberty change
 
     protected static final String REQUEST_CONTEXT = "RequestContext";
     protected static final String RESPONSE_CONTEXT = "ResponseContext";
@@ -130,7 +130,6 @@ public abstract class AbstractClient implements Client {
     protected ClientConfiguration cfg = new ClientConfiguration();
     private ClientState state;
     private AtomicBoolean closed = new AtomicBoolean();
-
     protected AbstractClient(ClientState initialState) {
         this.state = initialState;
     }
@@ -165,6 +164,7 @@ public abstract class AbstractClient implements Client {
         return this;
     }
 
+
     /**
      * {@inheritDoc}
      */
@@ -174,10 +174,6 @@ public abstract class AbstractClient implements Client {
         removeAllHeaders();
         state.getRequestHeaders().putAll(map);
         return this;
-    }
-
-    public void removeAllHeaders() {
-        state.getRequestHeaders().clear();
     }
 
     /**
@@ -304,7 +300,7 @@ public abstract class AbstractClient implements Client {
      */
     @Override
     public MultivaluedMap<String, String> getHeaders() {
-        MultivaluedMap<String, String> map = new MetadataMap<String, String>(false, true);
+        MultivaluedMap<String, String> map = new MetadataMap<>(false, true);
         map.putAll(state.getRequestHeaders());
         return map;
     }
@@ -348,13 +344,14 @@ public abstract class AbstractClient implements Client {
             if (cfg.getBus() == null) {
                 return;
             }
-            for (Closeable c : cfg.getEndpoint().getCleanupHooks()) {
-                try {
-                    c.close();
-                } catch (IOException e) {
-                    //ignore
-                }
-            }
+            cfg.getEndpoint().getCleanupHooks().
+                    forEach(c -> {
+                        try {
+                            c.close();
+                        } catch (IOException e) {
+                            //ignore
+                        }
+                    });
             ClientLifeCycleManager mgr = cfg.getBus().getExtension(ClientLifeCycleManager.class);
             if (null != mgr) {
                 mgr.clientDestroyed(new FrontendClientAdapter(getConfiguration()));
@@ -362,7 +359,7 @@ public abstract class AbstractClient implements Client {
 
             if (cfg.getConduitSelector() instanceof Closeable) {
                 try {
-                    ((Closeable) cfg.getConduitSelector()).close();
+                    ((Closeable)cfg.getConduitSelector()).close();
                 } catch (IOException e) {
                     //ignore, we're destroying anyway
                 }
@@ -379,6 +376,10 @@ public abstract class AbstractClient implements Client {
         closed = null;
     }
 
+    public void removeAllHeaders() {
+        state.getRequestHeaders().clear();
+    }
+
     private void possiblyAddHeader(String name, String value) {
         if (!isDuplicate(name, value)) {
             state.getRequestHeaders().add(name, value);
@@ -387,7 +388,7 @@ public abstract class AbstractClient implements Client {
 
     private boolean isDuplicate(String name, String value) {
         List<String> values = state.getRequestHeaders().get(name);
-        return values != null && values.contains(value) ? true : false;
+        return values != null && values.contains(value);
     }
 
     protected ClientState getState() {
@@ -412,9 +413,9 @@ public abstract class AbstractClient implements Client {
 
     protected MultivaluedMap<String, String> getTemplateParametersMap(URITemplate template,
                                                                       List<Object> values) {
-        if (values != null && values.size() != 0) {
+        if (values != null && !values.isEmpty()) {
             List<String> vars = template.getVariables();
-            MultivaluedMap<String, String> templatesMap = new MetadataMap<String, String>(vars.size());
+            MultivaluedMap<String, String> templatesMap = new MetadataMap<>(vars.size());
             for (int i = 0; i < vars.size(); i++) {
                 if (i < values.size()) {
                     templatesMap.add(vars.get(i), values.get(i).toString());
@@ -455,20 +456,20 @@ public abstract class AbstractClient implements Client {
                     currentResponseBuilder.header(entry.getKey(), entry.getValue().get(0));
                     continue;
                 }
-                for (Object valObject : entry.getValue()) {
+                entry.getValue().forEach(valObject -> {
                     if (splitHeaders && valObject instanceof String) {
                         String val = (String) valObject;
                         String[] values;
                         if (val.length() == 0) {
-                            values = new String[] { "" };
+                            values = new String[]{""};
                         } else if (val.charAt(0) == '"' && val.charAt(val.length() - 1) == '"') {
                             // if the value starts with a quote and ends with a quote, we do a best
                             // effort attempt to determine what the individual values are.
                             values = parseQuotedHeaderValue(val);
                         } else {
                             boolean splitPossible = !(HttpHeaders.SET_COOKIE.equalsIgnoreCase(entry.getKey())
-                                            && val.toUpperCase().contains(HttpHeaders.EXPIRES.toUpperCase()));
-                            values = splitPossible ? val.split(",") : new String[] { val };
+                                    && val.toUpperCase().contains(HttpHeaders.EXPIRES.toUpperCase()));
+                            values = splitPossible ? val.split(",") : new String[]{val};
                         }
                         for (String s : values) {
                             String theValue = s.trim();
@@ -479,10 +480,10 @@ public abstract class AbstractClient implements Client {
                     } else {
                         currentResponseBuilder.header(entry.getKey(), valObject);
                     }
-                }
+                });
             }
         }
-        String ct = (String) responseMessage.get(Message.CONTENT_TYPE);
+        String ct = (String)responseMessage.get(Message.CONTENT_TYPE);
         if (ct != null) {
             currentResponseBuilder.type(ct);
         }
@@ -503,9 +504,9 @@ public abstract class AbstractClient implements Client {
             (MultivaluedMap<String, Object>)outMessage.get(Message.PROTOCOL_HEADERS);
 
         @SuppressWarnings("unchecked")
-        Class<T> theClass = (Class<T>) cls;
+        Class<T> theClass = (Class<T>)cls;
 
-        Object contentTypeHeader = headers.getFirst("Content-Type");
+        Object contentTypeHeader = headers.getFirst(HttpHeaders.CONTENT_TYPE);
         if (contentTypeHeader == null) {
             contentTypeHeader = MediaType.WILDCARD;
         }
@@ -542,7 +543,7 @@ public abstract class AbstractClient implements Client {
             Class<?> exceptionClass = ExceptionUtils.getWebApplicationExceptionClass(r,
                                        WebApplicationException.class);
             Constructor<?> ctr = exceptionClass.getConstructor(Response.class);
-            return (WebApplicationException) ctr.newInstance(r);
+            return (WebApplicationException)ctr.newInstance(r);
         } catch (Throwable ex2) {
             return new WebApplicationException(r);
         }
@@ -575,7 +576,7 @@ public abstract class AbstractClient implements Client {
         // operating on InputStream don't have to close streams pro-actively
         exchange.put(KEEP_CONDUIT_ALIVE, true);
         getConfiguration().getConduitSelector().complete(exchange);
-        String s = (String) exchange.getOutMessage().get(Message.BASE_PATH);
+        String s = (String)exchange.getOutMessage().get(Message.BASE_PATH);
         if (s != null && !state.getBaseURI().toString().equals(s)) {
             // usually the (failover) conduit change will result in a retry call
             // which in turn will reset the base and current request URI.
@@ -584,16 +585,13 @@ public abstract class AbstractClient implements Client {
             calculateNewRequestURI(URI.create(s), getCurrentURI(), proxy);
             return;
         }
-        s = (String) exchange.getOutMessage().get("transport.retransmit.url");
+        s = (String)exchange.getOutMessage().get("transport.retransmit.url");
         if (s != null && !state.getBaseURI().toString().equals(s)) {
             calculateNewRequestURI(URI.create(s), getCurrentURI(), proxy);
-            return;
         }
-
     }
 
     protected Object[] preProcessResult(Message message) throws Exception {
-
         Exchange exchange = message.getExchange();
 
         Exception ex = message.getContent(Exception.class);
@@ -612,7 +610,7 @@ public abstract class AbstractClient implements Client {
         }
         if (ex != null
             || PropertyUtils.isTrue(exchange.get(SERVICE_NOT_AVAIL_PROPERTY))
-            && PropertyUtils.isTrue(exchange.get(COMPLETE_IF_SERVICE_NOT_AVAIL_PROPERTY))) {
+                && PropertyUtils.isTrue(exchange.get(COMPLETE_IF_SERVICE_NOT_AVAIL_PROPERTY))) {
             getConfiguration().getConduitSelector().complete(exchange);
         }
         if (ex != null) {
@@ -625,7 +623,7 @@ public abstract class AbstractClient implements Client {
     }
 
     protected void checkClientException(Message outMessage, Exception ex) throws Exception {
-        Throwable actualEx = ex instanceof Fault ? ((Fault) ex).getCause() : ex;
+        Throwable actualEx = ex instanceof Fault ? ((Fault)ex).getCause() : ex;
 
         Exchange exchange = outMessage.getExchange();
         Integer responseCode = getResponseCode(exchange);
@@ -666,15 +664,16 @@ public abstract class AbstractClient implements Client {
     }
 
     private Integer getResponseCode(Exchange exchange) {
-        Integer responseCode = (Integer) exchange.get(Message.RESPONSE_CODE);
+        Integer responseCode = (Integer)exchange.get(Message.RESPONSE_CODE);
         if (responseCode == null && exchange.getInMessage() != null) {
-            responseCode = (Integer) exchange.getInMessage().get(Message.RESPONSE_CODE);
+            responseCode = (Integer)exchange.getInMessage().get(Message.RESPONSE_CODE);
         }
         if (responseCode == null && exchange.isOneWay() && !state.getBaseURI().toString().startsWith("http")) {
             responseCode = 202;
         }
         return responseCode;
     }
+
 
     protected URI calculateNewRequestURI(Map<String, Object> reqContext) {
         URI newBaseURI = URI.create(reqContext.get(Message.ENDPOINT_ADDRESS).toString());
@@ -719,13 +718,13 @@ public abstract class AbstractClient implements Client {
 
     @SuppressWarnings("unchecked")
     protected Object[] retryInvoke(BindingOperationInfo oi, Object[] params, Map<String, Object> context,
-                                   Exchange exchange) throws Exception {
+                              Exchange exchange) throws Exception {
 
         try {
             Object body = params.length == 0 ? null : params[0];
-            Map<String, Object> reqContext = CastUtils.cast((Map<?, ?>) context.get(REQUEST_CONTEXT));
+            Map<String, Object> reqContext = CastUtils.cast((Map<?, ?>)context.get(REQUEST_CONTEXT));
             MultivaluedMap<String, String> headers =
-                            (MultivaluedMap<String, String>) reqContext.get(Message.PROTOCOL_HEADERS);
+                (MultivaluedMap<String, String>)reqContext.get(Message.PROTOCOL_HEADERS);
 
             URI newRequestURI = calculateNewRequestURI(reqContext);
             // TODO: if failover conduit selector fails to find a failover target
@@ -735,19 +734,20 @@ public abstract class AbstractClient implements Client {
             // retryInvoke.
             Object response = retryInvoke(newRequestURI, headers, body, exchange, context);
             exchange.put(List.class, getContentsList(response));
-            return new Object[] { response };
+            return new Object[]{response};
         } catch (Throwable t) {
-            Exception ex = t instanceof Exception ? (Exception) t : new Exception(t);
+            Exception ex = t instanceof Exception ? (Exception)t : new Exception(t);
             exchange.put(Exception.class, ex);
             return null;
         }
     }
 
     protected abstract Object retryInvoke(URI newRequestURI,
-                                          MultivaluedMap<String, String> headers,
-                                          Object body,
-                                          Exchange exchange,
-                                          Map<String, Object> invContext) throws Throwable;
+                                 MultivaluedMap<String, String> headers,
+                                 Object body,
+                                 Exchange exchange,
+                                 Map<String, Object> invContext) throws Throwable;
+
 
     protected void addMatrixQueryParamsToBuilder(UriBuilder ub,
                                                  String paramName,
@@ -776,21 +776,20 @@ public abstract class AbstractClient implements Client {
             }
         } else {
             Object pValue = pValues[0];
-            MultivaluedMap<String, Object> values =
-                InjectionUtils.extractValuesFromBean(pValue, "");
-            for (Map.Entry<String, List<Object>> entry : values.entrySet()) {
-                for (Object v : entry.getValue()) {
-                    convertMatrixOrQueryToBuilder(ub, entry.getKey(), v, pt, anns);
-                }
-            }
+            MultivaluedMap<String, Object> values = InjectionUtils.extractValuesFromBean(pValue, "");
+            values.forEach((key, value) -> {
+                value.forEach(v -> {
+                    convertMatrixOrQueryToBuilder(ub, key, v, pt, anns);
+                });
+            });
         }
     }
 
     private void convertMatrixOrQueryToBuilder(UriBuilder ub,
-                                               String paramName,
-                                               Object pValue,
-                                               ParameterType pt,
-                                               Annotation[] anns) {
+                                           String paramName,
+                                           Object pValue,
+                                           ParameterType pt,
+                                           Annotation[] anns) {
         Object convertedValue = convertParamValue(pValue, anns);
         addMatrixOrQueryToBuilder(ub, paramName, pt, convertedValue);
     }
@@ -805,6 +804,7 @@ public abstract class AbstractClient implements Client {
             ub.queryParam(paramName, pValue);
         }
     }
+
 
     protected String convertParamValue(Object pValue, Annotation[] anns) {
         return convertParamValue(pValue, pValue == null ? null : pValue.getClass(), anns);
@@ -851,22 +851,21 @@ public abstract class AbstractClient implements Client {
 
     protected static void reportMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Throwable ex) {
         String errorMessage = JAXRSUtils.logMessageHandlerProblem(name, cls, ct);
-        Throwable actualEx = ex instanceof Fault ? ((Fault) ex).getCause() : ex;
+        Throwable actualEx = ex instanceof Fault ? ((Fault)ex).getCause() : ex;
         throw new ProcessingException(errorMessage, actualEx);
     }
 
     protected static void setAllHeaders(MultivaluedMap<String, String> headers, HttpURLConnection conn) {
-        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+        headers.forEach((key, value) -> {
             StringBuilder b = new StringBuilder();
-            for (int i = 0; i < entry.getValue().size(); i++) {
-                String value = entry.getValue().get(i);
-                b.append(value);
-                if (i + 1 < entry.getValue().size()) {
+            for (int i = 0; i < value.size(); i++) {
+                b.append(value.get(i));
+                if (i + 1 < value.size()) {
                     b.append(',');
                 }
             }
-            conn.setRequestProperty(entry.getKey(), b.toString());
-        }
+            conn.setRequestProperty(key, b.toString());
+        });
     }
 
     protected String[] parseQuotedHeaderValue(String originalValue) {
@@ -943,7 +942,7 @@ public abstract class AbstractClient implements Client {
         message.getExchange().put(ConduitSelector.class, cfg.getConduitSelector());
         message.getExchange().put(Service.class, cfg.getConduitSelector().getEndpoint().getService());
 
-        String address = (String) message.get(Message.ENDPOINT_ADDRESS);
+        String address = (String)message.get(Message.ENDPOINT_ADDRESS);
         // custom conduits may override the initial/current address
         if (address.startsWith(HTTP_SCHEME) && !address.equals(currentURI.toString())) {
             URI baseAddress = URI.create(address);
@@ -976,6 +975,7 @@ public abstract class AbstractClient implements Client {
 
     protected static MessageObserver setupInFaultObserver(final ClientConfiguration cfg) {
         return new InFaultChainInitiatorObserver(cfg.getBus()) {
+
             @Override
             protected void initializeInterceptors(Exchange ex, PhaseInterceptorChain chain) {
                 chain.add(cfg.getInFaultInterceptors());
@@ -989,7 +989,6 @@ public abstract class AbstractClient implements Client {
             outMessage.put(Message.PROCESS_ONEWAY_RESPONSE, true);
         }
     }
-
     private void checkClosed() {
         if (closed.get()) {
             throw new IllegalStateException("Client is closed");
@@ -1075,14 +1074,15 @@ public abstract class AbstractClient implements Client {
         }
     }
 
+
     protected Object checkIfBodyEmpty(Object body, String contentType) {
         //CHECKSTYLE:OFF
         if (body != null
-            && (body.getClass() == String.class && ((String) body).length() == 0
-                || body.getClass() == Form.class && ((Form) body).asMap().isEmpty()
-                || Map.class.isAssignableFrom(body.getClass()) && ((Map<?, ?>) body).isEmpty()
+            && (body.getClass() == String.class && ((String)body).length() == 0
+            || body.getClass() == Form.class && ((Form)body).asMap().isEmpty()
+            || Map.class.isAssignableFrom(body.getClass()) && ((Map<?, ?>)body).isEmpty()
                 && !MediaType.APPLICATION_JSON.equals(contentType)
-                || body instanceof byte[] && ((byte[]) body).length == 0)) {
+            || body instanceof byte[] && ((byte[])body).length == 0)) {
             body = null;
         }
         //CHECKSTYLE:ON
@@ -1092,7 +1092,7 @@ public abstract class AbstractClient implements Client {
     protected Map<String, Object> getRequestContext(Message outMessage) {
         Map<String, Object> invContext
             = CastUtils.cast((Map<?, ?>)outMessage.get(Message.INVOCATION_CONTEXT));
-        return CastUtils.cast((Map<?, ?>) invContext.get(REQUEST_CONTEXT));
+        return CastUtils.cast((Map<?, ?>)invContext.get(REQUEST_CONTEXT));
     }
 
     protected List<?> getContentsList(Object body) {
@@ -1123,19 +1123,13 @@ public abstract class AbstractClient implements Client {
 
                 final ClientMessageObserver observer = new ClientMessageObserver(cfg);
 
-                exchange.put(MessageObserver.class, new MessageObserver() {
-                    public void onMessage(final Message message) {
-                        if (!message.getExchange()
-                            .containsKey(Executor.class.getName() + ".USING_SPECIFIED")) {
-
-                            executor.execute(new Runnable() {
-                                public void run() {
-                                    observer.onMessage(message);
-                                }
-                            });
-                        } else {
+                exchange.put(MessageObserver.class, message -> {
+                    if (!message.getExchange().containsKey(Executor.class.getName() + ".USING_SPECIFIED")) {
+                        executor.execute(() -> {
                             observer.onMessage(message);
-                        }
+                        });
+                    } else {
+                        observer.onMessage(message);
                     }
                 });
             }
@@ -1144,13 +1138,11 @@ public abstract class AbstractClient implements Client {
 
     protected void setContexts(Message message, Exchange exchange,
                                Map<String, Object> context, boolean proxy) {
-        Map<String, Object> reqContext = null;
-        Map<String, Object> resContext = null;
         if (context == null) {
             context = new HashMap<>();
         }
-        reqContext = CastUtils.cast((Map<?, ?>) context.get(REQUEST_CONTEXT));
-        resContext = CastUtils.cast((Map<?, ?>) context.get(RESPONSE_CONTEXT));
+        Map<String, Object> reqContext = CastUtils.cast((Map<?, ?>)context.get(REQUEST_CONTEXT));
+        Map<String, Object> resContext = CastUtils.cast((Map<?, ?>)context.get(RESPONSE_CONTEXT));
         if (reqContext == null) {
             reqContext = new HashMap<>(cfg.getRequestContext());
             context.put(REQUEST_CONTEXT, reqContext);
@@ -1233,7 +1225,6 @@ public abstract class AbstractClient implements Client {
 
         @Override
         public void handleMessage(Message outMessage) throws Fault {
-
             MessageContentsList objs = MessageContentsList.getContentsList(outMessage);
             if (objs == null || objs.isEmpty()) {
                 return;
@@ -1248,7 +1239,7 @@ public abstract class AbstractClient implements Client {
             }
 
             Object body = objs.get(0);
-            Annotation[] customAnns = (Annotation[]) outMessage.get(Annotation.class.getName());
+            Annotation[] customAnns = (Annotation[])outMessage.get(Annotation.class.getName());
             Type t = outMessage.get(Type.class);
             doWriteBody(outMessage, body, t, customAnns, os);
         }
@@ -1269,7 +1260,6 @@ public abstract class AbstractClient implements Client {
         }
 
     }
-
     private static class ConnectionFaultInterceptor extends AbstractPhaseInterceptor<Message> {
         ConnectionFaultInterceptor() {
             super(Phase.PRE_STREAM);
@@ -1291,10 +1281,9 @@ public abstract class AbstractClient implements Client {
                     cb.handleException(message, ex);
                 }
             }
-
-
         }
     }
+
     protected abstract class AbstractClientAsyncResponseInterceptor extends AbstractPhaseInterceptor<Message> {
         AbstractClientAsyncResponseInterceptor() {
             super(Phase.UNMARSHAL);

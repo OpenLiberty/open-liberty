@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+    
+  <display-name>JDBCFATDerbyTestWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <servlet-name>JDBC FAT Derby Servlet</servlet-name>
+    <servlet-class>web.JDBCDerbyServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>JDBC FAT Derby Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- RESOURCE REFERENCES -->
+  
+  <resource-ref>
+	<res-ref-name>jdbc/dsfat0ref</res-ref-name>
+	<res-type>javax.sql.DataSource</res-type>
+	<res-auth>Container</res-auth>
+  </resource-ref>
+  
+   <resource-ref>
+	<res-ref-name>jdbc/dsfat1ref</res-ref-name>
+	<res-type>javax.sql.DataSource</res-type>
+	<res-auth>Container</res-auth>
+  </resource-ref>
+  
+  <resource-ref>
+	<res-ref-name>jdbc/dsfat2ref</res-ref-name>
+	<res-type>javax.sql.DataSource</res-type>
+	<res-auth>Container</res-auth>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jdbc/dsfat5ref</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth> 
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jdbc/dsfat6ref</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+  
+  <resource-ref>
+    <res-ref-name>jdbc/dsfat7ref</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+  
+</web-app>

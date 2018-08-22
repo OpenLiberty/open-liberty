@@ -78,7 +78,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         super(Phase.UNMARSHAL);
     }
 
-    @FFDCIgnore(value = { Fault.class, RuntimeException.class })
+    @FFDCIgnore(value = { Fault.class, RuntimeException.class, IOException.class })
     @Override
     public void handleMessage(Message message) {
         final Exchange exchange = message.getExchange();
@@ -95,6 +95,8 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
                 convertExceptionToResponseIfPossible(ex.getCause(), message);
             } catch (RuntimeException ex) {
                 convertExceptionToResponseIfPossible(ex, message);
+            } catch (IOException ex) {
+                convertExceptionToResponseIfPossible(ex, message);
             }
         }
 
@@ -106,8 +108,8 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         }
     }
 
-    @FFDCIgnore(value = { WebApplicationException.class, IOException.class })
-    private void processRequest(Message message, Exchange exchange) {
+    @FFDCIgnore(value = { WebApplicationException.class })
+    private void processRequest(Message message, Exchange exchange) throws IOException {
 
         ServerProviderFactory providerFactory = ServerProviderFactory.getInstance(message);
 
@@ -281,13 +283,9 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         }
 
         //Process parameters
-        try {
-            List<Object> params = JAXRSUtils.processParameters(ori, matchedValues, message);
-            message.setContent(List.class, params);
-        } catch (IOException ex) {
-            convertExceptionToResponseIfPossible(ex, message);
-        }
 
+        List<Object> params = JAXRSUtils.processParameters(ori, matchedValues, message);
+        message.setContent(List.class, params);
     }
 
     private void convertExceptionToResponseIfPossible(Throwable ex, Message message) {

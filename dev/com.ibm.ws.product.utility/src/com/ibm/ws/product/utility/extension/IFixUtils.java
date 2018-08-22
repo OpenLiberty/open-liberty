@@ -24,14 +24,14 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.aries.util.manifest.BundleManifest;
 import org.apache.aries.util.manifest.ManifestProcessor;
 import org.osgi.framework.Version;
 import org.osgi.framework.VersionRange;
+import org.w3c.dom.Document;
 
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -50,11 +50,11 @@ import com.ibm.ws.product.utility.extension.ifix.xml.UpdatedFile;
  *
  */
 public class IFixUtils {
-    private static Unmarshaller unmarshaller;
+    private static DocumentBuilder docBuilder;
 
     /**
      * This method will find which iFixes have been installed and return a list with all of the IDs of APARs that have been fixed by the iFixes.
-     * 
+     *
      * @param wlpInstallationDirectory The installation directory of the current install
      * @param console The console for printing messages to
      * @return The list of APAR IDs contained in the installed iFixes or an empty list if none were found.
@@ -63,10 +63,9 @@ public class IFixUtils {
         Set<IFixInfo> iFixInfos = new HashSet<IFixInfo>();
         // First create a parser for reading the iFix XML
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(IFixInfo.class);
-            unmarshaller = jaxbContext.createUnmarshaller();
-        } catch (JAXBException e) {
-            // If we can't create an unmarshaller then we won't be able to read any files so print a message and return the empty list
+            docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (Exception e) {
+            // If we can't create a DocumentBuilder then we won't be able to read any files so print a message and return the empty list
             console.printlnErrorMessage(getMessage("ifixutils.unable.to.create.parser", e.getMessage()));
             return iFixInfos;
         }
@@ -77,9 +76,10 @@ public class IFixUtils {
         // Read in each file and look for the problem information inside it, the problem info is contained in a problem sub-element (contained within a "resolves" within a "fix" element)
         for (File file : iFixFiles) {
             try {
-                IFixInfo iFixInfo = (IFixInfo) unmarshaller.unmarshal(file);
+                Document doc = docBuilder.parse(file);
+                IFixInfo iFixInfo = IFixInfo.fromDocument(doc);
                 iFixInfos.add(iFixInfo);
-            } catch (JAXBException e) {
+            } catch (Exception e) {
                 // There was an error reading this one file but we can continue to read the next files so print a message but then continue
                 console.printlnErrorMessage(getMessage("ifixutils.unable.to.read.file", file.getAbsolutePath(), e.getMessage()));
             }
@@ -89,7 +89,7 @@ public class IFixUtils {
 
     /**
      * This method will find which iFixes have been installed and return a list with all of the IDs of APARs that have been fixed by the iFixes.
-     * 
+     *
      * @param wlpInstallationDirectory The installation directory of the current install
      * @param console The console for printing messages to
      * @return The Set of LibertyProfileMetadataFile objects from all the *.lpmf files in the supplied installation dir.
@@ -98,9 +98,8 @@ public class IFixUtils {
         Set<LibertyProfileMetadataFile> lpmfInfos = new HashSet<LibertyProfileMetadataFile>();
         // First create a parser for reading the Liberty Profile Metadata XML
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(LibertyProfileMetadataFile.class);
-            unmarshaller = jaxbContext.createUnmarshaller();
-        } catch (JAXBException e) {
+            docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (Exception e) {
             // If we can't create an unmarshaller then we won't be able to read any files so print a message and return the empty list
             console.printlnErrorMessage(getMessage("ifixutils.unable.to.create.parser", e.getMessage()));
             return lpmfInfos;
@@ -112,9 +111,10 @@ public class IFixUtils {
         // Read in each file and parse the liberty profile metadata into in memory objects.
         for (File file : lpmfFiles) {
             try {
-                LibertyProfileMetadataFile lpmfInfo = (LibertyProfileMetadataFile) unmarshaller.unmarshal(file);
+                Document doc = docBuilder.parse(file);
+                LibertyProfileMetadataFile lpmfInfo = LibertyProfileMetadataFile.fromDocument(doc);
                 lpmfInfos.add(lpmfInfo);
-            } catch (JAXBException e) {
+            } catch (Exception e) {
                 // There was an error reading this one file but we can continue to read the next files so print a message but then continue
                 console.printlnErrorMessage(getMessage("ifixutils.unable.to.read.file", file.getAbsolutePath(), e.getMessage()));
             }
@@ -124,8 +124,9 @@ public class IFixUtils {
 
     public static IFixInfo parseIFix(InputStream in, String path, CommandConsole console) {
         try {
-            return (IFixInfo) unmarshaller.unmarshal(in);
-        } catch (JAXBException e) {
+            Document doc = docBuilder.parse(in);
+            return IFixInfo.fromDocument(doc);
+        } catch (Exception e) {
             // There was an error reading this one file but we can continue to read the next files so print a message but then continue
             console.printlnErrorMessage(getMessage("ifixutils.unable.to.read.file", path, e.getMessage()));
         }
@@ -135,7 +136,7 @@ public class IFixUtils {
 
     /**
      * This loads all of the files ending with ".xml" within the lib/fixes directory of the WLP install. If none exist then it returns an empty array.
-     * 
+     *
      * @param wlpInstallationDirectory The installation directory of the current install
      * @return The list of XML files or an empty array if none is found
      */
@@ -155,7 +156,7 @@ public class IFixUtils {
 
     /**
      * This loads all of the files ending with ".lpmf" within the lib/fixes directory of the WLP install. If none exist then it returns an empty array.
-     * 
+     *
      * @param wlpInstallationDirectory The installation directory of the current install
      * @return The list of Liberty Profile Metadata files or an empty array if none is found
      */
@@ -181,7 +182,7 @@ public class IFixUtils {
      * This method checks to see whether any of the ifix jars or any ifix static content files are missing from the runtime. It ensures that
      * ifix jar files have their base bundles available, and all hashes of the new versions of the ifix files are checked against any they find
      * within the runtime.
-     * 
+     *
      * @param installDir - The install directory of the product extension (including core and usr).
      * @param features - The list of ProvisioningFeatureDefinition found in the install dir.
      * @param repo - This is the bundle repository that is mapped to the install location of the product extension.
@@ -202,27 +203,27 @@ public class IFixUtils {
         // Get a list of all the LibertyProfile metadata files that use to match up with the ifixes.
         Map<String, BundleFile> bundleFiles = processLPMFXmls(installDir, console);
 
-        // Iterate over each file that is found in all the ifix xmls. If the same file is listed in multiple ifix xml, we will have 
+        // Iterate over each file that is found in all the ifix xmls. If the same file is listed in multiple ifix xml, we will have
         // been given the new version that should be on the system, if it relevant to the runtime.
         for (Map.Entry<String, IFixInfo> ifixInfoEntry : processIFixXmls(installDir, bundleFiles, console).entrySet()) {
 
-            // Get the relative file name of the ifix file e.g. lib/test_1.0.0.20130101.jar 
+            // Get the relative file name of the ifix file e.g. lib/test_1.0.0.20130101.jar
             String updateFileName = ifixInfoEntry.getKey();
             // Get the IfixInfo object that contains the latest version of this file.
             IFixInfo ifixInfo = ifixInfoEntry.getValue();
 
-            // Loop through all the updated files in the current ifixInfo and when we've found the required file to 
+            // Loop through all the updated files in the current ifixInfo and when we've found the required file to
             // process, do the rest of the processing.
             for (UpdatedFile updatedFile : ifixInfo.getUpdates().getFiles()) {
                 if (updatedFile.getId().equals(updateFileName)) {
 
                     File updateFile = new File(installDir, updateFileName);
-                    // Check to see if we're dealing with a static content file or not. If not see if it is a bundle. If not then ignore as we 
+                    // Check to see if we're dealing with a static content file or not. If not see if it is a bundle. If not then ignore as we
                     // don't need it.
                     if (allStaticFileContent.contains(updateFile)) {
                         // Check that the file exists in the runtime.
                         if (updateFile.exists()) {
-                            // Get the hash of the static file from the ifix xml file. 
+                            // Get the hash of the static file from the ifix xml file.
                             String ifixHash = updatedFile.getHash();
                             // Now calculate the new hash and compare the 2. If they are NOT the same the ifix needs to be re-applied.
                             try {
@@ -238,13 +239,13 @@ public class IFixUtils {
                             // If the static file doesn't appear on disk, then we need to re-apply the ifix.
                             ifixesToReApply.add(ifixInfo.getId());
                         }
-                        // Process jar files. If the ifix jar doesn't exist, then check to see whether we have the relevant 
+                        // Process jar files. If the ifix jar doesn't exist, then check to see whether we have the relevant
                         // features installed that would require the ifix to be re-applied.
                     } else {
                         // If we're not dealing with static files, then we should be dealing with bundles and or static jars.
                         // If we have the actual ifix jar in the runtime, we need to check that it is the correct file. Check that hash.
                         if (allBundleJarContent.contains(updateFile)) {
-                            // Get the hash of the bundle from the ifix xml file. 
+                            // Get the hash of the bundle from the ifix xml file.
                             String ifixHash = updatedFile.getHash();
                             try {
                                 // Now calculate the new hash and compare both hashes. If they are NOT the same the ifix needs to be re-applied.
@@ -296,7 +297,7 @@ public class IFixUtils {
     /**
      * This method calculates a hash of the required file and compares it against the supplied hash. It then returns
      * true if both hashes are equals.
-     * 
+     *
      * @param fileToHash - The file to calculate the hash for.
      * @param hashToCompare - The hash to compare.
      * @return - A boolean indicating whether the hashes are equal.
@@ -313,10 +314,10 @@ public class IFixUtils {
     }
 
     /**
-     * 
+     *
      * This method reads all of the Feature manifests supplied and finds the files that should be in the runtime. For bundles it also
      * stores the Base bundles so we can use that to see if we have the necessary base bundles available in the runtime for the ifix.
-     * 
+     *
      * @param installDir - The installation directory of the runtime to search.
      * @param features - The Map of features that are in the runtime.
      * @param repo - The corresponding bundle repository that we use to get the latest versions of the bundles running in the server.
@@ -366,7 +367,7 @@ public class IFixUtils {
                                 zis = zipFile.getInputStream(zipEntry);
 
                                 // Use the ManifestProcessor to get the raw manifest, and then load it into BundleManifest to strip directives off
-                                // the symbolicname and version headers. We have to do it this way, because we got exceptions if we tried to load the 
+                                // the symbolicname and version headers. We have to do it this way, because we got exceptions if we tried to load the
                                 // zip input stream directly into the BundleManifest.
                                 Manifest manifest = ManifestProcessor.parseManifest(zis);
                                 BundleManifest bundleManifest = new BundleManifest(manifest);
@@ -391,7 +392,7 @@ public class IFixUtils {
                         }
                     } else {
                         // We need to have this section because non bundle/jar files won't be found by the above process. So all other static
-                        // content files will turn up here. 
+                        // content files will turn up here.
                         if (location != null) {
                             allStaticFileContent.add(new File(installDir, location));
                         }
@@ -404,7 +405,7 @@ public class IFixUtils {
     /**
      * This method processes all of the ifix xml's and stores the latest version of each file found in a map. The
      * comparisons on each file are based on the date associated with the file. The latest date means the latest update.
-     * 
+     *
      * @param wlpInstallationDirectory - The Liberty install dir.
      * @param bundleFiles - A Map of all bundle file Ids and the BundleFiles from all lpmf xmls.
      * @param console - The CommandConsole to write messages to.
@@ -437,7 +438,7 @@ public class IFixUtils {
                     existingUpdateFileID = updateId;
                 }
 
-                // If we've got an existing entry and the date of the currently processed updateFile has a greater date, 
+                // If we've got an existing entry and the date of the currently processed updateFile has a greater date,
                 // then remove the old version and replace it with the new one.
                 UpdatedFile existingUpdateFile = latestIfixFiles.get(existingUpdateFileID);
                 if (existingUpdateFile != null) {
@@ -479,7 +480,7 @@ public class IFixUtils {
     /**
      * This method takes a ifix ID finds any existing IFix IDs that refer to the same base bundle. Because the ifix jars will have
      * different qualifiers, we need to be able to work out which ids are related.
-     * 
+     *
      * @param bundleFile - The bundleFile that maps to the current jar file we're processing.
      * @param existingIDs - A Set of Strings that represent the existing updateIds.
      * @param bundleFiles - All the known bundleFile objects.
@@ -499,8 +500,8 @@ public class IFixUtils {
                     Version existingBundleVersion = new Version(existingBundleFile.getVersion());
                     Version bundleVersion = new Version(bundleFile.getVersion());
                     if (bundleVersion.getMajor() == existingBundleVersion.getMajor() &&
-                         bundleVersion.getMinor() == existingBundleVersion.getMinor() &&
-                         bundleVersion.getMicro() == existingBundleVersion.getMicro())
+                        bundleVersion.getMinor() == existingBundleVersion.getMinor() &&
+                        bundleVersion.getMicro() == existingBundleVersion.getMicro())
                         existingIfixKey = existingID;
                 }
             }
@@ -511,7 +512,7 @@ public class IFixUtils {
     /**
      * This method processes all of the Liberty profile Metadata files stores the BundleFile objects containing the BundleSymbolic
      * name and version of each bundle against the id of the file that matches the corresponding entry in the ifix.xml.
-     * 
+     *
      * @param wlpInstallationDirectory - The Liberty install dir.
      * @param console - The CommandConsole to write messages to.
      * @return - A Map of all bundle file Ids and the BundleFiles from all lpmf xmls.

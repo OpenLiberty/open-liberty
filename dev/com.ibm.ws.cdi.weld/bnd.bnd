@@ -25,7 +25,8 @@ javac.target: 1.7
   com.ibm.ws.cdi.liberty.CDIRuntimeImpl,\
   com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService,\
   com.ibm.ws.cdi.impl.inject.InjectProcessorProvider,\
-  com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig
+  com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig,\
+  com.ibm.ws.cdi.liberty.CDIDeferredMetaDataFactoryImpl
 
 Service-Component: \
  com.ibm.ws.cdi.weld.deserializationClassProvider;\
@@ -108,7 +109,7 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.cdi.1.2.weld;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.resource;version=latest,\
-	com.ibm.ws.com.google.guava.14.0.1;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\

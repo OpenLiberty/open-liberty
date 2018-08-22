@@ -15,11 +15,12 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataImpl;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 
 /**
  * A Component MetaData used for jndi validation
  */
-public class JndiHelperComponentMetaData extends MetaDataImpl implements ComponentMetaData {
+public class JndiHelperComponentMetaData extends MetaDataImpl implements ComponentMetaData, IdentifiableComponentMetaData {
 
     private final ModuleMetaData module;
 
@@ -45,5 +46,10 @@ public class JndiHelperComponentMetaData extends MetaDataImpl implements Compone
     @Override
     public String getName() {
         return module.getName();
+    }
+
+    @Override
+    public String getPersistentIdentifier() {
+        return CDIDeferredMetaDataFactoryImpl.getPersistentIdentifier(module);
     }
 }

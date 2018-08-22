@@ -19,6 +19,7 @@ import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * Collection of tests to be run when both cdi-1.1 and beanValidation-1.1 are enabled
@@ -33,6 +34,7 @@ public class BeanValidation11CDITest extends BeanValidationCDI_Common {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
         bvalVersion = 11;
         createAndExportCommonWARs(server);
         createAndExportApacheWARs(server);

@@ -23,10 +23,31 @@
       <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
     </dataSource>
 
+    <dataSource id="MiniDataSource" jndiName="jdbc/miniDataSource" ibm.internal.nonship.function="true">
+      <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
+      <properties databaseName="minidb" loginTimeout="330"/>
+    </dataSource>
+
+    <dataSource id="MiniDriver" jndiName="jdbc/miniDriver" ibm.internal.nonship.function="true">
+      <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
+      <properties url="jdbc:mini://localhost:3456/driverdb"/>
+    </dataSource>
+
     <library id="ibm.internal.simulate.no.library.do.not.ship"/>
 
     <!-- permissions for Derby -->
-    <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanPermission" name="*" actions="registerMBean"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="javax.management.MBeanTrustPermission" name="register"/>
+
+    <!-- permissions for Mini driver to utilize dynamic proxy -->
+    <javaPermission codeBase="${server.config.dir}apps/otherApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
 
     <variable name="onError" value="FAIL"/>
 </server>

@@ -35,7 +35,7 @@ javac.target: 1.8
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	com.ibm.ws.org.jboss.weld.3.0.3;version=latest, \
+	com.ibm.ws.org.jboss.weld.3.0.5;version=latest, \
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core,\
         com.ibm.websphere.org.osgi.service.component,\

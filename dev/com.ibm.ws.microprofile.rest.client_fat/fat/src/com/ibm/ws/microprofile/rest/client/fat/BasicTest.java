@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.rest.client.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -19,12 +20,18 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import mpRestClient10.basic.BasicClientTestServlet;
 
 @RunWith(FATRunner.class)
 public class BasicTest extends FATServletClient {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+        .andWith(new FeatureReplacementAction("mpRestClient-1.0", "mpRestClient-1.1").forServers("mpRestClient10.basic"));
 
     private static final String appName = "basicClientApp";
 

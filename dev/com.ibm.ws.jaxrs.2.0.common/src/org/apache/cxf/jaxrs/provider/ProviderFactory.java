@@ -511,6 +511,15 @@ public abstract class ProviderFactory {
                                        Message m,
                                        Class<?> providerClass,
                                        boolean injectContext) {
+        return handleMapper(em, expectedType, m, providerClass, null, injectContext);
+    }
+
+    protected <T> boolean handleMapper(ProviderInfo<T> em,
+                                       Class<?> expectedType,
+                                       Message m,
+                                       Class<?> providerClass,
+                                       Class<?> commonBaseClass,
+                                       boolean injectContext) {
 
         // Liberty Change for CXF Begin
         Class<?> mapperClass = ClassHelper.getRealClass(bus, em.getOldProvider());
@@ -519,7 +528,7 @@ public abstract class ProviderFactory {
         if (m != null && MessageUtils.isTrue(m.getContextualProperty(IGNORE_TYPE_VARIABLES))) {
             types = new Type[] { mapperClass };
         } else {
-            types = getGenericInterfaces(mapperClass, expectedType);
+            types = getGenericInterfaces(mapperClass, expectedType, commonBaseClass);
         }
         for (Type t : types) {
             if (t instanceof ParameterizedType) {
@@ -787,19 +796,19 @@ public abstract class ProviderFactory {
         for (ProviderInfo<? extends Object> provider : theProviders) {
             Class<?> providerCls = ClassHelper.getRealClass(bus, provider.getProvider());
 
-            if (MessageBodyReader.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, MessageBodyReader.class)) {
                 //Liberty code change start
                 addProviderToList(newReaders, provider);
                 //Liberty code change end
             }
 
-            if (MessageBodyWriter.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, MessageBodyWriter.class)) {
                 //Liberty code change start
                 addProviderToList(newWriters, provider);
                 //Liberty code change end
             }
 
-            if (ContextResolver.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ContextResolver.class)) {
                 //Liberty code change start
                 addProviderToList(newResolvers, provider);
                 //Liberty code change end
@@ -819,7 +828,7 @@ public abstract class ProviderFactory {
                 writeInts.add((ProviderInfo<WriterInterceptor>) provider);
             }
 
-            if (ParamConverterProvider.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ParamConverterProvider.class)) {
                 paramConverters.add((ProviderInfo<ParamConverterProvider>) provider);
             }
         }
@@ -1330,7 +1339,7 @@ public abstract class ProviderFactory {
             } else {
                 if (provider instanceof FilterProviderInfo) {
                     FilterProviderInfo<?> fpi = (FilterProviderInfo<?>) provider;
-                    if (fpi.isDynamic() && !names.containsAll(fpi.getNameBinding())) {
+                    if (fpi.isDynamic() && !names.containsAll(fpi.getNameBindings())) {
                         continue;
                     }
                 }
@@ -1449,6 +1458,11 @@ public abstract class ProviderFactory {
     //defect 178126
     //Add the result to cache before return
     private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass) {
+        return getGenericInterfaces(cls, expectedClass, Object.class);
+    }
+
+    private static Type[] getGenericInterfaces(Class<?> cls, Class<?> expectedClass,
+                                               Class<?> commonBaseCls) {
         if (Object.class == cls) {
             return emptyType;
         }
@@ -1463,7 +1477,10 @@ public abstract class ProviderFactory {
                     Type[] tempTypes = new Type[] { genericSuperType };
                     putTypes(cls, expectedClass, tempTypes);
                     return tempTypes;
-                } else if (expectedClass.isAssignableFrom(actualType)) {
+                } else if (commonBaseCls != null && commonBaseCls != Object.class
+                           && commonBaseCls.isAssignableFrom(expectedClass)
+                           && commonBaseCls.isAssignableFrom(actualType)
+                           || expectedClass.isAssignableFrom(actualType)) {
                     putTypes(cls, expectedClass, emptyType);
                     return emptyType;
                 }
@@ -1474,7 +1491,7 @@ public abstract class ProviderFactory {
             putTypes(cls, expectedClass, types);
             return types;
         }
-        Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass);
+        Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass, commonBaseCls);
         putTypes(cls, expectedClass, superGenericTypes);
         return superGenericTypes;
     }
@@ -1644,14 +1661,17 @@ public abstract class ProviderFactory {
     }
 
     protected static Set<String> getFilterNameBindings(ProviderInfo<?> p) {
-        Set<String> names = null;
         if (p instanceof FilterProviderInfo) {
-            names = ((FilterProviderInfo<?>) p).getNameBinding();
+            return ((FilterProviderInfo<?>) p).getNameBindings();
+        } else {
+            return getFilterNameBindings(p.getBus(), p.getProvider());
         }
-        if (names == null) {
-            Class<?> pClass = ClassHelper.getRealClass(p.getBus(), p.getProvider());
-            names = AnnotationUtils.getNameBindings(pClass.getAnnotations());
-        }
+
+    }
+
+    protected static Set<String> getFilterNameBindings(Bus bus, Object provider) {
+        Class<?> pClass = ClassHelper.getRealClass(bus, provider);
+        Set<String> names = AnnotationUtils.getNameBindings(pClass.getAnnotations());
         if (names.isEmpty()) {
             names = Collections.singleton(DEFAULT_FILTER_NAME_BINDING);
         }

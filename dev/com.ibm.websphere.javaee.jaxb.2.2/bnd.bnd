@@ -18,13 +18,15 @@ Export-Package: javax.xml.bind.*;version="2.2"
 Private-Package: org.apache.geronimo.osgi.locator
 
 Import-Package: \
-  javax.activation, \
+  !javax.activation, \
   javax.xml.namespace, \
   javax.xml.stream, \
   org.apache.geronimo.osgi.registry.api;resolution:=optional,\
   *
 
-DynamicImport-Package: com.sun.xml.*
+DynamicImport-Package: \
+  javax.activation, \
+  com.sun.xml.*
 
 Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
 

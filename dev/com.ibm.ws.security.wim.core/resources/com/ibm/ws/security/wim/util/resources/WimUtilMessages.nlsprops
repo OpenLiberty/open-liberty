@@ -248,7 +248,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: The user registry operation could not be
 MALFORMED_SEARCH_EXPRESSION.explanation=The search operation cannot be performed because the search expression is not valid.
 MALFORMED_SEARCH_EXPRESSION.useraction=Provide a valid search expression.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: The user registry operation could not be completed because the user registry encountered the underlying error : {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: The user registry operation could not be completed because the user registry encountered the underlying error : {0}
 ENTITY_SEARCH_FAILED.explanation=The entity cannot be searched because of the reason specified by the underlying registry.
 ENTITY_SEARCH_FAILED.useraction=Review the reason message and the trace file to determine the cause of the failure. Fix the error and try again.
 

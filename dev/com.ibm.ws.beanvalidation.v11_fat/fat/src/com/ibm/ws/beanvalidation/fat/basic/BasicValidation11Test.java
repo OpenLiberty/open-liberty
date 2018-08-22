@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * All Bean Validation tests for the 1.1 feature level.
@@ -29,6 +30,7 @@ public class BasicValidation11Test extends BasicValidation_Common {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
         bvalVersion = 11;
         createAndExportCommonWARs(server);
         createAndExportApacheWARs(server);

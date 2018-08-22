@@ -256,7 +256,10 @@ public class BootstrapManifest {
 
     private String getMergedSystemProperties(JarFile jarFile, List<String> pkgListFileNames) throws IOException {
         String packages = null;
+        boolean inheritSystemPackages = true;
         for (String pkgListFileName : pkgListFileNames) {
+            if (!inheritSystemPackages)
+                continue;
             ZipEntry propFile = jarFile.getEntry(pkgListFileName);
             if (propFile != null) {
                 // read org.osgi.framework.system.packages property value from the file
@@ -268,6 +271,7 @@ public class BootstrapManifest {
                     if (loadedPackages != null) {
                         packages = (packages == null) ? loadedPackages : packages + "," + loadedPackages;
                     }
+                    inheritSystemPackages &= Boolean.parseBoolean(properties.getProperty(BootstrapConstants.INITPROP_WAS_INHERIT_SYSTEM_PACKAGES, "true"));
                 } finally {
                     Utils.tryToClose(is);
                 }

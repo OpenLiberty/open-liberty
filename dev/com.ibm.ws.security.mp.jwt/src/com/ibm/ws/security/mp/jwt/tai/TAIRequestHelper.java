@@ -68,14 +68,14 @@ public class TAIRequestHelper {
      * @param mpJwtTaiRequest
      * @return
      */
-    public boolean requestShouldBeHandledByTAI(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
+    public boolean requestShouldBeHandledByTAI(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, boolean defaultConfig) {
         String methodName = "requestShouldBeHandledByTAI";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
         }
 
         String loginHint = getLoginHint(request);
-        mpJwtTaiRequest = setTaiRequestConfigInfo(request, loginHint, mpJwtTaiRequest);
+        mpJwtTaiRequest = setTaiRequestConfigInfo(request, loginHint, mpJwtTaiRequest, defaultConfig);
         boolean result = false;
         boolean ignoreAppAuthMethod = true;
 
@@ -242,7 +242,7 @@ public class TAIRequestHelper {
         return param;
     }
 
-    MicroProfileJwtTaiRequest setTaiRequestConfigInfo(HttpServletRequest request, String specifiedServiceId, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
+    MicroProfileJwtTaiRequest setTaiRequestConfigInfo(HttpServletRequest request, String specifiedServiceId, MicroProfileJwtTaiRequest mpJwtTaiRequest, boolean defaultConfig) {
         String methodName = "setTaiRequestConfigInfo";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, specifiedServiceId, mpJwtTaiRequest);
@@ -251,7 +251,7 @@ public class TAIRequestHelper {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Specific config ID not provided, so will set generic config information for MpJwtTaiRequest object");
             }
-            MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfo(request, mpJwtTaiRequest);
+            MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfo(request, mpJwtTaiRequest, defaultConfig);
             if (tc.isDebugEnabled()) {
                 Tr.exit(tc, methodName, result);
             }
@@ -264,7 +264,7 @@ public class TAIRequestHelper {
         return result;
     }
 
-    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfo(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
+    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfo(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, boolean defaultConfig) {
         String methodName = "setGenericAndFilteredConfigTaiRequestInfo";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
@@ -273,14 +273,14 @@ public class TAIRequestHelper {
             mpJwtTaiRequest = createMicroProfileJwtTaiRequestAndSetRequestAttribute(request);
         }
         Iterator<MicroProfileJwtConfig> services = getConfigServices();
-        MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(request, mpJwtTaiRequest, services);
+        MicroProfileJwtTaiRequest result = setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(request, mpJwtTaiRequest, services, defaultConfig);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
         return result;
     }
 
-    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, Iterator<MicroProfileJwtConfig> services) {
+    MicroProfileJwtTaiRequest setGenericAndFilteredConfigTaiRequestInfoFromConfigServices(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest, Iterator<MicroProfileJwtConfig> services, boolean defaultConfig) {
         String methodName = "setGenericAndFilteredConfigTaiRequestInfoFromConfigServices";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest, services);
@@ -302,7 +302,9 @@ public class TAIRequestHelper {
                 if (authFilter.isAccepted(request)) {
                     mpJwtTaiRequest.addFilteredConfig(mpJwtConfig);
                 }
-            } else {
+            } else if (defaultConfig) {
+                mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
+            } else if (!isMpJwtDefaultConfig(mpJwtConfig)){
                 mpJwtTaiRequest.addGenericConfig(mpJwtConfig);
             }
         }
@@ -310,6 +312,15 @@ public class TAIRequestHelper {
             Tr.exit(tc, methodName, mpJwtTaiRequest);
         }
         return mpJwtTaiRequest;
+    }
+    
+    public boolean isMpJwtDefaultConfig(MicroProfileJwtConfig mpJwtConfig) {
+        boolean isDefault = false;
+        if ("defaultMpJwt".equals(mpJwtConfig.getUniqueId())) {
+            isDefault = true;
+        }
+        return isDefault;
+        
     }
 
     MicroProfileJwtTaiRequest setSpecificConfigTaiRequestInfo(HttpServletRequest request, String configId, MicroProfileJwtTaiRequest mpJwtTaiRequest) {

@@ -16,6 +16,4 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
-    
-    <application location="jaxbApp.war"/>
 </server>

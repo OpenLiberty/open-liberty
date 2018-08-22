@@ -120,8 +120,7 @@ public class MetricsMonitorTest {
        	checkStrings(getHttpsServlet("/metrics/vendor"), new String[] {
        		"vendor:threadpool_default_executor_active_threads",
        		"vendor:threadpool_default_executor_size",
-       		"vendor:servlet_com_ibm_ws_microprofile_metrics_1_1_metrics_rest_proxy_servlet_request_total",
-       		"vendor:servlet_com_ibm_ws_microprofile_metrics_1_1_metrics_rest_proxy_servlet_response_time_total_seconds"
+       		"vendor:servlet_com_ibm_ws_microprofile_metrics"
        	}, new String[] {});
        	
        	Log.info(c, testName, "------- Add session application and run session servlet ------");

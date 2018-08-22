@@ -496,20 +496,6 @@ public class EmbeddedContainerTest {
                                                                                    "websocket-server-9.4.9.v20180320.jar",
                                                                                    "websocket-servlet-9.4.9.v20180320.jar");
 
-    private final static List<String> springBoot20NettyStarterJars = Arrays.asList("spring-boot-starter-reactor-netty-2.0.1.RELEASE.jar",
-                                                                                   "reactor-netty-0.7.6.RELEASE.jar",
-                                                                                   "netty-codec-http-4.1.23.Final.jar",
-                                                                                   "netty-codec-4.1.23.Final.jar",
-                                                                                   "netty-handler-4.1.23.Final.jar",
-                                                                                   "netty-buffer-4.1.23.Final.jar",
-                                                                                   "netty-transport-4.1.23.Final.jar",
-                                                                                   "netty-resolver-4.1.23.Final.jar",
-                                                                                   "netty-handler-proxy-4.1.23.Final.jar",
-                                                                                   "netty-codec-socks-4.1.23.Final.jar",
-                                                                                   "netty-transport-native-epoll-4.1.23.Final.jar",
-                                                                                   "netty-common-4.1.23.Final.jar",
-                                                                                   "netty-transport-native-unix-common-4.1.23.Final.jar",
-                                                                                   "reactor-core-3.1.6.RELEASE.jar",
-                                                                                   "reactive-streams-1.0.2.jar");
+    private final static List<String> springBoot20NettyStarterJars = Arrays.asList("spring-boot-starter-reactor-netty-2.0.1.RELEASE.jar");
 
 }

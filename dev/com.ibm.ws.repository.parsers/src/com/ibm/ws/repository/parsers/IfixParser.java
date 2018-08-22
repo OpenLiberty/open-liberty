@@ -25,9 +25,10 @@ import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
 
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
 import com.ibm.ws.product.utility.extension.ifix.xml.Problem;
@@ -70,10 +71,10 @@ public class IfixParser extends ParserBase implements Parser<IfixResourceWritabl
         ParserBase.ExtractedFileInformation xmlFileInfo = extractFileFromArchive(_jarPayload.getAbsolutePath(), ".*lib\\/fixes.*\\.xml");
         IFixInfo ifixInfo;
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(IFixInfo.class);
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            ifixInfo = (IFixInfo) unmarshaller.unmarshal(xmlFileInfo.getExtractedFile());
-        } catch (JAXBException e) {
+            DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document doc = docBuilder.parse(xmlFileInfo.getExtractedFile());
+            ifixInfo = IFixInfo.fromDocument(doc);
+        } catch (Exception e) {
             throw new RepositoryArchiveInvalidEntryException("Parse failure", xmlFileInfo.getSourceArchive(), xmlFileInfo.getSelectedPathFromArchive(), e);
         }
 

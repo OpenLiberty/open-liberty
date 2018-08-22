@@ -1,0 +1,178 @@
+###############################################################################
+# Copyright (c) 2013, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS1751 - CWWKS1799
+
+#do not translate issuerIdentifier, iss
+#
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}], poniewa\u017c wystawca (iss) [{1}] okre\u015blony w znaczniku nie jest zgodny z atrybutem [issuerIdentifier] [{2}] dla dostawcy okre\u015blonego w konfiguracji klienta OpenID Connect. Sprawd\u017a atrybut issuerIdentifier w konfiguracji klienta.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora, poniewa\u017c wystawca okre\u015blony w konfiguracji klienta OpenID Connect (strona zale\u017cna) i wystawca w znaczniku nie s\u0105 zgodni.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Podejmij odpowiednie dzia\u0142ania, aby atrybut [issuerIdentifier] okre\u015blony w konfiguracji klienta OpenID Connect (strona zale\u017cna) by\u0142 zgodny z wystawc\u0105 dla u\u017cywanego dostawcy OpenID Connect.
+
+#
+OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by podpisania znacznika identyfikatora przy u\u017cyciu algorytmu [{0}]: [{1}].
+OIDC_IDTOKEN_SIGNATURE_ERR.explanation=Nie mo\u017cna utworzy\u0107 znacznika identyfikatora, poniewa\u017c nie mo\u017cna go podpisa\u0107. Przyczyna b\u0142\u0119du zostanie wy\u015bwietlona po tym komunikacie.
+OIDC_IDTOKEN_SIGNATURE_ERR.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla komunikatu, kt\u00f3ry zostanie wy\u015bwietlony po tym b\u0142\u0119dzie.
+
+#
+OIDC_IDTOKEN_INVALID_KEY_ERR=CWWKS1753E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by podpisania znacznika identyfikatora przy u\u017cyciu algorytmu [{0}]: [{1}].
+OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=Nie mo\u017cna utworzy\u0107 znacznika identyfikatora, poniewa\u017c nie mo\u017cna go podpisa\u0107.  Przyczyna b\u0142\u0119du zostanie wy\u015bwietlona po tym komunikacie.
+OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=W przypadku u\u017cywania podpisu asymetrycznego sprawd\u017a, czy do podpisania znacznika zosta\u0142 u\u017cyty poprawny klucz prywatny. Sprawd\u017a na przyk\u0142ad, czy klucz nie utraci\u0142 wa\u017cno\u015bci. Sprawd\u017a element keyStore przywo\u0142ywany przez domy\u015blny protok\u00f3\u0142 SSL w pliku server.xml, aby znale\u017a\u0107 informacje na temat pliku kluczy, kt\u00f3ry zawiera klucz prywatny.  Zapoznaj si\u0119 r\u00f3wnie\u017c z czynno\u015bci\u0105 u\u017cytkownika dla komunikatu, kt\u00f3ry zostanie wy\u015bwietlony po tym b\u0142\u0119dzie.
+
+#do not translate clientId, aud
+OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{1}], poniewa\u017c grupa docelowa (aud) [{0}] okre\u015blona w znaczniku nie jest zgodna z atrybutem clientId [{1}] okre\u015blonym w konfiguracji klienta OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=Grupa docelowa w znaczniku identyfikatora musi by\u0107 zgodna z identyfikatorem klienta.  Sprawdzenie poprawno\u015bci znacznika identyfikatora nie powiod\u0142o si\u0119, poniewa\u017c grupa docelowa (aud) w znaczniku identyfikatora nie jest zgodna z identyfikatorem klienta.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Sprawd\u017a, czy atrybut [clientId] okre\u015blony w konfiguracji klienta OpenID Connect (strona zale\u017cna) jest poprawny. W warto\u015bci jest rozr\u00f3\u017cniana wielko\u015b\u0107 liter.
+
+#do not translate clientId, azp
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{1}], poniewa\u017c autoryzowana strona (azp) [{0}] okre\u015blona w znaczniku nie jest zgodna z atrybutem clientId [{1}] okre\u015blonym w konfiguracji klienta OpenID Connect.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=Autoryzowana strona w znaczniku identyfikatora musi by\u0107 zgodna z identyfikatorem klienta. Sprawdzenie poprawno\u015bci znacznika identyfikatora nie powiod\u0142o si\u0119, poniewa\u017c autoryzowana strona (azp) w znaczniku identyfikatora nie jest zgodna z identyfikatorem klienta.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Sprawd\u017a, czy atrybut [clientId] okre\u015blony w konfiguracji klienta OpenID Connect (strona zale\u017cna) jest poprawny. W warto\u015bci jest rozr\u00f3\u017cniana wielko\u015b\u0107 liter.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1756E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}] przy u\u017cyciu algorytmu [{2}], poniewa\u017c nie powiod\u0142a si\u0119 weryfikacja podpisu: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika identyfikatora, poniewa\u017c nie mo\u017cna zweryfikowa\u0107 podpisu. Mo\u017ce to by\u0107 spowodowane niezgodno\u015bci\u0105 w algorytmie podpisywania lub kluczu wsp\u00f3\u0142u\u017cytkowanym mi\u0119dzy klientem i dostawc\u0105 OpenID Connect.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=Sprawd\u017a konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce skonfigurowany algorytm podpisywania i klucz wsp\u00f3\u0142u\u017cytkowany s\u0105 zgodne z tymi skonfigurowanymi w dostawcy OpenID Connect.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}] przy u\u017cyciu algorytmu [{2}], poniewa\u017c nie powiod\u0142a si\u0119 weryfikacja podpisu: [{1}].
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika identyfikatora, poniewa\u017c nie mo\u017cna zweryfikowa\u0107 podpisu.  Przyczyna b\u0142\u0119du zostanie wy\u015bwietlona po tym komunikacie.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=W przypadku u\u017cywania podpisu asymetrycznego sprawd\u017a, czy klucz publiczny w certyfikacie mo\u017ce by\u0107 u\u017cywany na potrzeby podpisu cyfrowego.  Sprawd\u017a element keyStore przywo\u0142ywany przez domy\u015bln\u0105 konfiguracj\u0119 protoko\u0142u SSL w pliku server.xml, aby znale\u017a\u0107 informacje na temat magazynu kluczy, kt\u00f3ry zawiera klucz. Zapoznaj si\u0119 r\u00f3wnie\u017c z czynno\u015bci\u0105 u\u017cytkownika dla komunikatu, kt\u00f3ry zostanie wy\u015bwietlony po tym b\u0142\u0119dzie.
+ 
+#
+OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}]. Przyczyna: [{1}]. Powodem wyst\u0105pienia tego problemu m\u00f3g\u0142 by\u0107 fakt, \u017ce bie\u017c\u0105cy czas [{2}] jest p\u00f3\u017aniejszy ni\u017c czas wa\u017cno\u015bci znacznika [{3}] lub o wiele wcze\u015bniejszy ni\u017c czas wystawienia znacznika [{4}].
+OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika identyfikatora, poniewa\u017c wy\u015bwietlony bie\u017c\u0105cy czas nie zawiera si\u0119 mi\u0119dzy czasem wystawienia znacznika i czasem wa\u017cno\u015bci znacznika.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Sprawd\u017a, czy zegary systemowe klienta OpenID Connect (strona zale\u017cna) i dostawcy OpenID Connect s\u0105 zsynchronizowane (je\u015bli znajduj\u0105 si\u0119 w r\u00f3\u017cnych systemach).
+
+#do not translate at_hash
+#
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}], poniewa\u017c wyst\u0105pi\u0142a niezgodno\u015b\u0107 wyniku mieszania znacznika dost\u0119pu [{1}] i \u017c\u0105dania at_hash [{2}] w znaczniku identyfikatora. 
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=Dzi\u0119ki warto\u015bci at_hash w znaczniku identyfikatora klienty OpenID Connect mog\u0105 zapobiega\u0107 atakom przez podstawienie znacznika. Warto\u015b\u0107 at_hash musi by\u0107 zgodna z wynikiem mieszania znacznika dost\u0119pu odebranego przez klient OpenID Connect.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Upewnij si\u0119, \u017ce komunikacja mi\u0119dzy klientem OpenID Connect (strona zale\u017cna) i dostawc\u0105 OpenID Connect jest bezpieczna, aby zapobiec manipulowaniu znacznikiem dost\u0119pu odebranym przez stron\u0119 zale\u017cn\u0105.
+
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}], poniewa\u017c w znaczniku identyfikatora brakuje podpisu. Konfiguracja klienta OpenID Connect (strona zale\u017cna) okre\u015bli\u0142a algorytm [{1}] i oczekuje podpisanego znacznika identyfikatora.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika identyfikatora, poniewa\u017c nie zosta\u0142 on podpisany. Klient OpenID Connect (strona zale\u017cna) oczekuje podpisanego znacznika.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Upewnij si\u0119, \u017ce dostawca OpenID Connect umo\u017cliwia podpisanie znacznika.
+
+#do not translate signatureAlgorithm
+#
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}], poniewa\u017c mi\u0119dzy klientem OpenID Connect [{1}] i dostawc\u0105 OpenID Connect [{2}] wyst\u0105pi\u0142a niezgodno\u015b\u0107 algorytm\u00f3w podpisywania.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika identyfikatora, poniewa\u017c klient OpenID Connect (strona zale\u017cna) i dostawca OpenID Connect u\u017cywaj\u0105 r\u00f3\u017cnych algorytm\u00f3w podpisywania do podpisania/zweryfikowania znacznika.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Upewnij si\u0119, \u017ce algorytm signatureAlgorithm strony zale\u017cnej jest zgodny z algorytmem podpisywania dostawcy OpenID.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika JWT za\u017c\u0105danego przez {0}, poniewa\u017c w znaczniku JWT brakuje podpisu. Dostawca OpenID Connect okre\u015bli\u0142 algorytm [{1}] i oczekuje, \u017ce znacznik JWT b\u0119dzie podpisany.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Nie mo\u017cna zweryfikowa\u0107 znacznika JWT, poniewa\u017c nie jest on podpisany. Dostawca OpenID Connect oczekuje, \u017ce znacznik b\u0119dzie podpisany.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Sprawd\u017a konfiguracj\u0119 klienta OpenID Connect, aby upewni\u0107 si\u0119, \u017ce podpisuje znacznik JWT.
+
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika identyfikatora za\u017c\u0105danego przez [{0}], poniewa\u017c mi\u0119dzy dostawc\u0105 OpenID Connect [{1}] i klientem OpenID Connect [{2}] wyst\u0105pi\u0142a niezgodno\u015b\u0107 algorytm\u00f3w podpisywania.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Nie mo\u017cna zweryfikowa\u0107 znacznika JWT, poniewa\u017c dostawca i klient OpenID Connect u\u017cywaj\u0105 r\u00f3\u017cnych algorytm\u00f3w podpisu do podpisywania/weryfikowania znacznika.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Sprawd\u017a konfiguracj\u0119 klienta OpenID Connect i okre\u015bl algorytm podpisu, kt\u00f3ry jest zgodny z dostawc\u0105 OpenID Connect.
+
+#
+JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by podpisania znacznika JWT przy u\u017cyciu algorytmu [{0}]: [{1}].
+JWT_JWTTOKEN_INVALID_KEY_ERR.explanation=Nie mo\u017cna utworzy\u0107 znacznika JWT, poniewa\u017c nie mo\u017cna go podpisa\u0107.  Przyczyna b\u0142\u0119du zostanie wy\u015bwietlona w komunikacie.
+JWT_JWTTOKEN_INVALID_KEY_ERR.useraction=W przypadku u\u017cywania podpisu asymetrycznego sprawd\u017a, czy do podpisania znacznika zosta\u0142 u\u017cyty poprawny klucz prywatny. Sprawd\u017a na przyk\u0142ad, czy klucz nie utraci\u0142 wa\u017cno\u015bci. Sprawd\u017a element keyStore przywo\u0142ywany przez domy\u015bln\u0105 konfiguracj\u0119 protoko\u0142u SSL w pliku server.xml, aby znale\u017a\u0107 informacje na temat pliku kluczy, kt\u00f3ry zawiera klucz prywatny.  Zapoznaj si\u0119 r\u00f3wnie\u017c z czynno\u015bci\u0105 u\u017cytkownika dla komunikatu, kt\u00f3ry zostanie wy\u015bwietlony po tym b\u0142\u0119dzie.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR=CWWKS1765E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika JWT za\u017c\u0105danego przez [{0}], z powodu wyj\u0105tku weryfikacji podpisu: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.explanation=Znacznik JWT nie jest poprawny, poniewa\u017c weryfikacja podpisu nie powiod\u0142a si\u0119.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR.useraction=Upewnij si\u0119, \u017ce znacznik JWT zosta\u0142 poprawnie podpisany.
+
+#
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1766E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika JWT za\u017c\u0105danego przez [{0}] przy u\u017cyciu algorytmu [{2}], poniewa\u017c nie powiod\u0142a si\u0119 weryfikacja podpisu: [{1}].
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika JWT, poniewa\u017c nie mo\u017cna zweryfikowa\u0107 podpisu.  Przyczyna b\u0142\u0119du zostanie wy\u015bwietlona po tym komunikacie.
+JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=W przypadku u\u017cywania podpisu asymetrycznego sprawd\u017a, czy klucz publiczny w certyfikacie mo\u017ce by\u0107 u\u017cywany na potrzeby podpisu cyfrowego.  Sprawd\u017a element keyStore przywo\u0142ywany przez domy\u015bln\u0105 konfiguracj\u0119 protoko\u0142u SSL w pliku server.xml, aby znale\u017a\u0107 informacje na temat pliku kluczy, kt\u00f3ry zawiera ten klucz. Zapoznaj si\u0119 r\u00f3wnie\u017c z czynno\u015bci\u0105 u\u017cytkownika dla komunikatu, kt\u00f3ry zostanie wy\u015bwietlony po tym b\u0142\u0119dzie.
+ 
+#
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Podpisany znacznik JWT musi zawiera\u0107 3 segmenty rozdzielone znakiem kropki (.), ale liczba segment\u00f3w w tym znaczniku JWT wynosi [{0}].
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Podpisany znacznik JWT musi zawiera\u0107 dok\u0142adnie 3 segmenty rozdzielone znakiem kropki (.). Ten znacznik JWT ma niepoprawny numer segmentu.
+JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Upewnij si\u0119, \u017ce znacznik JWT jest poprawny oraz \u017ce zawiera 3 segmenty.
+
+#
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. Sprawdzanie poprawno\u015bci znacznika JWT za\u017c\u0105danego przez [{0}] nie powiod\u0142o si\u0119. Odebrano wyj\u0105tek IllegalStateException z komunikatem: [{1}].
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika JWT z powodu wyj\u0105tku IllegalStatException wskazanego w komunikacie.
+JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Popraw b\u0142\u0105d wskazany w komunikacie.
+
+#
+JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: \u017b\u0105danie punktu ko\u0144cowego znacznika nie powiod\u0142o si\u0119. W \u017c\u0105daniu nie znaleziono wymaganego znacznika JWT.
+JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=\u017b\u0105danie musi udost\u0119pnia\u0107 znacznik JWT, ale nie mo\u017cna znale\u017a\u0107 znacznika JWT w \u017c\u0105daniu punktu ko\u0144cowego znacznika.
+JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Podaj poprawny znacznik JWT w \u017c\u0105daniu punktu ko\u0144cowego znacznika.
+
+#
+JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: W konfiguracji klienta OpenID Connect jest potrzebny atrybut jwkEndpointUrl.
+JWK_ENDPOINT_MISSING_ERR.explanation=W konfiguracji klienta OpenID Connect nie podano atrybutu jwkEndpointUrl.
+JWK_ENDPOINT_MISSING_ERR.useraction=Ustaw atrybut jwkEndpointUrl na adres URL klucza us\u0142ug WWW JSON dostawcy OpenID Connect.
+
+OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania podmiotu RunAsSubject. Wyj\u0105tek: [{0}].
+OIDC_FAILED_RUN_AS_SUBJCET.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania podmiotu RunAsSubject.
+OIDC_FAILED_RUN_AS_SUBJCET.useraction=Upewnij si\u0119, \u017ce serwer jest poprawnie skonfigurowany i uruchomiony.
+
+#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Sprawdzanie poprawno\u015bci nie powiod\u0142o si\u0119 dla znacznika za\u017c\u0105danego przez [{0}], poniewa\u017c znacznik nie nale\u017cy do poprawnego zakresu. Powodem wyst\u0105pienia tego problemu m\u00f3g\u0142 by\u0107 fakt, \u017ce bie\u017c\u0105cy czas [{1}] jest p\u00f3\u017aniejszy ni\u017c czas wa\u017cno\u015bci znacznika [{2}] lub o wiele wcze\u015bniejszy ni\u017c czas wystawienia znacznika [{3}].
+OIDC_JWT_VERIFY_STATE_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika, poniewa\u017c wy\u015bwietlony bie\u017c\u0105cy czas nie zawiera si\u0119 mi\u0119dzy czasem wystawienia znacznika i czasem wa\u017cno\u015bci znacznika.
+OIDC_JWT_VERIFY_STATE_ERR.useraction=Sprawd\u017a, czy zegary systemowe klienta OpenID Connect (strona zale\u017cna) i dostawcy OpenID Connect s\u0105 zsynchronizowane (je\u015bli znajduj\u0105 si\u0119 w r\u00f3\u017cnych systemach).
+
+# Do not translate clientId, aud
+#0=aud claim, 1=OIDC client ID, 2=audiences of the oidc client
+OIDC_JWT_VERIFY_AUD_ERR=CWWKS1774E: Sprawdzanie poprawno\u015bci nie powiod\u0142o si\u0119 dla znacznika za\u017c\u0105danego przez [{1}], poniewa\u017c \u017c\u0105danie aud [{0}] ze znacznika nie znajduje si\u0119 w atrybucie audiences [{2}] konfiguracji klienta OpenID Connect.
+OIDC_JWT_VERIFY_AUD_ERR.explanation=Nale\u017cy okre\u015bli\u0107 \u017c\u0105danie aud z tego znacznika w atrybucie audiences w konfiguracji klienta OpenID Connect lub zezwoli\u0107 na wszystkie audytoria, okre\u015blaj\u0105c warto\u015b\u0107 ALL_AUDIENCES w atrybucie audiences w konfiguracji klienta.
+OIDC_JWT_VERIFY_AUD_ERR.useraction=Sprawd\u017a, czy atrybut audiences okre\u015blony w konfiguracji klienta OpenID Connect jest poprawny. Je\u015bli maj\u0105 by\u0107 dozwolone wszystkie \u017c\u0105dania aud, nale\u017cy okre\u015bli\u0107 warto\u015b\u0107 ALL_AUDIENCES w atrybucie audiences w konfiguracji klienta OpenID Connect. W przeciwnym razie \u017c\u0105danie aud ze znacznika nale\u017cy umie\u015bci\u0107 w warto\u015bci atrybutu audiences w konfiguracji klienta OpenID Connect. W warto\u015bci jest rozr\u00f3\u017cniana wielko\u015b\u0107 liter.
+
+# do not translate iat
+# 0= oidc client id.
+OIDC_ID_VERIFY_IAT_ERR=CWWKS1775E: Sprawdzanie poprawno\u015bci nie powiod\u0142o si\u0119 dla znacznika za\u017c\u0105danego przez [{0}], poniewa\u017c \u017c\u0105danie iat nie znajduje si\u0119 w znaczniku.
+OIDC_ID_VERIFY_IAT_ERR.explanation=Znacznik musi zawiera\u0107 \u017c\u0105danie iat (issued at \u2013 wystawiono dnia).
+OIDC_ID_VERIFY_IAT_ERR.useraction=Uzyskaj poprawny znacznik od dostawcy OpenId Connect.
+
+
+#0=OIDC client ID, 1=exception, 2=signature algorithm
+OIDC_JWT_SIGNATURE_VERIFY_ERR=CWWKS1776E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika za\u017c\u0105danego przez [{0}] przy u\u017cyciu algorytmu [{2}], poniewa\u017c nie powiod\u0142a si\u0119 weryfikacja podpisu: [{1}].
+OIDC_JWT_SIGNATURE_VERIFY_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika, poniewa\u017c nie mo\u017cna zweryfikowa\u0107 podpisu. Przyczyna b\u0142\u0119du jest wy\u015bwietlana w komunikacie. Mo\u017cliw\u0105 przyczyn\u0105 tego b\u0142\u0119du mo\u017ce by\u0107 niezgodno\u015b\u0107 w algorytmie podpisywania lub kluczu wsp\u00f3\u0142u\u017cytkowanym mi\u0119dzy klientem i dostawc\u0105 OpenID Connect.
+OIDC_JWT_SIGNATURE_VERIFY_ERR.useraction=Zapoznaj si\u0119 z czynno\u015bci\u0105 u\u017cytkownika dla przyczyny wy\u015bwietlonej w tym komunikacie. Je\u015bli przyczyn\u0105 wydaje si\u0119 by\u0107 niezgodno\u015b\u0107 klucza, sprawd\u017a konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce skonfigurowany algorytm podpisywania i klucz wsp\u00f3\u0142u\u017cytkowany s\u0105 zgodne z tymi skonfigurowanymi w dostawcy OpenID Connect.
+
+# Do not translate signatureAlgorithm
+#0= OIDC client ID, 1=client's signature algorithm (such as RS256, HS256), 2=provider's signature algorithm (RS256, HS256, etc.)
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1777E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika za\u017c\u0105danego przez [{0}], poniewa\u017c mi\u0119dzy klientem OpenID Connect i dostawc\u0105 OpenID Connect wyst\u0105pi\u0142a niezgodno\u015b\u0107 algorytm\u00f3w podpisywania. Algorytmem podpisywania klienta jest [{1}], a algorytmem podpisywania dostawcy jest [{2}].
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika, poniewa\u017c klient OpenID Connect (strona zale\u017cna) i dostawca OpenID Connect u\u017cywaj\u0105 r\u00f3\u017cnych algorytm\u00f3w podpisywania.
+OIDC_JWT_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Sprawd\u017a, czy atrybut signatureAlgorithm okre\u015blony w konfiguracji strony zale\u017cnej jest zgodny z algorytmem podpisywania dostawcy OpenID Connect.
+
+# Do not translate signatureAlgorithm
+#0=OIDC client ID, 1=signature algorithm (none, RS256, HS256)
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1778E: Nie powiod\u0142o si\u0119 sprawdzenie poprawno\u015bci znacznika za\u017c\u0105danego przez [{0}], poniewa\u017c w znaczniku brakuje podpisu. W atrybucie signatureAlgorithm klienta OpenID Connect ustawiono warto\u015b\u0107 [{1}]. To ustawienie algorytmu podpisywania wymaga podpisu.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika, poniewa\u017c nie zosta\u0142 on podpisany. Algorytm podpisywania ustawiony dla klienta OpenID Connect wymaga, aby znacznik by\u0142 podpisany.
+OIDC_JWT_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Ustaw w atrybucie signatureAlgorithm w konfiguracji klienta OpenID Connect warto\u015b\u0107 none. 2) Wy\u015blij podpisany znacznik.
+
+# Do not translate aud, audiences (only when followed by "attribute", i.e. "audiences attribute" or "audiences configuration attribute")
+#0=OIDC client ID, 1=audiences of the oidc client
+OIDC_JWT_MISSING_AUD=CWWKS1779E: Sprawdzanie poprawno\u015bci nie powiod\u0142o si\u0119 dla znacznika za\u017c\u0105danego przez [{0}], poniewa\u017c znacznik nie zawiera \u017c\u0105dania aud. Klient OpenID Connect [{0}] zosta\u0142 skonfigurowany w taki spos\u00f3b, aby ufa\u0142 tylko nast\u0119puj\u0105cym audytoriom: [{1}]
+OIDC_JWT_MISSING_AUD.explanation=W kliencie OpenID Connect sprawdzaj\u0105cym poprawno\u015b\u0107 znacznika skonfigurowano atrybut audiences w taki spos\u00f3b, aby klient ufa\u0142 tylko okre\u015blonym audytoriom, zatem ka\u017cdy znacznik sprawdzany przez klienta musi zawiera\u0107 \u017c\u0105danie aud. \u017b\u0105danie aud w znaczniku musi by\u0107 tak\u017ce zgodne z jednym z audytori\u00f3w skonfigurowanych jako zaufane audytoria klienta w atrybucie konfiguracyjnym audiences.
+OIDC_JWT_MISSING_AUD.useraction=Sprawd\u017a, czy znacznik udost\u0119pniony klientowi OpenID Connect zawiera \u017c\u0105danie aud. Je\u015bli nie ma by\u0107 sprawdzana poprawno\u015b\u0107 audytori\u00f3w znacznika, usu\u0144 atrybut audiences z konfiguracji klienta OpenID Connect.
+
+PROPAGATION_TOKEN_NBF_ERR=CWWKS1780E: \u017b\u0105danie uwierzytelnienia serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c nie mo\u017cna u\u017cy\u0107 znacznika znajduj\u0105cego si\u0119 w \u017c\u0105daniu. Warto\u015b\u0107 \u017c\u0105dania Nie przed godzin\u0105 (not before time - nbf) wynosz\u0105ca [{0}] przypada w przysz\u0142o\u015bci [{1}]. Ten warunek nie jest dozwolony.
+PROPAGATION_TOKEN_NBF_ERR.explanation=\u017b\u0105danie Nie przed godzin\u0105 w znaczniku ma warto\u015b\u0107 przypadaj\u0105c\u0105 w przysz\u0142o\u015bci i \u015brodowisko wykonawcze nie mo\u017ce u\u017cy\u0107 tego znacznika w chwili obecnej.
+PROPAGATION_TOKEN_NBF_ERR.useraction=Upewnij si\u0119, \u017ce w znaczniku nie ustawiono \u017c\u0105dania nbf przypadaj\u0105cego w przysz\u0142o\u015bci i/lub zsynchronizuj czasy system\u00f3w. Mo\u017cna tak\u017ce wys\u0142a\u0107 ponownie \u017c\u0105danie p\u00f3\u017aniej.
+
+# 0=OIDC client ID, 1="issuer" value (typically a URL), 2=Trusted issuer list, 3=OIDC client configuration attribute that specifies trusted issuers
+TOKEN_ISSUER_NOT_TRUSTED=CWWKS1781E: Sprawdzenie poprawno\u015bci znacznika \u017c\u0105danego przez klienta [{0}] nie powiod\u0142o si\u0119, poniewa\u017c wystawca (iss) [{1}] podany w znaczniku nie jest zgodny z \u017cadnym z zaufanych wystawc\u00f3w [{2}] podanych za pomoc\u0105 atrybutu [{3}] w konfiguracji klienta OpenID Connect.
+TOKEN_ISSUER_NOT_TRUSTED.explanation=Znacznik zawiera warto\u015b\u0107 wystawcy, kt\u00f3ra nie jest podana jako zaufany wystawca w konfiguracji klienta OpenID Connect. Znaczniki, kt\u00f3rych poprawno\u015b\u0107 jest sprawdzana przez klient OpenID Connect, musz\u0105 by\u0107 wystawione przez zaufanego wystawc\u0119.
+TOKEN_ISSUER_NOT_TRUSTED.useraction=Sprawd\u017a, czy warto\u015b\u0107 roszczenia wystawcy w znaczniku jest do\u0142\u0105czona do podanego atrybutu w konfiguracji klienta OpenID Connect.
+
+# 0=Claim name that should not be in the token, 1=OIDC client configuration attribute
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR=CWWKS1782E: \u017b\u0105danie uwierzytelnienia skierowane do serwera zasob\u00f3w nie powiod\u0142o si\u0119, poniewa\u017c znacznik [{0}] zawiera roszczenie, ale warto\u015b\u0107 atrybutu konfiguracji klienta [{1}] wskazuje, \u017ce znacznik nie mo\u017ce zawiera\u0107 roszczenia.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Znacznik nie mo\u017ce zawiera\u0107 podanego roszczenia ze wzgl\u0119du na warto\u015b\u0107 podanego atrybutu konfiguracji.
+PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Uzyskaj nowy znacznik, kt\u00f3ry nie zawiera podanego roszczenia, lub zmie\u0144 warto\u015b\u0107 podanego atrybutu konfiguracji, aby umo\u017cliwi\u0107 umieszczenie roszczenia w znaczniku.

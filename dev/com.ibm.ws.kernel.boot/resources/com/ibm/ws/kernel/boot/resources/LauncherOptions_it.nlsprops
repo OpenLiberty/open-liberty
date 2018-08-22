@@ -148,7 +148,7 @@ option-desc.package.include=\tUn elenco di valori delimitati da virgole. I valor
 \tminify, runnable, wlp. Se si specifica runnable il package risultante \n\
 \tsar\u00e0 un jar eseguibile che esegue il server. L'opzione minify \n\
 \tproduce l'immagine minima possibile per il server. L'opzione usr \n\
-\tcrea un package che contiene il servere l'applicazione, ma non \n\
+\tcrea un package che contiene il server e l'applicazione, ma non \n\
 \til runtime. L'opzione wlp produce un runtime che non contiene\n\
 \tla configurazione del server. L'opzione predefinita all produce un package\n\
 \tserver che contiene tutto.
@@ -169,4 +169,7 @@ option-desc.os=\tSpecifica i sistemi operativi che si desidera che il server in 
 \thttp://www.osgi.org/Specifications/Reference#os                      \n\
 \tQuesta opzione si applica solo alle operazioni di package e pu\u00f2 essere utilizzata\n\
 \tcon l'opzione --include=minify. Se si esclude un sistema operativo\n \tnon \u00e8 possibile includerlo successivamente se si ripete l'operazione minify\n\
-\tsull'archivio. 
+\tsull'archivio.
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\ \ \ \ --no-password
+option-desc.no-password=\tDisabilita la generazione della password del keystore predefinito

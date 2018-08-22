@@ -136,6 +136,7 @@ public class RemoteTests extends AbstractTest {
 
         EnterpriseArchive EnvEntryApp = ShrinkWrap.create(EnterpriseArchive.class, "EnvEntryApp.ear");
         EnvEntryApp.addAsModule(EnvEntryEJBJar).addAsModule(EnvEntryWeb);
+        EnvEntryApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EnvEntryApp, "test-applications/EnvEntryApp.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, EnvEntryApp);
 
@@ -181,6 +182,7 @@ public class RemoteTests extends AbstractTest {
 
         EnterpriseArchive JitDeployApp = ShrinkWrap.create(EnterpriseArchive.class, "JitDeployApp.ear");
         JitDeployApp.addAsModule(JitDeployEJBJar).addAsModule(JitDeployWeb);
+		JitDeployApp = (EnterpriseArchive) ShrinkHelper.addDirectory(JitDeployApp, "test-applications/JitDeployApp.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, JitDeployApp);
 
@@ -190,6 +192,7 @@ public class RemoteTests extends AbstractTest {
 
         EnterpriseArchive StatelessAnnApp = ShrinkWrap.create(EnterpriseArchive.class, "StatelessAnnTest.ear");
         StatelessAnnApp.addAsModule(StatelessAnnEJBJar).addAsModule(StatelessAnnWeb);
+		StatelessAnnApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessAnnApp, "test-applications/StatelessAnnTest.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, StatelessAnnApp);
 
@@ -204,6 +207,7 @@ public class RemoteTests extends AbstractTest {
         EnterpriseArchive StatelessMixApp = ShrinkWrap.create(EnterpriseArchive.class, "StatelessMixTest.ear");
         StatelessMixApp.addAsModule(StatelessMixASMDescEJBJar).addAsModule(StatelessMixEJBJar).addAsModule(StatelessMixMDCEJBJar).addAsModule(StatelessMixSCEJBJar).addAsModule(StatelessMixWeb);
         StatelessMixApp.addAsLibrary(StatelessMixIntfJar);
+		StatelessMixApp = (EnterpriseArchive) ShrinkHelper.addDirectory(StatelessMixApp, "test-applications/StatelessMixTest.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, StatelessMixApp);
 

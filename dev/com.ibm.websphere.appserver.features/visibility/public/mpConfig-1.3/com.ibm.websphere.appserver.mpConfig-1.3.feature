@@ -19,5 +19,5 @@ Subsystem-Name: MicroProfile Config 1.3
  com.ibm.ws.microprofile.config.1.3; apiJar=false; location:="lib/", \
  com.ibm.ws.cdi.interfaces; apiJar=false; location:="lib/", \
  com.ibm.ws.org.apache.commons.lang3; apiJar=false; location:="lib/"
-kind=beta
+kind=ga
 edition=core

@@ -156,9 +156,6 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      */
     private String name;
 
-    // TODO remove once function is ready to GA
-    private boolean nonshipFunction;
-
     /**
      * JDBC driver configuration.
      */
@@ -189,8 +186,6 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             lock.writeLock().unlock();
         }
 
-        nonshipFunction = props.get("internal.nonship.function") != null;
-
         if ("file".equals(props.get("config.source"))) {
             if (name.startsWith(AppDefinedResource.PREFIX)) // avoid conflicts with application defined data sources
                 throw new IllegalArgumentException(ConnectorService.getMessage("UNSUPPORTED_VALUE_J2CA8011", name, ID, JDBC_DRIVER));
@@ -204,10 +199,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      *
      * @param interfaceNames names of data source interface(s) or java.sql.Driver for which we could not find an implementation class.
      * @param packagesSearched packages in or beneath which we have searched for data source implementation classes.
+     * @param dsId identifier for the data source that is using this JDBC driver.
      * @param cause error that already occurred. Null if not applicable.
      * @return an exception to raise when the data source class is not found.
      */
-    private SQLException classNotFound(Object interfaceNames, Set<String> packagesSearched, Throwable cause) {
+    private SQLException classNotFound(Object interfaceNames, Set<String> packagesSearched, String dsId, Throwable cause) {
         if (cause instanceof SQLException)
             return (SQLException) cause;
 
@@ -217,10 +213,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         // Determine the list of folders that should contain the JDBC driver files.
         Collection<String> driverJARs = getClasspath(sharedLib, false);
 
-        // TODO consider using dataSource id in place of jdbcDriver id once Alex's pull goes in?
         String message = sharedLibId.startsWith("com.ibm.ws.jdbc.jdbcDriver-")
-                        ? AdapterUtil.getNLSMessage("DSRA4001.no.suitable.driver.nested", interfaceNames, name, driverJARs, packagesSearched)
-                        : AdapterUtil.getNLSMessage("DSRA4000.no.suitable.driver", interfaceNames, name, sharedLibId, driverJARs, packagesSearched);
+                        ? AdapterUtil.getNLSMessage("DSRA4001.no.suitable.driver.nested", interfaceNames, dsId, driverJARs, packagesSearched)
+                        : AdapterUtil.getNLSMessage("DSRA4000.no.suitable.driver", interfaceNames, dsId, sharedLibId, driverJARs, packagesSearched);
 
         return new SQLNonTransientException(message, cause);
     }
@@ -232,10 +227,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @param type data source interface in javax.sql package
      * @param className name of data source class to create
      * @param props typed data source properties
+     * @param dsID identifier for the data source
      * @return the data source
      * @throws SQLException if an error occurs
      */
-    private <T extends CommonDataSource> T create(final String className, final Hashtable<?, ?> props) throws SQLException {
+    private <T extends CommonDataSource> T create(final String className, final Hashtable<?, ?> props, String dsID) throws SQLException {
         if (classloader != null && className.startsWith("org.apache.derby.jdbc.Embedded") && isDerbyEmbedded.compareAndSet(false, true)) {
             embDerbyRefCount.add(classloader);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -291,8 +287,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                                     if (x instanceof InvocationTargetException)
                                         x = x.getCause();
                                     FFDCFilter.processException(x, getClass().getName(), "217", this, new Object[] { className, name, value });
+                                    boolean isURL = ("URL".equals(name) || "url".equals(name)) && value instanceof String;
                                     SQLException failure = connectorSvc.ignoreWarnOrFail(tc, x, SQLException.class, "PROP_SET_ERROR", name,
-                                                                                                     "=" + (isPassword ? "******" : value), AdapterUtil.stackTraceToString(x));
+                                                                                                     "=" + (isPassword ? "******" : isURL ? PropertyService.filterURL((String) value) : value),
+                                                                                                     AdapterUtil.stackTraceToString(x));
                                     if (failure != null)
                                         throw failure;
                                 }
@@ -323,7 +321,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             FFDCFilter.processException(x, JDBCDriverService.class.getName(), "234");
             int lastDot = className.lastIndexOf('.');
             Set<String> searched = Collections.singleton(lastDot > 0 ? className.substring(0, lastDot) : className);
-            SQLException sqlX = x instanceof ClassNotFoundException ? classNotFound(className, searched, x)
+            SQLException sqlX = x instanceof ClassNotFoundException ? classNotFound(className, searched, dsID, x)
                             : x instanceof SQLException ? (SQLException) x
                                             : new SQLNonTransientException(x);
             if (trace && tc.isEntryEnabled())
@@ -378,32 +376,30 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
              || null != (className = (String) properties.get(XADataSource.class.getName()))
              || null != (className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID))
              || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true))))
-                return create(className, props);
+                return create(className, props, dataSourceID);
 
-            Set<String> packagesSearched = new LinkedHashSet<String>();
-
-            if (nonshipFunction) {
-                String url = props.getProperty("URL", props.getProperty("url"));
-                if (url != null) {
-                    Driver driver = loadDriver(null, url, classloader, props, dataSourceID);
-                    if (driver != null)
-                        return driver;
-                }
-
-                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
-                                                                       packagesSearched,
-                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
-                                                                       JDBCDrivers.DATA_SOURCE,
-                                                                       JDBCDrivers.XA_DATA_SOURCE);
-                if (dsEntry != null)
-                    return create(className = dsEntry.getValue(), props);
+            String url = props.getProperty("URL", props.getProperty("url"));
+            if (url != null) {
+                Driver driver = loadDriver(null, url, classloader, props, dataSourceID);
+                if (driver != null)
+                    return driver;
             }
 
-            List<String> interfaceNames = Arrays.asList(ConnectionPoolDataSource.class.getName(),
-                                                        DataSource.class.getName(),
-                                                        XADataSource.class.getName(),
-                                                        Driver.class.getName());
-            throw classNotFound(interfaceNames, packagesSearched, null);
+            Set<String> packagesSearched = new LinkedHashSet<String>();
+            SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                   packagesSearched,
+                                                                   JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                   JDBCDrivers.DATA_SOURCE,
+                                                                   JDBCDrivers.XA_DATA_SOURCE);
+            if (dsEntry == null) {
+                List<String> interfaceNames = Arrays.asList(ConnectionPoolDataSource.class.getName(),
+                                                            DataSource.class.getName(),
+                                                            XADataSource.class.getName(),
+                                                            Driver.class.getName());
+                throw classNotFound(interfaceNames, packagesSearched, dataSourceID, null);                
+            }
+
+            return create(className = dsEntry.getValue(), props, dataSourceID);
         } finally {
             lock.readLock().unlock();
         }
@@ -419,10 +415,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * This order is different than the standard priority, which prioritizes javax.sql.XADataSource after ConnectionPoolDataSource and DataSource.
      * 
      * @param props typed data source properties
+     * @param dataSourceID identifier for the data source config
      * @return the data source or driver instance
      * @throws Exception if an error occurs
      */
-    public Object createDefaultDataSourceOrDriver(Properties props) throws Exception {
+    public Object createDefaultDataSourceOrDriver(Properties props, String dataSourceID) throws Exception {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -456,32 +453,30 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
              || null != (className = (String) properties.get(DataSource.class.getName()))
              || null != (className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID))
              || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true))))
-                return create(className, props);
+                return create(className, props, dataSourceID);
 
-            Set<String> packagesSearched = new LinkedHashSet<String>();
-
-            if (nonshipFunction) {
-                String url = props.getProperty("URL", props.getProperty("url"));
-                if (url != null) {
-                    Driver driver = loadDriver(null, url, classloader, props, "dataSource[DefaultDataSource]");
-                    if (driver != null)
-                        return driver;
-                }
-
-                SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
-                                                                       packagesSearched,
-                                                                       JDBCDrivers.XA_DATA_SOURCE,
-                                                                       JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
-                                                                       JDBCDrivers.DATA_SOURCE);
-                if (dsEntry != null)
-                    return create(className = dsEntry.getValue(), props);
+            String url = props.getProperty("URL", props.getProperty("url"));
+            if (url != null) {
+                Driver driver = loadDriver(null, url, classloader, props, "dataSource[DefaultDataSource]");
+                if (driver != null)
+                    return driver;
             }
 
-            List<String> interfaceNames = Arrays.asList(XADataSource.class.getName(),
-                                                        ConnectionPoolDataSource.class.getName(),
-                                                        DataSource.class.getName(),
-                                                        Driver.class.getName());
-            throw classNotFound(interfaceNames, packagesSearched, null);
+            Set<String> packagesSearched = new LinkedHashSet<String>();
+            SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver(classloader,
+                                                                   packagesSearched,
+                                                                   JDBCDrivers.XA_DATA_SOURCE,
+                                                                   JDBCDrivers.CONNECTION_POOL_DATA_SOURCE,
+                                                                   JDBCDrivers.DATA_SOURCE);
+            if (dsEntry == null) {
+                List<String> interfaceNames = Arrays.asList(XADataSource.class.getName(),
+                                                            ConnectionPoolDataSource.class.getName(),
+                                                            DataSource.class.getName(),
+                                                            Driver.class.getName());
+                throw classNotFound(interfaceNames, packagesSearched, dataSourceID, null);
+            }
+
+            return create(className = dsEntry.getValue(), props, dataSourceID);
         } finally {
             lock.readLock().unlock();
         }
@@ -491,10 +486,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * Create a ConnectionPoolDataSource
      * 
      * @param props typed data source properties
+     * @param dataSourceID identifier for the data source config
      * @return the data source
      * @throws SQLException if an error occurs
      */
-    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props) throws SQLException {
+    public ConnectionPoolDataSource createConnectionPoolDataSource(Properties props, String dataSourceID) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -520,19 +516,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction) {
+                    if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE); 
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
-                            throw classNotFound(ConnectionPoolDataSource.class.getName(), packagesSearched, null);
-                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
-                        throw classNotFound(ConnectionPoolDataSource.class.getName(), Collections.EMPTY_SET, null);
+                            throw classNotFound(ConnectionPoolDataSource.class.getName(), packagesSearched, dataSourceID, null);
+                    }
                 }
             }
 
-            return create(className, props);
+            return create(className, props, dataSourceID);
         } finally {
             lock.readLock().unlock();
         }
@@ -542,10 +537,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * Create a DataSource
      * 
      * @param props typed data source properties
+     * @param dataSourceID identifier for the data source config
      * @return the data source
      * @throws SQLException if an error occurs
      */
-    public DataSource createDataSource(Properties props) throws SQLException {
+    public DataSource createDataSource(Properties props, String dataSourceID) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -571,19 +567,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction) {
+                    if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
-                            throw classNotFound(DataSource.class.getName(), packagesSearched, null);
-                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
-                        throw classNotFound(DataSource.class.getName(), Collections.EMPTY_SET, null);
+                            throw classNotFound(DataSource.class.getName(), packagesSearched, dataSourceID, null);
+                    }
                 }
             }
 
-            return create(className, props);
+            return create(className, props, dataSourceID);
         } finally {
             lock.readLock().unlock();
         }
@@ -593,10 +588,11 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * Create an XADataSource
      * 
      * @param props typed data source properties
+     * @param dataSourceID identifier for the data source config 
      * @return the data source
      * @throws SQLException if an error occurs
      */
-    public XADataSource createXADataSource(Properties props) throws SQLException {
+    public XADataSource createXADataSource(Properties props, String dataSourceID) throws SQLException {
         lock.readLock().lock();
         try {
             if (!isInitialized)
@@ -622,19 +618,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true));
-                    if (className == null && nonshipFunction) {
+                    if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.XA_DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
-                            throw classNotFound(XADataSource.class.getName(), packagesSearched, null);
-                    } else if (className == null) // TODO remove, this will be redundant once data sources backed by java.sql.Driver are enabled
-                        throw classNotFound(XADataSource.class.getName(), Collections.EMPTY_SET, null);
+                            throw classNotFound(XADataSource.class.getName(), packagesSearched, dataSourceID, null);
+                    }
                 }
             }
 
-            return create(className, props);
+            return create(className, props, dataSourceID);
         } finally {
             lock.readLock().unlock();
         }
@@ -670,7 +665,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             final String className = (String) properties.get(Driver.class.getName());
             Driver driver = loadDriver(className, url, classloader, props, dataSourceID);
             if (driver == null)
-               throw classNotFound(Driver.class.getName(), Collections.singleton("META-INF/services/java.sql.Driver"), null);
+               throw classNotFound(Driver.class.getName(), Collections.singleton("META-INF/services/java.sql.Driver"), dataSourceID, null);
             return driver;
         } finally {
             lock.readLock().unlock();
@@ -730,10 +725,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * @param upperCaseFileNamesOnly indicates whether or not to include file names only (not paths) and to convert the names to all upper case.
      * @return list of file names for the library. If the library is null, returns an empty list.
      */
-    private Collection<String> getClasspath(Library sharedLib, boolean upperCaseFileNamesOnly) {
+    public static Collection<String> getClasspath(Library sharedLib, boolean upperCaseFileNamesOnly) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "getClasspath", sharedLib);
+            Tr.entry(tc, "getClasspath", sharedLib);
 
         Collection<String> classpath = new LinkedList<String>();
         if (sharedLib != null && sharedLib.getFiles() != null)
@@ -745,7 +740,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     classpath.add(upperCaseFileNamesOnly ? file.getName().toUpperCase() : file.getAbsolutePath());
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getClasspath", classpath);
+            Tr.exit(tc, "getClasspath", classpath);
         return classpath;
     }
 
@@ -756,14 +751,14 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      *
      * @param className pre-computed Driver implementation class name to load. This will only ever be available on the DataSourceDefinition path.
      * @param url the JDBC driver URL.
-     * @param classloader class loader from which to load JDBC drivers.
+     * @param classloader class loader from which to load JDBC drivers. NULL to load from the application's thread context class loader.
      * @return Driver instance that accepts the URL. NULL if no such Driver can be loaded.
      * @throws Exception if an error occurs.
      */
     private Driver loadDriver(final String className, String url, final ClassLoader classloader, Properties props, String dataSourceID) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isDebugEnabled())
-            Tr.entry(this, tc, "loadDriver", className, url, classloader);
+            Tr.entry(this, tc, "loadDriver", className, PropertyService.filterURL(url), classloader);
         int index = url.toLowerCase().indexOf("logintimeout");
         if(index != -1) {
             int length = url.length();
@@ -786,7 +781,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
         Iterable<Driver> drivers;
         if (className == null) {
-            drivers = ServiceLoader.load(Driver.class, classloader);
+            if (classloader == null)
+                drivers = ServiceLoader.load(Driver.class); // use thread context class loader of application
+            else
+                drivers = ServiceLoader.load(Driver.class, classloader);
         } else { // load explicitly specified class
             Driver driver = AccessController.doPrivileged(new PrivilegedExceptionAction<Driver>() {
                 public Driver run() throws Exception {
@@ -937,8 +935,13 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         Object param = null;
         String propName = pd.getName();
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "set " + propName + " = " + (doTraceValue ? value : "******"));
+        if (tc.isDebugEnabled()) {
+            if("URL".equals(propName) || "url".equals(propName)) {
+                Tr.debug(tc, "set " + propName + " = " + PropertyService.filterURL(value));
+            } else {
+                Tr.debug(tc, "set " + propName + " = " + (doTraceValue ? value : "******"));
+            }
+        }
 
         java.lang.reflect.Method setter = pd.getWriteMethod();
 

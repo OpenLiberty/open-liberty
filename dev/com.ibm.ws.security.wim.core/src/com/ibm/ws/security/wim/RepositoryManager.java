@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
@@ -197,6 +198,7 @@ public class RepositoryManager {
      * @return
      * @throws WIMException
      */
+    @Trivial
     public int getNumberOfRepositoriesVolatile() throws WIMException {
         return numRepos;
     }
