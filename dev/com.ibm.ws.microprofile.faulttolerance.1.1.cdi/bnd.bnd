@@ -26,7 +26,7 @@ Import-Package: \
 Export-Package: com.ibm.ws.microprofile.faulttolerance11.cdi
 
 Private-Package: \
-	com.ibm.ws.microprofile.faulttolerance.cdi.resources,\
+	com.ibm.ws.microprofile.faulttolerance11.cdi.resources,\
 	com.ibm.ws.microprofile.faulttolerance11.cdi.config
 
 Include-Resource: \
@@ -35,8 +35,8 @@ Include-Resource: \
 WS-TraceGroup: FAULTTOLERANCE
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.faulttolerance.cdi.FaultToleranceCDIExtension,\
-                com.ibm.ws.microprofile.faulttolerance.cdi.MetricComponent
+-dsannotations: com.ibm.ws.microprofile.faulttolerance11.cdi.FaultToleranceCDIExtension,\
+                com.ibm.ws.microprofile.faulttolerance11.cdi.MetricComponent
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
