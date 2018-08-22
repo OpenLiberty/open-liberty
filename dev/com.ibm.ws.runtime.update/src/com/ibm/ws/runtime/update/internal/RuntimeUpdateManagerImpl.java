@@ -21,6 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -135,6 +136,24 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
     protected void unsetLocationAdmin(WsLocationAdmin admin) {
         this.locationService = null;
+    }
+
+    /**
+     * The ThreadFactory used by the executor to create new threads.
+     */
+    ThreadFactory threadFactory = null;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               target = "(com.ibm.ws.threading.defaultExecutorThreadFactory=true)")
+    protected void setThreadFactory(ThreadFactory threadFactory) {
+        this.threadFactory = threadFactory;
+    }
+
+    protected void unsetThreadFactory(ThreadFactory threadFactory) {
+        if (this.threadFactory == threadFactory) {
+            threadFactory = null;
+        }
     }
 
     protected void cleanupNotifications() {
@@ -316,7 +335,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             return;
 
         // Thread pool for stopping bits of the server (so it doesn't compete with running work.. )
-        ExecutorService threadPool = Executors.newFixedThreadPool(3);
+        ExecutorService threadPool = threadFactory != null ? Executors.newFixedThreadPool(3, threadFactory) : Executors.newFixedThreadPool(3);
 
         if (isServer())
             Tr.audit(tc, "quiesce.begin");
