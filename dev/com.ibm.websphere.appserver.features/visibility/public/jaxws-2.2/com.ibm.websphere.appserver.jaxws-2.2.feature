@@ -4,6 +4,9 @@ visibility=public
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-API-Package: \
+ javax.jws; type="spec"; require-osgi-ee="9", \
+ javax.jws.soap; type="spec"; require-osgi-ee="9", \
+ javax.xml.soap; type="spec"; require-osgi-ee="9", \
  javax.xml.ws.handler; type="spec", \
  javax.xml.ws.http; type="spec", \
  javax.xml.ws.spi; type="spec", \
