@@ -39,8 +39,7 @@ public class TestMultiModuleClassLoading extends LoggingTest {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .with(FeatureReplacementAction.EE7_FEATURES().forServers(SHARED_SERVER.getServerName()))
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SHARED_SERVER.getServerName()))
-                    .andWith(new FeatureReplacementAction("mpFaultTolerance-1.1").removeFeature("mpFaultTolerance-1.0").forServers(SHARED_SERVER.getServerName()));
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers(SHARED_SERVER.getServerName()));
 
     @BeforeClass
     public static void setupApp() throws Exception {
