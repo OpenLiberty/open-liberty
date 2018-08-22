@@ -1492,7 +1492,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                 }
 
                 //Trace debug info
-                Tr.debug(ConnectionLogic, connLogic.get(Trace.REQUEST_STACK), connLogic.get(Trace.ID), connLogic.get(Trace.TRANSACTION));
+                Tr.debug(ConnectionLogic, connLogic.get(Trace.REQUEST_STACK), connLogic.get(Trace.TRANSACTION));
 
                 //For shared connection debug handle count
                 if (connLogic.shared && mcWrapper.getHandleCount() > 1) {
