@@ -109,7 +109,7 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.cdi.1.2.weld;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.resource;version=latest,\
-	com.ibm.ws.com.google.guava.14.0.1;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
