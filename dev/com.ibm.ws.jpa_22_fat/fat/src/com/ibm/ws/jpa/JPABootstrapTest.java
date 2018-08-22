@@ -28,6 +28,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.PrivHelper;
 import jpabootstrap.web.TestJPABootstrapServlet;
 
 /**
@@ -50,11 +51,11 @@ public class JPABootstrapTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
         createApplication("1.0");
         createApplication("2.0");
         createApplication("2.1");
         createApplication("2.2");
-
         server1.startServer();
     }
 

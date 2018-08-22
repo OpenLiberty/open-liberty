@@ -33,6 +33,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 import jpa10callback.web.CallbackOrderOfInvocationTestServlet;
 import jpa10callback.web.CallbackRuntimeExceptionTestServlet;
 import jpa10callback.web.CallbackTestServlet;
@@ -71,6 +72,7 @@ public class CallbackTest extends JPAFATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
         bannerStart(CallbackTest.class);
         timestart = System.currentTimeMillis();
 

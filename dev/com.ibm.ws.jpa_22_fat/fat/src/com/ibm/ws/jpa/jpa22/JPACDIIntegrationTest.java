@@ -24,6 +24,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  * Test cases for verifying JPA + CDI integration, by using the application-server provided
@@ -42,6 +43,8 @@ public class JPACDIIntegrationTest {
     @BeforeClass
     public static void setUp() throws Exception {
         final String resPath = "test-applications/jpa22/" + APP_NAME + "/resources/";
+
+        PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         app.addPackage("cdi.web");
