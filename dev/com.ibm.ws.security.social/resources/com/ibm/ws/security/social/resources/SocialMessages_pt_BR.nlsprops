@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -541,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verifique se a configura\u00e7\u00
 REQUEST_URL_NOT_VALID=CWWKS5499E: O recurso de login social n\u00e3o pode redirecionar a solicita\u00e7\u00e3o de volta para a URL de solicita\u00e7\u00e3o original [{0}] porque a URL n\u00e3o \u00e9 v\u00e1lida. {1}
 REQUEST_URL_NOT_VALID.explanation=A URL de solicita\u00e7\u00e3o original n\u00e3o \u00e9 uma URL v\u00e1lida. A URL pode incluir caracteres que n\u00e3o s\u00e3o v\u00e1lidos ou a URL pode estar malformada.
 REQUEST_URL_NOT_VALID.useraction=Verifique se a URL de solicita\u00e7\u00e3o que \u00e9 especificada na mensagem corresponde \u00e0 URL de solicita\u00e7\u00e3o de recurso protegido original. Verifique se a URL est\u00e1 bem-formada e se ela cont\u00e9m somente caracteres de URI v\u00e1lido.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Um atributo de configura\u00e7\u00e3o [{0}] necess\u00e1rio em uma configura\u00e7\u00e3o de login social possui um valor [{1}] inv\u00e1lido.
+INVALID_CONFIG_PARAM.explanation=O recurso de login social n\u00e3o encontrou um valor v\u00e1lido para um atributo de configura\u00e7\u00e3o necess\u00e1rio. Um valor v\u00e1lido \u00e9 necess\u00e1rio para processar a solicita\u00e7\u00e3o.
+INVALID_CONFIG_PARAM.useraction=Verifique se o atributo especificado na configura\u00e7\u00e3o de login social est\u00e1 configurado e definido para um valor v\u00e1lido.

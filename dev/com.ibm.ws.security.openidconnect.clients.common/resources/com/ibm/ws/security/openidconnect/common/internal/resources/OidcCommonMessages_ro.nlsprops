@@ -1,13 +1,9 @@
-###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2013.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
@@ -20,27 +16,27 @@
 #do not translate issuerIdentifier, iss
 #
 OIDC_IDTOKEN_VERIFY_ISSUER_ERR=CWWKS1751E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{0}] deoarece emitentul (iss) [{1}] specificat \u00een jeton nu se potrive\u015fte cu atributul [issuerIdentifier] [{2}] pentru furnizorul specificat \u00een configura\u0163ia clientului OpenID Connect. Verifica\u0163i atributul issuerIdentifier pe configura\u0163ia de client.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Validare jeton de ID e\u015fuat\u0103 deoarece emitentul specificat \u00een configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi emitentul din jeton nu se potrivesc.
-OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul [issuerIdentifier] specificat \u00een configura\u0163ia clientului OpenID Connect (RP) se potrive\u015fte cu emitentul pentru furnizorul OpenID Connect (OP) care este utilizat.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.explanation=Validarea jetonului de ID a e\u015fuat deoarece emitentul specificat \u00een configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi emitentul din jeton nu se potrivesc.
+OIDC_IDTOKEN_VERIFY_ISSUER_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul [issuerIdentifier] specificat \u00een configura\u0163ia de client OpenID Connect (RP) se potrive\u015fte cu emitentul furnizorului OpenID Connect (OP) folosit.
 
 #
 OIDC_IDTOKEN_SIGNATURE_ERR=CWWKS1752E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a semna un jeton de ID utiliz\u00e2nd algoritmul [{0}]: [{1}].
-OIDC_IDTOKEN_SIGNATURE_ERR.explanation=Nu poate fi creat un ID de jeton deoarece nu poate fi semnat. Motivul pentru eroare este afi\u015fat dup\u0103 mesaj.
-OIDC_IDTOKEN_SIGNATURE_ERR.useraction=Vede\u0163i ac\u0163iunea de utilizator pentru mesajul care apare dup\u0103 aceast\u0103 eroare.
+OIDC_IDTOKEN_SIGNATURE_ERR.explanation=Nu poate fi creat un ID de jeton deoarece nu poate fi semnat. Motivul pentru eroare este ar\u0103tat dup\u0103 mesaj.
+OIDC_IDTOKEN_SIGNATURE_ERR.useraction=Vede\u0163i ac\u0163iunea utilizatorului pentru mesaj care apare dup\u0103 aceast\u0103 eroare.
 
 #
 OIDC_IDTOKEN_INVALID_KEY_ERR=CWWKS1753E: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a semna un jeton de ID utiliz\u00e2nd algoritmul [{0}]: [{1}].
-OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=Nu poate fi creat un ID de jeton deoarece nu poate fi semnat.  Motivul pentru eroare este afi\u015fat dup\u0103 mesaj.
-OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Dac\u0103 utiliza\u0163i semn\u0103tura asimetric\u0103, verifica\u0163i dac\u0103 este utilizat\u0103 o cheie privat\u0103 valid\u0103 pentru a semna jetonul. De exemplu, verifica\u0163i dac\u0103 e cheie este expirat\u0103. Verifica\u0163i elementul keyStore referit de SSl-ul implicit din server.xml pentru a g\u0103si informa\u0163ii despre fi\u015fierul depozit de chei care con\u0163ine cheia privat\u0103.  De asemenea, vede\u0163i ac\u0163iunea de utilizator pentru mesajul care apare dup\u0103 aceast\u0103 eroare.
+OIDC_IDTOKEN_INVALID_KEY_ERR.explanation=Un jeton ID nu poate fi creat deoarece nu va putea fi semnat.  Motivul pentru eroare este ar\u0103tat dup\u0103 mesaj.
+OIDC_IDTOKEN_INVALID_KEY_ERR.useraction=Dac\u0103 se folose\u015fte semn\u0103tur\u0103 asimetric\u0103, verifica\u0163i c\u0103 o cheie privat\u0103 valid\u0103 este folosit\u0103 pentru semnarea jetonului. De exemplu, verifica\u0163i dac\u0103 cheia este expirat\u0103. Verifica\u0163i elementul keyStore referit de configura\u0163ia SSL implicit\u0103 din server.xml pentru a g\u0103si informa\u0163ii despre fi\u015fierul depozit de chei care con\u0163ine cheia privat\u0103.  De asemnea, vede\u0163i ac\u0163iunea de utilizator pentru mesajul care apare dup\u0103 aceast\u0103 eroare.
 
 #do not translate clientId, aud
 OIDC_IDTOKEN_VERIFY_AUD_ERR=CWWKS1754E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{1}] deoarece audien\u0163a (aud) [{0}] specificat\u0103 \u00een jeton nu se potrive\u015fte cu clientID-ul [{1}] specificat \u00een configura\u0163ia clientului OpenID Connect.
-OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=Audien\u0163a din jetonul de ID ar trebui s\u0103 se potriveasc\u0103 cu ID-ul de client.  \u00cen acest caz, audien\u0163a (aud) din jetonul de ID nu s-a potrivit cu ID-ul clientului, astfel c\u0103 validarea jetonului de ID a e\u015fuat.
+OIDC_IDTOKEN_VERIFY_AUD_ERR.explanation=Audien\u0163a din jetonul ID trebuie s\u0103 se potriveasc\u0103 cu ID-ul de client.  \u00cen acest caz audien\u0163a (aud) din jetonul ID nu se potrive\u015fte cu ID-ul de client, a\u015fa c\u0103 validarea jetonului ID a e\u015fuat.
 OIDC_IDTOKEN_VERIFY_AUD_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul [clientId] specificat \u00een configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) este corect. Valoarea este sensibil\u0103 la majuscule.
 
 #do not translate clientId, azp
 OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR=CWWKS1755E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{1}] deoarece partea autorizat\u0103 (azp) [{0}] specificat\u0103 \u00een jeton nu se potrive\u015fte cu clientID-ul [{1}] specificat \u00een configura\u0163ia clientului OpenID Connect.
-OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=Partea autorizat\u0103 din jetonul de ID ar trebui s\u0103 se potriveasc\u0103 cu ID-ul de client. \u00cen acest caz, partea autorizat\u0103 (azp) din jetonul de ID nu s-a potrivit cu ID-ul clientului, astfel c\u0103 validarea jetonului de ID a e\u015fuat.
+OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.explanation=Partea autorizat\u0103 din jetonul de ID ar trebui s\u0103 se potriveasc\u0103 cu ID-ul de client. \u00cen acest caz partea autorizat\u0103 (azp) din jetonul ID nu se potrive\u015fte cu ID-ul de client, a\u015fa c\u0103 validarea jetonului ID a e\u015fuat.
 OIDC_IDTOKEN_VERIFY_AUD_AZP_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul [clientId] specificat \u00een configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) este corect. Valoarea este sensibil\u0103 la majuscule.
 
 #
@@ -50,38 +46,40 @@ OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR.useraction=Verifica\u0163i configura\u0163ia d
 
 #
 OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR=CWWKS1757E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{0}] utiliz\u00e2nd algoritmul [{2}] din cauza unei e\u015fu\u0103ri de verificare semn\u0103tur\u0103: [{1}].
-OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Un jeton de ID nu poate fi validat deoarece semn\u0103tura nu a putut fi verificat\u0103.  Motivul pentru eroare este afi\u015fat dup\u0103 mesaj.
-OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Dac\u0103 utiliza\u0163i semn\u0103tura asimetric\u0103, asigura\u0163i-v\u0103 c\u0103 cheia public\u0103 din certificat poate fi utilizat\u0103 \u00een scopuri de semn\u0103tur\u0103 digital\u0103.  Verifica\u0163i elementul keyStore referit de configura\u0163ia SSl implicit\u0103 din server.xml pentru a g\u0103si informa\u0163ii despre fi\u015fierul depozit de chei care con\u0163ine cheia privat\u0103. De asemenea, vede\u0163i ac\u0163iunea de utilizator pentru mesajul care apare dup\u0103 aceast\u0103 eroare.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Un jeton ID nu poate fi validat deoarece semn\u0103tura nu poate fi verificat\u0103.  Motivul pentru eroare este ar\u0103tat dup\u0103 mesaj.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Dac\u0103 se folose\u015fte semnare asimetric\u0103, asigura\u0163i-v\u0103 c\u0103 cheia public\u0103 din certificat poate fi folosit\u0103 \u00een scopuri de semnare digital\u0103.  Verifica\u0163i elementul keyStore referit de configura\u0163ia SSL implicit\u0103 din server.xml pentru a g\u0103si informa\u0163ii despre depozitul de chei care con\u0163ine cheia privat\u0103. De asemnea, vede\u0163i ac\u0163iunea de utilizator pentru mesajul care apare dup\u0103 aceast\u0103 eroare.
  
 #
 OIDC_IDTOKEN_VERIFY_STATE_ERR=CWWKS1758E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{0}] din cauza [{1}]. Aceasta ar putea fi cauzat\u0103 fie de faptul c\u0103 ora curent\u0103 [{2}] este dup\u0103 ora de expirare a jetonului [{3}], fie de faptul c\u0103 ora de emitere [{4}] este prea \u00eendep\u0103rtat\u0103 de ora curent\u0103 [{2}].
-OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=Un jeton de ID nu poate fi validat deoarece ora curent\u0103 afi\u015fat\u0103 nu este \u00eentre orele de emitere \u015fi expirare ale jetonului.
-OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 ceasurile de sistem al clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi al furnizorului OpenID Connect (OP) sunt sincronizate (dac\u0103 sunt pe dou\u0103 sisteme).
+OIDC_IDTOKEN_VERIFY_STATE_ERR.explanation=Un jeton ID nu poate fi validat deoarece timpul curent nu este \u00eentre timpul emiterii \u015fi timpul expir\u0103rii.
+OIDC_IDTOKEN_VERIFY_STATE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 ceasurile de sistem ale clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi ale furnizorului OpenID Connect (OP) sunt sincronizate (dac\u0103 sunt pe dou\u0103 sisteme).
 
 #do not translate at_hash
 #
 OIDC_IDTOKEN_VERIFY_ATHASH_ERR=CWWKS1759E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{0}] din cauza nepotrivirii hash a jetonului de acces [{1}] \u015fi revendicarea at_hash [{2}] din jetonul de ID. 
-OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=at_hash din jetonul de ID permite clien\u0163ilor OpenID Connect s\u0103 \u00eempiedice atacurile de \u00eenlocuire jeton. Valoarea at_hash ar trebui s\u0103 se potriveasc\u0103 cu valoarea de hash a jetonului de acces recep\u0163ionat de clientul OpenID Connect.
+OIDC_IDTOKEN_VERIFY_ATHASH_ERR.explanation=at_hash din jetonul ID permite clien\u0163ilor OpenID Connect s\u0103 \u00eempiedice atacurile cu \u00eenlocuirea jetonului. Valoarea at_hash trebuie s\u0103 se potriveasc\u0103 cu valoarea hash a jetonului de acces primit de cl\u015fientul OpenID Connect.
 OIDC_IDTOKEN_VERIFY_ATHASH_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 comunicarea dintre clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi furnizotul OpenID Connect (OP) este sigur\u0103 pentru a evita modificarea jetonului de acces recep\u0163ionat de RP.
 
 #
 OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR=CWWKS1760E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{0}] din cauza lipsei semn\u0103turii din jetonul de ID. Configura\u0163ia clientului OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) a specificat algoritmul [{1}] \u015fi a\u015fteapt\u0103 un jeton de ID semnat.
-OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Un jeton de ID nu poate fi validat deoarece jetonul nu a fost semnat. Clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) a\u015fteapt\u0103 un jeton semnat.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.explanation=Un jeton ID nu poate fi validat deoarece jetonul nu a fost semnat. Clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) a\u015fteapt\u0103 un jeton semnat.
 OIDC_IDTOKEN_SIGNATURE_VERIFY_MISSING_SIGNATURE_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 furnizorul OpenID Connect permite jetonului s\u0103 fie semnat.
 
 #do not translate signatureAlgorithm
 #
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: Validare e\u015fuat\u0103 pentru jetonul de ID cerut de [{0}] din cauza unei nepotriviri a algoritmilor de semnare dintre clientul OpenID Connect [{1}] \u015fi furnizorul OpenID Connect [{2}].
-OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Un jeton de ID nu poate fi validat deoarece clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi furnizorul OpenID Connect (OP) utilizeaz\u0103 algoritmi de semnare diferi\u0163i pentru a semna/verifica jetonul.
-OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Asigura\u0163i-v\u0103 c\u0103 signatureAlgorithm specificat de RP se potrive\u015fte cu algoritmul  de semnare OP.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Un jeton ID nu a putut fi validat deoarece clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau RP) \u015fi furnizorul OpenID Connect (OP) folosesc algoritmi de semn\u0103tur\u0103 diferi\u0163i pentru a semna/verifica jetonul.
+OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Asigura\u0163i-v\u0103 algoritmul de semnare specificat pentru RP se potrive\u015fte cu cel specificat pentru OP.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: Cererea punct final jeton a e\u015fuat. Nu se poate valida fi\u015fierul JWT Token cerut de c\u0103tre [{0}] din cauza unei semn\u0103turi lips\u0103 din jetonul JWT. Furnizorul OpenID Connect a specificat algoritmul [{1}] a\u015fteapt\u0103 s\u0103 fie semnat JWT Token.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Nu se poate verifica jetonul JWT deoarece jetonul nu este semnat. Furnizorul OpenID Connect a\u015fteapt\u0103 s\u0103 fie semnat jetonul.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Verifica\u0163i configura\u0163ia de client OpenID Connect pentru a v\u0103 asigura c\u0103 semneaz\u0103 JWT Token.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a signature missing from the JWT token. The OpenID Connect provider specified [{1}] algorithm and expects the JWT Token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Cannot verify the JWT Token because the token is not signed. The OpenID Connect provider is expecting the token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Check the OpenID Connect client configuration to make sure that it signs the JWT Token.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: Cererea punct final jeton a e\u015fuat. Nu se poate valida fi\u015fierul JWT Token cerut de c\u0103tre [{0}] din cauza unei nepotriviri de algoritmi de semnare \u00eentre furnizorul OpenID Connect [{1}] \u015fi clientul OpenID Connect [{2}].
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Nu se poate verifica JWT Token deoarece furnizorul \u015fi clientul OpenID Connect utilizeaz\u0103 algoritmi diferi\u0163i de semn\u0103tur\u0103 pentru a semna/verifica jetonul.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Verifica\u0163i configura\u0163ia de client OpenID Connect pentru a specifica un algoritm semn\u0103tur\u0103 care se potrive\u015fte cu furnizorul OpenID.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a mismatch of signing algorithms between the OpenID Connect provider [{1}] and the OpenID Connect client [{2}].
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Cannot verify the JWT Token because the OpenID Connect provider and client are using different signature algorithms to sign/verify the token.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Check the OpenID Connect client configuration to specify a signature algorithm that matches with the OpenID Connect provider.
 
 #
 JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: Cererea punctului final de jeton a e\u015fuat. A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a semna un jeton JWT folosind algoritmul [{0}]: [{1}].
@@ -99,28 +97,32 @@ JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Un jeton JWT nu poate f
 JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Dac\u0103 utiliza\u0163i o semn\u0103tur\u0103 asimetric\u0103, asigura\u0163i-v\u0103 c\u0103 cheia public\u0103 din certificat poate fi utilizat\u0103 pentru scopuri de semn\u0103tur\u0103 digital\u0103.  Verifica\u0163i elementul depozit de chei referit de configura\u0163ia implicit\u0103 SSL \u00een fi\u015fierul server.xml pentru a g\u0103si informa\u0163ii despre fi\u015fierul depozit de chei care con\u0163ine cheia. De asemenea, vede\u0163i ac\u0163iunea de utilizator pentru mesajul care apare dup\u0103 aceast\u0103 eroare.
  
 #
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: Cererea punctului final de jeton a e\u015fuat. Un jeton semnat JWT trebuie s\u0103 aib\u0103 3 segmente separate prin ''.'', dar acest JWT Token are [{0}] segmente.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Un jeton semnat JWT trebuie s\u0103 aib\u0103 exact 3 segmente separate prin '.'. Acest JWT Token are nu num\u0103r gre\u015fit de segmente.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Asigura\u0163i-v\u0103 c\u0103 JWT Token este valid \u015fi are 3 segmente.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: The token endpoint request failed. A signed JWT token needs to have 3 segments separated by ''.'', but this JWT Token has [{0}] segments.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=A signed JWT token needs to have exactly 3 segments separated by '.'. This JWT Token has a bad segment number.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Make sure the JWT Token is valid and has 3 segments.
 
 #
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: Cererea punctului final de jeton a e\u015fuat. Validarea jetonului JWT cerut\u0103 de [{0}] a e\u015fuat. S-a primit un IllegalStateException cu mesajul: [{1}].
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Un jeton JWT nu poate fi validat din cauza unei IllegalStatException care este indicat\u0103 \u00een mesaj.
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corecta\u0163i eroarea care este indicat\u0103 \u00een mesaj.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: The token endpoint request failed. Validation of the JWT token requested by the [{0}] failed. It got an InvalidJwtException with message:[{1}].
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=A JWT token cannot be validated because of an InvalidJwtException which is indicated in the message.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Correct the error which is indicated in the message.
 
 #
-JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: Cererea punctului final de jeton a e\u015fuat. Nu este g\u0103sit un JWT Token \u00een cerere.
-JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=Cererea trebuie s\u0103 furnizeze un dar nu poate g\u0103si JWT Token \u00een cererea punctului final de jeton.
-JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Furniza\u0163i un JWT Token valid \u00een cererea punctului final de jeton.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: The token endpoint request failed. A required JWT Token is not found in the request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=The request needs to provide a JWT Token but can not find the JWT Token in the token endpoint request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Provide a valid JWT Token in the token endpoint request.
 
 #
 JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: Configura\u0163ia de client OpenID Connect are nevoie de atributul jwkEndpointUrl.
 JWK_ENDPOINT_MISSING_ERR.explanation=Atributul jwkEndpointUrl nu a fost furnizat \u00een configura\u0163ia client OpenID Connect.
 JWK_ENDPOINT_MISSING_ERR.useraction=Seta\u0163i atributul jwkEndpointUrl la URL-ul cheii web JSON a furnizorului OpenID Connect.
 
-OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: A ap\u0103rut o eroare \u00een timpul \u00eencerc\u0103rii de a ob\u0163ine RunAsSubject. Excep\u0163ia a fost: [{0}].
-OIDC_FAILED_RUN_AS_SUBJCET.explanation=A survenit o excep\u0163ie la ob\u0163inerea RunAsSubject.
-OIDC_FAILED_RUN_AS_SUBJCET.useraction=Asigura\u0163i-v\u0103 c\u0103 serverul este configurat \u015fi porne\u015fte corespunz\u0103tor.
+# now in openidconnect.common project, no longer used here.
+#OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: An exception occurred while attempting to get the RunAsSubject. The exception was: [{0}].
+#OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
+#OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
 #0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
 OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Validarea a e\u015fuat pentru jetonul cerut de c\u0103tre [{0}] pentru c\u0103 jetonul este \u00een afara intervalului valid. Aceasta ar putea fi cauzat\u0103 fie de faptul c\u0103 ora curent\u0103 [{1}] este dup\u0103 ora de expirare a jetonului [{2}], fie de faptul c\u0103 ora de emitere [{3}] este prea \u00eendep\u0103rtat\u0103 de ora curent\u0103 [{1}].
