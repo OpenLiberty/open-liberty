@@ -505,7 +505,8 @@ public class KernelBootstrap {
             Map<String, ProductInfo> products = ProductInfo.getAllProductInfo();
             StringBuilder builder = new StringBuilder();
             for (ProductInfo productInfo : products.values()) {
-                if (productInfo.getReplacedBy() == null) {
+                ProductInfo replaced = productInfo.getReplacedBy();
+                if (productInfo.getReplacedBy() == null || replaced.isReplacedProductLogged()) {
                     if (builder.length() != 0) {
                         builder.append(", ");
                     }
