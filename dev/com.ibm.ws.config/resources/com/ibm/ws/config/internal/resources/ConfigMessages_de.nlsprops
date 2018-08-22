@@ -458,6 +458,10 @@ info.config.conflict=CWWKG0102I: {0}
 info.config.conflict.explanation=Es wurden mehrere Werte f\u00fcr dieselbe Konfigurationseigenschaft angegeben. 
 info.config.conflict.useraction=Es ist keine Aktion erforderlich. Die Informationsnachricht kann vermieden werden, indem der Konflikt in der Serverkonfiguration behoben wird.
  
+warning.supplied.config.not.valid=CWWKG0103W: Das Attribut {0} mit dem Wert {1} wird ignoriert, weil es als ibm:final definiert ist. Das System verwendet den Standardwert des Attributs.
+warning.supplied.config.not.valid.explanation= Ein als ibm:final und Standardattribut markiertes Konfigurationsattribut ist nicht g\u00fcltig. Entfernen Sie das konfigurierte Attribut aus der Konfiguration.
+warning.supplied.config.not.valid.useraction=Aktualisieren Sie die Serverkonfiguration, um den falschen Attributwert zu entfernen.
+
 
 # Non-TR message
 error.invalidOCDRef=FEHLER: Die Metatyp-PID [{0}] gibt die ID einer nicht vorhandenen Objektklassendefinition [{1}] an.

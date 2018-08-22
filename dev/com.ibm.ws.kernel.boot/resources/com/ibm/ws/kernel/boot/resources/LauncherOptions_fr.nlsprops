@@ -177,4 +177,7 @@ option-desc.os=\tSp\u00e9cifie les syst\u00e8mes d'exploitation \u00e0 prendre e
 \tCette option s'applique uniquement \u00e0 l'op\u00e9ration de package et ne peut \u00eatre \n\
 \tutilis\u00e9e qu'avec l'option --include=minify. Si vous excluez un syst\u00e8me \n\
 \td'exploitation, vous ne pouvez pas l'inclure plus tard en r\u00e9p\u00e9tant l'op\u00e9ration \n\
-\tminify sur l'archive. 
+\tminify sur l'archive.
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\ \ \ \ --no-password
+option-desc.no-password=\tD\u00e9sactivez la g\u00e9n\u00e9ration d'un mot de passe de magasin de cl\u00e9s par d\u00e9faut
