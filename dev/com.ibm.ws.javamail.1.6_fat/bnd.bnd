@@ -29,5 +29,5 @@ fat.project: true
   com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest, \
   com.ibm.websphere.javaee.ejb.3.2;version=latest, \
   com.icegreen:greenmail;version=1.5.5, \
-  org.slf4j:slf4j-api;version=1.8.0.beta2, \
-  org.slf4j:slf4j-jdk14;version=1.8.0.beta2
+  org.slf4j:slf4j-api;version=1.7.7, \
+  org.slf4j:slf4j-jdk14;version=1.7.7

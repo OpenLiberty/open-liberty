@@ -8,9 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.slf4j:slf4j-jdk14;1.8.0.beta2}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.slf4j:slf4j-jdk14;1.7.7}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.slf4j:slf4j-jdk14;1.8.0.beta2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|module-info.class
+   @${repo;org.slf4j:slf4j-jdk14;1.7.7}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
--buildpath: org.slf4j:slf4j-jdk14;version=1.8.0.beta2
+-buildpath: org.slf4j:slf4j-jdk14;version=1.7.7
