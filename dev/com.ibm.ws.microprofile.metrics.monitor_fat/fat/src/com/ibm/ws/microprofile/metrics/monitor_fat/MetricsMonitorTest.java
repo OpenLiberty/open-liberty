@@ -94,6 +94,7 @@ public class MetricsMonitorTest {
     	String testName = "testEnableDisableFeatures";
     	
     	Log.info(c, testName, "------- No monitor-1.0: no vendor metrics should be available ------");
+    	server.setServerConfigurationFile("server_mpMetric11.xml");
     	server.startServer();
     	Log.info(c, testName, server.waitForStringInLog("defaultHttpEndpoint-ssl",60000));
     	Log.info(c, testName, "------- server started -----");
@@ -213,7 +214,7 @@ public class MetricsMonitorTest {
       	
        	Log.info(c, testName, "------- Remove monitor-1.0 ------");
     	server.setMarkToEndOfLog();
-    	server.setServerConfigurationFile("server_mpMetric11.xml");
+    	server.setServerConfigurationFile("server_noJDBCMonitor.xml");
        	Log.info(c, testName, server.waitForStringInLogUsingMark("CWPMI2002I"));
        	Log.info(c, testName, "------- no vendor metrics should be available ------");
       	checkStrings(getHttpsServlet("/metrics"), 
