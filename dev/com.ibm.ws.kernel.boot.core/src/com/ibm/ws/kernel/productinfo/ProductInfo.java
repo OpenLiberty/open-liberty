@@ -40,6 +40,7 @@ public class ProductInfo {
     public static final String COM_IBM_WEBSPHERE_PRODUCTVERSION_KEY = "com.ibm.websphere.productVersion";
     public static final String COM_IBM_WEBSPHERE_PRODUCTEDITION_KEY = "com.ibm.websphere.productEdition";
     public static final String COM_IBM_WEBSPHERE_PRODUCTREPLACES_KEY = "com.ibm.websphere.productReplaces";
+    public static final String COM_IBM_WEBSPHERE_LOG_REPLACED_PRODUCT = "com.ibm.websphere.logReplacedProduct";
 
     private static FileFilter versionFileFilter = new FileFilter() {
         @Override
@@ -207,6 +208,10 @@ public class ProductInfo {
         return replacedBy;
     }
 
+    public boolean isReplacedProductLogged() {
+      return "true".equalsIgnoreCase(properties.getProperty("com.ibm.websphere.logReplacedProduct"));
+    }
+
     public String getProperty(String key) {
         if (key == null) {
             return null;
@@ -222,7 +227,7 @@ public class ProductInfo {
 
     /**
      * Retrieves the product extension jar bundles located in the installation's usr directory.
-     * 
+     *
      * @return The array of product extension jar bundles in the default (usr) location.
      */
     public static File[] getUserExtensionVersionFiles(File installDir) {
@@ -243,7 +248,7 @@ public class ProductInfo {
 
     /**
      * Retrieves the product extension jar bundles pointed to by the properties file in etc/extensions.
-     * 
+     *
      * @return The array of product extension jar bundles
      */
     public static Map<String, File[]> getVersionFilesByProdExtension(File installDir) {
