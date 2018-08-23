@@ -6,10 +6,8 @@
 # http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
-# IBM Corporation - initial API and implementation
-# Add to Include Resource when present
-# We will add this in when it is in maven central
-# @${repo;org.eclipse.microprofile.reactive.streams:microprofile-reactive-streams-operators;1.0;EXACT}
+#    IBM Corporation 
+# This wraps the external JAR.
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -18,11 +16,8 @@ javac.source: 1.8
 javac.target: 1.8
 
 Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0; singleton:=true
-Bundle-Name: MicroProfile Reactive Streams Operators Bundle
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-
-Bundle-License: Eclipse Public License v 1.0
 
 Import-Package: \
   org.reactivestreams; version="[1.0,1.1)", \
@@ -33,11 +28,7 @@ Export-Package: \
   org.eclipse.microprofile.reactive.streams.spi;version=1.0
 
 Include-Resource: \
-
-src: src/main/java
-
--buildpath: \
-  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest
+  @${repo;org.eclipse.microprofile.reactive.streams:microprofile-reactive-streams-operators;1.0}
 
 WS-TraceGroup: REACTIVESTREAMS
 
