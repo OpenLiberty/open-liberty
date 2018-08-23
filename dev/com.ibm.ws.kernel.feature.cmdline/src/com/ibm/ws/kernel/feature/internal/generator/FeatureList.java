@@ -73,25 +73,24 @@ public class FeatureList {
 
         if (writingJavaVersion) {
             // When we add Java 9 we need to add it here and update the 1.6 and 1.7 and 1.8 filters. Need to ensure this is captured in docs.
-            addJVM(possibleJavaVersions, "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
 
-            List<GenericMetadata> mostGeneralRange = ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.6))\"");
+            List<GenericMetadata> mostGeneralRange = ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.7))\"");
 
             eeToCapability.put("J2SE-1.2", mostGeneralRange);
             eeToCapability.put("J2SE-1.3", mostGeneralRange);
             eeToCapability.put("J2SE-1.4", mostGeneralRange);
             eeToCapability.put("JavaSE-1.5", mostGeneralRange);
             eeToCapability.put("JavaSE-1.6", mostGeneralRange);
-            eeToCapability.put("JavaSE-1.7", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.7))\""));
+            eeToCapability.put("JavaSE-1.7", mostGeneralRange);
             eeToCapability.put("JavaSE-1.8", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.8))\""));
         }
     }
 
     /**
      * Constructor.
-     * 
+     *
      * @param options The list of command line options.
      * @param fds The list of features associated with a particular product.
      * @param coreFDs The list of features associated with the core product, or null if
@@ -404,13 +403,12 @@ public class FeatureList {
             }
             for (FeatureResource res : fd.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
                 ProvisioningFeatureDefinition otherFD = mfp.getFeatureDefinitions().get(res.getSymbolicName());
-                // This will NPE when we call getJavaVersion, so fail more helpfully
-                if (otherFD == null)
+                // This will NPE when we call getJavaVersion, so skip
+                if (otherFD != null)
                 {
-                    throw new RuntimeException("Could not find a feature definition for " + res.getSymbolicName());
+                  List<Map<String, Object>> featureSupportedVersion = getJavaVersion(mfp, otherFD);
+                  result.retainAll(featureSupportedVersion);
                 }
-                List<Map<String, Object>> featureSupportedVersion = getJavaVersion(mfp, otherFD);
-                result.retainAll(featureSupportedVersion);
             }
 
             cachedJavaVersionsByFeature.put(fd.getFeatureName(), result);
