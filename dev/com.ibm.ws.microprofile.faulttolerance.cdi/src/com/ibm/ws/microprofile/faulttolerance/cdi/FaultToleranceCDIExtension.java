@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,11 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AfterTypeDiscovery;
 import javax.enterprise.inject.spi.AnnotatedMethod;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -24,6 +26,7 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.WithAnnotations;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.Bulkhead;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
@@ -32,6 +35,7 @@ import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.tx.jta.cdi.interceptors.TransactionalInterceptor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
@@ -47,6 +51,8 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.config.TimeoutConfig;
 public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(FaultToleranceCDIExtension.class);
+
+    private static final String shuffleInterceptorsPropertyName = "com.ibm.ws.microprofile.faulttolerance.before.transactional";
 
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         //register the interceptor binding and in the interceptor itself
@@ -169,5 +175,38 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
                                                  Set<AnnotatedMethod<?>> interceptedMethods) {
         AnnotatedTypeWrapper<T> wrapper = new AnnotatedTypeWrapper<T>(beanManager, processAnnotatedType.getAnnotatedType(), interceptedClass, interceptedMethods);
         processAnnotatedType.setAnnotatedType(wrapper);
+    }
+
+    // Move the FaultToleranceInterceptor up before the Transactional interceptors if required
+    public void afterTypeDiscovery(@Observes AfterTypeDiscovery atd) {
+        if (ConfigProvider.getConfig().getOptionalValue(shuffleInterceptorsPropertyName, Boolean.class).orElse(false)) {
+
+            /* Run along the list of interceptors and find the indices of the first @Transactional one and the Fault Tolerance one */
+            int faultToleranceInterceptorIndex = -1;
+            int transactionalInterceptorIndex = -1;
+            int interceptorIndex = 0;
+            for (Iterator<Class<?>> iterator = atd.getInterceptors().iterator(); iterator.hasNext()
+                                                                                 && !(faultToleranceInterceptorIndex >= 0 && transactionalInterceptorIndex >= 0);) {
+                Class<?> i = iterator.next();
+                if (FaultToleranceInterceptor.class.equals(i)) {
+                    /* Found the Fault Tolerance interceptor */
+                    faultToleranceInterceptorIndex = interceptorIndex;
+                } else if (transactionalInterceptorIndex < 0) {
+                    if (TransactionalInterceptor.class.isAssignableFrom(i)) {
+                        /* Found the first @Transactional interceptor */
+                        transactionalInterceptorIndex = interceptorIndex;
+                    }
+                }
+                interceptorIndex++;
+            }
+
+            /* If we found both types of interceptor we need to move the Fault Tolerance one up before the @Transactional one */
+            if (faultToleranceInterceptorIndex >= 0 && transactionalInterceptorIndex >= 0) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Reordering fault tolerance with respect to @Transactional");
+                Class<?> c = atd.getInterceptors().remove(faultToleranceInterceptorIndex);
+                atd.getInterceptors().add(transactionalInterceptorIndex, c);
+            }
+        }
     }
 }
