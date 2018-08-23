@@ -51,7 +51,7 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
 -bundles=com.ibm.ws.org.jboss.weld.2.4.7, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
- com.ibm.ws.org.jboss.logging.3.3.0, \
+ com.ibm.ws.org.jboss.logging, \
  com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
  com.ibm.ws.cdi.weld, \
  com.ibm.ws.cdi.internal, \
