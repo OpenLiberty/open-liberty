@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.session.async.fat;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
@@ -23,10 +24,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -35,7 +38,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
-@Mode(Mode.TestMode.FULL)
+@Mode(FULL)
+@RunWith(FATRunner.class)
 public class AsyncWarnTest extends FATServletClient {
     public static LibertyServer server;
 

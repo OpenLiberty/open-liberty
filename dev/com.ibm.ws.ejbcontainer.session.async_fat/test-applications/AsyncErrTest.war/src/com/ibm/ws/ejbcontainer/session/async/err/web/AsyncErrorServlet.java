@@ -12,7 +12,6 @@
 package com.ibm.ws.ejbcontainer.session.async.err.web;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
@@ -67,10 +66,6 @@ public class AsyncErrorServlet extends FATServlet {
             // This is the exception associated with CNTR0187E.
         }
 
-        if (bean == null) {
-            assertNull("Application failed to start", bean);
-        } else {
-            fail("Application started");
-        }
+        assertNull("Application should have failed to start, but we successfully looked up the AsyncError1Bean bean", bean);
     }
 }

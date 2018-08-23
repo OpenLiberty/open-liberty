@@ -12,7 +12,6 @@
 package com.ibm.ws.ejbcontainer.session.async.err.web;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.util.logging.Logger;
 
@@ -61,7 +60,6 @@ public class AsyncXMLErrorServlet extends FATServlet {
         NoMethNameXMLLocal bean = null;
 
         try {
-            // bean = lookupBean(NoMethNameXMLLocal.class);
             bean = (NoMethNameXMLLocal) FATHelper.lookupDefaultBindingEJBJavaGlobal(Interface, Application, Module, BeanName);
         }
 
@@ -78,11 +76,7 @@ public class AsyncXMLErrorServlet extends FATServlet {
             }
         }
 
-        if (bean == null) {
-            assertNull("Lookup for bean should fail.", bean);
-        } else {
-            fail("Lookup for bean was successful - this is unexpected");
-        }
+        assertNull("Application should have failed to start, but we successfully looked up the NoMethNameXMLBean bean", bean);
     }
 
     /**
@@ -118,11 +112,7 @@ public class AsyncXMLErrorServlet extends FATServlet {
             }
         }
 
-        if (bean == null) {
-            assertNull("Lookup for bean should fail.", bean);
-        } else {
-            fail("Lookup for bean was successful - this is unexpected");
-        }
+        assertNull("Application should have failed to start, but we successfully looked up the EmptyMethNameXMLBean bean", bean);
     }
 
     /**
@@ -156,10 +146,6 @@ public class AsyncXMLErrorServlet extends FATServlet {
             }
         }
 
-        if (bean == null) {
-            assertNull("Lookup for bean should fail.", bean);
-        } else {
-            fail("Lookup for bean was successful - this is unexpected");
-        }
+        assertNull("Application should have failed to start, but we successfully looked up the Style1XMLwithParamsBean bean", bean);
     }
 }

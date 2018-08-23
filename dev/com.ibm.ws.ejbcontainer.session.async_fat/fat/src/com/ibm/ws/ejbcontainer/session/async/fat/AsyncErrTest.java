@@ -11,6 +11,7 @@
  */
 package com.ibm.ws.ejbcontainer.session.async.fat;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -22,10 +23,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -33,14 +36,15 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
-@Mode(Mode.TestMode.FULL)
+@Mode(FULL)
+@RunWith(FATRunner.class)
 public class AsyncErrTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer"));
 
-    protected void runTest(String servlet) throws Exception {
+    protected void runTest(String servlet, String testName) throws Exception {
         FATServletClient.runTest(server, servlet, testName);
     }
 
@@ -94,7 +98,7 @@ public class AsyncErrTest extends FATServletClient {
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException" })
     public void testNever() throws Exception {
         server.setMarkToEndOfLog();
-        runTest("AsyncErrTest/AsyncErrorServlet");
+        runTest("AsyncErrTest/AsyncErrorServlet", "testNever");
         assertNotNull("Message was not logged: CNTR0187E", server.waitForStringInLogUsingMark("CNTR0187E"));
     }
 
@@ -121,7 +125,7 @@ public class AsyncErrTest extends FATServletClient {
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException" })
     public void testNoMethNameXML() throws Exception {
         server.setMarkToEndOfLog();
-        runTest("AsyncErrTest/AsyncXMLErrorServlet");
+        runTest("AsyncErrTest/AsyncXMLErrorServlet", "testNoMethNameXML");
         assertFalse("Message was not logged: CNTR0203E", server.findStringsInLogsAndTraceUsingMark("CNTR0203E").isEmpty());
     }
 
@@ -133,7 +137,7 @@ public class AsyncErrTest extends FATServletClient {
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException" })
     public void testEmptyMethNameXML() throws Exception {
         server.setMarkToEndOfLog();
-        runTest("AsyncErrTest/AsyncXMLErrorServlet");
+        runTest("AsyncErrTest/AsyncXMLErrorServlet", "testEmptyMethNameXML");
         assertFalse("Message was not logged: CNTR0203E", server.findStringsInLogsAndTraceUsingMark("CNTR0203E").isEmpty());
     }
 
@@ -146,7 +150,7 @@ public class AsyncErrTest extends FATServletClient {
     @ExpectedFFDC({ "com.ibm.ejs.container.EJBConfigurationException" })
     public void testStyle1XMLwithParams() throws Exception {
         server.setMarkToEndOfLog();
-        runTest("AsyncErrTest/AsyncXMLErrorServlet");
+        runTest("AsyncErrTest/AsyncXMLErrorServlet", "testStyle1XMLwithParams");
         assertFalse("Message was not logged: CNTR0204E", server.findStringsInLogsAndTraceUsingMark("CNTR0204E").isEmpty());
     }
 }
