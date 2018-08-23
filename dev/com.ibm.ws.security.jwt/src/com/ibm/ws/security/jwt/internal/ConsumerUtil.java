@@ -594,7 +594,7 @@ public class ConsumerUtil {
         } catch (InvalidJwtSignatureException e) {
             String msg = Tr.formatMessage(tc, "JWT_INVALID_SIGNATURE", new Object[] { e.getLocalizedMessage() });
             throw new InvalidTokenException(msg, e);
-        } catch (Exception e) {
+        } catch (InvalidJwtException e) {
             Throwable cause = getRootCause(e);
             if (cause != null && cause instanceof InvalidKeyException) {
                 throw e;

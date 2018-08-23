@@ -43,7 +43,7 @@ Import-Package: \
 	com.ibm.ws.security.jwt.utils, \
 	com.ibm.ws.webcontainer.security, \
 	javax.management, \
-	org.jose4j.json; version="[0.5,1)", \
+	org.jose4j.*;version="[0.5,1)", \
 	*
 	
     

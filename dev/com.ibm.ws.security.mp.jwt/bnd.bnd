@@ -41,6 +41,7 @@ Import-Package: \
    javax.servlet;version="!", \
    javax.servlet.*;version="!", \
    com.ibm.ws.security.jwt.utils, \
+   org.jose4j.*;version="[0.5,1)", \
    *
 
 Private-Package: \

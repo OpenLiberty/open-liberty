@@ -28,7 +28,7 @@ Import-Package: \
     !*.internal.*, \
     !com.ibm.ws.kernel.boot.cmdline, \
     org.apache.http.*;resolution:=optional, \
-    org.jose4j.json; version="[0.5,1)", \
+    org.jose4j.*; version="[0.5,1)", \
     *
  
 Private-Package: \
