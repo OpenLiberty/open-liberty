@@ -39,6 +39,9 @@ import com.ibm.wsspi.library.Library;
 public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     private static final TraceComponent tc = Tr.register(JAASLoginModuleConfigImpl.class);
 
+    static private boolean isIBMJdk18Lower = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
+    static private boolean isJdk11Up = JavaInfo.majorVersion() >= 11;
+
     public static final String CERTIFICATE = "certificate";
     public static final String HASHTABLE = "hashtable";
     public static final String IDENTITY_ASSERTION = "identityAssertion";
@@ -107,8 +110,8 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
             ClassLoader loader = classLoadingService == null ? null : classLoadingService.getSharedLibraryClassLoader(sharedLibrary);
             Class<?> cl = null;
             try {
-                if (isIBMJDK() || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
-                    //Do not initialize the IBM Krb5LoginModule if we are running with NONE IBM JDK
+                if (isIBMJdk18Lower || !"com.ibm.security.auth.module.Krb5LoginModule".equalsIgnoreCase(target)) {
+                    //Do not initialize the IBM Krb5LoginModule if we are running with IBM JDK 18 or lower
                     cl = Class.forName(target, false, loader);
                 }
             } catch (ClassNotFoundException e) {
@@ -238,10 +241,6 @@ public class JAASLoginModuleConfigImpl implements JAASLoginModuleConfig {
     @Reference
     protected void setClassLoadingSvc(ClassLoadingService classLoadingService) {
         this.classLoadingService = classLoadingService;
-    }
-
-    private static boolean isIBMJDK() {
-        return JavaInfo.vendor() == Vendor.IBM;
     }
 
 }
