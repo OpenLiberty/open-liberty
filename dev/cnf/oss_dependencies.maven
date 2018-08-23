@@ -209,8 +209,8 @@ org.glassfish.jersey.core:jersey-common:2.26
 org.glassfish.jersey.inject:jersey-hk2:2.26
 org.hamcrest:hamcrest-all:1.3
 org.hibernate:hibernate-core:5.2.17.Final
-org.hibernate.validator:hibernate-validator:6.0.9.Final
-org.hibernate.validator:hibernate-validator-cdi:6.0.9.Final
+org.hibernate.validator:hibernate-validator:6.0.12.Final
+org.hibernate.validator:hibernate-validator-cdi:6.0.12.Final
 org.jacoco:org.jacoco.agent:0.7.9
 org.jacoco:org.jacoco.ant:0.7.9
 org.jacoco:org.jacoco.core:0.7.9
