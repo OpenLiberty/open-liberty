@@ -333,9 +333,7 @@ public abstract class ProviderFactory {
                         if (argCls != null && argCls.isAssignableFrom(contextCls)) {
                             List<MediaType> mTypes = JAXRSUtils.getProduceTypes(
                                                                                 cr.getProvider().getClass().getAnnotation(Produces.class));
-                            //Liberty code change begin
                             if (JAXRSUtils.doMimeTypesIntersect(mTypes, type)) {
-                            //Liberty code change end
                                 injectContextValues(cr, m);
                                 candidates.add((ContextResolver<T>) cr.getProvider());
                             }
@@ -1056,9 +1054,7 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderConsumeTypes(ep);
 
-        //Liberty code change begin
         return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
-        //Liberty code change end
     }
 
     private boolean isReadable(ProviderInfo<MessageBodyReader<?>> pi,

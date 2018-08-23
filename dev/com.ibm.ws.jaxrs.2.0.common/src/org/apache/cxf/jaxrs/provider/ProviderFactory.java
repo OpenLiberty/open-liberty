@@ -366,9 +366,7 @@ public abstract class ProviderFactory {
                         if (argCls != null && argCls.isAssignableFrom(contextCls)) {
                             List<MediaType> mTypes = JAXRSUtils.getProduceTypes(
                                                                                 cr.getProvider().getClass().getAnnotation(Produces.class));
-                            //Liberty code change begin
                             if (JAXRSUtils.doMimeTypesIntersect(mTypes, type)) {
-                            //Liberty code change end
                                 injectContextValues(cr, m);
                                 candidates.add((ContextResolver<T>) cr.getProvider());
                             }
@@ -1081,9 +1079,7 @@ public abstract class ProviderFactory {
         MessageBodyReader<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderConsumeTypes(ep);
 
-        //Liberty code change begin
         return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
-        //Liberty code change end
     }
 
     private boolean isReadable(ProviderInfo<MessageBodyReader<?>> pi,
@@ -1125,9 +1121,7 @@ public abstract class ProviderFactory {
                                                 MediaType mediaType) {
         MessageBodyWriter<?> ep = pi.getProvider();
         List<MediaType> supportedMediaTypes = JAXRSUtils.getProviderProduceTypes(ep);
-        //Liberty code change begin
         return JAXRSUtils.doMimeTypesIntersect(Collections.singletonList(mediaType), supportedMediaTypes);
-        //Liberty code change end
     }
 
     private boolean isWriteable(ProviderInfo<MessageBodyWriter<?>> pi,
@@ -1466,7 +1460,7 @@ public abstract class ProviderFactory {
         if (Object.class == cls) {
             return emptyType;
         }
-        Type[] cachedTypes = getTypes(cls, expectedClass);
+        Type[] cachedTypes = getTypes(cls, expectedClass, commonBaseCls);
         if (cachedTypes != null)
             return cachedTypes;
         if (expectedClass != null) {
@@ -1475,24 +1469,24 @@ public abstract class ProviderFactory {
                 Class<?> actualType = InjectionUtils.getActualType(genericSuperType);
                 if (actualType != null && actualType.isAssignableFrom(expectedClass)) {
                     Type[] tempTypes = new Type[] { genericSuperType };
-                    putTypes(cls, expectedClass, tempTypes);
+                    putTypes(cls, expectedClass, commonBaseCls, tempTypes);
                     return tempTypes;
                 } else if (commonBaseCls != null && commonBaseCls != Object.class
                            && commonBaseCls.isAssignableFrom(expectedClass)
                            && commonBaseCls.isAssignableFrom(actualType)
                            || expectedClass.isAssignableFrom(actualType)) {
-                    putTypes(cls, expectedClass, emptyType);
+                    putTypes(cls, expectedClass, commonBaseCls, emptyType);
                     return emptyType;
                 }
             }
         }
         Type[] types = cls.getGenericInterfaces();
         if (types.length > 0) {
-            putTypes(cls, expectedClass, types);
+            putTypes(cls, expectedClass, commonBaseCls, types);
             return types;
         }
         Type[] superGenericTypes = getGenericInterfaces(cls.getSuperclass(), expectedClass, commonBaseCls);
-        putTypes(cls, expectedClass, superGenericTypes);
+        putTypes(cls, expectedClass, commonBaseCls, superGenericTypes);
         return superGenericTypes;
     }
 
@@ -1819,9 +1813,9 @@ public abstract class ProviderFactory {
         }
     }
 
-    private static Type[] getTypes(Class<?> cls, Class<?> expectedCls) {
+    private static Type[] getTypes(Class<?> cls, Class<?> expectedCls, Class<?> commonBaseCls) {
         poll();
-        return genericInterfacesCache.get(new ClassesKey(cls, expectedCls));
+        return genericInterfacesCache.get(new ClassesKey(cls, expectedCls, commonBaseCls));
     }
 
     /**
@@ -1833,9 +1827,9 @@ public abstract class ProviderFactory {
      * @param expectedCls
      * @param types
      */
-    private static void putTypes(Class<?> cls, Class<?> expectedCls, Type[] types) {
+    private static void putTypes(Class<?> cls, Class<?> expectedCls, Class<?> commonBaseCls, Type[] types) {
         poll();
-        genericInterfacesCache.put(new ClassesKey(referenceQueue, cls, expectedCls), types);
+        genericInterfacesCache.put(new ClassesKey(referenceQueue, cls, expectedCls, commonBaseCls), types);
     }
 
     private static class ClassesKey {

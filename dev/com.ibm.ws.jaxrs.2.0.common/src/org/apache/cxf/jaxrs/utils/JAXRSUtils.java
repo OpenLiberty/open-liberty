@@ -563,7 +563,7 @@ public final class JAXRSUtils {
         return logLevel;
     }
 
-    public static List<MediaType> intersectSortMediaTypes(List<MediaType> acceptTypes,
+    private static List<MediaType> intersectSortMediaTypes(List<MediaType> acceptTypes,
                                                           List<MediaType> producesTypes,
                                                           final boolean checkDistance) {
         List<MediaType> all = intersectMimeTypes(acceptTypes, producesTypes, true, checkDistance);
@@ -1488,28 +1488,19 @@ public final class JAXRSUtils {
 
     public static boolean matchConsumeTypes(MediaType requestContentType,
                                             OperationResourceInfo ori) {
-
-        // Liberty change begin
         return doMimeTypesIntersect(ori.getConsumeTypes(), requestContentType);
-        // Liberty change end
     }
 
     public static boolean matchProduceTypes(MediaType acceptContentType,
                                             OperationResourceInfo ori) {
-
-        // Liberty change begin
         return doMimeTypesIntersect(ori.getProduceTypes(), acceptContentType);
-        // Liberty change end
     }
 
     public static boolean matchMimeTypes(MediaType requestContentType,
                                          MediaType acceptContentType,
                                          OperationResourceInfo ori) {
-
-        // Liberty change begin
-        return doMimeTypesIntersect(ori.getConsumeTypes(), requestContentType) &&
-               doMimeTypesIntersect(ori.getProduceTypes(), acceptContentType);
-        // Liberty change end
+        return doMimeTypesIntersect(ori.getConsumeTypes(), requestContentType)
+                && doMimeTypesIntersect(ori.getProduceTypes(), acceptContentType);
     }
 
     public static List<MediaType> parseMediaTypes(String types) {
@@ -1534,41 +1525,15 @@ public final class JAXRSUtils {
         return acceptValues;
     }
 
-    // Liberty change begin
-    public static boolean doMimeTypesIntersect(List<MediaType> requiredMediaTypes,
-                                               List<MediaType> userMediaTypes) {
-        for (MediaType requiredType : requiredMediaTypes) {
-            for (MediaType userType : userMediaTypes) {
-                boolean isCompatible = isMediaTypeCompatible(requiredType, userType);
-                if (isCompatible) {
-                    boolean parametersMatched = true;
-                    for (Map.Entry<String, String> entry : userType.getParameters().entrySet()) {
-                        String value = requiredType.getParameters().get(entry.getKey());
-                        if (value != null && entry.getValue() != null
-                            && !(stripDoubleQuotesIfNeeded(value).equals(stripDoubleQuotesIfNeeded(entry.getValue())))) {
-                            if (HTTP_CHARSET_PARAM.equals(entry.getKey())
-                                && value.equalsIgnoreCase(entry.getValue())) {
-                                continue;
-                            }
-                            parametersMatched = false;
-                            break;
-                        }
-                    }
-                    if (!parametersMatched) {
-                        continue;
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-
-    }
-
     public static boolean doMimeTypesIntersect(List<MediaType> mimeTypesA, MediaType mimeTypeB) {
         return doMimeTypesIntersect(mimeTypesA, Collections.singletonList(mimeTypeB));
+                            }
+
+    public static boolean doMimeTypesIntersect(List<MediaType> requiredMediaTypes, List<MediaType> userMediaTypes) {
+        final NonAccumulatingIntersector intersector = new NonAccumulatingIntersector();
+        intersectMimeTypes(requiredMediaTypes, userMediaTypes, intersector);
+        return intersector.doIntersect();
     }
-    // Liberty change end
 
     /**
      * intersect two mime types
@@ -1587,7 +1552,8 @@ public final class JAXRSUtils {
                                                      List<MediaType> userMediaTypes,
                                                      boolean addRequiredParamsIfPossible,
                                                      boolean addDistanceParameter) {
-        final AccumulatingIntersector intersector = new AccumulatingIntersector(addRequiredParamsIfPossible, addDistanceParameter);
+        final AccumulatingIntersector intersector = new AccumulatingIntersector(addRequiredParamsIfPossible,
+                addDistanceParameter);
         intersectMimeTypes(requiredMediaTypes, userMediaTypes, intersector);
         return new ArrayList<>(intersector.getSupportedMimeTypeList());
     }
@@ -1602,7 +1568,8 @@ public final class JAXRSUtils {
                     boolean parametersMatched = true;
                     for (Map.Entry<String, String> entry : userType.getParameters().entrySet()) {
                         String value = requiredType.getParameters().get(entry.getKey());
-                        if (value != null && entry.getValue() != null && !(stripDoubleQuotesIfNeeded(value).equals(stripDoubleQuotesIfNeeded(entry.getValue())))) {
+                        if (value != null && entry.getValue() != null && !(stripDoubleQuotesIfNeeded(value)
+                                .equals(stripDoubleQuotesIfNeeded(entry.getValue())))) {
 
                             if (HTTP_CHARSET_PARAM.equals(entry.getKey()) && value.equalsIgnoreCase(entry.getValue())) {
                                 continue;
@@ -1631,7 +1598,7 @@ public final class JAXRSUtils {
         return value;
     }
 
-    public static boolean isMediaTypeCompatible(MediaType requiredType, MediaType userType) {
+    private static boolean isMediaTypeCompatible(MediaType requiredType, MediaType userType) {
         boolean isCompatible = requiredType.isCompatible(userType);
         if (!isCompatible && requiredType.getType().equalsIgnoreCase(userType.getType())) {
             isCompatible = compareCompositeSubtypes(requiredType, userType,

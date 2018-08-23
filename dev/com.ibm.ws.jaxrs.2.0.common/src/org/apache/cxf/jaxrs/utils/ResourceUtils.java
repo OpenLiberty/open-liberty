@@ -882,7 +882,6 @@ public final class ResourceUtils {
                                                       Message m,
                                                       boolean perRequest,
                                                       Map<Class<?>, Object> contextValues) {
-        // Liberty Change for CXF Begin
         Class<?>[] params = c.getParameterTypes();
         Annotation[][] anns = c.getParameterAnnotations();
         Type[] genericTypes = c.getGenericParameterTypes();
@@ -892,14 +891,14 @@ public final class ResourceUtils {
     public static Object[] createConstructorArguments(Constructor<?> c,
                                                       Message m,
                                                       boolean perRequest,
-                                                      Map<Class<?>, Object> contextValues,
+                                                      Map<Class<?>,
+                                                      Object> contextValues,
                                                       Class<?>[] params,
                                                       Annotation[][] anns,
                                                       Type[] genericTypes) {
         if (m == null) {
             m = new MessageImpl();
         }
-        // Liberty Change for CXF End
         @SuppressWarnings("unchecked")
         MultivaluedMap<String, String> templateValues =
             (MultivaluedMap<String, String>)m.get(URITemplate.TEMPLATE_PARAMETERS);
@@ -960,6 +959,7 @@ public final class ResourceUtils {
                 }
             }
         }
+
         // we can get either a provider or resource class here
         for (Object o : singletons) {
             if (isValidProvider(o.getClass())) {
@@ -976,6 +976,7 @@ public final class ResourceUtils {
         if (bus != null) {
             bean.setBus(bus);
         }
+
         String address = "/";
         if (!ignoreAppPath) {
             ApplicationPath appPath = locateApplicationPath(app.getClass());
