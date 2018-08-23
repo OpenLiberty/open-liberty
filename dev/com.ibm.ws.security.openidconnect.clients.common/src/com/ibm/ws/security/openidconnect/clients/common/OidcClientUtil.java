@@ -352,7 +352,7 @@ public class OidcClientUtil {
     }
 
     // set the code cookie during authentication
-    public void setCookieForRequestParameter(HttpServletRequest request, HttpServletResponse response, String id, String state, boolean isHttpsRequest, ConvergedClientConfig clientCfg) {
+    public static void setCookieForRequestParameter(HttpServletRequest request, HttpServletResponse response, String id, String state, boolean isHttpsRequest, ConvergedClientConfig clientCfg) {
         //OidcClientConfigImpl clientCfg = activatedOidcClientImpl.getOidcClientConfig(request, id);
         Map<String, String[]> map = request.getParameterMap(); // at least it gets state parameter
         JsonObject jsonObject = new JsonObject();
@@ -371,23 +371,42 @@ public class OidcClientUtil {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "requestParameters:" + requestParameters);
         }
-        // digest with the client_secret value
-        String digestValue = HashUtils.digest(requestParameters + clientCfg.getClientSecret());
-        String hashReqParams = requestParameters + digestValue;
         String encodedReqParams = null;
         try {
-            encodedReqParams = Base64Coder.toString(Base64Coder.base64Encode(hashReqParams.getBytes(ClientConstants.CHARSET)));
+            encodedReqParams = Base64Coder.toString(Base64Coder.base64Encode(requestParameters.getBytes(ClientConstants.CHARSET)));
         } catch (UnsupportedEncodingException e) {
             //This should not happen, we are using UTF-8
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "get unexpected exception", e);
             }
         }
-
-        Cookie c = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams, request);
+        
+        String encodedHash = null;
+        if (encodedReqParams != null) {
+            encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg.getClientSecret());
+        }
+        Cookie c = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_CODE, encodedHash, request);
         if (clientCfg.isHttpsRequired() && isHttpsRequest) {
             c.setSecure(true);
         }
         response.addCookie(c);
+    }
+
+    /**
+     * @param encodedReqParams
+     * @param clientSecret
+     * @return
+     */
+    public static String calculateOidcCodeCookieValue(String encoded, String secret) {
+        
+        String retVal = new String(encoded);
+
+        if (secret != null && secret.length() > 0) {
+          String tmpStr = new String(encoded);
+          tmpStr = tmpStr.concat("_").concat(secret);   
+          retVal = retVal.concat("_").concat(HashUtils.digest(tmpStr));   // digest encoded request params and client_secret
+        }
+       
+        return retVal;
     }
 }
