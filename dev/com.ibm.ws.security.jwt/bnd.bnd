@@ -58,7 +58,7 @@ Import-Package: \
     com.ibm.wsspi.kernel.service.utils, \
     com.ibm.websphere.kernel.server, \
     org.osgi.framework.wiring, \
-    org.jose4j.*; version="[0.5,1)" \
+    org.jose4j.*;version="[0.5,1)", \
     org.apache.commons.codec.binary, \
     javax.management, \
     javax.servlet, \
