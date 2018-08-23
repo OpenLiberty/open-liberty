@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.cdi;
+package com.ibm.ws.microprofile.faulttolerance11.cdi;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 import static org.osgi.service.component.annotations.ReferenceCardinality.MANDATORY;
