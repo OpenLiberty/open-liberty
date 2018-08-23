@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ WS-TraceGroup: FAULTTOLERANCE
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
+	com.ibm.ws.transaction.cdi;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
