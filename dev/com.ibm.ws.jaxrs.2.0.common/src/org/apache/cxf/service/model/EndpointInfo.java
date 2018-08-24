@@ -32,6 +32,8 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     ServiceInfo service;
     BindingInfo binding;
     QName name;
+    private volatile EndpointReferenceType lastAddressSet; //Liberty: Maintain last address set for when threadlocal value may be null.
+    
     // Liberty #3669:  Store address in a theadLocal to avoid issue where redirected URL is mismatched when accessed 
     // from both IP address and machine name.
     private static ThreadLocal<EndpointReferenceType> threadLocal = new ThreadLocal<EndpointReferenceType>();
@@ -92,6 +94,9 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     
     public String getAddress() {
         EndpointReferenceType address = threadLocal.get(); //Liberty #3669
+        if (address == null) {
+            address = lastAddressSet; //Liberty
+        }
         return (null != address && null != address.getAddress()) ? address.getAddress().getValue() : null;
     }
     
@@ -103,10 +108,12 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
         } else {
             EndpointReferenceUtils.setAddress(address, addr);
         }
+        lastAddressSet = address; //Liberty 
     }
     
     public void setAddress(EndpointReferenceType endpointReference) {
         threadLocal.set(endpointReference);  //Liberty #3669
+        lastAddressSet = endpointReference; //Liberty
     }
     
     //When finished the threadlocal must be cleared. //Liberty #3669
@@ -137,6 +144,9 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
 
     public EndpointReferenceType getTarget() {
         EndpointReferenceType address = threadLocal.get();   //Liberty #3669
+        if (address == null) {
+            address = lastAddressSet;   //Liberty
+        }
         return address;
     }
 
