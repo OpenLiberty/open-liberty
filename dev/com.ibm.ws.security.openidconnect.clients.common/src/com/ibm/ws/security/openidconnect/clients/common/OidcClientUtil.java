@@ -383,7 +383,7 @@ public class OidcClientUtil {
         
         String encodedHash = null;
         if (encodedReqParams != null) {
-            encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg.getClientSecret());
+            encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
         }
         Cookie c = OidcClientUtil.createCookie(ClientConstants.WAS_OIDC_CODE, encodedHash, request);
         if (clientCfg.isHttpsRequired() && isHttpsRequest) {
@@ -397,15 +397,17 @@ public class OidcClientUtil {
      * @param clientSecret
      * @return
      */
-    public static String calculateOidcCodeCookieValue(String encoded, String secret) {
+    public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
         
         String retVal = new String(encoded);
-
-        if (secret != null && secret.length() > 0) {
-          String tmpStr = new String(encoded);
-          tmpStr = tmpStr.concat("_").concat(secret);   
-          retVal = retVal.concat("_").concat(HashUtils.digest(tmpStr));   // digest encoded request params and client_secret
+        String clientidsecret = clientCfg.getClientId();
+        if (clientCfg.getClientSecret() != null) {
+            clientidsecret = clientidsecret.concat(clientCfg.getClientSecret());
         }
+        
+        String tmpStr = new String(encoded);
+        tmpStr = tmpStr.concat("_").concat(clientidsecret);   
+        retVal = retVal.concat("_").concat(HashUtils.digest(tmpStr));   // digest encoded request params and clientid+client_secret
        
         return retVal;
     }

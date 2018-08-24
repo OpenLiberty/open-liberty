@@ -223,7 +223,7 @@ public class OIDCClientAuthenticatorUtilTest {
 
         // digest with the client_secret value
         String tmpStr = new String(localEncoded);
-        tmpStr = tmpStr.concat("_").concat(clientSecret);
+        tmpStr = tmpStr.concat("_").concat(CLIENTID+clientSecret);
         
         encodedReqParams = new String(localEncoded).concat("_").concat(HashUtils.digest(tmpStr));   
         reqParameterCookie = new Cookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams);
@@ -235,8 +235,10 @@ public class OIDCClientAuthenticatorUtilTest {
         createReqCookie();
         mock.checking(new Expectations() {
             {
-                one(convClientConfig).getClientSecret();
+                allowing(convClientConfig).getClientSecret();
                 will(returnValue(clientSecret));
+                allowing(convClientConfig).getClientId();
+                will(returnValue(CLIENTID));
             }
         });
 

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -546,40 +546,32 @@ public class OIDCClientAuthenticatorUtil {
         boolean validCookie = true;
         String encoded = null;
         String cookieName = "WASOidcCode";
-//        String decodedReqParams = Base64Coder.toString(Base64Coder.base64DecodeString(encodedReqParams));
-
         String requestParameters = null;
+        
         try {
             int lastindex = cookieValue.lastIndexOf("_");
             if (lastindex < 1) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "The cookie may have been tampered with.");
-                    if (lastindex < 0) Tr.debug(tc,"The cookie does not contain an underscore.");
-                    if (lastindex == 0) Tr.debug(tc,"The cookie does not contain a value before the underscore.");
+                    if (lastindex < 0) {
+                        Tr.debug(tc, "The cookie does not contain an underscore.");
+                    }
+                    if (lastindex == 0) {
+                        Tr.debug(tc, "The cookie does not contain a value before the underscore.");
+                    }
                 }
                 return false;
             }
             encoded = cookieValue.substring(0, lastindex);
-            String testCookie = OidcClientUtil.calculateOidcCodeCookieValue(encoded, clientConfig.getClientSecret());
-            
+            String testCookie = OidcClientUtil.calculateOidcCodeCookieValue(encoded, clientConfig);
+
             if (!cookieValue.equals(testCookie)) {
-                String msg = "The value for the OIDC state cookie ["+cookieName+"] failed validation.";
+                String msg = "The value for the OIDC state cookie [" + cookieName + "] failed validation.";
                 if (tc.isDebugEnabled()) {
-                  Tr.debug(tc,msg);
+                    Tr.debug(tc, msg);
                 }
                 validCookie = false;
             }
-            
-            //String digestCode = decodedReqParams.substring(iAfterLastBrace);
-            //requestParameters = decodedReqParams.substring(0, iAfterLastBrace);
-            // digest with the client_secret value
-            //String newDigestCode = HashUtils.digest(requestParameters + clientConfig.getClientSecret());
-            //validCookie = digestCode.equals(newDigestCode);
-//            if (!validCookie) {
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "newHashCode:" + newDigestCode);
-//                }
-//            }
         } catch (IndexOutOfBoundsException e) {
             // anything wrong indicated the requestParameter cookie is not right or is not in right format
             validCookie = false;
