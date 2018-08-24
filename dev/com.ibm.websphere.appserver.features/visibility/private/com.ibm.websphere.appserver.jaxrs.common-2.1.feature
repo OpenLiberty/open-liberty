@@ -18,8 +18,8 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.websphere.appserver.internal.cxf.common-3.2
 -bundles=\
  com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
- com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/",\
- com.ibm.websphere.javaee.jws.1.0; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/",\
+ com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
+ com.ibm.websphere.javaee.jws.1.0; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
  com.ibm.ws.jaxrs.2.1.common, \
  com.ibm.ws.jaxrs.2.x.config, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2, \

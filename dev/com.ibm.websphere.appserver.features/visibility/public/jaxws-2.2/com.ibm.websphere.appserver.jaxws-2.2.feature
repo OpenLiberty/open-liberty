@@ -4,9 +4,9 @@ visibility=public
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-API-Package: \
- javax.jws; type="spec"; require-osgi-ee="9", \
- javax.jws.soap; type="spec"; require-osgi-ee="9", \
- javax.xml.soap; type="spec"; require-osgi-ee="9", \
+ javax.jws; type="spec"; require-java:="9", \
+ javax.jws.soap; type="spec"; require-java:="9", \
+ javax.xml.soap; type="spec"; require-java:="9", \
  javax.xml.ws.handler; type="spec", \
  javax.xml.ws.http; type="spec", \
  javax.xml.ws.spi; type="spec", \
@@ -51,7 +51,7 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.cxf-rt-ws-addr.2.6.2, \
  com.ibm.ws.jaxws.common, \
  com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
- com.ibm.websphere.javaee.jws.1.0; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/",\
+ com.ibm.websphere.javaee.jws.1.0; require-java:="9"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.jws:jsr181-api:1.0-MR1",\
  com.ibm.ws.jaxws.tools.2.2.10, \
  com.ibm.ws.org.apache.cxf-rt-frontend-simple.2.6.2, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \

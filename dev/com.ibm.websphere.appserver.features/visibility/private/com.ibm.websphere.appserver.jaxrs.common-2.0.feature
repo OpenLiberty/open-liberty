@@ -22,8 +22,8 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.json-1.0
 -bundles=\
- com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/",\
- com.ibm.websphere.javaee.jws.1.0; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/",\
+ com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
+ com.ibm.websphere.javaee.jws.1.0; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
  com.ibm.ws.org.apache.xml.resolver.1.2, \
  com.ibm.ws.org.apache.neethi.3.0.2, \
  com.ibm.ws.jaxrs.2.0.common, \

@@ -365,7 +365,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
                 for (NameValuePair nvp : ManifestHeaderProcessor.parseExportString(packages)) {
                     String packageName = nvp.getName();
                     String type = nvp.getAttributes().get("type");
-                    String requireOsgiEE = nvp.getAttributes().get("require-osgi-ee");
+                    String requireOsgiEE = nvp.getAttributes().get("require-java:");
 
                     // If the Java requirements are not met for exposing this package, do not add the package
                     if (requireOsgiEE != null && JavaInfo.majorVersion() < Integer.parseInt(requireOsgiEE))

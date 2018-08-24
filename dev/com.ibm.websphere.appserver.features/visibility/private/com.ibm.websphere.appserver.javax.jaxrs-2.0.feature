@@ -11,8 +11,8 @@ Subsystem-Name: Java RESTful Services API 2.0
   com.ibm.websphere.appserver.javaeeCompatible-7.0
 -bundles=\
   com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
-  com.ibm.websphere.javaee.activation.1.1; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.activation:activation:1.1",\
-  com.ibm.websphere.javaee.jaxb.2.2; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.bind:jaxb-api:2.2.12", \
+  com.ibm.websphere.javaee.activation.1.1; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false,\
+  com.ibm.websphere.javaee.jaxb.2.2; require-java:="9"; location:="dev/api/spec/,lib/"; apiJar=false, \
   com.ibm.websphere.javaee.jaxrs.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.ws.rs:javax.ws.rs-api:2.0.1"
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jaxrs20_1.0-javadoc.zip
 kind=ga
