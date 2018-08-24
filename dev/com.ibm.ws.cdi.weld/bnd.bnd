@@ -86,6 +86,8 @@ Import-Package: !org.scannotation.archiveiterator, \
                 org.jboss.weld.serialization.spi;version="[2.4,4)",\
                 org.jboss.weld.transaction.spi;version="[2.4,4)",\
                 org.jboss.weld.util.collections;version="[2.4,4)",\
+                com.google.common.*;version="[14.0,30)",\
+                com.google.thirdparty.*;version="[14.0,30)",\
                 *
  
 WS-TraceGroup: JCDI
