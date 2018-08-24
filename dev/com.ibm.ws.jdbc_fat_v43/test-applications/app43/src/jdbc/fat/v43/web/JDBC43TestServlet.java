@@ -27,8 +27,10 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
+@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JDBC43TestServlet")
 public class JDBC43TestServlet extends FATServlet {
+
     @Resource
     DataSource defaultDataSource;
 
