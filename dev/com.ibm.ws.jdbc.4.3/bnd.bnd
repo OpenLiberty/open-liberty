@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-#TODO update to Java 11 once available
+#TODO update to Java 9 once available
 javac.source: 1.8
 javac.target: 1.8
 
@@ -21,12 +21,17 @@ Bundle-Description: Database connectivity infrastructure, version ${bVersion}
 
 WS-TraceGroup: RRA
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=9))"
 
 Export-Package: \
   com.ibm.ws.rsadapter.jdbc.v43
   
 instrument.disabled: true
+  
+# TODO: remove bootcp override once javac.source is set to '9'
+-buildpath.bootclasspath: \
+    lib/java.sql.4.3.jar;version=file;boot=true,\
+    ${javac.bootclasspath.${javac.source}}
   
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\

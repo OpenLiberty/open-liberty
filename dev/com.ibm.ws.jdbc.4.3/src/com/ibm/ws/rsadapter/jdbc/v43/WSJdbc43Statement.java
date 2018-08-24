@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.jdbc.v43;
 
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.ibm.websphere.ras.Tr;
@@ -31,5 +32,33 @@ public class WSJdbc43Statement extends WSJdbc42Statement implements Statement {
 
     public WSJdbc43Statement(Statement stmtImplObject, WSJdbcConnection connWrapper, int theHoldability) {
         super(stmtImplObject, connWrapper, theHoldability);
+    }
+
+    @Override
+    public String enquoteLiteral(String val) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String enquoteIdentifier(String identifier, boolean alwaysQuote) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isSimpleIdentifier(String identifier) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String enquoteNCharLiteral(String val) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
     }
 }
