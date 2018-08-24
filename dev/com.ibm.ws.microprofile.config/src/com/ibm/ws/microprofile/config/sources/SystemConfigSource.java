@@ -40,7 +40,9 @@ public class SystemConfigSource extends InternalConfigSource implements StaticCo
         Properties sysProps = getSystemProperties();
         Set<String> keys = sysProps.stringPropertyNames();
         for (String key : keys) {
-            props.put(key, sysProps.getProperty(key));
+            if (key != null) {
+                props.put(key, sysProps.getProperty(key));
+            }
         }
 
         return props;
