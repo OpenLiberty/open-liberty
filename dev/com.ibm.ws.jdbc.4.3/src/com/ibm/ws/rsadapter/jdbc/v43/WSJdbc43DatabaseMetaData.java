@@ -21,4 +21,10 @@ public class WSJdbc43DatabaseMetaData extends WSJdbc42DatabaseMetaData implement
     public WSJdbc43DatabaseMetaData(DatabaseMetaData metaDataImpl, WSJdbcConnection connWrapper) throws SQLException {
         super(metaDataImpl, connWrapper);
     }
+
+    @Override
+    public boolean supportsSharding() throws SQLException {
+        throw new UnsupportedOperationException();
+    }
+
 }

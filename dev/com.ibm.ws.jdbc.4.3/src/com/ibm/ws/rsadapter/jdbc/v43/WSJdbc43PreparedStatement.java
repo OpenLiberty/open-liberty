@@ -41,4 +41,32 @@ public class WSJdbc43PreparedStatement extends WSJdbc42PreparedStatement impleme
                                      StatementCacheKey pstmtKey) throws SQLException {
         super(pstmtImplObject, connWrapper, theHoldability, pstmtSQL, pstmtKey);
     }
+
+    @Override
+    public String enquoteLiteral(String val) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String enquoteIdentifier(String identifier, boolean alwaysQuote) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isSimpleIdentifier(String identifier) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String enquoteNCharLiteral(String val) throws SQLException {
+        // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
+        // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
+        throw new UnsupportedOperationException();
+    }
 }

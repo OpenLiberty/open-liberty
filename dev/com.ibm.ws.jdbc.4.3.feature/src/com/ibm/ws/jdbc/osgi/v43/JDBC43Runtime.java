@@ -51,6 +51,11 @@ public class JDBC43Runtime implements JDBCRuntimeVersion {
     }
 
     @Override
+    public WSJdbcConnection newConnection(WSRdbManagedConnectionImpl mc, Connection conn, Object key, Object currentThreadID) {
+        return new WSJdbc43Connection(mc, conn, key, currentThreadID);
+    }
+
+    @Override
     public WSJdbcDatabaseMetaData newDatabaseMetaData(DatabaseMetaData metaDataImpl,
                                                       WSJdbcConnection connWrapper) throws SQLException {
         return new WSJdbc43DatabaseMetaData(metaDataImpl, connWrapper);
@@ -95,11 +100,6 @@ public class JDBC43Runtime implements JDBCRuntimeVersion {
     @Override
     public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage) {
         return new BatchUpdateException(newMessage, copyFrom.getSQLState(), copyFrom.getErrorCode(), copyFrom.getLargeUpdateCounts(), null);
-    }
-
-    @Override
-    public WSJdbcConnection newConnection(WSRdbManagedConnectionImpl mc, Connection conn, Object key, Object currentThreadID) {
-        return new WSJdbc43Connection(mc, conn, key, currentThreadID);
     }
 
     @Override
