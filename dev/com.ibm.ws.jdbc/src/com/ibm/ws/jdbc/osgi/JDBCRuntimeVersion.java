@@ -42,6 +42,7 @@ public interface JDBCRuntimeVersion {
     public static final Version VERSION_4_0 = new Version(4, 0, 0);
     public static final Version VERSION_4_1 = new Version(4, 1, 0);
     public static final Version VERSION_4_2 = new Version(4, 2, 0);
+    public static final Version VERSION_4_3 = new Version(4, 3, 0);
 
     public Version getVersion();
 
