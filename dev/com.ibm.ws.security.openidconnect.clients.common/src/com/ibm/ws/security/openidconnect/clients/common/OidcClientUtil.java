@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -380,7 +380,7 @@ public class OidcClientUtil {
                 Tr.debug(tc, "get unexpected exception", e);
             }
         }
-        
+
         String encodedHash = null;
         if (encodedReqParams != null) {
             encodedHash = calculateOidcCodeCookieValue(encodedReqParams, clientCfg);
@@ -398,17 +398,17 @@ public class OidcClientUtil {
      * @return
      */
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
-        
+
         String retVal = new String(encoded);
-        String clientidsecret = clientCfg.getClientId();
+        String clientidsecret = clientCfg.getClass().getName(); //TODO: we should use client id here
         if (clientCfg.getClientSecret() != null) {
             clientidsecret = clientidsecret.concat(clientCfg.getClientSecret());
         }
-        
+
         String tmpStr = new String(encoded);
-        tmpStr = tmpStr.concat("_").concat(clientidsecret);   
-        retVal = retVal.concat("_").concat(HashUtils.digest(tmpStr));   // digest encoded request params and clientid+client_secret
-       
+        tmpStr = tmpStr.concat("_").concat(clientidsecret);
+        retVal = retVal.concat("_").concat(HashUtils.digest(tmpStr)); // digest encoded request params and clientid+client_secret
+
         return retVal;
     }
 }

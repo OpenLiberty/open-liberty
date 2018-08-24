@@ -223,7 +223,7 @@ public class OIDCClientAuthenticatorUtilTest {
 
         // digest with the client_secret value
         String tmpStr = new String(localEncoded);
-        tmpStr = tmpStr.concat("_").concat(CLIENTID+clientSecret);
+        tmpStr = tmpStr.concat("_").concat(convClientConfig.getClass().getName()+clientSecret);
         
         encodedReqParams = new String(localEncoded).concat("_").concat(HashUtils.digest(tmpStr));   
         reqParameterCookie = new Cookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams);
