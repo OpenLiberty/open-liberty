@@ -25,6 +25,7 @@ import javax.security.auth.login.CredentialExpiredException;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.ServiceReference;
@@ -567,7 +568,10 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
             }
 
-            extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            if (req != null) {
+                HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(req);
+                extraAuditData.put("HTTP_SERVLET_REQUEST", wrapper);
+            }
             //auditManager.setHttpServletRequest(req);
             performDelegation(servletName);
 
