@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -542,24 +542,35 @@ public class OIDCClientAuthenticatorUtil {
      * @return
      */
     @FFDCIgnore({ IndexOutOfBoundsException.class })
-    public boolean validateReqParameters(ConvergedClientConfig clientConfig, Hashtable<String, String> reqParameters, String encodedReqParams) {
+    public boolean validateReqParameters(ConvergedClientConfig clientConfig, Hashtable<String, String> reqParameters, String cookieValue) {
         boolean validCookie = true;
-        String decodedReqParams = Base64Coder.toString(Base64Coder.base64DecodeString(encodedReqParams));
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "decodedRequestParameters:" + decodedReqParams);
-        }
+        String encoded = null;
+        String cookieName = "WASOidcCode";
         String requestParameters = null;
+        
         try {
-            int iAfterLastBrace = decodedReqParams.lastIndexOf("}") + 1;
-            String digestCode = decodedReqParams.substring(iAfterLastBrace);
-            requestParameters = decodedReqParams.substring(0, iAfterLastBrace);
-            // digest with the client_secret value
-            String newDigestCode = HashUtils.digest(requestParameters + clientConfig.getClientSecret());
-            validCookie = digestCode.equals(newDigestCode);
-            if (!validCookie) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "newHashCode:" + newDigestCode);
+            int lastindex = cookieValue.lastIndexOf("_");
+            if (lastindex < 1) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The cookie may have been tampered with.");
+                    if (lastindex < 0) {
+                        Tr.debug(tc, "The cookie does not contain an underscore.");
+                    }
+                    if (lastindex == 0) {
+                        Tr.debug(tc, "The cookie does not contain a value before the underscore.");
+                    }
                 }
+                return false;
+            }
+            encoded = cookieValue.substring(0, lastindex);
+            String testCookie = OidcClientUtil.calculateOidcCodeCookieValue(encoded, clientConfig);
+
+            if (!cookieValue.equals(testCookie)) {
+                String msg = "The value for the OIDC state cookie [" + cookieName + "] failed validation.";
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, msg);
+                }
+                validCookie = false;
             }
         } catch (IndexOutOfBoundsException e) {
             // anything wrong indicated the requestParameter cookie is not right or is not in right format
@@ -570,6 +581,10 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         if (validCookie) {
+            requestParameters = Base64Coder.toString(Base64Coder.base64DecodeString(encoded));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "decodedRequestParameters:" + requestParameters);
+            }
             JsonParser parser = new JsonParser();
             JsonObject jsonObject = (JsonObject) parser.parse(requestParameters);
             Set<Map.Entry<String, JsonElement>> entries = jsonObject.entrySet();
