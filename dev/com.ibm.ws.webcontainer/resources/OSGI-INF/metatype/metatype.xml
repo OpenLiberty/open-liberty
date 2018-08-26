@@ -303,6 +303,12 @@
             description="%servletDestroyWaitTime.desc" 
             required="false" type="Integer" default="60" />
             
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="servletPathForDefaultMapping"
+            name="internal" 
+            description="internal" 
+            required="false" type="String" default="" />
+            
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
             ibm:type="pid" ibm:reference="com.ibm.wsspi.webcontainer.extension.ExtensionFactory" default="*" ibm:final="true"/> 
