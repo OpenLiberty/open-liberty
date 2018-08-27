@@ -89,8 +89,8 @@
             <scope>system</scope>
               
             <!--  TODO: WHEN TCK IS COMPLETE, REMOVE SYSTEMPATH AND SCOPE SO TESTS WILL PULL FROM GITHUB -->            
-            <!-- <systemPath>C:\projects\work\mpjwt\tck\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> -->
-            <systemPath>${componentRootDir}/lib/microprofile-jwt-auth-tck-1.2-20180821.143915-1.jar</systemPath>
+             <systemPath>C:\projects\work\mpjwt\tck0827\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> 
+            <!-- <systemPath>${componentRootDir}/lib/microprofile-jwt-auth-tck-1.2-20180821.143915-1.jar</systemPath>  -->
            
         </dependency>
         
@@ -169,7 +169,7 @@
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>
                         <tck_server>${tck_server}</tck_server>
-                        <tck_port>${tck_port}</tck_port>
+                        <tck_port>${tck_port}</tck_port>                       
                     </systemPropertyVariables>
                     <environmentVariables>
                         <my_int_property>45</my_int_property>

@@ -18,8 +18,8 @@
    -->
    
    
-    <!-- <javaPermission className="java.security.AllPermission"  name="*" actions="*" />  -->
-     <javaPermission className="java.net.SocketPermission"  name="127.0.0.1" actions="resolve" />
+   
+     <javaPermission className="java.net.SocketPermission"  name="127.0.0.1" actions="resolve"  />
     
     
     <featureManager>        
@@ -37,7 +37,7 @@
   
   
     <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" 
-      traceSpecification="com.ibm.ws.jaxrs*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.security.*=all:com.ibm.wsspi.webcontainer*=all:com.ibm.ws.security.context.internal=info"/> 
+      traceSpecification="com.ibm.ws.artifact.zip.*=all"/> 
         <!--  <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" traceSpecification="com.ibm.websphere.security.*=all:com.ibm.ws.jaxrs*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.security.*=all:com.ibm.wsspi.webcontainer*=all"/> --> 
  
     <keyStore id="defaultKeyStore" password="keyspass"/> 

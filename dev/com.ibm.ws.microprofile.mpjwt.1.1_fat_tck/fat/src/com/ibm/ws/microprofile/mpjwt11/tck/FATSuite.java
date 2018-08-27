@@ -18,7 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 Mpjwt11TCKLauncher_aud_env.class,
                 Mpjwt11TCKLauncher_aud_noenv.class,
-                Mpjwt11TCKLauncher_noaud_env.class, // exits clean
+                Mpjwt11TCKLauncher_aud_noenv2.class,
+                Mpjwt11TCKLauncher_noaud_env.class,
                 DummyForQuarantine.class
 })
 

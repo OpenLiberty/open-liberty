@@ -30,7 +30,7 @@
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMLocationTest" />
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMLocationURLTest" />
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKTest" />			
-			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKLocationURLTest" />
+			<!-- <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKLocationURLTest" />  -->
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKSTest" />
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsBase64JWKTest" />
 	
