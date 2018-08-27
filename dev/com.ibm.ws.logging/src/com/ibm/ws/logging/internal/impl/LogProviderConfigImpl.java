@@ -108,6 +108,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** Format to use for console.log / console */
     protected volatile String consoleFormat = LoggingConstants.DEFAULT_CONSOLE_FORMAT;
 
+    /** Whether to fill up any existing primary file instead of immediately rolling it. */
+    protected volatile boolean fillExistingFile = true;
+
     /** The header written at the beginning of all log files. */
     private final String logHeader;
 
@@ -222,6 +225,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         messageFormat = InitConfgAttribute.MESSAGE_FORMAT.getStringValueAndSaveInit(c, messageFormat, isInit);
         consoleSource = InitConfgAttribute.CONSOLE_SOURCE.getStringCollectionValueAndSaveInit("consoleSource", c, consoleSource, isInit);
         consoleFormat = InitConfgAttribute.CONSOLE_FORMAT.getStringValueAndSaveInit(c, consoleFormat, isInit);
+
+        fillExistingFile = InitConfgAttribute.FILL_EXISTING_FILE.getBooleanValue(c, fillExistingFile, isInit);
     }
 
     /**
@@ -373,6 +378,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return consoleFormat;
     }
 
+    public boolean fillExistingFile() {
+        return fillExistingFile;
+    }
+
     /**
      * @return true if we should use the logger -> tr handler
      */
@@ -392,6 +401,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         sb.append(",traceFormat=").append(traceFormat);
         sb.append(",isoDateFormat=").append(isoDateFormat);
         sb.append(",traceFileName=").append(traceFileName);
+        sb.append(",fillExistingFile=").append(fillExistingFile);
         sb.append("]");
 
         return sb.toString();
@@ -414,7 +424,8 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         MESSAGE_SOURCE("messageSource", "com.ibm.ws.logging.message.source"),
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
-        CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format");
+        CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
+        FILL_EXISTING_FILE("fillExistingFile", "com.ibm.ws.logging.fillExistingFile");
 
         final String configKey;
         final String propertyKey;

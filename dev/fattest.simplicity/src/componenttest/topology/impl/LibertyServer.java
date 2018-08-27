@@ -548,6 +548,8 @@ public class LibertyServer implements LogMonitorClient {
 
         if (!usePreviouslyConfigured)
             preTestTidyup();
+
+        initializeAnyExistingMarks();
     }
 
     protected void preTestTidyup() {
@@ -895,7 +897,8 @@ public class LibertyServer implements LogMonitorClient {
                                                 boolean validateTimedExit) throws Exception {
         final String method = "startServerAndValidate";
         Log.info(c, method, ">>> STARTING SERVER: " + this.getServerName());
-        Log.entering(c, method, "clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure + ", cmd=" + serverCmd + ", args=" + args);
+        Log.info(c, method, "Starting " + this.getServerName() + "; clean=" + cleanStart + ", validateApps=" + validateApps + ", expectStartFailure=" + expectStartFailure
+                            + ", cmd=" + serverCmd + ", args=" + args);
 
         if (serverCleanupProblem) {
             throw new Exception("The server was not cleaned up on the previous test.");
@@ -914,16 +917,7 @@ public class LibertyServer implements LogMonitorClient {
             // new behavior of not rolling messages.log & traces.log
             // in issue 4364, check if those exist, and if so, set
             // our marks to the end of those files.
-            RemoteFile messagesLog = getDefaultLogFile(false);
-            if (messagesLog != null && messagesLog.exists()) {
-                setMarkToEndOfLog();
-            }
-            RemoteFile traceLog = getDefaultTraceFile();
-            if (traceLog != null && traceLog.exists()) {
-                setTraceMarkToEndOfDefaultTrace();
-            }
-            Log.info(c, method, "Saving marks");
-            logMonitor.setOriginLogMarks();
+            initializeAnyExistingMarks();
         }
 
         final Properties envVars = new Properties();
@@ -1220,6 +1214,23 @@ public class LibertyServer implements LogMonitorClient {
 
         Log.exiting(c, method);
         return output;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private void initializeAnyExistingMarks() throws Exception {
+        final String method = "initializeAnyExistingMarks";
+        if (defaultLogFileExists()) {
+            Log.info(c, method, "Saving messages.log mark");
+            setMarkToEndOfLog();
+        }
+        if (defaultTraceFileExists()) {
+            Log.info(c, method, "Saving trace.log mark");
+            setTraceMarkToEndOfDefaultTrace();
+        }
+        Log.info(c, method, "Saving marks");
+        logMonitor.setOriginLogMarks();
     }
 
     private ArrayList<String> makeParmList(ArrayList<String> oldParms, int type) {
@@ -3962,17 +3973,17 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public RemoteFile getDefaultLogFile() throws Exception {
-        return getDefaultLogFile(true);
-    }
-
-    public RemoteFile getDefaultLogFile(boolean throwIfMissing) throws Exception {
         //Set path to server log assuming the default setting.
         // ALWAYS RETURN messages.log -- tests assume they can look for INFO+ messages.
         RemoteFile file = LibertyFileManager.getLibertyFile(machine, messageAbsPath);
-        if (file == null && throwIfMissing) {
+        if (file == null) {
             throw new IllegalStateException("Unable to find default log file, path=" + messageAbsPath);
         }
         return file;
+    }
+
+    public boolean defaultTraceFileExists() throws Exception {
+        return LibertyFileManager.libertyFileExists(machine, traceAbsPath);
     }
 
     protected String getDefaultLogPath() {
@@ -3986,6 +3997,10 @@ public class LibertyServer implements LogMonitorClient {
 
     public RemoteFile getDefaultTraceFile() throws Exception {
         return LibertyFileManager.getLibertyFile(machine, traceAbsPath);
+    }
+
+    public boolean defaultLogFileExists() throws Exception {
+        return LibertyFileManager.libertyFileExists(machine, messageAbsPath);
     }
 
     protected RemoteFile getTraceFile(String fileName) throws Exception {
