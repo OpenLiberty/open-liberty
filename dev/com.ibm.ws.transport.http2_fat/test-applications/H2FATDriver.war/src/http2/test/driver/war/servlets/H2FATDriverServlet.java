@@ -783,8 +783,12 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
+        // Add all the expected frames before sending
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
+        String dataString = " ";
+        h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
+
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
@@ -804,7 +808,6 @@ public class H2FATDriverServlet extends FATServlet {
         // send over the header frames followed by the continuation frames
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(firstContinuationHeaders);
-        h2Client.addExpectedFrame(FrameTypes.DATA, 3);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         this.handleErrors(h2Client, testName);
@@ -820,8 +823,12 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
+        // Add all the expected frames before sending
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
+        String dataString = " ";
+        h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
+
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
 
@@ -847,7 +854,6 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.sendFrame(firstContinuationHeaders);
         h2Client.sendFrame(secondContinuationHeaders);
 
-        h2Client.addExpectedFrame(FrameTypes.DATA, 3);
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         this.handleErrors(h2Client, testName);
     }
