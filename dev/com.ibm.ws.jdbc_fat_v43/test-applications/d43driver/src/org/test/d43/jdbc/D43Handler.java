@@ -14,12 +14,26 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.sql.Connection;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
-public class D43Handler implements InvocationHandler {
+public class D43Handler implements InvocationHandler, Supplier<int[]> {
+    // for tracking Connection.beginRequest/endRequest
+    private final AtomicInteger beginRequests = new AtomicInteger();
+    private final AtomicInteger endRequests = new AtomicInteger();
+
     private final Object instance;
 
     D43Handler(Object instance) {
         this.instance = instance;
+    }
+
+    // Accessible via wrapper pattern for obtaining the count of Connection.beginRequest/endRequest
+    // Usage: requestCounts = (int[]) con.unwrap(Supplier).get();
+    @Override
+    public int[] get() {
+        return new int[] { beginRequests.get(), endRequests.get() };
     }
 
     @Override
@@ -31,6 +45,23 @@ public class D43Handler implements InvocationHandler {
         if ("toString".equals(methodName))
             return "D43Handler@" + Integer.toHexString(System.identityHashCode(proxy)) + " for "
                    + instance.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(instance));
+
+        // Allow unwrap(Supplier) as a way to access request counts
+        if (instance instanceof Connection && args != null && args.length == 1 && Supplier.class.equals(args[0])) {
+            if ("isWrapperFor".equals(methodName))
+                return true;
+            if ("unwrap".equals(methodName))
+                return this;
+        }
+
+        if ("beginRequest".equals(methodName)) {
+            beginRequests.incrementAndGet();
+            return null;
+        }
+        if ("endRequest".equals(methodName)) {
+            endRequests.incrementAndGet();
+            return null;
+        }
         if ("getJDBCMajorVersion".equals(methodName))
             return 4;
         if ("getJDBCMinorVersion".equals(methodName))
