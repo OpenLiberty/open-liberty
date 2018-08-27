@@ -39,6 +39,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * This class listens for {@link Bundle}.INSTALLED and {@link Bundle}.UNINSTALLED events.
@@ -71,7 +72,7 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
     private final BundleContext ctx;
     private final File bundleOriginCache;
 
-    //stores the location of a bundle that has installed other bundles as a key to 
+    //stores the location of a bundle that has installed other bundles as a key to
     //the set of the install locations of the bundles it has installed
     private volatile ConcurrentHashMap<String, Set<String>> bundleOrigins = new ConcurrentHashMap<String, Set<String>>();
 
@@ -240,7 +241,7 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
     /**
      * Determines if the uninstalled bundle location was an installer bundle and calls for the
      * removal of any installees associated with it if it was.
-     * 
+     *
      * @param installerBundleLocation
      * @return true if the parameter was an installer bundle
      */
@@ -266,7 +267,7 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
 
     /**
      * Iterates a set of installee bundles attempting to uninstall them.
-     * 
+     *
      * @param installeeBundleLocationsToUninstall
      * @return Set of bundle locations that could not be uninstalled
      */
@@ -305,6 +306,11 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
     @FFDCIgnore(IllegalStateException.class)
     private synchronized void delayPurge() {
 
+        // if the framework is stopping, dont create the delayed purge
+        if (FrameworkState.isStopping()) {
+            return;
+        }
+
         //try to cancel any existing task if we can and it isn't running
         if (futurePurge != null) {
             futurePurge.cancel(false);
@@ -319,12 +325,14 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
             } finally {
                 try {
                     ctx.ungetService(sesRef);
-                } catch(IllegalStateException e) {
+                } catch (IllegalStateException e) {
                     // This is highly unlikely, but can happen.
                     // Rather than do a boolean check, its more efficient in the 99.99% case
                     // to just handle the exception if it occurs (which is unlikely)
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "IllegalStateException while releasing ServiceReference<ScheduledExecutorService> sesRef - the bundle is stopped or in an otherwise invalid so we shouldn't care",e);
+                        Tr.event(tc,
+                                 "IllegalStateException while releasing ServiceReference<ScheduledExecutorService> sesRef - the bundle is stopped or in an otherwise invalid so we shouldn't care",
+                                 e);
                     }
                 }
             }
@@ -333,7 +341,7 @@ public class BundleInstallOriginBundleListener implements BundleListener, Callab
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.util.concurrent.Callable#call()
      */
     @Override
