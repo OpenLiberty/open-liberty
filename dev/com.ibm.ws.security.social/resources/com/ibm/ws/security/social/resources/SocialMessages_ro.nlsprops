@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -541,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verifica\u0163i c\u0103 configura\
 REQUEST_URL_NOT_VALID=CWWKS5499E: Caracteristica de logare social\u0103 nu poate redirec\u0163iona cererea \u00eenapoi la URL-ul original al cererii [{0}] deoarece URL-ul nu este valid. {1}
 REQUEST_URL_NOT_VALID.explanation=URL-ul original de cerere nu este un URL valid. URL-ul ar putea include caractere care nu sunt valide sau e posibil ca URL-ul s\u0103 fie format gre\u015fit.
 REQUEST_URL_NOT_VALID.useraction=Verifica\u0163i c\u0103 URL-ul de cerere care este specificat \u00een mesaj se potrive\u015fte cu URL-ul de cerere de resurs\u0103 protejat\u0103 original\u0103. Verifica\u0163i c\u0103 URL-ul este bine format \u015fi con\u0163ine doar caractere URI valide.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Un atribut de configura\u0163ie [{0}] care este cerut \u00eentr-o configura\u0163ie de logare la o aplica\u0163ie social\u0103 care o valoare care nu este valid\u0103 [{1}].
+INVALID_CONFIG_PARAM.explanation=Caracteristica de logare social\u0103 nu poate g\u0103si o valoare valid\u0103 pentru un atribut de configurare necesar. Este necesar\u0103 o valoare valid\u0103 pentru a procesa cererea.
+INVALID_CONFIG_PARAM.useraction=Verifica\u0163i c\u0103 atributul specificat din configura\u0163ia de logare social\u0103 este configurat \u015fi este setat la o valoare valid\u0103.

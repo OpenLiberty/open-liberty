@@ -1,13 +1,9 @@
-###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2013.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/openidconnect/common/internal/resources/OidcCommonMessages.nlsprops
 #COMPONENTPREFIX CWWKS
 #COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
@@ -75,13 +71,15 @@ OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1761E: La validation a \u00e
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Un jeton d'ID ne peut pas \u00eatre valid\u00e9 car le client OpenID Connect (partie utilisatrice ou RP) et le fournisseur OpenID Connect (OP) utilisent diff\u00e9rents algorithmes de signature pour signer/v\u00e9rifier le jeton.
 OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Assurez-vous que la RP a indiqu\u00e9 un algorithme de signature qui correspond l'algorithme de signature OP.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: La demande de noeud final de jeton a \u00e9chou\u00e9. Impossible de valider le jeton JWT demand\u00e9 par le [{0}] en raison d''une signature manquante dans le jeton JWT. Le fournisseur OpenID Connect a sp\u00e9cifi\u00e9 l''algorithme [{1}] et s''attend \u00e0 ce que le jeton JWT soit sign\u00e9.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Impossible de v\u00e9rifier le jeton JWT car le jeton n'est pas sign\u00e9. Le fournisseur OpenID Connect s'attend \u00e0 ce que le jeton soit sign\u00e9.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=V\u00e9rifiez la configuration du client OpenID Connect pour vous assurer qu'il signe le jeton JWT.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR=CWWKS1762E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a signature missing from the JWT token. The OpenID Connect provider specified [{1}] algorithm and expects the JWT Token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.explanation=Cannot verify the JWT Token because the token is not signed. The OpenID Connect provider is expecting the token to be signed.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_SEGMENT_ERR.useraction=Check the OpenID Connect client configuration to make sure that it signs the JWT Token.
 
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: La demande de noeud final de jeton a \u00e9chou\u00e9. Impossible de valider le jeton JWT demand\u00e9 par le [{0}] en raison d''une non concordance des algorithmes de signature entre le fournisseur OpenID Connect [{1}] et le client OpenID Connect [{2}].
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Impossible de v\u00e9rifier le jeton JWT vu que le fournisseur et le client OpenID Connect utilisent des algorithmes de signature diff\u00e9rents pour signer/v\u00e9rifier le jeton.
-JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Corrigez la configuration du client OpenID Connect en sp\u00e9cifiant un algorithme de signature correspondant \u00e0 celui du fournisseur OpenID Connect.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH=CWWKS1763E: The token endpoint request failed. Cannot validate the JWT Token requested by the [{0}] due to a mismatch of signing algorithms between the OpenID Connect provider [{1}] and the OpenID Connect client [{2}].
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.explanation=Cannot verify the JWT Token because the OpenID Connect provider and client are using different signature algorithms to sign/verify the token.
+#JWT_JWTTOKEN_SIGNATURE_VERIFY_ERR_ALG_MISMATCH.useraction=Check the OpenID Connect client configuration to specify a signature algorithm that matches with the OpenID Connect provider.
 
 #
 JWT_JWTTOKEN_INVALID_KEY_ERR=CWWKS1764E: La demande de noeud final de jeton a \u00e9chou\u00e9. Une erreur s''est produite lors de la tentative de signature d''un jeton JWT \u00e0 l''aide de l''algorithme [{0}] : [{1}].
@@ -99,28 +97,32 @@ JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.explanation=Un jeton JWT n'a pas pu
 JWT_JWTTOKEN_SIGNATURE_VERIFY_INVALIDKEY_ERR.useraction=Si vous utilisez une signature asym\u00e9trique, v\u00e9rifiez que la cl\u00e9 publique du certificat peut \u00eatre utilis\u00e9e \u00e0 des fins de signature num\u00e9rique.  Examinez l'\u00e9l\u00e9ment keyStore r\u00e9f\u00e9renc\u00e9 par la configuration SSL par d\u00e9faut dans le fichier server.xml pour rechercher des informations sur le fichier de cl\u00e9s h\u00e9bergeant la cl\u00e9. Consultez \u00e9galement l'action utilisateur pour le message qui appara\u00eet apr\u00e8s cette erreur.
  
 #
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: La demande de noeud final de jeton a \u00e9chou\u00e9. Un jeton JWT sign\u00e9 doit comporter 3 segments s\u00e9par\u00e9s par le signe ''.'', mais ce jeton JWT en comporte [{0}].
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=Un jeton JWT sign\u00e9 doit comporter exactement 3 segments s\u00e9par\u00e9s par un signe '.'. Ce jeton JWT a un nombre de segments non conforme.
-JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=V\u00e9rifiez que le jeton JWT est valide et comporte 3 segments.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR=CWWKS1768E: The token endpoint request failed. A signed JWT token needs to have 3 segments separated by ''.'', but this JWT Token has [{0}] segments.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.explanation=A signed JWT token needs to have exactly 3 segments separated by '.'. This JWT Token has a bad segment number.
+#JWT_JWTTOKEN_BAD_SEGMENTS_ERR.useraction=Make sure the JWT Token is valid and has 3 segments.
 
 #
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: La demande de noeud final de jeton a \u00e9chou\u00e9. La validation du jeton JWT demand\u00e9 par le [{0}] a \u00e9chou\u00e9. Une exception IllegalStateException a \u00e9t\u00e9 renvoy\u00e9e avec le message :[{1}].
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=Un jeton JWT n'a pas pu \u00eatre valid\u00e9 en raison d'une exception IllegalStatException indiqu\u00e9e dans le message.
-JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Corrigez l'erreur signal\u00e9e dans le message.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR=CWWKS1769E: The token endpoint request failed. Validation of the JWT token requested by the [{0}] failed. It got an InvalidJwtException with message:[{1}].
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.explanation=A JWT token cannot be validated because of an InvalidJwtException which is indicated in the message.
+#JWT_JWTTOKEN_ILLEGAL_STATE_ERR.useraction=Correct the error which is indicated in the message.
 
 #
-JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: La demande de noeud final de jeton a \u00e9chou\u00e9. Un jeton JWT requis n'a pas \u00e9t\u00e9 d\u00e9tect\u00e9 dans la demande.
-JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=La demande doit fournir un jeton JWT mais celui-ci est introuvable dans la demande de noeud final de jeton.
-JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Fournissez un jeton JWT valide dans la demande de noeud final de jeton.
+# now in openidconnect.common project, no longer used here.
+#JWT_JWTTOKEN_NO_TOKEN_ERR=CWWKS1770E: The token endpoint request failed. A required JWT Token is not found in the request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.explanation=The request needs to provide a JWT Token but can not find the JWT Token in the token endpoint request.
+#JWT_JWTTOKEN_NO_TOKEN_ERR.useraction=Provide a valid JWT Token in the token endpoint request.
 
 #
 JWK_ENDPOINT_MISSING_ERR=CWWKS1771E: La configuration client OpenID Connect a besoin d'un attribut jwkEndpointUrl.
 JWK_ENDPOINT_MISSING_ERR.explanation=L'attribut jwkEndpointUrl n'a pas \u00e9t\u00e9 fourni dans la configuration client OpenID Connect.
 JWK_ENDPOINT_MISSING_ERR.useraction=D\u00e9finissez l'attribut jwkEndpointUrl sur l'URL de la cl\u00e9 Web JSON du fournisseur OpenID Connect.
 
-OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: Une exception s''est produite lors de la tentative d''ex\u00e9cution de RunAsSubject. L''exception \u00e9tait : [{0}].
-OIDC_FAILED_RUN_AS_SUBJCET.explanation=Une exception s'est produite lors de l'obtention de RunAsSubject.
-OIDC_FAILED_RUN_AS_SUBJCET.useraction=V\u00e9rifiez que le serveur est configur\u00e9 et a d\u00e9marr\u00e9 correctement.
+# now in openidconnect.common project, no longer used here.
+#OIDC_FAILED_RUN_AS_SUBJCET=CWWKS1772W: An exception occurred while attempting to get the RunAsSubject. The exception was: [{0}].
+#OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
+#OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
 #0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
 OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La validation a \u00e9chou\u00e9 pour le jeton demand\u00e9 par [{0}] vu que le jeton est en dehors de sa plage valide. Cela peut \u00eatre d\u00fb au fait que l''heure en cours [{1}] est post\u00e9rieure \u00e0 l''heure d''expiration du jeton [{2}] ou l''heure du probl\u00e8me [{3}] est trop \u00e9loign\u00e9e de l''heure en cours [{1}].

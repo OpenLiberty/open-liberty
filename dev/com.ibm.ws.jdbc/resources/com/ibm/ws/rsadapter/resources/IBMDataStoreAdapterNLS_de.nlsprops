@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Verwenden Sie das Feature nicht, oder stellen
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: Es wurde keine g\u00fcltige Implementierungsklasse f\u00fcr den JDBC-Treiber {0} gefunden, der die Bibliothek {1} verwendet.
-DSRA4000.no.suitable.driver.explanation=Es wurde keine g\u00fcltige Implementierungsklasse f\u00fcr den JDBC-Treiber gefunden.
-DSRA4000.no.suitable.driver.useraction=Aktualisieren Sie die Konfiguration so, dass die Bibliothek einen Pfad zu einem bekannten JDBC-Treiber enth\u00e4lt oder dass die Implementierungsklasse in der Datenquelle angegeben ist.
+DSRA4000.no.suitable.driver=DSRA4000E: Es wurden keine Implementierungen von {0} f\u00fcr {1} mit der Bibliothek {2} gefunden. Der Name oder die Position der JAR-Dateien des JDBC-Treibers ist m\u00f6glicherweise falsch oder nicht zug\u00e4nglich. Gesucht in: {3}. Gesucht in Paketen: {4}.
+DSRA4000.no.suitable.driver.explanation=Eine Datenquelle oder eine Treiberimplementierung wurde nicht gefunden, wof\u00fcr es verschiedene Gr\u00fcnde geben kann. Der Name oder die Position der JAR-Dateien des JDBC-Treibers ist m\u00f6glicherweise falsch oder nicht zug\u00e4nglich. Der JDBC-Treiber identifiziert seine java.sql.Driver-Implementierung m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df oder er hat m\u00f6glicherweise keine java.sql.Driver-Implementierung. Es ist auch m\u00f6glich, dass die integrierte Logik des Servers f\u00fcr die Identifizierung von Implementierungsklassen f\u00fcr Datenquellen nicht f\u00fcr alle Treiber gilt.
+DSRA4000.no.suitable.driver.useraction=Stellen Sie sicher, dass die Konfigurationen des JDBC-Treibers und der Bibliothek korrekt sind. Wenn die Implementierungsklassen danach immer noch nicht gefunden werden, geben Sie sie manuell in der Konfiguration an.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: Es wurde keine g\u00fcltige Implementierungsklasse f\u00fcr den JDBC-Treiber in der verschachtelten Bibliothek gefunden, die vom JDBC-Treiber {0} verwendet wird.
-DSRA4001.no.suitable.driver.nested.explanation=Es wurde keine g\u00fcltige Implementierungsklasse f\u00fcr den JDBC-Treiber gefunden.
-DSRA4001.no.suitable.driver.nested.useraction=Aktualisieren Sie die Konfiguration so, dass die verschachtelte Bibliothek einen Pfad zu einem bekannten JDBC-Treiber enth\u00e4lt oder dass die Implementierungsklasse in der Datenquelle angegeben ist.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Es wurden keine Implementierungen von {0} f\u00fcr {1} gefunden. Gesucht in: {2}. Der Name oder die Position der JAR-Dateien des JDBC-Treibers ist m\u00f6glicherweise falsch oder nicht zug\u00e4nglich. Gesucht in Paketen: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=Eine Datenquelle oder eine Treiberimplementierung wurde nicht gefunden, wof\u00fcr es verschiedene Gr\u00fcnde geben kann. Der Name oder die Position der JAR-Dateien des JDBC-Treibers ist m\u00f6glicherweise falsch oder nicht zug\u00e4nglich. Der JDBC-Treiber identifiziert seine java.sql.Driver-Implementierung m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df oder er hat m\u00f6glicherweise keine java.sql.Driver-Implementierung. Es ist auch m\u00f6glich, dass die integrierte Logik des Servers f\u00fcr die Identifizierung von Implementierungsklassen f\u00fcr Datenquellen nicht f\u00fcr alle Treiber gilt.
+DSRA4001.no.suitable.driver.nested.useraction=Stellen Sie sicher, dass die Konfigurationen des JDBC-Treibers und der Bibliothek korrekt sind. Wenn die Implementierungsklassen danach immer noch nicht gefunden werden, geben Sie sie manuell in der Konfiguration an.
 
 DSRA4003.driver.null=DSRA4003E: Es wurde kein g\u00fcltiges jdbcDriver-Element f\u00fcr die Datenquelle {0} gefunden.
 DSRA4003.driver.null.explanation=Es wurde kein g\u00fcltiges jdbcDriver-Element f\u00fcr die angegebene Datenquelle gefunden.
@@ -243,6 +243,33 @@ DSRA4003.driver.null.useraction=Aktualisieren Sie die Konfiguration so, dass sie
 DSRA4004.onconnect.sql=DSRA4004E: Der onConnect-SQL-Befehl \"{0}\" konnte nicht f\u00fcr die aus dataSource {1} abgerufene Verbindung ausgef\u00fchrt werden. Suchen Sie in der Ursachenausnahme nach weiteren Informationen.
 DSRA4004.onconnect.sql.explanation=Beim Versuch, den angegebenen SQL-Befehl auszuf\u00fchren, ist ein Fehler aufgetreten.
 DSRA4004.onconnect.sql.useraction=Bestimmen Sie die Problemursache anhand der Ausnahmenachricht.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: Der Server unterst\u00fctzt die Eigenschaft loginTimeout nicht, die in der URL oder in den Eigenschaften der Datenquelle {0} angegeben ist.
+DSRA4005.invalid.logintimeout.explanation=Die Eigenschaft loginTimeout wird nicht unterst\u00fctzt, wenn sie f\u00fcr eine Datenquelle angegeben wird, die durch eine java.sql.Driver-Implementierung gest\u00fctzt wird, weil der Server getLoginTimeout in der Klasse java.sql.Driver nicht aufrufen kann.
+DSRA4005.invalid.logintimeout.useraction=\u00c4ndern Sie die Konfiguration der Datenquelle so, dass eine DataSource-Implementierung anstelle einer java.sql.Driver-Implementierung verwendet wird, oder entfernen Sie die Eigenschaft loginTimeout.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: Die Datenquelle {0} kann keine Verbindung zur Datenbank herstellen, weil {1} eine Nullverbindung f\u00fcr die URL, die mit {2} beginnt, zur\u00fcckgegeben hat. Dies weist darauf hin, dass der JDBC-Treiber gegen die JDBC-Spezifikation verst\u00f6\u00dft.
+DSRA4006.null.connection.explanation=Obwohl der java.sql.Driver angezeigt hat, dass er die angegebene URL akzeptiert, hat er eine Nullverbindung zur\u00fcckgegeben. Dieser Fehler weist auf einen Fehler im JDBC-Treiber hin.
+DSRA4006.null.connection.useraction=Melden Sie den Fehler dem Anbieter des JDBC-Treibers und stellen Sie sicher, dass der JDBC-Treiber und die Datenquellenkonfiguration korrekt sind.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: Der JDBC-Treiber unterst\u00fctzt die Isolationsstufe TRANSACTION_NONE, die in der Datenquelle {0} konfiguriert ist, nicht.
+DSRA4008.tran.none.unsupported.explanation=Die Isolationsstufe TRANSACTION_NONE, die in der Datenquelle konfiguriert ist, wird vom JDBC-Treiber nicht unterst\u00fctzt.
+DSRA4008.tran.none.unsupported.useraction=Aktualisieren Sie die Datenquellenkonfiguration so, dass eine Isolationsstufe verwendet wird, die vom Treiber unterst\u00fctzt wird, oder verwenden Sie einen Treiber, der die Isolationsstufe TRANSACTION_NONE unterst\u00fctzt.
+
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Die Datenquelle {0} darf nicht mit der Isolationsstufe TRANSACTION_NONE und transactional=true konfiguriert werden.
+DSRA4009.tran.none.transactional.unsupported.explanation=Ein JDBC-Treiber, der mit der Isolationsstufe TRANSACTION_NONE konfiguriert ist, unterst\u00fctzt keine Transaktionen.
+DSRA4009.tran.none.transactional.unsupported.useraction=Definieren transactional=false in der Datenquellenkonfiguration.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: Automatische Festschreibung ist erforderlich, wenn die Isolationsstufe TRANSACTION_NONE verwendet wird, die in der Datenquelle {0} konfiguriert ist.
+DSRA4010.tran.none.autocommit.required.explanation=Der JDBC-Treiber ist mit der Isolationsstufe TRANSACTION_NONE konfiguriert und dies setzt die Verwendung der automatischen Festschreibung voraus.
+DSRA4010.tran.none.autocommit.required.useraction=Setzen Sie die Option f\u00fcr automatische Festschreibung auf true.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Der JDBC-Treiber unterst\u00fctzt den Wechsel auf die Isolationsstufe TRANSACTION_NONE f\u00fcr die Datenquelle {0} nicht.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=Die JDBC-Spezifikation unterst\u00fctzt den Wechsel auf die Isolationsstufe TRANSACTION_NONE nicht.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Vermeiden Sie den Wechsel auf die Isolationsstufe TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 
@@ -593,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Application Server unterst\u00fctzt 
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Inaktivieren Sie Kerberos, oder verwenden Sie eine DB2-Back-End-Datenbank mit dem Treiber "DB2 Universal JDBC".
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

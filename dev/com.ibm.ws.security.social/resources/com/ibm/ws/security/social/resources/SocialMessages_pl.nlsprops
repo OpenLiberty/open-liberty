@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -541,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Sprawd\u017a, czy konfiguracja JWT
 REQUEST_URL_NOT_VALID=CWWKS5499E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce przekierowa\u0107 \u017c\u0105dania z powrotem na adres URL oryginalnego \u017c\u0105dania [{0}], poniewa\u017c ten adres URL jest niepoprawny. {1}
 REQUEST_URL_NOT_VALID.explanation=Adres URL oryginalnego \u017c\u0105dania jest niepoprawny. Adres URL mo\u017ce zawiera\u0107 znaki, kt\u00f3re nie s\u0105 poprawne, lub mo\u017ce by\u0107 on zniekszta\u0142cony.
 REQUEST_URL_NOT_VALID.useraction=Sprawd\u017a, czy podany w komunikacie adres URL \u017c\u0105dania jest zgodny z adresem URL oryginalnego \u017c\u0105dania chronionego zasobu. Sprawd\u017a, czy ten adres URL zosta\u0142 poprawnie zbudowany i czy zawiera tylko poprawne znaki identyfikatora URI.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Atrybut konfiguracyjny [{0}] wymagany w konfiguracji logowania spo\u0142eczno\u015bciowego ma niepoprawn\u0105 warto\u015b\u0107 [{1}].
+INVALID_CONFIG_PARAM.explanation=Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce znale\u017a\u0107 poprawnej warto\u015bci dla wymaganego atrybutu konfiguracyjnego. Aby przetworzy\u0107 \u017c\u0105danie, wymagana jest poprawna warto\u015b\u0107.
+INVALID_CONFIG_PARAM.useraction=Sprawd\u017a, czy podany atrybut w konfiguracji logowania spo\u0142eczno\u015bciowego zosta\u0142 skonfigurowany i czy ma on poprawn\u0105 warto\u015b\u0107.

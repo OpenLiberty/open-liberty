@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -541,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Vergewissern Sie sich, dass die in
 REQUEST_URL_NOT_VALID=CWWKS5499E: Das Social Login-Feature kann die Anforderung nicht an die urspr\u00fcngliche Anforderungs-URL [{0}] umleiten, weil die URL nicht g\u00fcltig ist. {1}
 REQUEST_URL_NOT_VALID.explanation=Die urspr\u00fcngliche Anforderungs-URL ist keine g\u00fcltige URL. Die URL enth\u00e4lt m\u00f6glicherweise ung\u00fcltige Zeichen oder die URL ist fehlerhaft.
 REQUEST_URL_NOT_VALID.useraction=Vergewissern Sie sich, dass die in der Nachricht angegebene Anforderungs-URL mit der urspr\u00fcnglichen Anforderungs-URL f\u00fcr die gesch\u00fctzte Ressource \u00fcbereinstimmt. Stellen Sie sicher, dass die URL korrekt formatiert ist und nur g\u00fcltige URI-Zeichen enth\u00e4lt.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Ein Konfigurationsattribut [{0}], das in einer Social Login-Konfiguration erforderlich ist, hat einen Wert, der nicht g\u00fcltig ist [{1}].
+INVALID_CONFIG_PARAM.explanation=Das Social Login-Feature hat f\u00fcr ein erforderliches Konfigurationsattribut keinen g\u00fcltigen Wert gefunden. F\u00fcr die Verarbeitung der Anforderung ist ein g\u00fcltiger Wert erforderlich.
+INVALID_CONFIG_PARAM.useraction=Stellen Sie sicher, dass das angegebene Attribut in der Social Login-Konfiguration konfiguriert und auf einen g\u00fcltigen Wert gesetzt ist.
