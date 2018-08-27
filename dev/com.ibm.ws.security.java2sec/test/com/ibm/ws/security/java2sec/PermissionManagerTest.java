@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,18 +23,14 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Permissions;
 import java.security.Policy;
-import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.PropertyPermission;
 
 import javax.security.auth.AuthPermission;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -49,7 +45,6 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.url.URLStreamHandlerService;
 
 import com.ibm.ws.kernel.boot.security.WLPDynamicPolicy;
-import com.ibm.wsspi.classloading.ClassLoadingService;
 
 public class PermissionManagerTest {
 
@@ -96,12 +91,6 @@ public class PermissionManagerTest {
      */
     JavaPermissionsConfiguration permission1 = new JavaPermissionsConfiguration();
 
-    /**
-     * ClassLoading service
-     * @throws IOException
-     */
-    private final ClassLoadingService classLoadingService = mock.mock(ClassLoadingService.class, "classLoadingService");
-
     @SuppressWarnings("unchecked")
 	private ServiceReference<URLStreamHandlerService> urlStreamHandlerServiceRef = mock.mock(ServiceReference.class, "urlStreamHandlerServiceRef");
 
@@ -118,8 +107,6 @@ public class PermissionManagerTest {
     	
         mock.checking(new Expectations() {
             {
-            	one(classLoadingService).setSharedLibraryProtectionDomains(with(any(Map.class)));          	
- 
             	allowing(cc).getBundleContext();
             	will(returnValue(bc));
             	
@@ -130,7 +117,6 @@ public class PermissionManagerTest {
         });
 
 		permissionManager.setWsjarURLStreamHandler(urlStreamHandlerServiceRef);
-		permissionManager.setClassLoadingService(classLoadingService);
     	permissionManager.activate(cc, null);
     }
     
@@ -249,23 +235,14 @@ public class PermissionManagerTest {
     
     @Test
     public void restrictablePermissionsWithExitVMGrant() {
-    	createClassLoadingServiceExpectations();
     	grantExitVM();
     	ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
     	assertEquals("Number of permissions mismatched", 4, permissions.size());
     }
 
-	private void createClassLoadingServiceExpectations() {
-		mock.checking(new Expectations() {
-            {
-            	one(classLoadingService).setSharedLibraryProtectionDomains(with(any(Map.class)));
-            }
-        });
-	}
     
     @Test
     public void restrictablePermissionsWithReadPropertyRestrict() {
-    	createClassLoadingServiceExpectations();
     	grantReadProperty(null, true);
     	ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
     	assertEquals("Number of permissions mismatched", 5, permissions.size());
@@ -273,7 +250,6 @@ public class PermissionManagerTest {
 
     @Test
     public void restrictablePermissionsWithReadPropertyGrantAndRestrict() {
-    	createClassLoadingServiceExpectations();
     	grantAndRestrictReadProperty();
     	ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
     	assertEquals("Number of permissions mismatched", 4, permissions.size());
@@ -284,7 +260,6 @@ public class PermissionManagerTest {
 
     @Test
     public void restrictablePermissionsWithReadpropertyGrant() {
-    	createClassLoadingServiceExpectations();
     	grantReadProperty(null, false);
     	ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
     	assertEquals("Number of restrictable permissions mismatched", 4, permissions.size());
@@ -295,7 +270,6 @@ public class PermissionManagerTest {
     
     @Test
     public void getEffectivePermissionsMergeAllGrantedPermissions() throws Exception  {
-    	createClassLoadingServiceExpectations();
     	grantReadProperty(null, false);
     	CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/appWAR"), (java.security.cert.Certificate[]) null);
     	PermissionCollection staticPolicyPermissions = Policy.getPolicy().getPermissions(appCodeSource);
@@ -314,7 +288,6 @@ public class PermissionManagerTest {
     
     @Test
     public void getEffectivePermissionsMergeAllGrantedPermissionsExceptStatic() throws Exception  {
-    	createClassLoadingServiceExpectations();
     	grantReadProperty(null, false);
     	CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/appWAR"), (java.security.cert.Certificate[]) null);
     	PermissionCollection staticPolicyPermissions = Policy.getPolicy().getPermissions(appCodeSource);
@@ -339,28 +312,6 @@ public class PermissionManagerTest {
     	if (roots != null && roots.length > 0) {
     		codeBase = roots[0].getCanonicalPath() + codeBase;
     	}
-    	final String normalizedCodebase = codeBase.replace("\\", "/").replace("//", "/");
-    	
-    	permissionManager.setClassLoadingService(classLoadingService);
-    	mock.checking(new Expectations() {
-			{
-				one(classLoadingService).setSharedLibraryProtectionDomains(with(new BaseMatcher<Map<String, ProtectionDomain>>() {
-
-					@SuppressWarnings("unchecked")
-					@Override
-					public boolean matches(Object arg0) {
-						if (arg0 instanceof Map<?, ?>) {
-							Map<String, ProtectionDomain> protectionDomainMap = (Map<String, ProtectionDomain>) arg0;
-							return protectionDomainMap.containsKey(normalizedCodebase);
-						}
-						return false;
-					}
-
-					@Override
-					public void describeTo(Description arg0) {}
-				}));
-			}
-		});
 
     	grantReadProperty(codeBase, false);
     	CodeSource appCodeSource = new CodeSource(new URL("file:///aPath/toThe/appWAR.jar"), (java.security.cert.Certificate[]) null);
@@ -388,15 +339,12 @@ public class PermissionManagerTest {
 			}
 		});
 
-		createClassLoadingServiceExpectations();
-    	anotherPermissionManager.setClassLoadingService(classLoadingService);
     	anotherPermissionManager.activate(cc, null);
     	anotherPermissionManager.deactivate(cc);
     }
 
 	@Test
     public void wsjarUrlStreamHandlerRemoved() throws Exception {
-		createClassLoadingServiceExpectations();
     	grantReadProperty(null, false);
 
 		permissionManager.unsetWsjarURLStreamHandler(urlStreamHandlerServiceRef );
