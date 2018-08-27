@@ -174,6 +174,8 @@ public class JAASConfigurationImpl implements JAASConfiguration {
             loginModuleEntry = createIBMJdk8Krb5loginModuleAppConfigurationEntry();
         } else if (isJdk11Up) {
             loginModuleEntry = createJdk11Krb5loginModuleAppConfigurationEntry();
+            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_JGSS_KRB5_ACCEPT, loginModuleEntries);
+            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_IBM_SECURITY_JGSS_KRB5_INITIATE, loginModuleEntries);
         }
         if (loginModuleEntry != null) {
             loginModuleEntries.add(loginModuleEntry);
