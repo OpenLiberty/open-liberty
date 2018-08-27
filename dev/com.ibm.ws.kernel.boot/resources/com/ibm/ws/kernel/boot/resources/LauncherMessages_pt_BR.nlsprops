@@ -781,6 +781,10 @@ warning.server.status.invalid.targets.useraction=Especifique na op\u00e7\u00e3o 
 verificar seus status. Para verificar o status cumulativo de todos os componentes com capacidade de pausa no servidor, emita a \
 solicita\u00e7\u00e3o de status sem a op\u00e7\u00e3o de destino.
 
+warning.package.root.invalid=CWWKE0947W: Uma op\u00e7\u00e3o --server-root com um argumento vazio n\u00e3o \u00e9 permitida quando Extens\u00f5es do Produto est\u00e3o instaladas. O argumento padr\u00e3o de wlp ser\u00e1 usado.
+warning.package.root.invalid.explanation=O usu\u00e1rio executou uma solicita\u00e7\u00e3o de pacote com uma op\u00e7\u00e3o --server-root especificando um argumento vazio e Extens\u00f5es do Produto foram detectadas. A raiz de servidor padr\u00e3o de wlp ser\u00e1 usada.
+warning.package.root.invalid.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi \

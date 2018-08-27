@@ -80,7 +80,8 @@ action-desc.package=\t\u00cempacheta\u0163i un server la o arhiv\u0103. Op\u0163
 \tOp\u0163iunea --include poate fi utilizat\u0103 cu valorile "all", "usr", "minify", \n\
 \t"wlp", "runnable", "all,runnable" \u015fi "minify,runnable". Valorile \n\
 \t"runnable" \u015fi "all,runnable" sunt echivalente. Valoarea "runnable"   \n\
-\tlucreaz\u0103 numai cu arhive de tip "jar".
+\tlucreaz\u0103 numai cu arhive de tip "jar". Op\u0163iunea --server-root poate fi \n\
+\tfolosit\u0103 la specificarea folderului r\u0103d\u0103cin\u0103 din arhiva de pachet.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tCrea\u0163i un dump al informa\u0163iilor diagnosticului de pe server \u00eentr-o arhiv\u0103. Op\u0163iunea\n\
@@ -176,3 +177,6 @@ option-desc.os=\tSpecific\u0103 sistemele de operare pe care dori\u0163i s\u0103
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDezactiva\u0163i generarea parolei de depozit de chei implicite
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="folderul r\u0103d\u0103cin\u0103 al serverului din arhiv\u0103"
+option-desc.package.server-root=\tSpecific\u0103 numele folderului r\u0103d\u0103cin\u0103 al serverului \u00een fi\u015fierul arhiv\u0103.

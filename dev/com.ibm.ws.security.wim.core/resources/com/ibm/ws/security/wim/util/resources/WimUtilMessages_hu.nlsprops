@@ -61,11 +61,11 @@ MISSING_BASE_ENTRY.explanation=Lerakat felv\u00e9tele ut\u00e1n legal\u00e1bb eg
 MISSING_BASE_ENTRY.useraction=Vegyen fel legal\u00e1bb egy alapbejegyz\u00e9st a lerakatba a server.xml f\u00e1jlban.
 
 FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edt\u00e9si szolg\u00e1ltat\u00e1s \u00fczemk\u00e9sz.
-FEDERATED_MANAGER_SERVICE_READY.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+FEDERATED_MANAGER_SERVICE_READY.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
 FEDERATED_MANAGER_SERVICE_READY.useraction=Nincs teend\u0151.
 
 FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s egyes\u00edt\u00e9si szolg\u00e1ltat\u00e1s le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
-FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
 FEDERATED_MANAGER_SERVICE_STOPPED.useraction=Nincs teend\u0151.
 
 MISSING_REGISTRY_DEFINITION=CWIMK0011E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s. Adja hozz\u00e1 vagy jav\u00edtsa a nyilv\u00e1ntart\u00e1s meghat\u00e1roz\u00e1s\u00e1t a server.xml f\u00e1jlban.
@@ -248,7 +248,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntar
 MALFORMED_SEARCH_EXPRESSION.explanation=A keres\u00e9si m\u0171velet nem hajthat\u00f3 v\u00e9gre, mert a keres\u00e9si kifejez\u00e9s \u00e9rv\u00e9nytelen.
 MALFORMED_SEARCH_EXPRESSION.useraction=\u00c9rv\u00e9nyes keres\u00e9si kifejez\u00e9st adjon meg.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velete nem hajthat\u00f3 v\u00e9gre, mivel a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s az alapul szolg\u00e1l\u00f3 hib\u00e1ba \u00fctk\u00f6z\u00f6tt: {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velete nem hajthat\u00f3 v\u00e9gre, mivel a felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s az alapul szolg\u00e1l\u00f3 hib\u00e1ba \u00fctk\u00f6z\u00f6tt: {0}
 ENTITY_SEARCH_FAILED.explanation=Az entit\u00e1s keres\u00e9se az alapul szolg\u00e1l\u00f3 nyilv\u00e1ntart\u00e1s \u00e1ltal megadott okb\u00f3l nem hajthat\u00f3 v\u00e9gre.
 ENTITY_SEARCH_FAILED.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz tekintse \u00e1t az ok \u00fczenet\u00e9t \u00e9s vizsg\u00e1lja meg a nyomk\u00f6vet\u00e9si f\u00e1jlt. Jav\u00edtsa ki a hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 

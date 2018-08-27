@@ -80,7 +80,8 @@ action-desc.package=\tZabalit server do archivu. Lze pou\u017e\u00edt volbu --ar
 \tVolbu --include lze pou\u017e\u00edvat s hodnotami "all", "usr", "minify", \n\
 \t"wlp", "runnable", "all,runnable" a "minify,runnable". Hodnoty \n\
 \t"runnable" a "all,runnable" jsou ekvivalentn\u00ed. Hodnota "runnable" \n\
-\tfunguje pouze pro archivy typu "jar".
+\tfunguje pouze pro archivy typu "jar". Volbu --server-root lze \n\
+\tpou\u017e\u00edt k ur\u010den\u00ed ko\u0159enov\u00e9 slo\u017eky v archivu bal\u00edku.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tVypsat diagnostick\u00e9 informace ze serveru do archivu. Lze\n\
@@ -171,3 +172,6 @@ option-desc.os=\tUv\u00e1d\u00ed opera\u010dn\u00ed syst\u00e9my, kter\u00e9 m\u
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --\u017e\u00e1dn\u00e9 heslo
 option-desc.no-password=\tZak\u00e1zat generov\u00e1n\u00ed v\u00fdchoz\u00edho hesla \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ Slo\u017eka serveru --server-root="root v archivu"
+option-desc.package.server-root=\tUr\u010duje n\u00e1zev slo\u017eky ko\u0159enov\u00e9ho serveru v archivn\u00edm souboru.
