@@ -18,7 +18,7 @@ import java.sql.Connection;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-public class D43Handler implements InvocationHandler, Supplier<int[]> {
+public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> {
     // for tracking Connection.beginRequest/endRequest
     private final AtomicInteger beginRequests = new AtomicInteger();
     private final AtomicInteger endRequests = new AtomicInteger();
@@ -30,10 +30,10 @@ public class D43Handler implements InvocationHandler, Supplier<int[]> {
     }
 
     // Accessible via wrapper pattern for obtaining the count of Connection.beginRequest/endRequest
-    // Usage: requestCounts = (int[]) con.unwrap(Supplier).get();
+    // Usage: requestCounts = (AtomicInteger[]) con.unwrap(Supplier).get();
     @Override
-    public int[] get() {
-        return new int[] { beginRequests.get(), endRequests.get() };
+    public AtomicInteger[] get() {
+        return new AtomicInteger[] { beginRequests, endRequests };
     }
 
     @Override

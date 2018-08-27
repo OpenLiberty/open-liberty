@@ -146,4 +146,10 @@ public class JDBC41Runtime implements JDBCRuntimeVersion {
     public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage) {
         return new BatchUpdateException(newMessage, copyFrom.getSQLState(), copyFrom.getErrorCode(), copyFrom.getUpdateCounts());
     }
+
+    @Override
+    public void beginRequest(Connection con) {}
+
+    @Override
+    public void endRequest(Connection con) {}
 }

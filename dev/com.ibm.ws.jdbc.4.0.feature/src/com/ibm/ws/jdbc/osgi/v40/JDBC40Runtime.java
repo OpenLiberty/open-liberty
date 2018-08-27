@@ -120,4 +120,10 @@ public class JDBC40Runtime implements JDBCRuntimeVersion {
     public int doGetNetworkTimeout(Connection sqlConn) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
+
+    @Override
+    public void beginRequest(Connection con) {}
+
+    @Override
+    public void endRequest(Connection con) {}
 }
