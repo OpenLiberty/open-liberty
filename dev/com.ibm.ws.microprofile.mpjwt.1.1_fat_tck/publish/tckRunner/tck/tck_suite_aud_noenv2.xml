@@ -25,9 +25,8 @@
             </run>
         </groups>
 		<classes>
-			<!-- these all pass with empty server.xml and server.env, need audiences 
-				set -->
-				
+			
+			<!--  this one's in a suite by itself because it needs a unique url property passed in to maven -->	
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKLocationURLTest" />
 			
 	

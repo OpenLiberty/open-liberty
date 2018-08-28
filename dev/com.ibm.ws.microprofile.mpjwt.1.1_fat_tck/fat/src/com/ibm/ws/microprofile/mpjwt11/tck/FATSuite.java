@@ -16,10 +16,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
                 Mpjwt11TCKLauncher_aud_env.class,
                 Mpjwt11TCKLauncher_aud_noenv.class,
-                Mpjwt11TCKLauncher_aud_noenv2.class,
                 Mpjwt11TCKLauncher_noaud_env.class,
+                Mpjwt11TCKLauncher_aud_noenv2.class,
                 DummyForQuarantine.class
 })
 

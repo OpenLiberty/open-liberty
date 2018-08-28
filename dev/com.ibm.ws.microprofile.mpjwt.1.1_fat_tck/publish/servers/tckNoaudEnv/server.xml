@@ -32,7 +32,8 @@
     </featureManager>  
  
    
-    <mpJwt  groupNameAttribute="groups" id="myMpJwt"/> 
+     <!--  if no config beyond issuer and public key is required, this element is optional -->
+     <!-- <mpJwt  groupNameAttribute="groups" id="myMpJwt"/> -->
    
   
   

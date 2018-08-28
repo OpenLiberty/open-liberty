@@ -41,6 +41,9 @@
 			<class 	name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKLocationTest" />
 			<class 	name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsJWKSLocationTest" />
 			<class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsFileLocationURLTest" />
+			
+			  <!-- this one was INVALID  key did not have begin or end marks, retesting as of 8/28 -->
+              <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMTest" />
 	
 		</classes>
     </test>

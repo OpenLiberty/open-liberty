@@ -44,7 +44,7 @@ public class Mpjwt11TCKLauncher_aud_env {
     }
 
     @Test
-    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
+    @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtSignatureException")
     public void launchMpjwt11TCKLauncher_aud_env() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.setSuiteFileName("tck_suite_aud_env.xml", server);

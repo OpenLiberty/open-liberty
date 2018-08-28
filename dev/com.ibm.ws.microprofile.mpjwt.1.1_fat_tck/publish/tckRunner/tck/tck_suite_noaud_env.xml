@@ -33,8 +33,7 @@
              <!-- this one requires no audience,  test is invalid , checks for mp.jwt.verify.requireiss=false returns HTTP_OK -->
              <!--  <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationFailTest" />   -->
              
-              <!-- this one is INVALID  key does not have begin or end marks -->
-              <!--   <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMTest" />-->
+            
              
              <!--  these 3 require no audience  -->
              <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsTest" />
