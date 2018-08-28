@@ -33,13 +33,9 @@
  
    
      <!--  if no config beyond issuer and public key is required, this element is optional -->
-     <!-- <mpJwt  groupNameAttribute="groups" id="myMpJwt"/> -->
-   
-  
-  
-    <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" 
-      traceSpecification="com.ibm.ws.artifact.zip.*=all"/> 
-        <!--  <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" traceSpecification="com.ibm.websphere.security.*=all:com.ibm.ws.jaxrs*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.security.*=all:com.ibm.wsspi.webcontainer*=all"/> --> 
+     <!-- <mpJwt  groupNameAttribute="groups" id="myMpJwt"/> -->  
+     
+    <logging maxFileSize="20" maxFiles="10" traceFileName="trace.log" traceSpecification="com.ibm.websphere.security.*=all:com.ibm.ws.jaxrs*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.ws.security.*=all:com.ibm.wsspi.webcontainer*=all"/> 
  
     <keyStore id="defaultKeyStore" password="keyspass"/> 
 	
