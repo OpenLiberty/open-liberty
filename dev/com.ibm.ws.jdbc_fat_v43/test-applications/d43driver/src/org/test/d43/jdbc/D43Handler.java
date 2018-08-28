@@ -15,8 +15,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
+import javax.transaction.Status;
+import javax.transaction.TransactionManager;
+
+import com.ibm.tx.jta.TransactionManagerFactory;
 
 public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> {
     // for tracking Connection.beginRequest/endRequest
@@ -24,6 +30,8 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
     private final AtomicInteger endRequests = new AtomicInteger();
 
     private final Object instance;
+
+    private final static TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
     D43Handler(Object instance) {
         this.instance = instance;
@@ -36,6 +44,7 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
         return new AtomicInteger[] { beginRequests, endRequests };
     }
 
+    @SuppressWarnings("restriction")
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
@@ -56,9 +65,14 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
 
         if ("beginRequest".equals(methodName)) {
             beginRequests.incrementAndGet();
+            ((Connection) instance).beginRequest();
             return null;
         }
         if ("endRequest".equals(methodName)) {
+            if (tm.getStatus() == Status.STATUS_ACTIVE ||
+                ((org.apache.derby.iapi.jdbc.EngineConnection) instance).isInGlobalTransaction())
+                throw new SQLException("Transaction is still active");
+            ((Connection) instance).endRequest();
             endRequests.incrementAndGet();
             return null;
         }
