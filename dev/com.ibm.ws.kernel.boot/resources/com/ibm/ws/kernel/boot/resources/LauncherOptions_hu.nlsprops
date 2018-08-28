@@ -80,7 +80,8 @@ action-desc.package=\tKiszolg\u00e1l\u00f3 becsomagol\u00e1sa arch\u00edvumba. -
 \tAz --include param\u00e9ter az"all", "usr", "minify", "wlp", "runnable",\n\
 \t"all,runnable" \u00e9s "minify,runnable" \u00e9rt\u00e9kekkel haszn\u00e1lhat\u00f3. A "runnable" \n\
 \t\u00e9s "all,runnable" kifejez\u00e9sek egyen\u00e9rt\u00e9k\u0171ek. A "runnable" \u00e9rt\u00e9k csak   \n\
-\t"jar" t\u00edpus\u00fa arch\u00edvumokkal m\u0171k\u00f6dik.
+\t"jar" t\u00edpus\u00fa arch\u00edvumokkal m\u0171k\u00f6dik. A --server-root param\u00e9ter seg\u00edts\u00e9g\u00e9vel \n\
+\tadhat\u00f3 meg a csomagarch\u00edvum gy\u00f6k\u00e9rmapp\u00e1ja.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tDiagnosztikai inform\u00e1ci\u00f3k ki\u00edrat\u00e1sa a kiszolg\u00e1l\u00f3r\u00f3l arch\u00edvumba. Az\n\
@@ -179,3 +180,6 @@ option-desc.os=\t Megadja az oper\u00e1ci\u00f3s rendszereket, amelyeket a csoma
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tAlap\u00e9rtelmezett kulcst\u00e1rol\u00f3 jelsz\u00f3 el\u0151\u00e1ll\u00edt\u00e1s\u00e1nak letilt\u00e1sa
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa az arch\u00edvumban"
+option-desc.package.server-root=\tA gy\u00f6k\u00e9r kiszolg\u00e1l\u00f3mappa nev\u00e9t hat\u00e1rozza meg az arch\u00edv f\u00e1jlban.

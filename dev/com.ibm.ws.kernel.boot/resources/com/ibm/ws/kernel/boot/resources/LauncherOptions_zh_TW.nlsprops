@@ -82,7 +82,9 @@ action-desc.package=\t\u5c07\u4f3a\u670d\u5668\u5305\u88dd\u6210\u4fdd\u5b58\u6a
 \t--include \u9078\u9805\u7684\u503c\u53ef\u4ee5\u662f "all"\u3001"usr"\u3001"minify"\u3001\n\
 \t"wlp"\u3001"runnable"\u3001"all,runnable" \u548c "minify,runnable"\u3002\n\
 \t"runnable" \u548c "all,runnable" \u9019\u5169\u500b\u503c\u76f8\u7b49\u3002"runnable" \u503c\n\
-\t\u53ea\u80fd\u8207 "jar" \u985e\u578b\u7684\u4fdd\u5b58\u6a94\u642d\u914d\u904b\u4f5c\u3002
+\t\u53ea\u80fd\u8207 "jar" \u985e\u578b\u7684\u4fdd\u5b58\u6a94\u642d\u914d\u904b\u4f5c\u3002\
+--server-root \u9078\u9805\u53ef\u4ee5\u7528\u4f86 \n\
+\t\u6307\u5b9a\u5957\u4ef6\u4fdd\u5b58\u6a94\u4e2d\u7684\u6839\u8cc7\u6599\u593e\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\t\u5c07\u4f86\u81ea\u4f3a\u670d\u5668\u7684\u8a3a\u65b7\u8cc7\u8a0a\u50be\u51fa\u81f3\u4fdd\u5b58\u6a94\u3002\
@@ -178,3 +180,6 @@ option-desc.os=\t\u6307\u5b9a\u60a8\u5e0c\u671b\u5957\u88dd\u4f3a\u670d\u5668\u6
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\t\u505c\u7528\u9810\u8a2d\u91d1\u9470\u5132\u5b58\u5eab\u5bc6\u78bc\u7684\u7522\u751f
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="\u4fdd\u5b58\u6a94\u4e2d\u7684\u6839\u4f3a\u670d\u5668\u8cc7\u6599\u593e"
+option-desc.package.server-root=\t\u5728\u4fdd\u5b58\u6a94\u4e2d\u6307\u5b9a\u6839\u4f3a\u670d\u5668\u8cc7\u6599\u593e\u3002
