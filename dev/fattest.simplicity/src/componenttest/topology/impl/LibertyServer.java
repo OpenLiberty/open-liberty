@@ -1217,10 +1217,21 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Clear any log marks and then set log marks to messages.log
+     * or trace.log if those exist. See issue 4364
+     *
      * @throws Exception
      */
     private void initializeAnyExistingMarks() throws Exception {
         final String method = "initializeAnyExistingMarks";
+
+        // First we clear any marks - it's possible this
+        // server was re-used, but stopped, so logs were taken
+        // away. So if we simply clear our cache of log marks,
+        // and then for any of the files that do exist, set the
+        // log marks, then we should be at a good initial state
+        clearLogMarks();
+
         if (defaultLogFileExists()) {
             Log.info(c, method, "Saving messages.log mark");
             setMarkToEndOfLog();
