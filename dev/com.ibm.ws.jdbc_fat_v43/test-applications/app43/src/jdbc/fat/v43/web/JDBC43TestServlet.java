@@ -41,6 +41,9 @@ public class JDBC43TestServlet extends FATServlet {
     @Resource
     DataSource defaultDataSource;
 
+    @Resource(lookup = "jdbc/poolOf1", shareable = false)
+    DataSource unsharablePool1DataSource;
+
     @Resource(lookup = "jdbc/xa", shareable = false)
     DataSource unsharableXADataSource;
 
@@ -404,5 +407,179 @@ public class JDBC43TestServlet extends FATServlet {
 
         assertEquals(begins, requests[BEGIN].get());
         assertEquals(ends + 1, requests[END].get());
+    }
+
+    /**
+     * Verify that within a global transaction, separate requests are used for each unshared connection,
+     * and that these requests only end when both the connection is closed AND the global transaction has ended.
+     */
+    @Test
+    public void testSerialUnsharedInGlobalTransaction() throws Exception {
+        AtomicInteger[] requests1 = null, requests2 = null, requests3 = null;
+        int begin1 = -1000, end1 = -1000;
+        int begin2 = -2000, end2 = -2000;
+        int begin3 = -3000, end3 = -3000;
+
+        boolean successful = false;
+        Connection con3 = null;
+        tx.begin();
+        try {
+            Connection con1 = unsharableXADataSource.getConnection();
+            try {
+                requests1 = (AtomicInteger[]) con1.unwrap(Supplier.class).get();
+                begin1 = requests1[BEGIN].get();
+                end1 = requests1[END].get();
+                assertEquals(end1 + 1, begin1);
+
+                PreparedStatement ps1 = con1.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                ps1.setString(1, "Bamber Valley Road SW");
+                ps1.setString(2, "Rochester");
+                ps1.setString(3, "MN");
+                ps1.executeUpdate();
+                ps1.close();
+            } finally {
+                con1.close();
+            }
+
+            Connection con2 = unsharableXADataSource.getConnection();
+            try {
+                PreparedStatement ps2 = con2.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                ps2.setString(1, "Mayowood Road SW");
+                ps2.setString(2, "Rochester");
+                ps2.setString(3, "MN");
+                ps2.executeUpdate();
+                ps2.close();
+
+                requests2 = (AtomicInteger[]) con2.unwrap(Supplier.class).get();
+                begin2 = requests2[BEGIN].get();
+                end2 = requests2[END].get();
+                assertEquals(end2 + 1, begin2);
+            } finally {
+                con2.close();
+            }
+
+            con3 = unsharableXADataSource.getConnection();
+
+            requests3 = (AtomicInteger[]) con3.unwrap(Supplier.class).get();
+            begin3 = requests1[BEGIN].get();
+            end3 = requests1[END].get();
+            assertEquals(end3 + 1, begin3);
+
+            successful = true;
+        } finally {
+            tx.commit();
+
+            if (!successful && con3 != null)
+                con3.close();
+        }
+
+        try {
+            // first two requests should end after commit because their connections were closed
+            assertEquals(end1 + 1, requests1[END].get());
+            assertEquals(end2 + 1, requests2[END].get());
+
+            // third request must not end because the connection remains open
+            assertEquals(end3, requests3[END].get());
+
+            tx.begin();
+            try {
+                // same managed connection instance is used here
+                PreparedStatement ps3 = con3.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                assertEquals(begin3, requests3[BEGIN].get());
+                assertEquals(end3, requests3[END].get());
+
+                ps3.setString(1, "Collegeview Road SE");
+                ps3.setString(2, "Rochester");
+                ps3.setString(3, "MN");
+                ps3.executeUpdate();
+                ps3.close();
+
+                assertEquals(end3, requests3[END].get());
+            } finally {
+                tx.commit();
+            }
+        } finally {
+            con3.close();
+        }
+        assertEquals(end3 + 1, requests3[END].get());
+    }
+
+    /**
+     * Verify that within an LTC, a separate request is used for get/use/close of each unshared handle.
+     */
+    @Test
+    public void testSerialUnsharedInLTC() throws Exception {
+        AtomicInteger[] requests;
+        int begins = -1000, ends = -1000;
+
+        Connection con1 = unsharablePool1DataSource.getConnection();
+        try {
+            requests = (AtomicInteger[]) con1.unwrap(Supplier.class).get();
+            begins = requests[BEGIN].get();
+            ends = requests[END].get();
+            assertEquals(ends + 1, begins);
+
+            PreparedStatement ps1 = con1.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps1.setString(1, "Silver Creek Road NE");
+            ps1.setString(2, "Rochester");
+            ps1.setString(3, "MN");
+            ps1.executeUpdate();
+            ps1.close();
+        } finally {
+            con1.close();
+        }
+        assertEquals(ends + 1, requests[END].get());
+
+        // same connection must be returned from the pool because pool size is 1
+        Connection con2 = unsharablePool1DataSource.getConnection();
+        try {
+            PreparedStatement ps2 = con2.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps2.setString(1, "Marion Road SE");
+            ps2.setString(2, "Rochester");
+            ps2.setString(3, "MN");
+            ps2.executeUpdate();
+            ps2.close();
+
+            assertEquals(begins + 1, requests[BEGIN].get());
+            assertEquals(ends + 1, requests[END].get());
+        } finally {
+            con2.close();
+        }
+        assertEquals(ends + 2, requests[END].get());
+
+        // Again, same connection must be returned from the pool because pool size is 1
+        Connection con3 = unsharablePool1DataSource.getConnection();
+        try {
+            assertEquals(begins + 2, requests[BEGIN].get());
+            assertEquals(ends + 2, requests[END].get());
+
+            // end the LTC
+            tx.begin();
+            tx.commit();
+
+            assertEquals(begins + 2, requests[BEGIN].get());
+            assertEquals(ends + 2, requests[END].get());
+
+            // new LTC, but same request
+            PreparedStatement ps3 = con3.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            assertEquals(begins + 2, requests[BEGIN].get());
+            assertEquals(ends + 2, requests[END].get());
+
+            ps3.setString(1, "Pinewood Road SE");
+            ps3.setString(2, "Rochester");
+            ps3.setString(3, "MN");
+            ps3.executeUpdate();
+            ps3.close();
+        } finally {
+            con3.close();
+        }
+        assertEquals(ends + 3, requests[END].get());
+
+        // end the second LTC
+        tx.begin();
+        tx.commit();
+
+        assertEquals(begins + 2, requests[BEGIN].get());
+        assertEquals(ends + 3, requests[END].get());
     }
 }
