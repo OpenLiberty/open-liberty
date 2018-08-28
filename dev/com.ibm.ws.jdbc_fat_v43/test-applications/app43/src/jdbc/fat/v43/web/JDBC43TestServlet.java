@@ -41,6 +41,9 @@ public class JDBC43TestServlet extends FATServlet {
     @Resource
     DataSource defaultDataSource;
 
+    @Resource(lookup = "jdbc/xa", shareable = false)
+    DataSource unsharableXADataSource;
+
     @Resource
     UserTransaction tx;
 
@@ -122,6 +125,7 @@ public class JDBC43TestServlet extends FATServlet {
             assertEquals(begins, requests[BEGIN].get());
             assertEquals(ends, requests[END].get());
 
+            @SuppressWarnings("unused")
             Connection con3 = defaultDataSource.getConnection();
             assertEquals(begins, requests[BEGIN].get());
             assertEquals(ends, requests[END].get());
@@ -131,6 +135,126 @@ public class JDBC43TestServlet extends FATServlet {
 
         assertEquals(begins, requests[BEGIN].get());
         assertEquals(ends + 1, requests[END].get());
+    }
+
+    /**
+     * Verify that within a global transaction, a request is made per unshared connection,
+     * and those requests remain open until the connection is closed and the transaction ends,
+     * regardless of whether the close happens within the transaction or after it.
+     */
+    @Test
+    public void testMultipleUnsharedConnectionsInTransaction() throws Exception {
+        boolean successful = false;
+        Connection con1 = null, con2 = null;
+        AtomicInteger[] requests1 = null, requests2 = null, requests3 = null;
+        int begin1 = -1000, end1 = -1000;
+        int begin2 = -2000, end2 = -2000;
+        int begin3 = -3000, end3 = -3000;
+
+        tx.begin();
+        try {
+            con1 = unsharableXADataSource.getConnection();
+            requests1 = (AtomicInteger[]) con1.unwrap(Supplier.class).get();
+            begin1 = requests1[BEGIN].get();
+            end1 = requests1[END].get();
+            assertEquals(end1 + 1, begin1);
+
+            PreparedStatement ps1 = con1.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps1.setString(1, "Salem Road SW");
+            ps1.setString(2, "Rochester");
+            ps1.setString(3, "MN");
+            ps1.executeUpdate();
+            ps1.close();
+
+            con2 = unsharableXADataSource.getConnection();
+            requests2 = (AtomicInteger[]) con2.unwrap(Supplier.class).get();
+            begin2 = requests2[BEGIN].get();
+            end2 = requests2[END].get();
+            assertEquals(end2 + 1, begin2);
+
+            PreparedStatement ps2 = con2.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps2.setString(1, "Assisi Drive NW");
+            ps2.setString(2, "Rochester");
+            ps2.setString(3, "MN");
+            ps2.executeUpdate();
+            ps2.close();
+
+            Connection con3 = unsharableXADataSource.getConnection();
+            try {
+                requests3 = (AtomicInteger[]) con3.unwrap(Supplier.class).get();
+                begin3 = requests3[BEGIN].get();
+                end3 = requests3[END].get();
+                assertEquals(end3 + 1, begin3);
+            } finally {
+                con3.close();
+            }
+
+            // all requests remain open for the duration of the transaction
+            assertEquals(requests3[BEGIN].get(), begin3);
+            end3 = requests3[END].get();
+            assertEquals(end3 + 1, begin3);
+
+            end2 = requests2[END].get();
+            assertEquals(end2 + 1, begin2);
+
+            end1 = requests1[END].get();
+            assertEquals(end1 + 1, begin1);
+
+            successful = true;
+        } finally {
+            tx.commit();
+
+            try {
+                if (successful) {
+                    successful = false;
+
+                    // third requests ends after commit due to closed connection
+                    assertEquals(requests3[BEGIN].get(), begin3);
+                    end3 = requests3[END].get();
+                    assertEquals(end3, begin3);
+
+                    // other requests remain open across transaction boundary
+                    assertEquals(requests1[BEGIN].get(), begin1);
+                    end1 = requests1[END].get();
+                    assertEquals(end1 + 1, begin1);
+
+                    assertEquals(requests2[BEGIN].get(), begin2);
+                    end2 = requests2[END].get();
+                    assertEquals(end2 + 1, begin2);
+
+                    successful = true;
+                }
+            } finally {
+                con1.close();
+
+                try {
+                    if (successful) {
+                        successful = false;
+
+                        // first request ends due to closed connection
+                        assertEquals(requests1[BEGIN].get(), begin1);
+                        end1 = requests1[END].get();
+                        assertEquals(end1, begin1);
+
+                        // second request still open due to connection remaining open
+                        assertEquals(requests2[BEGIN].get(), begin2);
+                        end2 = requests2[END].get();
+                        assertEquals(end2 + 1, begin2);
+
+                        successful = true;
+                    }
+                } finally {
+                    con2.close();
+
+                    if (successful) {
+                        // second request ends due to closed connection
+                        assertEquals(requests2[BEGIN].get(), begin2);
+                        end2 = requests2[END].get();
+                        assertEquals(end2, begin2);
+                    }
+                }
+            }
+        }
     }
 
     /**
