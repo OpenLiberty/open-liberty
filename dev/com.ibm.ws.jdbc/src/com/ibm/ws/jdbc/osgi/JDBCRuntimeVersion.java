@@ -82,4 +82,8 @@ public interface JDBCRuntimeVersion {
     
     // JDBC 4.2 BatchUpdateException constructor
     public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage);
+
+    // JDBC 4.3 Connection methods
+    public void beginRequest(Connection con) throws SQLException;
+    public void endRequest(Connection con) throws SQLException;
 }

@@ -146,4 +146,15 @@ public class JDBC43Runtime implements JDBCRuntimeVersion {
             throw new SQLFeatureNotSupportedException(e);
         }
     }
+
+    @Override
+    public void beginRequest(Connection con) throws SQLException {
+        con.beginRequest();
+    }
+
+    @Override
+    public void endRequest(Connection con) throws SQLException {
+        con.endRequest();
+    }
+
 }
