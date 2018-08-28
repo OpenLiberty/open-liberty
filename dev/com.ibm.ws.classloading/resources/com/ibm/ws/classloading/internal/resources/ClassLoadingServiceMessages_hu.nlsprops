@@ -139,3 +139,19 @@ slf.no.acf.useraction=Tekintse meg a hibafelder\u00edt\u00e9si inform\u00e1ci\u0
 slf.failed.delete=CWWKL0072W: A(z) [{0}] gyors\u00edt\u00f3t\u00e1r f\u00e1jlja nem t\u00f6r\u00f6lhet\u0151. Ez az egym\u00e1sba \u00e1gyazott arch\u00edvumok s\u00e9r\u00fcl\u00e9s\u00e9hez vezethet.
 slf.failed.delete.explanation=A rendszer nem tudta t\u00f6r\u00f6lni a gyors\u00edt\u00f3t\u00e1r f\u00e1jlj\u00e1t. Mivel a f\u00e1jl tov\u00e1bbra is l\u00e9tezik a rendszeren, ez a be\u00e1gyazott arch\u00edvumok s\u00e9r\u00fcl\u00e9s\u00e9t okozhatja.
 slf.failed.delete.useraction=Ellen\u0151rizze, hogy a gyors\u00edt\u00f3t\u00e1r f\u00e1jlja nincs-e z\u00e1rolt \u00e1llapotban, ami a f\u00e1jl t\u00f6rl\u00e9s\u00e9nek meghi\u00fasul\u00e1s\u00e1t okozhatja.
+
+cls.classloader.config.duplicate=CWWKL0080E: A(z) [{0}] API t\u00edpus m\u00e1r haszn\u00e1latban van ebben a(z) [{1}] list\u00e1ban.  T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 API-t.
+cls.classloader.config.duplicate.explanation=Minden API t\u00edpus legfeljebb egyszer adhat\u00f3 meg.
+cls.classloader.config.duplicate.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban a t\u00f6bbsz\u00f6r szerepl\u0151 API t\u00edpust, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az API t\u00edpusok helyesek.
+
+cls.classloader.config.not.allowed=CWWKL0081E: A(z) [{0}] API t\u00edpus m\u00e1r hozz\u00e1 van adva a list\u00e1hoz a + vagy - el\u0151tag haszn\u00e1lat\u00e1val.  T\u00e1vol\u00edtsa el a(z) [{0}] t\u00edpust a(z) [{1}] list\u00e1b\u00f3l.
+cls.classloader.config.not.allowed.explanation=Az \u00f6sszes alap\u00e9rtelmezett API t\u00edpus hozz\u00e1 van adva, t\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151ket.
+cls.classloader.config.not.allowed.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3t, t\u00e1vol\u00edtsa el az alap\u00e9rtelmezett API t\u00edpust, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az API t\u00edpusok helyesek.
+
+cls.classloader.config.typo=CWWKL0082E: A(z) [{0}] API t\u00edpus nem \u00e9rv\u00e9nyes ebben a(z) [{1}] list\u00e1ban, \u00e9s m\u00f3dos\u00edtani kell az \u00e9rv\u00e9nyes {2} API t\u00edpusok egyik\u00e9re.
+cls.classloader.config.typo.explanation=M\u00f3dos\u00edtsa az \u00e9rv\u00e9nytelen API t\u00edpust egy \u00e9rv\u00e9nyes API t\u00edpusra.
+cls.classloader.config.typo.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban az \u00e9rv\u00e9nytelen API t\u00edpust, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az API t\u00edpusok helyesek.
+
+cls.classloader.config.typo2=CWWKL0083E: A + vagy - el\u0151tag haszn\u00e1latakor a(z) [{0}] API t\u00edpus nem \u00e9rv\u00e9nyes ebben a(z) [{1}] list\u00e1ban.  Minden API t\u00edpusnak rendelkeznie kell egy + vagy - el\u0151taggal.
+cls.classloader.config.typo2.explanation=M\u00f3dos\u00edtsa az \u00e9rv\u00e9nytelen API t\u00edpust egy \u00e9rv\u00e9nyes API t\u00edpusra a + vagy - el\u0151taggal.
+cls.classloader.config.typo2.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3ban az \u00e9rv\u00e9nytelen API t\u00edpust, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az API t\u00edpusok helyesek.

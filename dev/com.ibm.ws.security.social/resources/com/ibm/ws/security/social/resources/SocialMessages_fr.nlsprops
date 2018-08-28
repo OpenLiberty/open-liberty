@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -541,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=V\u00e9rifiez que la configuration
 REQUEST_URL_NOT_VALID=CWWKS5499E: La fonction de login social ne peut pas rediriger la demande vers l''URL de demande originelle, [{0}], car l''URL n''est pas valide. {1}
 REQUEST_URL_NOT_VALID.explanation=L'URL de demande originelle n'est pas une URL valide. Il se peut que l'URL contienne des caract\u00e8res non valides ou soit incorrectement form\u00e9e.
 REQUEST_URL_NOT_VALID.useraction=V\u00e9rifiez que l'URL de demande sp\u00e9cifi\u00e9e dans le message correspond \u00e0 l'URL originelle de demande de ressource prot\u00e9g\u00e9e. V\u00e9rifiez que l'URL est form\u00e9e correctement et ne contient que des caract\u00e8res d'URI valides.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Un attribut de configuration [{0}] requis dans une configuration de login social est associ\u00e9 \u00e0 la valeur [{1}], qui n''est pas valide.
+INVALID_CONFIG_PARAM.explanation=La fonction de login social ne trouve pas de valeur valide pour un attribut de configuration requis. Une valeur valide est requise pour que la demande puisse \u00eatre trait\u00e9e.
+INVALID_CONFIG_PARAM.useraction=V\u00e9rifiez que l'attribut sp\u00e9cifi\u00e9 dans la configuration de login social est configur\u00e9 et associ\u00e9 \u00e0 une valeur valide.
