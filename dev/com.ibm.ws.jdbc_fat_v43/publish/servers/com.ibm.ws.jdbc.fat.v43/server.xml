@@ -25,6 +25,12 @@
     <properties url="jdbc:d43:memory:testdb;create=true" user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
 
+  <dataSource jndiName="jdbc/xa">
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+    <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
+  </dataSource>
+
   <!-- This is a Derby driver with custom implementations added for certain JDBC 4.3 methods -->
   <library id="D43Lib" fat.modify="true">
     <file name="${server.config.dir}/drivers/d43driver.jar"/>
