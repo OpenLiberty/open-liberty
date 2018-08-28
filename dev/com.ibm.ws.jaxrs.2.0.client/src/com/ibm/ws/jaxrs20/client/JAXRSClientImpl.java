@@ -49,7 +49,6 @@ import com.ibm.ws.jaxrs20.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxrs20.client.bus.LibertyJAXRSClientBusFactory;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientConfigInterceptor;
 import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientProxyInterceptor;
-import com.ibm.ws.jaxrs20.client.configuration.LibertyJaxRsClientTimeOutInterceptor;
 import com.ibm.ws.jaxrs20.client.security.LibertyJaxRsClientSSLOutInterceptor;
 import com.ibm.ws.jaxrs20.client.security.ltpa.LibertyJaxRsClientLtpaInterceptor;
 import com.ibm.ws.jaxrs20.client.security.oauth.LibertyJaxRsClientOAuthInterceptor;
@@ -171,10 +170,7 @@ public class JAXRSClientImpl extends ClientImpl {
         //get ClientCongfiguration
         ClientConfiguration ccfg = WebClient.getConfig(targetClient);
 
-        //add Liberty Jax-RS Client Timeout Interceptor to configure the timeout
-        ccfg.getOutInterceptors().add(new LibertyJaxRsClientTimeOutInterceptor(Phase.PRE_LOGICAL));
-
-        //add Liberty Jax-RS Client Config Interceptor to configure things like KeepAlive
+        //add Liberty Jax-RS Client Config Interceptor to configure things like KeepAlive, timeouts, etc.
         ccfg.getOutInterceptors().add(new LibertyJaxRsClientConfigInterceptor(Phase.PRE_LOGICAL));
 
         //add Liberty Jax-RS Client Proxy Interceptor to configure the proxy
