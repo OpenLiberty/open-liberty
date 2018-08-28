@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.javaee.v80.fat;
+package javaee8.web.cdi;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.context.RequestScoped;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                JavaEE8Test.class
-})
-public class FATSuite {}
+@RequestScoped
+public class BasicCDIBean {
+
+    public String sayHi() {
+        return "Hello world";
+    }
+
+}

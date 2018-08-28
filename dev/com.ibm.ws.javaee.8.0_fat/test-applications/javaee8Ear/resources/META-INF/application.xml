@@ -5,12 +5,10 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/application_8.xsd"
     version="8">
 
-  <display-name>SimpleEar</display-name>
-
   <module>
       <web>
-	<web-uri>simpleWar.war</web-uri>
-          <context-root>simpleWar</context-root>
+	       <web-uri>javaee8App.war</web-uri>
+          <context-root>javaee8App</context-root>
       </web>
   </module>
 
