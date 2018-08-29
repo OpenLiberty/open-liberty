@@ -438,6 +438,11 @@ public abstract class AnnotationsImpl implements Annotations {
     }
 
     @Override
+    public AnnotationTargets_Targets getAnnotationTargets() {
+        return getTargets();
+    }
+
+    @Override
     public AnnotationTargets_Targets releaseTargets() {
         synchronized ( targetsLock ) {
             if ( !isSetTargets ) {
