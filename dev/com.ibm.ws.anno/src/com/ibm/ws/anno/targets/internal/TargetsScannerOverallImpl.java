@@ -179,7 +179,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     @Override
     protected TargetsTableImpl createTargetsData(String childClassSourceName) {
-        if ( isScanSingleThreaded() ) {
+        if ( isScanSingleThreaded() || isScanSingleSource() ) {
             return super.createTargetsData(childClassSourceName);
         } else {
             return new TargetsTableImpl( getFactory(), childClassSourceName );
@@ -187,7 +187,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
 
     protected TargetsTableImpl internTargetsData(TargetsTableImpl targetsData) {
-        if ( isScanSingleThreaded() ) {
+        if ( isScanSingleThreaded() || isScanSingleSource() ) {
             return targetsData;
         }
 
@@ -395,7 +395,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         TargetsTableContainersImpl useContainerTable;
 
-        if ( !modData.hasContainersTable() ) {
+        if ( !modData.shouldRead("Containers table") || !modData.hasContainersTable() ) {
             isChanged = true;
             isChangedReason = "Cache miss";
 
@@ -429,7 +429,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         }
 
         if ( isChanged ) {
-            modData.writeContainersTable(useContainerTable);
+            if ( modData.shouldWrite("Containers table") ) {
+                modData.writeContainersTable(useContainerTable);
+            }
         }
 
         setContainerTable(useContainerTable, isChangedReason, isChanged);
@@ -478,12 +480,19 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         boolean isChangedJustStamp;
         String isChangedReason;
 
-        TargetsTableImpl useTargetsData;
+        TargetCacheImpl_DataCon conData = modData.getConForcing(classSourceName);
+        TargetsTableImpl useTargetsData = createTargetsData(classSourceName);
 
-        TargetCacheImpl_DataCon conData = modData.getActiveCon(classSourceName);
-        if ( conData == null ) {
-            conData = modData.putActiveCon(classSourceName);
+        boolean attemptRead;
+        boolean completedRead;
+        
+        if ( attemptRead = (conData.shouldRead("Container data") && conData.hasFiles()) ) {
+            completedRead = conData.read(useTargetsData);
+        } else {
+            completedRead = false;
+        }
 
+        if ( !completedRead ) { 
             useTargetsData = scanInternal(classSource,
                 TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
                 TargetsVisitorClassImpl.DONT_RECORD_RESOLVED);
@@ -491,62 +500,58 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
             isChangedAll = true;
             isChangedJustStamp = false;
-            isChangedReason = "Cache miss";
+
+            if ( attemptRead ) {
+                isChangedReason = "Cache miss (read failure)";
+            } else {
+                isChangedReason = "Cache miss";
+            }
 
         } else {
-            useTargetsData = createTargetsData(classSourceName);
-            if ( !conData.read(useTargetsData) ) {
-                useTargetsData = scanInternal(classSource,
-                    TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                    TargetsVisitorClassImpl.DONT_RECORD_RESOLVED);
+            if ( modData.isAlwaysValid() ) {
                 useTargetsData = internTargetsData(useTargetsData);
 
-                isChangedAll = true;
+                isChangedAll = false;
                 isChangedJustStamp = false;
-                isChangedReason = "Cache miss (read failure)";
+                isChangedReason = "Cache hit (forced valid)";
+
+            } else if ( validStamp(classSource, conData) ) {
+                useTargetsData = internTargetsData(useTargetsData);
+
+                isChangedAll = false;
+                isChangedJustStamp = false;
+                isChangedReason = "Cache hit (valid stamp)";
 
             } else {
-                if ( modData.isAlwaysValid() ) {
-                    useTargetsData = internTargetsData(useTargetsData);
+                TargetsTableImpl newTargetsData = scanInternal(classSource,
+                    TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
+                    TargetsVisitorClassImpl.DONT_RECORD_RESOLVED);
 
-                    isChangedAll = false;
+                if ( !useTargetsData.sameAs(newTargetsData) ) {
+                    useTargetsData = internTargetsData(newTargetsData);
+
+                    isChangedAll = true;
                     isChangedJustStamp = false;
-                    isChangedReason = "Cache hit (forced valid)";
-
-                } else if ( validStamp(classSource, conData) ) {
-                    useTargetsData = internTargetsData(useTargetsData);
-
-                    isChangedAll = false;
-                    isChangedJustStamp = false;
-                    isChangedReason = "Cache hit (valid stamp)";
+                    isChangedReason = "Cache hit (invalid stamp; invalid data)";
 
                 } else {
-                    TargetsTableImpl newTargetsData = scanInternal(classSource,
-                        TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                        TargetsVisitorClassImpl.DONT_RECORD_RESOLVED);
+                    useTargetsData = internTargetsData(useTargetsData);
 
-                    if ( !useTargetsData.sameAs(newTargetsData) ) {
-                        useTargetsData = internTargetsData(newTargetsData);
-
-                        isChangedAll = true;
-                        isChangedJustStamp = false;
-                        isChangedReason = "Cache hit (invalid stamp; invalid data)";
-
-                    } else {
-                        useTargetsData = internTargetsData(useTargetsData);
-
-                        isChangedAll = false;
-                        isChangedJustStamp = true;
-                        isChangedReason = "Cache hit (invalid stamp; valid data)";
-                    }
+                    isChangedAll = false;
+                    isChangedJustStamp = true;
+                    isChangedReason = "Cache hit (invalid stamp; valid data)";
                 }
             }
         }
 
         if ( isChangedAll ) {
-            conData.write(useTargetsData);
+            if ( modData.shouldWrite("Container data") ) {
+                conData.write(modData, useTargetsData);
+            }
         } else if ( isChangedJustStamp ) {
-            conData.writeStamp(useTargetsData);
+            if ( modData.shouldWrite("Time stamp") ) {
+                conData.writeStamp(modData, useTargetsData);
+            }
         }
 
         synchronized( getTargetsControl() ) {
@@ -580,10 +585,14 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
              currentStamp.equals(ClassSource.UNAVAILABLE_STAMP) ) {
             isChanged = true;
             isChangedReason = "Non-comparable stamp [ " + currentStamp + " ]";
-            
+
         } else if ( conData == null ) {
             isChanged = true;
             isChangedReason = "Cache miss";
+            
+        } else if ( !conData.shouldRead("Time Stamp") ) {
+        	isChanged = true;
+        	isChangedReason = "Cache miss (disabled)";
 
         } else if ( !conData.hasTimeStampFile() ) {
             isChanged = true;
@@ -618,7 +627,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
 
     protected boolean validInternalContainers_Select() {
-        if ( isScanSingleThreaded() ) {
+        if ( isScanSingleThreaded() || isScanSingleSource() ) {
             return validInternalContainers();
         } else {
             return validInternalContainers_Concurrent();
@@ -786,11 +795,11 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         UtilImpl_IdentityStringSet i_cachedResolvedClassNames = null;
         UtilImpl_IdentityStringSet i_cachedUnresolvedClassNames = null;
 
-        if ( !modData.hasResolvedRefs() ) {
+        if ( !modData.shouldRead("Resolved class names") || !modData.hasResolvedRefs() ) {
             isChanged = true;
             isChangedReason = "Cache miss (resolved class names)";
 
-        } else if ( !modData.hasUnresolvedRefs() ) {
+        } else if ( !modData.shouldRead("Unresolved class names") || !modData.hasUnresolvedRefs() ) {
             isChanged = true;
             isChangedReason = "Cache miss (unresolved class names)";
 
@@ -888,8 +897,12 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         changedClassNames = isChanged;
 
         if ( isChanged ) {
-            modData.writeResolvedRefs(i_resolvedClassNames);
-            modData.writeUnresolvedRefs(i_unresolvedClassNames);
+        	if ( modData.shouldWrite("Resolved refs") ) {
+        		modData.writeResolvedRefs(i_resolvedClassNames);
+        	}
+        	if ( modData.shouldWrite("Unresolved refs") ) {
+        		modData.writeUnresolvedRefs(i_unresolvedClassNames);
+        	}
         }
 
         if ( logger.isLoggable(Level.FINER) ) {
@@ -913,7 +926,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         boolean readInternalResults;
 
-        if ( isScanSingleThreaded() ) {
+        if ( isScanSingleThreaded() || isScanSingleSource() ) {
             readInternalResults = readInternalResults(cachedBuckets);
         } else {
             readInternalResults = readInternalResults_Concurrent(cachedBuckets);
@@ -928,7 +941,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         } else {
             if ( modData.isAlwaysValid() ) {
-                didValidate = false;                
+                didValidate = false;
                 isChanged = false;
                 isChangedReason = "Cache hit (forced valid)";
 
@@ -960,7 +973,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                     continue;
                 }
 
-                modData.writeResultData( scanPolicy, newBuckets[ scanPolicy.ordinal() ] );
+                if ( modData.shouldWrite("Result container") ) {
+                	modData.writeResultCon( scanPolicy, newBuckets[ scanPolicy.ordinal() ] );
+                }
             }
 
             cachedBuckets = newBuckets;
@@ -1063,13 +1078,13 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     // 'internTargetsData'.
 
     protected TargetsTableImpl readResults(ScanPolicy scanPolicy, TargetsTableImpl[] buckets) {
-        if ( !modData.hasResultConData(scanPolicy) ) {
+        if ( !modData.shouldRead("Result container") || !modData.hasResultCon(scanPolicy) ) {
             return null;
         }
 
         TargetsTableImpl cachedResultData = createTargetsData( scanPolicy.name() );
 
-        if ( modData.readResultData(scanPolicy, cachedResultData) ) {
+        if ( modData.readResultCon(scanPolicy, cachedResultData) ) {
             cachedResultData = internTargetsData(cachedResultData);
 
             if ( buckets != null ) {
@@ -1094,7 +1109,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         TargetsTableClassesMultiImpl cachedClassTable;
 
-        if ( !modData.hasClassRefs() ) {
+        if ( !modData.shouldRead("Class refs") || !modData.hasClassRefs() ) {
             cachedClassTable = null;
         } else {
             cachedClassTable = createClassTable();
@@ -1135,7 +1150,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
             mergeClasses(newClassTable);
 
-            modData.writeClassRefs(newClassTable);
+            if ( modData.shouldWrite("Class refs") ) {
+            	modData.writeClassRefs(newClassTable);
+            }
 
             cachedClassTable = newClassTable;
         }

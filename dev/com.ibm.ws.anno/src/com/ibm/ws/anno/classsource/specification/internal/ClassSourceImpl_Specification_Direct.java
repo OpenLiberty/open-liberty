@@ -36,9 +36,9 @@ public abstract class ClassSourceImpl_Specification_Direct
 
     protected ClassSourceImpl_Specification_Direct(
         ClassSourceImpl_Factory factory,
-        String appName, String modName) {
+        String appName, String modName, String modCatName) {
 
-        super(factory, appName, modName);
+        super(factory, appName, modName, modCatName);
     }
 
     //

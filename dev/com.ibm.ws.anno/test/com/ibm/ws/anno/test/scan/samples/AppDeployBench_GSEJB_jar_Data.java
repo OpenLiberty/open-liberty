@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_EJB;
+import com.ibm.ws.anno.test.scan.Test_Base;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
@@ -33,13 +34,13 @@ public class AppDeployBench_GSEJB_jar_Data {
         EJBJAR_MANIFEST_PATHS = new ArrayList<String>();
 
         EJBJAR_MANIFEST_PATHS.add("GarageSaleUtils.jar");
-        EJBJAR_MANIFEST_PATHS.add("WSNClient.jar");
+        // EJBJAR_MANIFEST_PATHS.add("WSNClient.jar");
     }
 
     public static ClassSource_Specification_Direct_EJB createClassSourceSpecification(ClassSource_Factory factory) {
 
     	ClassSource_Specification_Direct_EJB ejbSpecification =
-            factory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME);
+            factory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
 
         String earPath = TestLocalization.putIntoData(EAR_NAME) + '/';
 

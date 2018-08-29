@@ -11,11 +11,8 @@
 
 package com.ibm.ws.anno.classsource.internal;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.Set;
 import java.util.logging.Level;
@@ -26,6 +23,7 @@ import org.jboss.jandex.Index;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.jandex.internal.Jandex_Utils;
 import com.ibm.ws.anno.jandex.internal.SparseIndex;
+import com.ibm.ws.anno.util.internal.UtilImpl_FileStamp;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -183,29 +181,9 @@ public class ClassSourceImpl_MappedContainer
     /**
      * <p>Answer a time stamp for the mapped container.</p>
      *
-     * <p>Answer the file time last modified time for containers
-     * which are mapped to a an archive type file.</p>
-     *
-     * <p>Answer the unavailable times tamp value if the file is not
-     * an archive type file.  (The directory last modified value does
-     * tell when child files were updated.  Iterating across the child
-     * files (which would be recursive) is not done because of the
-     * cost.</p>
-     *
-     * <p>See {@link File#lastModified()} and {@link ClassSource#UNAVAILABLE_STAMP}.</p>
-     *
-     * <p>From {@link File#lastModified()}:</p>
-     *
-     * <quote>A <code>long</code> value representing the time the file was
-     * last modified, measured in milliseconds since the epoch
-     * (00:00:00 GMT, January 1, 1970), or <code>0L</code> if the
-     * file does not exist or if an I/O error occurs.
-     * </quote}
-     *
-     * @return The time stamp of the mapped container.
-     *
-     * <p>This implementation uses the deprecated {@link Container#getPhysicalPath()}.
-     * No alternate is yet available.</p>
+     * <p>See {@link UtilImpl_FileStamp#computeStamp(Container).</p>
+	 *
+	 * @return The time stamp of the mapped container.
      */
     @Override
     protected String computeStamp() {
@@ -213,44 +191,16 @@ public class ClassSourceImpl_MappedContainer
 
         Container useRootContainer = getRootContainer();
 
-        @SuppressWarnings("deprecation")
-        final String rootContainerPath = useRootContainer.getPhysicalPath();
-
-        if ( rootContainerPath == null ) {
-            if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "Container [ {0} ] [ {1} ]",
-                    new Object[] { useRootContainer.getName(), useRootContainer.getPath() });
-            }
-
-            Container enclosingContainer = useRootContainer.getEnclosingContainer();
-            if ( enclosingContainer != null ) {
-                if ( logger.isLoggable(Level.FINER) ) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Enclosed by [ {0} ] [ {1} ]",
-                        new Object[] { enclosingContainer.getName(), enclosingContainer.getPath() });
-                }
-            }
-
-            return ClassSource.UNAVAILABLE_STAMP;
+        String stamp = UtilImpl_FileStamp.computeStamp(useRootContainer);
+        if ( stamp == null ) {
+        	stamp = ClassSource.UNAVAILABLE_STAMP;
         }
-
-        String result = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                File containerFile = new File(rootContainerPath);
-
-                if ( !containerFile.exists() || !containerFile.isFile() ) {
-                    return ClassSource.UNAVAILABLE_STAMP;
-                }
-
-                long containerLastModified = containerFile.lastModified();
-                return Long.toString(containerLastModified);
-            }
-        });
 
         if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, MessageFormat.format("[ {0} ] Container [ {1} ] Stamp [ {2} ]", getHashText(), rootContainerPath, result));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                MessageFormat.format("[ {0} ] Container [ {1} ] Stamp [ {2} ]", getHashText(), useRootContainer, stamp));
         }
-        return result;
+        return stamp;
     }
 
     //

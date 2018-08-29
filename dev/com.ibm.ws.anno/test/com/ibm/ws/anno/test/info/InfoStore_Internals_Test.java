@@ -41,6 +41,7 @@ import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Options;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
+import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Streamer;
 import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.info.InfoStoreException;
@@ -73,7 +74,7 @@ public class InfoStore_Internals_Test {
         ClassSourceImpl_Factory factory = annoService.getClassSourceFactory();
 
         ClassSourceImpl_Aggregate useRootClassSource =
-            factory.createAggregateClassSource("TestEar", "TestMod", factory.createOptions() );
+            factory.createAggregateClassSource("TestEar", "TestMod", ClassSource_Factory.JAVAEE_CATEGORY_NAME, factory.createOptions() );
 
         ClassSourceImpl_MappedDirectory dirClassSource =
             factory.createDirectoryClassSource(

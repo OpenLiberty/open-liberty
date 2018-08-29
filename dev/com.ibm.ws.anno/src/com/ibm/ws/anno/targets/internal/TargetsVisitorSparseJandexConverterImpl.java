@@ -189,6 +189,7 @@ public class TargetsVisitorSparseJandexConverterImpl {
             String i_annotationClassName = internClassName(classAnno.toString());
             annotationsTable.jandex_i_recordAnnotation(
                 i_className, AnnotationCategory.CLASS, i_annotationClassName);
+            // System.out.println("Record class [ " + i_className + " ] Class Anno [ " + i_annotationClassName + " ]");
             if ( logParms != null ) {
                 logParms[2] = i_annotationClassName;
                 jandexLogger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class annotation [ {1} ]", logParms);
@@ -198,6 +199,7 @@ public class TargetsVisitorSparseJandexConverterImpl {
         for ( SparseDotName fieldAnno : classInfo.fieldAnnotations() ) {
             String i_annotationClassName = internClassName(fieldAnno.toString());
             annotationsTable.jandex_i_recordAnnotation(i_className, AnnotationCategory.FIELD, i_annotationClassName);
+            // System.out.println("Record class [ " + i_className + " ] Field Anno [ " + i_annotationClassName + " ]");
             if ( logParms != null ) {
                 logParms[2] = i_annotationClassName;
                 jandexLogger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -208,6 +210,7 @@ public class TargetsVisitorSparseJandexConverterImpl {
         for ( SparseDotName methodAnno : classInfo.methodAnnotations() ) {
             String i_annotationClassName = internClassName(methodAnno.toString());
             annotationsTable.jandex_i_recordAnnotation(i_className, AnnotationCategory.METHOD, i_annotationClassName);
+            // System.out.println("Record class [ " + i_className + " ] Method Anno [ " + i_annotationClassName + " ]");            
             if ( logParms != null ) {
                 logParms[2] = i_annotationClassName;
                 jandexLogger.logp(Level.FINER, CLASS_NAME, methodName,

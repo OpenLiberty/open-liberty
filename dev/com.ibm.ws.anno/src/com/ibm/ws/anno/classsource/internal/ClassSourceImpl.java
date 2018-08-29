@@ -12,6 +12,7 @@
 package com.ibm.ws.anno.classsource.internal;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Set;
@@ -26,7 +27,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.jandex.internal.SparseClassInfo;
 import com.ibm.ws.anno.jandex.internal.SparseIndex;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
-
+import com.ibm.ws.anno.util.internal.UtilImpl_FileStamp;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -270,24 +271,15 @@ public abstract class ClassSourceImpl implements ClassSource {
     }
 
     /**
-     * <p>Compute and return a time stamp for this class source.</p>
+     * <p>Compute and return a stamp for this class source.</p>
      *
-     * <p>Two value patterns are returned: An entirely numeric value encodes
-     * the the last updated time of the target container, per {@link File#lastModified}.
-     * A non-numeric value represents either an unavailable value or an unrecorded
-     * value.  The unavailable value is used for containers which are not mapped to
-     * an archive type file.  The unrecorded value is used for container types which
-     * do not support time stamps.</p>
+     * Stamps are available only for mapped jar and for mapped container
+     * file sources.  Stamps for mapped container file sources are only available
+     * if the container maps to a single simple file.
+     * 
+     * See {@link UtilImpl_FileStamp#computeStamp(File)} for more information.
      *
-     * <p>For numeric values, this text from {@link File#lastModified} applies:</p>
-     *
-     * <quote>A <code>long</code> value representing the time the file was
-     * last modified, measured in milliseconds since the epoch
-     * (00:00:00 GMT, January 1, 1970), or <code>0L</code> if the
-     * file does not exist or if an I/O error occurs.
-     * </quote}
-     *
-     * @return The last modified value for the class source.
+     * @return The stamp for the class source.
      */
     protected abstract String computeStamp();
 
@@ -397,7 +389,7 @@ public abstract class ClassSourceImpl implements ClassSource {
         if ( processUsingJandex(streamer) ) {
             fromJandex = true;
         } else {
-        	long startScan = System.nanoTime();
+            long startScan = System.nanoTime();
             setProcessCount( processFromScratch(streamer) );
             long scanTime = System.nanoTime() - startScan;
             setProcessTime(scanTime);
@@ -520,11 +512,11 @@ public abstract class ClassSourceImpl implements ClassSource {
     @Trivial
     @Override
     public long getProcessTime() {
-    	return processTime;
+        return processTime;
     }
 
     protected void setProcessTime(long jandexReadTime) {
-    	this.processTime = jandexReadTime;
+        this.processTime = jandexReadTime;
     }
 
     protected int processCount;
@@ -532,12 +524,12 @@ public abstract class ClassSourceImpl implements ClassSource {
     @Trivial
     @Override
     public int getProcessCount() {
-    	return processCount;
+        return processCount;
     }
 
     @Trivial
     protected void setProcessCount(int processCount) {
-    	this.processCount = processCount;
+        this.processCount = processCount;
     }
 
     //

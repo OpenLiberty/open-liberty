@@ -611,8 +611,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
                 "App [ {0} ] Mod [ {1} ]", new Object[] { useAppName, useModName });
         }
 
-        TargetCacheImpl_DataApp appData = getAnnoCache().getActiveAppForcing(useAppName);
-        TargetCacheImpl_DataMod modData = appData.getActiveModForcing(useModName);
+        TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing(useAppName);
+        TargetCacheImpl_DataMod modData = appData.getModForcing(useModName);
 
         TargetsScannerOverallImpl useOverallScanner =
             new TargetsScannerOverallImpl(this, useRootClassSource, modData);

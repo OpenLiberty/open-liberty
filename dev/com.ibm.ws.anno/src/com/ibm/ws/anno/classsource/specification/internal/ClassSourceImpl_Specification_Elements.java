@@ -40,9 +40,9 @@ public class ClassSourceImpl_Specification_Elements
 
     public ClassSourceImpl_Specification_Elements(
         ClassSourceImpl_Factory factory,
-        String appName, String modName) {
+        String appName, String modName, String modCatName) {
 
-        super(factory, appName, modName);
+        super(factory, appName, modName, modCatName);
 
         String methodName = "<init>";
 

@@ -44,6 +44,13 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Fault;
 import test.common.SharedOutputManager;
 
 public abstract class Test_Base {
+    public static final String JAVAEE_MOD_CATEGORY_NAME =
+        ClassSource_Factory.JAVAEE_CATEGORY_NAME;
+
+    public static final String CDI_MOD_CATEGORY_NAME =
+        ClassSource_Factory.CDI_CATEGORY_NAME;
+
+    //
 
     public static SharedOutputManager outputManager;
 

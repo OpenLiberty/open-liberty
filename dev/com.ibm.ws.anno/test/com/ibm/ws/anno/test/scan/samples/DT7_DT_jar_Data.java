@@ -12,6 +12,7 @@
 package com.ibm.ws.anno.test.scan.samples;
 
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_EJB;
+import com.ibm.ws.anno.test.scan.Test_Base;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
@@ -25,8 +26,8 @@ public class DT7_DT_jar_Data {
     public static ClassSource_Specification_Direct_EJB createClassSourceSpecification(ClassSource_Factory factory) {
 
         ClassSource_Specification_Direct_EJB ejbSpecification =
-            factory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME);
-        
+            factory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
+
         String earPath = TestLocalization.putIntoData(EAR_NAME) + '/';
 
         String ejbJarPath = TestLocalization.putInto(earPath, EJBJAR_NAME);

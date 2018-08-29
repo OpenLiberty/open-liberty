@@ -21,64 +21,112 @@ import com.ibm.ws.anno.targets.internal.TargetsTableClassesImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableTimeStampImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableAnnotationsImpl;
-import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 
+/**
+ * Annotation cache data for a single container.
+ *
+ * Container data is managed in two different ways:
+ * 
+ * Non-result container data (which has a container) has its own directory relative to
+ * the directory of the enclosing application, and named using the
+ * standard pattern:
+ * <code>
+ *     appFolder + CON_PREFIX + encode(containerPath)
+ * </code>
+ *
+ * Result container data (which has no actual container) has its own
+ * directory relative to the directory of the enclosing module, and
+ * named using tags specific to the result type.  One of:
+ * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#SEED_RESULT_NAME},
+ * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#PARTIAL_RESULT_NAME},
+ * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#EXCLUDED_RESULT_NAME}, or
+ * {@link com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants#EXTERNAL_RESULT_NAME}.
+ *
+ * Container data has four parts:
+ * <ul><li>Time stamp information<li>
+ *     <li>Classes information, which consists of class references and detailed class information</li>
+ *     <li>Annotation targets information</li>
+ * </ul>
+ *
+ * Each part of the container has its own table.
+ */
 public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
-
     public static final String CLASS_NAME = TargetCacheImpl_DataCon.class.getSimpleName();
 
     //
 
     public TargetCacheImpl_DataCon(
-        TargetCacheImpl_Factory factory,
-        TargetCacheImpl_DataMod modData,
+        TargetCacheImpl_DataBase parentData,
         String conName, String e_conName, File conDir) {
 
-        super(factory, conName, e_conName, conDir, NO_CHILD_PREFIX);
+        super( parentData.getFactory(), conName, e_conName, conDir);
 
-        this.modData = modData;
+        this.parentData = parentData;
+
+        this.timeStampFile =
+            getDataFile(TargetCache_ExternalConstants.TIMESTAMP_NAME);
+        this.annoTargetsFile =
+            getDataFile(TargetCache_ExternalConstants.ANNO_TARGETS_NAME);
+        this.classRefsFile =
+            getDataFile(TargetCache_ExternalConstants.CLASS_REFS_NAME);
     }
 
     //
 
-    protected final TargetCacheImpl_DataMod modData;
+    // DataApp for shared non-results container data.
+    // DataMod for non-shared results container data.
+
+    private final TargetCacheImpl_DataBase parentData;
 
     @Trivial
-    public TargetCacheImpl_DataMod getModData() {
-        return modData;
+    public TargetCacheImpl_DataBase getParentData() {
+        return parentData;
     }
 
     //
 
-    protected void removeStorage() {
-        @SuppressWarnings("unused")
-        int failedRemovals = UtilImpl_FileUtils.removeAll( logger, getDataDir() );
-    }
+    private final File timeStampFile;
 
-    //
-
-    protected volatile File timeStampFile;
-
+    @Trivial
     public File getTimeStampFile() {
-        if ( timeStampFile == null ) {
-            synchronized ( this ) {
-                if ( timeStampFile == null ) {
-                    timeStampFile = getDataFile(TargetCache_ExternalConstants.TIMESTAMP_NAME);
-                }
-            }
-        }
         return timeStampFile;
     }
 
     public boolean hasTimeStampFile() {
-        if ( isDisabled() ) {
-            return false;
-        }
-
-        return exists( getTimeStampFile() );
+        return ( exists( getTimeStampFile() ) );
     }
 
-    public void write(final TargetsTableTimeStampImpl stampTable) {
+    //
+
+    private final File annoTargetsFile;
+
+    public File getAnnoTargetsFile() {
+        return annoTargetsFile;
+    }
+
+    public boolean hasAnnoTargetsFile() {
+        return ( exists( getAnnoTargetsFile() ) );
+    }
+
+    //
+
+    private final File classRefsFile;
+
+    @Trivial
+    public File getClassRefsFile() {
+    	return classRefsFile;
+    }
+
+    public boolean hasClassRefsFile() {
+        return ( exists( getClassRefsFile() ) );
+    }
+
+    //
+
+    private void write(
+        TargetCacheImpl_DataMod modData,
+        final TargetsTableTimeStampImpl stampTable) {
+
         TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
             @Override
             public void execute() {
@@ -86,16 +134,13 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
                 long writeStart = System.nanoTime();
 
-                File useTimeStampFile = getTimeStampFile();
-                synchronized( useTimeStampFile ) {
-                    try {
-                        createWriter(useTimeStampFile).write(stampTable);
-                        // 'createWriter', 'write' throws IOException
-                    } catch ( IOException e ) {
-                        // CWWKC00??W
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
-                    }
+                try {
+                    createWriter( getTimeStampFile() ).write(stampTable);
+                    // 'createWriter', 'write' throws IOException
+                } catch ( IOException e ) {
+                    // CWWKC00??W
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
                 }
 
                 @SuppressWarnings("unused")
@@ -103,20 +148,117 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
             }
         };
 
-        getModData().scheduleWrite(writer);
+        modData.scheduleWrite(writer);
     }
 
-    public TargetsTableTimeStampImpl readStampTable() {
-    	boolean didRead;
+    private void write(
+        TargetCacheImpl_DataMod modData,
+        final TargetsTableClassesImpl classesTable) {
 
+        TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
+            @Override
+            public void execute() {
+                String methodName = "write.execute";
+
+                long writeStart = System.nanoTime();
+
+                try {
+                    createWriter( getClassRefsFile() ).write(classesTable);
+                    // 'createWriter', 'write' throws IOException
+                } catch ( IOException e ) {
+                    // CWWKC00??W
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+                }
+
+                @SuppressWarnings("unused")
+                long writeDuration = addWriteTime(writeStart, "Write Classes");
+            }
+        };
+
+        modData.scheduleWrite(writer);
+    }
+
+    private void write(
+        TargetCacheImpl_DataMod modData,
+        final TargetsTableAnnotationsImpl targetTable) {
+
+        TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
+            @Override
+            public void execute() {
+                String methodName = "write.execute";
+
+                long writeStart = System.nanoTime();
+
+                try {
+                    createWriter( getAnnoTargetsFile() ).write(targetTable);
+                    // 'createWriter', 'write' throws IOException
+                } catch ( IOException e ) {
+                    // CWWKC00??W
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+                }
+
+                @SuppressWarnings("unused")
+                long writeDuration = addWriteTime(writeStart, "Write Targets");
+            }
+        };
+
+        modData.scheduleWrite(writer);
+    }
+
+    //
+
+    private boolean read(TargetsTableTimeStampImpl stampTable) {
+        boolean didRead;
+
+        long readStart = System.nanoTime();
+
+        TargetsTableTimeStampImpl readStampTable = readStampTable();
+        if ( readStampTable == null ) {
+            didRead = false;
+        } else {
+            didRead = true;
+            stampTable.setName( readStampTable.getName() );
+            stampTable.setStamp( readStampTable.getStamp() );
+        }
+
+        @SuppressWarnings("unused")
+        long readDuration = addReadTime(readStart, "Read Stamp");
+
+        return didRead;
+    }
+
+    private boolean read(TargetsTableClassesImpl classesTable) {
+        long readStart = System.nanoTime();
+
+        boolean didRead = read( classesTable, getClassRefsFile() );
+
+        @SuppressWarnings("unused")
+        long readDuration = addReadTime(readStart, "Read Classes");
+
+        return didRead;
+    }
+
+    private boolean read(TargetsTableAnnotationsImpl targetTable) {
+        long readStart = System.nanoTime();
+
+        boolean didRead = read( targetTable, getAnnoTargetsFile() );
+
+        @SuppressWarnings("unused")
+        long readDuration = addReadTime(readStart, "Read Targets");
+
+        return didRead;
+    }
+
+    //
+
+    public TargetsTableTimeStampImpl readStampTable() {
     	long readStart = System.nanoTime();
 
         TargetsTableTimeStampImpl stampTable = new TargetsTableTimeStampImpl();
 
-        File useTimeStampFile = getTimeStampFile();
-        synchronized( useTimeStampFile ) {
-        	didRead = read(stampTable, useTimeStampFile);
-        }
+        boolean didRead = read( stampTable, getTimeStampFile() );
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Stamp");
@@ -126,175 +268,38 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     //
 
-    public File getClassRefsFile() {
-        return getDataFile(TargetCache_ExternalConstants.CLASS_REFS_NAME);
+    @Trivial
+    public boolean shouldWrite(TargetCacheImpl_DataMod modData, String outputDescription) {
+        return ( modData.shouldWrite(outputDescription) );
     }
 
-    public boolean hasClassRefsFile() {
-        return ( !isDisabled() && exists( getClassRefsFile() ) );
-    }
-
-    public void write(final TargetsTableClassesImpl classesTable) {
-        TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
-            @Override
-            public void execute() {
-                String methodName = "write.execute";
-
-                long writeStart = System.nanoTime();
-
-                File useClassRefsFile = getClassRefsFile();
-                synchronized ( useClassRefsFile ) {
-                    try {
-                        createWriter(useClassRefsFile).write(classesTable);
-                        // 'createWriter', 'write' throws IOException
-                    } catch ( IOException e ) {
-                        // CWWKC00??W
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
-                    }
-                }
-
-                @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Classes");
-            }
-        };
-
-        getModData().scheduleWrite(writer);
-    }
-
-    public boolean read(TargetsTableClassesImpl classesTable) {
-        if ( isDisabled() ) {
-            return false;
-        }
-
-        boolean didRead;
-
-        long readStart = System.nanoTime();
-
-        File useClassRefsFile = getClassRefsFile();
-        synchronized ( useClassRefsFile ) {
-            didRead = read(classesTable, useClassRefsFile);
-        }
-
-        @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Classes");
-
-        return didRead;
+    @Trivial
+    public boolean shouldRead(TargetCacheImpl_DataMod modData, String inputDescription) {
+        return modData.shouldRead(inputDescription);
     }
 
     //
 
-    protected volatile File annoTargetsFile;
-
-    public File getAnnoTargetsFile() {
-        if ( annoTargetsFile == null ) {
-            synchronized(this) {
-                if ( annoTargetsFile == null ) {
-                    annoTargetsFile = getDataFile(TargetCache_ExternalConstants.ANNO_TARGETS_NAME);
-                }
-            }
-        }
-        return annoTargetsFile;
-    }
-
-    public boolean hasAnnoTargetsFile() {
-        return ( !isDisabled() && exists( getAnnoTargetsFile() ) );
-    }
-
-    public void write(final TargetsTableAnnotationsImpl targetTable) {
-        TargetCacheImpl_DataMod.ScheduleCallback writer = new TargetCacheImpl_DataMod.ScheduleCallback() {
-            @Override
-            public void execute() {
-                String methodName = "write.execute";
-                
-                long writeStart = System.nanoTime();
-
-                File useAnnoTargetsFile = getAnnoTargetsFile();
-                synchronized ( useAnnoTargetsFile ) {
-                    try {
-                        createWriter( getAnnoTargetsFile() ).write(targetTable);
-                        // 'createWriter', 'write' throws IOException
-                    } catch ( IOException e ) {
-                        // CWWKC00??W
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
-                    }
-                }
-
-                @SuppressWarnings("unused")
-                long writeDuration = addWriteTime(writeStart, "Write Targets");
-            }
-        };
-
-        getModData().scheduleWrite(writer);
-    }
-
-    public boolean read(TargetsTableAnnotationsImpl targetTable) {
-        if ( isDisabled() ) {
-            return false;
-        }
-
-        boolean didRead;
-
-        long readStart = System.nanoTime();
-
-        File useAnnoTargetsFile = getAnnoTargetsFile();
-        synchronized ( useAnnoTargetsFile ) {
-        	didRead = read(targetTable, useAnnoTargetsFile);
-        }
-
-        @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Targets");
-
-        return didRead;
-    }
-    
-    public boolean read(TargetsTableTimeStampImpl stampTable) {
-        if ( isDisabled() ) {
-            return false;
-        }
-
-        boolean didRead;
-
-        long readStart = System.nanoTime();
-
-        TargetsTableTimeStampImpl readStampTable = readStampTable();
-        if ( readStampTable == null ) {
-        	didRead = false;
-        } else {
-        	didRead = true;
-        	stampTable.setName( readStampTable.getName() );
-        	stampTable.setStamp( readStampTable.getStamp() );
-        }
-
-        @SuppressWarnings("unused")
-        long readDuration = addReadTime(readStart, "Read Stamp");
-
-        return didRead;
+    public boolean hasFiles() {
+    	return ( hasTimeStampFile() &&  hasAnnoTargetsFile() && hasClassRefsFile() );
     }
 
     public boolean read(TargetsTableImpl targetData) {
-        if ( isDisabled() ) {
-            return false;
-        }
-
-        return read( targetData.getClassTable() ) && 
-               read( targetData.getTargetTable() ) &&
-               read( targetData.getStampTable() );
+        return ( read( targetData.getClassTable() ) && 
+                 read( targetData.getTargetTable() ) &&
+                 read( targetData.getStampTable() ) );
     }
 
-    public void write(TargetsTableImpl targetData) {
-        if ( !shouldWrite( getDataDir(), "Container data" ) ) {
-            return;
-        }
+    //
 
-        write( targetData.getClassTable() );
-        write( targetData.getTargetTable() );
-        write( targetData.getStampTable() );
+    public void writeStamp(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
+        write ( modData, targetData.getStampTable() );
     }
 
-    public void writeStamp(TargetsTableImpl targetData) {
-        write ( targetData.getStampTable() );
+    public void write(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
+        write( modData, targetData.getClassTable() );
+        write( modData, targetData.getTargetTable() );
+        write( modData, targetData.getStampTable() );
     }
 }
 

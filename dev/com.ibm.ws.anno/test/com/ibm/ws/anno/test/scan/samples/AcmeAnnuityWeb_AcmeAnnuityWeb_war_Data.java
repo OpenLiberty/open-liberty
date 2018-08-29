@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_WAR;
+import com.ibm.ws.anno.test.scan.Test_Base;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
@@ -86,7 +87,7 @@ public class AcmeAnnuityWeb_AcmeAnnuityWeb_war_Data {
 
     public static ClassSource_Specification_Direct_WAR createClassSourceSpecification(ClassSource_Factory factory) {
         ClassSource_Specification_Direct_WAR warSpecification =
-            factory.newWARDirectSpecification(EAR_SIMPLE_NAME, WAR_SIMPLE_NAME);
+            factory.newWARDirectSpecification(EAR_SIMPLE_NAME, WAR_SIMPLE_NAME, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
 
         String earPath = TestLocalization.putIntoData(EAR_NAME) + '/';
 

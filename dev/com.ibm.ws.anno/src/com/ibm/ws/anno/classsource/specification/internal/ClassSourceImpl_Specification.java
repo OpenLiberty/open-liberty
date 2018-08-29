@@ -44,7 +44,7 @@ public abstract class ClassSourceImpl_Specification implements ClassSource_Speci
 
     public ClassSourceImpl_Specification(
         ClassSourceImpl_Factory factory,
-        String appName, String modName) {
+        String appName, String modName, String modCatName) {
 
         super();
 
@@ -56,6 +56,7 @@ public abstract class ClassSourceImpl_Specification implements ClassSource_Speci
 
         this.appName = appName;
         this.modName = modName;
+        this.modCatName = modCatName;
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, this.hashText);
@@ -75,6 +76,7 @@ public abstract class ClassSourceImpl_Specification implements ClassSource_Speci
 
     protected final String appName;
     protected final String modName;
+    protected final String modCatName;
 
     @Override
     public String getAppName() {
@@ -85,6 +87,11 @@ public abstract class ClassSourceImpl_Specification implements ClassSource_Speci
     public String getModName() {
         return modName;
     }
+    
+    @Override
+    public String getModCategoryName() {
+        return modCatName;
+    }    
 
     //
 
@@ -121,7 +128,9 @@ public abstract class ClassSourceImpl_Specification implements ClassSource_Speci
     public ClassSourceImpl_Aggregate createEmptyRootClassSource(ClassSourceImpl_Options classSourceOptions)
         throws ClassSource_Exception {
 
-        return getFactory().createAggregateClassSource( getAppName(), getModName(), classSourceOptions );
+        return getFactory().createAggregateClassSource(
+        	getAppName(), getModName(), getModCategoryName(),
+        	classSourceOptions );
     }
 
     //

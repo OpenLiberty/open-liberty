@@ -13,6 +13,7 @@ package com.ibm.ws.anno.test.scan.samples;
 
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_EJB;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_WAR;
+import com.ibm.ws.anno.test.scan.Test_Base;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
@@ -45,7 +46,7 @@ public class SecFVT_Servlet30_Data {
         String warSimpleName, String warName) {
 
         ClassSource_Specification_Direct_WAR warSpecification =
-            classSourceFactory.newWARDirectSpecification(EAR_SIMPLE_NAME, warSimpleName);
+            classSourceFactory.newWARDirectSpecification(EAR_SIMPLE_NAME, warSimpleName, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
 
         warSpecification.setModulePath(TestLocalization.putIntoData(EAR_NAME + '/', warName) + '/');
 
@@ -58,7 +59,7 @@ public class SecFVT_Servlet30_Data {
     	ClassSource_Factory classSourceFactory) {
 
         ClassSource_Specification_Direct_EJB ejbSpecification =
-            classSourceFactory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME);
+            classSourceFactory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
 
         ejbSpecification.setModulePath(TestLocalization.putIntoData(EAR_NAME + '/', EJBJAR_NAME) + '/');
 

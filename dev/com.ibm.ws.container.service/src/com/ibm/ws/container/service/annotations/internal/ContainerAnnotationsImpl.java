@@ -21,59 +21,63 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public class ContainerAnnotationsImpl extends AnnotationsImpl implements ContainerAnnotations {
 
     public ContainerAnnotationsImpl(
-    	AnnotationsAdapterImpl annotationsAdapter,
+        AnnotationsAdapterImpl annotationsAdapter,
         Container rootContainer, OverlayContainer rootOverlayContainer,
         ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
         String appName, String modName, String modCatName) {
 
-    	super(annotationsAdapter,
-    		  rootContainer, rootOverlayContainer,
-    		  rootArtifactContainer, rootAdaptableContainer,
-    		  appName, modName, modCatName);
+        super(annotationsAdapter,
+              rootContainer, rootOverlayContainer,
+              rootArtifactContainer, rootAdaptableContainer,
+              appName, modName, modCatName);
+
+        this.entryPrefix = null;
     }
 
-	@Override
-	protected void addInternalToClassSource() {
-		ClassSource_Factory classSourceFactory = getClassSourceFactory();
-		if ( classSourceFactory == null ) {
-			return;
-		}
+    //
 
-		// Most often, the container is NOT a WEB-INF/classes container, and
-		// is used directly.
+    private String entryPrefix;
 
-		Container container = getContainer();
-		String containerName = null;
-		String containerPrefix = null;
+    @Override
+    public String getEntryPrefix() {
+    	return entryPrefix;
+    }
 
-		// When the container IS a WEB-INF/classes container, adjust the container
-		// to the module root container and access the container indirectly.
-		// Shifting to the module root container enabled the annotations code to
-		// locate the JANDEX index of the web module without internally adjusting
-		// the location.
+    @Override
+    public void setEntryPrefix(String entryPrefix) {
+    	this.entryPrefix = entryPrefix;
+    }
 
-		if ( !container.isRoot() ) {
-			String containerPath = container.getPath();
-			if ( containerPath.equals("/WEB-INF/classes") ) {
-				container = container.getEnclosingContainer().getEnclosingContainer();
-				containerName = "WEB-INF/classes";
-				containerPrefix = "WEB-INF/classes";
-			}
-		}
+    //
 
-		ClassSource_MappedContainer containerClassSource;
-		try {
-			if ( containerPrefix == null ) {
-				containerClassSource = classSourceFactory.createImmediateClassSource(
-					classSource, container);
-			} else {
-				containerClassSource = classSourceFactory.createContainerClassSource(
-					classSource, containerName, container, containerPrefix);
-			}
-			// Both 'createContainerClassSource' throw ClassSource_Exception
-		} catch ( ClassSource_Exception e ) {
-			return; // FFDC
-		}
-		classSource.addClassSource(containerClassSource);
-	}
+    @Override
+    protected void addInternalToClassSource() {
+        ClassSource_Factory classSourceFactory = getClassSourceFactory();
+        if ( classSourceFactory == null ) {
+            return;
+        }
+
+        // When the target is WEB-INF/classes, the container must be
+        // set to the root container and the entry prefix must be set to
+        // "WEB-INF/classes".
+
+        Container useContainer = getContainer();
+        String containerName = getModName();
+        String containerPrefix = getEntryPrefix();
+
+        ClassSource_MappedContainer containerClassSource;
+        try {
+            if ( containerPrefix == null ) {
+                containerClassSource = classSourceFactory.createContainerClassSource(
+                    rootClassSource, containerName, useContainer);
+            } else {
+                containerClassSource = classSourceFactory.createContainerClassSource(
+                    rootClassSource, containerName, useContainer, containerPrefix);
+            }
+            // Both 'createContainerClassSource' throw ClassSource_Exception
+        } catch ( ClassSource_Exception e ) {
+            return; // FFDC
+        }
+        rootClassSource.addClassSource(containerClassSource);
+    }
 }

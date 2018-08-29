@@ -20,28 +20,28 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
  */
 public class FragmentAnnotationsImpl implements FragmentAnnotations {
 
-	public FragmentAnnotationsImpl(
-		AnnotationTargets_Targets targets,
-		String fragmentName) {
+    public FragmentAnnotationsImpl(
+        AnnotationTargets_Targets targets,
+        String fragmentName) {
 
         this.targets = targets;
         this.fragmentName = fragmentName;
     }
 
-	//
+    //
 
     private final AnnotationTargets_Targets targets;
 
     @Override
     public AnnotationTargets_Targets getTargets() {
-    	return targets;
+        return targets;
     }
 
     private final String fragmentName;
 
     @Override
     public String getFragmentName() {
-    	return fragmentName;
+        return fragmentName;
     }
 
     //

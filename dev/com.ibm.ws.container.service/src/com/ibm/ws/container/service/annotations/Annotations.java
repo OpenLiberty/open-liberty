@@ -6,38 +6,149 @@ import java.util.Set;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
+import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
+/**
+ * Common annotations access type.
+ *
+ * Access to annotations depends on several key parameters:
+ * 
+ * <ul><li>Application name</li>
+ *     <li>Module name</li>
+ *     <li>Module category name</li>
+ *     <li>Root Container</li>
+ * </ul>
+ * 
+ * The application name may be left unspecified, in which case, the
+ * annotations data is not cached, and the module name and the module
+ * category name are unused.
+ * 
+ * If the application name is specified, a module name and a module
+ * category name must be specified.  The annotations data is cached
+ * in a two tier storage structure which has a single folder for each
+ * unique application name and a single folder for each unique combination
+ * of module name and module category name.
+ * 
+ * Annotations data for a module is assembled from a collection of
+ * containers, each of which has a scan policy -- SEED, PARTIAL, EXCLUDED --
+ * plus a class loader (which has the scan policy EXTERNAL.
+ * 
+ * The results for each container is written to a cache location keyed
+ * to the full path of the container scoped to the application.  That
+ * enables sharing of container results between modules.  (Container
+ * results obtained with an unspecified application name are not cached.)
+ *
+ * The access layer is responsible for assigning the correct path to
+ * containers, including adjustments for processing WEB-INF/classes
+ * within a web module, which has special processing.
+ * 
+ * The processing of WEB-INF/classes uses a mapped container class source,
+ * with the enclosing module container as the container of the class source,
+ * with the class source specified with entry prefix of "WEB-INF/classes", and
+ * with the class source path assigned as the full path to the WEB-INF/classes
+ * container.
+ */
 public interface Annotations {
     /**
-     * Answer the container of the annotations.
-     * 
+     * Answer the name of the enclosing application.  Answer
+     * {@link ClassSource_Factory#UNNAMED_APP} if there is no enclosing
+     * application.
+     *
+     * @return The name of the enclosing application.
+     */
+    String getAppName();
+
+    /**
+     * Set the name of the enclosing application.  Set
+     * {@link ClassSource_Factory#UNNAMED_APP} if there is no enclosing 
+     * application.
+     *
+     * Annotations data is not cached when the application is un-named.
+     *
+     * @param appName The name of the enclosing application.
+     */    
+    void setAppName(String appName);
+
+    /**
+     * Answer the name of the enclosing module.  Answer
+     * {@link ClassSource_Factory#UNNAMED_MOD} if there is no enclosing
+     * module.
+     *
+     * The module name is unused when the application is unnamed.
+     *
+     * @return The name of the enclosing module.
+     */
+    String getModName();
+
+    /**
+     * Set the name of the enclosing module.  Set
+     * {@link ClassSource_Factory#UNNAMED_MOD} if there is no enclosing
+     * module.
+     *
+     * The module name is unused when the application is unnamed.
+     *
+     * @param modName The name of the enclosing module.
+     */
+    void setModName(String modName);
+
+    /**
+     * Answer the category name for the results.
+     *
+     * The module category name is unused when the application
+     * is unnamed.
+     *
+     * @return The category name for the results.
+     */
+    
+    String getModCategoryName();
+
+    /**
+     * Set the module category name of the results.
+     *
+     * The module category name is unused when the application
+     * is unnamed.
+     *
+     * Two standard category names are defined for current usage:
+     * {@link ClassSource_Factory#JAVAEE_CATEGORY_NAME} and
+     * {@link ClassSource_Factory#CDI_CATEGORY_NAME}.
+     *
+     * @param modCatname The module category name of the results.
+     */
+    void setModCategoryName(String modCatName);
+
+    //
+
+    /**
+     * Answer the root container of the annotations.
+     *
+     * This is  
      * @return The container of the annotations.
      */
-	Container getContainer();
+    Container getContainer();
 
-	/**
-	 * Answer the name of the container of the annotations.
-	 * 
-	 * @return The name of the container of the annotations.
-	 */
-	String getContainerName();
+    /**
+     * Answer the name of the container of the annotations.
+     * 
+     * @return The name of the container of the annotations.
+     */
+    String getContainerName();
 
-	/**
-	 * Answer the path of the container of the annotations.
-	 * 
-	 * This will often be "/", which is when the container is
-	 * a root container.
-	 *
-	 * @return The path of the container of the annotations.
-	 */
-	String getContainerPath();
-	
-	//
+    /**
+     * Answer the path of the container of the annotations.
+     * 
+     * This will often be "/", which is when the container is
+     * a root container.
+     *
+     * @return The path of the container of the annotations.
+     */
+    String getContainerPath();
 
-	/** Control parameter.  Used to enable Jandex index reads. */
+    //
+
+    /** Control parameter.  Used to enable Jandex index reads. */
     boolean USE_JANDEX = true;
 
     /**
@@ -45,36 +156,36 @@ public interface Annotations {
      *
      * @return True or false telling if Jandex index reads are enabled.
      */
-	boolean getUseJandex();
+    boolean getUseJandex();
 
-	/**
-	 * Set if Jandex index reads are enabled.  This must be done before
-	 * obtaining either of the three main data structures, as the setting
-	 * is used to create the main data structures.
-	 *
-	 * @param useJandex True or false telling Jandex index reads are enabled.
-	 */
-	void setUseJandex(boolean useJandex);
+    /**
+     * Set if Jandex index reads are enabled.  This must be done before
+     * obtaining either of the three main data structures, as the setting
+     * is used to create the main data structures.
+     *
+     * @param useJandex True or false telling Jandex index reads are enabled.
+     */
+    void setUseJandex(boolean useJandex);
 
-	//
+    //
 
-	/**
-	 * Set the class loader which is used by the class source.  This must be
-	 * done before obtaining either of the three main data structures, as the
-	 * setting is used to create the main data structures.
-	 *
-	 * @param classLoader The class loader which is to be used by the class source.
-	 */
-	void setClassLoader(ClassLoader classLoader);
+    /**
+     * Set the class loader which is used by the class source.  This must be
+     * done before obtaining either of the three main data structures, as the
+     * setting is used to create the main data structures.
+     *
+     * @param classLoader The class loader which is to be used by the class source.
+     */
+    void setClassLoader(ClassLoader classLoader);
 
-	/**
-	 * Answer the class loader which is to be used by the class source.
-	 *
-	 * @return The class loader which is to be used by the class source.
-	 */
-	ClassLoader getClassLoader();
+    /**
+     * Answer the class loader which is to be used by the class source.
+     *
+     * @return The class loader which is to be used by the class source.
+     */
+    ClassLoader getClassLoader();
 
-	//
+    //
 
     /**
      * Answer the class source of the the annotations data.  Create and
@@ -82,7 +193,7 @@ public interface Annotations {
      * 
      * @return The class source of the annotations data.
      */
-	ClassSource_Aggregate getClassSource();
+    ClassSource_Aggregate getClassSource();
 
     /**
      * Remove the class source from the in-memory cache.  Do nothing
@@ -98,7 +209,7 @@ public interface Annotations {
      *
      * @return The main annotation targets for the module.
      */
-	AnnotationTargets_Targets getTargets();
+    AnnotationTargets_Targets getTargets();
 
     /**
      * Remove the targets from the in-memory cache.  Do nothing
@@ -114,7 +225,7 @@ public interface Annotations {
      *
      * @return The info store of the annotations data.
      */
-	InfoStore getInfoStore();
+    InfoStore getInfoStore();
 
     /**
      * Remove the info store from the in-memory cache.  Do nothing
@@ -124,7 +235,7 @@ public interface Annotations {
      */
     InfoStore releaseInfoStore();
 
-	// Targets derived APIs ...
+    // Targets derived APIs ...
 
     /**
      * Tell if the target class was scanned from an included location.
@@ -142,7 +253,7 @@ public interface Annotations {
      *
      * @return True if the target class was scanned from a partial location. Otherwise, false.
      */
-	boolean isPartialClass(String className);
+    boolean isPartialClass(String className);
 
     /**
      * Tell if the target class was scanned from an excluded location.
@@ -234,51 +345,4 @@ public interface Annotations {
      * @see #getClassSource()
      */
     SpecificAnnotations getSpecificAnnotations(Set<String> specificClassNames) throws UnableToAdaptException;
-
-    /**
-     * Answer the name of the enclosing application.  Answer null if there is no
-     * enclosing application.
-     *
-     * @return The name of the enclosing application.
-     */
-	String getAppName();
-
-    /**
-     * Set the name of the enclosing application.
-     *
-     * @param appName The name of the enclosing application.
-     */	
-	void setAppName(String appName);
-
-    /**
-     * Answer the name of the enclosing module.  Answer null if there is no
-     * enclosing module.
-     *
-     * @return The name of the enclosing module.
-     */
-	
-	String getModName();
-
-    /**
-     * Set the name of the enclosing module.
-     *
-     * @param modName The name of the enclosing module.
-     */
-	void setModName(String modName);
-
-
-    /**
-     * Answer the category name for the results.
-     *
-     * @return The category name for the results.
-     */
-	
-	String getModCategoryName();
-
-    /**
-     * Set the module category name of the results.
-     *
-     * @param modCatname The module category name of the results.
-     */
-	void setModCategoryName(String modCatName);
 }

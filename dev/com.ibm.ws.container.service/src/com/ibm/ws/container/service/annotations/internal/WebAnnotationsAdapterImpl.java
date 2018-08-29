@@ -29,33 +29,33 @@ public class WebAnnotationsAdapterImpl
 
     @Override
     public WebAnnotations adapt(
-    	Container rootContainer,
+        Container rootContainer,
         OverlayContainer rootOverlayContainer,
         ArtifactContainer rootArtifactContainer,
         Container rootAdaptableContainer) throws UnableToAdaptException {
 
-    	String adaptPath = rootArtifactContainer.getPath();
+        String adaptPath = rootArtifactContainer.getPath();
 
-    	WebModuleInfo webModuleInfo = overlayGet(rootOverlayContainer, adaptPath, WebModuleInfo.class);
-    	if ( webModuleInfo == null ) {
-    		String msg = Tr.formatMessage(tc, "container.is.not.a.module.CWWKM0453E",
-    			"Container is not a module", rootAdaptableContainer);
-    		throw new UnableToAdaptException(msg);
-    	}
+        WebModuleInfo webModuleInfo = overlayGet(rootOverlayContainer, adaptPath, WebModuleInfo.class);
+        if ( webModuleInfo == null ) {
+            String msg = Tr.formatMessage(tc, "container.is.not.a.module.CWWKM0453E",
+                "Container is not a module", rootAdaptableContainer);
+            throw new UnableToAdaptException(msg);
+        }
 
-    	WebAnnotations webAnnotations =
-    		overlayGet(rootOverlayContainer, adaptPath, WebAnnotations.class);
+        WebAnnotations webAnnotations =
+            overlayGet(rootOverlayContainer, adaptPath, WebAnnotations.class);
 
-    	if ( webAnnotations == null ) {
-        	webAnnotations = new WebAnnotationsImpl(
-        	    this,
-        	    rootContainer, rootOverlayContainer,
-        	    rootArtifactContainer, rootAdaptableContainer,
-        	    webModuleInfo);
+        if ( webAnnotations == null ) {
+            webAnnotations = new WebAnnotationsImpl(
+                this,
+                rootContainer, rootOverlayContainer,
+                rootArtifactContainer, rootAdaptableContainer,
+                webModuleInfo);
 
-        	overlayPut(rootOverlayContainer, adaptPath, ModuleAnnotations.class, webAnnotations);
-    	}
+            overlayPut(rootOverlayContainer, adaptPath, ModuleAnnotations.class, webAnnotations);
+        }
 
-    	return webAnnotations;
+        return webAnnotations;
     }
 }

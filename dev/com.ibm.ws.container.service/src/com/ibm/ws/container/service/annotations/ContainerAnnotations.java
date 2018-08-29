@@ -17,7 +17,7 @@ package com.ibm.ws.container.service.annotations;
 // Used by:
 //
 // com.ibm.ws.app.manager.war/src/com/ibm/ws/app/manager/ear/internal/EARDeployedAppInfo.java
-// -- used to discover when EJB jar files have EJB annotations
+// -- used to discover when jar files have EJB annotations
 // com.ibm.ws.cdi.internal/src/com/ibm/ws/cdi/internal/archive/liberty/CDIArchiveImpl.java
 // -- used to detect annotations on a specified container
 // -- the container is either the immediate container of the CDI archive,
@@ -25,7 +25,31 @@ package com.ibm.ws.container.service.annotations;
 
 /**
  * Annotations data for a single container.
+ *
+ * Container annotations
+ *
+ * Currently used to discover application JAR files which have EJB annotations.
+ * 
+ * Also used for general annotations discovery on CDI archives. 
  */
 public interface ContainerAnnotations extends Annotations {
-	// Empty
+	/**
+	 * Answer the entry prefix of the single child class source of the
+	 * container annotations.  Answer null if the class source has no
+	 * entry prefix.
+	 * 
+	 * @return The entry prefix of the class source of the container
+	 *     annotations.
+	 */
+	String getEntryPrefix();
+	
+	/**
+	 * Set the entry prefix of the single class source of the container
+	 * annotations.  This must be done before obtaining results from
+	 * the container annotations.
+	 *
+	 * @param entryPrefix The entry prefix of the class source of the
+	 *     container annotations. 
+	 */
+	void setEntryPrefix(String entryPrefix);
 }

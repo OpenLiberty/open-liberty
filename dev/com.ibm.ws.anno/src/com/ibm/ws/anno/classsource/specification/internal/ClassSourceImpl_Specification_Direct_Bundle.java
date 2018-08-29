@@ -26,9 +26,9 @@ public class ClassSourceImpl_Specification_Direct_Bundle
     
     public ClassSourceImpl_Specification_Direct_Bundle(
         ClassSourceImpl_Factory factory,
-        String appName, String modName) {
+        String appName, String modName, String modCatName) {
 
-        super(factory, appName, modName);
+        super(factory, appName, modName, modCatName);
     }
 
     public void addInternalClassSources(ClassSourceImpl_Aggregate rootClassSource)
@@ -36,7 +36,7 @@ public class ClassSourceImpl_Specification_Direct_Bundle
     
         @SuppressWarnings("unused")
         ClassSourceImpl_MappedJar jarClassSource =
-            addJarClassSource(rootClassSource, "immediate", getModulePath(), ScanPolicy.SEED);
+            addJarClassSource(rootClassSource, modName, getModulePath(), ScanPolicy.SEED);
         // throws ClassSource_Exception
     }
 }

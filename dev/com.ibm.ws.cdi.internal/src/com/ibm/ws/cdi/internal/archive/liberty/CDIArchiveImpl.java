@@ -74,24 +74,24 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
     // com.ibm.ws.cdi.internal.archive.liberty.CDIArchiveImpl.initModuleLibraryArchives()
     
     public CDIArchiveImpl(
-    	ApplicationImpl application,
-    	ContainerInfo containerInfo,
-    	ArchiveType archiveType,
-    	ClassLoader classLoader,
-    	RuntimeFactory factory) {
+        ApplicationImpl application,
+        ContainerInfo containerInfo,
+        ArchiveType archiveType,
+        ClassLoader classLoader,
+        RuntimeFactory factory) {
 
-    	super( containerInfo.getName(), factory.getServices() );
+        super( containerInfo.getName(), factory.getServices() );
 
-    	this.factory = factory;
+        this.factory = factory;
 
-    	this.application = application; // Null for an externsion archive.
+        this.application = application; // Null for an externsion archive.
 
-    	this.containerInfo = containerInfo;
-    	this.type = archiveType;
+        this.containerInfo = containerInfo;
+        this.type = archiveType;
 
-    	this.classLoader = classLoader;
+        this.classLoader = classLoader;
 
-    	this.moduleLibraryArchives = initModuleLibraryArchives();
+        this.moduleLibraryArchives = initModuleLibraryArchives();
     }
 
     //
@@ -121,14 +121,14 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         try {
             return entry.adapt(Container.class); // throws UnableToAdaptException
         } catch ( Throwable th ) {
-        	return null; // FFDC
+            return null; // FFDC
         }
     }
 
     private Container getContainer(Container container, String path) {
         Entry startEntry = container.getEntry(path);
         if ( startEntry == null ) {
-        	return null;
+            return null;
         } else {
             return getContainer(startEntry);
         }
@@ -149,33 +149,28 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
 
     @Override
     public String getPath() throws CDIException {
-    	if ( path == null ) {
-    		path = getPath( getContainer() );
-    	}
-    	return path;
+        if ( path == null ) {
+            path = getPath( getContainer() );
+        }
+        return path;
     }
 
     private String getPath(Container useContainer) throws CDIException {
-    	StringBuilder pathBuilder = new StringBuilder();
+        StringBuilder pathBuilder = new StringBuilder();
 
-    	Entry entry;
-    	try {
-    		entry = useContainer.adapt(Entry.class);
-    	} catch ( UnableToAdaptException e ) {
-    		throw new CDIException(e);
-    	}
+        try {
+            Entry entry;
+            while ( (entry = useContainer.adapt(Entry.class)) != null ) {
+                // 'adapt' throws UnableToAdaptException
+                pathBuilder.insert(0,  entry.getPath() );
+                useContainer = entry.getRoot();
+            }
+        } catch ( UnableToAdaptException e ) {
+            // FFDC
+            throw new CDIException(e);
+        }
 
-    	while ( entry != null ) {
-    		pathBuilder.insert(0,  entry.getPath() );
-
-    		try {
-    			entry = entry.getRoot().adapt(Entry.class);
-    		} catch ( UnableToAdaptException e ) {
-    			throw new CDIException(e);
-    		}
-    	}
-
-    	return pathBuilder.toString();
+        return pathBuilder.toString();
     }
 
     @Override
@@ -240,39 +235,44 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
 
     //
 
-    private ExtendedModuleInfo moduleInfo;
+    private ExtendedModuleInfo extendedModuleInfo;
     private String appCallbackHandlerName;
 
     public ExtendedModuleInfo getModuleInfo() throws CDIException {
-        if ( moduleInfo == null ) {
-            if ( containerInfo instanceof ModuleContainerInfo ) {
-                NonPersistentCache cache;
-
-                ModuleContainerInfo moduleContainerInfo = (ModuleContainerInfo) containerInfo;
-            	try {
-                    cache = moduleContainerInfo.getContainer().adapt(NonPersistentCache.class);
-                } catch ( UnableToAdaptException e ) {
-                    throw new CDIException(e);
-                }
-
-                moduleInfo = (ExtendedModuleInfo) cache.getFromCache(ModuleInfo.class);
-            }
+        if ( !isModule() ) {
+            return null;
         }
 
-        return moduleInfo;
+        if ( extendedModuleInfo == null ) {
+            NonPersistentCache moduleCache;
+
+            ModuleContainerInfo moduleContainerInfo = (ModuleContainerInfo) containerInfo;
+            Container moduleContainer = moduleContainerInfo.getContainer();
+            try {
+                moduleCache = moduleContainer.adapt(NonPersistentCache.class);
+            } catch ( UnableToAdaptException e ) {
+                // FFDC
+                throw new CDIException(e);
+            }
+
+            extendedModuleInfo = (ExtendedModuleInfo) moduleCache.getFromCache(ModuleInfo.class);
+        }
+
+        return extendedModuleInfo;
     }
 
+    private ClientModuleInfo getClientModuleInfo() throws CDIException {
+        ModuleInfo moduleInfo = getModuleInfo(); // throws CDIException
+        if ( !(moduleInfo instanceof ClientModuleInfo) ) {
+            return null;
+        } else {
+            return (ClientModuleInfo) moduleInfo;
+        }
+    }
+    
     public ModuleMetaData getModuleMetaData() throws CDIException {
-        if ( !isModule() ) {
-        	return null;
-        }
-
-        ExtendedModuleInfo moduleInfo = getModuleInfo();
-        if ( moduleInfo == null ) {
-        	return null;
-        }
-
-        return moduleInfo.getMetaData();
+        ExtendedModuleInfo useModuleInfo = getModuleInfo();
+        return ( (useModuleInfo == null) ? null : useModuleInfo.getMetaData() );
     }
 
     @Override
@@ -289,40 +289,32 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         // TODO Can we come up with a J2EEName for libraries as well as modules?
 
         ModuleMetaData moduleMetaData = getModuleMetaData();
-        if ( moduleMetaData == null ) {
-        	return null;
-        } else {
-            return moduleMetaData.getJ2EEName();
-        }
+        return ( (moduleMetaData == null) ? null : moduleMetaData.getJ2EEName() );
     }
 
     @Override
     public String getClientModuleMainClass() throws CDIException {
-        ModuleInfo moduleInfo = getModuleInfo();
-        if ( (moduleInfo == null) || !(moduleInfo instanceof ClientModuleInfo) ) {
-        	return null;
-        }
-
-        ClientModuleInfo clientModuleInfo = (ClientModuleInfo) moduleInfo;
-        return clientModuleInfo.getMainClassName();
+        ClientModuleInfo clientModuleInfo = getClientModuleInfo(); // throws CDIException
+        return ( (clientModuleInfo == null) ? null : clientModuleInfo.getMainClassName() );
     }
 
     @Override
     public String getClientAppCallbackHandlerName() throws CDIException {
         if ( appCallbackHandlerName == null ) {
-            ModuleInfo moduleInfo = getModuleInfo();
-            if ( (moduleInfo != null) && (moduleInfo instanceof ClientModuleInfo) ) {
-                ApplicationClient appClientXml;
+            ClientModuleInfo clientModuleInfo = getClientModuleInfo(); // throws CDIException
+            if ( clientModuleInfo != null ) {
+                ApplicationClient appClient;
                 try {
-                    appClientXml = getContainer().adapt(ApplicationClient.class);
+                    appClient = getContainer().adapt(ApplicationClient.class);
                 } catch ( UnableToAdaptException e ) {
+                    // FFDC
                     // This should never happen unless there's a parse error
-                	// in the application-client.xml in which case the container
-                	// should catch it first.
+                    // in the application-client.xml in which case the container
+                    // should catch it first.
                     throw new CDIException(e);
                 }
-                if ( appClientXml != null ) {
-                    appCallbackHandlerName = appClientXml.getCallbackHandler();
+                if ( appClient != null ) {
+                    appCallbackHandlerName = appClient.getCallbackHandler();
                 }
             }
         }
@@ -343,7 +335,7 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
                 container = getContainer(container, CDIUtils.WEB_INF_CLASSES);
             }
             if ( container != null ) {
-            	collectClassNames(container, null, storage);
+                collectClassNames(container, null, storage);
             }
 
             classNames = storage;
@@ -355,32 +347,32 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
     @Trivial
     private void collectClassNames(Container container, String packageName, Set<String> storage) {
         for ( Entry entry : container ) {
-        	String entryName = entry.getName();
+            String entryName = entry.getName();
 
-        	if ( !entryName.endsWith(CDIUtils.CLASS_EXT) ) {
-        		// TODO: Is this correct for RAR files?
-        		//       A RAR can have nested JARs, which will be picked up
-        		//       by this loop.
-        		//       Conversion to a *local* container might be correct.
+            if ( !entryName.endsWith(CDIUtils.CLASS_EXT) ) {
+                // TODO: Is this correct for RAR files?
+                //       A RAR can have nested JARs, which will be picked up
+                //       by this loop.
+                //       Conversion to a *local* container might be correct.
 
-        		Container entryContainer = getContainer(entry);
-        		if ( entryContainer != null ) {
-        			collectClassNames(entryContainer, entryName, storage);
-        		}
+                Container entryContainer = getContainer(entry);
+                if ( entryContainer != null ) {
+                    collectClassNames(entryContainer, entryName, storage);
+                }
 
-        	} else {
-        		int classNameLength = entryName.length() - CDIUtils.CLASS_EXT_LENGTH;
-        		String className = entryName.substring(0, classNameLength);
+            } else {
+                int classNameLength = entryName.length() - CDIUtils.CLASS_EXT_LENGTH;
+                String className = entryName.substring(0, classNameLength);
 
-        		String qualifiedClassName;
-        		if ( packageName == null ) {
-        			qualifiedClassName = className;
-        		} else {
-        			qualifiedClassName = packageName + CDIUtils.DOT + className;
-        		}
+                String qualifiedClassName;
+                if ( packageName == null ) {
+                    qualifiedClassName = className;
+                } else {
+                    qualifiedClassName = packageName + CDIUtils.DOT + className;
+                }
 
-        		storage.add(qualifiedClassName);
-        	}
+                storage.add(qualifiedClassName);
+            }
         }
     }
 
@@ -414,30 +406,30 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
     @Override
     public ResourceInjectionBag getAllBindings() throws CDIException {
         if ( allBindings == null ) {
-        	ManagedBeanBnd managedBeanBnd;
-        	try {
-        		managedBeanBnd = getContainer().adapt(ManagedBeanBnd.class);
-        	} catch (UnableToAdaptException e) {
-        		throw new CDIException(e);
-        	}
+            ManagedBeanBnd managedBeanBnd;
+            try {
+                managedBeanBnd = getContainer().adapt(ManagedBeanBnd.class);
+            } catch (UnableToAdaptException e) {
+                throw new CDIException(e);
+            }
             
-        	if ( managedBeanBnd != null ) {
-        		ResourceRefConfigFactory resourceRefConfigFactory = factory.getServices().getResourceRefConfigFactory();
+            if ( managedBeanBnd != null ) {
+                ResourceRefConfigFactory resourceRefConfigFactory = factory.getServices().getResourceRefConfigFactory();
 
-        		allBindings = new ResourceInjectionBag(resourceRefConfigFactory.createResourceRefConfigList());
+                allBindings = new ResourceInjectionBag(resourceRefConfigFactory.createResourceRefConfigList());
 
-        		List<ManagedBean> managedBeans = managedBeanBnd.getManagedBeans();
-        		if ( managedBeans != null ) {
-        			for ( ManagedBean managedBean : managedBeans ) {
-        				OSGiJNDIEnvironmentRefBindingHelper.processBndAndExt(
-        					allBindings.allBindings,
-        					allBindings.envEntryValues,
-        					allBindings.resourceRefConfigList,
-        					managedBean,
-        					null);
-        			}
-        		}
-        	}
+                List<ManagedBean> managedBeans = managedBeanBnd.getManagedBeans();
+                if ( managedBeans != null ) {
+                    for ( ManagedBean managedBean : managedBeans ) {
+                        OSGiJNDIEnvironmentRefBindingHelper.processBndAndExt(
+                            allBindings.allBindings,
+                            allBindings.envEntryValues,
+                            allBindings.resourceRefConfigList,
+                            managedBean,
+                            null);
+                    }
+                }
+            }
         }
         return allBindings;
     }
@@ -446,38 +438,51 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
 
     @Override
     public Set<String> getAnnotatedClasses(Set<String> annotationClassNames) throws CDIException {
-    	// Archive.Type:
+        // Archive.Type:
         //   MANIFEST_CLASSPATH
         //   EAR_LIB
         //   WEB_INF_LIB
-    	//
+        //
         //   JAR_MODULE
         //   WEB_MODULE
         //   EJB_MODULE
         //   CLIENT_MODULE
         //   RAR_MODULE
-    	//
+        //
         //   SHARED_LIB
         //   ON_DEMAND_LIB
         //   RUNTIME_EXTENSION
 
-    	Container archiveContainer = getContainer();
-        Container classesContainer;
-        if ( type == ArchiveType.WEB_MODULE ) {
-            classesContainer = getContainer(archiveContainer, CDIUtils.WEB_INF_CLASSES);
-        } else {
-        	classesContainer = archiveContainer;
+        String appName = application.getName();
+
+        // Handle WEB-INF/classes by providing an entry prefix to the
+        // annotations information.  Keep the archive container as the
+        // target container.
+
+        Container archiveContainer = getContainer();
+
+        // When the archive is a root-of-roots, change the archive path
+        // to the application name.
+
+        String archivePath = getPath(archiveContainer);
+        if ( archivePath.isEmpty() ) { // Root-of-roots
+            archivePath = appName;
         }
 
-        if ( classesContainer == null ) {
-        	// This happens, for example, when a WAR has no WEB-INF/classes folder.
-        	// This should not happen in any other cases.
-        	return Collections.emptySet();
+        String archiveEntryPrefix;
+        if ( type == ArchiveType.WEB_MODULE ) {
+            if ( getContainer(archiveContainer, CDIUtils.WEB_INF_CLASSES) == null ) {
+                return Collections.emptySet();
+            } else {
+                archiveEntryPrefix = CDIUtils.WEB_INF_CLASSES;
+            }
+        } else {
+            archiveEntryPrefix = null;
         }
 
         ContainerAnnotations containerAnnotations;
         try {
-            containerAnnotations = classesContainer.adapt(ContainerAnnotations.class);
+            containerAnnotations = archiveContainer.adapt(ContainerAnnotations.class);
         } catch ( UnableToAdaptException e ) {
             throw new CDIException(e);
         }
@@ -500,13 +505,23 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         // because CDI obtains module results somewhat differently than it obtains
         // JavaEE obtains module results.
 
-        if ( application != null ) {
-            boolean useJandex = application.getUseJandex();
-            containerAnnotations.setUseJandex(useJandex);
+        // The category name is necessary to distinguish processing driven by CDI from
+        // processing driven by JavaEE.  In particular, CDI web module results contain
+        // data from only WEB-INF/classes, not from the entire web module.
 
-        	containerAnnotations.setAppName( application.getName() );
-    		containerAnnotations.setModName( getPath() );
-    		containerAnnotations.setModCategoryName(ClassSource_Factory.CDI_CATEGORY_NAME);
+        if ( application != null ) {
+            containerAnnotations.setUseJandex( application.getUseJandex() );
+
+            containerAnnotations.setAppName(appName);
+            containerAnnotations.setModName(archivePath);
+            containerAnnotations.setModCategoryName(ClassSource_Factory.CDI_CATEGORY_NAME);
+
+            if ( archiveEntryPrefix != null ) {
+                containerAnnotations.setEntryPrefix(archiveEntryPrefix);
+            }
+
+            // Complete inheritance information requires a class loader.
+            containerAnnotations.setClassLoader( getClassLoader() );
         }
 
         return containerAnnotations.getClassesWithSpecifiedInheritedAnnotations(annotationClassNames);

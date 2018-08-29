@@ -60,12 +60,12 @@ public class AppDeployBench_GSEJB_jar_Test extends Test_Base {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_JANDEX); // 'runSuiteTest' throws Exception
     }
 
-    @Test
+    // @Test
     public void testAppDeployBench_GSEJB_jar_SINGLE_JANDEX_FULL() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.SINGLE_JANDEX_FULL); // 'runSuiteTest' throws Exception
     }
 
-    @Test
+    // @Test
     public void testAppDeployBench_GSEJB_jar_MULTI() throws Exception {
         runSuiteTest(TestOptions_SuiteCase.MULTI); // 'runSuiteTest' throws Exception
     }

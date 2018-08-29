@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+  * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.websphere.ras.Tr;
 import com.ibm.ws.container.service.annotations.FragmentAnnotations;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
@@ -24,10 +23,7 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
-import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
-import com.ibm.wsspi.anno.classsource.ClassSource_MappedContainer;
-import com.ibm.wsspi.anno.classsource.ClassSource_Options;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
@@ -79,18 +75,16 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  */
 public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnnotations {
 
-    //
-
     public WebAnnotationsImpl(
-    	AnnotationsAdapterImpl annotationsAdapter,
-    	Container rootContainer, OverlayContainer rootOverlayContainer,
-    	ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
-    	WebModuleInfo webModuleInfo) throws UnableToAdaptException {
+        AnnotationsAdapterImpl annotationsAdapter,
+        Container rootContainer, OverlayContainer rootOverlayContainer,
+        ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
+        WebModuleInfo webModuleInfo) throws UnableToAdaptException {
 
-    	super(annotationsAdapter,
-    		  rootContainer, rootOverlayContainer,
-    		  rootArtifactContainer, rootAdaptableContainer,
-    		  webModuleInfo);
+        super(annotationsAdapter,
+              rootContainer, rootOverlayContainer,
+              rootArtifactContainer, rootAdaptableContainer,
+              webModuleInfo);
 
         this.webModuleName = webModuleInfo.getName();
         this.webFragments = rootAdaptableContainer.adapt(WebFragmentsInfo.class);
@@ -101,7 +95,7 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
 
     @Override
     public WebModuleInfo getModuleInfo() {
-    	return (WebModuleInfo) super.getModuleInfo();
+        return (WebModuleInfo) super.getModuleInfo();
     }
 
     private final String webModuleName;
@@ -167,104 +161,85 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
 
     @Override
     protected void addInternalToClassSource() {
-    	if ( classSource == null ) {
-    		return;
-    	}
+        if ( rootClassSource == null ) {
+            return;
+        }
 
-    	ClassSource_Factory classSourceFactory = getClassSourceFactory();
-    	if ( classSourceFactory == null ) {
-    		return;
-    	}
-
-        ClassSource_Options options = createOptions();
-
-        ClassSource_Aggregate rootClassSource;
-        try {
-            rootClassSource = classSourceFactory.createAggregateClassSource(
-            	getAppName(), getWebModuleName(), getModCategoryName(),
-            	options);
-        } catch ( ClassSource_Exception e ) {
-        	return; // FFDC
+        ClassSource_Factory classSourceFactory = getClassSourceFactory();
+        if ( classSourceFactory == null ) {
+            return;
         }
 
         // The classes folder is processed as if it were a fragment item.
 
-        for ( WebFragmentInfo fragment : getOrderedItems() ) {
-            String fragmentPath = fragment.getLibraryURI();
-            String fragmentCanonicalName = classSourceFactory.getCanonicalName(fragmentPath);
-            fragmentCanonicalName = setFragmentName(fragment, fragmentCanonicalName);
+        // Web module internal class path locations are categorized as either:
+        //  'SEED': Non-metadata-complete, non-excluded
+        //  'PARTIAL': Metadata-complete, non-excluded
+        //  'EXCLUDED': Excluded
+        //
+        // Where 'excluded' means excluded by an absolute ordering element
+        // of the web module deployment descriptor.  When an absolute ordering
+        // element is present in the descriptor, if the element does not contain
+        // an 'others' element, any fragment not listed in the element is an
+        // excluded element.  Less class information is used from excluded
+        // fragments than is used from partial fragments.
 
-            Container fragmentContainer = fragment.getFragmentContainer();
-            ScanPolicy fragmentPolicy = getFragmentPolicy(fragment);
+        for ( WebFragmentInfo nextFragment : getOrderedItems() ) {
+            String nextUri = nextFragment.getLibraryURI();
+            String nextCanonicalName = classSourceFactory.getCanonicalName(nextUri);
+            nextCanonicalName = setFragmentName(nextFragment, nextCanonicalName);
 
-            String fragmentPrefix = null;
+            Container nextContainer = nextFragment.getFragmentContainer();
 
-			if ( fragmentPath.equals("WEB-INF/classes") ) {
-				// The expectation is that the supplied container is twice nested
-				// local child of the module container.
-
-				if ( !fragmentContainer.isRoot() ) {
-					Container firstParent = fragmentContainer.getEnclosingContainer();
-					if ( !firstParent.isRoot() ) {
-						fragmentContainer = firstParent.getEnclosingContainer();
-						fragmentPrefix = "WEB-INF/classes";
-					}
-				}
-
-				if ( fragmentPrefix == null ) {
-				     Tr.warning(tc, "Strange WEB-INF/classes location [ " + fragmentContainer + " ]" +
-					               " for module [ " + getModName() + " ]" +
-					               " of application [ " + getAppName() + " ]");
-				}
-			}
-
-            ClassSource_MappedContainer fragmentSource;
-            try {
-            	if ( fragmentPrefix == null ) {
-                    fragmentSource = classSourceFactory.createContainerClassSource(
-                    	rootClassSource, fragmentPath, fragmentContainer);
-            	} else {
-            		fragmentSource = classSourceFactory.createContainerClassSource(
-            			rootClassSource, fragmentPath, fragmentContainer, fragmentPrefix );
-            	}
-            	// both 'createContainerClassSource' throw ClassSource_Exception
-            } catch ( ClassSource_Exception e ) {
-            	return; // FFDC
+            ScanPolicy nextPolicy;
+            if ( nextFragment.isSeedFragment() ) {
+                nextPolicy = ClassSource_Aggregate.ScanPolicy.SEED;
+            } else {
+                nextPolicy = ClassSource_Aggregate.ScanPolicy.PARTIAL;
             }
-            rootClassSource.addClassSource(fragmentSource, fragmentPolicy);
+
+            String nextPrefix;
+            if ( nextUri.equals("WEB-INF/classes") ) {
+                // The expectation is that the supplied container is twice nested
+                // local child of the module container.
+                nextContainer = nextContainer.getEnclosingContainer().getEnclosingContainer();
+                nextPrefix = "WEB-INF/classes";
+            } else {
+                nextPrefix = null;
+            }
+
+            String nextPath = getContainerPath(nextContainer);
+            if ( nextPath == null ) {
+                return; // FFDC in 'getContainerPath'
+            }
+
+            if ( !addContainerClassSource(nextPath, nextContainer, nextPrefix, nextPolicy) ) {
+                return; // FFDC in 'addContainerClassSource'
+            }
         }
 
-        for ( WebFragmentInfo fragment : getExcludedItems() ) {
-        	Container fragmentContainer = fragment.getFragmentContainer();
-            String fragmentPath = fragment.getLibraryURI();
+        for ( WebFragmentInfo nextFragment : getExcludedItems() ) {
+            Container nextContainer = nextFragment.getFragmentContainer();
 
-            ClassSource_MappedContainer containerSource;
-            try {
-                containerSource = classSourceFactory.createContainerClassSource(
-                	rootClassSource, fragmentPath, fragmentContainer ); // throws ClassSource_Exception
-            } catch ( ClassSource_Exception e ) {
-            	return; // FFDC
+            String nextPath = getContainerPath(nextContainer);
+            if ( nextPath == null ) {
+                return; // FFDC in 'getContainerPath'
             }
-            rootClassSource.addClassSource(containerSource, ClassSource_Aggregate.ScanPolicy.EXCLUDED);
-        }
-    }
 
-    private ClassSource_Aggregate.ScanPolicy getFragmentPolicy(WebFragmentInfo fragment) {
-    	if ( fragment.isSeedFragment() ) {
-    		return ClassSource_Aggregate.ScanPolicy.SEED;
-    	} else {
-    		return ClassSource_Aggregate.ScanPolicy.PARTIAL;
-    	}
+            if ( !addContainerClassSource(nextPath, nextContainer, ClassSource_Aggregate.ScanPolicy.EXCLUDED) ) {
+                return; // FFDC in 'addContainerClassSource'
+            }
+        }
     }
 
     //
 
     @Override
     public FragmentAnnotations getFragmentAnnotations(WebFragmentInfo fragment) {
-    	AnnotationTargets_Targets useTargets = getTargets();
-    	if ( useTargets == null ) {
-    		return null;
-    	}
+        AnnotationTargets_Targets useTargets = getTargets();
+        if ( useTargets == null ) {
+            return null;
+        }
         return new FragmentAnnotationsImpl( useTargets, getFragmentName(fragment) );
     }
 }
