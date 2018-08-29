@@ -207,9 +207,16 @@ public interface Annotations {
      * Answer the annotation targets of the annotations data.  Create
      * and store if necessary.
      *
-     * @return The main annotation targets for the module.
+     * @return The main annotation targets for the annotations data.
      */
     AnnotationTargets_Targets getTargets();
+
+    /**
+     * Synonym of {@link #getTargets()}.
+     *
+     * @return The main annotation targets for the annotations data.
+     */
+    AnnotationTargets_Targets getAnnotationTargets();
 
     /**
      * Remove the targets from the in-memory cache.  Do nothing
