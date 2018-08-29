@@ -23,7 +23,7 @@ public interface JAASService {
 
     /**
      * Performs a JAAS login.
-     * 
+     *
      * @param jaasEntryName
      * @param authenticationData
      * @param partialSubject
@@ -34,7 +34,7 @@ public interface JAASService {
 
     /**
      * Performs a JAAS login.
-     * 
+     *
      * @param jaasEntryName
      * @param callbackHandler
      * @param partialSubject
@@ -43,4 +43,5 @@ public interface JAASService {
      */
     public abstract Subject performLogin(String jaasEntryName, CallbackHandler callbackHandler, Subject partialSubject) throws LoginException;
 
+    public void reInstallJAASConfiguration();
 }

@@ -210,7 +210,7 @@ public class JAASServiceImpl implements JAASService {
      * <li>If there are module pids, and some can't be found, add the entry to the pending list.
      * <li>If all is well, add it to the map.
      * </ul>
-     * 
+     *
      * @param ref JAASLoginContextEntry service reference
      */
     private void processContextEntry(ServiceReference<JAASLoginContextEntry> ref) {
@@ -316,7 +316,7 @@ public class JAASServiceImpl implements JAASService {
 
     /**
      * Performs a JAAS login.
-     * 
+     *
      * @param jaasEntryName
      * @param callbackHandler
      * @param partialSubject
@@ -368,6 +368,19 @@ public class JAASServiceImpl implements JAASService {
             if (notifier != null) {
                 notifier.notifyListeners();
             }
+        }
+    }
+
+    /*
+     * This method call by the SPNEGO authentication to re-register all the jaasLoginContextEntry to pick up the Kerberos keytab file name
+     */
+    public void reInstallJAASConfiguration() {
+        jaasConfigurationFactory = jaasConfigurationFactoryRef.getService();
+        if (jaasConfigurationFactory != null) {
+            // Register all the default JAAS configuration entries
+            jaasConfigurationFactory.installJAASConfiguration(jaasLoginContextEntries);
+
+            configReady();
         }
     }
 }

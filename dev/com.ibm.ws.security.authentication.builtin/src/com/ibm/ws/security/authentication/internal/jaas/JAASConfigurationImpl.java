@@ -218,6 +218,9 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         options.put("doNotPrompt", "true");
         options.put("storeKey", "true");
         options.put("isInitiator", "false");
+        //Too early the KRB5_KTNAME is not set yet.
+        options.put("keyTab", getSystemProperty("KRB5_KTNAME"));
+        //options.put("keyTab", "/Users/utle/spnego/krb5.keytab");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             options.put("debug", "true");
             Tr.debug(tc, "loginModuleClassName: " + loginModuleClassName + " options: " + options.toString() + " controlFlag: " + controlFlag.toString());
