@@ -64,5 +64,6 @@ WS-TraceGroup: JCDI
         com.ibm.ws.javaee.dd.common;version=latest,\
         com.ibm.ws.adaptable.module;version=latest,\
         com.ibm.ws.artifact;version=latest,\
+        com.ibm.ws.anno;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
