@@ -29,7 +29,7 @@ public class TestLocalization {
     public static final String LOGS_RELATIVE_PATH = "build/logs/";
     public static final String LOGS_PATH = putIntoProject(LOGS_RELATIVE_PATH);
     
-    public static final String CLASSES_RELATIVE_PATH_LIBERTY = "build/classes/";
+    public static final String CLASSES_RELATIVE_PATH_LIBERTY = "build/classes/java/test/";
     public static final String CLASSES_RELATIVE_PATH_ECLIPSE = "bin/";
 
     public static final String CLASSES_RELATIVE_PATH;
