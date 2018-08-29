@@ -78,7 +78,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
     public ClassSourceImpl_Aggregate(
         ClassSourceImpl_Factory factory,
         Util_InternMap internMap,
-        String applicationName, String moduleName,
+        String applicationName, String moduleName, String moduleCategoryName,
         ClassSource_Options options) {
 
         String methodName = "<init>";
@@ -91,6 +91,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
 
         this.applicationName = applicationName;
         this.moduleName = moduleName;
+        this.moduleCategoryName = moduleCategoryName;
 
         //
 
@@ -119,7 +120,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
 
         this.hashText =
             getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
-            "(" + this.applicationName + ":" + this.moduleName + ")";
+            "(" + this.applicationName + ":" + this.moduleName + ":" + this.moduleCategoryName + ")";
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
@@ -170,6 +171,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
 
     protected final String applicationName;
     protected final String moduleName;
+    protected final String moduleCategoryName;
 
     /**
      * <p>Answer the name of the application of this class source.</p>
@@ -191,6 +193,17 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
     @Trivial
     public String getModuleName() {
         return moduleName;
+    }
+
+    /**
+     * <p>Answer the module category name of this class source.</p>
+     *
+     * @return The module category name of this class source.
+     */
+    @Override
+    @Trivial
+    public String getModuleCategoryName() {
+        return moduleCategoryName;
     }
 
     //

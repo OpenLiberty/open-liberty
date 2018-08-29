@@ -14,10 +14,10 @@ package com.ibm.ws.anno.targets.cache.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -26,7 +26,6 @@ import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.anno.targets.cache.TargetCache_Readable;
 import com.ibm.ws.anno.targets.cache.TargetCache_Reader;
-import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Utils.PrefixWidget;
 import com.ibm.ws.anno.targets.internal.TargetsTableClassesMultiImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableContainersImpl;
 import com.ibm.ws.anno.targets.internal.TargetsTableImpl;
@@ -34,23 +33,69 @@ import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.anno.util.internal.UtilImpl_PoolExecutor;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 
+/**
+ * Annotation cache data for a single module.
+ *
+ * Each module has its own directory, relative to the directory of the
+ * enclosing application, and named using the standard pattern:
+ * <code>
+ *     appFolder + MOD_PREFIX + encode(modName)
+ * </code>
+ *
+ * Module information consists of a list of containers (including policy settings for
+ * each container), the actual data of the containers (which is held by the enclosing
+ * application and which is shared between modules), resolved class references,
+ * unresolved class references, and four result containers (for SEED, PARTIAL,
+ * EXCLUDED, and EXTERNAL results).
+ *
+ * The list of containers, resolved class references, and unresolved class references
+ * are stored each in their own file.
+ *
+ * Storage of non-result container data is managed by the enclosing application, with the
+ * container data stored in sub-directories of the application directory.
+ *
+ * Storage of result container is managed at the module level, with the result container
+ * data stored in sub-directories of the module.
+ *
+ * Module data is held weakly by the enclosing application.
+ *
+ * Container data of a module is held strongly by the module.
+ */
 public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
-
     public static final String CLASS_NAME = TargetCacheImpl_DataMod.class.getSimpleName();
 
     //
 
     public TargetCacheImpl_DataMod(
-        TargetCacheImpl_Factory factory,
+        TargetCacheImpl_DataApp app,
         String modName, String e_modName, File modDir) {
 
-        super(factory,
-              modName, e_modName, modDir,
-              TargetCache_ExternalConstants.CON_PREFIX);
+        super( app.getFactory(), modName, e_modName, modDir );
+
+        this.app = app;
+
+        //
+
+        this.cons = new HashMap<String, TargetCacheImpl_DataCon>();
+        this.containersFile = getDataFile(TargetCache_ExternalConstants.CONTAINERS_NAME);
+
+        this.seedCon = null;
+        this.partialCon = null;
+        this.excludedCon = null;
+        this.externalCon = null;
+
+        this.unresolvedRefsFile = getDataFile(TargetCache_ExternalConstants.UNRESOLVED_REFS_NAME);
+        this.resolvedRefsFile = getDataFile(TargetCache_ExternalConstants.RESOLVED_REFS_NAME);
+        this.classRefsFile = getDataFile(TargetCache_ExternalConstants.CLASS_REFS_NAME);
+
+        //
 
         int writeThreads = this.cacheOptions.getWriteThreads();
 
-        if ( writeThreads == 1 ) {
+        if ( !app.isNamed() ) {
+            this.writePool = null;
+
+        } else if ( writeThreads == 1 ) {
             this.writePool = null;
 
         } else {
@@ -67,94 +112,35 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
             this.writePool = UtilImpl_PoolExecutor.createNonBlockingExecutor(corePoolSize, maxPoolSize);
         }
-
-        this.activeConsLock = new ActiveConsLock();
-        this.activeCons = new WeakHashMap<String, TargetCacheImpl_DataCon>();
-
-        this.loadConStore(activeCons);
-    }
-
-    public void loadConStore(final Map<String, TargetCacheImpl_DataCon> useConStore) {
-        if ( isDisabled() ) {
-            return;
-        }
-
-        TargetCacheImpl_Utils.PrefixListWidget conListWidget =
-            new TargetCacheImpl_Utils.PrefixListWidget( getChildPrefixWidget() ) {
-                @Override
-                public void storeChild(String conName, String e_conName, File conDir) {
-                    TargetCacheImpl_DataCon conData = createConData(conName, e_conName, conDir);
-                    useConStore.put(conName, conData);
-                }
-        };
-
-        conListWidget.storeParent( getDataDir() );
     }
 
     //
 
-    @Trivial
-    public TargetCacheImpl_DataCon createConData(File conDir) {
-        PrefixWidget usePrefixWidget = getChildPrefixWidget();
-
-        String conDirName = conDir.getName();
-        String e_conName = usePrefixWidget.e_removePrefix(conDirName);
-        String conName = decode(e_conName);
-
-        return createConData(conName, e_conName, conDir);
-    }
+    private final TargetCacheImpl_DataApp app;
 
     @Trivial
-    public TargetCacheImpl_DataCon createConData(String conName) {
-        String e_conName = encode(conName);
-        return createConData( conName, e_conName, e_getConDir(e_conName) );
-    }
-
-    @Trivial
-    public File e_getConDir(String e_conName) {
-        return getDataFile( e_addChildPrefix(e_conName) );
-    }
-
-    @Trivial
-    public TargetCacheImpl_DataCon createConData(String conName, String e_conName, File conDir) {
-        return getFactory().createConData(this, conName, e_conName, conDir);
+    public TargetCacheImpl_DataApp getApp() {
+    	return app;
     }
 
     //
 
-    protected volatile File containersFile;
+    protected final File containersFile;
 
     public File getContainersFile() {
-        if ( containersFile == null ) {
-            synchronized(this) {
-                if ( containersFile == null ) {
-                    containersFile = getDataFile(TargetCache_ExternalConstants.CONTAINERS_NAME);
-                }
-            }
-        }
         return containersFile;
     }
 
     public boolean hasContainersTable() {
-        if ( isDisabled() ) {
-            return false;
-        }
-
-        File useContainersFile = getContainersFile();
-        synchronized( useContainersFile ) {
-            return exists(useContainersFile);
-        }
+        return exists( getContainersFile() );
     }
 
     public boolean readContainerTable(TargetsTableContainersImpl containerTable) {
-    	boolean didRead;
+        boolean didRead;
 
-    	long readStart = System.nanoTime();
+        long readStart = System.nanoTime();
 
-        File useContainersFile = getContainersFile();
-        synchronized( useContainersFile ) {
-            didRead = super.read(containerTable, useContainersFile);
-        }
+        didRead = super.read( containerTable, getContainersFile() );
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Containers");
@@ -165,28 +151,14 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     public void writeContainersTable(TargetsTableContainersImpl containerTable) {
         String methodName = "writeContainersTable";
 
-        File useContainersFile = getContainersFile();
-
-        if ( !shouldWrite(useContainersFile, "Containers list") ) {
-            return;
-        }
-
         long writeStart = System.nanoTime();
 
-        synchronized(useContainersFile) {
-            try {
-                createWriter(useContainersFile).write(containerTable);
-            } catch ( IOException e ) {
-                // CWWKC00??W
-                logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-                logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
-            }
-
-            for ( String containerName : getActiveConNames() ) {
-                if ( !containerTable.containsName(containerName) ) {
-                    removeConData(containerName);
-                }
-            }
+        try {
+            createWriter( getContainersFile() ).write(containerTable);
+        } catch ( IOException e ) {
+            // CWWKC00??W
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+            logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
         }
 
         @SuppressWarnings("unused")
@@ -195,31 +167,32 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     //
 
-    protected void removeConData(String containerName) {
-        TargetCacheImpl_DataCon conData = getActiveCons().remove(containerName);
-        if ( conData != null ) {
-            conData.removeStorage();
+    private final Map<String, TargetCacheImpl_DataCon> cons;
+
+    @Trivial
+    protected Map<String, TargetCacheImpl_DataCon> getCons() {
+        return cons;
+    }
+
+    public TargetCacheImpl_DataCon getConForcing(String conPath) {
+        Map<String, TargetCacheImpl_DataCon> useCons = getCons();
+
+        TargetCacheImpl_DataCon con = useCons.get(conPath);
+        if ( con == null ) {
+            con = getApp().getConForcing(conPath);
+            useCons.put(conPath, con);
         }
+
+        return con;
     }
 
     //
 
-    private class ActiveConsLock {
-        // EMPTY
-    }
-    private final ActiveConsLock activeConsLock;
-    private final WeakHashMap<String, TargetCacheImpl_DataCon> activeCons;
-
-    @Trivial
-    protected Map<String, TargetCacheImpl_DataCon> getActiveCons() {
-        return activeCons;
-    }
-
     public long getContainerReadTime() {
     	long containerReadTime = 0L;
 
-    	for ( TargetCacheImpl_DataCon activeCon : activeCons.values() ) {
-    		containerReadTime += activeCon.getReadTime();
+    	for ( TargetCacheImpl_DataCon con : getCons().values() ) {
+    		containerReadTime += con.getReadTime();
     	}
 
     	return containerReadTime;
@@ -228,82 +201,46 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     public long getContainerWriteTime() {
     	long containerWriteTime = 0L;
 
-    	for ( TargetCacheImpl_DataCon activeCon : activeCons.values() ) {
-    		containerWriteTime += activeCon.getWriteTime();
+    	for ( TargetCacheImpl_DataCon con : getCons().values() ) {
+    		containerWriteTime += con.getWriteTime();
     	}
 
     	return containerWriteTime;
     }
 
+    //
+
     @Trivial
-    public Set<String> getActiveConNames() {
-        synchronized ( activeConsLock ) {
-            return getActiveCons().keySet();
-        }
+    public TargetCacheImpl_DataCon createConData(File conDir) {
+        String conDirName = conDir.getName();
+        String e_conPath = e_removeConPrefix(conDirName);
+        String conPath = decode(e_conPath);
+
+        return createConData(conPath, e_conPath, conDir);
     }
 
-    public boolean hasActiveConData(String conName) {
-        synchronized ( activeConsLock ) {
-            return getActiveCons().containsKey(conName);
-        }
+    @Trivial
+    public TargetCacheImpl_DataCon createConData(String conPath) {
+    	String e_conPath = encode(conPath);
+        return createConData( conPath, e_conPath, e_getConDir(e_conPath) );
     }
 
-    public TargetCacheImpl_DataCon getActiveCon(String conName) {
-        synchronized ( activeConsLock ) {
-            return getActiveCons().get(conName);
-        }
-    }
-    
-    public TargetCacheImpl_DataCon putActiveCon(String conName) {
-        TargetCacheImpl_DataCon activeConData = createConData(conName);
-
-        synchronized( activeConsLock ) {
-            getActiveCons().put(conName, activeConData);
-        }
-
-        return activeConData;
+    @Trivial
+    public File e_getConDir(String e_conPath) {
+        return getDataFile( e_addConPrefix(e_conPath) );
     }
 
-    public TargetCacheImpl_DataCon getActiveConForcing(String conName) {
-        synchronized ( activeConsLock ) {
-            Map<String, TargetCacheImpl_DataCon> useActiveCons = getActiveCons();
-
-            TargetCacheImpl_DataCon activeCon = useActiveCons.get(conName);
-
-            if ( activeCon == null ) {
-                activeCon = createConData(conName);
-                useActiveCons.put(conName, activeCon);
-            }
-
-            return activeCon;
-        }
+    @Trivial
+    public TargetCacheImpl_DataCon createConData(String conPath, String e_conPath, File conDir) {
+        return getFactory().createConData(this, conPath, e_conPath, conDir);
     }
 
     //
 
-    private static class SeedLock {
-        // EMPTY
-    }
-    private final SeedLock seedLock = new SeedLock();
-    private volatile TargetCacheImpl_DataCon seedCon;
-
-    private static class PartialLock {
-        // EMPTY
-    }
-    private final PartialLock partialLock = new PartialLock();
-    private volatile TargetCacheImpl_DataCon partialCon;
-
-    private static class ExcludedLock {
-        // EMPTY
-    }
-    private final ExcludedLock excludedLock = new ExcludedLock();
-    private volatile TargetCacheImpl_DataCon excludedCon;
-
-    private static class ExternalLock {
-        // EMPTY
-    }
-    private final Object externalLock = new ExternalLock();
-    private volatile TargetCacheImpl_DataCon externalCon;
+    private TargetCacheImpl_DataCon seedCon;
+    private TargetCacheImpl_DataCon partialCon;
+    private TargetCacheImpl_DataCon excludedCon;
+    private TargetCacheImpl_DataCon externalCon;
 
     private static final String[] RESULT_NAMES = new String[ScanPolicy.values().length];
 
@@ -319,38 +256,30 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         return RESULT_NAMES[ scanPolicy.ordinal() ];
     }
 
-    public TargetCacheImpl_DataCon getResultConData(ScanPolicy scanPolicy) {
+    public TargetCacheImpl_DataCon getResultCon(ScanPolicy scanPolicy) {
         String fileName = getResultName(scanPolicy);
 
         if ( scanPolicy == ScanPolicy.SEED ) {
             if ( seedCon == null ) {
-                synchronized ( seedLock ) {
-                    seedCon = createConData( getDataFile(fileName) );
-                }
+                seedCon = createConData( getDataFile(fileName) );
             }
             return seedCon;
 
         } else if ( scanPolicy == ScanPolicy.PARTIAL ) {
             if ( partialCon == null ) {
-                synchronized ( partialLock ) {
-                    partialCon = createConData( getDataFile(fileName) );
-                }
+                partialCon = createConData( getDataFile(fileName) );
             }
             return partialCon;
 
         } else if ( scanPolicy == ScanPolicy.EXCLUDED ) {
             if ( excludedCon == null ) {
-                synchronized ( excludedLock ) {
-                    excludedCon = createConData( getDataFile(fileName) );
-                }
+                excludedCon = createConData( getDataFile(fileName) );
             }
             return excludedCon;
 
         } else if ( scanPolicy == ScanPolicy.EXTERNAL ) {
             if ( externalCon == null ) {
-                synchronized ( externalLock ) {
-                    externalCon = createConData( getDataFile(fileName) );
-                }
+                externalCon = createConData( getDataFile(fileName) );
             }
             return externalCon;
 
@@ -359,39 +288,28 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         }
     }
 
-    public boolean hasResultConData(ScanPolicy scanPolicy) {
-        if ( isDisabled() ) {
-            return false;
-        }
-
-        return getResultConData(scanPolicy).exists();
+    public boolean hasResultCon(ScanPolicy scanPolicy) {
+        return getResultCon(scanPolicy).exists();
     }
 
-    public boolean readResultData(ScanPolicy scanPolicy, TargetsTableImpl resultData) {
-        return getResultConData(scanPolicy).read(resultData);
+    public boolean readResultCon(ScanPolicy scanPolicy, TargetsTableImpl resultData) {
+        return getResultCon(scanPolicy).read(resultData);
     }
 
-    public void writeResultData(ScanPolicy scanPolicy, TargetsTableImpl resultData) {
-        getResultConData(scanPolicy).write(resultData);
+    public void writeResultCon(ScanPolicy scanPolicy, TargetsTableImpl resultData) {
+        getResultCon(scanPolicy).write(this, resultData);
     }
 
     //
 
-    private volatile File unresolvedRefsFile;
+    private final File unresolvedRefsFile;
 
     public File getUnresolvedRefsFile() {
-        if ( unresolvedRefsFile == null ) {
-            synchronized (this) {
-                if ( unresolvedRefsFile == null ) {
-                    unresolvedRefsFile = getDataFile(TargetCache_ExternalConstants.UNRESOLVED_REFS_NAME);
-                }
-            }
-        }
         return unresolvedRefsFile;
     }
 
     public boolean hasUnresolvedRefs() {
-        return ( !isDisabled() && exists( getUnresolvedRefsFile() ) );
+        return ( exists( getUnresolvedRefsFile() ) );
     }
 
     public List<TargetCache_ParseError> basicReadUnresolvedRefs(UtilImpl_InternMap classNameInternMap, Set<String> i_unresolvedClassNames)
@@ -423,9 +341,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     }
 
     public void writeUnresolvedRefs(final Set<String> unresolvedClassNames) {
-        final File useUnresolvedRefsFile = getUnresolvedRefsFile();
-
-        if ( !shouldWrite(useUnresolvedRefsFile, "Unresolved class references") ) {
+        if ( !shouldWrite("Unresolved class references") ) {
             return;
         }
 
@@ -436,14 +352,12 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
                 long writeStart = System.nanoTime();
 
-                synchronized(useUnresolvedRefsFile) {
-                    try {
-                        createWriter(useUnresolvedRefsFile).writeUnresolvedRefs(unresolvedClassNames); // throws IOException
-                    } catch ( IOException e ) {
-                        // CWWKC00??W
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
-                    }
+                try {
+                    createWriter( getUnresolvedRefsFile() ).writeUnresolvedRefs(unresolvedClassNames); // throws IOException
+                } catch ( IOException e ) {
+                    // CWWKC00??W
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
                 }
 
                 @SuppressWarnings("unused")
@@ -456,34 +370,28 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     //
 
-    protected volatile File resolvedRefsFile;
+    protected final File resolvedRefsFile;
 
     public File getResolvedRefsFile() {
-        if ( resolvedRefsFile == null ) {
-            synchronized(this ) {
-                if ( resolvedRefsFile == null ) {
-                    resolvedRefsFile = getDataFile(TargetCache_ExternalConstants.RESOLVED_REFS_NAME);
-                }
-            }
-        }
         return resolvedRefsFile;
     }
 
     public boolean hasResolvedRefs() {
-        return ( !isDisabled() && exists( getResolvedRefsFile() ) );
+        return ( exists( getResolvedRefsFile() ) );
     }
 
-    public List<TargetCache_ParseError> basicReadResolvedRefs(UtilImpl_InternMap classNameInternMap,
-                                                              Set<String> i_resolvedClassNames)
-        throws FileNotFoundException, IOException {
+    public List<TargetCache_ParseError> basicReadResolvedRefs(
+        UtilImpl_InternMap classNameInternMap,
+        Set<String> i_resolvedClassNames) throws FileNotFoundException, IOException {
 
         return createReader( getResolvedRefsFile() ).readResolvedRefs(classNameInternMap, i_resolvedClassNames);
         // 'createReader' throws IOException
         // 'read' throws IOException
     }
 
-    public boolean readResolvedRefs(final UtilImpl_InternMap classNameInternMap,
-                                    final Set<String> i_resolvedClassNames) {
+    public boolean readResolvedRefs(
+        final UtilImpl_InternMap classNameInternMap,
+        final Set<String> i_resolvedClassNames) {
 
         TargetCache_Readable refsReadable = new TargetCache_Readable() {
             @Override
@@ -503,9 +411,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     }
 
     public void writeResolvedRefs(final Set<String> resolvedClassNames) {
-        final File useResolvedRefsFile = getResolvedRefsFile();
-
-        if ( !shouldWrite(useResolvedRefsFile, "Resolved class references") ) {
+        if ( !shouldWrite("Resolved class references") ) {
             return;
         }
 
@@ -516,14 +422,12 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
                 long writeStart = System.nanoTime();
 
-                synchronized ( useResolvedRefsFile ) {
-                    try {
-                        createWriter(useResolvedRefsFile).writeResolvedRefs(resolvedClassNames); // throws IOException
-                    } catch ( IOException e ) {
-                        // CWWKC00??W
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
-                    }
+                try {
+                    createWriter( getResolvedRefsFile() ).writeResolvedRefs(resolvedClassNames); // throws IOException
+                } catch ( IOException e ) {
+                    // CWWKC00??W
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
                 }
 
                 @SuppressWarnings("unused")
@@ -536,32 +440,20 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     //
 
-    protected volatile File classRefsFile;
+    protected final File classRefsFile;
 
     public File getClassRefsFile() {
-        if ( classRefsFile == null ) {
-            synchronized(this) {
-                if ( classRefsFile == null ) {
-                    classRefsFile = getDataFile(TargetCache_ExternalConstants.CLASS_REFS_NAME);
-                }
-            }
-        }
         return classRefsFile;
     }
 
     public boolean hasClassRefs() {
-        return ( !isDisabled() && exists( getClassRefsFile() ) );
+        return ( exists( getClassRefsFile() ) );
     }
 
     public boolean readClassRefs(TargetsTableClassesMultiImpl classesTable) {
-    	boolean didRead;
-
     	long readStart = System.nanoTime();
 
-        File useClassRefsFile = getClassRefsFile();
-        synchronized (useClassRefsFile ) {
-            didRead = read(classesTable, useClassRefsFile);
-        }
+        boolean didRead = read( classesTable, getClassRefsFile() );
 
         @SuppressWarnings("unused")
         long readDuration = addReadTime(readStart, "Read Class Refs");
@@ -570,9 +462,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
     }
 
     public void writeClassRefs(final TargetsTableClassesMultiImpl classesTable) {
-        final File useClassRefsFile = getClassRefsFile();
-
-        if ( !shouldWrite(useClassRefsFile, "Class relationship table") ) {
+        if ( !shouldWrite("Class relationship table") ) {
             return;
         }
 
@@ -583,19 +473,17 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
                 long writeStart = System.nanoTime();
 
-                synchronized( useClassRefsFile ) {
-                    try {
-                        // See the comment on 'mergeClasses': This must be synchronized
-                        // with updates to the class table which occur in 
-                        // TargetsScannerImpl_Overall.validExternal'.
-                        synchronized ( classesTable ) {
-                            createWriter(useClassRefsFile).write(classesTable); // 'write' throws IOException
-                        }
-                    } catch ( IOException e ) {
-                        // CWWKC00??W
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
-                        logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+                try {
+                    // See the comment on 'mergeClasses': This must be synchronized
+                    // with updates to the class table which occur in 
+                    // TargetsScannerImpl_Overall.validExternal'.
+                    synchronized ( classesTable ) {
+                        createWriter( getClassRefsFile() ).write(classesTable); // 'write' throws IOException
                     }
+                } catch ( IOException e ) {
+                    // CWWKC00??W
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "ANNO_TARGETS_CACHE_EXCEPTION [ {0} ]", e);
+                    logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
                 }
 
                 @SuppressWarnings("unused")
@@ -608,17 +496,16 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     //
 
-    public boolean readConData(String conName, TargetsTableImpl targetsData) {
-        TargetCacheImpl_DataCon conData = getActiveCon(conName);
-        if ( conData == null ) {
-            return false;
-        }
-
-        return conData.read(targetsData);
+    @Trivial
+    @Override
+    public boolean shouldRead(String inputDescription) {
+        return getApp().shouldRead(inputDescription);
     }
 
-    public void writeConData(String conName, TargetsTableImpl targetsData) {
-        getActiveConForcing(conName).write(targetsData);
+    @Trivial
+    @Override
+    public boolean shouldWrite(String outputDescription) {
+        return getApp().shouldWrite(outputDescription);
     }
 
     // Handle writes at the module level and below at the module level.

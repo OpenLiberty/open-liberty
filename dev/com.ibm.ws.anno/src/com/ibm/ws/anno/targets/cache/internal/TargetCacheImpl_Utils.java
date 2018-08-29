@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 
 public class TargetCacheImpl_Utils {
@@ -114,6 +115,15 @@ public class TargetCacheImpl_Utils {
         }
     }
 
+    public static final PrefixWidget APP_PREFIX_WIDGET =
+        new PrefixWidget(TargetCache_ExternalConstants.APP_PREFIX);
+
+    public static final PrefixWidget MOD_PREFIX_WIDGET =
+        new PrefixWidget(TargetCache_ExternalConstants.MOD_PREFIX);
+
+    public static final PrefixWidget CON_PREFIX_WIDGET =
+        new PrefixWidget(TargetCache_ExternalConstants.CON_PREFIX);
+
     public static abstract class PrefixListWidget implements ListWidget {
         public PrefixListWidget(PrefixWidget prefixWidget) {
             this.prefixWidget = prefixWidget;
@@ -176,4 +186,64 @@ public class TargetCacheImpl_Utils {
 
         public abstract void storeChild(String childName, String e_childName, File childFile);
     }
+    
+    //
+    
+//  if ( !loadedAppStore ) {
+//  synchronized ( appStoreLock ) {
+//      if ( !loadedAppStore ) {
+//          loadAppStore(appStore);
+//          loadedAppStore = true;
+//      }
+//  }
+//}
+
+//protected volatile boolean loadedAppStore;
+
+//protected void loadAppStore(final Map<String, TargetCacheImpl_DataApp> useAppStore) {
+//    TargetCacheImpl_Utils.PrefixListWidget appListWidget =
+//        new TargetCacheImpl_Utils.PrefixListWidget( getChildPrefixWidget() ) {
+//            @Override
+//            public void storeChild(String appName, String e_appName, File appDir) {
+//                TargetCacheImpl_DataApp appData = createAppData(appName, e_appName, appDir);
+//                useAppStore.put(appName, appData);
+//            }
+//    };
+//
+//    appListWidget.storeParent( getDataDir() );
+//}
+
+//  public void loadModStore(final Map<String, TargetCacheImpl_DataMod> useModStore) {
+//      if ( isDisabled() ) {
+//          return;
+//      }
+//
+//      TargetCacheImpl_Utils.PrefixListWidget modListWidget =
+//          new TargetCacheImpl_Utils.PrefixListWidget( getChildPrefixWidget() ) {
+//              @Override
+//              public void storeChild(String modName, String e_modName, File modDir) {
+//                  TargetCacheImpl_DataMod modData = createModData(modName, e_modName, modDir);
+//                  useModStore.put(modName, modData);
+//              }
+//      };
+//
+//      modListWidget.storeParent( getDataDir() );
+//  }
+
+//  public void loadConStore(final Map<String, TargetCacheImpl_DataCon> useConStore) {
+//  if ( isDisabled() ) {
+//      return;
+//  }
+//
+//  TargetCacheImpl_Utils.PrefixListWidget conListWidget =
+//      new TargetCacheImpl_Utils.PrefixListWidget( TargetCacheImpl_Utils.CON_PREFIX_WIDGET ) {
+//          @Override
+//          public void storeChild(String conName, String e_conName, File conDir) {
+//              TargetCacheImpl_DataCon conData = createConData(conName, e_conName, conDir);
+//              useConStore.put(conName, conData);
+//          }
+//  };
+//
+//  conListWidget.storeParent( getDataDir() );
+//}
 }

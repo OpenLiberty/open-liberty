@@ -16,9 +16,7 @@ import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Eleme
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_Bundle;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_EJB;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_WAR;
-
 import com.ibm.wsspi.adaptable.module.Container;
-
 import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 import com.ibm.wsspi.anno.util.Util_RelativePath;
@@ -65,12 +63,40 @@ public interface ClassSource_Factory {
     //
 
     /**
+     * Parameter used for aggregate class sources which do not have an associated
+     * application.  Module level results from a class source with an unnamed
+     * application are not persisted.  (Container level results are persisted.)
+     */
+    String UNNAMED_APP = null;
+
+    /**
+     * Parameter used for aggregate class sources which do not have an associated
+     * application.  Module level results from a class source with an unnamed
+     * application are not persisted.  (Container level results are persisted.)
+     */
+    String UNNAMED_MOD = null;
+
+    /** Predefined module category for JavaEE annotations results. */
+    String JAVAEE_CATEGORY_NAME = "javaee";
+
+    /** Predefined module category for CDI annotations results. */
+    String CDI_CATEGORY_NAME = "cdi";
+
+    /** Predefined un-set module category name. */
+    String UNSET_CATEGORY_NAME = null;
+
+    /** Predefined unused entry prefix parameter value. */
+    String UNUSED_ENTRY_PREFIX = null;
+
+    /**
      * Create a new empty aggregate class source. Assign options to the new
      * class source.
      * 
      * @param name The name of the class source.
      * @param appName The name of the application of the class source.
      * @param modName The name of the module of the class source.
+     * @param modNameCategory A name used to enable multiple results for
+     *     the same module name.
      * @param options Options for the new class source. 
      * 
      * @return The new class source.
@@ -78,7 +104,7 @@ public interface ClassSource_Factory {
      * @throws ClassSource_Exception Thrown if there was a problem creating the class source.
      */
     ClassSource_Aggregate createAggregateClassSource(
-        String appName, String modName,
+        String appName, String modName, String modNameCategory,
         ClassSource_Options options) throws ClassSource_Exception;
 
     ClassSource_MappedSimple createSimpleClassSource(
@@ -90,7 +116,7 @@ public interface ClassSource_Factory {
         ClassSource_Aggregate aggregate,
         String name,
         Container container) throws ClassSource_Exception;
-
+    
     ClassSource_MappedContainer createContainerClassSource(
         ClassSource_Aggregate aggregate,
         String name,
@@ -117,9 +143,13 @@ public interface ClassSource_Factory {
         String jarPath, String entryPrefix) throws ClassSource_Exception;
 
     ClassSource_ClassLoader createClassLoaderClassSource(
+            ClassSource_Aggregate aggregate,
+            String name,
+            ClassLoader classLoader) throws ClassSource_Exception;
+
+    ClassSource_ClassLoader createClassLoaderClassSource(
         ClassSource_Aggregate aggregate,
-        String name,
-        ClassLoader classLoader) throws ClassSource_Exception;
+        ClassLoader classLoader) throws ClassSource_Exception;    
 
     //
 
@@ -129,7 +159,7 @@ public interface ClassSource_Factory {
 
     ClassSource_Aggregate createAggregateClassSource(
         Util_InternMap internMap,
-        String appName, String modName,
+        String appName, String modName, String modNameCategory,
         ClassSource_Options options) throws ClassSource_Exception;
 
     //
@@ -176,11 +206,15 @@ public interface ClassSource_Factory {
 
     //
 
-    ClassSource_Specification_Elements newElementsSpecification(String appName, String modName);
+    ClassSource_Specification_Elements newElementsSpecification
+        (String appName, String modName, String modCatName);
     ClassSource_Specification_Element newElementSpecification(
         String name, ClassSource_Aggregate.ScanPolicy policy, Util_RelativePath relativePath);
 
-    ClassSource_Specification_Direct_Bundle newBundleDirectSpecification(String appName, String modName);
-    ClassSource_Specification_Direct_EJB newEJBDirectSpecification(String appName, String modName);
-    ClassSource_Specification_Direct_WAR newWARDirectSpecification(String appName, String modName);
+    ClassSource_Specification_Direct_Bundle newBundleDirectSpecification
+        (String appName, String modName, String modCatName);
+    ClassSource_Specification_Direct_EJB newEJBDirectSpecification
+        (String appName, String modName, String modCatName);
+    ClassSource_Specification_Direct_WAR newWARDirectSpecification
+        (String appName, String modName, String modCatName);
 }

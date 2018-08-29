@@ -31,9 +31,9 @@ public class ClassSourceImpl_Specification_Direct_EJB
 
     public ClassSourceImpl_Specification_Direct_EJB(
         ClassSourceImpl_Factory factory,
-        String appName, String modName) {
+        String appName, String modName, String modCatName) {
 
-        super(factory, appName, modName);
+        super(factory, appName, modName, modCatName);
     }
 
     public void addInternalClassSources(ClassSourceImpl_Aggregate rootClassSource)
@@ -48,13 +48,13 @@ public class ClassSourceImpl_Specification_Direct_EJB
         if ( useModuleFile.isDirectory() ) {
             @SuppressWarnings("unused")
             ClassSourceImpl_MappedDirectory dirClassSource =
-                addDirectoryClassSource(rootClassSource, "immediate", useModulePath, ScanPolicy.SEED);
+                addDirectoryClassSource(rootClassSource, modName, useModulePath, ScanPolicy.SEED);
                 // throws ClassSource_Exception
 
         } else {
             @SuppressWarnings("unused")
             ClassSourceImpl_MappedJar jarClassSource =
-                addJarClassSource(rootClassSource, "immediate", useModulePath, ScanPolicy.SEED);
+                addJarClassSource(rootClassSource, modName, useModulePath, ScanPolicy.SEED);
                 // throws ClassSource_Exception
         }
     }

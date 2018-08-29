@@ -30,6 +30,10 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 // Fragment annotations are helpers which wrap web annotations.  Fragment annotations
 // introduce no persistence issues.
 
+/**
+ * Helper type for performing queries on a single web fragment.  Always obtained relative
+ * to web module annotations.
+ */
 public interface FragmentAnnotations {
 	/**
 	 * Answer the annotation targets which store the overall web

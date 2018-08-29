@@ -12,6 +12,7 @@
 package com.ibm.ws.anno.test.scan.errors;
 
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_WAR;
+import com.ibm.ws.anno.test.scan.Test_Base;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
@@ -151,7 +152,7 @@ public class AnnotationTargets_ErrorData {
         String warSimpleName, String warName) {
 
         ClassSource_Specification_Direct_WAR warSpecification =
-            classSourceFactory.newWARDirectSpecification(EAR_SIMPLE_NAME, warSimpleName);
+            classSourceFactory.newWARDirectSpecification(EAR_SIMPLE_NAME, warSimpleName, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
 
         warSpecification.setModulePath(TestLocalization.putIntoData(EAR_NAME + '/', warName) + '/');
 

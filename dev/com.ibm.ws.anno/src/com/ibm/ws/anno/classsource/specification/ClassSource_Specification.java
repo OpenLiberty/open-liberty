@@ -42,6 +42,7 @@ public interface ClassSource_Specification {
 
     String getAppName();
     String getModName();
+	String getModCategoryName();
 
     //
     

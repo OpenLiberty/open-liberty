@@ -11,15 +11,14 @@
 package com.ibm.ws.anno.targets.internal;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.jandex.AnnotationInstance;
-import org.jboss.jandex.AnnotationTarget.Kind;
+import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
-import org.jboss.jandex.FieldInfo;
-import org.jboss.jandex.MethodInfo;
 
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.AnnotationCategory;
@@ -179,47 +178,36 @@ public class TargetsVisitorJandexConverterImpl {
             classesTable.jandex_i_setInterfaceNames(i_className, i_interfaceNames);
         }
 
-        for ( AnnotationInstance jandexClassAnnotation : classInfo.classAnnotations() ) {
-            String i_annotationClassName = internClassName(jandexClassAnnotation.name());
-            annotationsTable.jandex_i_recordAnnotation(
-                i_className, AnnotationCategory.CLASS, i_annotationClassName);
-            if ( logParms != null ) {
-                logParms[2] = i_annotationClassName;
-                jandexLogger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class annotation [ {1} ]", logParms);
-            }
-        }
+        // Jandex places all annotations of a class in a single table which is held
+        // by the class information.
 
-        for ( FieldInfo jandexFieldInfo : classInfo.fields() ) {
-            for ( AnnotationInstance jandexFieldAnnotation : jandexFieldInfo.annotations() ) {
-                String i_annotationClassName = internClassName(jandexFieldAnnotation.name());
-                annotationsTable.jandex_i_recordAnnotation(
-                    i_className, AnnotationCategory.FIELD, i_annotationClassName);
-                if ( logParms != null ) {
-                    logParms[2] = jandexFieldInfo.name();
-                    logParms[3] = i_annotationClassName;
-                    jandexLogger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Field annotation [ {1}.{2} ] [ {3} ]", logParms);
-                }
-            }
-        }
+        for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotations().entrySet() ) {
+            String annotationClassName = annoEntry.getKey().toString();
+            String i_annotationClassName = internClassName(annotationClassName);
 
-        for ( MethodInfo methodInfo : classInfo.methods() ) {
-            for ( AnnotationInstance methodAnnotation : methodInfo.annotations() ) {
-                if ( methodAnnotation.target().kind() != Kind.METHOD ) {
-                    // Kind.TYPE, Kind.CLASS, Kind.FIELD, and Kind.METHOD_PARAMETER also
-                    // exist, although, only TYPE, METHOD, and METHOD_PARAMETER are possible
-                    // for method annotation.
-
-                    // The annotation targets framework only handles method annotations.
-                    // Ignore the other kinds of annotations.
-                    continue;
+            for ( AnnotationInstance annoInstance : annoEntry.getValue() ) {
+                AnnotationTarget annoTarget = annoInstance.target();
+                AnnotationTarget.Kind annoKind = annoTarget.kind();
+                
+                AnnotationCategory annoCategory;
+                if ( annoKind == AnnotationTarget.Kind.CLASS ) {
+                    annoCategory = AnnotationCategory.CLASS;
+                } else if ( annoKind == AnnotationTarget.Kind.METHOD ) {
+                    annoCategory = AnnotationCategory.METHOD;
+                } else if ( annoKind == AnnotationTarget.Kind.FIELD ) {
+                    annoCategory = AnnotationCategory.FIELD;
+                } else {
+                     annoCategory = null;
                 }
 
-                String i_annotationClassName = internClassName(methodAnnotation.name());
-                annotationsTable.jandex_i_recordAnnotation(i_className, AnnotationCategory.METHOD, i_annotationClassName);
-                if ( logParms != null ) {
-                    logParms[2] = methodInfo.name();
-                    logParms[3] = i_annotationClassName;
-                    jandexLogger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Method annotation [ {1}.{2} ] [ {3} ]", logParms);
+                if ( annoCategory != null ) {
+                    annotationsTable.jandex_i_recordAnnotation(i_className, annoCategory, i_annotationClassName);
+
+                    if ( logParms != null ) {
+                        logParms[1] = i_annotationClassName;
+                        logParms[2] = annoCategory; 
+                        jandexLogger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Annotation [ {1} ] [ {2} ]", logParms);
+                    }
                 }
             }
         }

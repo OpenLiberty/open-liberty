@@ -28,32 +28,32 @@ public class ModuleAnnotationsAdapterImpl
 
     @Override
     public ModuleAnnotations adapt(
-    	Container rootContainer,
-    	OverlayContainer rootOverlayContainer,
-    	ArtifactContainer rootArtifactContainer,
-    	Container rootAdaptableContainer) throws UnableToAdaptException {
+        Container rootContainer,
+        OverlayContainer rootOverlayContainer,
+        ArtifactContainer rootArtifactContainer,
+        Container rootAdaptableContainer) throws UnableToAdaptException {
 
-    	String adaptPath = rootArtifactContainer.getPath();
+        String adaptPath = rootArtifactContainer.getPath();
 
         ModuleInfo moduleInfo = overlayGet(rootOverlayContainer, adaptPath, ModuleInfo.class);
         if ( moduleInfo == null ) {
             String msg = Tr.formatMessage(tc, "container.is.not.a.module.CWWKM0453E",
-            	"Container is not a module", rootAdaptableContainer);
+                "Container is not a module", rootAdaptableContainer);
             throw new UnableToAdaptException(msg);
         }
 
-    	ModuleAnnotations moduleAnnotations = overlayGet(rootOverlayContainer, adaptPath, ModuleAnnotations.class);
+        ModuleAnnotations moduleAnnotations = overlayGet(rootOverlayContainer, adaptPath, ModuleAnnotations.class);
 
-    	if ( moduleAnnotations == null ) {
-    		moduleAnnotations = new ModuleAnnotationsImpl(
-    		    this,
-    		    rootContainer, rootOverlayContainer,
-    		    rootArtifactContainer, rootAdaptableContainer,
-    		    moduleInfo);
+        if ( moduleAnnotations == null ) {
+            moduleAnnotations = new ModuleAnnotationsImpl(
+                this,
+                rootContainer, rootOverlayContainer,
+                rootArtifactContainer, rootAdaptableContainer,
+                moduleInfo);
 
-    		overlayPut(rootOverlayContainer, adaptPath, ModuleAnnotations.class, moduleAnnotations);
-    	}
+            overlayPut(rootOverlayContainer, adaptPath, ModuleAnnotations.class, moduleAnnotations);
+        }
 
-    	return moduleAnnotations;
+        return moduleAnnotations;
     }
 }

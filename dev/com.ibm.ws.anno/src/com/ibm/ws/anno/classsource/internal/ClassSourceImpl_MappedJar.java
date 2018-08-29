@@ -17,8 +17,6 @@ package com.ibm.ws.anno.classsource.internal;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.Set;
@@ -31,6 +29,7 @@ import org.jboss.jandex.Index;
 
 import com.ibm.ws.anno.jandex.internal.Jandex_Utils;
 import com.ibm.ws.anno.jandex.internal.SparseIndex;
+import com.ibm.ws.anno.util.internal.UtilImpl_FileStamp;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -96,14 +95,20 @@ public class ClassSourceImpl_MappedJar
      */
     @Override
     protected String computeStamp() {
-        Long result = AccessController.doPrivileged( new PrivilegedAction<Long>() {
-            @Override
-            public Long run() {
-                return Long.valueOf( getRawJarFile().lastModified() );
-            }
-        } );
+        String methodName = "computeStamp";
 
-        return result.toString();
+        File useJarFile = getRawJarFile();
+    
+        String stamp = UtilImpl_FileStamp.computeStamp(useJarFile);
+        if ( stamp == null ) {
+            stamp = ClassSource.UNAVAILABLE_STAMP;
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                MessageFormat.format("[ {0} ] File [ {1} ] Stamp [ {2} ]", getHashText(), useJarFile, stamp));
+        }
+        return stamp;
     }
 
     /*
@@ -485,7 +490,7 @@ public class ClassSourceImpl_MappedJar
 
     @Override
     protected SparseIndex basicGetSparseJandexIndex() {
-    	String methodName = "basicGetSparseJandexIndex";
+        String methodName = "basicGetSparseJandexIndex";
 
         String useJandexIndexPath = getJandexIndexPath();
 

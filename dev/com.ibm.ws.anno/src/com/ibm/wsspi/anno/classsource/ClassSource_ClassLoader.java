@@ -11,5 +11,7 @@
 package com.ibm.wsspi.anno.classsource;
 
 public interface ClassSource_ClassLoader extends ClassSource {
+	String CLASSLOADER_CLASSSOURCE_NAME = "classloader";
+
     ClassLoader getClassLoader();
 }

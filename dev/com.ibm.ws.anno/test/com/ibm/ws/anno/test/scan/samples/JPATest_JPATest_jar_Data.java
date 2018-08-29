@@ -12,6 +12,7 @@
 package com.ibm.ws.anno.test.scan.samples;
 
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Direct_Bundle;
+import com.ibm.ws.anno.test.scan.Test_Base;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
@@ -24,7 +25,7 @@ public class JPATest_JPATest_jar_Data {
 
     public static ClassSource_Specification_Direct_Bundle createClassSourceSpecification(ClassSource_Factory factory) {
         ClassSource_Specification_Direct_Bundle ebaSpecification =
-            factory.newBundleDirectSpecification(EBA_SIMPLE_NAME, EBAJAR_SIMPLE_NAME);
+            factory.newBundleDirectSpecification(EBA_SIMPLE_NAME, EBAJAR_SIMPLE_NAME, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
 
         ebaSpecification.setModulePath(TestLocalization.putIntoData(EBA_NAME + '/', EBAJAR_NAME));
 

@@ -29,8 +29,40 @@ public class TestLocalization {
     public static final String LOGS_RELATIVE_PATH = "build/logs/";
     public static final String LOGS_PATH = putIntoProject(LOGS_RELATIVE_PATH);
     
-    public static final String CLASSES_RELATIVE_PATH = "build/classes/java/test/";
-    public static final String CLASSES_PATH = putIntoProject(CLASSES_RELATIVE_PATH);
+    public static final String CLASSES_RELATIVE_PATH_LIBERTY = "build/classes/";
+    public static final String CLASSES_RELATIVE_PATH_ECLIPSE = "bin/";
+
+    public static final String CLASSES_RELATIVE_PATH;
+    public static final String CLASSES_PATH;
+
+    static {
+        String useClassesPath;
+        String useClassesRelativePath;
+
+        String libertyClasses = putIntoProject(CLASSES_RELATIVE_PATH_LIBERTY);
+        File libertyClassesFile = new File(libertyClasses);
+        if ( libertyClassesFile.exists() ) {
+            useClassesPath = libertyClasses;
+            useClassesRelativePath = CLASSES_RELATIVE_PATH_LIBERTY;
+
+        } else {
+            String eclipseClasses = putIntoProject(CLASSES_RELATIVE_PATH_ECLIPSE);
+            File eclipseClassesFile = new File(eclipseClasses);
+            if ( eclipseClassesFile.exists() ) {
+                useClassesPath = eclipseClasses;
+                useClassesRelativePath = CLASSES_RELATIVE_PATH_ECLIPSE;
+
+            } else {
+                String msg =
+                    "Neither liberty classes [ " + libertyClassesFile.getAbsolutePath() + " ]" +
+                    " nor eclipse classes [ " + eclipseClassesFile.getAbsolutePath() + " ] exists";
+                throw new IllegalArgumentException(msg);
+            }
+        }
+
+        CLASSES_RELATIVE_PATH = useClassesRelativePath;
+        CLASSES_PATH = useClassesPath;
+    }
 
     public static String getProjectPath() {
         return PROJECT_RELATIVE_PATH;

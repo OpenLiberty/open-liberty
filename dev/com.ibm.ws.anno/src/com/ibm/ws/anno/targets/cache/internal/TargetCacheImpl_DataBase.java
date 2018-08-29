@@ -26,7 +26,6 @@ import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.anno.targets.cache.TargetCache_Readable;
-import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Utils.PrefixWidget;
 import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 
 public abstract class TargetCacheImpl_DataBase {
@@ -40,8 +39,7 @@ public abstract class TargetCacheImpl_DataBase {
 
     public TargetCacheImpl_DataBase(
         TargetCacheImpl_Factory factory,
-        String name, String e_name, File dataDir,
-        String childPrefix) {
+        String name, String e_name, File dataDir) {
 
         this.factory = factory;
         this.cacheOptions = factory.getCacheOptions();
@@ -51,9 +49,6 @@ public abstract class TargetCacheImpl_DataBase {
 
         this.dataDir = dataDir;
 
-        this.childPrefix = childPrefix;
-        this.childPrefixWidget = ( (childPrefix == null) ? null : new PrefixWidget(childPrefix) );
-        
         this.readTime = 0L;
         this.writeTime = 0L;
     }
@@ -65,6 +60,11 @@ public abstract class TargetCacheImpl_DataBase {
     @Trivial
     public TargetCacheImpl_Factory getFactory() {
         return factory;
+    }
+
+    @Trivial
+    protected TargetCacheImpl_DataCon createConData(String conPath, String e_conPath, File conDir) {
+        return getFactory().createConData(this, conPath, e_conPath, conDir);
     }
 
     //
@@ -104,28 +104,50 @@ public abstract class TargetCacheImpl_DataBase {
     //
 
     @Trivial
-    public boolean shouldWrite(File outputFile, String outputDescription) {
+    public boolean shouldWrite(String outputDescription) {
         String methodName = "shouldWrite";
 
         if ( isDisabled() ) {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "Disabled: Skipping write of [ {0} ] to [ {1} ]",
-                        new Object[] { outputDescription, outputFile.getPath() });
+                    "Disabled: Skipping write of [ {0} ]", outputDescription);
             }
             return false;
 
         } else if ( isReadOnly() ) {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "Read-only: Skipping write of [ {0} ] to [ {1} ]",
-                        new Object[] { outputDescription, outputFile.getPath() });
+                    "Read-only: Skipping write of [ {0} ]", outputDescription);
             }
             return false;
 
-       } else {
-           return true;
-       }
+        } else {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "Enabled and not read-only: Allowing write of [ {0} ]", outputDescription);
+            }
+            return true;
+        }
+    }
+
+    @Trivial
+    public boolean shouldRead(String inputDescription) {
+        String methodName = "shouldRead";
+
+        if ( isDisabled() ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "Disabled: Skipping read of [ {0} ]", inputDescription);
+            }
+            return false;
+
+        } else {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "Enabled: Allowing read of [ {0} ]", inputDescription);
+            }
+            return true;
+        }
     }
 
     //
@@ -229,6 +251,11 @@ public abstract class TargetCacheImpl_DataBase {
     }
 
     @Trivial
+    public boolean isNamed() {
+    	return ( name != null );
+    }
+
+    @Trivial
     public String e_getName() {
         return e_name;
     }
@@ -255,28 +282,28 @@ public abstract class TargetCacheImpl_DataBase {
 
     //
 
-    protected final String childPrefix;
-
-    @Trivial
-    public String getChildPrefix() {
-        return childPrefix;
+    public String e_addAppPrefix(String e_appName) {
+        return ( TargetCacheImpl_Utils.APP_PREFIX_WIDGET.e_addPrefix(e_appName) );
     }
 
-    protected final PrefixWidget childPrefixWidget;
-
-    @Trivial
-    public PrefixWidget getChildPrefixWidget() {
-        return childPrefixWidget;
+    public String e_removeAppPrefix(String e_appName) {
+        return ( TargetCacheImpl_Utils.APP_PREFIX_WIDGET.e_removePrefix(e_appName) );
     }
 
-    @Trivial
-    public String e_addChildPrefix(String e_name) {
-        return ( (childPrefixWidget == null) ? e_name : childPrefixWidget.e_addPrefix(e_name) );
+    public String e_addModPrefix(String e_modName) {
+        return ( TargetCacheImpl_Utils.MOD_PREFIX_WIDGET.e_addPrefix(e_modName) );
     }
 
-    @Trivial
-    public String e_removeChildPrefix(String e_childName) {
-        return ( (childPrefixWidget == null) ? e_childName : childPrefixWidget.e_removePrefix(e_childName) );
+    public String e_removeModPrefix(String e_modName) {
+        return ( TargetCacheImpl_Utils.MOD_PREFIX_WIDGET.e_removePrefix(e_modName) );
+    }
+
+    public String e_addConPrefix(String e_conPath) {
+        return ( TargetCacheImpl_Utils.CON_PREFIX_WIDGET.e_addPrefix(e_conPath) );
+    }
+    
+    public String e_removeConPrefix(String e_conPath) {
+        return ( TargetCacheImpl_Utils.CON_PREFIX_WIDGET.e_removePrefix(e_conPath) );
     }
 
     //
@@ -318,29 +345,53 @@ public abstract class TargetCacheImpl_DataBase {
         return UtilImpl_FileUtils.createFileInputStream(file); // throws IOException
     }
 
+    //
+
     private long readTime;
 
     @Trivial
     public long getReadTime() {
-    	return readTime;
+        return readTime;
     }
 
     public long addReadTime(long start, String description) {
-    	long duration = System.nanoTime() - start;
-    	readTime += duration;
-    	return duration;
+        long duration = System.nanoTime() - start;
+        readTime += duration;
+        return duration;
     }
 
     private long writeTime;
 
     @Trivial
     public long getWriteTime() {
-    	return writeTime;
+        return writeTime;
     }
 
     public long addWriteTime(long start, String description) {
-    	long duration = System.nanoTime() - start;
-    	writeTime += duration;
-    	return duration;
+        long duration = System.nanoTime() - start;
+        writeTime += duration;
+        return duration;
+    }
+
+    //
+
+    @Trivial
+    protected TargetCacheImpl_DataCon createConData(String conPath) {
+        String e_conPath = encode(conPath);
+        return createConData( conPath, e_conPath, e_getConDir(e_conPath) );
+    }
+
+    @Trivial
+    protected File e_getConDir(String e_conPath) {
+        return getDataFile( e_addConPrefix(e_conPath) );
+    }
+
+    @Trivial
+    protected TargetCacheImpl_DataCon createConData(File conDir) {
+        String e_conDirName = conDir.getName();
+        String e_conName = e_removeConPrefix(e_conDirName);
+        String conName = decode(e_conName);
+
+        return createConData(conName, e_conName, conDir);
     }
 }

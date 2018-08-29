@@ -195,19 +195,25 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
 
     //
 
-    protected TargetCacheImpl_DataApp createAppData(String appName, String e_appName, File appDir) {
-        return new TargetCacheImpl_DataApp(this, appName, e_appName, appDir);
+    protected TargetCacheImpl_DataApp createAppData(
+        TargetCacheImpl_DataApps appsData,
+        String appName, String e_appName, File appDir) {
+
+        return new TargetCacheImpl_DataApp(appsData, appName, e_appName, appDir);
     }
 
-    protected TargetCacheImpl_DataMod createModData(String modName, String e_modName, File modDir) {
-        return new TargetCacheImpl_DataMod(this, modName, e_modName, modDir);
+    protected TargetCacheImpl_DataMod createModData(
+        TargetCacheImpl_DataApp appData,
+        String modName, String e_modName, File modDir) {
+
+        return new TargetCacheImpl_DataMod(appData, modName, e_modName, modDir);
     }
 
     protected TargetCacheImpl_DataCon createConData(
-        TargetCacheImpl_DataMod modData,
+        TargetCacheImpl_DataBase parentData, // App or Mod
         String conName, String e_conName, File conDir) {
 
-        return new TargetCacheImpl_DataCon(this, modData, conName, e_conName, conDir);
+        return new TargetCacheImpl_DataCon(parentData, conName, e_conName, conDir);
     }
 
     //

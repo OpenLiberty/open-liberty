@@ -74,15 +74,15 @@ public abstract class AnnotationsAdapterImpl {
 
     @SuppressWarnings("unchecked")
     public <T> T overlayGet(
-    	OverlayContainer overlayContainer,
-    	String targetPath, Class<T> targetClass) {
+        OverlayContainer overlayContainer,
+        String targetPath, Class<T> targetClass) {
 
         return (T) (overlayContainer.getFromNonPersistentCache(targetPath, targetClass));
     }
 
     public <T> void overlayPut(
-    	OverlayContainer overlayContainer,
-    	String targetPath, Class<T> targetClass, T targetObject) {
+        OverlayContainer overlayContainer,
+        String targetPath, Class<T> targetClass, T targetObject) {
 
         overlayContainer.addToNonPersistentCache(targetPath, targetClass, targetObject);
     }
@@ -90,25 +90,25 @@ public abstract class AnnotationsAdapterImpl {
     //
 
     public static String getPath(Container container) {
-    	StringBuilder pathBuilder = new StringBuilder();
+        StringBuilder pathBuilder = new StringBuilder();
 
-    	Entry entry;
-    	try {
-    		entry = container.adapt(Entry.class);
-    	} catch ( UnableToAdaptException e ) {
-    		return null;
-    	}
+        Entry entry;
+        try {
+            entry = container.adapt(Entry.class);
+        } catch ( UnableToAdaptException e ) {
+            entry = null;
+        }
 
-    	while ( entry != null ) {
-    		pathBuilder.insert(0,  entry.getPath() );
+        while ( entry != null ) {
+            pathBuilder.insert(0,  entry.getPath() );
 
-    		try {
-    			entry = entry.getRoot().adapt(Entry.class);
-    		} catch ( UnableToAdaptException e ) {
-    			return null;
-    		}
-    	}
+            try {
+                entry = entry.getRoot().adapt(Entry.class);
+            } catch ( UnableToAdaptException e ) {
+                entry = null;
+            }
+        }
 
-    	return pathBuilder.toString();
+        return pathBuilder.toString();
     }
 }

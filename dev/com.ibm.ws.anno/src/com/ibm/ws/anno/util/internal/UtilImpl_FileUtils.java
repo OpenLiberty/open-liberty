@@ -81,6 +81,28 @@ public class UtilImpl_FileUtils {
         });
     }
 
+    public static String getAbsolutePath(final File target) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return target.getAbsolutePath();
+            }
+        });
+    }
+
+    public static String getCanonicalPath(final File target) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                try {
+                    return target.getCanonicalPath(); // throws IOException
+                } catch ( IOException e ) {
+                    return target.getAbsolutePath();
+                }
+            }
+        });
+    }
+
     // Listing ...
 
     public static final File[] EMPTY_FILES = new File[] {};

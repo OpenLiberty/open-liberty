@@ -34,6 +34,7 @@ import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_Options;
 import com.ibm.ws.anno.test.utils.TestLocalization;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_ClassLoader;
+import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.FieldInfo;
@@ -110,7 +111,9 @@ public abstract class InfoStore_TestBase {
         ClassSourceImpl_Factory factory = getClassSourceFactory();
 
         ClassSourceImpl_Aggregate useRootClassSource =
-            factory.createAggregateClassSource("AppName", "ModName", factory.createOptions() );
+            factory.createAggregateClassSource(
+                "AppName", "ModName", ClassSource_Factory.JAVAEE_CATEGORY_NAME,
+                factory.createOptions() );
 
         addComponentClassSources(useRootClassSource);
 

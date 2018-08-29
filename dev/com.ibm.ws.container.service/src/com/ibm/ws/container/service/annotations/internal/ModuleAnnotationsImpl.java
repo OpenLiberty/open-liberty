@@ -20,9 +20,7 @@ import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
-import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
-import com.ibm.wsspi.anno.classsource.ClassSource_MappedContainer;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
@@ -103,20 +101,20 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnnotations {
 
     public ModuleAnnotationsImpl(
-    	AnnotationsAdapterImpl annotationsAdapter,
-    	Container rootContainer, OverlayContainer rootOverlayContainer,
-    	ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
-    	ModuleInfo moduleInfo) {
+        AnnotationsAdapterImpl annotationsAdapter,
+        Container rootContainer, OverlayContainer rootOverlayContainer,
+        ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
+        ModuleInfo moduleInfo) {
 
-    	super( annotationsAdapter,
-    		   rootContainer, rootOverlayContainer,
-    		   rootArtifactContainer, rootAdaptableContainer,
-    		   moduleInfo.getApplicationInfo().getName(),
-    		   AnnotationsAdapterImpl.getPath(moduleInfo.getContainer()),
-    		   ClassSource_Factory.JAVAEE_CATEGORY_NAME );
+        super( annotationsAdapter,
+               rootContainer, rootOverlayContainer,
+               rootArtifactContainer, rootAdaptableContainer,
+               moduleInfo.getApplicationInfo().getName(),
+               AnnotationsAdapterImpl.getPath(moduleInfo.getContainer()),
+               ClassSource_Factory.JAVAEE_CATEGORY_NAME );
 
         this.moduleInfo = moduleInfo;
-        this.classLoader = this.moduleInfo.getClassLoader();
+        this.classLoader = moduleInfo.getClassLoader();
 
         this.appInfo = moduleInfo.getApplicationInfo();
     }
@@ -127,15 +125,15 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
     @Override
     public ModuleInfo getModuleInfo() {
-    	return moduleInfo;
+        return moduleInfo;
     }
 
-    // Not currently in use.
+    //
 
     @Deprecated
     @Override
     public void addAppClassLoader(ClassLoader appClassLoader) {
-    	setClassLoader(appClassLoader);
+        setClassLoader(appClassLoader);
     }
 
     //
@@ -144,7 +142,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
     @Override
     public ApplicationInfo getAppInfo() {
-    	return appInfo;
+        return appInfo;
     }
 
     @Override
@@ -160,21 +158,21 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
      */
     @Override
     public boolean getUseJandex() {
-    	return getAppInfo().getUseJandex();
+        return getAppInfo().getUseJandex();
     }
 
     private ModuleClassesContainerInfo getModuleClassesContainerInfo() {
-    	Container container = getContainer();
-    	
+        Container container = getContainer();
+
         NonPersistentCache cache;
         try {
             cache = getAppContainer().adapt(NonPersistentCache.class);
             // 'adapt' throws UnableToAdaptException
         } catch ( UnableToAdaptException e ) {
-        	return null; // FFDC
+            return null; // FFDC
         }
         ApplicationClassesContainerInfo appClassesInfo = (ApplicationClassesContainerInfo)
-        	cache.getFromCache(ApplicationClassesContainerInfo.class);
+            cache.getFromCache(ApplicationClassesContainerInfo.class);
 
         // AppClassesInfo -> { ModuleClassesInfo -> { ContainerInfo -> Container } }
         // Find the module classes information which has a container which is the
@@ -183,10 +181,10 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         for ( ModuleClassesContainerInfo moduleClassesInfo : appClassesInfo.getModuleClassesContainerInfo() ) {
             for ( ContainerInfo containerInfo : moduleClassesInfo.getClassesContainerInfo() ) {
                 if ( containerInfo.getType() == ContainerInfo.Type.MANIFEST_CLASSPATH ) {
-                	continue;
+                    continue;
                 }
                 if ( !containerInfo.getContainer().equals(container) ) {
-                	continue;
+                    continue;
                 }
                 return moduleClassesInfo;
             }
@@ -197,131 +195,148 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
     //
 
+    protected String getContainerPath(Container container) {
+        String containerPath;
+        String pathCase;
+
+        try {
+            containerPath = getPath(container); // throws UnableToAdaptException
+        } catch ( UnableToAdaptException e ) {
+            return null; // FFDC
+        }
+        if ( containerPath.isEmpty() ) { // Root-of-roots
+            containerPath = getModName(); // See the comment, above.
+            pathCase = "root-of-roots (module name)";
+        } else {
+        	pathCase = "non-root-of-roots (full path)";
+        }
+
+        Tr.info(tc, "Container [ " + container + " ] Path [ " + containerPath + " ]: " + pathCase);
+        return containerPath;
+    }
+
     @Override
     protected void addInternalToClassSource() {
-		if ( classSource == null ) {
-			return; // Nothing yet to do.
-		}
+        if ( rootClassSource == null ) {
+            return; // Nothing yet to do.
+        }
 
-    	ClassSource_Factory classSourceFactory = getClassSourceFactory();
-    	if ( classSourceFactory == null ) {
-    		return;
-    	}
+        ClassSource_Factory classSourceFactory = getClassSourceFactory();
+        if ( classSourceFactory == null ) {
+            return;
+        }
 
-    	ModuleClassesContainerInfo moduleClassesContainerInfo = getModuleClassesContainerInfo();
+        Container moduleContainer = getContainer();
 
-    	if ( moduleClassesContainerInfo == null ) {
-    		Container classesContainer = getContainer();
-    		ClassSource_MappedContainer containerClassSource;
+        Tr.info(tc, "Module [ " + getAppName() + ":" + getModName() + " ][ " + moduleContainer + " ]:" +
+                    " Building internal class sources");
 
-    		try {
-    			containerClassSource = classSourceFactory.createImmediateClassSource(
-    				classSource, classesContainer); // throws ClassSource_Exception
-    		} catch ( ClassSource_Exception e ) {
-    			return; // FFDC
-    		}
-    		classSource.addClassSource(containerClassSource);
+        ModuleClassesContainerInfo moduleClassesContainerInfo = getModuleClassesContainerInfo();
 
-    	} else {
-    		// ContainerInfo.Type:
+        if ( moduleClassesContainerInfo == null ) {
+            Tr.info(tc, "No classes container info: Using the module container.");
+
+            // When there is no module classes container information, use the module container
+            // itself as the classes container.
+            //
+            // Use the full path of the module container as the container name, except,
+            // when the module container is a root of roots, use the module name as the
+            // container name, since the the full path of the module is empty.
+
+            String containerPath = getContainerPath(moduleContainer);
+            if ( containerPath == null ) {
+            	return; // FFDC in 'getContainerPath'
+            }
+            if ( !addContainerClassSource(containerPath, moduleContainer) ) {
+                return; // FFDC in 'addContainerClassSource'
+            }
+
+        } else {
+        	// These are the possible values of ContainerInfo.Type:
+        	//
             //   MANIFEST_CLASSPATH: Should not be present
-    		//   EAR_LIB: Should not be present
-    		//   SHARED_LIB: Should not be present
-    		//   WEB_MODULE: Should not be present; should be WEB_INF_CLASSES or WEB_INF_LIB
+            //   EAR_LIB: Should not be present
+            //   SHARED_LIB: Should not be present
+            //   WEB_MODULE: Should not be present; should be WEB_INF_CLASSES or WEB_INF_LIB
 
-    		//   WEB_INF_CLASSES: Must be prefixed to enable finding the JANDEX index
-    		//   WEB_INF_LIB: Normal; should be a root container
+            //   WEB_INF_CLASSES: Must be prefixed to enable finding the JANDEX index
+            //   WEB_INF_LIB: Normal; should be a root container
 
-    		//   EJB_MODULE: Normal; should be a root container
-    		//   CLIENT_MODULE: Normal; should be a root container
-    		//   RAR_MODULE: Normal; should be a root container
-    		//   JAR_MODULE: ?? Maybe, a JAR in a RAR module
+            //   EJB_MODULE: Normal; should be a root container
+            //   CLIENT_MODULE: Normal; should be a root container
+            //   RAR_MODULE: Normal; should be a root container
+            //   JAR_MODULE: ?? Maybe, a JAR in a RAR module
 
-    		for ( ContainerInfo containerInfo : moduleClassesContainerInfo.getClassesContainerInfo() ) {
-    			ContainerInfo.Type containerType = containerInfo.getType();
+            for ( ContainerInfo nextInfo : moduleClassesContainerInfo.getClassesContainerInfo() ) {
+                Container nextContainer = nextInfo.getContainer();
+                ContainerInfo.Type nextType = nextInfo.getType();
 
-    			if ( (containerType == ContainerInfo.Type.MANIFEST_CLASSPATH) ||
-    				 (containerType == ContainerInfo.Type.EAR_LIB) ||
-    				 (containerType == ContainerInfo.Type.SHARED_LIB) ) {
+                if ( (nextType == ContainerInfo.Type.MANIFEST_CLASSPATH) ||
+                     (nextType == ContainerInfo.Type.EAR_LIB) ||
+                     (nextType == ContainerInfo.Type.SHARED_LIB) ) {
 
-    				// While manifest class path entries, EAR libraries, and shared libraries
-    				// can be on a module's class path, none of these is ever scanned directly,
-    				// and should not be put into the class source containers.
-    				//
-    				// These will be handled as a part of the module class loader.
+                    // While manifest class path entries, EAR libraries, and shared libraries
+                    // can be on a module's class path, none of these is ever scanned directly,
+                    // and should not be put into the class source containers.
+                    //
+                    // These will be handled as a part of the module class loader.
 
-    				continue;
-    			}
+                    Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]");
+                    continue;
 
-    			Container classesContainer = containerInfo.getContainer();
-    			String containerName;
-    			String containerPrefix = null;
+                } else if ( nextType == ContainerInfo.Type.WEB_MODULE ) {
+                    // A web module should never be specified itself as a classes
+                    // container.
 
-    			if ( (containerType == ContainerInfo.Type.WEB_INF_LIB) ||
-        		     (containerType == ContainerInfo.Type.EJB_MODULE) ||
-        		     (containerType == ContainerInfo.Type.CLIENT_MODULE) ||
-        		     (containerType == ContainerInfo.Type.RAR_MODULE) ||
-        		     (containerType == ContainerInfo.Type.JAR_MODULE) ) {
+                    Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]: " +
+                                   "Web modules should use WEB_INF_CLASSES");
+                    continue;
+                }
 
-    				// WEB_INF_LIB, EJB_MODULE, CLIENT_MODULE, RAR_MODULE, and JAR_MODULE
-    				// are expected, and are always handled as immediate containers.
+                String nextPrefix;
 
-    				containerName = "immediate";
+                if ( nextType == ContainerInfo.Type.WEB_INF_CLASSES ) {
+                    // Handle WEB-INF/classes by providing the module container
+                    // and a prefix for locating the WEB-INF/classes folder.  The
+                    // module container is provided to give the annotations visibility
+                    // to META-INF, which is where jandex indexes are stored.
 
-    			} else if ( containerInfo.getType() == ContainerInfo.Type.WEB_INF_CLASSES ) {
+                    nextContainer  = nextContainer.getEnclosingContainer().getEnclosingContainer();
+                    nextPrefix = "WEB-INF/classes";
 
-    				// WEB-INF/classes requires special handling:
-    				// The Jandex index is located relative to the module container.
-    				// So as to not have the annotations framework handle the non-relative
-    				// placement, a classes folder is handled with the module container
-    				// given to the class source, but with a prefix supplied to select just
-    				// the entries under WEB-INF/classes.
+                    Tr.info(tc, "Handling type [ " + nextType + " ] with prefix [ " + nextPrefix + " ]");
 
-    				containerName = "WEB-INF/classes";
+                } else if ( (nextType == ContainerInfo.Type.WEB_INF_LIB) ||
+                            (nextType == ContainerInfo.Type.EJB_MODULE) ||
+                            (nextType == ContainerInfo.Type.CLIENT_MODULE) ||
+                            (nextType == ContainerInfo.Type.RAR_MODULE) ||
+                            (nextType == ContainerInfo.Type.JAR_MODULE) ) {
 
-    				// The expectation is that the supplied container is twice nested
-    				// local child of the module container.
+                    // These are the most usual cases.
 
-    				if ( !classesContainer.isRoot() ) {
-    					Container firstParent = classesContainer.getEnclosingContainer();
-    					if ( !firstParent.isRoot() ) {
-    						classesContainer = firstParent.getEnclosingContainer();
-    						containerPrefix = "WEB-INF/classes";
-    					}
-    				}
-    				if ( containerPrefix == null ) {
-    					Tr.warning(tc, "Strange WEB-INF/classes location [ " + classesContainer + " ]" +
-     					               " for module [ " + getModName() + " ]" +
-     					               " of application [ " + getAppName() + " ]");
-    				}
+                    nextPrefix = ClassSource_Factory.UNUSED_ENTRY_PREFIX;
 
-    			} else {
-    				// The WEB_MODULE case has not yet been handled.  This should never
-    				// be provided as a part of a web module class path.
-    				//
-    				// If new cases are added to the types list, these are not handled.
+                    Tr.info(tc, "Handling type [ " + nextType + " ]");
 
-    				Tr.warning(tc, "Strange container type [ " + containerType + " ]" +
-        			               " of [ " + classesContainer + " ]" +
-        			               " for module [ " + getModName() + " ]" +
-        			               " of application [ " + getAppName() + " ]");
-    				continue;
-    			}
+                } else {
+                    Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]: " +
+                                   "unknown type");
+                    return;
+                }
 
-    			ClassSource_MappedContainer containerClassSource;
-    			try {
-    				if ( containerPrefix == null ) {
-    					containerClassSource = classSourceFactory.createContainerClassSource(
-    						classSource, containerName, classesContainer); // throws ClassSource_Exception
-    				} else {
-    					containerClassSource = classSourceFactory.createContainerClassSource(
-    						classSource, containerName, classesContainer, containerPrefix); // throws ClassSource_Exception
-    				}
-    			} catch ( ClassSource_Exception e ) {
-    				return; // FFDC
-    			}
-    			classSource.addClassSource(containerClassSource);
-        	}
+                // A root-of-roots classes container should only be possible for
+                // particular container types.  Testing for all types should not
+                // be a problem.
+
+                String nextPath = getContainerPath(moduleContainer);
+                if ( nextPath == null ) {
+                	return; // FFDC in 'getContainerPath'
+                }
+
+                if ( !addContainerClassSource(nextPath, nextContainer, nextPrefix) ) {
+                    return; // FFDC in 'addContainerClassSource'
+                }
+            }
         }
     }
 }

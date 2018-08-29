@@ -163,6 +163,17 @@ public interface ClassSource_Aggregate {
      */
     String getModuleName();
 
+    /**
+     * <p>Answer the module category name of this class source.</p>
+     * 
+     * <p>The category name is used to enable multiple results for
+     * the same module.  Multiple results are needed because CDI
+     * and J2EE process modules differently.
+     *
+     * @return The category name of this class source.
+     */
+    String getModuleCategoryName();
+
     // Structure ...
 
     /**

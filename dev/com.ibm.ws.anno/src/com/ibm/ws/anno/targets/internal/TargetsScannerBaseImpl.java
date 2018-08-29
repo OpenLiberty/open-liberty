@@ -193,6 +193,26 @@ public class TargetsScannerBaseImpl {
         return ( getScanThreads() == 1 );
     }
 
+    // The single thread scan process should be used when there is only one
+    // non-external source.  That reduces the processing cost considerably.
+
+    public boolean isScanSingleSource() {
+        boolean foundFirst = false;
+
+        for ( ClassSource childClassSource : rootClassSource.getClassSources() ) {
+            ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
+            if ( childScanPolicy == ScanPolicy.EXTERNAL ) {
+                continue;
+            } else if ( foundFirst ) {
+                return false;
+            } else {
+                foundFirst = true;
+            }
+        }
+
+        return true;
+    }
+
     //
 
     public TargetsTableImpl scanInternal(ClassSource classSource,

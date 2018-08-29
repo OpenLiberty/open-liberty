@@ -27,11 +27,10 @@ import com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specif
 import com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct_WAR;
 
 import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
-
 import com.ibm.wsspi.adaptable.module.Container;
-
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.anno.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedSimple;
@@ -154,13 +153,13 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     @Override
     @Trivial
     public ClassSourceImpl_Aggregate createAggregateClassSource(
-        String appName, String modName,
+        String appName, String modName, String modCategoryName,
         ClassSource_Options options) throws ClassSource_Exception {
 
         Util_InternMap classInternMap =
             getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_CLASS_NAME, "classes and packages");
 
-        return createAggregateClassSource(classInternMap, appName, modName, options);
+        return createAggregateClassSource(classInternMap, appName, modName, modCategoryName, options);
         // throws ClassSource_Exception
     }
 
@@ -195,7 +194,6 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
         return createContainerClassSource(aggregate.getInternMap(), name, container, entryPrefix);
         // 'createContainerClassSource' throws ClassSource_Exception
-        
     }
 
     @Override
@@ -247,22 +245,35 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     @Trivial
     public ClassSourceImpl_ClassLoader createClassLoaderClassSource(
         ClassSource_Aggregate aggregate,
+        ClassLoader classLoader) throws ClassSource_Exception {
+
+        return createClassLoaderClassSource(
+            aggregate,
+            ClassSource_ClassLoader.CLASSLOADER_CLASSSOURCE_NAME,
+            classLoader);
+        // 'createSimpleClassSource' throws ClassSource_Exception
+    }
+
+    @Override
+    @Trivial
+    public ClassSourceImpl_ClassLoader createClassLoaderClassSource(
+        ClassSource_Aggregate aggregate,
         String name,
         ClassLoader classLoader) throws ClassSource_Exception {
 
         return createClassLoaderClassSource(aggregate.getInternMap(), name, classLoader);
         // 'createSimpleClassSource' throws ClassSource_Exception
     }
-    
+
     //
 
     @Override
     public ClassSourceImpl_Aggregate createAggregateClassSource(
         Util_InternMap internMap,
-        String appName, String modName,
+        String appName, String modName, String modCategoryName,
         ClassSource_Options options) throws ClassSource_Exception {
 
-        return new ClassSourceImpl_Aggregate(this, internMap, appName, modName, options);
+        return new ClassSourceImpl_Aggregate(this, internMap, appName, modName, modCategoryName, options);
     }
 
     @Override
@@ -352,8 +363,8 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     @Override
-    public ClassSourceImpl_Specification_Elements newElementsSpecification(String appName, String modName) {
-        return new ClassSourceImpl_Specification_Elements(this, appName, modName);
+    public ClassSourceImpl_Specification_Elements newElementsSpecification(String appName, String modName, String modCatName) {
+        return new ClassSourceImpl_Specification_Elements(this, appName, modName, modCatName);
     }
 
     @Override
@@ -363,17 +374,17 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     }
 
     @Override
-    public ClassSourceImpl_Specification_Direct_Bundle newBundleDirectSpecification(String appName, String modName) {
-        return new ClassSourceImpl_Specification_Direct_Bundle(this, appName, modName);
+    public ClassSourceImpl_Specification_Direct_Bundle newBundleDirectSpecification(String appName, String modName, String modCatName) {
+        return new ClassSourceImpl_Specification_Direct_Bundle(this, appName, modName, modCatName);
     }
 
     @Override
-    public ClassSourceImpl_Specification_Direct_EJB newEJBDirectSpecification(String appName, String modName) {
-        return new ClassSourceImpl_Specification_Direct_EJB(this, appName, modName);
+    public ClassSourceImpl_Specification_Direct_EJB newEJBDirectSpecification(String appName, String modName, String modCatName) {
+        return new ClassSourceImpl_Specification_Direct_EJB(this, appName, modName, modCatName);
     }
 
     @Override
-    public ClassSourceImpl_Specification_Direct_WAR newWARDirectSpecification(String appName, String modName) {
-        return new ClassSourceImpl_Specification_Direct_WAR(this, appName, modName);
+    public ClassSourceImpl_Specification_Direct_WAR newWARDirectSpecification(String appName, String modName, String modCatName) {
+        return new ClassSourceImpl_Specification_Direct_WAR(this, appName, modName, modCatName);
     }
 }
