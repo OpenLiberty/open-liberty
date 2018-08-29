@@ -8,19 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.version15.test.app;
+package com.ibm.ws.springboot.support.version15.test.multi.context.app.child1;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.context.annotation.PropertySource;
+
 
 @Configuration
-public class MvcConfig extends WebMvcConfigurerAdapter {
+@ComponentScan("com.ibm.ws.springboot.support.version15.test.multi.context.app.child1")
+@PropertySource("classpath:servlet1.properties")
+@EnableAutoConfiguration
+public class ServletConfig1 {
     
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/hello").setViewName("hello");
-        registry.addViewController("/login").setViewName("login");
-    }
-
 }

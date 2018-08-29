@@ -8,23 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.version15.test.actuator.app;
+package com.ibm.ws.springboot.support.version15.test.multi.context.app.parent;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ibm.ws.springboot.support.version15.test.multi.context.app.child1.ServletConfig1;
+import com.ibm.ws.springboot.support.version15.test.multi.context.app.child2.ServletConfig2;
 
-@SpringBootApplication
-@RestController
+import org.springframework.boot.builder.SpringApplicationBuilder;
+
 public class TestApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(TestApplication.class, args);
-	}
 
-	@RequestMapping("/")
-	public String hello() {
-		return "HELLO SPRING BOOT!!";
+	public static void main(String[] args) {
+		new SpringApplicationBuilder().parent(Config.class)
+			.web(false)
+			.child(ServletConfig1.class)
+			.web(true)
+			.sibling(ServletConfig2.class)
+			.web(true)
+			.run(args);
 	}
 
 }

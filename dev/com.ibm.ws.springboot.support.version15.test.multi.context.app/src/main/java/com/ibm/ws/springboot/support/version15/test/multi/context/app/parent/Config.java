@@ -8,23 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.version15.test.app;
+package com.ibm.ws.springboot.support.version15.test.multi.context.app.parent;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
-@WebListener
-public class TestWebListener implements ServletContextListener {
-
-	@Override
-	public void contextDestroyed(ServletContextEvent e) {
-		// nothing
-	}
-
-	@Override
-	public void contextInitialized(ServletContextEvent e) {
-		e.getServletContext().setAttribute(TestApplication.TEST_ATTR, "PASSED");
-	}
-
-}
+@Configuration
+@ComponentScan("com.ibm.ws.springboot.support.version15.test.multi.context.app.parent")
+public class Config {}
