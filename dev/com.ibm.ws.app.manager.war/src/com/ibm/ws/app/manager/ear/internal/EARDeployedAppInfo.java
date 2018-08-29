@@ -36,7 +36,6 @@ import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
 import com.ibm.ws.app.manager.module.internal.DeployedModuleInfoImpl;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
-import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.container.service.annotations.ContainerAnnotations;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ConnectorModuleInfo;
