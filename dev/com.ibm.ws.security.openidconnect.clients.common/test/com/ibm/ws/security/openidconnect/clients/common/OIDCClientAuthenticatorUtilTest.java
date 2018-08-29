@@ -200,6 +200,9 @@ public class OIDCClientAuthenticatorUtilTest {
         map.put("access_token", new String[] { "access_token_content" });
         map.put(id_token, idTokens);
         map.put("refresh_token", new String[] { "refresh_token_content" });
+        map.put("code", new String[] { "YMKexUVcHci2dhDJzNRHW2w9rhf70u" });
+        map.put("state", new String[] { "001534964952438QID21LdnF" });
+        
         JsonObject jsonObject = new JsonObject();
         Set<Map.Entry<String, String[]>> entries = map.entrySet();
         for (Map.Entry<String, String[]> entry : entries) {
@@ -210,16 +213,19 @@ public class OIDCClientAuthenticatorUtilTest {
             }
         }
         String requestParameters = jsonObject.toString();
-
-        // digest with the client_secret value
-        String digestValue = HashUtils.digest(requestParameters + clientSecret);
-        String hashReqParams = requestParameters + digestValue;
-
+        
+        String localEncoded = null;
         try {
-            encodedReqParams = Base64Coder.toString(Base64Coder.base64Encode(hashReqParams.getBytes(ClientConstants.CHARSET)));
+            localEncoded = Base64Coder.toString(Base64Coder.base64Encode(requestParameters.getBytes(ClientConstants.CHARSET)));
         } catch (UnsupportedEncodingException e) {
             //This should not happen, we are using UTF-8
         }
+
+        // digest with the client_secret value
+        String tmpStr = new String(localEncoded);
+        tmpStr = tmpStr.concat("_").concat(convClientConfig.getClass().getName()+clientSecret);
+        
+        encodedReqParams = new String(localEncoded).concat("_").concat(HashUtils.digest(tmpStr));   
         reqParameterCookie = new Cookie(ClientConstants.WAS_OIDC_CODE, encodedReqParams);
     }
 
@@ -229,8 +235,10 @@ public class OIDCClientAuthenticatorUtilTest {
         createReqCookie();
         mock.checking(new Expectations() {
             {
-                one(convClientConfig).getClientSecret();
+                allowing(convClientConfig).getClientSecret();
                 will(returnValue(clientSecret));
+                allowing(convClientConfig).getClientId();
+                will(returnValue(CLIENTID));
             }
         });
 

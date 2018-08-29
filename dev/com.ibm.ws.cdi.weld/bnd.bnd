@@ -86,6 +86,8 @@ Import-Package: !org.scannotation.archiveiterator, \
                 org.jboss.weld.serialization.spi;version="[2.4,4)",\
                 org.jboss.weld.transaction.spi;version="[2.4,4)",\
                 org.jboss.weld.util.collections;version="[2.4,4)",\
+                com.google.common.*;version="[14.0,30)",\
+                com.google.thirdparty.*;version="[14.0,30)",\
                 *
  
 WS-TraceGroup: JCDI
@@ -109,7 +111,7 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.cdi.1.2.weld;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.resource;version=latest,\
-	com.ibm.ws.com.google.guava.14.0.1;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\

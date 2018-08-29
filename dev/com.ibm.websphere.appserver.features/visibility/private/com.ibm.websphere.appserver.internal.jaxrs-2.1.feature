@@ -5,7 +5,8 @@ singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
 Subsystem-Name: Internal Java RESTful Services 2.1
--features=com.ibm.websphere.appserver.javax.jaxrs-2.1, \
+-features=\
+ com.ibm.websphere.appserver.javax.jaxrs-2.1, \
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.servlet-4.0, \
@@ -13,8 +14,10 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.websphere.appserver.javax.mail-1.6, \
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.javaeeCompatible-8.0, \
+ com.ibm.websphere.appserver.internal.optional.jaxb-2.2,\
  com.ibm.websphere.appserver.internal.cxf.common-3.2
--bundles=com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
+-bundles=\
+ com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
  com.ibm.ws.jaxrs.2.1.common, \
  com.ibm.ws.jaxrs.2.x.config, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2, \
@@ -26,7 +29,8 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.ws.jaxrs.2.0.web, \
  com.ibm.ws.jaxrs.2.0.server, \
  com.ibm.ws.jaxrs.2.0.client
--files=bin/jaxrs/wadl2java, \
+-files=\
+ bin/jaxrs/wadl2java, \
  bin/jaxrs/wadl2java.bat, \
  bin/jaxrs/tools/wadl2java.jar
 kind=ga

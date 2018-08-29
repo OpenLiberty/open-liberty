@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.cdi.config;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.enterprise.context.spi.CreationalContext;
@@ -28,7 +27,6 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceExceptio
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.cdi.FTUtils;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackHandlerFactory;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
@@ -177,22 +175,10 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
 
     private static <R> FallbackPolicy newFallbackPolicy(Object beanInstance, Method fallbackMethod, Class<R> fallbackReturn) {
         FaultToleranceFunction<ExecutionContext, R> fallbackFunction = new FaultToleranceFunction<ExecutionContext, R>() {
-            @SuppressWarnings("unchecked")
-            @FFDCIgnore(InvocationTargetException.class)
             @Override
             public R execute(ExecutionContext context) throws Exception {
-                R result = null;
-                try {
-                    result = (R) fallbackMethod.invoke(beanInstance, context.getParameters());
-                } catch (InvocationTargetException ex) {
-                    Throwable cause = ex.getCause();
-                    if (cause instanceof Exception) {
-                        // Unwrap the real exception to return it to the user
-                        throw (Exception) cause;
-                    } else {
-                        throw ex;
-                    }
-                }
+                @SuppressWarnings("unchecked")
+                R result = (R) fallbackMethod.invoke(beanInstance, context.getParameters());
                 return result;
             }
         };

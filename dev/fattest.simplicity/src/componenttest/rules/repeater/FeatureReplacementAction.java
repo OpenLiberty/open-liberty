@@ -62,6 +62,8 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> removeFeatures = new HashSet<>();
     private final Set<String> addFeatures = new HashSet<>();
 
+    public FeatureReplacementAction() {}
+
     /**
      * Remove one feature and add one feature.
      *

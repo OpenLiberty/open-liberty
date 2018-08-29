@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -31,6 +26,7 @@ SELECTION_PAGE_HEADER=Inicio de sesi\u00f3n
 SELECTION_PAGE_ALTERNATE_TEXT=O
 
 SELECTION_PAGE_USERNAME=Nombre de usuario
+
 SELECTION_PAGE_PASSWORD=Contrase\u00f1a
 
 SELECTION_PAGE_SUBMIT=Someter
@@ -540,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Compruebe que la configuraci\u00f3
 REQUEST_URL_NOT_VALID=CWWKS5499E: La caracter\u00edstica Social Login no puede redireccionar la solicitud de vuelta al URL de solicitud original [{0}] porque el URL no es v\u00e1lido. {1}
 REQUEST_URL_NOT_VALID.explanation=El URL de solicitud original no es un URL v\u00e1lido. Es posible que el URL incluya caracteres que no sean v\u00e1lidos o que est\u00e9 incorrectamente formado.
 REQUEST_URL_NOT_VALID.useraction=Compruebe que el URL de solicitud especificado en el mensaje coincide con el URL de solicitud de recurso protegido original. Compruebe que el URL est\u00e1 correctamente formato y que contiene s\u00f3lo caracteres de URI v\u00e1lidos.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Un atributo de configuraci\u00f3n [{0}] necesario en una configuraci\u00f3n de Social Login tiene un valor que no es v\u00e1lido [{1}].
+INVALID_CONFIG_PARAM.explanation=La caracter\u00edstica Social Login no puede encontrar un valor v\u00e1lido para un atributo de configuraci\u00f3n necesario. Se requiere un valor v\u00e1lido para procesar la solicitud.
+INVALID_CONFIG_PARAM.useraction=Verifique que el atributo especificado en la configuraci\u00f3n de Social Login est\u00e9 configurado y establecido en un valor v\u00e1lido.

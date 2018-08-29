@@ -16,7 +16,6 @@ import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -25,8 +24,6 @@ import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -44,11 +41,6 @@ public class DisableEnableTest extends FATServletClient {
     @Server(SERVER_NAME)
     @TestServlet(servlet = DisableEnableServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(new FeatureReplacementAction("mpFaultTolerance-1.0").removeFeature("mpFaultTolerance-1.1").forServers(SERVER_NAME))
-                    .andWith(new FeatureReplacementAction("mpFaultTolerance-1.1").removeFeature("mpFaultTolerance-1.0").forServers(SERVER_NAME));
 
     @BeforeClass
     public static void setUp() throws Exception {

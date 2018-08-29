@@ -139,3 +139,19 @@ slf.no.acf.useraction=Informacje dotycz\u0105ce okre\u015blenia problemu mo\u017
 slf.failed.delete=CWWKL0072W: Nie mo\u017cna usun\u0105\u0107 pliku pami\u0119ci podr\u0119cznej [{0}]. Ten wynik mo\u017ce doprowadzi\u0107 do uszkodzenia zagnie\u017cd\u017conych archiw\u00f3w.
 slf.failed.delete.explanation=System nie usun\u0105\u0142 pliku pami\u0119ci podr\u0119cznej. Poniewa\u017c plik istnieje wci\u0105\u017c w systemie, mo\u017ce to doprowadzi\u0107 do uszkodzenia w zagnie\u017cd\u017conych archiwach.
 slf.failed.delete.useraction=Sprawd\u017a, czy plik pami\u0119ci podr\u0119cznej nie jest zablokowany, co mo\u017ce by\u0107 przyczyn\u0105 niepowodzenia jego usuni\u0119cia.
+
+cls.classloader.config.duplicate=CWWKL0080E: Typ interfejsu API [{0}] zosta\u0142 ju\u017c u\u017cyty na li\u015bcie [{1}]. Usu\u0144 zduplikowany typ interfejsu API.
+cls.classloader.config.duplicate.explanation=Ka\u017cdy typ API mo\u017cna poda\u0107 maksymalnie jeden raz.
+cls.classloader.config.duplicate.useraction=Sprawd\u017a konfiguracj\u0119 serwera pod k\u0105tem zduplikowanego typu interfejsu API, aby upewni\u0107 si\u0119, \u017ce typ interfejsu API jest poprawny.
+
+cls.classloader.config.not.allowed=CWWKL0081E: Typ interfejsu API [{0}] zosta\u0142 ju\u017c dodany do listy przy u\u017cyciu przedrostka + lub -. Usu\u0144 typ [{0}] z listy [{1}].
+cls.classloader.config.not.allowed.explanation=Wszystkie domy\u015blne typy interfejsu API zosta\u0142y dodane. Usu\u0144 duplikaty.
+cls.classloader.config.not.allowed.useraction=Sprawd\u017a konfiguracj\u0119 serwera i usu\u0144 domy\u015blny typ interfejsu API, aby zagwarantowa\u0107, \u017ce typ interfejsu API b\u0119dzie poprawny.
+
+cls.classloader.config.typo=CWWKL0082E: Ta lista [{1}] zawiera niepoprawny typ interfejsu API [{0}]. Nale\u017cy zmieni\u0107 go na jeden z poprawnych typ\u00f3w interfejsu API {2}.
+cls.classloader.config.typo.explanation=Zmie\u0144 niepoprawny typ interfejsu API na poprawny typ interfejsu API.
+cls.classloader.config.typo.useraction=Sprawd\u017a konfiguracj\u0119 serwera pod k\u0105tem niepoprawnego typu interfejsu API, aby upewni\u0107 si\u0119, \u017ce interfejs API ma poprawny typ.
+
+cls.classloader.config.typo2=CWWKL0083E: Je\u015bli zosta\u0142 u\u017cyty przedrostek + lub -, ta lista [{1}] zawiera niepoprawny typ interfejsu API [{0}]. Wszystkie typy interfejsu API musz\u0105 mie\u0107 przedrostek + lub -
+cls.classloader.config.typo2.explanation=Zmie\u0144 niepoprawny typ interfejsu API na poprawny typ interfejsu API z przedrostkiem + lub -.
+cls.classloader.config.typo2.useraction=Sprawd\u017a konfiguracj\u0119 serwera pod k\u0105tem niepoprawnego typu interfejsu API, aby upewni\u0107 si\u0119, \u017ce interfejs API ma poprawny typ.

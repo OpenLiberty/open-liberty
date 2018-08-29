@@ -196,7 +196,7 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
 	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653,\
 	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20180529-1900,\
 	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\

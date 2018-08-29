@@ -117,8 +117,6 @@ public final class HttpUtils {
     }
 
     private static String componentEncode(String reservedChars, String value) {
-
-        // Liberty Change for CXF Begin
         StringBuilder buffer = null;
         int length = value.length();
         int startingIndex = 0;
@@ -143,7 +141,6 @@ public final class HttpUtils {
         if (startingIndex < length) {
             buffer.append(urlEncode(value.substring(startingIndex, length)));
         }
-        // Liberty Change for CXF Begin
 
         return buffer.toString();
     }
@@ -195,7 +192,6 @@ public final class HttpUtils {
         }
         Matcher m = ENCODE_PATTERN.matcher(encoded);
 
-        // Liberty Change for CXF Begin
         if (!m.find()) {
             return query ? HttpUtils.queryEncode(encoded) : HttpUtils.pathEncode(encoded);
         }
@@ -210,7 +206,6 @@ public final class HttpUtils {
             i = m.end();
         } while (m.find());
         String tail = encoded.substring(i, length);
-        // Liberty Change for CXF End
         sb.append(query ? HttpUtils.queryEncode(tail) : HttpUtils.pathEncode(tail));
         return sb.toString();
     }
@@ -314,12 +309,14 @@ public final class HttpUtils {
         if (index == 0 || index == value.length() - 1) {
             throw new IllegalArgumentException("Illegal locale value : " + value);
         }
+        
         if (index > 0) {
             language = value.substring(0, index);
             locale = value.substring(index + 1);
         } else {
             language = value;
         }
+        
         if (locale == null) {
             return new Locale(language);
         } else {
@@ -421,6 +418,7 @@ public final class HttpUtils {
         uriStringBuffer.append(uriString);
         return result;
     }
+    
     private static boolean replaceLoopBackAddress(Message m) {
         Object prop = m.getContextualProperty(REPLACE_LOOPBACK_PROPERTY);
         return prop == null || PropertyUtils.isTrue(prop);
@@ -698,6 +696,7 @@ public final class HttpUtils {
 
         return false;
     }
+    
     public static <T> T createServletResourceValue(Message m, Class<T> clazz) {
 
         Object value = null;

@@ -5,7 +5,8 @@ singleton=true
 IBM-ShortName: beanValidation-2.0
 Subsystem-Name: Bean Validation 2.0
 IBM-App-ForceRestart: install, uninstall
-IBM-API-Package: javax.validation; type="spec", \
+IBM-API-Package: \
+  javax.validation; type="spec", \
   javax.validation.bootstrap; type="spec", \
   javax.validation.constraints; type="spec", \
   javax.validation.constraintvalidation; type="spec", \
@@ -16,17 +17,18 @@ IBM-API-Package: javax.validation; type="spec", \
   javax.validation.valueextraction; type="spec",\
   com.ibm.ws.beanvalidation.accessor; type="internal"
 -features=\
-  com.ibm.websphere.appserver.javax.cdi-2.0, \
   com.ibm.websphere.appserver.beanValidationCore-1.0, \
-  com.ibm.websphere.appserver.javax.validation-2.0, \
   com.ibm.websphere.appserver.el-3.0, \
-  com.ibm.websphere.appserver.transaction-1.2, \
+  com.ibm.websphere.appserver.internal.optional.jaxb-2.2,\
+  com.ibm.websphere.appserver.javaeeCompatible-8.0,\
+  com.ibm.websphere.appserver.javax.cdi-2.0, \
   com.ibm.websphere.appserver.javax.interceptor-1.2, \
-  com.ibm.websphere.appserver.javaeeCompatible-8.0
+  com.ibm.websphere.appserver.javax.validation-2.0, \
+  com.ibm.websphere.appserver.transaction-1.2
 -bundles=\
   com.ibm.ws.beanvalidation.v20, \
-  com.ibm.ws.org.hibernate.validator.6.0.9.Final, \
-  com.ibm.ws.org.jboss.logging.3.3.0, \
-  com.ibm.ws.com.fasterxml.classmate.1.3.1
+  com.ibm.ws.org.hibernate.validator, \
+  com.ibm.ws.org.jboss.logging, \
+  com.ibm.ws.com.fasterxml.classmate
 kind=ga
 edition=core

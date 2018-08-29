@@ -24,6 +24,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.PrivHelper;
 import jpa22timeapi.web.JPATimeAPITestServlet;
 
 /**
@@ -42,6 +43,8 @@ public class JPA22TimeAPITest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         final String resPath = "test-applications/jpa22/" + APP_NAME + "/resources/";
+
+        PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         app.addPackage("jpa22timeapi.web");

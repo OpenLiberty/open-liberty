@@ -49,7 +49,6 @@ error.parse.bundle.useraction=R\u00e9solvez l'erreur de configuration et retente
 info.prop.ignored=CWWKG0003I: Un op\u00e9rateur n''a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9, ou la valeur sp\u00e9cifi\u00e9e est Null ou vide. La propri\u00e9t\u00e9 est ignor\u00e9e. Propri\u00e9t\u00e9 : {0} Fichier : {1}
 info.prop.ignored.explanation=Une propri\u00e9t\u00e9 de configuration pr\u00e9vue est manquante ou non sp\u00e9cifi\u00e9e ; elle a donc \u00e9t\u00e9 ignor\u00e9e.
 info.prop.ignored.useraction=Aucune action n'est requise.
-
 info.unsupported.api=CWWKG0004I: L''API {0} n''est pas prise en charge.
 info.unsupported.api.explanation=L'API sp\u00e9cifi\u00e9e n'est pas prise en charge.
 info.unsupported.api.useraction=Utilisez une API prise en charge.
@@ -57,7 +56,6 @@ info.unsupported.api.useraction=Utilisez une API prise en charge.
 info.ignore.unresolved.optional.include=CWWKG0005I: La ressource {0} ({1}) optionnelle n''est pas r\u00e9solue et donc ignor\u00e9e. Ligne : {2}, {3}
 info.ignore.unresolved.optional.include.explanation=Un fichier de configuration optionnel n'a pas \u00e9t\u00e9 trouv\u00e9 et sera donc ignor\u00e9.
 info.ignore.unresolved.optional.include.useraction=Aucune action n'est requise.
-
 info.ignore.invalid.optional.include=CWWKG0006I: Ignor\u00e9 : inclusion (@include?) d''une ressource ({0}), qui n''est pas valide.  Ligne : {1}. {2}
 info.ignore.invalid.optional.include.explanation=La ressource indiqu\u00e9e n'est pas valide et a donc \u00e9t\u00e9 ignor\u00e9e.
 info.ignore.invalid.optional.include.useraction=Faites de cette ressource une ressource valide si elle ne doit pas \u00eatre ignor\u00e9e.
@@ -99,13 +97,11 @@ warn.config.validate.failed.useraction=Corrigez la configuration.
 warn.config.delete.failed=CWWKG0012W: Le syst\u00e8me n''a pas pu supprimer la configuration {0}.
 warn.config.delete.failed.explanation=La configuration n'a pas \u00e9t\u00e9 retir\u00e9e du service ConfigurationAdmin.
 warn.config.delete.failed.useraction=Aucune action n'est requise.
-
 warn.config.delete.failed.multiple=CWWKG0013W: Le syst\u00e8me n''a pas supprim\u00e9 la configuration {0}. Plusieurs \
 configurations concordantes ont \u00e9t\u00e9 trouv\u00e9es.
 warn.config.delete.failed.multiple.explanation=La configuration indiqu\u00e9e n'a pas pu \u00eatre retir\u00e9e sans risque \
 du service ConfigurationAdmin, car plusieurs configurations correspondantes ont \u00e9t\u00e9 trouv\u00e9es.
 warn.config.delete.failed.multiple.useraction=Aucune action n'est requise.
-
 error.syntax.parse.server=CWWKG0014E: L''analyseur de configuration a d\u00e9tect\u00e9 une erreur de syntaxe XML lors de \
 l''analyse syntaxique de la racine de la configuration et des documents de configuration r\u00e9f\u00e9renc\u00e9s. Erreur : {0} Fichier : {1} Ligne : {2} Colonne : {3}
 error.syntax.parse.server.explanation=La configuration du serveur n'a pas pu \u00eatre lue en raison d'une erreur de syntaxe XML dans \
@@ -117,22 +113,18 @@ configurations. Erreur : {0}
 error.config.update.init.explanation=Une ou plusieurs configurations n'ont pas pu \u00eatre mises \u00e0 jour \
 dans le service ConfigurationAdmin.
 error.config.update.init.useraction=Aucune action n'est requise.
-
 info.config.refresh.start=CWWKG0016I: D\u00e9marrage de la mise \u00e0 jour de la configuration du serveur.
 info.config.refresh.start.explanation=Les fichiers de configuration du serveur ont chang\u00e9 et le syst\u00e8me tente \
 de mettre \u00e0 jour la configuration du serveur avec les nouvelles informations.
 info.config.refresh.start.useraction=Aucune action n'est requise.
-
 info.config.refresh.stop=CWWKG0017I: La mise \u00e0 jour de la configuration du serveur a abouti en {0} secondes.
 info.config.refresh.stop.explanation=Le syst\u00e8me ayant d\u00e9tect\u00e9 des changements dans les fichiers de configuration du serveur, \
 il a mis \u00e0 jour la configuration du serveur avec les nouvelles informations.
 info.config.refresh.stop.useraction=Aucune action n'est requise.
-
 info.config.refresh.nochanges=CWWKG0018I: La configuration du serveur n'a pas \u00e9t\u00e9 mise \u00e0 jour. Aucun changement fonctionnel n'a \u00e9t\u00e9 d\u00e9tect\u00e9.
 info.config.refresh.nochanges.explanation=Les fichiers de configuration du serveur ont \u00e9t\u00e9 modifi\u00e9s, \
 mais aucun changement fonctionnel n'y a \u00e9t\u00e9 d\u00e9tect\u00e9.
 info.config.refresh.nochanges.useraction=Aucune action n'est requise.
-
 schemagen.noextensions=CWWKG0019E: La configuration parent {0} sp\u00e9cifi\u00e9e dans {1} n''admet pas les extensions.
 schemagen.noextensions.explanation=Les extensions de m\u00e9tatype doivent \u00eatre activ\u00e9es pour autoriser les \
 configurations imbriqu\u00e9es.
@@ -157,12 +149,10 @@ schemagen.invalid.child.useraction=Pour d\u00e9finir une configuration de fabriq
 error.config.update.disk=CWWKG0024E: La configuration de serveur {0} n''a pas \u00e9t\u00e9 mise \u00e0 jour sur le disque. Erreur : {1}
 error.config.update.disk.explanation=Les donn\u00e9es de configuration du serveur n'ont pas \u00e9t\u00e9 correctement stock\u00e9es sur le disque.
 error.config.update.disk.useraction=Aucune action n'est requise.
-
 error.config.update.event=CWWKG0025E: Les \u00e9v\u00e9nements de mise \u00e0 jour de configuration de serveur n''ont pas \u00e9t\u00e9 \u00e9mis pour \
 {0}. Erreur : {1}
 error.config.update.event.explanation=Les \u00e9v\u00e9nements de mise \u00e0 jour de configuration de serveur n'ont pas \u00e9t\u00e9 \u00e9mis.
 error.config.update.event.useraction=Aucune action n'est requise.
-
 error.alias.collision=CWWKG0026E: Au moins deux d\u00e9finitions de m\u00e9tatype partagent le m\u00eame PID (identit\u00e9 persistante) ou le m\u00eame \
 alias. Le PID ou l''alias {0} est partag\u00e9 par les d\u00e9finitions de classe d''objets {1}.
 error.alias.collision.explanation=Plusieurs d\u00e9finitions de m\u00e9tatype partagent la m\u00eame valeur d'alias. Il peut en r\u00e9sulter un comportement impr\u00e9visible \u00e0 l'ex\u00e9cution.
@@ -171,11 +161,9 @@ error.alias.collision.useraction=Signalez le probl\u00e8me au support IBM.
 info.config.refresh.timeout=CWWKG0027W: D\u00e9passement du d\u00e9lai imparti lors de la mise \u00e0 jour de la configuration du serveur.
 info.config.refresh.timeout.explanation=Le syst\u00e8me a cess\u00e9 d'attendre que les composants traitent la nouvelle configuration du serveur.
 info.config.refresh.timeout.useraction=Aucune action n'est requise.
-
 audit.include.being.processed=CWWKG0028A: Traitement de la ressource de configuration incluse : {0}
 audit.include.being.processed.explanation=Le contenu de la ressource sp\u00e9cifi\u00e9e sera inclus dans la configuration du serveur.
 audit.include.being.processed.useraction=Aucune action n'est requise.
-
 schemagen.bad.reference.extension=CWWKG0029E: L''attribut {0} n''a pas l''extension ibm:reference ou l''extension ne sp\u00e9cifie pas de PID.
 schemagen.bad.reference.extension.explanation=L'extension ibm:reference est requise pour les attributs d\u00e9finis avec ibm:type=pid.
 schemagen.bad.reference.extension.useraction=Editez le fichier metatype.xml correspondant et ajoutez ou r\u00e9solvez l'extension ibm:reference.
@@ -235,7 +223,6 @@ warn.parse.circular.include.useraction=Supprimez les inclusions qui entra\u00een
 info.configValidator.validator=CWWKG0043I: Classe de valideur de configuration en cours d''utilisation : {0}.
 info.configValidator.validator.explanation=La classe indiqu\u00e9e sera utilis\u00e9e pour valider la configuration.
 info.configValidator.validator.useraction=Aucune action n'est requise.
-
 fatal.configValidator.documentNotValid=CWWKG0044E: Arr\u00eat du serveur car un document de configuration ne contient pas de signature valide : {0}.
 fatal.configValidator.documentNotValid.explanation=Le document de configuration indiqu\u00e9 ne contient pas de signature valide, ou une partie de ce document qui est prot\u00e9g\u00e9e par la signature a \u00e9t\u00e9 modifi\u00e9e. Ce message est pr\u00e9c\u00e9d\u00e9 d'un message d'erreur donnant plus d'informations sur l'erreur sp\u00e9cifique dans le document.
 fatal.configValidator.documentNotValid.useraction=Corrigez l'erreur dans le document de configuration qui a \u00e9t\u00e9 identifi\u00e9e dans le message d'erreur pr\u00e9c\u00e9dent.
@@ -283,7 +270,6 @@ error.configValidator.signatureNotValid.useraction=Remplacez le document de conf
 info.configValidator.documentValid=CWWKG0055I: Un document de configuration contient une signature valide : {0}.
 info.configValidator.documentValid.explanation=Le document de configuration sp\u00e9cifi\u00e9 contient une signature valide.
 info.configValidator.documentValid.useraction=Aucune action n'est requise.
-
 fatal.configValidator.dropinsEnabled=CWWKG0056E: Arr\u00eat du serveur car les suppressions sont activ\u00e9es.
 fatal.configValidator.dropinsEnabled.explanation=Le(s) document(s) de configuration utilis\u00e9(s) pour d\u00e9marrer un serveur int\u00e9gr\u00e9 ne contien(nen)t pas d'\u00e9l\u00e9ment applicationMonitor ou contien(nen)t un \u00e9l\u00e9ment applicationMonitor n'ayant pas d\u00e9sactiv\u00e9 les suppressions.
 fatal.configValidator.dropinsEnabled.useraction=Sp\u00e9cifiez "dropinsEnabled=false" dans un \u00e9l\u00e9ment applicationMonitor d'un des documents de configuration.
@@ -410,7 +396,6 @@ pour {0} avec l''ID {1} est toujours utilis\u00e9e.
 warning.old.config.still.in.use.explanation=La mise \u00e0 jour de l'\u00e9l\u00e9ment de \
 configuration a \u00e9chou\u00e9 mais une valeur ant\u00e9rieure continuera d'\u00eatre utilis\u00e9e.
 warning.old.config.still.in.use.useraction=Aucune action n'est requise.
-
 error.specify.parentpid=CWWKG0077E: La d\u00e9finition de m\u00e9tatype pour {0} \
 d\u00e9finit un alias enfant mais ne d\u00e9finit pas de parent.
 error.specify.parentpid.explanation=Il s'agit d'une erreur interne due au \
@@ -488,7 +473,6 @@ error.variable.value.missing.useraction=Ajoutez un attribut de valeur \u00e0 la 
 audit.dropin.being.processed=CWWKG0093A: Traitement de la ressource de suppression de configuration : {0}
 audit.dropin.being.processed.explanation=Le contenu de la ressource sp\u00e9cifi\u00e9e sera inclus dans la configuration du serveur.
 audit.dropin.being.processed.useraction=Aucune action n'est requise.
-
 warning.unrecognized.merge.behavior=CWWKG0094W: La valeur {0} qui est sp\u00e9cifi\u00e9e pour le comportement de fusion sur l''\u00e9l\u00e9ment d''inclusion de configuration n''est pas valide. Le syst\u00e8me utilisera la valeur par d\u00e9faut de la fusion.
 warning.unrecognized.merge.behavior.explanation=L'\u00e9l\u00e9ment d'inclusion de configuration indique une valeur qui n'est pas valide.  Les valeurs valides sont :  merge, replace et ignore.
 warning.unrecognized.merge.behavior.useraction=Mettez \u00e0 jour la configuration de serveur afin de corriger le comportement de fusion.
@@ -511,6 +495,15 @@ info.config.conflict=CWWKG0102I: {0}
 info.config.conflict.explanation=Plusieurs valeurs sont sp\u00e9cifi\u00e9es pour la m\u00eame propri\u00e9t\u00e9 de configuration. 
 info.config.conflict.useraction=Aucune action n'est requise. Vous pouvez \u00e9viter l'affichage de ce message d'information en \u00e9ditant la configuration de serveur afin de supprimer le conflit.
  
+warning.supplied.config.not.valid=CWWKG0103W: Le nom d''attribut \
+{0} dont la valeur est {1} est ignor\u00e9 car il est d\u00e9fini en tant que ibm:final. Le syst\u00e8me \
+utilise la valeur par d\u00e9faut de l''attribut.
+warning.supplied.config.not.valid.explanation= Un attribut de \
+configuration est marqu\u00e9 comme ibm:final et la valeur par d\u00e9faut n'est pas valide. Retirez \
+l'attribut configur\u00e9 de la configuration.
+warning.supplied.config.not.valid.useraction=Mettez \u00e0 jour la \
+configuration du serveur pour retirer la valeur d'attribut incorrecte.
+
 
 # Non-TR message
 error.invalidOCDRef=ERREUR : Le PID [{0}] du m\u00e9tatype sp\u00e9cifie un ID de d\u00e9finition de classe d''objets qui n''existe pas [{1}]

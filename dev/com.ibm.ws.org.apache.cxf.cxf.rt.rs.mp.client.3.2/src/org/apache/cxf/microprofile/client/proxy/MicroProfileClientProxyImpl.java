@@ -27,6 +27,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 
 import javax.ws.rs.client.InvocationCallback;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.apache.cxf.jaxrs.client.ClientProxyImpl;
@@ -118,6 +119,9 @@ public class MicroProfileClientProxyImpl extends ClientProxyImpl {
     @Override
     protected void checkResponse(Method m, Response r, Message inMessage) throws Throwable {
         MicroProfileClientProviderFactory factory = MicroProfileClientProviderFactory.getInstance(inMessage);
+        if (r.getLocation() == null) {
+            r.getMetadata().putSingle(HttpHeaders.LOCATION, URI.create((String)inMessage.get(Message.REQUEST_URI)));
+        }
         List<ResponseExceptionMapper<?>> mappers = factory.createResponseExceptionMapper(inMessage,
                 Throwable.class);
         for (ResponseExceptionMapper<?> mapper : mappers) {

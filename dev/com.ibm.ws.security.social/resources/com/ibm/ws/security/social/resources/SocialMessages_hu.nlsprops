@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -35,6 +30,7 @@ SELECTION_PAGE_USERNAME=Felhaszn\u00e1l\u00f3n\u00e9v
 SELECTION_PAGE_PASSWORD=Jelsz\u00f3
 
 SELECTION_PAGE_SUBMIT=Elk\u00fcld\u00e9s
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 [{0}] sikeresen feldolgoz\u00e1sra ker\u00fclt.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A jelzett k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3 sikeresen feldolgoz\u00e1sra ker\u00fclt.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nincs teend\u0151.
@@ -540,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00
 REQUEST_URL_NOT_VALID=CWWKS5499E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tudja visszak\u00fcldeni a k\u00e9r\u00e9st az eredeti k\u00e9r\u00e9s URL c\u00edmre ([{0}]), mert az URL \u00e9rv\u00e9nytelen. {1}
 REQUEST_URL_NOT_VALID.explanation=Az eredeti k\u00e9r\u00e9s URL \u00e9rv\u00e9nytelen URL c\u00edm. Az URL \u00e9rv\u00e9nytelen karaktereket tartalmazhat vagy lehet, hogy az URL rossz form\u00e1tum\u00fa.
 REQUEST_URL_NOT_VALID.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott k\u00e9r\u00e9s URL megegyezik az eredeti v\u00e9dett er\u0151forr\u00e1sk\u00e9r\u00e9s URL c\u00edm\u00e9vel. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az URL szab\u00e1lyosan form\u00e1zott \u00e9s csak \u00e9rv\u00e9nyes URI karaktereket tartalmaz.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9shez sz\u00fcks\u00e9ges [{0}] konfigur\u00e1ci\u00f3s attrib\u00fatum [{1}] \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes.
+INVALID_CONFIG_PARAM.explanation=A k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s szolg\u00e1ltat\u00e1s nem tal\u00e1l \u00e9rv\u00e9nyes \u00e9rt\u00e9ket egy k\u00f6telez\u0151 konfigur\u00e1ci\u00f3s attrib\u00fatumhoz. A k\u00e9r\u00e9s feldolgoz\u00e1s\u00e1hoz egy \u00e9rv\u00e9nyes \u00e9rt\u00e9k sz\u00fcks\u00e9ges.
+INVALID_CONFIG_PARAM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3ban a megadott attrib\u00fatum konfigur\u00e1lva van, \u00e9s egy \u00e9rv\u00e9nyes \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.

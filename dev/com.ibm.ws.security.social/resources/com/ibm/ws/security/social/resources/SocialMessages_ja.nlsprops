@@ -1,13 +1,8 @@
-###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
-###############################################################################
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2016.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -541,3 +536,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=\u30e1\u30c3\u30bb\u30fc\u30b8\u30
 REQUEST_URL_NOT_VALID=CWWKS5499E: \u5143\u306e\u8981\u6c42 URL [{0}] \u304c\u7121\u52b9\u306a\u305f\u3081\u3001\u30bd\u30fc\u30b7\u30e3\u30eb\u30fb\u30ed\u30b0\u30a4\u30f3\u30fb\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306f\u3053\u306e URL \u3078\u8981\u6c42\u3092\u30ea\u30c0\u30a4\u30ec\u30af\u30c8\u3067\u304d\u307e\u305b\u3093\u3002 {1}
 REQUEST_URL_NOT_VALID.explanation=\u5143\u306e\u8981\u6c42 URL \u306f\u7121\u52b9\u306a URL \u3067\u3059\u3002 URL \u306b\u7121\u52b9\u306a\u6587\u5b57\u304c\u542b\u307e\u308c\u3066\u3044\u308b\u304b\u3001URL \u304c\u8aa4\u3063\u305f\u5f62\u5f0f\u3067\u3042\u308b\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002
 REQUEST_URL_NOT_VALID.useraction=\u30e1\u30c3\u30bb\u30fc\u30b8\u306b\u793a\u3055\u308c\u3066\u3044\u308b\u8981\u6c42 URL \u304c\u3001\u5143\u306e\u4fdd\u8b77\u30ea\u30bd\u30fc\u30b9\u8981\u6c42 URL \u3068\u4e00\u81f4\u3059\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002 URL \u306e\u5f62\u5f0f\u304c\u6b63\u3057\u3044\u3053\u3068\u3001\u304a\u3088\u3073\u6709\u52b9\u306a URI \u6587\u5b57\u306e\u307f\u3092\u542b\u3093\u3067\u3044\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+INVALID_CONFIG_PARAM=CWWKS5500E: \u30bd\u30fc\u30b7\u30e3\u30eb\u30fb\u30ed\u30b0\u30a4\u30f3\u69cb\u6210\u3067\u5fc5\u8981\u306a\u69cb\u6210\u5c5e\u6027 [{0}] \u306e\u5024\u304c\u3001\u6709\u52b9\u306a [{1}] \u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002
+INVALID_CONFIG_PARAM.explanation=\u30bd\u30fc\u30b7\u30e3\u30eb\u30fb\u30ed\u30b0\u30a4\u30f3\u30fb\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306f\u3001\u5fc5\u8981\u306a\u69cb\u6210\u5c5e\u6027\u306b\u6709\u52b9\u306a\u5024\u3092\u898b\u3064\u3051\u308b\u3053\u3068\u304c\u3067\u304d\u307e\u305b\u3093\u3002\u8981\u6c42\u3092\u51e6\u7406\u3059\u308b\u306b\u306f\u3001\u6709\u52b9\u306a\u5024\u304c\u5fc5\u8981\u3067\u3059\u3002
+INVALID_CONFIG_PARAM.useraction=\u30bd\u30fc\u30b7\u30e3\u30eb\u30fb\u30ed\u30b0\u30a4\u30f3\u69cb\u6210\u306b\u3001\u793a\u3055\u308c\u305f\u5c5e\u6027\u304c\u69cb\u6210\u3055\u308c\u3066\u3044\u3066\u3001\u6709\u52b9\u306a\u5024\u306b\u8a2d\u5b9a\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u3092\u691c\u8a3c\u3057\u3066\u304f\u3060\u3055\u3044\u3002

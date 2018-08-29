@@ -45,6 +45,25 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     @Trivial
     ZipFileHandleImpl(String path) {
+        // TODO: Logging shows that different code is requesting zip file handles
+        //       with different path formats.
+        //
+        // For example, on Windows, WSJarURLStreamHandler provides a path which
+        // has a leading slash and a drive letter:
+        //
+        // com.ibm.ws.artifact.url.internal.WSJarURLStreamHandler.connect
+        //
+        // /c:/Liberty/openliberty-all-18.0.0.3-20180817-1300/
+        //   wlp/usr/servers/test2/apps/expanded/TestServlet40.ear/TestServlet40.war/WEB-INF/lib/TestServlet40.jar
+        //
+        // While other code paths are providing a path which omits the leading slash:
+        //
+        // c:/Liberty/openliberty-all-18.0.0.3-20180817-1300/
+        //   wlp/usr/servers/test2/apps/expanded/TestServlet40.ear/TestServlet40.war/WEB-INF/lib/TestServlet40.jar
+        //
+        // These path formats must be unified to a single consistent format
+        // for maximum sharing of zip file handles.
+
         this.path = path;
         this.file = new File(path);
     }

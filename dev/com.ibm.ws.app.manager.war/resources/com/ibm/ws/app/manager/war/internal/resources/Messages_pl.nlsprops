@@ -219,4 +219,4 @@ warning.could.not.expand.application.useraction=Spr\u00f3buj rozwi\u0105za\u0107
 
 error.file.outside.archive=CWWKZ0132W: Plik {0} w archiwum {1} nie zostanie rozpakowany, poniewa\u017c \u015bcie\u017cka nie znajduje si\u0119 w archiwum.
 error.file.outside.archive.explanation=\u015acie\u017cka do pliku okre\u015bla katalog wzgl\u0119dny. Rozpakowanie tego pliku spowoduje, \u017ce plik znajdzie si\u0119 poza katalogiem g\u0142\u00f3wnym archiwum.
-error.file.outside.archive.useraction=Usu\u0144 z archiwum wszystkie pliki ze \u015bcie\u017ckami wzgl\u0119dnymi. 
+error.file.outside.archive.useraction=Usu\u0144 z archiwum wszystkie pliki ze \u015bcie\u017ckami wzgl\u0119dnymi.  

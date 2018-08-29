@@ -26,7 +26,7 @@ Export-Package: \
 
 -buildpath: \
 	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20180529-1900, \
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180529-1900, \
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20180821-1653, \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

@@ -43,8 +43,8 @@ Import-Package: \
 
   
 Export-Package: \
-  org.apache.cxf.validation.*;version=3.1.14, \
-  org.apache.cxf.jaxrs.validation.*;version=3.1.14, \
+  org.apache.cxf.validation.*;version=3.1.16, \
+  org.apache.cxf.jaxrs.validation.*;version=3.1.16, \
    
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
@@ -53,8 +53,8 @@ Private-Package:\
 -dsannotations: com.ibm.ws.jaxrs20.beanvalidation.component.*    
  
 -buildpath: \
-	org.apache.cxf.cxf-core;strategy=exact;version=3.1.14,\
-	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.16,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.16,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

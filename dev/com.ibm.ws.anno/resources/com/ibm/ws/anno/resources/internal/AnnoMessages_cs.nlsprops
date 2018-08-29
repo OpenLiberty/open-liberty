@@ -380,7 +380,7 @@ ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Vnit\u0159n\u00ed nekonzistence dat:
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
-ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: V tabulce \u0159et\u011bzc\u016f [ {0} ] do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed hodnoty [ {1} ] typu [ {2} ]. Hodnota by nem\u011bla obsahovat zp\u011btn\u00e9 lom\u00edtko (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: V tabulce \u0159et\u011bzc\u016f [ {0} ] do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed hodnoty [ {1} ] typu [ {2} ]. Hodnota by nem\u011bla obsahovat zp\u011btn\u00e9 lom\u00edtko (''\\'').
 ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=Pro p\u0159edpokl\u00e1dan\u00e9 pou\u017eit\u00ed m\u00e1 hodnota neplatn\u00fd obsah. Hodnota nemus\u00ed b\u00fdt zpracov\u00e1na spr\u00e1vn\u011b. P\u0159idru\u017een\u00fd modul m\u016f\u017ee pracovat chybn\u011b.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Data modulu by m\u011bla b\u00fdt zkontrolov\u00e1na, aby se ov\u011b\u0159ilo, \u017ee je zadan\u00e1 hodnota platn\u00e1.
 

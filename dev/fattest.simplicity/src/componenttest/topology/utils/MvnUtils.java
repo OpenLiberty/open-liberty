@@ -63,6 +63,7 @@ public class MvnUtils {
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
     private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
     public static File resultsDir;
+    public static File componentRootDir;
     public static String wlp;
     public static File tckRunnerDir;
     public static File pomXml;
@@ -71,6 +72,9 @@ public class MvnUtils {
     public static String[] mvnCliRoot;
     public static String[] mvnCliTckRoot;
     public static String mvnOutputFilename = "mvnOutput_TCK";
+    public static String defaultSuiteFile = "tck-suite.xml";
+    public static String defaultTargetFolder = "tck";
+    public static String targetFolder = defaultTargetFolder;
     static List<String> jarsFromWlp = new ArrayList<String>(3);
     private static File mvnOutput;
     private static String apiVersion;
@@ -78,6 +82,24 @@ public class MvnUtils {
     private static String backStopImplVersion;
     private static Set<String> versionedJars;
     private static Map<String, String> mavenVersionBindingJarPatches = new HashMap<String, String>();
+    private static String overrideSuiteFileName = null;
+
+    /**
+     * Changes the name of the suite file used from default value to a new name.
+     * Changes maven output file from default value to default value + _ + new suite name
+     * Changes maven reports folder name from default to default value + _ + new suite name
+     *
+     * @param newName - new suite file
+     * @param server - server that will run this suite
+     * @throws Exception
+     */
+    public static void overrideSuiteFileName(String newName, LibertyServer server) throws Exception {
+        overrideSuiteFileName = newName;
+        mvnOutputFilename = "mvnOutput_" + newName.replace(".xml", "");
+        targetFolder = defaultTargetFolder + "_" + newName.replace(".xml", "");
+
+        init(server);
+    }
 
     /**
      * Initialise shared values for a particular server.
@@ -104,12 +126,15 @@ public class MvnUtils {
     public static void init(LibertyServer server, String pomRelativePath) throws Exception {
         wlp = server.getInstallRoot();
         resultsDir = Props.getInstance().getFileProperty(Props.DIR_LOG); //typically ${component_Root_Directory}/results
+        componentRootDir = Props.getInstance().getFileProperty(Props.DIR_COMPONENT_ROOT);
 
         tckRunnerDir = new File("publish/tckRunner");
 
         pomXml = new File(tckRunnerDir, pomRelativePath);
 
-        populateJarsFromWlp(pomXml);
+        if (!init) {
+            populateJarsFromWlp(pomXml);
+        }
 
         String mvn = "mvn";
         if (System.getProperty("os.name").contains("Windows")) {
@@ -119,7 +144,10 @@ public class MvnUtils {
                                    "-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT,
                                    "-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT,
                                    "-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT,
-                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/tck" };
+                                   "-Dtck_port=" + server.getPort(PortType.WC_defaulthost),
+                                   "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/" + targetFolder,
+                                   "-DcomponentRootDir=" + componentRootDir
+        };
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliProperties(server, jarsFromWlp));
 
@@ -127,7 +155,8 @@ public class MvnUtils {
         // It is possible to use other Testng control xml files (and even generate them
         // based on examining the TCK jar) in which case the value for suiteXmlFile would
         // be different.
-        mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=tck-suite.xml" });
+        String suiteFile = overrideSuiteFileName == null ? defaultSuiteFile : overrideSuiteFileName;
+        mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=" + suiteFile });
 
         mvnOutput = new File(resultsDir, mvnOutputFilename);
 
@@ -314,7 +343,7 @@ public class MvnUtils {
      */
     private static String postProcessTestNgResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException {
 
-        File src = new File(MvnUtils.resultsDir, "tck/surefire-reports/junitreports");
+        File src = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports/junitreports");
         File tgt = new File(MvnUtils.resultsDir, "junit");
         try {
             Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
@@ -449,6 +478,7 @@ public class MvnUtils {
      * @return the path to the jar
      */
     public static String genericResolveJarPath(String jarName, String wlpPathName) {
+        log("genericResolveJarPath entry, jarname, wlppathname = " + jarName + " " + wlpPathName);
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
         String apiStable = api + "stable/";
@@ -485,6 +515,12 @@ public class MvnUtils {
         String result = null;
         File dirFileObj = new File(dir);
         String[] files = dirFileObj.list();
+
+        // for someone debugging with absolute paths, just ignore those, regex might not handle.
+        if (jarNameFragment.toLowerCase().startsWith("c:") || jarNameFragment.startsWith("/")) {
+            log("ignoring absolute path: " + jarNameFragment);
+            return null;
+        }
 
         //Allow for some users using ".jar" at the end and some not
         if (jarNameFragment.endsWith(".jar")) {
@@ -586,7 +622,7 @@ public class MvnUtils {
      */
     public static String getNonPassingTestsNamesList() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
         String notPassingTestsQuery = "/testng-results/suite/test/class/test-method[@status!='PASS']/@name";
-        File testngResults = new File(MvnUtils.resultsDir, "tck/surefire-reports/testng-results.xml");
+        File testngResults = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports/testng-results.xml");
         HashSet<String> excludes = new HashSet<String>(Arrays.asList("arquillianBeforeTest", "arquillianAfterTest"));
         String notPassingTestsResultString = getQueryInXml(testngResults, notPassingTestsQuery, " ", excludes);
         return notPassingTestsResultString;

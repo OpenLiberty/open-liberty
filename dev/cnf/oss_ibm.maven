@@ -8,7 +8,7 @@ com.ibm.ws.org.apache.cxf:cxf-rt-databinding-jaxb:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-frontend-jaxws:2.6.2.ibm-s20180529-1900
 com.ibm.ws.org.apache.cxf:cxf-rt-frontend-simple:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-management:2.6.2.ibm-s20170216-1739
-com.ibm.ws.org.apache.cxf:cxf-rt-transports-http:2.6.2.ibm-s20180529-1900
+com.ibm.ws.org.apache.cxf:cxf-rt-transports-http:2.6.2.ibm-s20180821-1653
 com.ibm.ws.org.apache.cxf:cxf-rt-ws-addr:2.6.2.ibm-s20170216-1739
 com.ibm.ws.org.apache.cxf:cxf-rt-ws-policy:2.6.2.ibm-s20180529-1900
 com.ibm.ws.org.apache.cxf:cxf-core:3.2.0.20170815-181006-518
@@ -68,12 +68,12 @@ com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws.commons-collections:commons-collections:3.2.1
 org.apache.geronimo.specs:geronimo-ejb_3.1_spec-alt:1.0.0
 com.ibm.ws.org.eclipse.jdt.core.compiler:ecj:4.4.2
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr:2.6.7.WAS-6c446ab
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm:2.6.7.WAS-6c446ab
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.7.WAS-6c446ab
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.7.WAS-6c446ab
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.7.WAS-6c446ab
-com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.7.WAS-6c446ab
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr:2.6.7.WAS-0dccd4c
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm:2.6.7.WAS-0dccd4c
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.7.WAS-0dccd4c
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.7.WAS-0dccd4c
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.7.WAS-0dccd4c
+com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.7.WAS-0dccd4c
 org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.3-4be1041
 org.eclipse.persistence:org.eclipse.persistence.asm:2.7.3-4be1041
 org.eclipse.persistence:org.eclipse.persistence.core:2.7.3-4be1041

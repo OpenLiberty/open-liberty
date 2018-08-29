@@ -158,7 +158,7 @@ public class ZipFileContainerUtils {
             ZipFileEntry nextZipFileEntry = rootContainer.createEntry(
                 nestedContainer,
                 entryName, a_entryPath,
-                location, nextEntryData);
+                nextEntryData);
 
             return nextZipFileEntry;
         }

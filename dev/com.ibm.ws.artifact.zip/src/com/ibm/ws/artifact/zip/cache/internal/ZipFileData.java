@@ -76,23 +76,23 @@ public class ZipFileData {
         ZipCachingProperties.ZIP_REAPER_COLLECT_TIMINGS;
 
     @Trivial
-    private static String toRelMilliSec(long initialAt, long finalAt) {
-        return ZipCachingProperties.toRelMilliSec(initialAt, finalAt);
+    private static String toRelSec(long initialAt, long finalAt) {
+        return ZipCachingProperties.toRelSec(initialAt, finalAt);
     }
 
     @Trivial
-    private static String toAbsMilliSec(long eventAt) {
-        return ZipCachingProperties.toAbsMilliSec(eventAt);
+    private static String toAbsSec(long eventAt) {
+        return ZipCachingProperties.toAbsSec(eventAt);
     }
 
     @Trivial
     private static String dualTiming(long eventAt, long initialAt) {
-    	return ZipCachingProperties.dualTiming(eventAt, initialAt);
+        return ZipCachingProperties.dualTiming(eventAt, initialAt);
     }
 
     @Trivial
     private static String dualTiming(long eventAt) {
-    	return ZipCachingProperties.dualTiming(eventAt);
+        return ZipCachingProperties.dualTiming(eventAt);
     }
 
     @Trivial
@@ -125,13 +125,11 @@ public class ZipFileData {
     public ZipFileData(String path, long initialAt)
         throws IOException, ZipException {
         String methodName = "<init>";
-
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName, "Create [ " + path + " ]");
         }
 
         this.path = path; // Fixed: The identity of the zip data.
-
         this.setInitial(initialAt);
     }
 
@@ -204,7 +202,7 @@ public class ZipFileData {
     public void enactOpen(long openAt) {
         String methodName = "enactOpen";
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelMilliSec(initialAt, openAt) + "ms ]");
+            Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, openAt) + " (s) ]");
         }
 
         if ( zipFileState == ZipFileState.OPEN ) { // OPEN -> OPEN
@@ -229,7 +227,7 @@ public class ZipFileData {
             zipFileState = ZipFileState.OPEN;
 
             if ( ZIP_REAPER_COLLECT_TIMINGS ) {
-                timing(" Pend Success [ " + toAbsMilliSec(lastPendDuration) + "ms ]");
+                timing(" Pend Success [ " + toAbsSec(lastPendDuration) + " (s) ]");
             }
 
         } else if ( zipFileState == ZipFileState.FULLY_CLOSED ) { // FULLY_CLOSED -> OPEN
@@ -242,8 +240,8 @@ public class ZipFileData {
 
                 if ( ZIP_REAPER_COLLECT_TIMINGS ) {
                     long lastPendDuration = ( (lastPendAt == -1L) ? 0 : (lastFullCloseAt - lastPendAt) );
-                    timing(" Reopen; Pend [ " + toAbsMilliSec(lastPendDuration) + "ms ] " +
-                           " Close [ " + toAbsMilliSec(lastFullCloseDuration) + "ms ]");
+                    timing(" Reopen; Pend [ " + toAbsSec(lastPendDuration) + " (s) ] " +
+                           " Close [ " + toAbsSec(lastFullCloseDuration) + " (s) ]");
                 }
             }
 
@@ -273,7 +271,7 @@ public class ZipFileData {
     public boolean enactClose(long closeAt, boolean closeAll) {
         String methodName = "enactClose";
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelMilliSec(initialAt, closeAt) + "ms ]");
+            Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, closeAt) + " (s) ]");
         }
 
         if ( zipFileState == ZipFileState.OPEN ) { // OPEN -> OPEN or OPEN -> PENDING
@@ -323,7 +321,7 @@ public class ZipFileData {
     public void enactFullClose(long fullCloseAt) {
         String methodName = "enactFullClose";
         if ( tc.isDebugEnabled() ) {
-            Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelMilliSec(initialAt, fullCloseAt) + "ms ]");
+            Tr.debug(tc, methodName + " On [ " + path + " ] at [ " + toRelSec(initialAt, fullCloseAt) + " (s) ]");
         }
 
         if ( zipFileState == ZipFileState.OPEN ) {
@@ -342,8 +340,8 @@ public class ZipFileData {
             zipFileState = ZipFileState.FULLY_CLOSED;
 
             if ( ZIP_REAPER_COLLECT_TIMINGS ) {
-                timing(" Failed Pend [ " + toAbsMilliSec(lastPendDuration) + "ms ]");
-                timing(" Full Close [ " + dualTiming(fullCloseAt, initialAt) + "ms ]");
+                timing(" Failed Pend [ " + toAbsSec(lastPendDuration) + " (s) ]");
+                timing(" Full Close [ " + dualTiming(fullCloseAt, initialAt) + " (s) ]");
             }
 
         } else if ( zipFileState == ZipFileState.FULLY_CLOSED ) {
@@ -368,44 +366,44 @@ public class ZipFileData {
         String openText;
         if ( lastLastOpenAt == -1L ) {
             openText =
-                "   Open: First [ " + toRelMilliSec(initialAt, firstOpenAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastOpenAt) + "ms ]" +
+                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
                 " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(openDuration) + "ms ]";
+                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
         } else {
             openText =
-                "   Open: First [ " + toRelMilliSec(initialAt, firstOpenAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastOpenAt) + "ms ]" +
-                " Next Last [ " + toRelMilliSec(initialAt, lastLastOpenAt) + "ms ]" +
+                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
+                " Next Last [ " + toRelSec(initialAt, lastLastOpenAt) + " (s) ]" +
                 " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(openDuration) + "ms ]";
+                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
         }
         System.out.println("ZFR " + openText);
 
         String pendingText =
-                "   Pending: First [ " + toRelMilliSec(initialAt, firstPendAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastPendAt) + "ms ]" +
+                "   Pending: First [ " + toRelSec(initialAt, firstPendAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastPendAt) + " (s) ]" +
                 " Count [ " + toCount(openToPendCount) + " ]";
         System.out.println("ZFR " + pendingText);
 
         String pendingBeforeOpenText =
                 "     Pending to Open: Count [ " + toCount(pendToOpenCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(pendToOpenDuration) + "ms ]";
+                " Duration [ " + toAbsSec(pendToOpenDuration) + " (s) ]";
         System.out.println("ZFR " + pendingBeforeOpenText);
 
         String pendingBeforeCloseText =
                 "     Pending to Full Close: Count [ " + toCount(pendToFullCloseCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(pendToFullCloseDuration) + "ms ]";
+                " Duration [ " + toAbsSec(pendToFullCloseDuration) + " (s) ]";
         System.out.println("ZFR " + pendingBeforeCloseText);
 
         String closeText =
-                "   Full Close: First [ " + toRelMilliSec(initialAt, firstFullCloseAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastFullCloseAt) + "ms ]";
+                "   Full Close: First [ " + toRelSec(initialAt, firstFullCloseAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastFullCloseAt) + " (s) ]";
         System.out.println("ZFR " + closeText);
 
         String closeBeforeOpenText =
                 "     Full Close to Open: Count [ " + toCount(fullCloseToOpenCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(fullCloseToOpenDuration) + "ms ]";
+                " Duration [ " + toAbsSec(fullCloseToOpenDuration) + " (s) ]";
         System.out.println(closeBeforeOpenText);
     }
 
@@ -563,7 +561,6 @@ public class ZipFileData {
                 " Length [ " + Long.valueOf(zipLength) + " ]" +
                 " Last modified [ " + Long.valueOf(zipLastModified) + " ]");
         }
-
         return zipFile;
     }
 
@@ -680,57 +677,57 @@ public class ZipFileData {
         Tr.info(tc, methodName + " ZipFile [ " + path + " ]:");
 
         String spanText =
-                " Span: Initial [ " + toAbsMilliSec(initialAt) + "ms ]" +
-                " Final [ " + toAbsMilliSec(finalAt) + "ms ]" +
-                " Duration [ " + toAbsMilliSec(finalAt - initialAt) + "ms ]";
+                " Span: Initial [ " + toAbsSec(initialAt) + " (s) ]" +
+                " Final [ " + toAbsSec(finalAt) + " (s) ]" +
+                " Duration [ " + toAbsSec(finalAt - initialAt) + " (s) ]";
         Tr.info(tc, methodName + spanText);
 
         String marginsText =
-                "   Margin: To First Open [ " + toAbsMilliSec(firstOpenAt - initialAt) + "ms ]" +
-                " From Last Close [ " + toAbsMilliSec(finalAt - lastFullCloseAt) + "ms ]";
+                "   Margin: To First Open [ " + toAbsSec(firstOpenAt - initialAt) + " (s) ]" +
+                " From Last Close [ " + toAbsSec(finalAt - lastFullCloseAt) + " (s) ]";
         Tr.info(tc, methodName + marginsText);
 
         String openText;
         if ( lastLastOpenAt == -1L ) {
             openText =
-                "   Open: First [ " + toRelMilliSec(initialAt, firstOpenAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastOpenAt) + "ms ]" +
+                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
                 " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(openDuration) + "ms ]";
+                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
         } else {
             openText =
-                "   Open: First [ " + toRelMilliSec(initialAt, firstOpenAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastOpenAt) + "ms ]" +
-                " Next Last [ " + toRelMilliSec(initialAt, lastLastOpenAt) + "ms ]" +
+                "   Open: First [ " + toRelSec(initialAt, firstOpenAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastOpenAt) + " (s) ]" +
+                " Next Last [ " + toRelSec(initialAt, lastLastOpenAt) + " (s) ]" +
                 " Count [ " + toCount(openCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(openDuration) + "ms ]";
+                " Duration [ " + toAbsSec(openDuration) + " (s) ]";
         }
         Tr.info(tc, methodName + openText);
 
         String pendingText =
-                "   Pending: First [ " + toRelMilliSec(initialAt, firstPendAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastPendAt) + "ms ]" +
+                "   Pending: First [ " + toRelSec(initialAt, firstPendAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastPendAt) + " (s) ]" +
                 " Count [ " + toCount(openToPendCount) + " ]";
         Tr.info(tc, methodName + pendingText);
 
         String pendingBeforeOpenText =
                 "     Pending to Open: Count [ " + toCount(pendToOpenCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(pendToOpenDuration) + "ms ]";
+                " Duration [ " + toAbsSec(pendToOpenDuration) + " (s) ]";
         Tr.info(tc, methodName + pendingBeforeOpenText);
 
         String pendingBeforeCloseText =
                 "     Pending to Full Close: Count [ " + toCount(pendToFullCloseCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(pendToFullCloseDuration) + "ms ]";
+                " Duration [ " + toAbsSec(pendToFullCloseDuration) + " (s) ]";
         Tr.info(tc, methodName + pendingBeforeCloseText);
 
         String closeText =
-                "   Full Close: First [ " + toRelMilliSec(initialAt, firstFullCloseAt) + "ms ]" +
-                " Last [ " + toRelMilliSec(initialAt, lastFullCloseAt) + "ms ]";
+                "   Full Close: First [ " + toRelSec(initialAt, firstFullCloseAt) + " (s) ]" +
+                " Last [ " + toRelSec(initialAt, lastFullCloseAt) + " (s) ]";
         Tr.info(tc, methodName + closeText);
 
         String closeBeforeOpenText =
                 "     Full Close to Open: Count [ " + toCount(fullCloseToOpenCount) + " ]" +
-                " Duration [ " + toAbsMilliSec(fullCloseToOpenDuration) + "ms ]";
+                " Duration [ " + toAbsSec(fullCloseToOpenDuration) + " (s) ]";
         Tr.info(tc, methodName + closeBeforeOpenText);
     }
 }

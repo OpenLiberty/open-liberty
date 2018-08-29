@@ -202,15 +202,15 @@ CANNOT_DELETE_LOGGED_IN_USER.useraction=Effettuare il login come utente diverso 
 
 AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: Impossibile completare l'operazione registro utenti. Si \u00e8 verificato un errore non previsto durante la ricerca delle credenziali dell'oggetto. Per identificare la causa principale dell'errore, esaminare i log di traccia.
 AUTH_SUBJECT_CRED_FAILURE.explanation=Le credenziali dell'oggetto non possono essere richiamate a causa di un errore sconosciuto.
-AUTH_SUBJECT_CRED_FAILURE.useraction=Per vedere la causa principale dell'errore analizzare i log di traccia. Potrebbe esserci un problema con la configurazione della sicurezza di WebSphere.
+AUTH_SUBJECT_CRED_FAILURE.useraction=Per vedere la causa dell'errore analizzare i log di traccia. Potrebbe esserci un problema con la configurazione della sicurezza di WebSphere.
 
 AUTH_SUBJECT_FAILURE=CWIML2004E: Impossibile completare l'operazione registro utenti. Si \u00e8 verificato un errore non previsto durante la ricerca dell'oggetto del programma chiamante. Per identificare la causa principale dell'errore, esaminare i log di traccia.
 AUTH_SUBJECT_FAILURE.explanation=L'oggetto del programma chiamante non pu\u00f2 essere richiamato a causa di un errore sconosciuto.
-AUTH_SUBJECT_FAILURE.useraction=Per vedere la causa principale dell'errore analizzare i log di traccia. Potrebbe esserci un problema con la configurazione della sicurezza di WebSphere.
+AUTH_SUBJECT_FAILURE.useraction=Per vedere la causa dell'errore analizzare i log di traccia. Potrebbe esserci un problema con la configurazione della sicurezza di WebSphere.
 
 INVALID_PARENT_UNIQUE_ID=CWIML1014E: La propriet\u00e0 uniqueId {0} dell''elemento parent non \u00e8 valida.
 INVALID_PARENT_UNIQUE_ID.explanation=uniqueId specificato dell'entit\u00e0 parent non valido. Specificare un Id univoco valido.
-INVALID_PARENT_UNIQUE_ID.useraction=Verificare che uniqueId per l'entit\u00e0 parent sia presente nel repository e che sia specificato correttamente. 
+INVALID_PARENT_UNIQUE_ID.useraction=Verificare che uniqueId per l'entit\u00e0 parent sia presente nel repository e che sia specificato correttamente.
 
 DEFAULT_PARENT_NOT_FOUND=CWIML0516E: Impossibile determinare l''elemento  parent predefinito per {0}. Verificare che la configurazione per il realm {1} sia corretta.
 DEFAULT_PARENT_NOT_FOUND.explanation=L'operazione non pu\u00f2 essere eseguita perch\u00e9 non \u00e8 stato possibile determinare l'elemento parent predefinito per questo tipo di entit\u00e0.

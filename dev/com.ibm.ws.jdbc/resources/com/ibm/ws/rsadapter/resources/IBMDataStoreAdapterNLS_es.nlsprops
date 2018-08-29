@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Evite el uso de la caracter\u00edstica o camb
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: No se ha encontrado una clase de implementaci\u00f3n del controlador JDBC v\u00e1lida para el jdbcDriver {0} utilizando la biblioteca {1}.
-DSRA4000.no.suitable.driver.explanation=No se ha encontrado una clase de implementaci\u00f3n del controlador JDBC v\u00e1lida.
-DSRA4000.no.suitable.driver.useraction=Actualice la configuraci\u00f3n para que la biblioteca contenga una v\u00eda de acceso a un controlador JDBC reconocido o la clase de implementaci\u00f3n se especifique en el origen de datos.
+DSRA4000.no.suitable.driver=DSRA4000E: No se han encontrado implementaciones de {0} para {1} con la biblioteca {2}. Puede que el nombre o ubicaci\u00f3n de los archivos JAR del controlador JDBC sean incorrectos o no est\u00e9n accesibles. Se ha buscado en: {3}. Se ha buscado en los paquetes: {4}.
+DSRA4000.no.suitable.driver.explanation=Podr\u00eda no haberse encontrado una implementaci\u00f3n de origen de datos o controlador por varias razones. Puede que el nombre o ubicaci\u00f3n de los archivos JAR del controlador JDBC sean incorrectos o no est\u00e9n accesibles. Puede que el controlador JDBC no identifique correctamente su implementaci\u00f3n java.sql.Driver o que no tenga ninguna implementaci\u00f3n java.sql.Driver. O bien, la l\u00f3gica integrada del servidor para identificar clases de implementaci\u00f3n de origen de datos no se aplica a todos los controladores.
+DSRA4000.no.suitable.driver.useraction=Compruebe que las configuraciones del controlador JDBC y de la biblioteca sean correctas. Si a\u00fan as\u00ed las clases de implementaci\u00f3n no se encuentran, especif\u00edquelas manualmente en la configuraci\u00f3n.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: No se ha encontrado una clase de implementaci\u00f3n del controlador JDBC v\u00e1lida en la biblioteca anidada utilizada por el jdbcDriver {0}.
-DSRA4001.no.suitable.driver.nested.explanation=No se ha encontrado una clase de implementaci\u00f3n del controlador JDBC v\u00e1lida.
-DSRA4001.no.suitable.driver.nested.useraction=Actualice la configuraci\u00f3n para que la biblioteca anidada contenga una v\u00eda de acceso a un controlador JDBC reconocido o la clase de implementaci\u00f3n se especifique en el origen de datos.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: No se han encontrado implementaciones de {0} para {1}. Se ha buscado en: {2}. Puede que el nombre o ubicaci\u00f3n de los archivos JAR del controlador JDBC sean incorrectos o no est\u00e9n accesibles. Se ha buscado en los paquetes: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=Podr\u00eda no haberse encontrado una implementaci\u00f3n de origen de datos o controlador por varias razones. Puede que el nombre o ubicaci\u00f3n de los archivos JAR del controlador JDBC sean incorrectos o no est\u00e9n accesibles. Puede que el controlador JDBC no identifique correctamente su implementaci\u00f3n java.sql.Driver o que no tenga ninguna implementaci\u00f3n java.sql.Driver. O bien, la l\u00f3gica integrada del servidor para identificar clases de implementaci\u00f3n de origen de datos no se aplica a todos los controladores.
+DSRA4001.no.suitable.driver.nested.useraction=Compruebe que las configuraciones del controlador JDBC y de la biblioteca sean correctas. Si a\u00fan as\u00ed las clases de implementaci\u00f3n no se encuentran, especif\u00edquelas manualmente en la configuraci\u00f3n.
 
 DSRA4003.driver.null=DSRA4003E: No se ha encontrado un elemento jdbcDriver v\u00e1lido para el origen de datos {0}.
 DSRA4003.driver.null.explanation=No se ha encontrado un elemento jdbcDriver v\u00e1lido para el origen de datos especificado.
@@ -244,6 +244,32 @@ DSRA4003.driver.null.useraction=Actualice la configuraci\u00f3n para que incluya
 DSRA4004.onconnect.sql=DSRA4004E: No se ha podido ejecutar el mandato SQL onConnect \"{0}\" en la conexi\u00f3n obtenida del origen de datos {1}. Consulte la excepci\u00f3n de la causa para obtener m\u00e1s informaci\u00f3n.
 DSRA4004.onconnect.sql.explanation=Se ha producido un error al intentar ejecutar el mandato SQL especificado.
 DSRA4004.onconnect.sql.useraction=Consulte el mensaje de la excepci\u00f3n, que le ayudar\u00e1 a determinar la causa del problema.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: El servidor no da soporte a la propiedad loginTimeout especificada en el URL o en las propiedades del DataSource {0}.
+DSRA4005.invalid.logintimeout.explanation=La propiedad loginTimeout no est\u00e1 soportada cuando se especifica en un DataSource respaldado por una implementaci\u00f3n java.sql.Driver porque el servidor no puede llamar a getLoginTimeout en la clase java.sql.Driver.
+DSRA4005.invalid.logintimeout.useraction=Modifique la configuraci\u00f3n de DataSource para utilizar una implementaci\u00f3n DataSource y no una implementaci\u00f3n java.sql.Driver, o bien elimine la propiedad loginTimeout.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: DataSource {0} no puede conectarse a la base de datos porque {1} ha devuelto una conexi\u00f3n nula para el URL que empieza con {2}. Esto indica que el controlador JDBC infringe la especificaci\u00f3n JDBC.
+DSRA4006.null.connection.explanation=Aunque java.sql.Driver ha indicado que aceptaba el URL proporcionado, ha devuelto una conexi\u00f3n nula. Este error indica un error en el controlador JDBC.
+DSRA4006.null.connection.useraction=Notifique el error al proveedor del controlador JDBC y aseg\u00farese de que la configuraci\u00f3n del controlador JDBC y del DataSource es correcta.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: El controlador JDBC no da soporte a un nivel de aislamiento de TRANSACTION_NONE, que est\u00e1 configurado en el origen de datos {0}.
+DSRA4008.tran.none.unsupported.explanation=El controlador JDBC no da soporte al nivel de aislamiento TRANSACTION_NONE configurado en el origen de datos.
+DSRA4008.tran.none.unsupported.useraction=Actualice la configuraci\u00f3n del origen de datos para utilizar un nivel de aislamiento al que d\u00e9 soporte el controlador, o bien utilice un controlador que d\u00e9 soporte a un nivel de aislamiento de TRANSACTION_NONE. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: No se puede configurar el origen de datos {0} con un nivel de aislamiento de TRANSACTION_NONE y transactional=true.
+DSRA4009.tran.none.transactional.unsupported.explanation=Un controlador JDBC configurado con un nivel de aislamiento de TRANSACTION_NONE no dar\u00e1 soporte a transacciones.
+DSRA4009.tran.none.transactional.unsupported.useraction=Establezca transactional=false en el origen de datos.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: Se requiere la confirmaci\u00f3n autom\u00e1tica cuando se utiliza un nivel de aislamiento de TRANSACTION_NONE, que est\u00e1 configurado en el origen de datos {0}.
+DSRA4010.tran.none.autocommit.required.explanation=El controlador JDBC est\u00e1 configurado con un nivel de aislamiento de TRANSACTION_NONE y requiere el uso de la confirmaci\u00f3n autom\u00e1tica.
+DSRA4010.tran.none.autocommit.required.useraction=Mantenga auto commit establecido en true.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: El controlador JDBC no da soporte a la conmutaci\u00f3n a un nivel de aislamiento de TRANSACTION_NONE en el origen de datos {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=La especificaci\u00f3n JDBC no da soporte a la conmutaci\u00f3n a un nivel de aislamiento de TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Evite conmutar a un nivel de aislamiento de TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 
@@ -594,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= El servidor de aplicaciones no tiene
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Inhabilite Kerberos o utilice un programa de fondo de DB2 con el controlador JDBC DB2 universal.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

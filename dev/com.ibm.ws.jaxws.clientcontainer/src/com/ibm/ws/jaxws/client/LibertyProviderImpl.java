@@ -45,7 +45,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.xml.ws.spi.Provider#createServiceDelegate(java.net.URL, javax.xml.namespace.QName, java.lang.Class)
      */
     @Override
@@ -85,7 +85,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * set the feature list for the current thread
-     * 
+     *
      * @param features
      */
     public static void setWebServiceFeatures(List<WebServiceFeature> features) {
@@ -94,7 +94,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * return the feature list for the current thread
-     * 
+     *
      * @return
      */
     public static List<WebServiceFeature> getWebServiceFeatures() {
@@ -110,7 +110,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * set the serviceRefInfo for the current thread
-     * 
+     *
      * @param wsrInfo
      */
     public static void setWebServiceRefInfo(WebServiceRefInfo wsrInfo) {
@@ -126,7 +126,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * return the serviceREfInfo for the current thread
-     * 
+     *
      * @return
      */
     public static WebServiceRefInfo getWebServiceRefInfo() {
@@ -135,7 +135,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * Set the security configuration service
-     * 
+     *
      * @param securityConfigService the securityConfigService to set
      */
     public static void setSecurityConfigService(AtomicServiceReference<JaxWsSecurityConfigurationService> serviceRefer) {

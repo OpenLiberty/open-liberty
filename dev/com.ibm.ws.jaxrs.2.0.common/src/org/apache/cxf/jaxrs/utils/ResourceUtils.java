@@ -27,6 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -225,7 +226,7 @@ public final class ResourceUtils {
         ClassResourceInfo cri =
             new ClassResourceInfo(sClass, sClass, isRoot, enableStatic, true,
                                   model.getConsumes(), model.getProduces(), bus);
-        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), model.getPath()); // Liberty change        
+        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), model.getPath()); // Liberty change
         URITemplate t = URITemplate.createTemplate(model.getPath(), classNameandPath); // Liberty change
         cri.setURITemplate(t);
 
@@ -251,7 +252,7 @@ public final class ResourceUtils {
             if (actualMethod == null) {
                 continue;
             }
-            String classNameandPath2 = getClassNameandPath(cri.getResourceClass().getName(), op.getName()); // Liberty change            
+            String classNameandPath2 = getClassNameandPath(cri.getResourceClass().getName(), op.getName()); // Liberty change
             URITemplate t2 = URITemplate.createTemplate(op.getName(), classNameandPath2); // Liberty change
             OperationResourceInfo ori =
                 new OperationResourceInfo(actualMethod, cri, t2, // Liberty change
@@ -305,7 +306,7 @@ public final class ResourceUtils {
         cri.setParent(parent);
 
         if (root) {
-            String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), cri.getPath()); // Liberty change            
+            String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), cri.getPath()); // Liberty change
             URITemplate t = URITemplate.createTemplate(cri.getPath(), classNameandPath); // Liberty change
             cri.setURITemplate(t);
         }
@@ -536,21 +537,21 @@ public final class ResourceUtils {
     private static OperationResourceInfo createOperationInfo(Method m, Method annotatedMethod,
                                                              ClassResourceInfo cri, Path path, String httpMethod) {
         OperationResourceInfo ori = new OperationResourceInfo(m, annotatedMethod, cri);
-        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), path); // Liberty change       
+        String classNameandPath = getClassNameandPath(cri.getResourceClass().getName(), path); // Liberty change
         URITemplate t = URITemplate.createTemplate(path, ori.getParameters(), classNameandPath); // Liberty change
         ori.setURITemplate(t);
         ori.setHttpMethod(httpMethod);
         return ori;
     }
 
-    
-// start Liberty change    
+
+// start Liberty change
     private static String getClassNameandPath (String className, Path path) {
-        if (path == null) {            
+        if (path == null) {
             return getClassNameandPath(className, "/");
         } else {
-            return getClassNameandPath(className, path.value()); 
-        }        
+            return getClassNameandPath(className, path.value());
+        }
     }
 
     private static String getClassNameandPath (String className, String pathValue) {
@@ -570,7 +571,7 @@ public final class ResourceUtils {
         return sb.toString();
     }
 // end Liberty change
-    
+
     private static boolean checkMethodDispatcher(ClassResourceInfo cr) {
         if (cr.getMethodDispatcher().getOperationResourceInfos().isEmpty()) {
             LOG.warning(new org.apache.cxf.common.i18n.Message("NO_RESOURCE_OP_EXC",
@@ -783,7 +784,8 @@ public final class ResourceUtils {
             type = InjectionUtils.getActualType(genericType);
             isCollection = true;
         }
-        if (type == Object.class && !(genericType instanceof Class)) {
+        if (type == Object.class && !(genericType instanceof Class)
+            || genericType instanceof TypeVariable) {
             Type theType = InjectionUtils.processGenericTypeIfNeeded(serviceClass,
                                                                      Object.class,
                                                                      genericType);
@@ -880,7 +882,6 @@ public final class ResourceUtils {
                                                       Message m,
                                                       boolean perRequest,
                                                       Map<Class<?>, Object> contextValues) {
-        // Liberty Change for CXF Begin
         Class<?>[] params = c.getParameterTypes();
         Annotation[][] anns = c.getParameterAnnotations();
         Type[] genericTypes = c.getGenericParameterTypes();
@@ -890,14 +891,14 @@ public final class ResourceUtils {
     public static Object[] createConstructorArguments(Constructor<?> c,
                                                       Message m,
                                                       boolean perRequest,
-                                                      Map<Class<?>, Object> contextValues,
+                                                      Map<Class<?>,
+                                                      Object> contextValues,
                                                       Class<?>[] params,
                                                       Annotation[][] anns,
                                                       Type[] genericTypes) {
         if (m == null) {
             m = new MessageImpl();
         }
-        // Liberty Change for CXF End
         @SuppressWarnings("unchecked")
         MultivaluedMap<String, String> templateValues =
             (MultivaluedMap<String, String>)m.get(URITemplate.TEMPLATE_PARAMETERS);
@@ -958,6 +959,7 @@ public final class ResourceUtils {
                 }
             }
         }
+
         // we can get either a provider or resource class here
         for (Object o : singletons) {
             if (isValidProvider(o.getClass())) {
@@ -974,6 +976,7 @@ public final class ResourceUtils {
         if (bus != null) {
             bean.setBus(bus);
         }
+
         String address = "/";
         if (!ignoreAppPath) {
             ApplicationPath appPath = locateApplicationPath(app.getClass());

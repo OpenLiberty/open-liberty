@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,6 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.3.0.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.3.2.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--buildpath: org.jboss.logging:jboss-logging;version=3.3.0.Final
+-buildpath: org.jboss.logging:jboss-logging;version=3.3.2.Final
