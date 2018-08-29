@@ -36,6 +36,7 @@ import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
 import com.ibm.ws.app.manager.module.internal.DeployedModuleInfoImpl;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
+import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.container.service.annotations.ContainerAnnotations;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ConnectorModuleInfo;
@@ -135,11 +136,11 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         Collections.unmodifiableList( Arrays.asList("*") );
 
     private ClassLoader basicCreateAppClassLoader() {
-    	String appPrefix;
+        String appPrefix;
         if ( _tc.isDebugEnabled() ) {
-        	appPrefix = "Application [ " + getName() + " ]: ";
+            appPrefix = "Application [ " + getName() + " ]: ";
         } else {
-        	appPrefix = null;
+            appPrefix = null;
         }
 
         if ( appPrefix != null ) {
@@ -284,8 +285,8 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 return null;
             }
         } else {
-        	// Having no library directory element, including when there is no application
-        	// descriptor at all, means the application library is the default value, "lib".
+            // Having no library directory element, including when there is no application
+            // descriptor at all, means the application library is the default value, "lib".
             libDir = "lib";
         }
 
@@ -412,7 +413,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                     // throws UnableToAdaptException
                 } catch ( UnableToAdaptException e ) {
                     // FFDC
-                	// Ignore this the same as when a lib jar fails to adapt.
+                    // Ignore this the same as when a lib jar fails to adapt.
                 }
             }
 
@@ -978,7 +979,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     public ApplicationMonitoringInformation createApplicationMonitoringInformation() {
         // TODO: Move this into the info objects; each info type should
         //       handle the cases that they care about.
-    	//
+        //
         // TODO: An application.xml will not always be present.
 
         Collection<Notification> notificationsToMonitor = new HashSet<Notification>();
@@ -1104,6 +1105,24 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         EJB_ANNOTATIONS.add("javax.ejb.Singleton");
     }
 
+    private String getPath(Container useContainer) {
+        StringBuilder pathBuilder = new StringBuilder();
+
+        try {
+            Entry entry;
+            while ( (entry = useContainer.adapt(Entry.class)) != null ) {
+                // 'adapt' throws UnableToAdaptException
+                pathBuilder.insert(0,  entry.getPath() );
+                useContainer = entry.getRoot();
+            }
+        } catch ( UnableToAdaptException e ) {
+            // FFDC
+            return null;
+        }
+
+        return pathBuilder.toString();
+    }
+
     private boolean hasAnnotations(Container moduleContainer, Collection<String> annotationClassNames) {
         boolean selected;;
         String selectionCase;
@@ -1118,12 +1137,11 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             containerAnnotations = null;
             boundException = e;
         }
-        
+
         if ( boundException != null ) {
             // CWWKZ0121E: Application {0}: Failed to access annotations for module {1} of type {2}: {3}
             Tr.error(_tc, "error.module.class.source",
                            getName(), moduleContainer.getPath(), "EJB", boundException);
-
             selected = false;
             selectionCase = "REJECT: No EJB descriptor and error obtaining annotations";
 
@@ -1132,26 +1150,38 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             selectionCase = "REJECT: No EJB descriptor and unexpected null annotations";
 
         } else {
-            containerAnnotations.setUseJandex( applicationInformation.getUseJandex() );
+            String appName = getName();
 
+            String modName = getPath(moduleContainer);
+            if ( modName == null ) {
+                selected = false;
+                selectionCase = "REJECT: Unexpected failure to obtain module path";
 
-            containerAnnotations.setAppName( getName() );
-        	containerAnnotations.setModName(modName);
-            containerAnnotations.setModCategoryName(ClassSource_Factory.JAVAEE_CATEGORY_NAME);
-
-        	// A class loader is not needed: This usage of container annotations only uses
-            // a basic API.  APIs which use inheritance information are not used.
-
-            selected = containerAnnotations.hasSpecifiedAnnotations(annotationClassNames);
-            if ( selected ) {
-            	selectionCase = "SELECT: No EJB descriptor, but EJB annotations were detected";
             } else {
-            	selectionCase = "REJECT: No EJB descriptor and no EJB annotations";
+                if ( modName.isEmpty() ) {
+                    modName = appName; 
+                }
+
+                containerAnnotations.setAppName(appName);
+                containerAnnotations.setModName(modName);
+                containerAnnotations.setModCategoryName(ClassSource_Factory.JAVAEE_CATEGORY_NAME);
+
+                containerAnnotations.setUseJandex( applicationInformation.getUseJandex() );
+
+                // A class loader is not needed: This usage of container annotations only uses
+                // a basic API.  APIs which use inheritance information are not used.
+
+                selected = containerAnnotations.hasSpecifiedAnnotations(annotationClassNames);
+                if ( selected ) {
+                    selectionCase = "SELECT: No EJB descriptor; EJB annotations were detected";
+                } else {
+                    selectionCase = "REJECT: No EJB descriptor and no EJB annotations";
+                }
             }
         }
 
         if (_tc.isDebugEnabled()) {
-        	Tr.debug(_tc, "Module [ " + moduleContainer.getPath() + " ]: " + selectionCase);
+            Tr.debug(_tc, "Module [ " + moduleContainer.getPath() + " ]: " + selectionCase);
         }
         return selected;
     }
@@ -1186,9 +1216,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     /**
      * Obtain a class loader for an EJB module.  Answer the application
      * class loader.
-	 *
-	 * @param ejbModuleInfo EJB module information.
-	 *
+     *
+     * @param ejbModuleInfo EJB module information.
+     *
      * @return A class loader for an EJB module.
      */
     private ClassLoader createEJBModuleClassLoader(EJBModuleInfo ejbModuleInfo) {
