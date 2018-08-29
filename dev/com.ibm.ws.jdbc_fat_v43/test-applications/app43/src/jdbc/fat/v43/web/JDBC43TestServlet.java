@@ -600,7 +600,7 @@ public class JDBC43TestServlet extends FATServlet {
      */
     @ExpectedFFDC("java.lang.IllegalStateException") // TODO remove this once transactions bug is fixed
     @Test
-    public void testSuspendResumeSharable() throws Exception {
+    public void testSuspendRunGlobalTranAndResumeSharable() throws Exception {
         AtomicInteger[] requests1;
         int begin1, end1;
 
@@ -708,7 +708,7 @@ public class JDBC43TestServlet extends FATServlet {
      */
     @ExpectedFFDC("java.lang.IllegalStateException") // TODO remove this once transactions bug is fixed
     @Test
-    public void testSuspendResumeUnsharable() throws Exception {
+    public void testSuspendRunGlobalTranAndResumeUnsharable() throws Exception {
         AtomicInteger[] requests;
         int begins, ends;
 
@@ -797,4 +797,227 @@ public class JDBC43TestServlet extends FATServlet {
         }
     }
 
+    /**
+     * Begin a request (using a sharable connection) within one global transaction. Suspend that transaction
+     * and use the connection handle within an LTC, which must be considered a different request.
+     * After performing commits and rollbacks within the LTC, resume the first global transaction and perform
+     * additional operations which should be under the first request. Commit the first transaction and verify
+     * that the first request has ended.
+     */
+    @Test
+    public void testSuspendRunLTCAndResumeSharable() throws Exception {
+        AtomicInteger[] requests1;
+        int begin1, end1;
+
+        AtomicInteger[] requests2;
+        int begin2, end2;
+
+        // Obtain and use a connection handle within one global transaction
+        tx.begin();
+        try {
+            Connection con = defaultDataSource.getConnection();
+            con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+
+            PreparedStatement ps1 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps1.setString(1, "Simpson Road SE");
+            ps1.setString(2, "Rochester");
+            ps1.setString(3, "MN");
+            ps1.executeUpdate();
+            ps1.close();
+
+            requests1 = (AtomicInteger[]) con.unwrap(Supplier.class).get();
+            begin1 = requests1[BEGIN].get();
+            end1 = requests1[END].get();
+            assertEquals(end1 + 1, begin1);
+
+            Transaction suspended = txm.suspend();
+            try {
+                assertEquals(end1, requests1[END].get());
+                assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con.getTransactionIsolation());
+
+                requests2 = (AtomicInteger[]) con.unwrap(Supplier.class).get();
+                begin2 = requests2[BEGIN].get();
+                end2 = requests2[END].get();
+                assertEquals(end2 + 1, begin2);
+
+                con.setAutoCommit(false);
+                PreparedStatement ps2 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                ps2.setString(1, "Eastwood Road SE");
+                ps2.setString(2, "Rochester");
+                ps2.setString(3, "MN");
+                ps2.executeUpdate();
+                ps2.close();
+                // TODO con.commit(); enable once suspend/resume is fixed
+
+                PreparedStatement ps3 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                ps3.setString(1, "Park Lane SE");
+                ps3.setString(2, "Rochester");
+                ps3.setString(3, "MN");
+                ps3.executeUpdate();
+                ps3.close();
+                // TODO con.rollback(); enable once suspend/resume is fixed
+
+                // TODO con.setAutoCommit(true); enable once suspend/resume is fixed
+
+                // TODO bug: It appears the same managed connection remains with the sharable handle across suspend/begin/rollback
+                // and therefore it is operating under the original request, rather than being a separate request that can end here!
+                // assertEquals(end2 + 1, requests2[END].get());
+                System.out.println("At this point, the second request should have end count of " + (end2 + 1) + ". We observed: " + requests2[END].get());
+            } finally {
+                txm.resume(suspended);
+            }
+
+            assertEquals(end1, requests1[END].get());
+
+            try {
+                // Continue using the connection handle after the LTC ends,
+                PreparedStatement ps4 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                ps4.setString(1, "St. Bridget's Road SE");
+                ps4.setString(2, "Rochester");
+                ps4.setString(3, "MN");
+                ps4.executeUpdate();
+                ps4.close();
+
+                assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con.getTransactionIsolation());
+            } finally {
+                con.close();
+            }
+        } finally {
+            tx.commit();
+        }
+
+        assertEquals(end1 + 1, requests1[END].get());
+
+        // Check if the data is consistent. The first and third update must commit. The second must roll back.
+        Connection c = defaultDataSource.getConnection();
+        try {
+            PreparedStatement ps = c.prepareStatement("SELECT NAME FROM STREETS WHERE NAME=? AND CITY=? AND STATE=?");
+            ps.setString(3, "MN");
+            ps.setString(2, "Rochester");
+            ps.setString(1, "Simpson Road SE");
+            assertTrue(ps.executeQuery().next()); // must be committed (from global transaction)
+
+            ps.setString(1, "Eastwood Road SE");
+            assertTrue(ps.executeQuery().next()); // must be committed (from commit in LTC)
+
+            ps.setString(1, "Park Lane SE");
+            // TODO enable once suspend/resume are fixed
+            //assertFalse(ps.executeQuery().next()); // must be rolled back (from rollback in LTC)
+
+            ps.setString(1, "St. Bridget's Road SE");
+            assertTrue(ps.executeQuery().next()); // must be committed (from global transaction)
+
+            ps.close();
+        } finally {
+            c.close();
+        }
+    }
+
+    /**
+     * Begin a request (using an unsharable connection) within one global transaction. Suspend that transaction
+     * and use the connection within an LTC, which must be considered the same request because it is the same
+     * connection, even though running separate transactions. After committing and rolling back transactions
+     * within the LTC, resume the first global transaction and perform additional operations, which should
+     * continue be under the first (and only) request. Commit the first transaction and verify that the single
+     * request has ended.
+     */
+    @Test
+    public void testSuspendRunLTCAndResumeUnsharable() throws Exception {
+        AtomicInteger[] requests;
+        int begins, ends;
+
+        // Obtain and use a connection within one global transaction
+        Connection con = null;
+        tx.begin();
+        try {
+            con = unsharableXADataSource.getConnection();
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+
+            PreparedStatement ps1 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps1.setString(1, "Valkyrie Drive NW");
+            ps1.setString(2, "Rochester");
+            ps1.setString(3, "MN");
+            ps1.executeUpdate();
+            ps1.close();
+
+            requests = (AtomicInteger[]) con.unwrap(Supplier.class).get();
+            begins = requests[BEGIN].get();
+            ends = requests[END].get();
+            assertEquals(ends + 1, begins);
+
+            Transaction suspended = txm.suspend();
+            try {
+                assertEquals(ends, requests[END].get());
+                assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con.getTransactionIsolation());
+
+                con.setAutoCommit(false);
+                PreparedStatement ps2 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                ps2.setString(1, "Zumbro Drive NW");
+                ps2.setString(2, "Rochester");
+                ps2.setString(3, "MN");
+                ps2.executeUpdate();
+                ps2.close();
+                // TODO con.rollback(); enable once suspend/resume is fixed
+
+                PreparedStatement ps3 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+                ps3.setString(1, "Viking Drive NW");
+                ps3.setString(2, "Rochester");
+                ps3.setString(3, "MN");
+                ps3.executeUpdate();
+                ps3.close();
+                // TODO con.commit(); enable once suspend/resume is fixed
+
+                // TODO con.setAutoCommit(true); enable once suspend/resume is fixed
+
+                assertEquals(ends, requests[END].get());
+            } finally {
+                txm.resume(suspended);
+            }
+
+            assertEquals(ends, requests[END].get());
+
+            // Continue using the connection after the global transaction completes,
+            PreparedStatement ps4 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps4.setString(1, "Terracewood Drive NW");
+            ps4.setString(2, "Rochester");
+            ps4.setString(3, "MN");
+            ps4.executeUpdate();
+            ps4.close();
+
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con.getTransactionIsolation());
+        } finally {
+            try {
+                if (con != null)
+                    con.close();
+            } finally {
+                tx.commit();
+            }
+        }
+
+        assertEquals(ends + 1, requests[END].get());
+
+        // Check if the data is consistent. The first and third update must commit. The second must roll back.
+        Connection c = unsharableXADataSource.getConnection();
+        try {
+            PreparedStatement ps = c.prepareStatement("SELECT NAME FROM STREETS WHERE NAME=? AND CITY=? AND STATE=?");
+            ps.setString(3, "MN");
+            ps.setString(2, "Rochester");
+            ps.setString(1, "Valkyrie Drive NW");
+            assertTrue(ps.executeQuery().next()); // must be committed (from global transaction)
+
+            ps.setString(1, "Zumbro Drive NW");
+            // TODO enable once suspend/resume are fixed
+            //assertFalse(ps.executeQuery().next()); // must be rolled back (from rollback during LTC)
+
+            ps.setString(1, "Viking Drive NW");
+            assertTrue(ps.executeQuery().next()); // must be committed (from commit during LTC)
+
+            ps.setString(1, "Terracewood Drive NW");
+            assertTrue(ps.executeQuery().next()); // must be committed
+
+            ps.close();
+        } finally {
+            c.close();
+        }
+    }
 }
