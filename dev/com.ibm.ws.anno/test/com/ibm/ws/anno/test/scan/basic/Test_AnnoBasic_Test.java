@@ -98,13 +98,13 @@ public class Test_AnnoBasic_Test extends Test_Base {
     }
 
     private Set<String> select(Set<String> values, String prefix) {
-    	Set<String> selected = new HashSet<String>();
-    	for ( String value : values ) {
-    		if ( value.startsWith(prefix) ) {
-    			selected.add(value);
-    		}
-    	}
-    	return selected;
+        Set<String> selected = new HashSet<String>();
+        for ( String value : values ) {
+                if ( value.startsWith(prefix) ) {
+                        selected.add(value);
+                }
+        }
+        return selected;
     }
 
     @Test
