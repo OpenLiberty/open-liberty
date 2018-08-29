@@ -757,11 +757,14 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // 321485
-        String addr = this._request.getRemoteAddr();
-        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"getRemoteAddr", "this->"+this+": "+" address --> " + addr);
+        if (this._request != null) {
+            String addr = this._request.getRemoteAddr();
+            if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+                logger.logp(Level.FINE, CLASS_NAME,"getRemoteAddr", "this->"+this+": "+" address --> " + addr);
+            }
+            return addr;
         }
-        return addr;
+        return null;
     }
 
     /* (non-Javadoc)
