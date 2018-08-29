@@ -734,7 +734,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             Chain conflict = getPostponedConflict(baseSymbolicName, selectedName);
             if (conflict != null) {
                 addConflict(baseSymbolicName, new ArrayList<Chain>(Arrays.asList(conflict, new Chain(chain, copyCandidates, preferredVersion, symbolicName))));
-                return;
+                // Note that we do not return here because we have a single candidate that must be selected
+                // and one or more postponed decisions that conflict with the single candidate.
+                // We must continue on here and select the single candidate, but record the confict
+                // from the postponed
             }
 
             // We have selected one; only create a new chain if there was not an existing selected
@@ -857,6 +860,14 @@ public class FeatureResolverImpl implements FeatureResolver {
             int insertion = Collections.binarySearch(_chains, chain, this);
             if (insertion < 0) {
                 insertion = (-(insertion) - 1);
+            } else {
+                // make sure we insert in the order we are added when we have the same preferred;
+                // we do this by checking each insertion element to see if we are equal
+                // until we find one that is not
+                Chain existing;
+                while (insertion < _chains.size() && (existing = _chains.get(insertion)) != null && compare(existing, chain) == 0) {
+                    insertion++;
+                }
             }
             _chains.add(insertion, chain);
         }
