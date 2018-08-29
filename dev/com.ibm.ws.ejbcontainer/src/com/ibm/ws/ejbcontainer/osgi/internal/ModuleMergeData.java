@@ -133,11 +133,7 @@ class ModuleMergeData {
     @Trivial
     AnnotationTargets_Targets getAnnotationTargets() {
         if (annotationTargets == null) {
-            try {
-                annotationTargets = getModuleAnnotations().getAnnotationTargets();
-            } catch (UnableToAdaptException e) {
-                throw new IllegalStateException(e);
-            }
+            annotationTargets = getModuleAnnotations().getAnnotationTargets();
         }
         return annotationTargets;
     }
@@ -145,11 +141,7 @@ class ModuleMergeData {
     @Trivial
     public InfoStore getInfoStore() {
         if (infoStore == null) {
-            try {
-                infoStore = getModuleAnnotations().getInfoStore();
-            } catch (UnableToAdaptException e) {
-                throw new IllegalStateException(e);
-            }
+            infoStore = getModuleAnnotations().getInfoStore();
         }
         return infoStore;
     }
