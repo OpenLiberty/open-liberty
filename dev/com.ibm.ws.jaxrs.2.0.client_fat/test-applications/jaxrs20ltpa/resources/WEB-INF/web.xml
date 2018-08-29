@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="HelloworldServlet" version="3.0"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+     http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<display-name>JAX-RS Hello World Sample</display-name>
+	<description>Server-side application to test Hello world client .</description>
+
+	<!-- SERVLET DEFINITIONS -->
+	<servlet id="Servlet_1">
+		<servlet-name>HelloServlet</servlet-name>
+		<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+		<init-param>
+			<param-name>javax.ws.rs.Application</param-name>
+			<param-value>com.ibm.ws.jaxrs20.client.LtpaClientTest.service.TestApplication</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- SERVLET MAPPINGS -->
+	<servlet-mapping id="ServletMapping_1">
+		<servlet-name>HelloServlet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>BasicRegistry</realm-name>
+		<form-login-config>
+			<form-login-page>/login.html</form-login-page>
+			<form-error-page>/loginError.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-constraint>
+		<display-name>FormLogin</display-name>
+		<web-resource-collection>
+			<web-resource-name>FormLogin</web-resource-name>
+			<url-pattern>/rest/ltpa</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>BasicLogin_WebUsers</role-name>
+		</auth-constraint>
+	</security-constraint>
+</web-app>
