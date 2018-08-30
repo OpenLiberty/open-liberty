@@ -11,12 +11,16 @@
 package jdbc.fat.v43.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -24,7 +28,9 @@ import java.util.function.Supplier;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
+import javax.sql.XADataSource;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
@@ -86,7 +92,183 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
-     * Verify that that DatabaseMetaData indicates spec version 4.3.
+     * Test that attempting to use the connection builder methods on an unwrapped connection or the liberty wrapper are blocked.
+     */
+    @Test
+    public void testBuilderMethodsBlocked() throws Exception {
+        try {
+            defaultDataSource.createConnectionBuilder();
+            fail("Call to createConnectionBuilder should result in an exception");
+        } catch (SQLFeatureNotSupportedException ex) {
+            //expected
+        }
+
+        XADataSource xaDS = unsharableXADataSource.unwrap(XADataSource.class);
+        try {
+            xaDS.createXAConnectionBuilder();
+            fail("Call to createXAConnectionBuilder on XADataSource should result in an exception");
+        } catch (SQLFeatureNotSupportedException ex) {
+            if (!ex.getMessage().contains("DSRA9130E"))
+                throw ex;
+        }
+
+        ConnectionPoolDataSource cpDS = unsharablePool1DataSource.unwrap(ConnectionPoolDataSource.class);
+        try {
+            cpDS.createPooledConnectionBuilder();
+            fail("Call to createPooledConnectionBuilder on ConnectionPoolDataSource should result in an exception");
+        } catch (SQLFeatureNotSupportedException ex) {
+            if (!ex.getMessage().contains("DSRA9130E"))
+                throw ex;
+        }
+    }
+
+    /**
+     * Tests that the new JDBC 4.3 method enquoteIdentifier is correctly delegated to the driver on Statement,
+     * PreparedStatement, and CallableStatement. This is done by ensuring a DSRA9110E error is thrown when
+     * we attempt to execute on the closed statement.
+     */
+    @Test
+    public void testEnquoteIdentifier() throws Exception {
+        Connection con = defaultDataSource.getConnection();
+        try {
+            Statement stmt = con.createStatement();
+            PreparedStatement pstmt = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            CallableStatement cstmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_EMPTY_STATEMENT_CACHE()");
+            stmt.close();
+            pstmt.close();
+            cstmt.close();
+
+            try {
+                stmt.enquoteIdentifier("West River Road", false);
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+            try {
+                pstmt.enquoteIdentifier("IBM's Parking Lot", true);
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+            try {
+                cstmt.enquoteIdentifier("'41st Street'", true);
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Tests that the new JDBC 4.3 method enquoteLiteral is correctly delegated to the driver on Statement,
+     * PreparedStatement, and CallableStatement. This is done by ensuring a DSRA9110E error is thrown when
+     * we attempt to execute on the closed statement.
+     */
+    @Test
+    public void testEnquoteLiteral() throws Exception {
+        Connection con = defaultDataSource.getConnection();
+        try {
+            Statement stmt = con.createStatement();
+            PreparedStatement pstmt = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            CallableStatement cstmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_EMPTY_STATEMENT_CACHE()");
+            stmt.close();
+            pstmt.close();
+            cstmt.close();
+
+            try {
+                stmt.enquoteLiteral("West River Road");
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+            try {
+                pstmt.enquoteLiteral("IBM's Parking Lot");
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+            try {
+                stmt.enquoteLiteral("'41st Street'");
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Tests that the new JDBC 4.3 method enquoteNCharLiteral is correctly delegated to the driver on Statement,
+     * PreparedStatement, and CallableStatement. This is done by ensuring a DSRA9110E error is thrown when
+     * we attempt to execute on the closed statement.
+     */
+    @Test
+    public void testEnquoteNCharLiteral() throws Exception {
+        Connection con = defaultDataSource.getConnection();
+        try {
+            Statement stmt = con.createStatement();
+            PreparedStatement pstmt = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            CallableStatement cstmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_EMPTY_STATEMENT_CACHE()");
+            stmt.close();
+            pstmt.close();
+            cstmt.close();
+
+            try {
+                stmt.enquoteNCharLiteral("West River Road");
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+            try {
+                pstmt.enquoteNCharLiteral("IBM's Parking Lot");
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+            try {
+                cstmt.enquoteNCharLiteral("'41st Street'");
+            } catch (SQLException ex) {
+                if (!ex.getMessage().contains("DSRA9110E"))
+                    throw ex;
+            }
+
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Tests that the new JDBC 4.3 method isSimpleIdentifier is functional when using the default implementations.
+     */
+    @Test
+    public void testIsSimpleIdentifier() throws Exception {
+        Connection con = defaultDataSource.getConnection();
+        try {
+            Statement stmt = con.createStatement();
+            PreparedStatement pstmt = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            CallableStatement cstmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_EMPTY_STATEMENT_CACHE()");
+
+            assertTrue(stmt.isSimpleIdentifier("ValidSQLIdentifier"));
+            assertFalse(pstmt.isSimpleIdentifier("Invalid SQL Identifier"));
+            assertFalse(cstmt.isSimpleIdentifier("$Invalid"));
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Verify that that DatabaseMetaData indicates spec version 4.3 and that the method supports sharding is functional
      */
     @Test
     public void testMetaData() throws Exception {
@@ -96,6 +278,8 @@ public class JDBC43TestServlet extends FATServlet {
 
             assertEquals(4, mdata.getJDBCMajorVersion());
             assertEquals(3, mdata.getJDBCMinorVersion());
+
+            assertFalse(mdata.supportsSharding());
         } finally {
             con.close();
         }
