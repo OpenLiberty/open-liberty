@@ -119,6 +119,9 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         // Lastly stop server1
         server1.stopServer("WTRN0075W", "WTRN0076W"); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
+
+        // Lastly, clean up XA resource file
+        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
     }
 
     /**
@@ -164,6 +167,11 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
 
         server2.waitForStringInTrace("Performed recovery for FScloud001");
         server2.stopServer();
+
+        // Lastly, clean up XA resource files
+        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server2.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+
     }
 
     /**
@@ -243,6 +251,10 @@ public class SimpleFS2PCCloudTest extends FATServletClient {
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
         server2.waitForStringInTrace("Performed recovery for FScloud001");
         server2.stopServer();
+
+        // Lastly, clean up XA resource files
+        server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
+        server2.deleteFileFromLibertyServerRoot("XAResourceData.dat");
     }
 
     private boolean lockServerLease(String recoveryId) throws Exception {
