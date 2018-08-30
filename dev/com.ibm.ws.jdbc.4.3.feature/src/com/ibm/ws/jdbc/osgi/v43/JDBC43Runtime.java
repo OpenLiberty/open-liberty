@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jdbc.osgi.v41;
+package com.ibm.ws.jdbc.osgi.v43;
 
 import java.sql.BatchUpdateException;
 import java.sql.CallableStatement;
@@ -35,66 +35,71 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcObject;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcResultSet;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
-import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41CallableStatement;
-import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41Connection;
-import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41DatabaseMetaData;
-import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41PreparedStatement;
-import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41ResultSet;
-import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41Statement;
+import com.ibm.ws.rsadapter.jdbc.v42.WSJdbc42ResultSet;
+import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43CallableStatement;
+import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43Connection;
+import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43DatabaseMetaData;
+import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43PreparedStatement;
+import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43Statement;
 
 @Trivial
-@Component(property = { "version=4.1", "service.ranking:Integer=41" })
-public class JDBC41Runtime implements JDBCRuntimeVersion {
+@Component(property = { "version=4.3", "service.ranking:Integer=43" })
+public class JDBC43Runtime implements JDBCRuntimeVersion {
     @Override
     public Version getVersion() {
-        return VERSION_4_1;
+        return VERSION_4_3;
     }
 
     @Override
     public WSJdbcConnection newConnection(WSRdbManagedConnectionImpl mc, Connection conn, Object key, Object currentThreadID) {
-        return new WSJdbc41Connection(mc, conn, key, currentThreadID);
+        return new WSJdbc43Connection(mc, conn, key, currentThreadID);
     }
 
     @Override
     public WSJdbcDatabaseMetaData newDatabaseMetaData(DatabaseMetaData metaDataImpl,
                                                       WSJdbcConnection connWrapper) throws SQLException {
-        return new WSJdbc41DatabaseMetaData(metaDataImpl, connWrapper);
+        return new WSJdbc43DatabaseMetaData(metaDataImpl, connWrapper);
     }
 
     @Override
     public WSJdbcStatement newStatement(Statement stmtImplObject, WSJdbcConnection connWrapper, int theHoldability) {
-        return new WSJdbc41Statement(stmtImplObject, connWrapper, theHoldability);
+        return new WSJdbc43Statement(stmtImplObject, connWrapper, theHoldability);
     }
 
     @Override
     public WSJdbcPreparedStatement newPreparedStatement(PreparedStatement pstmtImplObject, WSJdbcConnection connWrapper,
                                                         int theHoldability, String pstmtSQL) throws SQLException {
-        return new WSJdbc41PreparedStatement(pstmtImplObject, connWrapper, theHoldability, pstmtSQL);
+        return new WSJdbc43PreparedStatement(pstmtImplObject, connWrapper, theHoldability, pstmtSQL);
     }
 
     @Override
     public WSJdbcPreparedStatement newPreparedStatement(PreparedStatement pstmtImplObject, WSJdbcConnection connWrapper,
                                                         int theHoldability, String pstmtSQL,
                                                         StatementCacheKey pstmtKey) throws SQLException {
-        return new WSJdbc41PreparedStatement(pstmtImplObject, connWrapper, theHoldability, pstmtSQL, pstmtKey);
+        return new WSJdbc43PreparedStatement(pstmtImplObject, connWrapper, theHoldability, pstmtSQL, pstmtKey);
     }
 
     @Override
     public WSJdbcCallableStatement newCallableStatement(CallableStatement cstmtImplObject, WSJdbcConnection connWrapper,
                                                         int theHoldability, String cstmtSQL) throws SQLException {
-        return new WSJdbc41CallableStatement(cstmtImplObject, connWrapper, theHoldability, cstmtSQL);
+        return new WSJdbc43CallableStatement(cstmtImplObject, connWrapper, theHoldability, cstmtSQL);
     }
 
     @Override
     public WSJdbcCallableStatement newCallableStatement(CallableStatement cstmtImplObject, WSJdbcConnection connWrapper,
                                                         int theHoldability, String cstmtSQL,
                                                         StatementCacheKey cstmtKey) throws SQLException {
-        return new WSJdbc41CallableStatement(cstmtImplObject, connWrapper, theHoldability, cstmtSQL, cstmtKey);
+        return new WSJdbc43CallableStatement(cstmtImplObject, connWrapper, theHoldability, cstmtSQL, cstmtKey);
     }
 
     @Override
     public WSJdbcResultSet newResultSet(ResultSet rsImpl, WSJdbcObject parent) {
-        return new WSJdbc41ResultSet(rsImpl, parent);
+        return new WSJdbc42ResultSet(rsImpl, parent);
+    }
+
+    @Override
+    public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage) {
+        return new BatchUpdateException(newMessage, copyFrom.getSQLState(), copyFrom.getErrorCode(), copyFrom.getLargeUpdateCounts(), null);
     }
 
     @Override
@@ -143,13 +148,13 @@ public class JDBC41Runtime implements JDBCRuntimeVersion {
     }
 
     @Override
-    public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage) {
-        return new BatchUpdateException(newMessage, copyFrom.getSQLState(), copyFrom.getErrorCode(), copyFrom.getUpdateCounts());
+    public void beginRequest(Connection con) throws SQLException {
+        con.beginRequest();
     }
 
     @Override
-    public void beginRequest(Connection con) {}
+    public void endRequest(Connection con) throws SQLException {
+        con.endRequest();
+    }
 
-    @Override
-    public void endRequest(Connection con) {}
 }

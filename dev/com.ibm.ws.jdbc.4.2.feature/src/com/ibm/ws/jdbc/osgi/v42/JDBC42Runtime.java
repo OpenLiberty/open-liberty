@@ -146,4 +146,10 @@ public class JDBC42Runtime implements JDBCRuntimeVersion {
             throw new SQLFeatureNotSupportedException(e);
         }
     }
+
+    @Override
+    public void beginRequest(Connection con) {}
+
+    @Override
+    public void endRequest(Connection con) {}
 }
