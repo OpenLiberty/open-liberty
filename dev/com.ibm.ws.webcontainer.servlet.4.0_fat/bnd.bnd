@@ -18,7 +18,8 @@ src: \
 	test-applications/TestGetMapping.war/src,\
 	test-applications/TestAddJspFile.war/src, \
 	test-applications/TestEncoding.war/src, \
-	test-applications/TestPushBuilderSecurity.war/src
+	test-applications/TestPushBuilderSecurity.war/src, \
+	test-applications/ServletPathDefaultMapping.war/src
 	
 fat.project: true
 

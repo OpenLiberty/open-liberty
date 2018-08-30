@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012, 2014
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.fat.wc;
 
 import org.junit.BeforeClass;
@@ -25,6 +24,8 @@ import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
 import com.ibm.ws.fat.wc.tests.WCServerTest;
 import com.ibm.ws.fat.wc.tests.WCServletClarificationTest;
+import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
+import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
 /**
@@ -45,7 +46,7 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
  * "fat.test.mode=full" to the properties tab, then launch the
  * build.
  *
- * Alternatively, for a comand line launch, add "-Dfat.test.mode=full".
+ * Alternatively, for a command line launch, add "-Dfat.test.mode=full".
  */
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -58,7 +59,9 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
                 WCEncodingTest.class,
                 WCTrailersTest.class,
 //              WCPushBuilderSecurityTest.class,
-                WCAddJspFileTest.class
+                WCAddJspFileTest.class,
+                WCServletPathForDefaultMappingDefault.class,
+                WCServletPathForDefaultMappingFalse.class
 })
 public class FATSuite {
 
