@@ -56,8 +56,6 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.ws.cdi.weld, \
  com.ibm.ws.cdi.internal, \
  com.ibm.ws.cdi.1.2.weld, \
- com.ibm.websphere.javaee.jaxb.2.2; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.bind:jaxb-api:2.2.12", \
- com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.servlet:jstl:1.2", \
  com.ibm.ws.cdi.interfaces
 -jars=com.ibm.websphere.appserver.thirdparty.cdi; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:2.4.7.Final"

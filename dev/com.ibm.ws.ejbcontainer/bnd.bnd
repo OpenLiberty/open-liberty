@@ -37,8 +37,7 @@ Import-Package: \
   *
 
 DynamicImport-Package: \
-  org.omg.stub.java.rmi,\
-  javax.xml.bind
+  org.omg.stub.java.rmi
 
 Export-Package: \
   com.ibm.ejs.container;-split-package:=merge-first, \
