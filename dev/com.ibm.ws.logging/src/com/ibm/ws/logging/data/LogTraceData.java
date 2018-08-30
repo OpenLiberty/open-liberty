@@ -94,7 +94,7 @@ public class LogTraceData extends GenericData {
 
     private String getStringValue(int index) {
         KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
-        return kvp.getStringValue();
+        return (kvp == null) ? null : kvp.getStringValue();
     }
 
     private int getIntValue(int index) {
@@ -373,7 +373,7 @@ public class LogTraceData extends GenericData {
             String message = getMessage();
             if (message != null) {
                 messageId = parseMessageId(message);
-                this.modifyPair(1, NAMES1_1[1], messageId);
+                this.setPair(1, NAMES1_1[1], messageId);
             }
         }
         return messageId;
@@ -431,7 +431,7 @@ public class LogTraceData extends GenericData {
         String sequenceId = getStringValue(14);
         if (sequenceId == null || sequenceId.isEmpty()) {
             sequenceId = SequenceNumber.formatSequenceNumber(getDatetime(), rawSequenceNumber);
-            this.modifyPair(14, NAMES1_1[14], sequenceId);
+            this.setPair(14, NAMES1_1[14], sequenceId);
         }
         return sequenceId;
     }

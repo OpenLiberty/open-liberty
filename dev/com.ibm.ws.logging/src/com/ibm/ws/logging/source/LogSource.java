@@ -122,7 +122,7 @@ public class LogSource implements Source {
         logData.setDatetime(dateVal);
 
         String messageVal = extractMessage(routedMessage, logRecord);
-
+        
         logData.setMessageId(null);
 
         int threadIdVal = (int) Thread.currentThread().getId();
@@ -153,16 +153,9 @@ public class LogSource implements Source {
                     CollectorJsonHelpers.handleExtensions(extensions, entry.getKey(), entry.getValue());
                 }
             }
-        } else {
-            logData.setCorrelationId(null);
-            logData.setOrg(null);
-            logData.setProduct(null);
-            logData.setComponent(null);
-            extensions = null;
         }
 
         logData.setRawSequenceNumber(sequenceNumber.getRawSequenceNumber());
-        logData.setSequence(null);
 
         Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
@@ -174,20 +167,13 @@ public class LogSource implements Source {
                 s = thrown.toString();
             }
             logData.setThrowableLocalized(s);
-        } else {
-            logData.setThrowable(null);
-            logData.setThrowableLocalized(null);
         }
 
         logData.setMessage(messageVal);
 
         if (routedMessage.getFormattedMsg() != null) {
             logData.setFormattedMsg(routedMessage.getFormattedMsg());
-        } else {
-            logData.setFormattedMsg(null);
         }
-
-        // cannot pass null to traceData.setObjectId(int i)
 
         logData.setExtensions(extensions);
 
