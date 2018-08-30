@@ -10,12 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
+
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
 /**
  *
  */
 public class AccessLogData extends GenericData {
+
+    private final static int NUMBER_OF_FIELDS = 14;
+
     private final static String[] NAMES1_1 = {
                                                LogFieldConstants.IBM_REQUESTSTARTTIME,
                                                LogFieldConstants.IBM_URIPATH,
@@ -50,8 +55,52 @@ public class AccessLogData extends GenericData {
                                             LogFieldConstants.SEQUENCE
     };
 
+    private static KeyValuePair.ValueTypes[] types = {
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.INTEGER,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.STRING
+    };
+
     public AccessLogData() {
-        super(14);
+        super(initializeDefaultList());
+    }
+
+    private static ArrayList<KeyValuePair> initializeDefaultList() {
+        ArrayList<KeyValuePair> defaultPairs = new ArrayList<KeyValuePair>(NUMBER_OF_FIELDS);
+        for (int index = 0; index < NUMBER_OF_FIELDS; index++) {
+            switch (types[index]) {
+                case INTEGER:
+                    defaultPairs.add(new KeyValueIntegerPair(NAMES1_1[index], null));
+                    break;
+                case BOOLEAN:
+                    defaultPairs.add(new KeyValueBooleanPair(NAMES1_1[index], null));
+                    break;
+                case FLOAT:
+                    defaultPairs.add(new KeyValueFloatPair(NAMES1_1[index], null));
+                    break;
+                case LIST:
+                    defaultPairs.add(new KeyValuePairList(NAMES1_1[index]));
+                    break;
+                case LONG:
+                    defaultPairs.add(new KeyValueLongPair(NAMES1_1[index], null));
+                    break;
+                case STRING:
+                    defaultPairs.add(new KeyValueStringPair(NAMES1_1[index], null));
+                    break;
+            }
+        }
+        return defaultPairs;
     }
 
     private void setPair(int index, String s) {

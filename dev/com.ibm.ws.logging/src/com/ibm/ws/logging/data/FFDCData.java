@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
+
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
 /**
@@ -17,41 +19,86 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  */
 public class FFDCData extends GenericData {
 
+    private static final int NUMBER_OF_FIELDS = 13;
+
+    private static final String[] NAMES = {
+                                            LogFieldConstants.DATETIME,
+                                            LogFieldConstants.DATEOFFIRSTOCCURENCE,
+                                            LogFieldConstants.COUNT,
+                                            LogFieldConstants.MESSAGE,
+                                            LogFieldConstants.CLASSNAME,
+                                            LogFieldConstants.LABEL,
+                                            LogFieldConstants.EXCEPTIONNAME,
+                                            LogFieldConstants.PROBEID,
+                                            LogFieldConstants.SOURCEID,
+                                            LogFieldConstants.THREADID,
+                                            LogFieldConstants.STACKTRACE,
+                                            LogFieldConstants.OBJECTDETAILS,
+                                            LogFieldConstants.SEQUENCE
+    };
+
+    private static final String[] NAMES1_1 = {
+                                               LogFieldConstants.IBM_DATETIME,
+                                               LogFieldConstants.DATEOFFIRSTOCCURENCE,
+                                               LogFieldConstants.COUNT,
+                                               LogFieldConstants.MESSAGE,
+                                               LogFieldConstants.IBM_CLASSNAME,
+                                               LogFieldConstants.LABEL,
+                                               LogFieldConstants.IBM_EXCEPTIONNAME,
+                                               LogFieldConstants.IBM_PROBEID,
+                                               LogFieldConstants.SOURCEID,
+                                               LogFieldConstants.IBM_THREADID, //long
+                                               LogFieldConstants.IBM_STACKTRACE,
+                                               LogFieldConstants.IBM_OBJECTDETAILS,
+                                               LogFieldConstants.IBM_SEQUENCE
+    };
+
+    private static KeyValuePair.ValueTypes[] types = {
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.INTEGER,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING
+    };
+
     public FFDCData() {
-        super(13);
+        super(initializeDefaultList());
     }
 
-    public static final String[] NAMES = {
-                                           LogFieldConstants.DATETIME,
-                                           LogFieldConstants.DATEOFFIRSTOCCURENCE,
-                                           LogFieldConstants.COUNT,
-                                           LogFieldConstants.MESSAGE,
-                                           LogFieldConstants.CLASSNAME,
-                                           LogFieldConstants.LABEL,
-                                           LogFieldConstants.EXCEPTIONNAME,
-                                           LogFieldConstants.PROBEID,
-                                           LogFieldConstants.SOURCEID,
-                                           LogFieldConstants.THREADID,
-                                           LogFieldConstants.STACKTRACE,
-                                           LogFieldConstants.OBJECTDETAILS,
-                                           LogFieldConstants.SEQUENCE
-    };
-
-    public static final String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.DATEOFFIRSTOCCURENCE,
-                                              LogFieldConstants.COUNT,
-                                              LogFieldConstants.MESSAGE,
-                                              LogFieldConstants.IBM_CLASSNAME,
-                                              LogFieldConstants.LABEL,
-                                              LogFieldConstants.IBM_EXCEPTIONNAME,
-                                              LogFieldConstants.IBM_PROBEID,
-                                              LogFieldConstants.SOURCEID,
-                                              LogFieldConstants.IBM_THREADID, //long
-                                              LogFieldConstants.IBM_STACKTRACE,
-                                              LogFieldConstants.IBM_OBJECTDETAILS,
-                                              LogFieldConstants.IBM_SEQUENCE
-    };
+    private static ArrayList<KeyValuePair> initializeDefaultList() {
+        ArrayList<KeyValuePair> defaultPairs = new ArrayList<KeyValuePair>(NUMBER_OF_FIELDS);
+        for (int index = 0; index < NUMBER_OF_FIELDS; index++) {
+            switch (types[index]) {
+                case INTEGER:
+                    defaultPairs.add(new KeyValueIntegerPair(NAMES1_1[index], null));
+                    break;
+                case BOOLEAN:
+                    defaultPairs.add(new KeyValueBooleanPair(NAMES1_1[index], null));
+                    break;
+                case FLOAT:
+                    defaultPairs.add(new KeyValueFloatPair(NAMES1_1[index], null));
+                    break;
+                case LIST:
+                    defaultPairs.add(new KeyValuePairList(NAMES1_1[index]));
+                    break;
+                case LONG:
+                    defaultPairs.add(new KeyValueLongPair(NAMES1_1[index], null));
+                    break;
+                case STRING:
+                    defaultPairs.add(new KeyValueStringPair(NAMES1_1[index], null));
+                    break;
+            }
+        }
+        return defaultPairs;
+    }
 
     private void setPair(int index, String s) {
         setPair(index, NAMES1_1[index], s);

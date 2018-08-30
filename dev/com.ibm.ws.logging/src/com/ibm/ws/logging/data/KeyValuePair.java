@@ -34,15 +34,15 @@ public interface KeyValuePair {
 
     public ArrayList<KeyValuePair> getList();
 
-    public int getIntValue();
+    public Integer getIntValue();
 
-    public long getLongValue();
+    public Long getLongValue();
 
     public String getStringValue();
 
-    public float getFloatValue();
+    public Float getFloatValue();
 
-    public boolean getBooleanValue();
+    public Boolean getBooleanValue();
 
     public ValueTypes getType();
 

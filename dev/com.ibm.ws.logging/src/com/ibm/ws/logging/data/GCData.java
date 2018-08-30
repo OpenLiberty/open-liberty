@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
+import java.util.ArrayList;
+
 import com.ibm.ws.logging.collector.LogFieldConstants;
 
 /**
@@ -17,30 +19,70 @@ import com.ibm.ws.logging.collector.LogFieldConstants;
  */
 public class GCData extends GenericData {
 
-    public static final String[] NAMES = {
-                                           LogFieldConstants.HEAP,
-                                           LogFieldConstants.USED_HEAP,
-                                           LogFieldConstants.MAX_HEAP,
-                                           LogFieldConstants.DURATION,
-                                           LogFieldConstants.GC_TYPE,
-                                           LogFieldConstants.REASON,
-                                           LogFieldConstants.DATETIME,
-                                           LogFieldConstants.SEQUENCE
+    private static final int NUMBER_OF_FIELDS = 8;
+
+    private static final String[] NAMES = {
+                                            LogFieldConstants.HEAP,
+                                            LogFieldConstants.USED_HEAP,
+                                            LogFieldConstants.MAX_HEAP,
+                                            LogFieldConstants.DURATION,
+                                            LogFieldConstants.GC_TYPE,
+                                            LogFieldConstants.REASON,
+                                            LogFieldConstants.DATETIME,
+                                            LogFieldConstants.SEQUENCE
     };
 
-    public static final String[] NAMES1_1 = {
-                                              LogFieldConstants.IBM_HEAP,
-                                              LogFieldConstants.IBM_USED_HEAP,
-                                              LogFieldConstants.IBM_MAX_HEAP,
-                                              LogFieldConstants.IBM_DURATION,
-                                              LogFieldConstants.IBM_GC_TYPE,
-                                              LogFieldConstants.IBM_REASON,
-                                              LogFieldConstants.IBM_DATETIME,
-                                              LogFieldConstants.IBM_SEQUENCE
+    private static final String[] NAMES1_1 = {
+                                               LogFieldConstants.IBM_HEAP,
+                                               LogFieldConstants.IBM_USED_HEAP,
+                                               LogFieldConstants.IBM_MAX_HEAP,
+                                               LogFieldConstants.IBM_DURATION,
+                                               LogFieldConstants.IBM_GC_TYPE,
+                                               LogFieldConstants.IBM_REASON,
+                                               LogFieldConstants.IBM_DATETIME,
+                                               LogFieldConstants.IBM_SEQUENCE
+    };
+
+    private static KeyValuePair.ValueTypes[] types = {
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.STRING,
+                                                       KeyValuePair.ValueTypes.LONG,
+                                                       KeyValuePair.ValueTypes.STRING
     };
 
     public GCData() {
-        super(8);
+        super(initializeDefaultList());
+    }
+
+    private static ArrayList<KeyValuePair> initializeDefaultList() {
+        ArrayList<KeyValuePair> defaultPairs = new ArrayList<KeyValuePair>(NUMBER_OF_FIELDS);
+        for (int index = 0; index < NUMBER_OF_FIELDS; index++) {
+            switch (types[index]) {
+                case INTEGER:
+                    defaultPairs.add(new KeyValueIntegerPair(NAMES1_1[index], null));
+                    break;
+                case BOOLEAN:
+                    defaultPairs.add(new KeyValueBooleanPair(NAMES1_1[index], null));
+                    break;
+                case FLOAT:
+                    defaultPairs.add(new KeyValueFloatPair(NAMES1_1[index], null));
+                    break;
+                case LIST:
+                    defaultPairs.add(new KeyValuePairList(NAMES1_1[index]));
+                    break;
+                case LONG:
+                    defaultPairs.add(new KeyValueLongPair(NAMES1_1[index], null));
+                    break;
+                case STRING:
+                    defaultPairs.add(new KeyValueStringPair(NAMES1_1[index], null));
+                    break;
+            }
+        }
+        return defaultPairs;
     }
 
     public void setHeap(long l) {

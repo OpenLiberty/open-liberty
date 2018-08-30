@@ -18,9 +18,9 @@ import java.util.ArrayList;
 
 public class KeyValueBooleanPair implements KeyValuePair {
     private final String key;
-    private final boolean value;
+    private final Boolean value;
 
-    public KeyValueBooleanPair(String key, boolean value) {
+    public KeyValueBooleanPair(String key, Boolean value) {
         this.key = key;
         this.value = value;
     }
@@ -61,22 +61,22 @@ public class KeyValueBooleanPair implements KeyValuePair {
     }
 
     @Override
-    public int getIntValue() {
+    public Integer getIntValue() {
         throw new UnsupportedOperationException("Cannot call getIntValue method on KeyValueBooleanPair class");
     }
 
     @Override
-    public long getLongValue() {
+    public Long getLongValue() {
         throw new UnsupportedOperationException("Cannot call getLongValue method on KeyValueBooleanPair class");
     }
 
     @Override
-    public float getFloatValue() {
+    public Float getFloatValue() {
         throw new UnsupportedOperationException("Cannot call getFloatValue method on KeyValueBooleanPair class");
     }
 
     @Override
-    public boolean getBooleanValue() {
+    public Boolean getBooleanValue() {
         return value;
     }
 
