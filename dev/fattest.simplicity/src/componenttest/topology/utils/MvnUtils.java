@@ -283,30 +283,13 @@ public class MvnUtils {
 
         versionedJars = versionedJarKeys;
 
-        if (!init) {
-            init(server);
-        }
-
-        String[] cmd = mvnCliRoot;
-        for (Iterator<Entry<String, String>> iterator = addedProps.entrySet().iterator(); iterator.hasNext();) {
-            Entry<String, String> entry = iterator.next();
-            cmd = concatStringArray(cmd, new String[] { "-D" + entry.getKey() + "=" + entry.getValue() });
-        }
-
-        int rc = runCmd(cmd, MvnUtils.tckRunnerDir, mvnOutput);
-        String failingTestsList = postProcessTestNgResults();
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
-                            + "The TCK (" + cmd + ") has thus returned non-zero return code of: "
-                            + rc +
-                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
-                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
-        return rc;
+        return runTCKMvnCmd(server, bucketName, testName, addedProps);
     }
 
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
+     *
+     * @see #runTCKMvnCmd(LibertyServer, String, String, Map, Map)
      */
     public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName) throws Exception {
         return runTCKMvnCmd(server, bucketName, testName, null);
@@ -314,21 +297,37 @@ public class MvnUtils {
 
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
+     *
+     * @param server the liberty server which should be used to run the TCK
+     * @param bucketName the name of the test project
+     * @param testName the name of the method that's being used to launch the TCK
+     * @param addedProps java properties to set when running the mvn command
      */
-    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> environmentVariables) throws Exception {
+    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Map<String, String> addedProps) throws Exception {
         if (!init) {
             init(server);
         }
+
+        String[] cmd = mvnCliRoot;
+        if (addedProps != null) {
+            for (Iterator<Entry<String, String>> iterator = addedProps.entrySet().iterator(); iterator.hasNext();) {
+                Entry<String, String> entry = iterator.next();
+                cmd = concatStringArray(cmd, new String[] { "-D" + entry.getKey() + "=" + entry.getValue() });
+            }
+        }
+
         // Everything under autoFVT/results is collected from the child build machine
-        int rc = runCmd(MvnUtils.mvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput, environmentVariables);
+        int rc = runCmd(cmd, MvnUtils.tckRunnerDir, mvnOutput);
         String failingTestsList = postProcessTestNgResults();
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-        Assert.assertEquals("In " + bucketName + ":" + testName + " the following tests failed: [" + failingTestsList + "].\n"
-                            + "The TCK has thus returned non-zero return code of: "
-                            + rc +
-                            ".\nThis indicates test failure, \nsee: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
-                            " \nand ...autoFVT/results/tck/surefire-reports/index.html for more details", 0, rc);
+
+        // mvn returns 0 on success, anything else represents a failure.
+        // Usually this is caused by failing tests, but if we didn't detect any failing tests then we should raise an exception
+        if (rc != 0 && failingTestsList.length() == 0) {
+            Assert.fail("In " + bucketName + ":" + testName + " the TCK (" + cmd + ") has returned non-zero return code of: " + rc + "\n"
+                        + "but did not report any failing tests.\n"
+                        + "see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename + " for more details");
+        }
+
         return rc;
     }
 
@@ -378,40 +377,16 @@ public class MvnUtils {
      * @throws Exception
      */
     public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
-        return runCmd(cmd, workingDirectory, outputFile, null);
-    }
-
-    /**
-     * Run a command using a ProcessBuilder.
-     *
-     * @param cmd
-     * @param workingDirectory
-     * @param outputFile
-     * @param environmentVariables
-     * @return The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
-     * @throws Exception
-     */
-    public static int runCmd(String[] cmd, File workingDirectory, File outputFile, Map<String, String> environmentVariables) throws Exception {
         ProcessBuilder pb = new ProcessBuilder(cmd);
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
         pb.redirectErrorStream(true);
 
-        pb.environment().put("my_int_property", "45");
-        pb.environment().put("MY_BOOLEAN_PROPERTY", "true");
-        pb.environment().put("my_string_property", "haha");
-        pb.environment().put("MY_STRING_PROPERTY", "woohoo");
-
-        log("Environment: " + pb.environment());
-
-//        if (environmentVariables != null) {
-//            Map<String, String> env = pb.environment();
-//            env.putAll(environmentVariables);
-//        }
         log("Running command " + Arrays.asList(cmd));
         Process p = pb.start();
         int exitCode = p.waitFor();
         return exitCode;
+
     }
 
     /**
