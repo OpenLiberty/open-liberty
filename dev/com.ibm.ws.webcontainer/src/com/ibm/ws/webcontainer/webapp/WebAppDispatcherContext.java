@@ -86,7 +86,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     private static final String SET_SERVLET_PATH_FOR_DEFAULT_MAPPING = WCCustomProperties.SERVLET_PATH_FOR_DEFAULT_MAPPING;
     private static boolean isServletPathForDefaultMapping = false;
     static{
-        if (SET_SERVLET_PATH_FOR_DEFAULT_MAPPING == null){
+        if (SET_SERVLET_PATH_FOR_DEFAULT_MAPPING == null || SET_SERVLET_PATH_FOR_DEFAULT_MAPPING.isEmpty()){
             if (WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40)
                 isServletPathForDefaultMapping = true;
         }
