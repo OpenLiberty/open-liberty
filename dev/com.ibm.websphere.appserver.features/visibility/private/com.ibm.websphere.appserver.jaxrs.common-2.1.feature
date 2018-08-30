@@ -3,8 +3,7 @@ symbolicName=com.ibm.websphere.appserver.jaxrs.common-2.1
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install
--features=\
- com.ibm.websphere.appserver.javax.jaxrs-2.1, \
+-features=com.ibm.websphere.appserver.javax.jaxrs-2.1, \
  com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.servlet-4.0, \
@@ -16,10 +15,7 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.websphere.appserver.internal.optional.jaxb-2.2,\
  com.ibm.websphere.appserver.internal.slf4j-1.7.7, \
  com.ibm.websphere.appserver.internal.cxf.common-3.2
--bundles=\
- com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
- com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/",\
- com.ibm.websphere.javaee.jws.1.0; apiJar=false; required-osgi-ee:="(&(osgi.ee=JavaSE)(version>=9))"; location:="dev/api/spec/,lib/",\
+-bundles=com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
  com.ibm.ws.jaxrs.2.1.common, \
  com.ibm.ws.jaxrs.2.x.config, \
  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2, \
@@ -28,8 +24,7 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.tools.wadlto.jaxrs.3.2, \
  com.ibm.ws.jaxrs.2.0.tools
--files=\
- bin/jaxrs/wadl2java, \
+-files=bin/jaxrs/wadl2java, \
  bin/jaxrs/wadl2java.bat, \
  bin/jaxrs/tools/wadl2java.jar
 kind=ga
