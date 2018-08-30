@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+-sub: *.bnd
+
 src: \
 	fat/src,\
 	test-applications/DSDAnnEJB.jar/src,\
@@ -32,7 +34,9 @@ src: \
 	test-applications/RepeatableEnvEntryMixWeb.war/src,\
 	test-applications/RepeatableTransactionWeb.war/src,\
 	test-applications/ResourceRefWeb.war/src,\
-	test-applications/TransactionWeb.war/src
+	test-applications/ServiceLookupWeb.war/src,\
+	test-applications/TransactionWeb.war/src,\
+	test-bundles/ServiceLookup/src
 
 javac.source: 1.8
 javac.target: 1.8
