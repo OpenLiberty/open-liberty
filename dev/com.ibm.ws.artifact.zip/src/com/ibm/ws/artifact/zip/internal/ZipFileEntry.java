@@ -217,7 +217,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
                     synchronized( this ) {
                         if ( !isClosed ) {
                             try {
-                                super.close(); // throws IOException
+                                baseInputStream.close(); // throws IOException
                             } catch ( IOException e ) {
                                 // FFDC
                             }
