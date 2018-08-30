@@ -332,16 +332,16 @@ public class ClassSourceImpl_MappedJar
                 continue;
             }
 
-            if ( ClassSource.isDirectoryResource(nextEntryName) ) {
+            if ( ClassSourceImpl.isDirectoryResource(nextEntryName) ) {
                 continue;
-            } else if ( !ClassSource.isClassResource(nextEntryName) ) {
+            } else if ( !ClassSourceImpl.isClassResource(nextEntryName) ) {
                 continue;
             }
 
             numClasses++;
 
-            String nextClassName = ClassSource.getClassNameFromResourceName( removePrefix(nextEntryName) );
-            if ( ClassSource.isJava9PackageName(nextClassName) ) {  // PI89708
+            String nextClassName = ClassSourceImpl.getClassNameFromResourceName( removePrefix(nextEntryName) );
+            if ( ClassSourceImpl.isJava9PackageName(nextClassName) ) {  // PI89708
                 logger.logp(Level.FINER, CLASS_NAME, methodName,  "Java9 class name [ {0} ]", nextClassName);
                 continue;
             }
@@ -386,14 +386,14 @@ public class ClassSourceImpl_MappedJar
 
             if ( !hasPrefix(nextEntryName) ) {
                 continue;
-            } else if ( ClassSource.isDirectoryResource(nextEntryName) ) {
+            } else if ( ClassSourceImpl.isDirectoryResource(nextEntryName) ) {
                 continue;
-            } else if ( !ClassSource.isClassResource(nextEntryName) ) {
+            } else if ( !ClassSourceImpl.isClassResource(nextEntryName) ) {
                 continue;
             } 
 
-            String nextClassName = ClassSource.getClassNameFromResourceName( removePrefix(nextEntryName) );
-            if ( ClassSource.isJava9PackageName(nextClassName) ) {  // PI89708
+            String nextClassName = ClassSourceImpl.getClassNameFromResourceName( removePrefix(nextEntryName) );
+            if ( ClassSourceImpl.isJava9PackageName(nextClassName) ) {  // PI89708
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "Java9 class name [ {0} ]", nextClassName);
                 continue;
             }

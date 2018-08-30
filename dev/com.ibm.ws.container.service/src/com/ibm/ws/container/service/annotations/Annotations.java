@@ -281,7 +281,7 @@ public interface Annotations {
     boolean isExternalClass(String className);
 
     //
-
+   
     /**
      * Tell if any class is present with any of a specified collection
      * of annotations.
@@ -293,6 +293,25 @@ public interface Annotations {
      *     with any of the annotation classes.
      */
     boolean hasSpecifiedAnnotations(Collection<String> annotationClassNames);
+
+    /**
+     * Answer the names of classes which have specified non-inherited annotations.
+     * 
+     * @param annotationClassNames The names of the annotation classes
+     *     for which to test.
+     *
+     * @return The set of classes having at least one of the annotations.
+     */
+    Set<String> getClassesWithAnnotations(Collection<String> annotationClassNames);    
+
+    /**
+     * Answer the names of classes which have a specified non-inherited annotation.
+     * 
+     * @param annotationClassName The name of the annotation class for which to test.
+     *
+     * @return The set of classes having the annotation.
+     */
+	Set<String> getClassesWithAnnotation(String annotationClassName);
 
     /**
      * Answer the classes which have any of a specified collection of annotations.

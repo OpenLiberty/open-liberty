@@ -51,7 +51,6 @@ import com.ibm.ws.jca.utils.xml.ra.RaMessageListener;
 import com.ibm.ws.jca.utils.xml.ra.RaOutboundResourceAdapter;
 import com.ibm.ws.jca.utils.xml.ra.RaResourceAdapter;
 import com.ibm.ws.jca.utils.xml.ra.RaSecurityPermission;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 
 /**
@@ -140,12 +139,7 @@ public class RAAnnotationProcessor {
     }
 
     private void findAnnotatedClassesUsingTargets() throws ResourceAdapterInternalException {
-        AnnotationTargets_Targets targets;
-        try {
-            targets = raAnnotations.getAnnotationTargets();
-        } catch (UnableToAdaptException e) {
-            throw new ResourceAdapterInternalException(e);
-        }
+        AnnotationTargets_Targets targets = raAnnotations.getAnnotationTargets();
 
         findAnnotatedClassesUsingTargets(targets, Connector.class, connectorClasses);
         findAnnotatedClassesUsingTargets(targets, Activation.class, activationClasses);

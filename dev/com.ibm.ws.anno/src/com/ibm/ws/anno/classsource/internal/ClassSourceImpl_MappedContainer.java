@@ -225,7 +225,7 @@ public class ClassSourceImpl_MappedContainer
 
         for ( Entry nextEntry : targetContainer ) {
             String nextChildName = nextEntry.getName();
-            String nextPrefix = ClassSource.resourceAppend(prefix, nextChildName);
+            String nextPrefix = ClassSourceImpl.resourceAppend(prefix, nextChildName);
 
             Container nextChildContainer;
             try {
@@ -272,7 +272,7 @@ public class ClassSourceImpl_MappedContainer
                 }
 
             } else {
-                if ( !ClassSource.isClassResource(nextPrefix) ) {
+                if ( !ClassSourceImpl.isClassResource(nextPrefix) ) {
                     // Ignore
                 } else {
                     // Processing notes:
@@ -287,8 +287,8 @@ public class ClassSourceImpl_MappedContainer
                     // of the class in the second class source is still masked by the
                     // version in the first class source.
 
-                    String nextClassName = ClassSource.getClassNameFromResourceName(nextPrefix);
-                    if ( ClassSource.isJava9PackageName(nextClassName) ) {
+                    String nextClassName = ClassSourceImpl.getClassNameFromResourceName(nextPrefix);
+                    if ( ClassSourceImpl.isJava9PackageName(nextClassName) ) {
                         logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Java9 class name [ {1} ]", 
                             new Object[] { getHashText(), nextClassName });
                         continue;
@@ -373,7 +373,7 @@ public class ClassSourceImpl_MappedContainer
         long scanStart = System.nanoTime();
 
         for ( String i_className : i_classNames ) {
-            String resourceName = ClassSource.getResourceNameFromClassName(i_className);
+            String resourceName = ClassSourceImpl.getResourceNameFromClassName(i_className);
 
             Entry nextEntry;
             try {

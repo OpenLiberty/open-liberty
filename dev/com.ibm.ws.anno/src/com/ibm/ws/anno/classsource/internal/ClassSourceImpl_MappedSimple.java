@@ -225,14 +225,14 @@ public class ClassSourceImpl_MappedSimple
         int classCount = 0;
 
         for ( String nextResourceName : getProvider().getResourceNames() ) {
-            if ( ClassSource.isDirectoryResource(nextResourceName) ) {
+            if ( ClassSourceImpl.isDirectoryResource(nextResourceName) ) {
                 continue;
-            } else if ( !ClassSource.isClassResource(nextResourceName) ) {
+            } else if ( !ClassSourceImpl.isClassResource(nextResourceName) ) {
                 continue;
             }
 
-            String nextClassName = ClassSource.getClassNameFromResourceName(nextResourceName);
-            if ( ClassSource.isJava9PackageName(nextClassName) ) {  // PI89708
+            String nextClassName = ClassSourceImpl.getClassNameFromResourceName(nextResourceName);
+            if ( ClassSourceImpl.isJava9PackageName(nextClassName) ) {  // PI89708
                 logger.logp(Level.FINER, CLASS_NAME, methodName,  "Java9 class name [ {0} ]", nextClassName);
                 continue;
             }
@@ -272,7 +272,7 @@ public class ClassSourceImpl_MappedSimple
         Collection<String> providerResourceNames = getProvider().getResourceNames();
 
         for ( String i_className : i_classNames ) {
-            String resourceName = ClassSource.getResourceNameFromClassName(i_className);
+            String resourceName = ClassSourceImpl.getResourceNameFromClassName(i_className);
             if ( !providerResourceNames.contains(resourceName) ) {
                 continue;
             }
