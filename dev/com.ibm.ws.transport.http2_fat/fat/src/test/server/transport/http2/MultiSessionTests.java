@@ -53,6 +53,11 @@ public class MultiSessionTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "before()", "Starting servers...");
         }
+
+        // I think we need this for tracing to turn on (as well as changes in bootstrap.properties)
+        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", false, "http2.test.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", false, "http2.test.driver.war.servlets");
+
         server.startServer(true, true);
         runtimeServer.startServer(true);
     }
@@ -127,7 +132,7 @@ public class MultiSessionTests extends FATServletClient {
     //    Utils.STRESS_CONNECTIONS is the number of parallel http2 connections that will be used.
     //    Utils.STRESS_DELAY_BETWEEN_CONN_STARTS time to delay between starting connections
     // Server side parameters
-    //    H2MultiDataFrame.SERVLET_INSTANCES  is the numberof parallel http2 streams the server side expects.
+    //    H2MultiDataFrame.SERVLET_INSTANCES  is the number of parallel http2 CONNECTIONS, NOT streams, the server side expects.
     //    H2MultiDataFrame.MINUTES_PER_STREAM is how long each stream will be active
     //    H2MultiDataFrame.<other parameters>  will control the flow rate of Data, Ping, and WindowUpdate frames.
     // The above two SERVLET_INSTANCES need to be the same.
