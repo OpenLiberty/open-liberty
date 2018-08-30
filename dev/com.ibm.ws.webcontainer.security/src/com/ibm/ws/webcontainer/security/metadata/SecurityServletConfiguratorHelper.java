@@ -168,58 +168,64 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
             return;
         }
 
-        String annoName = "org.eclipse.microprofile.auth.LoginConfig";
-        Set<String> annotatedClasses = null;
-        InfoStore annosInfo = null;
-        try {
-            annotatedClasses = configurator.getWebAnnotations().getAnnotationTargets().getAnnotatedClasses(annoName);
-            annosInfo = configurator.getWebAnnotations().getInfoStore();
-        } catch (UnableToAdaptException e) { // ffdc and return
-            return;
-        }
-        if (annotatedClasses.size() == 0) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "no annotated classes found, return");
-            }
-            return;
-        }
-        if (loginConfiguration != null && !loginConfiguration.isAuthenticationMethodDefaulted()) {
-            // we already have something from web.xml, annos don't matter.
+        // if we already have something from web.xml, annos don't matter.
+        if ((loginConfiguration != null) && !loginConfiguration.isAuthenticationMethodDefaulted()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "already have auth method determined, return");
             }
             return;
         }
-        // we have an annotation and no DD, so check it out
-        String className = annotatedClasses.iterator().next();
-        ClassInfo ci = annosInfo.getDelayableClassInfo(className);
-        boolean isValid = false;
-        while (ci != null) {
-            if ("javax.ws.rs.core.Application".equals(ci.getSuperclassName())) {
-                isValid = true;
-                break;
-            }
-            ci = ci.getSuperclass();
-        }
-        ci = annosInfo.getDelayableClassInfo(className);
-        if (!isValid) {
+
+        // look for and process @LoginConfig
+        // if no occurrences are found, there is nothing to do
+        // if at least one occurrence is found, validate the target,
+        // then set the login configuration from the annotation value
+        // use only the first target; additional targets are ignored
+
+        WebAnnotations webAnnotations = configurator.getWebAnnotations();
+
+        String annoName = "org.eclipse.microprofile.auth.LoginConfig";
+        Set<String> annotatedClasses = webAnnotations.getClassesWithAnnotation(annoName);
+        if (annotatedClasses.isEmpty()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "loginConfig annotation  found, but on wrong class, " + ci.getSuperclassName() + ", return");
+                Tr.debug(this, tc, "no annotated classes found, return");
             }
             return;
         }
-        AnnotationInfo ai = ci.getAnnotation(annoName);
-        AnnotationValue authMethod, realmName;
-        authMethod = ai.getValue("authMethod");
-        realmName = ai.getValue("realmName");
-        String authMethodString = authMethod == null ? null : authMethod.getStringValue();
-        String realmNameString = realmName == null ? null : realmName.getStringValue();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "setting authMethod and realm to: "
-                               + authMethodString + " " + realmNameString);
-        }
+        // only use the first(!)
+        String annotatedClassName = annotatedClasses.iterator().next();
 
-        loginConfiguration = new LoginConfigurationImpl(authMethodString, realmNameString, null);
+        webAnnotations.openInfoStore();
+
+        try {
+            ClassInfo ci = webAnnotations.getClassInfo(annotatedClassName);
+
+            if ( !ci.isInstanceOf("javax.ws.rs.core.Application") ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "loginConfig annotation found" +
+                                       ", but on class " + annotatedClassName +
+                                       " with superclass " + ci.getSuperclassName() +
+                                       ", which does not extend 'javax.ws.rs.core.Application'; return");
+                }
+                return;
+            }
+
+            AnnotationInfo ai = ci.getAnnotation(annoName);
+
+            AnnotationValue authMethod = ai.getValue("authMethod");
+            String authMethodString = ((authMethod == null) ? null : authMethod.getStringValue());
+
+            AnnotationValue realmName = ai.getValue("realmName");
+            String realmNameString = ((realmName == null) ? null : realmName.getStringValue());
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "setting authMethod and realm to: " + authMethodString + " " + realmNameString);
+            }
+            loginConfiguration = new LoginConfigurationImpl(authMethodString, realmNameString, null);
+
+        } finally {
+            webAnnotations.closeInfoStore();
+        }
     }
 
     @Override

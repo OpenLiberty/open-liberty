@@ -17,6 +17,7 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -660,6 +661,39 @@ public abstract class AnnotationsImpl implements Annotations {
             }
         }
         return false;
+    }
+
+    @Override
+    @Trivial
+    public Set<String> getClassesWithAnnotation(String annotationClassName) {
+        return getClassesWithAnnotations( Collections.singletonList(annotationClassName) );
+    }
+
+    @Override
+    public Set<String> getClassesWithAnnotations(Collection<String> annotationClassNames) {
+        AnnotationTargets_Targets useTargets = getTargets();
+        if ( useTargets == null ) {
+            return Collections.emptySet();
+        }
+
+        Set<String> annotatedClassNames = null;
+
+        for ( String annotationClassName : annotationClassNames ) {
+            Set<String> nextClassNames = useTargets.getAnnotatedClasses(annotationClassName);
+            if ( !nextClassNames.isEmpty() ) {
+                if ( annotatedClassNames == null ) {
+                    annotatedClassNames = new HashSet<String>(nextClassNames);
+                } else {
+                    annotatedClassNames.addAll(nextClassNames);
+                }
+            }
+        }
+
+        if ( annotatedClassNames == null ) {
+            return Collections.emptySet();
+        } else {
+            return annotatedClassNames;
+        }
     }
 
     @Override

@@ -18,11 +18,12 @@ import java.util.logging.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Type;
 
-import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.info.InfoStore;
 import com.ibm.wsspi.anno.info.InfoStoreException;
+
+import com.ibm.ws.anno.classsource.internal.ClassSourceImpl;
 
 public class InfoStoreImpl implements InfoStore {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
@@ -166,7 +167,7 @@ public class InfoStoreImpl implements InfoStore {
 
         startStreamTime();
 
-        String resourceName = ClassSource.getResourceNameFromClassName(className);
+        String resourceName = ClassSourceImpl.getResourceNameFromClassName(className);
         InputStream inputStream = null;
         try {
             inputStream = getClassSource().openResourceStream(className, resourceName); // throws ClassSource_Exception

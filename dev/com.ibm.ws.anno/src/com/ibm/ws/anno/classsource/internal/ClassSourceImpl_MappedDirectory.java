@@ -486,11 +486,11 @@ public class ClassSourceImpl_MappedDirectory
                 classCount += processDirectory(streamer, nextChildPrefix + FILE_SEPARATOR_CHAR, nextChildFile);
 
             } else {
-                if ( ClassSource.isClassResource(nextChildPrefix) ) {
+                if ( ClassSourceImpl.isClassResource(nextChildPrefix) ) {
                     String nextResourceName = inconvert(nextChildPrefix);
-                    String nextClassName = ClassSource.getClassNameFromResourceName(nextResourceName);
+                    String nextClassName = ClassSourceImpl.getClassNameFromResourceName(nextResourceName);
 
-                    if ( ClassSource.isJava9PackageName(nextClassName) ) {  // PI89708
+                    if ( ClassSourceImpl.isJava9PackageName(nextClassName) ) {  // PI89708
                         logger.logp(Level.FINER, CLASS_NAME, methodName, "Java9 class name [ {0} ]", nextClassName);
                         continue;
                     }
@@ -546,7 +546,7 @@ public class ClassSourceImpl_MappedDirectory
         long scanStart = System.nanoTime();
 
         for ( String i_className : i_classNames ) {
-            String resourceName = ClassSource.getResourceNameFromClassName(i_className);
+            String resourceName = ClassSourceImpl.getResourceNameFromClassName(i_className);
             String resourcePath = outconvert(resourceName);
 
             processClassResource(streamer, i_className, resourceName, resourcePath); // throws ClassSource_Exception

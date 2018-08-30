@@ -229,7 +229,7 @@ public class ClassSourceImpl_ClassLoader
         long scanStart = System.nanoTime();
 
         for ( String i_className : i_classNames ) {
-            String resourceName = ClassSource.getResourceNameFromClassName(i_className);
+            String resourceName = ClassSourceImpl.getResourceNameFromClassName(i_className);
             try {
                 scan(streamer, i_className, resourceName); // throws ClassSource_Exception
             } catch ( ClassSource_Exception e ) {
