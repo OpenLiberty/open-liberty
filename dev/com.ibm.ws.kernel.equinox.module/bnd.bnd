@@ -20,7 +20,7 @@ WS-TraceGroup: kernelEquinoxModule
 Export-Package: com.ibm.wsspi.kernel.equinox.module
 Private-Package: com.ibm.ws.kernel.equinox.module.internal
 
-#Fragment-Host: org.eclipse.osgi; bundle-version="[3.10.0, 3.13.0)"
+#Fragment-Host: org.eclipse.osgi; bundle-version="[3.10.0, 3.14.0)"
 Fragment-Host: org.eclipse.osgi
 Import-Package: !*
 

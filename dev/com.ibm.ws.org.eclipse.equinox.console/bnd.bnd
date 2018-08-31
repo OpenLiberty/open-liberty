@@ -13,9 +13,9 @@
 instrument.disabled: true
 
 -buildpath: \
-	org.eclipse.equinox.console;version=1.1.200.v20150929-1405,\
 	org.eclipse.osgi;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
-	com.ibm.ws.org.apache.felix.gogo.command.0.16.0;version=latest,\
-	com.ibm.ws.org.apache.felix.gogo.runtime.0.16.2;version=latest,\
-	com.ibm.ws.org.apache.felix.gogo.shell.0.12.0;version=latest
+	com.ibm.ws.org.apache.felix.gogo.command;version=latest,\
+	com.ibm.ws.org.apache.felix.gogo.runtime;version=latest,\
+	com.ibm.ws.org.apache.felix.gogo.shell;version=latest,\
+	org.eclipse.equinox.console;version=1.1.200.v20150929-1405
