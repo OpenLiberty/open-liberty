@@ -92,17 +92,10 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
-     * Test that attempting to use the connection builder methods on an unwrapped connection or the liberty wrapper are blocked.
+     * Test that attempting to use the connection builder methods on an unwrapped connection are blocked.
      */
     @Test
     public void testBuilderMethodsBlocked() throws Exception {
-        try {
-            defaultDataSource.createConnectionBuilder();
-            fail("Call to createConnectionBuilder should result in an exception");
-        } catch (SQLFeatureNotSupportedException ex) {
-            //expected
-        }
-
         XADataSource xaDS = unsharableXADataSource.unwrap(XADataSource.class);
         try {
             xaDS.createXAConnectionBuilder();
