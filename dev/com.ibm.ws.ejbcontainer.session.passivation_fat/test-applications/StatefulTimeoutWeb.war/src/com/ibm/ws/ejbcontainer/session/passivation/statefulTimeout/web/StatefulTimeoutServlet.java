@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.web;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -27,6 +28,7 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
+import com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.InitRecoveryLogBean;
 import com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.InvalidInterface;
 import com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.MyAppException;
 import com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb.NoSpecifiedTimeoutBean;
@@ -51,7 +53,6 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet("/StatefulTimeoutServlet")
@@ -59,13 +60,15 @@ public class StatefulTimeoutServlet extends FATServlet {
     private final static String CLASSNAME = StatefulTimeoutServlet.class.getName();
     private final static Logger svLogger = Logger.getLogger(CLASSNAME);
 
+    private boolean recLogInit = false;
+
     private final static long BUFFER = 10 * 1000; // 10 seconds
     private final static long EXPECTED_DEFAULT_TIMEOUT = 10 * 60 * 1000; // 10 minutes
     private final static long USER_TIMEOUT = 15 * 1000; // 15 seconds
     private final static long ONE_MIN = 60 * 1000; // 60 seconds
-    private final static long FIVE_SEC = 5 * 1000; // 5 seconds
 
     private final static String JNDI_USER_TRAN = "java:comp/UserTransaction";
+    private final static String JNDI_INIT_RECOVERY_LOG_BEAN = "java:app/StatefulTimeoutEJB/InitRecoveryLogBean";
     private final static String JNDI_NO_SPECIFIED_TIMEOUT_BEAN = "java:app/StatefulTimeoutEJB/NoSpecifiedTimeoutBean";
     private final static String JNDI_EXT_FILE_ONLY = "java:app/StatefulTimeoutEJB/TimeoutInExtFileOnlyBean";
     private final static String JNDI_ANN_ONLY = "java:app/StatefulTimeoutEJB/StatefulTimeoutAnnotationOnlyBean";
@@ -88,6 +91,15 @@ public class StatefulTimeoutServlet extends FATServlet {
     private final static String JNDI_XML_TIMEOUT_OVERFLOW = "java:app/StatefulTimeoutEJB/StatefulTimeoutXMLTimeoutOverflowBean";
     private final static String JNDI_ASYNC = "java:app/StatefulTimeoutEJB/StatefulTimeoutAsyncBean";
 
+    public void initRecoveryLog() throws Exception {
+        // Call a method on a bean to initialize the server recovery log
+        svLogger.info("initialize the server recovery log");
+        InitRecoveryLogBean bean = (InitRecoveryLogBean) new InitialContext().lookup(JNDI_INIT_RECOVERY_LOG_BEAN);
+        bean.getInvocationTime();
+
+        recLogInit = true;
+    }
+
     /**
      * Tests that if the bean contains no specified session timeout at all
      * (i.e. no extension file, no @StatefulTimeout annotation, no
@@ -95,9 +107,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * be in place - currently that default is 10 minutes.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
     public void testNoSpecifiedTimeout() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         NoSpecifiedTimeoutBean bean = (NoSpecifiedTimeoutBean) new InitialContext().lookup(JNDI_NO_SPECIFIED_TIMEOUT_BEAN);
         long invokeTime = bean.getInvocationTime();
         FATHelper.sleep(BUFFER);
@@ -124,8 +139,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * of these, the container should use the value from the ext file.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testTimeoutSpecifiedInExtFileOnly() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         TimeoutInExtFileOnlyBean bean = (TimeoutInExtFileOnlyBean) new InitialContext().lookup(JNDI_EXT_FILE_ONLY);
         long invokeTime = bean.getInvocationTime();
         FATHelper.sleep(BUFFER);
@@ -149,8 +167,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * the <code>@StatefulTimeout</code> annotation (15 seconds).
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testAnnotationOnly() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAnnotationOnlyBean bean = (StatefulTimeoutAnnotationOnlyBean) new InitialContext().lookup(JNDI_ANN_ONLY);
         long invokeTime = bean.getInvocationTime();
         FATHelper.sleep(BUFFER);
@@ -175,6 +196,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      */
     @Test
     public void testXMLOnly() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutXMLOnlyBean bean = (StatefulTimeoutXMLOnlyBean) new InitialContext().lookup(JNDI_XML_ONLY);
         long invokeTime = bean.getInvocationTime();
         FATHelper.sleep(BUFFER);
@@ -198,8 +222,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * unit is specified in the <code>@StatefulTimeout</code> annotation.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testAnnotationTimeoutWithNoSpecifiedUnit() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAnnotationOnlyDefaultUnitBean bean = (StatefulTimeoutAnnotationOnlyDefaultUnitBean) new InitialContext().lookup(JNDI_ANN_DEFAULT_UNIT_BEAN);
         // bean specified timeout is "1" with no unit specified - expecting unit to be Minutes
         long invokeTime = bean.getInvocationTime();
@@ -224,8 +251,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * unit is specified in the stateful-timeout stanza in the XML DD.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testXMLTimeoutWithNoSpecifiedUnit() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutXMLOnlyDefaultUnitBean bean = (StatefulTimeoutXMLOnlyDefaultUnitBean) new InitialContext().lookup(JNDI_XML_DEFAULT_UNIT_BEAN);
         // bean specified timeout is "1" with no unit specified - expecting unit to be Minutes
         long invokeTime = bean.getInvocationTime();
@@ -253,9 +283,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * has to end at some point! :-)
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
     public void testNegativeOneValueInAnnotation() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutNegativeOneAnnotationBean bean = (StatefulTimeoutNegativeOneAnnotationBean) new InitialContext().lookup(JNDI_NEG_ONE_ANN_BEAN);
         long invokeTime = bean.getInvocationTime();
         FATHelper.sleep(EXPECTED_DEFAULT_TIMEOUT + BUFFER);
@@ -275,9 +308,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * has to end at some point! :-)
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
     public void testNegativeOneValueInXML() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutNegativeOneXMLBean bean = (StatefulTimeoutNegativeOneXMLBean) new InitialContext().lookup(JNDI_NEG_ONE_XML_BEAN);
         long invokeTime = bean.getInvocationTime();
         FATHelper.sleep(EXPECTED_DEFAULT_TIMEOUT + BUFFER);
@@ -295,6 +331,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      */
     @Test
     public void testZeroValueInAnnotation() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutZeroAnnotationBean bean = (StatefulTimeoutZeroAnnotationBean) new InitialContext().lookup(JNDI_ZERO_ANN_BEAN);
         FATHelper.sleep(16); // zero is not immediate, but rather a 1ms timeout, sleep here to account for that
         try {
@@ -310,8 +349,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * when the XML DD timeout value is 0.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testZeroValueInXML() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutZeroXMLBean bean = (StatefulTimeoutZeroXMLBean) new InitialContext().lookup(JNDI_ZERO_XML_BEAN);
         FATHelper.sleep(16); // zero is not immediate, but rather a 1ms timeout, sleep here to account for that
         try {
@@ -327,8 +369,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * in a global transaction when the annotation timeout value is 0.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testZeroValueInAnnotationInGlobalTx() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         UserTransaction tran = (UserTransaction) new InitialContext().lookup(JNDI_USER_TRAN);
         StatefulTimeoutZeroAnnotationBean bean;
         try {
@@ -351,8 +396,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * in a global transaction when the XML DD timeout value is 0.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testZeroValueInXMLInGlobalTx() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         UserTransaction tran = (UserTransaction) new InitialContext().lookup(JNDI_USER_TRAN);
         StatefulTimeoutZeroXMLBean bean;
         try {
@@ -376,6 +424,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      * when EJBContainer=all tracing is enabled.
      */
     public void testAnnotationOnInterfaceLogsWarning() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         InvalidInterface bean = null;
 
         try {
@@ -394,6 +445,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      * the JNDI lookup and log a CNTR0311E error.
      */
     public void testNegativeTwoValueInAnnotationLogsError() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         try {
             new InitialContext().lookup(JNDI_NEG_TWO_ANN_BEAN);
             fail("Bean was allowed to init with a @StatefulTimeout(-2) annotation.");
@@ -408,6 +462,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      * JNDI lookup and log a CNTR0311E error.
      */
     public void testNegativeTwoValueInXMLLogsError() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         try {
             new InitialContext().lookup(JNDI_NEG_TWO_XML_BEAN);
             fail("Bean was allowed to init with a -2 stateful timeout in ejb-jar.xml.");
@@ -422,8 +479,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * ext file value.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testAnnotationOverridesExtFile() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAnnotationOverrideExtFileBean bean = (StatefulTimeoutAnnotationOverrideExtFileBean) new InitialContext().lookup(JNDI_ANN_OVERRIDE_EXT_FILE);
         // timeout specified in ibm-ejb-jar-ext.xml is 60 seconds
         // timeout specified in annotation is 15 seconds
@@ -450,8 +510,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * file value.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testXMLOverridesExtFile() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutXMLOverrideExtFileBean bean = (StatefulTimeoutXMLOverrideExtFileBean) new InitialContext().lookup(JNDI_XML_OVERRIDE_EXT_FILE);
         // timeout specified in ibm-ejb-jar-ext.xml is 60 seconds
         // timeout specified in ejb-jar.xml is 15 seconds
@@ -478,9 +541,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * element (contrary to the ejb-jar.xml XSD).
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
     public void testNoTimeoutStanzaInStatefulTimeoutXML() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutXMLNoTimeoutStanzaBean bean = (StatefulTimeoutXMLNoTimeoutStanzaBean) new InitialContext().lookup(JNDI_XML_NO_TIMEOUT_STANZA);
         assertNotNull("Failed to lookup StatefulTimeoutXMLNoTimeoutStanzaBean", bean);
 
@@ -507,9 +573,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * element (contrary to the ejb-jar.xml XSD).
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @SkipForRepeat(SkipForRepeat.EE7_FEATURES)
     public void testUnitButNoTimeoutSpecifiedInStatefulTimeoutXML() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutXMLUnitButNoTimeoutBean bean = (StatefulTimeoutXMLUnitButNoTimeoutBean) new InitialContext().lookup(JNDI_XML_UNIT_NO_TIMEOUT_STANZA);
         assertNotNull("Failed to lookup StatefulTimeoutXMLUnitButNoTimeoutBean", bean);
 
@@ -536,6 +605,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      * trace is enabled).
      */
     public void testLogWarningOnStatefulTimeoutOnStatelessBeanAnnotation() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatelessWithStatefulTimeoutAnnotationBean bean = (StatelessWithStatefulTimeoutAnnotationBean) new InitialContext().lookup(JNDI_STATELESS_WITH_ANN_TIMEOUT);
         bean.getInvocationTime();
     }
@@ -546,6 +618,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      * EJBContainer trace is enabled).
      */
     public void testLogWarningOnStatefulTimeoutOnStatelessBeanXML() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatelessWithStatefulTimeoutXMLBean bean = (StatelessWithStatefulTimeoutXMLBean) new InitialContext().lookup(JNDI_STATELESS_WITH_XML_TIMEOUT);
         bean.getInvocationTime();
     }
@@ -557,6 +632,9 @@ public class StatefulTimeoutServlet extends FATServlet {
      * LONG.
      */
     public void testXMLTimeoutSpecifiedOverflow() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         try {
             new InitialContext().lookup(JNDI_XML_TIMEOUT_OVERFLOW);
             fail("Container did not fail to start bean with super high timeout (999999999999 Days)");
@@ -570,8 +648,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * execution of an asynchronous method.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testAsyncMethodResetsTimeoutTimer() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
         Future<Long> f = bean.async(-1); // no sleep time
         f.get();
@@ -602,8 +683,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * SFSB timeout.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testTimeoutTimerResetsAftersAsyncMethodExits() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
         Future<Long> f = bean.async(25 * 1000); // sleep inside async method for 25 seconds
         try {
@@ -634,8 +718,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * with retainIfException is true is invoked and throws an exception.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testStatefulBeanTimeoutAfterRemoveWithException() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
 
         try {
@@ -672,8 +759,11 @@ public class StatefulTimeoutServlet extends FATServlet {
      * exception.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     public void testStatefulBeanTimeoutAfterAsyncRemoveWithException() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
         Future<String> f = bean.removeAsync(true); // expect a runtime exception - client will never see it since it is fire and forget
         try {
@@ -707,9 +797,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * exception, that the bean is removed immediately.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @ExpectedFFDC({ "java.lang.RuntimeException" })
     public void testUncheckedExceptionInAsyncFAFMethodRemovesBean() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
         bean.throwUncheckedExceptionInFAFAsyncMethod();
         FATHelper.sleep(2000);
@@ -726,9 +819,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * unchecked exception, that the bean is removed immediately.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @ExpectedFFDC({ "java.lang.RuntimeException" })
     public void testUncheckedExceptionInAsyncFAFRemoveMethodRemovesBean() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
         bean.throwUncheckedExceptionInFAFAsyncRemoveMethod();
         FATHelper.sleep(2000);
@@ -746,9 +842,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * removed immediately.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @ExpectedFFDC({ "java.lang.RuntimeException" })
     public void testUncheckedExceptionInAsyncFAFRemoveWithRetainMethodRemovesBean() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
         bean.throwUncheckedExceptionInFAFAsyncRemoveWithRetainMethod();
         FATHelper.sleep(2000);
@@ -765,9 +864,12 @@ public class StatefulTimeoutServlet extends FATServlet {
      * exception, that the bean is removed immediately.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @Mode(FULL)
     @ExpectedFFDC({ "java.lang.RuntimeException" })
     public void testUncheckedExceptionInAsyncFARMethodRemovesBean() throws Exception {
+        if (!recLogInit)
+            initRecoveryLog();
+
         StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
         Future<String> f = bean.throwUncheckedExceptionInFARAsyncMethod();
         try {
