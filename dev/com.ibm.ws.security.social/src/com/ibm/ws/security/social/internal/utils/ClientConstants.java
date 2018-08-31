@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.internal.utils;
 
-/**
- *
- */
 public class ClientConstants {
     public static final String OIDC_CLIENT = "oidc_client";
     public static final String OIDC_AUTHN_HINT_HEADER = "oidcAuthnHint";
@@ -32,6 +29,8 @@ public class ClientConstants {
     public static final String ENCRYPTED_TOKEN = "encrypted_token";
     public static final String ACCESS_TOKEN_ALIAS = "accessTokenAlias";
     public static final String RESPONSE_TYPE = "response_type";
+    public static final String RESPONSE_MODE = "response_mode";
+    public static final String FORM_POST = "form_post";
 
     public final static String USER_ID = "user_id";
     public final static String USER_NAME = "user_name";
@@ -42,6 +41,7 @@ public class ClientConstants {
     public static final String CHARSET = "UTF-8";
     public static final String CODE = "code";
     public final static String AUTHORIZATION_CODE = "authorization_code";
+    public final static String IMPLICIT = "implicit";
     public static final String STATE = "state";
 
     public final static String RESPONSEMAP_CODE = "RESPONSEMAP_CODE";
