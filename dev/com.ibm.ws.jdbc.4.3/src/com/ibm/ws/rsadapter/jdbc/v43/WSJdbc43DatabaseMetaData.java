@@ -13,7 +13,9 @@ package com.ibm.ws.rsadapter.jdbc.v43;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v42.WSJdbc42DatabaseMetaData;
 
 public class WSJdbc43DatabaseMetaData extends WSJdbc42DatabaseMetaData implements DatabaseMetaData {
@@ -24,7 +26,15 @@ public class WSJdbc43DatabaseMetaData extends WSJdbc42DatabaseMetaData implement
 
     @Override
     public boolean supportsSharding() throws SQLException {
-        throw new UnsupportedOperationException();
+        try {
+            return mDataImpl.supportsSharding();
+        } catch (SQLException ex) {
+            FFDCFilter.processException(ex, getClass().getName(), "32", this);
+            throw WSJdbcUtil.mapException(this, ex);
+        } catch (NullPointerException nullX) {
+            // No FFDC code needed; we might be closed.
+            throw runtimeXIfNotClosed(nullX);
+        }
     }
 
 }

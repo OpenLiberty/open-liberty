@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v42.WSJdbc42CallableStatement;
 
 public class WSJdbc43CallableStatement extends WSJdbc42CallableStatement implements CallableStatement {
@@ -39,27 +40,51 @@ public class WSJdbc43CallableStatement extends WSJdbc42CallableStatement impleme
     public String enquoteLiteral(String val) throws SQLException {
         // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
         // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
-        throw new UnsupportedOperationException();
+        try {
+            return cstmtImpl.enquoteLiteral(val);
+        } catch (SQLException ex) {
+            throw WSJdbcUtil.mapException(this, ex);
+        } catch (NullPointerException nullX) {
+            throw runtimeXIfNotClosed(nullX);
+        }
     }
 
     @Override
     public String enquoteIdentifier(String identifier, boolean alwaysQuote) throws SQLException {
         // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
         // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
-        throw new UnsupportedOperationException();
+        try {
+            return cstmtImpl.enquoteIdentifier(identifier, alwaysQuote);
+        } catch (SQLException ex) {
+            throw WSJdbcUtil.mapException(this, ex);
+        } catch (NullPointerException nullX) {
+            throw runtimeXIfNotClosed(nullX);
+        }
     }
 
     @Override
     public boolean isSimpleIdentifier(String identifier) throws SQLException {
         // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
         // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
-        throw new UnsupportedOperationException();
+        try {
+            return cstmtImpl.isSimpleIdentifier(identifier);
+        } catch (SQLException ex) {
+            throw WSJdbcUtil.mapException(this, ex);
+        } catch (NullPointerException nullX) {
+            throw runtimeXIfNotClosed(nullX);
+        }
     }
 
     @Override
     public String enquoteNCharLiteral(String val) throws SQLException {
         // KEEP CODE IN SYNC: This method is duplicated in WSJdbc43Statement, WSJdbc43PreparedStatement,
         // and WSJdbc43CallableStatement because multiple inheritance isn't allowed.
-        throw new UnsupportedOperationException();
+        try {
+            return cstmtImpl.enquoteNCharLiteral(val);
+        } catch (SQLException ex) {
+            throw WSJdbcUtil.mapException(this, ex);
+        } catch (NullPointerException nullX) {
+            throw runtimeXIfNotClosed(nullX);
+        }
     }
 }
