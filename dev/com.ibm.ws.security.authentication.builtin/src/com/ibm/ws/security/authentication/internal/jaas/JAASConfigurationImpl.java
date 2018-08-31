@@ -26,13 +26,12 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.security.authentication.jaas.modules.WSLoginModuleImpl;
 import com.ibm.ws.security.authentication.utility.JaasLoginConfigConstants;
 import com.ibm.ws.security.jaas.common.JAASConfiguration;
 import com.ibm.ws.security.jaas.common.JAASLoginContextEntry;
 import com.ibm.ws.security.jaas.common.JAASLoginModuleConfig;
+import com.ibm.ws.security.krb5.Krb5Common;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 
 /**
@@ -55,8 +54,6 @@ public class JAASConfigurationImpl implements JAASConfiguration {
     public static final Class<WSLoginModuleImpl> WSLOGIN_MODULE_IMPL_CLASS = WSLoginModuleImpl.class;
 
     private ConcurrentServiceReferenceMap<String, JAASLoginContextEntry> jaasLoginContextEntries;
-    static private boolean isIBMJdk18Lower = (JavaInfo.vendor() == Vendor.IBM && JavaInfo.majorVersion() <= 8);
-    static private boolean isJdk11Up = JavaInfo.majorVersion() >= 11;
 
     /*
      * (non-Javadoc)
@@ -159,24 +156,18 @@ public class JAASConfigurationImpl implements JAASConfiguration {
     private void createJAASClientLoginContextEntry(Map<String, List<AppConfigurationEntry>> jaasConfigurationEntries) throws IllegalArgumentException {
         AppConfigurationEntry loginModuleEntry = null;
 
-//        String vendorName = getSystemProperty("java.vendor");
-//        if (vendorName != null && vendorName.toLowerCase().contains("oracle")) {
-//            List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
-//            AppConfigurationEntry loginModuleEntry = createJdk11Krb5loginModuleAppConfigurationEntry();
-//            loginModuleEntries.add(loginModuleEntry);
-        //TODO - UTLE???
-//            jaasConfigurationEntries.put("com.sun.security.jgss.krb5.accept", loginModuleEntries);
-//            jaasConfigurationEntries.put("com.sun.security.jgss.krb5.initiate", loginModuleEntries);
-//        }
-
         List<AppConfigurationEntry> loginModuleEntries = new ArrayList<AppConfigurationEntry>();
-        if (isIBMJdk18Lower) {
+        if (Krb5Common.isIBMJdk18Lower) {
             loginModuleEntry = createIBMJdk8Krb5loginModuleAppConfigurationEntry();
-        } else if (isJdk11Up) {
+            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
+        } else if (Krb5Common.isJdk11Up) {
             loginModuleEntry = createJdk11Krb5loginModuleAppConfigurationEntry();
+            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE, loginModuleEntries);
+            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_JGSS_KRB5_INITIATE, loginModuleEntries);
             jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_SUN_SECURITY_JGSS_KRB5_ACCEPT, loginModuleEntries);
-            jaasConfigurationEntries.put(JaasLoginConfigConstants.COM_IBM_SECURITY_JGSS_KRB5_INITIATE, loginModuleEntries);
         }
+        jaasConfigurationEntries.put(JaasLoginConfigConstants.JAASClient, loginModuleEntries);
+
         if (loginModuleEntry != null) {
             loginModuleEntries.add(loginModuleEntry);
         }
@@ -210,7 +201,7 @@ public class JAASConfigurationImpl implements JAASConfiguration {
     }
 
     private AppConfigurationEntry createJdk11Krb5loginModuleAppConfigurationEntry() {
-        String loginModuleClassName = JaasLoginConfigConstants.COM_SUN_SECURITY_AUTH_MODULE_KRB5LOGINMODULE;
+        String loginModuleClassName = JaasLoginConfigConstants.COM_IBM_SECURITY_AUTH_MODULE_KRB5LOGINMODULE_WRAPPER;
         LoginModuleControlFlag controlFlag = LoginModuleControlFlag.REQUIRED;
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("useKeyTab", "true");
@@ -218,9 +209,7 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         options.put("doNotPrompt", "true");
         options.put("storeKey", "true");
         options.put("isInitiator", "false");
-        //Too early the KRB5_KTNAME is not set yet.
         options.put("keyTab", getSystemProperty("KRB5_KTNAME"));
-        //options.put("keyTab", "/Users/utle/spnego/krb5.keytab");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             options.put("debug", "true");
             Tr.debug(tc, "loginModuleClassName: " + loginModuleClassName + " options: " + options.toString() + " controlFlag: " + controlFlag.toString());
@@ -229,4 +218,5 @@ public class JAASConfigurationImpl implements JAASConfiguration {
         AppConfigurationEntry loginModuleEntry = new AppConfigurationEntry(loginModuleClassName, controlFlag, options);
         return loginModuleEntry;
     }
+
 }
