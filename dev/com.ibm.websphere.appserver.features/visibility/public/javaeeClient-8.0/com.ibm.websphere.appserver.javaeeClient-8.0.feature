@@ -19,7 +19,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.javaMail-1.6, \
   com.ibm.websphere.appserver.jaxb-2.2, \
   com.ibm.websphere.appclient.appClient-1.0, \
-  com.ibm.websphere.appserver.jdbc-4.2, \
+  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3",\
   com.ibm.websphere.appserver.transaction-1.2, \
   com.ibm.websphere.appserver.managedBeans-1.0, \
   com.ibm.websphere.appserver.wasJmsClient-2.0
