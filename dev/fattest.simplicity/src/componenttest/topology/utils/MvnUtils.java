@@ -10,17 +10,16 @@
  *******************************************************************************/
 package componenttest.topology.utils;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,6 +47,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.ibm.websphere.simplicity.PortType;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
 import componenttest.topology.impl.LibertyServer;
@@ -58,6 +58,8 @@ import componenttest.topology.impl.LibertyServer;
  * in development that share these functions.
  */
 public class MvnUtils {
+
+    public static final Class<MvnUtils> c = MvnUtils.class;
 
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
@@ -187,7 +189,7 @@ public class MvnUtils {
                 String jarKey = nl.item(i).getTextContent().replaceAll("\\$\\{", "").replaceAll("\\}", "".replaceAll("\\s+", ""));
 
                 jarsFromWlp.add(jarKey);
-                log(jarKey);
+                Log.finer(c, "populateJarsFromWlp", jarKey);
                 // For jars that have more than one version we try to add to the regex the api version
                 if (versionedJars != null && versionedJars.contains(jarKey)) {
                     String versionedJarKey;
@@ -203,7 +205,7 @@ public class MvnUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log(e.toString());
+            Log.warning(c, e.toString());
             throw e;
         }
 
@@ -318,11 +320,11 @@ public class MvnUtils {
 
         // Everything under autoFVT/results is collected from the child build machine
         int rc = runCmd(cmd, MvnUtils.tckRunnerDir, mvnOutput);
-        String failingTestsList = postProcessTestNgResults();
+        List<String> failingTestsList = postProcessTestResults();
 
         // mvn returns 0 on success, anything else represents a failure.
         // Usually this is caused by failing tests, but if we didn't detect any failing tests then we should raise an exception
-        if (rc != 0 && failingTestsList.length() == 0) {
+        if (rc != 0 && failingTestsList.isEmpty()) {
             Assert.fail("In " + bucketName + ":" + testName + " the TCK (" + cmd + ") has returned non-zero return code of: " + rc + "\n"
                         + "but did not report any failing tests.\n"
                         + "see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename + " for more details");
@@ -332,7 +334,7 @@ public class MvnUtils {
     }
 
     /**
-     * Prepare the TestNg Result XML files for inclusion in Simplicity html processing and return a list of failing tests
+     * Prepare the TestNg/Junit Result XML files for inclusion in Simplicity html processing and return a list of failing tests
      *
      * @return A list of non passing tests
      * @throws IOException
@@ -340,31 +342,48 @@ public class MvnUtils {
      * @throws XPathExpressionException
      * @throws ParserConfigurationException
      */
-    private static String postProcessTestNgResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException {
+    private static List<String> postProcessTestResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException {
 
-        File src = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports/junitreports");
-        File tgt = new File(MvnUtils.resultsDir, "junit");
-        try {
-            Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
-        } catch (java.nio.file.NoSuchFileException nsfe) {
-            Assert.assertNull(
-                              "The TCK tests' results directory does not exist which suggests the TCK tests did not run - check build logs."
-                              + src.getAbsolutePath(), nsfe);
+        List<File> resultsFiles = findJunitResultFiles();
+        Path targetDir = MvnUtils.resultsDir.toPath().resolve("junit");
+
+        for (File file : resultsFiles) {
+            Path src = file.toPath();
+            Path target = targetDir.resolve(src.getFileName());
+            Files.copy(src, target, REPLACE_EXISTING);
         }
 
-        // Get the failing tests out of testng-results.xml
-        String failingTestsList = getNonPassingTestsNamesList();
-        if (failingTestsList != null && failingTestsList.length() > 0) {
-            String[] nonPassed = failingTestsList.split("\\s");
-            if (nonPassed.length > 0) {
-                printStdOutAndScreenIfLocal("\nTCK TESTS THAT DID NOT PASS:");
-                for (int i = 0; i < nonPassed.length; i++) {
-                    printStdOutAndScreenIfLocal("                               " + nonPassed[i]);
-                }
-                printStdOutAndScreenIfLocal("\n");
+        // Get the failing tests out of the JUnit result files
+        List<String> failingTestsList = getNonPassingTestsNamesList(resultsFiles);
+        if (!failingTestsList.isEmpty()) {
+            printStdOutAndScreenIfLocal("\nTCK TESTS THAT DID NOT PASS:");
+            for (String failedTest : failingTestsList) {
+                printStdOutAndScreenIfLocal("                               " + failedTest);
             }
+            printStdOutAndScreenIfLocal("\n");
         }
         return failingTestsList;
+    }
+
+    private static List<File> findJunitResultFiles() {
+        File resultsDir = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports/junitreports"); // TestNG result location
+        if (!resultsDir.exists()) {
+            resultsDir = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports"); // JUnit result location
+        }
+
+        File[] resultsFiles = resultsDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.matches("TEST.*\\.xml");
+            }
+        });
+
+        if (resultsFiles == null || resultsFiles.length == 0) {
+            Assert.fail("No TCK test JUnit result files were found in the results directory which suggests the TCK tests did not run - check build logs.\n"
+                        + "ResultsDir: " + resultsDir.getAbsolutePath());
+        }
+
+        return Arrays.asList(resultsFiles);
     }
 
     /**
@@ -382,7 +401,7 @@ public class MvnUtils {
         pb.redirectOutput(outputFile);
         pb.redirectErrorStream(true);
 
-        log("Running command " + Arrays.asList(cmd));
+        Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
         Process p = pb.start();
         int exitCode = p.waitFor();
         return exitCode;
@@ -453,7 +472,7 @@ public class MvnUtils {
      * @return the path to the jar
      */
     public static String genericResolveJarPath(String jarName, String wlpPathName) {
-        log("genericResolveJarPath entry, jarname, wlppathname = " + jarName + " " + wlpPathName);
+        Log.entering(c, "genericResolveJarPath", new Object[] { jarName, wlpPathName });
         String dev = wlpPathName + "/dev/";
         String api = dev + "api/";
         String apiStable = api + "stable/";
@@ -468,10 +487,10 @@ public class MvnUtils {
         String jarPath = null;
         for (Iterator<String> iterator = places.iterator(); iterator.hasNext();) {
             String dir = iterator.next();
-            log("JAR: dir=" + dir);
+            Log.finer(c, "genericResolveJarPath", "JAR: dir=" + dir);
             jarPath = jarPathInDir(jarName, dir);
             if (jarPath != null) {
-                log("JAR: dir match=" + dir + jarPath);
+                Log.finer(c, "genericResolveJarPath", "JAR: dir match=" + dir + jarPath);
                 jarPath = dir + jarPath;
                 break;
             }
@@ -493,7 +512,7 @@ public class MvnUtils {
 
         // for someone debugging with absolute paths, just ignore those, regex might not handle.
         if (jarNameFragment.toLowerCase().startsWith("c:") || jarNameFragment.startsWith("/")) {
-            log("ignoring absolute path: " + jarNameFragment);
+            Log.finer(c, "jarPathInDir", "ignoring absolute path: " + jarNameFragment);
             return null;
         }
 
@@ -512,7 +531,7 @@ public class MvnUtils {
         //
         String expandedJarNameFragment = jarNameFragment.replaceAll("\\.", "\\\\\\.").replaceAll("DOTSTAR", ".*").replaceAll("DOT", "\\.").replaceAll("STAR", ".*");
         String stringPattern = ".*" + expandedJarNameFragment + ".*" + "\\.jar";
-        log("looking for jar " + jarNameFragment + " using " + stringPattern + " in dir " + dir);
+        Log.finer(c, "jarPathInDir", "looking for jar " + jarNameFragment + " using " + stringPattern + " in dir " + dir);
 
         // Looking for (for example):
         //              <systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
@@ -524,83 +543,29 @@ public class MvnUtils {
             Matcher m = p.matcher(files[i]);
             if (m.matches()) {
                 result = files[i];
-                log("dir " + dir + " matches " + stringPattern + " for " + jarNameFragment + " as " + result);
+                Log.finer(c, "jarPathInDir", "dir " + dir + " matches " + stringPattern + " for " + jarNameFragment + " as " + result);
                 return result;
             }
         }
-        log("returning NOT FOUND for " + jarNameFragment + " " + expandedJarNameFragment + " " + stringPattern);
+        Log.finer(c, "jarPathInDir", "returning NOT FOUND for " + jarNameFragment + " " + expandedJarNameFragment + " " + stringPattern);
         return null;
     }
 
     /**
-     * A simple log abstraction to enable easy grepping of the logs.
-     *
-     * @param string
-     */
-    public static void log(String string) {
-        System.out.println("TCK:" + string);
-    }
-
-    /**
-     * A fairly standard fileTreeWalker Visitor that copies files to a new directory.
-     * Used for copying testng results to the simplicity junit directory
-     *
-     */
-    public static class CopyFileVisitor extends SimpleFileVisitor<Path> {
-        private final Path src, tgt;
-
-        public CopyFileVisitor(Path src, Path tgt) {
-            this.src = src;
-            this.tgt = tgt;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.nio.file.SimpleFileVisitor#visitFile(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
-         */
-        @Override
-        public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
-            Path dest = tgt.resolve(src.relativize(path));
-            try {
-                Files.copy(path, dest, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-            return FileVisitResult.CONTINUE;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.nio.file.SimpleFileVisitor#preVisitDirectory(java.lang.Object, java.nio.file.attribute.BasicFileAttributes)
-         */
-        @Override
-        public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes fileAttributes) {
-            Path dest = tgt.resolve(src.relativize(path));
-            try {
-                Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-            return FileVisitResult.CONTINUE;
-        }
-
-    }
-
-    /**
-     * @return A space separated list of non-PASSing test results
+     * @return A list of non-PASSing test results
      * @throws SAXException
      * @throws IOException
      * @throws XPathExpressionException
      * @throws ParserConfigurationException
      */
-    public static String getNonPassingTestsNamesList() throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
-        String notPassingTestsQuery = "/testng-results/suite/test/class/test-method[@status!='PASS']/@name";
-        File testngResults = new File(MvnUtils.resultsDir, targetFolder + "/surefire-reports/testng-results.xml");
+    public static List<String> getNonPassingTestsNamesList(List<File> resultFiles) throws SAXException, IOException, XPathExpressionException, ParserConfigurationException {
+        String notPassingTestsQuery = "//testcase[child::error or child::failure]/@name";
         HashSet<String> excludes = new HashSet<String>(Arrays.asList("arquillianBeforeTest", "arquillianAfterTest"));
-        String notPassingTestsResultString = getQueryInXml(testngResults, notPassingTestsQuery, " ", excludes);
-        return notPassingTestsResultString;
+        List<String> result = new ArrayList<>();
+        for (File resultFile : resultFiles) {
+            result.addAll(getQueryInXml(resultFile, notPassingTestsQuery, excludes));
+        }
+        return result;
     }
 
     /**
@@ -691,15 +656,15 @@ public class MvnUtils {
         File pomXml = new File(dir, "pom.xml");
         Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
         String query = "/project/version";
-        String projectVersion = getQueryInXml(pomXml, query, "", null);
+        List<String> projectVersion = getQueryInXml(pomXml, query, null);
         // Some pom.xml files have no version but inherit it from the
         // parent
-        if (projectVersion != null && projectVersion.trim().length() > 0) {
-            return projectVersion.trim();
+        if (!projectVersion.isEmpty() && projectVersion.get(0).trim().length() > 0) {
+            return projectVersion.get(0).trim();
         } else {
             query = "/project/parent/version";
-            String parentVersion = getQueryInXml(pomXml, query, "", null);
-            return parentVersion != null ? parentVersion.trim() : parentVersion;
+            List<String> parentVersion = getQueryInXml(pomXml, query, null);
+            return parentVersion.isEmpty() ? null : parentVersion.get(0).trim();
         }
 
     }
@@ -711,16 +676,18 @@ public class MvnUtils {
      * @param query as a XPath String
      * @return result of query into the xml
      */
-    private static String getQueryInXml(File xml, String query, String seperatorPrefix, Set<String> excludes) {
-        String result = "";
+    private static List<String> getQueryInXml(File xml, String query, Set<String> excludes) {
+        ArrayList<String> result = new ArrayList<>();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document docTestngResults = builder.parse(xml);
+            Document xmlDoc = builder.parse(xml);
             XPathFactory xPathFactory = XPathFactory.newInstance();
             XPath xpath = xPathFactory.newXPath();
             XPathExpression xpr = xpath.compile(query);
-            NodeList nodes = (NodeList) xpr.evaluate(docTestngResults, XPathConstants.NODESET);
+            NodeList nodes = (NodeList) xpr.evaluate(xmlDoc, XPathConstants.NODESET);
+
+            Log.finer(c, "getQueryInXml", "query " + query + " returned " + nodes.getLength() + " nodes");
 
             if (nodes.getLength() > 0) {
                 for (int i = 0; i < nodes.getLength(); i++) {
@@ -729,13 +696,15 @@ public class MvnUtils {
                         value = nodes.item(i).getTextContent();
                     }
                     if (excludes == null || !excludes.contains(value)) {
-                        result += seperatorPrefix + value;
+                        result.add(value);
                     }
                 }
             }
 
+            Log.finer(c, "getQueryInXml", "results: {0}", result);
+
         } catch (Throwable t) {
-            MvnUtils.log(t.getMessage());
+            Log.warning(c, t.getMessage());
         }
         return result;
     }
