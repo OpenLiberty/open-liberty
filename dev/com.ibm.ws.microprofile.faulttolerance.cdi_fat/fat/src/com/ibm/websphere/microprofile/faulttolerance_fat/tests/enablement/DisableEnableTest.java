@@ -10,20 +10,31 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile13;
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.RepeatMicroProfile20;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -35,8 +46,13 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class DisableEnableTest extends FATServletClient {
 
+    private static final Logger LOGGER = Logger.getLogger(DisableEnableTest.class.getName());
+
     private static final String APP_NAME = "DisableEnable";
     private static final String SERVER_NAME = "CDIFaultTolerance";
+
+    @ClassRule
+    public static RepeatTests repeatTests = RepeatTests.with(new RepeatMicroProfile13(SERVER_NAME)).andWith(new RepeatMicroProfile20(SERVER_NAME));
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = DisableEnableServlet.class, contextRoot = APP_NAME)
@@ -45,6 +61,7 @@ public class DisableEnableTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         StringBuilder config = new StringBuilder();
+        config.append("fault.tolerance.version=" + getFaultToleranceVersion() + "\n");
         config.append("com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableClient/Retry/enabled=false\n");
         config.append("com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableClient/failWithOneRetry/Retry/enabled=true\n");
         config.append("com.ibm.websphere.microprofile.faulttolerance_fat.tests.enablement.DisableEnableClassAnnotatedClient/Retry/enabled=false\n");
@@ -54,7 +71,7 @@ public class DisableEnableTest extends FATServletClient {
                         .addAsResource(new StringAsset(config.toString()), "META-INF/microprofile-config.properties")
                         .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
-        ShrinkHelper.exportDropinAppToServer(server, app);
+        ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY, OVERWRITE);
 
         server.startServer();
     }
@@ -63,6 +80,28 @@ public class DisableEnableTest extends FATServletClient {
     public static void cleanup() throws Exception {
         server.stopServer();
         server.removeDropinsApplications(APP_NAME + ".war");
+    }
+
+    /**
+     * Get the fault tolerance feature version from the
+     *
+     * @return
+     * @throws Exception
+     */
+    private static String getFaultToleranceVersion() throws Exception {
+        Set<String> feature = server.getServerConfiguration().getFeatureManager().getFeatures();
+
+        LOGGER.info("Features: " + String.join(", ", feature));
+
+        Optional<String> ftFeature = feature.stream().filter((s) -> s.toLowerCase().startsWith("mpfaulttolerance")).findFirst();
+        if (!ftFeature.isPresent()) {
+            throw new Exception("No mpFaultTolerance feature in server config");
+        }
+
+        String featureName = ftFeature.get();
+        String featureVersion = featureName.substring(featureName.indexOf("-") + 1);
+        LOGGER.info("Feature version: " + featureVersion);
+        return featureVersion;
     }
 
 }
