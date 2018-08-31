@@ -87,10 +87,6 @@ public class LoggingConfigurationService implements ManagedService {
         if (properties == null)
             return;
 
-        // this property can only be set in config, be sure to capture it
-        String eventConfig = (String) (properties.get("publishOsgiEvents"));
-        TrLogServiceImpl.updatePublishEventConfig(eventConfig);
-
         Map<String, Object> newMap = null;
         if (properties instanceof Map) {
             newMap = (Map<String, Object>) properties;

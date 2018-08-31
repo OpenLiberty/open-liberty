@@ -34,6 +34,10 @@ OSGI_MSG001={0} {1} {2} {3} {4}
 OSGI_MSG001.explanation=An informational message was logged using the OSGi log service
 OSGI_MSG001.useraction=No action is required.
 
+OSGI_AUDIT_MSG={0} {1} {2} {3} {4}
+OSGI_AUDIT_MSG.explanation=An audit message was logged using the OSGi log service
+OSGI_AUDIT_MSG.useraction=No action is required.
+
 OSGI_WARNING_MSG=CWWKE0700W: {0} {1} {2} {3} {4}
 OSGI_WARNING_MSG.explanation=A warning message was logged using the OSGi log service.
 OSGI_WARNING_MSG.useraction=See the warning message for information.

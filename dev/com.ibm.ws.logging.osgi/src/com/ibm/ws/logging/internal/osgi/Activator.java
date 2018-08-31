@@ -12,35 +12,24 @@
 package com.ibm.ws.logging.internal.osgi;
 
 import java.lang.instrument.Instrumentation;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
+import org.eclipse.equinox.log.ExtendedLogReaderService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.EventAdmin;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.osgi.service.log.LogReaderService;
 
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceComponentChangeListener;
-import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.ras.instrument.internal.main.LibertyJava8WorkaroundRuntimeTransformer;
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
-import com.ibm.wsspi.collector.manager.Source;
 
 /**
  * Activator for the RAS/FFDC bundle.
  */
-public class Activator implements BundleActivator, ServiceTrackerCustomizer<EventAdmin, EventAdmin> {
+public class Activator implements BundleActivator {
 
-    private BundleContext bContext;
-    private TrLogImpl logImpl;
-    private TrLogServiceFactory logSvcFactory;
-    private ServiceTracker<EventAdmin, EventAdmin> eventAdminTracker;
     private MessageRouterConfigurator msgRouter;
     private TraceRouterConfigurator traceRouter;
     private CollectorManagerPipelineConfigurator collectorMgrPipeConfigurator; 
@@ -58,31 +47,12 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
      */
     @Override
     public void start(BundleContext context) throws Exception {
-        bContext = context;
 
-        // We must register OSGi log services: if none is present, third party
-        // bundles will log directly to stdout (metatype, scr, etc.)
-
-        // Create the core of our service provider: 
-        // TrLogImpl also acts as a service factory for LogReaderService
-        logImpl = new TrLogImpl();
-        context.registerService("org.osgi.service.log.LogReaderService", logImpl, getProperties());
-
-        // Create and register the log service factory
-        // TrLogServiceFactory also contains a listener for bundle/framework/service events
-        logSvcFactory = new TrLogServiceFactory(logImpl, context.getBundle(0));
-        context.registerService("org.osgi.service.log.LogService", logSvcFactory, getProperties());
-
-        // 96353: Register the framework, service, and bundle listeners using
-        // the system bundle's context so that events from regions other than
-        // kernel are visible.
-        BundleContext sysContext = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getBundleContext();
-        sysContext.addBundleListener(logSvcFactory.getListener());
-        sysContext.addFrameworkListener(logSvcFactory.getListener());
-        sysContext.addServiceListener(logSvcFactory.getListener());
-
-        eventAdminTracker = new ServiceTracker<EventAdmin, EventAdmin>(context, EventAdmin.class, this);
-        eventAdminTracker.open();
+        // The LogService comes from the framework and is always there;
+        // We also never remove our listener because that will be done automatically when 
+        // we are stopped.
+        LogReaderService logReader = context.getService(context.getServiceReference(ExtendedLogReaderService.class));
+        logReader.addLogListener(new TrOSGiLogForwarder());
 
         // Instrumentation, when available, is registered by the launcher
         // and will never go away.
@@ -125,15 +95,6 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
      */
     @Override
     public void stop(BundleContext context) throws Exception {
-        eventAdminTracker.close();
-
-        // 96353: Explicitly remove listeners using the system bundle's context.
-        BundleContext sysContext = context.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getBundleContext();
-        sysContext.removeServiceListener(logSvcFactory.getListener());
-        sysContext.removeFrameworkListener(logSvcFactory.getListener());
-        sysContext.removeBundleListener(logSvcFactory.getListener());
-
-        logImpl.stop();
         msgRouter.stop();
         traceRouter.stop();
 
@@ -159,29 +120,4 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         }
     }
 
-    /** @return Dictionary containing minimal default service properties */
-    public Dictionary<String, ?> getProperties() {
-        Hashtable<String, Object> h = new Hashtable<String, Object>();
-        h.put("service.vendor", "IBM");
-        h.put("service.ranking", Integer.valueOf(1));
-        return h;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventAdmin addingService(ServiceReference<EventAdmin> reference) {
-        EventAdmin service = bContext.getService(reference);
-        logImpl.setEventAdmin(service);
-        return service;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void modifiedService(ServiceReference<EventAdmin> reference, EventAdmin service) {}
-
-    /** {@inheritDoc} */
-    @Override
-    public void removedService(ServiceReference<EventAdmin> reference, EventAdmin service) {
-        logImpl.setEventAdmin(null);
-    }
 }
