@@ -107,7 +107,7 @@ public class InstallKernelMap implements Map {
     private static final String INDIVIDUAL_ESAS = "individual.esas";
 
     //Headers in Manifest File
-    private static final String SYMBOLIC_NAME_HEADER_NAME = "Subsystem-SymbolicName";
+    private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
 
     // Return code
     private static final Integer OK = Integer.valueOf(0);
@@ -553,27 +553,37 @@ public class InstallKernelMap implements Map {
             Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
 
             //TODO
-            if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
-                Path tempDir = Files.createTempDirectory("generatedJson");
-                tempDir.toFile().deleteOnExit();
-                Map<String, String> symbolicNameMap = new HashMap<String, String>();
-                File individualEsaJson = individualESAInstall(tempDir, symbolicNameMap);
-                //File individualEsaJson = individualESAInstall(jsonDir);
-                RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
-                repoList.add(repo);
-                //repoList.add(individualESAInstall(tempDir));
-                for (String feature : featureToInstall) {
-                    if (feature.endsWith(".esa")) {
-                        if (symbolicNameMap.containsKey(feature)) {
-                            String symbolicName = symbolicNameMap.get(feature);
-                            featureToInstall.remove(feature);
-                            System.out.println("This is the symbolic name" + symbolicName);
-                            featureToInstall.add(symbolicName);
+            try {
+                if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
+                    System.out.println("YES INSTALLING INDIVIDUAL ESAS");
+                    Path tempDir = Files.createTempDirectory("generatedJson");
+                    tempDir.toFile().deleteOnExit();
+                    Map<String, String> shortNameMap = new HashMap<String, String>();
+                    File individualEsaJson = individualESAInstall(tempDir, shortNameMap);
+                    //File individualEsaJson = individualESAInstall(jsonDir);
+                    RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
+                    repoList.add(repo);
+                    //repoList.add(individualESAInstall(tempDir));
+                    for (String feature : featureToInstall) {
+                        if (feature.endsWith(".esa")) {
+                            if (shortNameMap.containsKey(feature)) {
+                                String shortName = shortNameMap.get(feature);
+                                featureToInstall.remove(feature);
+                                System.out.println("This is the shortname" + shortName);
+                                featureToInstall.add(shortName);
+                            } else {
+                                //TODO
+                                //throw error???
+
+                            }
                         }
                     }
-                }
 
+                }
+            } catch (NullPointerException e) {
+                //do something
             }
+
             for (String feature : featureToInstall) {
                 System.out.println("This is featureToInstall   " + feature);
             }
@@ -767,7 +777,7 @@ public class InstallKernelMap implements Map {
         return OK;
     }
 
-    private static void getSymbolicNameFromManifest(File esa, Map<String, String> symbolicNameMap) throws IOException {
+    private static void getShortNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
         String esaLocation = esa.getAbsolutePath();
         ZipFile zip = null;
         try {
@@ -786,8 +796,8 @@ public class InstallKernelMap implements Map {
             } else {
                 Manifest m = ManifestProcessor.parseManifest(zip.getInputStream(subsystemEntry));
                 Attributes manifestAttrs = m.getMainAttributes();
-                String symbolicNameAttr = manifestAttrs.getValue(SYMBOLIC_NAME_HEADER_NAME);
-                symbolicNameMap.put(esa.getAbsolutePath(), symbolicNameAttr);
+                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
+                shortNameMap.put(esa.getAbsolutePath(), shortNameAttr);
             }
         } finally {
             if (zip != null) {
@@ -797,7 +807,7 @@ public class InstallKernelMap implements Map {
     }
 
     //accept List of Files
-    private File individualESAInstall(Path generatedJson, Map<String, String> symbolicNameMap) throws IOException, BuildException, RepositoryException {
+    private File individualESAInstall(Path generatedJson, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException {
 
         String dir = generatedJson.toString();
         System.out.println("This is the directory " + dir);
@@ -807,7 +817,7 @@ public class InstallKernelMap implements Map {
 
         for (File esa : esas) {
 
-            getSymbolicNameFromManifest(esa, symbolicNameMap);
+            getShortNameFromManifest(esa, shortNameMap);
 
             SingleFileRepositoryConnection mySingleFileRepo = null;
             if (singleJson.exists()) {
