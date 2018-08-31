@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
+import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.ws.ssl.config.WSKeyStore;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
@@ -185,7 +186,10 @@ public class SSLConfigValidator {
                         for (Configuration config : configurations) {
                             Dictionary<String, Object> properties = config.getProperties();
                             if (LibertyConstants.DEFAULT_SSL_CONFIG_ID.equals(properties.get("id"))) {
-                                return (String) properties.get("keyStoreRef");
+                                String keyStoreRef = (String) properties.get("keyStoreRef");
+                                WSKeyStore wsks = KeyStoreManager.getInstance().getKeyStore(keyStoreRef);
+                                if (wsks != null)
+                                    return wsks.getName();
                             }
                         }
                     }

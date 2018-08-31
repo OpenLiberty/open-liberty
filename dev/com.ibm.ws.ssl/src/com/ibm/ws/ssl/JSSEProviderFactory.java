@@ -35,7 +35,7 @@ import com.ibm.ws.ssl.provider.SunJSSEProvider;
  * <p>
  * This is the factory class that selects the currently active JSSEProvider. For v7, mostly IBMJSSE2 is used, but for the pluggable client it could be SunJSSE.
  * </p>
- * 
+ *
  * @author IBM Corporation
  * @version WAS 7.0
  * @since WAS 7.0
@@ -57,7 +57,7 @@ public class JSSEProviderFactory {
 
     /**
      * Access the default provider.
-     * 
+     *
      * @return JSSEProvider
      */
     public static JSSEProvider getInstance() {
@@ -67,11 +67,11 @@ public class JSSEProviderFactory {
     /**
      * Access the provider for the given name. This will return null if no match
      * was found.
-     * 
+     *
      * @param inputProvider
      * @return JSSEProvider
      */
-    public static JSSEProvider getInstance(String inputProvider) {
+    public static synchronized JSSEProvider getInstance(String inputProvider) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getInstance: " + inputProvider);
 
@@ -108,11 +108,9 @@ public class JSSEProviderFactory {
                     try {
                         if (contextProviderPriv.equalsIgnoreCase(Constants.IBMJSSE_NAME)) {
                             provider = (Provider) Class.forName(Constants.IBMJSSE2).newInstance();
-                        }
-                        else if (contextProviderPriv.equalsIgnoreCase(Constants.SUNJSSE_NAME)) {
+                        } else if (contextProviderPriv.equalsIgnoreCase(Constants.SUNJSSE_NAME)) {
                             provider = (Provider) Class.forName("com.sun.net.ssl.internal.ssl.Provider").newInstance();
-                        }
-                        else {
+                        } else {
                             provider = (Provider) Class.forName(Constants.IBMJSSE2).newInstance();
                         }
                         if (provider != null) {
@@ -199,7 +197,7 @@ public class JSSEProviderFactory {
 
     /**
      * Get the default SSLSocketFactory from Security.
-     * 
+     *
      * @return String
      */
     public static String getDefaultSSLSocketFactory() {
@@ -217,7 +215,7 @@ public class JSSEProviderFactory {
 
     /**
      * Get the default SSLServerSocketFactory class from Security.
-     * 
+     *
      * @return String
      */
     public static String getDefaultSSLServerSocketFactory() {
@@ -235,7 +233,7 @@ public class JSSEProviderFactory {
 
     /**
      * Get the key manager factory algorithm default from Security.
-     * 
+     *
      * @return String
      */
     public static String getKeyManagerFactoryAlgorithm() {
@@ -253,7 +251,7 @@ public class JSSEProviderFactory {
 
     /**
      * Get the trust manager factory algorithm default from Security.
-     * 
+     *
      * @return String
      */
     public static String getTrustManagerFactoryAlgorithm() {
@@ -271,7 +269,7 @@ public class JSSEProviderFactory {
 
     /**
      * Initialize the IBM CMS provider.
-     * 
+     *
      * @throws Exception
      */
     public static void initializeIBMCMSProvider() throws Exception {
@@ -310,7 +308,7 @@ public class JSSEProviderFactory {
 
     /**
      * Initialize FIPS.
-     * 
+     *
      * @throws Exception
      */
     public static void initializeFips() throws Exception {
@@ -389,7 +387,7 @@ public class JSSEProviderFactory {
 
     /**
      * Insert a provider into Security at the provided slot number.
-     * 
+     *
      * @param newProvider
      * @param slot
      */
