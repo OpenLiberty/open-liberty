@@ -178,14 +178,4 @@ public class GCData extends GenericData {
     private void setPair(int index, long l) {
         setPair(index, NAMES1_1[index], l);
     }
-
-    private String getStringValue(int index) {
-        KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
-        return kvp.getStringValue();
-    }
-
-    private long getLongValue(int index) {
-        KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
-        return kvp.getLongValue();
-    }
 }
