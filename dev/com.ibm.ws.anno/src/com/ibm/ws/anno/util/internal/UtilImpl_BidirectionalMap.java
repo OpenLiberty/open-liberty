@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.ws.anno.util.internal;
 
 import java.text.MessageFormat;
@@ -36,12 +35,24 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     //
 
+    // If the intern maps were used only by the bi-di map, they could be used
+    // to optimize containment tests, as a value would be a held value if and
+    // only if it were in the held intern map, and similarly for holder values.
+    //
+    // However, the intern maps are shared; the "if and only if condition" is
+    // not true.  The"only if" condition *is* true: A value is a held value only
+    // if it is in the held intern map, but a value can be in the held intern
+    // map without being a held value.
+
     protected UtilImpl_BidirectionalMap(UtilImpl_Factory factory,
                                         String holderTag, String heldTag,
                                         UtilImpl_InternMap holderInternMap,
                                         UtilImpl_InternMap heldInternMap) {
 
-        this(factory, holderTag, heldTag, holderInternMap, heldInternMap, Util_BidirectionalMap.IS_ENABLED);
+        this(factory,
+             holderTag, heldTag,
+             holderInternMap, heldInternMap,
+             Util_BidirectionalMap.IS_ENABLED);
     }
 
     protected UtilImpl_BidirectionalMap(UtilImpl_Factory factory,
@@ -51,8 +62,9 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
                                         boolean isEnabled) {
         super();
 
-        this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this) +
-                        "(" + holderTag + " : " + heldTag + ", enabled='" + (isEnabled ? "true" : "false") + "')";
+        this.hashText =
+            AnnotationServiceImpl_Logging.getBaseHash(this) +
+            "(" + holderTag + " : " + heldTag + ", enabled='" + (isEnabled ? "true" : "false") + "')";
 
         this.factory = factory;
 
@@ -115,11 +127,6 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         return holderInternMap;
     }
 
-    @Override
-    public boolean containsHolder(String holderName) {
-        return (getIsEnabled() && holderInternMap.contains(holderName));
-    }
-
     protected String internHolder(String name, boolean doForce) {
         return holderInternMap.intern(name, doForce);
     }
@@ -129,11 +136,6 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     @Override
     public UtilImpl_InternMap getHeldInternMap() {
         return heldInternMap;
-    }
-
-    @Override
-    public boolean containsHeld(String heldName) {
-        return (getIsEnabled() && heldInternMap.contains(heldName));
     }
 
     protected String internHeld(String name, boolean doForce) {
@@ -149,8 +151,6 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         return isEnabled;
     }
 
-    //
-
     // Implementation intention:
     //
     // className -> Set<annotationName> : tell what annotations a class has
@@ -158,21 +158,93 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     protected Map<String, Set<String>> i_holderToHeldMap;
 
+    // Need to answer the exported holders: The holder set is exposed through
+    // APIs, and must use simple containment tests.
+
+    // DO NOT cache the exported key sets.  That would work, for now, but depends
+    // on implementation details of IdentityHashSet.  Also, it forces an early
+    // creation of the key set.
+
     @Override
     public Set<String> getHolderSet() {
-        return (getIsEnabled() ? i_holderToHeldMap.keySet() : UtilImpl_EmptyStringSet.INSTANCE);
+        if ( !getIsEnabled() ) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        } else {
+            return new UtilImpl_ExportedIdentitySet(holderInternMap, i_holderToHeldMap.keySet());
+        }
+    }
+
+    protected Set<String> i_getHolderSet() {
+        if ( !getIsEnabled() ) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        } else {
+            return i_holderToHeldMap.keySet();
+        }
     }
 
     //
 
     protected Map<String, Set<String>> i_heldToHoldersMap;
 
+    // Need to answer the exported holders: The holder set is exposed through
+    // APIs, and must use simple containment tests.
+
     @Override
     public Set<String> getHeldSet() {
-        return (getIsEnabled() ? i_heldToHoldersMap.keySet() : UtilImpl_EmptyStringSet.INSTANCE);
+        if (!getIsEnabled()) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        } else {
+            return new UtilImpl_ExportedIdentitySet(heldInternMap, i_heldToHoldersMap.keySet());
+        }
+    }
+
+    protected Set<String> i_getHeldSet() {
+        if ( !getIsEnabled() ) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        } else {
+            return i_heldToHoldersMap.keySet();
+        }
     }
 
     //
+
+    @Override
+    public boolean containsHolder(String holderName) {
+        if ( !getIsEnabled() ) {
+            return false;
+        }
+        String i_holderName = internHolder(holderName, Util_InternMap.DO_NOT_FORCE);
+        if (i_holderName == null) {
+            return false;
+        }
+        return i_holderToHeldMap.containsKey(i_holderName);
+    }
+
+    protected boolean i_containsHolder(String i_holderName) {
+        if ( !getIsEnabled() ) {
+            return false;
+        }
+        return i_holderToHeldMap.containsKey(i_holderName);
+    }
+
+    @Override
+    public boolean containsHeld(String heldName) {
+        if ( !getIsEnabled() ) {
+            return false;
+        }
+        String i_heldName = internHeld(heldName, Util_InternMap.DO_NOT_FORCE);
+        if (i_heldName == null) {
+            return false;
+        }
+        return i_heldToHoldersMap.containsKey(i_heldName);
+    }
+
+    protected boolean i_containsHeld(String i_heldName) {
+        if ( !getIsEnabled() ) {
+            return false;
+        }
+        return i_heldToHoldersMap.containsKey(i_heldName);
+    }
 
     @Override
     public boolean holds(String holderName, String heldName) {
@@ -193,18 +265,24 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         // Symmetric: Go through the holder map.  The held map would work just as well.
 
         Set<String> i_held = i_holderToHeldMap.get(i_holderName);
-
         return ((i_held == null) ? false : i_held.contains(i_heldName));
 
-        // Note (*):
-        //
-        // The held map can be null, in case the holder map is shared
-        // (which is the case for the annotation targets maps, which
-        // use a single class intern map for all of the package, class,
-        // class method, and class field maps.
-        //
-        // Similarly, if the lookup was through the held map, the holders
-        // mapping could be null.
+        // Set<String> i_holders = i_heldToHoldersMap.get(i_heldName);
+        // return ((i_holders == null) ? false : i_holders.contains(i_holderName));
+    }
+
+    public boolean i_holds(String i_holderName, String i_heldName) {
+        if (!getIsEnabled()) {
+            return false;
+        }
+
+        // Symmetric: Go through the holder map.  The held map would work just as well.
+
+        Set<String> i_held = i_holderToHeldMap.get(i_holderName);
+        return ((i_held == null) ? false : i_held.contains(i_heldName));
+
+        // Set<String> i_holders = i_heldToHoldersMap.get(i_heldName);
+        // return ((i_holders == null) ? false : i_holders.contains(i_holderName));
     }
 
     //
@@ -214,42 +292,54 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         if (!getIsEnabled()) {
             return UtilImpl_EmptyStringSet.INSTANCE;
         }
-
         String i_holderName = internHolder(holderName, Util_InternMap.DO_NOT_FORCE);
         if (i_holderName == null) {
             return UtilImpl_EmptyStringSet.INSTANCE;
         }
-
         Set<String> i_held = i_holderToHeldMap.get(i_holderName);
         if (i_held == null) { // See the note (*), above.
             return UtilImpl_EmptyStringSet.INSTANCE;
         }
-
-        return i_held;
+        return new UtilImpl_ExportedIdentitySet(heldInternMap, i_held);
     }
 
+    protected Set<String> i_selectHeldOf(String i_holderName) {
+        if (!getIsEnabled()) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        }
+        Set<String> i_held = i_holderToHeldMap.get(i_holderName);
+        if (i_held == null) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        }
+        return i_held;
+    }
+    
     @Override
     public Set<String> selectHoldersOf(String heldName) {
         if (!getIsEnabled()) {
             return UtilImpl_EmptyStringSet.INSTANCE;
         }
-
         String i_heldName = internHeld(heldName, Util_InternMap.DO_NOT_FORCE);
-
         if (i_heldName == null) {
             return UtilImpl_EmptyStringSet.INSTANCE;
         }
-
         Set<String> i_holders = i_heldToHoldersMap.get(i_heldName);
-
-        if (i_holders == null) { // See the note (*), above.
+        if (i_holders == null) {
             return UtilImpl_EmptyStringSet.INSTANCE;
         }
-
-        return i_holders;
+        return new UtilImpl_ExportedIdentitySet(holderInternMap, i_holders);
     }
 
-    //
+    protected Set<String> i_selectHoldersOf(String i_heldName) {
+        if (!getIsEnabled()) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        }
+        Set<String> i_holders = i_heldToHoldersMap.get(i_heldName);
+        if (i_holders == null) {
+            return UtilImpl_EmptyStringSet.INSTANCE;
+        }
+        return i_holders;
+    }
 
     // TODO: Check 'isEnabled' and bounce?
     //       Or rely on the caller to know to make no store calls?
@@ -260,17 +350,19 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     }
 
     public boolean i_record(String i_holderName, String i_heldName) {
-
         boolean addedHeldToHolder = i_recordHolderToHeld(i_holderName, i_heldName);
         boolean addedHolderToHeld = i_recordHeldToHolder(i_holderName, i_heldName);
-
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format("[ {0} ] Holder [ {1} ] Held [ {2} ] [ {3} ]",
-                                              getHashText(), i_holderName, i_heldName, Boolean.valueOf(addedHeldToHolder)));
+            String msg = MessageFormat.format(
+                "[ {0} ] Holder [ {1} ] Held [ {2} ] [ {3} ]",
+                getHashText(),
+                i_holderName, i_heldName,
+                Boolean.valueOf(addedHeldToHolder));
+            Tr.debug(tc, msg);
         }
 
         if (addedHeldToHolder != addedHolderToHeld) {
-            //  CWWKC0057W
+            // CWWKC0057W
             Tr.warning(tc, "ANNO_UTIL_MAPPING_INCONSISTENCY", getHashText(),
                        i_holderName, i_heldName,
                        Boolean.valueOf(addedHeldToHolder),
@@ -286,24 +378,21 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     }
 
     protected Set<String> i_recordHolder(String i_holderName) {
-
         Set<String> i_held = i_holderToHeldMap.get(i_holderName);
+        String recordCase;
         if (i_held == null) {
             i_held = factory.createIdentityStringSet();
             i_holderToHeldMap.put(i_holderName, i_held);
-
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Holder [ {1} ] Added",
-                                                  getHashText(), i_holderName));
-            }
-
+            recordCase = "Added";
         } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Holder [ {1} ] Already present",
-                                                  getHashText(), i_holderName));
-            }
+        	recordCase = "Already present";
         }
-
+        if (tc.isDebugEnabled()) {
+            String msg = MessageFormat.format(
+                "[ {0} ] Holder [ {1} ] {2}",
+                getHashText(), i_holderName, recordCase);
+            Tr.debug(tc, msg);
+        }
         return i_held;
     }
 
@@ -313,24 +402,21 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     }
 
     protected Set<String> i_recordHeld(String i_heldName) {
-
         Set<String> i_holders = i_heldToHoldersMap.get(i_heldName);
+        String recordCase;
         if (i_holders == null) {
             i_holders = factory.createIdentityStringSet();
             i_heldToHoldersMap.put(i_heldName, i_holders);
-
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Held [ {1} ] Added",
-                                                  getHashText(), i_heldName));
-            }
-
+            recordCase = "Added";
         } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, MessageFormat.format("[ {0} ] Held [ {1} ] Already present",
-                                                  getHashText(), i_heldName));
-            }
+        	recordCase = "Already present";
         }
-
+        if (tc.isDebugEnabled()) {
+            String msg = MessageFormat.format(
+                "[ {0} ] Held [ {1} ] {2}",
+                getHashText(), i_heldName, recordCase);
+            Tr.debug(tc, msg);
+        }
         return i_holders;
     }
 
@@ -339,7 +425,6 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     @Override
     public void logState() {
         TraceComponent stateLogger = AnnotationServiceImpl_Logging.stateLogger;
-
         if (stateLogger.isDebugEnabled()) {
             log(stateLogger);
         }
@@ -348,7 +433,6 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     @Override
     @Trivial
     public void log(TraceComponent tc) {
-
         Tr.debug(tc, MessageFormat.format("BEGIN STATE [ {0} ]", getHashText()));
 
         Tr.debug(tc, MessageFormat.format("  Is Enabled [ {0} ]", Boolean.valueOf(getIsEnabled())));

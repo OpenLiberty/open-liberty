@@ -267,23 +267,47 @@ public class DelayedClassInfo extends ClassInfoImpl {
     protected Boolean isInterface;
 
     protected Boolean isAnnotationClass;
+    protected Boolean isInherited;
+    protected Boolean isRepeatable;
 
     @Override
     public boolean isInterface() {
-        if (isInterface == null) {
-            isInterface = Boolean.valueOf(getClassInfo().isInterface());
+        if ( isInterface == null ) {
+            isInterface = Boolean.valueOf( getClassInfo().isInterface() );
         }
-
-        return isInterface;
+        return isInterface.booleanValue();
     }
 
     @Override
     public boolean isAnnotationClass() {
-        if (isAnnotationClass == null) {
+        if ( isAnnotationClass == null ) {
             isAnnotationClass = getClassInfo().isAnnotationClass();
         }
+        return isAnnotationClass.booleanValue();
+    }
 
-        return isAnnotationClass;
+    @Override
+    public boolean isInherited() {
+        if ( isInherited == null ) {
+            if ( !isAnnotationClass() ) {
+                isInherited = Boolean.FALSE;
+            } else {
+                isInherited = Boolean.valueOf( getClassInfo().isInherited() );
+            }
+        }
+        return isInherited.booleanValue();
+    }
+
+    @Override
+    public boolean isRepeatable() {
+        if ( isRepeatable == null ) {
+            if ( !isAnnotationClass() ) {
+                isRepeatable = Boolean.FALSE;
+            } else {
+                isRepeatable = Boolean.valueOf( getClassInfo().isRepeatable() );
+            }
+        }
+        return isRepeatable.booleanValue();
     }
 
     //

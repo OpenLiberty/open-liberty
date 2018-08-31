@@ -178,6 +178,27 @@ public interface ClassInfo extends Info {
      */
     public boolean isAnnotationClass(); // Derived from the interfaces.
 
+    /**
+     * <p>Tell if this class is an annotation class and has the
+     * <code>inherited</code> meta-annotation.</p>
+     * 
+     * @return True if this class has the <code>inherited</code>
+     *     meta-annotation.  Otherwise, false.
+     * 
+     * @see Annotation#JAVA_LANG_ANNOTATION_INHERITED
+     */
+    public boolean isInherited(); // Derived from annotations.
+
+    /**
+     * <p>Tell if this class is an annotation class and has the
+     * <code>repeatable</code> meta-annotation.</p>
+     * 
+     * @return True if this classhas the <code>repeatable</code>
+     *     meta-annotation.  Otherwise, false.
+     *         
+     * @see AnnotationInfo#JAVA_LANG_ANNOTATION_REPEATABLE
+     */    
+    public boolean isRepeatable(); // Derived from annotations.
     //
 
     /**

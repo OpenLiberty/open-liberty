@@ -120,6 +120,16 @@ public class PrimitiveClassInfo extends ClassInfoImpl {
     }
 
     @Override
+    public boolean isInherited() {
+        return false;
+    }
+
+    @Override
+    public boolean isRepeatable() {
+        return false;
+    }
+
+    @Override
     public boolean isInterface() {
         return false;
     }

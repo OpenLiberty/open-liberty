@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,9 @@ public interface AnnotationInfo {
 
     /** <p>Text for the class name of the <code>inherited</code> meta-annotation.</p> */
     public String JAVA_LANG_ANNOTATION_INHERITED = "java.lang.annotation.Inherited";
+
+    /** <p>Text for the class name of the <code>repeatable</code> meta-annotation.</p> */
+    public String JAVA_LANG_ANNOTATION_REPEATABLE = "java.lang.annotation.Repeatable";
 
     /** <p>Naming constant: The qualified name of <code>java.lang.annotation.Annotation</code>.</p> */
     public String ANNOTATION_CLASS_NAME = "java.lang.annotation.Annotation";
@@ -106,6 +109,16 @@ public interface AnnotationInfo {
      * @see #JAVA_LANG_ANNOTATION_INHERITED
      */
     public boolean isInherited();
+
+    /**
+     * <p>Tell if this annotation has the <code>repeatable</code> meta-annotation.</p>
+     * 
+     * @return True if this annotation has the <code>repeatable</code> meta-annotation.
+     *         Otherwise, false.
+     *         
+     * @see #JAVA_LANG_ANNOTATION_REPEATABLE
+     */    
+    public boolean isRepeatable();
 
     //
 
