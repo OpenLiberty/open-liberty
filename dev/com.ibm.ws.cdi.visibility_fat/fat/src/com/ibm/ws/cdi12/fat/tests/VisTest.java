@@ -32,18 +32,21 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Tests the visibility of beans between different BDAs
@@ -78,14 +81,12 @@ import componenttest.topology.impl.LibertyClientFactory;
  * Each row of the visibility report has a bean location and the number of beans in that location that are visible, separated by a tab character.
  */
 
-public class VisTest extends LoggingTest {
+public class VisTest {
 
-    @ClassRule
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("visTestServer");
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer("visTestServer");
 
-    @BuildShrinkWrap
-    public static Map<Archive,List<String>> buildShrinkWrap() {
-       Map<Archive,List<String>> archives = new HashMap<Archive,List<String>>();
+    //This is driven by getAppClientResults
+    public static void buildShrinkWrap(LibertyClient client) throws Exception {
 
         JavaArchive visTestWarWebinfLib1 = ShrinkWrap.create(JavaArchive.class,"visTestWarWebinfLib.jar")
                         .addClass("vistest.warWebinfLib.WarWebinfLibTargetBean")
@@ -223,20 +224,13 @@ public class VisTest extends LoggingTest {
                         .addAsLibrary(visTestEarLib20)
                         .addAsResource("com/ibm/ws/cdi12/fat/tests/permissions.xml", "permissions.xml");
 
-       List paths = new ArrayList<String>();
-       paths.add("publish/servers/visTestServer/apps");
-       paths.add("publish/clients/visTestClient/apps");
+       ShrinkHelper.exportAppToServer(server, visTest);
+       ShrinkHelper.exportAppToClient(client, visTest);
 
-       archives.put(visTest, paths);
-       return archives;
+       server.startServer();
     }
 
     public static Logger LOG = Logger.getLogger(VisTest.class.getName());
-
-    @Override
-    protected ShrinkWrapSharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
 
     /**
      * Enumeration of locations of target beans
@@ -324,6 +318,7 @@ public class VisTest extends LoggingTest {
         appClientResults = new HashMap<Location, String>();
 
         LibertyClient client = LibertyClientFactory.getLibertyClient("visTestClient");
+        buildShrinkWrap(client);
         ProgramOutput output = client.startClient();
 
         LOG.info("GOT THE CLIENT OUTPUT");
@@ -442,8 +437,7 @@ public class VisTest extends LoggingTest {
      * @throws Exception if there is an error requesting the visibility information or parsing the result.
      */
     private void doTestWithServlet(Location location, Set<Location> visibleLocations) throws Exception {
-        WebBrowser wb = createWebBrowserForTestCase();
-        String response = SHARED_SERVER.getResponse(wb, "/visTestWar/?location=" + location).getResponseBody();
+        String response = HttpUtils.getHttpResponseAsString(server, "/visTestWar/?location=" + location);
 
         checkResult(response, visibleLocations);
     }
@@ -567,6 +561,13 @@ public class VisTest extends LoggingTest {
 
     private Exception parsingException(String line, String response, Throwable cause) {
         return new Exception("Badly formed line: " + line + "\n\nWhole response:\n" + response, cause);
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        if (server != null) {
+            server.stopServer();
+        }
     }
 
 }
