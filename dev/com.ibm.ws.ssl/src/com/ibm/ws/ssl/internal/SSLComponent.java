@@ -46,6 +46,7 @@ import com.ibm.ws.ssl.config.SSLConfigManager;
 import com.ibm.ws.ssl.config.WSKeyStore;
 import com.ibm.ws.ssl.optional.SSLSupportOptional;
 import com.ibm.ws.ssl.protocol.LibertySSLSocketFactory;
+import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
@@ -132,6 +133,9 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         repertoirePIDMap.clear();
         keystoreIdMap.clear();
         keystorePidMap.clear();
+        SSLConfigManager.getInstance().clearSSLConfigMap();
+        KeyStoreManager.getInstance().clearKSMap();
+        AbstractJSSEProvider.clearSSLContextCache();
         processConfig(true);
         this.componentContext = null;
 
@@ -185,6 +189,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         keystoreIdMap.remove(config.getId());
         keystorePidMap.remove(config.getPid());
         KeyStoreManager.getInstance().clearKeyStoreFromMap(config.getId());
+        KeyStoreManager.getInstance().clearKeyStoreFromMap(config.getPid());
         for (Iterator<Map.Entry<String, RepertoireConfigService>> it = repertoireMap.entrySet().iterator(); it.hasNext();) {
 
             RepertoireConfigService rep = it.next().getValue();
@@ -309,7 +314,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
             return;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Processing configuration");
+            Tr.event(tc, "Processing configuration " + updateSSLConfigManager);
         }
 
         boolean isServer = locSvc.resolveString(WsLocationConstants.SYMBOL_PROCESS_TYPE).equals(WsLocationConstants.LOC_PROCESS_TYPE_SERVER);

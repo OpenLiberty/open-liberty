@@ -76,18 +76,20 @@
          id="com.ibm.ws.ssl.repertoire" ibm:alias="ssl">
 
         <AD id="keyStoreRef" name="%keystore" description="%keystore.desc" 
-            required="true" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+            ibm:type="pid" required="true" type="String" ibm:reference="com.ibm.ws.ssl.keystore" />
 
         <AD id="KeyStore.target" name="internal" description="internal use only" 
             ibm:final="true" required="false" type="String" 
-            default="(id=${keyStoreRef})" />
+            default="(service.pid=${keyStoreRef})" />
 
         <AD id="trustStoreRef" name="%truststore" description="%truststore.desc" 
-            required="false" type="String" default="${keyStoreRef}" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+            ibm:type="pid" required="false" type="String" ibm:reference="com.ibm.ws.ssl.keystore" />
+          
+        <AD id="effectiveTrustStore" ibm:variable="trustStoreRef" default="${keyStoreRef}"  name="internal" description="internal" ibm:final="true" type="String"/>
             
         <AD id="TrustStore.target" name="internal" description="internal use only" 
             ibm:final="true" required="false" type="String" 
-            default="(id=${trustStoreRef})" />
+            default="(service.pid=${effectiveTrustStore})" />
 
         <AD id="sslProtocol" name="%repertoire.sslProtocol" description="%repertoire.sslProtocol.desc" 
             required="false" type="String" />

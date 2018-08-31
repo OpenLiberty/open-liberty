@@ -18,6 +18,7 @@ import org.osgi.framework.ServiceRegistration;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
+import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.ws.ssl.config.WSKeyStore;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -73,20 +74,25 @@ public class KeystoreConfig {
     /**
      * Create the new keystore based on the properties provided.
      * Package private.
-     * 
+     *
      * @param properties
      */
     synchronized boolean updateKeystoreConfig(Dictionary<String, Object> props) {
         properties = props;
+        if (id != null) {
+            properties.put(Constants.SSLPROP_ALIAS, id);
+        }
         String location = (String) properties.get(LibertyConstants.KEY_KEYSTORE_LOCATION);
         if (location != null) {
             properties.put(Constants.SSLPROP_KEY_STORE, locSvc.getServiceWithException().resolveString(location));
         }
 
         try {
-            // Try modifying the properties.. 
+            // Try modifying the properties..
             // This may throw if arguments are bad
             wsKeyStore = new WSKeyStore(id, properties, this);
+            KeyStoreManager.getInstance().addKeyStoreToMap(id, wsKeyStore);
+            KeyStoreManager.getInstance().addKeyStoreToMap(pid, wsKeyStore);
             return true;
         } catch (Exception e) {
             wsKeyStore = null;
@@ -97,7 +103,7 @@ public class KeystoreConfig {
     /**
      * Register this as a service in the service registry.
      * Package private.
-     * 
+     *
      * @param ctx Bundle context to register service with.
      */
     synchronized void updateRegistration(BundleContext ctx) {
