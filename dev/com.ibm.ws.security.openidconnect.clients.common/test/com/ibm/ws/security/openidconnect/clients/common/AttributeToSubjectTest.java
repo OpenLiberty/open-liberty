@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -26,7 +26,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
 
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
@@ -35,8 +37,13 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 import test.common.SharedOutputManager;
+import test.common.junit.rules.MaximumJavaLevelRule;
 
 public class AttributeToSubjectTest extends CommonTestClass {
+
+    // Cap this unit test to Java 8 because it relies on legacy cglib which is not supported post JDK 8
+    @ClassRule
+    public static TestRule maxJavaLevel = new MaximumJavaLevelRule(8);
 
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.openidconnect.*=all=enabled");
 
