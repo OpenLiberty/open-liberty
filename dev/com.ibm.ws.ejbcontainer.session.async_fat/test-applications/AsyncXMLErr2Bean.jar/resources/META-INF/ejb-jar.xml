@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+	version="3.1" metadata-complete="false">
+
+	<enterprise-beans>
+		<session>
+			<ejb-name>Style1XMLwithParamsBean</ejb-name>
+			<business-local>com.ibm.ws.ejbcontainer.session.async.err.shared.Style1XMLwithParamsLocal</business-local>
+			<ejb-class>
+				com.ibm.ws.ejbcontainer.session.async.err.xmlerr2.ejb.Style1XMLwithParamsBean
+			</ejb-class>
+			<session-type>Stateless</session-type>
+			<async-method>
+				<method-name>*</method-name>
+				<method-params>
+				    <method-param>int</method-param>
+				    <method-param>long</method-param>
+				</method-params>
+			</async-method>
+			<transaction-type>Container</transaction-type>
+		</session>
+	</enterprise-beans>
+</ejb-jar>
