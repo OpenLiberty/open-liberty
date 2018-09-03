@@ -1,4 +1,6 @@
 package com.ibm.ws.sib.msgstore.deliverydelay;
+import com.ibm.websphere.sib.exception.SIException;
+import com.ibm.ws.sib.msgstore.MessageStoreConstants.MaximumAllowedDeliveryDelayAction;
 
 /*******************************************************************************
  * Copyright (c) 2014 IBM Corporation and others.
@@ -58,4 +60,15 @@ public interface DeliveryDelayable
      * @return true if the object has unlocked itself.
      */
     public boolean deliveryDelayableUnlock(PersistentTransaction tran, long lockID) throws MessageStoreException;
+
+	/**
+	 * Handle a potentially incorrect delivery delay.
+	 * 
+	 * @param action to perform
+	 * @return true if the object was unlocked.
+	 * @throws MessageStoreException 
+	 * @throws SIException 
+	 */
+	public boolean handleInvalidDeliveryDelayable(MaximumAllowedDeliveryDelayAction action) 
+		throws MessageStoreException, SIException;
 }
