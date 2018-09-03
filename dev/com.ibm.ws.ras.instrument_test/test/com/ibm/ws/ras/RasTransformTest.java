@@ -85,7 +85,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
         StringWriter sw = null;
         sw = new StringWriter();
         ClassReader reader = new ClassReader(classBytes);
-        ClassNode directory = new ClassNode(Opcodes.ASM5);
+        ClassNode directory = new ClassNode(Opcodes.ASM7_EXPERIMENTAL);
         ClassVisitor visitor = new TraceClassVisitor(directory, new PrintWriter(sw));
         
         try {
