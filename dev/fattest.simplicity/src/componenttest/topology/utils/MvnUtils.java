@@ -10,16 +10,12 @@
  *******************************************************************************/
 package componenttest.topology.utils;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,6 +31,12 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -42,6 +44,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Assert;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -50,6 +53,8 @@ import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -341,17 +346,22 @@ public class MvnUtils {
      * @throws SAXException
      * @throws XPathExpressionException
      * @throws ParserConfigurationException
+     * @throws TransformerFactoryConfigurationError
+     * @throws TransformerException
      */
-    private static List<String> postProcessTestResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException {
+    private static List<String> postProcessTestResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
 
         List<File> resultsFiles = findJunitResultFiles();
-        Path targetDir = MvnUtils.resultsDir.toPath().resolve("junit");
+        File targetDir = new File(MvnUtils.resultsDir, "junit");
 
-        for (File file : resultsFiles) {
-            Path src = file.toPath();
-            Path target = targetDir.resolve(src.getFileName());
-            Files.copy(src, target, REPLACE_EXISTING);
+        String id;
+        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == null || RepeatTestFilter.CURRENT_REPEAT_ACTION.equals(EmptyAction.ID)) {
+            id = "";
+        } else {
+            id = "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
         }
+
+        copyResultsAndAppendId(targetDir, resultsFiles, id);
 
         // Get the failing tests out of the JUnit result files
         List<String> failingTestsList = getNonPassingTestsNamesList(resultsFiles);
@@ -384,6 +394,43 @@ public class MvnUtils {
         }
 
         return Arrays.asList(resultsFiles);
+    }
+
+    /**
+     * Copy a list of result files to the target directory, appending the id string to both the file name and to test names inside the result XML.
+     *
+     * @param targetDir the target directory
+     * @param resultFiles the result files to modify and copy
+     * @param id the id string to append to the file names and test names
+     * @throws TransformerException
+     */
+    private static void copyResultsAndAppendId(File targetDir, List<File> resultFiles,
+                                               String id) throws ParserConfigurationException, XPathExpressionException, TransformerFactoryConfigurationError, SAXException, IOException, TransformerException {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        XPathExpression xpr = xpath.compile("//testcase/@name");
+
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+
+        for (File file : resultFiles) {
+            Document doc = builder.parse(file);
+            NodeList nodes = (NodeList) xpr.evaluate(doc, XPathConstants.NODESET);
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Attr nameAttr = (Attr) nodes.item(i);
+                nameAttr.setValue(nameAttr.getValue() + id);
+            }
+
+            int extensionStart = file.getName().lastIndexOf(".");
+
+            StringBuilder targetNameBuilder = new StringBuilder();
+            targetNameBuilder.append(file.getName().substring(0, extensionStart));
+            targetNameBuilder.append(id);
+            targetNameBuilder.append(file.getName().substring(extensionStart));
+
+            File targetFile = new File(targetDir, targetNameBuilder.toString());
+
+            transformer.transform(new DOMSource(doc), new StreamResult(targetFile));
+        }
     }
 
     /**
