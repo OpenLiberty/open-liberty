@@ -67,9 +67,8 @@ error.missing.websocket=CWWKC0259E: O aplicativo falhou ao iniciar porque ele re
 error.missing.websocket.explanation=O aplicativo \u00e9 um aplicativo de soquete da web, que requer que um recurso websocket seja configurado no arquivo server.xml.
 error.missing.websocket.useraction=Configure um recurso websocket no arquivo server.xml.
 
-error.webflux.not.supported=CWWKC0260E: N\u00e3o \u00e9 poss\u00edvel iniciar o aplicativo porque o Spring WebFlux n\u00e3o \u00e9 suportado.
-error.webflux.not.supported.explanation=O aplicativo \u00e9 um aplicativo WebFlux. O suporte de programa\u00e7\u00e3o reativo fornecido pelo Spring WebFlux n\u00e3o \u00e9 suportado.
-error.webflux.not.supported.useraction=Configure um aplicativo que n\u00e3o use o Spring WebFlux com o servidor.
+# CWWKC0260E: GOT REMOVED
+
 warning.spring_config.ignored.compression=CWWKC0261W: A compacta\u00e7\u00e3o foi ativada pelo aplicativo. A compacta\u00e7\u00e3o n\u00e3o \u00e9 suportada e a configura\u00e7\u00e3o ser\u00e1 ignorada.
 warning.spring_config.ignored.compression.explanation=A compacta\u00e7\u00e3o n\u00e3o \u00e9 suportada e a configura\u00e7\u00e3o ser\u00e1 ignorada, mas o aplicativo continuar\u00e1 funcionando de outra forma.
 warning.spring_config.ignored.compression.useraction=N\u00e3o \u00e9 necess\u00e1ria a\u00e7\u00e3o do usu\u00e1rio.
@@ -77,3 +76,7 @@ warning.spring_config.ignored.compression.useraction=N\u00e3o \u00e9 necess\u00e
 warning.spring_config.ignored.session=CWWKC0262W: O tempo limite de sess\u00e3o ou a persist\u00eancia de sess\u00e3o foi configurada pelo aplicativo. Essas configura\u00e7\u00f5es de sess\u00e3o devem ser configuradas no arquivo server.xml.
 warning.spring_config.ignored.session.explanation=O tempo limite de sess\u00e3o e a persist\u00eancia de sess\u00e3o devem ser configurados no arquivo server.xml. Essas configura\u00e7\u00f5es de sess\u00e3o do aplicativo ser\u00e3o ignoradas.
 warning.spring_config.ignored.session.useraction=Configure o tempo limite da sess\u00e3o e a persist\u00eancia de sess\u00e3o no arquivo server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: A vers\u00e3o {0} do Spring Boot n\u00e3o \u00e9 suportada. Uma vers\u00e3o do Spring Boot dentro do intervalo {1} \u00e9 necess\u00e1ria.
+error.wrong.spring.boot.version.explanation=Uma vers\u00e3o do Spring Boot que n\u00e3o \u00e9 suportada pelo servidor foi detectada.
+error.wrong.spring.boot.version.useraction=Atualize o aplicativo Spring Boot para usar uma vers\u00e3o que esteja dentro do intervalo de vers\u00e3o necess\u00e1rio.
