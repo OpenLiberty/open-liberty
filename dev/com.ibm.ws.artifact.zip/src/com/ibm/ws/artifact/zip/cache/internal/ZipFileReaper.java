@@ -1044,7 +1044,7 @@ public class ZipFileReaper {
                 } catch (Exception e) {
                     // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
                     // Either way, the proper state should be closed.
-                    close(path);
+                    data.enactFullClose( SystemUtils.getNanoTime() );
                     throw e;
                 }
 
@@ -1059,7 +1059,8 @@ public class ZipFileReaper {
                 } catch (Exception e) {
                     // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
                     // Either way, the proper state should be closed.
-                    close(path);
+                    data.enactClose( SystemUtils.getNanoTime(), true );
+                    data.enactFullClose( SystemUtils.getNanoTime() );
                     throw e;
                 }
 
