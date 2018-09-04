@@ -132,7 +132,7 @@ public class InfoVisitor extends ClassVisitor {
         private List<AnnotationInfoImpl>[] paramAnnotations;
 
         public InfoMethodVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7_EXPERIMENTAL);
         }
 
         void setMethodInfo(MethodInfoImpl mii) {
@@ -238,7 +238,7 @@ public class InfoVisitor extends ClassVisitor {
         private List<AnnotationInfoImpl> annotations;
 
         public InfoFieldVisitor() {
-            super(Opcodes.ASM5);
+            super(Opcodes.ASM7_EXPERIMENTAL);
         }
 
         void setFieldInfo(FieldInfoImpl fii) {
@@ -308,7 +308,7 @@ public class InfoVisitor extends ClassVisitor {
     //
 
     public InfoVisitor(InfoStoreImpl infoStore, String externalName) {
-        super(Opcodes.ASM5);
+        super(Opcodes.ASM7_EXPERIMENTAL);
 
         this.infoStore = infoStore;
         this.externalName = externalName;
