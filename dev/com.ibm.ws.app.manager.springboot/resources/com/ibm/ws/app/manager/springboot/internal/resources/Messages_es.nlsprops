@@ -67,9 +67,7 @@ error.missing.websocket=CWWKC0259E: La aplicaci\u00f3n no ha podido iniciarse po
 error.missing.websocket.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n de socket web y necesita que en el archivo server.xml se configure una caracter\u00edstica websocket.
 error.missing.websocket.useraction=Configure una caracter\u00edstica websocket en el archivo server.xml.
 
-error.webflux.not.supported=CWWKC0260E: No se puede iniciar la aplicaci\u00f3n porque Spring WebFlux no es compatible.
-error.webflux.not.supported.explanation=La aplicaci\u00f3n es una aplicaci\u00f3n WebFlux. El soporte de programa reactivo proporcionado por Spring WebFlux no es compatible.
-error.webflux.not.supported.useraction=Configure una aplicaci\u00f3n que no utilice Spring WebFlux con el servidor.
+# CWWKC0260E: GOT REMOVED
 
 warning.spring_config.ignored.compression=CWWKC0261W: La aplicaci\u00f3n ha aplicaci\u00f3n compresi\u00f3n. No se admite la compresi\u00f3n y el valor se ignora.
 warning.spring_config.ignored.compression.explanation=No se admite la compresi\u00f3n y el valor se ignora, pero la aplicaci\u00f3n continuar\u00e1 funcionando en cualquier caso.
@@ -78,3 +76,7 @@ warning.spring_config.ignored.compression.useraction=No es necesaria ninguna acc
 warning.spring_config.ignored.session=CWWKC0262W: Se ha configurado tiempo de espera de sesi\u00f3n o persistencia de sesi\u00f3n en la aplicaci\u00f3n. Estos valores de sesi\u00f3n se deben configurar en el archivo server.xml.
 warning.spring_config.ignored.session.explanation=Los valores de tiempo de espera de sesi\u00f3n y persistencia de sesi\u00f3n se deben configurar en el archivo server.xml. Estos valores de sesi\u00f3n de las aplicaciones se ignorar\u00e1n.
 warning.spring_config.ignored.session.useraction=Configure los valores de tiempo de espera de sesi\u00f3n y persistencia de sesi\u00f3n en el archivo server.xml.
+
+error.wrong.spring.boot.version=CWWKC0263E: La versi\u00f3n de Spring Boot {0} no est\u00e1 soportada. Es necesario tener una versi\u00f3n de Spring Boot dentro del rango {1}.
+error.wrong.spring.boot.version.explanation=Se ha detectado una versi\u00f3n de Spring Boot que no est\u00e1 soportada por el servidor.
+error.wrong.spring.boot.version.useraction=Actualice la aplicaci\u00f3n Spring Boot para que utilice una versi\u00f3n de Spring Boot que est\u00e9 dentro del rango de versiones necesario.

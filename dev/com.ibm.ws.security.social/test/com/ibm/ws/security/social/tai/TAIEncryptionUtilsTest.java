@@ -39,9 +39,11 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.rules.TestRule;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.social.SocialLoginConfig;
@@ -49,8 +51,13 @@ import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.test.CommonTestClass;
 
 import test.common.SharedOutputManager;
+import test.common.junit.rules.MaximumJavaLevelRule;
 
 public class TAIEncryptionUtilsTest extends CommonTestClass {
+	
+	// Cap this unit test to Java 8 because it relies on legacy cglib which is not supported post JDK 8
+	@ClassRule
+	public static TestRule maxJavaLevel = new MaximumJavaLevelRule(8);
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.social.*=all");
 

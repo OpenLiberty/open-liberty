@@ -684,6 +684,10 @@ warning.server.status.invalid.targets=CWWKE0946W: Une demande de statut a \u00e9
 warning.server.status.invalid.targets.explanation=Un utilisateur a \u00e9mis une demande de statut avec une liste de cibles vide dans l'option target. La demande a \u00e9t\u00e9 ex\u00e9cut\u00e9e, mais aucune action n'a \u00e9t\u00e9 engag\u00e9e.
 warning.server.status.invalid.targets.useraction=Sp\u00e9cifiez dans l'option target la liste des composants pour lesquels v\u00e9rifier le statut. Pour v\u00e9rifier le statut cumul\u00e9 de tous les composants pouvant \u00eatre mis en pause sur le serveur, \u00e9mettez la demande de statut sans l'option target.
 
+warning.package.root.invalid=CWWKE0947W: L'option --server-root associ\u00e9e \u00e0 un argument vide n'est pas admise lorsque des extensions de produit sont install\u00e9es. L'argument par d\u00e9faut de wlp sera utilis\u00e9.
+warning.package.root.invalid.explanation=L'utilisateur a \u00e9mis une demande de package avec une option --server-root sp\u00e9cifiant un argument vide alors que des extensions de produit ont \u00e9t\u00e9 d\u00e9tect\u00e9es. La racine de serveur par d\u00e9faut de wlp sera utilis\u00e9e.
+warning.package.root.invalid.useraction=Aucune action n'est requise.
+
 info.serverStarting=D\u00e9marrage du serveur {0}.
 info.serverStarted=Le serveur {0} a d\u00e9marr\u00e9.
 info.serverStartedWithPID=Le serveur {0} a d\u00e9marr\u00e9 avec l''ID de processus {1}.

@@ -10,68 +10,107 @@
  *******************************************************************************/
 package com.ibm.ws.logging.data;
 
-import java.util.ArrayList;
-
 public class GenericData {
 
-    private final ArrayList<KeyValuePair> pairs;
+    private final static int DEFAULT_SIZE = 16;
+
+    private KeyValuePair[] pairs;
 
     private String sourceType;
 
     private String jsonMessage = null;
 
+    private Integer lastIndex = -1;
+
     public GenericData() {
-        pairs = new ArrayList<KeyValuePair>();
+        pairs = new KeyValuePair[DEFAULT_SIZE];
     }
 
     public GenericData(int size) {
-        pairs = new ArrayList<KeyValuePair>(size);
-    }
-
-    public void modifyPair(int index, String key, String value) {
-        KeyValueStringPair kvp = new KeyValueStringPair(key, value);
-        pairs.set(index, kvp);
+        pairs = new KeyValuePair[size];
     }
 
     public void setPair(int index, String key, String value) {
         KeyValueStringPair kvp = new KeyValueStringPair(key, value);
-        pairs.add(index, kvp);
+        ensureCapacityAndSetPair(index, kvp);
     }
 
     public void setPair(int index, String key, int value) {
         KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
-        pairs.add(index, kvp);
+        ensureCapacityAndSetPair(index, kvp);
     }
 
     public void setPair(int index, String key, long value) {
         KeyValueLongPair kvp = new KeyValueLongPair(key, value);
-        pairs.add(index, kvp);
+        ensureCapacityAndSetPair(index, kvp);
     }
 
     public void setPair(int index, KeyValuePairList kvps) {
-        pairs.add(index, kvps);
+        ensureCapacityAndSetPair(index, kvps);
+
     }
 
     public void addPair(String key, String value) {
         KeyValueStringPair kvp = new KeyValueStringPair(key, value);
-        pairs.add(kvp);
+        ensureCapacityAndAddPair(kvp);
     }
 
     public void addPair(String key, int value) {
         KeyValueIntegerPair kvp = new KeyValueIntegerPair(key, value);
-        pairs.add(kvp);
+        ensureCapacityAndAddPair(kvp);
     }
 
     public void addPair(String key, long value) {
         KeyValueLongPair kvp = new KeyValueLongPair(key, value);
-        pairs.add(kvp);
+        ensureCapacityAndAddPair(kvp);
     }
 
     public void addPair(KeyValuePairList kvps) {
-        pairs.add(kvps);
+        ensureCapacityAndAddPair(kvps);
     }
 
-    public ArrayList<KeyValuePair> getPairs() {
+    /* Resizes pairs array when full */
+    private void ensureCapacityAndAddPair(KeyValuePair kvp) {
+        if (lastIndex + 1 < pairs.length) {
+            pairs[++lastIndex] = kvp;
+        } else {
+            pairs = java.util.Arrays.copyOf(pairs, Math.max(pairs.length + (pairs.length >> 1), DEFAULT_SIZE));
+            pairs[++lastIndex] = kvp;
+        }
+    }
+
+    /* Resizes pairs array when full */
+    private void ensureCapacityAndSetPair(int index, KeyValuePair kvp) {
+        if (index < pairs.length) {
+            pairs[index] = kvp;
+        } else {
+            pairs = java.util.Arrays.copyOf(pairs, Math.max(index + (index >> 1), DEFAULT_SIZE));
+            pairs[index] = kvp;
+        }
+        setLastIndex(index);
+    }
+
+    /* Ensures that addPair() will not override values set by setPair() */
+    private void setLastIndex(int index) {
+        lastIndex = (index > lastIndex) ? index : lastIndex;
+    }
+
+    protected String getStringValue(int index) {
+        KeyValueStringPair kvp = (KeyValueStringPair) pairs[index];
+        return kvp == null ? null : kvp.getStringValue();
+    }
+
+    protected int getIntValue(int index) {
+        KeyValueIntegerPair kvp = (KeyValueIntegerPair) pairs[index];
+        return kvp.getIntValue();
+    }
+
+    protected long getLongValue(int index) {
+        KeyValueLongPair kvp = (KeyValueLongPair) pairs[index];
+        return kvp.getLongValue();
+    }
+
+    public KeyValuePair[] getPairs() {
         return pairs;
     }
 

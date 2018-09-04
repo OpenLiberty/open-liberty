@@ -46,7 +46,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="Google" />
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://accounts.google.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                <Option label="client_secret_basic" value="client_secret_basic" />
                <Option label="client_secret_post"  value="client_secret_post" /> 
@@ -144,7 +144,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="Facebook" /> 
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://www.facebook.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                 <Option label="client_secret_basic" value="client_secret_basic" />
                 <Option label="client_secret_post"  value="client_secret_post" /> 
@@ -187,7 +187,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="GitHub" /> 
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://github.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                <Option label="client_secret_basic" value="client_secret_basic" />
                <Option label="client_secret_post"  value="client_secret_post" />
@@ -230,7 +230,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="Linkedin" /> 
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://www.linkednin.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                 <Option label="client_secret_basic" value="client_secret_basic" />
                 <Option label="client_secret_post"  value="client_secret_post" />
@@ -266,7 +266,7 @@
             	 </AD>
             	-->
        
-        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                 <Option label="client_secret_basic" value="client_secret_basic" />
                 <Option label="client_secret_post"  value="client_secret_post" />               
@@ -355,7 +355,7 @@
         <AD id="signatureAlgorithm" name="%signatureAlgorithm"  description="%signatureAlgorithm.desc"
             required="false" type="String"  default="RS256" /> 
         <!-- todo: might need a name for this next one in metatype.properties after 2q --> 
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                <Option label="client_secret_basic" value="client_secret_basic" />
                <Option label="client_secret_post"  value="client_secret_post" /> 

@@ -41,8 +41,8 @@ public class ShrinkWrapSharedServer extends SharedServer {
      * Creates a {@link SharedServer} then runs any methods in testClass annotated with
      * @BuildShrinkWrap and copies the returned Archives to the servers 
      *
-     * Methods must be static, have no paramaters, return: Archive, Archive[], Map<Archive,String>. 
-     * If Archive or Archive[] is returned the returned values will be placed to the server's 
+     * Methods must be static, have no paramaters, return: Archive, Archive[], List<Archive> Map<Archive,String>. 
+     * If Archive, List<Archive> or Archive[] is returned the returned values will be placed to the server's 
      * dropins folders. If a map is returned each archive will be placed whereever the
      * string points too.
      * 
@@ -56,7 +56,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
     }
 
     private void getArchivesViaAnnotation(String serverName, Class testClass) {
-        String dropinsPath = "publish/servers/"+serverName+"/dropins";
+        String dropinsPath = "/dropins";
 
         for (Method method : testClass.getDeclaredMethods()){
             if (method.isAnnotationPresent(BuildShrinkWrap.class)){
@@ -71,6 +71,16 @@ public class ShrinkWrapSharedServer extends SharedServer {
                         for (Archive a : archives) {
                             if (a != null) { 
                               archivesAndPaths.put(a, Arrays.asList(dropinsPath));
+                            }
+                        }
+                    } else if (archive instanceof List<?>){
+                        List<?> archives = (List<?>) archive;
+                        for (Object a : archives) {
+                            if (! (a instanceof Archive)) {
+                                throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a List, but an entry was not an Archive");
+                            }
+                            if (a != null) { 
+                              archivesAndPaths.put((Archive) a, Arrays.asList(dropinsPath));
                             }
                         }
                     } else if (archive instanceof Map<?,?>) { 
@@ -154,7 +164,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
         super(serverName);
 
         archivesAndPaths = new HashMap<Archive,List<String>>();
-        String dropinsPath = "publish/servers/"+serverName+"/dropins";
+        String dropinsPath = "/dropins";
         
         for (Archive archive : shirnkWrapArchives) {
             archivesAndPaths.put(archive, Arrays.asList(dropinsPath));
@@ -188,7 +198,11 @@ public class ShrinkWrapSharedServer extends SharedServer {
             //This takes place before the servers are copied, so we do not need to worry about
             //moving archives ourselves beyond this. 
             for (String path : archivesAndPaths.get(archive)) { 
-                ShrinkHelper.exportArtifact(archive, path);
+                try {
+                    ShrinkHelper.exportToServer(getLibertyServer(), path, archive);
+                } catch (Exception e) {
+                    throw new RuntimeException(e); //TODO something better here. 
+                }
             }
         }
         super.before();
@@ -199,7 +213,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
     //Ported from WS-CD open. TODO, investigate this further. 
     @Override 
     protected void after() {
-       if (shutdownAfterTest &&getLibertyServer().isStarted()) {
+       if (shutdownAfterTest && getLibertyServer().isStarted()) {
             try { 
                 getLibertyServer().stopServer();
             } catch (Exception e) {

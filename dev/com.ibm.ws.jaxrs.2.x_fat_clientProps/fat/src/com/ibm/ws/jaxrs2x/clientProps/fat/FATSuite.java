@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 KeepAliveTest20.class,
-                KeepAliveTest21.class
+                KeepAliveTest21.class,
+                CxfClientPropsTest.class
 })
 public class FATSuite {}

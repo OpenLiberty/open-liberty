@@ -249,7 +249,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: Die Benutzerregistry-Operation konnte ni
 MALFORMED_SEARCH_EXPRESSION.explanation=Die Suchoperation kann nicht ausgef\u00fchrt werden, weil der Suchausdruck nicht g\u00fcltig ist.
 MALFORMED_SEARCH_EXPRESSION.useraction=Geben Sie einen g\u00fcltigen Suchausdruck an.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden, weil in der Benutzerregistry der folgende zugrundeliegende Fehler aufgetreten ist: {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: Die Benutzerregistry-Operation konnte nicht ausgef\u00fchrt werden, weil in der Benutzerregistry der folgende zugrundeliegende Fehler aufgetreten ist: {0}
 ENTITY_SEARCH_FAILED.explanation=Die Entit\u00e4t konnte wegen der von der zugrundeliegenden Registry angegebenen Ursache nicht durchsucht werden.
 ENTITY_SEARCH_FAILED.useraction=Bestimmen Sie die Fehlerursache anhand der Ursachennachricht und der Tracedatei. Beheben Sie den Fehler und wiederholen Sie dann die Operation.
 
