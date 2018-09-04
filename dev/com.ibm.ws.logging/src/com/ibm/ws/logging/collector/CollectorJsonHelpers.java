@@ -286,7 +286,7 @@ public class CollectorJsonHelpers {
     }
 
     protected static StringBuilder startAuditJson(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(512);
+        StringBuilder sb = new StringBuilder(2048);
 
         if (startAuditJson != null) {
             sb.append(startAuditJson);
@@ -301,7 +301,7 @@ public class CollectorJsonHelpers {
     }
 
     protected static StringBuilder startAuditJson1_1(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(512);
+        StringBuilder sb = new StringBuilder(2048);
 
         if (startAuditJson1_1 != null) {
             sb.append(startAuditJson1_1);
