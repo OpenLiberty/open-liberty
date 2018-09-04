@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.messaging.jms20security_fat" default="buildandrun" basedir=".">
+	<property name="javac.boot.classpath" value="1.7"/>
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+
+    
+	<property name="shared.resource.dir" value="${liberty.dir}/usr/shared/resources" />
+	<property name="features.dir" value="${basedir}/publish/files/features" />
+	
+	<!-- override the standard build and run and call build for the messaging test prereqs This for building the dummyxa-->
+	
+
+	<!--<target name="private">
+		<ant inheritAll="false" antfile="build-private.xml"/> 
+	</target> -->
+	
+	<target name="addRequiredLibraries">
+
+
+		<!-- Copy our bundle of utility classes in to autoFVT.zip -->
+		            
+		<!-- Copy our bundle of utility classes in to autoFVT.zip -->
+		<mkdir dir="${features.dir}"/>
+		<copy todir="${required.lib.dir}">
+		<fileset dir="../build.image/wlp/lib" includes="com.ibm.ws.logging_*.jar"/>
+	</copy>			
+
+	</target>
+			
+	<target name="addAutoInstallApplications" description="Automatically Install applications on LibertyServer instance creation">
+		<echo message="create apps" />
+				
+		<mkdir dir="${basedir}/publish/servers/TestServer/apps" />	
+				<move file="${basedir}/publish/files/jmsmdb.zip" tofile="${basedir}/publish/servers/TestServer/apps/jmsmdb.jar"/>	
+				<zip destfile="${basedir}/publish/servers/TestServer/apps/jmsapp.ear" >
+						           <!-- <zipfileset dir="${basedir}/publish/files/jmsapp" includes="**"/> -->
+						        	<zipfileset dir="${basedir}/publish/servers/TestServer/apps" includes="*.jar"/>
+				  </zip>		
+				
+		
+		<mkdir dir="${basedir}/publish/servers/TestServer/dropins"/>
+	
+					<copy todir="${basedir}/publish/servers/TestServer/dropins">
+								    	<fileset dir="../com.ibm.ws.security.registry_test.servlet/build/test-application" includes="*.war"/>
+								    </copy>
+			
+			
+		
+	
+		<move file="${basedir}/publish/files/JMSContext.zip" tofile="${basedir}/publish/servers/TestServer/dropins/JMSContext.war"/>
+		<move file="${basedir}/publish/files/JMSConsumer.zip" tofile="${basedir}/publish/servers/TestServer/dropins/JMSConsumer.war"/>
+		<move file="${basedir}/publish/files/TemporaryQueue.zip" tofile="${basedir}/publish/servers/TestServer/dropins/TemporaryQueue.war"/>
+		<move file="${basedir}/publish/files/DurableUnshared.zip" tofile="${basedir}/publish/servers/TestServer/dropins/DurableUnshared.war"/>
+		<move file="${basedir}/publish/files/JMSContextInject.zip" tofile="${basedir}/publish/servers/TestServer/dropins/JMSContextInject.war"/>
+		<move file="${basedir}/publish/files/JMSDCFSecurity.zip" tofile="${basedir}/publish/servers/TestServer/dropins/JMSDCFSecurity.war"/>
+		<move file="${basedir}/publish/files/mdbapp.zip" tofile="${basedir}/publish/servers/TestServer/dropins/mdbapp.war"/>
+		<delete>
+						            <fileset dir="${basedir}/publish/servers/TestServer/apps">
+						                <include name="jmsmdb.jar"/>
+						            </fileset>
+						        </delete>
+		
+	
+		
+</target>
+</project>

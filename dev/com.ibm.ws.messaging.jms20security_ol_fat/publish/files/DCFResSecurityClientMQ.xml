@@ -1,0 +1,176 @@
+<server>
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jndi-1.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+      <feature>wasJmsServer-1.0</feature>   
+	  <feature>wasJmsSecurity-1.0</feature>  
+	 
+ 	  <feature>testjmsinternals-1.0</feature>
+ 	  
+	     
+    </featureManager>
+
+    
+	<include location="../fatTestPorts.xml"/>
+		
+    <variable name="onError" value="FAIL"/>
+    
+    <wasJmsOutbound id="BootstrapSecureMessaging" useSSL="true">
+   </wasJmsOutbound>
+    
+    <logging 
+  traceSpecification="*=info:logservice=all:SIBMessageTrace=all"
+ maxFileSize="200"
+    />
+    	<keyStore id="defaultKeyStore" location="mykey.jks" type="JKS" password="key123"/>
+    
+  
+	
+	    <basicRegistry id="basic" realm="customRealm">
+		<user name="user1" password="user1pwd" />
+		<user name="user2" password="user2pwd" />
+		<user name="user3" password="user3pwd" />
+		<group name="Testers">
+			<member name="user3" />
+		</group>
+	</basicRegistry>
+
+    <messagingEngine>
+
+		<queue id="QUEUE1" >
+		</queue>
+		
+		<queue id="QUEUE2">
+		</queue>
+		
+		<queue id="QUEUE3">
+		</queue>
+		
+		<queue id="QUEUE4">
+		</queue>
+			<topicSpace id="NewTopic1">			
+		</topicSpace>
+	
+		<topicSpace id="NewTopic2">			
+		</topicSpace>
+		
+		<topicSpace id="NewTopic3">			
+		</topicSpace>
+		
+	<messagingSecurity>
+			<role name="developer">
+				<queuePermission queueRef="QUEUE1">
+					<action>SEND</action>
+					<action>BROWSE</action>
+					<action>RECEIVE</action>
+				</queuePermission>
+				
+				<queuePermission queueRef="QUEUE2">
+					<action>SEND</action>
+					<action>BROWSE</action>
+					<action>RECEIVE</action>
+				</queuePermission>
+				
+				<queuePermission queueRef="QUEUE3">
+					<action>SEND</action>
+					<action>BROWSE</action>
+					<action>RECEIVE</action>
+				</queuePermission>
+				
+				<queuePermission queueRef="QUEUE4">
+					<action>SEND</action>
+					<action>BROWSE</action>
+					<action>RECEIVE</action>
+				</queuePermission>
+				
+				<topicPermission topicSpaceRef="NewTopic1" topicName="testTopic">
+					<action>ALL</action>
+				</topicPermission>
+				
+				<topicPermission topicSpaceRef="NewTopic3" topicName="testTopic3">
+					<action>ALL</action>
+				</topicPermission>
+				
+				<topicPermission topicSpaceRef="NewTopic2" topicName="testTopic2">
+					<action>ALL</action>
+				</topicPermission>
+				<topicPermission topicSpaceRef="Default.Topic.Space" topicName="_tempTopic" > 
+					<action>ALL</action>
+				</topicPermission>
+				
+				<tempDestinationPermission prefix="TEMP">
+					<action>ALL</action>
+				</tempDestinationPermission>
+				<tempDestinationPermission prefix="Qtemp">
+					<action>CREATE</action>
+					<action>SEND</action>
+					<action>RECEIVE</action>
+				</tempDestinationPermission>
+				<tempDestinationPermission prefix="Ttemp">
+					<action>CREATE</action>
+					<action>SEND</action>
+					<action>RECEIVE</action>
+				</tempDestinationPermission>
+				
+				<user name="user1" /> 
+			 	<group name="Testers" /> 	
+			</role>
+			
+	    </messagingSecurity>
+		
+
+	 </messagingEngine>
+   
+
+   
+
+<jmsConnectionFactory id="DefaultJMSConnectionFactory">
+			<properties.wmqJms 
+		userName="user1" password="user1pwd"
+	  hostName="localhost" 
+	  port="1414"
+	  channel="MQClient"
+	  username=""
+	  queueManager="qm1"/>
+</jmsConnectionFactory>
+
+    <jmsQueue jndiName="jndi_INPUT_Q">
+      <properties.wasJms 	queueName="QUEUE1" 
+								timeToLive="500000"  
+								  />
+    </jmsQueue>
+    
+    <jmsQueue jndiName="jndi_INPUT_Q1">
+      <properties.wasJms 	queueName="QUEUE2" 
+								
+								  />
+    </jmsQueue>
+    
+        <jmsQueue jndiName="jndi_INPUT_Q2">
+      <properties.wasJms 	queueName="QUEUE3" 
+								
+								  />
+    </jmsQueue>
+    
+    <jmsQueue jndiName="jndi_INPUT_Q3">
+      <properties.wasJms 	queueName="QUEUE4" 
+								
+								  />
+    </jmsQueue>
+    
+      <jmsTopic jndiName="eis/topic1">
+      <properties.wasJms topicSpace="NewTopic1" topicName="testTopic"/>
+    </jmsTopic>
+    <jmsTopic jndiName="eis/topic2">
+      <properties.wasJms topicSpace="NewTopic2" topicName="testTopic2" />
+    </jmsTopic>
+    
+    <jmsTopic jndiName="eis/topic3">
+      <properties.wasJms topicSpace="NewTopic3" topicName="testTopic3" />
+    </jmsTopic>
+    
+
+    
+</server>
+
