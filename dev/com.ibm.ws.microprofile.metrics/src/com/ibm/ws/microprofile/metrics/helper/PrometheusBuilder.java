@@ -24,14 +24,13 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.Constants;
-import com.ibm.ws.microprofile.metrics.MetricsHandler;
 
 /**
  *
  */
 public class PrometheusBuilder {
 
-    private static final TraceComponent tc = Tr.register(MetricsHandler.class);
+    private static final TraceComponent tc = Tr.register(PrometheusBuilder.class);
 
     private static final String QUANTILE = "quantile";
 

@@ -125,7 +125,7 @@ ANNO_CLASSSOURCE_CLOSE4_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A jar file path name
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION=CWWKC0012W: [ {0} ]: Das \u00d6ffnen von [{1}] ist mit einer Ausnahme fehlgeschlagen.
-ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Die Datei wurde als JAR-Datei ge\u00f6ffnet, und diese Aktion hat eine Ausnahme ausgel\u00f6st.
+ANNO_CLASSSOURCE_OPEN4_EXCEPTION.explanation=Die Datei wurde als JAR-Datei ge\u00f6ffnet und diese Aktion hat eine Ausnahme ausgel\u00f6st.
 ANNO_CLASSSOURCE_OPEN4_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
 
 # # {0} A hashcode id used to identify the object emitting the message
@@ -252,7 +252,7 @@ ANNO_CREATE_READER_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh
 # # {1} a parameter name
 # # {2} a parameter value
 ANNO_INFOVISIT_INVALID_STATE=CWWKC0031W: Interner Statusfehler: Visitor [ {0} ] [ {1} ] wird auf [ {2} ] gesetzt.
-ANNO_INFOVISIT_INVALID_STATE.explanation=Bei der Verarbeitung einer Annotation ist ein Fehler aufgetreten, weil das visitor-Objekt ung\u00fcltig ist.
+ANNO_INFOVISIT_INVALID_STATE.explanation=Bei der Verarbeitung einer Annotation ist ein Fehler aufgetreten, weil das Visitor-Objekt ung\u00fcltig ist.
 ANNO_INFOVISIT_INVALID_STATE.useraction=CMSG0001 
 
 # # {0} A hashcode id used to identify the object emitting the message
@@ -343,7 +343,7 @@ ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Beim Versuch, eine Klasse nach Kla
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Suchen Sie in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
 
 ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Beim Erstellen eines Klassenbytecodelesers f\u00fcr die Klasse [ {0} ] ist eine Ausnahme eingetreten.
-ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Beim Vorbereiten eines Klassenbytecodelesers ist ein Problem aufgetreten. Die Bytecodewerte f\u00fcr diese Klasse sind m\u00f6glicherweise nicht g\u00fcltig, oder die Klassendatei ist nicht lesbar. Deshalb sind die Klassen- und Annotationsdaten f\u00fcr diese Klasse nicht verf\u00fcgbar, und das Modul, das diese Klasse verwendet, funktioniert m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
+ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Beim Vorbereiten eines Klassenbytecodelesers ist ein Problem aufgetreten. Die Bytecodewerte f\u00fcr diese Klasse sind m\u00f6glicherweise nicht g\u00fcltig oder die Klassendatei ist nicht lesbar. Deshalb sind die Klassen- und Annotationsdaten f\u00fcr diese Klasse nicht verf\u00fcgbar und das Modul, das diese Klasse verwendet, funktioniert m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
 ANNO_TARGETS_FAILED_TO_CREATE_READER.useraction=\u00dcberpr\u00fcfen Sie den Inhalt der Klassendatei, die den Fehler verursacht. Ersetzen Sie die Klassendatei gegebenenfalls durch eine Klassendatei mit g\u00fcltigen Bytecodes. Suchen Sie au\u00dferdem in der Ausnahme und der zugeh\u00f6rigen FFDC-Nachricht nach weiteren Informationen.
 
 ANNO_TARGETS_RESIDUAL_PACKAGE=CWWKC0050W: Interner Fehler beim Scannen der Klasse: Der Visitor [ {0} ] zeigt einen nicht aufgel\u00f6sten Paketnamen [ {2} ] beim Scannen der Klasse [ {1} ].
@@ -378,7 +378,7 @@ ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Inkonsistenz interner Daten: Die bid
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001 
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
-ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: In der Zeichenfolgetabelle [ {0} ] ist bei der Verarbeitung des Werts [ {1} ] des Typs [ {2} ] ein Fehler aufgetreten. Der Wert darf keinen Backslash (''\\'\') enthalten.
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: In der Zeichenfolgetabelle [ {0} ] ist bei der Verarbeitung des Werts [ {1} ] des Typs [ {2} ] ein Fehler aufgetreten. Der Wert darf keinen Backslash (''\\'') enthalten.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=Der Wert hat einen ung\u00fcltigen Inhalt f\u00fcr die erwartete Verwendung. Der Wert wird m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df verarbeitet. Das zugeordnete Modul funktioniert m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Die Daten des Moduls m\u00fcssen gepr\u00fcft werden, um sicherzustellen, dass der angegebene Wert g\u00fcltig ist.
 

@@ -166,7 +166,6 @@ public class Constants {
     public final static String getAuthTypeJaspi = "getAuthType: JASPI_AUTH";
     public final static String getAuthTypeForm = "getAuthType: FORM";
     public final static String getAuthTypeNull = "getAuthType: null";
-    public final static String getAuthTypeJSR375Basic = "getAuthType: BASIC_AUTH";
     public final static String getRunAsSubjectNull = "RunAsSubject: null";
     public final static String isManadatoryFalse = "isManadatory=false";
     public final static String isManadatoryTrue = "isManadatory=true";

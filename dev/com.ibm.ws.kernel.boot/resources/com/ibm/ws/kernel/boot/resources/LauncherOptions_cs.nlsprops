@@ -167,4 +167,7 @@ option-desc.os=\tUv\u00e1d\u00ed opera\u010dn\u00ed syst\u00e9my, kter\u00e9 m\u
 \tTato volba plat\u00ed pouze pro operace s bal\u00edkem a lze ji pou\u017e\u00edt pouze   \n\
 \ts volbou --include=minify. Pokud opera\u010dn\u00ed syst\u00e9m vylou\u010d\u00edte,\n\
 \tnem\u016f\u017eete ho p\u0159i pozd\u011bj\u0161\u00edm opakov\u00e1n\u00ed operace minify s archivem  \n\
-\tzahrnout. 
+\tzahrnout.
+#------------------------------\n at 72 chars -- leading tab-----------\n\# 
+option-key.no-password=\ \ \ \ --\u017e\u00e1dn\u00e9 heslo
+option-desc.no-password=\tZak\u00e1zat generov\u00e1n\u00ed v\u00fdchoz\u00edho hesla \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f

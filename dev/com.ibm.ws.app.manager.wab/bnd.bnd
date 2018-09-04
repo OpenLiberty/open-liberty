@@ -21,16 +21,16 @@ Private-Package: com.ibm.ws.app.manager.wab*
 -dsannotations:, \
   com.ibm.ws.app.manager.wab.internal.WABInstaller, \
   com.ibm.ws.app.manager.wab.internal.WABExtensionFactory
-  
+
 
 Export-Package: com.ibm.wsspi.wab.configure, \
     com.ibm.ws.app.manager.wab.helper
 Import-Package: \
     com.ibm.ws.app.manager.module.internal, \
     *
-    
+
 Include-Resource: OSGI-INF=resources/OSGI-INF
-    
+
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.classesExcludes: com/ibm/ws/app/manager/wab/internal/resources/*.class
@@ -48,6 +48,7 @@ instrument.classesExcludes: com/ibm/ws/app/manager/wab/internal/resources/*.clas
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.app.manager.module;version=latest,\
+    com.ibm.ws.runtime.update,\
 	com.ibm.ws.threading,\
 	com.ibm.websphere.appserver.spi.javaeedd;version=latest,\
 	com.ibm.ws.eba.wab.integrator;version=latest,\

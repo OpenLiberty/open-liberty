@@ -137,14 +137,24 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             }
             authResult = jaspiAuthenticator.authenticate(webRequest);
         }
-        if (authResult.getStatus() != AuthResult.CONTINUE) {
+        AuthResult result = authResult.getStatus();
+        if (result != AuthResult.CONTINUE) {
             if (!isNewAuth) {
-                String authHeader = webRequest.getHttpServletRequest().getHeader("Authorization");
-                if (authHeader != null && authHeader.startsWith("Basic ")) {
-                    String basicAuthHeader = decodeCookieString(authHeader.substring(6));
-                    int index = basicAuthHeader.indexOf(':');
-                    String uid = basicAuthHeader.substring(0, index);
-                    authResult.setAuditCredValue(uid);
+                if (authResult.getAuditAuthConfigProviderAuthType() == "BASIC") {
+                    // check BA header, and if it exists, use denied and set username, otherwise, challenge
+                    String authHeader = webRequest.getHttpServletRequest().getHeader("Authorization");
+                    if (authHeader != null && authHeader.startsWith("Basic ")) {
+                        String basicAuthHeader = decodeCookieString(authHeader.substring(6));
+                        int index = basicAuthHeader.indexOf(':');
+                        String uid = basicAuthHeader.substring(0, index);
+                        authResult.setAuditCredValue(uid);
+                    }
+                    if (result == AuthResult.SEND_401) {
+                        authResult.setAuditOutcome(AuditEvent.OUTCOME_CHALLENGE);
+                    }
+                }
+                if (result == AuthResult.RETURN) {
+                    authResult.setAuditOutcome(AuditEvent.OUTCOME_DENIED);
                 }
                 authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
             } else {
@@ -157,7 +167,8 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     private AuthenticationResult authenticateForFormMechanism(WebRequest webRequest, HashMap<String, Object> props, WebAuthenticator jaspiAuthenticator) {
         AuthenticationResult authResult;
         try {
-            authResult = jaspiAuthenticator.authenticate(webRequest.getHttpServletRequest(),
+            HttpServletRequest req = webRequest.getHttpServletRequest();
+            authResult = jaspiAuthenticator.authenticate(req,
                                                          webRequest.getHttpServletResponse(),
                                                          props);
             if (authResult.getStatus() != AuthResult.CONTINUE) {
@@ -167,8 +178,15 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                     int index = basicAuthHeader.indexOf(':');
                     String uid = basicAuthHeader.substring(0, index);
                     authResult.setAuditCredValue(uid);
+                } else {
+                    // best effort to set the user id for audit message upon error.
+                    String username = req.getParameter("j_username");
+                    if (username != null) {
+                        authResult.setAuditCredValue(username);
+                    }
                 }
                 authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
+                authResult.setAuditOutcome(AuditEvent.OUTCOME_DENIED);
             }
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {

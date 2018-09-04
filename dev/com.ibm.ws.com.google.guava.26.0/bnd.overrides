@@ -1,0 +1,23 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: google.concurrent
+Bundle-Description: google.concurrent; version=26.0
+Bundle-SymbolicName: com.ibm.ws.com.google.guava
+
+WS-TraceGroup: OPENIDCONNECT
+
+Export-Package: \
+  com.google.common.base;version="26.0", \
+  com.google.common.cache;version="26.0", \
+  com.google.common.collect;version="26.0", \
+  com.google.common.primitives;version="26.0", \
+  com.google.common.util.concurrent;version="26.0"
+
+Private-Package: com.google.common.*
+
+# Mimic the Import-Package header from the original JAR.  However, the code
+# paths we use do require javax.inject, so make that non-optional.
+Import-Package: javax.annotation; resolution:=optional, \
+  javax.inject, \
+  sun.misc; resolution:=optional

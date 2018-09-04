@@ -10,17 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
+import org.w3c.dom.NodeList;
 
 public class Bundles {
-    @XmlElement(name = "bundle")
-    private List<BundleFile> files;
 
-    public Bundles() {
-        //no-op
-        //default constructor required by jaxb
+    private final List<BundleFile> files;
+
+    public static List<BundleFile> fromNodeList(NodeList nl) {
+        List<BundleFile> bundles = new ArrayList<BundleFile>();
+
+        for (int i = 0; i < nl.getLength(); i++) //bundles Elements
+            for (int j = 0; j < nl.item(i).getChildNodes().getLength(); j++) //bundle Elements
+                if (nl.item(i).getChildNodes().item(j).getNodeName().equals("bundle"))
+                    bundles.add(BundleFile.fromNode(nl.item(i).getChildNodes().item(j)));
+        return bundles;
     }
 
     public Bundles(List<BundleFile> files) {

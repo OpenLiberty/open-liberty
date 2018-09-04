@@ -8,7 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.ws.ejbcontainer.injection.fat.tests;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -36,7 +35,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class RemoteInjectionTest {
-
     @Server("com.ibm.ws.ejbcontainer.injection.fat.server")
     @TestServlets({ @TestServlet(servlet = SFEnvInjectionServlet.class, contextRoot = "EJB3INJSAWeb"),
                     @TestServlet(servlet = SFRemoteEnvInjectionServlet.class, contextRoot = "EJB3INJSAWeb"),
@@ -49,20 +47,18 @@ public class RemoteInjectionTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        //Use ShrinkHelper to build the Ear
+        // Use ShrinkHelper to build the ear
 
         JavaArchive EJB3INJSABeanJar = ShrinkHelper.buildJavaArchive("EJB3INJSABean.jar", "com.ibm.ws.ejbcontainer.injection.ann.ejb.");
         WebArchive EJB3INJSAWeb = ShrinkHelper.buildDefaultApp("EJB3INJSAWeb.war", "com.ibm.ws.ejbcontainer.injection.ann.web.");
 
         EnterpriseArchive EJB3INJSATestApp = ShrinkWrap.create(EnterpriseArchive.class, "EJB3INJSATestApp.ear");
         EJB3INJSATestApp.addAsModule(EJB3INJSABeanJar).addAsModule(EJB3INJSAWeb);
-        //This particular app does not have an application.xml, but most will
-        //ShrinkHelper.addDirectory(EJB3INJSATestApp, "test-applications/EJB3INJSATestApp.ear/resources");
+        EJB3INJSATestApp = (EnterpriseArchive) ShrinkHelper.addDirectory(EJB3INJSATestApp, "test-applications/EJB3INJSATestApp.ear/resources");
 
         ShrinkHelper.exportDropinAppToServer(server, EJB3INJSATestApp);
 
         server.startServer();
-
     }
 
     @AfterClass

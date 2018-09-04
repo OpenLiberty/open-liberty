@@ -349,7 +349,7 @@ public class CollectorJsonUtils1_1 {
                     } else if (key.equals(LogFieldConstants.IBM_THREADID)) {
                         CollectorJsonHelpers.addToJSON(sb, LogFieldConstants.IBM_THREADID, DataFormatHelper.padHexString(kvp.getIntValue(), 8), false, true, false, false, false);
                     } else {
-                        CollectorJsonHelpers.addToJSON(sb, key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
+                        CollectorJsonHelpers.addToJSON(sb, "ibm_audit_" + key, kvp.getStringValue(), false, false, false, false, !kvp.isString());
                     }
 
                 } //There shouldn't be any list items from Audit's Generic Data object

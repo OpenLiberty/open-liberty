@@ -38,6 +38,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
@@ -193,7 +194,7 @@ public final class ServerProviderFactory extends ProviderFactory {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "ExceptionMapper:  " + em.getProvider());
             }
-            if (handleMapper(em, exceptionType, m, ExceptionMapper.class, true)) {
+            if (handleMapper(em, exceptionType, m, ExceptionMapper.class, Throwable.class, true)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Adding candidate mapper:  " + em.getProvider());
                 }
@@ -217,14 +218,20 @@ public final class ServerProviderFactory extends ProviderFactory {
         for (Object p : providers) {
             if (p instanceof Feature) {
                 FeatureContext featureContext = createServerFeatureContext();
-                ((Feature)p).configure(featureContext);
+                Feature feature = (Feature) p;
+                injectApplicationIntoFeature(feature);
+                feature.configure(featureContext);
                 Configuration cfg = featureContext.getConfiguration();
 
                 for (Object featureProvider : cfg.getInstances()) {
                     Map<Class<?>, Integer> contracts = cfg.getContracts(featureProvider.getClass());
                     if (contracts != null && !contracts.isEmpty()) {
-                        allProviders.add(new FilterProviderInfo<Object>(featureProvider,
+                        Class<?> providerCls = ClassHelper.getRealClass(getBus(), featureProvider);
+
+                        allProviders.add(new FilterProviderInfo<Object>(featureProvider.getClass(), providerCls, featureProvider,
                                                                         getBus(),
+                                        getFilterNameBindings(getBus(),
+                                                              featureProvider), false,
                                                                         contracts));
                     } else {
                         allProviders.add(featureProvider);
@@ -234,7 +241,6 @@ public final class ServerProviderFactory extends ProviderFactory {
                 allProviders.add(p);
             }
         }
-
 
         List<ProviderInfo<ContainerRequestFilter>> postMatchRequestFilters =
                         new LinkedList<ProviderInfo<ContainerRequestFilter>>();
@@ -262,7 +268,7 @@ public final class ServerProviderFactory extends ProviderFactory {
                 dynamicFeatures.add((DynamicFeature) feature);
             }
 
-            if (ExceptionMapper.class.isAssignableFrom(providerCls)) {
+            if (filterContractSupported(provider, providerCls, ExceptionMapper.class)) {
                 addProviderToList(exceptionMappers, provider);
             }
 
@@ -278,6 +284,28 @@ public final class ServerProviderFactory extends ProviderFactory {
         injectContextProxies(exceptionMappers,
                              postMatchContainerRequestFilters.values(), preMatchContainerRequestFilters,
                              containerResponseFilters.values());
+    }
+
+    protected void injectApplicationIntoFeature(Feature feature) {
+        if (application != null) {
+            AbstractResourceInfo info = new AbstractResourceInfo(feature.getClass(), ClassHelper.getRealClass(feature), true, true, getBus()) {
+                @Override
+                public boolean isSingleton() {
+                    return false;
+                }
+            };
+            Method contextMethod = info.getContextMethods().get(Application.class);
+            if (contextMethod != null) {
+                InjectionUtils.injectThroughMethod(feature, contextMethod, application.getProvider());
+                return;
+            }
+            for (Field contextField : info.getContextFields()) {
+                if (Application.class == contextField.getType()) {
+                    InjectionUtils.injectContextField(info, contextField, feature, application.getProvider());
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -399,9 +427,10 @@ public final class ServerProviderFactory extends ProviderFactory {
                 for (Object provider : cfg.getInstances()) {
                     Map<Class<?>, Integer> contracts = cfg.getContracts(provider.getClass());
                     if (contracts != null && !contracts.isEmpty()) {
-                        registerUserProvider(new FilterProviderInfo<Object>(provider,
+                        Class<?> providerCls = ClassHelper.getRealClass(getBus(), provider);
+                        registerUserProvider(new FilterProviderInfo<Object>(provider.getClass(), providerCls, provider,
                             getBus(),
-                            nameBinding,
+                                        Collections.singleton(nameBinding),
                             true,
                             contracts));
                         ori.addNameBindings(Collections.singletonList(nameBinding));

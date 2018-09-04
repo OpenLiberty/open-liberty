@@ -28,6 +28,6 @@ Subsystem-Name: JavaMail 1.5
   com.ibm.ws.javamail,\
   com.ibm.ws.javamail.config
 -jars=com.ibm.websphere.javaee.mail.1.5; location:=dev/api/spec/; mavenCoordinates="javax.mail:javax.mail-api:1.5.6", \
- com.ibm.websphere.appserver.thirdparty.mail; location:=dev/api/third-party/
+ com.ibm.websphere.appserver.thirdparty.mail; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:javax.mail:1.5.0"
 kind=ga
 edition=core

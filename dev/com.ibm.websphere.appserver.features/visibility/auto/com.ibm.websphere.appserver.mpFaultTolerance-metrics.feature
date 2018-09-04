@@ -5,5 +5,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.mpMetrics-1.1))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.microprofile.faulttolerance.metrics
-kind=beta
+kind=ga
 edition=core

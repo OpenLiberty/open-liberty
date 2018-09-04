@@ -39,5 +39,5 @@ Private-Package: \
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
-	com.ibm.ws.org.jboss.weld.3.0.3;version=latest
+	com.ibm.ws.org.jboss.weld.3.0.5;version=latest
 

@@ -10,13 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.metadata.ejb;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.ejb.ScheduleExpression;
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 
 import com.ibm.ejs.container.BeanId;
 import com.ibm.ejs.container.BeanMetaData;
@@ -213,15 +211,44 @@ public class AutomaticTimerBean
      * runtime before calling the parse method.
      */
     private static final class DateHelper {
-        static {
-            try {
-                JAXBContext.newInstance(DateHelper.class);
-            } catch (JAXBException e) {
-            }
-        }
+        private static boolean initialized = false;
 
         public static long parse(String dateTime) {
-            return DatatypeConverter.parseDateTime(dateTime).getTimeInMillis();
+            try {
+                // Reflection is needed here so that ejbcontainer can avoid a dependency on JAX-B, which
+                // is being removed from the JDK in Java 9.  If we are JDK <9 we will continue to use JAX-B,
+                // and if we are JDK >=9 we will use the java.time APIs that were introduced in JDK 8.
+                boolean isJAXBAvailable = System.getProperty("java.version").startsWith("1.");
+                if (isJAXBAvailable) {
+                    if (!initialized) {
+                        // JAXBContext.newInstance(DateHelper.class);
+                        Class.forName("javax.xml.bind.JAXBContext").getMethod("newInstance", Class[].class)//
+                                        .invoke(null, new Object[] { new Class[] { DateHelper.class } });
+                        initialized = true;
+                    }
+                    // return DatatypeConverter.parseDateTime(dateTime).getTimeInMillis();
+                    Calendar calendar = (Calendar) Class.forName("javax.xml.bind.DatatypeConverter").getMethod("parseDateTime", String.class).invoke(null, dateTime);
+                    return calendar.getTimeInMillis();
+                } else {
+                    // TemporalAccessor accessor = DateTimeFormatter
+                    // .ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S][z]")
+                    // .withZone(ZoneId.systemDefault()).parse(date);
+                    // long millis = Instant.from(accessor).toEpochMilli();
+                    Class<?> DateTimeFormatter = Class.forName("java.time.format.DateTimeFormatter");
+                    Class<?> ZoneId = Class.forName("java.time.ZoneId");
+                    Class<?> TemporalAccessor = Class.forName("java.time.temporal.TemporalAccessor");
+                    Class<?> Instant = Class.forName("java.time.Instant");
+                    Object formatter = DateTimeFormatter.getMethod("ofPattern", String.class)//
+                                    .invoke(null,"yyyy-MM-dd'T'HH:mm:ss[.SSSSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S][z]");
+                    Object defaultZone = ZoneId.getMethod("systemDefault").invoke(null);
+                    formatter = DateTimeFormatter.getMethod("withZone", ZoneId).invoke(formatter, defaultZone);
+                    Object accessor = DateTimeFormatter.getMethod("parse", CharSequence.class).invoke(formatter, dateTime);
+                    Object instant = Instant.getMethod("from", TemporalAccessor).invoke(null, accessor);
+                    return (long) Instant.getMethod("toEpochMilli").invoke(instant);
+                }
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 }

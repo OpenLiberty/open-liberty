@@ -260,7 +260,7 @@ public class LDAPReferralTest {
      * will connect to {@link #delegateServer}.
      *
      * @param referral The 'referral' attribute value to set. Null indicates to leave it unset.
-     * @param referal The 'referal' attribute value to set. Null indicates to leave it unset.
+     * @param referal  The 'referal' attribute value to set. Null indicates to leave it unset.
      * @throws Exception If there was an error configuring the server.
      */
     private static void updateLibertyServer(String referral, String referal) throws Exception {
@@ -275,7 +275,7 @@ public class LDAPReferralTest {
         ldap.setBindDN(EmbeddedApacheDS.getBindDN());
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
-        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s", null), new SearchResultsCache(false, 0, 0, "0s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 
         ldap.setReferral(referral);
         ldap.setReferal(referal);

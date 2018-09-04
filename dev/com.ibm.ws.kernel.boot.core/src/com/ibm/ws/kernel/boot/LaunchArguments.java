@@ -31,7 +31,7 @@ public class LaunchArguments {
     private static final List<String> KNOWN_OPTIONS = Collections.unmodifiableList(Arrays.asList(new String[] { "archive", "include",
                                                                                                                 "os", "pid", "pid-file",
                                                                                                                 "script", "template", "force",
-                                                                                                                "target", "no-password" }));
+                                                                                                                "target", "no-password", "server-root" }));
 
     /**
      * Script argument: set by both batch and shell scripts to record the

@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: MicroProfile Metrics Public REST API
+Bundle-SymbolicName: com.ibm.ws.microprofile.metrics.public
+
+Bundle-Description: MicroProfile Metrics 1.0 Public REST API, version ${bVersion}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+IBM-Web-Extension-Processing-Disabled: true
+
+Web-ContextPath: @publicMetricsURL
+OL-VirtualHost: ${admin.virtual.host}
+
+Private-Package: \
+	com.ibm.ws.microprofile.metrics.publicapi,\
+	com.ibm.ws.microprofile.metrics.publicapi.resources
+
+Include-Resource: \
+	WEB-INF=resources/WEB-INF
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+-dsannotations-inherit: true
+-dsannotations: com.ibm.ws.microprofile.metrics.publicapi.PublicMetricsRESTHandler
+
+WS-TraceGroup: METRICS
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.metrics.1.0;version=latest,\
+	com.ibm.websphere.rest.handler;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.microprofile.metrics;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

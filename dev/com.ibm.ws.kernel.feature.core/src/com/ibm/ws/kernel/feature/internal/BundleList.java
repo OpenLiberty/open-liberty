@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.osgi.framework.Bundle;
@@ -41,11 +42,13 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 
 public class BundleList {
     private static final String CACHE_WRITE_TIME = "Cache-WriteTime";
+    static final String PROP_JVM_SPEC_VERSION = "java.specification.version";
     private static final TraceComponent tc = Tr.register(BundleList.class);
     private final WsResource cacheFile;
     private final AtomicBoolean stale = new AtomicBoolean(false);
     private final List<RuntimeFeatureResource> resources = new ArrayList<RuntimeFeatureResource>();
     private long writeTime;
+    private String javaSpecVersion = "";
     private final FeatureManager featureManager;
 
     public static interface FeatureResourceHandler {
@@ -201,6 +204,13 @@ public class BundleList {
         /** {@inheritDoc} */
         @Override
         public boolean equals(Object obj) {
+            // IMPLEMENTATION NOTE: this equals is really only correct for managing
+            // the BundleList.resources collection when trying to avoid adding duplicates
+            // Note that this does not include checking for all attributes of the
+            // FeatureResource by design.  For example start level and requiredOSGiEE
+            // TODO this does imply we don't have a good strategy for when two features
+            // try to set different start levels for the same bundle.  Which start-level
+            // gets used will look to be random.
             if (this == obj)
                 return true;
             if (obj == null)
@@ -209,13 +219,8 @@ public class BundleList {
                 RuntimeFeatureResource other = (RuntimeFeatureResource) obj;
                 if (bundle == other.bundle && bundle != null)
                     return true;
-                String thisRepo = getBundleRepositoryType();
-                String otherRepo = other.getBundleRepositoryType();
-                if (thisRepo != null && !thisRepo.equals(otherRepo)) {
+                if (!Objects.equals(getBundleRepositoryType(), other.getBundleRepositoryType()))
                     return false;
-                } else if (otherRepo != null && !otherRepo.equals(thisRepo)) {
-                    return false;
-                }
 
                 if (bundle != other.bundle && (bundle == null || other.bundle == null)) {
                     Bundle b = (bundle == null) ? other.bundle : bundle;
@@ -491,7 +496,7 @@ public class BundleList {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(CACHE_WRITE_TIME)) {
-                    readWriteTime(res, line);
+                    readWriteTimeAndJavaSpecVersion(res, line);
                 } else {
                     int index = line.indexOf('=');
                     if (index != -1) {
@@ -507,11 +512,16 @@ public class BundleList {
 
     // ignore the NumberFormatException as we deal with it.
     @FFDCIgnore(NumberFormatException.class)
-    private void readWriteTime(WsResource res, String line) {
-        int index = line.indexOf('=');
-        if (index != -1) {
+    private void readWriteTimeAndJavaSpecVersion(WsResource res, String line) {
+        int timeIndex = line.indexOf('=');
+        int javaSpecVersionIndex = timeIndex >= 0 ? line.indexOf(';', timeIndex) : -1;
+        if (timeIndex != -1) {
             try {
-                writeTime = Long.parseLong(line.substring(index + 1));
+                String sTime = javaSpecVersionIndex > timeIndex ? line.substring(timeIndex + 1, javaSpecVersionIndex) : line.substring(timeIndex + 1);
+                writeTime = Long.parseLong(sTime);
+                if (javaSpecVersionIndex != -1) {
+                    javaSpecVersion = line.substring(javaSpecVersionIndex + 1);
+                }
             } catch (NumberFormatException nfe) {
             }
         }
@@ -531,6 +541,8 @@ public class BundleList {
                 writer.write('=');
                 writeTime = System.currentTimeMillis();
                 writer.write(String.valueOf(writeTime));
+                writer.write(';');
+                writer.write(System.getProperty(PROP_JVM_SPEC_VERSION));
                 writer.write(FeatureDefinitionUtils.NL);
                 for (RuntimeFeatureResource entry : resources) {
                     if (entry.getURLString() != null) {
@@ -565,7 +577,10 @@ public class BundleList {
     public void addAll(ProvisioningFeatureDefinition fdefinition, FeatureManager featureManager) {
         for (FeatureResource fr : fdefinition.getConstituents(SubsystemContentType.BUNDLE_TYPE)) {
             RuntimeFeatureResource rfr = (RuntimeFeatureResource) ((fr instanceof RuntimeFeatureResource) ? fr : new RuntimeFeatureResource(fr));
-            resources.add(rfr);
+            // only add bundles that match the current osgi.ee capability
+            if (!featureManager.missingRequiredOSGiEE(rfr)) {
+                resources.add(rfr);
+            }
         }
         stale.set(true);
     }
@@ -614,5 +629,9 @@ public class BundleList {
         }
 
         return b;
+    }
+
+    public String getJavaSpecVersion() {
+        return javaSpecVersion;
     }
 }

@@ -1,7 +1,0 @@
-com.ibm.ws.logging.trace.specification=*=info=enabled:bootstrap=all=enabled
-com.ibm.ws.logging.trace.max.files=30
-com.ibm.ws.logging.console.log.level=INFO
-
-websphere.log.provider=binaryLogging-1.0
-
-bootstrap.include=../testports.properties

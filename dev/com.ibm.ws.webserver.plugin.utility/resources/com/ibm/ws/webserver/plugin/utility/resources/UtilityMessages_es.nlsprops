@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -148,7 +148,7 @@ MergePluginFilesTask.merging.plugin.target.file.generated=\n\
 El archivo de configuraci\u00f3n fusionado se ha generado satisfactoriamente.
 
 MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
-Proporcione al menos dos archivos de configuraci\u00f3n de plugin para realizar la fusi\u00f3n.
+Proporcione al menos un archivo de configuraci\u00f3n de plugin para realizar la fusi\u00f3n.
 
 #------------------------------------------------------------------------------
 # Messages for pluginUtility generate option 

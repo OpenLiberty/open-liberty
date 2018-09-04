@@ -138,7 +138,7 @@ ANNO_CLASSSOURCE_JAR_STATE_BAD.useraction=CMSG0002
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} The name of a jar file
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION=CWWKC0014W: [ {0} ]: La fermeture de [{1}] a \u00e9chou\u00e9.
-ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Une tentative de fermeture de l'objet JarFile a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.explanation=Une tentative de fermeture du fichier Jar a g\u00e9n\u00e9r\u00e9 une exception.
 ANNO_CLASSSOURCE_CLOSE5_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
 
 # # {0} A hashcode id used to identify the object emitting the message
@@ -247,7 +247,7 @@ ANNO_INFOSTORE_CLOSE2_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et a
 # # {0} The class name
 # # {1} the full resource name for the class
 ANNO_CREATE_READER_EXCEPTION=CWWKC0030W: La cr\u00e9ation d''un programme de lecture de classe [ {0} ], \u00e0 partir de la ressource [{1}], a \u00e9chou\u00e9 avec une exception.
-ANNO_CREATE_READER_EXCEPTION.explanation=Le processus d'analyse des annotations cr\u00e9ait un programme de lecture de classe pour traiter le flux d'entr\u00e9e de la ressource, ce qui a g\u00e9n\u00e9r\u00e9 une exception.
+ANNO_CREATE_READER_EXCEPTION.explanation=Le processus d'analyse des annotations cr\u00e9ait un lecteur de classe pour traiter le flux d'entr\u00e9e de la ressource, ce qui a g\u00e9n\u00e9r\u00e9 une exception.
 ANNO_CREATE_READER_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
 
 # # {0} A hashcode id used to identify the object emitting the message
@@ -345,7 +345,7 @@ ANNO_TARGETS_SCAN_CLASS_EXCEPTION.explanation=Un probl\u00e8me s'est produit lor
 ANNO_TARGETS_SCAN_CLASS_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
 
 ANNO_TARGETS_FAILED_TO_CREATE_READER=CWWKC0049W: Une exception s''est produite lors de la cr\u00e9ation d''un programme de lecture de code interm\u00e9diaire de classe pour la classe [ {0} ].
-ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Un probl\u00e8me s'est produit lors de la pr\u00e9paration d'un programme de lecture de code interm\u00e9diaire de classe.  Il se peut que les valeurs du code interm\u00e9diaire de cette classe ne soient pas valides ou que le fichier de classe soit inaccessible.  Les informations de classe et d'annotation de cette classe ne seront donc pas disponibles et le module qui utilise la classe risque de ne pas fonctionner correctement.
+ANNO_TARGETS_FAILED_TO_CREATE_READER.explanation=Un probl\u00e8me s'est produit lors de la pr\u00e9paration d'un lecteur de code interm\u00e9diaire de classe.  Il se peut que les valeurs du code interm\u00e9diaire de cette classe ne soient pas valides ou que le fichier de classe soit inaccessible.  Les informations de classe et d'annotation de cette classe ne seront donc pas disponibles et le module qui utilise la classe risque de ne pas fonctionner correctement.
 ANNO_TARGETS_FAILED_TO_CREATE_READER.useraction=V\u00e9rifiez le contenu du fichier de classe \u00e0 l'origine de l'erreur.  Si n\u00e9cessaire, remplacez ce fichier de classe par un fichier de classe qui contient des codes interm\u00e9diaires valides.  Pour plus d'informations, reportez-vous par ailleurs \u00e0 l'exception et au message FFDC associ\u00e9.
 
 ANNO_TARGETS_RESIDUAL_PACKAGE=CWWKC0050W: Erreur interne d''analyse de la classe : Le visiteur [ {0} ] montre un nom de package non effac\u00e9 [ {2} ] lors de l''analyse de la classe [ {1} ].
@@ -380,7 +380,7 @@ ANNO_UTIL_MAPPING_INCONSISTENCY=CWWKC0057W: Incoh\u00e9rence des donn\u00e9es in
 ANNO_UTIL_MAPPING_INCONSISTENCY.explanation=CMSG0001
 ANNO_UTIL_MAPPING_INCONSISTENCY.useraction=CMSG0002
 
-ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: La table de cha\u00eenes [ {0} ] a rencontr\u00e9 une erreur lors du traitement de la valeur [ {1} ] de type [ {2} ].  Cette valeur ne doit pas contenir de barre oblique invers\u00e9e (''\\'\').
+ANNO_UTIL_UNEXPECTED_BACKSLASH=CWWKC0058W: La table de cha\u00eenes [ {0} ] a rencontr\u00e9 une erreur lors du traitement de la valeur [ {1} ] de type [ {2} ].  Cette valeur ne doit pas contenir de barre oblique invers\u00e9e (''\\'').
 ANNO_UTIL_UNEXPECTED_BACKSLASH.explanation=La valeur contient un contenu non valide pour l'utilisation pr\u00e9vue.  Il se peut qu'elle ne soit pas trait\u00e9e correctement.  Il se peut que le module associ\u00e9 ne fonctionne pas correctement.
 ANNO_UTIL_UNEXPECTED_BACKSLASH.useraction=Les donn\u00e9es du module doivent \u00eatre examin\u00e9es pour v\u00e9rifier que la valeur fournie est valide.
 
@@ -524,28 +524,28 @@ ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Reportez-vous \u00e0 l'excepti
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] L''ouverture de la ressource d''index Jandex [{1}] a \u00e9chou\u00e9. Message d''erreur : {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: [ {0} ] L''ouverture de la ressource d''index Jandex [{1}] a \u00e9chou\u00e9.  Message d''erreur : {2}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=La tentative d'ouverture de la ressource d'index Jandex a g\u00e9n\u00e9r\u00e9 une exception.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] La lecture de la ressource d''index Jandex [{1}] a \u00e9chou\u00e9. Message d''erreur : {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: [ {0} ] La lecture de la ressource d''index Jandex [{1}] a \u00e9chou\u00e9.  Message d''erreur : {2}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=La tentative de lecture de l'index Jandex a \u00e9chou\u00e9 avec une exception.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] L''ouverture du fichier d''index Jandex [{1}] a \u00e9chou\u00e9. Message d''erreur : {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: [ {0} ] L''ouverture du fichier d''index Jandex [{1}] a \u00e9chou\u00e9.  Message d''erreur : {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=La tentative d'ouverture de la ressource d'index Jandex a g\u00e9n\u00e9r\u00e9 une exception.
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] La lecture du fichier d''index Jandex [{1}] a \u00e9chou\u00e9. Message d''erreur : {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: [ {0} ] La lecture du fichier d''index Jandex [{1}] a \u00e9chou\u00e9.  Message d''erreur : {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=La tentative de lecture de l'index Jandex a \u00e9chou\u00e9 avec une exception.
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Reportez-vous \u00e0 l'exception et aux messages FFDC associ\u00e9s pour plus d'informations.
 
@@ -561,6 +561,6 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {4} The name of a file or the name of a directory
 # # Read - Past tense. 
 ANNO_JANDEX_USAGE=CWWKC0092I: Index Jandex lues pour {0} archives sur {1} ({2} classes sur {3}) dans {4}. 
-ANNO_JANDEX_USAGE.explanation=Affiche le nombre d'archives dans le module qui ont \u00e9t\u00e9 trait\u00e9es en lisant les index Jandex plut\u00f4t qu'en analysant les fichiers classe r\u00e9els. Affiche \u00e9galement le nombre total de classes dans l'application qui ont \u00e9t\u00e9 trait\u00e9es en lisant les index Jandex.
-ANNO_JANDEX_USAGE.useraction=S'il est pr\u00e9vu que les index Jandex soient lus pour l'application, aucune action n'est requise. Si les index Jandex ne doivent pas \u00eatre lus pour l'application, d\u00e9finissez l'attribut useJandex="false" dans l'\u00e9l\u00e9ment application dans le fichier server.xml. Vous pouvez aussi d\u00e9finir useJandex="false" dans l'\u00e9l\u00e9ment applicationManager dans le fichier server.xml afin d'ignorer les index Jandex dans toutes les applications.
+ANNO_JANDEX_USAGE.explanation=Affiche le nombre d'archives dans le module qui ont \u00e9t\u00e9 trait\u00e9es en lisant les index Jandex plut\u00f4t qu'en analysant les fichiers classe r\u00e9els.  Affiche \u00e9galement le nombre total de classes dans l'application qui ont \u00e9t\u00e9 trait\u00e9es en lisant les index Jandex.
+ANNO_JANDEX_USAGE.useraction=S'il est pr\u00e9vu que les index Jandex soient lus pour l'application, aucune action n'est requise.  Si les index Jandex ne doivent pas \u00eatre lus pour l'application, d\u00e9finissez l'attribut useJandex="false" dans l'\u00e9l\u00e9ment application dans le fichier server.xml. Vous pouvez aussi d\u00e9finir useJandex="false" dans l'\u00e9l\u00e9ment applicationManager dans le fichier server.xml afin d'ignorer les index Jandex dans toutes les applications.
 

@@ -5,7 +5,7 @@
 [![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
 [![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Maven Central](https://img.shields.io/maven-central/v/io.openliberty/openliberty-runtime.svg)](https://search.maven.org/#artifactdetails%7Cio.openliberty%7Copenliberty-runtime%7C18.0.0.2%7Czip)
+[![Maven Central](https://img.shields.io/maven-central/v/io.openliberty/openliberty-runtime.svg?label=Maven%20Central)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.openliberty%22%20a%3A%22openliberty-runtime%22)
 
 # Summary
 Open Liberty is a highly composable, fast to start, dynamic application server runtime environment.

@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientConnectionException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 // A barely usable, fake connection (and database metadata) that we include in the application.
@@ -27,9 +28,9 @@ import java.util.Map;
 // our fake JDBC driver is being used.
 public class MiniConnection implements InvocationHandler {
     private boolean closed;
-    private Map<String, Object> map;
+    private Map<String, Object> map = new HashMap<String, Object>();
 
-    MiniConnection(String databaseName, String user, String password) {
+    public MiniConnection(String databaseName, String user, String password) {
         map.put("AutoCommit", true);
         map.put("Catalog", databaseName);
         map.put("DatabaseProductName", "MiniDatabase");
@@ -89,6 +90,10 @@ public class MiniConnection implements InvocationHandler {
                 return null;
             }
         }
+
+        Class<?> returnType = method.getReturnType();
+        if (void.class.equals(returnType))
+            return null;
 
         for (Class<?> c : method.getExceptionTypes())
             if (c.isAssignableFrom(SQLFeatureNotSupportedException.class))

@@ -662,6 +662,10 @@ info.config.conflict.explanation=W przypadku tej samej w\u0142a\u015bciwo\u015bc
 info.config.conflict.useraction=Nie jest wymagana \
 \u017cadna czynno\u015b\u0107. Aby unikn\u0105\u0107 wy\u015bwietlenia komunikatu informacyjnego, zmie\u0144 konfiguracj\u0119 serwera w celu usuni\u0119cia konfliktu.
  
+warning.supplied.config.not.valid=CWWKG0103W: Nazwa atrybutu {0} o warto\u015bci {1} jest ignorowana, poniewa\u017c jest ona zdefiniowana jako ibm:final. System u\u017cywa domy\u015blnej warto\u015bci atrybutu.
+warning.supplied.config.not.valid.explanation= Atrybut konfiguracyjny oznaczony jako ibm:final i domy\u015blny nie jest poprawny. Usu\u0144 skonfigurowany atrybut z konfiguracji.
+warning.supplied.config.not.valid.useraction=Zaktualizuj konfiguracj\u0119 serwera, aby usun\u0105\u0107 niepoprawn\u0105 warto\u015b\u0107 atrybutu.
+
 
 # Non-TR message
 error.invalidOCDRef=B\u0141\u0104D: to\u017csamo\u015b\u0107 PID metatypu \

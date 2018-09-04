@@ -1,7 +1,0 @@
-*.log*
-defaultServer
-dist
-workarea
-/*.ec
-/lib
-/reports

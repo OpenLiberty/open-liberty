@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import javax.persistence.spi.PersistenceUnitInfo;
@@ -38,8 +40,17 @@ public class JPAORMDiagnostics {
                                                          "JPAORM",
                                                          "com.ibm.ws.jpa.jpa");
 
+    // Check if including JPA ORM in the Liberty Dump has been enabled.
+    private static boolean jpaDumpEnabled = AccessController.doPrivileged(
+                                                                          new PrivilegedAction<Boolean>() {
+                                                                              @Override
+                                                                              public Boolean run() {
+                                                                                  return Boolean.getBoolean("com.ibm.websphere.persistence.enablejpadump");
+                                                                              }
+                                                                          });
+
     public static void writeJPAORMDiagnostics(PersistenceUnitInfo pui, InputStream pxmlIS, PrintWriter out) {
-        if (pui == null || out == null) {
+        if (jpaDumpEnabled == false || pui == null || out == null) {
             return;
         }
 

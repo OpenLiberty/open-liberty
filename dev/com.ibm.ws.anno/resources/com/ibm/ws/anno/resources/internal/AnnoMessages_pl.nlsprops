@@ -524,28 +524,28 @@ ANNO_CLASSSOURCE_JANDEX_SCAN_EXCEPTION.useraction=Wi\u0119cej informacji znajduj
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: Otwarcie zasobu indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W: Otwarcie zasobu indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.explanation=Pr\u00f3ba otwarcia zasobu indeksu Jandex spowodowa\u0142a wyj\u0105tek.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: Odczytanie zasobu indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {2}
+ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION=CWWKC0088W: Odczytanie zasobu indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.explanation=Pr\u00f3ba odczytania indeksu Jandex nie powiod\u0142a si\u0119 z powodu wyj\u0105tku.
 ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: Otwarcie pliku indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION=CWWKC0089W: Otwarcie pliku indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.explanation=Pr\u00f3ba otwarcia zasobu indeksu Jandex spowodowa\u0142a wyj\u0105tek.
 ANNO_CLASSSOURCE_FILE_JANDEX_OPEN_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
 
 # # {0} A hashcode id used to identify the object emitting the message
 # # {1} A resource name
 # # {2} The error message from the exception
-ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: Odczytanie pliku indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}]. Komunikat o b\u0142\u0119dzie: {2}
+ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION=CWWKC0090W: Odczytanie pliku indeksu Jandex [{1}] zako\u0144czy\u0142o si\u0119 niepowodzeniem. Identyfikator obiektu emituj\u0105cego komunikat: [{0}].  Komunikat o b\u0142\u0119dzie: {2}
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.explanation=Pr\u00f3ba odczytania indeksu Jandex nie powiod\u0142a si\u0119 z powodu wyj\u0105tku.
 ANNO_CLASSSOURCE_FILE_JANDEX_READ_EXCEPTION.useraction=Wi\u0119cej informacji znajduje si\u0119 w tre\u015bci wyj\u0105tku i powi\u0105zanym komunikacie FFDC.
 
@@ -561,6 +561,6 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 # # {4} The name of a file or the name of a directory
 # # Read - Past tense. 
 ANNO_JANDEX_USAGE=CWWKC0092I: Odczytano indeksy Jandex dla {0} z {1} archiw\u00f3w ({2} z {3} klas) w pliku lub katalogu {4}. 
-ANNO_JANDEX_USAGE.explanation=Podaje liczb\u0119 archiw\u00f3w w module, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex, a nie poprzez skanowanie rzeczywistych plik\u00f3w klas. Podaje tak\u017ce \u0142\u0105czn\u0105 liczb\u0119 klas w aplikacji, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex.
-ANNO_JANDEX_USAGE.useraction=Je\u015bli w przypadku aplikacji maj\u0105 by\u0107 odczytywane indeksy Jandex, nie trzeba wykonywa\u0107 \u017cadnej czynno\u015bci. Je\u015bli w przypadku aplikacji nie maj\u0105 by\u0107 odczytywane indeksy Jandex, ustaw atrybut useJandex="false" w elemencie aplikacji w pliku server.xml. Mo\u017cna r\u00f3wnie\u017c ustawi\u0107 parametr useJandex="false" w elemencie applicationManger w pliku server.xml, aby ignorowa\u0107 indeksy Jandex we wszystkich aplikacjach.
+ANNO_JANDEX_USAGE.explanation=Podaje liczb\u0119 archiw\u00f3w w module, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex, a nie poprzez skanowanie rzeczywistych plik\u00f3w klas.  Podaje tak\u017ce \u0142\u0105czn\u0105 liczb\u0119 klas w aplikacji, kt\u00f3re zosta\u0142y przetworzone poprzez odczyt indeks\u00f3w Jandex.
+ANNO_JANDEX_USAGE.useraction=Je\u015bli w przypadku aplikacji maj\u0105 by\u0107 odczytywane indeksy Jandex, nie trzeba wykonywa\u0107 \u017cadnej czynno\u015bci.  Je\u015bli w przypadku aplikacji nie maj\u0105 by\u0107 odczytywane indeksy Jandex, ustaw atrybut useJandex="false" w elemencie aplikacji w pliku server.xml. Mo\u017cna r\u00f3wnie\u017c ustawi\u0107 parametr useJandex="false" w elemencie applicationManger w pliku server.xml, aby ignorowa\u0107 indeksy Jandex we wszystkich aplikacjach.
 

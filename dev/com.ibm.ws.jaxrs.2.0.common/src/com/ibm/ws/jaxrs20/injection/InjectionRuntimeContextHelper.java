@@ -140,43 +140,44 @@ public abstract class InjectionRuntimeContextHelper {
             return;
         }
 
-        Class clz = pi.getProvider().getClass();
-        Bus bus = resource.getBus();
+        synchronized(pi) {
+            if (pi.isInit()) {
+                return;
+            }
+            Class clz = pi.getProvider().getClass();
+            Bus bus = resource.getBus();
 
-        if (bus != null) { // if bus is null, then we don't need to do injection on this provider
-            List<JaxRsFactoryBeanCustomizer> beanCustomizers = (List<JaxRsFactoryBeanCustomizer>) bus.getProperty(JaxRsConstants.ENDPOINT_LIST_BEANCUSTOMIZER);
-            Map<String, Object> beanCustomizerContexts = (Map<String, Object>) bus.getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
+            if (bus != null) { // if bus is null, then we don't need to do injection on this provider
+                 List<JaxRsFactoryBeanCustomizer> beanCustomizers = (List<JaxRsFactoryBeanCustomizer>) bus.getProperty(JaxRsConstants.ENDPOINT_LIST_BEANCUSTOMIZER);
+                  Map<String, Object> beanCustomizerContexts = (Map<String, Object>) bus.getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
 
-            if (beanCustomizers != null && !beanCustomizers.isEmpty() && beanCustomizerContexts != null) {
-                // return;
+                  if (beanCustomizers != null && !beanCustomizers.isEmpty() && beanCustomizerContexts != null) {
 
-                //boolean isReplaced = false;
-                Object newProviderInstance = null;
-                for (JaxRsFactoryBeanCustomizer beanCustomizer : beanCustomizers) {
-                    Object context = beanCustomizerContexts.get(createCustomizerKey(beanCustomizer));
-                    if (beanCustomizer.isCustomizableBean(clz, context)) {
+                      Object newProviderInstance = null;
+                      for (JaxRsFactoryBeanCustomizer beanCustomizer : beanCustomizers) {
+                          Object context = beanCustomizerContexts.get(createCustomizerKey(beanCustomizer));
+                          if (beanCustomizer.isCustomizableBean(clz, context)) {
 
-                        newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), context, message);
+                              newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), context, message);
 
-                        /**
-                         * if newProviderInstance!= the original object, which means it is replaced to EJB or CDI, so just return
-                         * no need call @PostConstruct
-                         */
-                        if (newProviderInstance != null) {
-                            //call setProvider to set isInit==true
-                            pi.setProvider(newProviderInstance);
-                            pi.setIsInit(true);
-                            //isReplaced = true;
-                            return;
+                              /**
+                               * if newProviderInstance!= the original object, which means it is replaced to EJB or CDI, so just return
+                               * no need call @PostConstruct
+                               */
+                              if (newProviderInstance != null) {
+                                  //call setProvider to set isInit==true
+                                  pi.setProvider(newProviderInstance);
+                                  pi.setIsInit(true);
+                                  return;
+                              }
                         }
-
                     }
                 }
+                //No replacement happens which means this is a POJO, call @PostConstruct
+                pi.setIsInit(true);
+                Method postConstructMethod = ResourceUtils.findPostConstructMethod(clz);
+                InjectionUtils.invokeLifeCycleMethod(pi.getProvider(), postConstructMethod);
             }
-            //No replacement happens which means this is a POJO, call @PostConstruct
-            pi.setIsInit(true);
-            Method postConstructMethod = ResourceUtils.findPostConstructMethod(clz);
-            InjectionUtils.invokeLifeCycleMethod(pi.getProvider(), postConstructMethod);
         }
     }
 

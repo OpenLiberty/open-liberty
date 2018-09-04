@@ -1,0 +1,39 @@
+<server description="openTracingServer">
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>opentracing-1.1</feature>
+    <feature>usr:opentracingMock-0.31</feature>
+    <feature>componenttest-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="serviceApp.war">
+    <classloader apiTypeVisibility="spec, ibm-api, third-party, stable"/>
+  </application>
+
+  <!-- Turn this on for the FAT: That provides good diagnostics in case -->
+  <!-- of a failure, and means that trace code is tested. -->
+  <logging traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all" maxFileSize="100" maxFiles="1" />
+  
+  <opentracing>
+  	<!-- Test excluding exact relative and absolute URIs -->
+  	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest?response=simple" />
+  	<excludeSpans pattern="http://localhost:${bvt.prop.HTTP_default}/serviceApp/rest/testService/excludeTest?response=absoluteUri" />
+  	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest\?response=regexTest[0-9]+" regex="true" />
+
+	<!-- Test excluding wildcard URIs -->
+  	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest?response=wildcard*" />
+  	
+  	<!-- Test including a subset of requests that would otherwise be excluded by the above wildcard -->
+  	<includeSpans pattern="/serviceApp/rest/testService/excludeTest?response=wildcardInclude*" />
+
+	<!-- Test excluding nested paths -->
+  	<excludeSpans pattern="/serviceApp/rest/testService/getDelayed?delay=4&amp;response=nestedExcludeTest1*" />
+  	
+  	<!-- Test exclude types -->
+  	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest?response=incomingExcluded" type="INCOMING" />
+  	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest?response=incomingIncluded" type="OUTGOING" />
+  </opentracing>
+</server>

@@ -75,7 +75,8 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     private static final String REASON_OK = "OK";
     private static final String CONTENT_LANGUAGE_HEADER = "Content-Language";
     private static final byte[] CONTENT_LANGUAGE_HEADER_BYTES = CONTENT_LANGUAGE_HEADER.getBytes();
-    private static final byte[] HEADER_CONTENT_TYPE_BYTES = WebContainerConstants.HEADER_CONTENT_TYPE.getBytes();
+    private static final String HEADER_CONTENT_TYPE = WebContainerConstants.HEADER_CONTENT_TYPE;
+    private static final byte[] HEADER_CONTENT_TYPE_BYTES = HEADER_CONTENT_TYPE.getBytes();
     protected static final String HEADER_CONTENT_LENGTH = "Content-Length";
     private static final String HEADER_CONTENT_ENCODING = "Content-Encoding";
     private static final boolean keepContentLength = (Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("keepcontentlength"))).booleanValue();
@@ -1217,12 +1218,14 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         return _encoding;
     }
 
-    // TODO This could be trouble. Need to expose getHeader?
     public String getContentType() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getContentType","["+this+"]");
         }
-        // return getHeader(HEADER_CONTENT_TYPE_BYTES);
+        if (_contentType == null) {
+           setContentType(getHeader(HEADER_CONTENT_TYPE));
+        }
+        
         return _contentType;
     }
 

@@ -1471,7 +1471,7 @@ public abstract class HTTPConduit
                         .append("\" Transmit cached message to: ")
                         .append(url)
                         .append(": ");
-                    cachedStream.writeCacheTo(b, 16 * 1024);
+                    cachedStream.writeCacheTo(b, 16L * 1024L);
                     LOG.fine(b.toString());
                 }
 

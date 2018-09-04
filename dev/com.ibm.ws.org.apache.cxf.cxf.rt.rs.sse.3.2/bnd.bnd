@@ -8,16 +8,16 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-sse;3.2.4}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-rs-sse;3.2.6}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 javac.source: 1.8
 javac.target: 1.8
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-rs-sse;3.2.4}!/!META-INF/*,\
+   @${repo;org.apache.cxf:cxf-rt-rs-sse;3.2.6}!/!META-INF/*,\
    org/apache/cxf=${bin}/org/apache/cxf
 
--buildpath: org.apache.cxf:cxf-rt-rs-sse;version=3.2.4,\
+-buildpath: org.apache.cxf:cxf-rt-rs-sse;version=3.2.6,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2;version=latest,\

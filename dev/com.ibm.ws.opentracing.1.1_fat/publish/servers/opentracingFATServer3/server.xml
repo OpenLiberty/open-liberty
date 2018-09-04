@@ -1,0 +1,19 @@
+<server description="openTracingServer">
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jaxrs-2.0</feature>
+    <feature>opentracing-1.1</feature>
+    <feature>usr:opentracingMock-0.31</feature>
+    <feature>mpOpenTracing-1.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="mpOpenTracing.war">
+    <classloader apiTypeVisibility="spec, ibm-api, third-party, stable"/>
+  </application>
+
+  <logging traceSpecification="*=info:com.ibm.ws.opentracing*=all:com.ibm.ws.microprofile.opentracing*=all:CDI=all:com.ibm.ws.cdi*=all" maxFileSize="100" maxFiles="1" />
+
+</server>

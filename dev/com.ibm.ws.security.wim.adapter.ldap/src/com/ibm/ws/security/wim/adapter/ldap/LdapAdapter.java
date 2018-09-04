@@ -3693,9 +3693,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
                 // Invalidate the search cache
                 iLdapConn.invalidateSearchCache();
-            } else if (tc.isWarningEnabled())
+            } else if (tc.isWarningEnabled()) {
                 Tr.warning(tc, WIMMessageKey.UNKNOWN_CLEAR_CACHE_MODE,
                            WIMMessageHelper.generateMsgParms(reposId, cacheMode));
+            }
 
             return null;
         }
@@ -3745,22 +3746,40 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         String[] rdnAttrNames = LdapHelper.getRDNAttributes(dn);
         String[] rdnAttrValues = null;
         for (String propertyName : propertyNames) {
-            if (inEntity.isSet(propertyName) || inEntity.isUnset(propertyName)) {
+            boolean isSet = inEntity.isSet(propertyName);
+            boolean isUnset = inEntity.isUnset(propertyName);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, METHODNAME + " Property '" + propertyName + "': Set? " + isSet + ", Unset? " + isUnset);
+            }
+            if (isSet || isUnset) {
                 if (inEntity.isPersistentProperty(propertyName)) {
                     Set<Attribute> attrSet = null;
 
-                    if (inEntity.isSet(propertyName))
+                    if (isSet) {
                         attrSet = getAttribute(inEntity, null, propertyName, ldapEntity);
-                    else if (inEntity.isUnset(propertyName)) {
+                    } else if (isUnset) {
                         String attrName = iLdapConfigMgr.getAttributeName(ldapEntity, propertyName);
+
+                        /*
+                         * Don't unset RDN attributes.
+                         */
                         if (!isRDN(attrName, rdnAttrNames)) {
                             Attribute attr = new BasicAttribute(attrName);
                             attrSet = new HashSet<Attribute>();
                             attrSet.add(attr);
                         }
                     }
+
+                    /*
+                     * Was there an LDAP attribute mapped to the WIM property? There is nothing
+                     * to update if there was not.
+                     */
                     if (attrSet != null) {
                         for (Attribute attr : attrSet) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, METHODNAME + " Property '" + propertyName + "': Attribute: " + attr);
+                            }
+
                             boolean isRdnAttr = false;
                             for (int j = 0; j < rdnAttrNames.length; j++) {
                                 if (attr.getID().equalsIgnoreCase(rdnAttrNames[j])) {
@@ -3780,13 +3799,24 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                                     isRdnAttr = true;
                                 }
                             }
+
+                            /*
+                             * Dont set or unset RDN attributes.
+                             */
                             if (!isRdnAttr) {
-                                // If attribute was set by caller then replace it
-                                if (inEntity.isSet(propertyName))
+                                if (isSet) {
+                                    // If attribute was set by caller then replace it
+                                    if (tc.isDebugEnabled()) {
+                                        Tr.debug(tc, METHODNAME + " The following LDAP attribute is to be set: " + attr);
+                                    }
                                     modItemList.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr));
-                                // If attribute was unset by caller then remove it
-                                else if (inEntity.isUnset(propertyName))
+                                } else if (isUnset) {
+                                    // If attribute was unset by caller then remove it
+                                    if (tc.isDebugEnabled()) {
+                                        Tr.debug(tc, METHODNAME + " The following LDAP attribute is to be unset: " + attr);
+                                    }
                                     modItemList.add(new ModificationItem(DirContext.REMOVE_ATTRIBUTE, attr));
+                                }
                             }
                         }
                     }
@@ -3794,7 +3824,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     if (SchemaConstants.DO_MEMBERS.equals(propertyName)) {
                         members = ((Group) inEntity).getMembers();
                     }
-                    // Assgin the entity to groups.
+                    // Assign the entity to groups.
                     else if (SchemaConstants.DO_GROUPS.equals(propertyName)) {
                         groups = inEntity.getGroups();
                     }

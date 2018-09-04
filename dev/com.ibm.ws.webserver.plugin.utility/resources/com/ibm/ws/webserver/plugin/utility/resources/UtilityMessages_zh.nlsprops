@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -146,7 +146,7 @@ MergePluginFilesTask.merging.plugin.target.file.generated=\n\
 \u5df2\u6210\u529f\u751f\u6210\u5408\u5e76\u914d\u7f6e\u6587\u4ef6\u3002
 
 MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\n\
-\u81f3\u5c11\u63d0\u4f9b\u4e24\u4e2a\u63d2\u4ef6\u914d\u7f6e\u6587\u4ef6\u4ee5\u6267\u884c\u5408\u5e76\u3002
+\u81f3\u5c11\u63d0\u4f9b\u4e00\u4e2a\u63d2\u4ef6\u914d\u7f6e\u6587\u4ef6\u4ee5\u6267\u884c\u5408\u5e76\u3002
 
 #------------------------------------------------------------------------------
 # Messages for pluginUtility generate option 

@@ -40,6 +40,7 @@ import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.cxf.common.util.ClassHelper;
 import org.apache.cxf.common.util.SystemPropertyAction;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.jaxrs.client.ClientConfiguration;
@@ -327,8 +328,8 @@ public class ClientImpl implements Client {
                     if (contracts == null || contracts.isEmpty()) {
                         providers.add(p);
                     } else {
-                        providers.add(
-                                      new FilterProviderInfo<Object>(p, pf.getBus(), contracts));
+                        final Class<?> providerCls = ClassHelper.getRealClass(pf.getBus(), p);
+                        providers.add(new FilterProviderInfo<Object>(p.getClass(), providerCls, p, pf.getBus(), contracts));
                     }
                 }
             }

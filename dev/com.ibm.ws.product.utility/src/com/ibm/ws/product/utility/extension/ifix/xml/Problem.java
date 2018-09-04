@@ -10,20 +10,36 @@
  *******************************************************************************/
 package com.ibm.ws.product.utility.extension.ifix.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Representation of the &lt;problem&gt; XML element in an iFix XML file.
  */
 public class Problem {
 
+    public static List<Problem> fromNodeList(NodeList nl) {
+        List<Problem> problems = new ArrayList<Problem>();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node n = nl.item(i);
+            if (n.getNodeName().equals("problem")) {
+                String id = n.getAttributes().getNamedItem("id") == null ? null : n.getAttributes().getNamedItem("id").getNodeValue();
+                String displayId = n.getAttributes().getNamedItem("displayId") == null ? null : n.getAttributes().getNamedItem("displayId").getNodeValue();
+                String description = n.getAttributes().getNamedItem("description") == null ? null : n.getAttributes().getNamedItem("description").getNodeValue();
+
+                problems.add(new Problem(id, displayId, description));
+            }
+        }
+
+        return problems.size() > 0 ? problems : null;
+    }
+
     private String displayId;
     private String description;
     private String id;
-
-    public Problem() {
-        //needed as Jaxb needs a blank constructor
-    }
 
     public Problem(String setId, String setDisplayId, String setDescription) {
         id = setId;
@@ -41,7 +57,6 @@ public class Problem {
     /**
      * @param displayId the displayId to set
      */
-    @XmlAttribute
     public void setDisplayId(String displayId) {
         this.displayId = displayId;
     }
@@ -56,7 +71,6 @@ public class Problem {
     /**
      * @param description the description to set
      */
-    @XmlAttribute
     public void setDescription(String description) {
         this.description = description;
     }
@@ -71,7 +85,6 @@ public class Problem {
     /**
      * @param id the id to set
      */
-    @XmlAttribute
     public void setId(String id) {
         this.id = id;
     }

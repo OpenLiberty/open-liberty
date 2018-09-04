@@ -1,0 +1,547 @@
+###############################################################################
+# Copyright (c) 2016, 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/social/resources/SocialMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server OpenID Connect Security
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5400 - CWWKS5499
+ADD_ID={0} ({1})
+ADD_ID.explanation=Internal use only.
+ADD_ID.useraction=No action is required.
+
+# HTML title of the social media selection page
+SELECTION_PAGE_TITLE=Social Media Selection Form
+
+# Text that appears above the social media options to choose from on the social media selection page
+SELECTION_PAGE_HEADER=Sign in
+
+# Text that indicates a user can sign in using social media "or" with a username and password ("or" being the text that appears on the web page)
+SELECTION_PAGE_ALTERNATE_TEXT=Or
+
+SELECTION_PAGE_USERNAME=Username
+
+SELECTION_PAGE_PASSWORD=Password
+
+SELECTION_PAGE_SUBMIT=Submit
+
+SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
+SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.
+SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=No action is required.
+
+SOCIAL_LOGIN_CONFIG_MODIFIED=CWWKS5401I: The social login configuration [{0}] was successfully processed.
+SOCIAL_LOGIN_CONFIG_MODIFIED.explanation=The indicated social login configuration has been successfully processed.
+SOCIAL_LOGIN_CONFIG_MODIFIED.useraction=No action is required.
+
+SOCIAL_LOGIN_CONFIG_DEACTIVATED=CWWKS5402I: The social login configuration [{0}] was successfully deactivated.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.explanation=The indicated social login configuration has been successfully deactivated.
+SOCIAL_LOGIN_CONFIG_DEACTIVATED.useraction=No action is required.
+
+# 0=exception class name, 1=exception message, 2=stack trace
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR=CWWKS5403E: An internal server error occurred while processing social login request [{0}]. Cause:[{1}], StackTrace: [{2}].
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.explanation=While processing a social login request, an internal server error occurred.
+SOCIAL_LOGIN_SERVER_INTERNAL_LOG_ERROR.useraction=Check for errors in the server log files and ensure your configuration is correct. If the problem persists, see the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# 
+SOCIAL_LOGIN_AUTHENTICATION_FAIL=CWWKS5404E: Social Login Exception: The social login service provider failed to process the authentication request.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.explanation=The authentication process was not successful because some other error has happened prior to this message.
+SOCIAL_LOGIN_AUTHENTICATION_FAIL.useraction=See the user action for the error that appears before this message.
+
+# Do not translate "social_login_hint"
+# 0=Social login configuration ID
+SOCIAL_LOGIN_NO_SUCH_PROVIDER=CWWKS5405E: The social login configuration [{0}] that is specified in the request is either missing or is not configured to serve this request.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.explanation=The request includes a 'social_login_hint' parameter or header that specifies a social login configuration ID to use for this request. However a social login configuration that matches the ID is missing, or the authentication filter that is used for the social login configuration is not configured to serve this request.
+SOCIAL_LOGIN_NO_SUCH_PROVIDER.useraction=Verify that a social login service with the indicated ID is configured. If an authentication filter is configured for the social login service, verify that the filter is configured to serve the request.
+
+# web RequestFilter
+# 0=url
+SOCIAL_LOGIN_INVALID_URL=CWWKS5406E: The requested endpoint of [{0}] is not supported in this social login service provider.
+SOCIAL_LOGIN_INVALID_URL.explanation=The indicated URL is not a valid social login endpoint. This could be caused by an incorrect configuration in the social login server.
+SOCIAL_LOGIN_INVALID_URL.useraction=Make sure the social login is configured properly.
+
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED=CWWKS5407I: The Social Login Version 1.0 endpoint service is activated.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.explanation=The Social Login Version 1.0 endpoint service is activated.
+SOCIAL_LOGIN_ENDPOINT_SERVICE_ACTIVATED.useraction=No Action is required.
+
+# EndpointServlet
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS5408E: A social login request cannot be processed because there is no social login feature available.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.explanation=A social login request has been received by the server, but the socialLogin-1.0 feature is not enabled in server.xml or it is not available.
+SOCIAL_LOGIN_OSGI_ENDPOINT_SERVICE_ERROR.useraction=Ensure the ssocialLogin-1.0 feature and its dependencies are configured in the featureManager of the server.xml file.
+
+# Do not translate RFC
+# 0=Exception message
+TWITTER_ERROR_CREATING_SIGNATURE=CWWKS5409E: The signature for an authorized Twitter request cannot be created: {0}
+TWITTER_ERROR_CREATING_SIGNATURE.explanation=Authorized Twitter requests must be signed using the HMAC-SHA1 signature algorithm. Either there was an issue obtaining the required signature algorithm, or the provided key could not be used to initialize the signature algorithm.
+TWITTER_ERROR_CREATING_SIGNATURE.useraction=Verify that your system supports the HMAC-SHA1 signature algorithm. Verify the consumer secret and request token secret values. These two values are used as part of the key for the signature algorithm. If either value is malformed or contains characters that cannot be encoded in compliance with RFC 3986, you may need to obtain a new value.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response from endpoint
+TWITTER_RESPONSE_HAS_NO_PARAMS=CWWKS5410E: The response from the [{0}] Twitter endpoint did not contain any parameters in the expected format. The response was: [{1}]
+TWITTER_RESPONSE_HAS_NO_PARAMS.explanation=The response from the Twitter endpoint was likely null or empty. The initial request might have been directed to the wrong endpoint. Responses from Twitter endpoints should be a string of key and value pairs. The key and value are expected to be separated by an equal sign ("=") character, and multiple key and value pairs are expected to be separated by an ampersand ("&") character.
+TWITTER_RESPONSE_HAS_NO_PARAMS.useraction=Verify that the request was directed to the correct Twitter endpoint. Verify that all required parameters were included in the initial request and that the request was authorized by including a valid Authorization header. A valid Authorization header is created using the consumer key for the Twitter application in addition to a callback URL or an OAuth request token. Check your server configuration to make sure that the correct consumer key and callback URL are configured.
+
+# Do not translate "Authorization"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Name(s) of the required parameter(s)
+TWITTER_RESPONSE_MISSING_PARAMETER=CWWKS5411E: The response from the [{0}] Twitter endpoint did not contain one or more required parameters. The required parameters that are missing from the response are [{1}].
+TWITTER_RESPONSE_MISSING_PARAMETER.explanation=The responses from each Twitter endpoint return their own set of parameters. The Twitter response received did not contain the required parameters that are listed in the message. The initial request might have been directed to the wrong endpoint.
+TWITTER_RESPONSE_MISSING_PARAMETER.useraction=Verify that the request was directed to the correct Twitter endpoint. Verify that all required parameters were included in the initial request and that the request was authorized by including a valid Authorization header. A valid Authorization header is created using the consumer key for the Twitter application in addition to a callback URL or an OAuth request token. Check your server configuration to make sure that the correct consumer key and callback URL are configured.
+
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token"), 2=Expected value of parameter, 3=Parameter value in the response
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE=CWWKS5412E: The value of the [{0}] parameter in the response from the [{1}] Twitter endpoint did not match the expected value [{2}]. The value in the response was [{3}].
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.explanation=The parameter that is specified in the message must have a value that matches the expected value. This is an unlikely scenario where Twitter successfully processed a request but returned an unexpected value for the parameter.
+TWITTER_RESPONSE_PARAM_WITH_WRONG_VALUE.useraction=Check your server configuration to make sure the callback URL configured for this application points to a valid URL that Twitter can redirect a user to once authorization is granted.
+
+# Do not translate "Authorization"
+# 0=Parameter name, 1=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_PARAMETER_EMPTY=CWWKS5413E: The [{0}] parameter was empty in the response from the [{1}] Twitter endpoint. A value for this parameter must be provided to process the authorization request.
+TWITTER_RESPONSE_PARAMETER_EMPTY.explanation=The response from the Twitter endpoint contained the parameter specified in the message but did not provide a value for the parameter.
+TWITTER_RESPONSE_PARAMETER_EMPTY.useraction=Verify that the response from the Twitter endpoint contained all of the expected parameters and values for those parameters. Verify that all required parameters were included in the initial request and that the request was authorized by including a valid Authorization header. A valid Authorization header is created using the consumer key for the Twitter application in addition to a callback URL or an OAuth request token. Check your server configuration to make sure that the correct consumer key and callback URL are configured.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_EMPTY_RESPONSE_BODY=CWWKS5414E: The response from the [{0}] Twitter endpoint cannot be evaluated because there is no content in the response body.
+TWITTER_EMPTY_RESPONSE_BODY.explanation=The initial request might have been directed to the wrong Twitter endpoint, or there was an error processing the response from the endpoint.
+TWITTER_EMPTY_RESPONSE_BODY.useraction=Check the server logs for any other messages that might indicate a failure. Verify that the initial request was directed to the appropriate endpoint.
+
+# Do not translate "Authorization" or "OAuth"
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Response status (e.g. 401, 403), 2=Response content
+TWITTER_ENDPOINT_REQUEST_FAILED=CWWKS5415E: The [{0}] Twitter endpoint request failed. The response status was [{1}] and the response content was: [{2}]
+TWITTER_ENDPOINT_REQUEST_FAILED.explanation=The initial request likely contained incorrect authorization data or was forbidden from performing the requested operation. Twitter endpoints that require authorization must have an Authorization header that matches a specific format. For authorized requests, it is likely that a piece of data used to create the Authorization header, such as the signature or OAuth token, was malformed or incorrect. The status code provided in the message should indicate a more specific reason for why the request failed.
+TWITTER_ENDPOINT_REQUEST_FAILED.useraction=If the request was unauthorized, verify that the request contained an Authorization header with accurate authorization data. If the authorization data includes an OAuth token, verify that the token is still valid or consider obtaining a new token. Verify that the request is not identical to a previous request by comparing the signatures in the Authorization headers of the requests. If the request was forbidden, verify that the Twitter application allows the requested operation.
+
+# 0=Outgoing request URL, 1=Parameter name
+OUTGOING_REQUEST_MISSING_PARAMETER=CWWKS5416W: The outgoing request to [{0}] might not succeed because the [{1}] parameter is missing or empty.
+OUTGOING_REQUEST_MISSING_PARAMETER.explanation=The specified parameter is required for OAuth authentication. The request that is being directed to the specified endpoint might fail because information that is required is missing.
+OUTGOING_REQUEST_MISSING_PARAMETER.useraction=Verify that the configuration attribute that corresponds to the specified parameter is configured by each social login provider in the server configuration.
+
+# 0=URL string, 1=Exception message text
+EXCEPTION_INITIALIZING_URL=CWWKS5417E: An error was encountered while initializing the URI [{0}]: {1}
+EXCEPTION_INITIALIZING_URL.explanation=The string specified in the message might not be a valid URI, or the system might not have permission to perform the action of initializing a URI.
+EXCEPTION_INITIALIZING_URL.useraction=Verify that the specified string is a valid URL. Verify that the string is not null and that the protocol used in the URL is a valid protocol such as http or https. Make sure that the code base has adequate permission to initialize a URI object.
+
+# Do not translate "GET" or "POST"
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_EXCEPTION_EXECUTING_REQUEST=CWWKS5418E: An error was encountered while processing the request to the [{0}] Twitter endpoint: {1}
+TWITTER_EXCEPTION_EXECUTING_REQUEST.explanation=One of the following situations likely occurred: 1. There was an error opening a connection to the specified endpoint. 2. The request method used for the request was not a known protocol such as GET or POST. 3. There was an error writing POST data to the connection. 4. There was an error reading the response from the Twitter endpoint.
+TWITTER_EXCEPTION_EXECUTING_REQUEST.useraction=See the error text in the message for more information about the failure. Verify that system maintained connectivity during the request. Verify that a known request method, such as GET or POST, was used for the request.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT=CWWKS5419E: The authorization request failed because there was an error while creating the result from the [{0}] Twitter endpoint.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.explanation=Either no result was returned or an empty result was returned from the specified request. An error must have occurred while submitting or processing the request.
+TWITTER_ERROR_OBTAINING_ENDPOINT_RESULT.useraction=Check the server logs for additional error messages that indicate where the failure occurred.
+
+# 0=Endpoint ("oauth/request_token or "oauth/access_token"), 1=Exception message text
+TWITTER_REDIRECT_IOEXCEPTION=CWWKS5420E: An error was encountered while redirecting the response from the [{0}] Twitter endpoint: {1}
+TWITTER_REDIRECT_IOEXCEPTION.explanation=The URL to which the response was redirected might not have been valid or was unable to serve the request.
+TWITTER_REDIRECT_IOEXCEPTION.useraction=Verify that the redirect target is available and able to serve the request. See the error message for more information about the failure.
+
+# Do not translate OAuth
+TWITTER_TOKEN_DOES_NOT_MATCH=CWWKS5421E: The authorization request failed because the token provided in the request does not match the token that was used for the initial authorization request.
+TWITTER_TOKEN_DOES_NOT_MATCH.explanation=The inbound request must include an OAuth request token value that is identical to the OAuth request token that was obtained in the first step of the authorization process. The values must match to confirm that the inbound request corresponds to the initial request that began the authorization process.
+TWITTER_TOKEN_DOES_NOT_MATCH.useraction=Verify that the inbound request corresponds to an earlier request for an OAuth request token. Consider beginning the authorization flow again to obtain a new OAuth request token.
+
+# 0=Endpoint ("oauth/access_token"), 1=Parameter name
+TWITTER_REQUEST_MISSING_PARAMETER=CWWKS5422E: The request intended for the [{0}] Twitter endpoint is missing a required parameter. The required parameters that are missing from the request are: {1}
+TWITTER_REQUEST_MISSING_PARAMETER.explanation=The request must contain all of the parameters shown in the message. The request did not contain any of the parameters shown in the message.
+TWITTER_REQUEST_MISSING_PARAMETER.useraction=Verify that the request includes all required parameters.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token")
+TWITTER_RESPONSE_STATUS_MISSING=CWWKS5423E: The response status from the [{0}] Twitter endpoint could not be determined. An error likely occurred while submitting or processing the request.
+TWITTER_RESPONSE_STATUS_MISSING.explanation=A response status field is expected to determine the result of the authorization request.
+TWITTER_RESPONSE_STATUS_MISSING.useraction=Check the server logs for additional error messages that indicate where another error occurred.
+
+# 0=Endpoint ("oauth/request_token" or "oauth/access_token"), 1=Error message, if present
+TWITTER_RESPONSE_FAILURE=CWWKS5424E: Cannot process the response from the [{0}] Twitter endpoint. {1}
+TWITTER_RESPONSE_FAILURE.explanation=The response status included in the result did not indicate a successful result. A failure must have occurred while submitting or processing the request.
+TWITTER_RESPONSE_FAILURE.useraction=If the message contains another error message, see the user action for that message. Otherwise, check the server logs for additional error messages that might indicate where another error occurred.
+
+# web EndpointServices 
+# 0=qualified config IDs
+SOCIAL_LOGIN_MANY_PROVIDERS=CWWKS5425E: Too many social login services [{0}] are qualified to handle the request.
+SOCIAL_LOGIN_MANY_PROVIDERS.explanation=When more than one social login service are qualified, cannot select which social login service to handle the request.
+SOCIAL_LOGIN_MANY_PROVIDERS.useraction=Make sure no more than one social login service in the server.xml is configured to handle the request.
+
+# Do not translate "JSON"
+# 0=Endpoint ("/1.1/accounts/verify_credentials"), 1=Error message, 2=Endpoint response content
+TWITTER_RESPONSE_NOT_JSON=CWWKS5426E: The response from the [{0}] Twitter endpoint was not in the expected JSON format. The error was: [{1}]. The response content was: [{2}]
+TWITTER_RESPONSE_NOT_JSON.explanation=The specified endpoint might not be functioning as expected, or the endpoint behavior might have changed to return responses in a different format. Some data could have been omitted when reading the response.
+TWITTER_RESPONSE_NOT_JSON.useraction=Verify that the server read the entire response from the specified endpoint. Verify that the request was sent to the correct Twitter endpoint and that the response is formatted as expected.
+
+SIGN_IN_NO_CONFIGS=CWWKS5427E: The social media sign in page cannot be displayed because the social login feature cannot find any social login configurations that are configured to authenticate this request.
+SIGN_IN_NO_CONFIGS.explanation=At least one social login configuration must be present to display the sign in page. Either the cookie that contains the list of matching social login configurations is missing or empty, or the social login configurations specified by the cookie cannot be found.
+SIGN_IN_NO_CONFIGS.useraction=Ensure that at least one social login service is configured to authenticate this request.
+
+# 0=Config element ID
+SIGN_IN_MISSING_EXPECTED_CONFIG=CWWKS5428W: The social login feature cannot find a social login configuration that matches the ID [{0}]. A social login configuration with the specified ID is expected to be present and configured to authenticate this request.
+SIGN_IN_MISSING_EXPECTED_CONFIG.explanation=The specified ID is included in a cookie that is used to record which social login configurations are configured to authenticate this request. However, a social login configuration that matches that ID cannot be found. The ID is either malformed or the corresponding social login configuration has been removed.
+SIGN_IN_MISSING_EXPECTED_CONFIG.useraction=Verify that a social login configuration with the specified ID is present in the server configuration.
+
+# 0=Specific error message describing why the page cannot be displayed
+ERROR_DISPLAYING_SIGN_IN_PAGE=CWWKS5429E: The default social media sign in page cannot be displayed. {0}
+ERROR_DISPLAYING_SIGN_IN_PAGE.explanation=An error occurred while processing the default sign in page. The message includes a specific explanation for why the sign in page cannot be displayed.
+ERROR_DISPLAYING_SIGN_IN_PAGE.useraction=See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+# 0=Selection page URL configured in server.xml, 1=Specific error message
+SELECTION_PAGE_URL_NOT_VALID=CWWKS5430W: The social media selection page URL [{0}] that is specified by the social login web application configuration is not a valid URI. The default selection page will be used. {1}
+SELECTION_PAGE_URL_NOT_VALID.explanation=The selection page URL that is configured by the social login web application configuration is not a valid URI string. The selection page URL must conform to RFC 3986 (https://tools.ietf.org/html/rfc3986) and can only contain certain characters.
+SELECTION_PAGE_URL_NOT_VALID.useraction=Verify that the configured selection page URL is not null and contains only those characters allowed by RFC 3986.
+
+# 0=Selection page URL configured in server.xml
+SELECTION_PAGE_URL_NOT_HTTP=CWWKS5431E: The social media selection page URL [{0}] that is specified by the social login web application configuration is not a relative path and does not use either the HTTP or HTTPS scheme.
+SELECTION_PAGE_URL_NOT_HTTP.explanation=The social media selection page URL value must be a relative path or a URL that uses the HTTP or HTTPS scheme. The provided URL is either null or uses a URL scheme other than HTTP or HTTPS.
+SELECTION_PAGE_URL_NOT_HTTP.useraction=Ensure that the social media selection page URL value is a relative path, or that the URL value uses the HTTP or HTTPS scheme.
+
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG=CWWKS5432W: The social login feature cannot redirect the request to the custom social media selection page because the social login web application configuration is not available. The default selection page will be used.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.explanation=The social login web application service is not available. The web application configuration is likely missing from the server configuration.
+CUSTOM_SELECTION_INITED_MISSING_WEBAPP_CONFIG.useraction=Verify that a social login web application configuration is specified in the server configuration. Check the server logs to ensure that the web application service is ready and available.
+
+# 0=Endpoint URL
+REDIRECT_NO_MATCHING_CONFIG=CWWKS5433E: The request directed to [{0}] does not have a social login configuration with which it can be associated.
+REDIRECT_NO_MATCHING_CONFIG.explanation=The request is expected to be sent to an endpoint that includes a social login configuration ID in the URL. However the URL does not include the ID of a known social login configuration.
+REDIRECT_NO_MATCHING_CONFIG.useraction=Verify that the redirect URL is a well-formed URL that includes the ID of a social login configuration that exists in the server configuration.
+
+# 0=Specific exception or error message
+ERROR_PROCESSING_REDIRECT=CWWKS5434E: The social login feature encountered an error while processing the redirect request. {0}
+ERROR_PROCESSING_REDIRECT.explanation=A social media provider redirected a request to this endpoint to continue authenticating or authorizing a user. However, the request cannot be completed because of the reason that is displayed in the error message.
+ERROR_PROCESSING_REDIRECT.useraction=See the user action for the error that is displayed in the message. Check the server logs for any additional error messages. 
+
+USERNAME_NOT_FOUND=CWWKS5435E: The user name could not be extracted from the token that was obtained from the social media platform.
+USERNAME_NOT_FOUND.explanation=The attribute that defines the user name varies by social media platform. The value that is configured for userNameAttribute might be incorrect.
+USERNAME_NOT_FOUND.useraction=Verify that the value of the userNameAttribute matches the value used by the social media platform to define the user name.
+
+REALM_NOT_FOUND=CWWKS5436E: The realm could not be extracted from the token that was obtained from the social media platform.
+REALM_NOT_FOUND.explanation=The attribute that defines the realm name varies by social media platform. The value that is configured for the realmName attribute might be incorrect.
+REALM_NOT_FOUND.useraction=Verify that the value of the realmName attribute matches the value used by the social media platform to define the realm.
+
+# "subject" refers to a Java Authentication and Authorization Service (JAAS) subject
+# 0=socialLogin element ID, 1=Error message (if present)
+TWITTER_ERROR_CREATING_RESULT=CWWKS5437E: The social login feature cannot create a subject for the user by using Twitter profile information and social login configuration [{0}]. {1}
+TWITTER_ERROR_CREATING_RESULT.explanation=Some of the profile information that was used to create the subject for the user might be missing or malformed.
+TWITTER_ERROR_CREATING_RESULT.useraction=See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN=CWWKS5438E: The social login feature cannot create an encrypted access token for the social login configuration [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.explanation=An error occurred while the feature was using one of the encryption algorithms to create an encrypted access token based on the access token that was provided. The message should include a more specific reason why the encrypted token cannot be created.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN.useraction=See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL=CWWKS5439E: The access token that was provided to the social login feature is null, so the token cannot be encrypted.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.explanation=A null access token cannot be encrypted.
+ACCESS_TOKEN_TO_ENCRYPT_IS_NULL.useraction=Provide a non-null access token to be encrypted.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA=CWWKS5440E: The social login feature cannot encrypt the provided access token using the public key specified by the social login configuration [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.explanation=The public key that is used to encrypt the access token might be malformed or might not be valid, or the required RSA encryption algorithm might not be available.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_RSA.useraction=Verify that the public key that is configured for the specified social login configuration is valid and can be used for RSA encryption.
+
+# Intended to be a child of ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES=CWWKS5441E: The social login feature cannot encrypt the provided access token by using the secret key specified by the social login configuration [{0}]. {1}
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.explanation=The secret key that is used to encrypt the access token might be malformed or might not be valid. An error might have occurred while getting the initialization vector for the encryption algorithm, or the required AES encryption algorithm might not be available.
+ERROR_GETTING_ENCRYPTED_ACCESS_TOKEN_AES.useraction=Verify that the secret key that is configured for the social login configuration that is specified in the message is valid and can be used for AES encryption.
+
+# 0=socialLogin element ID
+TWITTER_STATE_MISSING=CWWKS5442E: The social login feature cannot complete the request by using the social login configuration [{0}] because the state value is missing.
+TWITTER_STATE_MISSING.explanation=A state value is generated for each unique authentication request and stored in a cookie. That value is required to verify and process each authentication request. The state cookie either was not created or was deleted.
+TWITTER_STATE_MISSING.useraction=Verify that the state value was successfully stored in a cookie and that the cookie was not deleted.
+
+# 0=socialLogin element ID
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY=CWWKS5443E: The social login feature cannot complete the request by using the social login configuration [{0}] because the value for the original request URL is missing or empty. The original request URL value must be present to redirect the user back to the protected resource that was originally requested.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.explanation=The original request URL is stored in a cookie at the beginning of the authentication process. That cookie is either missing or its value is empty.
+TWITTER_ORIGINAL_REQUEST_URL_MISSING_OR_EMPTY.useraction=Verify that the original request URL was successfully stored in a cookie and that the cookie was not deleted.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA=CWWKS5444E: The access token that is provided to the social login feature cannot be decrypted by using the private key that is specified by the social login configuration [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.explanation=An error occurred that prevented the RSA encryption algorithm from decrypting the access token. The private key that is used to decrypt the access token might be malformed or might not be valid, the encrypted token might not be formatted properly, or the required RSA encryption algorithm might not be available.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA.useraction=Verify that the social login configuration specifies a private key that has a valid configuration and can be used for RSA decryption. Verify that the encrypted token is formatted correctly and that the decryption algorithm is available.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES=CWWKS5445E: The access token that is provided to the social login feature cannot be decrypted by using the secret key that is specified by the social login configuration [{0}]. {1}
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.explanation=An error occurred that prevented the AES encryption algorithm from decrypting the access token. The secret key that is used to decrypt the access token might be malformed or might not be valid. The encrypted token might not be formatted properly. An error might have occurred while retrieving the initialization vector for the decryption algorithm, or the required AES encryption algorithm might not be available.
+ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES.useraction=Verify that the social login configuration specifies a secret key that has a valid configuration and can be used for AES decryption. Verify that the encrypted token is formatted correctly and that the decryption algorithm is available.
+
+# Intended to be a child of ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_RSA or ERROR_GETTING_DECRYPTED_ACCESS_TOKEN_AES
+VALUE_NOT_HEXADECIMAL=CWWKS5446E: The provided value is not in hexadecimal format, so it cannot be decoded.
+VALUE_NOT_HEXADECIMAL.explanation=The value for an encrypted token is expected to be encoded in hexadecimal format.
+VALUE_NOT_HEXADECIMAL.useraction=Verify that the value is encoded correctly in hexadecimal format.
+
+# 0=socialLogin element ID, 1=Error message (if present)
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT=CWWKS5447E: The request cannot be redirected to the authorization endpoint that is configured for the social login configuration [{0}]. {1}
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.explanation=There was likely an error while building the authorization endpoint redirect URL. Alternatively, an error occurred while redirecting the request.
+FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT.useraction=See the user action for the error that is displayed in the message. Verify that the redirect URL for the authorization endpoint is a valid URL. Check the server logs for any additional error messages.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'state', OAuth
+# 0=socialLogin element ID
+STATE_IS_NULL=CWWKS5448E: A valid query string cannot be created for the authorization endpoint of the social login configuration [{0}] because the state value that was provided is null.
+STATE_IS_NULL.explanation=A 'state' parameter is required in requests to OAuth authorization endpoints. A valid authorization endpoint request cannot be created without a state value.
+STATE_IS_NULL.useraction=Verify that a non-null state value was generated for this request.
+
+# Intended to be a child of FAILED_TO_REDIRECT_TO_AUTHZ_ENDPOINT
+# Do not translate 'redirect_uri', OAuth
+# 0=socialLogin element ID
+REDIRECT_URL_IS_NULL=CWWKS5449E: A valid query string cannot be created for the authorization endpoint of the social login configuration [{0}] because the redirect URI that was provided is null.
+REDIRECT_URL_IS_NULL.explanation=A 'redirect_uri' parameter is required in requests to OAuth authorization endpoints. A valid authorization endpoint request cannot be created without a redirect URI value.
+REDIRECT_URL_IS_NULL.useraction=Verify that a non-null redirect URI value was created for this request.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_SSL_CONTEXT=CWWKS5450E: The request cannot invoke the token endpoint because an error occurred while retrieving SSL information for the social login configuration [{0}]. {1}
+AUTH_CODE_ERROR_SSL_CONTEXT.explanation=The request includes an authorization code that is used to obtain user information from an OAuth token endpoint. SSL information is required to invoke the token endpoint. An error occurred while loading the SSL information, so the token endpoint cannot be invoked.
+AUTH_CODE_ERROR_SSL_CONTEXT.useraction=See the user action for the error that is displayed in the message. Verify that the specified social login configuration references a valid SSL configuration, or verify that the default SSL configuration for the server is properly configured.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_GETTING_TOKENS=CWWKS5451E: The social login feature encountered a problem while obtaining token information from the token endpoint that is configured for the social login configuration [{0}]. {1}
+AUTH_CODE_ERROR_GETTING_TOKENS.explanation=The social login feature must make a request to the token endpoint to obtain an access token and an optional ID token. The token endpoint URL might be malformed or missing, the response from the token endpoint might not be formatted correctly, or there was an error calling the token endpoint.
+AUTH_CODE_ERROR_GETTING_TOKENS.useraction=Verify that the token endpoint URL that is configured for the specified social login configuration is a valid URL. Check the server logs for additional error messages.
+
+# 0=socialLogin element ID
+USER_API_RESPONSE_NULL_OR_EMPTY=CWWKS5452E: The social login feature cannot authenticate the user because the response from the user API that is configured for the social login configuration [{0}] is null or empty.
+USER_API_RESPONSE_NULL_OR_EMPTY.explanation=User data must be returned from the configured user API. The user cannot be authenticated without user data from the user API.
+USER_API_RESPONSE_NULL_OR_EMPTY.useraction=Verify that at least one user API is configured for the specified social login configuration. Check the server logs for additional error messages.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_FAILED_TO_CREATE_JWT=CWWKS5453E: The social login feature encountered a problem while creating a JSON Web Token (JWT) from the provided access token for the social login configuration [{0}]. {1}
+AUTH_CODE_FAILED_TO_CREATE_JWT.explanation=An error might have occurred while getting user information with the provided access token, or an error might have occurred while building a JWT from the provided ID token.
+AUTH_CODE_FAILED_TO_CREATE_JWT.useraction=See the user action for the error that is displayed in the message. Check the server logs for additional error messages.
+
+# 0=socialLogin element ID, 1=Error message
+AUTH_CODE_ERROR_CREATING_RESULT=CWWKS5454E: The social login feature cannot create a subject for the user with the provided authorization code using social login configuration [{0}]. {1}
+AUTH_CODE_ERROR_CREATING_RESULT.explanation=Some of the data that is used to create the subject for the specified user might be missing or malformed.
+AUTH_CODE_ERROR_CREATING_RESULT.useraction=See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+# 0=socialLogin element ID, 1=User name
+ACCESS_TOKEN_MISSING=CWWKS5455E: The social login feature cannot authenticate user [{0}] because an access token cannot be found.
+ACCESS_TOKEN_MISSING.explanation=A subject cannot be created for the user because the access token is missing. The data that was returned from the social medium should include an access token.
+ACCESS_TOKEN_MISSING.useraction=Check the server logs for additional error messages. Verify that an access token was returned from the social medium.
+
+USER_PROFILE_ACCESS_TOKEN_NULL=CWWKS5456E: A user profile cannot be created because the access token that is provided is null.
+USER_PROFILE_ACCESS_TOKEN_NULL.explanation=A valid access token must be provided to retrieve the social login configuration that is associated with the access token.
+USER_PROFILE_ACCESS_TOKEN_NULL.useraction=Provide a valid access token to create a user profile.
+
+ACCESS_TOKEN_NOT_IN_CACHE=CWWKS5457E: A user profile cannot be created because the access token that is provided was not found in the token cache.
+ACCESS_TOKEN_NOT_IN_CACHE.explanation=The token key that is calculated might be malformed, or this access token was not used in a recent authenticated request. The token might have been removed from the cache because it was too old.
+ACCESS_TOKEN_NOT_IN_CACHE.useraction=Ensure that the token that is provided is a valid access token and that it matches an access token that was used in a successfully authenticated request. Verify that the token cache has not been cleared since the token was added.
+
+# 0=socialLogin element ID
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND=CWWKS5458E: The social login configuration [{0}] that is associated with the cached token cannot be found.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.explanation=The social login service that is specified cannot be found in the server configuration. The social login configuration ID that is associated with the access token is either missing, or the social login configuration that is specified does not exist.
+CONFIG_FOR_CACHED_TOKEN_NOT_FOUND.useraction=Ensure that a social login configuration with the ID that is specified exists in the server configuration. Verify that the social login configuration was successfully loaded.
+
+# 0=socialLogin element ID
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN=CWWKS5459E: An access token cannot be found in the set of tokens that are provided to the social login feature.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.explanation=An access token must be provided to create a user profile. The token might not be in the token cache, or the token might be missing from user information that was returned from the social medium.
+SOCIAL_LOGIN_RESULT_MISSING_ACCESS_TOKEN.useraction=Verify that an access token was included in the set of data that was returned from the social medium. Verify that the token object specified a valid access token at the time the token object was cached.
+
+# 0=socialLogin element ID
+NO_USER_API_CONFIGS_PRESENT=CWWKS5460W: There are no user API configurations specified for the social login configuration [{0}].
+NO_USER_API_CONFIGS_PRESENT.explanation=At least one user API configuration must be specified to obtain user information.
+NO_USER_API_CONFIGS_PRESENT.useraction=Ensure that the specified social login configuration contains at least one user API configuration.
+
+# 0=User API string, 1=socialLogin element ID, 2=Error message
+ERROR_GETTING_USER_API_RESPONSE=CWWKS5461E: The social login feature encountered an error while getting user information from the user API [{0}] that is configured for social login configuration [{1}]. {2}
+ERROR_GETTING_USER_API_RESPONSE.explanation=The specified user API might not be configured correctly. There might be a problem with the access token that was used to invoke the user API. The response from the user API might not be in the expected format.
+ERROR_GETTING_USER_API_RESPONSE.useraction=See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+TOKEN_ENDPOINT_NULL_OR_EMPTY=CWWKS5462E: The token endpoint URL value is null or empty.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.explanation=A valid token endpoint URL must be provided to obtain access tokens or ID tokens for users.
+TOKEN_ENDPOINT_NULL_OR_EMPTY.useraction=Ensure that a valid token endpoint URL is configured for every social login configuration.
+
+# Intended to be a child of AUTH_CODE_ERROR_SSL_CONTEXT
+# 0=socialLogin element ID, 1=Error message
+FAILED_TO_GET_SSL_CONTEXT=CWWKS5463E: The SSL context for the social login configuration [{0}] cannot be loaded. {1}
+FAILED_TO_GET_SSL_CONTEXT.explanation=The SSL configuration that is used by the specified social login configuration might be missing or incorrect.
+FAILED_TO_GET_SSL_CONTEXT.useraction=See the error in the message for more information. Verify that the SSL information for the specified social login configuration is accurate. If the 'sslRef' configuration attribute is specified in the social login configuration, verify that the corresponding SSL configuration is correct. Otherwise, verify that the default SSL configuration for the server is properly configured.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=socialLogin element ID
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE=CWWKS5464E: JSON Web Token (JWT) consumer functionality might not be available for the social login configuration [{0}] because the service for the specified social login configuration cannot be found.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.explanation=The specified social login configuration might not be available yet, or the service for the social login configuration has been stopped.
+SERVICE_NOT_FOUND_JWT_CONSUMER_NOT_AVAILABLE.useraction=Verify that the specified social login configuration is configured and available.
+
+# 0=Context path string from webapp configuration
+INVALID_CONTEXT_PATH_CHARS=CWWKS5465E: The context path [{0}] that is specified by the social login web application configuration contains characters that cannot be included in a valid URI path. The social login feature does not work with a context path that is not valid.
+INVALID_CONTEXT_PATH_CHARS.explanation=The context path that is configured by the social login web application configuration is not a valid URI path string. The context path must conform to RFC 3986 (https://tools.ietf.org/html/rfc3986) and can only contain certain characters.
+INVALID_CONTEXT_PATH_CHARS.useraction=Verify that the configured context path contains only those characters allowed by RFC 3986 for URI path components.
+
+# 0=Exception message
+ERROR_LOADING_SSL_PROPS=CWWKS5466E: SSL reference information for the social login feature cannot be loaded because an error was encountered while loading SSL properties. {0}
+ERROR_LOADING_SSL_PROPS.explanation=The SSL configuration that is used by the social login configuration might not be available, or an error occurred loading the properties for the SSL configuration.
+ERROR_LOADING_SSL_PROPS.useraction=Verify that the SSL configuration used by the social login service is configured correctly and has started successfully.
+
+KEYSTORE_SERVICE_NOT_FOUND=CWWKS5467E: Public keys cannot be loaded from the keystore because the keystore service cannot be found.
+KEYSTORE_SERVICE_NOT_FOUND.explanation=The keystore service for the social login feature might not be available.
+KEYSTORE_SERVICE_NOT_FOUND.useraction=Verify that the keystore service that is used by the social login service is configured correctly and has started successfully.
+
+# 0=Truststore ID, 1=Exception message
+ERROR_LOADING_KEYSTORE_CERTIFICATES=CWWKS5468E: An error occurred while loading the trusted certificates from the truststore [{0}]. {1}
+ERROR_LOADING_KEYSTORE_CERTIFICATES.explanation=The truststore might not be initialized yet, or the specified truststore does not exist in the server configuration.
+ERROR_LOADING_KEYSTORE_CERTIFICATES.useraction=Verify that a truststore with the specified ID is present in the server configuration and was successfully processed.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_CERTIFICATE=CWWKS5469E: A certificate with the alias [{0}] cannot be loaded from the truststore [{1}]. {2}
+ERROR_LOADING_CERTIFICATE.explanation=A certificate with the specified alias might not be present in the truststore, the truststore might not be initialized yet, or the truststore does not exist in the server configuration.
+ERROR_LOADING_CERTIFICATE.useraction=Verify that a certificate with the specified alias is included in the truststore. Verify that a truststore with the specified ID is present in the server configuration and was successfully processed.
+
+# 0=Certificate alias, 1=Truststore ID, 2=Exception message
+ERROR_LOADING_GETTING_PUBLIC_KEYS=CWWKS5470E: The certificate with the alias [{0}] cannot be loaded from the truststore [{1}] because an error occurred while getting the public keys from the truststore. {2}
+ERROR_LOADING_GETTING_PUBLIC_KEYS.explanation=The keystore service might not be available, the certificates in the truststore cannot be loaded, or the certificate with the specified alias cannot be loaded.
+ERROR_LOADING_GETTING_PUBLIC_KEYS.useraction=See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+# 0=Private key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY=CWWKS5471E: A private key with the alias [{0}] cannot be loaded from the keystore [{1}]. {2}
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.explanation=A private key with the specified alias might not be present in the keystore, the private key might not be the correct type, the keystore might not be initialized yet, or the keystore does not exist in the server configuration.
+ERROR_LOADING_SPECIFIC_PRIVATE_KEY.useraction=Verify that a private key with the specified alias is included in the keystore and that the private key is the correct type. Verify that a keystore with the specified ID is present in the server configuration and was successfully processed.
+
+# 0=Keystore ID, 1=Exception message
+ERROR_LOADING_PRIVATE_KEY=CWWKS5472E: A private key cannot be loaded from the keystore [{0}]. {1}
+ERROR_LOADING_PRIVATE_KEY.explanation=The private key that was selected from the keystore might not be the correct type, the keystore might not be initialized yet, or the keystore does not exist in the server configuration.
+ERROR_LOADING_PRIVATE_KEY.useraction=Verify that the private keys in the keystore are the correct type. Verify that a keystore with the specified ID is present in the server configuration and was successfully processed.
+
+# 0=Secret key alias, 1=Keystore ID, 2=Exception message
+ERROR_LOADING_SECRET_KEY=CWWKS5473E: A secret key with the alias [{0}] cannot be loaded from the keystore [{1}]. {2}
+ERROR_LOADING_SECRET_KEY.explanation=A secret key with the specified alias might not be present in the keystore, the secret key might not be the correct type, the keystore might not be initialized yet, or the keystore does not exist in the server configuration.
+ERROR_LOADING_SECRET_KEY.useraction=Verify that a secret key with the specified alias is included in the keystore and that the secret key is the correct type. Verify that a keystore with the specified ID is present in the server configuration and was successfully processed.
+
+# 0=HttpResponse entity
+ERROR_PARSING_RESPONSE_ENTITY=CWWKS5474E: Tokens cannot be extracted from the response because an error was encountered while parsing the response. [{0}]
+ERROR_PARSING_RESPONSE_ENTITY.explanation=The response from the social medium endpoint might not be in the expected format. An error might have occurred while executing the response, or the social medium might have returned an error.
+ERROR_PARSING_RESPONSE_ENTITY.useraction=Check the content of the response from the social medium. Verify that the response content is formatted correctly and that the response did not include an error message.
+
+NULL_OR_EMPTY_REQUEST_URL=CWWKS5475E: An HTTP request cannot be made because the provided URL is null or empty.
+NULL_OR_EMPTY_REQUEST_URL.explanation=An HTTP request cannot be made with a null or empty URL. An endpoint URL in the social login configuration might be missing or empty.
+NULL_OR_EMPTY_REQUEST_URL.useraction=Verify that every endpoint URL that is specified in a social login configuration has a value that is a valid URL.
+
+# Do not translate "POST"
+# 0=URL to which the request was submitted, 1=Error message
+ERROR_EXECUTING_REQUEST=CWWKS5476E: An error occurred while making a request to the provided URL [{0}]. {1}
+ERROR_EXECUTING_REQUEST.explanation=The provided URL might be malformed or contain a protocol that is not valid, or an error might have prevented the request from being served.
+ERROR_EXECUTING_REQUEST.useraction=See the message for a more detailed error description. Verify that the URL is a well-formed URL and that there were no connection issues with the target server.
+
+# 0=Response status
+RESPONSE_STATUS_MISSING_OR_ERROR=CWWKS5477E: The response status cannot be found, or the response returned an error. The response status was [{0}].
+RESPONSE_STATUS_MISSING_OR_ERROR.explanation=The request likely failed because it was unauthorized or missing information such as a required request parameter or header. If the response status was not null, the response status code and reason is included in the message.
+RESPONSE_STATUS_MISSING_OR_ERROR.useraction=Check the response status code in the message, if present. Verify that all required parameters and headers were included in the request.
+
+# 0=URL to which the request was submitted, 1=Error message
+RESPONSE_STATUS_UNSUCCESSFUL=CWWKS5478E: The request to the endpoint [{0}] failed. The error was: {1}
+RESPONSE_STATUS_UNSUCCESSFUL.explanation=The request likely failed because it was unauthorized or missing information such as a required request parameter or header. The request might have been directed to the wrong endpoint.
+RESPONSE_STATUS_UNSUCCESSFUL.useraction=Verify that the request was directed to the correct endpoint. Verify that all required parameters and headers were included in the request.
+
+CONFIG_REQUIRED_ATTRIBUTE_NULL=CWWKS5479E: The configuration attribute [{0}] that is required in the social login configuration [{1}] is missing or empty. Verify that the attribute is configured, that it is not empty, and that it does not consist of only white space characters.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=The specified configuration attribute might be missing from the server configuration. If a value is specified, white space at the beginning and end of the value is removed when the value is processed, so the value in the configuration might be empty or consist of only white space characters.
+CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Ensure that the specified configuration attribute is configured, that it is not empty, and that it does not consist of only white space characters.
+
+STATE_NULL_OR_MISMATCHED=CWWKS5480E: A social login request failed because the state element of the request was empty or mismatched.
+STATE_NULL_OR_MISMATCHED.explanation=An empty or missing state element in a social login request caused an error. 
+STATE_NULL_OR_MISMATCHED.useraction=Verify that the social login configuration is correct and the remote service is operating correctly.
+
+REQUEST_URL_NULL_OR_EMPTY=CWWKS5481E: A social login request failed because the request URL attribute of the request was null or empty.
+REQUEST_URL_NULL_OR_EMPTY.explanation=An empty or missing request URL attribute in the social login request caused an error.
+REQUEST_URL_NULL_OR_EMPTY.useraction=Verify that the social login configuration for the URL attribute is correct and the remote service is operating correctly.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_REQUEST_TOKEN_URL=CWWKS5482E: The social login feature cannot obtain a request token from Twitter because the URL [{0}] that is specified by the [{1}] configuration attribute in the [{2}] Twitter configuration is not valid. {3}
+TWITTER_BAD_REQUEST_TOKEN_URL.explanation=The value for the specified configuration attribute is not a valid URL. A valid URL must be specified that can serve requests for Twitter request tokens.
+TWITTER_BAD_REQUEST_TOKEN_URL.useraction=Ensure that a valid URL is configured for the specified configuration attribute, and that the URL is capable of serving requests for Twitter request tokens. To use the default Twitter endpoint, remove the specified configuration attribute from the Twitter configuration that is specified in the message.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_ACCESS_TOKEN_URL=CWWKS5483E: The social login feature cannot obtain an access token from Twitter because the URL [{0}] that is specified by the [{1}] configuration attribute in the [{2}] Twitter configuration is not valid. {3}
+TWITTER_BAD_ACCESS_TOKEN_URL.explanation=The value for the specified configuration attribute is not a valid URL. A valid URL must be specified that can serve requests for Twitter access tokens.
+TWITTER_BAD_ACCESS_TOKEN_URL.useraction=Ensure that a valid URL is configured for the specified configuration attribute, and that the URL is capable of serving requests for Twitter access tokens. To use the default Twitter endpoint, remove the specified configuration attribute from the Twitter configuration that is specified in the message.
+
+# 0=URL value, 1=Configuration attribute name, 2=Config element ID, 3=Error message
+TWITTER_BAD_USER_API_URL=CWWKS5484E: The social login feature cannot obtain user account data from Twitter because the URL [{0}] that is specified by the [{1}] configuration attribute in the [{2}] Twitter configuration is not valid. {3}
+TWITTER_BAD_USER_API_URL.explanation=The value for the specified configuration attribute is not a valid URL. A valid URL must be specified that can serve requests for Twitter user account data.
+TWITTER_BAD_USER_API_URL.useraction=Ensure that a valid URL is configured for the specified configuration attribute, and that the URL is capable of serving requests for Twitter user account data. To use the default Twitter endpoint, remove the specified configuration attribute from the Twitter configuration that is specified in the message.
+
+# 0=Configuration attribute name
+TWITTER_MISSING_REQ_ATTR=CWWKS5485W: Twitter authentication requests might not succeed because the provided [{0}] configuration value is either null or empty. Verify that all Twitter social login configurations specify a non-empty value for the [{0}] configuration attribute.
+TWITTER_MISSING_REQ_ATTR.explanation=The configuration attribute that is specified in the message is missing from the configuration, or the value for the attribute is empty or consists of only white space characters. A non-empty value for this attribute is required.
+TWITTER_MISSING_REQ_ATTR.useraction=Verify that all Twitter social login elements in the server configuration have configured the attribute that is specified in the message and that their values are not empty.
+
+# 0=Endpoint URL, 1=Map of data about the endpoint response
+POST_RESPONSE_NULL=CWWKS5486W: Tokens cannot be extracted from the response from the [{0}] endpoint. The response map from the endpoint was [{1}].
+POST_RESPONSE_NULL.explanation=The request might be directed to an incorrect endpoint, or the request does not include enough information.
+POST_RESPONSE_NULL.useraction=Verify that the endpoint URL is accurate and that the request included all of the necessary headers or parameters. Check the server logs for additional error messages.
+
+# Do not translate "JSON"
+# 0=Endpoint URL, 1=Error message, 2=Endpoint response content
+ENDPOINT_RESPONSE_NOT_JSON=CWWKS5487W: The response from the [{0}] endpoint was not in the expected JSON format. The error was [{1}]. The response content was [{2}].
+ENDPOINT_RESPONSE_NOT_JSON.explanation=The specified endpoint might not be active, or the endpoint might return responses in a different format.
+ENDPOINT_RESPONSE_NOT_JSON.useraction=Verify that the server read the entire response from the specified endpoint. Verify that the request was sent to the correct endpoint and that the response is formatted as expected.
+
+# 0=URI value
+URI_CONTAINS_INVALID_CHARS=CWWKS5488W: The provided value [{0}] contains at least one character that cannot be included in a valid URI.
+URI_CONTAINS_INVALID_CHARS.explanation=The endpoint value that is specified in the message is not considered a valid URI because it contains characters that are not valid. The set of valid URI characters is defined by RFC 3986.
+URI_CONTAINS_INVALID_CHARS.useraction=Update the URI string to contain only valid URI characters.
+
+SOCIAL_LOGIN_FRONT_END_ERROR=CWWKS5489E: An error was encountered while authenticating a user by using social media.
+SOCIAL_LOGIN_FRONT_END_ERROR.explanation=A problem occurred while authenticating a user. There might have been a connection issue between the application and a third-party service provider.
+SOCIAL_LOGIN_FRONT_END_ERROR.useraction=Contact the system administrator to resolve the problem.
+
+# 0=User API URL, 1=HTTP response status, 2=Error code, 3=Error description
+USERAPI_RESP_INVALID_STATUS=CWWKS5490E: Cannot process the response from the [{0}] user API endpoint. The response status was [{1}], error was [{2}] and the error description was [{3}].
+USERAPI_RESP_INVALID_STATUS.explanation=The specified response status did not indicate a successful result. The error and error description provided in the message may contain additional information.
+USERAPI_RESP_INVALID_STATUS.useraction=Take the action necessary to fix the error in the response.
+
+# 0=User API URL, 1=Error message
+USERAPI_ERROR_RESPONSE=CWWKS5491E: Cannot process the error response from the [{0}] user API endpoint. The error was: [{1}]
+USERAPI_ERROR_RESPONSE.explanation=The specified user API endpoint did not return a valid response status, and an error was encountered while processing the response.
+USERAPI_ERROR_RESPONSE.useraction=Verify that the specified endpoint is correct and that it is a valid endpoint that is capable of processing user info API requests.
+
+# 0=User API URL, 1=Error message
+USERAPI_RESP_PROCESS_ERR=CWWKS5492E: Cannot process the response from the [{0}] user API endpoint. The error was: [{1}]
+USERAPI_RESP_PROCESS_ERR.explanation=The specified user API endpoint returned a valid response status but the runtime encountered an error while processing the response content.
+USERAPI_RESP_PROCESS_ERR.useraction=Verify that the specified endpoint is correct and the response content is formatted correctly. See the user action for the error that is displayed in the message.
+
+# 0=User API URL
+USERAPI_NULL_RESP_STR=CWWKS5493E: The response content from the [{0}] user API endpoint is not valid. 
+USERAPI_NULL_RESP_STR.explanation=The specified user API endpoint did not return a valid response to the user API request. 
+USERAPI_NULL_RESP_STR.useraction=Verify that the specified endpoint is correct and that it is a valid endpoint that is capable of processing user info API requests.
+
+# do not translate CODE
+CODE_PARAMETER_NULL_OR_EMPTY=CWWKS5494E: A social login request failed because the CODE attribute of the request was null or empty.
+CODE_PARAMETER_NULL_OR_EMPTY.explanation=An empty or missing CODE attribute in the the social login request caused an error. 
+CODE_PARAMETER_NULL_OR_EMPTY.useraction=Verify that the social login configuration for the social media service is correct and the remote service is operating correctly.
+
+# 0=Error parameter value ("invalid_client", for example), 1=Error description, 2=Error URI
+REDIRECT_REQUEST_CONTAINED_ERROR=CWWKS5495E: A social login authentication request failed because the social media returned the following {0} error: {1}. The error URI was [{2}].
+REDIRECT_REQUEST_CONTAINED_ERROR.explanation=The specified response status indicated that the authentication was not successful. The error and error description provided in the message contain additional information.
+REDIRECT_REQUEST_CONTAINED_ERROR.useraction=Verify that social login is correctly configured in the server configuration, and verify that the values in the server configuration match the values that are defined in the remote social media.
+
+# 0=URI value
+HTTP_URI_DOES_NOT_START_WITH_HTTP=CWWKS5496W: The provided value [{0}] is expected to be an HTTP URI. The value does not start with an HTTP protocol.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.explanation=The value is expected to be an HTTP URI, so the value needs to start with either http:// or https://.
+HTTP_URI_DOES_NOT_START_WITH_HTTP.useraction=Update the URI so that it specifies either the HTTP or HTTPS protocol.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=User API value, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_USER_API=CWWKS5497E: The social login feature cannot create a JSON Web Token (JWT) by using information from the configured user API [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_USER_API.explanation=The error that is displayed in the message should provide a more specific reason the JWT cannot be created. Either the user API request is malformed or missing information, an error occurred after the user API request was submitted, or the response from the user API cannot be used to create a JWT.
+FAILED_TO_CREATE_JWT_FROM_USER_API.useraction=Verify that the user API value is correct. See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+# Do not translate "JSON", "JSON Web Token", or "JWT"
+# 0=JWT configuration element ID, 1=Error message
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN=CWWKS5498E: The social login feature cannot create a JSON Web Token (JWT) by using the provided ID token and JWT configuration [{0}]. {1}
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.explanation=The JWT configuration that is specified in the message might be configured incorrectly, the ID token might be malformed or missing information, or another error occurred while creating the JWT.
+FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Verify that the JWT configuration that is specified in the message is configured correctly. See the user action for the error that is displayed in the message. Check the server logs for any additional error messages.
+
+# 0=Request URL value, 1=Error message
+REQUEST_URL_NOT_VALID=CWWKS5499E: The social login feature cannot redirect the request back to the original request URL [{0}] because the URL is not valid. {1}
+REQUEST_URL_NOT_VALID.explanation=The original request URL is not a valid URL. The URL might include characters that are not valid, or the URL might be malformed.
+REQUEST_URL_NOT_VALID.useraction=Verify that the request URL that is specified in the message matches the original protected resource request URL. Verify that the URL is well-formed and contains only valid URI characters.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: A required configuration parameter {0} is missing or has an invalid value {1}
+INVALID_CONFIG_PARAM.explanation=The social login runtime code did not find a required parameter when processing the client request.
+INVALID_CONFIG_PARAM.useraction=Check the missing parameter in the configuration and make sure that it is specified and correct.

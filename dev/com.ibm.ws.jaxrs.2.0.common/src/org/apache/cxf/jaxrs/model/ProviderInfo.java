@@ -19,12 +19,18 @@
 
 package org.apache.cxf.jaxrs.model;
 
+import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.jaxrs.impl.tl.ThreadLocalProxy;
 
+import com.ibm.ejs.ras.Tr;
+import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class ProviderInfo<T> extends AbstractResourceInfo {
+    private final static TraceComponent tc = Tr.register(ProviderInfo.class);
 
     private T provider;
 // Liberty Change for CXF Begin
@@ -42,7 +48,16 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
     }
 
     public ProviderInfo(T provider, Bus bus, boolean checkContexts, boolean custom) {
-        this(provider, null, bus, checkContexts, custom);
+        this(provider.getClass(), provider.getClass(), provider, bus, true, custom);
+    }
+
+    public ProviderInfo(Class<?> resourceClass, Class<?> serviceClass, T provider, Bus bus, boolean custom) {
+        this(resourceClass, serviceClass, provider, bus, true, custom);
+    }
+
+    public ProviderInfo(Class<?> resourceClass, Class<?> serviceClass, T provider, Bus bus,
+                        boolean checkContexts, boolean custom) {
+        this(resourceClass, serviceClass, provider, null, bus, checkContexts, custom);
     }
 
     public ProviderInfo(T provider,
@@ -52,14 +67,27 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
         this(provider, constructorProxies, bus, true, custom);
     }
 
+    public ProviderInfo(Class<?> resourceClass,
+                        Class<?> serviceClass,
+                        T provider,
+                        Map<Class<?>, ThreadLocalProxy<?>> constructorProxies,
+                        Bus bus,
+                        boolean checkContexts,
+                        boolean custom) {
+        super(resourceClass, serviceClass, true, checkContexts, constructorProxies, bus, provider);
+        this.provider = provider;
+        this.custom = custom;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "<init> provider.getClass()=" + provider.getClass() + " isProxy=" + Proxy.isProxyClass(provider.getClass()));
+        }
+    }
+
     public ProviderInfo(T provider,
                         Map<Class<?>, ThreadLocalProxy<?>> constructorProxies,
                         Bus bus,
                         boolean checkContexts,
                         boolean custom) {
-        super(provider.getClass(), provider.getClass(), true, checkContexts, constructorProxies, bus, provider);
-        this.provider = provider;
-        this.custom = custom;
+        this(provider.getClass(), provider.getClass(), provider, constructorProxies, bus, checkContexts, custom);
     }
 
     @Override
@@ -67,12 +95,22 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
         return true;
     }
 
+    @Trivial
     public T getProvider() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getProvider : provider=" + (provider==null?"null":provider.getClass()) + 
+                            " oldProvider=" + (oldProvider==null?"null":oldProvider.getClass()));
+        }
         return provider;
     }
 
 // Liberty Change for CXF Begin
+    @Trivial
     public T getOldProvider() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getOldProvider : provider=" + (provider==null?"null":provider.getClass()) + 
+                            " oldProvider=" + (oldProvider==null?"null":oldProvider.getClass()));
+        }
         return (oldProvider == null) ? provider : oldProvider;
     }
 
@@ -83,8 +121,18 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
      */
     public void setProvider(Object pObj) {
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setProvider pre: pObj(class)=" + pObj.getClass() + " isProxy=" + Proxy.isProxyClass(pObj.getClass()) + " provider=" + (provider==null?"null":provider.getClass()) + 
+                            " oldProvider=" + (oldProvider==null?"null":oldProvider.getClass()));
+        }
+
         this.oldProvider = this.provider;
         this.provider = (T) pObj;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setProvider post: provider=" + (provider==null?"null":provider.getClass()) + 
+                            " oldProvider=" + (oldProvider==null?"null":oldProvider.getClass()));
+        }
     }
 
     /**
@@ -137,8 +185,6 @@ public class ProviderInfo<T> extends AbstractResourceInfo {
         } else {
             return "{NULL}";
         }
-
     }
     //Liberty 226760 end
-
 }

@@ -406,6 +406,14 @@ public class Group extends Party {
      */
     @Override
     public Object get(String propName) {
+
+        /*
+         * Require a property name.
+         */
+        if (propName == null || propName.trim().isEmpty()) {
+            return null;
+        }
+
         if (propName.equals(PROP_CN)) {
             return getCn();
         }
@@ -440,6 +448,14 @@ public class Group extends Party {
      */
     @Override
     public boolean isSet(String propName) {
+
+        /*
+         * Require a property name.
+         */
+        if (propName == null || propName.trim().isEmpty()) {
+            return false;
+        }
+
         if (propName.equals(PROP_CN)) {
             return isSetCn();
         }
@@ -510,6 +526,14 @@ public class Group extends Party {
      */
     @Override
     public void unset(String propName) {
+
+        /*
+         * Require a property name.
+         */
+        if (propName == null || propName.trim().isEmpty()) {
+            return;
+        }
+
         if (propName.equals(PROP_MEMBERS)) {
             unsetMembers();
         }

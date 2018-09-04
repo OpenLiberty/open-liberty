@@ -609,13 +609,13 @@ osgi_initializer_failed=Construction of environment specific OSGi initializer, [
 
 overriding_cache_isolation=Parent Entity {0} has an isolation level of: {1} which is more protective then the subclass {2} with isolation: {3} so the subclass has been set to the isolation level {1}.
 
-ox_lowering_global_logging_from_default_info_to_warning= {0} Lowering global logging from default INFO to WARNING level.
+ox_lowering_global_logging_from_default_info_to_warning={0} Lowering global logging from default INFO to WARNING level.
 
-ox_lowering_session_logging_from_default_info_to_warning= {0} Lowering session logging from default INFO to WARNING level.
+ox_lowering_session_logging_from_default_info_to_warning={0} Lowering session logging from default INFO to WARNING level.
 
-ox_turn_global_logging_off= {0} Turning global session logging off.
+ox_turn_global_logging_off={0} Turning global session logging off.
 
-ox_turn_session_logging_off= {0} Turning session logging off.
+ox_turn_session_logging_off={0} Turning session logging off.
 
 parse_ejb_jar_with_validation_fails=Parsing ejb-jar.xml with validation fails with error ({0}). The migration tool will parse the xml file without validation.
 

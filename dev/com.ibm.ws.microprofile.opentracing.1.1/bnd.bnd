@@ -1,0 +1,55 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: com.ibm.ws.microprofile.opentracing.1.1
+Bundle-SymbolicName: com.ibm.ws.microprofile.opentracing.1.1
+Bundle-Description: MicroProfile.OpenTracing, version 1.1
+
+WS-TraceGroup: OPENTRACING
+
+-dsannotations: \
+    com.ibm.ws.microprofile.opentracing.OpenTracingFilterHelper, \
+    com.ibm.ws.microprofile.opentracing.cdi.OpenTracingCDIInjectionExtension
+
+Import-Package: \
+  javax.enterprise.inject.spi;version="[1.1,2.1)",\
+  *
+
+Export-Package: \
+	com.ibm.ws.microprofile.opentracing;version=1.1,\
+	com.ibm.ws.microprofile.opentracing.cdi;version=1.1
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Include-Resource: \
+  META-INF=resources/META-INF
+
+-buildpath: \
+	com.ibm.ws.opentracing.1.1;version=latest, \
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.jaxrs.2.0.common;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component;version=latest, \
+	com.ibm.wsspi.org.osgi.core;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	com.ibm.websphere.org.osgi.service.cm;version=latest, \
+	com.ibm.websphere.org.eclipse.microprofile.opentracing.1.1;version=latest, \
+	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
+	com.ibm.ws.cdi.interfaces;version=latest, \
+	com.ibm.websphere.javaee.annotation.1.2;version=latest, \
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest, \
+	com.ibm.ws.io.opentracing.opentracing-api.0.31.0;version=latest

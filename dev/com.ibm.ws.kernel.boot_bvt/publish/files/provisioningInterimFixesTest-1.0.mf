@@ -1,9 +1,0 @@
-Subsystem-ManifestVersion: 1.0
-Subsystem-SymbolicName: provisioningInterimFixesTest-1.0;visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Content: ProvisioningInterimFixesTestBundle1; version="[1,1.0.100)",
- ProvisioningInterimFixesTestBundle2; version="[1,1.0.100)",
- ProvisioningInterimFixesTestBundle3; version="[1,1.0.100)",
- ProvisioningInterimFixesTestBundle4; version="[1,1.0.100)"
-Subsystem-Type: osgi.subsystem.feature
-IBM-Feature-Version: 2

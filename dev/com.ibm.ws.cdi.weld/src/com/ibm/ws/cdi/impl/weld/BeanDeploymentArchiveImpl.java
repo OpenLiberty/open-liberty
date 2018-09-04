@@ -51,6 +51,8 @@ import org.jboss.weld.resources.MemberTransformer;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.ArchiveType;
@@ -132,6 +134,8 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     private final Map<Class<?>, List<InjectionPoint>> staticInjectionPoints = new HashMap<Class<?>, List<InjectionPoint>>();
 
     private final CDIArchive archive;
+
+    private static final TraceComponent tc = Tr.register(BeanDeploymentArchiveImpl.class);
 
     //package visibility only ... use factory
     BeanDeploymentArchiveImpl(WebSphereCDIDeployment cdiDeployment,
@@ -359,7 +363,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             for (String className : allClassNames) {
                 if (jeeComponentClassNames.contains(className)) {
                     Class<?> clazz = CDIUtils.loadClass(classLoader, className);
-                    classes.add(clazz);
+                    if (clazz != null) {
+                        classes.add(clazz);
+                    } else { 
+                        Tr.debug(tc, "jee Component Class was null", className);
+                    }
                 }
             }
         }
@@ -369,6 +377,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         for (EjbDescriptor<?> ejb : ejbs) {
             if (ejb.isMessageDriven()) {
                 classes.add(ejb.getBeanClass());
+                if (ejb.getBeanClass() == null) { 
+                    Tr.debug(tc, "Message Bean's bean class was null", ejb);
+                }
             }
         }
 
@@ -786,6 +797,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     public void addManagedBeanDescriptor(ManagedBeanDescriptor<?> managedBeanDescriptor) {
         if (getBeanDiscoveryMode() != BeanDiscoveryMode.NONE) {
             this.managedBeanClasses.add(managedBeanDescriptor.getBeanClass());
+            if (managedBeanDescriptor.getBeanClass() == null) { 
+                Tr.debug(tc, "Managed bean descriptor's bean class was null", managedBeanDescriptor);
+            }
         }
     }
 
