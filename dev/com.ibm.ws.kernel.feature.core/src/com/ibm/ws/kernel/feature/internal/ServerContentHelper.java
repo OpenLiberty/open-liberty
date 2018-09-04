@@ -132,7 +132,7 @@ public class ServerContentHelper {
                         //type = boot.jar, basically same as type=bundle.. for minify purposes.
                         File b = br.selectBundle(fr.getLocation(), fr.getSymbolicName(), fr.getVersionRange());
                         File bb = br.selectBaseBundle(fr.getLocation(), fr.getSymbolicName(), fr.getVersionRange());
-                        //b & bb will be the same bundle if the base was the selected.. 
+                        //b & bb will be the same bundle if the base was the selected..
                         if (b != null && bb != null) {
                             boolean pathsSame = b.getAbsolutePath().equals(bb.getAbsolutePath());
                             absPathsForLibertyContent.add(b.getAbsolutePath());
@@ -154,7 +154,7 @@ public class ServerContentHelper {
                                 }
                             }
                         } else {
-                            //b & bb were null, we have no match for this resource.. 
+                            //b & bb were null, we have no match for this resource..
                             //maybe the resource was minfiied out?
                             List<String> osList = fr.getOsList();
                             if (osList != null) {
@@ -164,7 +164,8 @@ public class ServerContentHelper {
                                 //(so this can still be ignored).
                             } else {
                                 //use match string for error message, it provides best chance for being helpful.
-                                Tr.warning(tc, "ERROR_MISSING_FEATURE_RESOURCE", new Object[] { fd.getFeatureName(), fr.getMatchString() });
+                                if (!fr.getMatchString().contains("com.ibm.ws.config.utility")) // Ignore for com.ibm.ws.config.utility
+                                    Tr.warning(tc, "ERROR_MISSING_FEATURE_RESOURCE", new Object[] { fd.getFeatureName(), fr.getMatchString() });
                             }
                         }
                         break;
@@ -216,8 +217,8 @@ public class ServerContentHelper {
                     case UNKNOWN: {
                         //if its not jar,bundle,feature, or file.. then something is wrong.
                         Tr.warning(tc, "ERROR_UNKNOWN_FEATURE_RESOURCE_TYPE", new Object[] { fd.getFeatureName(),
-                                                                                            fr.getSymbolicName(),
-                                                                                            fr.getRawType() });
+                                                                                             fr.getSymbolicName(),
+                                                                                             fr.getRawType() });
                         //we assume that other types will use the location field as something useful.
                         String loc = fr.getLocation();
                         if (loc != null) {
@@ -252,7 +253,7 @@ public class ServerContentHelper {
                 }
             }
 
-            //add in the manifest for the feature itself .. 
+            //add in the manifest for the feature itself ..
             File featureFile = fd.getFeatureDefinitionFile();
             if (featureFile != null) {
                 absPathsForLibertyContent.add(featureFile.getAbsolutePath());
@@ -317,7 +318,7 @@ public class ServerContentHelper {
                 if (osRequest == null || osRequest.isEmpty() || "all".equals(osRequest))
                     return pathArray;
                 else {
-                    //filter paths as required.. then return them..                                       
+                    //filter paths as required.. then return them..
                     String[] osNames = osRequest.split(",");
                     boolean add = true;
 
@@ -341,7 +342,7 @@ public class ServerContentHelper {
                                 if (osPaths != null && !osPaths.isEmpty()) {
                                     absPathsForLibertyContent.addAll(osPaths);
 
-                                    //verify the requested paths File.exists .. otherwise 
+                                    //verify the requested paths File.exists .. otherwise
                                     //this could be an error ?
                                     for (String osPath : osPaths) {
                                         if (!FileUtils.fileExists(new File(osPath))) {
@@ -364,7 +365,7 @@ public class ServerContentHelper {
                             } else {
                                 List<String> osPaths = specificPlatformPathsByPlatform.get(osName);
                                 if (osPaths != null && !osPaths.isEmpty()) {
-                                    //verify the requested paths File.exists .. otherwise 
+                                    //verify the requested paths File.exists .. otherwise
                                     //this could be an error.
                                     for (String osPath : osPaths) {
                                         if (!FileUtils.fileExists(new File(osPath))) {
@@ -386,9 +387,9 @@ public class ServerContentHelper {
     }
 
     /**
-     * 
+     *
      * Scan a folder and any subfolders for icons, and compare them to the list of expected icons
-     * 
+     *
      * @param iconPaths the collection where found icons will go. Cannot be null
      * @param baseFolder the folder from where we will start searching. Used when we recurse to maintain a root
      * @param iconsFolder the current folder being scanned.
@@ -442,7 +443,7 @@ public class ServerContentHelper {
                         }
                     }
                 } catch (IOException e) {
-                    //means we were unable to open the jar to read its manifest 
+                    //means we were unable to open the jar to read its manifest
                     //which means we may be missing some jars.. also, means the jar
                     //is broken.
                     Tr.warning(tc, "ERROR_OPENING_JAR_FOR_CLASSPATH", new Object[] { test.getAbsolutePath(), e });
@@ -465,7 +466,7 @@ public class ServerContentHelper {
     /**
      * Take the set of FeatureResources representing lib/fixes content
      * and add the ones required for the current server to the set of absolute paths.
-     * 
+     *
      * @param installRoot required to process absolute paths to files in the set
      * @param absPathsForLibertyContent set to add paths to keep to, expected to already contain all paths planned to be kept other than fix xmls.
      * @param fixes collection of FeatureResources
@@ -483,7 +484,7 @@ public class ServerContentHelper {
              * <file hash="sha1hash" id="path under installroot"/>
              * </updates>
              * </fix>
-             * 
+             *
              * if any file in updates exists in our current set of paths-to-keep
              * AND said file has the same SHA1
              * THEN keep xml.
@@ -555,26 +556,26 @@ public class ServerContentHelper {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Unable to parse file " + fixFileLoc + " due to parser config error, file will be kept regardless");
                     }
-                    //error? add the file anyways.. 
+                    //error? add the file anyways..
                     absPathsForLibertyContent.add(absFixFileLoc);
                 } catch (SAXException e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Unable to parse file " + fixFileLoc + " due to sax error, file will be kept regardless");
                     }
-                    //error? add the file anyways.. 
+                    //error? add the file anyways..
                     absPathsForLibertyContent.add(absFixFileLoc);
                 } catch (IOException e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Unable to parse file " + fixFileLoc + " due to io error, file will be kept regardless");
                     }
-                    //error? add the file anyways.. 
+                    //error? add the file anyways..
                     absPathsForLibertyContent.add(absFixFileLoc);
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Unable to parse file " + fixFileLoc + " not xml, file will be kept regardless");
                 }
-                //not an xml file? add the file anyways.. 
+                //not an xml file? add the file anyways..
                 absPathsForLibertyContent.add(absFixFileLoc);
             }
         }
