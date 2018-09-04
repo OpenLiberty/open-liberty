@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.messaging.clientcontainer_fat" default="buildandrun" basedir=".">
+		<property name="javac.boot.classpath" value="1.7"/>
+		<property name="minimum.java.level.for.test.execution" value="1.7"/>
+		<import file="../ant_build/public_imports/fat_imports.xml" />
+		
+
+		<target name="addRequiredLibraries">
+				<copy todir="${required.lib.dir}">
+						<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-codec-1.4.jar"/>
+						<fileset dir="../build.sharedResources/lib/httpclient/4.1.2" includes="commons-logging-1.1.1.jar"/>
+				</copy>
+		</target>
+
+</project>
