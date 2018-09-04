@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
+import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -119,6 +120,9 @@ public class AuthorizationCodeHandler {
 
             // this has a LOT of dependencies.
             oidcResult = jose4jUtil.createResultWithJose4J(responseState, tokens, clientConfig, oidcClientRequest);
+
+            //if tokens were valid, go get the userinfo if configured to do so, and update the authentication result
+            (new UserInfoHelper()).getUserInfo(oidcResult, clientConfig, sslSocketFactory, tokens.get(Constants.ACCESS_TOKEN));
 
         } catch (BadPostRequestException e) {
             Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getErrorMessage(), clientId, clientConfig.getTokenEndpointUrl() });

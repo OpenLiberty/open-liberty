@@ -10,16 +10,27 @@
  *******************************************************************************/
 package com.ibm.websphere.security.social;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.security.auth.Subject;
+
+import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.Claims;
+import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
+import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
+import com.ibm.ws.security.social.tai.SocialLoginTAI;
 
 /**
- * This API represents the user’s access_token and profile upon user authenticated by social media.
+ * This API represents the user's access_token and profile upon user authenticated by social media.
  *
  * @author IBM Corporation
  *
@@ -35,12 +46,18 @@ public class UserProfile {
     private final JwtToken jwtToken;
     private final Map<String, Object> customProperties;
     private final Set<Claims> claimSet;
+    private final String userInfo;  // only present in oidc clients
 
     public UserProfile(JwtToken jwtToken, Map<String, Object> customProperties, Claims claims) {
+        this(jwtToken, customProperties, claims, null);
+    }    
+    
+    public UserProfile(JwtToken jwtToken, Map<String, Object> customProperties, Claims claims, String userInfo){
         this.jwtToken = jwtToken;
         this.customProperties = customProperties;
         claimSet = new HashSet<Claims>();
         claimSet.add(claims);
+        this.userInfo = userInfo;
     }
 
     /**
@@ -127,5 +144,14 @@ public class UserProfile {
     public String getAccessTokenAlias() {
         return (String) customProperties.get("accessTokenAlias");
     }
-
+    
+    /**
+     * return userInfo information from an OpenIdConnect provider's userInfo
+     * endpoint for the authenticated user.    
+     *
+     * @return the userInfo JSON as a string or null if the info is not available. 
+     */
+    public String getUserInfo()  {
+        return userInfo;
+    }
 }
