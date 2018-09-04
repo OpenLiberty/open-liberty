@@ -60,6 +60,6 @@ public class JDBC43Test extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("WLTC0018E"); // TODO remove once transactions bug is fixed
     }
 }

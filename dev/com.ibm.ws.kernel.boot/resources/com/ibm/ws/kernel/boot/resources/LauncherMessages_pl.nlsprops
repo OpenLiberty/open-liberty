@@ -936,6 +936,10 @@ komponent\u00f3w dla opcji docelowej, aby sprawdzi\u0107 ich status. Aby sprawdz
 zbiorczy status wszystkich komponent\u00f3w na serwerze obs\u0142uguj\u0105cych wstrzymanie, wy\u015blij \
 \u017c\u0105danie statusu bez opcji docelowej.
 
+warning.package.root.invalid=CWWKE0947W: Opcja --server-root z pustym argumentem nie jest dozwolona, je\u015bli zainstalowano rozszerzenia produktu. Zostanie u\u017cyty argument domy\u015blny wlp.
+warning.package.root.invalid.explanation=U\u017cytkownik wykona\u0142 \u017c\u0105danie utworzenia pakietu z opcj\u0105 --server-root okre\u015blaj\u0105c\u0105 argument pusty i wykryto rozszerzenia produktu. Zostanie u\u017cyty domy\u015blny katalog g\u0142\u00f3wny serwera wlp.
+warning.package.root.invalid.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \
