@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 public class StackTraceFilteringForSpecificationClassesExceptionTest extends AbstractStackTraceFilteringTest {
 
-    private static final String MAIN_EXCEPTION = "NullPointerException";
+    private static final String MAIN_EXCEPTION = "IllegalArgumentException";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -68,7 +68,7 @@ public class StackTraceFilteringForSpecificationClassesExceptionTest extends Abs
         assertConsoleLogCountEquals("The console stack should only have one [internal classes] in it per stack trace.",
                                     INTERNAL_CLASSES_REGEXP, errorCount);
         // The javax.servlet methods shouldn't be stripped out, because they're spec used by the app
-        final int servletFrames = 9;
+        final int servletFrames = 7;
         assertConsoleLogCountEquals("The console log should have several frames from the specification javax.servlet classes", "javax.servlet", servletFrames);
 
         assertConsoleLogContains("The console log should have the user class in it", "SpecUsingServlet");
