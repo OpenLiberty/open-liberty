@@ -57,6 +57,8 @@ public class ResourceApplicationScoped {
         if (interceptors == null) {
             return "NONE";
         }
-        return String.join(" ", interceptors);
+        String result = String.join(" ", interceptors);
+        interceptors.clear();
+        return result;
     }
 }
