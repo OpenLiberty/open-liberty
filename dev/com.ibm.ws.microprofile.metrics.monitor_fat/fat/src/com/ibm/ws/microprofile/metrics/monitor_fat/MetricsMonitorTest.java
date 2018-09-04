@@ -238,12 +238,6 @@ public class MetricsMonitorTest {
       	String logMsg = server.waitForStringInLogUsingMark("CWPMI2002I");
       	Log.info(c, testName, logMsg);
       	Assert.assertNotNull("No CWPMI2002I message", logMsg);
-      	try {
-      		getHttpsServlet("/metrics");
-      		Assert.fail("/metrics still can be executed");
-      	} catch (Exception e) {
-      		// Passed
-      	}
     }
     
     @Test
