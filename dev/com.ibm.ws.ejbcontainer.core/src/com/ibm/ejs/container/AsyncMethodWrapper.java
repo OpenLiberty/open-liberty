@@ -164,7 +164,10 @@ public class AsyncMethodWrapper extends EJSWrapperBase implements Runnable {
         AbstractEJBRuntime rt = (AbstractEJBRuntime) super.container.getEJBRuntime();
 
         // If the server is stopping, don't invoke the async method
-        if (!rt.isStopping()) {
+        if (rt.isStopping()) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Async method " + methodInfo.getBeanClassName() + "." + methodInfo.getMethodName() + " will not be invoked because server is stopping");
+        } else {
             try {
                 try {
                     Object theBean = container.EjbPreInvoke(this, ivMethodId, s, ivArgs);
