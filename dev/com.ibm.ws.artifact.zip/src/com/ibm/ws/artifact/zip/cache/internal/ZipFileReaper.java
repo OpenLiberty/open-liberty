@@ -1043,8 +1043,8 @@ public class ZipFileReaper {
 
                 } catch (Exception e) {
                     // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
-                    // Either way, the proper state should be closed.
-                    data.enactFullClose( openAt );
+                    // Either way, the proper state should be fully closed.
+                    data.enactFullClose(openAt);
                     throw e;
                 }
 
@@ -1058,8 +1058,8 @@ public class ZipFileReaper {
 
                 } catch (Exception e) {
                     // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
-                    // Either way, the proper state should be closed.
-                    data.enactClose( openAt, ZipFileData.CLOSE_ALL );
+                    // Either way, the proper state should be fully closed.
+                    data.enactClose(openAt, ZipFileData.CLOSE_ALL);
                     data.enactFullClose( openAt );
                     throw e;
                 }
