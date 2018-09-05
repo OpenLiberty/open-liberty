@@ -52,7 +52,6 @@ public class UserInfoHelper {
         if (!willRetrieveUserInfo() || accessToken == null) {
             return false;
         }
-
         String userInfoStr = getUserInfoFromURL(clientConfig, sslSocketFactory, accessToken);
 
         if (userInfoStr == null) {
@@ -74,7 +73,7 @@ public class UserInfoHelper {
     // per oidc-connect-core-1.0 sec 5.3.2, sub claim of userinfo response must match sub claim in id token.
     protected boolean isUserInfoValid(String userInfoStr, String subClaim) {
         String userInfoSubClaim = getUserInfoSubClaim(userInfoStr);
-        if (userInfoSubClaim == null || userInfoSubClaim.compareTo(subClaim) != 0) {
+        if (userInfoSubClaim == null || subClaim == null || userInfoSubClaim.compareTo(subClaim) != 0) {
             Tr.error(tc, "USERINFO_INVALID", new Object[] { userInfoStr, subClaim });
             return false;
         }
