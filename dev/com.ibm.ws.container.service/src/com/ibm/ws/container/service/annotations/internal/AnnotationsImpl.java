@@ -47,6 +47,8 @@ import com.ibm.ws.container.service.annotations.SpecificAnnotations;
 public abstract class AnnotationsImpl implements Annotations {
     public static final TraceComponent tc = Tr.register(AnnotationsImpl.class);
 
+    private static final String CLASS_NAME = AnnotationsImpl.class.getSimpleName();
+
     public static String getPath(Container useContainer) throws UnableToAdaptException {
         StringBuilder pathBuilder = new StringBuilder();
 
@@ -59,6 +61,41 @@ public abstract class AnnotationsImpl implements Annotations {
         return pathBuilder.toString();
     }
 
+    protected String getContainerPath(Container container) {
+        String containerPath;
+        String pathCase;
+
+        try {
+            containerPath = getPath(container); // throws UnableToAdaptException
+        } catch ( UnableToAdaptException e ) {
+            return null; // FFDC
+        }
+
+        if ( containerPath.isEmpty() ) { // Root-of-roots
+            containerPath = getModName();
+            if ( (containerPath == null) || containerPath.isEmpty() ) {
+                containerPath = getAppName();
+                if ( (containerPath == null) || containerPath.isEmpty() ) {
+                    Tr.warning(tc, "Unable to obtain path for container [ " + container + " ]");
+                    return null;
+                } else {
+                    pathCase = "root-of-roots (application name)";
+                }
+            } else {
+                pathCase = "root-of-roots (module name)";
+            }
+        } else {
+            pathCase = "non-root-of-roots (full path)";
+        }
+
+        String message = CLASS_NAME + ": Container [ " + container + " ] Path [ " + containerPath + " ]: " + pathCase;
+        Tr.info(tc, message);
+        (new Throwable(message)).printStackTrace(System.out);
+
+        return containerPath;
+    }
+
+    //
     
     @SuppressWarnings("unchecked")
     protected static <T> T cacheGet(
@@ -257,6 +294,30 @@ public abstract class AnnotationsImpl implements Annotations {
         return modName;
     }
 
+    protected void forceModName() throws UnableToAdaptException {
+        if ( (modName == null) || modName.isEmpty() ) {
+            String modNameCase;
+            String useModName = getPath( getContainer() ); // 'getPath' throws UnableToAdaptException
+            if ( (useModName == null) || useModName.isEmpty() ) {
+                useModName = getAppName();
+                if ( (useModName == null) || useModName.isEmpty() ) {
+                    Tr.warning(tc, "Failed to assign module name for container [ " + getContainer() + " ]");
+                    return;
+                } else {
+                    modNameCase = "assigned from application";
+                }
+            } else {
+                modNameCase = "assigned from module container";
+            }
+            modName = useModName;
+
+            System.out.println(CLASS_NAME +
+                ": App [ " + getAppName() + " ]" +
+                " Container [ " + getContainer() + " ]" +
+                " Forced Mod [ " + modName + " ] (" + modNameCase + ")");
+        }
+    }
+
     @Override
     public void setModName(String modName) {
         this.modName = modName;
@@ -380,11 +441,26 @@ public abstract class AnnotationsImpl implements Annotations {
             return null;
         }
 
+        try {
+            forceModName(); // throws UnableToAdaptException
+        } catch ( UnableToAdaptException e ) {
+            // FFDC
+            return null;
+        }
+
         String useAppName = getAppName();
         String useModName = getModName();
         String useModCatName = getModCategoryName();
 
         ClassSource_Options options = createOptions();
+
+        System.out.println("Create root class source:");
+        System.out.println("  App Name [ " + useAppName + " ]");
+        System.out.println("  Mod Name [ " + useModName + " ]");
+        System.out.println("  Mod Cat Name [ " + useModCatName + " ]");
+
+        System.out.println("  IsSet Scan Threads [ " + options.getIsSetScanThreads() + " ]");
+        System.out.println("  Scan Threads [ " + options.getScanThreads() + " ]");
 
         try {
             return classSourceFactory.createAggregateClassSource(

@@ -591,8 +591,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             isChangedReason = "Cache miss";
             
         } else if ( !conData.shouldRead("Time Stamp") ) {
-        	isChanged = true;
-        	isChangedReason = "Cache miss (disabled)";
+            isChanged = true;
+            isChangedReason = "Cache miss (disabled)";
 
         } else if ( !conData.hasTimeStampFile() ) {
             isChanged = true;
@@ -897,12 +897,12 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         changedClassNames = isChanged;
 
         if ( isChanged ) {
-        	if ( modData.shouldWrite("Resolved refs") ) {
-        		modData.writeResolvedRefs(i_resolvedClassNames);
-        	}
-        	if ( modData.shouldWrite("Unresolved refs") ) {
-        		modData.writeUnresolvedRefs(i_unresolvedClassNames);
-        	}
+            if ( modData.shouldWrite("Resolved refs") ) {
+                modData.writeResolvedRefs(i_resolvedClassNames);
+            }
+            if ( modData.shouldWrite("Unresolved refs") ) {
+                modData.writeUnresolvedRefs(i_unresolvedClassNames);
+            }
         }
 
         if ( logger.isLoggable(Level.FINER) ) {
@@ -974,7 +974,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 }
 
                 if ( modData.shouldWrite("Result container") ) {
-                	modData.writeResultCon( scanPolicy, newBuckets[ scanPolicy.ordinal() ] );
+                    modData.writeResultCon( scanPolicy, newBuckets[ scanPolicy.ordinal() ] );
                 }
             }
 
@@ -1078,21 +1078,24 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     // 'internTargetsData'.
 
     protected TargetsTableImpl readResults(ScanPolicy scanPolicy, TargetsTableImpl[] buckets) {
-        if ( !modData.shouldRead("Result container") || !modData.hasResultCon(scanPolicy) ) {
+        if ( !modData.shouldRead("Result container") ) {
+            return null;
+        }
+
+        TargetCacheImpl_DataCon resultCon =  modData.getResultCon(scanPolicy);
+        if ( !resultCon.exists() || !resultCon.hasFiles() ) {
             return null;
         }
 
         TargetsTableImpl cachedResultData = createTargetsData( scanPolicy.name() );
+        if ( !resultCon.read(cachedResultData) ) {
+            return null;
+        }
 
-        if ( modData.readResultCon(scanPolicy, cachedResultData) ) {
-            cachedResultData = internTargetsData(cachedResultData);
+        cachedResultData = internTargetsData(cachedResultData);
 
-            if ( buckets != null ) {
-                buckets[ scanPolicy.ordinal() ] = cachedResultData;
-            }
-
-        } else {
-            cachedResultData = null;
+        if ( buckets != null ) {
+            buckets[ scanPolicy.ordinal() ] = cachedResultData;
         }
 
         return cachedResultData;
@@ -1151,7 +1154,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             mergeClasses(newClassTable);
 
             if ( modData.shouldWrite("Class refs") ) {
-            	modData.writeClassRefs(newClassTable);
+                modData.writeClassRefs(newClassTable);
             }
 
             cachedClassTable = newClassTable;

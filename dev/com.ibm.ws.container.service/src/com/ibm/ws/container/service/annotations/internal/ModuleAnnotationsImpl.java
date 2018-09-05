@@ -99,18 +99,19 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 // com.ibm.ws.springboot.support.web.server/src/com/ibm/ws/springboot/support/web/server/internal/WebInstance.java
 
 public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnnotations {
+    private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
 
     public ModuleAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
         Container rootContainer, OverlayContainer rootOverlayContainer,
         ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
-        ModuleInfo moduleInfo) {
+        ModuleInfo moduleInfo) throws UnableToAdaptException {
 
         super( annotationsAdapter,
                rootContainer, rootOverlayContainer,
                rootArtifactContainer, rootAdaptableContainer,
                moduleInfo.getApplicationInfo().getName(),
-               AnnotationsAdapterImpl.getPath(moduleInfo.getContainer()),
+               AnnotationsImpl.getPath( moduleInfo.getContainer() ), // 'getPath' throws UnableToAdaptException
                ClassSource_Factory.JAVAEE_CATEGORY_NAME );
 
         this.moduleInfo = moduleInfo;
@@ -195,26 +196,6 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
     //
 
-    protected String getContainerPath(Container container) {
-        String containerPath;
-        String pathCase;
-
-        try {
-            containerPath = getPath(container); // throws UnableToAdaptException
-        } catch ( UnableToAdaptException e ) {
-            return null; // FFDC
-        }
-        if ( containerPath.isEmpty() ) { // Root-of-roots
-            containerPath = getModName(); // See the comment, above.
-            pathCase = "root-of-roots (module name)";
-        } else {
-        	pathCase = "non-root-of-roots (full path)";
-        }
-
-        Tr.info(tc, "Container [ " + container + " ] Path [ " + containerPath + " ]: " + pathCase);
-        return containerPath;
-    }
-
     @Override
     protected void addInternalToClassSource() {
         if ( rootClassSource == null ) {
@@ -228,13 +209,14 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
         Container moduleContainer = getContainer();
 
-        Tr.info(tc, "Module [ " + getAppName() + ":" + getModName() + " ][ " + moduleContainer + " ]:" +
+        Tr.info(tc, CLASS_NAME +
+                    ": Module [ " + getAppName() + ":" + getModName() + " ][ " + moduleContainer + " ]:" +
                     " Building internal class sources");
 
         ModuleClassesContainerInfo moduleClassesContainerInfo = getModuleClassesContainerInfo();
 
         if ( moduleClassesContainerInfo == null ) {
-            Tr.info(tc, "No classes container info: Using the module container.");
+            Tr.info(tc, CLASS_NAME + ": No classes container info: Using the module container.");
 
             // When there is no module classes container information, use the module container
             // itself as the classes container.
@@ -245,15 +227,15 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
             String containerPath = getContainerPath(moduleContainer);
             if ( containerPath == null ) {
-            	return; // FFDC in 'getContainerPath'
+                return; // FFDC in 'getContainerPath'
             }
             if ( !addContainerClassSource(containerPath, moduleContainer) ) {
                 return; // FFDC in 'addContainerClassSource'
             }
 
         } else {
-        	// These are the possible values of ContainerInfo.Type:
-        	//
+            // These are the possible values of ContainerInfo.Type:
+            //
             //   MANIFEST_CLASSPATH: Should not be present
             //   EAR_LIB: Should not be present
             //   SHARED_LIB: Should not be present
@@ -302,9 +284,9 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                     // to META-INF, which is where jandex indexes are stored.
 
                     nextContainer  = nextContainer.getEnclosingContainer().getEnclosingContainer();
-                    nextPrefix = "WEB-INF/classes";
+                    nextPrefix = "WEB-INF/classes/";
 
-                    Tr.info(tc, "Handling type [ " + nextType + " ] with prefix [ " + nextPrefix + " ]");
+                    Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ] with prefix [ " + nextPrefix + " ]");
 
                 } else if ( (nextType == ContainerInfo.Type.WEB_INF_LIB) ||
                             (nextType == ContainerInfo.Type.EJB_MODULE) ||
@@ -316,11 +298,10 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
 
                     nextPrefix = ClassSource_Factory.UNUSED_ENTRY_PREFIX;
 
-                    Tr.info(tc, "Handling type [ " + nextType + " ]");
+                    Tr.info(tc, CLASS_NAME + ": Handling type [ " + nextType + " ]");
 
                 } else {
-                    Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]: " +
-                                   "unknown type");
+                    Tr.warning(tc, "Ignoring container [ " + nextContainer + " ] [ " + nextType + " ]: " + "unknown type");
                     return;
                 }
 
@@ -328,9 +309,9 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                 // particular container types.  Testing for all types should not
                 // be a problem.
 
-                String nextPath = getContainerPath(moduleContainer);
+                String nextPath = getContainerPath(nextContainer);
                 if ( nextPath == null ) {
-                	return; // FFDC in 'getContainerPath'
+                    return; // FFDC in 'getContainerPath'
                 }
 
                 if ( !addContainerClassSource(nextPath, nextContainer, nextPrefix) ) {

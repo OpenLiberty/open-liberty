@@ -49,7 +49,7 @@ public class ModuleAnnotationsAdapterImpl
                 this,
                 rootContainer, rootOverlayContainer,
                 rootArtifactContainer, rootAdaptableContainer,
-                moduleInfo);
+                moduleInfo); // throws UnableToAdaptException
 
             overlayPut(rootOverlayContainer, adaptPath, ModuleAnnotations.class, moduleAnnotations);
         }

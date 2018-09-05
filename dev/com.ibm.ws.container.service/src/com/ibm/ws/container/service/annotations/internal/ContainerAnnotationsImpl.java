@@ -40,12 +40,12 @@ public class ContainerAnnotationsImpl extends AnnotationsImpl implements Contain
 
     @Override
     public String getEntryPrefix() {
-    	return entryPrefix;
+        return entryPrefix;
     }
 
     @Override
     public void setEntryPrefix(String entryPrefix) {
-    	this.entryPrefix = entryPrefix;
+        this.entryPrefix = entryPrefix;
     }
 
     //

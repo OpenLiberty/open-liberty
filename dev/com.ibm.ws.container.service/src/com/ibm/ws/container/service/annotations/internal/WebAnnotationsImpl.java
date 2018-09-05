@@ -74,6 +74,7 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * completion of a scan.
  */
 public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnnotations {
+    private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
 
     public WebAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
@@ -203,7 +204,7 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
                 // The expectation is that the supplied container is twice nested
                 // local child of the module container.
                 nextContainer = nextContainer.getEnclosingContainer().getEnclosingContainer();
-                nextPrefix = "WEB-INF/classes";
+                nextPrefix = "WEB-INF/classes/";
             } else {
                 nextPrefix = null;
             }

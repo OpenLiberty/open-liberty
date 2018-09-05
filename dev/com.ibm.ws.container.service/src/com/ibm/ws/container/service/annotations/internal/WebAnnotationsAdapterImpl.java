@@ -53,7 +53,7 @@ public class WebAnnotationsAdapterImpl
                 rootArtifactContainer, rootAdaptableContainer,
                 webModuleInfo);
 
-            overlayPut(rootOverlayContainer, adaptPath, ModuleAnnotations.class, webAnnotations);
+            overlayPut(rootOverlayContainer, adaptPath, WebAnnotations.class, webAnnotations);
         }
 
         return webAnnotations;
