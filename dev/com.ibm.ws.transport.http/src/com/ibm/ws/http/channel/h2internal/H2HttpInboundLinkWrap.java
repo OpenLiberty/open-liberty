@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.Constants.Direction;
+import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameContinuation;
@@ -347,7 +349,7 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
         }
     }
 
-    public void writeFramesSync(CopyOnWriteArrayList<Frame> frames) {
+    public void writeFramesSync(CopyOnWriteArrayList<Frame> frames) throws IOException {
 
         if (frames == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -378,6 +380,16 @@ public class H2HttpInboundLinkWrap extends HttpInboundLink {
                         Tr.debug(tc, "writeFramesSync stream " + streamID + " was already closed; cannot write");
                     }
                 }
+
+            }
+
+            catch (FlowControlException e) {
+                //  throw IOE so channel code knows the write failed and can deal with the app/servlet facing output stream.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "write failed with a FlowControlException: " + e.getErrorString());
+                }
+                IOException ioe = new IOException(e);
+                throw ioe;
 
             } catch (Http2Exception e) {
                 //  send out a connection error.

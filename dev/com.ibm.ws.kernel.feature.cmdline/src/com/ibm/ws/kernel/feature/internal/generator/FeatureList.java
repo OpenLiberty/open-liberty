@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -70,7 +72,6 @@ public class FeatureList {
     private static final Map<String, Collection<GenericMetadata>> eeToCapability = new HashMap<String, Collection<GenericMetadata>>();
 
     static {
-
         if (writingJavaVersion) {
             addJVM(possibleJavaVersions, "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
@@ -244,8 +245,8 @@ public class FeatureList {
         if (!!!privateFeature) {
             ContentBasedLocalBundleRepository cbr = getBundleRepo(fd.getFeatureName(), mfp);
             Set<File> bundles = new TreeSet<File>();
-            Set<File> apiJars = showExternals ? new TreeSet<File>() : null;
-            Set<File> spiJars = new TreeSet<File>();
+            Map<File,Map<String,String>> apiJars = showExternals ? new TreeMap<File,Map<String,String>>() : null;
+            Map<File,Map<String,String>> spiJars = new TreeMap<File,Map<String,String>>();
 
             if (publicFeature) {
                 Set<String> enabledFeatureNames = new TreeSet<String>();
@@ -433,9 +434,10 @@ public class FeatureList {
         return metadata;
     }
 
-    private void writeApiSpiJars(FeatureListWriter writer, File installDir, Set<File> jars, String elementName) throws IOException, XMLStreamException {
+    private void writeApiSpiJars(FeatureListWriter writer, File installDir, Map<File,Map<String,String>> jars, String elementName) throws IOException, XMLStreamException {
         if (jars != null) {
-            for (File f : jars) {
+            for (Entry<File, Map<String, String>> e : jars.entrySet()) {
+                File f = e.getKey();
                 String nameToWrite;
 
                 if (f.getAbsolutePath().startsWith(installDir.getAbsolutePath())) {
@@ -445,7 +447,7 @@ public class FeatureList {
                     nameToWrite = PathUtils.slashify(f.getAbsolutePath());
                 }
 
-                writer.writeTextElement(elementName, nameToWrite);
+                writer.writeTextElementWithAttributes(elementName, nameToWrite, e.getValue());
             }
         }
     }
@@ -482,8 +484,8 @@ public class FeatureList {
                                ContentBasedLocalBundleRepository cbr,
                                Set<String> enabledFeatureNames,
                                Set<File> bundles,
-                               Set<File> apiJars,
-                               Set<File> spiJars) {
+                               Map<File,Map<String,String>> apiJars,
+                               Map<File,Map<String,String>> spiJars) {
         for (FeatureResource fr : feature.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
             String symbolicName = fr.getSymbolicName();
             ProvisioningFeatureDefinition other = features.get(symbolicName);
@@ -514,8 +516,8 @@ public class FeatureList {
     private void searchJars(ProvisioningFeatureDefinition feature,
                             ContentBasedLocalBundleRepository cbr,
                             Set<File> bundles,
-                            Set<File> apiJars,
-                            Set<File> spiJars) {
+                            Map<File,Map<String,String>> apiJars,
+                            Map<File,Map<String,String>> spiJars) {
         if (bundles != null || apiJars != null || spiJars != null) {
             searchJars(feature, cbr, SubsystemContentType.JAR_TYPE, null, apiJars, spiJars);
             searchJars(feature, cbr, SubsystemContentType.BUNDLE_TYPE, bundles, apiJars, spiJars);
@@ -526,8 +528,8 @@ public class FeatureList {
                             ContentBasedLocalBundleRepository cbr,
                             SubsystemContentType contentType,
                             Set<File> bundles,
-                            Set<File> apiJars,
-                            Set<File> spiJars) {
+                            Map<File,Map<String,String>> apiJars,
+                            Map<File,Map<String,String>> spiJars) {
         for (FeatureResource fr : feature.getConstituents(contentType)) {
             String location = fr.getLocation();
             File f = cbr.selectBundle(location, fr.getSymbolicName(), fr.getVersionRange());
@@ -537,13 +539,16 @@ public class FeatureList {
                 }
 
                 APIType apiType = APIType.getAPIType(fr);
+                Map<String,String> attrs = new HashMap<String,String>(1);
+                if (fr.getRequireJava() != null)
+                    attrs.put("require-java", fr.getRequireJava().toString());
                 if (apiType == APIType.API) {
                     if (apiJars != null) {
-                        apiJars.add(f);
+                        apiJars.put(f, attrs);
                     }
                 } else if (apiType == APIType.SPI) {
                     if (spiJars != null) {
-                        spiJars.add(f);
+                        spiJars.put(f, attrs);
                     }
                 }
             }

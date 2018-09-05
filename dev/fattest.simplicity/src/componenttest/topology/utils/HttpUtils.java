@@ -639,6 +639,11 @@ public class HttpUtils {
         return getHttpResponseAsString(url);
     }
 
+    public static String getHttpResponseAsString(LibertyServer server, String urlSuffix) throws IOException {
+        URL url = createURL(server, urlSuffix);
+        return getHttpResponseAsString(url);
+    }
+
     public static String getHttpResponseAsString(URL url) throws IOException {
         final String method = "getHttpResponseAsString";
         Log.info(c, method, "url = " + url);

@@ -10,11 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.web.server.version20.container;
 
-public interface LibertyFactoryBase {
+import java.util.concurrent.atomic.AtomicReference;
+
+interface LibertyFactoryBase {
+
+    static final AtomicReference<LibertyWebServer> usingDefaultHost = new AtomicReference<>();
 
     String getContextPath();
 
     boolean shouldUseDefaultHost(LibertyWebServer container);
 
-    void stopUsingDefaultHost(LibertyWebServer container);
+    default boolean acquireDefaultHost(LibertyWebServer container) {
+        // only use default host if this is the first container
+        return usingDefaultHost.compareAndSet(null, container);
+    }
+
+    default void stopUsingDefaultHost(LibertyWebServer container) {
+        usingDefaultHost.compareAndSet(container, null);
+    }
 }

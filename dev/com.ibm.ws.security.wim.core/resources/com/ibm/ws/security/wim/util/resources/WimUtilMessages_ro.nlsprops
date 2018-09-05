@@ -248,7 +248,7 @@ MALFORMED_SEARCH_EXPRESSION=CWIML3006W: Opera\u0163ia de registru de utilizatori
 MALFORMED_SEARCH_EXPRESSION.explanation=Opera\u0163ia de c\u0103utare nu poate fi realizat\u0103 pentru c\u0103 expresia de c\u0103utare nu este valid\u0103.
 MALFORMED_SEARCH_EXPRESSION.useraction=Furniza\u0163i o expresie de c\u0103utare valid\u0103.
 
-ENTITY_SEARCH_FAILED=CWIML4506E: Opera\u0163ia de registru de utilizatori nu a putut fi finalizat\u0103 deoarece registrul de utilizator a \u00eent\u00e2lnit eroarea subiacent\u0103 : {1}
+ENTITY_SEARCH_FAILED=CWIML4506E: Opera\u0163ia de registru de utilizatori nu a putut fi finalizat\u0103 deoarece registrul de utilizator a \u00eent\u00e2lnit eroarea subiacent\u0103 : {0}
 ENTITY_SEARCH_FAILED.explanation=Entitatea nu poate fi c\u0103utat\u0103 din cauza motivului specificat de registrul subiacent.
 ENTITY_SEARCH_FAILED.useraction=Examina\u0163i mesajul de motiv \u015fi fi\u015fierul de urm\u0103rire pentru a determina cauza defectului. Corecta\u0163i eroarea \u015fi \u00eencerca\u0163i din nou.
 

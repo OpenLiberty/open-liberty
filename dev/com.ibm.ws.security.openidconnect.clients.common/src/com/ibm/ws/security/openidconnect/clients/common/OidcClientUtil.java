@@ -400,7 +400,7 @@ public class OidcClientUtil {
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
 
         String retVal = new String(encoded);
-        String clientidsecret = clientCfg.getClass().getName(); //TODO: we should use client id here
+        String clientidsecret = clientCfg.toString();
         if (clientCfg.getClientSecret() != null) {
             clientidsecret = clientidsecret.concat(clientCfg.getClientSecret());
         }

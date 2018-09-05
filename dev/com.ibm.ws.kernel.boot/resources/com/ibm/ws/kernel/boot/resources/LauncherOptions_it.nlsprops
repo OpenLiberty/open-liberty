@@ -80,7 +80,8 @@ action-desc.package=\tCrea il package di un server in un archivio. L'opzione --a
 \tL'opzione --include pu\u00f2 essere utilizzata con i valori "all", "usr", "minify", \n\
 \t"wlp", "runnable", "all,runnable" e "minify,runnable". I valori \n\
 \t"runnable" e "all,runnable" sono equivalenti. il valore "runnable"  \n\
-\tfunziona solo con il tipo di archivio "jar".
+\tfunziona solo con il tipo di archivio "jar". L'opzione --server-root non pu\u00f2 essere\n\
+\tutilizzata per specificare la cartella root nell'archivio package.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tEsegue il dump delle informazioni di diagnostica dal server in un archivio. \u00c8\n\
@@ -173,3 +174,6 @@ option-desc.os=\tSpecifica i sistemi operativi che si desidera che il server in 
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDisabilita la generazione della password del keystore predefinito
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="cartella server root nell'archivio"
+option-desc.package.server-root=\tSpecifica il nome della cartella del server root nel file di archivio.

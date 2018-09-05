@@ -64,9 +64,9 @@ public class SharedLibraryTest extends LoggingTest {
                         .addClass("com.ibm.ws.cdi12.test.shared.NonInjectedHello")
                         .addClass("com.ibm.ws.cdi12.test.shared.InjectedHello");
 
-       archives.put(sharedLibraryNoInjectionApp, "publish/servers/cdi12SharedLibraryServer/apps");
-       archives.put(sharedLibraryAppWeb, "publish/servers/cdi12SharedLibraryServer/apps");
-       archives.put(sharedLibrary, "publish/servers/cdi12SharedLibraryServer/InjectionSharedLibrary");
+       archives.put(sharedLibraryNoInjectionApp, "/apps");
+       archives.put(sharedLibraryAppWeb, "/apps");
+       archives.put(sharedLibrary, "/InjectionSharedLibrary");
        return archives;
     }
 

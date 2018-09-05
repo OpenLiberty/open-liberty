@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,6 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-/**
- *
- */
 public class FeatureListWriter {
     private final XMLStreamWriter writer;
     private final Indenter i;
@@ -41,7 +38,9 @@ public class FeatureListWriter {
         i.indent(2);
         writer.writeStartElement(nodeName);
         for (Map.Entry<String, String> attr : attrs.entrySet()) {
-            writer.writeAttribute(attr.getKey(), attr.getValue());
+            String rawKey = attr.getKey();
+            String key = rawKey.endsWith(":") ? rawKey.substring(0, rawKey.length() -1) : rawKey;
+            writer.writeAttribute(key, attr.getValue());
         }
         writer.writeCharacters(text);
         writer.writeEndElement();

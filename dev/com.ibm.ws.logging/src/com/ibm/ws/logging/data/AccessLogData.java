@@ -66,21 +66,6 @@ public class AccessLogData extends GenericData {
         setPair(index, NAMES1_1[index], l);
     }
 
-    private String getStringValue(int index) {
-        KeyValueStringPair kvp = (KeyValueStringPair) getPairs().get(index);
-        return kvp.getStringValue();
-    }
-
-    private int getIntValue(int index) {
-        KeyValueIntegerPair kvp = (KeyValueIntegerPair) getPairs().get(index);
-        return kvp.getIntValue();
-    }
-
-    private long getLongValue(int index) {
-        KeyValueLongPair kvp = (KeyValueLongPair) getPairs().get(index);
-        return kvp.getLongValue();
-    }
-
     public void setRequestStartTime(long l) {
         setPair(0, l);
     }

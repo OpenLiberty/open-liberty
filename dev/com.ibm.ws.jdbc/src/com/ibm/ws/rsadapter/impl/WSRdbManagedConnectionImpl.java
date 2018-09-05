@@ -242,6 +242,12 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      */
     private static int maxHandlesInUse = 15;
 
+    /**
+     * Tracks whether the managed connection is currently being used within a request,
+     * as defined by JDBC 4.3 Connection.begin/endRequest.
+     */
+    private boolean inRequest;
+
     // for holding ConnectionEventListeners
     private ConnectionEventListener[] ivEventListeners;
     private int numListeners;
@@ -527,12 +533,21 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
     /**
      * Add a handle to this ManagedConnection's list of handles.
+     * Signal the JDBC 4.3+ driver that a request is starting.
      * 
      * @param handle the handle to add.
-     * 
+     * @throws ResourceException if a JDBC 4.3+ driver rejects the beginRequest operation
      */
-    private final void addHandle(WSJdbcConnection handle) {
+    private final void addHandle(WSJdbcConnection handle) throws ResourceException {
         (numHandlesInUse < handlesInUse.length - 1 ? handlesInUse : resizeHandleList())[numHandlesInUse++] = handle;
+        if (!inRequest)
+            try {
+                inRequest = true;
+                mcf.jdbcRuntime.beginRequest(sqlConn);
+            } catch (SQLException x) {
+                FFDCFilter.processException(x, getClass().getName(), "548", this);
+                throw new DataStoreAdapterException("DSA_ERROR", x, getClass());
+            }
     }
 
     /**
@@ -2417,23 +2432,27 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.entry(this, tc, "destroy");
-        
+
+        // Save the first exception to occur and raise it after all other destroy processing is complete.
+        // Don't map exceptions and fire ConnectionError event from destroy because the
+        // ManagedConnection is already being destroyed and there is no further action to take.
+
+        ResourceException dsae = null;
+
+        if (inRequest)
+            try {
+                inRequest = false;
+                mcf.jdbcRuntime.endRequest(sqlConn);
+            } catch (SQLException x) {
+                FFDCFilter.processException(x, getClass().getName(), "2447", this);
+                dsae = new DataStoreAdapterException("DSA_ERROR", x, getClass());
+            }
+
         if(isAborted()){
             if(isTraceOn && tc.isEntryEnabled())
                 Tr.exit(this, tc, "destroy", "ManagedConnection is aborted -- skipping destroy");
             return;
         }
-
-        //We are creating this exception here and just saving the exceptions as they happen.  We want to make
-        // sure that if there is an exception, we keep processing the closes.  So, only throw the first exception
-        // encountered.
-        // Don't map exceptions and fire ConnectionError event from destroy since the
-        // ManagedConnection is already being destroyed. 
-
-        ResourceException dsae = null;
-
-        // Cleanup should be done before destroy. We should continue processing even if there
-        // is an error.
 
         try {
             //  - We can't use the normal cleanup here because it dissociates
@@ -2648,24 +2667,36 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "cleanup"); 
-        
+            Tr.entry(this, tc, "cleanup");
+
+        // Save the first exception to occur, continue processing, and throw it later.
+        // This allows us to ensure all handles are dissociated and transactions are
+        // rolled back, even if something fails early on in the cleanup processing.
+        ResourceException firstX = null;
+
+        if (inRequest)
+            try {
+                inRequest = false;
+                mcf.jdbcRuntime.endRequest(sqlConn);
+            } catch (SQLException x) {
+                FFDCFilter.processException(x, getClass().getName(), "2682", this);
+                firstX = new DataStoreAdapterException("DSA_ERROR", x, getClass());
+            }
+
         if(isAborted()){
             if(isTraceOn && tc.isEntryEnabled())
                 Tr.exit(this, tc, "cleanup", "ManagedConnection is aborted -- skipping cleanup");
             return;
         }
 
-        //  - Save the first exception to occur, continue processing, and throw it
-        // later.  This allows us to ensure all handles are dissociated and transactions are
-        // rolled back, even if something fails early on in the cleanup processing.
-
         // According to the JCA 1.5 spec, all remaining handles must be invalidated on
         // cleanup.  This is achieved by closing the handles.  Dissociating the handles would
         // not be adequate because dissociated handles may be used again.  
         // Skip the closeHandles processing if there are no handles. 
 
-        ResourceException firstX = numHandlesInUse < 1 ? null : closeHandles();
+        ResourceException handleX = numHandlesInUse < 1 ? null : closeHandles();
+        if (handleX != null && firstX == null)
+            firstX = handleX;
 
         try {
             cleanupTransactions(true); 

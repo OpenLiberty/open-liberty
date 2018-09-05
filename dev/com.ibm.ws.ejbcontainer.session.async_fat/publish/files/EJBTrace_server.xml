@@ -1,0 +1,17 @@
+<server>
+    <featureManager>
+		<feature>componentTest-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ejb-3.2</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+	<application id="AsyncInLocalIf1Bean" name="AsyncInLocalIf1Bean" type="ear" location="AsyncInLocalIf1Bean.ear"/>
+	<application id="AsyncInRemoteIf1Bean" name="AsyncInRemoteIf1Bean" type="ear" location="AsyncInRemoteIf1Bean.ear"/>
+	<application id="AsyncInRemoteIf3Bean" name="AsyncInRemoteIf3Bean" type="ear" location="AsyncInRemoteIf3Bean.ear"/>
+	<application id="AsyncNotInLocalIf1Bean" name="AsyncNotInLocalIf1Bean" type="ear" location="AsyncNotInLocalIf1Bean.ear"/>
+	<application id="AsyncNotInRemoteIf1Bean" name="AsyncNotInRemoteIf1Bean" type="ear" location="AsyncNotInRemoteIf1Bean.ear"/> 
+	
+	<javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>
