@@ -19,8 +19,11 @@ import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import javax.sql.PooledConnection;
 import javax.transaction.Status;
 import javax.transaction.TransactionManager;
+import javax.transaction.xa.XAException;
+import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.jta.TransactionManagerFactory;
 
@@ -34,10 +37,13 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
     private boolean isAborted;
     private boolean isClosed;
 
+    private final D43Handler parent;
+
     private final static TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
-    D43Handler(Object instance) {
+    D43Handler(Object instance, D43Handler parent) {
         this.instance = instance;
+        this.parent = parent;
     }
 
     // Accessible via wrapper pattern for obtaining the count of Connection.beginRequest/endRequest
@@ -47,11 +53,22 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
         return new AtomicInteger[] { beginRequests, endRequests };
     }
 
+    private D43Handler getConnectionHandler() {
+        D43Handler c = null;
+        for (D43Handler h = this; h != null; h = h.parent)
+            if (h.instance instanceof PooledConnection)
+                return h;
+            else if (h.instance instanceof Connection)
+                c = h;
+        return c;
+    }
+
     @SuppressWarnings("restriction")
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String methodName = method.getName();
         Class<?> returnType = method.getReturnType();
+        D43Handler connectionHandler = getConnectionHandler();
         if ("hashCode".equals(methodName))
             return System.identityHashCode(proxy);
         if ("toString".equals(methodName))
@@ -69,6 +86,9 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
         if ("abort".equals(methodName)) {
             isAborted = true;
             isClosed = true;
+            // also mark PooledConnection/XAConnection aborted
+            if (connectionHandler != null)
+                connectionHandler.isAborted = true;
         } else if ("close".equals(methodName)) {
             isClosed = true;
         } else if (!"isClosed".equals(methodName) && !"isValid".equals(methodName) && !"endRequest".equals(methodName)
@@ -83,6 +103,14 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
             beginRequests.incrementAndGet();
             ((Connection) instance).beginRequest();
             return null;
+        }
+        // this works around Derby raising IndexOutOfBoundsException on XAResource.commit/rollback after an abort
+        if (("commit".equals(methodName) || "end".equals(methodName) || "prepare".equals(methodName))
+            && instance instanceof XAResource
+            && connectionHandler != null && connectionHandler.isAborted) {
+            XAException xax = new XAException("Connection aborted");
+            xax.errorCode = XAException.XA_RBOTHER;
+            throw xax;
         }
         if ("endRequest".equals(methodName)) {
             if (isClosed && !isAborted)
@@ -111,10 +139,18 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
             return 4;
         if ("getJDBCMinorVersion".equals(methodName))
             return 3;
+        // this works around Derby raising IndexOutOfBoundsException on XAResource.rollback after an abort
+        if (("rollback".equals(methodName))
+            && instance instanceof XAResource
+            && connectionHandler != null && connectionHandler.isAborted) {
+            return null;
+        }
         try {
             Object result = method.invoke(instance, args);
-            if (returnType.isInterface() && (returnType.getPackage().getName().startsWith("java.sql") || returnType.getPackage().getName().startsWith("javax.sql")))
-                return Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { returnType }, new D43Handler(result));
+            if (returnType.isInterface() && (returnType.getPackage().getName().startsWith("java.sql")
+                                             || returnType.getPackage().getName().startsWith("javax.sql")
+                                             || returnType.equals(XAResource.class)))
+                return Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { returnType }, new D43Handler(result, this));
             return result;
         } catch (InvocationTargetException x) {
             throw x.getCause();
