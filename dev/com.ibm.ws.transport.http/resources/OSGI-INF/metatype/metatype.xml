@@ -153,6 +153,21 @@
         <AD name="%http.autoDecompression" description="%http.autoDecompression.desc"
             id="AutoDecompression" required="false" type="Boolean" default="true" />
             
+        <AD name="%http.limitNumHeaders" description="%http.limitNumHeaders.desc"
+            id="limitNumHeaders" required="false" type="Integer" min="50" max="500" default="500" />
+            
+        <AD name="%http.limitFieldSize" description="%http.limitFieldSize.desc"
+            id="limitFieldSize" required="false" type="Integer" min="50" max="32768" default="32768" />
+            
+        <AD name="%http.doNotAllowDuplicateSetCookies" description="%http.doNotAllowDuplicateSetCookies.desc"
+            id="DoNotAllowDuplicateSetCookies" required="false" type="String" default="false" />
+            
+        <AD name="%http.messageSizeLimit" description="%http.messageSizeLimit.desc"
+            id="MessageSizeLimit" required="false" type="Long" default="-1" />
+            
+        <AD name="%http.incomingBodyBufferSize" description="%http.incomingBodyBufferSize.desc"
+            id="incomingBodyBufferSize" required="false" type="Integer" min="1024" max="1048576" default="32768" />
+            
         <AD name="%http2.connectionIdleTimeout" description="%http2.connectionIdleTimeout.desc"
 			id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
 
