@@ -3,7 +3,7 @@ bVersion=1.0
 
 Bundle-Name: google.concurrent
 Bundle-Description: google.concurrent; version=27.0.1
-Bundle-SymbolicName: com.ibm.ws.com.google.guava
+Bundle-SymbolicName: com.ibm.ws.com.google.guava.27.0.1
 
 WS-TraceGroup: OPENIDCONNECT
 
