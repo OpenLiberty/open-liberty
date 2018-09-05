@@ -458,7 +458,8 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
-     * Abort an unsharable connection from the same thread that is using it.
+     * Abort a sharable connection from the same thread that is using it.
+     * Verify that endRequest is invoked on the JDBC driver.
      */
     @AllowedFFDC("javax.transaction.xa.XAException") // seen by transaction manager for aborted connection
     @Test
@@ -532,6 +533,7 @@ public class JDBC43TestServlet extends FATServlet {
 
     /**
      * Abort an unsharable connection from the same thread that is using it.
+     * Verify that endRequest is invoked on the JDBC driver in response to the abort.
      */
     @AllowedFFDC("javax.transaction.xa.XAException") // seen by transaction manager for aborted connection
     @Test
