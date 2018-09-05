@@ -136,4 +136,34 @@ public class UserInfoHelperTest {
         String result = uihm.getUserInfoSubClaim(USERINFO);
         assertTrue("should have extracted testuser sub from userinfo but instead got: " + result, result.equals("testuser"));
     }
+
+    @Test
+    public void testWillRetrieveUserInfoNeg1() {
+        mock.checking(new Expectations() {
+            {
+                allowing(convClientConfig).getUserInfoEndpointUrl();
+                will(returnValue(null));
+                allowing(convClientConfig).isUserInfoEnabled();
+                will(returnValue(true));
+            }
+        });
+        UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig);
+        assertFalse("willRetreive should be false", uihm.willRetrieveUserInfo());
+
+    }
+
+    @Test
+    public void testWillRetrieveUserInfoNeg2() {
+        mock.checking(new Expectations() {
+            {
+                allowing(convClientConfig).getUserInfoEndpointUrl();
+                will(returnValue("http://somebogusthing"));
+                allowing(convClientConfig).isUserInfoEnabled();
+                will(returnValue(false));
+            }
+        });
+        UserInfoHelperMock uihm = new UserInfoHelperMock(convClientConfig);
+        assertFalse("willRetreive should be false", uihm.willRetrieveUserInfo());
+
+    }
 }
