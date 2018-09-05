@@ -52,6 +52,10 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
         }
         setCacheOptions(useCacheOptions);
 
+        System.out.println(CLASS_NAME + ": activate: Cache Disabled [ " + useCacheOptions.getDisabled() + " ]");
+        System.out.println(CLASS_NAME + ": activate: Cache Dir [ " + useCacheOptions.getDir() + " ]");
+        System.out.println(CLASS_NAME + ": activate: Cache Write Threads [ " + useCacheOptions.getWriteThreads() + " ]");
+
         setFactories(); // Need the work area path to setup the cache instance.
    }
 
@@ -91,6 +95,7 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
         if ( logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "OSGi Work Path [ {0} ]", osgiWorkPath);
         }
+        System.out.println(CLASS_NAME + ": OSGi Work Path [ " + osgiWorkPath + " ]");
         return osgiWorkPath;
     }
 

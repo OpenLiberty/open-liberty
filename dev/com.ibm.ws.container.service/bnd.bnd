@@ -63,7 +63,7 @@ Private-Package: \
 
 Service-Component: \
    com.ibm.ws.container.service.annotations.ContainerAnnotationsAdapter; \
-      implementation:=com.ibm.ws.container.service.annotations.internal.ContainerAnnotationsAdapter; \
+      implementation:=com.ibm.ws.container.service.annotations.internal.ContainerAnnotationsAdapterImpl; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
       annoService=com.ibm.wsspi.anno.service.AnnotationService_Service; \
       configuration-policy:=optional; \
@@ -71,7 +71,7 @@ Service-Component: \
       dynamic:="annoService"; \
       properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.ContainerAnnotations", \
    com.ibm.ws.container.service.annotations.ModuleAnnotationsAdapter; \
-      implementation:=com.ibm.ws.container.service.annotations.internal.ModuleAnnotationsAdapter; \
+      implementation:=com.ibm.ws.container.service.annotations.internal.ModuleAnnotationsAdapterImpl; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
       annoService=com.ibm.wsspi.anno.service.AnnotationService_Service; \
       configuration-policy:=optional; \
@@ -79,7 +79,7 @@ Service-Component: \
       dynamic:="annoService"; \
       properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.ModuleAnnotations", \
    com.ibm.ws.container.service.annotations.WebAnnotationsAdapter; \
-      implementation:=com.ibm.ws.container.service.annotations.internal.WebAnnotationsAdapter; \
+      implementation:=com.ibm.ws.container.service.annotations.internal.WebAnnotationsAdapterImpl; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
       annoService=com.ibm.wsspi.anno.service.AnnotationService_Service; \
       configuration-policy:=optional; \

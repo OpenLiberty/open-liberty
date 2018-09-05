@@ -28,6 +28,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public abstract class AnnotationsAdapterImpl {
     public static final TraceComponent tc = Tr.register(AnnotationsAdapterImpl.class);
 
+    private static final String CLASS_NAME = AnnotationsAdapterImpl.class.getSimpleName();
+
     //
 
     /**
@@ -77,38 +79,19 @@ public abstract class AnnotationsAdapterImpl {
         OverlayContainer overlayContainer,
         String targetPath, Class<T> targetClass) {
 
-        return (T) (overlayContainer.getFromNonPersistentCache(targetPath, targetClass));
+        T result = (T) (overlayContainer.getFromNonPersistentCache(targetPath, targetClass));
+
+        System.out.println(CLASS_NAME + ": overlayGet [ " + overlayContainer + " ] [ " + targetPath + " ] [ " + targetClass + " ] [ " + result + " ]");
+
+        return result;
     }
 
     public <T> void overlayPut(
         OverlayContainer overlayContainer,
         String targetPath, Class<T> targetClass, T targetObject) {
 
+        System.out.println(CLASS_NAME + ": overlayPut [ " + overlayContainer + " ] [ " + targetPath + " ] [ " + targetClass + " ] [ " + targetObject + " ]");
+
         overlayContainer.addToNonPersistentCache(targetPath, targetClass, targetObject);
-    }
-
-    //
-
-    public static String getPath(Container container) {
-        StringBuilder pathBuilder = new StringBuilder();
-
-        Entry entry;
-        try {
-            entry = container.adapt(Entry.class);
-        } catch ( UnableToAdaptException e ) {
-            entry = null;
-        }
-
-        while ( entry != null ) {
-            pathBuilder.insert(0,  entry.getPath() );
-
-            try {
-                entry = entry.getRoot().adapt(Entry.class);
-            } catch ( UnableToAdaptException e ) {
-                entry = null;
-            }
-        }
-
-        return pathBuilder.toString();
     }
 }
