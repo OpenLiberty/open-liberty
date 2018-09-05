@@ -205,7 +205,7 @@ public class SearchPagingTest {
         ldap.setBindDN(EmbeddedApacheDS.getBindDN());
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
-        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s", null), new SearchResultsCache(false, 0, 0, "0s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 
         if (searchPageSize != null) {
             ldap.setSearchPageSize(searchPageSize);
