@@ -247,12 +247,8 @@ public class TAISubjectUtils {
         } catch (Exception e) {
 
         }
-        String userInfoToUse = userInfo;
-        // oidc-connect-core-1.0 sec 5.3.2, sub claim of userinfo response must match sub claim in id token
-        if(userInfo != null && ! (new UserInfoHelper()).isUserInfoValid(userInfo, jwt.getClaims().getSubject())){
-            userInfoToUse = null;
-        }
-        return new UserProfile(jwt, customProperties, claims, userInfoToUse);
+        
+        return new UserProfile(jwt, customProperties, claims, userInfo);
     }
 
     Hashtable<String, Object> createCustomProperties(SocialLoginConfig config, boolean getRefreshAndIdTokens) throws SocialLoginException {

@@ -29,45 +29,50 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
  */
 public class UserInfoHelper {
     private static final TraceComponent tc = Tr.register(UserInfoHelper.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    private ConvergedClientConfig clientConfig = null;
+
+    public UserInfoHelper(ConvergedClientConfig config) {
+        this.clientConfig = config;
+    }
+
+    public boolean willRetrieveUserInfo() {
+        return (clientConfig.getUserInfoEndpointUrl() != null && clientConfig.isUserInfoEnabled() == true);
+    }
 
     /**
      * get userinfo from provider's UserInfo Endpoint if configured and active.
-     * If successful, update Subject or Properties in the ProviderAuthenticationResult
+     * If successful, update properties in the ProviderAuthenticationResult
+     *
+     * @return true if PAR was updated with userInfo
      *
      */
-    public void getUserInfo(ProviderAuthenticationResult oidcResult, ConvergedClientConfig clientConfig,
-            SSLSocketFactory sslSocketFactory, String accessToken) {
+    public boolean getUserInfo(ProviderAuthenticationResult oidcResult,
+            SSLSocketFactory sslSocketFactory, String accessToken, String subjectFromIdToken) {
 
-        if (clientConfig.getUserInfoEndpointUrl() == null || clientConfig.isUserInfoEnabled() == false || accessToken == null) {
-            return;
+        if (!willRetrieveUserInfo() || accessToken == null) {
+            return false;
         }
 
         String userInfoStr = getUserInfoFromURL(clientConfig, sslSocketFactory, accessToken);
 
         if (userInfoStr == null) {
-            return;
+            return false;
         }
 
-        if (clientConfig.isSocial()) {
-            // social will finish building the subject
-            updateAuthenticationResultPropertiesWithUserInfo(oidcResult, userInfoStr);
-        } else {
-            updateAuthenticationResultSubjectWithUserInfo(oidcResult, userInfoStr);
+        if (!isUserInfoValid(userInfoStr, subjectFromIdToken)) {
+            return false;
         }
+
+        updateAuthenticationResultPropertiesWithUserInfo(oidcResult, userInfoStr);
+        return true;
     }
 
     protected void updateAuthenticationResultPropertiesWithUserInfo(ProviderAuthenticationResult oidcResult, String userInfoStr) {
         oidcResult.getCustomProperties().put(Constants.USERINFO_STR, userInfoStr);
     }
 
-    protected void updateAuthenticationResultSubjectWithUserInfo(ProviderAuthenticationResult oidcResult, String userInfoStr) {
-        oidcResult.getSubject().getPrivateCredentials().add(userInfoStr);
-    }
-
-    // per oidc-connect-core-1.0 sec 5.3.2, sub claim of userinfo response must match sub claim in id token,
-    // i.e. the subject we authenticated.
-    // At the time userinfo is retreived, subject isn't built, so this gets called later.
-    public boolean isUserInfoValid(String userInfoStr, String subClaim) {
+    // per oidc-connect-core-1.0 sec 5.3.2, sub claim of userinfo response must match sub claim in id token.
+    protected boolean isUserInfoValid(String userInfoStr, String subClaim) {
         String userInfoSubClaim = getUserInfoSubClaim(userInfoStr);
         if (userInfoSubClaim == null || userInfoSubClaim.compareTo(subClaim) != 0) {
             Tr.error(tc, "USERINFO_INVALID", new Object[] { userInfoStr, subClaim });
@@ -88,7 +93,7 @@ public class UserInfoHelper {
     /**
      * Obtain userInfo from an OIDC provider
      *
-     * @return
+     * @return the userInfo string, or null
      */
     protected String getUserInfoFromURL(ConvergedClientConfig config, SSLSocketFactory sslsf, String accessToken) {
         String url = config.getUserInfoEndpointUrl();

@@ -325,7 +325,7 @@
         <!--  userInfoEndpoint is not required, but if used successfully, results are available in an api.  -->
         <AD id="userInfoEndpoint" name="%userInfoEndpoint" description="%userInfoEndpoint.desc"
             required="false" type="String" />  
-        <AD id="userInfoEndpointEnabled" name="%userInfoEndpointEnabled" description="%userInfoEndpointEnbabled.desc"
+        <AD id="userInfoEndpointEnabled" name="%userInfoEndpointEnabled" description="%userInfoEndpointEnabled.desc"
             required="false" type="Boolean" default="true" />            
         <AD id="jwksUri" name="%jwksUri" description="%jwksUri.desc"
             required="false" type="String" />
