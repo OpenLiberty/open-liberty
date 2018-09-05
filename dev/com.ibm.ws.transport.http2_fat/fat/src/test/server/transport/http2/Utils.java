@@ -21,13 +21,14 @@ public class Utils {
     public static String TEST_DIR;
 
     public static final int STRESS_ITERATIONS = 20;
-    public static final int STRESS_CONNECTIONS = 3;
+    public static final int STRESS_CONNECTIONS = 3; // Parallel H2 Connections
 
     // times are in milliseconds
     public static final int STRESS_DELAY_BETWEEN_CONN_STARTS = 2000;
     public static final int STRESS_DELAY_BETWEEN_STREAM_STARTS = 50;
+
     public static final int STRESS_TEST_TIMEOUT_testSingleConnectionStress = 2 * 60000;
-    public static final int STRESS_TEST_TIMEOUT_testMulitData = 4 * 60000;
+    public static final int STRESS_TEST_TIMEOUT_testMulitData = 8 * 60000;
     public static final int STRESS_TEST_TIMEOUT_testMultipleConnectionStress = 8 * 60000;
 
     public static final int STRESS_DELAY_MSECS = 2000;

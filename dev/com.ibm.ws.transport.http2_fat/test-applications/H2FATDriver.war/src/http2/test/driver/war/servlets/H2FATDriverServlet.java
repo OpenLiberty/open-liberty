@@ -141,7 +141,11 @@ public class H2FATDriverServlet extends FATServlet {
 
     public void testMultiData(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
-        int SERVLET_INSTANCES = 3;
+        long startTime = System.currentTimeMillis();
+        long endTime = 0;
+        System.out.println("Test start at: " + startTime);
+
+        int STREAM_INSTANCES = 3; // streams per connection
 
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testMultiData";
@@ -155,9 +159,9 @@ public class H2FATDriverServlet extends FATServlet {
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
 
-        for (int i = 1; i <= SERVLET_INSTANCES; i++) {
+        for (int i = 1; i <= STREAM_INSTANCES; i++) {
             int sID = (i * 2) - 1;
-            String s = sID + ".LAST.DATA.FRAME";
+            String s = "LAST.DATA.FRAME";
             h2Client.addExpectedFrame(new FrameData(sID, s.getBytes(), 0, false, false, false));
         }
 
@@ -172,13 +176,16 @@ public class H2FATDriverServlet extends FATServlet {
         int depNode = 0;
         boolean excNode = false;
 
-        FrameWindowUpdate windowGood = new FrameWindowUpdate(0, 64000 * 10 * SERVLET_INSTANCES, false);
+        //WDW
+        FrameWindowUpdate windowGood = new FrameWindowUpdate(0, 64000 * 100 * STREAM_INSTANCES, false);
+        // Use a smaller value to drive FlowControlExceptions during stress testing
+        // FrameWindowUpdate windowGood = new FrameWindowUpdate(0, 32000, false);
         h2Client.sendFrame(windowGood);
 
         windowGood = new FrameWindowUpdate(1, 64000 * 10, false);
         h2Client.sendFrame(windowGood);
 
-        for (int i = 2; i <= SERVLET_INSTANCES; i++) {
+        for (int i = 2; i <= STREAM_INSTANCES; i++) {
             List<HeaderEntry> headersToSend = new ArrayList<HeaderEntry>();
             headersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
             headersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -237,6 +244,9 @@ public class H2FATDriverServlet extends FATServlet {
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
+
+        endTime = System.currentTimeMillis();
+        System.out.println("Test end at: " + endTime + " duration: " + (endTime - startTime));
 
         handleErrors(h2Client, testName);
     }
