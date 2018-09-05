@@ -1,0 +1,305 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.messaging.JMS20.fat.TemporaryQueue;
+
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.OVERWRITE;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ibm.ws.fat.util.BuildShrinkWrap;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+
+import org.junit.BeforeClass;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.rules.TestRule;
+
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
+
+@Mode(TestMode.FULL)
+public class JMSContextTest_118068 {
+    @ClassRule
+    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
+
+    private static LibertyServer server = LibertyServerFactory
+                    .getLibertyServer("JMSContextTest_118068_TestServer");
+    private static LibertyServer server1 = LibertyServerFactory.getLibertyServer("JMSContextTest_118068_TestServer2");
+
+    private static final int PORT = server.getHttpDefaultPort();
+    private static final String HOST = server.getHostname();
+
+    private static boolean val = false;
+
+    private boolean runInServlet(String test) throws IOException {
+        boolean result = false;
+
+        URL url = new URL("http://" + HOST + ":" + PORT + "/TemporaryQueue?test="
+                          + test);
+        System.out.println("The Servlet URL is : " + url.toString());
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        try {
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setRequestMethod("GET");
+            con.connect();
+
+            InputStream is = con.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String sep = System.getProperty("line.separator");
+            StringBuilder lines = new StringBuilder();
+            for (String line = br.readLine(); line != null; line = br
+                            .readLine())
+                lines.append(line).append(sep);
+
+            if (lines.indexOf("COMPLETED SUCCESSFULLY") < 0) {
+                org.junit.Assert.fail("Missing success message in output. "
+                                      + lines);
+                result = false;
+            } else
+                result = true;
+
+            return result;
+        } finally {
+            con.disconnect();
+        }
+    }
+
+    @BeforeClass
+    public static void testConfigFileChange() throws Exception {
+            setUpShirnkWrap();
+
+
+        server.setServerConfigurationFile("ApiTD.xml");
+        server.copyFileToLibertyInstallRoot("lib/features",
+                                            "features/testjmsinternals-1.0.mf");
+
+        server.startServer("JMSContextTest_118068_Client.log");
+        server1.startServer("JMSContextTest_118068_Server.log");
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testgetTemporaryQueueNameSecOffBinding() throws Exception {
+        val = runInServlet("testgetTemporaryQueueNameSecOffBinding");
+        assertTrue("testgetTemporaryQueueNameSecOffBinding failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testgetTemporaryQueueNameSecOffTCPIP() throws Exception {
+        val = runInServlet("testgetTemporaryQueueNameSecOffTCPIP");
+        assertTrue("testgetTemporaryQueueNameSecOffTCPIP failed ", val);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testToStringTemporaryQueueNameSecOffBinding() throws Exception {
+        val = runInServlet("testToStringTemporaryQueueNameSecOffBinding");
+
+        assertTrue("testToStringTemporaryQueueNameSecOffBinding failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testToStringTemporaryQueueNameSecOffTCPIP() throws Exception {
+        val = runInServlet("testToStringTemporaryQueueNameSecOffTCPIP");
+
+        assertTrue("testToStringTemporaryQueueNameSecOffTCPIP failed ", val);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPTemporaryDestinationNotFoundException")
+    public void testDeleteTemporaryQueueNameSecOffTCPIP() throws Exception {
+        val = runInServlet("testDeleteTemporaryQueueNameSecOffTCPIP");
+        assertTrue("testDeleteTemporaryQueueNameSecOffTCPIP failed ", val);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testDeleteExceptionTemporaryQueueNameSecOFF_B() throws Exception {
+
+        val = runInServlet("testDeleteExceptionTemporaryQueueNameSecOFF_B");
+
+        assertTrue("testDeleteExceptionTemporaryQueueNameSecOFF_B failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPTemporaryDestinationNotFoundException")
+    public void testDeleteExceptionTemporaryQueueNameSecOFF_TCPIP() throws Exception {
+        val = runInServlet("testDeleteExceptionTemporaryQueueNameSecOFF_TCPIP");
+
+        assertTrue("testDeleteExceptionTemporaryQueueNameSecOFF_TCPIP failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testGetTemporaryTopicSecOffBinding() throws Exception {
+
+        val = runInServlet("testGetTemporaryTopicSecOffBinding");
+        assertTrue("testGetTemporaryTopicSecOffBinding failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testGetTemporaryTopicSecOffTCPIP() throws Exception {
+
+        val = runInServlet("testGetTemporaryTopicSecOffTCPIP");
+        assertTrue("testGetTemporaryTopicSecOffTCPIP failed ", val);
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testToStringTemporaryTopicSecOffBinding() throws Exception {
+        val = runInServlet("testToStringTemporaryTopicSecOffBinding");
+        assertTrue("testToStringTemporaryTopicSecOffBinding failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testToStringeTemporaryTopicSecOffTCPIP() throws Exception {
+
+        val = runInServlet("testToStringeTemporaryTopicSecOffTCPIP");
+        assertTrue("testToStringeTemporaryTopicSecOffTCPIP failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void testDeleteExceptionTemporaryTopicSecOff_B() throws Exception {
+
+        val = runInServlet("testDeleteExceptionTemporaryTopicSecOff_B");
+        assertTrue("testDeleteExceptionTemporaryTopicSecOff_B failed ", val);
+
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
+    public void testDeleteExceptionTemporaryTopicSecOff_TCPIP() throws Exception {
+
+        val = runInServlet("testDeleteExceptionTemporaryTopicSecOff_TCPIP");
+        assertTrue("testDeleteExceptionTemporaryTopicSecOff_B failed ", val);
+    }
+
+    @Test
+    public void testTemporaryTopicLifetimeSecOff_B() throws Exception {
+        val = runInServlet("testTemporaryTopicLifetimeSecOff_B");
+        assertTrue("testTemporaryTopicLifetimeSecOff_B failed ", val);
+
+    }
+
+    @Test
+    public void testTemporaryTopicLifetimeSecOff_TCPIP() throws Exception {
+        val = runInServlet("testTemporaryTopicLifetimeSecOff_TCPIP");
+        assertTrue("testTemporaryTopicLifetimeSecOff_TCPIP failed ", val);
+
+    }
+
+    @Test
+    public void testDeleteTemporaryTopicSecOffBinding() throws Exception {
+
+        val = runInServlet("testDeleteTemporaryTopicSecOffBinding");
+        assertTrue("testDeleteTemporaryTopicSecOffBinding failed ", val);
+
+    }
+
+    @Test
+    public void testDeleteTemporaryTopicSecOffTCPIP() throws Exception {
+        val = runInServlet("testDeleteTemporaryTopicSecOffTCPIP");
+        assertTrue("testDeleteTemporaryTopicSecOffTCPIP failed ", val);
+
+    }
+
+    @Test
+    public void testTemporaryTopicPubSubSecOff_B() throws Exception {
+        val = runInServlet("testTemporaryTopicPubSubSecOff_B");
+        assertTrue("testTemporaryTopicPubSubSecOff_B failed ", val);
+
+    }
+
+    @Test
+    public void testTemporaryTopicPubSubSecOff_TCPIP() throws Exception {
+        val = runInServlet("testTemporaryTopicPubSubSecOff_TCPIP");
+        assertTrue("testTemporaryTopicPubSubSecOff_TCPIP failed ", val);
+
+    }
+
+    @org.junit.AfterClass
+    public static void tearDown() {
+        try {
+            System.out.println("Stopping server");
+            server.stopServer();
+            server1.stopServer();
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    public static void setUpShirnkWrap() throws Exception {
+
+        Archive TemporaryQueuewar = ShrinkWrap.create(WebArchive.class, "TemporaryQueue.war")
+            .addClass("web.JMSContextTestServlet")
+            .add(new FileAsset(new File("test-applications//TemporaryQueue.war/resources/WEB-INF/web.xml")), "WEB-INF/web.xml")
+            .add(new FileAsset(new File("test-applications//TemporaryQueue.war/resources/META-INF/permissions.xml")), "META-INF/permissions.xml");
+
+        ShrinkHelper.exportDropinAppToServer(server, TemporaryQueuewar, OVERWRITE);
+
+        ShrinkHelper.exportDropinAppToServer(server1, TemporaryQueuewar, OVERWRITE);
+        Archive JMSContextwar = ShrinkWrap.create(WebArchive.class, "JMSContext.war")
+            .addClass("web.JMSContextServlet")
+            .add(new FileAsset(new File("test-applications//JMSContext.war/resources/WEB-INF/web.xml")), "WEB-INF/web.xml")
+            .add(new FileAsset(new File("test-applications//JMSContext.war/resources/META-INF/permissions.xml")), "META-INF/permissions.xml");
+
+        ShrinkHelper.exportDropinAppToServer(server, JMSContextwar, OVERWRITE);
+
+        ShrinkHelper.exportDropinAppToServer(server1, JMSContextwar, OVERWRITE);
+    }
+}
