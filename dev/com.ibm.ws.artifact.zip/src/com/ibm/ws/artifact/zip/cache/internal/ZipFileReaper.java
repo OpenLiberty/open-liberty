@@ -1038,14 +1038,31 @@ public class ZipFileReaper {
                 // Removal from pending may result in the next reap
                 // discovering no expired closes.
 
-                zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+                try {
+                    zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+
+                } catch (Exception e) {
+                    // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
+                    // Either way, the proper state should be closed.
+                    data.enactFullClose( SystemUtils.getNanoTime() );
+                    throw e;
+                }
 
             } else if ( data.isOpen() ) {
                 if ( tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Already open [ " + path + " ]");
                 }
 
-                zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+                try {
+                    zipFile = data.reacquireZipFile(); // throws IOException, ZipException
+
+                } catch (Exception e) {
+                    // The closeZipFile() or openZipFile() call failed in reacquireZipFile().
+                    // Either way, the proper state should be closed.
+                    data.enactClose( SystemUtils.getNanoTime(), true );
+                    data.enactFullClose( SystemUtils.getNanoTime() );
+                    throw e;
+                }
 
             } else {
                 throw data.unknownState();
