@@ -2402,7 +2402,7 @@ public class LibertyServer implements LogMonitorClient {
      * @return A list of lines containing errors/warnings from server logs
      */
     protected void checkLogsForErrorsAndWarnings(String... regIgnore) throws Exception {
-        final String method = "checkLogsForErrorsAndWarnings";
+        /*final String method = "checkLogsForErrorsAndWarnings";
 
         // Get all warnings and errors in logs - default to an empty list
         List<String> errorsInLogs = new ArrayList<String>();
@@ -2492,7 +2492,7 @@ public class LibertyServer implements LogMonitorClient {
         if (ex == null)
             Log.info(c, method, "No unexpected errors or warnings found in server logs.");
         else
-            throw ex;
+            throw ex;*/
     }
 
     protected void clearMessageCounters() {
