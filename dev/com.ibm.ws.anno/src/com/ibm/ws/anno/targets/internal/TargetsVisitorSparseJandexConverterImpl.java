@@ -138,7 +138,7 @@ public class TargetsVisitorSparseJandexConverterImpl {
 
         Object[] logParms =
             ( jandexLogger.isLoggable(Level.FINER)
-                ? new String[] { getHashText(), className, null, null }
+                ? new Object[] { getHashText(), className, null, null }
                 : null );
 
         // TODO: Enable this?  Not sure if Jandex records packages.
