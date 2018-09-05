@@ -128,9 +128,7 @@ public class AuthorizationCodeHandler {
                 OidcTokenImplBase idToken = (OidcTokenImplBase) oidcResult.getCustomProperties().get(Constants.ID_TOKEN_OBJECT);
                 String subjFromIdToken = null;
                 if (idToken != null) {
-                    System.out.println("idToken = " + idToken);
                     subjFromIdToken = idToken.getSubject();
-                    System.out.println("subj  = " + subjFromIdToken);
                 }
                 if (subjFromIdToken != null) {
                     uih.getUserInfo(oidcResult, sslSocketFactory, tokens.get(Constants.ACCESS_TOKEN), subjFromIdToken);

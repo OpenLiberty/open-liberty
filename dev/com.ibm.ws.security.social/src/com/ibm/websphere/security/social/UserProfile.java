@@ -10,24 +10,14 @@
  *******************************************************************************/
 package com.ibm.websphere.security.social;
 
-import java.io.IOException;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.security.auth.Subject;
-
-import com.ibm.websphere.security.WSSecurityException;
-import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.Claims;
-import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.JwtToken;
-import com.ibm.ws.security.openidconnect.clients.common.ClientConstants;
-import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
-import com.ibm.ws.security.social.tai.SocialLoginTAI;
+
 
 /**
  * This API represents the user's access_token and profile upon user authenticated by social media.
