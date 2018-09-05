@@ -15,8 +15,10 @@ Import-Package: \
   !org.osgi.service.blueprint.*,\
   *
 
+exportVer=3.2.6
+  
 Export-Package: com.ibm.ws.jaxrs21.clientconfig,\
   org.apache.cxf.jaxrs.client,\
-  org.apache.cxf.jaxrs.client.blueprint;version=3.2.4,\
+  org.apache.cxf.jaxrs.client.blueprint;version=${exportVer},\
   org.apache.cxf.jaxrs.client.spec
   

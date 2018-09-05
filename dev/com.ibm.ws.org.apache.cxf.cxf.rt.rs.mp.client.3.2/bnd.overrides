@@ -5,14 +5,16 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
+exportVer=3.2.6
+ 
 Export-Package: \
   com.ibm.ws.microprofile.rest.client.component,\
-  org.apache.cxf.microprofile.client.cdi;version="3.2.4",\
-  org.apache.cxf.microprofile.client;version="3.2.4",\
-  org.apache.cxf.microprofile.client.cdi;version="3.2.4",\
-  org.apache.cxf.microprofile.client.config;version="3.2.4",\
-  org.apache.cxf.microprofile.client.proxy;version="3.2.4",\
-  org.apache.cxf.microprofile.client.spi;thread-context=true;version="3.2.4"
+  org.apache.cxf.microprofile.client.cdi;version=${exportVer},\
+  org.apache.cxf.microprofile.client;version=${exportVer},\
+  org.apache.cxf.microprofile.client.cdi;version=${exportVer},\
+  org.apache.cxf.microprofile.client.config;version=${exportVer},\
+  org.apache.cxf.microprofile.client.proxy;version=${exportVer},\
+  org.apache.cxf.microprofile.client.spi;thread-context=true;version=${exportVer}
 
 Import-Package: \
  javax.annotation;version="[1.2,2)",\

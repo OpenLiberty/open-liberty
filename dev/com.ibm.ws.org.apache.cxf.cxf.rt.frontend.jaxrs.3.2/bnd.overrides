@@ -20,7 +20,7 @@ Import-Package: \
   com.ibm.json.java;resolution:=optional,\
   *
 
-exportVer=3.2.4
+exportVer=3.2.6
 
 Export-Package: com.ibm.ws.jaxrs20.cache,\
   org.apache.cxf.jaxrs;version=${exportVer},\

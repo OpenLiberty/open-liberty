@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-exportVer=3.2.4
+exportVer=3.2.6
 
 Import-Package: \
   !org.atmosphere.*,\
