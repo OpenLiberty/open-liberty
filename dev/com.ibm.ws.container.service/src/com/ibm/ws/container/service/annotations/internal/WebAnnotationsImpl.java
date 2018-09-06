@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.container.service.annotations.internal;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,12 +99,16 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
         return (WebModuleInfo) super.getModuleInfo();
     }
 
+    //
+
     private final String webModuleName;
 
     @Override
     public String getWebModuleName() {
         return webModuleName;
     }
+
+    //
 
     private final WebFragmentsInfo webFragments;
 
@@ -125,37 +129,20 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
 
     //
 
-    // Mapping between unique ids and fragments
-    private Map<String, WebFragmentInfo> idToFragment;
+    private Map<WebFragmentInfo, String> fragmentPaths;
 
-    private String setFragmentName(WebFragmentInfo fragment, String cName) {
-        if ( idToFragment == null ) {
-            idToFragment = new HashMap<String, WebFragmentInfo>();
+    private void putFragmentPath(WebFragmentInfo fragment, String path) {
+        if ( fragmentPaths == null ) {
+            fragmentPaths = new IdentityHashMap<WebFragmentInfo, String>();
         }
-
-        int nameSuffix = 1;
-        String fragmentName = cName;
-        while ( idToFragment.containsKey(fragmentName) ) {
-            nameSuffix++;
-            fragmentName = cName + "_" + nameSuffix;
-        }
-
-        idToFragment.put(fragmentName, fragment);
-
-        return fragmentName;
+        fragmentPaths.put(fragment, path);
     }
 
-    private String getFragmentName(WebFragmentInfo fragment) {
-        if ( idToFragment == null ) {
+    private String getFragmentPath(WebFragmentInfo fragment) {
+        if ( fragmentPaths == null ) {
             return null;
         }
-
-        for ( Map.Entry<String, WebFragmentInfo> mapEntry : idToFragment.entrySet() ) {
-            if ( mapEntry.getValue() == fragment ) {
-                return mapEntry.getKey();
-            }
-        }
-        return null;
+        return fragmentPaths.get(fragment);
     }
 
     //
@@ -187,9 +174,6 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
 
         for ( WebFragmentInfo nextFragment : getOrderedItems() ) {
             String nextUri = nextFragment.getLibraryURI();
-            String nextCanonicalName = classSourceFactory.getCanonicalName(nextUri);
-            nextCanonicalName = setFragmentName(nextFragment, nextCanonicalName);
-
             Container nextContainer = nextFragment.getFragmentContainer();
 
             ScanPolicy nextPolicy;
@@ -217,6 +201,8 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
             if ( !addContainerClassSource(nextPath, nextContainer, nextPrefix, nextPolicy) ) {
                 return; // FFDC in 'addContainerClassSource'
             }
+
+            putFragmentPath(nextFragment, nextPath);
         }
 
         for ( WebFragmentInfo nextFragment : getExcludedItems() ) {
@@ -230,6 +216,8 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
             if ( !addContainerClassSource(nextPath, nextContainer, ClassSource_Aggregate.ScanPolicy.EXCLUDED) ) {
                 return; // FFDC in 'addContainerClassSource'
             }
+
+            putFragmentPath(nextFragment, nextPath);
         }
     }
 
@@ -241,6 +229,6 @@ public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnno
         if ( useTargets == null ) {
             return null;
         }
-        return new FragmentAnnotationsImpl( useTargets, getFragmentName(fragment) );
+        return new FragmentAnnotationsImpl( useTargets, getFragmentPath(fragment) );
     }
 }

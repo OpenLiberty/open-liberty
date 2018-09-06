@@ -17,6 +17,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
@@ -28,6 +31,12 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 public class TargetsScannerBaseImpl {
+    private static final TraceComponent tc = Tr.register(TargetsScannerBaseImpl.class);
+
+    private static String nlsFormat(String msgKey, Object... msgParms) {
+        return Tr.formatMessage(tc, msgKey, msgParms);
+    }
+
     protected static final Logger logger = AnnotationServiceImpl_Logging.ANNO_LOGGER;
 
     public static final String CLASS_NAME = TargetsScannerBaseImpl.class.getSimpleName();
@@ -213,6 +222,61 @@ public class TargetsScannerBaseImpl {
         return true;
     }
 
+    public boolean getUseJandex() {
+        return getScanOptions().getUseJandex();
+    }
+
+    //
+
+    private void displayJandex() {
+        String methodName = "displayJandex";
+        String prefix = CLASS_NAME + "." + methodName + ": ";
+
+        ClassSource_Aggregate useRootClassSource = getRootClassSource();
+        String appName = useRootClassSource.getApplicationName();
+        String modName = useRootClassSource.getModuleName();
+
+        if ( !getUseJandex() ) {
+            System.out.println("App [ " + appName + " ] [ " + modName + " ]: Jandex is not enabled");
+            return;
+        } else {
+            System.out.println("App [ " + appName + " ] [ " + modName + " ]: Jandex is enabled");
+        }
+
+        int sourceCount = 0;
+        int jandexSourceCount = 0;
+
+        int classCount = 0;
+        int jandexClassCount = 0;
+        
+        for ( ClassSource nextClassSource : useRootClassSource.getClassSources() ) {
+            ScanPolicy nextScanPolicy = useRootClassSource.getScanPolicy(nextClassSource);
+            if ( nextScanPolicy == ScanPolicy.EXTERNAL ) {
+                continue;
+            }
+
+            sourceCount++;
+
+            int nextClassCount = nextClassSource.getProcessCount();
+            classCount += nextClassCount;
+
+            if ( nextClassSource.isProcessedUsingJandex() ) {
+                jandexSourceCount++;
+                jandexClassCount += nextClassCount;
+            }
+        }
+
+        System.out.println(
+            "Jandex coverage for module [ " + modName + " ] of application [ " + appName + " ]:" +
+            " [ " + Integer.toString(sourceCount) + " ] module locations were scanned for annotations." +
+            " [ " + Integer.toString(jandexSourceCount) + " ] of the module locations had Jandex indexes." +
+            " [ " + Integer.toString(classCount) + " ] module classes were processed." +
+            " [ " + Integer.toString(jandexClassCount) + " ] of the module classes were processed directly from Jandex indexes.");
+
+        String coverageMsg = nlsFormat("ANNO_JANDEX_USAGE", appName, modName, sourceCount, jandexSourceCount, classCount, jandexClassCount);
+        logger.logp(Level.INFO, CLASS_NAME, methodName, coverageMsg);
+    }
+
     //
 
     public TargetsTableImpl scanInternal(ClassSource classSource,
@@ -243,6 +307,8 @@ public class TargetsScannerBaseImpl {
 
         targetsData.setName(classSourceName);
         targetsData.setStamp( classSource.getStamp() );
+
+        displayJandex();
 
         return targetsData;
     }

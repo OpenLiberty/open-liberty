@@ -812,7 +812,7 @@ public class TargetsTableImpl implements TargetsTable {
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] [ {1} ] ENTER Resolved [ {1} ] Unresolved [ {2} ]",
+                        "[ {0} ] [ {1} ] ENTER Resolved [ {2} ] Unresolved [ {3} ]",
                         new Object[] { getHashText(), classSource.getName(),
                                        Integer.valueOf(i_resolvedClassNames.size()),
                                        Integer.valueOf(i_unresolvedClassNames.size()) });
@@ -899,7 +899,7 @@ public class TargetsTableImpl implements TargetsTable {
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] [ {1} ] RETURN Resolved [ {1} ] Unresolved [ {2} ]",
+                        "[ {0} ] [ {1} ] RETURN Resolved [ {2} ] Unresolved [ {3} ]",
                         new Object[] { getHashText(), classSource.getName(),
                                        Integer.valueOf(i_resolvedClassNames.size()),
                                        Integer.valueOf(i_unresolvedClassNames.size()) });

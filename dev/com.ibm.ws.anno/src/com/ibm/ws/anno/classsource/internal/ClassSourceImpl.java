@@ -358,12 +358,6 @@ public abstract class ClassSourceImpl implements ClassSource {
         return null;
     }
     
-    protected boolean processedUsingSparseJandex = false;
-    
-    public boolean isProcessedUsingSparseJandex() {
-        return processedUsingSparseJandex;
-    }
-
     //
 
     protected String stamp;

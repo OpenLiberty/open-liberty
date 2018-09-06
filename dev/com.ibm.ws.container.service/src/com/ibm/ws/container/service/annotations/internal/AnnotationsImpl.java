@@ -474,12 +474,22 @@ public abstract class AnnotationsImpl implements Annotations {
     protected abstract void addInternalToClassSource();
 
     protected void addExternalToClassSource() {
-        if ( (rootClassSource == null) || (classLoader == null) ) {
+        String methodName = "addExternalToClassSource";
+        String prefix = CLASS_NAME + "." + methodName + ": ";
+
+        if ( rootClassSource == null ) {
+            System.out.println(prefix + "No root class source");
+            return; // Nothing yet to do.
+        } else if ( classLoader == null ) {
+            System.out.println(prefix + "No class loader");
             return; // Nothing yet to do.
         }
 
+        System.out.println(prefix + "Class loader [ " + classLoader + " ]");
+
         ClassSource_Factory classSourceFactory = getClassSourceFactory();
         if ( classSourceFactory == null ) {
+            System.out.println(prefix + "No class source factory");
             return;
         }
 

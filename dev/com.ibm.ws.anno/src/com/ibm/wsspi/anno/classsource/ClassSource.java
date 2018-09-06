@@ -185,22 +185,22 @@ public interface ClassSource {
      * @return True or false telling if this class source used jandex processing.
      */
     boolean isProcessedUsingJandex();
-    
+
     /**
      * <p>Answer the time in nano-seconds spent reading the JANDEX index.</p>
      *
      * @return The time in nano-speconds spent reading the JANDEX index.
      */
-	long getProcessTime();
+    long getProcessTime();
 
-	/**
-	 * <p>Answer the count of classes processed.
-	 *
-	 * @return The count of classes processed.
-	 */
-	int getProcessCount();
+    /**
+     * <p>Answer the count of classes processed.
+     *
+     * @return The count of classes processed.
+     */
+    int getProcessCount();
 
-	//
+    //
 
     void processSpecific(ClassSource_Streamer streamer, Set<String> i_classNames)
         throws ClassSource_Exception;
