@@ -30,6 +30,7 @@ src: \
      test-applications/AsyncNotInRemoteIf1Bean.jar/src,\
      test-applications/AsyncNotInRemoteIf2Bean.jar/src,\
      test-applications/AsyncNotInRemoteIf3Bean.jar/src,\
+     test-applications/AsyncWarnTestBean.jar/src,\
      test-applications/AsyncWarnTest.war/src,\
      test-applications/AsyncXMLErr1Bean.jar/src,\
      test-applications/AsyncXMLErr2Bean.jar/src,\

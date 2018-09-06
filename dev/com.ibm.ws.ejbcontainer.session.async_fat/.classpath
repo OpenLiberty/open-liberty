@@ -18,6 +18,7 @@
 	<classpathentry kind="src" path="test-applications/AsyncNotInRemoteIf1Bean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/AsyncNotInRemoteIf2Bean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/AsyncNotInRemoteIf3Bean.jar/src"/>
+	<classpathentry kind="src" path="test-applications/AsyncWarnTestBean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/AsyncWarnTest.war/src"/>
 	<classpathentry kind="src" path="test-applications/AsyncXMLErr1Bean.jar/src"/>
 	<classpathentry kind="src" path="test-applications/AsyncXMLErr2Bean.jar/src"/>
