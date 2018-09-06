@@ -627,11 +627,13 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
 
     protected boolean validInternalContainers_Select() {
+        boolean isValid;
         if ( isScanSingleThreaded() || isScanSingleSource() ) {
-            return validInternalContainers();
+            isValid = validInternalContainers();
         } else {
-            return validInternalContainers_Concurrent();
+            isValid = validInternalContainers_Concurrent();
         }
+        return isValid;
     }
     
     protected boolean validInternalContainers() {

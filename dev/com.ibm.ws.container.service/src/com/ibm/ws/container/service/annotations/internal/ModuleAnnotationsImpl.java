@@ -118,6 +118,12 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         this.classLoader = moduleInfo.getClassLoader();
 
         this.appInfo = moduleInfo.getApplicationInfo();
+
+        System.out.println(CLASS_NAME + ": Container [ " + rootContainer + " ]");
+        System.out.println(CLASS_NAME + ": Module Container [ " + moduleInfo.getContainer() + " ]");
+        System.out.println(CLASS_NAME + ": Application Name [ " + this.getAppName() + " ]");
+        System.out.println(CLASS_NAME + ": Module Name [ " + this.getModName() + " ]");
+        System.out.println(CLASS_NAME + ": Module Classloader [ " + this.classLoader + " ]");
     }
 
     //

@@ -554,13 +554,13 @@ ANNO_TARGETS_JANDEX_DUPLICATE_CLASS=CWWKC0091W: Class scanning internal error: J
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.explanation=CMSG0001
 ANNO_TARGETS_JANDEX_DUPLICATE_CLASS.useraction=CMSG0002
 
-# # {0} A number
-# # {1} A number
-# # {2} A number
-# # {3} A number
-# # {4} The name of a file or the name of a directory
+# # {0} A string; The name of an application
+# # {1} A string; The name of a module
+# # {2} A number; The count of locations of the module which were scanned for annotions
+# # {3} A number; The count of locations of the module which had Jandex indexes
+# # {4} A number; The count of classes of the module which were processed
+# # {5} A number; The count of classes of the module which were processed directly from Jandex indexes
 # # Read - Past tense. 
-ANNO_JANDEX_USAGE=CWWKC0092I: Read Jandex indexes for {0} out of {1} archives ({2} out of {3} classes) in {4}. 
-ANNO_JANDEX_USAGE.explanation=This shows the number of archives in the module that were processed by reading Jandex indexes rather than by scanning the actual class files.  It also shows the total number of classes in the application that were processed by reading Jandex indexes.
+ANNO_JANDEX_USAGE=CWWKC0092I: Jandex coverage for module [ {1} ] of application [ {0} ]: [ {2} ] module locations were scanned for annotations. [ {3} ] of the module locations had Jandex indexes. [ {4} ] module classes were processed. [ {5} ] of the module classes were processed directly from Jandex indexes.
+ANNO_JANDEX_USAGE.explanation=This shows the number of locations of a module which were processed using Jandex indexes instead of performing the usual annotation scan.  This also shows the total number of classes which were processed, and how many classes were processed using Jandex index data. A module location can be the entire module archive, or can be a nested archive of the module archive, or can be the WEB-INF/classes folder of a web module archive.
 ANNO_JANDEX_USAGE.useraction=If Jandex indexes are intended to be read for the application then there is no action.  If Jandex indexes are not to be read for the application, then set the useJandex="false" attribute in the application element in server.xml. Alternatively, set useJandex="false" in the applicationManger element in server.xml to ignore Jandex indexes in all applications.
-

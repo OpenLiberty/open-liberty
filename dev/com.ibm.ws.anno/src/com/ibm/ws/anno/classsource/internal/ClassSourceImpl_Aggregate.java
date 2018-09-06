@@ -918,26 +918,26 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
 
     @Override
     public long addCacheReadTime(long readTime, String description) {
-    	return ( cacheReadTime += readTime );
+        return ( cacheReadTime += readTime );
     }
 
     @Trivial
     @Override
     public long getCacheReadTime() {
-    	return cacheReadTime;
+        return cacheReadTime;
     }
 
     protected long cacheWriteTime;
 
     @Override
     public long addCacheWriteTime(long writeTime, String description) {
-    	return ( cacheWriteTime += writeTime );
+        return ( cacheWriteTime += writeTime );
     }
 
     @Trivial
     @Override
     public long getCacheWriteTime() {
-    	return cacheWriteTime;
+        return cacheWriteTime;
     }
 
     public class TimingDataImpl implements TimingData {
@@ -1045,15 +1045,15 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
 
         @Override
         @Trivial
-		public long getCacheReadTime() {
-			return cacheReadTime;
-		}
+        public long getCacheReadTime() {
+            return cacheReadTime;
+        }
 
         @Override
         @Trivial
-		public long getCacheWriteTime() {
-			return cacheWriteTime;
-		}
+        public long getCacheWriteTime() {
+            return cacheWriteTime;
+        }
     }
 
     private TimingDataImpl timingData;
