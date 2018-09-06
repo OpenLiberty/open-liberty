@@ -2444,8 +2444,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 inRequest = false;
                 mcf.jdbcRuntime.endRequest(sqlConn);
             } catch (SQLException x) {
-                FFDCFilter.processException(x, getClass().getName(), "2447", this);
-                dsae = new DataStoreAdapterException("DSA_ERROR", x, getClass());
+                if (!isAborted()) {
+                    FFDCFilter.processException(x, getClass().getName(), "2447", this);
+                    dsae = new DataStoreAdapterException("DSA_ERROR", x, getClass());
+                }
             }
 
         if(isAborted()){
@@ -2679,8 +2681,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 inRequest = false;
                 mcf.jdbcRuntime.endRequest(sqlConn);
             } catch (SQLException x) {
-                FFDCFilter.processException(x, getClass().getName(), "2682", this);
-                firstX = new DataStoreAdapterException("DSA_ERROR", x, getClass());
+                if (!isAborted()) {
+                    FFDCFilter.processException(x, getClass().getName(), "2682", this);
+                    firstX = new DataStoreAdapterException("DSA_ERROR", x, getClass());
+                }
             }
 
         if(isAborted()){

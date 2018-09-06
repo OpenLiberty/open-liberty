@@ -31,6 +31,9 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
 
     private final Object instance;
 
+    private boolean isAborted;
+    private boolean isClosed;
+
     private final static TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
     D43Handler(Object instance) {
@@ -63,17 +66,45 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
                 return this;
         }
 
+        if ("abort".equals(methodName)) {
+            isAborted = true;
+            isClosed = true;
+        } else if ("close".equals(methodName)) {
+            isClosed = true;
+        } else if (!"isClosed".equals(methodName) && !"isValid".equals(methodName) && !"endRequest".equals(methodName)
+                   && method.getDeclaringClass().getName().startsWith("java.sql")) {
+            if (isAborted)
+                throw new AbortedException(method.getDeclaringClass());
+            if (isClosed)
+                throw new ClosedException(method.getDeclaringClass());
+        }
+
         if ("beginRequest".equals(methodName)) {
             beginRequests.incrementAndGet();
             ((Connection) instance).beginRequest();
             return null;
         }
         if ("endRequest".equals(methodName)) {
+            if (isClosed && !isAborted)
+                throw new ClosedException(method.getDeclaringClass());
             if (tm.getStatus() == Status.STATUS_ACTIVE ||
                 ((org.apache.derby.iapi.jdbc.EngineConnection) instance).isInGlobalTransaction())
                 throw new SQLException("Transaction is still active");
             ((Connection) instance).endRequest();
             endRequests.incrementAndGet();
+
+            // The expectation for endRequest on abort paths is unclear.
+            // It seems wrong for endRequest to be sent prior to abort because additional operations
+            // for the request might subsequently come in on the main thread of execution (the thread
+            // that isn't being used to invoke abort).
+            // It also seems wrong to avoid sending endRequest at all when a connection is aborted.
+            // That leaves sending endRequest after the abort operation, although there is no way of
+            // knowing when the JDBC driver has actually completed the asynchronous abort processing.
+            // To complicate matters further, a JDBC driver might decide to raise an exception if
+            // endRequest is invoked on a previously aborted connection. Simulate that here, while
+            // still having incremented the endRequest counter so that test can also compare that value.
+            if (isAborted)
+                throw new AbortedException(method.getDeclaringClass());
             return null;
         }
         if ("getJDBCMajorVersion".equals(methodName))
