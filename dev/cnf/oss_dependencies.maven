@@ -328,3 +328,11 @@ org.reactivestreams:reactive-streams:1.0.2
 org.mock-server:mockserver-client-java:3.10.7
 org.mock-server:mockserver-core:3.10.7
 org.mock-server:mockserver-netty:3.10.7
+org.apache.cxf:cxf-rt-bindings-soap:3.2.6
+org.apache.cxf:cxf-rt-bindings-xml:3.2.6
+org.apache.cxf:cxf-rt-databinding-jaxb:3.2.6
+org.apache.cxf:cxf-rt-frontend-jaxws:3.2.6
+org.apache.cxf:cxf-rt-frontend-simple:3.2.6
+org.apache.cxf:cxf-rt-ws-addr:3.2.6
+org.apache.cxf:cxf-rt-ws-policy:3.2.6
+org.apache.cxf:cxf-rt-wsdl:3.2.6
