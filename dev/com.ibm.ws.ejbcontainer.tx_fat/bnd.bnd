@@ -17,8 +17,8 @@ src: \
 	test-applications/RunUnderUOWWeb.war/src, \
 	test-applications/MethodIntfEJB.jar/src, \
 	test-applications/MethodIntfWeb.war/src, \
-	test-applications/StatelessMixASMDescEJB.jar, \
-	test-applications/StatelessMixSecWeb.war
+	test-applications/StatelessMixASMDescEJB.jar/src, \
+	test-applications/StatelessMixSecWeb.war/src
 
 fat.project: true
 
