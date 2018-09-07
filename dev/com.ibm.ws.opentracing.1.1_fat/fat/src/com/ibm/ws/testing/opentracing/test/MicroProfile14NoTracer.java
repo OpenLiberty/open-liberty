@@ -36,7 +36,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 8)
-public class MicroProfile13NoTracer extends FATTestBase {
+public class MicroProfile14NoTracer extends FATTestBase {
     /**
      * Set to the generated server before any tests are run.
      */
