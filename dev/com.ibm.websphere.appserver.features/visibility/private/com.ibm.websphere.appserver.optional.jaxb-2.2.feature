@@ -5,6 +5,7 @@ IBM-App-ForceRestart: uninstall, install
 IBM-Process-Types: client, server
 Subsystem-Name: Java XML Bindings 2.2 for Java 9 and above
 IBM-API-Package: \
+  javax.activation; type="spec"; require-java:="9", \
   javax.xml.bind; type="spec"; require-java:="9", \
   javax.xml.bind.annotation; type="spec"; require-java:="9", \
   javax.xml.bind.annotation.adapters; type="spec"; require-java:="9", \
