@@ -52,7 +52,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
                                 AdapterUtil.TRACE_GROUP,
                                 AdapterUtil.NLS_FILE);
 
-    private WSConnectionManager cm;
+    protected WSConnectionManager cm;
     private ResourceRefInfo resRefInfo;
 
     /**
@@ -124,8 +124,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
      * 
      * @throws SQLException if an error occurs while obtaining a Connection.
      */
-    Connection getConnection(ConnectionRequestInfo connInfo) 
-    throws SQLException {
+    protected Connection getConnection(ConnectionRequestInfo connInfo) throws SQLException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isEntryEnabled()) 

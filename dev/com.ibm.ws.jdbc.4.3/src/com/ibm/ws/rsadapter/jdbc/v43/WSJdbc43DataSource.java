@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.jdbc.v43;
 
+import java.sql.Connection;
 import java.sql.ConnectionBuilder;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -21,6 +22,7 @@ import javax.sql.DataSource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.rsadapter.AdapterUtil;
+import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
@@ -33,11 +35,16 @@ public class WSJdbc43DataSource extends WSJdbcDataSource implements DataSource {
 
     @Override
     public ConnectionBuilder createConnectionBuilder() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return new WSJdbc43ConnectionBuilder(this);
     }
 
     @Override
     public ShardingKeyBuilder createShardingKeyBuilder() throws SQLException {
         throw new SQLFeatureNotSupportedException();
+    }
+
+    Connection getConnection(WSJdbc43ConnectionBuilder builder) throws SQLException {
+        WSConnectionRequestInfoImpl conRequest = new WSConnectionRequestInfoImpl(mcf, cm, builder.user, builder.password, builder.shardingKey, builder.superShardingKey);
+        return super.getConnection(conRequest);
     }
 }
