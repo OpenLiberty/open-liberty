@@ -20,9 +20,11 @@ import com.ibm.ejs.util.am.Alarm;
 import com.ibm.ejs.util.am.AlarmListener;
 import com.ibm.ejs.util.am.AlarmManager;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.ws.sib.admin.JsMessagingEngine;
 import com.ibm.ws.sib.msgstore.AbstractItem;
 import com.ibm.ws.sib.msgstore.MessageStoreConstants;
+import com.ibm.ws.sib.msgstore.MessageStoreException;
 import com.ibm.ws.sib.msgstore.MessageStoreRuntimeException;
 import com.ibm.ws.sib.msgstore.SevereMessageStoreException;
 import com.ibm.ws.sib.msgstore.XmlConstants;
@@ -73,7 +75,7 @@ public class DeliveryDelayManager implements AlarmListener, XmlConstants
     private long lastExceptionTime = 0;
     private long deliveryDelayManagerStartTime = 0;
     private long deliveryDelayManagerStopTime = 0;
-    private long startTime = 0;
+    private long maximumTime = 0;
     private boolean cleanupDeletedItems = false;
 
     // Info for diagnostic dump
@@ -276,7 +278,7 @@ public class DeliveryDelayManager implements AlarmListener, XmlConstants
             SibTr.entry(this, tc, "start", "interval=" + deliveryDelayScanInterval + " indexSize=" + deliveryDelayIndex.size());
 
         messagingEngine = jsme;
-
+        
         if (deliveryDelayScanInterval >= 0) // If an deliverydelayscan interval was given, use it
         {
             interval = deliveryDelayScanInterval;
@@ -319,7 +321,9 @@ public class DeliveryDelayManager implements AlarmListener, XmlConstants
             else
             {
                 if (deliveryDelayAlarm == null)
-                {
+                {           
+                	scanForInvalidDeliveryDelay();
+                	
                     runEnabled = true;
                     addEnabled = true;
                     deliveryDelayManagerStartTime = timeNow();
@@ -352,6 +356,84 @@ public class DeliveryDelayManager implements AlarmListener, XmlConstants
     }
 
     /**
+     * Scan the delivery delay intervals loaded at startup to determine 
+     * if any may have been migrated incorrectly.
+     * 
+     * Caller must hold a lock on lockObject.
+     *
+     * @throws SevereMessageStoreException
+     */
+    private void scanForInvalidDeliveryDelay() throws SevereMessageStoreException {
+    	final String methodName = "scanForInvalidDeliveryDelay";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(this, tc, methodName);
+
+
+        String str = messageStore.getProperty(MessageStoreConstants.PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_INTERVAL, MessageStoreConstants.PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_INTERVAL_DEFAULT);
+        if (str.equals(MessageStoreConstants.PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_INTERVAL_DEFAULT)) {
+        	 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                 SibTr.exit(this, tc, methodName, "No scan");	
+        	 return;
+        }
+        try {
+            final long maximumAllowedDeliveryDelayInterval = Long.parseLong(str);
+            maximumTime = System.currentTimeMillis() + maximumAllowedDeliveryDelayInterval;
+
+        } catch (NumberFormatException exception) {
+            // No FFDC Code Needed.
+            lastException = exception;
+            lastExceptionTime = timeNow();
+            SibTr.debug(this, tc, methodName, "Unable to parse property: " + exception);
+            //TODO Output a warning message, no scan.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(this, tc, methodName, "No scan, exception="+exception);	
+       	    return;
+        }
+        
+        MessageStoreConstants.MaximumAllowedDeliveryDelayAction action; 
+        try {
+        	String actionStr = messageStore.getProperty(MessageStoreConstants.PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_ACTION, MessageStoreConstants.PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_ACTION_DEFAULT);        
+            action = MessageStoreConstants.MaximumAllowedDeliveryDelayAction.valueOf(actionStr);
+
+        } catch (IllegalArgumentException illegalArgumentException) {
+        	 lastException = illegalArgumentException;
+             lastExceptionTime = timeNow();
+             SibTr.debug(this, tc, methodName, "Unable to parse property: " + illegalArgumentException);
+             action = MessageStoreConstants.MaximumAllowedDeliveryDelayAction.warn;
+        }       
+        
+        // Point to the start of the deliveryDelayIndex tree.                  
+        deliveryDelayIndex.resetIterator();
+        DeliveryDelayableReference deliveryDelayableRef = deliveryDelayIndex.next();
+        try {
+        	while (deliveryDelayableRef != null && deliveryDelayableRef.getDeliveryDelayTime() > maximumTime) {
+
+        		DeliveryDelayable deliveryDelayable = (DeliveryDelayable) deliveryDelayableRef.get();
+        		 SibTr.debug(this, tc, methodName, "deliveryDelayable="+deliveryDelayable+" deliveryDelayable.deliveryDelayableIsInStore()="+deliveryDelayable.deliveryDelayableIsInStore());	
+        		// The soft reference should not be null during startup when the scan is done. 
+        		if (deliveryDelayable != null && deliveryDelayable.deliveryDelayableIsInStore()) {
+        			boolean unlocked = deliveryDelayable.handleInvalidDeliveryDelayable(action);
+                    if (unlocked)
+    			        remove(deliveryDelayableRef, true);   			
+        		}
+        		deliveryDelayableRef = deliveryDelayIndex.next();
+        	}
+        	
+        } catch (MessageStoreException | SIException exception) {
+
+            SevereMessageStoreException severeMessageStoreException = new SevereMessageStoreException(exception);
+            lastException = exception;
+            lastExceptionTime = timeNow();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, methodName, severeMessageStoreException);
+            throw severeMessageStoreException;
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(this, tc, methodName);		
+	}
+
+	/**
      * Stop the DeliveryDelayManager daemon.
      */
     public final void stop()
@@ -446,8 +528,8 @@ public class DeliveryDelayManager implements AlarmListener, XmlConstants
             }
 
             // Get current system time for start of cycle
-            startTime = System.currentTimeMillis();
-            indexUsed = saveStartTime(startTime);
+            maximumTime = System.currentTimeMillis();
+            indexUsed = saveStartTime(maximumTime);
 
             // Get the first entry from the index and start the cycle
             DeliveryDelayableReference deliveryDelayableRef = null;
@@ -457,7 +539,7 @@ public class DeliveryDelayManager implements AlarmListener, XmlConstants
                 deliveryDelayIndex.resetIterator();
                 deliveryDelayableRef = deliveryDelayIndex.next();
             }
-            while (runEnabled && deliveryDelayableRef != null && deliveryDelayableRef.getDeliveryDelayTime() <= startTime)
+            while (runEnabled && deliveryDelayableRef != null && deliveryDelayableRef.getDeliveryDelayTime() <= maximumTime)
             {
                 processed++;
 
