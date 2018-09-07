@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaeeClient-8.0
 visibility=public
+singleton=true
 IBM-ShortName: javaeeClient-8.0
 Subsystem-Name: Java EE 8 Application Client
 IBM-API-Package: \
