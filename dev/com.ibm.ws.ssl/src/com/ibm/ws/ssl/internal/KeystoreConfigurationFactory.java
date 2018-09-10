@@ -77,7 +77,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "updated " + pid, properties);
+            Tr.event(this, tc, "updated keystore " + pid, properties);
         }
 
         String id = (String) properties.get(LibertyConstants.KEY_ID);
@@ -119,16 +119,14 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
 
     @Override
     public void deleted(String pid) {
-        if (keyConfigs.contains(pid)) {
+        KeystoreConfig old = keyConfigs.get(pid);
+        if (old != null) {
             KeyStoreManager.getInstance().clearKeyStoreFromMap(pid);
             KeyStoreManager.getInstance().clearKeyStoreFromMap(keyConfigs.get(pid).getId());
-            KeystoreConfig old = keyConfigs.remove(pid);
-            if (old != null) {
-                old.unregister();
-            }
+            old.unregister();
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "deleted " + pid,
-                         (old == null ? "not found" : old.getId()));
+                Tr.event(this, tc, "deleted keystore " + pid);
             }
         }
     }

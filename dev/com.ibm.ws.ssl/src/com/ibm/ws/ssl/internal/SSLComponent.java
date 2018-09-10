@@ -199,8 +199,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
                 repertoirePIDMap.remove(rep.getPID());
             }
         }
-        processConfig(true);
-
     }
 
     private void addKeyStores(boolean updateSSLConfigManager, KeystoreConfig... keystores) {

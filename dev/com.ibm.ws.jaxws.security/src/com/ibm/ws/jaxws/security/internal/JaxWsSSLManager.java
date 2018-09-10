@@ -75,7 +75,7 @@ public class JaxWsSSLManager {
                     sslConfig = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
                         @Override
                         public Properties run() throws SSLException {
-                            return (Properties) f_jsseHelper.getProperties(f_sslRef).clone();
+                            return f_jsseHelper.getProperties(f_sslRef);
                         }
                     });
 
