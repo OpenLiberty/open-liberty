@@ -14,6 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -33,6 +37,35 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/CxfClientPropsTestServlet")
 public class CxfClientPropsTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
+
+    /**
+     * Not actually testing CXF client properties, but rather testing socket timeouts,
+     * which are a prereq for CXF client connection timeouts.
+     */
+    @Test
+    public void testUrlConnectTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        final String m = "testUrlConnectTimeout";
+        long SOCKET_TIMEOUT = 5000;
+        long MARGIN = 2000;
+        URL url = new URL("http://localhost:23/blah");
+        URLConnection conn = url.openConnection();
+        conn.setConnectTimeout(5000); // 5 seconds
+        long startTime = System.currentTimeMillis();
+        try {
+            conn.connect();
+            _log.info(m + " aborting test... we actually connected to the remote telnet port...");
+        } catch (SocketTimeoutException expected) {
+            
+        } catch (IOException ex) {
+            _log.info(m + " unexpected exception (expected SocketTimeoutException)");
+            ex.printStackTrace();
+        }
+        long elapsed = System.currentTimeMillis() - startTime;
+        _log.info(m + " Request finished in " + elapsed + "ms");
+        if (elapsed > SOCKET_TIMEOUT + MARGIN) {
+            fail("Did not timeout within the CXF-specific connection timeout, waited " + elapsed + "ms");
+        }
+    }
 
     @Test
     public void testCXFConnectTimeout(HttpServletRequest req, HttpServletResponse resp) throws Exception {
