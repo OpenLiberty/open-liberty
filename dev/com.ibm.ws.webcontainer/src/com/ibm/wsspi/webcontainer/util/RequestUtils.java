@@ -189,18 +189,12 @@ public class RequestUtils {
                         equalSign = i;
                         continue;
                     } //PK75617
-                    System.out.println("key before:" + key);
-                    System.out.println("val before:" + value);
-                    
                     
                     if (!encoding_is_ShortEnglish) {
                         
                         try {
                             key = new String(key.getBytes(SHORT_ENGLISH), encoding);
                             value = new String(value.getBytes(SHORT_ENGLISH), encoding);
-                            
-                            System.out.println("key after:" + key);
-                            System.out.println("val after:" + value);
                         } catch (UnsupportedEncodingException uee) {
                             //No need to nls. SHORT_ENGLISH will always be supported
                             logger.logp(Level.SEVERE, CLASS_NAME, "parseQueryString", "unsupported exception", uee);
