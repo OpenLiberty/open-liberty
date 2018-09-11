@@ -84,7 +84,7 @@ public class FileLogHolder implements TraceWriter {
     /**
      * Whether to fill up an existing primary file instead of rolling it.
      */
-    protected final boolean fillExistingFile;
+    protected final boolean newLogsOnStart;
 
     /**
      * Capture when checked the existence of the log directory
@@ -148,14 +148,14 @@ public class FileLogHolder implements TraceWriter {
      *            New maximum number of log files. If 0, log files won't be pruned.
      * @param maxSizeBytes
      *            New maximum log file size in bytes. If 0, log files won't be rolled.
-     * @param fillExistingFile
+     * @param newLogsOnStart
      *            Whether to fill an existing primary file if there's space (if it exists).
      * @return a log holder. If all values are the same, the old one is returned, otherwise a new log holder is created.
      */
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
                                                     File logDirectory, String newFileName,
                                                     int maxFiles, long maxSizeBytes,
-                                                    boolean fillExistingFile) {
+                                                    boolean newLogsOnStart) {
 
         final FileLogHolder logHolder;
 
@@ -200,7 +200,7 @@ public class FileLogHolder implements TraceWriter {
             }
 
             // Send to bit bucket until the file is created (true -- create/replace if needed).
-            logHolder = new FileLogHolder(logHeader, logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes, fillExistingFile);
+            logHolder = new FileLogHolder(logHeader, logDirectory, fileName, fileExtension, maxFiles, maxSizeBytes, newLogsOnStart);
         }
 
         return logHolder;
@@ -216,10 +216,11 @@ public class FileLogHolder implements TraceWriter {
      * @param maxNumFiles The maximum number of files to create if this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code> and
      *            <code>maxSizeBytes</code> is greater than 0)
      * @param maxFileSizeBytes The maximum file size a single file should create when this is a rolling log (i.e. when <code>alwaysCreateNewFile</code> is <code>false</code>)
+     * @param newLogsOnStart Whether to fill an existing primary file if there's space (if it exists).
      */
-    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean fillExistingFile) {
+    private FileLogHolder(FileLogHeader logHeader, File directory, String fileName, String fileExtension, int maxNumFiles, long maxFileSizeBytes, boolean newLogsOnStart) {
         this.logHeader = logHeader;
-        this.fillExistingFile = fillExistingFile;
+        this.newLogsOnStart = newLogsOnStart;
 
         currentPrintStream = DummyOutputStream.psInstance;
         update(directory, fileName, fileExtension, maxNumFiles, maxFileSizeBytes);
@@ -302,7 +303,7 @@ public class FileLogHolder implements TraceWriter {
         switch (currentStatus) {
             case INIT:
 
-                if (fillExistingFile) {
+                if (!newLogsOnStart) {
 
                     // Check if we can fill into an existing file (including a new log header).
                     File primaryFile = getPrimaryFile();

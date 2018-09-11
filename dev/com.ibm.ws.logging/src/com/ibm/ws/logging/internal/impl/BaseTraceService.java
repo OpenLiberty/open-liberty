@@ -945,7 +945,7 @@ public class BaseTraceService implements TrService {
                                                         config.getMessageFileName(),
                                                         config.getMaxFiles(),
                                                         config.getMaxFileBytes(),
-                                                        config.fillExistingFile());
+                                                        config.newLogsOnStart());
 
         // Always create a traceLog when using Tr -- this file won't actually be
         // created until something is logged to it...
@@ -961,7 +961,7 @@ public class BaseTraceService implements TrService {
                                                          config.getTraceFileName(),
                                                          config.getMaxFiles(),
                                                          config.getMaxFileBytes(),
-                                                         config.fillExistingFile());
+                                                         config.newLogsOnStart());
             if (!TraceComponent.isAnyTracingEnabled()) {
                 ((FileLogHolder) traceLog).releaseFile();
             }
