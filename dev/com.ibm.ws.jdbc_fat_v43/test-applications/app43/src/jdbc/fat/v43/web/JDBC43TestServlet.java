@@ -12,12 +12,14 @@ package jdbc.fat.v43.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ConnectionBuilder;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import javax.annotation.Resource;
+import javax.annotation.Resource.AuthenticationType;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.ConnectionPoolDataSource;
@@ -65,8 +68,14 @@ public class JDBC43TestServlet extends FATServlet {
     @Resource
     DataSource defaultDataSource;
 
+    @Resource(lookup = "jdbc/poolOf1", authenticationType = AuthenticationType.APPLICATION)
+    DataSource sharablePool1DataSourceWithAppAuth;
+
     @Resource(lookup = "jdbc/xa", shareable = true)
     DataSource sharableXADataSource;
+
+    @Resource(lookup = "jdbc/xa", shareable = true, authenticationType = AuthenticationType.APPLICATION)
+    DataSource sharableXADataSourceWithAppAuth;
 
     @Resource(lookup = "jdbc/poolOf1", shareable = false)
     DataSource unsharablePool1DataSource;
@@ -625,6 +634,66 @@ public class JDBC43TestServlet extends FATServlet {
         }
 
         assertEquals(ends + 1, requests[END].get());
+    }
+
+    /**
+     * Verify that user and password supplied via connection builder are used when sharing a PooledConnection,
+     * as well as when requesting a new PooledConnection.
+     */
+    @Test
+    public void testPooledConnectionBuilderMatchUserPassword() throws Exception {
+        ConnectionBuilder builderA = sharablePool1DataSourceWithAppAuth.createConnectionBuilder();
+        ConnectionBuilder builderA1 = builderA.user("user43").password("pwd43");
+
+        // ensure same instance returned, as required by ConnectionBuilder JavaDoc
+        assertSame(builderA, builderA1);
+
+        tx.begin();
+        try {
+            Connection con1 = builderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+
+            // different builder instance must be returned
+            ConnectionBuilder builderB = sharablePool1DataSourceWithAppAuth.createConnectionBuilder();
+            assertNotSame(builderA, builderB);
+
+            Connection con2 = builderB.user("user43").password("pwd43").build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
+            assertEquals("user43", con2.getMetaData().getUserName());
+
+            // Show that the user name is honored by accessing data that was previously written by this user
+            PreparedStatement ps2 = con2.prepareStatement("SELECT NAME FROM STREETS WHERE NAME=? AND CITY=? AND STATE=?");
+            ps2.setString(1, "Valleyhigh Drive NW");
+            ps2.setString(2, "Rochester");
+            ps2.setString(3, "MN");
+            ResultSet result2 = ps2.executeQuery();
+            assertTrue(result2.next());
+            ps2.close();
+
+            // Request another matching connection via the same builder
+            Connection con3 = builderA.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con3.getTransactionIsolation());
+            assertEquals("user43", con3.getMetaData().getUserName());
+
+            con3.close();
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Clear the user/password that were specified on the builder,
+        Connection con5 = builderA.user(null).password(null).build();
+        try {
+            // User name should be vendor-specific default (which is APP for the Derby driver
+            // upon which our mock JDBC driver is built)
+            assertEquals("APP", con5.getMetaData().getUserName());
+        } finally {
+            con5.close();
+        }
     }
 
     /**
@@ -1504,6 +1573,63 @@ public class JDBC43TestServlet extends FATServlet {
             ps.close();
         } finally {
             c.close();
+        }
+    }
+
+    /**
+     * Verify that user and password supplied via connection builder are used when sharing XA connections,
+     * as well as when requesting new XA connections.
+     */
+    @Test
+    public void testXAConnectionBuilderMatchUserPassword() throws Exception {
+        tx.begin();
+        try {
+            Connection con1 = sharableXADataSourceWithAppAuth.getConnection("user43", "pwd43");
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+
+            ConnectionBuilder builderA = sharableXADataSourceWithAppAuth.createConnectionBuilder();
+            Connection con2 = builderA.user("user43").password("pwd43").build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
+            assertEquals("user43", con2.getMetaData().getUserName());
+
+            // Show that the user name is honored by accessing data that was previously written by this user
+            PreparedStatement ps2 = con2.prepareStatement("SELECT NAME FROM STREETS WHERE NAME=? AND CITY=? AND STATE=?");
+            ps2.setString(1, "Civic Center Drive NW");
+            ps2.setString(2, "Rochester");
+            ps2.setString(3, "MN");
+            ResultSet result2 = ps2.executeQuery();
+            assertTrue(result2.next());
+            ps2.close();
+
+            // Request another matching connection via the same builder
+            Connection con3 = builderA.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con3.getTransactionIsolation());
+            assertEquals("user43", con3.getMetaData().getUserName());
+
+            // Request a new non-matching connection via the builder
+            Connection con4 = builderA.user("user4").build();
+            // If connection handle is not shared with con1/con2/con3, it will report the default isolation level,
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con4.getTransactionIsolation());
+            con4.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            assertEquals("user4", con4.getMetaData().getUserName());
+
+            // Request a matching connection via a different builder
+            ConnectionBuilder builderB = sharableXADataSourceWithAppAuth.createConnectionBuilder();
+            Connection con5 = builderB.user("user43").password("pwd43").build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con5.getTransactionIsolation());
+            assertEquals("user43", con5.getMetaData().getUserName());
+
+            con5.close();
+            con4.close();
+            con3.close();
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
         }
     }
 }
