@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  "Restricted Materials of IBM"
+
+  Copyright IBM Corp. 2014 All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or
+  disclosure restricted by GSA ADP Schedule Contract with
+  IBM Corp.
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+ 
+    <OCD name="internal" description="internal" 
+         id="test.server.quiesce" ibm:alias="testServerQuiesce">
+    
+        <AD name="internal" description="internal" 
+            id="throwException" required="false" type="Boolean" default="false" />  
+    
+        <AD name="internal" description="internal" 
+            id="takeForever" required="false" type="Boolean" default="false" />  
+    </OCD>
+  
+    <Designate pid="test.server.quiesce">
+        <Object ocdref="test.server.quiesce"/>
+    </Designate>
+    
+</metatype:MetaData>
