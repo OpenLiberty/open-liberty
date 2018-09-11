@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2018 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,38 +28,28 @@ Private-Package: \
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
-  
 
-Service-Component: \
-  com.ibm.ws.security.java2sec.policyConfig; \
-    configuration-policy:=require; \
-    implementation:=com.ibm.ws.security.java2sec.JavaPermissionsConfiguration; \
-    provide:=com.ibm.ws.security.java2sec.JavaPermissionsConfiguration; \
-    properties:="service.vendor=IBM", \
-  com.ibm.ws.security.java2sec.PermissionManager; \
-    configuration-policy:=ignore; \
-    immediate:=true;\
-    implementation:=com.ibm.ws.security.java2sec.PermissionManager; \
-    provide:=com.ibm.ws.security.java2sec.PermissionManager; \
-    permission=com.ibm.ws.security.java2sec.JavaPermissionsConfiguration; \
-    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
-    wsjarURLStreamHandler='org.osgi.service.url.URLStreamHandlerService(url.handler.protocol=wsjar)'; \
-    dynamic:='permission,wsjarURLStreamHandler'; \
-    multiple:='permission'; \
-    greedy:='permission'; \
-    optional:='permission,wsjarURLStreamHandler'; \
-    properties:="service.vendor=IBM"
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.classesExcludes: com/ibm/ws/security/java2sec/resources/*.class
 
+-dsannotations: \
+    com.ibm.ws.security.java2sec.JavaPermissionsConfiguration, \
+    com.ibm.ws.security.java2sec.PermissionManager
+
+-metatypeannotations: \
+    com.ibm.ws.security.java2sec.PermissionManagerConfig
+
 -buildpath: \
-	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
+ 	com.ibm.ws.bnd.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

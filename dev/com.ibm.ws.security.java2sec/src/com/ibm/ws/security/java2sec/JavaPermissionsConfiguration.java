@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,33 +14,27 @@ import java.util.Map;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * This class holds the Java 2 Security permissions configured in the server.xml
  */
 @Trivial
+@Component(service = com.ibm.ws.security.java2sec.JavaPermissionsConfiguration.class,
+                configurationPid = "com.ibm.ws.security.java2sec.policyConfig",
+                configurationPolicy = ConfigurationPolicy.REQUIRE,
+                property = "service.vendor=IBM")
 public class JavaPermissionsConfiguration {
 
-	/**
-	 * The trace component used for logging to the trace.log file.
-	 */
-	private static final TraceComponent tc = Tr.register(JavaPermissionsConfiguration.class);
-	
-	/**
-	 * Constant for the configuration Id
-	 */
-	private static final String KEY_ID = "config.id";
-	
 	/**
 	 * Constant for the codebase configuration key.
 	 */
 	public static final String CODE_BASE = "codebase";
-	
+
 	/**
 	 * Constant for the signedBy configuration key.
 	 */
@@ -80,7 +74,7 @@ public class JavaPermissionsConfiguration {
 	 * Map to hold the configuration properties for this permission object
 	 */
 	public volatile Map<String, Object> config;
-	
+
 	/**
 	 * Activate the Java Permission configuration
 	 * @param properties
@@ -90,7 +84,7 @@ public class JavaPermissionsConfiguration {
 	protected void activate(Map<String, Object> properties, ComponentContext cc) {
     	config = properties;
     }
-    
+
     /**
      * Deactivate the Java Permission configuration
      */
@@ -98,7 +92,7 @@ public class JavaPermissionsConfiguration {
     protected void deactivate(ComponentContext cc) {
     	config = null;
     }
-    
+
     /**
      * Get the data/value associated with the specified key for this permission configuration.
      * 
@@ -111,4 +105,5 @@ public class JavaPermissionsConfiguration {
     	else
     		return null;
     }
+
 }
