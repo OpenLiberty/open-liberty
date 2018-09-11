@@ -47,6 +47,47 @@
 
     <dependencies>
     
+        <!--  begin 0911 add TODO: remove once the auth-tck is in mvn, as it will do this automatically --> 
+        <dependency>
+            <groupId>org.eclipse.microprofile.config</groupId>
+            <artifactId>microprofile-config-api</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+      
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.security.jacc</groupId>
+            <artifactId>javax.security.jacc-api</artifactId>
+            <version>1.5</version>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+       
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>4.23</version>
+        </dependency>
+        <!--  end 0911 add  -->
+    
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-api</artifactId>
@@ -70,13 +111,16 @@
 		</dependency>
 		 -->
 	
-        
+	   
         
           <!-- This is the MP-JWT TCK base extension and utility classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>1.1</version>
+            <version>1.1.1-RC2</version>
+            <scope>system</scope>  <!--  todo: remove systempath -->
+            <systemPath>C:\projects\work\mpjwt\tck0911\microprofile-jwt-auth-tck-1.1.1-RC2.jar</systemPath>
+             
         </dependency>
         <!-- This is the actual MP-JWT TCK test classes -->
         <dependency>
@@ -89,7 +133,8 @@
             <scope>system</scope>
               
             <!--  TODO: WHEN TCK IS COMPLETE, REMOVE SYSTEMPATH AND SCOPE SO TESTS WILL PULL FROM GITHUB -->            
-             <systemPath>C:\projects\work\mpjwt\tck0827\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> 
+             <!-- <systemPath>C:\projects\work\mpjwt\tck0827\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath>-->
+             <systemPath>C:\projects\work\mpjwt\tck0911\microprofile-jwt-auth-tck-1.1.1-RC2-tests.jar</systemPath>
             <!-- <systemPath>${componentRootDir}/lib/microprofile-jwt-auth-tck-1.2-20180821.143915-1.jar</systemPath>  -->
            
         </dependency>
