@@ -129,7 +129,7 @@ public class FileLogHolder implements TraceWriter {
     public static FileLogHolder createFileLogHolder(TraceWriter oldLog, FileLogHeader logHeader,
                                                     File logDirectory, String newFileName,
                                                     int maxFiles, long maxSizeBytes) {
-        return createFileLogHolder(oldLog, logHeader, logDirectory, newFileName, maxFiles, maxSizeBytes, !NEW_LOGS_ON_START_DEFAULT);
+        return createFileLogHolder(oldLog, logHeader, logDirectory, newFileName, maxFiles, maxSizeBytes, NEW_LOGS_ON_START_DEFAULT);
     }
 
     /**
