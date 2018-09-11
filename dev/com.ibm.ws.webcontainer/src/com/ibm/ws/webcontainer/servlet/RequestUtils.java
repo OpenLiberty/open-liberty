@@ -276,14 +276,14 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
         return sb.toString();
     }
     
-    private static String getPostBody(int len, ServletInputStream in, String encoding) /* 157338 add throws */ throws IOException
+    private static byte[] getPostBytes(int len, ServletInputStream in) /* 157338 add throws */ throws IOException
     {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-			logger.logp(Level.FINE,CLASS_NAME,"getPostBody","len = " + len, ", encoding = " + encoding);
+                        logger.logp(Level.FINE,CLASS_NAME,"getPostBody","len = " + len);
         
         int inputLen, offset;
         byte[] postedBytes = null;
-        String postedBody;
+        
         if (len <= 0)
             return null;
         if (in == null)
@@ -317,12 +317,16 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
             //return new Hashtable();
             // begin 157338
         }
-        // XXX we shouldn't assume that the only kind of POST body
-        // is FORM data encoded using ASCII or ISO Latin/1 ... or
-        // that the body should always be treated as FORM data.
-        //
+        
+        return postedBytes;
+    }
+    private static String getPostBody(int len, ServletInputStream in, String encoding) /* 157338 add throws */ throws IOException
+    {
+        String postedBody;
+        byte postedBytes[] = getPostBytes(len,in);
+        
         try
-        {
+        {   
             postedBody = new String(postedBytes, encoding);
         }
         catch (UnsupportedEncodingException e)
@@ -347,15 +351,16 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
     
     public static Hashtable parsePostData(int len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) /* 157338 add throws */ throws IOException // MultiRead
     {    
-        String postedBody = getPostBody(len, in, encoding);
+        //String postedBody = getPostBody(len, in, encoding);
 
+        byte postedBytes[] = getPostBytes(len,in);
         // MultiRead Start
         if (multireadPropertyEnabled) {
             in.close();
         }
         // MultiRead End
 
-        return parseQueryString(postedBody, encoding);
+        return parseQueryString(postedBytes, encoding);
     }
     
     public static Hashtable parsePostDataLong(long len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) throws IOException // MultiRead
