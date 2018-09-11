@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.FFDCSummaryPolicy;
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
+import com.ibm.ws.logging.utils.FileLogHolder;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.FFDCFilterService;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
@@ -109,7 +110,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     protected volatile String consoleFormat = LoggingConstants.DEFAULT_CONSOLE_FORMAT;
 
     /** Whether to fill up any existing primary file instead of immediately rolling it. */
-    protected volatile boolean fillExistingFile = true;
+    protected volatile boolean fillExistingFile = !FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
 
     /** The header written at the beginning of all log files. */
     private final String logHeader;
@@ -401,7 +402,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         sb.append(",traceFormat=").append(traceFormat);
         sb.append(",isoDateFormat=").append(isoDateFormat);
         sb.append(",traceFileName=").append(traceFileName);
-        sb.append(",fillExistingFile=").append(fillExistingFile);
+        sb.append(",newLogsOnStart=").append(!fillExistingFile);
         sb.append("]");
 
         return sb.toString();
@@ -425,7 +426,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
         CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
-        FILL_EXISTING_FILE("fillExistingFile", "com.ibm.ws.logging.fillExistingFile");
+        FILL_EXISTING_FILE("newLogsOnStart", "com.ibm.ws.logging.newLogsOnStart");
 
         final String configKey;
         final String propertyKey;
