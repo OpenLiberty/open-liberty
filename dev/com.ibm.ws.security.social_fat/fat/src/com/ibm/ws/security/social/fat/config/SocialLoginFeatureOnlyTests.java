@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
-import com.ibm.ws.security.fat.common.MessageConstants;
+import com.ibm.ws.security.fat.common.social.MessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
