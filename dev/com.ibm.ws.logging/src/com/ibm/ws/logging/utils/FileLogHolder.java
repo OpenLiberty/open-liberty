@@ -43,6 +43,9 @@ public class FileLogHolder implements TraceWriter {
     /** Whether to fill up any existing primary file instead of immediately rolling it. */
     public static final boolean NEW_LOGS_ON_START_DEFAULT = true;
 
+    /** The bootstrap property to change whether to fill up existing primary file instead of immediately rolling it. */
+    public static final String NEW_LOGS_ON_START_PROPERTY = "com.ibm.ws.logging.newLogsOnStart";
+
     private static TraceComponent tc = null;
 
     enum StreamStatus {

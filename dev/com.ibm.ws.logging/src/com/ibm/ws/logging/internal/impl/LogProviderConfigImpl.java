@@ -426,7 +426,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         MESSAGE_FORMAT("messageFormat", "com.ibm.ws.logging.message.format"),
         CONSOLE_SOURCE("consoleSource", "com.ibm.ws.logging.console.source"),
         CONSOLE_FORMAT("consoleFormat", "com.ibm.ws.logging.console.format"),
-        NEW_LOGS_ON_START("newLogsOnStart", "com.ibm.ws.logging.newLogsOnStart");
+        NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
 
         final String configKey;
         final String propertyKey;

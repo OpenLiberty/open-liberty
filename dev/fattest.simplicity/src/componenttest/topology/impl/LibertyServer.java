@@ -85,6 +85,7 @@ import com.ibm.websphere.simplicity.exception.ApplicationNotInstalledException;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.logging.utils.FileLogHolder;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
@@ -307,6 +308,8 @@ public class LibertyServer implements LogMonitorClient {
      */
     private final LogMonitor logMonitor;
 
+    private boolean newLogsOnStart = FileLogHolder.NEW_LOGS_ON_START_DEFAULT;
+
     /**
      * @param serverCleanupProblem the serverCleanupProblem to set
      */
@@ -367,6 +370,11 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(c, method, "runAsAWindowService: " + runAsAWindowService);
         } else {
             runAsAWindowService = false;
+        }
+
+        String newLogsOnStartProperty = b.getValue(FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
+        if (newLogsOnStartProperty != null) {
+            newLogsOnStart = Boolean.parseBoolean(newLogsOnStartProperty);
         }
 
         // This is the only case where we will allow the messages.log name to  be changed
@@ -549,7 +557,9 @@ public class LibertyServer implements LogMonitorClient {
         if (!usePreviouslyConfigured)
             preTestTidyup();
 
-        initializeAnyExistingMarks();
+        if (!newLogsOnStart) {
+            initializeAnyExistingMarks();
+        }
     }
 
     protected void preTestTidyup() {
@@ -911,13 +921,17 @@ public class LibertyServer implements LogMonitorClient {
             // Tidy up any pre-existing logs
             Log.info(c, method, "Tidying logs");
             preStartServerLogsTidy();
-            clearLogMarks();
+            if (!newLogsOnStart) {
+                clearLogMarks();
+            }
         } else {
-            // We were asked not to pre-clean the logs, so given the
-            // new behavior of not rolling messages.log & traces.log
-            // in issue 4364, check if those exist, and if so, set
-            // our marks to the end of those files.
-            initializeAnyExistingMarks();
+            if (!newLogsOnStart) {
+                // We were asked not to pre-clean the logs, so given the
+                // new behavior of not rolling messages.log & traces.log
+                // in issue 4364, check if those exist, and if so, set
+                // our marks to the end of those files.
+                initializeAnyExistingMarks();
+            }
         }
 
         final Properties envVars = new Properties();
@@ -1009,6 +1023,12 @@ public class LibertyServer implements LogMonitorClient {
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
+        }
+
+        Properties bootstrapProperties = getBootstrapProperties();
+        String newLogsOnStartProperty = bootstrapProperties.getProperty(FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
+        if (newLogsOnStartProperty != null) {
+            newLogsOnStart = Boolean.parseBoolean(newLogsOnStartProperty);
         }
 
         // Look for forced server trace..
@@ -2083,13 +2103,11 @@ public class LibertyServer implements LogMonitorClient {
 
             checkLogsForErrorsAndWarnings(expectedFailuresRegExps);
         } finally {
-            // Issue 4363: No longer reset the log offsets because if the
-            // server starts again, logs will roll into the existing logs.
-            // We also don't clear the message counters because the use
-            // of those counters uses searchForMessages which doesn't take
-            // into account marks.
-            /*-
-            if (commandPortEnabled) {
+            // Issue 4363: If !newLogsOnStart, no longer reset the log offsets because if the
+            // server starts again, logs will roll into the existing logs. We also don't clear
+            // the message counters because the use of those counters uses searchForMessages
+            // which doesn't take into account marks.
+            if (newLogsOnStart && commandPortEnabled) {
                 // If the command port is enabled we should reset the log offsets
                 // as we will get new logs on the next start. However, if the
                 // command port isn't disabled, we won't have shut down the
@@ -2097,7 +2115,6 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
                 clearMessageCounters();
             }
-            */
 
             if (GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY) {
                 try {
