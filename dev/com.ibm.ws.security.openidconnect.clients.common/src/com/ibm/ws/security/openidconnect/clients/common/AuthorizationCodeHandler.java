@@ -124,7 +124,7 @@ public class AuthorizationCodeHandler {
 
             //if tokens were valid, go get the userinfo if configured to do so, and update the authentication result to include it.
             UserInfoHelper uih = new UserInfoHelper(clientConfig);
-            if (uih.willRetrieveUserInfo()) {
+            if (uih.willRetrieveUserInfo()) { //todo: null guard needed next line.
                 OidcTokenImplBase idToken = (OidcTokenImplBase) oidcResult.getCustomProperties().get(Constants.ID_TOKEN_OBJECT);
                 String subjFromIdToken = null;
                 if (idToken != null) {
