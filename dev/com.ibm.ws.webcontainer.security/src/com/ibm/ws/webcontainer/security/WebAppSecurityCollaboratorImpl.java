@@ -129,6 +129,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private static final WebReply PERMIT_REPLY = new PermitReply();
     private static final WebReply DENY_AUTHZ_FAILED = new DenyReply("AuthorizationFailed");
     private static final String AUTH_TYPE = "AUTH_TYPE";
+    private static final String SYNC_USER = "SYNC_USER";
 
     // '**' will represent the Servlet 3.1 defined all authenticated Security constraint
     private static final String ALL_AUTHENTICATED_ROLE = "**";
@@ -536,6 +537,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
             try {
                 resetSyncToOSThread(webSecurityContext);
+                // Possibly remove private attribute, but we don't have the request here
             } catch (ThreadIdentityException e) {
                 throw new ServletException(e);
             }
@@ -557,6 +559,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         Subject receivedSubject = subjectManager.getCallerSubject();
 
         WebSecurityContext webSecurityContext = new WebSecurityContext(invokedSubject, receivedSubject);
+        SRTServletRequestUtils.setPrivateAttribute(req, SYNC_USER, webSecurityContext);
         setUnauthenticatedSubjectIfNeeded(invokedSubject, receivedSubject);
 
         if (enforceSecurity) {
@@ -1142,6 +1145,14 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         getAuthenticateApi().login(req, resp, username, password, webAppSecConfig, basicAuthAuthenticator);
         String authType = getSecurityMetadata().getLoginConfiguration().getAuthenticationMethod();
         SRTServletRequestUtils.setPrivateAttribute(req, AUTH_TYPE, authType);
+        try {
+            Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subjectManager.getInvocationSubject());
+        } catch (ThreadIdentityException e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            e.printStackTrace();
+        }
+
     }
 
     @Override

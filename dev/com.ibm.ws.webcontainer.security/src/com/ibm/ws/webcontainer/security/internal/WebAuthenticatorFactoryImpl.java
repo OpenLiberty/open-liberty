@@ -14,8 +14,13 @@ import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.tai.TAIService;
 import com.ibm.ws.security.collaborator.CollaboratorUtils;
 import com.ibm.ws.webcontainer.security.AuthenticateApi;
@@ -39,6 +44,8 @@ import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 @Component(service = WebAuthenticatorFactory.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
 
+    private UnauthenticatedSubjectService unauthenticatedSubjectService;
+
     @Override
     public WebAppSecurityConfig createWebAppSecurityConfigImpl(Map<String, Object> props,
                                                                AtomicServiceReference<WsLocationAdmin> locationAdminRef,
@@ -52,7 +59,7 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
                                                  CollaboratorUtils collabUtils,
                                                  ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef,
                                                  ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef) {
-        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+        return new AuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef, unauthenticatedSubjectService);
     }
 
     @Override
@@ -73,5 +80,16 @@ public class WebAuthenticatorFactoryImpl implements WebAuthenticatorFactory {
     @Override
     public Boolean needToAuthenticateSubject(WebRequest webRequest) {
         return null;
+    }
+
+    @Reference(policy = ReferencePolicy.DYNAMIC,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setUnauthenticatedSubjectService(UnauthenticatedSubjectService unauthenticatedSubjectService) {
+        this.unauthenticatedSubjectService = unauthenticatedSubjectService;
+    }
+
+    protected void unsetUnauthenticatedSubjectService(UnauthenticatedSubjectService unauthenticatedSubjectService) {
+        this.unauthenticatedSubjectService = null;
     }
 }
