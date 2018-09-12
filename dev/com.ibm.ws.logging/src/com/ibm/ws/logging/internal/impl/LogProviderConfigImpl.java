@@ -379,7 +379,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         return consoleFormat;
     }
 
-    public boolean newLogsOnStart() {
+    public boolean getNewLogsOnStart() {
         return newLogsOnStart;
     }
 
