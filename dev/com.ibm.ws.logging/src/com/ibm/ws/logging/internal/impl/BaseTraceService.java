@@ -199,6 +199,7 @@ public class BaseTraceService implements TrService {
     protected volatile BufferManagerImpl logConduit;
     protected volatile BufferManagerImpl traceConduit;
     protected volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
+    protected volatile Timer earlyMessageTraceKiller_Timer = new Timer();
 
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
@@ -224,7 +225,6 @@ public class BaseTraceService implements TrService {
         systemOut = new SystemLogHolder(LoggingConstants.SYSTEM_OUT, System.out);
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
-        Timer earlyMessageTraceKiller_Timer = new Timer();
         earlyMessageTraceKiller_Timer.schedule(new EarlyMessageTraceCleaner(), 5 * MINUTE); // 5 minutes wait time
     }
 
