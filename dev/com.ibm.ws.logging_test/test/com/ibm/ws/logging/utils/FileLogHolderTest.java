@@ -10,11 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.logging.utils;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -285,7 +280,7 @@ public class FileLogHolderTest {
 
         int expected = header.length() + record.length() + LoggingConstants.nlen;
 
-        if (newLogsOnStart) {
+        if (!newLogsOnStart) {
             expected <<= 1;
         }
 
