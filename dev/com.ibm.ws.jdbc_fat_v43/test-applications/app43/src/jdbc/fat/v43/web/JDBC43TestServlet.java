@@ -68,6 +68,12 @@ public class JDBC43TestServlet extends FATServlet {
     @Resource
     DataSource defaultDataSource;
 
+    @Resource(authenticationType = AuthenticationType.APPLICATION)
+    DataSource defaultDataSourceWithAppAuth;
+
+    @Resource(lookup = "jdbc/ds", authenticationType = AuthenticationType.APPLICATION)
+    DataSource dataSourceWithAppAuth;
+
     @Resource(lookup = "jdbc/poolOf1", authenticationType = AuthenticationType.APPLICATION)
     DataSource sharablePool1DataSourceWithAppAuth;
 
@@ -143,6 +149,93 @@ public class JDBC43TestServlet extends FATServlet {
         } catch (SQLFeatureNotSupportedException ex) {
             if (!ex.getMessage().contains("DSRA9130E"))
                 throw ex;
+        }
+    }
+
+    /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a
+     * javax.sql.DataSource implementation. This test only does matching on user/password
+     * and does not cover sharding.
+     */
+    @Test
+    public void testDataSourceConnectionBuilderMatchUserPassword() throws Exception {
+        ConnectionBuilder builderA = dataSourceWithAppAuth.createConnectionBuilder().user("user1").password("pwd1");
+        ConnectionBuilder builderB = dataSourceWithAppAuth.createConnectionBuilder().user("user1").password("pwd1");
+
+        tx.begin();
+        try {
+            Connection con1 = builderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+
+            Connection con2 = builderB.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
+            assertEquals("user1", con2.getMetaData().getUserName());
+
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Clear the user/password that were specified on the builder,
+        Connection con3 = builderB.user(null).password(null).build();
+        try {
+            // User name should be vendor-specific default (which is APP for the Derby driver
+            // upon which our mock JDBC driver is built)
+            assertEquals("APP", con3.getMetaData().getUserName());
+        } finally {
+            con3.close();
+        }
+    }
+
+    /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a java.sql.Driver
+     * implementation if only the user and password attributes are supplied.
+     */
+    @Test
+    public void testDriverConnectionBuilderMatchUserPassword() throws Exception {
+        ConnectionBuilder builder = defaultDataSourceWithAppAuth.createConnectionBuilder();
+        builder.user("user1").password("pwd1");
+
+        tx.begin();
+        try {
+            Connection con1 = builder.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+
+            Connection con2 = builder.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
+            assertEquals("user1", con2.getMetaData().getUserName());
+
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try {
+            // Clear the user/password that were specified on the builder,
+            Connection con3 = builder.user(null).password(null).build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con3.getTransactionIsolation());
+            con3.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+
+            // User name should be vendor-specific default (which for this data source
+            // is specified on the vendor properties element in server config)
+            assertEquals("user43", con3.getMetaData().getUserName());
+
+            Connection con4 = defaultDataSourceWithAppAuth.getConnection();
+            // If connection handle is shared, it will report the isolation level value of con3,
+            assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con4.getTransactionIsolation());
+            assertEquals("user43", con4.getMetaData().getUserName());
+
+            con4.close();
+            con3.close();
+        } finally {
+            tx.commit();
         }
     }
 
