@@ -294,11 +294,13 @@ public class ClassLoaderConfigHelper {
             Collection<File> files = fileset.getFileset();
             if (files == null || files.isEmpty())
                 continue;
+            ((ClassLoadingServiceImpl) classLoadingService).setGlobalSharedLibrary(globalSharedLibrary);
             return createGSLLoader(classPath, config, classLoadingService, gsl);
         }
 
         for (File folder : folders) {
             if (folderContainsFiles(folder)) {
+                ((ClassLoadingServiceImpl) classLoadingService).setGlobalSharedLibrary(globalSharedLibrary);
                 return createGSLLoader(classPath, config, classLoadingService, gsl);
             }
         }
