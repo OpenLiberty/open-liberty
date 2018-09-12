@@ -39,6 +39,7 @@ instrument.disabled: true
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
 	com.ibm.ws.jdbc;version=latest,\
 	com.ibm.ws.jdbc.4.1;version=latest,\
 	com.ibm.ws.jdbc.4.2;version=latest,\

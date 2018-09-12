@@ -1006,7 +1006,7 @@ public class JDBC43TestServlet extends FATServlet {
         AtomicInteger[] requests;
         int begins = -1000, ends = -1000;
 
-        Connection con1 = unsharablePool1DataSource.getConnection();
+        Connection con1 = unsharablePool1DataSource.createConnectionBuilder().build();
         try {
             requests = (AtomicInteger[]) con1.unwrap(Supplier.class).get();
             begins = requests[BEGIN].get();
@@ -1301,7 +1301,7 @@ public class JDBC43TestServlet extends FATServlet {
         // Obtain and use a connection handle within one global transaction
         tx.begin();
         try {
-            Connection con = defaultDataSource.getConnection();
+            Connection con = defaultDataSource.createConnectionBuilder().build();
             con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
             PreparedStatement ps1 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
@@ -1416,7 +1416,7 @@ public class JDBC43TestServlet extends FATServlet {
         Connection con = null;
         tx.begin();
         try {
-            con = unsharableXADataSource.getConnection();
+            con = unsharableXADataSource.createConnectionBuilder().build();
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 
             PreparedStatement ps1 = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
