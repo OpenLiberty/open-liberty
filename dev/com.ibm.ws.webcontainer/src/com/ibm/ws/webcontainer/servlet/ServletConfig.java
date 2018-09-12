@@ -220,7 +220,7 @@ public class ServletConfig extends TargetConfig implements IServletConfig {
 
     public List<String> getMappings() {
         // start PI23529
-        if(mappings == null && (WCCustomProperties.EMPTY_SERVLET_MAPPINGS || com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_31 )){
+        if(mappings == null && (WCCustomProperties.EMPTY_SERVLET_MAPPINGS || com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_31 )){
                 return new ArrayList();
         }
         //end PI23529

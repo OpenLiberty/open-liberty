@@ -18,7 +18,7 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.webcontainer.WebContainer;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 
 /**
@@ -94,7 +94,7 @@ public class WCCustomProperties {
     public static String SUPPRESS_HEADERS_IN_REQUEST; //PK80362
 
     public static boolean DISPATCHER_RETHROW_SER; // PK79464
-    public static boolean ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS; // PK80340
+    public static String ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS; // PK80340 //PMDINH
     public static boolean COPY_ATTRIBUTES_KEY_SET; //PK81452	
     public static boolean SUPPRESS_LAST_ZERO_BYTE_PACKAGE; // PK82794
     public static boolean DEFAULT_TRACE_REQUEST_BEHAVIOR; // PK83258.2
@@ -398,6 +398,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("useoriginalqsinforwardifnull", "com.ibm.ws.webcontainer.useoriginalqsinforwardifnull"); //PI81569
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletdestroywaittime", "com.ibm.ws.webcontainer.servletdestroywaittime");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("servletpathfordefaultmapping", "com.ibm.ws.webcontainer.servletpathfordefaultmapping");     //4666
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("enabledefaultservletrequestpathelements", "com.ibm.ws.webcontainer.enabledefaultservletrequestpathelements");     //PMDINH
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -480,7 +481,17 @@ public class WCCustomProperties {
         }
 
     }
-
+   
+    //PMDINH
+    public static boolean ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS(){
+        boolean defaultServletPath = Boolean.valueOf(ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS).booleanValue();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Property [enabledefaultservletrequestpathelements]"+ " value ["+ defaultServletPath +"]");
+        }
+        return defaultServletPath;
+    }
+    //PMDINH
+    
     public static void setCustomPropertyVariables() {
  
         DO_NOT_SERVE_BY_CLASSNAME = customProps.getProperty("com.ibm.ws.webcontainer.donotservebyclassname");
@@ -543,9 +554,7 @@ public class WCCustomProperties {
         SUPPRESS_HEADERS_IN_REQUEST = customProps.getProperty("com.ibm.ws.webcontainer.suppressheadersinrequest"); //PK80362
 
         DISPATCHER_RETHROW_SER = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.dispatcherrethrowser", "true")).booleanValue(); // PK79464
-        ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS = Boolean.valueOf(
-                                                                       WebContainer.getWebContainerProperties().getProperty(
-                                                                                                                            "com.ibm.ws.webcontainer.enabledefaultservletrequestpathelements")).booleanValue(); // PK80340
+        ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS = customProps.getProperty( "com.ibm.ws.webcontainer.enabledefaultservletrequestpathelements"); // PK80340 //PMDINH
         COPY_ATTRIBUTES_KEY_SET = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.copyattributeskeyset")).booleanValue(); //PK81452       
         SUPPRESS_LAST_ZERO_BYTE_PACKAGE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.suppresslastzerobytepackage")).booleanValue(); // PK82794
         DEFAULT_TRACE_REQUEST_BEHAVIOR = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.defaulttracerequestbehavior")).booleanValue(); // PK83258.2
@@ -778,6 +787,10 @@ public class WCCustomProperties {
 	//18.0.0.3
 	SERVLET_PATH_FOR_DEFAULT_MAPPING = customProps.getProperty("com.ibm.ws.webcontainer.servletpathfordefaultmapping"); //4666
 
+	//18.0.0.4 PMDINH
+	if (ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS == null || ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS.isEmpty()){
+	    if (WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_40)
+	        ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS = "true";
+	}
     }
-
 }

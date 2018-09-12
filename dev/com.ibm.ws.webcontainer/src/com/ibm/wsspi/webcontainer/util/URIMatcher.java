@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.util.ClauseNode;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
@@ -24,7 +25,9 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 public class URIMatcher extends com.ibm.ws.webcontainer.util.URIMatcher {
     private static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.wsspi.webcontainer.util");
     private static final String CLASS_NAME = "com.ibm.wsspi.webcontainer.util.URIMatcher";
-
+   
+    protected static final boolean  enableDefaultServletRequestPathElements = WCCustomProperties.ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS();
+    
     public URIMatcher() {
         super();
     }
@@ -184,7 +187,7 @@ public class URIMatcher extends com.ibm.ws.webcontainer.util.URIMatcher {
             // PK80340 Start
             Object starTarget = defaultNode.getStarTarget();
 
-            if (WCCustomProperties.ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS && (starTarget instanceof ServletWrapper) && ((ServletWrapper) starTarget).isDefaultServlet()) {
+            if (enableDefaultServletRequestPathElements && ((ServletWrapper) starTarget).isDefaultServlet()) {
                 dispatchContext.setPathElements(uri, null);
             } else {
                 dispatchContext.setPathElements("", uri);

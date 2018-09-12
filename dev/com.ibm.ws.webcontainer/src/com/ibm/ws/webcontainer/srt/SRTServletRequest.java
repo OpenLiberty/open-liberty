@@ -202,6 +202,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     private boolean usedStartAsyncNoParameters = false;
     //PI43752 end
     
+    //PMDINH
+    protected static final boolean  enableDefaultServletRequestPathElements = WCCustomProperties.ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS();
+    
     public SRTServletRequest(SRTConnectionContext context)
     {
         this._connContext = context;
@@ -1985,7 +1988,8 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // 321485
         String path = ((WebAppDispatcherContext) this.getDispatchContext()).getServletPath();
         //PM59297 ...in case this servlet is a default servlet AND contains a ;jsessionid= which needs to be stripped off
-        if (WCCustomProperties.ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS || WCCustomProperties.REMOVE_TRAILING_SERVLET_PATH_SLASH) {
+        //PMDINH
+        if (enableDefaultServletRequestPathElements || WCCustomProperties.REMOVE_TRAILING_SERVLET_PATH_SLASH) {
             if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
                 logger.logp(Level.FINE, CLASS_NAME, "getServletPath", "stripping path -> " + path);
             }
