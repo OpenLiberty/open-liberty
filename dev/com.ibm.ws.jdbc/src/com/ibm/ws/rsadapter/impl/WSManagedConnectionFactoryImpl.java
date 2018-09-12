@@ -343,21 +343,20 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     /**
-     * Creates a ConnectionFactory. The created ConnectionFactory will use the application server
-     * connection manager passed in as a parameter to manage the connections.
+     * Creates a javax.sql.DataSource that uses the application server provided
+     * connection manager to manage its connections.
      * 
-     * @param ConnectionManager connMgr - An application server ConnectionManager.
-     * @return a new instance of WSJdbcDataSource.
-     * @exception ResourceException
+     * @param ConnectionManager connMgr - An application server provided ConnectionManager.
+     * @return a new instance of WSJdbcDataSource or a subclass of it pertaining to a particular JDBC spec level.
      */
-    public final Object createConnectionFactory(ConnectionManager connMgr)
-                    throws ResourceException {
+    @Override
+    public final DataSource createConnectionFactory(ConnectionManager connMgr) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isEntryEnabled()) 
             Tr.entry(this, tc, "createConnectionFactory", connMgr); 
 
-        Object connFactory = new WSJdbcDataSource(this, (WSConnectionManager)connMgr);
+        DataSource connFactory = jdbcRuntime.newDataSource(this, connMgr);
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "createConnectionFactory", connFactory); 
