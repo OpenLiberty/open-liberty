@@ -123,6 +123,7 @@ public class BaseTraceService implements TrService {
 
     protected static RecursionCounter counterForTraceRouter = new RecursionCounter();
     protected static RecursionCounter counterForTraceSource = new RecursionCounter();
+    protected static RecursionCounter counterForTraceWriter = new RecursionCounter();
     protected static RecursionCounter counterForLogSource = new RecursionCounter();
 
     /**
@@ -848,10 +849,16 @@ public class BaseTraceService implements TrService {
             counterForTraceSource.decrementCount();
         }
 
-        // write to trace.log
-        if (detailLog != systemOut) {
-            String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
-            detailLog.writeRecord(traceDetail);
+        try {
+            if (!(counterForTraceWriter.incrementCount() > 1)) {
+                // write to trace.log
+                if (detailLog != systemOut) {
+                    String traceDetail = formatter.traceLogFormat(logRecord, id, formattedMsg, formattedVerboseMsg);
+                    detailLog.writeRecord(traceDetail);
+                }
+            }
+        } finally {
+            counterForTraceWriter.decrementCount();
         }
     }
 
