@@ -15,9 +15,9 @@ configurations {
 }
 
 dependencies {
-  johnzon 'org.apache.johnzon:johnzon-core:1.1.5',
-    'org.apache.johnzon:johnzon-jsonb:1.1.5',
-    'org.apache.johnzon:johnzon-mapper:1.1.5'
+  johnzon 'org.apache.johnzon:johnzon-core:1.1.8',
+    'org.apache.johnzon:johnzon-jsonb:1.1.8',
+    'org.apache.johnzon:johnzon-mapper:1.1.8'
   jsonbapi 'javax.json.bind:javax.json.bind-api:1.0'
 }
 

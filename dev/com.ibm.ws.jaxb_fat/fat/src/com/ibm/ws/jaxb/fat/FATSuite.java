@@ -18,5 +18,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 LibertyJAXBTest.class,
                 ThirdPartyJAXBTest.class,
+                JAXBToolsTest.class
 })
 public class FATSuite {}

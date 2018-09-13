@@ -421,5 +421,12 @@ public class SIRCConstants {
    * The message could not be delivered due to an incorrect destination usage.
    */
   public final static int SIRC0905_INTERNAL_CONFIGURATION_ERROR = 905;
+  
+  /**
+   * SIRC0906_SUSPECT_DELIVERY_DELAY_TIME.
+   * <p>
+   * The message has a delivery delay time which may be incorrect.
+   */
+  public final static int SIRC0906_SUSPECT_DELIVERY_DELAY_TIME = 906;
 
 }

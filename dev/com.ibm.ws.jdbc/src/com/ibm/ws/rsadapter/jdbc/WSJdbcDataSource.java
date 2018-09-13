@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import javax.resource.ResourceException;
+import javax.resource.spi.ConnectionManager;
 import javax.resource.spi.ConnectionRequestInfo;
 import javax.sql.DataSource;
 
@@ -51,7 +52,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
                                 AdapterUtil.TRACE_GROUP,
                                 AdapterUtil.NLS_FILE);
 
-    private WSConnectionManager cm;
+    protected WSConnectionManager cm;
     private ResourceRefInfo resRefInfo;
 
     /**
@@ -60,19 +61,14 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
     private final transient AtomicReference<Class<?>[]> vendorConnectionInterfaces = new AtomicReference<Class<?>[]>();
 
     /**
-     * Create a WebSphere DataSource wrapper. This constructor is called by the Managed
-     * Connection Factory. The ConnectionFactoryBuilder or DataSourceFactory are responsible
-     * for setting all properties into the MCF, which then creates this wrapper on a call to
-     * createConnectionFactory. This means that most MCF properties are configurable
-     * only on the DataSourceFactory or ConnectionFactoryBuilder, and they will not be changed
-     * in the middle of execution. DataSource properties, however, can be changed at any time.
+     * Create a DataSource wrapper. The ManagedConnectionFactory invokes this constructor
+     * indirectly via the JDBC##Runtime class in order to create a wrapper for the JDBC spec
+     * level that corresponds to the jdbc-#.# feature that is enabled in the server configuration.
      * 
-     * @param mcf Managed Connection Factory for this WebSphere Data Source.
-     * @param connMgr Connection Manager for this WebSphere Data Source.
-     * 
-     * @exception ResourceException if an error occurs during data source creation.
+     * @param mcf ManagedConnectionFactory implementation that created this data source.
+     * @param connMgr connection manager that manages connections from this data source.
      */
-    public WSJdbcDataSource(WSManagedConnectionFactoryImpl mcf, WSConnectionManager connMgr) throws ResourceException 
+    public WSJdbcDataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) 
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
@@ -80,7 +76,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
             Tr.entry(this, tc, "<init>", mcf, connMgr);
 
         this.mcf = mcf;
-        cm = connMgr;
+        cm = (WSConnectionManager) connMgr;
         resRefInfo = cm.getResourceRefInfo(); 
         dsConfig = mcf.dsConfig; 
 
@@ -128,8 +124,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
      * 
      * @throws SQLException if an error occurs while obtaining a Connection.
      */
-    Connection getConnection(ConnectionRequestInfo connInfo) 
-    throws SQLException {
+    protected Connection getConnection(ConnectionRequestInfo connInfo) throws SQLException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
 
         if (isTraceOn && tc.isEntryEnabled()) 

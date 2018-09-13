@@ -20,6 +20,18 @@ task copyPropertiesToBuildImage (type:Copy) {
            tokens: [PRODUCT_VERSION: bnd.libertyRelease, PRODUCT_EDITION: bnd.productEdition, PRODUCT_LICENSE_TYPE: bnd.productLicenseType])
 }
 
+task copySwidTagToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp/lib/versions/tags')
+    include 'openliberty.io_OpenLiberty-@VERSION@.swidtag'
+    rename {
+        String fileName -> fileName.replace("@VERSION@", "${bnd.libertyRelease}")
+    }
+    filter(ReplaceTokens,
+           tokens: [ VERSION: bnd.libertyRelease ])
+}
+
 task copyReadmeToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
@@ -43,6 +55,7 @@ assemble {
     dependsOn copyPropertiesToBuildImage
     dependsOn copyReadmeToBuildImage
     dependsOn copyLicenseToBuildImage
+    dependsOn copySwidTagToBuildImage
 }
 
 import groovy.json.*

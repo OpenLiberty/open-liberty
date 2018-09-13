@@ -99,7 +99,10 @@ public class CommonSecurityFat {
     public void logTestCaseInServerLogs(ServerTracker serverTracker, String testName, String actionToLog) {
         Set<LibertyServer> testServers = serverTracker.getServers();
         for (LibertyServer server : testServers) {
-            loggingUtils.logTestCaseInServerLog(server, testName, actionToLog);
+            if (server != null && !server.isStarted()) {
+                continue;
+            }
+	    loggingUtils.logTestCaseInServerLog(server, testName, actionToLog);
             try {
                 server.setMarkToEndOfLog(server.getDefaultLogFile());
             } catch (Exception e) {

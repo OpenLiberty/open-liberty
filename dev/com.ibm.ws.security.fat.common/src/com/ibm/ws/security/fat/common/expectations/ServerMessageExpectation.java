@@ -48,8 +48,10 @@ public class ServerMessageExpectation extends Expectation {
 
     boolean isMessageLogged() {
         String errorMsg = server.waitForStringInLogUsingMark(validationValue, 100);
-        Log.info(getClass(), "isMessageLogged", "Found message: " + errorMsg);
-        return (errorMsg != null);
+        boolean isMessageLogged = errorMsg != null;
+        String logMsg = isMessageLogged ? ("Found message: " + errorMsg) : "Did NOT find message [" + validationValue + "] in " + server.getServerName() + " server log!";
+        Log.info(getClass(), "isMessageLogged", logMsg);
+        return isMessageLogged;
     }
 
 }
