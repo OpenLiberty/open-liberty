@@ -11,6 +11,8 @@
  */
 package com.ibm.ws.security.openidconnect.clients.common;
 
+import java.util.Map;
+
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.HttpResponse;
@@ -94,7 +96,7 @@ public class UserInfoHelper {
      *
      * @return the userInfo string, or null
      */
-    protected String getUserInfoFromURL(ConvergedClientConfig config, SSLSocketFactory sslsf, String accessToken) {
+    protected String getUserInfoFromURLold(ConvergedClientConfig config, SSLSocketFactory sslsf, String accessToken) {
         String url = config.getUserInfoEndpointUrl();
         boolean hostnameVerification = config.isHostNameVerificationEnabled();
 
@@ -114,6 +116,45 @@ public class UserInfoHelper {
         String responseStr = null;
         try {
             response = hc.execute(getMethod);
+            statusCode = response.getStatusLine().getStatusCode();
+            responseStr = EntityUtils.toString(response.getEntity(), "UTF-8");
+        } catch (Exception ex) {
+            //ffdc
+        }
+        if (statusCode != 200) {
+            Tr.error(tc, "USERINFO_RETREIVE_FAILED", new Object[] { url, Integer.toString(statusCode), responseStr });
+            return null;
+        }
+        return responseStr;
+    }
+
+    /**
+     * Obtain userInfo from an OIDC provider
+     *
+     * @return the userInfo string, or null
+     */
+    protected String getUserInfoFromURL(ConvergedClientConfig config, SSLSocketFactory sslsf, String accessToken) {
+        String url = config.getUserInfoEndpointUrl();
+        boolean hostnameVerification = config.isHostNameVerificationEnabled();
+
+        // https required by spec, use of http is not spec compliant
+        if (!url.toLowerCase().startsWith("https:") && config.isHttpsRequired()) {
+            Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", new Object[] { url });
+            return null;
+        }
+
+        OidcClientUtil oidccu = new OidcClientUtil();
+        int statusCode = 0;
+        String responseStr = null;
+        try {
+            Map<String, Object> resultMap = oidccu.getUserinfo(url, accessToken, sslsf, hostnameVerification);
+            if (resultMap == null) {
+                throw new Exception("result map from getUserinfo is null");
+            }
+            HttpResponse response = (HttpResponse) resultMap.get(ClientConstants.RESPONSEMAP_CODE);
+            if (response == null) {
+                throw new Exception("HttpResponse from getUserinfo is null");
+            }
             statusCode = response.getStatusLine().getStatusCode();
             responseStr = EntityUtils.toString(response.getEntity(), "UTF-8");
         } catch (Exception ex) {
