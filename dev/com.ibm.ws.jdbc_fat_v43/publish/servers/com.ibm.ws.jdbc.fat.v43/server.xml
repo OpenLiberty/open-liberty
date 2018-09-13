@@ -25,6 +25,11 @@
     <properties url="jdbc:d43:memory:testdb;create=true" user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
 
+  <dataSource jndiName="jdbc/ds" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+  </dataSource>
+
   <dataSource jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource">
     <connectionManager maxPoolSize="1"/>
     <jdbcDriver libraryRef="D43Lib"/>
