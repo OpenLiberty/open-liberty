@@ -468,6 +468,12 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Flushing buffers: " + this);
         }
+
+        if (this.isc.getResponse() == null) {
+            IOException x = new IOException("response Object(s) (e.g. getObjectFactory()) are null");
+            throw x;
+        }
+
         if (!this.isc.getResponse().isCommitted()) {
             if (obs != null && !this.WCheadersWritten) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

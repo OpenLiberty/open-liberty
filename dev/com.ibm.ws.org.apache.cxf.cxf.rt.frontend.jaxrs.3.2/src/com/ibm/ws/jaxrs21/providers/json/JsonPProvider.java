@@ -86,7 +86,6 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
                 }
             }
         }
-        Tr.debug(tc, "obj=" + obj);
     }
 
     @Override

@@ -126,9 +126,8 @@ public class OAuthLoginFlow {
                 query = String.format("%s&acr_values=%s", query, URLEncoder.encode(acr_values, ClientConstants.CHARSET));
 
             }
+            query = addResponseModeToQuery(query, clientConfig);
             if (!strResponse_type.equals(ClientConstants.CODE)) {
-                query = String.format("%s&response_mode=%s", query, URLEncoder.encode("form_post", ClientConstants.CHARSET));
-                // add resource
                 String resources = clientConfig.getResource();
                 if (resources != null) {
                     query = String.format("%s&%s", query, URLEncoder.encode(resources, ClientConstants.CHARSET));
@@ -140,6 +139,19 @@ public class OAuthLoginFlow {
         }
         String s = authzEndpoint + "?" + query;
         return s;
+    }
+
+    String addResponseModeToQuery(String query, SocialLoginConfig config) throws UnsupportedEncodingException {
+        String responseMode = config.getResponseMode();
+        String responseType = config.getResponseType();
+        if (!responseType.equals(ClientConstants.CODE)) {
+            // Implicit types will always use the form_post response mode
+            responseMode = ClientConstants.FORM_POST;
+        }
+        if (responseMode != null) {
+            query = String.format("%s&" + ClientConstants.RESPONSE_MODE + "=%s", query, URLEncoder.encode(responseMode, ClientConstants.CHARSET));
+        }
+        return query;
     }
 
     TAIResult handleAuthorizationCode(HttpServletRequest req, HttpServletResponse res, String authzCode, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {

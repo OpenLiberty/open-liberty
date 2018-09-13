@@ -682,6 +682,10 @@ warning.server.status.invalid.targets=CWWKE0946W: \u00c8 stata ricevuta una rich
 warning.server.status.invalid.targets.explanation=Un utente ha emesso una richiesta di stato con un elenco di destinazione vuoto sull'opzione di destinazione. La richiesta \u00e8 stata completata, ma non \u00e8 stata intrapresa alcuna azione.
 warning.server.status.invalid.targets.useraction=Specificare nell'opzione di destinazione un elenco di componenti di cui controllare lo stato. Per controllare lo stato cumulativo di tutti i componenti sospendibili nel server, emettere una richiesta di stato senza l'opzione di destinazione.
 
+warning.package.root.invalid=CWWKE0947W: Un'opzione --server-root con un argomento vuoto non \u00e8 consentita quando sono installate le estensioni prodotto. Verr\u00e0 utilizzato l'argomento predefinito wlp.
+warning.package.root.invalid.explanation=L'utente ha effettuato una richiesta di package con un'opzione --server-root che specifica un argomento vuoto e sono state rilevate le estensioni prodotto. Verr\u00e0 utilizzata la root server predefinita wlp.
+warning.package.root.invalid.useraction=Non \u00e8 richiesta alcuna azione.
+
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
 info.serverStartedWithPID=Server {0} avviato con ID processo {1}.
