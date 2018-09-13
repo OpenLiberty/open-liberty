@@ -145,6 +145,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         getVC().getStateMap().remove(CallbackIDs.CALLBACK_HTTPISC);
         getVC().getStateMap().remove(HTTP_ERROR_IDENTIFIER);
         this.myLink = null;
+
         super.destroy();
     }
 
@@ -569,6 +570,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     final protected HttpResponseMessageImpl getResponseImpl() {
         if (null == getMyResponse()) {
+            if (getObjectFactory() == null) {
+                return null;
+            }
             setMyResponse(getObjectFactory().getResponse(this));
         }
         return getMyResponse();

@@ -20,7 +20,6 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -521,16 +520,6 @@ public class JSF23CDIGeneralTests extends FATServletClient {
 //        assertTrue(page.asText().contains("com.ibm.ws.jsf23.fat.converter_validator.beans.TestBehavior"));
     }
 
-    /*
-     * Ignore this test -- for some reason the CustomViewHandler is failing to build:
-     * An exception has occurred in the compiler (1.8.0). Please file a bug against the
-     * Java compiler via the Java bug reporting page (http://bugreport.java.com) after
-     * checking the Bug Database (http://bugs.java.com) for duplicates. Include your
-     * program and the following diagnostic in your report. Thank you.
-     *
-     * com.sun.tools.javac.code.Symbol$CompletionFailure: class file for java.util.stream.Stream not found
-     */
-    @Ignore
     @Test
     @Mode(TestMode.FULL)
     @WebArchiveInfo(name = "ViewHandlerTest", pkgs = { "jsf.container.viewhandlertest" })

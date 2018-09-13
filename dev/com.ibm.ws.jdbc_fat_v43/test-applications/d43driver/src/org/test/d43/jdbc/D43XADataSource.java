@@ -31,7 +31,7 @@ public class D43XADataSource implements XADataSource {
     public XAConnectionBuilder createXAConnectionBuilder() throws SQLException {
         return (XAConnectionBuilder) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                             new Class[] { XAConnectionBuilder.class },
-                                                            new D43Handler(ds.createXAConnectionBuilder()));
+                                                            new D43Handler(ds.createXAConnectionBuilder(), null));
     }
 
     public String getDatabaseName() {
@@ -57,14 +57,14 @@ public class D43XADataSource implements XADataSource {
     public XAConnection getXAConnection() throws SQLException {
         return (XAConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                      new Class[] { XAConnection.class },
-                                                     new D43Handler(ds.getXAConnection()));
+                                                     new D43Handler(ds.getXAConnection(), null));
     }
 
     @Override
     public XAConnection getXAConnection(String user, String pwd) throws SQLException {
         return (XAConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                      new Class[] { XAConnection.class },
-                                                     new D43Handler(ds.getXAConnection(user, pwd)));
+                                                     new D43Handler(ds.getXAConnection(user, pwd), null));
     }
 
     public void setDatabaseName(String value) {

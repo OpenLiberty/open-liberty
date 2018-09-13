@@ -10,17 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics11.tck.launcher;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -34,7 +30,6 @@ import componenttest.topology.utils.MvnUtils;
  */
 @RunWith(FATRunner.class)
 public class MetricsTCKLauncher {
-    private static Class<?> c = MetricsTCKLauncher.class;
 
     @Server("MetricsTCKServer")
     public static LibertyServer server;
@@ -53,43 +48,16 @@ public class MetricsTCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchTck() throws Exception {
-        final String method = "launchTck";
-        if (!MvnUtils.init) {
-            MvnUtils.init(server);
-        }
-
-        // inject the test.url parameter into the command
         String protocol = "http";
         String host = server.getHostname();
         String port = Integer.toString(server.getHttpDefaultPort());
 
-        String[] customMvnCliTckRoot = MvnUtils.concatStringArray(MvnUtils.mvnCliTckRoot,
-                                                                  new String[] {
-                                                                                 "-Dtest.url=" + protocol + "://" + host + ":" + port
-                                                                  });
-        Log.info(c, method, "customMvnCliTckRoot=" + Arrays.toString(customMvnCliTckRoot));
-        // Everything under autoFVT/results is collected from the child build machine
-        File mvnOutput = new File(MvnUtils.resultsDir, MvnUtils.mvnOutputFilename);
-        Log.info(c, method, "tckRunnerDir=" + MvnUtils.tckRunnerDir);
-        Log.info(c, method, "mvnOutput=" + mvnOutput);
-        int rc = MvnUtils.runCmd(customMvnCliTckRoot, MvnUtils.tckRunnerDir, mvnOutput);
-        File src = new File(MvnUtils.resultsDir, "tck/surefire-reports");
-        File tgt = new File(MvnUtils.resultsDir, "junit");
+        Map<String, String> additionalProps = new HashMap<>();
+        additionalProps.put("test.url", protocol + "://" + host + ":" + port);
+        additionalProps.put("test.user", "theUser");
+        additionalProps.put("test.pwd", "thePassword");
 
-        try {
-            Files.walkFileTree(src.toPath(), new MvnUtils.CopyFileVisitor(src.toPath(), tgt.toPath()));
-        } catch (java.nio.file.NoSuchFileException nsfe) {
-            Assert.assertNull(
-                              "The TCK tests' results directory does not exist which suggests the TCK tests did not run - check build logs."
-                              + src.getAbsolutePath(), nsfe);
-        }
-
-        Log.warning(getClass(), "Mvn command finished with return code: " + Integer.toString(rc));
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-        Assert.assertEquals("com.ibm.ws.microprofile.metrics11 TCK has returned non-zero return code of: " + rc +
-                            " This indicates test failure, see: ...autoFVT/results/" + MvnUtils.mvnOutputFilename +
-                            " and ...autoFVT/results/tck/surefire-reports/index.html", 0, rc);
+        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.metrics.1.1.noAuth_fat_tck", "launchTck", additionalProps);
     }
 
 }
