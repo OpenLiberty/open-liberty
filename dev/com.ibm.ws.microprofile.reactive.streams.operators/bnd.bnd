@@ -8,7 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props,\
+          ~../cnf/resources/bnd/app-resources.bnd
+
+bSymbolicName=com.ibm.ws.microprofile.reactive.streams.operators
 bVersion=1.0
 
 javac.source: 1.8
@@ -22,7 +25,7 @@ Bundle-Description:MicroProfile Reactive Streams 1.0 impl, version ${bVersion}
 WS-TraceGroup: REACTIVESTREAMS
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.reactive.streams.ReactiveStreamsEngineImpl
+-dsannotations: com.ibm.ws.microprofile.reactive.streams.spi.impl.WASReactiveStreamsEngineImpl
 
 Import-Package: \
   org.eclipse.microprofile.reactive.streams.spi; version="[1.0,1.1)",\
@@ -30,12 +33,19 @@ Import-Package: \
   com.lightbend.microprofile.reactive.streams.zerodep; version="[1.0,1.1)",\
   *
 
+# See the app-resources.bnd included above
+app-resources= \
+  META-INF/services/org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine
+    
 Export-Package: \
- com.ibm.ws.microprofile.reactive.streams; version=1.0
+ com.ibm.ws.microprofile.reactive.streams.spi.impl;thread-context="true";version=1.0
 
+Include-Resource: \
+  META-INF/services=resources/META-INF/services
+    
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-src: src
+src: src,resources
 testsrc: test/src
 
 -buildpath: \
@@ -67,4 +77,6 @@ testsrc: test/src
   org.slf4j:slf4j-api;version=1.7.7, \
   org.slf4j:slf4j-jdk14;version=1.7.7, \
   com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-  org.apache.commons:commons-lang3;version=3.8
+  org.apache.commons:commons-lang3;version=3.8, \
+  ./resources/;version=file
+  
