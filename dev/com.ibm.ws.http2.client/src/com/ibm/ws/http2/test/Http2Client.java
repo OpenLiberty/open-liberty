@@ -162,16 +162,16 @@ public class Http2Client {
     public void sendBytes(byte[] bytes) {
         long bytesWritten = h2Connection.sendBytes(bytes);
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.length + " bytes written)= " + bytesWritten);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.length + " bytes written)= " + bytesWritten);
         }
     }
 
     public void sendBytes(WsByteBuffer bytes) {
         long bytesWritten = h2Connection.sendBytes(bytes);
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.limit() + " bytes written)= " + bytesWritten);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendBytes", "Sending bytes (size: " + bytes.limit() + " bytes written)= " + bytesWritten);
         }
     }
 
@@ -320,9 +320,9 @@ public class Http2Client {
      */
     private long sendFrame(Frame writableFrame, long timeout, boolean bypassPreface) throws UnableToSendFrameException {
         long startTime = System.currentTimeMillis();
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendFrame", "Sending frame with timeout of: " + timeout);
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendFrame", "Start time (Millis): " + startTime);
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame", "Sending frame with timeout of: " + timeout);
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendFrame", "Start time (Millis): " + startTime);
         }
         //loop until the time is over
         do {
@@ -356,7 +356,7 @@ public class Http2Client {
         do {
             if (h2Connection.didFrameArrive(expectedFrame))
                 return this;
-            LOGGER.logp(Level.INFO, CLASS_NAME, "waitFor", "looping");
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "waitFor", "looping");
             try {
                 Thread.sleep(100);
             } catch (Exception x) {
@@ -368,20 +368,20 @@ public class Http2Client {
 
     synchronized public void sendUponArrivalCondition(Frame waitForFrame, Frame frameToSend) throws UnableToSendFrameException {
         //if the frame has been received before calling this method, send frameToSend
-        LOGGER.logp(Level.INFO, CLASS_NAME, "sendUponArrivalCondition", "ENTRY");
+        LOGGER.logp(Level.FINEST, CLASS_NAME, "sendUponArrivalCondition", "ENTRY");
         try {
             waitForFrame = h2Connection.frameConverter(waitForFrame, false);
         } catch (CompressionException | IOException e) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "sendUponArrivalCondition", "caught exception: " + e);
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "sendUponArrivalCondition", "caught exception: " + e);
         }
         if (h2Connection.didFrameArrive(waitForFrame)) {
             sendFrame(frameToSend);
         }
 
-        LOGGER.logp(Level.INFO, CLASS_NAME, "sendUponArrivalCondition", "waitForFrame.getClass: " + waitForFrame.getClass());
+        LOGGER.logp(Level.FINEST, CLASS_NAME, "sendUponArrivalCondition", "waitForFrame.getClass: " + waitForFrame.getClass());
         sendFrameConditional.put(waitForFrame, frameToSend);
         sendFrameConditionalList.add(new SimpleEntry<Frame, Frame>(waitForFrame, frameToSend));
-        LOGGER.logp(Level.INFO, CLASS_NAME, "sendUponArrivalCondition", "EXIT");
+        LOGGER.logp(Level.FINEST, CLASS_NAME, "sendUponArrivalCondition", "EXIT");
     }
 
     public void addExpectedFrames(ArrayList<Frame> frames) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {
@@ -507,20 +507,20 @@ public class Http2Client {
                 FrameData fd = (FrameData) receivedFrame;
                 String s = new String(fd.getData());
                 if (s.toLowerCase().contains("donotadd")) {
-                    if (LOGGER.isLoggable(Level.INFO)) {
-                        LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedFrame",
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame",
                                     ":Next Frame: :Read In: " + receivedFrame.getFrameType() + " H2Conn hc: " + h2Connection.hashCode() + " DoNotAdd Frame");
                     }
                 } else {
-                    if (LOGGER.isLoggable(Level.INFO)) {
-                        LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedFrame",
+                    if (LOGGER.isLoggable(Level.FINEST)) {
+                        LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame",
                                     ":Next Frame: :Read In: " + receivedFrame.getFrameType() + " H2Conn hc: " + h2Connection.hashCode() + " " + receivedFrame);
                     }
                 }
             } else {
 
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedFrame",
+                if (LOGGER.isLoggable(Level.FINEST)) {
+                    LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame",
                                 ":Next Frame: :Read In: " + receivedFrame.getFrameType() + " H2Conn hc: " + h2Connection.hashCode() + " " + receivedFrame);
                 }
             }
@@ -529,15 +529,15 @@ public class Http2Client {
                 SimpleEntry<Frame, Frame> entry = iterator.next();
                 if (entry.equals(entry.getKey())) {
                     try {
-                        if (LOGGER.isLoggable(Level.INFO)) {
-                            LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedFrame", "Received frame was found in sendFrameConditionalList.");
+                        if (LOGGER.isLoggable(Level.FINEST)) {
+                            LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame", "Received frame was found in sendFrameConditionalList.");
                         }
                         sendFrame(entry.getValue());
                         iterator.remove();
                         return;
                     } catch (UnableToSendFrameException e) {
-                        if (LOGGER.isLoggable(Level.INFO)) {
-                            LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedFrame", "caught exception: " + e);
+                        if (LOGGER.isLoggable(Level.FINEST)) {
+                            LOGGER.logp(Level.FINEST, CLASS_NAME + "$FATFramesListener", "receivedFrame", "caught exception: " + e);
                         }
                     }
                 }
@@ -581,7 +581,8 @@ public class Http2Client {
             didTimeout.set(true);
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.logp(Level.INFO, CLASS_NAME + "$TimeoutHelper", "run",
-                            "Finished looping because timeout: " + ((System.currentTimeMillis() - startTime) < timeoutToFinishTest) + " isTestDone.get()= " + isTestDone.get());
+                            "Finished looping because timeout: " + ((System.currentTimeMillis() - startTime) >= timeoutToFinishTest) + " isTestDone.get()= " + isTestDone.get());
+
             }
             //if the test is not done, make it finish. Otherwise, let the framework handle the end of the test as usual (meaning receivedFrameGoAway() will handle the end of the test).
             if (!isTestDone.get()) {

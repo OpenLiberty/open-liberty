@@ -73,12 +73,8 @@ public class H2FATDriverServlet extends FATServlet {
     private static final String SERVLET_H2Ping1 = "/H2TestModule/H2PriorityWindowUpdate1?testName=Ping1";
     private static final String SERVLET_CONTINUATION = "/H2TestModule/HeadersAndContinuation";
 
-    public static final long STRESS_MS_PER_LOOP = 10000L; //TODO: Might need to adjust this to a more sensible value
-
     public static final FrameSettings EMPTY_SETTINGS_FRAME = new FrameSettings();
     public static final FrameSettings DEFAULT_SERVER_SETTINGS_FRAME = new FrameSettings(0, -1, -1, 200, -1, 57344, -1, false);
-
-    int testTimeout = Utils.STRESS_TEST_TIMEOUT_testMulitData;
 
     protected final int PROTOCOL_ERROR = 0x1;
     protected final int FLOW_CONTROL_ERROR = 0x3;
@@ -142,10 +138,7 @@ public class H2FATDriverServlet extends FATServlet {
     public void testMultiData(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
         long startTime = System.currentTimeMillis();
-        long endTime = 0;
         System.out.println("Test start at: " + startTime);
-
-        int STREAM_INSTANCES = 3; // streams per connection
 
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         String testName = "testMultiData";
@@ -154,12 +147,12 @@ public class H2FATDriverServlet extends FATServlet {
             LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "hostName: " + request.getParameter("hostName"));
             LOGGER.logp(Level.INFO, this.getClass().getName(), testName, "port: " + request.getParameter("port"));
         }
-        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, this.testTimeout);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, Utils.STRESS_TEST_TIMEOUT_testMultipleConnectionStress);
 
         h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         addFirstExpectedHeaders(h2Client);
 
-        for (int i = 1; i <= STREAM_INSTANCES; i++) {
+        for (int i = 1; i <= Utils.STREAM_INSTANCES; i++) {
             int sID = (i * 2) - 1;
             String s = "LAST.DATA.FRAME";
             h2Client.addExpectedFrame(new FrameData(sID, s.getBytes(), 0, false, false, false));
@@ -170,22 +163,23 @@ public class H2FATDriverServlet extends FATServlet {
         //Since this is a conditional send, this will block the thread until the preface is sent.
         //If the this fails, the test needs to fail as well because the H2 protocol was not established successfully.
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
-        int weight = 16;
+        int weight = Utils.FIRST_STREAM_WEIGHT;
         boolean makeDependent = false;
         boolean makeExclusive = false;
         int depNode = 0;
         boolean excNode = false;
 
-        //WDW
-        FrameWindowUpdate windowGood = new FrameWindowUpdate(0, 64000 * 100 * STREAM_INSTANCES, false);
+        // send window update for the connection (stream 0)
         // Use a smaller value to drive FlowControlExceptions during stress testing
         // FrameWindowUpdate windowGood = new FrameWindowUpdate(0, 32000, false);
+        FrameWindowUpdate windowGood = new FrameWindowUpdate(0, Utils.STRESS_CONNECTION_WINDOW_UPDATE, false);
         h2Client.sendFrame(windowGood);
 
-        windowGood = new FrameWindowUpdate(1, 64000 * 10, false);
+        // send window update for stream 1
+        windowGood = new FrameWindowUpdate(1, Utils.STRESS_STREAM_WINDOW_UPDATE_START, false);
         h2Client.sendFrame(windowGood);
 
-        for (int i = 2; i <= STREAM_INSTANCES; i++) {
+        for (int i = 2; i <= Utils.STREAM_INSTANCES; i++) {
             List<HeaderEntry> headersToSend = new ArrayList<HeaderEntry>();
             headersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
             headersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -224,7 +218,8 @@ public class H2FATDriverServlet extends FATServlet {
                 FramePriority fp = new FramePriority((i * 2) - 1, depNode, weight, excNode, false);
                 h2Client.sendBytes(fp.buildFrameForWrite());
 
-                windowGood = new FrameWindowUpdate((i * 2) - 1, 64000 * 10, false);
+                // send window update for new stream
+                windowGood = new FrameWindowUpdate((i * 2) - 1, Utils.STRESS_STREAM_WINDOW_UPDATE_START, false);
                 h2Client.sendFrame(windowGood);
 
                 Thread.sleep(Utils.STRESS_DELAY_BETWEEN_STREAM_STARTS);
@@ -236,17 +231,14 @@ public class H2FATDriverServlet extends FATServlet {
                 }
             }
 
-            weight += 16;
+            weight += Utils.WEIGHT_INCREMENT_PER_STREAM;
             if (weight > 255) {
-                weight = 8;
+                weight = Utils.FIRST_STREAM_WEIGHT;
             }
         }
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
-
-        endTime = System.currentTimeMillis();
-        System.out.println("Test end at: " + endTime + " duration: " + (endTime - startTime));
 
         handleErrors(h2Client, testName);
     }
@@ -337,107 +329,6 @@ public class H2FATDriverServlet extends FATServlet {
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);
-    }
-
-    public void testSingleConnectionStress(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-
-        String testName = "";
-
-        //Use a single client, loop to create multiple streams on a single connection
-        try {
-            int iterations = Integer.parseInt(request.getParameter("iterations"));
-
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStress", "interations are: " + iterations);
-            }
-
-            // Give STRESS_MS_PER_LOOP ms for each iteration, might need to adjust this
-            Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, Utils.STRESS_TEST_TIMEOUT_testSingleConnectionStress);
-
-            h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
-
-            String dataString = "ABC123";
-
-            List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
-
-            //Expected headers for the first (upgrade) request
-            firstHeadersReceived.add(new H2HeaderField(":status", "200"));
-            firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
-            firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            // cannot assume language of test machine
-            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-            FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
-            frameHeaders.setHeaderFields(firstHeadersReceived);
-            h2Client.addExpectedFrame(frameHeaders);
-
-            //Expected headers for the "second" request
-            List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
-            secondHeadersReceived.add(new H2HeaderField(":status", "200"));
-            secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
-            secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            // cannot assume language of test machine
-            secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-            FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
-            secondFrameHeaders.setHeaderFields(secondHeadersReceived);
-            h2Client.addExpectedFrame(secondFrameHeaders.clone());
-
-            //Headers frame to send for "second" request
-            List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
-            frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-            // WTL: split up adding and sending frames
-            for (int i = 1; i <= iterations; i++) {
-                testName = new String("testSingleConnectionStress_h2Client:" + h2Client + "_adding_frames_iteration#" + i);
-
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStress", "Running " + testName);
-                }
-
-                //Add the expected headers frame from the next iteration to avoid triggering the
-                // goaway logic too early (only if we are not in the last iteration)
-                if (i != iterations) {
-                    //TODO: Fix this id to be the last used + 2
-                    secondFrameHeaders.setStreamID(i * 2 + 3);
-                    h2Client.addExpectedFrame(secondFrameHeaders.clone());
-                }
-                // Add the expected data frame from the current iteration
-                //TODO: Should we extend this class to allow us to change the stream id like we do in FrameHeaders? (will allow to reuse this object)
-                h2Client.addExpectedFrame(new FrameData(i * 2 + 1, dataString.getBytes(), 0, false, false, false));
-            }
-
-            // WTL: start sending frames out
-            h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
-            h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
-
-            for (int i = 1; i <= iterations; i++) {
-                testName = new String("testSingleConnectionStress_h2Client:" + h2Client + "_sending_frames_iteration#" + i);
-
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStress", "send frame for iteration: " + i);
-                }
-
-                frameHeadersToSend.setStreamID(i * 2 + 1);
-                h2Client.sendFrame(frameHeadersToSend.clone());
-
-            }
-
-            blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
-
-            handleErrors(h2Client, testName);
-
-        } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStress", "Failed to load test: " + e);
-            }
-            Assert.fail(e.getMessage());
-        }
     }
 
     /**
@@ -644,7 +535,6 @@ public class H2FATDriverServlet extends FATServlet {
 
     //This is just a placeholder to get around the way simplicity works...
     public void testMultipleConnectionStress(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        this.testTimeout = Utils.STRESS_TEST_TIMEOUT_testMultipleConnectionStress;
         this.testMultiData(request, response);
     }
 
@@ -4300,116 +4190,6 @@ public class H2FATDriverServlet extends FATServlet {
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);
-    }
-
-    public void testSingleConnectionStressMaxStreams(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-
-        String testName = "";
-
-        //Use a single client, loop to create multiple streams on a single connection
-        try {
-            int iterations = Integer.parseInt(request.getParameter("iterations"));
-
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStressMaxStreams", "interations are: " + iterations);
-            }
-
-            // Give STRESS_MS_PER_LOOP ms for each iteration, might need to adjust this
-            Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, Utils.STRESS_TEST_TIMEOUT_testSingleConnectionStress);
-
-            h2Client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
-
-            byte[] debugData = "Psuedo-headers are not allowed in trailers: :scheme: http".getBytes();
-            FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
-            h2Client.addExpectedFrame(errorFrame);
-
-            List<H2HeaderField> firstHeadersReceived = new ArrayList<H2HeaderField>();
-
-            //Expected headers for the first (upgrade) request
-            firstHeadersReceived.add(new H2HeaderField(":status", "200"));
-            firstHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
-            firstHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            // cannot assume language of test machine
-            firstHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-            FrameHeadersClient frameHeaders = new FrameHeadersClient(1, null, 0, 0, 0, false, true, false, false, false, false);
-            frameHeaders.setHeaderFields(firstHeadersReceived);
-            h2Client.addExpectedFrame(frameHeaders);
-
-            //Expected headers for the "second" request
-            List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
-            secondHeadersReceived.add(new H2HeaderField(":status", "200"));
-            secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
-            secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-            // cannot assume language of test machine
-            secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-            FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
-            secondFrameHeaders.setHeaderFields(secondHeadersReceived);
-            h2Client.addExpectedFrame(secondFrameHeaders.clone());
-
-            //Headers frame to send for "second" request
-            List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
-            frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-            //Bookkeeping for errors/failures
-            boolean testFailed = false;
-            StringBuilder message = new StringBuilder("The following exceptions were found: ");
-
-            // WTL: split up adding and sending frames
-            for (int i = 1; i <= iterations; i++) {
-                testName = new String("testSingleConnectionStressMaxStreams_h2Client:" + h2Client + "_adding_frames_iteration#" + i);
-
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStressMaxStreams", "Running " + testName);
-                }
-
-                //Add the expected headers frame from the next iteration to avoid triggering the
-                // goaway logic too early (only if we are not in the last iteration)
-                if (i != iterations) {
-                    //TODO: Fix this id to be the last used + 2
-                    secondFrameHeaders.setStreamID(i * 2 + 3);
-                    h2Client.addExpectedFrame(secondFrameHeaders.clone());
-                }
-                // Add the expected data frame from the current iteration
-                //TODO: Should we extend this class to allow us to change the stream id like we do in FrameHeaders? (will allow to reuse this object)
-                //h2Client.addExpectedFrame(new FrameData(i * 2 + 1, dataString.getBytes(), 0, false, false, false));
-            }
-
-            // WTL: start sending frames out
-            h2Client.sendUpgradeHeader(HEADERS_AND_BODY_URI);
-            //iterations will be the max number of streams so we can make the server send a goaway when we exceed that number of streams
-            //we also want to block stream from closing, to make this test easier
-            h2Client.sendClientPrefaceFollowedBySettingsFrame(new FrameSettings(0, -1, -1, iterations, 0, -1, -1, false));
-
-            //will create 1 extra stream to trigger GOAWAY
-            for (int i = 1; i <= iterations + 1; i++) {
-                testName = new String("testSingleConnectionStressMaxStreams_h2Client:" + h2Client + "_sending_frames_iteration#" + i);
-
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStressMaxStreams", "send frame for iteration: " + i);
-                }
-
-                frameHeadersToSend.setStreamID(i * 2 + 1);
-                h2Client.sendFrame(frameHeadersToSend.clone());
-
-            }
-
-            blockUntilConnectionIsDone.await();
-
-            handleErrors(h2Client, testName);
-
-        } catch (Exception e) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.logp(Level.INFO, this.getClass().getName(), "testSingleConnectionStressMaxStreams", "Failed to load test: " + e);
-            }
-            Assert.fail(e.getMessage());
-        }
     }
 
     public void testDataFrameOf16384Bytes(HttpServletRequest request,
