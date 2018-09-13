@@ -72,9 +72,9 @@ public class BuilderTests extends CommonJwtFat {
      */
     @Test
     public void test_jwkEnabled() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_builder_jwkEnabled.xml");
+        reconfigureServer(server, "server_builder_jwkEnabled.xml");
 
-        WebClient webClient = getHtmlUnitWebClient();
+        WebClient webClient = actions.createWebClient();
 
         String builderId = "builder_jwkEnabled";
 
@@ -83,7 +83,7 @@ public class BuilderTests extends CommonJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
@@ -111,16 +111,16 @@ public class BuilderTests extends CommonJwtFat {
      */
     @Test
     public void test_noBuilderRef_mpJwtJwksUriConfigured() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noBuilder_jwksUriConfigured.xml");
+        reconfigureServer(server, "server_noBuilder_jwksUriConfigured.xml");
 
-        WebClient webClient = getHtmlUnitWebClient();
+        WebClient webClient = actions.createWebClient();
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;

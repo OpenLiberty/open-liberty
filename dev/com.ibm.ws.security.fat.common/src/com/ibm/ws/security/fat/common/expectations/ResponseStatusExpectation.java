@@ -36,7 +36,7 @@ public class ResponseStatusExpectation extends Expectation {
         try {
             int responseStatus = getResponseStatus(contentToValidate);
             validationUtils.validateStringContent(this, Integer.toString(responseStatus));
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception("Failed to validate response status: " + e.getMessage());
         }
     }

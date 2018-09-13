@@ -174,6 +174,9 @@ public class LibertyServer implements LogMonitorClient {
     protected int httpSecondaryPort = Integer.parseInt(System.getProperty("HTTP_secondary", "0"));
     protected int httpSecondarySecurePort = Integer.parseInt(System.getProperty("HTTP_secondary.secure", "0"));
 
+    protected String bvtPortPropertyName = null;
+    protected String bvtSecurePortPropertyName = null;
+
     protected int iiopDefaultPort = Integer.parseInt(System.getProperty("IIOP", "0"));
 
     protected String hostName;
@@ -234,6 +237,7 @@ public class LibertyServer implements LogMonitorClient {
     protected String serverRoot; // The root of the server for Liberty
     protected String serverOutputRoot; // The output root of the server
     protected String logsRoot; // The root of the Logs Files
+    protected String relativeServerConfigsRoot = "serverConfigs";
 
     protected long lastConfigUpdate = 0; // Time stamp (in millis) of the last configuration update
 
@@ -5621,5 +5625,29 @@ public class LibertyServer implements LogMonitorClient {
     @Override
     public void lmcUpdateLogOffset(String logFile, Long newLogOffset) {
         updateLogOffset(logFile, newLogOffset);
+    }
+
+    public void setBvtPortPropertyName(String propertyName) {
+        bvtPortPropertyName = propertyName;
+    }
+
+    public void setBvtSecurePortPropertyName(String propertyName) {
+        bvtSecurePortPropertyName = propertyName;
+    }
+
+    public int getBvtPort() {
+        if (bvtPortPropertyName != null) {
+            return Integer.getInteger(bvtPortPropertyName);
+        } else {
+            return getHttpDefaultPort();
+        }
+    }
+
+    public int getBvtSecurePort() {
+        if (bvtSecurePortPropertyName != null) {
+            return Integer.getInteger(bvtSecurePortPropertyName);
+        } else {
+            return getHttpDefaultSecurePort();
+        }
     }
 }

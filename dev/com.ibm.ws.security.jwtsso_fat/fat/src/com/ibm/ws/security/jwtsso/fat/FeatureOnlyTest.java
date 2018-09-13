@@ -69,7 +69,6 @@ public class FeatureOnlyTest extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_simpleLogin_featureEnabled() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
@@ -78,7 +77,7 @@ public class FeatureOnlyTest extends CommonJwtFat {
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
@@ -104,7 +103,8 @@ public class FeatureOnlyTest extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_simpleLogin_featureNotEnabled() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
+
+        reconfigureServer(server, "server_noFeature.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
@@ -112,7 +112,7 @@ public class FeatureOnlyTest extends CommonJwtFat {
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME));
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;

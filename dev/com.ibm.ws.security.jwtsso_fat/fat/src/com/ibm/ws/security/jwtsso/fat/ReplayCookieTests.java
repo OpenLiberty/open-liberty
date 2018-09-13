@@ -33,6 +33,7 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.apps.CommonFatApplications;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.ProtectedServlet;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
@@ -66,7 +67,7 @@ public class ReplayCookieTests extends CommonJwtFat {
     private JwtFatActions actions = new JwtFatActions();
     private TestValidationUtils validationUtils = new TestValidationUtils();
 
-    static final String DEFAULT_CONFIG = JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp.xml";
+    static final String DEFAULT_CONFIG = "server_withBuilderApp.xml";
     static final String APP_NAME_JWT_BUILDER = "jwtbuilder";
 
     String httpUrlBase = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
@@ -77,9 +78,9 @@ public class ReplayCookieTests extends CommonJwtFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        buildAndDeployApp(server, APP_NAME_JWT_BUILDER, "com.ibm.ws.security.fat.common.apps.jwtbuilder.*");
+        CommonFatApplications.buildAndDeployApp(server, APP_NAME_JWT_BUILDER, "com.ibm.ws.security.fat.common.apps.jwtbuilder.*");
 
-        setUpAndStartServer(server, DEFAULT_CONFIG);
+        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/" + DEFAULT_CONFIG);
     }
 
     /**
@@ -91,13 +92,12 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_useSameWebConversation_includeJwtCookie() throws Exception {
-        server.reconfigureServer(DEFAULT_CONFIG);
 
         String user = JwtFatConstants.USER_1;
         String password = JwtFatConstants.USER_1_PWD;
 
         WebClient webClient = new WebClient();
-        actions.logInAndObtainJwtCookie(testName.getMethodName(), webClient, protectedUrl, user, password);
+        actions.logInAndObtainJwtCookie(_testName, webClient, protectedUrl, user, password);
 
         // Access the protected resource again using the same web conversation
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -108,7 +108,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
         expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -122,10 +122,9 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_useSameWebConversation_deleteJwtCookie() throws Exception {
-        server.reconfigureServer(DEFAULT_CONFIG);
 
         WebClient webClient = new WebClient();
-        actions.logInAndObtainJwtCookie(testName.getMethodName(), webClient, protectedUrl, defaultUser, defaultPassword);
+        actions.logInAndObtainJwtCookie(_testName, webClient, protectedUrl, defaultUser, defaultPassword);
 
         webClient.getCookieManager().clearCookies();
 
@@ -135,7 +134,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -148,9 +147,8 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_newConversationWithoutJwtCookie() throws Exception {
-        server.reconfigureServer(DEFAULT_CONFIG);
 
-        actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Access the protected resource again, but without the JWT cookie
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -158,7 +156,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
+        Page response = actions.invokeUrl(_testName, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -171,9 +169,8 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_reaccessResource_newConversationWithValidJwtCookie() throws Exception {
-        server.reconfigureServer(DEFAULT_CONFIG);
 
-        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Access the protected again using a new conversation with the JWT SSO cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -182,7 +179,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
         expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -199,19 +196,16 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_jwtCookieWithEmptySignature() throws Exception {
-        server.restartServer();
-        server.reconfigureServer(DEFAULT_CONFIG);
-        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
-        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Remove the cookie signature, but leave the trailing "." so the JWT still has three parts (an empty signature)
         String cookieValue = jwtCookie.getValue();
         String truncatedValue = cookieValue.substring(0, cookieValue.lastIndexOf(".") + 1);
         Cookie truncatedCookie = createIdenticalCookieWithNewValue(jwtCookie, truncatedValue);
 
-        Log.info(thisClass, testName.getMethodName(), "Original cookie value  : " + cookieValue);
-        Log.info(thisClass, testName.getMethodName(), "Truncated cookie value : " + truncatedCookie.getValue());
+        Log.info(thisClass, _testName, "Original cookie value  : " + cookieValue);
+        Log.info(thisClass, _testName, "Truncated cookie value : " + truncatedCookie.getValue());
 
         // Access the protected again using a new conversation with the truncated JWT SSO cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -223,7 +217,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT + ".+"
                                                                                         + "Problem verifying signature"));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, truncatedCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, truncatedCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -240,19 +234,16 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_reaccessResource_signatureRemovedFromJwtCookie() throws Exception {
-        server.restartServer();
-        server.reconfigureServer(DEFAULT_CONFIG);
-        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
-        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Remove the entire signature from the JWT, including the "." denoting the signature segment
         String cookieValue = jwtCookie.getValue();
         String truncatedValue = cookieValue.substring(0, cookieValue.lastIndexOf("."));
         Cookie cookieWithoutSignature = createIdenticalCookieWithNewValue(jwtCookie, truncatedValue);
 
-        Log.info(thisClass, testName.getMethodName(), "Original cookie value  : " + cookieValue);
-        Log.info(thisClass, testName.getMethodName(), "Truncated cookie value : " + cookieWithoutSignature.getValue());
+        Log.info(thisClass, _testName, "Original cookie value  : " + cookieValue);
+        Log.info(thisClass, _testName, "Truncated cookie value : " + cookieWithoutSignature.getValue());
 
         // Access the protected again using a new conversation with the truncated JWT SSO cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -264,7 +255,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS6031E_JWT_ERROR_PROCESSING_JWT + ".+"
                                                                                         + "Invalid JOSE Compact Serialization"));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, cookieWithoutSignature);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, cookieWithoutSignature);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -279,13 +270,14 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie() throws Exception {
-        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
 
-        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
+        reconfigureServer(server, "server_noFeature.xml");
+
+        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServer(DEFAULT_CONFIG);
+        reconfigureServer(server, DEFAULT_CONFIG);
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -293,7 +285,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, ltpaCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, ltpaCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -310,12 +302,13 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_useLtpaIfJwtAbsent() throws Exception {
+
         server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
+        reconfigureServer(server, "server_noFeature.xml");
 
-        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_useLtpaIfJwtAbsent_true.xml");
+        reconfigureServer(server, "server_useLtpaIfJwtAbsent_true.xml");
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -329,7 +322,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedAccessId(currentAction, JwtFatConstants.BASIC_REALM, defaultUser));
         expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, ltpaCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, ltpaCookie);
         validationUtils.validateResult(response, currentAction, expectations);
 
         server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
@@ -345,12 +338,11 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainJwt_reconfigureToDisableJwtSso_reaccessResourceWithJwtCookie() throws Exception {
-        server.reconfigureServer(DEFAULT_CONFIG);
 
-        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noFeature.xml");
+        reconfigureServer(server, "server_noFeature.xml");
 
         // Access the protected again using a new conversation with the JWT SSO cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -358,7 +350,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
 
         server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
@@ -373,9 +365,8 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainJwt_accessNewProtectedResource_withoutJwtCookie() throws Exception {
-        server.reconfigureServer(DEFAULT_CONFIG);
 
-        actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Access a different protected resource without the JWT cookie
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -384,7 +375,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(currentAction, HttpServletResponse.SC_UNAUTHORIZED));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), newProtectedUrl);
+        Page response = actions.invokeUrl(_testName, newProtectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -397,9 +388,8 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_obtainJwt_accessNewProtectedResource_withJwtCookie() throws Exception {
-        server.reconfigureServer(DEFAULT_CONFIG);
 
-        Cookie jwtCookie = actions.logInAndObtainJwtCookie(testName.getMethodName(), protectedUrl, defaultUser, defaultPassword);
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Access a different protected resource with the JWT cookie
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -412,7 +402,7 @@ public class ReplayCookieTests extends CommonJwtFat {
                                                                           "Did not find the expected success message in the servlet response."));
         expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), newProtectedUrl, jwtCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, newProtectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -427,9 +417,8 @@ public class ReplayCookieTests extends CommonJwtFat {
     @ExpectedFFDC({ "com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException", "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_missingClaims_accessProtectedResource() throws Exception {
-        server.restartServer();
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
-        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
+
+        reconfigureServer(server, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
 
         String builderId = "builder_defaults";
         Cookie jwtCookie = buildThirdPartyJwtCookieUsingBuilderApp(builderId);
@@ -442,7 +431,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5506E_USERNAME_NOT_FOUND));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5508E_ERROR_CREATING_RESULT));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -458,9 +447,6 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_accessProtectedResource_defaultMpJwtConsumer() throws Exception {
-        server.restartServer();
-        server.reconfigureServer(DEFAULT_CONFIG);
-        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
 
         String builderId = "builder_defaults";
         Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
@@ -475,7 +461,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -489,7 +475,8 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     @Test
     public void test_buildJwt_accessProtectedResource_issuerTrusted() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
+
+        reconfigureServer(server, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
 
         String builderId = "builder_defaults";
         Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
@@ -502,7 +489,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser, expectedIssuer));
         expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -517,9 +504,8 @@ public class ReplayCookieTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_buildJwt_signedWithNonDefaultKey_accessProtectedResource() throws Exception {
-        server.restartServer();
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_withBuilderApp_consumerTrustsAllIssuers.xml");
-        server.validateAppLoaded(APP_NAME_JWT_BUILDER);
+
+        reconfigureServer(server, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
 
         String builderId = "builder_signWithUniqueKey";
         Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
@@ -533,7 +519,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5524E_ERROR_CREATING_JWT));
         expectations.addExpectation(new ServerMessageExpectation(currentAction, server, MessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ));
 
-        Page response = actions.invokeUrlWithCookie(testName.getMethodName(), protectedUrl, jwtCookie);
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
         validationUtils.validateResult(response, currentAction, expectations);
     }
 
@@ -555,11 +541,11 @@ public class ReplayCookieTests extends CommonJwtFat {
         requestParams.add(new NameValuePair(JwtBuilderServlet.PARAM_BUILDER_ID, builderId));
 
         WebClient webClient = new WebClient();
-        Page response = actions.invokeUrlWithParameters(testName.getMethodName(), webClient, jwtBuilderUrl, requestParams);
-        Log.info(thisClass, testName.getMethodName(), "JWT builder app response: " + WebResponseUtils.getResponseText(response));
+        Page response = actions.invokeUrlWithParameters(_testName, webClient, jwtBuilderUrl, requestParams);
+        Log.info(thisClass, _testName, "JWT builder app response: " + WebResponseUtils.getResponseText(response));
 
         Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
-        Log.info(thisClass, testName.getMethodName(), "Built JWT cookie: " + jwtCookie);
+        Log.info(thisClass, _testName, "Built JWT cookie: " + jwtCookie);
 
         return jwtCookie;
     }
@@ -570,10 +556,10 @@ public class ReplayCookieTests extends CommonJwtFat {
      */
     private Cookie buildThirdPartyJwtCookie(String builderId) throws Exception {
         String jwtString = getJwtFromTokenEndpoint(builderId);
-        Log.info(thisClass, testName.getMethodName(), "Received JWT string : " + jwtString);
+        Log.info(thisClass, _testName, "Received JWT string : " + jwtString);
 
         Cookie jwtCookie = new Cookie("*", JwtFatConstants.JWT_COOKIE_NAME, jwtString);
-        Log.info(thisClass, testName.getMethodName(), "Built JWT cookie: " + jwtCookie);
+        Log.info(thisClass, _testName, "Built JWT cookie: " + jwtCookie);
 
         return jwtCookie;
     }
@@ -584,8 +570,8 @@ public class ReplayCookieTests extends CommonJwtFat {
         WebClient wc = new WebClient();
         wc.getOptions().setUseInsecureSSL(true);
 
-        Page response = actions.submitRequest(testName.getMethodName(), wc, request);
-        Log.info(thisClass, testName.getMethodName(), "Response: " + WebResponseUtils.getResponseText(response));
+        Page response = actions.submitRequest(_testName, wc, request);
+        Log.info(thisClass, _testName, "Response: " + WebResponseUtils.getResponseText(response));
 
         return extractJwtFromTokenEndpointResponse(response);
     }

@@ -26,7 +26,7 @@ public class ResponseTitleExpectation extends Expectation {
         try {
             String responseTitle = getResponseTitle(contentToValidate);
             validationUtils.validateStringContent(this, responseTitle);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception(failureMsg + " Failed to validate response title: " + e.getMessage());
         }
     }
