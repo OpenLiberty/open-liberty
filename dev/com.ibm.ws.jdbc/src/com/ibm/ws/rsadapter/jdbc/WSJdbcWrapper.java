@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLRecoverableException;
@@ -423,7 +424,7 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
      *             interface.
      */
     @SuppressWarnings("unchecked")
-    public <T> T unwrap(Class<T> interfaceClass) throws SQLException 
+    public <T> T unwrap(final Class<T> interfaceClass) throws SQLException 
     {
         TraceComponent tc = getTracer();
         if (tc.isEntryEnabled())
@@ -468,10 +469,13 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
 
                 // An implementation object is found. Create a new wrapper for it.
                 // And then add it to the map of dynamic wrappers.
-
-                result = Proxy.newProxyInstance(priv.getClassLoader(interfaceClass),
-                                                new Class[] { interfaceClass },
-                                                this);
+                result = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                    public Object run() {
+                        return Proxy.newProxyInstance(interfaceClass.getClassLoader(),
+                                                      new Class[] { interfaceClass },
+                                                      WSJdbcWrapper.this);
+                    }
+                });
 
                 ifcToDynamicWrapper.put(interfaceClass, result);
                 dynamicWrapperToImpl.put(result, implObject);

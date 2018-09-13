@@ -79,7 +79,9 @@ action-desc.package=\t\u5c06\u670d\u52a1\u5668\u5c01\u88c5\u5230\u5f52\u6863\u4e
 \t --include \u9009\u9879\u7684\u503c\u53ef\u4e3a\u201call\u201d\u3001\u201cusr\u201d\u3001\u201cminify\u201d\u3001\n\
 \t\u201cwlp\u201d\u3001\u201crunnable\u201d\u3001\u201call,runnable\u201d\u548c\u201cminify,runnable\u201d\u3002\n\
 \t\u201crunnable\u201d\u548c\u201call,runnable\u201d\u8fd9\u4e24\u4e2a\u503c\u7b49\u4ef7\u3002\n\
-\t\u503c\u201crunnable\u201d\u4ec5\u9002\u7528\u4e8e\u201cjar\u201d\u7c7b\u578b\u7684\u5f52\u6863\u3002
+\t\u503c\u201crunnable\u201d\u4ec5\u9002\u7528\u4e8e\u201cjar\u201d\u7c7b\u578b\u7684\u5f52\u6863\u3002\
+\u53ef\u4ee5\u4f7f\u7528 --server-root \u9009\u9879\u6765\u6307\u5b9a\n\
+\t\u8f6f\u4ef6\u5305\u5f52\u6863\u4e2d\u7684\u6839\u6587\u4ef6\u5939\u3002
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\t\u5c06\u8bca\u65ad\u4fe1\u606f\u4ece\u670d\u52a1\u5668\u8f6c\u50a8\u5230\u5f52\u6863\u4e2d\u3002\
@@ -174,3 +176,6 @@ option-desc.os=\t\u6307\u5b9a\u5e0c\u671b\u6253\u5305\u670d\u52a1\u5668\u652f\u6
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\t\u7981\u7528\u751f\u6210\u7f3a\u7701\u5bc6\u94a5\u5e93\u5bc6\u7801
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="root server folder in archive"
+option-desc.package.server-root=\t\u6307\u5b9a\u5f52\u6863\u6587\u4ef6\u4e2d\u7684\u6839\u670d\u52a1\u5668\u6587\u4ef6\u5939\u540d\u79f0\u3002

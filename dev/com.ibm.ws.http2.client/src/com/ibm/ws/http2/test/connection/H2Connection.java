@@ -563,10 +563,13 @@ public class H2Connection {
             }
 
             if (s.compareTo(sendBackWinUpdate1) == 0) {
-                System.out.println("FOUND: " + sendBackWinUpdate1);
+                //too verbose System.out.println("FOUND: " + sendBackWinUpdate1);
 
                 int streamId = fd.getStreamId();
-                int windowSizeIncrement = 1024;
+
+                //need a big size for large stress testing
+                int windowSizeIncrement = 10000;
+
                 boolean reserveBit = false;
 
                 FrameWindowUpdate fw = new FrameWindowUpdate(streamId, windowSizeIncrement, reserveBit);

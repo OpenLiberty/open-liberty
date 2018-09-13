@@ -20,6 +20,7 @@ IBM-Process-Types: client
  com.ibm.ws.org.apache.cxf-rt-management.2.6.2, \
  com.ibm.ws.org.apache.cxf-rt-ws-addr.2.6.2, \
  com.ibm.websphere.javaee.jaxws.2.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.xml.ws:jaxws-api:2.2.12", \
+ com.ibm.websphere.javaee.jws.1.0; location:="dev/api/spec/,lib/"; require-java:="9",\
  com.ibm.ws.org.apache.cxf-rt-frontend-simple.2.6.2, \
  com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
  com.ibm.ws.jaxws.clientcontainer, \

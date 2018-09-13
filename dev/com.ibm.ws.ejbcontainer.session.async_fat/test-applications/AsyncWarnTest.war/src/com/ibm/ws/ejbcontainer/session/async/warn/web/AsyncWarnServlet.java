@@ -15,9 +15,11 @@ import static junit.framework.Assert.fail;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
+import com.ibm.ws.ejbcontainer.session.async.warn.ejb.InitRecoveryLogBean;
 import com.ibm.ws.ejbcontainer.session.async.warn.shared.AsyncInLocalIf;
 import com.ibm.ws.ejbcontainer.session.async.warn.shared.AsyncInRemoteIf;
 import com.ibm.ws.ejbcontainer.session.async.warn.shared.AsyncNotInLocalIf;
@@ -30,6 +32,15 @@ public class AsyncWarnServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
     private static final String CLASS_NAME = AsyncWarnServlet.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
+
+    private final static String JNDI_INIT_RECOVERY_LOG_BEAN = "java:app/AsyncWarnTestBean/InitRecoveryLogBean";
+
+    public void initRecoveryLog() throws Exception {
+        // Call a method on a bean to initialize the server recovery log
+        svLogger.info("initialize the server recovery log");
+        InitRecoveryLogBean bean = (InitRecoveryLogBean) new InitialContext().lookup(JNDI_INIT_RECOVERY_LOG_BEAN);
+        bean.getInvocationTime();
+    }
 
     /* @Asynchronous defined on bean class and interface class */
     public void testInLocalIf_asyncOnBeanClass() throws Exception {

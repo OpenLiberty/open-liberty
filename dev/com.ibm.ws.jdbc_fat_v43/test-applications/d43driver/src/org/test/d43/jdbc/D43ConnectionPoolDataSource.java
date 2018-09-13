@@ -31,7 +31,7 @@ public class D43ConnectionPoolDataSource implements ConnectionPoolDataSource {
     public PooledConnectionBuilder createPooledConnectionBuilder() throws SQLException {
         return (PooledConnectionBuilder) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                                 new Class[] { PooledConnectionBuilder.class },
-                                                                new D43Handler(ds.createPooledConnectionBuilder()));
+                                                                new D43Handler(ds.createPooledConnectionBuilder(), null));
     }
 
     public String getDatabaseName() {
@@ -57,14 +57,14 @@ public class D43ConnectionPoolDataSource implements ConnectionPoolDataSource {
     public PooledConnection getPooledConnection() throws SQLException {
         return (PooledConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                          new Class[] { PooledConnection.class },
-                                                         new D43Handler(ds.getPooledConnection()));
+                                                         new D43Handler(ds.getPooledConnection(), null));
     }
 
     @Override
     public PooledConnection getPooledConnection(String user, String pwd) throws SQLException {
         return (PooledConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                          new Class[] { PooledConnection.class },
-                                                         new D43Handler(ds.getPooledConnection(user, pwd)));
+                                                         new D43Handler(ds.getPooledConnection(user, pwd), null));
     }
 
     public void setDatabaseName(String value) {

@@ -32,14 +32,18 @@ import componenttest.topology.utils.FATServletClient;
 @Mode(TestMode.FULL)
 public class Http2FullModeTests extends FATServletClient {
 
+    // to run this bucket with trace on flip the comments here (or figure out something I couldn't about the tracing!)
     private static final String CLASS_NAME = Http2FullModeTests.class.getName();
+    private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat");
+    // private static final String CLASS_NAME = Http2FullTracingTests.class.getName();
+    // private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat.tracing");
+
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public static final String TEST_DIR = System.getProperty("dir.build.classes") + File.separator + "test" + File.separator + "server" + File.separator + "transport"
                                           + File.separator + "http2" + File.separator + "buckets";
 
     private final static LibertyServer runtimeServer = LibertyServerFactory.getLibertyServer("http2ClientRuntime");
-    private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat");
 
     String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
     String genericServletPath = "H2FATDriver/GenericFrameTests?hostName=";

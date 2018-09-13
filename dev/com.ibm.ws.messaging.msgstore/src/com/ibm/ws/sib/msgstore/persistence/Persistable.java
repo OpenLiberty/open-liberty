@@ -355,4 +355,10 @@ public interface Persistable
      * @return the delivery delay time (in milliseconds)
      */
     public long getDeliveryDelayTime();
+
+	/**
+	 * @return true if the deliveryDelayTime was migrated from 
+	 *              serialVersionUIDV1 = 7600601884916130911L and might have been migrated incorrectly.
+	 */
+	public boolean getDeliveryDelayTimeIsSuspect();
 }

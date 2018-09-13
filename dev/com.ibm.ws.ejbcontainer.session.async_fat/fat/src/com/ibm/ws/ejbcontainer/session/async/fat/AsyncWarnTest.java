@@ -118,8 +118,9 @@ public class AsyncWarnTest extends FATServletClient {
         AsyncNotInRemoteIf3BeanApp.addAsModule(AsyncNotInRemoteIf3Bean);
 
         WebArchive AsyncWarnTestWar = ShrinkHelper.buildDefaultApp("AsyncWarnTest.war", "com.ibm.ws.ejbcontainer.session.async.warn.web.");
+        JavaArchive AsyncWarnTestBean = ShrinkHelper.buildJavaArchive("AsyncWarnTestBean.jar", "com.ibm.ws.ejbcontainer.session.async.warn.ejb.");
         EnterpriseArchive AsyncWarnTest = ShrinkWrap.create(EnterpriseArchive.class, "AsyncWarnTest.ear");
-        AsyncWarnTest.addAsModule(AsyncWarnTestWar);
+        AsyncWarnTest.addAsModule(AsyncWarnTestWar).addAsModule(AsyncWarnTestBean);
         AsyncWarnTest = (EnterpriseArchive) ShrinkHelper.addDirectory(AsyncWarnTest, "test-applications/AsyncWarnTest.ear/resources/");
 
         ShrinkHelper.exportAppToServer(server, AsyncInLocalIf1BeanApp);
@@ -156,6 +157,7 @@ public class AsyncWarnTest extends FATServletClient {
 
                 server.setServerConfigurationFile("checkFalse_server.xml");
                 server.startServer();
+                runTest("initRecoveryLog");
 
                 warnTraceLog = null;
 
@@ -173,6 +175,7 @@ public class AsyncWarnTest extends FATServletClient {
 
                 server.setServerConfigurationFile("checkTrue_server.xml");
                 server.startServer();
+                runTest("initRecoveryLog");
 
                 warnTraceLog = null;
 
@@ -190,6 +193,7 @@ public class AsyncWarnTest extends FATServletClient {
 
                 server.setServerConfigurationFile("EJBTrace_server.xml");
                 server.startServer();
+                runTest("initRecoveryLog");
 
                 if (warnTraceLog == null)
                     warnTraceLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "trace.log");
@@ -208,6 +212,7 @@ public class AsyncWarnTest extends FATServletClient {
 
                 server.setServerConfigurationFile("MetaDataTrace_server.xml");
                 server.startServer();
+                runTest("initRecoveryLog");
 
                 if (warnTraceLog == null)
                     warnTraceLog = new RemoteFile(server.getMachine(), server.getLogsRoot() + "trace.log");
@@ -226,6 +231,7 @@ public class AsyncWarnTest extends FATServletClient {
 
                 server.setServerConfigurationFile("default_server.xml");
                 server.startServer();
+                runTest("initRecoveryLog");
 
                 warnTraceLog = null;
 
@@ -260,8 +266,7 @@ public class AsyncWarnTest extends FATServletClient {
     }
 
     /* @Asynchronous defined on bean class and interface class, checkEJBApplicationConfiguration property set to false, no trace enabled. */
-    // TODO: Uncomment when making fix for server stopping issue
-    // @Test
+    @Test
     public void testInRemoteIf_asyncOnBeanClass_checkFalse() throws Exception {
         setupTest("checkFalse");
         runTest("testInRemoteIf_asyncOnBeanClass");

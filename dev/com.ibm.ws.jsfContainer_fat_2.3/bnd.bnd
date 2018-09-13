@@ -26,7 +26,7 @@ src: \
     test-applications/JSF22StatelessView/src,\
     test-applications/noJsfApp/src,\
     test-applications/PostRenderViewEvent/src,\
-    #test-applications/ViewHandlerTest/src,\
+    test-applications/ViewHandlerTest/src,\
     test-applications/WebSocket/src
 
 fat.project: true

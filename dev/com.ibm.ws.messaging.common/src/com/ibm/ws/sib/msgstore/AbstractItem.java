@@ -14,8 +14,9 @@ package com.ibm.ws.sib.msgstore;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
-
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.sib.exception.SIException;
+import com.ibm.ws.sib.msgstore.MessageStoreConstants.MaximumAllowedDeliveryDelayAction;
 import com.ibm.ws.sib.msgstore.transactions.Transaction;
 import com.ibm.ws.sib.transactions.PersistentTranId;
 import com.ibm.ws.sib.utils.DataSlice;
@@ -1149,4 +1150,12 @@ public abstract class AbstractItem
      * @throws IOException
      */
     public void xmlWriteOn(FormattedWriter writer) throws IOException {}
+
+	/**
+	 * Handle migration to Was V9.0.0 where a suspect delivery delay is discovered.
+	 * @param action
+	 */
+	public void handleInvalidDeliveryDelayable(MaximumAllowedDeliveryDelayAction action) throws MessageStoreException, SIException {
+		// Can be overriden, otherwise no action is taken.
+	}
 }

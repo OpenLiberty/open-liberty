@@ -21,15 +21,19 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.concurrent.Executor;
 
+import javax.resource.spi.ConnectionManager;
+
 import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDatabaseMetaData;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcObject;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement;
@@ -38,6 +42,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 import com.ibm.ws.rsadapter.jdbc.v42.WSJdbc42ResultSet;
 import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43CallableStatement;
 import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43Connection;
+import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43DataSource;
 import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43DatabaseMetaData;
 import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43PreparedStatement;
 import com.ibm.ws.rsadapter.jdbc.v43.WSJdbc43Statement;
@@ -59,6 +64,11 @@ public class JDBC43Runtime implements JDBCRuntimeVersion {
     public WSJdbcDatabaseMetaData newDatabaseMetaData(DatabaseMetaData metaDataImpl,
                                                       WSJdbcConnection connWrapper) throws SQLException {
         return new WSJdbc43DatabaseMetaData(metaDataImpl, connWrapper);
+    }
+
+    @Override
+    public WSJdbcDataSource newDataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) {
+        return new WSJdbc43DataSource(mcf, connMgr);
     }
 
     @Override

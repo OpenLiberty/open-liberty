@@ -244,7 +244,7 @@ public class H2InboundLink extends HttpInboundLink {
      *
      * @throws StreamClosedException
      */
-    public void processConnectionPrefaceMagic() throws ProtocolException, StreamClosedException {
+    public void processConnectionPrefaceMagic() throws Http2Exception {
         connection_preface_string_rcvd = true;
         H2StreamProcessor controlStream = createNewInboundLink(0);
         controlStream.completeConnectionPreface();
