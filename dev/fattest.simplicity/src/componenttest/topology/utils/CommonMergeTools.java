@@ -9,7 +9,7 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.fat.common.utils;
+package componenttest.topology.utils;
 
 import java.io.File;
 import java.util.regex.Pattern;
@@ -64,7 +64,7 @@ public class CommonMergeTools {
      * @param serverXmlPath
      *            The Location of the server.xml file to copy.
      * @param autoFVTPath
-     *            The path to the autoFVT file inside of the build.image
+     *            The path to the "import" directory inside of the build.image
      *            folder... i.e. the server file Location
      * @return True if the merge was successful or false if the merge wasn't
      *         successful.

@@ -39,8 +39,8 @@ public class FeatureOnlyTest extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private JwtFatActions actions = new JwtFatActions();
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    private final JwtFatActions actions = new JwtFatActions();
+    private final TestValidationUtils validationUtils = new TestValidationUtils();
     private WebClient webClient = new WebClient();
 
     String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + JwtFatConstants.SIMPLE_SERVLET_PATH;
@@ -49,7 +49,11 @@ public class FeatureOnlyTest extends CommonJwtFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
+        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        serverTracker.addServer(server);
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
+
     }
 
     @Before
@@ -104,7 +108,7 @@ public class FeatureOnlyTest extends CommonJwtFat {
     @Test
     public void test_simpleLogin_featureNotEnabled() throws Exception {
 
-        reconfigureServer(server, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();

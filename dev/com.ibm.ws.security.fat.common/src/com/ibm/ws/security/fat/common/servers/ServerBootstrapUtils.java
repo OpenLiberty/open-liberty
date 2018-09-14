@@ -8,6 +8,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.ServerFileUtils;
 
 public class ServerBootstrapUtils {
     private final Class<?> thisClass = ServerBootstrapUtils.class;

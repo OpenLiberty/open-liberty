@@ -52,8 +52,8 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private JwtFatActions actions = new JwtFatActions();
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    private final JwtFatActions actions = new JwtFatActions();
+    private final TestValidationUtils validationUtils = new TestValidationUtils();
     private WebClient webClient = new WebClient();
 
     String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + JwtFatConstants.SIMPLE_SERVLET_PATH;
@@ -62,7 +62,10 @@ public class ConfigAttributeTests extends CommonJwtFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
+        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        serverTracker.addServer(server);
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
     }
 
     @Before
@@ -79,7 +82,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_cookieName_includeLtpa() throws Exception {
-        reconfigureServer(server, "server_testcookiename.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testcookiename.xml");
 
         String cookieName = "easyrider";
 
@@ -112,7 +115,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Test
     public void test_cookieName_empty() throws Exception {
-        reconfigureServer(server, "server_cookieNameEmpty.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_cookieNameEmpty.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
@@ -139,7 +142,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Test
     public void test_cookieName_includesWhitespace() throws Exception {
-        reconfigureServer(server, "server_cookieNameIncludesWhitespace.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_cookieNameIncludesWhitespace.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
@@ -166,7 +169,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Test
     public void test_cookieName_invalidCookieCharacters() throws Exception {
-        reconfigureServer(server, "server_cookieNameInvalidCharacters.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_cookieNameInvalidCharacters.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
@@ -193,7 +196,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Test
     public void test_cookieName_unicodeInvalid() throws Exception {
-        reconfigureServer(server, "server_cookieNameInvalidUnicodeCharacters.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_cookieNameInvalidUnicodeCharacters.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
@@ -219,7 +222,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Test
     public void test_cookieName_unicodeValid() throws Exception {
-        reconfigureServer(server, "server_cookieNameValidUnicodeCharacters.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_cookieNameValidUnicodeCharacters.xml");
 
         String cookieName = "MyCookie";
 
@@ -250,7 +253,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Test
     public void test_cookieName_extremelyLong() throws Exception {
-        reconfigureServer(server, "server_cookieNameExtremelyLong.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_cookieNameExtremelyLong.xml");
 
         String cookieName = "ExtremelyLongCookieNamexxxxxxxx10xxxxxxxx20";
 
@@ -289,7 +292,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Test
     @ExpectedFFDC({ "com.ibm.websphere.security.jwt.InvalidBuilderException" })
     public void test_invalidBuilderRef_useLtpaIfJwtAbsentFalse() throws Exception {
-        reconfigureServer(server, "server_testbadbuilder.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testbadbuilder.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
@@ -319,7 +322,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_validBuilderRef() throws Exception {
-        reconfigureServer(server, "server_testgoodbuilder.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testgoodbuilder.xml");
 
         String issuer = "https://flintstone:19443/jwt/defaultJWT";
 
@@ -355,7 +358,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_validConsumerRef() throws Exception {
-        reconfigureServer(server, "server_testgoodconsumer.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testgoodconsumer.xml");
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
@@ -385,7 +388,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_invalidConsumerRef() throws Exception {
-        reconfigureServer(server, "server_testbadconsumer.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testbadconsumer.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
         Expectations expectations = new Expectations();
@@ -416,13 +419,13 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_useLtpaIfJwtAbsent_true() throws Exception {
-        reconfigureServer(server, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
 
         // Obtain a valid LTPA token
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Enable useLtpaIfJwtAbsent
-        reconfigureServer(server, "server_useLtpaIfJwtAbsent_true.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_true.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
@@ -457,13 +460,13 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_useLtpaIfJwtAbsent_false() throws Exception {
-        reconfigureServer(server, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
 
         // Obtain a valid LTPA token
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         // Disable useLtpaIfJwtAbsent
-        reconfigureServer(server, "server_useLtpaIfJwtAbsent_false.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_false.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
@@ -484,7 +487,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_cookieSecureTrue_httpOnlyTrue() throws Exception {
-        reconfigureServer(server, "server_testcookiesecure.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testcookiesecure.xml");
 
         WebClient wc = new WebClient();
 
@@ -511,7 +514,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_cookieSecureTrue_httpOnlyFalse() throws Exception {
-        reconfigureServer(server, "server_testcookiesecure_httponlyfalse.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testcookiesecure_httponlyfalse.xml");
 
         WebClient wc = new WebClient();
 
@@ -539,7 +542,7 @@ public class ConfigAttributeTests extends CommonJwtFat {
      */
     @Test
     public void test_sslPortNotDefined() throws Exception {
-        reconfigureServer(server, "/server_noSslPort.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "/server_noSslPort.xml");
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 

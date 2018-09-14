@@ -22,13 +22,11 @@ import org.junit.runner.Description;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.FatWatcher;
-import com.ibm.ws.security.fat.common.apps.CommonFatApplications;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
-import com.ibm.ws.security.fat.common.servers.ServerFileUtils;
 import com.ibm.ws.security.fat.common.servers.ServerTracker;
 
-import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.ServerFileUtils;
 
 public class CommonSecurityFat {
 
@@ -43,24 +41,6 @@ public class CommonSecurityFat {
     protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
     protected String _testName = null;
-
-    protected static void setUpAndStartServer(LibertyServer server, String startingConfigFile) throws Exception {
-        deployApps(server);
-        startServer(server, startingConfigFile);
-    }
-
-    protected static void startServer(LibertyServer server, String startingConfigFile) throws Exception {
-        serverTracker.addServer(server);
-        // copy an expanded server config to server.xml (bypass setServerConfigurationFile as our config source path is differnt
-        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getServerRoot(), "server.xml", serverFileUtils.expandAndBackupCfgFile(server, startingConfigFile));
-        // save this "server startup config" for use in restoring a servers config between tests later.
-        server.saveServerConfiguration();
-        server.startServer();
-    }
-
-    protected static void deployApps(LibertyServer server) throws Exception {
-        CommonFatApplications.deployTestMarkerApp(server);
-    }
 
     @BeforeClass
     public static void commonBeforeClass() throws Exception {
@@ -102,34 +82,13 @@ public class CommonSecurityFat {
             if (server != null && !server.isStarted()) {
                 continue;
             }
-	    loggingUtils.logTestCaseInServerLog(server, testName, actionToLog);
+            loggingUtils.logTestCaseInServerLog(server, testName, actionToLog);
             try {
                 server.setMarkToEndOfLog(server.getDefaultLogFile());
             } catch (Exception e) {
                 Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
             }
         }
-    }
-
-    public void reconfigureServer(LibertyServer server, String newConfig, String... waitForMessages) throws Exception {
-
-        reconfigureServer(server, Constants.COMMON_CONFIG_DIR, newConfig, waitForMessages);
-    }
-
-    public void reconfigureServer(LibertyServer server, String configDir, String newConfig, String... waitForMessages) throws Exception {
-
-        String newServerCfg = serverFileUtils.expandAndBackupCfgFile(server, configDir + "/" + newConfig, _testName);
-        Log.info(thisClass, "reconfigureServer", "Reconfiguring server to use new config: " + newConfig);
-        server.setMarkToEndOfLog();
-        //        server.replaceServerConfiguration(serverFileUtils.getServerFileLoc(server) + "/" + newServerCfg);
-        //        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), serverFileLoc, "server.xml", newServerConfigFile);
-        //        server.copyFileToLibertyServerRoot(newServerCfg);
-        //        server.copyFileToLibertyServerRoot(serverFileUtils.getServerFileLoc(server), server.getServerFileLoc(server), newServerCfg);
-        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), serverFileUtils.getServerFileLoc(server), "server.xml", newServerCfg);
-
-        Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
-        //        setServerConfigurationFile(newConfigFile);
-        server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation(), waitForMessages);
     }
 
     @Rule

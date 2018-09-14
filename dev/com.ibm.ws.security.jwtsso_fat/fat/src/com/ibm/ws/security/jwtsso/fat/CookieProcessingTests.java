@@ -56,12 +56,16 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private TestActions actions = new TestActions();
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    private final TestActions actions = new TestActions();
+    private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
+        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        serverTracker.addServer(server);
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
+
     }
 
     /**
@@ -100,7 +104,7 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_largeCookies() throws Exception {
-        reconfigureServer(server, "server_testlargecookies.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testlargecookies.xml");
 
         doHappyPath();
         // The test app logs the cookies,  check them that way.  Or we could look at the response headers.
@@ -151,7 +155,7 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_ServletLogout() throws Exception {
-        reconfigureServer(server, "server_testlargecookies.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testlargecookies.xml");
         doHappyPath();
 
         // add attribute to tell the app to logout
@@ -176,7 +180,7 @@ public class CookieProcessingTests extends CommonJwtFat {
     @Mode(TestMode.LITE)
     @Test
     public void test_ibm_security_logout() throws Exception {
-        reconfigureServer(server, "server_testlargecookies.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_testlargecookies.xml");
         doHappyPath();
         // add attribute to tell the app to logout
         String logoutUrl = protectedUrl.replace("SimpleServlet", "ibm_security_logout");

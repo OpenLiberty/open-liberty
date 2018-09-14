@@ -97,6 +97,7 @@ import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.PrivHelper;
+import componenttest.topology.utils.ServerFileUtils;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -237,7 +238,6 @@ public class LibertyServer implements LogMonitorClient {
     protected String serverRoot; // The root of the server for Liberty
     protected String serverOutputRoot; // The output root of the server
     protected String logsRoot; // The root of the Logs Files
-    protected String relativeServerConfigsRoot = "serverConfigs";
 
     protected long lastConfigUpdate = 0; // Time stamp (in millis) of the last configuration update
 
@@ -658,6 +658,18 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Sets the server configuration to be the specified file and starts the server.
+     */
+    public ProgramOutput startServerUsingExpandedConfiguration(String configFile) throws Exception {
+
+        ServerFileUtils serverFileUtils = new ServerFileUtils();
+        String mergedFile = serverFileUtils.expandAndBackupCfgFile(this, configFile);
+        ProgramOutput startupOutput = startServerUsingConfiguration(mergedFile, new ArrayList<String>());
+        saveServerConfiguration();
+        return startupOutput;
+    }
+
+    /**
      * Sets the server configuration to be the specified file, starts the server, and waits for each of the specified messages.
      */
     public ProgramOutput startServerUsingConfiguration(String configFile, List<String> waitForMessages) throws Exception {
@@ -665,6 +677,44 @@ public class LibertyServer implements LogMonitorClient {
         ProgramOutput startupOutput = startServer();
         waitForStringsInLogUsingMark(waitForMessages);
         return startupOutput;
+    }
+
+    /**
+     * Reconfigures the running server. Expands any imports in the specified server config and copies that expanded
+     * configuration to server.xml of the server root.
+     *
+     * @param testName - The name of the test case requesting the reconfig - a copy of the expanded configuration
+     *            file will be saved for debug purposes
+     * @param newConfig - The configuration to swich to
+     * @param waitForMessages - Any messages to wait (used to determine if the update is complete)
+     * @throws Exception
+     */
+    public void reconfigureServerUsingExpandedConfiguration(String testName, String newConfig, String... waitForMessages) throws Exception {
+
+        reconfigureServerUsingExpandedConfiguration(testName, "configs", newConfig, waitForMessages);
+    }
+
+    /**
+     * Reconfigures the running server. Expands any imports in the specified server config and copies that expanded
+     * configuration to server.xml of the server root.
+     *
+     * @param testName - The name of the test case requesting the reconfig - a copy of the expanded configuration
+     *            file will be saved for debug purposes
+     * @param configDir - The directory under the server root where the configuration will be found ("configs" is the default)
+     * @param newConfig - The configuration to swich to
+     * @param waitForMessages - Any messages to wait (used to determine if the update is complete)
+     * @throws Exception
+     */
+    public void reconfigureServerUsingExpandedConfiguration(String testName, String configDir, String newConfig, String... waitForMessages) throws Exception {
+
+        ServerFileUtils serverFileUtils = new ServerFileUtils();
+        String newServerCfg = serverFileUtils.expandAndBackupCfgFile(this, configDir + "/" + newConfig, testName);
+        Log.info(c, "reconfigureServerUsingExpandedConfiguration", "Reconfiguring server to use new config: " + newConfig);
+        setMarkToEndOfLog();
+        replaceServerConfiguration(newServerCfg);
+
+        Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
+        waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), waitForMessages);
     }
 
     /**
@@ -3788,7 +3838,7 @@ public class LibertyServer implements LogMonitorClient {
      * assumed to exist under the server root directory.
      */
     public void setServerConfigurationFromFilePath(String filePath) throws Exception {
-        if (filePath != null && !filePath.startsWith("/")) {
+        if (filePath != null && !filePath.startsWith(getServerRoot())) {
             filePath = getServerRoot() + File.separator + filePath;
         }
         Log.info(c, "setServerConfigurationFile", "Using path: " + filePath);

@@ -8,21 +8,32 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.fat.common.servers;
+package componenttest.topology.utils;
 
 import java.io.File;
 import java.nio.file.Files;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.Constants;
-import com.ibm.ws.security.fat.common.utils.CommonMergeTools;
 
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
+/**
+ * Expands imported files within a Liberty server xml.
+ * The server configs (that include "imports" are assumed to be found in:
+ * publish/servers/<server>/configs/
+ * These config files will have imports located in
+ * publish/shared/config/ of a FAT project
+ *
+ * @author chrisc
+ *
+ */
 public class ServerFileUtils {
 
     protected static Class<?> thisClass = ServerFileUtils.class;
+    private final String serverConfigDir = "configs";
+    private final String importConfigDir = "config";
+    private final String serverBackupDir = "serverConfigBackups";
 
     public String expandAndBackupCfgFile(LibertyServer server, String cfgFile) throws Exception {
         return expandAndBackupCfgFile(server, cfgFile, null);
@@ -34,8 +45,8 @@ public class ServerFileUtils {
         if (cfgFile == null) {
             throw new Exception("Requested configuration file can not be null");
         } else {
-            if (!(cfgFile.startsWith("/" + Constants.COMMON_CONFIG_DIR + "/") || cfgFile.startsWith(Constants.COMMON_CONFIG_DIR + "/"))) {
-                fixedCfgFileName = Constants.COMMON_CONFIG_DIR + "/" + cfgFile;
+            if (!(cfgFile.startsWith("/" + serverConfigDir + "/") || cfgFile.startsWith(serverConfigDir + "/"))) {
+                fixedCfgFileName = serverConfigDir + "/" + cfgFile;
             }
             String newCfgFile = expandCfgFile(server, fixedCfgFileName);
             backupCfgFile(server, newCfgFile, inTestName);
@@ -47,7 +58,7 @@ public class ServerFileUtils {
 
         String newCfgFile = cfgFile;
         CommonMergeTools merge = new CommonMergeTools();
-        if (merge.mergeFile(server.getServerRoot() + "/" + cfgFile, server.getServerSharedPath() + "config", server.getServerRoot() + "/")) {
+        if (merge.mergeFile(server.getServerRoot() + "/" + cfgFile, server.getServerSharedPath() + importConfigDir, server.getServerRoot() + "/")) {
             newCfgFile = cfgFile.replace(".xml", "_Merged.xml");
         }
         return server.getServerRoot() + "/" + newCfgFile;
@@ -80,15 +91,16 @@ public class ServerFileUtils {
     }
 
     /**
-     * Builds the fully qualified path of the {@code <Install>/build.image/wlp/usr/servers/<serverName>/testServers} directory
+     * Builds the fully qualified path of the {@code <Install>/build.image/wlp/usr/servers/<serverName>/serverConfigBackups}
+     * directory
      */
     public File getServerBackupDir(LibertyServer server) throws Exception {
         try {
-            File testServerDir = new File(getServerFileLoc(server) + "/testServers");
+            File testServerDir = new File(getServerFileLoc(server) + "/" + serverBackupDir);
             if (!Files.isDirectory(testServerDir.toPath())) {
                 testServerDir.mkdir();
             }
-            Log.info(thisClass, "getTestServerDir", "testServerDir: " + testServerDir.toString());
+            Log.info(thisClass, "getServerBackupDir", "serverBackupDir: " + testServerDir.toString());
             return testServerDir;
         } catch (Exception ex) {
             ex.printStackTrace(System.out);

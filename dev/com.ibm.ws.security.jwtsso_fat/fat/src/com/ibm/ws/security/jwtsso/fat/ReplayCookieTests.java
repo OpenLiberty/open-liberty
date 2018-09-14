@@ -64,8 +64,8 @@ public class ReplayCookieTests extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private JwtFatActions actions = new JwtFatActions();
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    private final JwtFatActions actions = new JwtFatActions();
+    private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     static final String DEFAULT_CONFIG = "server_withBuilderApp.xml";
     static final String APP_NAME_JWT_BUILDER = "jwtbuilder";
@@ -79,8 +79,11 @@ public class ReplayCookieTests extends CommonJwtFat {
     @BeforeClass
     public static void setUp() throws Exception {
         CommonFatApplications.buildAndDeployApp(server, APP_NAME_JWT_BUILDER, "com.ibm.ws.security.fat.common.apps.jwtbuilder.*");
+        server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
+        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        serverTracker.addServer(server);
+        server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG);
 
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/" + DEFAULT_CONFIG);
     }
 
     /**
@@ -272,12 +275,12 @@ public class ReplayCookieTests extends CommonJwtFat {
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie() throws Exception {
 
         server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        reconfigureServer(server, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        reconfigureServer(server, DEFAULT_CONFIG);
+        server.reconfigureServerUsingExpandedConfiguration(_testName, DEFAULT_CONFIG);
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -304,11 +307,11 @@ public class ReplayCookieTests extends CommonJwtFat {
     public void test_obtainLtpa_reconfigureToUseJwtSso_reaccessResourceWithLtpaCookie_useLtpaIfJwtAbsent() throws Exception {
 
         server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        reconfigureServer(server, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
 
         Cookie ltpaCookie = actions.logInAndObtainLtpaCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
-        reconfigureServer(server, "server_useLtpaIfJwtAbsent_true.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_useLtpaIfJwtAbsent_true.xml");
 
         // Access the protected again using a new conversation with the LTPA cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -342,7 +345,7 @@ public class ReplayCookieTests extends CommonJwtFat {
         Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
 
         server.removeInstalledAppForValidation(APP_NAME_JWT_BUILDER);
-        reconfigureServer(server, "server_noFeature.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noFeature.xml");
 
         // Access the protected again using a new conversation with the JWT SSO cookie included
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
@@ -418,7 +421,7 @@ public class ReplayCookieTests extends CommonJwtFat {
     @Test
     public void test_buildJwt_missingClaims_accessProtectedResource() throws Exception {
 
-        reconfigureServer(server, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
 
         String builderId = "builder_defaults";
         Cookie jwtCookie = buildThirdPartyJwtCookieUsingBuilderApp(builderId);
@@ -476,7 +479,7 @@ public class ReplayCookieTests extends CommonJwtFat {
     @Test
     public void test_buildJwt_accessProtectedResource_issuerTrusted() throws Exception {
 
-        reconfigureServer(server, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
 
         String builderId = "builder_defaults";
         Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
@@ -505,7 +508,7 @@ public class ReplayCookieTests extends CommonJwtFat {
     @Test
     public void test_buildJwt_signedWithNonDefaultKey_accessProtectedResource() throws Exception {
 
-        reconfigureServer(server, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_withBuilderApp_consumerTrustsAllIssuers.xml");
 
         String builderId = "builder_signWithUniqueKey";
         Cookie jwtCookie = buildThirdPartyJwtCookie(builderId);
@@ -526,7 +529,8 @@ public class ReplayCookieTests extends CommonJwtFat {
     /********************************************** Helper methods **********************************************/
 
     private Cookie createIdenticalCookieWithNewValue(Cookie cookieToDuplicate, String newCookieValue) {
-        return new Cookie(cookieToDuplicate.getDomain(), cookieToDuplicate.getName(), newCookieValue, cookieToDuplicate.getPath(), cookieToDuplicate.getExpires(), cookieToDuplicate.isSecure(), cookieToDuplicate.isHttpOnly());
+        return new Cookie(cookieToDuplicate.getDomain(), cookieToDuplicate.getName(), newCookieValue, cookieToDuplicate.getPath(), cookieToDuplicate.getExpires(), cookieToDuplicate
+                        .isSecure(), cookieToDuplicate.isHttpOnly());
     }
 
     /**

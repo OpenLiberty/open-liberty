@@ -43,8 +43,8 @@ public class CookieExpirationTests extends CommonJwtFat {
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private JwtFatActions actions = new JwtFatActions();
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    private final JwtFatActions actions = new JwtFatActions();
+    private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     String protectedUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + JwtFatConstants.SIMPLE_SERVLET_PATH;
     String defaultUser = JwtFatConstants.TESTUSER;
@@ -52,7 +52,11 @@ public class CookieExpirationTests extends CommonJwtFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
+        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        serverTracker.addServer(server);
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
+
     }
 
     /**
@@ -67,7 +71,7 @@ public class CookieExpirationTests extends CommonJwtFat {
      */
     @Test
     public void test_shortJwtCookieLifetime_reuseCookieWithinClockSkew() throws Exception {
-        reconfigureServer(server, "server_shortJwtLifetime.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_shortJwtLifetime.xml");
 
         WebClient webClient = new WebClient();
         String expectedIssuer = "https://" + "[^/]+" + "/jwt/builder_shortLifetime";
@@ -103,7 +107,7 @@ public class CookieExpirationTests extends CommonJwtFat {
                     "com.ibm.ws.security.authentication.AuthenticationException" })
     @Test
     public void test_shortJwtCookieLifetime_reuseCookieOutsideClockSkew() throws Exception {
-        reconfigureServer(server, "server_shortJwtLifetime_shortClockSkew.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_shortJwtLifetime_shortClockSkew.xml");
 
         WebClient webClient = new WebClient();
         String expectedIssuer = "https://" + "[^/]+" + "/jwt/builder_shortLifetime";
