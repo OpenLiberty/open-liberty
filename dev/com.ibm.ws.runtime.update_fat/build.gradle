@@ -1,0 +1,35 @@
+
+task copyBundles {
+  enabled project.file('test-bundles').exists()
+  doLast {
+    new File(project.buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(project.name + '.jar')) {
+        copy {
+          from line
+          into new File(autoFvtDir, 'publish/bundles')
+        }
+      }
+    }
+  }
+}
+
+addRequiredLibraries {
+	dependsOn copyBundles
+}
+
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
+  }
+}
+
+apply plugin: "net.ossindex.audit"
+
+audit {
+    failOnError = false
+}
