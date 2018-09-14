@@ -254,7 +254,7 @@ public class OidcClientHttpUtil {
             String accessToken,
             final List<NameValuePair> commonHeaders) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "OIDC SSO RP POST TO URL ["+WebUtils.stripSecretFromUrl(url,"client_secret")+"]");
+            Tr.debug(tc, "OIDC _SSO RP POST TO URL ["+WebUtils.stripSecretFromUrl(url,"client_secret")+"]");
             Tr.debug(tc, "postToEndpoint: url: " + url + " headers: "
                     + commonHeaders + " params: " + "*****" + " baUsername: "
                     + baUsername + " baPassword: " + (baPassword != null ? "****" : null)
