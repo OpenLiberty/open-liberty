@@ -60,7 +60,10 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.cxf-rt-frontend-jaxws.2.6.2, \
  com.ibm.ws.org.apache.cxf-rt-ws-policy.2.6.2, \
  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
- com.ibm.ws.org.apache.cxf-api.2.6.2
+ com.ibm.ws.org.apache.cxf-api.2.6.2, \
+ com.ibm.ws.com.sun.xml.messaging.saaj; require-java:="9", \
+ com.ibm.ws.org.jvnet.mimepull; require-java:="9"
+ 
 -files=\
  bin/jaxws/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/jaxws/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
