@@ -19,9 +19,6 @@ Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.reactive.streams
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
-app-resources= \
-  META-INF/services/org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine
-
 Import-Package: \
   org.reactivestreams; version="[1.0,1.1)", \
   com.ibm.ws.microprofile.reactive.streams.spi.impl;version=1.0,\
@@ -33,7 +30,6 @@ Export-Package: \
 
 Include-Resource: \
   @${repo;org.eclipse.microprofile.reactive.streams:microprofile-reactive-streams-operators;1.0}
-  META-INF/services=resources/META-INF/services
 
 WS-TraceGroup: REACTIVESTREAMS
 
