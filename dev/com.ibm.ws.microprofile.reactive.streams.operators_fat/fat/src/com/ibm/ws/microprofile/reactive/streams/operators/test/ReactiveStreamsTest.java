@@ -47,8 +47,8 @@ public class ReactiveStreamsTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
+        // Create a WebArchive that will have the file name APP_NAME.war once it's written to a file
+        // Include the 'APP_NAME.web' package and all of it's java classes and sub-packages
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.reactive.streams.*");
