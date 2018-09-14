@@ -646,8 +646,13 @@ public class RequestUtils {
        return ht;
    }
    
-static public Hashtable parseQueryString(byte b[], String encoding) {
        
+   static public Hashtable parseQueryString(byte b[], String encoding) {
+       
+       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
+           logger.entering(CLASS_NAME, "parseQueryString( byte[] , encoding --> [" + encoding + "])"); //PM35450.1
+       } 
+    
        Charset charset = Charset.forName(encoding);
        
        int totalSize = 0; //PM53930
@@ -755,7 +760,7 @@ static public Hashtable parseQueryString(byte b[], String encoding) {
        }
 
        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
-           logger.exiting(CLASS_NAME, "parseQueryString(char[], String)");
+           logger.exiting(CLASS_NAME, "parseQueryString(byte[], String)");
        } //PK75617
        return ht;  
    }
@@ -765,6 +770,11 @@ static public Hashtable parseQueryString(byte b[], String encoding) {
         */
    // @MD17415 begin part 3 of 3 New Loop for finding key and value
    static private String parseName(final char [] ch, final int startOffset, final int endOffset) {
+       
+       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
+           logger.entering(CLASS_NAME, "parseName( char[] , startOffset --> [" + startOffset + "], endOffset  --> [" + endOffset + "])");
+       } 
+       
        int j = 0;
        char [] c = null;
        for (int i = startOffset; i < endOffset; i++) {
@@ -824,6 +834,11 @@ static public Hashtable parseQueryString(byte b[], String encoding) {
    }
    
    static private String parseName(final byte [] bytes, final int startOffset, final int endOffset, Charset charset) {
+       
+       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
+           logger.entering(CLASS_NAME, "parseName( byte[] , startOffset --> [" + startOffset + "], endOffset  --> [" + endOffset + "])");
+       } 
+       
        int j = 0;
        byte [] b = null;
        for (int i = startOffset; i < endOffset; i++) {
@@ -847,6 +862,7 @@ static public Hashtable parseQueryString(byte b[], String encoding) {
                            System.arraycopy(bytes, startOffset, b, 0, j);
                        }
                    }
+                   
                    int num1 = Character.digit(bytes[++i],16);   //@RWS7
                    int num2 = Character.digit(bytes[++i],16);   //@RWS7
                    
@@ -916,6 +932,10 @@ static public Hashtable parseQueryString(byte b[], String encoding) {
     */
    static private String parse_decode_Parameter(char[] data, int start, int length, String encoding, String val) {
 
+       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
+           logger.entering(CLASS_NAME, "parse_decode_Parameter( char[] , start --> [" + start + "], length  --> [" + length + "], encoding --> [" + encoding + "], val  --> [" + val + ")");
+       } 
+       
        String paramData = null;     
        paramData = new String(data, start, length);
        
@@ -951,6 +971,10 @@ static public Hashtable parseQueryString(byte b[], String encoding) {
     */
    static private String parse_decode_Parameter(byte[] data, int start, int length, String encoding, String val) {
 
+       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
+           logger.entering(CLASS_NAME, "parse_decode_Parameter( byte[] , start --> [" + start + "], length  --> [" + length + "], encoding --> [" + encoding + "], val  --> [" + val + ")");
+       } 
+       
        String paramData = null;     
        paramData = new String(data, start, length);
        

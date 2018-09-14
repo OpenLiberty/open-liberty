@@ -279,7 +279,7 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
     private static byte[] getPostBytes(int len, ServletInputStream in) /* 157338 add throws */ throws IOException
     {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-                        logger.logp(Level.FINE,CLASS_NAME,"getPostBody","len = " + len);
+            logger.logp(Level.FINE,CLASS_NAME,"getPostBytes","len = " + len);
         
         int inputLen, offset;
         byte[] postedBytes = null;
@@ -303,15 +303,15 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
                     String msg = nls.getString("post.body.contains.less.bytes.than.specified", "post body contains less bytes than specified by content-length");
                     throw new IOException(msg);
                 }
-                logger.logp(Level.FINE, CLASS_NAME, "getPostBody","read of " +  inputLen + " bytes.");
-               offset += inputLen;
+                logger.logp(Level.FINE, CLASS_NAME, "getPostBytes","read of " +  inputLen + " bytes.");
+                offset += inputLen;
             }
             while ((len - offset) > 0);            
             
         }
         catch (IOException e)
         {
-            com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.RequestUtils.parsePostData", "398");
+            com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.RequestUtils.getPostBytes", "398");
             // begin 157338
             throw e;
             //return new Hashtable();
@@ -322,6 +322,10 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
     }
     private static String getPostBody(int len, ServletInputStream in, String encoding) /* 157338 add throws */ throws IOException
     {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.logp(Level.FINE,CLASS_NAME,"getPostBody","len = " + len," encoding = " + encoding);
+        }
+        
         String postedBody;
         byte postedBytes[] = getPostBytes(len,in);
         
@@ -331,7 +335,7 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
         }
         catch (UnsupportedEncodingException e)
         {
-            com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.RequestUtils.parsePostData", "411");
+            com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.RequestUtils.getPostBody", "411");
             postedBody = new String(postedBytes);
         }
         
