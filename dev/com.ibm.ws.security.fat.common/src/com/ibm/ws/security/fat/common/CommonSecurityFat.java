@@ -51,12 +51,38 @@ public class CommonSecurityFat {
     public void commonBeforeTest() {
         _testName = testName.getMethodName();
         loggingUtils.printMethodName("STARTING TEST CASE: " + _testName);
-        logTestCaseInServerLogs(serverTracker, _testName, "STARTING");
+        logTestCaseInServerLogs("STARTING");
     }
 
     @After
     public void commonAfterTest() {
-        logTestCaseInServerLogs(serverTracker, _testName, "ReStoringConfig");
+        restoreTestServers() ;
+        loggingUtils.printMethodName("ENDING TEST CASE: " + _testName);
+        logTestCaseInServerLogs("ENDING");
+    }
+
+    @AfterClass
+    public static void commonAfterClass() throws Exception {
+        serverTracker.stopAllServers();
+    }
+
+    public void logTestCaseInServerLogs(String actionToLog) {
+        Set<LibertyServer> testServers = serverTracker.getServers();
+        for (LibertyServer server : testServers) {
+            if (server != null && !server.isStarted()) {
+                continue;
+            }
+            loggingUtils.logTestCaseInServerLog(server, _testName, actionToLog);
+            try {
+                server.setMarkToEndOfLog(server.getDefaultLogFile());
+            } catch (Exception e) {
+                Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
+            }
+        }
+    }
+
+    public void restoreTestServers() {
+        logTestCaseInServerLogs("ReStoringConfig");
         for (LibertyServer server : serverTracker.getServers()) {
             try {
                 Log.info(thisClass, "commonAfterTest", "Restoring server: " + server.getServerName());
@@ -67,30 +93,8 @@ public class CommonSecurityFat {
                 Log.info(thisClass, "commonAfterTest", "**********************FAILED to restore original server configuration**********************");
             }
         }
-        loggingUtils.printMethodName("ENDING TEST CASE: " + _testName);
-        logTestCaseInServerLogs(serverTracker, _testName, "ENDING");
     }
-
-    @AfterClass
-    public static void commonAfterClass() throws Exception {
-        serverTracker.stopAllServers();
-    }
-
-    public void logTestCaseInServerLogs(ServerTracker serverTracker, String testName, String actionToLog) {
-        Set<LibertyServer> testServers = serverTracker.getServers();
-        for (LibertyServer server : testServers) {
-            if (server != null && !server.isStarted()) {
-                continue;
-            }
-            loggingUtils.logTestCaseInServerLog(server, testName, actionToLog);
-            try {
-                server.setMarkToEndOfLog(server.getDefaultLogFile());
-            } catch (Exception e) {
-                Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
-            }
-        }
-    }
-
+    
     @Rule
     public FatWatcher watchman = new FatWatcher() {
         @Override

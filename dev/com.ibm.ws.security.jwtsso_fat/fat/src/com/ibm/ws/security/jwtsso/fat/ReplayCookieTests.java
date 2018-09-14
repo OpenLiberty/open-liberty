@@ -32,6 +32,7 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
+import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.apps.CommonFatApplications;
 import com.ibm.ws.security.fat.common.apps.jwtbuilder.JwtBuilderServlet;
@@ -57,7 +58,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class ReplayCookieTests extends CommonJwtFat {
+public class ReplayCookieTests extends CommonSecurityFat {
 
     protected static Class<?> thisClass = ReplayCookieTests.class;
 
@@ -79,7 +80,6 @@ public class ReplayCookieTests extends CommonJwtFat {
     @BeforeClass
     public static void setUp() throws Exception {
         CommonFatApplications.buildAndDeployApp(server, APP_NAME_JWT_BUILDER, "com.ibm.ws.security.fat.common.apps.jwtbuilder.*");
-        server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG);

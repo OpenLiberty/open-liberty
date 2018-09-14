@@ -27,7 +27,7 @@ public class ServerBootstrapUtils {
      * Writes each of the specified bootstrap properties and values to the provided server's bootstrap.properties file.
      */
     public void writeBootstrapProperties(LibertyServer server, Map<String, String> miscParms) throws Exception {
-        String thisMethod = "addBootstrapParms";
+        String thisMethod = "writeBootstrapProperties";
         loggingUtils.printMethodName(thisMethod);
 
         if (miscParms == null) {

@@ -27,6 +27,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
@@ -41,7 +42,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class CookieProcessingTests extends CommonJwtFat {
+public class CookieProcessingTests extends CommonSecurityFat {
 
     protected static Class<?> thisClass = CookieProcessingTests.class;
 
@@ -61,7 +62,6 @@ public class CookieProcessingTests extends CommonJwtFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server.addInstalledAppForValidation(JwtFatConstants.APP_TESTMARKER);
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml");

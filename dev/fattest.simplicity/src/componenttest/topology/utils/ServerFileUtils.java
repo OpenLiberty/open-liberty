@@ -32,7 +32,7 @@ public class ServerFileUtils {
 
     protected static Class<?> thisClass = ServerFileUtils.class;
     private final String serverConfigDir = "configs";
-    private final String importConfigDir = "config";
+    private final String sharedConfigDir = "config";
     private final String serverBackupDir = "serverConfigBackups";
 
     public String expandAndBackupCfgFile(LibertyServer server, String cfgFile) throws Exception {
@@ -44,21 +44,22 @@ public class ServerFileUtils {
         String fixedCfgFileName = cfgFile;
         if (cfgFile == null) {
             throw new Exception("Requested configuration file can not be null");
-        } else {
-            if (!(cfgFile.startsWith("/" + serverConfigDir + "/") || cfgFile.startsWith(serverConfigDir + "/"))) {
-                fixedCfgFileName = serverConfigDir + "/" + cfgFile;
-            }
-            String newCfgFile = expandCfgFile(server, fixedCfgFileName);
-            backupCfgFile(server, newCfgFile, inTestName);
-            return newCfgFile;
         }
+
+        if (!(cfgFile.startsWith("/" + serverConfigDir + "/") || cfgFile.startsWith(serverConfigDir + "/"))) {
+            fixedCfgFileName = serverConfigDir + "/" + cfgFile;
+        }
+        String newCfgFile = expandCfgFile(server, fixedCfgFileName);
+        backupCfgFile(server, newCfgFile, inTestName);
+        return newCfgFile;
+
     }
 
     public String expandCfgFile(LibertyServer server, String cfgFile) throws Exception {
 
         String newCfgFile = cfgFile;
         CommonMergeTools merge = new CommonMergeTools();
-        if (merge.mergeFile(server.getServerRoot() + "/" + cfgFile, server.getServerSharedPath() + importConfigDir, server.getServerRoot() + "/")) {
+        if (merge.mergeFile(server.getServerRoot() + "/" + cfgFile, server.getServerSharedPath() + sharedConfigDir, server.getServerRoot() + "/")) {
             newCfgFile = cfgFile.replace(".xml", "_Merged.xml");
         }
         return server.getServerRoot() + "/" + newCfgFile;
