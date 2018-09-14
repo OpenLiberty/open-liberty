@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,37 +35,27 @@ import javax.security.auth.AuthPermission;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.osgi.service.url.URLStreamHandlerService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.kernel.boot.security.PermissionsCombiner;
 import com.ibm.ws.kernel.boot.security.WLPDynamicPolicy;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 
-@ObjectClassDefinition(pid = "com.ibm.ws.security.java2sec.PermissionManagerConfig", name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, localization = Ext.LOCALIZATION)
-interface PermissionManagerConfig {}
-
-@Component(service = {com.ibm.ws.security.java2sec.PermissionManager.class, com.ibm.ws.kernel.boot.security.PermissionsCombiner.class},
-                immediate = true,
-                configurationPolicy = ConfigurationPolicy.REQUIRE,
-                configurationPid = "com.ibm.ws.security.java2sec.PermissionManagerConfig",
-                property = "service.vendor=IBM")
 public class PermissionManager implements PermissionsCombiner {
 	
 	/**
 	 * The trace component
 	 */
 	private static final TraceComponent tc = Tr.register(PermissionManager.class);
+	
+	/**
+	 * Class Loader
+	 */
+	private ClassLoadingService classLoadingService;
 
 	/**
 	 * These are the default filtered or restrictable permissions. These can be overridden by
@@ -158,7 +148,6 @@ public class PermissionManager implements PermissionsCombiner {
     	setAsDynamicPolicyPermissionCombiner(null);
     }
 
-    @Reference(name = KEY_PERMISSION, service = JavaPermissionsConfiguration.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.MULTIPLE)
     protected void setPermission(ServiceReference<JavaPermissionsConfiguration> permission) {
     	permissions.addReference(permission);
     }
@@ -173,8 +162,7 @@ public class PermissionManager implements PermissionsCombiner {
     	    initializePermissions();
     	}
     }
-
-    @Reference(service = URLStreamHandlerService.class, target = "(url.handler.protocol=wsjar)", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+    
     protected synchronized void setWsjarURLStreamHandler(ServiceReference<URLStreamHandlerService> urlStreamHandlerServiceRef) {
     	wsjarUrlStreamHandlerAvailable = true;
     }
@@ -197,6 +185,14 @@ public class PermissionManager implements PermissionsCombiner {
     	grantedPermissions.clear();
     	codeBasePermissionMap.clear();
 	}
+
+    protected void setClassLoadingService(ClassLoadingService service) {
+        classLoadingService = service;
+    }
+
+    protected void unsetClassLoadingService(ClassLoadingService service) {
+        classLoadingService = null;
+    }
 
 	/**
 	 * Initialize the permissions using the configuration and determine the effective permission
@@ -232,9 +228,9 @@ public class PermissionManager implements PermissionsCombiner {
     	}
     	
     	// Iterate through the configured Permissions.
-    	if (permissions != null && !permissions.isEmpty()) {
+    	if(permissions != null && !permissions.isEmpty()) {
     		Iterable<JavaPermissionsConfiguration> javaPermissions = permissions.services();
-    		if (javaPermissions != null) {
+    		if(javaPermissions != null) {
     			for(JavaPermissionsConfiguration permission : javaPermissions) {
     				String permissionClass = String.valueOf(permission.get(JavaPermissionsConfiguration.PERMISSION));
     				String target = String.valueOf(permission.get(JavaPermissionsConfiguration.TARGET_NAME));
@@ -253,31 +249,33 @@ public class PermissionManager implements PermissionsCombiner {
         				isRestriction = ((Boolean) permission.get(JavaPermissionsConfiguration.RESTRICTION)).booleanValue();    					
     				}
     				
-    				if (isRestriction) {
+    				if(isRestriction) {
     					// If this is a restriction
     					if(perm != null) {
    						    restrictablePermissions.add(perm);
     					}
-    				} else {
+    				}
+    				else {
     					// If this is not a restriction, then set is a grant
-    					if (perm != null) {
+    					if(perm != null) {
     						// if codebase is present, then set the permission on the shared lib classloader
-    						if (codebase != null && !codebase.equalsIgnoreCase("null")) {
+    						if(codebase != null && !codebase.equalsIgnoreCase("null")) {
     							setCodeBasePermission(codebase, perm);
     						}
-    						else {
+    						else
     						    grantedPermissions.add(perm);
-    						}
     					}
     				}
     			}
     			
-    			if (tc.isDebugEnabled()) {
+    			if(tc.isDebugEnabled()) {
         			Tr.debug(tc, "restrictablePermissions : " + restrictablePermissions);
         			Tr.debug(tc, "grantedPermissions : " + grantedPermissions);
     			}
     		}
     	}
+    	
+    	setSharedLibraryPermission();
     }
 
     private String normalize(String codebase) {
@@ -302,11 +300,10 @@ public class PermissionManager implements PermissionsCombiner {
     	}
 	}
 
-	@Override
-	public Map<String, ProtectionDomain> getProtectionDomains() {
+	private void setSharedLibraryPermission() {
 		Map<String, ProtectionDomain> protectionDomainMap = new HashMap<String, ProtectionDomain>();
 		
-		for (String codeBase : codeBasePermissionMap.keySet()) {
+		for(String codeBase : codeBasePermissionMap.keySet()) {
 			if (tc.isDebugEnabled()) {
 				Tr.debug(tc, "codeBase = " + codeBase);
 			}
@@ -326,7 +323,8 @@ public class PermissionManager implements PermissionsCombiner {
 			Tr.debug(tc, "protectionDomainMap.size = " + protectionDomainMap.size());
 		}
 		
-		return protectionDomainMap;
+		if(classLoadingService != null)
+    	    classLoadingService.setSharedLibraryProtectionDomains(protectionDomainMap);
 	}
 
 	private ProtectionDomain createProtectionDomain(String codeBase, ArrayList<Permission> permissions) {
