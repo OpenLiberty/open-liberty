@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.util;
 
+import java.io.Closeable;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,36 +25,53 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.osgi.framework.Constants;
+
 /**
  * A utility class for thinning an uber jar by separating application code in a separate jar
  * and libraries(dependencies) in a zip or a directory.
  */
-public class SpringBootThinUtil {
+public class SpringBootThinUtil implements Closeable {
+    public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
+    private static final String SPRING_BOOT_LOADER_CLASSPATH = "org/springframework/boot/loader/";
+    private static final String LIBERTY_EXEC_JAR_BSN = "wlp.lib.extract";
+    private static final String LIBERTY_SERVER_NAME_HEADER = "Server-Name";
+    private static final String LIBERTY_ARCHIVE_ROOT_HEADER = "Archive-Root";
+    private static final String LIBERTY_LIB_CACHE_PATH = "usr/shared/resources/lib.index.cache/";
+    private static final String LIBERTY_SERVERS_PATH = "usr/servers/";
+    private static final String LIBERTY_SERVER_DROPINS_SPRING = "/dropins/spring/";
+    private static final String LIBERTY_SERVER_DROPINS = "/dropins/";
+    private static final String LIBERTY_SPRING_EXT = ".spring";
+    private static final String LIBERTY_SERVER_APPS = "/apps/";
+    private static final String[] appSearchRoots = new String[] { LIBERTY_SERVER_DROPINS_SPRING, LIBERTY_SERVER_DROPINS, LIBERTY_SERVER_APPS };
 
     private final JarFile sourceFatJar;
     private final File targetThinJar;
     private final File libIndexCache;
     private final File libIndexCacheParent;
+    private final String libertyServer;
+    private final String libertyRoot;
     private final String springBootLibPath;
     private final String springBootLibProvidedPath;
+    private final StarterFilter springStarterFilter;
     private final List<String> libEntries = new ArrayList<>();
-    private final StarterFilter starterFilter;
-    public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
-    private static final String SPRING_BOOT_LOADER_CLASSPATH = "org/springframework/boot/loader/";
 
     private static final String[] ZIP_EXTENSIONS = new String[] {
                                                                   "jar",
@@ -76,18 +93,32 @@ public class SpringBootThinUtil {
         this.targetThinJar = targetThinJar;
         this.libIndexCache = libIndexCache;
         this.libIndexCacheParent = libIndexCacheParent;
-        SpringBootManifest sbmf = new SpringBootManifest(this.sourceFatJar.getManifest());
-        String springBootLibPath = sbmf.getSpringBootLib();
-        if (!springBootLibPath.endsWith("/")) {
-            springBootLibPath += "/";
+
+        Manifest mf = this.sourceFatJar.getManifest();
+        String bsn = mf.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
+        if (LIBERTY_EXEC_JAR_BSN.equals(bsn)) {
+            this.libertyServer = mf.getMainAttributes().getValue(LIBERTY_SERVER_NAME_HEADER);
+            this.libertyRoot = mf.getMainAttributes().getValue(LIBERTY_ARCHIVE_ROOT_HEADER);
+            this.springBootLibPath = null;
+            this.springBootLibProvidedPath = null;
+            this.springStarterFilter = null;
+
+        } else {
+            SpringBootManifest sbmf = new SpringBootManifest(this.sourceFatJar.getManifest());
+            String springBootLibPath = sbmf.getSpringBootLib();
+            if (!springBootLibPath.endsWith("/")) {
+                springBootLibPath += "/";
+            }
+            String springBootLibProvidedPath = sbmf.getSpringBootLibProvided();
+            if (springBootLibProvidedPath != null && !springBootLibProvidedPath.endsWith("/")) {
+                springBootLibProvidedPath += "/";
+            }
+            this.libertyServer = null;
+            this.libertyRoot = null;
+            this.springBootLibPath = springBootLibPath;
+            this.springBootLibProvidedPath = springBootLibProvidedPath;
+            this.springStarterFilter = getStarterFilter(this.sourceFatJar);
         }
-        this.springBootLibPath = springBootLibPath;
-        String springBootLibProvidedPath = sbmf.getSpringBootLibProvided();
-        if (springBootLibProvidedPath != null && !springBootLibProvidedPath.endsWith("/")) {
-            springBootLibProvidedPath += "/";
-        }
-        this.springBootLibProvidedPath = springBootLibProvidedPath;
-        this.starterFilter = getStarterFilter(this.sourceFatJar);
     }
 
     private void validateNotNull(File sourceFatJar, File targetThinJar, File libIndexCache) {
@@ -103,10 +134,34 @@ public class SpringBootThinUtil {
     }
 
     public void execute() throws IOException, NoSuchAlgorithmException {
-        thin();
+        if (springStarterFilter == null) {
+            // this must be a liberty executable JAR
+            executeExtractFromExecutableJar();
+        } else {
+            executeThin();
+        }
     }
 
-    private void thin() throws FileNotFoundException, IOException, NoSuchAlgorithmException {
+    private void executeExtractFromExecutableJar() throws IOException {
+        if (this.libertyServer == null) {
+            // TODO need an error message about invalid Liberty uber JAR
+            throw new IOException(LIBERTY_SERVER_NAME_HEADER);
+        }
+
+        String root = this.libertyRoot;
+        if (root == null) {
+            root = "";
+        }
+
+        String libCachePath = root + LIBERTY_LIB_CACHE_PATH;
+        String serverPath = root + LIBERTY_SERVERS_PATH + this.libertyServer;
+
+        PreThinnedApp preThinned = new PreThinnedApp(libCachePath, serverPath, this.sourceFatJar);
+        preThinned.discover();
+        preThinned.store(this.libIndexCache, this.targetThinJar);
+    }
+
+    private void executeThin() throws IOException, NoSuchAlgorithmException {
         try (JarOutputStream thinJar = new JarOutputStream(new FileOutputStream(targetThinJar), sourceFatJar.getManifest())) {
             Set<String> entryNames = new HashSet<>();
             for (Enumeration<JarEntry> entries = sourceFatJar.entries(); entries.hasMoreElements();) {
@@ -117,7 +172,6 @@ public class SpringBootThinUtil {
                 }
             }
             addLibIndexFileToThinJar(thinJar);
-
         }
     }
 
@@ -127,7 +181,7 @@ public class SpringBootThinUtil {
         boolean isLibProvidedPath = isFromLibProvidedPath(path);
         // check if entry is dependency jar or application class
         if (isLibPath || isLibProvidedPath) {
-            if (!starterFilter.apply(entry.getName()) && (!isLibProvidedPath || includeLibProvidedPaths())) {
+            if (!springStarterFilter.apply(entry.getName()) && (!isLibProvidedPath || includeLibProvidedPaths())) {
                 String hash = hash(sourceFatJar, entry);
                 String hashPrefix = hash.substring(0, 2);
                 String hashSuffix = hash.substring(2, hash.length());
@@ -287,7 +341,7 @@ public class SpringBootThinUtil {
         }
     }
 
-    private void writeEntry(InputStream is, ZipOutputStream zos, String entryName) throws IOException {
+    private static void writeEntry(InputStream is, ZipOutputStream zos, String entryName) throws IOException {
         try {
             zos.putNextEntry(new ZipEntry(entryName));
             copyStream(is, zos);
@@ -296,7 +350,7 @@ public class SpringBootThinUtil {
         }
     }
 
-    private void copyStream(InputStream is, OutputStream os) throws IOException {
+    static void copyStream(InputStream is, OutputStream os) throws IOException {
         byte[] buffer = new byte[4096];
         int read = -1;
         while ((read = is.read(buffer)) != -1) {
@@ -341,6 +395,168 @@ public class SpringBootThinUtil {
         String springBootStarter = (starterRef.get() != null) ? starterRef.get() : THE_UNKNOWN_STARTER;
         Set<String> starterArtifactIds = EmbeddedContainer.getStarterArtifactIds(springBootStarter);
         return new StarterFilter(springBootStarter, starterArtifactIds);
+    }
+
+    static class PreThinnedApp {
+        private final String libCachePath;
+        private final String serverPath;
+        private final JarFile jarFile;
+
+        private final Map<String, Map<String, List<JarEntry>>> applicationEntries = new HashMap<String, Map<String, List<JarEntry>>>();
+        private final List<JarEntry> libCacheEntries = new ArrayList<>();
+
+        PreThinnedApp(String libCachePath, String serverPath, JarFile jarFile) {
+            this.libCachePath = libCachePath;
+            this.serverPath = serverPath;
+            this.jarFile = jarFile;
+        }
+
+        void discover() throws IOException {
+            if (jarFile.getJarEntry(libCachePath) == null) {
+                // TODO need an error message about invalid Liberty uber JAR
+                throw new IOException(libCachePath);
+            }
+            if (jarFile.getJarEntry(serverPath) == null) {
+                // TODO need an error message about invalid Liberty uber JAR
+                throw new IOException(serverPath);
+            }
+
+            for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements();) {
+                JarEntry entry = entries.nextElement();
+                String fullEntryPath = entry.getName();
+                if (!fullEntryPath.equals(libCachePath) && fullEntryPath.startsWith(libCachePath)) {
+                    libCacheEntries.add(entry);
+                }
+                for (String appsRoot : appSearchRoots) {
+                    if (addAppEntry(fullEntryPath, appsRoot, entry)) {
+                        break;
+                    }
+                }
+            }
+
+            if (libCacheEntries.isEmpty()) {
+                // TODO need an error message about invalid Liberty uber JAR
+                throw new IOException(libCachePath);
+            }
+            if (applicationEntries.isEmpty()) {
+                // TODO need an error message about invalid Liberty uber JAR
+                throw new IOException(String.valueOf(appSearchRoots));
+            }
+
+            applicationEntries.forEach((k1, m) -> m.forEach((k2, l) -> l.sort((e1, e2) -> e1.getName().compareTo(e2.getName()))));
+        }
+
+        private boolean addAppEntry(String fullEntryPath, String appsRoot, JarEntry entry) {
+            String fullAppsRoot = serverPath + appsRoot;
+            if (fullEntryPath.startsWith(fullAppsRoot)) {
+                if (!fullEntryPath.equals(fullAppsRoot)) {
+                    String appName = fullEntryPath.substring(fullAppsRoot.length());
+                    int slash = appName.indexOf('/');
+                    if (slash >= 0) {
+                        appName.substring(0, slash);
+                    }
+                    Map<String, List<JarEntry>> apps = applicationEntries.computeIfAbsent(appsRoot, (k) -> new LinkedHashMap<>());
+                    apps.computeIfAbsent(appName, (k) -> new ArrayList<>()).add(entry);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        void store(File libCache, File thinApp) throws IOException {
+            storeApp(thinApp);
+            storeLibCache(libCache);
+        }
+
+        private void storeApp(File thinApp) throws IOException {
+            // First look for dropins/spring
+            Map<String, List<JarEntry>> found = applicationEntries.get(LIBERTY_SERVER_DROPINS_SPRING);
+            if (found != null) {
+                storeApp(thinApp, found.values().iterator().next());
+                return;
+            }
+            found = applicationEntries.get(LIBERTY_SERVER_DROPINS);
+            if (found != null) {
+                for (Entry<String, List<JarEntry>> app : found.entrySet()) {
+                    if (app.getKey().endsWith(LIBERTY_SPRING_EXT)) {
+                        storeApp(thinApp, app.getValue());
+                        return;
+                    }
+                }
+            }
+            found = applicationEntries.get(LIBERTY_SERVER_APPS);
+            if (found != null) {
+                for (Entry<String, List<JarEntry>> app : found.entrySet()) {
+                    if (appLocationConfigured(app.getKey())) {
+                        storeApp(thinApp, app.getValue());
+                        return;
+                    }
+                }
+            }
+            // TODO add proper error message
+            throw new IOException("No application found.");
+        }
+
+        private boolean appLocationConfigured(String key) {
+            // TODO Auto-generated method stub
+            return true;
+        }
+
+        private void storeApp(File thinApp, List<JarEntry> entries) throws IOException {
+            // if the first application entry is a file then assume it is the application jar
+            JarEntry firstAppEntry = entries.get(0);
+            if (!firstAppEntry.isDirectory()) {
+                copyStream(jarFile.getInputStream(firstAppEntry), new FileOutputStream(thinApp));
+            } else {
+                // the first entry is a directory, assume that the application is an extracted app with
+                // the first entry being the root directory of the application
+                String dirAppRoot = firstAppEntry.getName();
+                String dirAppRootManifest = dirAppRoot + JarFile.MANIFEST_NAME;
+                JarEntry manifestEntry = jarFile.getJarEntry(dirAppRootManifest);
+                if (manifestEntry == null) {
+                    // TODO need an error message about invalid Liberty uber JAR
+                    throw new IOException(dirAppRootManifest);
+                }
+                Manifest mf = new Manifest(jarFile.getInputStream(manifestEntry));
+                try (JarOutputStream thinJar = new JarOutputStream(new FileOutputStream(thinApp), mf)) {
+                    for (JarEntry appEntry : entries.subList(1, entries.size())) {
+                        String entryName = appEntry.getName();
+                        if (entryName.startsWith(dirAppRoot) && !entryName.equals(dirAppRootManifest)) {
+                            String path = appEntry.getName().substring(dirAppRoot.length());
+                            try (InputStream is = jarFile.getInputStream(appEntry)) {
+                                writeEntry(is, thinJar, path);
+                            }
+                        }
+                    }
+                }
+            }
+            try (JarFile verifyThinJar = new JarFile(thinApp)) {
+                if (verifyThinJar.getEntry(SPRING_LIB_INDEX_FILE) == null) {
+                    throw new IOException(SPRING_LIB_INDEX_FILE);
+                }
+            }
+
+        }
+
+        private void storeLibCache(File libCache) throws IOException {
+            for (JarEntry libEntry : libCacheEntries) {
+                if (!libEntry.isDirectory()) {
+                    String path = libEntry.getName().substring(libCachePath.length());
+                    File libFile = new File(libCache, path);
+                    if (!libFile.exists()) {
+                        if (!libFile.getParentFile().exists()) {
+                            libFile.getParentFile().mkdirs();
+                        }
+                        InputStream is = jarFile.getInputStream(libEntry);
+                        try (OutputStream libJar = new FileOutputStream(libFile)) {
+                            copyStream(is, libJar);
+                        } finally {
+                            is.close();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private static String THE_UNKNOWN_STARTER = "";
@@ -499,7 +715,6 @@ public class SpringBootThinUtil {
             return startersToDependentArtifactIdsMap;
         }
 
-        @SuppressWarnings("serial")
         private static final Map<String, Set<String>> startersToDependentArtifactIdsMap;
 
         static {
@@ -529,6 +744,11 @@ public class SpringBootThinUtil {
             return Collections.unmodifiableSet(starterArtifactIds);
         }
 
+    }
+
+    @Override
+    public void close() throws IOException {
+        sourceFatJar.close();
     };
 
-} // EmbeddedContainers
+}

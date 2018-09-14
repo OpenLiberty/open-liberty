@@ -616,8 +616,8 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
             applicationInformation.setContainer(container);
             return artifactContainer;
         } catch (NoSuchAlgorithmException | IOException e) {
-            // Log error and continue to use the container for the SPRING file
-            Tr.error(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
+            // Log warning and continue to use the container for the SPRING file
+            Tr.warning(tc, "warning.could.not.thin.application", applicationInformation.getName(), e.getMessage());
         }
         return rawContainer;
     }
@@ -625,8 +625,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
         File parent = libIndexCache.getLibIndexParent();
         File workarea = libIndexCache.getLibIndexWorkarea();
-        SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent);
-        springBootThinUtil.execute();
+        try (SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent)) {
+            springBootThinUtil.execute();
+        }
         thinSpringAppFile.setLastModified(lastModified);
     }
 
