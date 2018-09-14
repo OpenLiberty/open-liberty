@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,13 +54,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.metatype.annotations.AttributeDefinition;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.osgi.service.url.URLStreamHandlerService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.classloading.ClassGenerator;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
 import com.ibm.ws.classloading.LibertyClassLoadingService;
@@ -74,7 +71,6 @@ import com.ibm.ws.classloading.internal.util.MultiMap;
 import com.ibm.ws.classloading.serializable.ClassLoaderIdentityImpl;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.boot.security.PermissionsCombiner;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -86,35 +82,15 @@ import com.ibm.wsspi.classloading.ClassTransformer;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.classloading.ResourceProvider;
 import com.ibm.wsspi.config.Fileset;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.library.ApplicationExtensionLibrary;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 
-@ObjectClassDefinition(pid = "com.ibm.ws.classloading.internal.ClassLoadingServiceConfig",
-                       name = Ext.INTERNAL, description = Ext.INTERNAL_DESC,
-                       localization = "OSGI-INF/l10n/classloader")
-interface ClassLoadingServiceConfig {
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, required = false, defaultValue = "*")
-    @Ext.ReferencePid("com.ibm.ws.security.java2sec.PermissionManagerConfig")
-    @Ext.Final
-    String[] PermissionsCombinerRef();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "${servicePidOrFilter(PermissionsCombinerRef)}")
-    String PermissionsCombiner_target();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "${count(PermissionsCombinerRef)}")
-    String PermissionsCombiner_cardinality_minimum();
-
-}
-
 @Component(service = { ClassLoadingService.class, LibertyClassLoadingService.class, ClassLoaderIdentifierService.class, Introspector.class },
            immediate = true,
-           configurationPolicy = ConfigurationPolicy.REQUIRE,
-           configurationPid = "com.ibm.ws.classloading.internal.ClassLoadingServiceConfig",
+           configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
 public class ClassLoadingServiceImpl implements LibertyClassLoadingService, ClassLoaderIdentifierService, Introspector {
     static final TraceComponent tc = Tr.register(ClassLoadingServiceImpl.class);
@@ -175,14 +151,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
      */
     protected MetaDataIdentifierService metadataIdentifierService;
 
-    private static final String KEY_PERMISSIONS_COMBINER = "PermissionsCombiner";
-    private final AtomicServiceReference<PermissionsCombiner> permissionsCombinerServiceRef = new AtomicServiceReference<PermissionsCombiner>(KEY_PERMISSIONS_COMBINER);
-
     @Activate
     protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
         generatorRefs.activate(cCtx);
         metaInfServicesRefs.activate(cCtx);
-        permissionsCombinerServiceRef.activate(cCtx);
         this.bundleContext = cCtx.getBundleContext();
         this.aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
         this.tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
@@ -196,7 +168,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     protected void deactivate(ComponentContext cCtx) {
         generatorRefs.deactivate(cCtx);
         metaInfServicesRefs.deactivate(cCtx);
-        permissionsCombinerServiceRef.deactivate(cCtx);
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
         systemContext.removeBundleListener(listener);
@@ -292,20 +263,15 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     protected void unsetURLStreamHandlerService(URLStreamHandlerService svc) {}
 
-    @Reference(name = KEY_PERMISSIONS_COMBINER, cardinality = ReferenceCardinality.OPTIONAL, policy = DYNAMIC, policyOption = GREEDY)
-    protected void setPermissionsCombiner(ServiceReference<PermissionsCombiner> permissionsCombiner) {
-        permissionsCombinerServiceRef.setReference(permissionsCombiner);
-    }
-
-    protected void unsetPermissionsCombiner(ServiceReference<PermissionsCombiner> permissionsCombiner) {
-        permissionsCombinerServiceRef.unsetReference(permissionsCombiner);
-    }
-
     @Override
     public AppClassLoader createTopLevelClassLoader(List<Container> classPath, GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig) {
         if (clConfig.getIncludeAppExtensions())
             addAppExtensionLibs(clConfig);
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).setClassPath(classPath).configure(gwConfig).configure(clConfig).create();
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .setClassPath(classPath)
+                        .configure(gwConfig)
+                        .configure(clConfig)
+                        .create();
 
         this.rememberBundle(result.getBundle());
         return result;
@@ -313,14 +279,22 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     @Override
     public AppClassLoader createBundleAddOnClassLoader(List<File> classPath, ClassLoader gwClassLoader, ClassLoaderConfiguration clConfig) {
-        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).setSharedLibPath(classPath).configure(createGatewayConfiguration()).useBundleAddOnLoader(gwClassLoader).configure(clConfig).create();
+        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .setSharedLibPath(classPath)
+                        .configure(createGatewayConfiguration())
+                        .useBundleAddOnLoader(gwClassLoader)
+                        .configure(clConfig)
+                        .create();
     }
 
     @Override
     public AppClassLoader createChildClassLoader(List<Container> classPath, ClassLoaderConfiguration config) {
         if (config.getIncludeAppExtensions())
             addAppExtensionLibs(config);
-        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).setClassPath(classPath).configure(config).create();
+        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .setClassPath(classPath)
+                        .configure(config)
+                        .create();
     }
 
     @Override
@@ -418,20 +392,19 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             }
         }
 
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN
-                                                                                                                                                                                                                 + ": "
-                                                                                                                                                                                                                 + lib.id()).setDynamicImportPackage("*").setApiTypeVisibility(apiTypeVisibility)).configure(clsCfg).onCreate(listenForLibraryChanges(lib.id())).getCanonical();
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
+                                        .setDynamicImportPackage("*")
+                                        .setApiTypeVisibility(apiTypeVisibility))
+                        .configure(clsCfg)
+                        .onCreate(listenForLibraryChanges(lib.id()))
+                        .getCanonical();
 
         this.rememberBundle(result.getBundle());
         return result;
     }
 
     private void setProtectionDomain(Collection<File> files, ClassLoaderConfiguration clsCfg) {
-        PermissionsCombiner permissionsCombiner = permissionsCombinerServiceRef.getService();
-        if (permissionsCombiner != null) {
-            protectionDomainMap = permissionsCombiner.getProtectionDomains();
-        }
-
         for (File file : files) {
             String path = file.getPath();
             path = path.replace("\\", "/");
@@ -587,7 +560,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
          * Always create a new TCCL to handle features being added/removed
          */
 
-        GatewayConfiguration gwConfig = this.createGatewayConfiguration().setApplicationName("ThreadContextClassLoader").setDynamicImportPackage("*;thread-context=\"true\"").setDelegateToSystem(false);
+        GatewayConfiguration gwConfig = this.createGatewayConfiguration()
+                        .setApplicationName("ThreadContextClassLoader")
+                        .setDynamicImportPackage("*;thread-context=\"true\"")
+                        .setDelegateToSystem(false);
         ClassLoaderConfiguration clConfig = this.createClassLoaderConfiguration().setId(createIdentity("Thread Context", key));
         GatewayBundleFactory gatewayBundleFactory = new GatewayBundleFactory(bundleContext, digraph, classloaders);
         GatewayClassLoader aug = gatewayBundleFactory.createGatewayBundleClassLoader(gwConfig, clConfig, resourceProviders);
