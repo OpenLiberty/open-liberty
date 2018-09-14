@@ -661,10 +661,14 @@ public class LibertyServer implements LogMonitorClient {
      * Sets the server configuration to be the specified file and starts the server.
      */
     public ProgramOutput startServerUsingExpandedConfiguration(String configFile) throws Exception {
+        return startServerUsingExpandedConfiguration(configFile, new ArrayList<String>());
+    }
+
+    public ProgramOutput startServerUsingExpandedConfiguration(String configFile, List<String> waitForMessages) throws Exception {
 
         ServerFileUtils serverFileUtils = new ServerFileUtils();
         String mergedFile = serverFileUtils.expandAndBackupCfgFile(this, configFile);
-        ProgramOutput startupOutput = startServerUsingConfiguration(mergedFile, new ArrayList<String>());
+        ProgramOutput startupOutput = startServerUsingConfiguration(mergedFile, waitForMessages);
         saveServerConfiguration();
         return startupOutput;
     }

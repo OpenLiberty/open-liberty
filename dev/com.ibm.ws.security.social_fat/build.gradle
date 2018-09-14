@@ -45,11 +45,7 @@ autoFVT.doLast {
       from new File(project(":com.ibm.ws.security.fat.common").buildDir, "test-application/formlogin.war")
       into new File(autoFvtDir, "publish/servers/" + server + "/apps")
     }
-    copy { 
-      from "publish/files/serversettings"
-      include "*.xml"
-      into "publish/servers/" + server + "/imports"
-    }
+
   }
   
 }
