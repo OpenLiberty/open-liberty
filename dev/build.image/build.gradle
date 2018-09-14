@@ -39,10 +39,23 @@ task copyLicenseToBuildImage (type:Copy) {
            tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
 }
 
+task copySwidTagToBuildImage (type:Copy) {
+    dependsOn jar
+    from project.file('publish')
+    into project.file('wlp/lib/versions/tags')
+    include 'openliberty.io_OpenLiberty-@VERSION@.swidtag'
+    rename {
+        String fileName -> fileName.replace("@VERSION@", "${bnd.libertyRelease}")
+    }
+    filter(ReplaceTokens,
+           tokens: [ VERSION: bnd.libertyRelease ])
+}
+
 assemble {
     dependsOn copyPropertiesToBuildImage
     dependsOn copyReadmeToBuildImage
     dependsOn copyLicenseToBuildImage
+    dependsOn copySwidTagToBuildImage
 }
 
 import groovy.json.*
