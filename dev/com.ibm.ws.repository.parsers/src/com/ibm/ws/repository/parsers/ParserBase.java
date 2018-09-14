@@ -26,6 +26,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
@@ -240,7 +241,7 @@ public abstract class ParserBase {
         try {
             try {
                 jarFile = new JarFile(sourceArchive);
-            } catch (FileNotFoundException fne) {
+            } catch (FileNotFoundException | NoSuchFileException fne) {
                 throw new RepositoryArchiveException("Unable to locate archive " + fileName, sourceArchive, fne);
             } catch (IOException ioe) {
                 throw new RepositoryArchiveIOException("Error opening archive ", sourceArchive, ioe);

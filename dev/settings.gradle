@@ -64,7 +64,7 @@ buildscript {
   }
   
   def fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl=https://repo.maven.apache.org/maven2/;index=${build}/oss_dependencies.maven')
-  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;local=~/.ibmdhe/repository;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/;index=${build}/oss_ibm.maven')
+  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;local=~/.ibmdhe/repository;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/;index=${build}/oss_ibm.maven')
   def fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = DummyRepo') //Not yet supported to not have this set via gradle.startup.properties
   def pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublish')
 

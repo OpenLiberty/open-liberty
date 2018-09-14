@@ -61,6 +61,9 @@ public class CommonSecurityFat {
     public void logTestCaseInServerLogs(String actionToLog) {
         Set<LibertyServer> testServers = serverTracker.getServers();
         for (LibertyServer server : testServers) {
+            if (server != null && !server.isStarted()) {
+                continue;
+            }
             loggingUtils.logTestCaseInServerLog(server, testName.getMethodName(), actionToLog);
             try {
                 server.setMarkToEndOfLog(server.getDefaultLogFile());

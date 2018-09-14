@@ -10,8 +10,8 @@
     <featureManager>
         <feature>componenttest-1.0</feature>
         <feature>localConnector-1.0</feature>
-        <feature>cdi-2.0</feature>
-        <feature>jaxrsClient-2.1</feature>
+        <feature>cdi-1.2</feature>
+        <feature>jaxrsClient-2.0</feature>
         <feature>mpConfig-1.3</feature>
         <feature>mpRestClient-1.1</feature>
     </featureManager>

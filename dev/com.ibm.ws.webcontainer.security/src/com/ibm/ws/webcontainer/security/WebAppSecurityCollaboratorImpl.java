@@ -567,7 +567,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
             }
 
-            extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            if (req != null) {
+                extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            }
             //auditManager.setHttpServletRequest(req);
             performDelegation(servletName);
 
