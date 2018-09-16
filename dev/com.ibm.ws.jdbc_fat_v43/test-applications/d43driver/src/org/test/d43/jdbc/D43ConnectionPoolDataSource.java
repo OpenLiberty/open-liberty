@@ -20,8 +20,8 @@ import javax.sql.ConnectionPoolDataSource;
 import javax.sql.PooledConnection;
 import javax.sql.PooledConnectionBuilder;
 
-public class D43ConnectionPoolDataSource implements ConnectionPoolDataSource {
-    private final org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource ds;
+public class D43ConnectionPoolDataSource extends D43CommonDataSource implements ConnectionPoolDataSource {
+    final org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource ds;
 
     public D43ConnectionPoolDataSource() {
         ds = new org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource();
@@ -29,9 +29,7 @@ public class D43ConnectionPoolDataSource implements ConnectionPoolDataSource {
 
     @Override
     public PooledConnectionBuilder createPooledConnectionBuilder() throws SQLException {
-        return (PooledConnectionBuilder) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
-                                                                new Class[] { PooledConnectionBuilder.class },
-                                                                new D43Handler(ds.createPooledConnectionBuilder(), null));
+        return new D43PooledConnectionBuilder(this);
     }
 
     public String getDatabaseName() {
@@ -57,14 +55,14 @@ public class D43ConnectionPoolDataSource implements ConnectionPoolDataSource {
     public PooledConnection getPooledConnection() throws SQLException {
         return (PooledConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                          new Class[] { PooledConnection.class },
-                                                         new D43Handler(ds.getPooledConnection(), null));
+                                                         new D43Handler(ds.getPooledConnection(), null, this));
     }
 
     @Override
     public PooledConnection getPooledConnection(String user, String pwd) throws SQLException {
         return (PooledConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                          new Class[] { PooledConnection.class },
-                                                         new D43Handler(ds.getPooledConnection(user, pwd), null));
+                                                         new D43Handler(ds.getPooledConnection(user, pwd), null, this));
     }
 
     public void setDatabaseName(String value) {
