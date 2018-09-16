@@ -28,6 +28,9 @@ public class ServerTracker {
 
     public void addServer(LibertyServer server) {
         libertyServers.add(server);
+        if (server == null) {
+            return;
+        }
         // Every server should have the testMarker app in dropins (make sure it starts)
         server.addInstalledAppForValidation(Constants.APP_TESTMARKER);
     }
