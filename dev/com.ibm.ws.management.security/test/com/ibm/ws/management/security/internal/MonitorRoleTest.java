@@ -8,16 +8,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.management.security;
+package com.ibm.ws.management.security.internal;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import com.ibm.ws.management.security.ManagementRole;
+import com.ibm.ws.management.security.ManagementSecurityConstants;
 
 /**
  *
  */
-public interface ManagementSecurityConstants {
+public class MonitorRoleTest {
 
-    static final String ADMINISTRATOR_ROLE_NAME = "Administrator";
-    static final String ADMIN_RESOURCE_NAME = "com.ibm.ws.management.security.resource";
-    static final String ALL_AUTHENTICATED_USERS_ROLE_NAME = "allAuthenticatedUsers";
-    static final String MONITOR_ROLE_NAME = "Monitor";
+    @Test
+    public void checkRoleName() {
+        ManagementRole role = new MonitorRole();
+        assertEquals(ManagementSecurityConstants.MONITOR_ROLE_NAME,
+                     role.getRoleName());
+    }
 
 }
