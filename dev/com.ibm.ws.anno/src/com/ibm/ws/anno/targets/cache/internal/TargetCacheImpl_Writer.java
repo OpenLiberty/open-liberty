@@ -425,7 +425,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeComment(DELIMITER_TAG);
         writeComment(PACKAGE_TARGETS_SECTION);
 
-        UtilImpl_BidirectionalMap targetMap = targetTable.i_getPackageAnnotationData();
+        UtilImpl_BidirectionalMap targetMap = targetTable.i_getPackageAnnotations();
 
         for ( String i_packageName : targetMap.getHolderSet() ) {
             Set<String> i_annotationClassNames = targetMap.selectHeldOf(i_packageName);
@@ -444,9 +444,9 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
 
         Map<String, String> i_annotatedClassNames = new IdentityHashMap<String, String>();
 
-        UtilImpl_BidirectionalMap classTargetMap = targetTable.i_getClassAnnotationData();
-        UtilImpl_BidirectionalMap fieldTargetMap = targetTable.i_getFieldAnnotationData();
-        UtilImpl_BidirectionalMap methodTargetMap = targetTable.i_getMethodAnnotationData();
+        UtilImpl_BidirectionalMap classTargetMap = targetTable.i_getClassAnnotations();
+        UtilImpl_BidirectionalMap fieldTargetMap = targetTable.i_getFieldAnnotations();
+        UtilImpl_BidirectionalMap methodTargetMap = targetTable.i_getMethodAnnotations();
 
         for ( String i_annotationClassName : classTargetMap.getHolderSet() ) {
             i_annotatedClassNames.put(i_annotationClassName, i_annotationClassName);

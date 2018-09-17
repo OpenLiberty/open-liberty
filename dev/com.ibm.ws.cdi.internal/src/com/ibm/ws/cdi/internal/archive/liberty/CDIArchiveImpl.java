@@ -28,7 +28,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.Resource;
 import com.ibm.ws.cdi.internal.interfaces.ResourceInjectionBag;
-import com.ibm.ws.container.service.annotations.ContainerAnnotations;
+import com.ibm.ws.container.service.annotations.CDIContainerAnnotations;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
@@ -51,6 +51,8 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
+    private static final String CLASS_NAME = CDIArchiveImpl.class.getSimpleName();
+
     // CDIArchives are created ...
     //
     // As module archives of an application:
@@ -92,6 +94,14 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         this.classLoader = classLoader;
 
         this.moduleLibraryArchives = initModuleLibraryArchives();
+
+        String methodName = "<init>";
+        String prefix = CLASS_NAME + "." + methodName + ": ";
+
+        System.out.println(prefix + "Container [ " + containerInfo.getName() + " ] [ " + containerInfo.getContainer() + " ]");
+        System.out.println(prefix + "Type [ " + archiveType + " ]");
+        System.out.println(prefix + "Application [ " + application + " ]");
+        System.out.println(prefix + "Class loader [ " + classLoader + " ]");
     }
 
     //
@@ -453,7 +463,13 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         //   ON_DEMAND_LIB
         //   RUNTIME_EXTENSION
 
-        String appName = application.getName();
+        String appName;
+
+        if ( application == null ) {
+            appName = ClassSource_Factory.UNNAMED_APP;
+        } else {
+            appName = application.getName();
+        }
 
         // Handle WEB-INF/classes by providing an entry prefix to the
         // annotations information.  Keep the archive container as the
@@ -480,9 +496,9 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
             archiveEntryPrefix = null;
         }
 
-        ContainerAnnotations containerAnnotations;
+        CDIContainerAnnotations cdiContainerAnnotations;
         try {
-            containerAnnotations = archiveContainer.adapt(ContainerAnnotations.class);
+            cdiContainerAnnotations = archiveContainer.adapt(CDIContainerAnnotations.class);
         } catch ( UnableToAdaptException e ) {
             throw new CDIException(e);
         }
@@ -510,20 +526,19 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         // data from only WEB-INF/classes, not from the entire web module.
 
         if ( application != null ) {
-            containerAnnotations.setUseJandex( application.getUseJandex() );
+            cdiContainerAnnotations.setUseJandex( application.getUseJandex() );
 
-            containerAnnotations.setAppName(appName);
-            containerAnnotations.setModName(archivePath);
-            containerAnnotations.setModCategoryName(ClassSource_Factory.CDI_CATEGORY_NAME);
+            cdiContainerAnnotations.setAppName(appName);
+            cdiContainerAnnotations.setModName(archivePath);
 
             if ( archiveEntryPrefix != null ) {
-                containerAnnotations.setEntryPrefix(archiveEntryPrefix);
+                cdiContainerAnnotations.setEntryPrefix(archiveEntryPrefix);
             }
-
-            // Complete inheritance information requires a class loader.
-            containerAnnotations.setClassLoader( getClassLoader() );
         }
 
-        return containerAnnotations.getClassesWithSpecifiedInheritedAnnotations(annotationClassNames);
+        // Complete inheritance information requires a class loader.
+        cdiContainerAnnotations.setClassLoader( getClassLoader() );
+
+        return cdiContainerAnnotations.getClassesWithSpecifiedInheritedAnnotations(annotationClassNames);
     }
 }

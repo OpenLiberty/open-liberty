@@ -95,29 +95,15 @@ public interface Annotations {
     void setModName(String modName);
 
     /**
-     * Answer the category name for the results.
+     * Answer the category name for the results.  The category name
+     * is null except for CDI container annotations.
      *
      * The module category name is unused when the application
      * is unnamed.
      *
      * @return The category name for the results.
      */
-    
     String getModCategoryName();
-
-    /**
-     * Set the module category name of the results.
-     *
-     * The module category name is unused when the application
-     * is unnamed.
-     *
-     * Two standard category names are defined for current usage:
-     * {@link ClassSource_Factory#JAVAEE_CATEGORY_NAME} and
-     * {@link ClassSource_Factory#CDI_CATEGORY_NAME}.
-     *
-     * @param modCatname The module category name of the results.
-     */
-    void setModCategoryName(String modCatName);
 
     //
 

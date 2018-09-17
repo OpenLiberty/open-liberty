@@ -22,19 +22,19 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
 public class UtilImpl_FileStamp {
-	/**
-	 * Answer a stamp for a file.  Answer null if the file does not exist,
-	 * or is not a simple file.
-	 * 
-	 * The stamp is the length of the file, plus ",", plus the last modified
-	 * time of the file.
-	 * 
-	 * See {@link File#length()} and {@link File#lastModified()}.
-	 * 
-	 * @param file The file for which to answer a stamp.
-	 * 
-	 * @return The stamp of the file.
-	 */
+    /**
+     * Answer a stamp for a file.  Answer null if the file does not exist,
+     * or is not a simple file.
+     * 
+     * The stamp is the length of the file, plus ",", plus the last modified
+     * time of the file.
+     * 
+     * See {@link File#length()} and {@link File#lastModified()}.
+     * 
+     * @param file The file for which to answer a stamp.
+     * 
+     * @return The stamp of the file.
+     */
     public static String computeStamp(File file) {
         return AccessController.doPrivileged( new PrivilegedAction<String>() {
             @Override

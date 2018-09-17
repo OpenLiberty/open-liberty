@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
 import com.ibm.ws.anno.util.delta.internal.UtilImpl_BidirectionalMapDelta;
 import com.ibm.ws.anno.util.delta.internal.UtilImpl_IdentityMapDelta;
@@ -40,6 +42,7 @@ public class UtilImpl_Factory implements Util_Factory {
     protected String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -64,12 +67,14 @@ public class UtilImpl_Factory implements Util_Factory {
 
     protected final AnnotationServiceImpl_Service annoService;
 
+    @Trivial
     public AnnotationServiceImpl_Service getAnnotationService() {
         return annoService;
     }
 
     //
 
+    @Trivial
     public Util_Exception newUtilException(Logger useLogger, String message) {
         String methodName = "newUtilException";
 
@@ -162,14 +167,16 @@ public class UtilImpl_Factory implements Util_Factory {
     public static final boolean AS_ADDED = true;
     public static final boolean AS_REMOVED = false;
 
+    @Trivial
     public UtilImpl_IdentitySetDelta subtractSet(
         Map<String, String> finalSet, Map<String, String> initialSet) {
 
         return subtractSet(
             DO_RECORD_ADDED, DO_RECORD_REMOVED, DO_NOT_RECORD_STILL,
             finalSet, null, initialSet, null);
-        }
+    }
 
+    @Trivial
     public UtilImpl_IdentitySetDelta subtractSet(
         Map<String, String> finalSet, Util_InternMap finalDomain,
         Map<String, String> initialSet, Util_InternMap initialDomain) {
@@ -178,7 +185,7 @@ public class UtilImpl_Factory implements Util_Factory {
             DO_RECORD_ADDED, DO_RECORD_REMOVED, DO_NOT_RECORD_STILL,
             finalSet, finalDomain,
             initialSet, initialDomain);
-        }
+    }
 
 
     public UtilImpl_IdentitySetDelta subtractSet(
@@ -194,14 +201,16 @@ public class UtilImpl_Factory implements Util_Factory {
         return setDelta;
     }
 
+    @Trivial
     public UtilImpl_IdentityMapDelta subtractMap(
         Map<String, String> finalMap, Map<String, String> initialMap) {
 
         return subtractMap(
             DO_RECORD_ADDED, DO_RECORD_REMOVED, DO_RECORD_CHANGED, DO_NOT_RECORD_STILL,
             finalMap, null, initialMap, null);
-        }
-    
+    }
+
+    @Trivial    
     public UtilImpl_IdentityMapDelta subtractMap(
         Map<String, String> finalMap, Util_InternMap finalDomain,
         Map<String, String> initialMap, Util_InternMap initialDomain) {
@@ -237,6 +246,7 @@ public class UtilImpl_Factory implements Util_Factory {
         return mapDelta;
     }
 
+    @Trivial
     public UtilImpl_BidirectionalMapDelta subtractBiMap(
         UtilImpl_BidirectionalMap finalMap, UtilImpl_BidirectionalMap initialMap) {
 
@@ -445,51 +455,61 @@ public class UtilImpl_Factory implements Util_Factory {
     //
 
     @Override
+    @Trivial
     public String normalize(String path) {
         return UtilImpl_PathUtils.normalize(path);
     }
 
     @Override
+    @Trivial
     public String denormalize(String n_path) {
         return UtilImpl_PathUtils.denormalize(n_path);
     }
 
     @Override
+    @Trivial
     public String append(String headPath, String tailPath) {
         return UtilImpl_PathUtils.append(headPath, tailPath);
     }
 
     @Override
+    @Trivial
     public String n_append(String n_headPath, String n_tailPath) {
         return UtilImpl_PathUtils.n_append(n_headPath, n_tailPath);
     }
 
     @Override
+    @Trivial
     public String subtractPath(String basePath, String fullPath) {
         return UtilImpl_PathUtils.subtractPath(basePath, fullPath);
     }
 
     @Override
+    @Trivial
     public String n_subtractPath(String n_basePath, String n_fullPath) {
         return UtilImpl_PathUtils.n_subtractPath(n_basePath, n_fullPath);
     }
 
     @Override
+    @Trivial
     public UtilImpl_RelativePath addRelativePath(String basePath, String relativePath) {
         return UtilImpl_PathUtils.addRelativePath(basePath, relativePath);
     }
 
     @Override
+    @Trivial
     public UtilImpl_RelativePath n_addRelativePath(String n_basePath, String n_relativePath) {
         return UtilImpl_PathUtils.n_addRelativePath(n_basePath, n_relativePath);
     }
 
     @Override
+    @Trivial
     public UtilImpl_RelativePath subtractRelativePath(String basePath, String fullPath) {
         return UtilImpl_PathUtils.subtractRelativePath(basePath, fullPath);
     }
 
     @Override
+    @Trivial
     public Util_RelativePath n_subtractRelativePath(String n_basePath, String n_fullPath) {
         return UtilImpl_PathUtils.n_subtractRelativePath(n_basePath, n_fullPath);
     }
@@ -504,11 +524,13 @@ public class UtilImpl_Factory implements Util_Factory {
     }
 
     @Override
+    @Trivial
     public UtilImpl_RelativePath n_createRelativePath(String n_basePath, String n_relativePath, String n_fullPath) {
         return new UtilImpl_RelativePath(n_basePath, n_relativePath, n_fullPath);
     }
 
     @Override
+    @Trivial
     public List<UtilImpl_RelativePath> selectJars(String basePath) {
         return UtilImpl_PathUtils.selectJars(basePath);
     }

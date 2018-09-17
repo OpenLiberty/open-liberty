@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTableAnnotations;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
@@ -46,6 +48,7 @@ public class TargetsTableAnnotationsImpl
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -60,33 +63,33 @@ public class TargetsTableAnnotationsImpl
         this.utilFactory = otherTable.getUtilFactory();
         this.classNameInternMap = classNameInternMap;
 
-        this.i_packageAnnotationData = internAnnotationData( "Packages with annotations", otherTable.i_packageAnnotationData );
+        this.i_packageAnnotations = internAnnotations( "Packages with annotations", otherTable.i_packageAnnotations );
 
-        this.i_classAnnotationData = internAnnotationData( "Classes with annotations", otherTable.i_classAnnotationData );
+        this.i_classAnnotations = internAnnotations( "Classes with annotations", otherTable.i_classAnnotations );
 
-        this.i_fieldAnnotationData = internAnnotationData( "Classes with field annotations", otherTable.i_fieldAnnotationData );
-        this.i_methodAnnotationData = internAnnotationData( "Classes with method annotations", otherTable.i_methodAnnotationData );
+        this.i_fieldAnnotations = internAnnotations( "Classes with field annotations", otherTable.i_fieldAnnotations );
+        this.i_methodAnnotations = internAnnotations( "Classes with method annotations", otherTable.i_methodAnnotations );
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
         }
     }
 
-    protected UtilImpl_BidirectionalMap internAnnotationData(String description, UtilImpl_BidirectionalMap otherData) {
+    protected UtilImpl_BidirectionalMap internAnnotations(String description, UtilImpl_BidirectionalMap otherAnnos) {
         UtilImpl_InternMap useClassNameInternMap = getClassNameInternMap();
 
-        UtilImpl_BidirectionalMap thisData = getUtilFactory().createBidirectionalMap(description, useClassNameInternMap,
-                                                                                     "annotations", useClassNameInternMap);
+        UtilImpl_BidirectionalMap theseAnnos = getUtilFactory().createBidirectionalMap(description, useClassNameInternMap,
+                                                                                       "annotations", useClassNameInternMap);
 
-        for ( String i_otherClassName : otherData.getHolderSet() ) {
-            Set<String> i_otherAnnotationClassNames = otherData.i_selectHeldOf(i_otherClassName);
+        for ( String i_otherClassName : otherAnnos.getHolderSet() ) {
+            Set<String> i_otherAnnotationClassNames = otherAnnos.i_selectHeldOf(i_otherClassName);
 
             for ( String i_otherAnnotationClassName : i_otherAnnotationClassNames ) {
-                thisData.record(i_otherClassName, i_otherAnnotationClassName);
+                theseAnnos.record(i_otherClassName, i_otherAnnotationClassName);
             }
         }
 
-        return thisData;
+        return theseAnnos;
     }
 
     //
@@ -99,13 +102,13 @@ public class TargetsTableAnnotationsImpl
         this.utilFactory = utilFactory;
         this.classNameInternMap = classNameInternMap;
 
-        this.i_packageAnnotationData = utilFactory.createBidirectionalMap("Packages with annotations", classNameInternMap,
+        this.i_packageAnnotations = utilFactory.createBidirectionalMap("Packages with annotations", classNameInternMap,
                                                                           "annotations", classNameInternMap);
-        this.i_classAnnotationData = utilFactory.createBidirectionalMap("Classes with annotations", classNameInternMap,
+        this.i_classAnnotations = utilFactory.createBidirectionalMap("Classes with annotations", classNameInternMap,
                                                                         "annotations", classNameInternMap);
-        this.i_fieldAnnotationData = utilFactory.createBidirectionalMap("Classes with field annotations", classNameInternMap,
+        this.i_fieldAnnotations = utilFactory.createBidirectionalMap("Classes with field annotations", classNameInternMap,
                                                                         "annotations", classNameInternMap);
-        this.i_methodAnnotationData = utilFactory.createBidirectionalMap("Classes with method annotations", classNameInternMap,
+        this.i_methodAnnotations = utilFactory.createBidirectionalMap("Classes with method annotations", classNameInternMap,
                                                                          "annotations", classNameInternMap);
 
         if (logger.isLoggable(Level.FINER)) {
@@ -117,12 +120,14 @@ public class TargetsTableAnnotationsImpl
 
     protected final UtilImpl_Factory utilFactory;
 
+    @Trivial
     public UtilImpl_Factory getUtilFactory() {
         return utilFactory;
     }
 
     protected final UtilImpl_InternMap classNameInternMap;
 
+    @Trivial
     public UtilImpl_InternMap getClassNameInternMap() {
         return classNameInternMap;
     }
@@ -139,156 +144,160 @@ public class TargetsTableAnnotationsImpl
 
     //
 
-    protected final UtilImpl_BidirectionalMap i_packageAnnotationData;
+    protected final UtilImpl_BidirectionalMap i_packageAnnotations;
 
     @Override
-    public UtilImpl_BidirectionalMap i_getPackageAnnotationData() {
-        return i_packageAnnotationData;
+    @Trivial
+    public UtilImpl_BidirectionalMap i_getPackageAnnotations() {
+        return i_packageAnnotations;
     }
 
-    protected final UtilImpl_BidirectionalMap i_classAnnotationData;
+    protected final UtilImpl_BidirectionalMap i_classAnnotations;
 
     @Override
-    public UtilImpl_BidirectionalMap i_getClassAnnotationData() {
-        return i_classAnnotationData;
+    @Trivial
+    public UtilImpl_BidirectionalMap i_getClassAnnotations() {
+        return i_classAnnotations;
     }
 
-    protected final UtilImpl_BidirectionalMap i_fieldAnnotationData;
+    protected final UtilImpl_BidirectionalMap i_fieldAnnotations;
 
     @Override
-    public UtilImpl_BidirectionalMap i_getFieldAnnotationData() {
-        return i_fieldAnnotationData;
+    @Trivial
+    public UtilImpl_BidirectionalMap i_getFieldAnnotations() {
+        return i_fieldAnnotations;
     }
 
-    protected final UtilImpl_BidirectionalMap i_methodAnnotationData;
+    protected final UtilImpl_BidirectionalMap i_methodAnnotations;
 
     @Override
-    public UtilImpl_BidirectionalMap i_getMethodAnnotationData() {
-        return i_methodAnnotationData;
+    @Trivial
+    public UtilImpl_BidirectionalMap i_getMethodAnnotations() {
+        return i_methodAnnotations;
     }
 
     //
 
     @Override
     public Set<String> i_getPackagesWithAnnotations() {
-        return i_packageAnnotationData.getHolderSet();
+        return i_packageAnnotations.getHolderSet();
     }
 
     @Override
     public Set<String> i_getPackagesWithAnnotation(String i_annotationName) {
-        return i_packageAnnotationData.selectHoldersOf(i_annotationName);
+        return i_packageAnnotations.selectHoldersOf(i_annotationName);
     }
 
     @Override
-    public Set<String> i_getPackageAnnotations() {
-        return i_packageAnnotationData.getHeldSet();
+    public Set<String> i_getPackageAnnotationNames() {
+        return i_packageAnnotations.getHeldSet();
     }
 
     @Override
     public Set<String> i_getPackageAnnotations(String i_packageName) {
-        return i_packageAnnotationData.selectHeldOf(i_packageName);
+        return i_packageAnnotations.selectHeldOf(i_packageName);
     }
 
     //
 
     @Override
     public Set<String> i_getClassesWithClassAnnotations() {
-        return i_classAnnotationData.getHolderSet();
+        return i_classAnnotations.getHolderSet();
     }
 
     @Override
     public Set<String> i_getClassesWithClassAnnotation(String i_annotationName) {
-        return i_classAnnotationData.selectHoldersOf(i_annotationName);
+        return i_classAnnotations.selectHoldersOf(i_annotationName);
     }
 
     @Override
-    public Set<String> i_getClassAnnotations() {
-        return i_classAnnotationData.getHeldSet();
+    public Set<String> i_getClassAnnotationNames() {
+        return i_classAnnotations.getHeldSet();
     }
 
     @Override
     public Set<String> i_getClassAnnotations(String i_className) {
-        return i_classAnnotationData.selectHeldOf(i_className);
+        return i_classAnnotations.selectHeldOf(i_className);
     }
 
     //
 
     @Override
     public Set<String> i_getClassesWithFieldAnnotations() {
-        return i_fieldAnnotationData.getHolderSet();
+        return i_fieldAnnotations.getHolderSet();
     }
 
     @Override
     public Set<String> i_getClassesWithFieldAnnotation(String i_annotationName) {
-        return i_fieldAnnotationData.selectHoldersOf(i_annotationName);
+        return i_fieldAnnotations.selectHoldersOf(i_annotationName);
     }
 
     @Override
-    public Set<String> i_getFieldAnnotations() {
-        return i_fieldAnnotationData.getHeldSet();
+    public Set<String> i_getFieldAnnotationNames() {
+        return i_fieldAnnotations.getHeldSet();
     }
 
     @Override
     public Set<String> i_getFieldAnnotations(String i_className) {
-        return i_fieldAnnotationData.selectHeldOf(i_className);
+        return i_fieldAnnotations.selectHeldOf(i_className);
     }
 
     //
 
     @Override
     public Set<String> i_getClassesWithMethodAnnotations() {
-        return i_methodAnnotationData.getHolderSet();
+        return i_methodAnnotations.getHolderSet();
     }
 
     @Override
     public Set<String> i_getClassesWithMethodAnnotation(String i_annotationName) {
-        return i_methodAnnotationData.selectHoldersOf(i_annotationName);
+        return i_methodAnnotations.selectHoldersOf(i_annotationName);
     }
 
     @Override
-    public Set<String> i_getMethodAnnotations() {
-        return i_methodAnnotationData.getHeldSet();
+    public Set<String> i_getMethodAnnotationNames() {
+        return i_methodAnnotations.getHeldSet();
     }
 
     @Override
     public Set<String> i_getMethodAnnotations(String i_className) {
-        return i_methodAnnotationData.selectHeldOf(i_className);
+        return i_methodAnnotations.selectHeldOf(i_className);
     }
 
     //
 
     @Override
     public Set<String> i_getAnnotatedTargets(AnnotationCategory category) {
-        return i_getAnnotationData(category).getHolderSet();
+        return i_getAnnotations(category).getHolderSet();
     }
 
     @Override
     public Set<String> i_getAnnotatedTargets(AnnotationCategory category, String i_annotationName) {
-        return i_getAnnotationData(category).selectHoldersOf(i_annotationName);
+        return i_getAnnotations(category).selectHoldersOf(i_annotationName);
     }
 
     @Override
-    public Set<String> i_getAnnotations(AnnotationCategory category) {
-        return i_getAnnotationData(category).getHeldSet();
+    public Set<String> i_getAnnotationNames(AnnotationCategory category) {
+        return i_getAnnotations(category).getHeldSet();
     }
 
     @Override
     public Set<String> i_getAnnotations(AnnotationCategory category, String i_classOrPackageName) {
-        return i_getAnnotationData(category).selectHeldOf(i_classOrPackageName);
+        return i_getAnnotations(category).selectHeldOf(i_classOrPackageName);
     }
 
     //
 
     @Override
-    public UtilImpl_BidirectionalMap i_getAnnotationData(AnnotationCategory category) {
+    public UtilImpl_BidirectionalMap i_getAnnotations(AnnotationCategory category) {
         if (category == AnnotationCategory.PACKAGE) {
-            return (i_packageAnnotationData);
+            return (i_packageAnnotations);
         } else if (category == AnnotationCategory.CLASS) {
-            return (i_classAnnotationData);
+            return (i_classAnnotations);
         } else if (category == AnnotationCategory.METHOD) {
-            return (i_methodAnnotationData);
+            return (i_methodAnnotations);
         } else if (category == AnnotationCategory.FIELD) {
-            return (i_fieldAnnotationData);
+            return (i_fieldAnnotations);
         } else {
             throw new IllegalArgumentException("Category [ " + category + " ]");
         }
@@ -297,6 +306,7 @@ public class TargetsTableAnnotationsImpl
     //
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "<init>";
 
@@ -304,36 +314,36 @@ public class TargetsTableAnnotationsImpl
             return;
         }
 
-        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Annotations Data: START: [ {0} ]", getHashText());
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Annotations: START: [ {0} ]", getHashText());
 
-        i_packageAnnotationData.log(useLogger);
-        i_classAnnotationData.log(useLogger);
-        i_fieldAnnotationData.log(useLogger);
-        i_methodAnnotationData.log(useLogger);
+        i_packageAnnotations.log(useLogger);
+        i_classAnnotations.log(useLogger);
+        i_fieldAnnotations.log(useLogger);
+        i_methodAnnotations.log(useLogger);
 
-        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Annotations Data: END: [ {0} ]", getHashText());
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Annotations: END: [ {0} ]", getHashText());
     }
 
     //
 
     @Override
     public void recordPackageAnnotation(String i_packageName, String i_annotationClassName) {
-        i_packageAnnotationData.i_record(i_packageName, i_annotationClassName);
+        i_packageAnnotations.i_record(i_packageName, i_annotationClassName);
     }
 
     @Override
     public void recordClassAnnotation(String i_className, String i_annotationClassName) {
-        i_classAnnotationData.i_record(i_className, i_annotationClassName);
+        i_classAnnotations.i_record(i_className, i_annotationClassName);
     }
 
     @Override
     public void recordFieldAnnotation(String i_className, String i_annotationClassName) {
-        i_fieldAnnotationData.i_record(i_className, i_annotationClassName);
+        i_fieldAnnotations.i_record(i_className, i_annotationClassName);
     }
 
     @Override
     public void recordMethodAnnotation(String i_className, String i_annotationClassName) {
-        i_methodAnnotationData.i_record(i_className, i_annotationClassName);
+        i_methodAnnotations.i_record(i_className, i_annotationClassName);
     }
 
     public void record(TargetsVisitorClassImpl.ClassData classData) {
@@ -422,19 +432,90 @@ public class TargetsTableAnnotationsImpl
      * @param i_addedPackageNames The names of packages for which to added data.
      * @param i_addedClassNames The names of classes for which to added data.
      */
-    protected void restrictedAdd(TargetsTableAnnotationsImpl targetTable,
+    protected void restrictedAdd(TargetsTableAnnotationsImpl annoTable,
                                  Set<String> i_addedPackageNames,
                                  Set<String> i_addedClassNames) {
 
-        i_packageAnnotationData.i_record( targetTable.i_getPackageAnnotationData(),
-                                          i_addedPackageNames );
+        String methodName = "restrictedAdd";
 
-        i_classAnnotationData.i_record( targetTable.i_getClassAnnotationData(),
-                                        i_addedClassNames );
-        i_fieldAnnotationData.i_record( targetTable.i_getFieldAnnotationData(),
-                                        i_addedClassNames );
-        i_methodAnnotationData.i_record( targetTable.i_getMethodAnnotationData(),
-                                         i_addedClassNames );
+        Object[] logParms;
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logParms = new Object[] { getHashText(), null };
+
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", logParms);
+
+            logParms[1] = printString(i_addedClassNames);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Added classes [ {1} ]", logParms);
+
+            logParms[1] = printString( i_classAnnotations.getHolderSet() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial annotated classes [ {1} ]", logParms);
+            logParms[1] = printString( i_classAnnotations.getHeldSet() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial class annotations [ {1} ]", logParms);
+
+            logParms[1] = printString( annoTable.i_classAnnotations.getHolderSet() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Other annotated classes [ {1} ]", logParms);
+            logParms[1] = printString( annoTable.i_classAnnotations.getHeldSet() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Other class annotations [ {1} ]", logParms);
+
+        } else {
+            logParms = null;
+        }
+
+        i_packageAnnotations.i_record(
+            annoTable.i_getPackageAnnotations(),
+            i_addedPackageNames );
+
+        i_classAnnotations.i_record(
+            annoTable.i_getClassAnnotations(),
+            i_addedClassNames );
+
+        i_fieldAnnotations.i_record(
+            annoTable.i_getFieldAnnotations(),
+            i_addedClassNames );
+
+        i_methodAnnotations.i_record(
+            annoTable.i_getMethodAnnotations(),
+            i_addedClassNames );
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logParms[1] = printString( i_classAnnotations.getHolderSet() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final annotated classes [ {1} ]", logParms);
+            logParms[1] = printString( i_classAnnotations.getHeldSet() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final class annotations [ {1} ]", logParms);
+
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN", getHashText());
+        }
+    }
+
+    //
+
+    @Trivial
+    private String printString(Set<String> values) {
+        if ( values.isEmpty() ) {
+            return "{ }";
+
+        } else if ( values.size() == 1 ) {
+            for ( String value : values ) {
+                return "{ " + value + " }";
+            }
+            return null; // Unreachable
+
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("{ ");
+            boolean first = true;
+            for ( String value : values ) {
+                if ( !first ) {
+                    builder.append(", ");
+                } else {
+                    first = false;
+                }
+                builder.append(value);
+            }
+            builder.append(" }");
+            return builder.toString();
+        }
     }
 
     //
@@ -446,19 +527,19 @@ public class TargetsTableAnnotationsImpl
             return true;
         }
 
-        if ( !i_getPackageAnnotationData().i_equals( otherTable.i_getPackageAnnotationData() ) ) {
+        if ( !i_getPackageAnnotations().i_equals( otherTable.i_getPackageAnnotations() ) ) {
             return false;
         }
 
-        if ( !i_getClassAnnotationData().i_equals( otherTable.i_getClassAnnotationData() ) ) {
+        if ( !i_getClassAnnotations().i_equals( otherTable.i_getClassAnnotations() ) ) {
             return false;
         }
 
-        if ( !i_getFieldAnnotationData().i_equals( otherTable.i_getFieldAnnotationData() ) ) {
+        if ( !i_getFieldAnnotations().i_equals( otherTable.i_getFieldAnnotations() ) ) {
             return false;
         }
 
-        if ( !i_getMethodAnnotationData().i_equals( otherTable.i_getMethodAnnotationData() ) ) {
+        if ( !i_getMethodAnnotations().i_equals( otherTable.i_getMethodAnnotations() ) ) {
             return false;
         }
 
@@ -472,20 +553,25 @@ public class TargetsTableAnnotationsImpl
         return reader.read(this);
     }
 
-    public void updateClassNames(Set<String> i_resolvedClassNames, Set<String> i_newlyResolvedClassNames,
-                                 Set<String> i_unresolvedClassNames, Set<String> i_newlyUnresolvedClassNames) {
+    public void updateClassNames(
+        Set<String> i_allResolvedClassNames, Set<String> i_newlyResolvedClassNames,
+        Set<String> i_allUnresolvedClassNames, Set<String> i_newlyUnresolvedClassNames) {
 
-        i_getPackageAnnotationData().update(i_resolvedClassNames, i_newlyResolvedClassNames,
-                                            i_unresolvedClassNames, i_newlyUnresolvedClassNames);
+        i_getPackageAnnotations().update(
+            i_allResolvedClassNames, i_newlyResolvedClassNames,
+            i_allUnresolvedClassNames, i_newlyUnresolvedClassNames);
 
-        i_getClassAnnotationData().update(i_resolvedClassNames, i_newlyResolvedClassNames,
-                                          i_unresolvedClassNames, i_newlyUnresolvedClassNames);
+        i_getClassAnnotations().update(
+            i_allResolvedClassNames, i_newlyResolvedClassNames,
+            i_allUnresolvedClassNames, i_newlyUnresolvedClassNames);
 
-        i_getFieldAnnotationData().update(i_resolvedClassNames, i_newlyResolvedClassNames,
-                                          i_unresolvedClassNames, i_newlyUnresolvedClassNames);
+        i_getFieldAnnotations().update(
+            i_allResolvedClassNames, i_newlyResolvedClassNames,
+            i_allUnresolvedClassNames, i_newlyUnresolvedClassNames);
 
-        i_getMethodAnnotationData().update(i_resolvedClassNames, i_newlyResolvedClassNames,
-                                           i_unresolvedClassNames, i_newlyUnresolvedClassNames);
+        i_getMethodAnnotations().update(
+            i_allResolvedClassNames, i_newlyResolvedClassNames,
+            i_allUnresolvedClassNames, i_newlyUnresolvedClassNames);
     }
 
     //
@@ -515,7 +601,7 @@ public class TargetsTableAnnotationsImpl
 
     @Override
     public Set<String> getAnnotations(AnnotationCategory category) {
-        return uninternClassNames( i_getAnnotations(category) ) ;
+        return uninternClassNames( i_getAnnotationNames(category) ) ;
     }
 
     @Override
@@ -545,7 +631,7 @@ public class TargetsTableAnnotationsImpl
 
     @Override
     public Set<String> getPackageAnnotations() {
-        return uninternClassNames( i_getPackageAnnotations() );
+        return uninternClassNames( i_getPackageAnnotationNames() );
     }
 
     @Override
@@ -575,7 +661,7 @@ public class TargetsTableAnnotationsImpl
 
     @Override
     public Set<String> getClassAnnotations() {
-        return uninternClassNames( i_getClassAnnotations() );
+        return uninternClassNames( i_getClassAnnotationNames() );
     }
 
     @Override
@@ -605,7 +691,7 @@ public class TargetsTableAnnotationsImpl
 
     @Override
     public Set<String> getFieldAnnotations() {
-        return uninternClassNames( i_getFieldAnnotations() );
+        return uninternClassNames( i_getFieldAnnotationNames() );
     }
 
     @Override
@@ -635,7 +721,7 @@ public class TargetsTableAnnotationsImpl
 
     @Override
     public Set<String> getMethodAnnotations() {
-        return uninternClassNames( i_getMethodAnnotations() );
+        return uninternClassNames( i_getMethodAnnotationNames() );
     }
 
     @Override

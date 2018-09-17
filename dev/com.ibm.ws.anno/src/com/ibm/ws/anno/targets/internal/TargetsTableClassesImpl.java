@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTableClasses;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
@@ -31,6 +33,29 @@ import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.anno.util.internal.UtilImpl_NonInternSet;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
+/**
+ * Store of class information.  Has three current uses:
+ *
+ *   * Stores class information for a single non-aggregate class source.
+ *
+ *   * Stores class information for a single scan policy (SEED, PARTIAL,
+ *     EXCLUDED, or EXTERNAL).
+ *
+ *   * Through subclass "TargetsTableClassesMultiImpl", stores overall
+ *     class information for a single aggregate class source.
+ *
+ * The name of a classes table is either the name of a non-aggregate
+ * class source, the text value of a scan policy, or "root", depending
+ * on the particular use.
+ *
+ * Class information consists of:
+ *
+ *   * package names
+ *   * class names
+ *   * super class names
+ *   * interface names
+ *   * class modifiers
+ */
 public class TargetsTableClassesImpl
     implements TargetsTableClasses, TargetCache_Readable {
 
@@ -42,6 +67,7 @@ public class TargetsTableClassesImpl
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -139,10 +165,9 @@ public class TargetsTableClassesImpl
         return i_thisModifiersMap;
     }
     
-    
     protected TargetsTableClassesImpl(UtilImpl_Factory utilFactory,
-                                    UtilImpl_InternMap classNameInternMap,
-                                    String classSourceName) {
+                                      UtilImpl_InternMap classNameInternMap,
+                                      String classSourceName) {
 
         String methodName = "<init>";
 
@@ -175,12 +200,14 @@ public class TargetsTableClassesImpl
 
     protected final UtilImpl_Factory utilFactory;
 
+    @Trivial
     public UtilImpl_Factory getUtilFactory() {
         return utilFactory;
     }
 
     protected final UtilImpl_InternMap classNameInternMap;
 
+    @Trivial
     public UtilImpl_InternMap getClassNameInternMap() {
         return classNameInternMap;
     }
@@ -198,18 +225,29 @@ public class TargetsTableClassesImpl
         return utilFactory.createIdentityStringSet();
     }
 
-    public Set<String> uninternClassNames(Set<String> classNames) {
-        if ( classNames == null ) {
+    /**
+     * Create a set which tests containment using equality.
+     * Intern based sets use identity, and are not suitable
+     * for external uses, which do not provide interned string
+     * values.
+     *
+     * @param i_classNames An identity based set.
+     *
+     * @return An equality based set containing the values of the
+     *     initial set.
+     */
+    public Set<String> uninternClassNames(Set<String> i_classNames) {
+        if ( i_classNames == null ) {
             // System.out.println("TargetsClassTable Unintern [ 0 (null) ]");
             return Collections.emptySet();
 
-        } else if ( classNames.isEmpty() ) {
+        } else if ( i_classNames.isEmpty() ) {
             // System.out.println("TargetsClassTable Unintern [ 0 (empty) ]");
             return Collections.emptySet();
 
         } else {
-            // System.out.println("TargetsClassTable Unintern [ " + classNames.size() + " ]");
-            return new UtilImpl_NonInternSet( getClassNameInternMap(), classNames );
+            // System.out.println("TargetsClassTable Unintern [ " + i_classNames.size() + " ]");
+            return new UtilImpl_NonInternSet( getClassNameInternMap(), i_classNames );
         }
     }
 
@@ -218,6 +256,7 @@ public class TargetsTableClassesImpl
     protected final String classSourceName;
 
     @Override
+    @Trivial
     public String getClassSourceName() {
         return classSourceName;
     }
@@ -226,6 +265,7 @@ public class TargetsTableClassesImpl
 
     protected final Map<String, String> i_packageNames;
 
+    @Trivial
     public Map<String, String> i_getPackageNamesMap() {
         return i_packageNames;
     }
@@ -259,6 +299,7 @@ public class TargetsTableClassesImpl
 
     protected final Map<String, String> i_classNames;
 
+    @Trivial
     public Map<String, String> i_getClassNamesMap() {
         return i_classNames;
     }
@@ -292,6 +333,7 @@ public class TargetsTableClassesImpl
 
     protected final Map<String, String> i_superclassNames;
 
+    @Trivial
     public Map<String, String> i_getSuperclassNamesMap() {
         return i_superclassNames;
     }
@@ -319,6 +361,7 @@ public class TargetsTableClassesImpl
 
     protected Map<String, String[]> i_interfaceNames;
 
+    @Trivial
     public Map<String, String[]> i_getInterfaceNamesMap() {
         return i_interfaceNames;
     }
@@ -338,6 +381,7 @@ public class TargetsTableClassesImpl
         return i_interfaceNames.get(i_classOrInterfaceName);
     }
 
+    @Trivial
     public Map<String, String[]> i_getInterfaceNames() {
         return i_interfaceNames;
     }
@@ -346,6 +390,7 @@ public class TargetsTableClassesImpl
     
     protected Map<String, Integer> i_modifiers;
     
+    @Trivial
     public Map<String, Integer> i_getModifiers() {
         return i_modifiers;
     }    
@@ -379,6 +424,7 @@ public class TargetsTableClassesImpl
 
     //
 
+    @Trivial
     public void logState() {
         if ( stateLogger.isLoggable(Level.FINER) ) {
             log(stateLogger);
@@ -386,6 +432,7 @@ public class TargetsTableClassesImpl
     }
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
         
@@ -403,6 +450,7 @@ public class TargetsTableClassesImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Class Relationships: END [ {0} ]", getHashText());
     }
 
+    @Trivial
     public void logClassNames(Logger useLogger) {
         String methodName = "logClassNames";
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Classes: BEGIN");
@@ -414,6 +462,7 @@ public class TargetsTableClassesImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Classes: END");
     }
 
+    @Trivial
     public void logSuperclassNames(Logger useLogger) {
         String methodName = "logSuperclsasNames";
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Superclasses: BEGIN");
@@ -435,6 +484,7 @@ public class TargetsTableClassesImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Superclasses: END");
     }
 
+    @Trivial
     public void logInterfaceNames(Logger useLogger) {
         String methodName = "logInterfaceNames";
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Interfaces: BEGIN");
@@ -456,7 +506,8 @@ public class TargetsTableClassesImpl
 
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Interfaces: END");
     }
-    
+
+    @Trivial
     public void logModifiers(Logger useLogger) {
         String methodName = "logModifiers";
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Modifiers: BEGIN");
@@ -766,45 +817,163 @@ public class TargetsTableClassesImpl
 
     //
 
-    public void updateClassNames(Set<String> i_resolvedClassNames, Set<String> i_newlyResolvedClassNames,
-                                 Set<String> i_unresolvedClassNames, Set<String> i_newlyUnresolvedClassNames) {
+    public void updateClassNames(
+        Set<String> i_allResolvedClassNames, Set<String> i_newlyResolvedClassNames,
+        Set<String> i_allUnresolvedClassNames, Set<String> i_newlyUnresolvedClassNames) {
+
+        String methodName = "updateClassNames";
+
+        Object[] logParms;
+        if ( logger.isLoggable(Level.FINER) ) {
+            logParms = new Object[] { this.hashText, null };
+        } else {
+            logParms = null;
+        }
+
+        if ( logParms != null ) {
+            logParms[1] = Integer.toString( i_allResolvedClassNames.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] All resolved [ {1} ]", logParms);
+            logParms[1] = Integer.toString( i_allUnresolvedClassNames.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] All unresolved [ {1} ]", logParms);
+        }
+
+        // The presence of a package or a class in this table resolves that package or class.
+        //
+        // Mark each such package or class as resolved, remove each such package or class as being unresolved,
+        //
+        // When appropriate, mark the package or class as being newly resolved.
+        //
+        // Newly resolved packages and classes must have the additional associated data transferred
+        // during a later step.
 
         for ( String i_packageName : i_getPackageNames() ) {
-            if ( i_resolvedClassNames.add(i_packageName) ) {
-                i_newlyResolvedClassNames.add(i_packageName);
-
-                if ( i_unresolvedClassNames.remove(i_packageName) ) {
-                    i_newlyUnresolvedClassNames.add(i_packageName);
+            if ( !i_allResolvedClassNames.add(i_packageName) ) {
+                if ( logParms != null ) {
+                    logParms[1] = i_packageName;
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Already resolved package [ {1} ]", logParms);
                 }
+                continue;
+            }
+
+            i_allUnresolvedClassNames.remove(i_packageName);
+            i_newlyResolvedClassNames.add(i_packageName);
+            // The package name cannot be newly unresolved.
+
+            if ( logParms != null ) {
+                logParms[1] = i_packageName;
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Resolved package [ {1} ]", logParms);
             }
         }
 
         for ( String i_className : i_getClassNames() ) {
-            if ( i_resolvedClassNames.add(i_className) ) {
-                i_newlyResolvedClassNames.add(i_className);
-
-                if ( i_unresolvedClassNames.remove(i_className) ) {
-                    i_newlyUnresolvedClassNames.add(i_className);
+            if ( !i_allResolvedClassNames.add(i_className) ) {
+                if ( logParms != null ) {
+                    logParms[1] = i_className;
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Already resolved class [ {1} ]", logParms);
                 }
+                continue;
+            }
+
+            i_allUnresolvedClassNames.remove(i_className);
+            i_newlyResolvedClassNames.add(i_className);
+            // The class name cannot be newly unresolved.
+
+            if ( logParms != null ) {
+                logParms[1] = i_className;
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Resolved class [ {1} ]", logParms);
+            }
+        }
+
+        // There are, in effect, three loops across the classes of this table:
+        // * A loop to record resolved classes;
+        // * A loop to record superclasses as unresolved;
+        // * A loop to record interfaces as unresolved.
+        //
+        // The loop to resolve classes is done first as a distinct loop because
+        // all resolutions must be recorded before testing for unresolved superclasses
+        // and interfaces.
+
+        // Check each super class of each newly resolved class.  If necessary,
+        // mark the super class as a new unresolved class.
+
+        for ( Map.Entry<String, String> i_subclassEntry : i_superclassNames.entrySet() ) {
+            // Do *NOT* process the super class if the sub class was previously resolved.
+            // That means the sub class exists in more than one table.  The super class available
+            // during first resolution of the sub class has precedence.
+
+            String i_subclassName = i_subclassEntry.getKey();
+            if ( !i_newlyResolvedClassNames.contains(i_subclassName) ) {
+                if ( logParms != null ) {
+                    logParms[1] = i_subclassName;
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Resolved subclass [ {1} ]", logParms);
+                }
+                continue;
+            }
+
+            String i_superclassName = i_subclassEntry.getValue();
+            if ( i_allResolvedClassNames.contains(i_superclassName) ) {
+                if ( logParms != null ) {
+                    logParms[1] = i_superclassName;
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Resolved superclass [ {1} ]", logParms);
+                }
+                continue;
+            }
+
+            i_allUnresolvedClassNames.add(i_superclassName);
+            i_newlyUnresolvedClassNames.add(i_superclassName);
+            
+            if ( logParms != null ) {
+                logParms[1] = i_superclassName;
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Unresolved superclass [ {1} ]", logParms);
             }
         }
 
         for ( Map.Entry<String, String[]> i_interfaceEntry : i_getInterfaceNamesMap().entrySet() ) {
-            String i_className = i_interfaceEntry.getKey();
-            if ( !i_newlyResolvedClassNames.contains(i_className) ) {
-                // Don't process it!  It was processed previously,
-                // possibly with different interfaces.
+            // Do *NOT* process the interfaces if the implementer was previously resolved.
+            // That means the implementer exists in more than one table.  The interfaces available
+            // during first resolution of the implementer have precedence.
+
+            String i_implementerName = i_interfaceEntry.getKey();
+            if ( !i_newlyResolvedClassNames.contains(i_implementerName) ) {
+                if ( logParms != null ) {
+                    logParms[1] = i_implementerName;
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Previously resolved implementer [ {1} ]", logParms);
+                }
                 continue;
             }
 
             String[] use_i_interfaceNames = i_interfaceEntry.getValue();
             for ( String i_interfaceName : use_i_interfaceNames ) {
-                if ( !i_resolvedClassNames.contains(i_interfaceName) ) {
-                    if ( i_unresolvedClassNames.add(i_interfaceName) ) {
-                        i_newlyUnresolvedClassNames.add(i_interfaceName);
+                if ( i_allResolvedClassNames.contains(i_interfaceName) ) {
+                    if ( logParms != null ) {
+                        logParms[1] = i_interfaceName;
+                        logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Previously resolved interface [ {1} ]", logParms);
                     }
+                    continue;
+                }
+
+                i_allUnresolvedClassNames.add(i_interfaceName);
+                i_newlyUnresolvedClassNames.add(i_interfaceName);
+
+                if ( logParms != null ) {
+                    logParms[1] = i_interfaceName;
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Unresolved interface [ {1} ]", logParms);
                 }
             }
+        }
+
+        if ( logParms != null ) {
+            logParms[1] = Integer.toString( i_allResolvedClassNames.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] All resolved [ {1} ]", logParms);
+
+            logParms[1] = Integer.toString( i_newlyResolvedClassNames.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] New resolved [ {1} ]", logParms);
+
+            logParms[1] = Integer.toString( i_allUnresolvedClassNames.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] All unresolved [ {1} ]", logParms);
+
+            logParms[1] = Integer.toString( i_newlyUnresolvedClassNames.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] New unresolved [ {1} ]", logParms);
         }
     }
 
@@ -898,102 +1067,175 @@ public class TargetsTableClassesImpl
 
     //
 
+    @Trivial
+    private String printString(Set<String> values) {
+        if ( values.isEmpty() ) {
+            return "{ }";
+
+        } else if ( values.size() == 1 ) {
+            for ( String value : values ) {
+                return "{ " + value + " }";
+            }
+            return null; // Unreachable
+
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("{ ");
+            boolean first = true;
+            for ( String value : values ) {
+                if ( !first ) {
+                    builder.append(", ");
+                } else {
+                    first = false;
+                }
+                builder.append(value);
+            }
+            builder.append(" }");
+            return builder.toString();
+        }
+    }
+
     /**
-     * <p>Add data from a table into this table.</p>
+     * <p>Merge data into this table.</p>
      *
-     * <p>Only add data for new packages and classes.</p>
+     * <p>Add packages and classes, super class names, interfaces names, and modifiers.</p>
      *
-     * <p>Record which packages and classes were added.  Other
-     * data addition steps needs the additions information to
-     * restrict other additions.</p>
+     * <p>Only add data for packages and classes which are not already present.</p>
      *
-     * @param table The table which is to be added to this table.
+     * <p>Do not add data for packages or classes which were previously added.</p>
      *
-     * @param i_newlyAddedPackageNames The names of the packages which were added.
-     * @param i_addedPackageNames The names of the packages which were added.
+     * <p>The "newly" and "all" added package and classes parameters track packages
+     * and classes which were added.</p>
      *
-     * @param i_newlyAddedClassNames The names of the classes which were added.
-     * @param i_addedClassNames The names of the classes which were added.
+     * @param otherClassTable A classes table to merge into this classes table.
+     *
+     * @param i_newlyAddedPackageNames The names of packages which were added from the
+     *     classes table.
+     * @param i_allAddedPackageNames The names of packages and classes which were added
+     *     from the classes table and from other classes tables.
+     * @param i_newlyAddedClassNames The names of the classes which were added from the
+     *     classes table.
+     * @param i_allAddedClassNames The names of the classes which were added from the
+     *     classes table and from other classes tables.
      */
     protected void restrictedAdd(TargetsTableClassesImpl otherClassTable,
-                                 Set<String> i_newlyAddedPackageNames, Set<String> i_addedPackageNames,
-                                 Set<String> i_newlyAddedClassNames, Set<String> i_addedClassNames) {
+                                 Set<String> i_newlyAddedPackageNames, Set<String> i_allAddedPackageNames,
+                                 Set<String> i_newlyAddedClassNames, Set<String> i_allAddedClassNames) {
 
-        i_addPackageNames( otherClassTable.i_getPackageNames(), i_newlyAddedPackageNames, i_addedPackageNames );
-        i_addClassNames( otherClassTable.i_getClassNames(), i_newlyAddedClassNames, i_addedClassNames );
+        String methodName = "restrictedAdd";
 
+        // Put in any new packages; 'newly' starts empty, and ends with the added packages.
+        i_addPackageNames(
+            otherClassTable.i_getPackageNames(),
+            i_newlyAddedPackageNames, i_allAddedPackageNames );
+
+        // Put in any new classes; 'newly' starts empty, and ends with the added classes.
+        i_addClassNames(
+            otherClassTable.i_getClassNames(),
+            i_newlyAddedClassNames, i_allAddedClassNames );
+
+        // Put in superclass data, but only for the added classes.
         i_addSuperclassNames( otherClassTable.i_getSuperclassNames(), i_newlyAddedClassNames );
+
+        // Put in interface data, but only for the added classes.
         i_addInterfaceNames( otherClassTable.i_getInterfaceNames(), i_newlyAddedClassNames );
+
+        // Put in modifiers, but only for the added classes.
         i_addModifiers( otherClassTable.i_getModifiers(), i_newlyAddedClassNames );
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ]", hashText);
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] New Packages [ {1} ]",
+                        new Object[] { hashText, printString(i_newlyAddedPackageNames) } );
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] New Classes [ {1} ]",
+                        new Object[] { hashText, printString(i_newlyAddedClassNames) } );
+        }
     }
 
     protected void i_addPackageNames(Set<String> i_otherPackageNames,
                                      Set<String> i_newlyAddedPackageNames,
-                                     Set<String> i_addedPackageNames) {
+                                     Set<String> i_allAddedPackageNames) {
 
         for ( String i_packageName : i_otherPackageNames ) {
-            if ( !i_addedPackageNames.contains(i_packageName) ) {
+            if ( !i_allAddedPackageNames.contains(i_packageName) ) {
                 i_packageNames.put(i_packageName, i_packageName);
 
+                // Record to *both* tracking collections.
                 i_newlyAddedPackageNames.add(i_packageName);
-                i_addedPackageNames.add(i_packageName);
+                i_allAddedPackageNames.add(i_packageName);
             }
         }
     }
 
     protected void i_addClassNames(Set<String> i_otherClassNames,
                                    Set<String> i_newlyAddedClassNames,
-                                   Set<String> i_addedClassNames) {
+                                   Set<String> i_allAddedClassNames) {
 
         for ( String i_className : i_otherClassNames ) {
-            if ( !i_addedClassNames.contains(i_className) ) {
+            if ( !i_allAddedClassNames.contains(i_className) ) {
                 i_classNames.put(i_className, i_className);
 
+                // Record to *both* tracking collections.
                 i_newlyAddedClassNames.add(i_className);
-                i_addedClassNames.add(i_className);
+                i_allAddedClassNames.add(i_className);
             }
         }
     }
 
     protected void i_addSuperclassNames(Map<String, String> i_otherSuperclassNames,
-                                        Set<String> i_addedClassNames) {
+                                        Set<String> i_newlyAddedClassNames) {
+
+        // Iterate across the entries of the other class data should be more efficient than
+        // iterating across the new added class names and doing gets: Most if not all of the
+        // superclass data is expected to be added.
 
         for ( Map.Entry<String, String> i_otherSuperclassNameEntry : i_otherSuperclassNames.entrySet() ) {
             String i_otherClassName = i_otherSuperclassNameEntry.getKey();
             String i_otherSuperclassName = i_otherSuperclassNameEntry.getValue();
 
-            if ( i_addedClassNames.contains(i_otherClassName) ) {
+            if ( i_newlyAddedClassNames.contains(i_otherClassName) ) {
                 i_superclassNames.put(i_otherClassName, i_otherSuperclassName);
             }
         }
     }
 
     protected void i_addInterfaceNames(Map<String, String[]> i_otherInterfaceNames,
-                                       Set<String> i_addedClassNames) {
+                                       Set<String> i_newlyAddedClassNames) {
+
+        // Iterate across the entries of the other class data should be more efficient than
+        // iterating across the new added class names and doing gets: Most if not all of the
+        // interface data is expected to be added.
 
         for ( Map.Entry<String, String[]> i_otherInterfaceNamesEntry : i_otherInterfaceNames.entrySet() ) {
             String i_otherClassName = i_otherInterfaceNamesEntry.getKey();
-            String[] i_useInterfaceNames = i_otherInterfaceNamesEntry.getValue();
+            String[] i_useOtherInterfaceNames = i_otherInterfaceNamesEntry.getValue();
 
-            if ( i_addedClassNames.contains(i_otherClassName) ) {
-                i_interfaceNames.put(i_otherClassName, i_useInterfaceNames);
+            if ( i_newlyAddedClassNames.contains(i_otherClassName) ) {
+                i_interfaceNames.put(i_otherClassName, i_useOtherInterfaceNames);
             }
         }
     }
     
     protected void i_addModifiers(Map<String, Integer> i_otherModifiers,
-                                  Set<String> i_addedClassNames) {
+                                  Set<String> i_newlyAddedClassNames) {
         // String methodName = "i_addModifiers";
         
         // logger.logp(Level.INFO, CLASS_NAME, methodName,
         //     "Classes [ {0} ]",
-        //     Integer.valueOf(i_addedClassNames.size()));
+        //     Integer.valueOf(i_newlyAddedClassNames.size()));
         
+        // Iterate across the entries of the other class data should be more efficient than
+        // iterating across the new added class names and doing gets: Most if not all of the
+        // modifiers are expected to be added.
+
         for ( Map.Entry<String, Integer> i_otherModifiersEntry : i_otherModifiers.entrySet() ) {
             String i_otherClassName = i_otherModifiersEntry.getKey();
             Integer otherModifier = i_otherModifiersEntry.getValue();
 
-            if ( i_addedClassNames.contains(i_otherClassName) ) {
+            if ( i_newlyAddedClassNames.contains(i_otherClassName) ) {
                 i_modifiers.put(i_otherClassName, otherModifier);
                 
                 // logger.logp(Level.INFO, CLASS_NAME, methodName,

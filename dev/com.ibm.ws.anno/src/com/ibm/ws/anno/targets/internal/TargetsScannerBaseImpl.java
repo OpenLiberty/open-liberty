@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
@@ -43,12 +45,24 @@ public class TargetsScannerBaseImpl {
 
     protected final String hashText;
 
+    @Trivial
     public String getHashText() {
         return hashText;
     }
 
     //
 
+    /**
+     * Create a new targets scanner for annotation targets and aggregate
+     * class source.
+     *
+     * Use the intern maps of the annotation targets as the intern maps
+     * of the new scanner.
+     *
+     * @param targets The targets for which to create the scanner.
+     * @param rootClassSource The aggregate class source for which to create
+     *     the scanner.
+     */
     public TargetsScannerBaseImpl(
         AnnotationTargetsImpl_Targets targets,
         ClassSource_Aggregate rootClassSource) {
@@ -69,9 +83,9 @@ public class TargetsScannerBaseImpl {
 
         this.rootClassSource = rootClassSource;
 
-        this.targetsDataMap = new HashMap<String, TargetsTableImpl>();
+        this.targetsTables = new HashMap<String, TargetsTableImpl>();
 
-        this.resultBuckets = createResultBuckets();
+        this.resultTables = createResultTables();
         this.classTable = null;
 
         if (logger.isLoggable(Level.FINER)) {
@@ -94,22 +108,27 @@ public class TargetsScannerBaseImpl {
     protected final UtilImpl_InternMap fieldNameInternMap;
     protected final UtilImpl_InternMap methodSignatureInternMap;
 
+    @Trivial
     public AnnotationTargetsImpl_Targets getTargets() {
         return targets;
     }
 
+    @Trivial
     public AnnotationTargetsImpl_Factory getFactory() {
         return factory;
     }
 
+    @Trivial
     public UtilImpl_InternMap getClassNameInternMap() {
         return classNameInternMap;
     }
 
+    @Trivial
     public UtilImpl_InternMap getFieldNameInternMap() {
         return fieldNameInternMap;
     }
 
+    @Trivial
     public UtilImpl_InternMap getMethodSignatureInternMap() {
         return methodSignatureInternMap;
     }
@@ -134,22 +153,58 @@ public class TargetsScannerBaseImpl {
 
     //
 
-    protected TargetsTableImpl createTargetsData(ScanPolicy scanPolicy) {
+    /**
+     * Create a targets table for a scan policy.  Use the overall intern
+     * maps as the intern maps of the new targets data.
+     *
+     * @param scanPolicy The scan policy for which to create the targets
+     *     table.
+     *
+     * @return A new targets table.
+     */
+    protected TargetsTableImpl createTargetsTable(ScanPolicy scanPolicy) {
+        // Use the intern maps of this scanner, which are the intern maps
+        // of the annotations targets.
         return new TargetsTableImpl( getFactory(),
-                                    getClassNameInternMap(),
-                                    getFieldNameInternMap(),
-                                    getMethodSignatureInternMap(),
-                                    scanPolicy.name() );
+                                     getClassNameInternMap(),
+                                     getFieldNameInternMap(),
+                                     getMethodSignatureInternMap(),
+                                     scanPolicy.name() );
     }
 
-    protected TargetsTableImpl createTargetsData(String classSourceName) {
-        return new TargetsTableImpl( getFactory(),
-                                    getClassNameInternMap(),
-                                    getFieldNameInternMap(),
-                                    getMethodSignatureInternMap(),
-                                    classSourceName );
+    /**
+     * Create a targets table for a class source.  Use the overall intern
+     * maps as the intern maps of the new targets data.
+     *
+     * Set the name of the targets data using the name of the class source.
+     * Set the stamp of the targets table using the stamp of the class source.
+     *
+     * @param classSource The class source for which to create the targets table.
+     *
+     * @return A new targets table.
+     */
+    protected TargetsTableImpl createTargetsTable(ClassSource classSource) {
+        // Use the intern maps of this scanner, which are the intern maps
+        // of the annotations targets.
+        // Overridden in 'TargetsScannerOverallImpl' to conditionally
+        // create the table with its own intern maps.
+        TargetsTableImpl targetsTable = new TargetsTableImpl(
+            getFactory(),
+            getClassNameInternMap(),
+            getFieldNameInternMap(),
+            getMethodSignatureInternMap(),
+            classSource.getName() );
+
+        targetsTable.setStamp( classSource.getStamp() );
+
+        return targetsTable;
     }
 
+    /**
+     * Create a new class table using the overall class intern map.
+     *
+     * @return A new class table.
+     */
     public TargetsTableClassesMultiImpl createClassTable() {
         return new TargetsTableClassesMultiImpl( getFactory().getUtilFactory(), getClassNameInternMap() );
     }
@@ -166,13 +221,37 @@ public class TargetsScannerBaseImpl {
 
     //
 
+    /**
+     * Intern a class name using the top level class name intern map.
+     * Add the class name if it is not already present.  Answer the already
+     * interned value if an equal class name is already present.
+     *
+     * @param className The class name to intern.
+     *
+     * @return The interned class name.
+     */
     public String internClassName(String className) {
         return getClassNameInternMap().intern(className);
     }
 
+    /**
+     * Intern a class name using the top level class name intern map.
+     * According to the forcing parameter, add the class name if it is not
+     * already present.  Answer the already interned value if an equal class
+     * name is already present.
+     *
+     * @param className The class name to intern.
+     * @param doForce Control parameter: If true, add the class name to the
+     *     class name intern map if the class name is not already present.
+     *     If false, do not add the class name.
+     * @return The interned class name.  Null if forcing is turned off and
+     *     the class name is not already present.
+     */
     public String internClassName(String className, boolean doForce) {
         return getClassNameInternMap().intern(className, doForce);
     }
+
+    // Used by 'TargetsScannerSpecificImpl.scan'.
 
     public Set<String> internClassNames(Set<String> uninternedClassNames) {
         Set<String> internedClassNames = createIdentityStringSet(uninternedClassNames.size());
@@ -186,6 +265,7 @@ public class TargetsScannerBaseImpl {
 
     protected final ClassSource_Aggregate rootClassSource;
 
+    @Trivial
     public ClassSource_Aggregate getRootClassSource() {
         return rootClassSource;
     }
@@ -198,26 +278,51 @@ public class TargetsScannerBaseImpl {
         return getScanOptions().getScanThreads();
     }
 
+    /**
+     * Tell if scanning is limited to using a single thread.
+     *
+     * See {@link #getScanOptions()}, {@link #getScanThreads()},
+     * and {@link ClassSourceOptions#getScanThreads()}.
+     *
+     * See also {@link #isScanSingleSource}: Scanning will be
+     * limited to a single thread if there is only one internal
+     * class source.
+     *
+     * @return True or false telling if scanning is limited to using
+     *     a single thread.
+     */
     public boolean isScanSingleThreaded() {
         return ( getScanThreads() == 1 );
     }
 
-    // The single thread scan process should be used when there is only one
-    // non-external source.  That reduces the processing cost considerably.
-
+    /**
+     * Tell if if there is zero or one internal class source.
+     *
+     * When there is no more than one internal class source, scanning
+     * uses single thread processing, even if scanning is enabled to use
+     * more than one thread.  This removes the unnecessary, substantial,
+     * overhead of multi-thread scan processing.
+     *
+     * @return True or false tell if there is at most one internal class
+     *     source.
+     */
     public boolean isScanSingleSource() {
         boolean foundFirst = false;
 
         for ( ClassSource childClassSource : rootClassSource.getClassSources() ) {
             ScanPolicy childScanPolicy = rootClassSource.getScanPolicy(childClassSource);
             if ( childScanPolicy == ScanPolicy.EXTERNAL ) {
-                continue;
+                continue; // Ignore the external class source
             } else if ( foundFirst ) {
-                return false;
+                return false; // This is the second internal class source.
             } else {
-                foundFirst = true;
+                foundFirst = true; // This is the first internal class source.
             }
         }
+
+        // This is *not* based on 'foundFirst': 'foundFirst' will be true
+        // if there is exactly only internal class source.  'foundFirst' will
+        // be false if there are no internal class sources.
 
         return true;
     }
@@ -279,23 +384,36 @@ public class TargetsScannerBaseImpl {
 
     //
 
+    @Trivial
     public TargetsTableImpl scanInternal(ClassSource classSource,
                                         Set<String> i_useResolvedClassNames,
                                         Set<String> i_useUnresolvedClassNames) {
         String methodName = "scanInternal";
 
-        String classSourceName = classSource.getName();
+        Object[] logParms;
+        if ( logger.isLoggable(Level.FINER) ) {
+            logParms = new Object[] { getHashText(), classSource.getName() };
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class source [ {1} ]", logParms);
+            if ( i_useResolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useResolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial resolved [ {1} ]", logParms);
+            }
+            if ( i_useUnresolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useUnresolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial unresolved [ {1} ]", logParms);
+            }
+        } else {
+            logParms = null;
+        }
 
-        TargetsTableImpl targetsData = createTargetsData(classSourceName);
-
-        createTargetsData(classSourceName);
+        TargetsTableImpl targetsTable = createTargetsTable(classSource);
 
         try {
-            targetsData.scanInternal(
+            targetsTable.scanInternal(
                 classSource,
-                TargetsVisitorClassImpl.DONT_RECORD_NEW_UNRESOLVED, i_useResolvedClassNames,
-                TargetsVisitorClassImpl.DONT_RECORD_NEW_RESOLVED, i_useUnresolvedClassNames,
-                TargetsVisitorClassImpl.SELECT_ALL_ANNOTATIONS ); // throws AnnotationTargets_Exception {
+                TargetsVisitorClassImpl.DONT_RECORD_NEW_RESOLVED, i_useResolvedClassNames,
+                TargetsVisitorClassImpl.DONT_RECORD_NEW_UNRESOLVED, i_useUnresolvedClassNames,
+                TargetsVisitorClassImpl.SELECT_ALL_ANNOTATIONS ); // throws AnnotationTargets_Exception
 
         } catch ( AnnotationTargets_Exception e ) {
             // CWWKC0044W
@@ -305,25 +423,48 @@ public class TargetsScannerBaseImpl {
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "Scan error", e);
         }
 
-        targetsData.setName(classSourceName);
-        targetsData.setStamp( classSource.getStamp() );
+        if ( logParms != null ) {
+            if ( i_useResolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useResolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final resolved [ {1} ]", logParms);
+            }
+            if ( i_useUnresolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useUnresolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final unresolved [ {1} ]", logParms);
+            }
+        }
 
         displayJandex();
 
-        return targetsData;
+        return targetsTable;
     }
 
+    @Trivial
     public TargetsTableImpl scanExternal(ClassSource classSource,
-                                        Set<String> i_useResolvedClassNames,
-                                        Set<String> i_useUnresolvedClassNames) {
+                                         Set<String> i_useResolvedClassNames,
+                                         Set<String> i_useUnresolvedClassNames) {
         String methodName = "scanExternal";
-        
-        String classSourceName = classSource.getName();
 
-        TargetsTableImpl targetsData = createTargetsData(classSourceName);
+        Object[] logParms;
+        if ( logger.isLoggable(Level.FINER) ) {
+            logParms = new Object[] { getHashText(), classSource.getName() };
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class source [ {1} ]", logParms);
+            if ( i_useResolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useResolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial resolved [ {1} ]", logParms);
+            }
+            if ( i_useUnresolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useUnresolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial unresolved [ {1} ]", logParms);
+            }
+        } else {
+            logParms = null;
+        }
+        
+        TargetsTableImpl targetsTable = createTargetsTable(classSource);
 
         try {
-            targetsData.scanExternal(classSource, i_useResolvedClassNames, i_useUnresolvedClassNames);
+            targetsTable.scanExternal(classSource, i_useResolvedClassNames, i_useUnresolvedClassNames);
             // throws AnnotationTargets_Exception {
 
         } catch ( AnnotationTargets_Exception e ) {
@@ -334,43 +475,45 @@ public class TargetsScannerBaseImpl {
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "Scan error", e);
         }
 
-        targetsData.setName(classSourceName);
-        targetsData.setStamp( classSource.getStamp() );
+        if ( logParms != null ) {
+            if ( i_useResolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useResolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final resolved [ {1} ]", logParms);
+            }
+            if ( i_useUnresolvedClassNames != null ) {
+                logParms[1] = Integer.valueOf(i_useUnresolvedClassNames.size());
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final unresolved [ {1} ]", logParms);
+            }
+        }
 
-        return targetsData;
+        return targetsTable;
     }
 
     //
 
-    // Class source name -> class source targets data
-    protected final Map<String, TargetsTableImpl> targetsDataMap;
+    // Class source name | scan policy -> classes + annotation targets
 
-    public Map<String, TargetsTableImpl> getTargetsDataMap() {
-        return targetsDataMap;
+    protected final Map<String, TargetsTableImpl> targetsTables;
+
+    @Trivial
+    public Map<String, TargetsTableImpl> getTargetsTables() {
+        return targetsTables;
     }
 
-    public TargetsTableImpl getTargetsData(String classSourceName) {
-        return getTargetsDataMap().get(classSourceName);
+    public TargetsTableImpl getTargetsTable(String classSourceName) {
+        return getTargetsTables().get(classSourceName);
     }
 
-    public void putTargetsData(String classSourceName, TargetsTableImpl targetsData) {
-        getTargetsDataMap().put(classSourceName, targetsData);
+    public void putTargetsTable(String classSourceName, TargetsTableImpl targetsTable) {
+        getTargetsTables().put(classSourceName, targetsTable);
     }
 
-    public TargetsTableImpl getTargetsData(ClassSource classSource) {
-        return getTargetsDataMap().get(classSource.getName());
+    public TargetsTableImpl getTargetsTable(ClassSource classSource) {
+        return getTargetsTables().get(classSource.getName());
     }
 
-    public void putTargetsData(ClassSource classSource, TargetsTableImpl targetsData) {
-        getTargetsDataMap().put(classSource.getName(), targetsData);
-    }
-
-    public TargetsTableImpl getTargetsData(ScanPolicy scanPolicy) {
-        return getTargetsDataMap().get(scanPolicy.name());
-    }
-
-    public void putTargetsData(ScanPolicy scanPolicy, TargetsTableImpl targetsData) {
-        getTargetsDataMap().put(scanPolicy.name(), targetsData);
+    public void putTargetsTable(ClassSource classSource, TargetsTableImpl targetsTable) {
+        getTargetsTables().put(classSource.getName(), targetsTable);
     }
 
     //
@@ -387,48 +530,44 @@ public class TargetsScannerBaseImpl {
 
     //
 
-    // for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
-    //     useResultBuckets[ scanPolicy.ordinal() ] = createTargetsData();
-    // }
+    protected final TargetsTableImpl[] resultTables;
 
-    protected final TargetsTableImpl[] resultBuckets;
-
-    public TargetsTableImpl[] createResultBuckets() {
+    public TargetsTableImpl[] createResultTables() {
         return new TargetsTableImpl[ ScanPolicy.values().length ];
     }
 
-    public void putResultBuckets(TargetsTableImpl[] useResultBuckets) {
+    public void putResultTables(TargetsTableImpl[] useResultTables) {
         for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
-            resultBuckets[ scanPolicy.ordinal() ] = useResultBuckets[ scanPolicy.ordinal() ];
+            resultTables[ scanPolicy.ordinal() ] = useResultTables[ scanPolicy.ordinal() ];
         }
     }
 
     public void putExternalResults(TargetsTableImpl externalResults) {
-        resultBuckets[ ScanPolicy.EXTERNAL.ordinal() ] = externalResults;
+        resultTables[ ScanPolicy.EXTERNAL.ordinal() ] = externalResults;
     }
 
-    public TargetsTableImpl[] getResultBuckets() {
-        return resultBuckets;
+    public TargetsTableImpl[] getResultTables() {
+        return resultTables;
     }
 
-    public TargetsTableImpl getResultBucket(ScanPolicy scanPolicy) {
-        return resultBuckets[ scanPolicy.ordinal() ];
+    public TargetsTableImpl getResultTable(ScanPolicy scanPolicy) {
+        return resultTables[ scanPolicy.ordinal() ];
     }
 
-    public TargetsTableImpl getSeedBucket() {
-        return getResultBucket(ScanPolicy.SEED);
+    public TargetsTableImpl getSeedTable() {
+        return getResultTable(ScanPolicy.SEED);
     }
 
-    public TargetsTableImpl getPartialBucket() {
-        return getResultBucket(ScanPolicy.PARTIAL);
+    public TargetsTableImpl getPartialTable() {
+        return getResultTable(ScanPolicy.PARTIAL);
     }
 
-    public TargetsTableImpl getExcludedBucket() {
-        return getResultBucket(ScanPolicy.EXCLUDED);
+    public TargetsTableImpl getExcludedTable() {
+        return getResultTable(ScanPolicy.EXCLUDED);
     }
 
-    public TargetsTableImpl getExternalBucket() {
-        return getResultBucket(ScanPolicy.EXTERNAL);
+    public TargetsTableImpl getExternalTable() {
+        return getResultTable(ScanPolicy.EXTERNAL);
     }
 
     //
@@ -438,7 +577,7 @@ public class TargetsScannerBaseImpl {
     // Does not need to be synchronized.  No write is performed
     // on the merged annotations.
 
-    protected void mergeAnnotations(TargetsTableImpl[] buckets) {
+    protected void mergeInternalResults(TargetsTableImpl[] resultTables) {
         Set<String> i_addedPackageNames = createIdentityStringSet();
         Set<String> i_addedClassNames = createIdentityStringSet();
 
@@ -450,42 +589,55 @@ public class TargetsScannerBaseImpl {
                 continue;
             }
 
-            TargetsTableImpl targetsData = getTargetsData(classSource);
-            if ( targetsData == null ) {
+            TargetsTableImpl targetsTable = getTargetsTable(classSource);
+            if ( targetsTable == null ) {
                 continue; // Failed to scan the class source.
             }
 
-            TargetsTableImpl bucket = buckets[ scanPolicy.ordinal() ];
-            if ( bucket == null ) {
-                bucket = buckets[ scanPolicy.ordinal() ] = createTargetsData(scanPolicy);
+            TargetsTableImpl resultTable = resultTables[ scanPolicy.ordinal() ];
+            if ( resultTable == null ) {
+                resultTable = ( resultTables[ scanPolicy.ordinal() ] = createTargetsTable(scanPolicy) );
             }
-            bucket.restrictedAdd(targetsData, i_addedPackageNames, i_addedClassNames);
+            resultTable.restrictedAdd(targetsTable, i_addedPackageNames, i_addedClassNames);
         }
 
         for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
-            if ( buckets[ scanPolicy.ordinal() ] == null ) {
-                buckets[ scanPolicy.ordinal() ] = createTargetsData(scanPolicy);
+            if ( resultTables[ scanPolicy.ordinal() ] == null ) {
+                resultTables[ scanPolicy.ordinal() ] = createTargetsTable(scanPolicy);
             }
         }
     }
 
     // Used by 'TargetsScannerImpl_Overall.validInternalClasses'.
-    //
-    // Does not need to be synchronized.  This step occurs on a new not yet shared
-    // class table.
 
     public void mergeClasses(TargetsTableClassesMultiImpl useClassTable) {
+        String methodName = "mergeClasses";
 
         Set<String> i_addedPackageNames = createIdentityStringSet();
         Set<String> i_addedClassNames = createIdentityStringSet();
 
         for ( ClassSource classSource : getRootClassSource().getClassSources() ) {
-            TargetsTableImpl targetsData = getTargetsData(classSource);
-            if ( targetsData == null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] on [ {1} ]",
+                    new Object[] { this.hashText, classSource.getHashText() });
+            }
+
+            TargetsTableImpl targetsTable = getTargetsTable(classSource);
+            if ( targetsTable == null ) {
+                if ( logger.isLoggable(Level.FINER) ) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] on [ {1} ]: Null Data",
+                        new Object[] { this.hashText, classSource.getHashText() });
+                }
                 continue; // Failed to scan the class source.
             }
 
-            TargetsTableClassesImpl targetsClassData = targetsData.getClassTable();
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] on [ {1} ]: Merging",
+                new Object[] { this.hashText, classSource.getHashText() });
+
+            TargetsTableClassesImpl targetsClassData = targetsTable.getClassTable();
 
             Set<String> i_newlyAddedPackageNames = createIdentityStringSet();
             Set<String> i_newlyAddedClassNames = createIdentityStringSet();
@@ -523,7 +675,7 @@ public class TargetsScannerBaseImpl {
     // updates the class table which is stored into the cache.
 
     public void mergeClasses(TargetsTableClassesMultiImpl useClassTable,
-                             TargetsTableImpl targetsData) {
+                             TargetsTableImpl targetsTable) {
 
         Set<String> i_addedPackageNames = createIdentityStringSet();
         Set<String> i_addedClassNames = createIdentityStringSet();
@@ -531,10 +683,10 @@ public class TargetsScannerBaseImpl {
         Set<String> i_newlyAddedPackageNames = createIdentityStringSet();
         Set<String> i_newlyAddedClassNames = createIdentityStringSet();
 
-        TargetsTableClassesImpl targetsClassData = targetsData.getClassTable();
+        TargetsTableClassesImpl targetsClassData = targetsTable.getClassTable();
 
         useClassTable.restrictedAdd(targetsClassData,
-                i_newlyAddedPackageNames, i_addedPackageNames,
-                i_newlyAddedClassNames, i_addedClassNames);
+            i_newlyAddedPackageNames, i_addedPackageNames,
+            i_newlyAddedClassNames, i_addedClassNames);
     }
 }

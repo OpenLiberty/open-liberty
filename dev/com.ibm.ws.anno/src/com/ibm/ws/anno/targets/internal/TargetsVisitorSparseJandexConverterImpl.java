@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 import com.ibm.ws.anno.jandex.internal.SparseClassInfo;
 import com.ibm.ws.anno.jandex.internal.SparseDotName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.AnnotationCategory;
@@ -64,6 +66,7 @@ public class TargetsVisitorSparseJandexConverterImpl {
 
     protected final String hashText;
 
+    @Trivial
     public String getHashText() {
     	return hashText;
     }
@@ -73,7 +76,7 @@ public class TargetsVisitorSparseJandexConverterImpl {
     public TargetsVisitorSparseJandexConverterImpl(TargetsTableImpl targetsTable) {
         this.targetsTable = targetsTable;
         this.classesTable = targetsTable.getClassTable();
-        this.annotationsTable = targetsTable.getTargetTable();
+        this.annotationsTable = targetsTable.getAnnotationTable();
 
         this.hashText = CLASS_NAME + "@" + Integer.toHexString(hashCode());
     }
@@ -83,15 +86,18 @@ public class TargetsVisitorSparseJandexConverterImpl {
     protected final TargetsTableImpl targetsTable;
     protected final TargetsTableClassesImpl classesTable;
     protected final TargetsTableAnnotationsImpl annotationsTable;
-    
+
+    @Trivial    
     public TargetsTableImpl getTargetsTable() {
         return targetsTable;
     }
 
+    @Trivial
     public TargetsTableClassesImpl getClassesTable() {
         return classesTable;
     }
     
+    @Trivial
     public TargetsTableAnnotationsImpl getAnnotationsTable() {
         return annotationsTable;
     }    

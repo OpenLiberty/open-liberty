@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 public class UtilImpl_EmptyInternMap implements Util_InternMap {
@@ -26,16 +28,19 @@ public class UtilImpl_EmptyInternMap implements Util_InternMap {
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
 
     @Override
+    @Trivial
     public int getLogThreshHold() {
         return UtilImpl_InternMap.DEFAULT_LOG_THRESHHOLD;
     }
 
     @Override
+    @Trivial
     public String validate(String value, ValueType useValueType) {
         return UtilImpl_InternMap.doValidate(value, useValueType);
     }
@@ -69,6 +74,7 @@ public class UtilImpl_EmptyInternMap implements Util_InternMap {
     protected final UtilImpl_Factory factory;
 
     @Override
+    @Trivial
     public UtilImpl_Factory getFactory() {
         return factory;
     }
@@ -78,12 +84,14 @@ public class UtilImpl_EmptyInternMap implements Util_InternMap {
     protected final ValueType valueType;
 
     @Override
+    @Trivial
     public ValueType getValueType() {
         return valueType;
     }
 
     protected boolean checkValues;
 
+    @Trivial
     public boolean getCheckValues() {
         return checkValues;
     }
@@ -93,6 +101,7 @@ public class UtilImpl_EmptyInternMap implements Util_InternMap {
     protected final String name;
 
     @Override
+    @Trivial
     public String getName() {
         return name;
     }
@@ -135,6 +144,7 @@ public class UtilImpl_EmptyInternMap implements Util_InternMap {
     //
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
 

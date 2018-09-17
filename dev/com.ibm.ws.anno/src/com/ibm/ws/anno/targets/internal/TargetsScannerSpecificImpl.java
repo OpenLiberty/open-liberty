@@ -14,6 +14,8 @@ package com.ibm.ws.anno.targets.internal;
 import java.util.Set;
 import java.util.logging.Level;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
@@ -51,6 +53,7 @@ public class TargetsScannerSpecificImpl extends TargetsScannerBaseImpl {
      * @throws AnnotationTargets_Exception
      *     Thrown in case of a failure during scanning.
      */
+    @Trivial
     public void scan(Set<String> specificClassNames, Set<String> specificAnnotationClassNames)
         throws AnnotationTargets_Exception {
 
@@ -108,11 +111,11 @@ public class TargetsScannerSpecificImpl extends TargetsScannerBaseImpl {
                 }
             }
 
-            TargetsTableImpl childData = createTargetsData(classSourceName);
+            TargetsTableImpl targetTable = createTargetsTable(classSource);
 
-            childData.scanSpecific(classSource,
-                                   i_specificClassNames, i_resolvedClassNames,
-                                   i_specificAnnotationClassNames);
+            targetTable.scanSpecific(classSource,
+                                     i_specificClassNames, i_resolvedClassNames,
+                                     i_specificAnnotationClassNames);
             // throws ClassSource_Exception
 
             if ( logger.isLoggable(Level.FINER) ) {
@@ -121,14 +124,13 @@ public class TargetsScannerSpecificImpl extends TargetsScannerBaseImpl {
                             new Object[] { getHashText(), classSourceName });
             }
 
-            putTargetsData(classSourceName, childData);
+            putTargetsTable(classSourceName, targetTable);
         }
 
-        mergeAnnotations( getResultBuckets() );
+        mergeInternalResults( getResultTables() );
 
         TargetsTableClassesMultiImpl useClassTable = createClassTable();
         mergeClasses(useClassTable);
-
         setClassTable(useClassTable);
 
         if (logger.isLoggable(Level.FINER)) {

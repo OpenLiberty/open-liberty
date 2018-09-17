@@ -25,6 +25,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -141,8 +143,8 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     public TargetsVisitorClassImpl(
         TargetsTableImpl parentData,
         String classSourceName,
-        Set<String> i_newUnresolvedClassNames, Set<String> i_unresolvedClassNames,
         Set<String> i_newResolvedClassNames, Set<String> i_resolvedClassNames,
+        Set<String> i_newUnresolvedClassNames, Set<String> i_unresolvedClassNames,
         Set<String> i_selectAnnotationClassNames,
         boolean recordDetail) {
 
@@ -156,11 +158,15 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
         this.classData = new ClassData(classSourceName);
 
-        this.i_newUnresolvedClassNames = i_newUnresolvedClassNames;
-        this.i_unresolvedClassNames = i_unresolvedClassNames;
+        if ( (i_resolvedClassNames == null) != (i_unresolvedClassNames == null) ) {
+            throw new IllegalArgumentException("Both or neither of the class names stores must be null.");
+        }
 
         this.i_newResolvedClassNames = i_newResolvedClassNames;
         this.i_resolvedClassNames = i_resolvedClassNames;
+
+        this.i_newUnresolvedClassNames = i_newUnresolvedClassNames;
+        this.i_unresolvedClassNames = i_unresolvedClassNames;
 
         this.i_selectAnnotationClassNames = i_selectAnnotationClassNames;
 
@@ -192,6 +198,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected final String hashText;
 
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -200,6 +207,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected final TargetsTableImpl targetsData;
 
+    @Trivial
     public TargetsTableImpl geTargetsData() {
         return targetsData;
     }
@@ -220,10 +228,12 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
         return geTargetsData().internMethodSignature(methodSignature);
     }
 
+    @Trivial
     protected Map<String, String> createSmallMap() {
         return new IdentityHashMap<String, String>(3);
     }
 
+    @Trivial
     protected Set<String> createIdentitySet() {
         return new UtilImpl_IdentityStringSet();
     }
@@ -245,6 +255,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
         this.externalName = externalName;
     }
 
+    @Trivial
     public String getExternalName() {
         return externalName;
     }
@@ -544,10 +555,12 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     protected final Set<String> i_newResolvedClassNames;
     protected final Set<String> i_resolvedClassNames;
 
+    @Trivial
     public Set<String> i_getNewResolvedClassNames() {
         return i_newResolvedClassNames;
     }
 
+    @Trivial
     public Set<String> i_getResolvedClassNames() {
         return i_resolvedClassNames;
     }
@@ -562,16 +575,32 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
      * @param i_className The class which was defined.
      */
     protected void recordDefinition(String i_className) {
-        if ( (i_resolvedClassNames != null) && i_resolvedClassNames.add(i_className) ) {
+        String methodName = "recordDefinition";
+
+        String defCase;
+
+        if ( i_resolvedClassNames == null ) {
+            defCase = "No resolved or unresolved; not recording";
+        } else if ( !i_resolvedClassNames.add(i_className) ) {
+            defCase = "Already resolved";
+        } else {
             if ( i_newResolvedClassNames != null ) {
                 i_newResolvedClassNames.add(i_className);
             }
-
-            if ( (i_unresolvedClassNames != null) && i_unresolvedClassNames.remove(i_className) ) {
+            if ( i_unresolvedClassNames.remove(i_className) ) {
                 if ( i_newUnresolvedClassNames != null ) {
                     i_newUnresolvedClassNames.remove(i_className);
                 }
+                defCase = "Newly resolved (with references)";
+            } else {
+                defCase = "Newly resolved (no references)";
             }
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "Class [ {0} ] ({1})",
+                        new Object[] { i_className, defCase });
         }
     }
 
@@ -586,12 +615,28 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
      * @param i_className
      */
     protected void recordReference(String i_className) {
-        if ( (i_resolvedClassNames != null) && !i_resolvedClassNames.contains(i_className) ) {
-            if ( (i_unresolvedClassNames != null) && i_unresolvedClassNames.add(i_className) ) {
-                if ( i_newUnresolvedClassNames != null ) {
-                    i_newUnresolvedClassNames.add(i_className);
-                }
+        String methodName = "recordReference";
+
+        String referenceCase;
+
+        if ( i_resolvedClassNames == null ) {
+            referenceCase = "Null resolved or unresolved; no recording";
+        } else if ( i_resolvedClassNames.contains(i_className) ) {
+            referenceCase = "Already resolved";
+        } else if ( !i_unresolvedClassNames.add(i_className) ) {
+            referenceCase = "Already unresolved";
+        } else {
+            if ( i_newUnresolvedClassNames != null ) {
+                i_newUnresolvedClassNames.add(i_className);
             }
+            referenceCase = "New unresolved";
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "Class [ {0} ] ({1})",
+                        new Object[] { i_className, referenceCase });
+
         }
     }
 
@@ -599,12 +644,9 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected final Set<String> i_selectAnnotationClassNames;
 
+    @Trivial
     protected Set<String> i_getSelectAnnotationClassNames() {
         return i_selectAnnotationClassNames;
-    }
-
-    protected boolean recordAnnotationsOnly() {
-        return ( i_selectAnnotationClassNames != null );
     }
 
     /**
@@ -654,6 +696,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
     protected final TargetsVisitorAnnotationImpl annotationVisitor;
 
+    @Trivial
     public boolean getRecordDetail() {
         return ( annotationVisitor != null );
     }
@@ -678,14 +721,14 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
         String methodName = "visit";
         
-        // logger.logp(Level.INFO, CLASS_NAME, methodName,
-        //     "Class [ {0} ] Super [ {1} ] Interfaces [ {2} ]",
-        //     new Object[] { classResourceName, superClassResourceName, interfaceResourceNames });
-        
         Object[] logParms;
         if (logger.isLoggable(Level.FINER)) {
             logParms = new Object[] { getHashText(), classResourceName };
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] [ {1} ]", logParms);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Class [ {1} ]", logParms);
+            logParms[1] = superClassResourceName;
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Superclass [ {1} ]", logParms);
+            logParms[1] = interfaceResourceNames;
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Interfaces [ {1} ]", logParms);
         } else {
             logParms = null;
         }
@@ -737,25 +780,23 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
             classData.setModifiers(access);
             
-            if ( !recordAnnotationsOnly() ) {
-                if (superClassResourceName != null) {
-                    String superClassName = getClassNameFromPartialResourceName(superClassResourceName);
-                    recordReference( classData.i_superclassName = internClassName(superClassName) );
+            if (superClassResourceName != null) {
+                String superClassName = getClassNameFromPartialResourceName(superClassResourceName);
+                recordReference( classData.i_superclassName = internClassName(superClassName) );
+            }
+
+            if ((interfaceResourceNames != null) && (interfaceResourceNames.length > 0)) {
+                String[] i_interfaceNames = new String[interfaceResourceNames.length];
+
+                for (int nameNo = 0; nameNo < interfaceResourceNames.length; nameNo++) {
+                    String nextInterfaceResourceName = interfaceResourceNames[nameNo];
+                    String nextInterfaceName = getClassNameFromPartialResourceName(nextInterfaceResourceName);
+                    String i_nextInterfaceName = internClassName(nextInterfaceName);
+
+                    recordReference( i_interfaceNames[nameNo] = i_nextInterfaceName );
                 }
 
-                if ((interfaceResourceNames != null) && (interfaceResourceNames.length > 0)) {
-                    String[] i_interfaceNames = new String[interfaceResourceNames.length];
-
-                    for (int nameNo = 0; nameNo < interfaceResourceNames.length; nameNo++) {
-                        String nextInterfaceResourceName = interfaceResourceNames[nameNo];
-                        String nextInterfaceName = getClassNameFromPartialResourceName(nextInterfaceResourceName);
-                        String i_nextInterfaceName = internClassName(nextInterfaceName);
-
-                        recordReference( i_interfaceNames[nameNo] = i_nextInterfaceName );
-                    }
-
-                    classData.i_interfaceNames = i_interfaceNames;
-                }
+                classData.i_interfaceNames = i_interfaceNames;
             }
         }
     }
@@ -825,14 +866,10 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
         String i_annotationClassName = i_selectAnnotationClassName(annotationClassName);
         if ( i_annotationClassName == null ) {
-            return null;
+            return null; // Annotation filtering is in effect, and this annotation is filtered.
         }
 
-        if ( recordAnnotationsOnly() ) {
-            classData.i_annotationClassName = i_annotationClassName;
-        } else {
-            recordReference(classData.i_annotationClassName = i_annotationClassName);
-        }
+        recordReference(classData.i_annotationClassName = i_annotationClassName);
 
         if ( annotationVisitor == null ) {
             classData.recordClassAnnotation();
@@ -869,14 +906,10 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
             String i_annotationClassName = i_selectAnnotationClassName(annotationClassName);
             if ( i_annotationClassName == null ) {
-                return null;
+                return null; // Annotation filtering is in effect, and this annotation is filtered.
             }
 
-            if ( recordAnnotationsOnly() ) {
-                classData.i_annotationClassName = i_annotationClassName;
-            } else {
-                recordReference( classData.i_annotationClassName = i_annotationClassName );
-            }
+            recordReference( classData.i_annotationClassName = i_annotationClassName );
 
             if ( annotationVisitor == null ) {
                 classData.recordFieldAnnotation();
@@ -934,14 +967,10 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
 
             String i_annotationClassName = i_selectAnnotationClassName(annotationClassName);
             if ( i_annotationClassName == null ) {
-                return null;
+                return null; // Annotation filtering is in effect, and this annotation is filtered.
             }
 
-            if ( recordAnnotationsOnly() ) {
-                classData.i_annotationClassName = i_annotationClassName;
-            } else {
-                recordReference( classData.i_annotationClassName = i_annotationClassName );
-            }
+            recordReference( classData.i_annotationClassName = i_annotationClassName );
 
             if ( annotationVisitor == null ) {
                 classData.recordMethodAnnotation();

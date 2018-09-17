@@ -34,6 +34,10 @@ public class TargetCacheImpl_Utils {
     public static final String UTF_8_ENCODING_NAME = "UTF-8";
 
     public static final String encodePath(String path) {
+        if ( path == null ) {
+            return null; // Possible for unnamed applications and unnamed modules
+        }
+
         try {
             return URLEncoder.encode(path, UTF_8_ENCODING_NAME); // throws UnsupportedEncodingException
         } catch (UnsupportedEncodingException e) {
@@ -43,6 +47,10 @@ public class TargetCacheImpl_Utils {
     }
 
     public static final String decodePath(String e_path) {
+        if ( e_path == null ) {
+            return null; // Possible for unnamed applications and unnamed modules
+        }
+
         try {
             return URLDecoder.decode(e_path, UTF_8_ENCODING_NAME); // throws UnsupportedEncodingException
         } catch (UnsupportedEncodingException e) {
@@ -107,11 +115,19 @@ public class TargetCacheImpl_Utils {
         //
 
         public String e_removePrefix(String e_name) {
-            return e_name.substring( e_getPrefix().length() );
+            if ( e_name == null ) {
+                return null;
+            } else {
+                return e_name.substring( e_getPrefix().length() );
+            }
         }
 
         public String e_addPrefix(String e_name) {
-            return e_getPrefix() + e_name;
+            if ( e_name == null ) {
+                return null;
+            } else {
+                return e_getPrefix() + e_name;
+            }
         }
     }
 
@@ -140,12 +156,20 @@ public class TargetCacheImpl_Utils {
 
         @Override
         public String e_addPrefix(String e_name) {
-            return getPrefixWidget().e_addPrefix(e_name);
+            if ( e_name == null ) {
+                return null;
+            } else {
+                return getPrefixWidget().e_addPrefix(e_name);
+            }
         }
 
         @Override
         public String e_removePrefix(String e_name) {
-            return getPrefixWidget().e_removePrefix(e_name);
+            if ( e_name == null ) {
+                return null;
+            } else {
+                return getPrefixWidget().e_removePrefix(e_name);
+            }
         }
 
         //
@@ -164,8 +188,8 @@ public class TargetCacheImpl_Utils {
             File[] childFiles = UtilImpl_FileUtils.listFiles( parentDir, getFilter() );
 
 //            if ( childFiles.length == 0 ) {
-//            	String path = parentDir.getAbsolutePath();
-//            	System.out.println("Path [ " + path + " ]");
+//                String path = parentDir.getAbsolutePath();
+//                System.out.println("Path [ " + path + " ]");
 //            }
 
             for ( File childFile : childFiles ) {

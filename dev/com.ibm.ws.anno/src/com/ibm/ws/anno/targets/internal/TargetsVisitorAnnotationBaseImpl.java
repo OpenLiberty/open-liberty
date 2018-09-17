@@ -14,6 +14,8 @@ package com.ibm.ws.anno.targets.internal;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * <p>Core detail text generating visitor for annotations. Used for annotation
  * and array visit steps.</p>
@@ -52,12 +54,14 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
 
     protected final TargetsVisitorClassImpl parentVisitor;
 
+    @Trivial
     public TargetsVisitorClassImpl getParentVisitor() {
         return parentVisitor;
     }
 
     // Nested here means nested beneath another detail visitor.
 
+    @Trivial
     public boolean isNested() {
         return (parentVisitor == null);
     }
@@ -135,7 +139,7 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
 
     public String encode(String value) {
         boolean doEscape = ((value.indexOf(DOUBLE_QUOTE) != -1) ||
-                        (value.indexOf(FORWARD_SLASH) != -1));
+                            (value.indexOf(FORWARD_SLASH) != -1));
         if (!doEscape) {
             return value;
         }

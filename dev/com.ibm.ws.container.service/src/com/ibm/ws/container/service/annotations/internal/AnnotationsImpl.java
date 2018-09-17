@@ -301,7 +301,8 @@ public abstract class AnnotationsImpl implements Annotations {
             if ( (useModName == null) || useModName.isEmpty() ) {
                 useModName = getAppName();
                 if ( (useModName == null) || useModName.isEmpty() ) {
-                    Tr.warning(tc, "Failed to assign module name for container [ " + getContainer() + " ]");
+                    useModName = null;
+                    modNameCase = "unavailable";
                     return;
                 } else {
                     modNameCase = "assigned from application";
@@ -323,16 +324,11 @@ public abstract class AnnotationsImpl implements Annotations {
         this.modName = modName;
     }
 
-    private String modCatName;
+    private final String modCatName;
     
     @Override
     public String getModCategoryName() {
         return modCatName;
-    }
-
-    @Override
-    public void setModCategoryName(String modCatName) {
-        this.modCatName = modCatName;
     }
 
     //
@@ -784,8 +780,13 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public Set<String> getClassesWithSpecifiedInheritedAnnotations(Collection<String> annotationClassNames) {
+        String methodName = "getClassesWithSpecifiedInheritedAnnotations";
+        String prefix = CLASS_NAME + "." + methodName + ": ";
+        Tr.info(tc, prefix + " ENTER Annotations [ " + annotationClassNames + " ]");
+
         AnnotationTargets_Targets useTargets = getTargets();
         if ( useTargets == null ) {
+            Tr.info(tc, prefix + "RETURN [ ]: Null targets");
             return Collections.emptySet();
         }
 
@@ -794,9 +795,11 @@ public abstract class AnnotationsImpl implements Annotations {
         for ( String annotationClassName : annotationClassNames ) {
             Set<String> annotatedClassNames =
                 useTargets.getAllInheritedAnnotatedClasses(annotationClassName);
+            Tr.info(tc, prefix + "Annotation [ " + annotationClassName + " ] [ " + annotatedClassNames + " ]");
             allAnnotatedClassNames.addAll(annotatedClassNames);
         }
 
+        Tr.info(tc, prefix + "RETURN [ " + allAnnotatedClassNames + " ]");
         return allAnnotatedClassNames;
     }
 

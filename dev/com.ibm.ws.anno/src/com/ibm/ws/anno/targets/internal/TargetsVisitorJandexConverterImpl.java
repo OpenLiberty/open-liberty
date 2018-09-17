@@ -20,6 +20,8 @@ import org.jboss.jandex.AnnotationTarget;
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.AnnotationCategory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
@@ -68,7 +70,8 @@ public class TargetsVisitorJandexConverterImpl {
     //
     
     protected final String hashText;
-    
+
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -76,30 +79,33 @@ public class TargetsVisitorJandexConverterImpl {
     public TargetsVisitorJandexConverterImpl(TargetsTableImpl targetsTable) {
         this.targetsTable = targetsTable;
         this.classesTable = targetsTable.getClassTable();
-        this.annotationsTable = targetsTable.getTargetTable();
+        this.annotationsTable = targetsTable.getAnnotationTable();
         // this.detailsTable = targetsTable.getDetailsTable();
 
         this.hashText = CLASS_NAME + "@" + Integer.toHexString(hashCode());
     }
 
     //
-     
+
     protected final TargetsTableImpl targetsTable;
     protected final TargetsTableClassesImpl classesTable;
     protected final TargetsTableAnnotationsImpl annotationsTable;
-    
+
+    @Trivial    
     public TargetsTableImpl getTargetsTable() {
         return targetsTable;
     }
 
+    @Trivial
     public TargetsTableClassesImpl getClassesTable() {
         return classesTable;
     }
-    
+
+    @Trivial
     public TargetsTableAnnotationsImpl getAnnotationsTable() {
         return annotationsTable;
     }    
-    
+
     protected String internClassName(String className) {
         return getTargetsTable().internClassName(className,  Util_InternMap.DO_FORCE);
     }

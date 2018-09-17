@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.container.service.annotations.internal;
 
+import java.net.URL;
+
 import com.ibm.ws.container.service.annotations.ContainerAnnotations;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -19,6 +21,7 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 
 public class ContainerAnnotationsImpl extends AnnotationsImpl implements ContainerAnnotations {
+    private final String CLASS_NAME = "ContainerAnnotationsImpl";
 
     public ContainerAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
@@ -32,6 +35,17 @@ public class ContainerAnnotationsImpl extends AnnotationsImpl implements Contain
               appName, modName, modCatName);
 
         this.entryPrefix = null;
+
+        String methodName = "<init>";
+        String prefix = CLASS_NAME + "." + methodName + ": ";
+        System.out.println(prefix + "Root container [ " + rootContainer + " ]");
+        for ( URL url : rootContainer.getURLs() ) {
+            System.out.println(prefix + "  URL [ " + url + " ]");
+        }
+        rootContainer.getURLs();
+        System.out.println(prefix + "Application [ " + appName + " ]");
+        System.out.println(prefix + "Module [ " + modName + " ]");
+        System.out.println(prefix + "Module Category [ " + modCatName + " ]");
     }
 
     //
@@ -62,22 +76,26 @@ public class ContainerAnnotationsImpl extends AnnotationsImpl implements Contain
         // "WEB-INF/classes".
 
         Container useContainer = getContainer();
-        String containerName = getModName();
-        String containerPrefix = getEntryPrefix();
+
+        String useContainerName = getModName();
+        if ( useContainerName == null ) {
+            useContainerName = getAppName();
+            if ( useContainerName == null ) {
+                useContainerName = "unused";
+            }
+        }
+
+        String useContainerPrefix = getEntryPrefix();
 
         ClassSource_MappedContainer containerClassSource;
         try {
-            if ( containerPrefix == null ) {
-                containerClassSource = classSourceFactory.createContainerClassSource(
-                    rootClassSource, containerName, useContainer);
-            } else {
-                containerClassSource = classSourceFactory.createContainerClassSource(
-                    rootClassSource, containerName, useContainer, containerPrefix);
-            }
-            // Both 'createContainerClassSource' throw ClassSource_Exception
+            containerClassSource = classSourceFactory.createContainerClassSource(
+                rootClassSource, useContainerName, useContainer, useContainerPrefix);
+            // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
             return; // FFDC
         }
+
         rootClassSource.addClassSource(containerClassSource);
     }
 }

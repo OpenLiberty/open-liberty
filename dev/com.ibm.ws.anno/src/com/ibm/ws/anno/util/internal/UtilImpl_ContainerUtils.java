@@ -22,44 +22,44 @@ import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 
 public class UtilImpl_ContainerUtils {
-	/**
-	 * Answer the root-of-roots of a target container.
-	 *
-	 * @param container The container from which to obtain the root-of-roots.
-	 *
-	 * @return The root-of-roots of a target container.
-	 */
+    /**
+     * Answer the root-of-roots of a target container.
+     *
+     * @param container The container from which to obtain the root-of-roots.
+     *
+     * @return The root-of-roots of a target container.
+     */
     public static ArtifactContainer getRootOfRoots(ArtifactContainer container) {
-    	ArtifactEntry entry = container.getEntryInEnclosingContainer();
-    	while ( entry != null ) {
-    		container = container.getRoot();
-    		entry = container.getEntryInEnclosingContainer();
-    	}
-    	return container;
+        ArtifactEntry entry = container.getEntryInEnclosingContainer();
+        while ( entry != null ) {
+            container = container.getRoot();
+            entry = container.getEntryInEnclosingContainer();
+        }
+        return container;
     }
 
-	/**
-	 * Answer the full path of a container from the root-of-roots.  Answer
-	 * "/" if the container is the root-of-roots.
-	 * 
-	 * @param container The container for which to obtain the path.
-	 * 
-	 * @return The full path of the container from the root-of-roots.
-	 */
+    /**
+     * Answer the full path of a container from the root-of-roots.  Answer
+     * "/" if the container is the root-of-roots.
+     * 
+     * @param container The container for which to obtain the path.
+     * 
+     * @return The full path of the container from the root-of-roots.
+     */
     public static String getFullInternalPath(ArtifactContainer container) {
-    	ArtifactEntry entry = container.getEntryInEnclosingContainer();
-    	if ( entry == null ) {
-    		return "/";
-    	}
+        ArtifactEntry entry = container.getEntryInEnclosingContainer();
+        if ( entry == null ) {
+            return "/";
+        }
 
-    	StringBuilder pathBuilder = new StringBuilder();
-    	while ( entry != null ) {
-    		pathBuilder.insert(0,  entry.getPath());
-    		container = entry.getRoot();
-    		entry = container.getEntryInEnclosingContainer();
-    	}
+        StringBuilder pathBuilder = new StringBuilder();
+        while ( entry != null ) {
+            pathBuilder.insert(0,  entry.getPath());
+            container = entry.getRoot();
+            entry = container.getEntryInEnclosingContainer();
+        }
 
-    	return pathBuilder.toString();
+        return pathBuilder.toString();
     }
 
     /**
@@ -76,20 +76,20 @@ public class UtilImpl_ContainerUtils {
      * @return The external path of the container.
      */
     public static String getExternalPath(ArtifactContainer container) {
-    	Collection<URL> urls = container.getURLs();
-    	if ( urls.isEmpty() ) {
-    		return null;
-    	}
-    	URL firstUrl = null;
-    	for ( URL url : urls ) {
-    		firstUrl = url;
-    		break;
-    	}
+        Collection<URL> urls = container.getURLs();
+        if ( urls.isEmpty() ) {
+            return null;
+        }
+        URL firstUrl = null;
+        for ( URL url : urls ) {
+            firstUrl = url;
+            break;
+        }
 
-    	String firstPath = firstUrl.getPath();
-    	File firstFile = new File(firstPath);
+        String firstPath = firstUrl.getPath();
+        File firstFile = new File(firstPath);
 
-    	return UtilImpl_FileUtils.getCanonicalPath(firstFile);
+        return UtilImpl_FileUtils.getCanonicalPath(firstFile);
     }
 
     /**
@@ -103,28 +103,28 @@ public class UtilImpl_ContainerUtils {
      * @return The full external path of the container.
      */
     public static String getFullExternalPath(ArtifactContainer container) {
-    	String internalPath;
-    	
-    	ArtifactEntry entry = container.getEntryInEnclosingContainer();
-    	if ( entry == null ) {
-    		internalPath = null;
-    	} else {
-    		StringBuilder pathBuilder = new StringBuilder();
-    		while ( entry != null ) {
-    			pathBuilder.insert(0,  entry.getPath());
-    			container = entry.getRoot();
-    			entry = container.getEntryInEnclosingContainer();
-    		}
-    		internalPath = pathBuilder.toString();
-    	}
+        String internalPath;
+        
+        ArtifactEntry entry = container.getEntryInEnclosingContainer();
+        if ( entry == null ) {
+            internalPath = null;
+        } else {
+            StringBuilder pathBuilder = new StringBuilder();
+            while ( entry != null ) {
+                pathBuilder.insert(0,  entry.getPath());
+                container = entry.getRoot();
+                entry = container.getEntryInEnclosingContainer();
+            }
+            internalPath = pathBuilder.toString();
+        }
 
-    	String externalPath = getExternalPath(container);
+        String externalPath = getExternalPath(container);
 
-    	if ( internalPath == null ) {
-    		return externalPath;
-    	} else {
-    		return externalPath + internalPath;
-    	}
+        if ( internalPath == null ) {
+            return externalPath;
+        } else {
+            return externalPath + internalPath;
+        }
     }
 
     //
@@ -138,52 +138,52 @@ public class UtilImpl_ContainerUtils {
      * @return The enclosing entry of the container.
      */
     public static Entry getEntryInEnclosingContainer(Container container) {
-    	try {
-    		return container.adapt(Entry.class);
-    	} catch ( UnableToAdaptException e ) {
-    		// FFDC
-    		return null;
-    	}
+        try {
+            return container.adapt(Entry.class);
+        } catch ( UnableToAdaptException e ) {
+            // FFDC
+            return null;
+        }
     }
 
-	/**
-	 * Answer the root-of-roots of a target container.
-	 *
-	 * @param container The container from which to obtain the root-of-roots.
-	 *
-	 * @return The root-of-roots of a target container.
-	 */
+    /**
+     * Answer the root-of-roots of a target container.
+     *
+     * @param container The container from which to obtain the root-of-roots.
+     *
+     * @return The root-of-roots of a target container.
+     */
     public static Container getRootOfRoots(Container container) {
-    	Entry entry = getEntryInEnclosingContainer(container);
-    	while ( entry != null ) {
-    		container = container.getRoot();
-    		entry = getEntryInEnclosingContainer(container);
-    	}
-    	return container;
+        Entry entry = getEntryInEnclosingContainer(container);
+        while ( entry != null ) {
+            container = container.getRoot();
+            entry = getEntryInEnclosingContainer(container);
+        }
+        return container;
     }
 
-	/**
-	 * Answer the full path of a container from the root-of-roots.  Answer
-	 * "/" if the container is the root-of-roots.
-	 * 
-	 * @param container The container for which to obtain the path.
-	 * 
-	 * @return The full path of the container from the root-of-roots.
-	 */
+    /**
+     * Answer the full path of a container from the root-of-roots.  Answer
+     * "/" if the container is the root-of-roots.
+     * 
+     * @param container The container for which to obtain the path.
+     * 
+     * @return The full path of the container from the root-of-roots.
+     */
     public static String getFullInternalPath(Container container) {
-    	Entry entry = getEntryInEnclosingContainer(container);
-    	if ( entry == null ) {
-    		return "/";
-    	}
+        Entry entry = getEntryInEnclosingContainer(container);
+        if ( entry == null ) {
+            return "/";
+        }
 
-    	StringBuilder pathBuilder = new StringBuilder();
-    	while ( entry != null ) {
-    		pathBuilder.insert(0,  entry.getPath());
-    		container = entry.getRoot();
-    		entry = getEntryInEnclosingContainer(container);
-    	}
+        StringBuilder pathBuilder = new StringBuilder();
+        while ( entry != null ) {
+            pathBuilder.insert(0,  entry.getPath());
+            container = entry.getRoot();
+            entry = getEntryInEnclosingContainer(container);
+        }
 
-    	return pathBuilder.toString();
+        return pathBuilder.toString();
     }
 
     /**
@@ -200,20 +200,20 @@ public class UtilImpl_ContainerUtils {
      * @return The external path of the container.
      */
     public static String getExternalPath(Container container) {
-    	Collection<URL> urls = container.getURLs();
-    	if ( urls.isEmpty() ) {
-    		return null;
-    	}
-    	URL firstUrl = null;
-    	for ( URL url : urls ) {
-    		firstUrl = url;
-    		break;
-    	}
+        Collection<URL> urls = container.getURLs();
+        if ( urls.isEmpty() ) {
+            return null;
+        }
+        URL firstUrl = null;
+        for ( URL url : urls ) {
+            firstUrl = url;
+            break;
+        }
 
-    	String firstPath = firstUrl.getPath();
-    	File firstFile = new File(firstPath);
+        String firstPath = firstUrl.getPath();
+        File firstFile = new File(firstPath);
 
-    	return UtilImpl_FileUtils.getCanonicalPath(firstFile);
+        return UtilImpl_FileUtils.getCanonicalPath(firstFile);
     }
 
     /**
@@ -227,27 +227,27 @@ public class UtilImpl_ContainerUtils {
      * @return The full external path of the container.
      */
     public static String getFullExternalPath(Container container) {
-    	String internalPath;
-    	
-    	Entry entry = getEntryInEnclosingContainer(container);
-    	if ( entry == null ) {
-    		internalPath = null;
-    	} else {
-    		StringBuilder pathBuilder = new StringBuilder();
-    		while ( entry != null ) {
-    			pathBuilder.insert(0,  entry.getPath());
-    			container = entry.getRoot();
-    			entry = getEntryInEnclosingContainer(container);
-    		}
-    		internalPath = pathBuilder.toString();
-    	}
+        String internalPath;
+        
+        Entry entry = getEntryInEnclosingContainer(container);
+        if ( entry == null ) {
+            internalPath = null;
+        } else {
+            StringBuilder pathBuilder = new StringBuilder();
+            while ( entry != null ) {
+                pathBuilder.insert(0,  entry.getPath());
+                container = entry.getRoot();
+                entry = getEntryInEnclosingContainer(container);
+            }
+            internalPath = pathBuilder.toString();
+        }
 
-    	String externalPath = getExternalPath(container);
+        String externalPath = getExternalPath(container);
 
-    	if ( internalPath == null ) {
-    		return externalPath;
-    	} else {
-    		return externalPath + internalPath;
-    	}
+        if ( internalPath == null ) {
+            return externalPath;
+        } else {
+            return externalPath + internalPath;
+        }
     }
 }

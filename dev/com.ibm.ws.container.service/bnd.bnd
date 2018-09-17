@@ -70,6 +70,14 @@ Service-Component: \
       optional:="annoService"; \
       dynamic:="annoService"; \
       properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.ContainerAnnotations", \
+   com.ibm.ws.container.service.annotations.CDIContainerAnnotationsAdapter; \
+      implementation:=com.ibm.ws.container.service.annotations.internal.CDIContainerAnnotationsAdapterImpl; \
+      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
+      annoService=com.ibm.wsspi.anno.service.AnnotationService_Service; \
+      configuration-policy:=optional; \
+      optional:="annoService"; \
+      dynamic:="annoService"; \
+      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.CDIContainerAnnotations", \
    com.ibm.ws.container.service.annotations.ModuleAnnotationsAdapter; \
       implementation:=com.ibm.ws.container.service.annotations.internal.ModuleAnnotationsAdapterImpl; \
       provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \

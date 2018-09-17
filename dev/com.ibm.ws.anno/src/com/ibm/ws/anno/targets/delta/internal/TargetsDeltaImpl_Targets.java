@@ -57,7 +57,7 @@ public class TargetsDeltaImpl_Targets implements TargetsDelta_Targets {
         this.classesDelta = new TargetsDeltaImpl_Classes(this.factory,
             finalTable.getClassTable(), initialTable.getClassTable());
         this.annotationsDelta = new TargetsDeltaImpl_Annotations(this.factory,
-            finalTable.getTargetTable(), initialTable.getTargetTable());
+            finalTable.getAnnotationTable(), initialTable.getAnnotationTable());
 
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Null [ {1} ]",

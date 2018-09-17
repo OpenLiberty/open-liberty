@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.targets.cache.TargetCache_Options;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataCon;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataMod;
@@ -27,6 +29,8 @@ import com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.ws.anno.util.internal.UtilImpl_PoolExecutor;
 import com.ibm.ws.anno.util.internal.UtilImpl_Utils;
+
+import com.ibm.wsspi.anno.util.Util_InternMap;
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
@@ -34,59 +38,137 @@ import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 /**
  * Data dependencies:
  *
- * { Internal Source } + External Source
+ * Inputs:
  *
- * Internal Source -> Internal Data
+ *   A list of internal class sources, plus an optional external
+ *   class source.
  *
- * { Internal Data } -> Targets Data
+ *   { Internal Source } + External Source
  *
- * { Internal Data } -> Class References Data
- * { Internal Data } -> Internal Class Data
+ * Internal class source dependencies:
  *
- * External Source + Class References Data -> External Class Data
+ *   Each internal class source generates a class table and an
+ *   annotation targets table.  As a side effect of generating
+ *   the class and targets tables, a collections of resolved
+ *   and unresolved class names are generated.
  *
- * Internal Class Data + External Class Data -> Overall Class Data
+ *   Processing of each internal class source is exhaustive:
+ *   All classes of each internal class source are processed.
  *
- * Internal sources are provided by the initial root class source.
- * An external source may be present, but is expected to be absent
- * in the initial root class source.
+ *   Each internal class source operates independent of all
+ *   other internal class sources.
  *
- * Processing of the initial sources generates intermediate data, which
- * consists of annotation tables and class tables.
+ *   Internal Source ->
+ *   Internal Class Table +
+ *     Internal Annotation Targets Table +
+ *     Internal Resolved Class Names +
+ *     Internal Unresolved Class Names
  *
- * Processing of the initial sources also generates incomplete class
- * references data, which is a set of resolved class names and a set of
- * unresolved class names.  The incomplete class references data is necessary
- * to complete the class data.
+ * Resolved class name dependencies:
  *
- * Processing of the external source and the incomplete class references
- * data generates the external class data.
+ *   The resolved and unresolved class names from all of the
+ *   internal class sources is merged into single collections.
+ *   Precedence is given according to the ordering of the
+ *   internal class sources, including masking effects when
+ *   duplicate class information is present.
  *
- * A merge of the internal class data and the external class data generates
- * the overall class data.
+ *   { ( Internal Resolved Class Names, Internal Unresolved Class Names ) } ->
+ *     ( Overall Internal Resolved Class Names, overall Internal Unresolved Class Names )
  *
- * Data caching is performed according to this data flow:
+ * External class source dependencies:
  *
- * The list of class sources is cached as a class source table.  Changes
- * to this table force particular targets data to be recomputed.  The external
- * source is not listed in the class source table.
+ *   The single external class source, when present, generates
+ *   a single external class table.  No external annotation
+ *   targets table is generated.
  *
- * Data for each internal source is cached.
+ *   Initially only unresolved class names obtained from the
+ *   internal class sources are processed.  This often generates
+ *   new unresolved class names, which are processed iteratively
+ *   until no new unresolved class names are generated.
  *
- * The class references data is cached.
+ *   Some class names may fail to resolve.
  *
- * The internal class data is cached.
+ *   External Source +
+ *     Overall Internal Resolved Class Names +
+ *     Overall Internal Unresolved Class Names ->
+ *   External Class Data +
+ *     External Resolved Class Names +
+ *     External Unresolved Class Names
  *
- * The external class data is cached.
+ * Final class data dependencies:
  *
- * The overall class data is not cached: This data is always regenerated
- * by merging the internal class data and the external class data.
+ *   An overall internal class table is generated from the
+ *   internal class tables.
+ * 
+ *   An overall class table is generated from the overall
+ *   internal class table and from the external class table.
+ *
+ *   An overall annotations table is generated from the
+ *   internal annotations tables.  (There is no external
+ *   annotations table: annotations are not recorded from the
+ *   external class source.)
+ *
+ *   Results are partitioned according to policy assignments:
+ *   SEED, PARTIAL, EXCLUDED, and EXTERNAL.
+ *
+ *   { Internal Class Table } -> Overall Internall Class Table
+ *
+ *   ( Internal Annotations Table } -> Overall Annotations Table
+ *
+ *   Overall Internal Class Table + External Class Table ->
+ *     Overall Class Table
+ *
+ * Caching is performed largely according to this data flow:
+ *
+ * Data from each internal class source is recorded with the class
+ * table stored to a single file, with the annotation targets table
+ * table stored to a single file, and with stamp information stored
+ * to a aingle file.
+ *
+ * The list of internal class sources, including the policy assignment
+ * of each internal class source, is recorded to a single file.
+ *
+ * The overall internal class table is stored.  The overall internal
+ * resolved and unresolved class names are caches.
+ *
+ * Data from the external class source is not cached: The external
+ * class source includes environment specific components which are not
+ * guaranteed to be stable.
  */
 
 public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     public static final String CLASS_NAME = TargetsScannerOverallImpl.class.getSimpleName();
-    
-    protected String priorResult(String resultType, String reason, boolean isChanged) {
+
+    @Trivial
+    private String printString(Set<String> values) {
+        if ( values.isEmpty() ) {
+            return "{ }";
+
+        } else if ( values.size() == 1 ) {
+            for ( String value : values ) {
+                return "{ " + value + " }";
+            }
+            return null; // Unreachable
+
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("{ ");
+            boolean first = true;
+            for ( String value : values ) {
+                if ( !first ) {
+                    builder.append(", ");
+                } else {
+                    first = false;
+                }
+                builder.append(value);
+            }
+            builder.append(" }");
+            return builder.toString();
+        }
+    }
+
+    @Trivial
+    public String priorResult(String resultType, String reason, boolean isChanged) {
         return MessageFormat.format(
                 "[ {0} ] ENTER / RETURN Valid (prior result) [ {1} ] [ {2} ]: {3}",
                 getHashText(),
@@ -95,7 +177,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 reason);
     }
 
-    protected String newResult(String resultType, String reason, boolean isChanged) {
+    @Trivial
+    public String newResult(String resultType, String reason, boolean isChanged) {
         return MessageFormat.format(
                 "[ {0} ] RETURN Valid (new result) [ {1} ] [ {2} ]: {3}",
                 getHashText(),
@@ -107,9 +190,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     //
 
     protected TargetsScannerOverallImpl(
-            AnnotationTargetsImpl_Targets targets,
-            ClassSource_Aggregate rootClassSource,
-            TargetCacheImpl_DataMod modData) {
+        AnnotationTargetsImpl_Targets targets,
+        ClassSource_Aggregate rootClassSource,
+        TargetCacheImpl_DataMod modData) {
 
         super(targets, rootClassSource);
 
@@ -119,6 +202,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         this.targetsControl = new TargetsControl();
 
         this.modData = modData;
+
+        //
 
         this.containerTable = null;
 
@@ -134,6 +219,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         this.changedClassTableReason = null;
         this.changedClassTable = false;
+
+        //
 
         this.i_resolvedClassNames = null;
         this.i_unresolvedClassNames = null;
@@ -152,6 +239,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
     protected final Object internMapControl;
 
+    @Trivial
     protected Object getInternMapControl() {
         return internMapControl;
     }
@@ -163,49 +251,109 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
     protected final Object targetsControl;
 
+    @Trivial
     protected Object getTargetsControl() {
         return targetsControl;
     }
 
-    // When extra treads are enabled, targets data are created and populated
-    // using their own intern maps.
-    //
-    // That adds a step to the targets data, which is to re-intern the data
-    // using the master intern maps.
-    //
-    // The added intern step requires a lock-down of the master intern maps.
-    // The alternative is to add fine grained locking to the intern maps.
-    // That alternative is avoided for efficiency.
-
+    /**
+     * Override: Create a targets table for a class source.  If multiple scan
+     * threads are being used, create the targets table with its own intern
+     * maps.
+     *
+     * The table must be interned relative to the overall intern maps before
+     * it is merged into the overall reaults.
+     *
+     * Having independent intern maps adds storage overhead.  The alternative
+     * is expensive fine grained locking on intern maps.
+     *
+     * See {@link #internTargetsTable}.
+     *
+     * @param classSource The class source for which to create the targets
+     *     table.
+     *
+     * @return A new targets table for the class source.
+     */
     @Override
-    protected TargetsTableImpl createTargetsData(String childClassSourceName) {
+    protected TargetsTableImpl createTargetsTable(ClassSource classSource) {
         if ( isScanSingleThreaded() || isScanSingleSource() ) {
-            return super.createTargetsData(childClassSourceName);
+            // Create the targets table using the intern map of the scanner,
+            // which is the intern map of the annotation targets.
+            return super.createTargetsTable(classSource);
+
         } else {
-            return new TargetsTableImpl( getFactory(), childClassSourceName );
+            // Create the targets table with its own intern map.
+            TargetsTableImpl targetsTable = new TargetsTableImpl( getFactory(), classSource.getName() );
+            targetsTable.setStamp( classSource.getStamp() );
+            return targetsTable;
         }
     }
 
-    protected TargetsTableImpl internTargetsData(TargetsTableImpl targetsData) {
-        if ( isScanSingleThreaded() || isScanSingleSource() ) {
-            return targetsData;
+    /**
+     * Conditionally recreate a targets table using the overall intern maps.
+     *
+     * Do nothing if mutiple scan threads are not in use.
+     *
+     * @return The targets table interned using the overall intern maps.
+     */
+    protected TargetsTableImpl internTargetsTable(TargetsTableImpl targetsTable) {
+        if ( !isScanSingleThreaded() && !isScanSingleSource() ) {
+            synchronized ( getInternMapControl() ) {
+                targetsTable = new TargetsTableImpl( targetsTable,
+                                                     getClassNameInternMap(),
+                                                     getFieldNameInternMap(),
+                                                     getMethodSignatureInternMap() );
+            }
         }
 
-        synchronized ( getInternMapControl() ) {
-            return new TargetsTableImpl( targetsData,
-                                         getClassNameInternMap(),
-                                         getFieldNameInternMap(),
-                                         getMethodSignatureInternMap() );
+        if ( logger.isLoggable(Level.FINER) ) {
+            verifyTargets(targetsTable);
+        }
+
+        return targetsTable;
+    }
+
+    private void verifyTargets(TargetsTableImpl targetsTable) {
+        String methodName = "verifyTargets";
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", getHashText());
+        }
+
+        Set<String> i_packageNames = targetsTable.i_getPackageNames();
+        verify("Package names", i_packageNames);
+        Set<String> i_classNames = targetsTable.i_getClassNames();
+        verify("Class names", i_classNames);
+
+        Set<String> i_packageAnnotations = targetsTable.i_getPackageAnnotations().getHeldSet();
+        verify("Package annotations", i_packageAnnotations);
+        Set<String> i_classAnnotations = targetsTable.i_getClassAnnotations().getHeldSet();
+        verify("Class annotations", i_classAnnotations);
+        Set<String> i_fieldAnnotations = targetsTable.i_getFieldAnnotations().getHeldSet();
+        verify("Field annotations", i_fieldAnnotations);
+        Set<String> i_methodAnnotations = targetsTable.i_getMethodAnnotations().getHeldSet();
+        verify("Method annotations", i_methodAnnotations);
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN", getHashText());
         }
     }
 
     // External class source processing ...
-    //
-    // The external class source is expected to be added after
-    // processing the internal class sources.
-    //
-    // There is at most one external class source.
 
+    /**
+     * Answer the external class source.  Answer null if no external class
+     * source is present.
+     *
+     * The external class source need not be present initially, but is
+     * required for inhertance based APIs.
+     *
+     * At most one external class source may be present.
+     *
+     * See {@link ScanPolicy#EXTERNAL}.
+     *
+     * @return The external class source.  Null if there is no external
+     *     class source.
+     */
     public ClassSource getExternalClassSource() {
         ClassSource_Aggregate useRootClassSource = getRootClassSource();
 
@@ -222,27 +370,47 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     protected TargetCacheImpl_DataMod modData;
 
+    @Trivial
     public TargetCacheImpl_DataMod getModData() {
         return modData;
+    }
+
+    public long getCacheReadTime() {
+        return getModData().getReadTime();
+    }
+
+    public long getCacheWriteTime() {
+        return getModData().getWriteTime();
+    }
+
+    public long getContainerReadTime() {
+        return getModData().getContainerReadTime();
+    }
+
+    public long getContainerWriteTime() {
+        return getModData().getContainerWriteTime();
     }
 
     // The table of child class sources of the root aggregate class source.
 
     protected TargetsTableContainersImpl containerTable;
 
+    @Trivial
     public TargetsTableContainersImpl getContainerTable() {
         return containerTable;
     }
 
-    // Change information for the list of child class sources.
+    // Change information for the child class sources.
 
     protected String changedContainerTableReason;
     protected boolean changedContainerTable;
 
+    @Trivial
     public String getChangedContainerReason() {
         return changedContainerTableReason;
     }
 
+    @Trivial
     public boolean getChangedContainerTable() {
         return changedContainerTable;
     }
@@ -260,38 +428,40 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     protected final Map<String, String> changedTargetsReasons; // Class source name -> reason
     protected final Set<String> changedTargets; // Class source name
 
-    protected Map<String, String> getChangedTargetsDataReasons() {
+    @Trivial
+    protected Map<String, String> getChangedTargetsTableReasons() {
         return changedTargetsReasons;
     }
 
-    protected Set<String> getChangedTargetsData() {
+    @Trivial
+    protected Set<String> getChangedTargetsTable() {
         return changedTargets;
     }
 
-    protected void setChangedTargetsData(String classSourceName, String reason, boolean isChanged) {
-        getChangedTargetsDataReasons().put(classSourceName, reason);
+    protected void setChangedTargetsTable(String classSourceName, String reason, boolean isChanged) {
+        getChangedTargetsTableReasons().put(classSourceName, reason);
 
         if ( isChanged ) {
-            getChangedTargetsData().add(classSourceName);
+            getChangedTargetsTable().add(classSourceName);
         }
     }
 
-    public String getChangedTargetsDataReason(String classSourceName) {
-        return getChangedTargetsDataReasons().get(classSourceName);
+    public String getChangedTargetsTableReason(String classSourceName) {
+        return getChangedTargetsTableReasons().get(classSourceName);
     }
 
-    public boolean isChangedTargetsData(String classSourceName) {
-        return getChangedTargetsData().contains(classSourceName);
+    public boolean isChangedTargetsTable(String classSourceName) {
+        return getChangedTargetsTable().contains(classSourceName);
     }
 
-    protected void putTargetsData(String classSourceName, TargetsTableImpl targetsData,
+    protected void putTargetsTable(String classSourceName, TargetsTableImpl targetsTable,
                                   String reason, boolean isChanged) {
 
-        putTargetsData(classSourceName, targetsData);
-        setChangedTargetsData(classSourceName, reason, isChanged);
+        putTargetsTable(classSourceName, targetsTable);
+        setChangedTargetsTable(classSourceName, reason, isChanged);
     }
 
-    // Change information for the aggregate class table.
+    // Change information for the overall class table.
 
     protected String changedClassTableReason;
     protected boolean changedClassTable;
@@ -366,7 +536,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
      * Tell if the list of child class sources has changed.
      *
      * Answer the previously stored result, if one is available.
-     * 
+     *
      * If the containers table has changed, write the updated table. 
      *
      * A change to the class source list means that the aggregate
@@ -380,8 +550,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         if ( containerTable != null ) {
             if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        priorResult("container table", changedContainerTableReason, changedContainerTable));
+                String resultMsg = priorResult("container table",
+                    changedContainerTableReason, changedContainerTable);
+                logger.logp(Level.FINER, CLASS_NAME, methodName, resultMsg);
             }
             return !changedContainerTable;
         }
@@ -437,7 +608,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         setContainerTable(useContainerTable, isChangedReason, isChanged);
 
         if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, newResult("container table", isChangedReason, isChanged));
+            String resultMsg = newResult("container table", isChangedReason, isChanged);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, resultMsg);
         }
         return !isChanged;
     }
@@ -453,9 +625,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     // In single threaded mode, the targets data is processed using the master
     // intern maps.  In multi-threaded mode, each targets data has its own intern
     // maps, and a final step is added to recreate the targets data using the
-    // master intern maps.  Intern maps are placed by 'getTargetsData'.  The
-    // recreation of the targets data, when necessary, is don by by
-    // 'internTargetsData'.
+    // master intern maps.  Intern maps are placed by 'getTargetsTable'.  The
+    // recreation of the targets data, when necessary, is done by
+    // 'internTargetsTable'.
 
     protected boolean validInternalContainer(ClassSource classSource, ScanPolicy scanPolicy) {
         String methodName = "validInternalContainer";
@@ -463,10 +635,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         String classSourceName = classSource.getName();
 
         synchronized ( getTargetsControl() ) {
-            TargetsTableImpl priorTargetsData = getTargetsData(classSourceName);
-            if ( priorTargetsData != null ) {
-                String priorIsChangedReason = getChangedTargetsDataReason(classSourceName);
-                boolean priorIsChanged = isChangedTargetsData(classSourceName);
+            TargetsTableImpl priorTargetsTable = getTargetsTable(classSourceName);
+            if ( priorTargetsTable != null ) {
+                String priorIsChangedReason = getChangedTargetsTableReason(classSourceName);
+                boolean priorIsChanged = isChangedTargetsTable(classSourceName);
 
                 if ( logger.isLoggable(Level.FINER) ) {
                     logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -481,22 +653,22 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         String isChangedReason;
 
         TargetCacheImpl_DataCon conData = modData.getConForcing(classSourceName);
-        TargetsTableImpl useTargetsData = createTargetsData(classSourceName);
+        TargetsTableImpl useTargetsTable = createTargetsTable(classSource);
 
         boolean attemptRead;
         boolean completedRead;
-        
+
         if ( attemptRead = (conData.shouldRead("Container data") && conData.hasFiles()) ) {
-            completedRead = conData.read(useTargetsData);
+            completedRead = conData.read(useTargetsTable);
         } else {
             completedRead = false;
         }
 
         if ( !completedRead ) { 
-            useTargetsData = scanInternal(classSource,
-                TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                TargetsVisitorClassImpl.DONT_RECORD_RESOLVED);
-            useTargetsData = internTargetsData(useTargetsData);
+            useTargetsTable = scanInternal(classSource,
+                TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
+                TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED);
+            useTargetsTable = internTargetsTable(useTargetsTable);
 
             isChangedAll = true;
             isChangedJustStamp = false;
@@ -509,33 +681,33 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         } else {
             if ( modData.isAlwaysValid() ) {
-                useTargetsData = internTargetsData(useTargetsData);
+                useTargetsTable = internTargetsTable(useTargetsTable);
 
                 isChangedAll = false;
                 isChangedJustStamp = false;
                 isChangedReason = "Cache hit (forced valid)";
 
             } else if ( validStamp(classSource, conData) ) {
-                useTargetsData = internTargetsData(useTargetsData);
+                useTargetsTable = internTargetsTable(useTargetsTable);
 
                 isChangedAll = false;
                 isChangedJustStamp = false;
                 isChangedReason = "Cache hit (valid stamp)";
 
             } else {
-                TargetsTableImpl newTargetsData = scanInternal(classSource,
-                    TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                    TargetsVisitorClassImpl.DONT_RECORD_RESOLVED);
+                TargetsTableImpl newTargetsTable = scanInternal(classSource,
+                    TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
+                    TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED);
 
-                if ( !useTargetsData.sameAs(newTargetsData) ) {
-                    useTargetsData = internTargetsData(newTargetsData);
+                if ( !useTargetsTable.sameAs(newTargetsTable) ) {
+                    useTargetsTable = internTargetsTable(newTargetsTable);
 
                     isChangedAll = true;
                     isChangedJustStamp = false;
                     isChangedReason = "Cache hit (invalid stamp; invalid data)";
 
                 } else {
-                    useTargetsData = internTargetsData(useTargetsData);
+                    useTargetsTable = internTargetsTable(useTargetsTable);
 
                     isChangedAll = false;
                     isChangedJustStamp = true;
@@ -546,16 +718,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         if ( isChangedAll ) {
             if ( modData.shouldWrite("Container data") ) {
-                conData.write(modData, useTargetsData);
+                conData.write(modData, useTargetsTable);
             }
         } else if ( isChangedJustStamp ) {
             if ( modData.shouldWrite("Time stamp") ) {
-                conData.writeStamp(modData, useTargetsData);
+                conData.writeStamp(modData, useTargetsTable);
             }
         }
 
         synchronized( getTargetsControl() ) {
-            putTargetsData(classSourceName, useTargetsData, isChangedReason, isChangedAll);
+            putTargetsTable(classSourceName, useTargetsTable, isChangedReason, isChangedAll);
         }
 
         if ( logger.isLoggable(Level.FINER) ) {
@@ -635,7 +807,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         }
         return isValid;
     }
-    
+
     protected boolean validInternalContainers() {
         String methodName = "validInternalContainers";
 
@@ -771,134 +943,156 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     //
 
-    protected boolean validUnresolvedClasses() {
-        String methodName = "validUnresolvedClasses";
+    protected boolean validInternalUnresolved() {
+        String methodName = "validInternalUnresolved";
 
-        boolean isChanged;
-        String isChangedReason;
-
-        if ( i_resolvedClassNames != null ) {
-            isChangedReason = getChangedClassNamesReason();
-            isChanged = isChangedClassNames();
-
+        if ( this.i_resolvedClassNames != null ) {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                            priorResult("Unresolved classes", isChangedReason, isChanged));
+                            priorResult("Unresolved classes", this.changedClassNamesReason, this.changedClassNames));
             }
-            return !isChanged;
+            return !this.changedClassNames;
         }
 
         if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] ENTER: Unresolved classes",
-                        getHashText());
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", getHashText());
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Single threaded [ {1} ]",
+                new Object[] { getHashText(), Boolean.valueOf(isScanSingleThreaded()) });
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Single sourced [ {1} ]",
+                new Object[] { getHashText(), Boolean.valueOf(isScanSingleSource()) });
         }
 
-        UtilImpl_IdentityStringSet i_cachedResolvedClassNames = null;
-        UtilImpl_IdentityStringSet i_cachedUnresolvedClassNames = null;
+        String validReason;
 
-        if ( !modData.shouldRead("Resolved class names") || !modData.hasResolvedRefs() ) {
-            isChanged = true;
-            isChangedReason = "Cache miss (resolved class names)";
+        boolean mustCompute;
 
-        } else if ( !modData.shouldRead("Unresolved class names") || !modData.hasUnresolvedRefs() ) {
-            isChanged = true;
-            isChangedReason = "Cache miss (unresolved class names)";
+        UtilImpl_IdentityStringSet i_cachedResolved = null;
+        UtilImpl_IdentityStringSet i_cachedUnresolved = null;
+
+        if ( !modData.shouldRead("Unresolved class data") ) {
+            mustCompute = true;
+            validReason = "Cache miss (read disabled)";
+
+        } else if ( !modData.hasResolvedRefs() ) {
+            mustCompute = true;
+            validReason = "Cache miss (resolved)";
+
+        } else if ( !modData.hasUnresolvedRefs() ) {
+            mustCompute = true;
+            validReason = "Cache miss (unresolved)";
 
         } else {
-            i_cachedResolvedClassNames = createIdentityStringSet();
-            if ( !modData.readResolvedRefs(getClassNameInternMap(), i_cachedResolvedClassNames) ) {
-                i_cachedResolvedClassNames = null;
+            i_cachedResolved = createIdentityStringSet();
+            if ( !modData.readResolvedRefs(getClassNameInternMap(), i_cachedResolved) ) {
+                i_cachedResolved = null;
 
-                isChanged = true;
-                isChangedReason = "Cache miss (read failure on resolved class names)";
+                mustCompute = true;
+                validReason = "Cache miss (failed to read resolved)";
 
             } else {
-                i_cachedUnresolvedClassNames = createIdentityStringSet();
-                if ( !modData.readUnresolvedRefs(getClassNameInternMap(), i_cachedUnresolvedClassNames) ) {
-                    i_cachedResolvedClassNames = null;
-                    i_cachedUnresolvedClassNames = null;
+                i_cachedUnresolved = createIdentityStringSet();
+                if ( !modData.readUnresolvedRefs(getClassNameInternMap(), i_cachedUnresolved) ) {
+                    i_cachedResolved = null;
+                    i_cachedUnresolved = null;
 
-                    isChanged = true;
-                    isChangedReason = "Cache miss (read failure on unresolved class names)";
+                    mustCompute = true;
+                    validReason = "Cache miss (failed to read unresolved)";
 
                 } else {
-                    isChanged = false;
-                    isChangedReason = "Comparison needed -- prior data is available";
+                    mustCompute = false;
+                    validReason = "Cache hit";
                 }
             }
         }
 
-        boolean didValidate;
-        
-        if ( !isChanged ) {
-            if ( modData.isAlwaysValid() ) {
-                didValidate = false;
-                isChangedReason = "Cache hit (forced valid)";
-
-            } else if ( !validInternalContainers_Select() ) {
-                didValidate = true;
-                isChanged = true;
-                isChangedReason = "Comparison still needed -- containers show changes";
-
-            } else {
-                didValidate = false;
-                isChangedReason = "Cache hit (valid)";
-            }
-
-        } else {
-            didValidate = false;
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] (Pre-validation) Must compute [ {1} ] ({2})",
+                new Object[] { getHashText(), Boolean.valueOf(mustCompute), validReason });
         }
 
-        if ( isChanged ) {
-            if ( !didValidate ) {
-                validInternalContainers_Select();
+        if ( !mustCompute ) {
+            if ( modData.isAlwaysValid() ) {
+                validReason += " (forced valid)";
+            } else if ( !validInternalContainers_Select() ) {
+                mustCompute = true;
+                validReason += " (invalid containers)";
+            } else {
+                validReason += " (valid containers)";
             }
+        } else {
+            validInternalContainers_Select();
+        }
 
-            UtilImpl_IdentityStringSet i_newResolvedClassNames = createIdentityStringSet();
-            UtilImpl_IdentityStringSet i_newUnresolvedClassNames = createIdentityStringSet();
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] (Post-validation) Must compute [ {1} ] ({2})",
+                new Object[] { getHashText(), Boolean.valueOf(mustCompute), validReason });
+        }
+
+        UtilImpl_IdentityStringSet i_newResolved;
+        UtilImpl_IdentityStringSet i_newUnresolved;
+
+        boolean useNew;
+
+        if ( mustCompute ) {
+            i_newResolved = createIdentityStringSet();
+            i_newUnresolved = createIdentityStringSet();
 
             for ( ClassSource classSource : rootClassSource.getClassSources() ) {
                 if ( rootClassSource.getScanPolicy(classSource) == ScanPolicy.EXTERNAL ) {
                     continue;
                 }
 
-                TargetsTableImpl targetsData = getTargetsData(classSource);
+                getTargetsTable(classSource).updateClassNames(i_newResolved, i_newUnresolved);
 
-                targetsData.updateClassNames(i_newResolvedClassNames, i_newUnresolvedClassNames);
+                if ( logger.isLoggable(Level.FINER) ) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] Class source [ {1} ] Resolved [ {2} ]",
+                        new Object[] { getHashText(), classSource.getName(), printString(i_newResolved) });
+                    logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "[ {0} ] Class source [ {1} ] Unresolved [ {2} ]",
+                        new Object[] { getHashText(), classSource.getName(), printString(i_newUnresolved) });
+                }
             }
 
-            if ( !i_newResolvedClassNames.i_equals(i_cachedResolvedClassNames) ) {
-                isChangedReason = "Cache hit (invalid resolved class names)";
-
-                i_cachedResolvedClassNames = i_newResolvedClassNames;
-                i_cachedUnresolvedClassNames = i_newUnresolvedClassNames;
-
-            } else if ( !i_newUnresolvedClassNames.i_equals(i_cachedUnresolvedClassNames) ) {
-                isChangedReason = "Cache hit (invalid unresolved class names)";
-
-                i_cachedResolvedClassNames = i_newResolvedClassNames;
-                i_cachedUnresolvedClassNames = i_newUnresolvedClassNames;
-
+            if ( (i_cachedResolved == null) || (i_cachedUnresolved == null) ) {
+                useNew = true;
+            } else if ( !i_newResolved.i_equals(i_cachedResolved) ) {
+                validReason += " (invalid resolved)";
+                useNew = true;
+            } else if ( !i_newUnresolved.i_equals(i_cachedUnresolved) ) {
+                validReason += " (invalid unresolved)";
+                useNew = true;
             } else {
-                isChangedReason = "Cache hit (valid)";
-                isChanged = false;
+                validReason += " (valid)";
+                useNew = false;
             }
 
-            if ( isChanged && modData.isValidating() ) {
-                logger.logp(Level.WARNING, CLASS_NAME, methodName,
-                        "[ {0} ] Validation Error: Class resolution data [ {1} ]",
-                        new Object[] { getHashText(), isChangedReason });
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] (Post-compute) Use new [ {1} ] ({2})",
+                    new Object[] { getHashText(), Boolean.valueOf(useNew), validReason });
             }
+
+        } else {
+            i_newResolved = null;
+            i_newUnresolved = null;
+
+            useNew = false;
         }
 
-        i_resolvedClassNames = i_cachedResolvedClassNames;
-        i_unresolvedClassNames = i_cachedUnresolvedClassNames;
+        this.changedClassNames = useNew;
+        this.changedClassNamesReason = validReason;
 
-        changedClassNamesReason = isChangedReason;
-        changedClassNames = isChanged;
+        if ( !useNew ) {
+            this.i_resolvedClassNames = i_cachedResolved;
+            this.i_unresolvedClassNames = i_cachedUnresolved;
 
-        if ( isChanged ) {
+        } else {
+            this.i_resolvedClassNames = i_newResolved;
+            this.i_unresolvedClassNames = i_newUnresolved;
+
             if ( modData.shouldWrite("Resolved refs") ) {
                 modData.writeResolvedRefs(i_resolvedClassNames);
             }
@@ -909,89 +1103,139 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    newResult("Unresolved classes", isChangedReason, isChanged));
+                    newResult("Unresolved classes", validReason, useNew));
+
+            verifyUnresolved();
         }
-        return !isChanged;
+
+        return !mustCompute;
     }
 
-    protected boolean validInternalResults() {
-        String methodName = "validInternalResults";
+    private void verify(String description, Set<String> i_values) {
+        String methodName = "verify";
+
+        logger.logp(Level.FINER, CLASS_NAME, methodName,
+           "{0} count [ {1} ]",
+           new Object[] { description, Integer.toString(i_values.size()) });
+
+        for ( String i_value : i_values ) {
+            if ( internClassName(i_value, Util_InternMap.DO_NOT_FORCE) == null ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] is not interned", i_value);
+            } else {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] is interned", i_value);
+            }
+        }
+    }
+
+    private void verifyUnresolved() {
+        String methodName = "verifyUnresolved";
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", getHashText());
         }
 
-        boolean isChanged;
-        String isChangedReason;
+        verify("Resolved class names", i_resolvedClassNames);
+        verify("Unresolved class names", i_unresolvedClassNames);
 
-        TargetsTableImpl[] cachedBuckets = createResultBuckets();
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN", getHashText());
+        }
+    }
 
-        boolean readInternalResults;
-
-        if ( isScanSingleThreaded() || isScanSingleSource() ) {
-            readInternalResults = readInternalResults(cachedBuckets);
-        } else {
-            readInternalResults = readInternalResults_Concurrent(cachedBuckets);
+    protected boolean validInternalResults() {
+        String methodName = "validInternalResults";
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", getHashText());
         }
 
-        boolean didValidate;
+        boolean isValid;
+        String isValidReason;
 
-        if ( !readInternalResults ) {
-            isChangedReason = "Cache miss";
-            didValidate = false;
-            isChanged = true;
+        TargetsTableImpl[] cachedTables = createResultTables();
 
-        } else {
+        boolean didRead = readInternalResults_Select(cachedTables);
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Read [ {1} ]",
+                new Object[] { getHashText(), Boolean.valueOf(didRead) });
+        }
+
+        if ( didRead ) {
             if ( modData.isAlwaysValid() ) {
-                didValidate = false;
-                isChanged = false;
-                isChangedReason = "Cache hit (forced valid)";
-
+                isValid = true;
+                isValidReason = "Cache hit (forced valid)";
+            } else if ( !validInternalContainers_Select() ) {
+                isValid = false;
+                isValidReason = "Cache hit (invalid)";
             } else {
-                if ( !validInternalContainers_Select() ) {
-                    didValidate = true;
-                    isChanged = true;
-                    isChangedReason = "Cache hit (invalid)";
-
-                } else {
-                    didValidate = true;
-                    isChanged = false;
-                    isChangedReason = "Cache hit (valid)";
-                }
+                isValid = true;
+                isValidReason = "Cache hit (valid)";
             }
+        } else {
+            validInternalContainers_Select();
+            isValid = false;
+            isValidReason = "Cache miss";
         }
 
-        if ( isChanged ) {
-            if ( !didValidate ) {
-                validInternalContainers_Select();
-            }
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Valid [ {1} ] ({2})",
+                new Object[] { getHashText(), Boolean.valueOf(isValid), isValidReason });
+        }
 
-            TargetsTableImpl[] newBuckets = createResultBuckets();
+        if ( !isValid ) {
+            TargetsTableImpl[] newTables = createResultTables();
 
-            mergeAnnotations(newBuckets);
+            mergeInternalResults(newTables);
 
             for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
                 if ( scanPolicy == ScanPolicy.EXTERNAL ) {
                     continue;
                 }
-
                 if ( modData.shouldWrite("Result container") ) {
-                    modData.writeResultCon( scanPolicy, newBuckets[ scanPolicy.ordinal() ] );
+                    modData.writeResultCon( scanPolicy, newTables[ scanPolicy.ordinal() ] );
                 }
             }
 
-            cachedBuckets = newBuckets;
+            cachedTables = newTables;
         }
 
-        putResultBuckets(cachedBuckets);
+        putResultTables(cachedTables);
 
         if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, newResult("Internal results", isChangedReason, isChanged));
+            for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
+                if ( scanPolicy == ScanPolicy.EXTERNAL ) {
+                    continue;
+                }
+
+                TargetsTableImpl resultTable = cachedTables[ scanPolicy.ordinal() ];
+                if ( resultTable == null ) {
+                    continue;
+                }
+
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] Result [ {1} ]",
+                    new Object[] { getHashText(), scanPolicy });
+                verifyTargets(resultTable);
+             }
         }
-        return !isChanged;
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, newResult("Internal results", isValidReason, isValid));
+        }
+        return !isValid;
     }
 
-    protected boolean readInternalResults(TargetsTableImpl[] buckets) {
+    protected boolean readInternalResults_Select(TargetsTableImpl[] tables) {
+        if ( isScanSingleThreaded() || isScanSingleSource() ) {
+            return readInternalResults(tables);
+        } else {
+            return readInternalResults_Concurrent(tables);
+        }
+    }
+
+    protected boolean readInternalResults(TargetsTableImpl[] tables) {
         boolean isAnyMissing = false;
 
         for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
@@ -999,7 +1243,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                 continue;
             }
 
-            if ( readResults(scanPolicy, buckets) == null ) {
+            if ( readResults(scanPolicy, tables) == null ) {
                 isAnyMissing = true;
             }
         }
@@ -1007,12 +1251,17 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         return !isAnyMissing;
     }
 
-    // Do not pool the internal result readers: there will only be at most three of these.
-
-    protected boolean readInternalResults_Concurrent(final TargetsTableImpl[] buckets) {
+    protected boolean readInternalResults_Concurrent(final TargetsTableImpl[] tables) {
         String methodName = "readInternalResults";
 
+        // Each processing array have a cell for the EXTERNAL scan policy,
+        // which is unused.  Having the extra unused cell is simpler than
+        // adjusting for the unused policy.
+
         final boolean[] missingResults = new boolean[ ScanPolicy.values().length ];
+
+        // Do not pool the internal result readers: there will only be at most
+        // three of these.
 
         Thread[] readThreads = new Thread[ ScanPolicy.values().length ];
 
@@ -1024,9 +1273,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             final ScanPolicy useScanPolicy = scanPolicy;
 
             Runnable readRunner = new Runnable() {
-                @Override                
+                @Override
                 public void run() {
-                    if ( readResults(useScanPolicy, buckets) == null ) {
+                    if ( readResults(useScanPolicy, tables) == null ) {
                         missingResults[ useScanPolicy.ordinal() ] = true;
                     }
                 }
@@ -1045,7 +1294,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             }
 
             try {
-                readThreads[ scanPolicy.ordinal() ].join(); // throws InterruptedException
+                readThreads[scanPolicy.ordinal()].join(); // throws InterruptedException
 
             } catch ( InterruptedException e ) {
                    // CWWKC00??W 
@@ -1059,7 +1308,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         }
 
         for ( ScanPolicy scanPolicy : ScanPolicy.values() ) {
-            if ( (scanPolicy != ScanPolicy.EXTERNAL) && missingResults[scanPolicy.ordinal()] ) {
+            if ( scanPolicy == ScanPolicy.EXTERNAL ) {
+                continue;
+            }
+            if ( missingResults[scanPolicy.ordinal()] ) {
                 return false;
             }
         }
@@ -1075,11 +1327,11 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     // In single threaded mode, the targets data is processed using the master
     // intern maps.  In multi-threaded mode, each targets data has its own intern
     // maps, and a final step is added to recreate the targets data using the
-    // master intern maps.  Intern maps are placed by 'getTargetsData'.  The
+    // master intern maps.  Intern maps are placed by 'getTargetsTable'.  The
     // recreation of the targets data, when necessary, is done by
-    // 'internTargetsData'.
+    // 'internTargetsTable'.
 
-    protected TargetsTableImpl readResults(ScanPolicy scanPolicy, TargetsTableImpl[] buckets) {
+    protected TargetsTableImpl readResults(ScanPolicy scanPolicy, TargetsTableImpl[] tables) {
         if ( !modData.shouldRead("Result container") ) {
             return null;
         }
@@ -1089,15 +1341,15 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             return null;
         }
 
-        TargetsTableImpl cachedResultData = createTargetsData( scanPolicy.name() );
+        TargetsTableImpl cachedResultData = createTargetsTable(scanPolicy);
         if ( !resultCon.read(cachedResultData) ) {
             return null;
         }
 
-        cachedResultData = internTargetsData(cachedResultData);
+        cachedResultData = internTargetsTable(cachedResultData);
 
-        if ( buckets != null ) {
-            buckets[ scanPolicy.ordinal() ] = cachedResultData;
+        if ( tables != null ) {
+            tables[ scanPolicy.ordinal() ] = cachedResultData;
         }
 
         return cachedResultData;
@@ -1153,6 +1405,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
             TargetsTableClassesMultiImpl newClassTable = createClassTable();
 
+            // Merge all of the internal containers to the overall class table.
             mergeClasses(newClassTable);
 
             if ( modData.shouldWrite("Class refs") ) {
@@ -1173,7 +1426,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
 
     protected boolean validInternal() {
-        boolean validUnresolvedClasses = validUnresolvedClasses();
+        boolean validInternalUnresolved = validInternalUnresolved();
         boolean validInternalResults = validInternalResults();
         boolean validInternalClasses = validInternalClasses();
 
@@ -1181,7 +1434,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             logInternalResults(logger);
         }
 
-        return ( validUnresolvedClasses && validInternalResults && validInternalClasses );
+        return ( validInternalUnresolved && validInternalResults && validInternalClasses );
     }
 
     //
@@ -1199,10 +1452,10 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         String isChangedReason;
         boolean isChanged;
 
-        TargetsTableImpl externalData = getTargetsData(classSourceName);
+        TargetsTableImpl externalData = getTargetsTable(classSourceName);
         if ( externalData != null ) {
-            isChangedReason = getChangedTargetsDataReason(classSourceName);
-            isChanged = isChangedTargetsData(classSourceName);
+            isChangedReason = getChangedTargetsTableReason(classSourceName);
+            isChanged = isChangedTargetsTable(classSourceName);
 
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -1221,20 +1474,25 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         isChangedReason = "Always invalid";
 
         @SuppressWarnings("unused")
-        boolean validUnresolvedClasses = validUnresolvedClasses();
+        boolean validInternalUnresolved = validInternalUnresolved();
 
         externalData = scanExternal(externalClassSource, i_resolvedClassNames, i_unresolvedClassNames);
+        externalData = internTargetsTable(externalData);
 
         // See the comment on 'mergeClasses': This must be synchronized
         // with the write of the class table which occurs in 
         // 'TargetCacheImpl_ModData.writeClassRefs'.
 
+        // Merge the external data into the overall class table.
+        // The internal containers are expected to already have been
+        // merged to the overall class table.
+
         TargetsTableClassesMultiImpl useClassTable = getClassTable();
         synchronized( useClassTable ) {
-            mergeClasses( useClassTable, externalData );
+            mergeClasses(useClassTable, externalData);
         }
 
-        putTargetsData(classSourceName, externalData, isChangedReason, isChanged);
+        putTargetsTable(classSourceName, externalData, isChangedReason, isChanged);
         putExternalResults(externalData); // Note the table reuse.
 
         // No need to put the class table: It is already set.
@@ -1255,6 +1513,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
     //
 
+    @Trivial
     public void logClassInfo(Logger useLogger) {
         String methodName = "logClassInfo";
 
@@ -1289,6 +1548,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         }
     }
 
+    @Trivial
     public void logInternalResults(Logger useLogger) {
         String methodName = "logInternalResults";
 
@@ -1296,24 +1556,16 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             return;
         }
 
-        TargetsTableImpl[] useBuckets = getResultBuckets();
+        TargetsTableImpl[] useResultTables = getResultTables();
 
         for ( ScanPolicy policy : ScanPolicy.values() ) {
             if ( policy == ScanPolicy.EXTERNAL ) {
                 continue;
             }
 
-            TargetsTableImpl bucket = useBuckets[ policy.ordinal() ];
+            TargetsTableImpl resultTable = useResultTables[ policy.ordinal() ];
 
-            Set<String> packageAnnotationNames = bucket.getPackageAnnotations();
-            Set<String> classAnnotationNames = bucket.getClassAnnotations();
-            Set<String> fieldAnnotationNames = bucket.getFieldAnnotations();
-            Set<String> methodAnnotationNames = bucket.getMethodAnnotations();
-
-            int totalAnnotations = packageAnnotationNames.size() +
-                            classAnnotationNames.size() +
-                            fieldAnnotationNames.size() +
-                            methodAnnotationNames.size();
+            int totalAnnotations = resultTable.countAnnotations();
 
             useLogger.logp(Level.FINER, CLASS_NAME, methodName,
                         "Result [ {0} ] [ {1} ]",
@@ -1321,6 +1573,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         }
     }
 
+    @Trivial
     public void logExternalResults(Logger useLogger) {
         String methodName = "logExternalResults";
 
@@ -1328,39 +1581,15 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             return;
         }
 
-        TargetsTableImpl[] useBuckets = getResultBuckets();
+        TargetsTableImpl[] useResultTables = getResultTables();
 
-        TargetsTableImpl bucket = useBuckets[ ScanPolicy.EXTERNAL.ordinal() ];
+        TargetsTableImpl resultTable = useResultTables[ ScanPolicy.EXTERNAL.ordinal() ];
 
-        Set<String> packageAnnotationNames = bucket.getPackageAnnotations();
-        Set<String> classAnnotationNames = bucket.getClassAnnotations();
-        Set<String> fieldAnnotationNames = bucket.getFieldAnnotations();
-        Set<String> methodAnnotationNames = bucket.getMethodAnnotations();
-
-        int totalAnnotations = packageAnnotationNames.size() +
-                        classAnnotationNames.size() +
-                        fieldAnnotationNames.size() +
-                        methodAnnotationNames.size();
+        int totalAnnotations = resultTable.countAnnotations();
 
         useLogger.logp(Level.FINER, CLASS_NAME, methodName,
                     "Result [ {0} ] [ {1} ]",
                     new Object[] { ScanPolicy.EXTERNAL.name(), Integer.valueOf(totalAnnotations) });
-    }
-
-    public long getCacheReadTime() {
-        return getModData().getReadTime();
-    }
-
-    public long getCacheWriteTime() {
-        return getModData().getWriteTime();
-    }
-
-    public long getContainerReadTime() {
-        return getModData().getContainerReadTime();
-    }
-
-    public long getContainerWriteTime() {
-        return getModData().getContainerWriteTime();
     }
 
 //

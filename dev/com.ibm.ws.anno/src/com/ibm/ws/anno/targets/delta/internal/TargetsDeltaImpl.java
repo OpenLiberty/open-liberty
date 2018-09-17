@@ -43,7 +43,7 @@ public class TargetsDeltaImpl implements TargetsDelta {
 
     public TargetsDeltaImpl(
         AnnotationTargetsImpl_Factory factory,
-        String appName, String modName,
+        String appName, String modName, String modCatName,
         AnnotationTargetsImpl_Targets finalTargets,
         AnnotationTargetsImpl_Targets initialTargets) {
 
@@ -51,21 +51,22 @@ public class TargetsDeltaImpl implements TargetsDelta {
 
         this.hashText =
             getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
-            "(" + appName + "." + modName + ")";
+            "(" + appName + "." + modName + "_" + modCatName + ")";
 
         this.factory = factory;
 
         this.appName = appName;
         this.modName = modName;
+        this.modCatName = modCatName;
 
         this.seedAnnotationsDelta = new TargetsDeltaImpl_Targets(factory,
-            ScanPolicy.SEED, finalTargets.getSeedData(), initialTargets.getSeedData());
+            ScanPolicy.SEED, finalTargets.getSeedTable(), initialTargets.getSeedTable());
         this.partialAnnotationsDelta = new TargetsDeltaImpl_Targets(factory,
-            ScanPolicy.PARTIAL, finalTargets.getPartialData(), initialTargets.getPartialData());
+            ScanPolicy.PARTIAL, finalTargets.getPartialTable(), initialTargets.getPartialTable());
         this.excludedAnnotationsDelta = new TargetsDeltaImpl_Targets(factory,
-            ScanPolicy.EXCLUDED, finalTargets.getExcludedData(), initialTargets.getExcludedData());
+            ScanPolicy.EXCLUDED, finalTargets.getExcludedTable(), initialTargets.getExcludedTable());
         this.externalAnnotationsDelta = new TargetsDeltaImpl_Targets(factory,
-            ScanPolicy.EXTERNAL, finalTargets.getExternalData(), initialTargets.getExternalData());
+            ScanPolicy.EXTERNAL, finalTargets.getExternalTable(), initialTargets.getExternalTable());
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] isNull [ {1} ]",
@@ -104,6 +105,13 @@ public class TargetsDeltaImpl implements TargetsDelta {
     @Override
     public String getModName() {
         return modName;
+    }
+
+    private final String modCatName;
+
+    @Override
+    public String getModCatName() {
+        return modCatName;
     }
 
     //
