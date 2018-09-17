@@ -4896,6 +4896,7 @@ public abstract class EJBMDOrchestrator {
 
         List<TimerMethodData> timerMethods = new ArrayList<TimerMethodData>();
         Method timeoutMethod = getTimeoutMethod(bmd);
+        boolean hasPersistentTimers = false;
 
         if (timeoutMethod != null) {
             boolean oneParm = timeoutMethod.getParameterTypes().length == 1; //F743-15870
@@ -4948,6 +4949,7 @@ public abstract class EJBMDOrchestrator {
                 }
 
                 for (com.ibm.ws.javaee.dd.ejb.Timer timer : timerList) {
+                    hasPersistentTimers |= !timer.isSetPersistent() || timer.isPersistent();
                     timerMethod.addAutomaticTimer(processAutomaticTimerFromXML(timer));
                 }
             }
@@ -4962,6 +4964,7 @@ public abstract class EJBMDOrchestrator {
                         Tr.debug(tc, "processing @Schedules for " + method);
 
                     for (Schedule scheduleAnnotation : schedulesAnnotation.value()) {
+                        hasPersistentTimers |= scheduleAnnotation.persistent();
                         if (timerMethod == null) {
                             timerMethod = new TimerMethodData(method, depth, methodHas1Parm);
                             timerMethods.add(timerMethod);
@@ -4975,6 +4978,7 @@ public abstract class EJBMDOrchestrator {
                 // Process the @Schedule annotation, if any.
                 Schedule scheduleAnnotation = method.getAnnotation(Schedule.class);
                 if (scheduleAnnotation != null) {
+                    hasPersistentTimers |= scheduleAnnotation.persistent();
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "processing @Schedule for " + method);
 
@@ -5011,7 +5015,10 @@ public abstract class EJBMDOrchestrator {
 
             // F743-13022 - Check now if the runtime environment supports timers
             // rather than waiting until the automatic timers are created.
-            bmd.container.getEJBRuntime().setupTimers(bmd);
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "Are persistent timers present? " + hasPersistentTimers);
+            if (hasPersistentTimers)
+                bmd.container.getEJBRuntime().setupTimers(bmd);
 
             // Sort the timer methods, and then assign method IDs.  We must sort
             // methods so that method IDs remain stable for persistent timers even
