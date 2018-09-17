@@ -152,8 +152,9 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
          * Create a new method visitor.  As of yet, the visitor is not bound
          * to a method, and has null method and parameter annotations.
          */
+        @SuppressWarnings("deprecation")
         public MethodVisitorImpl_Info() {
-            super(Opcodes.ASM7_EXPERIMENTAL);
+            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
 
             this.methodInfo = null;
             this.methodAnnotations = null;
@@ -306,8 +307,9 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
         private FieldInfoImpl fieldInfo;
         private List<AnnotationInfoImpl> annotations;
 
+        @SuppressWarnings("deprecation")
         public InfoFieldVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL);
+            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
         }
 
         void setFieldInfo(FieldInfoImpl fii) {
@@ -375,8 +377,9 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
 
     //
 
+    @SuppressWarnings("deprecation")
     public ClassVisitorImpl_Info(InfoStoreImpl infoStore, String externalName) {
-        super(Opcodes.ASM7_EXPERIMENTAL);
+        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
 
         String methodName = "<init>";
 
