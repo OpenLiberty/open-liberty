@@ -84,7 +84,7 @@ public abstract class AnnotationVisitorImpl_Info extends AnnotationVisitor {
     // The name value is expected to match one of the methods of the
     // annotation class name.  (This is not validated.)
 
-    protected InfoVisitor_Annotation(InfoStoreImpl iStore) {
+    protected AnnotationVisitorImpl_Info(InfoStoreImpl iStore) {
         super(Opcodes.ASM7_EXPERIMENTAL);
         String methodName = "<init>";
 

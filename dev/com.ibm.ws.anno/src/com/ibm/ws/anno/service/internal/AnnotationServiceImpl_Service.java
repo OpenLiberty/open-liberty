@@ -39,9 +39,12 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
     // Service entry point ...
 
     protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
-    setBundleContext( componentContext.getBundleContext() );
+        String methodName = "activate";
 
-    String workArea = getOsgiWorkArea(); // Need the bundle context to get the work area path.
+        setBundleContext( componentContext.getBundleContext() );
+
+        String workArea = getOsgiWorkArea(); // Need the bundle context to get the work area path.
+
         setWorkAreaPath(workArea);
 
         TargetCacheImpl_Options useCacheOptions = TargetCacheImpl_Factory.createOptionsFromProperties();
@@ -52,9 +55,17 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
         }
         setCacheOptions(useCacheOptions);
 
-        System.out.println(CLASS_NAME + ": activate: Cache Disabled [ " + useCacheOptions.getDisabled() + " ]");
-        System.out.println(CLASS_NAME + ": activate: Cache Dir [ " + useCacheOptions.getDir() + " ]");
-        System.out.println(CLASS_NAME + ": activate: Cache Write Threads [ " + useCacheOptions.getWriteThreads() + " ]");
+        if ( logger.isLoggable(Level.INFO) ) { // INFO is temporary
+            logger.logp(Level.INFO, CLASS_NAME, methodName,
+                        "Cache Disabled [ {0} ]",
+                        Boolean.valueOf( useCacheOptions.getDisabled() ));
+            logger.logp(Level.INFO, CLASS_NAME, methodName,
+                        "Cache Dir [ {0} ]",
+                        useCacheOptions.getDir());
+            logger.logp(Level.INFO, CLASS_NAME, methodName,
+                        "Cache Write Threads [ {0} ]",
+                        Integer.valueOf(useCacheOptions.getWriteThreads()));
+        }
 
         setFactories(); // Need the work area path to setup the cache instance.
    }
@@ -92,10 +103,9 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
         }
 
         String osgiWorkPath = osgiWorkFile.getAbsolutePath();
-        if ( logger.isLoggable(Level.FINER)) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "OSGi Work Path [ {0} ]", osgiWorkPath);
+        if ( logger.isLoggable(Level.INFO)) { // INFO is temporary
+            logger.logp(Level.INFO, CLASS_NAME, methodName, "OSGi Work Path [ {0} ]", osgiWorkPath);
         }
-        System.out.println(CLASS_NAME + ": OSGi Work Path [ " + osgiWorkPath + " ]");
         return osgiWorkPath;
     }
 

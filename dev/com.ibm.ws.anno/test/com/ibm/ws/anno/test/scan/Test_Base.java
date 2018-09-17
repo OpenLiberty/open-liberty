@@ -44,11 +44,15 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Fault;
 import test.common.SharedOutputManager;
 
 public abstract class Test_Base {
-    public static final String JAVAEE_MOD_CATEGORY_NAME =
-        ClassSource_Factory.JAVAEE_CATEGORY_NAME;
+    // Convenience copy of the unset category name from the class source factory.
+    public static final String UNSET_MOD_CATEGORY_NAME = ClassSource_Factory.UNSET_CATEGORY_NAME;
 
-    public static final String CDI_MOD_CATEGORY_NAME =
-        ClassSource_Factory.CDI_CATEGORY_NAME;
+    // Omit a category name for JavaEE scan caching.
+    public static final String JAVAEE_MOD_CATEGORY_NAME = UNSET_MOD_CATEGORY_NAME;
+
+    // CDI addes a category name, since it generates results with a different
+    // structure than JavaEE.
+    public static final String CDI_MOD_CATEGORY_NAME = "cdi";
 
     //
 
