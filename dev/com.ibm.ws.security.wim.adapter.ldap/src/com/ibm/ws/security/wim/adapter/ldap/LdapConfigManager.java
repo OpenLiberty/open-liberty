@@ -664,13 +664,8 @@ public class LdapConfigManager {
                     } else
                         hasLoginProperties = false;
                 }
-                if (ldapEntity != null) {
-                    try {
-                        ldapEntity.addPropertyAttributeMap(SchemaConstants.PROP_PRINCIPAL_NAME, iLoginAttrs.get(0));
-                    } catch (Exception e) {
-                        throw new IllegalArgumentException("userFilter requires a %v value");
-                    }
-                }
+                if (ldapEntity != null)
+                    ldapEntity.addPropertyAttributeMap(SchemaConstants.PROP_PRINCIPAL_NAME, iLoginAttrs.get(0));
             }
 
             // Parse the Group filter and extract the applicable objectclass names
