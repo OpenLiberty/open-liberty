@@ -112,7 +112,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
                rootArtifactContainer, rootAdaptableContainer,
                moduleInfo.getApplicationInfo().getName(),
                AnnotationsImpl.getPath( moduleInfo.getContainer() ), // 'getPath' throws UnableToAdaptException
-               ClassSource_Factory.JAVAEE_CATEGORY_NAME );
+               ClassSource_Factory.UNSET_CATEGORY_NAME );
 
         this.moduleInfo = moduleInfo;
         this.classLoader = moduleInfo.getClassLoader();

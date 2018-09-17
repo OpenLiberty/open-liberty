@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
@@ -38,6 +40,7 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -71,6 +74,7 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
 
     protected final AnnotationServiceImpl_Service annoService;
 
+    @Trivial
     public AnnotationServiceImpl_Service getAnnotationService() {
         return annoService;
     }
@@ -80,6 +84,7 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     protected final UtilImpl_Factory utilFactory;
 
     @Override
+    @Trivial
     public UtilImpl_Factory getUtilFactory() {
         return utilFactory;
     }
@@ -88,10 +93,12 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
 
     protected final TargetCacheImpl_Factory cacheFactory;
 
+    @Trivial
     public TargetCacheImpl_Factory getCacheFactory() {
         return cacheFactory;
     }
 
+    @Trivial
     public TargetCacheImpl_DataApps getCache() {
         return getCacheFactory().getCache();
     }
@@ -99,12 +106,13 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     //
 
     @Override
+    @Trivial
     public AnnotationTargets_Exception newAnnotationTargetsException(Logger useLogger, String message) {
         String methodName = "newAnnotationTargetsException";
 
         AnnotationTargets_Exception exception = new AnnotationTargets_Exception(message);
 
-        if (useLogger.isLoggable(Level.FINER)) {
+        if ( useLogger.isLoggable(Level.FINER) ) {
             useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Created [ {0} ]", message);
         }
 
@@ -112,6 +120,7 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     }
 
     @Override
+    @Trivial
     public AnnotationTargets_Exception wrapIntoAnnotationTargetsException(Logger useLogger,
                                                                           String callingClassName,
                                                                           String callingMethodName,
@@ -120,7 +129,7 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
 
         AnnotationTargets_Exception wrappedException = new AnnotationTargets_Exception(message, th);
 
-        if (useLogger.isLoggable(Level.FINER)) {
+        if ( useLogger.isLoggable(Level.FINER) ) {
             useLogger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ] Wrap [ {2} ] as [ {3} ]",
                         new Object[] { callingClassName,
@@ -139,6 +148,7 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     // Global scan APIs ...
 
     @Override
+    @Trivial
     public AnnotationTargetsImpl_Targets createTargets()
         throws AnnotationTargets_Exception {
 
@@ -151,14 +161,17 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
 
     // These are needed for concurrent scanning.
 
+    @Trivial
     protected UtilImpl_InternMap createClassNameInternMap() {
         return getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_CLASS_NAME, "classes and package names");
     }
 
+    @Trivial
     protected UtilImpl_InternMap createFieldNameInternMap() {
         return getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_FIELD_NAME, "field names");
     }
 
+    @Trivial
     protected UtilImpl_InternMap createMethodSignatureInternMap() {
         return getUtilFactory().createInternMap(Util_InternMap.ValueType.VT_OTHER, "method signatures");
     }
@@ -166,16 +179,19 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     //
 
     @Override
+    @Trivial
     public AnnotationTargetsImpl_Fault createFault(String unresolvedText) {
         return new AnnotationTargetsImpl_Fault(unresolvedText);
     }
 
     @Override
+    @Trivial
     public AnnotationTargetsImpl_Fault createFault(String unresolvedText, String parameter) {
         return new AnnotationTargetsImpl_Fault(unresolvedText, new String[] { parameter });
     }
 
     @Override
+    @Trivial
     public AnnotationTargetsImpl_Fault createFault(String unresolvedText, String... parameters) {
         return new AnnotationTargetsImpl_Fault(unresolvedText, parameters);
     }
@@ -183,14 +199,15 @@ public class AnnotationTargetsImpl_Factory implements AnnotationTargets_Factory 
     //
 
     @Override
+    @Trivial
     public AnnotationTargetsImpl_Targets createTargets(ClassSource_Aggregate classSource)
-                    throws AnnotationTargets_Exception {
+        throws AnnotationTargets_Exception {
 
-        AnnotationTargetsImpl_Targets moduleTargets = createTargets(); // throws AnnotationTargets_Exception
+        AnnotationTargetsImpl_Targets targets = createTargets(); // throws AnnotationTargets_Exception
 
-        moduleTargets.scan(classSource);
+        targets.scan(classSource); // This just sets the class source ... the scan is done on demand.
 
-        return moduleTargets;
+        return targets;
     }
 
     // Limited scan APIs ...

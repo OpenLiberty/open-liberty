@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.targets.TargetsTableClassesMulti;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.anno.targets.cache.TargetCache_Readable;
@@ -29,6 +31,17 @@ import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.ws.anno.util.internal.UtilImpl_InternMap;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
+/**
+ * Extension of the class table: Partitions package and class names by
+ * class source name: Each package name and each class name is in a single
+ * class source.  (Bi-directional maps are not used since the mappings are
+ * one-to-many, not many-to-many.)
+ *
+ * The extended table is used a hold the all of the class information
+ * for of an aggregate class source.
+ *
+ * The extended table uses the intern map of the annotation targets table.
+ */
 public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
     implements TargetsTableClassesMulti, TargetCache_Readable {
 
@@ -36,6 +49,7 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
 
     //
 
+    @Trivial
     protected TargetsTableClassesMultiImpl(
             UtilImpl_Factory utilFactory,
             UtilImpl_InternMap classNameInternMap) {
@@ -44,9 +58,11 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
 
         String methodName = "<init>";
 
+        // many-to-one: package name to class source name
         this.i_packageNameClassSourceMap = new IdentityHashMap<String, String>();
         this.i_classSourcePackageNamesMap = new HashMap<String, Set<String>>();
 
+        // many-to-one: class name to class source name
         this.i_classNameClassSourceMap = new IdentityHashMap<String, String>();
         this.i_classSourceClassNamesMap = new HashMap<String, Set<String>>();
 
@@ -63,18 +79,22 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
     protected final Map<String, String> i_classNameClassSourceMap;
     protected final Map<String, Set<String>> i_classSourceClassNamesMap;
 
+    @Trivial
     public Map<String, String> i_getPackageNameClassSourceMap() {
         return i_packageNameClassSourceMap;
     }
 
+    @Trivial
     public Map<String, Set<String>> i_getClassSourcePackageNamesMap() {
         return i_classSourcePackageNamesMap;
     }
 
+    @Trivial
     public Map<String, String> i_getClassNameClassSourceMap() {
         return i_classNameClassSourceMap;
     }
 
+    @Trivial
     public Map<String, Set<String>> i_getClassSourceClassNamesMap() {
         return i_classSourceClassNamesMap;
     }
@@ -131,8 +151,8 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
     }
 
     @Override
-    public boolean i_containsPackageName(String useClassSourceName, String i_packageName) {
-        Set<String> i_classSourcePackageNames = i_classSourcePackageNamesMap.get(useClassSourceName);
+    public boolean i_containsPackageName(String childClassSourceName, String i_packageName) {
+        Set<String> i_classSourcePackageNames = i_classSourcePackageNamesMap.get(childClassSourceName);
         if ( i_classSourcePackageNames == null ) {
             return false;
         } else {
@@ -156,13 +176,13 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
     }
 
     @Override
-    public Set<String> getClassNames(String useClassSourceName) {
-        return uninternClassNames( i_getClassNames(useClassSourceName) );
+    public Set<String> getClassNames(String childClassSourceName) {
+        return uninternClassNames( i_getClassNames(childClassSourceName) );
     }
 
     @Override
-    public Set<String> i_getClassNames(String useClassSourceName) {
-        Set<String> result = i_classSourceClassNamesMap.get(useClassSourceName);
+    public Set<String> i_getClassNames(String childClassSourceName) {
+        Set<String> result = i_classSourceClassNamesMap.get(childClassSourceName);
 //        if ( result == null ) {
 //            System.out.println("TargetsClassTable class names [ " + classSourceName + " ] [ 0 (null) ]");
 //        } else {
@@ -199,6 +219,7 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
     //
 
     @Override
+    @Trivial
     public void logState() {
         if ( stateLogger.isLoggable(Level.FINER) ) {
             log(stateLogger);
@@ -206,6 +227,7 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
     }
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
 
@@ -224,6 +246,7 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Class Relationships: END [ {0} ]", getHashText());
     }
 
+    @Trivial
     public void logClassSources(Logger useLogger) {
         String methodName = "logClassSources";
 

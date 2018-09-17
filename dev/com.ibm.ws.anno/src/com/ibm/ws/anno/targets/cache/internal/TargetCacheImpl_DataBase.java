@@ -252,7 +252,7 @@ public abstract class TargetCacheImpl_DataBase {
 
     @Trivial
     public boolean isNamed() {
-    	return ( name != null );
+        return ( name != null );
     }
 
     @Trivial
@@ -271,13 +271,21 @@ public abstract class TargetCacheImpl_DataBase {
 
     @Trivial
     public boolean exists() {
-        return exists( getDataDir() );
+        return ( exists( getDataDir() ) );
     }
 
     // Calls to obtain files in the cache tree MUST use a relative constructor.
     // The files must be created with a proper relationship to their parent.
     public File getDataFile(String relativePath) {
-        return new File( getDataDir(), relativePath );
+        if ( relativePath == null ) {
+            return null;
+        }
+        File useDataDir = getDataDir();
+        if ( useDataDir == null ) {
+            return null;
+        } else {
+            return new File(useDataDir, relativePath);
+        }
     }
 
     //
@@ -322,12 +330,12 @@ public abstract class TargetCacheImpl_DataBase {
 
     @Trivial
     protected boolean exists(File targetFile) {
-        return UtilImpl_FileUtils.exists(targetFile);
+        return ( (targetFile != null) && UtilImpl_FileUtils.exists(targetFile) );
     }
 
     @Trivial
     protected boolean isDirectory(File targetFile) {
-        return UtilImpl_FileUtils.isDirectory(targetFile);
+        return ( UtilImpl_FileUtils.isDirectory(targetFile) );
     }
 
     @Trivial

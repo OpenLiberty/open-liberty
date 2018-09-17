@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTableContainers;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
@@ -43,12 +45,14 @@ public class TargetsTableContainersImpl
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
 
     //
 
+    @Trivial
     public TargetsTableContainersImpl(AnnotationTargetsImpl_Factory factory) {
         String methodName = "<init>";
 
@@ -69,6 +73,7 @@ public class TargetsTableContainersImpl
     protected final AnnotationTargetsImpl_Factory factory;
 
     @Override
+    @Trivial
     public AnnotationTargetsImpl_Factory getFactory() {
         return factory;
     }
@@ -141,6 +146,7 @@ public class TargetsTableContainersImpl
     //
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
 

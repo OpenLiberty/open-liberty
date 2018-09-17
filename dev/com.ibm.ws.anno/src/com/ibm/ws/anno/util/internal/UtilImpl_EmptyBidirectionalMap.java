@@ -16,6 +16,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
 
 public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
@@ -27,6 +29,7 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -59,6 +62,7 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
     protected final UtilImpl_Factory factory;
 
     @Override
+    @Trivial
     public UtilImpl_Factory getFactory() {
         return factory;
     }
@@ -67,6 +71,7 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
 
     @Deprecated
     @Override
+    @Trivial
     public boolean getEnabled() {
         return true;
     }
@@ -76,11 +81,13 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
     protected final UtilImpl_EmptyInternMap holderInternMap;
 
     @Override
+    @Trivial
     public UtilImpl_EmptyInternMap getHolderInternMap() {
         return holderInternMap;
     }
 
     @Override
+    @Trivial
     public String getHolderTag() {
         return holderInternMap.getName();
     }
@@ -90,6 +97,7 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
         return false;
     }
 
+    @Trivial
     protected String internHolder(String name, boolean doForce) {
         throw new UnsupportedOperationException();
     }
@@ -99,11 +107,13 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
     protected final UtilImpl_EmptyInternMap heldInternMap;
 
     @Override
+    @Trivial
     public UtilImpl_EmptyInternMap getHeldInternMap() {
         return heldInternMap;
     }
 
     @Override
+    @Trivial
     public String getHeldTag() {
         return heldInternMap.getName();
     }
@@ -193,6 +203,7 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
     //
 
     @Override
+    @Trivial
     public void logState() {
         if ( !stateLogger.isLoggable(Level.FINER) ) {
             return;
@@ -202,6 +213,7 @@ public class UtilImpl_EmptyBidirectionalMap implements Util_BidirectionalMap {
     }
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
         

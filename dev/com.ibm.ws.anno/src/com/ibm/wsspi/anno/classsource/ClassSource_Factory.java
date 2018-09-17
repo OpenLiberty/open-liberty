@@ -76,12 +76,6 @@ public interface ClassSource_Factory {
      */
     String UNNAMED_MOD = null;
 
-    /** Predefined module category for JavaEE annotations results. */
-    String JAVAEE_CATEGORY_NAME = "javaee";
-
-    /** Predefined module category for CDI annotations results. */
-    String CDI_CATEGORY_NAME = "cdi";
-
     /** Predefined un-set module category name. */
     String UNSET_CATEGORY_NAME = null;
 

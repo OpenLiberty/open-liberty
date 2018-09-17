@@ -14,6 +14,8 @@ package com.ibm.ws.anno.targets.internal;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 
@@ -29,25 +31,26 @@ public class TargetsScannerLimitedImpl extends TargetsScannerBaseImpl {
 
         super(targets, rootClassSource);
 
-        this.targetsData = null;
+        this.targetsTable = null;
     }
 
-    protected TargetsTableImpl targetsData;
+    protected TargetsTableImpl targetsTable;
 
-    public TargetsTableImpl getTargetsData() {
-        return targetsData;
+    @Trivial
+    public TargetsTableImpl getTargetsTable() {
+        return targetsTable;
     }
 
-    public void setTargetsData(TargetsTableImpl targetsData) {
-        this.targetsData = targetsData;
+    public void setTargetsTable(TargetsTableImpl targetsTable) {
+        this.targetsTable = targetsTable;
     }
 
     protected void scanContainer() {
         ClassSource initialClassSource = getRootClassSource().getClassSources().get(0);
 
-        setTargetsData( scanInternal( initialClassSource,
-                                      TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
-                                      TargetsVisitorClassImpl.DONT_RECORD_RESOLVED ) );
+        setTargetsTable( scanInternal( initialClassSource,
+                                       TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
+                                       TargetsVisitorClassImpl.DONT_RECORD_RESOLVED ) );
     }
 
     protected void validate() {

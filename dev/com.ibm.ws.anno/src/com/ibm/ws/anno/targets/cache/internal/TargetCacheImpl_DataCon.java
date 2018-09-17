@@ -286,7 +286,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     public boolean read(TargetsTableImpl targetData) {
         return ( read( targetData.getClassTable() ) && 
-                 read( targetData.getTargetTable() ) &&
+                 read( targetData.getAnnotationTable() ) &&
                  read( targetData.getStampTable() ) );
     }
 
@@ -298,7 +298,7 @@ public class TargetCacheImpl_DataCon extends TargetCacheImpl_DataBase {
 
     public void write(TargetCacheImpl_DataMod modData, TargetsTableImpl targetData) {
         write( modData, targetData.getClassTable() );
-        write( modData, targetData.getTargetTable() );
+        write( modData, targetData.getAnnotationTable() );
         write( modData, targetData.getStampTable() );
     }
 }

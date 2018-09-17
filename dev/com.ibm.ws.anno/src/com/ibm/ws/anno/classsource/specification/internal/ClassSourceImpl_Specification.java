@@ -252,6 +252,7 @@ public abstract class ClassSourceImpl_Specification implements ClassSource_Speci
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Specification [ " + getClass().getName() + " ]");
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Application Name [ " + getAppName() + " ]");
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Module Name [ " + getModName() + " ]");
+        useLogger.logp(Level.FINER, CLASS_NAME, methodName, "  Module Category Name [ " + getModCategoryName() + " ]");
     }
 
     @Override

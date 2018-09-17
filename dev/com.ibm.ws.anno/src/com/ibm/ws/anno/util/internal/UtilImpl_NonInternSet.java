@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 /**
@@ -36,10 +38,12 @@ public class UtilImpl_NonInternSet implements Set<String> {
     protected final Util_InternMap internMap;
     protected final Set<String> base;
 
+    @Trivial
     public Util_InternMap getInternMap() {
         return internMap;
     }
 
+    @Trivial
     public Set<String> getBase() {
         return base;
     }

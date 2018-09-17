@@ -36,6 +36,7 @@ public interface TargetsDelta {
 
     String getAppName();
     String getModName();
+    String getModCatName();
 
     TargetsDelta_Targets getSeedDelta();
     TargetsDelta_Targets getPartialDelta();

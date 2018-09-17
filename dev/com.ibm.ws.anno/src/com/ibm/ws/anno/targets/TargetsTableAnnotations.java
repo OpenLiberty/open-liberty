@@ -26,7 +26,7 @@ public interface TargetsTableAnnotations {
 
     Set<String> i_getAnnotatedTargets(AnnotationCategory category);
     Set<String> i_getAnnotatedTargets(AnnotationCategory category, String i_annotationName);
-    Set<String> i_getAnnotations(AnnotationCategory category);
+    Set<String> i_getAnnotationNames(AnnotationCategory category);
     Set<String> i_getAnnotations(AnnotationCategory category, String i_classOrPackageName);
 
     Set<String> getAnnotatedTargets(AnnotationCategory category);
@@ -36,35 +36,35 @@ public interface TargetsTableAnnotations {
 
     //
 
-    Util_BidirectionalMap i_getAnnotationData(AnnotationCategory category);
+    Util_BidirectionalMap i_getAnnotations(AnnotationCategory category);
 
     //
 
-    Util_BidirectionalMap i_getPackageAnnotationData();
-    Util_BidirectionalMap i_getClassAnnotationData();
-    Util_BidirectionalMap i_getFieldAnnotationData();
-    Util_BidirectionalMap i_getMethodAnnotationData();
+    Util_BidirectionalMap i_getPackageAnnotations();
+    Util_BidirectionalMap i_getClassAnnotations();
+    Util_BidirectionalMap i_getFieldAnnotations();
+    Util_BidirectionalMap i_getMethodAnnotations();
 
     //
 
     Set<String> i_getPackagesWithAnnotations();
     Set<String> i_getPackagesWithAnnotation(String i_annotationName);
-    Set<String> i_getPackageAnnotations();
+    Set<String> i_getPackageAnnotationNames();
     Set<String> i_getPackageAnnotations(String i_packageName);
 
     Set<String> i_getClassesWithClassAnnotations();
     Set<String> i_getClassesWithClassAnnotation(String i_annotationName);
-    Set<String> i_getClassAnnotations();
+    Set<String> i_getClassAnnotationNames();
     Set<String> i_getClassAnnotations(String i_className);
 
     Set<String> i_getClassesWithFieldAnnotations();
     Set<String> i_getClassesWithFieldAnnotation(String i_annotationName);
-    Set<String> i_getFieldAnnotations();
+    Set<String> i_getFieldAnnotationNames();
     Set<String> i_getFieldAnnotations(String i_className);
 
     Set<String> i_getClassesWithMethodAnnotations();
     Set<String> i_getClassesWithMethodAnnotation(String i_annotationName);
-    Set<String> i_getMethodAnnotations();
+    Set<String> i_getMethodAnnotationNames();
     Set<String> i_getMethodAnnotations(String i_className);
 
     //

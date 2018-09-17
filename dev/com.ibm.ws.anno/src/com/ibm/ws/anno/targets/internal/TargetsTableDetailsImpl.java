@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTableDetails;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
@@ -48,6 +50,7 @@ public class TargetsTableDetailsImpl
 
     // Core state ...
 
+    @Trivial
     protected TargetsTableDetailsImpl(TargetsTableImpl parentData) {
         String methodName = "<init>";
 
@@ -72,6 +75,7 @@ public class TargetsTableDetailsImpl
     protected final TargetsTableImpl parentData;
 
     @Override
+    @Trivial
     public TargetsTableImpl getParentData() {
         return parentData;
     }
@@ -81,6 +85,7 @@ public class TargetsTableDetailsImpl
     // package name -> annotation name -> annotation details
     protected final Map<String, Map<String, String>> i_packageDetails;
 
+    @Trivial
     public Map<String, Map<String, String>> i_getPackageDetails() {
         return i_packageDetails;
     }
@@ -101,6 +106,7 @@ public class TargetsTableDetailsImpl
     // class name -> annotation name -> annotation details
     protected final Map<String, Map<String, String>> i_classDetails;
 
+    @Trivial
     public Map<String, Map<String, String>> i_getClassDetails() {
         return i_classDetails;
     }
@@ -121,6 +127,7 @@ public class TargetsTableDetailsImpl
     // class name -> method signature -> annotation name -> annotation details
     protected final Map<String, Map<String, Map<String, String>>> i_methodDetails;
 
+    @Trivial
     public Map<String, Map<String, Map<String, String>>> i_getMethodDetails() {
         return i_methodDetails;
     }
@@ -151,6 +158,7 @@ public class TargetsTableDetailsImpl
 
     protected final Map<String, Map<String, Map<String, String>>> i_fieldDetails;
 
+    @Trivial
     public Map<String, Map<String, Map<String, String>>> i_getFieldDetails() {
         return i_fieldDetails;
     }
@@ -184,6 +192,7 @@ public class TargetsTableDetailsImpl
     // each which is across all classes.
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
 
@@ -201,6 +210,7 @@ public class TargetsTableDetailsImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Annotations Details: Complete");
     }
 
+    @Trivial
     protected void logPackageDetails(Logger useLogger) {
         String methodName = "logPackageDetails";
 
@@ -211,6 +221,7 @@ public class TargetsTableDetailsImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Package Details: Complete");
     }
 
+    @Trivial
     protected void logClassDetails(Logger useLogger) {
         String methodName = "logClassDetails";
 
@@ -221,6 +232,7 @@ public class TargetsTableDetailsImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Class Details: Complete");
     }
 
+    @Trivial
     protected void logFieldDetails(Logger useLogger) {
         String methodName = "logFieldDetails";
 
@@ -237,6 +249,7 @@ public class TargetsTableDetailsImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Field Annotation Details: Complete");
     }
 
+    @Trivial
     protected void logMethodDetails(Logger useLogger) {
         String methodName = "logMethodDetails";
 
@@ -253,6 +266,7 @@ public class TargetsTableDetailsImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Method Annotation Details: Complete");
     }
 
+    @Trivial
     protected void logAnnotations(Logger useLogger,
                                   String entryTypeName, String prefix,
                                   Map<String, Map<String, String>> i_entries) {
@@ -280,6 +294,7 @@ public class TargetsTableDetailsImpl
     // Put the class details for each class in a single block.
 
     @Override
+    @Trivial
     public void logConsolidated(Logger useLogger) {
         String methodName = "logConsolidated";
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Annotations Details:");
@@ -290,6 +305,7 @@ public class TargetsTableDetailsImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Annotation Details: Complete");
     }
 
+    @Trivial
     protected void logConsolidatedPackageDetails(Logger useLogger) {
         String methodName = "logConsolidatedPackageDetails";
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Package Annotation Details:");
@@ -299,6 +315,7 @@ public class TargetsTableDetailsImpl
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Package Details: Complete");
     }
 
+    @Trivial
     protected void logConsolidatedClassDetails(Logger useLogger) {
         String methodName = "logConsolidatedClassDetails";
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Class Details:");
@@ -346,6 +363,7 @@ public class TargetsTableDetailsImpl
     //
     // Sort on the entry names and the annotation class names.
 
+    @Trivial
     protected void logConsolidatedAnnotations(Logger useLogger,
                                               String entryTypeName, String prefix,
                                               Map<String, Map<String, String>> i_entries) {
@@ -368,6 +386,7 @@ public class TargetsTableDetailsImpl
     //
     // Sort on the annotation class names.
 
+    @Trivial
     protected void logConsolidatedAnnotations(Logger useLogger,
                                               String prefix,
                                               Map<String, String> i_annotations) {

@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
@@ -30,6 +32,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -68,6 +71,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected final UtilImpl_Factory factory;
 
     @Override
+    @Trivial
     public UtilImpl_Factory getFactory() {
         return factory;
     }
@@ -76,6 +80,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     @Deprecated
     @Override
+    @Trivial
     public boolean getEnabled() {
         return true;
     }
@@ -85,6 +90,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected final String holderTag;
 
     @Override
+    @Trivial
     public String getHolderTag() {
         return holderTag;
     }
@@ -92,6 +98,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected String heldTag;
 
     @Override
+    @Trivial
     public String getHeldTag() {
         return heldTag;
     }
@@ -101,13 +108,22 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected final UtilImpl_InternMap holderInternMap;
 
     @Override
+    @Trivial
     public UtilImpl_InternMap getHolderInternMap() {
         return holderInternMap;
     }
 
     @Override
+    @Trivial
     public boolean containsHolder(String holderName) {
-        return (holderInternMap.contains(holderName));
+        String methodName = "containsHolder";
+        boolean result = holderInternMap.contains(holderName);
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Contains holder [ {1} ] [ {2} ]",
+                new Object[] { getHashText(), holderName, Boolean.valueOf(result) });
+        }
+        return result;
     }
 
     protected String internHolder(String name, boolean doForce) {
@@ -117,13 +133,21 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected UtilImpl_InternMap heldInternMap;
 
     @Override
+    @Trivial
     public UtilImpl_InternMap getHeldInternMap() {
         return heldInternMap;
     }
 
     @Override
     public boolean containsHeld(String heldName) {
-        return (heldInternMap.contains(heldName));
+        String methodName = "containsHeld";
+        boolean result = heldInternMap.contains(heldName);
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Contains held [ {1} ] [ {2} ]",
+                new Object[] { getHashText(), heldName, Boolean.valueOf(result) });
+        }
+        return result;
     }
 
     protected String internHeld(String name, boolean doForce) {
@@ -138,6 +162,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected Map<String, Set<String>> i_holderToHeldMap;
 
     @Override
+    @Trivial
     public Set<String> getHolderSet() {
         return (i_holderToHeldMap.keySet());
     }
@@ -147,6 +172,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     protected Map<String, Set<String>> i_heldToHoldersMap;
 
     @Override
+    @Trivial
     public Set<String> getHeldSet() {
         return (i_heldToHoldersMap.keySet());
     }
@@ -154,22 +180,43 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     //
 
     @Override
+    @Trivial
     public boolean isEmpty() {
-        return ( i_heldToHoldersMap.isEmpty() );
+        String methodName = "isEmpty";
+        boolean result = i_heldToHoldersMap.isEmpty();
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTER / RETURN [ {1} ]", 
+                new Object[] { getHashText(), Boolean.valueOf(result) });
+        }
+        return result;
         // return ( i_holdersToHoldersMap.isEmpty() ); // Would work, too.
     }
 
     //
 
     @Override
+    @Trivial
     public boolean holds(String holderName, String heldName) {
+        String methodName = "holds";
+
         String i_holderName = internHolder(holderName, Util_InternMap.DO_NOT_FORCE);
         if (i_holderName == null) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] ENTER [ {1} ] [ {2} ] / RETURN [ false ] (holder not stored)", 
+                    new Object[] { getHashText(), holderName, heldName } );
+            }
             return false;
         }
 
         String i_heldName = internHeld(heldName, Util_InternMap.DO_NOT_FORCE);
         if (i_heldName == null) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] ENTER [ {1} ] [ {2} ] / RETURN [ false ] (held not stored)", 
+                    new Object[] { getHashText(), holderName, heldName } );
+            }
             return false;
         }
 
@@ -177,7 +224,13 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
         Set<String> i_held = i_holderToHeldMap.get(i_holderName);
 
-        return ((i_held == null) ? false : i_held.contains(i_heldName));
+        boolean result = ((i_held == null) ? false : i_held.contains(i_heldName));
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTER [ {1} ] [ {2} ] / RETURN [ {3} ]",
+                new Object[] { getHashText(), holderName, heldName, Boolean.valueOf(result) } );
+        }
+        return result;
 
         // Note (*):
         //
@@ -193,52 +246,104 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     //
 
     @Override
+    @Trivial
     public Set<String> selectHeldOf(String holderName) {
+        String methodName = "selectHeldOf";
         String i_holderName = internHolder(holderName, Util_InternMap.DO_NOT_FORCE);
         if (i_holderName == null) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] ENTER [ {1} ] / RETURN [ 0 ] (holder not stored)",
+                    new Object[] { getHashText(), holderName });
+            }
             return Collections.emptySet();
         }
 
         Set<String> i_held = i_selectHeldOf(i_holderName);
         if (i_held == null) { // See the note (*), above.
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] ENTER [ {1} ] / RETURN [ 0 ] (null held)",
+                    new Object[] { getHashText(), holderName });
+            }
             return Collections.emptySet();
         }
 
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTER [ {1} ] / RETURN [ {2} ]",
+                new Object[] { getHashText(), holderName, Integer.valueOf(i_held.size()) });
+        }
         return i_held;
     }
 
     @Override
+    @Trivial
     public Set<String> i_selectHeldOf(String i_holderName) {
-        return i_holderToHeldMap.get(i_holderName);
+        String methodName = "i_selectHeldOf";
+        Set<String> result = i_holderToHeldMap.get(i_holderName);
+        if ( logger.isLoggable(Level.FINER) ) {
+            String resultString = ( (result == null) ? "null" : Integer.toString( result.size() ) );
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTER [ {1} ] / RETURN [ {2} ]",
+                new Object[] { getHashText(), i_holderName, resultString });
+        }
+        return result;
     }
 
     @Override
+    @Trivial
     public Set<String> selectHoldersOf(String heldName) {
+        String methodName = "selectHoldersOf";
         String i_heldName = internHeld(heldName, Util_InternMap.DO_NOT_FORCE);
         if (i_heldName == null) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] ENTER [ {1} ] / RETURN [ 0 ] (held not stored)",
+                    new Object[] { getHashText(), heldName });
+            }
             return Collections.emptySet();
         }
 
         Set<String> i_holders = i_selectHoldersOf(i_heldName);
         if (i_holders == null) { // See the note (*), above.
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] ENTER [ {1} ] / RETURN [ 0 ] (null holders)",
+                    new Object[] { getHashText(), heldName });
+            }
             return Collections.emptySet();
         }
 
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTER [ {1} ] / RETURN [ {2} ]",
+                new Object[] { getHashText(), heldName, Integer.valueOf(i_holders.size()) });
+        }
         return i_holders;
     }
 
     @Override
     public Set<String> i_selectHoldersOf(String i_heldName) {
-        return i_heldToHoldersMap.get(i_heldName);
+        String methodName = "i_selectHoldersOf";
+        Set<String> result = i_heldToHoldersMap.get(i_heldName);
+        if ( logger.isLoggable(Level.FINER) ) {
+            String resultString = ( (result == null) ? "null" : Integer.toString( result.size() ) );
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTER [ {1} ] / RETURN [ {2} ]",
+                new Object[] { getHashText(), i_heldName, resultString });
+        }
+        return result;
     }
 
     //
 
     public boolean record(String holderName, String heldName) {
-        return i_record(internHolder(holderName, Util_InternMap.DO_FORCE),
-                        internHeld(heldName, Util_InternMap.DO_FORCE));
+        return i_record( internHolder(holderName, Util_InternMap.DO_FORCE),
+                         internHeld(heldName, Util_InternMap.DO_FORCE) );
     }
 
+    @Trivial
     public boolean i_record(String i_holderName, String i_heldName) {
         String methodName = "i_record";
 
@@ -247,8 +352,8 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "[ {0} ] Holder [ {1} ] Held [ {2} ] [ {3} ]",
-                    new Object[] { getHashText(), i_holderName, i_heldName, Boolean.valueOf(addedHeldToHolder) });
+                "[ {0} ] Holder [ {1} ] Held [ {2} ] [ {3} ]",
+                new Object[] { getHashText(), i_holderName, i_heldName, Boolean.valueOf(addedHeldToHolder) });
         }
 
         if (addedHeldToHolder != addedHolderToHeld) {
@@ -266,11 +371,20 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         return addedHeldToHolder;
     }
 
+    @Trivial
     protected boolean i_recordHolderToHeld(String i_holderName, String i_heldName) {
+        String methodName = "i_recordHolderToHeld";
         Set<String> i_held = i_recordHolder(i_holderName);
-        return i_held.add(i_heldName);
+        boolean didAdd = i_held.add(i_heldName);
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] Holder [ {1} ] Held [ {2} ] [ {3} ]",
+                    new Object[] { getHashText(), i_holderName, i_heldName, Boolean.valueOf(didAdd) });
+        }
+        return didAdd;
     }
 
+    @Trivial
     protected Set<String> i_recordHolder(String i_holderName) {
         String methodName = "i_recordHolder";
         
@@ -281,24 +395,38 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
             if (logger.isLoggable(Level.FINER)) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] Holder [ {1} ] Added",
-                        new Object[] { getHashText(), i_holderName });
+                    "[ {0} ] Holder [ {1} ] Added",
+                    new Object[] { getHashText(), i_holderName });
             }
 
         } else {
             if (logger.isLoggable(Level.FINER)) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] Holder [ {1} ] Already present",
-                        new Object[] { getHashText(), i_holderName });
+                    "[ {0} ] Holder [ {1} ] Already present",
+                    new Object[] { getHashText(), i_holderName });
             }
         }
 
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Holder [ {1} ] Held [ {2} ]",
+                new Object[] { getHashText(), Integer.valueOf(i_held.size()) });
+        }
         return i_held;
     }
 
+    @Trivial
     protected boolean i_recordHeldToHolder(String i_holderName, String i_heldName) {
+        String methodName = "i_recordHeldToHolder";
         Set<String> i_holders = i_recordHeld(i_heldName);
-        return i_holders.add(i_holderName);
+        boolean didAdd = i_holders.add(i_holderName);
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] Holder [ {1} ] Held [ {2} ] [ {3} ]",
+                    new Object[] { getHashText(), i_holderName, i_heldName, Boolean.valueOf(didAdd) });
+        }
+        return didAdd;
+
     }
 
     protected Set<String> i_recordHeld(String i_heldName) {
@@ -311,18 +439,23 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
             if (logger.isLoggable(Level.FINER)) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] Held [ {1} ] Added",
-                        new Object[] { getHashText(), i_heldName });
+                    "[ {0} ] Held [ {1} ] Added",
+                    new Object[] { getHashText(), i_heldName });
             }
 
         } else {
             if (logger.isLoggable(Level.FINER)) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] Held [ {1} ] Already present",
-                        new Object[] { getHashText(), i_heldName });
+                    "[ {0} ] Held [ {1} ] Already present",
+                    new Object[] { getHashText(), i_heldName });
             }
         }
 
+        if (logger.isLoggable(Level.FINER)) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] Holder [ {1} ] Holders [ {2} ]",
+                new Object[] { getHashText(), Integer.valueOf(i_holders.size()) });
+        }
         return i_holders;
     }
 
@@ -332,7 +465,6 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
             if ( i_held == null ) {
                 continue;
             }
-
             for ( String i_nextHeld : i_held ) {
                 i_record(i_nextHolder, i_nextHeld);
             }
@@ -344,12 +476,10 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
             if ( !i_restrictedHolders.contains(i_otherHolder) ) {
                 continue;
             }
-
             Set<String> i_otherHeld = otherMap.i_selectHeldOf(i_otherHolder);
             if ( i_otherHeld == null ) {
                 continue;
             }
-
             for ( String i_otherHeldName : i_otherHeld ) {
                 i_record(i_otherHolder, i_otherHeldName);
             }
@@ -359,6 +489,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     //
 
     @Override
+    @Trivial
     public void logState() {
         if ( !stateLogger.isLoggable(Level.FINER) ) {
             return;
@@ -368,6 +499,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
     }
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
         
@@ -386,6 +518,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "BiDi Map: END: [ {0} ]", getHashText());
     }
 
+    @Trivial
     public void logHolderMap(Logger useLogger) {
         String methodName = "logHolderMap";
 
@@ -403,6 +536,7 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Holder-to-held Map: END");
     }
 
+    @Trivial
     public void logHeldMap(Logger useLogger) {
         String methodName = "logHeldMap";
 
@@ -485,19 +619,68 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
 
     //
 
-    public void update(Set<String> i_resolved, Set<String> i_newlyResolved,
-                       Set<String> i_unresolved, Set<String> i_newlyUnresolved) {
+    /**
+     * Update value resolution tables with held data from this mapping.
+     *
+     * Holders are not processed.
+     *
+     * For each held value, if the held is not resolved, record it as
+     * unresolved, and if not previously recorded as unresolved, record
+     * it as newly unresolved.
+     *
+     * @param i_allResolved The revolved held values.
+     * @param i_newlyResolved Newly resolved held values.  Not currently used.
+     * @param i_allUnresolved Known unresolved held values.
+     * @param i_newlyUnresolved Newly discovered unresolved held values.
+     */
+    @Trivial
+    public void update(
+        Set<String> i_allResolved, Set<String> i_newlyResolved,
+        Set<String> i_allUnresolved, Set<String> i_newlyUnresolved) {
+
+        String methodName = "update";
+
+        Object[] logParms;
+        if ( logger.isLoggable(Level.FINER) ) {
+            logParms = new Object[] { getHashText(), null };
+
+            logParms[1] = Integer.toString( i_allResolved.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] All resolved [ {1} ]", logParms);
+
+            logParms[1] = Integer.toString( i_newlyResolved.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] New resolved [ {1} ]", logParms);
+
+            logParms[1] = Integer.toString( i_allUnresolved.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial all unresolved [ {1} ]", logParms);
+
+            logParms[1] = Integer.toString( i_newlyUnresolved.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Initial new unresolved [ {1} ]", logParms);
+        } else {
+            logParms = null;
+        }
 
         for ( Set<String> i_held : i_holderToHeldMap.values() ) {
             for ( String i_heldName : i_held ) {
-                if ( i_resolved.contains(i_heldName) ) {
+                if ( i_allResolved.contains(i_heldName) ) {
                     continue;
                 }
 
-                if ( i_unresolved.add(i_heldName) ) {
+                if ( i_allUnresolved.add(i_heldName) ) {
+                    if ( logParms != null ) {
+                        logParms[1] = i_heldName;
+                        logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] New unresolved [ {1} ]", logParms);
+                    }
                     i_newlyUnresolved.add(i_heldName);
                 }
             }
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logParms[1] = Integer.toString( i_allUnresolved.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final all unresolved [ {1} ]", logParms);
+
+            logParms[1] = Integer.toString( i_newlyUnresolved.size() );
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Final new unresolved [ {1} ]", logParms);
         }
     }
 }

@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 
 import org.objectweb.asm.ClassReader;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTable;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;
@@ -34,6 +36,11 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.AnnotationCategory;
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
 
+/**
+ * Annotation and class information:
+ *
+ * A targets table comprises class information, 
+ */
 public class TargetsTableImpl implements TargetsTable {
     // Logging ...
 
@@ -45,6 +52,7 @@ public class TargetsTableImpl implements TargetsTable {
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -89,7 +97,7 @@ public class TargetsTableImpl implements TargetsTable {
 
         this.stampTable = new TargetsTableTimeStampImpl( classSourceName, sourceData.getStamp() );
         this.classTable = new TargetsTableClassesImpl( sourceData.getClassTable(), classNameInternMap, classSourceName );
-        this.targetTable = new TargetsTableAnnotationsImpl( sourceData.getTargetTable(), classNameInternMap );
+        this.annotationTable = new TargetsTableAnnotationsImpl( sourceData.getAnnotationTable(), classNameInternMap );
 
         //
 
@@ -112,7 +120,6 @@ public class TargetsTableImpl implements TargetsTable {
      * @param factory The factory used by the new targets data.
      * @param classSourceName The name to assign to the new targets data.
      */
-    
     public TargetsTableImpl(AnnotationTargetsImpl_Factory factory,
                            String classSourceName) {
 
@@ -161,7 +168,7 @@ public class TargetsTableImpl implements TargetsTable {
 
         this.stampTable = new TargetsTableTimeStampImpl(classSourceName);
         this.classTable = new TargetsTableClassesImpl(factory.getUtilFactory(), classNameInternMap, classSourceName);
-        this.targetTable = new TargetsTableAnnotationsImpl(factory.getUtilFactory(), classNameInternMap);
+        this.annotationTable = new TargetsTableAnnotationsImpl(factory.getUtilFactory(), classNameInternMap);
 
         //
 
@@ -177,7 +184,7 @@ public class TargetsTableImpl implements TargetsTable {
                         new Object[] { this.hashText, this.classTable.getHashText() });
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ]",
-                        new Object[] { this.hashText, this.targetTable.getHashText() });
+                        new Object[] { this.hashText, this.annotationTable.getHashText() });
         }
     }
 
@@ -185,6 +192,7 @@ public class TargetsTableImpl implements TargetsTable {
 
     protected final AnnotationTargetsImpl_Factory factory;
 
+    @Trivial
     protected AnnotationTargetsImpl_Factory getFactory() {
         return factory;
     }
@@ -205,6 +213,7 @@ public class TargetsTableImpl implements TargetsTable {
 
     protected final UtilImpl_InternMap classNameInternMap;
 
+    @Trivial
     protected UtilImpl_InternMap getClassNameInternMap() {
         return classNameInternMap;
     }
@@ -230,6 +239,7 @@ public class TargetsTableImpl implements TargetsTable {
 
     protected final UtilImpl_InternMap fieldNameInternMap;
 
+    @Trivial
     protected UtilImpl_InternMap getFieldNameInternMap() {
         return fieldNameInternMap;
     }
@@ -255,6 +265,7 @@ public class TargetsTableImpl implements TargetsTable {
 
     protected final UtilImpl_InternMap methodSignatureInternMap;
 
+    @Trivial
     protected UtilImpl_InternMap getMethodSignatureInternMap() {
         return methodSignatureInternMap;
     }
@@ -272,6 +283,7 @@ public class TargetsTableImpl implements TargetsTable {
 
     protected final String classSourceName;
 
+    @Trivial
     public String getClassSourceName() {
         return classSourceName;
     }
@@ -281,6 +293,7 @@ public class TargetsTableImpl implements TargetsTable {
     protected final TargetsTableTimeStampImpl stampTable;
 
     @Override
+    @Trivial
     public TargetsTableTimeStampImpl getStampTable() {
         return stampTable;
     }
@@ -291,6 +304,7 @@ public class TargetsTableImpl implements TargetsTable {
     }
 
     @Override
+    @Trivial
     public String getName() {
         return getStampTable().getName();
     }
@@ -301,6 +315,7 @@ public class TargetsTableImpl implements TargetsTable {
     }
 
     @Override
+    @Trivial
     public String getStamp() {
         return getStampTable().getStamp();
     }
@@ -310,6 +325,7 @@ public class TargetsTableImpl implements TargetsTable {
     protected final TargetsTableClassesImpl classTable;
 
     @Override
+    @Trivial
     public TargetsTableClassesImpl getClassTable() {
         return classTable;
     }
@@ -388,252 +404,261 @@ public class TargetsTableImpl implements TargetsTable {
 
     //
 
-    protected final TargetsTableAnnotationsImpl targetTable;
+    protected final TargetsTableAnnotationsImpl annotationTable;
 
     //
 
     @Override
-    public TargetsTableAnnotationsImpl getTargetTable() {
-        return targetTable;
+    public TargetsTableAnnotationsImpl getAnnotationTable() {
+        return annotationTable;
     }
 
     //
 
     @Override
-    public UtilImpl_BidirectionalMap i_getAnnotationData(AnnotationCategory category) {
-        return getTargetTable().i_getAnnotationData(category);
+    public UtilImpl_BidirectionalMap i_getAnnotations(AnnotationCategory category) {
+        return getAnnotationTable().i_getAnnotations(category);
     }
 
     @Override
-    public Util_BidirectionalMap i_getPackageAnnotationData() {
-        return getTargetTable().i_getPackageAnnotationData();
+    public Util_BidirectionalMap i_getPackageAnnotations() {
+        return getAnnotationTable().i_getPackageAnnotations();
     }
 
     @Override
-    public Util_BidirectionalMap i_getClassAnnotationData() {
-        return getTargetTable().i_getClassAnnotationData();
+    public Util_BidirectionalMap i_getClassAnnotations() {
+        return getAnnotationTable().i_getClassAnnotations();
     }
 
     @Override
-    public Util_BidirectionalMap i_getFieldAnnotationData() {
-        return getTargetTable().i_getFieldAnnotationData();
+    public Util_BidirectionalMap i_getFieldAnnotations() {
+        return getAnnotationTable().i_getFieldAnnotations();
     }
 
     @Override
-    public Util_BidirectionalMap i_getMethodAnnotationData() {
-        return getTargetTable().i_getMethodAnnotationData();
+    public Util_BidirectionalMap i_getMethodAnnotations() {
+        return getAnnotationTable().i_getMethodAnnotations();
     }
 
     //
 
     @Override
     public Set<String> i_getAnnotatedTargets(AnnotationCategory category) {
-        return getTargetTable().i_getAnnotatedTargets(category);
+        return getAnnotationTable().i_getAnnotatedTargets(category);
     }
 
     @Override
     public Set<String> i_getAnnotatedTargets(AnnotationCategory category, String i_annotationName) {
-        return getTargetTable().i_getAnnotatedTargets(category, i_annotationName);
+        return getAnnotationTable().i_getAnnotatedTargets(category, i_annotationName);
     }
 
     @Override
-    public Set<String> i_getAnnotations(AnnotationCategory category) {
-        return getTargetTable().i_getAnnotations(category);
+    public Set<String> i_getAnnotationNames(AnnotationCategory category) {
+        return getAnnotationTable().i_getAnnotationNames(category);
     }
 
     @Override
     public Set<String> i_getAnnotations(AnnotationCategory category, String i_classOrPackageName) {
-        return getTargetTable().i_getAnnotations(category, i_classOrPackageName);
+        return getAnnotationTable().i_getAnnotations(category, i_classOrPackageName);
     }
 
     //
 
     @Override
     public Set<String> getAnnotatedTargets(AnnotationCategory category) {
-        return getTargetTable().getAnnotatedTargets(category);
+        return getAnnotationTable().getAnnotatedTargets(category);
     }
 
     @Override
     public Set<String> getAnnotatedTargets(AnnotationCategory category, String annotationName) {
-        return getTargetTable().getAnnotatedTargets(category, annotationName);
+        return getAnnotationTable().getAnnotatedTargets(category, annotationName);
     }
 
     @Override
     public Set<String> getAnnotations(AnnotationCategory category) {
-        return getTargetTable().getAnnotations(category);
+        return getAnnotationTable().getAnnotations(category);
     }
 
     @Override
     public Set<String> getAnnotations(AnnotationCategory category, String classOrPackageName) {
-        return getTargetTable().getAnnotations(category, classOrPackageName);
+        return getAnnotationTable().getAnnotations(category, classOrPackageName);
     }
 
     //
 
     @Override
     public Set<String> getPackagesWithAnnotations() {
-        return getTargetTable().getPackagesWithAnnotations();
+        return getAnnotationTable().getPackagesWithAnnotations();
     }
 
     @Override
     public Set<String> i_getPackagesWithAnnotations() {
-        return getTargetTable().i_getPackagesWithAnnotations();
+        return getAnnotationTable().i_getPackagesWithAnnotations();
     }
 
     @Override
     public Set<String> getPackagesWithAnnotation(String annotationName) {
-        return getTargetTable().getPackagesWithAnnotation(annotationName);
+        return getAnnotationTable().getPackagesWithAnnotation(annotationName);
     }
 
     @Override
     public Set<String> i_getPackagesWithAnnotation(String i_annotationName) {
-        return getTargetTable().i_getPackagesWithAnnotation(i_annotationName);
+        return getAnnotationTable().i_getPackagesWithAnnotation(i_annotationName);
     }
 
     @Override
     public Set<String> getPackageAnnotations() {
-        return getTargetTable().getPackageAnnotations();
+        return getAnnotationTable().getPackageAnnotations();
     }
 
     @Override
-    public Set<String> i_getPackageAnnotations() {
-        return getTargetTable().i_getPackageAnnotations();
+    public Set<String> i_getPackageAnnotationNames() {
+        return getAnnotationTable().i_getPackageAnnotationNames();
     }
 
     @Override
     public Set<String> getPackageAnnotations(String packageName) {
-        return getTargetTable().getPackageAnnotations(packageName);
+        return getAnnotationTable().getPackageAnnotations(packageName);
     }
 
     @Override
     public Set<String> i_getPackageAnnotations(String i_packageName) {
-        return getTargetTable().i_getPackageAnnotations(i_packageName);
+        return getAnnotationTable().i_getPackageAnnotations(i_packageName);
     }
 
     //
 
     @Override
     public Set<String> getClassesWithClassAnnotations() {
-        return getTargetTable().getClassesWithClassAnnotations();
+        return getAnnotationTable().getClassesWithClassAnnotations();
     }
 
     @Override
     public Set<String> i_getClassesWithClassAnnotations() {
-        return getTargetTable().i_getClassesWithClassAnnotations();
+        return getAnnotationTable().i_getClassesWithClassAnnotations();
     }
 
     @Override
     public Set<String> getClassesWithClassAnnotation(String annotationName) {
-        return getTargetTable().getClassesWithClassAnnotation(annotationName);
+        return getAnnotationTable().getClassesWithClassAnnotation(annotationName);
     }
 
     @Override
     public Set<String> i_getClassesWithClassAnnotation(String i_annotationName) {
-        return getTargetTable().i_getClassesWithClassAnnotation(i_annotationName);
+        return getAnnotationTable().i_getClassesWithClassAnnotation(i_annotationName);
     }
 
     @Override
     public Set<String> getClassAnnotations() {
-        return getTargetTable().getClassAnnotations();
+        return getAnnotationTable().getClassAnnotations();
     }
 
     @Override
-    public Set<String> i_getClassAnnotations() {
-        return getTargetTable().i_getClassAnnotations();
+    public Set<String> i_getClassAnnotationNames() {
+        return getAnnotationTable().i_getClassAnnotationNames();
     }
 
     @Override
     public Set<String> getClassAnnotations(String className) {
-        return getTargetTable().getClassAnnotations(className);
+        return getAnnotationTable().getClassAnnotations(className);
     }
 
     @Override
     public Set<String> i_getClassAnnotations(String i_className) {
-        return getTargetTable().i_getClassAnnotations(i_className);
+        return getAnnotationTable().i_getClassAnnotations(i_className);
     }
 
     //
 
     @Override
     public Set<String> getClassesWithFieldAnnotations() {
-        return getTargetTable().getClassesWithFieldAnnotations();
+        return getAnnotationTable().getClassesWithFieldAnnotations();
     }
 
     @Override
     public Set<String> i_getClassesWithFieldAnnotations() {
-        return getTargetTable().i_getClassesWithFieldAnnotations();
+        return getAnnotationTable().i_getClassesWithFieldAnnotations();
     }
 
     @Override
     public Set<String> getClassesWithFieldAnnotation(String annotationName) {
-        return getTargetTable().getClassesWithFieldAnnotation(annotationName);
+        return getAnnotationTable().getClassesWithFieldAnnotation(annotationName);
     }
 
     @Override
     public Set<String> i_getClassesWithFieldAnnotation(String i_annotationName) {
-        return getTargetTable().i_getClassesWithFieldAnnotation(i_annotationName);
+        return getAnnotationTable().i_getClassesWithFieldAnnotation(i_annotationName);
     }
 
     @Override
     public Set<String> getFieldAnnotations() {
-        return getTargetTable().getFieldAnnotations();
+        return getAnnotationTable().getFieldAnnotations();
     }
 
     @Override
-    public Set<String> i_getFieldAnnotations() {
-        return getTargetTable().i_getFieldAnnotations();
+    public Set<String> i_getFieldAnnotationNames() {
+        return getAnnotationTable().i_getFieldAnnotationNames();
     }
 
     @Override
     public Set<String> getFieldAnnotations(String className) {
-        return getTargetTable().getFieldAnnotations(className);
+        return getAnnotationTable().getFieldAnnotations(className);
     }
 
     @Override
     public Set<String> i_getFieldAnnotations(String i_className) {
-        return getTargetTable().i_getFieldAnnotations(i_className);
+        return getAnnotationTable().i_getFieldAnnotations(i_className);
     }
 
     //
 
     @Override
     public Set<String> getClassesWithMethodAnnotations() {
-        return getTargetTable().getClassesWithMethodAnnotations();
+        return getAnnotationTable().getClassesWithMethodAnnotations();
     }
 
     @Override
     public Set<String> i_getClassesWithMethodAnnotations() {
-        return getTargetTable().i_getClassesWithMethodAnnotations();
+        return getAnnotationTable().i_getClassesWithMethodAnnotations();
     }
 
     @Override
     public Set<String> getClassesWithMethodAnnotation(String annotationName) {
-        return getTargetTable().getClassesWithMethodAnnotation(annotationName);
+        return getAnnotationTable().getClassesWithMethodAnnotation(annotationName);
     }
 
     @Override
     public Set<String> i_getClassesWithMethodAnnotation(String i_annotationName) {
-        return getTargetTable().i_getClassesWithMethodAnnotation(i_annotationName);
+        return getAnnotationTable().i_getClassesWithMethodAnnotation(i_annotationName);
     }
 
     @Override
     public Set<String> getMethodAnnotations() {
-        return getTargetTable().getMethodAnnotations();
+        return getAnnotationTable().getMethodAnnotations();
     }
 
     @Override
-    public Set<String> i_getMethodAnnotations() {
-        return getTargetTable().i_getMethodAnnotations();
+    public Set<String> i_getMethodAnnotationNames() {
+        return getAnnotationTable().i_getMethodAnnotationNames();
     }
 
     @Override
     public Set<String> getMethodAnnotations(String className) {
-        return getTargetTable().getMethodAnnotations(className);
+        return getAnnotationTable().getMethodAnnotations(className);
     }
 
     @Override
     public Set<String> i_getMethodAnnotations(String i_className) {
-        return getTargetTable().i_getMethodAnnotations(i_className);
+        return getAnnotationTable().i_getMethodAnnotations(i_className);
+    }
+
+    //
+
+    public int countAnnotations() {
+        return ( getPackageAnnotations().size() +
+                 getClassAnnotations().size() +
+                 getFieldAnnotations().size() +
+                 getMethodAnnotations().size() );
     }
 
     //
@@ -646,6 +671,7 @@ public class TargetsTableImpl implements TargetsTable {
     }
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
 
@@ -656,7 +682,7 @@ public class TargetsTableImpl implements TargetsTable {
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "BEGIN STATE [ {0} ]", getHashText());
 
         getClassTable().log(useLogger);
-        getTargetTable().log(useLogger);
+        getAnnotationTable().log(useLogger);
 
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "END STATE [ {0} ]", getHashText());
     }
@@ -685,11 +711,12 @@ public class TargetsTableImpl implements TargetsTable {
         throws AnnotationTargets_Exception {
 
         scanInternal( classSource,
-                      TargetsVisitorClassImpl.DONT_RECORD_NEW_UNRESOLVED,
-                      TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
 
                       TargetsVisitorClassImpl.DONT_RECORD_NEW_RESOLVED,
                       TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
+
+                      TargetsVisitorClassImpl.DONT_RECORD_NEW_UNRESOLVED,
+                      TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED,
 
                       TargetsVisitorClassImpl.SELECT_ALL_ANNOTATIONS ); // throws AnnotationTargets_Exception
     }
@@ -699,23 +726,24 @@ public class TargetsTableImpl implements TargetsTable {
      *
      * @param classSource The class source which is to be scanned.
      *
-     * @param i_newUnresolvedClassNames The names of new unresolved classes.
-     * @param i_unresolvedClassNames The names of unresolved classes.
-     *
      * @param i_newResolvedClassNames The names of new unresolved classes.
      * @param i_resolvedClassNames The names of previously resolved classes.
+     *
+     * @param i_newUnresolvedClassNames The names of new unresolved classes.
+     * @param i_unresolvedClassNames The names of unresolved classes.
      *
      * @param i_selectAnnotationClassNames Filter of annotation class names which are to be recorded.
      *
      * @throws AnnotationTargets_Exception Thrown in case of a scan error.
      */
+    @Trivial
     protected void scanInternal(ClassSource classSource,
-
-                                Set<String> i_newUnresolvedClassNames,
-                                Set<String> i_unresolvedClassNames,
 
                                 Set<String> i_newResolvedClassNames,
                                 Set<String> i_resolvedClassNames,
+
+                                Set<String> i_newUnresolvedClassNames,
+                                Set<String> i_unresolvedClassNames,
 
                                 Set<String> i_selectAnnotationClassNames)
 
@@ -736,8 +764,8 @@ public class TargetsTableImpl implements TargetsTable {
                 new TargetsVisitorClassImpl(
                     this,
                     classSource.getName(),
-                    i_newUnresolvedClassNames, i_unresolvedClassNames,
                     i_newResolvedClassNames, i_resolvedClassNames,
+                    i_newUnresolvedClassNames, i_unresolvedClassNames,
                     i_selectAnnotationClassNames,
                     TargetsVisitorClassImpl.DO_NOT_RECORD_ANNOTATION_DETAIL );
 
@@ -776,7 +804,6 @@ public class TargetsTableImpl implements TargetsTable {
 
             try {
                 classSource.process(useStreamer); // throws ClassSource_Exception
-
             } catch ( ClassSource_Exception e ) {
                 throw getFactory().wrapIntoAnnotationTargetsException(logger, CLASS_NAME, methodName,
                                                                       "Failed to scan class source", e);
@@ -793,16 +820,45 @@ public class TargetsTableImpl implements TargetsTable {
         }
     }
 
+    @Trivial
+    private String printString(Set<String> values) {
+        if ( values.isEmpty() ) {
+            return "{ }";
+
+        } else if ( values.size() == 1 ) {
+            for ( String value : values ) {
+                return "{ " + value + " }";
+            }
+            return null; // Unreachable
+
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append("{ ");
+            boolean first = true;
+            for ( String value : values ) {
+                if ( !first ) {
+                    builder.append(", ");
+                } else {
+                    first = false;
+                }
+                builder.append(value);
+            }
+            builder.append(" }");
+            return builder.toString();
+        }
+    }
+
     /**
      * <p>Scan unresolved classes of the tail external class source.  Don't
      * record any annotations of this class source.</p>
      *
      * @param classSource The class source which is to be scanned.
-     * @param i_unresolvedClassNames The names of unresolved classes.
      * @param i_resolvedClassNames The names of previously resolved classes.
+     * @param i_unresolvedClassNames The names of unresolved classes.
      *
      * @throws AnnotationTargets_Exception Thrown in case of a scan error.
      */
+    @Trivial
     protected void scanExternal(ClassSource classSource,
                                 Set<String> i_resolvedClassNames,
                                 Set<String> i_unresolvedClassNames)
@@ -827,26 +883,33 @@ public class TargetsTableImpl implements TargetsTable {
             return;
         }
 
-        Set<String> i_nextUnresolvedClassNames = i_dupClassNames(i_unresolvedClassNames);
-
         boolean didOpen = false;
 
         try {
+            Set<String> i_nextUnresolvedClassNames = i_dupClassNames(i_unresolvedClassNames);
+
             while ( !i_nextUnresolvedClassNames.isEmpty() ) {
-                Set<String> i_newUnresolvedClassNames = createIdentityStringSet();
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                            "[ {0} ] [ {1} ] Next Unresolved [ {2} ]",
+                            new Object[] { getHashText(), classSource.getName(),
+                                           printString(i_nextUnresolvedClassNames) });
+
                 Set<String> i_newResolvedClassNames = createIdentityStringSet();
+                Set<String> i_newUnresolvedClassNames = createIdentityStringSet();
 
                 if ( !didOpen ) {
                     openClassSource(classSource); // throws AnnotationTargets_Exception
                     didOpen = true;
                 }
 
+                final Logger innerLogger = logger;
+
                 final TargetsVisitorClassImpl visitor =
                     new TargetsVisitorClassImpl(
                         this,
                         classSource.getName(),
-                        i_newUnresolvedClassNames, i_unresolvedClassNames,
                         i_newResolvedClassNames, i_resolvedClassNames,
+                        i_newUnresolvedClassNames, i_unresolvedClassNames,
                         TargetsVisitorClassImpl.SELECT_NO_ANNOTATIONS,
                         TargetsVisitorClassImpl.DO_NOT_RECORD_ANNOTATION_DETAIL );
 
@@ -858,6 +921,10 @@ public class TargetsTableImpl implements TargetsTable {
 
                     @Override
                     public boolean process(String i_className, InputStream inputStream) throws ClassSource_Exception {
+                        String methodName = "scanExternal.process";
+                        if ( innerLogger.isLoggable(Level.FINER) ) {
+                            innerLogger.logp(Level.FINER, CLASS_NAME, methodName, "Class [ {0} ]", i_className);
+                        }
                         return apply(visitor, i_className, inputStream); // throws ClassSource_Exception
                     }
 
@@ -918,6 +985,7 @@ public class TargetsTableImpl implements TargetsTable {
      *
      * @throws AnnotationTargets_Exception Thrown in case of a scan error.
      */
+    @Trivial
     protected void scanSpecific(ClassSource classSource,
                                 Set<String> i_unresolvedClassNames,
                                 Set<String> i_resolvedClassNames,
@@ -1026,6 +1094,7 @@ public class TargetsTableImpl implements TargetsTable {
 
     //
 
+    @Trivial
     protected boolean apply(TargetsVisitorClassImpl visitor, String i_className, InputStream inputStream) {
         String methodName = "apply";
         Object[] logParms;
@@ -1122,7 +1191,7 @@ public class TargetsTableImpl implements TargetsTable {
         String methodName = "record";
 
         if ( getClassTable().record(classData) ) {
-             getTargetTable().record(classData);
+             getAnnotationTable().record(classData);
 
         } else {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -1137,21 +1206,40 @@ public class TargetsTableImpl implements TargetsTable {
     /**
      * <p>Add data from a table into this table.</p>
      *
+     * <p>Record new additions to the added packages and added
+     * classes collections.</p>
+
      * @param table The table which is to be added to this table.
+     * @param i_allAddedClassNames Names of classes previously added to this table.
+     *     Updated with newly added class names.
+     * @param i_allAddedPackageNames Names of packages previously added to this table
+     *     Updated with newly added package names.
      */
     protected void restrictedAdd(TargetsTableImpl table,
-                                 Set<String> i_addedClassNames,
-                                 Set<String> i_addedPackageNames) {
+                                 Set<String> i_allAddedClassNames,
+                                 Set<String> i_allAddedPackageNames) {
+
+        // Use the 'allAdded' collections to know which packages and classes are new,
+        // and which were previously added.
+        //
+        // Use the 'newlyAdded' collections to know which packages and classes were
+        // just added.
+        //
+        // The 'newlyAdded' collections are poplulated during the initial merge of
+        // the package and class names.
+        //
+        // Subsequent operations transfer additional data, but just for the newly
+        // added packages and classes.
 
         Set<String> i_newlyAddedPackageNames = createIdentityStringSet();
         Set<String> i_newlyAddedClassNames = createIdentityStringSet();
 
         getClassTable().restrictedAdd( table.getClassTable(),
-                                       i_newlyAddedPackageNames, i_addedPackageNames,
-                                       i_newlyAddedClassNames, i_addedClassNames );
+                                       i_newlyAddedPackageNames, i_allAddedPackageNames,
+                                       i_newlyAddedClassNames, i_allAddedClassNames );
 
-        getTargetTable().restrictedAdd( table.getTargetTable(),
-                                        i_newlyAddedPackageNames, i_newlyAddedClassNames );
+        getAnnotationTable().restrictedAdd( table.getAnnotationTable(),
+                                            i_newlyAddedPackageNames, i_newlyAddedClassNames );
     }
 
     //
@@ -1164,19 +1252,23 @@ public class TargetsTableImpl implements TargetsTable {
         }
 
         return ( getClassTable().sameAs( otherTable.getClassTable() ) &&
-                 getTargetTable().sameAs( otherTable.getTargetTable() ) );
+                 getAnnotationTable().sameAs( otherTable.getAnnotationTable() ) );
     }
 
     //
 
-    public void updateClassNames(Set<String> i_resolvedClassNames, Set<String> i_unresolvedClassNames) {
+    public void updateClassNames(
+        Set<String> i_allResolvedClassNames, Set<String> i_allUnresolvedClassNames) {
+
         Set<String> i_newlyResolvedClassNames = createIdentityStringSet();
         Set<String> i_newlyUnresolvedClassNames = createIdentityStringSet();
 
-        getClassTable().updateClassNames(i_resolvedClassNames, i_newlyResolvedClassNames,
-                                         i_unresolvedClassNames, i_newlyUnresolvedClassNames);
+        getClassTable().updateClassNames(
+            i_allResolvedClassNames, i_newlyResolvedClassNames,
+            i_allUnresolvedClassNames, i_newlyUnresolvedClassNames);
 
-        getTargetTable().updateClassNames(i_resolvedClassNames, i_newlyResolvedClassNames,
-                                          i_unresolvedClassNames, i_newlyUnresolvedClassNames);
+        getAnnotationTable().updateClassNames(
+            i_allResolvedClassNames, i_newlyResolvedClassNames,
+            i_allUnresolvedClassNames, i_newlyUnresolvedClassNames);
     }
 }

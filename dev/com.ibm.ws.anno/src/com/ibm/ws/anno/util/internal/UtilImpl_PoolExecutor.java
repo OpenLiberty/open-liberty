@@ -18,12 +18,16 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
 
+    @Trivial
     public static UtilImpl_PoolExecutor createBlockingExecutor(int completionCount) {
         return createExecutor( UtilImpl_PoolParameters.createDefaultParameters(), completionCount );
     }
 
+    @Trivial
     public static UtilImpl_PoolExecutor createBlockingExecutor(
         int coreSize, int maxSize, int completionCount) {
 
@@ -32,10 +36,12 @@ public class UtilImpl_PoolExecutor extends ThreadPoolExecutor {
                                completionCount );
     }    
 
+    @Trivial
     public static UtilImpl_PoolExecutor createNonBlockingExecutor() {
         return createExecutor( UtilImpl_PoolParameters.createDefaultParameters(), NON_BLOCKING_COUNT );
     }
-    
+
+    @Trivial
     public static UtilImpl_PoolExecutor createNonBlockingExecutor(int coreSize, int maxSize) {
         return createExecutor( UtilImpl_PoolParameters.createDefaultParameters(),
                                coreSize, maxSize, NON_BLOCKING_COUNT );

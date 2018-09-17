@@ -56,20 +56,20 @@ public class TargetsDeltaImpl_Annotations implements TargetsDelta_Annotations {
         UtilImpl_Factory utilFactory = factory.getUtilFactory();
 
         this.packageAnnotationDelta = utilFactory.subtractBiMap(
-            finalTargets.i_getPackageAnnotationData(),
-            initialTargets.i_getPackageAnnotationData() );
+            finalTargets.i_getPackageAnnotations(),
+            initialTargets.i_getPackageAnnotations() );
 
         this.classAnnotationDelta = utilFactory.subtractBiMap(
-            finalTargets.i_getClassAnnotationData(),
-            initialTargets.i_getClassAnnotationData() );
+            finalTargets.i_getClassAnnotations(),
+            initialTargets.i_getClassAnnotations() );
 
         this.fieldAnnotationDelta = utilFactory.subtractBiMap(
-            finalTargets.i_getFieldAnnotationData(),
-            initialTargets.i_getFieldAnnotationData() );
+            finalTargets.i_getFieldAnnotations(),
+            initialTargets.i_getFieldAnnotations() );
 
         this.methodAnnotationDelta = utilFactory.subtractBiMap(
-            finalTargets.i_getMethodAnnotationData(),
-            initialTargets.i_getMethodAnnotationData() );
+            finalTargets.i_getMethodAnnotations(),
+            initialTargets.i_getMethodAnnotations() );
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);

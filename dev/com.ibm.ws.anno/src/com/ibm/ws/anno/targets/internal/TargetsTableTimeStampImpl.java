@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.TargetsTableTimeStamp;
 import com.ibm.ws.anno.targets.cache.TargetCache_ParseError;
@@ -37,6 +39,7 @@ public class TargetsTableTimeStampImpl
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -98,6 +101,7 @@ public class TargetsTableTimeStampImpl
     }
 
     @Override
+    @Trivial
     public String getName() {
         return name;
     }
@@ -114,6 +118,7 @@ public class TargetsTableTimeStampImpl
     }
 
     @Override
+    @Trivial
     public String getStamp() {
         return stamp;
     }
@@ -121,6 +126,7 @@ public class TargetsTableTimeStampImpl
     //
 
     @Override
+    @Trivial
     public void log(Logger useLogger) {
         String methodName = "log";
 

@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 public class UtilImpl_InternMap implements Util_InternMap {
@@ -28,6 +30,7 @@ public class UtilImpl_InternMap implements Util_InternMap {
     protected final String hashText;
 
     @Override
+    @Trivial
     public String getHashText() {
         return hashText;
     }
@@ -113,12 +116,14 @@ public class UtilImpl_InternMap implements Util_InternMap {
     }
 
     @Override
+    @Trivial
     public String validate(String useValue, ValueType useValueType) {
         return UtilImpl_InternMap.doValidate(useValue, useValueType);
     }
 
     //
 
+    @Trivial
     public UtilImpl_InternMap(UtilImpl_Factory factory, ValueType valueType, String name) {
         this(factory, valueType, DEFAULT_LOG_THRESHHOLD, name);
     }
@@ -158,6 +163,7 @@ public class UtilImpl_InternMap implements Util_InternMap {
     protected final UtilImpl_Factory factory;
 
     @Override
+    @Trivial
     public UtilImpl_Factory getFactory() {
         return factory;
     }
@@ -216,6 +222,7 @@ public class UtilImpl_InternMap implements Util_InternMap {
     }
 
     @Override
+    @Trivial
     public String intern(String useName) {
         return intern(useName, Util_InternMap.DO_FORCE);
     }
@@ -274,6 +281,7 @@ public class UtilImpl_InternMap implements Util_InternMap {
     //
 
     @Override
+    @Trivial
     public synchronized void log(Logger useLogger) {
         String methodName = "log";
         if ( !useLogger.isLoggable(Level.FINER) ) {
