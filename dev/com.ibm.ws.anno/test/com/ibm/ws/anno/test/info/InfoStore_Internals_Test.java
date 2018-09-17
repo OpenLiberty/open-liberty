@@ -74,7 +74,7 @@ public class InfoStore_Internals_Test {
         ClassSourceImpl_Factory factory = annoService.getClassSourceFactory();
 
         ClassSourceImpl_Aggregate useRootClassSource =
-            factory.createAggregateClassSource("TestEar", "TestMod", ClassSource_Factory.JAVAEE_CATEGORY_NAME, factory.createOptions() );
+            factory.createAggregateClassSource("TestEar", "TestMod", ClassSource_Factory.UNSET_CATEGORY_NAME, factory.createOptions() );
 
         ClassSourceImpl_MappedDirectory dirClassSource =
             factory.createDirectoryClassSource(

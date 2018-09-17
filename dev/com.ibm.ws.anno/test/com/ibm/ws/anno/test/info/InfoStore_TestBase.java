@@ -112,7 +112,7 @@ public abstract class InfoStore_TestBase {
 
         ClassSourceImpl_Aggregate useRootClassSource =
             factory.createAggregateClassSource(
-                "AppName", "ModName", ClassSource_Factory.JAVAEE_CATEGORY_NAME,
+                "AppName", "ModName", ClassSource_Factory.UNSET_CATEGORY_NAME,
                 factory.createOptions() );
 
         addComponentClassSources(useRootClassSource);

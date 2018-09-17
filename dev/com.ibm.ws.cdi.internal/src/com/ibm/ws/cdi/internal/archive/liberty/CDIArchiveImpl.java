@@ -94,14 +94,6 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         this.classLoader = classLoader;
 
         this.moduleLibraryArchives = initModuleLibraryArchives();
-
-        String methodName = "<init>";
-        String prefix = CLASS_NAME + "." + methodName + ": ";
-
-        System.out.println(prefix + "Container [ " + containerInfo.getName() + " ] [ " + containerInfo.getContainer() + " ]");
-        System.out.println(prefix + "Type [ " + archiveType + " ]");
-        System.out.println(prefix + "Application [ " + application + " ]");
-        System.out.println(prefix + "Class loader [ " + classLoader + " ]");
     }
 
     //

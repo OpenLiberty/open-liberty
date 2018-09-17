@@ -27,7 +27,7 @@ public class Test_AnnoBasic_Data {
         createClassSourceSpecification(ClassSource_Factory classSourceFactory) {
 
         ClassSource_Specification_Direct_EJB ejbSpecification =
-            classSourceFactory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME, Test_Base.JAVAEE_MOD_CATEGORY_NAME);
+            classSourceFactory.newEJBDirectSpecification(EAR_SIMPLE_NAME, EJBJAR_SIMPLE_NAME, Test_Base.UNSET_MOD_CATEGORY_NAME);
 
         ejbSpecification.setModulePath(TestLocalization.getClassesPath());
 

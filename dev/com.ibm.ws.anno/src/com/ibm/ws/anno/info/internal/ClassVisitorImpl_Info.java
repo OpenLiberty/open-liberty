@@ -122,79 +122,134 @@ import com.ibm.ws.anno.util.internal.UtilImpl_EmptyCollections;
 
 public class ClassVisitorImpl_Info extends ClassVisitor {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
-
-    private static final String CLASS_NAME = "ClassVisitorImpl_Info";
+    private static final String CLASS_NAME = ClassVisitorImpl_Info.class.getSimpleName();
 
     //
-    class InfoMethodVisitor extends MethodVisitor {
+
+    /**
+     * Type for accumulating method information and method annotation information.
+     *
+     * Method annotations and parameter annotations are handled.  Other annotations,
+     * for example, which are associated with generic parameters, are not handled.
+     *
+     * Methods are processed serially.  For performance, this accumulator is reused
+     * across the methods.
+     */
+    class MethodVisitorImpl_Info extends MethodVisitor {
+        /** The method which is being processed. */
         private MethodInfoImpl methodInfo;
-        private List<AnnotationInfoImpl> annotations;
-        private List<AnnotationInfoImpl>[] paramAnnotations;
 
-        public InfoMethodVisitor() {
+        /** Annotations of the method. */
+        private List<AnnotationInfoImpl> methodAnnotations;
+
+        /**
+         * Parameter annotations of the method: One slot per parameters.  Each slot contains
+         * a list of annotations.  Slots are null for parameters which have no annotations.
+         */
+        private List<AnnotationInfoImpl>[] allParmAnnotations;
+
+        /**
+         * Create a new method visitor.  As of yet, the visitor is not bound
+         * to a method, and has null method and parameter annotations.
+         */
+        public MethodVisitorImpl_Info() {
             super(Opcodes.ASM7_EXPERIMENTAL);
+
+            this.methodInfo = null;
+            this.methodAnnotations = null;
+            this.allParmAnnotations = null;
         }
 
+        /**
+         * Bind this visitor to a method.  Set the method and parameters to new,
+         * empty, collections.
+         *
+         * @param methodInfo The method to which to bind the visitor.
+         */
         @SuppressWarnings("unchecked")            
-        void setMethodInfo(MethodInfoImpl mii) {
-            methodInfo = mii;
-            annotations = new LinkedList<AnnotationInfoImpl>();
-            paramAnnotations = new List[mii.getParameterTypeNames().size()];
+        void setMethodInfo(MethodInfoImpl methodInfo) {
+            this.methodInfo = methodInfo;
+
+            this.methodAnnotations = new LinkedList<AnnotationInfoImpl>();
+            this.allParmAnnotations = new List[ methodInfo.getParameterTypeNames().size() ];
         }
 
-        // This is necessary for use of the receiver as a method visitor.
-        //
-        // Processing of a default annotation creates a new (visit ... visitEnd) sequence,
-        // which must be ended in a visitor other than the core info visitor.  Otherwise,
-        // there will be an extra 'visitEnd', which will clear an extra level of data
-        // of the core visitor.
-        //
-        // Prime the method info with a new annotation value.  That new annotation value
-        // is retrieved by the annotation visitor and is used to store the method default
-        // value.
-
+        /**
+         * API used to process the default value of an annotation.
+         *
+         * Answer a new annotation visitor.
+         *
+         * A call to {@link AnnotationVisitor#storeAnnotationValue} is expected to
+         * be made to the annotation visitor.  Handle that by storing the
+         * annotation value onto the current bound method info using {@link MethodInfo#setAnnotationDefaultValue}.
+         */
         @Override
         public AnnotationVisitor visitAnnotationDefault() {
-            final MethodInfoImpl mii = methodInfo;
-            return new AnnotationVisitorImpl_Info(mii.getInfoStore()) {
+            final MethodInfoImpl useMethodInfo = methodInfo;
+            return new AnnotationVisitorImpl_Info(useMethodInfo.getInfoStore()) {
                 @Override
                 protected void storeAnnotationValue(String name, AnnotationValueImpl newAnnotationValue) {
-                    mii.setAnnotationDefaultValue(newAnnotationValue);
+                    useMethodInfo.setAnnotationDefaultValue(newAnnotationValue);
                 }
             };
         }
 
+        /**
+         * Core API for processing method annotations.  Obtain an annotation visitor using the annotation
+         * descriptor and visibility parameters.  Add the annotation which is created by the annottion
+         * visitor as a new annotation of the bound method.  Answer the annotation visitor, which will
+         * be further used to process the method annotation.
+         *
+         * @param desc The description of the method annotation.
+         * @param visible Value telling if the method annotation is visible.
+         *
+         * @return An visitor for the methodannotation.
+         */
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-            AnnotationInfoVisitor av = ClassVisitorImpl_Info.visitAnnotation(methodInfo, desc, visible);
-            annotations.add(av.getAnnotationInfo());
-            return av;
+            AnnotationInfoVisitor annotationVisitor = ClassVisitorImpl_Info.visitAnnotation(methodInfo, desc, visible);
+            methodAnnotations.add(annotationVisitor.getAnnotationInfo());
+            return annotationVisitor;
         }
 
+        /**
+         * Core API for processing method parameters.  Simply forward this to the
+         * superclass.  The implementation is extended only to provide a trace point.
+         *
+         * @param parmName The name of the parameter.
+         * @param parmNo The number of the parameter.
+         */
         @Override
         public void visitParameter(String parmName, int parmNo) {
             super.visitParameter(parmName, parmNo);
         }
         
-        // This is necessary for use of the receiver as a method visitor.
-        //
-        // Processing of the parameter annotation creates a new (visit ... visitEnd) sequence,
-        // which must be ended in a visitor other than the core info visitor.  Otherwise,
-        // there will be an extra 'visitEnd', which will clear an extra level of data
-        // of the core visitor.
-
+        /**
+         * Core API for processing method parameter annotations.
+         *
+         * Create a new annotation instance and store and add it to parameter annotations.  Create
+         * a new parameter list if this is the first annotation for the parameter.
+         *
+         * Answer an annotation visitor which is bound to the new annotation.
+         *
+         * @param parmNo The number of the target parameter of the annotation.
+         * @desc The description of the parameter annotation.
+         * @visible Whether the parameter annotation is visible.
+         *
+         * @return An annotation visitor for the parameter annotation.
+         */
         @Override
-        public AnnotationVisitor visitParameterAnnotation(int param, String desc, boolean visible) {
+        public AnnotationVisitor visitParameterAnnotation(int parmNo, String desc, boolean visible) {
             Type annotationType = Type.getType(desc);
             String annotationClassName = annotationType.getClassName();
 
             AnnotationInfoImpl annotationInfo = new AnnotationInfoImpl(annotationClassName, getInfoStore());
-            List<AnnotationInfoImpl> annoList = paramAnnotations[param];
-            if (annoList == null) {
-                annoList = new LinkedList<AnnotationInfoImpl>();
-                paramAnnotations[param] = annoList;
+            List<AnnotationInfoImpl> thisParmAnnotations = allParmAnnotations[parmNo];
+            if ( thisParmAnnotations == null ) {
+                thisParmAnnotations = new LinkedList<AnnotationInfoImpl>();
+                allParmAnnotations[parmNo] = thisParmAnnotations;
             }
-            annoList.add(annotationInfo);
+            thisParmAnnotations.add(annotationInfo);
 
             return new AnnotationVisitorImpl_Info.AnnotationInfoVisitor(annotationInfo);
         }
@@ -207,36 +262,43 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
                 if (logger.isLoggable(Level.FINER)) {
                     logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Method [ {1} ]", logParms);
                 }
-
                 logParms[1] = methodInfo.getDeclaringClass().getName();
                 logParms[2] = methodInfo.getDeclaringClass().getHashText();
             }
 
-            AnnotationInfoImpl[][] arrAnnos = new AnnotationInfoImpl[paramAnnotations.length][];
+            // Transfer the method annotations ...
 
-            for (int i = 0; i < paramAnnotations.length; ++i) {
-                List<AnnotationInfoImpl> annos = paramAnnotations[i];
+            AnnotationInfoImpl[] methodAnnos;
+            if ( methodAnnotations.isEmpty() ) {
+                methodAnnos = UtilImpl_EmptyCollections.emptyAnnotationInfoArray;
+            } else {
+                methodAnnos = methodAnnotations.toArray(new AnnotationInfoImpl[methodAnnotations.size()]);
+            }
+            methodInfo.setDeclaredAnnotations(methodAnnos);
 
-                AnnotationInfoImpl[] aAnnos;
-                if (annos == null || annos.isEmpty()) {
-                    aAnnos = UtilImpl_EmptyCollections.emptyAnnotationInfoArray;
+            // Transfer the parameter annotations ...
+
+            AnnotationInfoImpl[][] allParmAnnos = new AnnotationInfoImpl[allParmAnnotations.length][];
+
+            for ( int parmNo = 0; parmNo < allParmAnnotations.length; parmNo++ ) {
+                List<AnnotationInfoImpl> parmAnnotations = allParmAnnotations[parmNo];
+
+                AnnotationInfoImpl[] parmAnnos;
+                if ( (parmAnnotations == null) || parmAnnotations.isEmpty() ) {
+                    parmAnnos = UtilImpl_EmptyCollections.emptyAnnotationInfoArray;
                 } else {
-                    aAnnos = annos.toArray(new AnnotationInfoImpl[annos.size()]);
+                    parmAnnos = parmAnnotations.toArray( new AnnotationInfoImpl[parmAnnotations.size()]);
                 }
-
-                arrAnnos[i] = aAnnos;
+                allParmAnnos[parmNo] = parmAnnos;
             }
-            methodInfo.setParameterAnnotations(arrAnnos);
 
-            AnnotationInfoImpl[] annos = UtilImpl_EmptyCollections.emptyAnnotationInfoArray;
-            if (annotations.size() > 0) {
-                annos = annotations.toArray(new AnnotationInfoImpl[annotations.size()]);
-            }
-            methodInfo.setDeclaredAnnotations(annos);
+            methodInfo.setParameterAnnotations(allParmAnnos);
 
-            this.methodInfo = null;
-            paramAnnotations = null;
-            annotations = null;
+            // Reset the method values ...
+
+            methodInfo = null;
+            allParmAnnotations = null;
+            methodAnnotations = null;
         }
     }
 
@@ -255,9 +317,9 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
 
         @Override
         public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-            AnnotationInfoVisitor av = ClassVisitorImpl_Info.visitAnnotation(fieldInfo, desc, visible);
-            annotations.add(av.getAnnotationInfo());
-            return av;
+            AnnotationInfoVisitor annotationVisitor = ClassVisitorImpl_Info.visitAnnotation(fieldInfo, desc, visible);
+            annotations.add(annotationVisitor.getAnnotationInfo());
+            return annotationVisitor;
 
         }
 
@@ -284,7 +346,7 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
         }
     }
 
-    private final InfoMethodVisitor methodVisitor = new InfoMethodVisitor();
+    private final MethodVisitorImpl_Info methodVisitor = new MethodVisitorImpl_Info();
     private final InfoFieldVisitor fieldVisitor = new InfoFieldVisitor();
 
     protected final String hashText;
@@ -313,8 +375,10 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
 
     //
 
-    public InfoVisitor(InfoStoreImpl infoStore, String externalName) {
+    public ClassVisitorImpl_Info(InfoStoreImpl infoStore, String externalName) {
         super(Opcodes.ASM7_EXPERIMENTAL);
+
+        String methodName = "<init>";
 
         this.infoStore = infoStore;
         this.externalName = externalName;
@@ -464,9 +528,9 @@ public class ClassVisitorImpl_Info extends ClassVisitor {
     // See the class comment for details of annotation processing.
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-        AnnotationInfoVisitor av = visitAnnotation(getInfo(), desc, visible);
-        annotationInfos.add(av.getAnnotationInfo());
-        return av;
+        AnnotationInfoVisitor annotationVisitor = visitAnnotation(getInfo(), desc, visible);
+        annotationInfos.add(annotationVisitor.getAnnotationInfo());
+        return annotationVisitor;
     }
 
     static AnnotationInfoVisitor visitAnnotation(InfoImpl info, String desc, boolean visible) {

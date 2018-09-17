@@ -101,10 +101,10 @@ public class TestPrinter {
     public void printTargets(AnnotationTargetsImpl_Targets targets) {
         println("BEGIN [ Annotations ]");
 
-        printTargets("Package Annotations", targets.i_getPackageAnnotationData(), IS_PACKAGE);
-        printTargets("Class Annotations", targets.i_getClassAnnotationData(), IS_CLASS);
-        printTargets("Field Annotations", targets.i_getFieldAnnotationData(), IS_CLASS);
-        printTargets("Method Annotations", targets.i_getMethodAnnotationData(), IS_CLASS);
+        printTargets("Package Annotations", targets.i_getPackageAnnotations(), IS_PACKAGE);
+        printTargets("Class Annotations", targets.i_getClassAnnotations(), IS_CLASS);
+        printTargets("Field Annotations", targets.i_getFieldAnnotations(), IS_CLASS);
+        printTargets("Method Annotations", targets.i_getMethodAnnotations(), IS_CLASS);
 
         println("END [ Annotation Targets ]");
     }

@@ -544,13 +544,13 @@ public class Test_Base_State {
         // in case the internals change to more incrementally obtain the scan results.
 
         @SuppressWarnings("unused")
-        TargetsTableImpl seedTable = targets.getSeedData();
+        TargetsTableImpl seedTable = targets.getSeedTable();
         @SuppressWarnings("unused")
-        TargetsTableImpl partialTable = targets.getPartialData();
+        TargetsTableImpl partialTable = targets.getPartialTable();
         @SuppressWarnings("unused")
-        TargetsTableImpl excludedTable = targets.getExcludedData();
+        TargetsTableImpl excludedTable = targets.getExcludedTable();
         @SuppressWarnings("unused")
-        TargetsTableImpl externalTable = targets.getExternalData();
+        TargetsTableImpl externalTable = targets.getExternalTable();
 
         long endTime = displayStamp("End Target Scan [ " + getFullName() + " ]");
 

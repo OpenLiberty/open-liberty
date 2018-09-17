@@ -175,19 +175,19 @@ public class Test_Base_Result {
     }
 
     public void setAnnotationCounts(AnnotationTargetsImpl_Targets targets) {
-        Util_BidirectionalMap packageData = targets.i_getPackageAnnotationData();
+        Util_BidirectionalMap packageData = targets.i_getPackageAnnotations();
         uniquePackages = packageData.getHolderSet().size();
         uniquePackageAnnotations = packageData.getHeldSet().size();
 
-        Util_BidirectionalMap classData = targets.i_getClassAnnotationData();
+        Util_BidirectionalMap classData = targets.i_getClassAnnotations();
         uniqueClasses = classData.getHolderSet().size();
         uniqueClassAnnotations = classData.getHeldSet().size();
 
-        Util_BidirectionalMap fieldData = targets.i_getFieldAnnotationData();
+        Util_BidirectionalMap fieldData = targets.i_getFieldAnnotations();
         uniqueClassesWithFieldAnnotations = fieldData.getHolderSet().size();
         uniqueFieldAnnotations = fieldData.getHeldSet().size();
 
-        Util_BidirectionalMap methodData = targets.i_getMethodAnnotationData();
+        Util_BidirectionalMap methodData = targets.i_getMethodAnnotations();
         uniqueClassesWithMethodAnnotations = methodData.getHolderSet().size();
         uniqueMethodAnnotations = methodData.getHeldSet().size();
     }
@@ -313,10 +313,10 @@ public class Test_Base_Result {
     	
         writer.println("  Interned class names [ " + classNames.getSize() + " ]");
         
-    	validateInterns(writer, targets, classNames, ScanPolicy.SEED, targets.getSeedData());
-    	validateInterns(writer, targets, classNames, ScanPolicy.PARTIAL, targets.getPartialData());
-    	validateInterns(writer, targets, classNames, ScanPolicy.EXCLUDED, targets.getExcludedData());
-    	validateInterns(writer, targets, classNames, ScanPolicy.EXTERNAL, targets.getExternalData());
+    	validateInterns(writer, targets, classNames, ScanPolicy.SEED, targets.getSeedTable());
+    	validateInterns(writer, targets, classNames, ScanPolicy.PARTIAL, targets.getPartialTable());
+    	validateInterns(writer, targets, classNames, ScanPolicy.EXCLUDED, targets.getExcludedTable());
+    	validateInterns(writer, targets, classNames, ScanPolicy.EXTERNAL, targets.getExternalTable());
     	
         writer.println("Validating target interns ... done");	
     }
@@ -340,13 +340,13 @@ public class Test_Base_Result {
 
     	validateInterns(
         	writer, targets, classNames,
-        	scanPolicy, targetsData.i_getClassAnnotations(),
+        	scanPolicy, targetsData.i_getClassAnnotationNames(),
         	"Class annotation class names",
         	"Class annotation class name [ {0} ] in [ {1} ] is not interned!");
 
     	validateInterns(
     		writer, targets, classNames,
-        	scanPolicy, targetsData.i_getPackageAnnotations(),
+        	scanPolicy, targetsData.i_getPackageAnnotationNames(),
         	"Package annotation class names",
         	"Package annotation class name [ {0} ] in [ {1} ] is not interned!");
 
@@ -374,10 +374,10 @@ public class Test_Base_Result {
     public void validateAnnotations(PrintWriter writer, AnnotationTargetsImpl_Targets targets) {
         writer.println("Begin Validate Annotations");
 
-        validateBidiMap(writer, "Package Annotations", targets, targets.i_getPackageAnnotationData());
-        validateBidiMap(writer, "Class Annotations", targets, targets.i_getClassAnnotationData());
-        validateBidiMap(writer, "Field Annotations", targets, targets.i_getFieldAnnotationData());
-        validateBidiMap(writer, "Method Annotations", targets, targets.i_getMethodAnnotationData());
+        validateBidiMap(writer, "Package Annotations", targets, targets.i_getPackageAnnotations());
+        validateBidiMap(writer, "Class Annotations", targets, targets.i_getClassAnnotations());
+        validateBidiMap(writer, "Field Annotations", targets, targets.i_getFieldAnnotations());
+        validateBidiMap(writer, "Method Annotations", targets, targets.i_getMethodAnnotations());
 
         writer.println("End Validate Annotations");
     }

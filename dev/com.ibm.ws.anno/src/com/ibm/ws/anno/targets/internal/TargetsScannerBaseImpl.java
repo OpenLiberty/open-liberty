@@ -333,20 +333,16 @@ public class TargetsScannerBaseImpl {
 
     //
 
-    private void displayJandex() {
-        String methodName = "displayJandex";
-        String prefix = CLASS_NAME + "." + methodName + ": ";
+    private void displayJandexCoverage() {
+        String methodName = "displayJandexCoverage";
+
+        if ( !getUseJandex() ) {
+            return;
+        }
 
         ClassSource_Aggregate useRootClassSource = getRootClassSource();
         String appName = useRootClassSource.getApplicationName();
         String modName = useRootClassSource.getModuleName();
-
-        if ( !getUseJandex() ) {
-            System.out.println("App [ " + appName + " ] [ " + modName + " ]: Jandex is not enabled");
-            return;
-        } else {
-            System.out.println("App [ " + appName + " ] [ " + modName + " ]: Jandex is enabled");
-        }
 
         int sourceCount = 0;
         int jandexSourceCount = 0;
@@ -371,14 +367,18 @@ public class TargetsScannerBaseImpl {
             }
         }
 
-        System.out.println(
-            "Jandex coverage for module [ " + modName + " ] of application [ " + appName + " ]:" +
-            " [ " + Integer.toString(sourceCount) + " ] module locations were scanned for annotations." +
-            " [ " + Integer.toString(jandexSourceCount) + " ] of the module locations had Jandex indexes." +
-            " [ " + Integer.toString(classCount) + " ] module classes were processed." +
-            " [ " + Integer.toString(jandexClassCount) + " ] of the module classes were processed directly from Jandex indexes.");
+        // System.out.println(
+        //     "Jandex coverage for module [ " + modName + " ] of application [ " + appName + " ]:" +
+        //     " [ " + Integer.toString(sourceCount) + " ] module locations were scanned for annotations." +
+        //     " [ " + Integer.toString(jandexSourceCount) + " ] of the module locations had Jandex indexes." +
+        //     " [ " + Integer.toString(classCount) + " ] module classes were processed." +
+        //     " [ " + Integer.toString(jandexClassCount) + " ] of the module classes were processed directly from Jandex indexes.");
 
-        String coverageMsg = nlsFormat("ANNO_JANDEX_USAGE", appName, modName, sourceCount, jandexSourceCount, classCount, jandexClassCount);
+        String coverageMsg = nlsFormat("ANNO_JANDEX_USAGE",
+                                       appName, modName,
+                                       sourceCount, jandexSourceCount,
+                                       classCount, jandexClassCount);
+
         logger.logp(Level.INFO, CLASS_NAME, methodName, coverageMsg);
     }
 
@@ -434,7 +434,7 @@ public class TargetsScannerBaseImpl {
             }
         }
 
-        displayJandex();
+        displayJandexCoverage();
 
         return targetsTable;
     }
