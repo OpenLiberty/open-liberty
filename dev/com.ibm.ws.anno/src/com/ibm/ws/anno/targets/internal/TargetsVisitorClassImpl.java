@@ -140,6 +140,7 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     // These values are not already set since a single visitor instance is used for
     // an entire scan sweep.
 
+    @SuppressWarnings("deprecation")
     public TargetsVisitorClassImpl(
         TargetsTableImpl parentData,
         String classSourceName,
@@ -148,10 +149,9 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
         Set<String> i_selectAnnotationClassNames,
         boolean recordDetail) {
 
-        super(Opcodes.ASM7_EXPERIMENTAL);
+        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
 
         String methodName = "<init>";
-        
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
         this.targetsData = parentData;
@@ -886,8 +886,9 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     // enable field annotation storage through the enclosing class.
 
     protected class AnnoFieldVisitor extends FieldVisitor {
+        @SuppressWarnings("deprecation")
         public AnnoFieldVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL);
+            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
         }
 
         // A field annotation.  Needs to be recorded.
@@ -947,8 +948,9 @@ public class TargetsVisitorClassImpl extends ClassVisitor {
     // enable method annotation storage through the enclosing class.
 
     protected class AnnoMethodVisitor extends MethodVisitor {
+        @SuppressWarnings("deprecation")
         public AnnoMethodVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL);
+            super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
         }
 
         // A method annotation.  Needs to be recorded.

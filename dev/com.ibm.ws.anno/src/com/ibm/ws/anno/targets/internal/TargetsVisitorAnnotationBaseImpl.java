@@ -29,8 +29,9 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
     /**
      * <p>Standard constructor. Construct a non-delegating root detail visitor.</p>
      */
+    @SuppressWarnings("deprecation")
     public TargetsVisitorAnnotationBaseImpl(TargetsVisitorClassImpl parentVisitor) {
-        super(Opcodes.ASM7_EXPERIMENTAL);
+        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
 
         this.parentVisitor = parentVisitor;
 
@@ -41,8 +42,9 @@ public abstract class TargetsVisitorAnnotationBaseImpl extends AnnotationVisitor
     /**
      * <p>Standard constructor. Construct a non-delegating nested detail visitor.</p>
      */
+    @SuppressWarnings("deprecation")
     public TargetsVisitorAnnotationBaseImpl(StringBuilder parentDetailText, StringBuilder parentEncoder) {
-        super(Opcodes.ASM7_EXPERIMENTAL);
+        super(Opcodes.ASM7_EXPERIMENTAL); // Deprecated
 
         this.parentVisitor = null;
 
