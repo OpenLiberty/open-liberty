@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.equinox.region.RegionDigraph;
@@ -150,6 +151,11 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
      * For converting type/app/module/comp to a metadata ID under getClassLoaderIdentifier.
      */
     protected MetaDataIdentifierService metadataIdentifierService;
+
+    /**
+     * reference to the global library - primarily used for dump introspector output
+     */
+    private final AtomicReference<Library> globalSharedLibrary = new AtomicReference<>();
 
     @Activate
     protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
@@ -699,6 +705,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         this.protectionDomainMap = protectionDomainMap;
     }
 
+    public void setGlobalSharedLibrary(Library gsl) {
+        this.globalSharedLibrary.set(gsl);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -745,6 +755,31 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             out.println("  " + b.getSymbolicName());
             for (GatewayClassLoader gcl : entry.getValue()) {
                 out.println("    " + gcl.getBundle().getSymbolicName() + " " + gcl.getApiTypeVisibility());
+            }
+        }
+
+        out.println();
+        out.println();
+
+        Library gsl = globalSharedLibrary.get();
+        if (gsl == null) {
+            out.println("Global Shared Library not configured");
+        } else {
+            out.println("Global Shared Library contents:");
+            out.println("  filesets:");
+            for (Fileset fileset : gsl.getFilesets()) {
+                String dir = fileset.getDir();
+                for (File file : fileset.getFileset()) {
+                    out.println("    " + dir + "  " + file.getPath());
+                }
+            }
+            out.println("  folders:");
+            for (File folder : gsl.getFolders()) {
+                out.println("    " + folder.getAbsolutePath());
+            }
+            out.println("  files:");
+            for (File file : gsl.getFiles()) {
+                out.println("    " + file.getAbsolutePath());
             }
         }
 
