@@ -30,6 +30,7 @@ com.netflix.archaius:archaius2-api:2.1.10
 com.netflix.archaius:archaius2-core:2.1.10
 com.nimbusds:nimbus-jose-jwt:4.23
 com.openpojo:openpojo:0.8.4
+com.sebastian-daschner:jaxrs-analyzer:0.9
 com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
 com.sun.mail:javax.mail:1.5.0
@@ -291,7 +292,7 @@ org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.5.0
 org.apache.deltaspike.modules:deltaspike-scheduler-module-api:1.5.0
 org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0
 org.quartz-scheduler:quartz:2.2.1
-com.sebastian-daschner:jaxrs-analyzer:0.9 
+org.reactivestreams:reactive-streams:1.0.2
 org.springframework:spring-core:4.3.13.RELEASE
 org.springframework:spring-context:4.3.13.RELEASE
 org.springframework:spring-aop:4.3.13.RELEASE
@@ -321,7 +322,6 @@ org.springframework:spring-web:5.0.8.RELEASE
 org.springframework:spring-webflux:5.0.8.RELEASE
 org.springframework.boot:spring-boot:2.0.4.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.0.4.RELEASE
-org.reactivestreams:reactive-streams:1.0.2
 io.projectreactor:reactor-core:3.1.8.RELEASE
 xalan:xalan:2.7.1
 xalan:xalan:2.7.2
