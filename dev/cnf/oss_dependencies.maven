@@ -327,7 +327,6 @@ xalan:xalan:2.7.1
 xalan:xalan:2.7.2
 xerces:xercesImpl:2.11.0
 commons-collections:commons-collections:3.2.2
-org.reactivestreams:reactive-streams:1.0.2
 org.mock-server:mockserver-client-java:3.10.7
 org.mock-server:mockserver-core:3.10.7
 org.mock-server:mockserver-netty:3.10.7
