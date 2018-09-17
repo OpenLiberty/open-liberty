@@ -16,8 +16,6 @@ import java.util.Map;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 
 import com.ibm.json.java.JSONObject;
@@ -89,43 +87,6 @@ public class UserInfoHelper {
         } catch (Exception e) { // ffdc
         }
         return jobj == null ? null : (String) jobj.get("sub");
-    }
-
-    /**
-     * Obtain userInfo from an OIDC provider
-     *
-     * @return the userInfo string, or null
-     */
-    protected String getUserInfoFromURLold(ConvergedClientConfig config, SSLSocketFactory sslsf, String accessToken) {
-        String url = config.getUserInfoEndpointUrl();
-        boolean hostnameVerification = config.isHostNameVerificationEnabled();
-
-        // https required by spec, use of http is not spec compliant
-        if (!url.toLowerCase().startsWith("https:") && config.isHttpsRequired()) {
-            Tr.error(tc, "OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS", new Object[] { url });
-            return null;
-        }
-
-        HttpClient hc = (OidcClientHttpUtil.getInstance()).createHTTPClient(sslsf, url, hostnameVerification);
-        HttpGet getMethod = new HttpGet(url);
-        if (accessToken != null) {
-            getMethod.setHeader(ClientConstants.AUTHORIZATION, ClientConstants.BEARER + accessToken);
-        }
-        HttpResponse response = null;
-        int statusCode = 0;
-        String responseStr = null;
-        try {
-            response = hc.execute(getMethod);
-            statusCode = response.getStatusLine().getStatusCode();
-            responseStr = EntityUtils.toString(response.getEntity(), "UTF-8");
-        } catch (Exception ex) {
-            //ffdc
-        }
-        if (statusCode != 200) {
-            Tr.error(tc, "USERINFO_RETREIVE_FAILED", new Object[] { url, Integer.toString(statusCode), responseStr });
-            return null;
-        }
-        return responseStr;
     }
 
     /**
