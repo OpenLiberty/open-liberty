@@ -13,6 +13,7 @@ package com.ibm.ws.ejbcontainer.timer.persistent.osgi.internal;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -152,7 +153,12 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
             // -1, therefore the first (and only) timeout has passed while creating the timer.
             // In this scenario, run the timer immediately by returning the creation time.
             if (nextTimeout == -1) {
-                return timerCreationTime;
+                //Need to shave off milliseconds from timerCreationTime
+                GregorianCalendar cal = new GregorianCalendar();
+                cal.setTime(timerCreationTime);
+                cal.set(GregorianCalendar.MILLISECOND, 0);
+                cal.add(GregorianCalendar.SECOND, 1);
+                return cal.getTime();
             }
         }
         if (nextTimeout == -1) {
