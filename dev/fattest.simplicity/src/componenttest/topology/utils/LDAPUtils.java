@@ -260,19 +260,19 @@ public class LDAPUtils {
          */
         Log.info(c, "<clinit>", "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
         if (USE_LOCAL_LDAP_SERVER == false) {
-            Log.info(c, "<clinit>", "Active Directory WAS SVT LDAP SERVER");
+            Log.info(c, "<clinit>", "Active Directory WAS SVT LDAP Servers");
             Log.info(c, "<clinit>", "           LDAP_SERVER_2_NAME=" + LDAP_SERVER_2_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_2_PORT=" + LDAP_SERVER_2_PORT + '\n');
             Log.info(c, "<clinit>", "           LDAP_SERVER_6_NAME=" + LDAP_SERVER_6_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_6_PORT=" + LDAP_SERVER_6_PORT + '\n');
 
-            Log.info(c, "<clinit>", "IBM Continuous Delivery LDAP SERVER");
+            Log.info(c, "<clinit>", "IBM Continuous Delivery LDAP Servers");
             Log.info(c, "<clinit>", "           LDAP_SERVER_1_NAME=" + LDAP_SERVER_1_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_1_PORT=" + LDAP_SERVER_1_PORT + '\n');
             Log.info(c, "<clinit>", "           LDAP_SERVER_5_NAME=" + LDAP_SERVER_5_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_5_PORT=" + LDAP_SERVER_5_PORT + '\n');
 
-            Log.info(c, "<clinit>", "IBM WAS Security FVT LDAP SERVER");
+            Log.info(c, "<clinit>", "IBM WAS Security FVT LDAP Servers");
             Log.info(c, "<clinit>", "           LDAP_SERVER_4_NAME=" + LDAP_SERVER_4_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_4_PORT=" + LDAP_SERVER_4_PORT);
             Log.info(c, "<clinit>", "           LDAP_SERVER_4_SSL_PORT=" + LDAP_SERVER_4_SSL_PORT + '\n');
@@ -283,13 +283,13 @@ public class LDAPUtils {
             Log.info(c, "<clinit>", "           LDAP_SERVER_8_PORT=" + LDAP_SERVER_8_PORT);
             Log.info(c, "<clinit>", "           LDAP_SERVER_8_SSL_PORT=" + LDAP_SERVER_8_SSL_PORT + '\n');
 
-            Log.info(c, "<clinit>", "IBM WAS Security LDAP SERVER");
+            Log.info(c, "<clinit>", "IBM WAS Security LDAP Servers");
             Log.info(c, "<clinit>", "           LDAP_SERVER_10_NAME=" + LDAP_SERVER_10_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_10_PORT=" + LDAP_SERVER_10_PORT + '\n');
             Log.info(c, "<clinit>", "           LDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT + '\n');
 
-            Log.info(c, "<clinit>", "Oracle WAS SVT LDAP SERVER");
+            Log.info(c, "<clinit>", "Oracle WAS SVT LDAP Servers");
             Log.info(c, "<clinit>", "           LDAP_SERVER_3_NAME=" + LDAP_SERVER_3_NAME);
             Log.info(c, "<clinit>", "           LDAP_SERVER_3_PORT=" + LDAP_SERVER_3_PORT);
             Log.info(c, "<clinit>", "           LDAP_SERVER_3_SSL_PORT=" + LDAP_SERVER_3_SSL_PORT + '\n');
