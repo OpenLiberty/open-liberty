@@ -21,7 +21,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Import-Package: \
   org.reactivestreams; version="[1.0,1.1)", \
-  com.ibm.ws.microprofile.reactive.streams.spi.impl;version=1.0,\
+  com.ibm.ws.microprofile.reactive.streams.spi.impl;version="1.0";resolution:=optional, \
   *
   
 Export-Package: \
