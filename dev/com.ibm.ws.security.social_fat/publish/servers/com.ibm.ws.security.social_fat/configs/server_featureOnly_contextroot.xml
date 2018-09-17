@@ -14,7 +14,7 @@
         <feature>socialLogin-1.0</feature>
     </featureManager>
 
-    <include location="imports/misc.xml" />
+    <include location="${shared.config.dir}/misc.xml" />
 
     <socialLoginWebapp contextPath="/some/place" />   <!-- test we can change context root --> 
 

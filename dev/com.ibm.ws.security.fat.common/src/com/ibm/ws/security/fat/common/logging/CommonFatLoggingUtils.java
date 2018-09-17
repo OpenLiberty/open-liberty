@@ -18,10 +18,10 @@ import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.apps.testmarker.TestMarker;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
 
 public class CommonFatLoggingUtils {
 
@@ -41,8 +41,9 @@ public class CommonFatLoggingUtils {
         try {
             if (server != null) {
                 String parameters = TestMarker.PARAM_TEST_NAME + "=" + testName + "&" + TestMarker.PARAM_ACTION + "=" + actionToLog;
-                HttpURLConnection connection = HttpUtils.getHttpConnectionWithAnyResponseCode(server, "/testmarker?" + parameters);
-                HttpUtils.getResponseBody(connection);
+                HttpURLConnection connection = SecurityFatHttpUtils.getHttpConnectionWithAnyResponseCode(server, "/testmarker?" + parameters);
+                Log.info(thisClass, "logTestCaseInServerLog", connection.toString());
+                SecurityFatHttpUtils.getResponseBody(connection);
             }
         } catch (Exception e) {
             e.printStackTrace();

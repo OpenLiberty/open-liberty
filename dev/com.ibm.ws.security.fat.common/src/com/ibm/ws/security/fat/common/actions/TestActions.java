@@ -31,7 +31,7 @@ public class TestActions {
     public static final String ACTION_INVOKE_PROTECTED_RESOURCE = "invokeProtectedResource";
     public static final String ACTION_SUBMIT_LOGIN_CREDENTIALS = "submitLoginCredentials";
 
-    CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
+    protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
     WebFormUtils webFormUtils = new WebFormUtils();
 
     /**
@@ -197,14 +197,14 @@ public class TestActions {
         }
     }
 
-    WebClient createWebClient() {
+    public WebClient createWebClient() {
         WebClient webClient = new WebClient();
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setUseInsecureSSL(true);
         return webClient;
     }
 
-    WebRequest createGetRequest(String url) throws MalformedURLException {
+    public WebRequest createGetRequest(String url) throws MalformedURLException {
         return new WebRequest(new URL(url), HttpMethod.GET);
     }
 

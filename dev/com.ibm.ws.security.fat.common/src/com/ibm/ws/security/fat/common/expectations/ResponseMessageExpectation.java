@@ -26,7 +26,7 @@ public class ResponseMessageExpectation extends Expectation {
         try {
             String responseMessage = getResponseMessage(contentToValidate);
             validationUtils.validateStringContent(this, responseMessage);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception(failureMsg + " Failed to validate response message: " + e.getMessage());
         }
     }

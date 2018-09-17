@@ -13,29 +13,29 @@ package com.ibm.ws.security.fat.common.expectations;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
-public class ResponseFullExpectation extends Expectation {
+public class ExceptionMessageExpectation extends Expectation {
 
-    protected static Class<?> thisClass = ResponseFullExpectation.class;
+    protected static Class<?> thisClass = ExceptionMessageExpectation.class;
 
-    public ResponseFullExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
+    public ExceptionMessageExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_FULL, checkType, searchFor, failureMsg);
     }
 
     @Override
-    protected void validate(Object contentToValidate) throws Exception {
+    protected void validate(Object exception) throws Exception {
         try {
-            String responseText = getResponseTextFromContent(contentToValidate);
-            validationUtils.validateStringContent(this, responseText);
+            String messageText = getErrorMessageFromException(exception);
+            validationUtils.validateStringContent(this, messageText);
         } catch (Exception e) {
-            throw new Exception(failureMsg + " Failed to validate response text: " + e.getMessage());
+            throw new Exception(failureMsg + " Failed to validate exception message: " + e.getMessage());
         }
     }
 
-    String getResponseTextFromContent(Object contentToValidate) throws Exception {
-        if (contentToValidate instanceof String) {
-            return (String) contentToValidate;
+    String getErrorMessageFromException(Object exception) throws Exception {
+        if (exception instanceof Exception) {
+            return ((Exception) exception).getMessage();
         }
-        return WebResponseUtils.getResponseText(contentToValidate);
+        return WebResponseUtils.getResponseText(exception);
     }
 
 }

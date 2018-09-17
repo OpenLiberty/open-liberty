@@ -9,7 +9,7 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.fat.common.utils;
+package componenttest.topology.utils;
 
 import java.io.File;
 import java.util.regex.Pattern;
@@ -60,15 +60,15 @@ public class CommonMergeTools {
      * merges all the files under one XML. This file is placed inside of the
      * same directory that the parameter 'serverXmlpath' is. If this method fails
      * for what ever reason it will return false.
-     * 
+     *
      * @param serverXmlPath
      *            The Location of the server.xml file to copy.
      * @param autoFVTPath
-     *            The path to the autoFVT file inside of the build.image
+     *            The path to the "import" directory inside of the build.image
      *            folder... i.e. the server file Location
      * @return True if the merge was successful or false if the merge wasn't
      *         successful.
-     * 
+     *
      */
     public boolean mergeFile(String serverXmlPath, String autoFVTPath, String serverRootLoc) {
 
@@ -167,7 +167,7 @@ public class CommonMergeTools {
 
     /**
      * Remove unnecessary text nodes / whitespace.
-     * 
+     *
      * @param targetDoc
      *            The target document.
      * @param targetRoot
@@ -193,7 +193,7 @@ public class CommonMergeTools {
     /**
      * Add whitespace to separate the generated "include" comments from the content from the include files
      * that replaced the include elements.
-     * 
+     *
      * @param targetDoc
      *            The target document to add the whitespace to.
      */
@@ -208,10 +208,14 @@ public class CommonMergeTools {
                 Node parent = matching.getParentNode();
                 Node previousSibling = matching.getPreviousSibling();
 
+                boolean previousNodeMatches = false;
+                if (previousSibling != null) {
+                    previousNodeMatches = previousSibling.isEqualNode(text1);
+                }
                 /**
                  * Do not add more whitespace if the previous node is whitespace we just added.
                  */
-                if (previousSibling.isEqualNode(text1)) {
+                if (previousNodeMatches) {
                     Node text = text1.cloneNode(false);
                     parent.replaceChild(text, matching);
                     parent.insertBefore(matching, text);
@@ -233,7 +237,7 @@ public class CommonMergeTools {
     /**
      * This method goes through the list of includes and replaces the content of the include element with a comment and the
      * content of the file specified.
-     * 
+     *
      * @param includeElements
      *            List of Include elements
      * @param targetDoc
@@ -308,7 +312,7 @@ public class CommonMergeTools {
 
     /**
      * Creates a Document Object from the specified directory
-     * 
+     *
      * @param pathToDocument
      *            Is the Path to the file to convert
      * @return A Document file if it was successful or returns null
@@ -330,7 +334,7 @@ public class CommonMergeTools {
 
     /**
      * Will merge all the specified elements in the root under one element
-     * 
+     *
      * @param targetRoot
      *            The root element to search under.
      * @param targetDoc
@@ -362,7 +366,7 @@ public class CommonMergeTools {
 
     /**
      * Clone the child nodes from the original node to the target node.
-     * 
+     *
      * @param originalNode
      *            The node to clone content from.
      * @param targetDoc

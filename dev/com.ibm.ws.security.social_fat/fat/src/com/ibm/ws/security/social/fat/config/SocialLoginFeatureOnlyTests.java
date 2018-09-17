@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.social.fat.config;
 
@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.MessageConstants;
-import com.ibm.ws.security.social.fat.SocialConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,7 +49,7 @@ public class SocialLoginFeatureOnlyTests extends CommonSecurityFat {
         List<String> waitForMessages = new ArrayList<String>();
         waitForMessages.add(MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*/ibm/api/social-login/");
 
-        server.startServerUsingConfiguration(SocialConstants.CONFIGS_DIR + "server_featureOnly.xml", waitForMessages);
+        server.startServerUsingExpandedConfiguration("server_featureOnly.xml", waitForMessages);
         server.stopServer();
     }
 
@@ -66,7 +65,7 @@ public class SocialLoginFeatureOnlyTests extends CommonSecurityFat {
         List<String> waitForMessages = new ArrayList<String>();
         waitForMessages.add(MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*/some/place");
 
-        server.startServerUsingConfiguration(SocialConstants.CONFIGS_DIR + "server_featureOnly_contextroot.xml", waitForMessages);
+        server.startServerUsingExpandedConfiguration("server_featureOnly_contextroot.xml", waitForMessages);
         server.stopServer();
     }
 
