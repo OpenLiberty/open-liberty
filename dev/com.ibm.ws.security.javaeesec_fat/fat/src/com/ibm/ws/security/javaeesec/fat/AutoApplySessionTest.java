@@ -22,11 +22,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
@@ -34,18 +32,12 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-/**
- * Test Description:
- */
-@MinimumJavaLevel(javaLevel = 7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class AutoApplySessionTest extends JavaEESecTestBase {
@@ -65,18 +57,11 @@ public class AutoApplySessionTest extends JavaEESecTestBase {
         super(myServer, logClass);
     }
 
-    @ClassRule
-    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
-
     @Rule
     public TestName name = new TestName();
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        if (!OnlyRunInJava7Rule.IS_JAVA_7_OR_HIGHER) {
-            return; // skip the test setup
-        }
-
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESec.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets",
                                                "web.war.mechanisms",
                                                "web.war.mechanisms.autoapplysession",
@@ -91,9 +76,6 @@ public class AutoApplySessionTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        if (!OnlyRunInJava7Rule.IS_JAVA_7_OR_HIGHER) {
-            return;
-        }
         myServer.stopServer();
     }
 
