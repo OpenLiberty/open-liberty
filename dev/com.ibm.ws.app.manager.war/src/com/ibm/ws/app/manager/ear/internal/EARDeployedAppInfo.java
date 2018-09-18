@@ -1163,7 +1163,6 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
                 containerAnnotations.setAppName(appName);
                 containerAnnotations.setModName(modName);
-                containerAnnotations.setModCategoryName(ClassSource_Factory.JAVAEE_CATEGORY_NAME);
 
                 containerAnnotations.setUseJandex( applicationInformation.getUseJandex() );
 
