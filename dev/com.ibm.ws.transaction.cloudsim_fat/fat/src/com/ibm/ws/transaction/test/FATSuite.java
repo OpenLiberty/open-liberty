@@ -24,6 +24,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 SimpleFS2PCCloudTest.class,
+                Simple2PCCloudTest.class,
 })
 public class FATSuite {
 
