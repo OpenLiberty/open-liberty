@@ -134,6 +134,8 @@ public class ServerMessageExpectationTest extends CommonSpecificExpectationTest 
                     one(server).addIgnoredErrors(Arrays.asList(SEARCH_FOR_VAL));
                     one(server).waitForStringInLogUsingMark(SEARCH_FOR_VAL, 100);
                     will(returnValue(null));
+                    one(server).getServerName();
+                    will(returnValue("myServer"));
                 }
             });
             try {

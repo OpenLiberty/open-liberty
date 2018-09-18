@@ -36,7 +36,7 @@ public class ResponseHeaderExpectation extends Expectation {
         try {
             String responseHeaders = getResponseHeaderString(contentToValidate);
             validationUtils.validateStringContent(this, responseHeaders);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception(failureMsg + " Failed to validate response headers: " + e.getMessage());
         }
     }

@@ -139,3 +139,19 @@ slf.no.acf.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na w
 slf.failed.delete=CWWKL0072W: Soubor mezipam\u011bti [{0}] nelze odstranit. Tento v\u00fdsledek m\u016f\u017ee v\u00e9st k po\u0161kozen\u00ed vno\u0159en\u00fdch archiv\u016f.
 slf.failed.delete.explanation=Syst\u00e9mu se nezda\u0159ilo odstranit soubor mezipam\u011bti. Jeliko\u017e tento soubor v syst\u00e9mu i nad\u00e1le existuje, mohl by zp\u016fsobit po\u0161kozen\u00ed ve vno\u0159en\u00fdch archivech.
 slf.failed.delete.useraction=Ov\u011b\u0159te, zda nen\u00ed soubor mezipam\u011bti v uzam\u010den\u00e9m stavu, kter\u00fd by mohl zp\u016fsobit selh\u00e1n\u00ed odstran\u011bn\u00ed tohoto souboru.
+
+cls.classloader.config.duplicate=CWWKL0080E: Typ rozhran\u00ed API [{0}] byl ji\u017e pou\u017eit v tomto seznamu [{1}]. Odeberte duplicitn\u00ed typ rozhran\u00ed API.
+cls.classloader.config.duplicate.explanation=Ka\u017ed\u00e9 rozhran\u00ed API lze zadat nejv\u00fd\u0161e jednou.
+cls.classloader.config.duplicate.useraction=Zkontrolujte konfiguraci serveru pro duplicitn\u00ed typ rozhran\u00ed API, abyste se ujistili, \u017ee tento typ rozhran\u00ed API je spr\u00e1vn\u00fd.
+
+cls.classloader.config.not.allowed=CWWKL0081E: Typ rozhran\u00ed API [{0}] je ji\u017e p\u0159id\u00e1n do seznamu p\u0159i pou\u017eit\u00ed p\u0159edpony + nebo -. Odeberte [{0}] ze seznamu [{1}].
+cls.classloader.config.not.allowed.explanation=V\u0161echny v\u00fdchoz\u00ed typy rozhran\u00ed API jsou p\u0159id\u00e1ny, odeberte duplicity.
+cls.classloader.config.not.allowed.useraction=Zkontrolujte konfiguraci serveru a odeberte v\u00fdchoz\u00ed typ rozhran\u00ed API, abyste se ujistili, \u017ee tento typ rozhran\u00ed API je spr\u00e1vn\u00fd.
+
+cls.classloader.config.typo=CWWKL0082E: Typ rozhran\u00ed API [{0}] nen\u00ed platn\u00fd v tomto seznamu [{1}] a je t\u0159eba jej zm\u011bnit na jeden z platn\u00fdch typ\u016f rozhran\u00ed API {2}.
+cls.classloader.config.typo.explanation=Zm\u011b\u0148te neplatn\u00fd typ rozhran\u00ed API na platn\u00fd typ rozhran\u00ed API.
+cls.classloader.config.typo.useraction=Zkontrolujte konfiguraci serveru pro neplatn\u00fd typ rozhran\u00ed API, abyste se ujistili, \u017ee tento typ rozhran\u00ed API je spr\u00e1vn\u00fd.
+
+cls.classloader.config.typo2=CWWKL0083E: P\u0159i pou\u017eit\u00ed p\u0159edpony + nebo -, nen\u00ed typ rozhran\u00ed API [{0}] platn\u00fd v tomto seznamu [{1}]. V\u0161echny typy rozhran\u00ed API mus\u00ed m\u00edt p\u0159edponu + nebo -.
+cls.classloader.config.typo2.explanation=Zm\u011b\u0148te neplatn\u00fd typ rozhran\u00ed API na platn\u00fd typ rozhran\u00ed API s p\u0159edponou + nebo -.
+cls.classloader.config.typo2.useraction=Zkontrolujte konfiguraci serveru pro neplatn\u00fd typ rozhran\u00ed API, abyste se ujistili, \u017ee tento typ rozhran\u00ed API je spr\u00e1vn\u00fd.

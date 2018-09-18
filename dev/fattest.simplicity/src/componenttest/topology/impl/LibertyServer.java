@@ -97,6 +97,7 @@ import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
 import componenttest.topology.utils.LibertyServerUtils;
 import componenttest.topology.utils.PrivHelper;
+import componenttest.topology.utils.ServerFileUtils;
 
 public class LibertyServer implements LogMonitorClient {
 
@@ -173,6 +174,9 @@ public class LibertyServer implements LogMonitorClient {
 
     protected int httpSecondaryPort = Integer.parseInt(System.getProperty("HTTP_secondary", "0"));
     protected int httpSecondarySecurePort = Integer.parseInt(System.getProperty("HTTP_secondary.secure", "0"));
+
+    protected String bvtPortPropertyName = null;
+    protected String bvtSecurePortPropertyName = null;
 
     protected int iiopDefaultPort = Integer.parseInt(System.getProperty("IIOP", "0"));
 
@@ -644,6 +648,77 @@ public class LibertyServer implements LogMonitorClient {
 
     public boolean getValidateApps() {
         return validateApps;
+    }
+
+    /**
+     * Sets the server configuration to be the specified file and starts the server.
+     */
+    public ProgramOutput startServerUsingConfiguration(String configFile) throws Exception {
+        return startServerUsingConfiguration(configFile, new ArrayList<String>());
+    }
+
+    /**
+     * Sets the server configuration to be the specified file and starts the server.
+     */
+    public ProgramOutput startServerUsingExpandedConfiguration(String configFile) throws Exception {
+        return startServerUsingExpandedConfiguration(configFile, new ArrayList<String>());
+    }
+
+    public ProgramOutput startServerUsingExpandedConfiguration(String configFile, List<String> waitForMessages) throws Exception {
+
+        ServerFileUtils serverFileUtils = new ServerFileUtils();
+        String mergedFile = serverFileUtils.expandAndBackupCfgFile(this, configFile);
+        ProgramOutput startupOutput = startServerUsingConfiguration(mergedFile, waitForMessages);
+        saveServerConfiguration();
+        return startupOutput;
+    }
+
+    /**
+     * Sets the server configuration to be the specified file, starts the server, and waits for each of the specified messages.
+     */
+    public ProgramOutput startServerUsingConfiguration(String configFile, List<String> waitForMessages) throws Exception {
+        setServerConfigurationFromFilePath(configFile);
+        ProgramOutput startupOutput = startServer();
+        waitForStringsInLogUsingMark(waitForMessages);
+        return startupOutput;
+    }
+
+    /**
+     * Reconfigures the running server. Expands any imports in the specified server config and copies that expanded
+     * configuration to server.xml of the server root.
+     *
+     * @param testName - The name of the test case requesting the reconfig - a copy of the expanded configuration
+     *            file will be saved for debug purposes
+     * @param newConfig - The configuration to swich to
+     * @param waitForMessages - Any messages to wait (used to determine if the update is complete)
+     * @throws Exception
+     */
+    public void reconfigureServerUsingExpandedConfiguration(String testName, String newConfig, String... waitForMessages) throws Exception {
+
+        reconfigureServerUsingExpandedConfiguration(testName, "configs", newConfig, waitForMessages);
+    }
+
+    /**
+     * Reconfigures the running server. Expands any imports in the specified server config and copies that expanded
+     * configuration to server.xml of the server root.
+     *
+     * @param testName - The name of the test case requesting the reconfig - a copy of the expanded configuration
+     *            file will be saved for debug purposes
+     * @param configDir - The directory under the server root where the configuration will be found ("configs" is the default)
+     * @param newConfig - The configuration to swich to
+     * @param waitForMessages - Any messages to wait (used to determine if the update is complete)
+     * @throws Exception
+     */
+    public void reconfigureServerUsingExpandedConfiguration(String testName, String configDir, String newConfig, String... waitForMessages) throws Exception {
+
+        ServerFileUtils serverFileUtils = new ServerFileUtils();
+        String newServerCfg = serverFileUtils.expandAndBackupCfgFile(this, configDir + "/" + newConfig, testName);
+        Log.info(c, "reconfigureServerUsingExpandedConfiguration", "Reconfiguring server to use new config: " + newConfig);
+        setMarkToEndOfLog();
+        replaceServerConfiguration(newServerCfg);
+
+        Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
+        waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), waitForMessages);
     }
 
     /**
@@ -3752,12 +3827,26 @@ public class LibertyServer implements LogMonitorClient {
      * This will put the named file into the root directory of the server and name it server.xml. As the file name is changed if you want to copy files for use in an include
      * statement or if the location of the config file is being changed using the was.configroot.uri property or --config-root command line then you should use the
      * {@link #copyFileToLibertyInstallRoot(String)} method.
+     * <br/>
+     * Note: The provided file name is relative to the autoFVT test files directory.
      *
      * @param fileName The name of the file from the FVT test suite
      * @throws Exception
      */
     public void setServerConfigurationFile(String fileName) throws Exception {
         replaceServerConfiguration(pathToAutoFVTTestFiles + "/" + fileName);
+    }
+
+    /**
+     * Puts the named file into the root directory of the server and names it server.xml. If the file path is not absolute, it is
+     * assumed to exist under the server root directory.
+     */
+    public void setServerConfigurationFromFilePath(String filePath) throws Exception {
+        if (filePath != null && !filePath.startsWith(getServerRoot())) {
+            filePath = getServerRoot() + File.separator + filePath;
+        }
+        Log.info(c, "setServerConfigurationFile", "Using path: " + filePath);
+        replaceServerConfiguration(filePath);
         Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
     }
 
@@ -4565,6 +4654,26 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Waits for each of the regexes in the provided list in the default log from the last mark. Each search will time out after
+     * a sensible period of time has elapsed.
+     *
+     * @throws Exception Thrown if any of the messages in the provided list are not found.
+     */
+    public void waitForStringsInLogUsingMark(List<String> messages) throws Exception {
+        if (messages == null) {
+            return;
+        }
+        for (String msg : messages) {
+            String matchingLine = waitForStringInLogUsingMark(msg);
+            if (matchingLine != null) {
+                Log.info(getClass(), "waitForStringsInLogUsingMark", "Found message [" + msg + "]: " + matchingLine);
+            } else {
+                throw new Exception("Failed to find [" + msg + "] in the server log for server " + getServerName());
+            }
+        }
+    }
+
+    /**
      * Wait for the specified regex in the default logs from the last mark.
      * <p>
      * This method will time out after a sensible period of
@@ -4837,14 +4946,27 @@ public class LibertyServer implements LogMonitorClient {
      * and verify that the regex does not show up in the logs during the
      * specfied duration.
      *
-     * @param regexp a regular expression to search for
-     * @param intendedTimeout a timeout, in milliseconds, within which the wait should complete. Exceeding this is a soft fail.
-     * @param extendedTimeout a timeout, in milliseconds, within which the wait must complete. Exceeding this is a hard fail.
-     * @param outputFile file to check
+     * @param timeout Timeout (in milliseconds)
      * @return line that matched the regexp
      */
-    public boolean verifyStringNotInLogUsingMark(String regexp, long timeout) {
-        return logMonitor.verifyStringNotInLogUsingMark(regexp, timeout);
+    public String verifyStringNotInLogUsingMark(String regexToSearchFor, long timeout) {
+        try {
+            return verifyStringNotInLogUsingMark(regexToSearchFor, timeout, getDefaultLogFile());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Wait for the specified regexp in the default logs from the last mark
+     * and verify that the regex does not show up in the logs during the
+     * specfied duration.
+     *
+     * @param timeout Timeout (in milliseconds)
+     * @return line that matched the regexp
+     */
+    public String verifyStringNotInLogUsingMark(String regexToSearchFor, long timeout, RemoteFile logFileToSearch) {
+        return logMonitor.verifyStringNotInLogUsingMark(regexToSearchFor, timeout, logFileToSearch);
     }
 
     /**
@@ -5621,5 +5743,29 @@ public class LibertyServer implements LogMonitorClient {
     @Override
     public void lmcUpdateLogOffset(String logFile, Long newLogOffset) {
         updateLogOffset(logFile, newLogOffset);
+    }
+
+    public void setBvtPortPropertyName(String propertyName) {
+        bvtPortPropertyName = propertyName;
+    }
+
+    public void setBvtSecurePortPropertyName(String propertyName) {
+        bvtSecurePortPropertyName = propertyName;
+    }
+
+    public int getBvtPort() {
+        if (bvtPortPropertyName != null) {
+            return Integer.getInteger(bvtPortPropertyName);
+        } else {
+            return getHttpDefaultPort();
+        }
+    }
+
+    public int getBvtSecurePort() {
+        if (bvtSecurePortPropertyName != null) {
+            return Integer.getInteger(bvtSecurePortPropertyName);
+        } else {
+            return getHttpDefaultSecurePort();
+        }
     }
 }

@@ -541,3 +541,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Vergewissern Sie sich, dass die in
 REQUEST_URL_NOT_VALID=CWWKS5499E: Das Social Login-Feature kann die Anforderung nicht an die urspr\u00fcngliche Anforderungs-URL [{0}] umleiten, weil die URL nicht g\u00fcltig ist. {1}
 REQUEST_URL_NOT_VALID.explanation=Die urspr\u00fcngliche Anforderungs-URL ist keine g\u00fcltige URL. Die URL enth\u00e4lt m\u00f6glicherweise ung\u00fcltige Zeichen oder die URL ist fehlerhaft.
 REQUEST_URL_NOT_VALID.useraction=Vergewissern Sie sich, dass die in der Nachricht angegebene Anforderungs-URL mit der urspr\u00fcnglichen Anforderungs-URL f\u00fcr die gesch\u00fctzte Ressource \u00fcbereinstimmt. Stellen Sie sicher, dass die URL korrekt formatiert ist und nur g\u00fcltige URI-Zeichen enth\u00e4lt.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Der erforderliche Konfigurationsparameter {0} fehlt oder er hat den ung\u00fcltigen Wert {1}.
+INVALID_CONFIG_PARAM.explanation=Der Social Login-Laufzeitcode hat bei der Verarbeitung der Clientanforderung einen erforderlichen Parameter nicht gefunden.
+INVALID_CONFIG_PARAM.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration und stellen Sie sicher, dass der fehlende Parameter korrekt angegeben wird.

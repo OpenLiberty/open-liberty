@@ -99,8 +99,8 @@
 		<script language="javascript"> <![CDATA[
 			var testBucketClassForLowJava = "componenttest.custom.junit.runner.AlwaysPassesTest";
 			var minTestJava = project.getProperty("fat.minimum.java.level");
-			var javaVersion = project.getProperty("java.specification.version");
-			if(minTestJava != null && javaVersion < minTestJava)
+			var javaVersion = parseFloat(project.getProperty("java.specification.version"));
+			if(minTestJava != null && javaVersion < parseFloat(minTestJava))
 			  project.setProperty("test.bucket.class", testBucketClassForLowJava);
         ]]></script>
         <echo message="fat.minimum.java.level=${fat.minimum.java.level}"/>

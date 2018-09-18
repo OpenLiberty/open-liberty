@@ -20,16 +20,20 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.Executor;
 
+import javax.resource.spi.ConnectionManager;
+
 import org.osgi.framework.Version;
 
 import com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDatabaseMetaData;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcObject;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcResultSet;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 
 /**
@@ -42,6 +46,7 @@ public interface JDBCRuntimeVersion {
     public static final Version VERSION_4_0 = new Version(4, 0, 0);
     public static final Version VERSION_4_1 = new Version(4, 1, 0);
     public static final Version VERSION_4_2 = new Version(4, 2, 0);
+    public static final Version VERSION_4_3 = new Version(4, 3, 0);
 
     public Version getVersion();
 
@@ -53,6 +58,8 @@ public interface JDBCRuntimeVersion {
 
     public WSJdbcDatabaseMetaData newDatabaseMetaData(DatabaseMetaData metaDataImpl,
                                                       WSJdbcConnection connWrapper) throws SQLException;
+
+    public WSJdbcDataSource newDataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr);
 
     public WSJdbcStatement newStatement(Statement stmtImplObject, WSJdbcConnection connWrapper, int theHoldability);
 
@@ -81,4 +88,8 @@ public interface JDBCRuntimeVersion {
     
     // JDBC 4.2 BatchUpdateException constructor
     public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage);
+
+    // JDBC 4.3 Connection methods
+    public void beginRequest(Connection con) throws SQLException;
+    public void endRequest(Connection con) throws SQLException;
 }

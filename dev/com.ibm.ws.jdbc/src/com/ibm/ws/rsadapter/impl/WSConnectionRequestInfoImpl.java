@@ -11,6 +11,7 @@
 
 package com.ibm.ws.rsadapter.impl;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Properties;
@@ -23,6 +24,8 @@ import org.ietf.jgss.GSSName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
+import com.ibm.ws.jca.adapter.WSConnectionManager;
+import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
 /**
@@ -246,6 +249,45 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "ConnectionRequestInfo created", this); 
+    }
+
+    /**
+     * Constructor to be used by connection builder.
+     *
+     * @param mcf the managed connection factory of the data source that is used to make the connection request
+     * @param cm the connection manager that managed connections to the data source that is used to make the connection request
+     * @param user the user name specified on the connection builder, or null if none.
+     * @param password the password, or null if none.
+     * @param shardingKey the sharding key, or null if none.
+     * @param superShardingKey the super sharding key, or null if none.
+     */
+    public WSConnectionRequestInfoImpl(WSManagedConnectionFactoryImpl mcf, WSConnectionManager cm,
+                                       String user, String password, Object shardingKey, Object superShardingKey) {
+        ivUserName = user;
+        ivPassword = password;
+        // TODO sharding
+        if (shardingKey != null || superShardingKey != null)
+            throw new UnsupportedOperationException("Not shardable");
+        ivConfigID = mcf.instanceID;
+        supportIsolvlSwitching = mcf.getHelper().isIsolationLevelSwitchingSupport();
+
+        // Get the isolation level from the resource reference, or if that is not specified, use the
+        // configured isolationLevel value, otherwise use a default that we choose for the database.
+        ResourceRefInfo resRefInfo = cm.getResourceRefInfo();
+        ivIsoLevel = resRefInfo == null ? Connection.TRANSACTION_NONE : resRefInfo.getIsolationLevel();
+        if (ivIsoLevel == Connection.TRANSACTION_NONE)
+            ivIsoLevel = mcf.dsConfig.get().isolationLevel;
+        if (ivIsoLevel == -1)
+            ivIsoLevel = mcf.getHelper().getDefaultIsolationLevel();
+
+        hashcode = ivConfigID +
+                   (ivUserName == null ? 0 : ivUserName.hashCode()) +
+                   (ivPassword == null ? 0 : ivPassword.hashCode());
+
+        markAsChangable();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "ConnectionRequestInfo created", this);
     }
 
     /**

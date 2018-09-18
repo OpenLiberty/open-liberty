@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/mp/jwt/v11/resources/MpConfigProxyMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server MicroProfile JWT 1.1 Config Proxy
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5775 - CWWKS5799
+
+MPJWT_11_CONFIG_PROXY_PROCESSED=CWWKS5775I: MicroProfile JWT 1.1: mpConfigProxy \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u043d\u043e.
+MPJWT_11_CONFIG_PROXY_PROCESSED.explanation=\u0423\u043a\u0430\u0437\u0430\u043d\u043d\u0430\u044f \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044f \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u043d\u0430.
+MPJWT_11_CONFIG_PROXY_PROCESSED.useraction=\u041d\u0438\u043a\u0430\u043a\u0438\u0445 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0439 \u043d\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f.
+
+MPJWT_11_CONFIG_PROXY_MODIFIED=CWWKS5776I: MicroProfile JWT 1.1: mpConfigProxy \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u043d\u043e.
+MPJWT_11_CONFIG_PROXY_MODIFIED.explanation=\u0423\u043a\u0430\u0437\u0430\u043d\u043d\u0430\u044f \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044f \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u043e\u0431\u0440\u0430\u0431\u043e\u0442\u0430\u043d\u0430.
+MPJWT_11_CONFIG_PROXY_MODIFIED.useraction=\u041d\u0438\u043a\u0430\u043a\u0438\u0445 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0439 \u043d\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f.
+
+MPJWT_11_CONFIG_PROXY_DEACTIVATED=CWWKS5777I: MicroProfile JWT 1.1: mpConfigProxy \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0434\u0435\u0430\u043a\u0442\u0438\u0432\u0438\u0440\u043e\u0432\u0430\u043d\u043e.
+MPJWT_11_CONFIG_PROXY_DEACTIVATED.explanation=\u0423\u043a\u0430\u0437\u0430\u043d\u043d\u0430\u044f \u043a\u043e\u043d\u0444\u0438\u0433\u0443\u0440\u0430\u0446\u0438\u044f \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0434\u0435\u0430\u043a\u0442\u0438\u0432\u0438\u0440\u043e\u0432\u0430\u043d\u0430.
+MPJWT_11_CONFIG_PROXY_DEACTIVATED.useraction=\u041d\u0438\u043a\u0430\u043a\u0438\u0445 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0439 \u043d\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f.
+

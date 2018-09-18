@@ -19,7 +19,7 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtToken;
 
 /**
- * This API represents the user’s access_token and profile upon user authenticated by social media.
+ * This API represents the user's access_token and profile upon user authenticated by social media.
  *
  * @author IBM Corporation
  *

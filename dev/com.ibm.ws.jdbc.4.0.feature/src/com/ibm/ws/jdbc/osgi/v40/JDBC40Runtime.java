@@ -21,15 +21,19 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.concurrent.Executor;
 
+import javax.resource.spi.ConnectionManager;
+
 import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDatabaseMetaData;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcObject;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement;
@@ -53,6 +57,11 @@ public class JDBC40Runtime implements JDBCRuntimeVersion {
     public WSJdbcDatabaseMetaData newDatabaseMetaData(DatabaseMetaData metaDataImpl,
                                                       WSJdbcConnection connWrapper) throws SQLException {
         return new WSJdbcDatabaseMetaData(metaDataImpl, connWrapper);
+    }
+
+    @Override
+    public WSJdbcDataSource newDataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) {
+        return new WSJdbcDataSource(mcf, connMgr);
     }
 
     @Override
@@ -120,4 +129,10 @@ public class JDBC40Runtime implements JDBCRuntimeVersion {
     public int doGetNetworkTimeout(Connection sqlConn) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
+
+    @Override
+    public void beginRequest(Connection con) {}
+
+    @Override
+    public void endRequest(Connection con) {}
 }

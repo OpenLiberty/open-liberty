@@ -286,7 +286,16 @@ public interface MessageStoreConstants
 
     public static final String PROP_DELIVERY_DELAY_SCAN_INTERVAL = "deliveryDelayScanInterval";
     public static final String PROP_DELIVERY_DELAY_SCAN_INTERVAL_DEFAULT = "1000"; // Milliseconds
-
+    
+    public static final String PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_INTERVAL = "maximumAllowedDeliveryDelayInterval";
+    public static final String PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_INTERVAL_DEFAULT = "-1"; // Milliseconds
+    
+    public static enum MaximumAllowedDeliveryDelayAction {
+        warn , unlock , exception;
+    }
+    public static final String PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_ACTION = "maximumAllowedDeliveryDelayAction";
+    public static final String PROP_MAXIMUM_ALLOWED_DELIVERY_DELAY_ACTION_DEFAULT = MaximumAllowedDeliveryDelayAction.warn.toString();
+   
     /*************************************************************************/
     /* Object Manager Properties */
     /*************************************************************************/

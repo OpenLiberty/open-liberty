@@ -31,8 +31,10 @@ public class Constants {
     public static final String RESPONSE_HEADER = "header";
     public static final String RESPONSE_URL = "url";
     public static final String JSON_OBJECT = "jsonObject";
+    public static final String EXCEPTION_MESSAGE = "exceptionMsg";
 
     public static final String HEADER_SET_COOKIE = "Set-Cookie";
+    public static final String TOKEN_TYPE_BEARER = "Bearer";
 
     public static final String J_SECURITY_CHECK = "j_security_check";
     public static final String J_USERNAME = "j_username";
@@ -48,5 +50,21 @@ public class Constants {
 
     public static final String APP_FORMLOGIN = "formlogin";
     public static final String APP_TESTMARKER = "testmarker";
+
+    public static final String COMMON_CONFIG_DIR = "configs";
+
+    /* ***************** Http methods ******************* */
+    public static final String GETMETHOD = "GET";
+    public static final String POSTMETHOD = "POST";
+    public static final String DELETEMETHOD = "DELETE";
+    public static final String PUTMETHOD = "PUT";
+    public static final String HEADMETHOD = "HEAD";
+
+    public static final String UNAUTHORIZED_EXCEPTION = "401 Unauthorized";
+    public static final String HTTP_UNAUTHORIZED_EXCEPTION = "HTTP " + UNAUTHORIZED_EXCEPTION;
+
+    /********************** Page Values *********************/
+    public static final String FORM_LOGIN_HEADING = "Form Login Page";
+    public static final String FORM_LOGIN_TITLE = "login.jsp";
 
 }

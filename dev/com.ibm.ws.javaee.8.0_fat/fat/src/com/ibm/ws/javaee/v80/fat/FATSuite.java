@@ -15,12 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( {
-    WebProfileSimpleWarTest.class,
-    WebProfileSimpleEarTest.class,
-    FullProfileSimpleWarTest.class,
-    FullProfileSimpleEarTest.class,
- } )
-public class FATSuite {
-    // EMPTY
-}
+@SuiteClasses({
+                JavaEE8Test.class
+})
+public class FATSuite {}

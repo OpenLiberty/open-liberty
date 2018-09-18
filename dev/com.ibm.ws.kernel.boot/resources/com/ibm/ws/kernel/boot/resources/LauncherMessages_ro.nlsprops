@@ -682,6 +682,10 @@ warning.server.status.invalid.targets=CWWKE0946W: A fost primit\u0103 o cerere d
 warning.server.status.invalid.targets.explanation=Un utilizator a lansat o cerere de stare cu o list\u0103 de \u0163inte goal\u0103 pe op\u0163iunea pentru \u0163inte. Cererea s-a finalizat, dar nu a fost realizat\u0103 nicio ac\u0163iune.
 warning.server.status.invalid.targets.useraction=Specifica\u0163i pe op\u0163iunea pentru \u0163int\u0103 o list\u0103 de componente pentru a le verifica starea. Pentru a verifica starea cumulativ\u0103 a tuturor componentelor capabile de pauz\u0103 din server, lansa\u0163i o cerere de stare f\u0103r\u0103 op\u0163iunea pentru \u0163int\u0103.
 
+warning.package.root.invalid=CWWKE0947W: O op\u0163iune --server-root cu un argument gol nu este permis\u0103 c\u00e2nd este instalat Product Extensions. Va fi folosit argumentul implicit wlp.
+warning.package.root.invalid.explanation=Utilizatorul a realizat o cerere de pachet cu o op\u0163iune --server-root care specific\u0103 un argument gol \u015fi au fost detectate Product Extensions. Va fi folosit wpl, r\u0103d\u0103cina implicit\u0103 pentru server.
+warning.package.root.invalid.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
+
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.
 info.serverStartedWithPID=Serverul {0} a pornit cu ID de proces {1}.

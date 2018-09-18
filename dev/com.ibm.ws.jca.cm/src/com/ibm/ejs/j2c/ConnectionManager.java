@@ -509,7 +509,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(this, tc, "allocateConnection", Integer.toHexString(rVal.hashCode()));
+            Tr.exit(this, tc, "allocateConnection", rVal==null?" connection handle is null":Integer.toHexString(rVal.hashCode()));
         }
 
         return rVal;

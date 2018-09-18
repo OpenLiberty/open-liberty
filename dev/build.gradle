@@ -36,10 +36,12 @@ subprojects {
   /* For Java 9 builds, set the --release compiler flag to keep bootclasspath in sync */
   tasks.withType(JavaCompile) {
     doFirst {
-      if(JavaVersion.current().isJava9Compatible() && bndis('javac.args.release')) {
+      if(JavaVersion.current().isJava9Compatible() && !'off'.equals(bnd('javac.args.release'))) {
         def release = sourceCompatibility
         if(sourceCompatibility < '9')
           release = sourceCompatibility.substring(2);
+        if('current'.equals(bnd('javac.args.release')))
+          release = JavaVersion.current().getMajorVersion() 
         println "Compiling with --release=" + release
         options.compilerArgs.addAll([ '--release', release])
       }

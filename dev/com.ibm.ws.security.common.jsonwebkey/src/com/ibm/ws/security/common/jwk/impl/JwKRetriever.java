@@ -28,11 +28,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-// import java.util.Base64; // or could use
-import org.apache.commons.codec.binary.Base64;
-
 import javax.net.ssl.SSLSocketFactory;
 
+// import java.util.Base64; // or could use
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
@@ -43,7 +42,6 @@ import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
@@ -58,7 +56,6 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.security.common.jwk.internal.JwkConstants;
-
 import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
@@ -212,7 +209,7 @@ public class JwKRetriever {
         return isHttp;
     }
 
-    @FFDCIgnore({PrivilegedActionException.class, Exception.class})
+    @FFDCIgnore({ PrivilegedActionException.class, Exception.class })
     protected PublicKey getPublicKeyFromFile(String location, String kid, String x5t) {
         PublicKey publicKey = null;
         String keyString = null;
@@ -274,7 +271,7 @@ public class JwKRetriever {
         if (publicKeyText == null && location != null) {
             return getPublicKeyFromFile(location, kid, x5t);
         }
- 
+
         if (publicKeyText != null) {
             synchronized (jwkSet) {
                 PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t);
@@ -439,16 +436,21 @@ public class JwKRetriever {
     private JWK parseJwkFormat(JSONObject jsonObject, String signatureAlgorithm) {
         JWK jwk = null;
 
-        String kty = (String) jsonObject.get("kty");
-        if (kty == null) {
+        Object ktyEntry = jsonObject.get("kty");
+        if (ktyEntry == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "JSON object is missing 'kty' entry");
             }
-        } else {
-            jwk = createJwkBasedOnKty(kty, jsonObject, signatureAlgorithm);
+            return null;
+        }
+        if (!(ktyEntry instanceof String)) {
+            return null;
+        }
+        String kty = (String) ktyEntry;
+        jwk = createJwkBasedOnKty(kty, jsonObject, signatureAlgorithm);
+        if (jwk != null) {
             jwk.parse();
         }
-
         return jwk;
     }
 
@@ -572,7 +574,7 @@ public class JwKRetriever {
 
     JWK getEllipticCurveJwk(JSONObject thing, String signatureAlgorithm) {
         // let get the map<String, Object> from keyObject
-        if (signatureAlgorithm.startsWith("ES")) { // ES256, ES384, ES512
+        if (signatureAlgorithm != null && signatureAlgorithm.startsWith("ES")) { // ES256, ES384, ES512
             return Jose4jEllipticCurveJWK.getInstance(thing); // if implemented
                                                               // ES256
         }

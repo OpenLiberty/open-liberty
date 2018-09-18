@@ -337,10 +337,10 @@ public class WSJdbcPreparedStatement extends WSJdbcStatement implements Prepared
                 }
 
             } catch (SQLException cleanupX) {
-                FFDCFilter.processException(cleanupX,
-                                            getClass().getName() + ".closeWrapper", "310", this);
-
-                sqlX = cleanupX;
+                if (!mc.isAborted()) {
+                    FFDCFilter.processException(cleanupX, getClass().getName() + ".closeWrapper", "310", this);
+                    sqlX = cleanupX;
+                }
 
                 try {
                     pstmtImpl.close();

@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.exceptions.FatExceptionUtils;
 
 import componenttest.topology.impl.LibertyServer;
@@ -27,6 +28,11 @@ public class ServerTracker {
 
     public void addServer(LibertyServer server) {
         libertyServers.add(server);
+        if (server == null) {
+            return;
+        }
+        // Every server should have the testMarker app in dropins (make sure it starts)
+        server.addInstalledAppForValidation(Constants.APP_TESTMARKER);
     }
 
     public Set<LibertyServer> getServers() {

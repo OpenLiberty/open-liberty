@@ -108,6 +108,8 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     public static final String KEY_responseType = "responseType";
     protected String responseType = null;
 
+    protected String grantType = null;
+
     public static final String KEY_nonce = "nonce";
     protected boolean nonce = false;
 
@@ -253,6 +255,7 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         initializeUserApiConfigs();
         initializeJwt(props);
         resetLazyInitializedMembers();
+        setGrantType();
     }
 
     protected void initializeUserApiConfigs() throws SocialLoginException {
@@ -298,6 +301,13 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
         this.authFilter = null;
         this.sslContext = null;
         this.sslSocketFactory = null;
+    }
+
+    protected void setGrantType() {
+        grantType = ClientConstants.AUTHORIZATION_CODE;
+        if (responseType != null && responseType.contains(ClientConstants.TOKEN)) {
+            grantType = ClientConstants.IMPLICIT;
+        }
     }
 
     protected String getRequiredConfigAttribute(Map<String, Object> props, String key) {
@@ -477,6 +487,11 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
     @Override
     public String getResponseType() {
         return this.responseType;
+    }
+
+    @Override
+    public String getGrantType() {
+        return this.grantType;
     }
 
     @Override
@@ -708,6 +723,11 @@ public class Oauth2LoginConfigImpl implements SocialLoginConfig {
 
     protected SslRefInfoImpl createSslRefInfoImpl(SocialLoginService socialLoginService) {
         return new SslRefInfoImpl(socialLoginService.getSslSupport(), socialLoginService.getKeyStoreServiceRef(), sslRef, keyAliasName);
+    }
+
+    @Override
+    public String getResponseMode() {
+        return null;
     }
 
 }

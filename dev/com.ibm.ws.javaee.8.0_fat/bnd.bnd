@@ -13,8 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/simpleWar.war/src,\
-	test-applications/simpleJar.jar/src
+	test-applications/javaee8App/src
 
 javac.source: 1.8
 javac.target: 1.8
@@ -22,4 +21,14 @@ javac.target: 1.8
 fat.project: true
 
 -buildpath: \
-	com.ibm.websphere.javaee.servlet.4.0;version=latest
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+    com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+    com.ibm.websphere.javaee.jsf.2.3;version=latest,\
+    com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+    com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+    com.ibm.websphere.javaee.persistence.2.2;version=latest,\
+    com.ibm.websphere.javaee.security.1.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+    com.ibm.websphere.javaee.validation.2.0;version=latest

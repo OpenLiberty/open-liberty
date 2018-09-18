@@ -41,6 +41,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.common.web.WebUtils;
 
 public class OidcClientHttpUtil {
     private static final TraceComponent tc = Tr.register(OidcClientHttpUtil.class);
@@ -253,6 +254,7 @@ public class OidcClientHttpUtil {
             String accessToken,
             final List<NameValuePair> commonHeaders) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "OIDC _SSO RP POST TO URL ["+WebUtils.stripSecretFromUrl(url,"client_secret")+"]");
             Tr.debug(tc, "postToEndpoint: url: " + url + " headers: "
                     + commonHeaders + " params: " + "*****" + " baUsername: "
                     + baUsername + " baPassword: " + (baPassword != null ? "****" : null)

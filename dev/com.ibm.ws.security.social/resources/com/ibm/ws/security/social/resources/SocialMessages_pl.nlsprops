@@ -541,3 +541,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Sprawd\u017a, czy konfiguracja JWT
 REQUEST_URL_NOT_VALID=CWWKS5499E: Funkcja logowania spo\u0142eczno\u015bciowego nie mo\u017ce przekierowa\u0107 \u017c\u0105dania z powrotem na adres URL oryginalnego \u017c\u0105dania [{0}], poniewa\u017c ten adres URL jest niepoprawny. {1}
 REQUEST_URL_NOT_VALID.explanation=Adres URL oryginalnego \u017c\u0105dania jest niepoprawny. Adres URL mo\u017ce zawiera\u0107 znaki, kt\u00f3re nie s\u0105 poprawne, lub mo\u017ce by\u0107 on zniekszta\u0142cony.
 REQUEST_URL_NOT_VALID.useraction=Sprawd\u017a, czy podany w komunikacie adres URL \u017c\u0105dania jest zgodny z adresem URL oryginalnego \u017c\u0105dania chronionego zasobu. Sprawd\u017a, czy ten adres URL zosta\u0142 poprawnie zbudowany i czy zawiera tylko poprawne znaki identyfikatora URI.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Brak wymaganego parametru konfiguracyjnego {0} lub ma on niepoprawn\u0105 warto\u015b\u0107 {1}
+INVALID_CONFIG_PARAM.explanation=Kod \u015brodowiska wykonawczego logowania spo\u0142eczno\u015bciowego nie znalaz\u0142 wymaganego parametru podczas przetwarzania \u017c\u0105dania klienta.
+INVALID_CONFIG_PARAM.useraction=Sprawd\u017a brakuj\u0105cy parametr w konfiguracji i upewnij si\u0119, \u017ce zosta\u0142 on podany i jest poprawny.

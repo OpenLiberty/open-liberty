@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaee-7.0
 visibility=public
+singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-ShortName: javaee-7.0
@@ -11,7 +12,7 @@ Subsystem-Name: Java EE Full Platform 7.0
  com.ibm.websphere.appserver.servlet-3.1, \
  com.ibm.websphere.appserver.jcaInboundSecurity-1.0, \
  com.ibm.websphere.appserver.batch-1.0, \
- com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2", \
+ com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2, 4.3", \
  com.ibm.websphere.appserver.ejb-3.2, \
  com.ibm.websphere.appserver.jacc-1.5, \
  com.ibm.websphere.appserver.wasJmsSecurity-1.0, \

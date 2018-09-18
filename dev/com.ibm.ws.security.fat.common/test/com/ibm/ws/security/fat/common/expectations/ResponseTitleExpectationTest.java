@@ -288,7 +288,7 @@ public class ResponseTitleExpectationTest extends CommonSpecificExpectationTest 
         try {
             exp.validate(response);
             fail("Should have thrown an exception saying this response object cannot return a title, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, Pattern.quote(exp.getFailureMsg()) + ".+" + Pattern.quote(response.getClass().getName()) + ".+no title");
         }
     }

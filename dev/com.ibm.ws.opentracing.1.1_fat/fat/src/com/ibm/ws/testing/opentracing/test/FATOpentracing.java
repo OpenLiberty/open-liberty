@@ -78,10 +78,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 @Mode(TestMode.FULL)
 @MinimumJavaLevel(javaLevel = 8)
 public class FATOpentracing implements FATOpentracingConstants {
-    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-0.31.mf";
-    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock-0.31.jar";
-    // Logging ...
-
     private static final Class<? extends FATOpentracing> CLASS = FATOpentracing.class;
 
     private static void info(String methodName, String text, Object value) {
@@ -101,8 +97,6 @@ public class FATOpentracing implements FATOpentracingConstants {
 
     private static void setUpServer() throws Exception {
         server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
     }
 
     private static LibertyServer getServer() {
@@ -124,10 +118,6 @@ public class FATOpentracing implements FATOpentracingConstants {
     private static void stopServer() throws Exception {
         getServer().stopServer(); // 'stopServer' throws Exception
     }
-
-    // Test setup ...
-    //
-    // TODO: Maybe this should be done by the FAT suite.
 
     @BeforeClass
     public static void setUp() throws Exception {

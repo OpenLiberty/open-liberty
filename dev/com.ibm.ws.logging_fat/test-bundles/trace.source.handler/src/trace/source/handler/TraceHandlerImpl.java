@@ -156,7 +156,7 @@ public class TraceHandlerImpl implements Handler {
     }
 
     private String getAttribute(GenericData genData, String key) {
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         for (KeyValuePair p : pairs) {
             if (p != null && !p.isList()) {
                 KeyValuePair kvp = p;

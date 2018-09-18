@@ -50,5 +50,5 @@ public interface FeatureResource extends HeaderElementDefinition {
 
     public List<String> getTolerates();
 
-    public String getRequiredOSGiEE();
+    public Integer getRequireJava();
 }
