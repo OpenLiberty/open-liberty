@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.jose4j.util;
 
@@ -354,7 +354,7 @@ public class Jose4jUtil {
         } else if (SIGNATURE_ALG_RS256.equals(signatureAlgorithm)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
                 JwKRetriever retriever = createJwkRetriever(clientConfig);
-                keyValue = retriever.getPublicKeyFromJwk(kid, x5t);
+                keyValue = retriever.getPublicKeyFromJwk(kid, x5t, "sig");
             } else {
                 keyValue = clientConfig.getPublicKey();
             }
