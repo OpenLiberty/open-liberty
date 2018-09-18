@@ -26,7 +26,7 @@ public class ResponseUrlExpectation extends Expectation {
         try {
             String responseUrl = getResponseUrlFromContent(contentToValidate);
             validationUtils.validateStringContent(this, responseUrl);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception(failureMsg + " Failed to validate response URL: " + e.getMessage());
         }
     }

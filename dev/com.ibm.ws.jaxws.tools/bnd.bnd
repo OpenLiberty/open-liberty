@@ -21,6 +21,8 @@ Export-Package: com.sun.tools.ws.ant;version="2.2.10", \
  com.ibm.jtc.jax.xml.ws.api;version=1.0.0, \
  com.ibm.jtc.jax.xml.ws.policy;version=1.0.0, \
  com.ibm.ws.jaxws.tools;version="2.2.10", \
+ org.jvnet.staxex;version="1.7.7", \
+ org.jvnet.staxex.util;version="1.7.7"
 
 Import-Package: \
  com.sun.xml.bind*;version="2.2.10"

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -86,11 +84,7 @@ final class TestUtil {
                                                           final ComponentContextExpectationProvider expectations) throws BundleException, InvalidSyntaxException {
         final ClassLoadingServiceImpl cls = new ClassLoadingServiceImpl();
 
-        final Mockery mockery = new JUnit4Mockery() {
-            {
-                setImposteriser(ClassImposteriser.INSTANCE);
-            }
-        };
+        final Mockery mockery = new Mockery();
         final ComponentContext componentContext = mockery.mock(ComponentContext.class);
         final BundleContext myBundleContext = mockery.mock(BundleContext.class, "myBundleContext");
         setFinalStatic(Providers.class, "bundleContext", myBundleContext);
@@ -198,7 +192,6 @@ final class TestUtil {
         if (expectations != null) {
             expectations.addExpectations(mockery, componentContext);
         }
-
         cls.activate(componentContext, null);
         return cls;
     }

@@ -20,18 +20,16 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-public class D43DataSource implements DataSource {
-    private final org.apache.derby.jdbc.EmbeddedDataSource ds;
+public class D43DataSource extends D43CommonDataSource implements DataSource {
+    final org.apache.derby.jdbc.EmbeddedDataSource ds;
 
     public D43DataSource() {
         ds = new org.apache.derby.jdbc.EmbeddedDataSource();
     }
 
     @Override
-    public ConnectionBuilder createConnectionBuilder() throws SQLException {
-        return (ConnectionBuilder) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
-                                                          new Class[] { ConnectionBuilder.class },
-                                                          new D43Handler(ds.createConnectionBuilder(), null));
+    public ConnectionBuilder createConnectionBuilder() {
+        return new D43ConnectionBuilder(this);
     }
 
     public String getDatabaseName() {
@@ -57,14 +55,14 @@ public class D43DataSource implements DataSource {
     public Connection getConnection() throws SQLException {
         return (Connection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                    new Class[] { Connection.class },
-                                                   new D43Handler(ds.getConnection(), null));
+                                                   new D43Handler(ds.getConnection(), null, this));
     }
 
     @Override
     public Connection getConnection(String user, String pwd) throws SQLException {
         return (Connection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                    new Class[] { Connection.class },
-                                                   new D43Handler(ds.getConnection(user, pwd), null));
+                                                   new D43Handler(ds.getConnection(user, pwd), null, this));
     }
 
     @Override

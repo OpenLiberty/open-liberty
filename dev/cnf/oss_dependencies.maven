@@ -40,6 +40,7 @@ com.sun.xml.bind:jaxb-core:2.2.10
 com.sun.xml.bind:jaxb-impl:2.2.10
 com.sun.xml.bind:jaxb-jxc:2.2.10
 com.sun.xml.bind:jaxb-xjc:2.2.10
+com.sun.xml.messaging.saaj:saaj-impl:1.4.0
 com.sun.xml.stream.buffer:streambuffer:1.5.3
 com.sun.xml.ws:jaxws-rt:2.2.10
 com.sun.xml.ws:jaxws-tools:2.2.10
@@ -232,6 +233,7 @@ org.jboss.weld:weld-osgi-bundle:3.0.5.Final
 org.jmock:jmock:2.5.1
 org.jmock:jmock-junit4:2.5.1
 org.jsoup:jsoup:1.7.2
+org.jvnet.mimepull:mimepull:1.9.7
 org.jvnet.staxex:stax-ex:1.7.7
 org.mongodb:mongo-java-driver:1.0
 org.mongodb:mongo-java-driver:2.9.3
