@@ -72,6 +72,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
  * Class relationship information is the class to superclass and
  * the class to implements relationships.
  */
+<<<<<<< HEAD
 
 // Used by:
 //
