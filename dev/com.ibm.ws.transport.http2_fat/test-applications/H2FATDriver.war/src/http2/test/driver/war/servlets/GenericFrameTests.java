@@ -223,7 +223,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
     }
 
     // This does the same thing as DatatypeConverter.parseHexBinary(str), but it allows us to avoid a dependency on JAX-B for this FAT
-    private static byte[] parseHexBinary(String str) {
+    public static byte[] parseHexBinary(String str) {
         int len = str.length();
         byte[] data = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {

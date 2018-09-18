@@ -10,6 +10,8 @@
  *******************************************************************************/
 package http2.test.driver.war.servlets;
 
+import static http2.test.driver.war.servlets.GenericFrameTests.parseHexBinary;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +26,6 @@ import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.DatatypeConverter;
 
 import org.junit.Assert;
 
@@ -2738,7 +2739,7 @@ public class H2FATDriverServlet extends FATServlet {
         // malformed DATA: set padding length to 12, which is greater than the specified total payload length
         //____________________________________ ||____________________ - padding length byte
         String dataString = "00000b0009000000030c74657374000000000000";
-        byte[] b = DatatypeConverter.parseHexBinary(dataString);
+        byte[] b = parseHexBinary(dataString);
         h2Client.sendBytes(b);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
@@ -2907,7 +2908,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         //length: 4, which is invalid
         String priorityString = "0000040200000000037fffffffff";
-        byte[] b = DatatypeConverter.parseHexBinary(priorityString);
+        byte[] b = parseHexBinary(priorityString);
         h2Client.sendBytes(b);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
@@ -2965,7 +2966,7 @@ public class H2FATDriverServlet extends FATServlet {
         // malformed RST_STREAM: only has 3 byte byte payload
         //______________________||____________ - payload length byte
         String rstString = "000003030000000003000003";
-        byte[] b = DatatypeConverter.parseHexBinary(rstString);
+        byte[] b = parseHexBinary(rstString);
         h2Client.sendBytes(b);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
@@ -3024,7 +3025,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         //______________________|_____________________||||||||__ - window size bytes: set here as 2^0
         String settingsFrame = "0000060400000000000004ffffffff";
-        byte[] b = DatatypeConverter.parseHexBinary(settingsFrame);
+        byte[] b = parseHexBinary(settingsFrame);
         h2Client.sendBytes(b);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
@@ -3055,7 +3056,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         //____________________________________________||||||||__ - window size bytes: set here as 2^32
         String settingsFrame = "0000060400000000000004ffffffff";
-        byte[] b = DatatypeConverter.parseHexBinary(settingsFrame);
+        byte[] b = parseHexBinary(settingsFrame);
         h2Client.sendBytes(b);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
@@ -3087,7 +3088,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         //__________________________________________||________ - setting type bytes: set here as 238
         String settingsFrame = "00000604000000000000eeffffffff";
-        byte[] b = DatatypeConverter.parseHexBinary(settingsFrame);
+        byte[] b = parseHexBinary(settingsFrame);
         h2Client.sendBytes(b);
 
         //send a ping and expect a ping back; this also helps us know if Setting ACK arrived as the PING
@@ -3276,7 +3277,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         //______________________||___________________________ - frame size byte: set to 7
         String pingFrame = "0000070600000000006c696265727479";
-        byte[] b = DatatypeConverter.parseHexBinary(pingFrame);
+        byte[] b = parseHexBinary(pingFrame);
         h2Client.sendBytes(b);
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
@@ -4580,7 +4581,7 @@ public class H2FATDriverServlet extends FATServlet {
          * :path: /H2TestModule/H2HeadersAndBody
          * T: t
          */
-        h2Client.sendBytes(DatatypeConverter.parseHexBinary("0000270104000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001540174"));
+        h2Client.sendBytes(parseHexBinary("0000270104000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001540174"));
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);
@@ -4632,7 +4633,7 @@ public class H2FATDriverServlet extends FATServlet {
          * t: T
          * <dynamic window update>
          */
-        h2Client.sendBytes(DatatypeConverter.parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015421"));
+        h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015421"));
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
@@ -4685,7 +4686,7 @@ public class H2FATDriverServlet extends FATServlet {
          * t: t
          * <invalid header index>
          */
-        h2Client.sendBytes(DatatypeConverter.parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001740154C6"));
+        h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001740154C6"));
 
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
         handleErrors(h2Client, testName);
@@ -4736,7 +4737,7 @@ public class H2FATDriverServlet extends FATServlet {
          * t: t
          * <invalid huffman header>
          */
-        h2Client.sendBytes(javax.xml.bind.DatatypeConverter.parseHexBinary("0000330105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F647910017401540085F2B24A84FF8449509FFF"));
+        h2Client.sendBytes(parseHexBinary("0000330105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F647910017401540085F2B24A84FF8449509FFF"));
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
 
         handleErrors(h2Client, testName);
@@ -4787,7 +4788,7 @@ public class H2FATDriverServlet extends FATServlet {
          * <header with invalid index>
          */
         String frameBytes = "0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015480";
-        h2Client.sendBytes(javax.xml.bind.DatatypeConverter.parseHexBinary(frameBytes));
+        h2Client.sendBytes(parseHexBinary(frameBytes));
         blockUntilConnectionIsDone.await(500, TimeUnit.MILLISECONDS);
 
         handleErrors(h2Client, testName);
