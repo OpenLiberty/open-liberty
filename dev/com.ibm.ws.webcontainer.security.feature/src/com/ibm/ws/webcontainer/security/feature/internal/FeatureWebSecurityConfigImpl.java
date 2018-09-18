@@ -42,6 +42,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean ssoRequiresSSL = false;
     private final String ssoDomainNames = null;
     private final Boolean ssoUseDomainFromURL = false;
+    private final Boolean useSSOForJaspic = false;
     private final Boolean useAuthenticationDataForUnprotectedResource = true;
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = false;
@@ -219,6 +220,15 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getSSOUseDomainFromURL();
         else
             return ssoUseDomainFromURL;
+    }
+
+    @Override
+    public boolean isUseSSOForJaspic() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().isUseSSOForJaspic();
+        else
+            return useSSOForJaspic;
     }
 
     @Override
