@@ -89,17 +89,6 @@ public class Http2LiteModeTests extends FATServletClient {
                                  testName);
     }
 
-    public void runStressTest() throws Exception {
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "runTest()", "Running test with iterations of: " + Utils.STRESS_ITERATIONS);
-        }
-
-        FATServletClient.runTest(runtimeServer,
-                                 "H2FATDriver/H2FATDriverServlet?hostName=" + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&iterations="
-                                                + Utils.STRESS_ITERATIONS + "&testdir=" + Utils.TEST_DIR,
-                                 testName);
-    }
-
     @Test
     public void testUpgradeHeaderFollowedBySettingsFrame() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
