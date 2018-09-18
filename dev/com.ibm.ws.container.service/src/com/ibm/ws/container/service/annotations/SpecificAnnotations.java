@@ -25,13 +25,13 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 //
 
 public interface SpecificAnnotations {
-	/**
-	 * Answer the targets table which holds the specific annotation
-	 * data.
-	 * 
-	 * @return The underlying targets table.
-	 */
-	AnnotationTargets_Targets getTargets();
+    /**
+     * Answer the targets table which holds the specific annotation
+     * data.
+     * 
+     * @return The underlying targets table.
+     */
+    AnnotationTargets_Targets getTargets();
 
     /**
      * Target helper: Select the classes which are recorded as having

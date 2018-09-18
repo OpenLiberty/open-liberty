@@ -107,27 +107,27 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public interface WebAnnotations extends ModuleAnnotations {
 
-	/**
-	 * Override: The module information of web annotations is known
-	 * to be web module information.
-	 * 
-	 * @return The web module information of the web module annotations.
-	 */
-	WebModuleInfo getModuleInfo();
+    /**
+     * Override: The module information of web annotations is known
+     * to be web module information.
+     * 
+     * @return The web module information of the web module annotations.
+     */
+    WebModuleInfo getModuleInfo();
 
-	/**
-	 * Answer the name of the web module.
-	 * 
-	 * @return The name of the web module.
-	 */
-	String getWebModuleName();
+    /**
+     * Answer the name of the web module.
+     * 
+     * @return The name of the web module.
+     */
+    String getWebModuleName();
 
-	/**
-	 * Answer all of the fragments of the module.
-	 * 
-	 * @return All of the fragments of the module.
-	 */
-	WebFragmentsInfo getWebFragments();
+    /**
+     * Answer all of the fragments of the module.
+     * 
+     * @return All of the fragments of the module.
+     */
+    WebFragmentsInfo getWebFragments();
 
     /**
      * Answer the ordered list of fragments of the module.

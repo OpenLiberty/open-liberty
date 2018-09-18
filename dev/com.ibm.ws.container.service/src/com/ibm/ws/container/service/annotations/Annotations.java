@@ -297,7 +297,7 @@ public interface Annotations {
      *
      * @return The set of classes having the annotation.
      */
-	Set<String> getClassesWithAnnotation(String annotationClassName);
+    Set<String> getClassesWithAnnotation(String annotationClassName);
 
     /**
      * Answer the classes which have any of a specified collection of annotations.

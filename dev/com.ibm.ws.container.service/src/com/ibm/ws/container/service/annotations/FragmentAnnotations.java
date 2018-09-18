@@ -35,21 +35,21 @@ import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
  * to web module annotations.
  */
 public interface FragmentAnnotations {
-	/**
-	 * Answer the annotation targets which store the overall web
-	 * module data.  The fragment data is managed within the
-	 * web module data.
-	 *
-	 * @return The annotation targets of the overall web module. 
-	 */
-	AnnotationTargets_Targets getTargets();
+    /**
+     * Answer the annotation targets which store the overall web
+     * module data.  The fragment data is managed within the
+     * web module data.
+     *
+     * @return The annotation targets of the overall web module. 
+     */
+    AnnotationTargets_Targets getTargets();
 
-	/**
-	 * Answer the name of the fragment of this data.
-	 * 
-	 * @return The name of the fragment of this data.
-	 */
-	String getFragmentName();
+    /**
+     * Answer the name of the fragment of this data.
+     * 
+     * @return The name of the fragment of this data.
+     */
+    String getFragmentName();
 
     /**
      * Target helper: Select the classes which are recorded as having

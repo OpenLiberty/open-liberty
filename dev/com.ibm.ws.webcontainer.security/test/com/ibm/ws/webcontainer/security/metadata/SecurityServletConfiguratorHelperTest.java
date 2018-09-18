@@ -202,16 +202,19 @@ public class SecurityServletConfiguratorHelperTest {
 
                 String annoName = "org.eclipse.microprofile.auth.LoginConfig";
 
+                HashSet annotatedClasses = new HashSet();
+                annotatedClasses.add("FooClass");
+
                 allowing(configurator).getWebAnnotations();
                 will(returnValue(webAnnotations));
 
+                one(webAnnotations).getClassesWithAnnotation(annoName);
+                will(returnValue(annotatedClasses));
+
                 one(webAnnotations).getAnnotationTargets();
                 will(returnValue(targets));
-
-                HashSet hs = new HashSet();
-                hs.add("FooClass");
                 one(targets).getAnnotatedClasses(annoName);
-                will(returnValue(hs));
+                will(returnValue(annotatedClasses));
 
                 one(webAnnotations).getInfoStore();
                 will(returnValue(infoStore));
@@ -369,6 +372,8 @@ public class SecurityServletConfiguratorHelperTest {
             {
                 one(configurator).getWebAnnotations();
                 will(returnValue(webAnnotations));
+                one(webAnnotations).getClassesWithAnnotation(ROLES_ALLOWED);
+                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
                 one(webAnnotations).getAnnotationTargets();
                 will(returnValue(targets));
                 allowing(targets).getAnnotatedClasses(ROLES_ALLOWED);
@@ -398,6 +403,8 @@ public class SecurityServletConfiguratorHelperTest {
             {
                 one(configurator).getWebAnnotations();
                 will(returnValue(webAnnotations));
+                one(webAnnotations).getClassesWithAnnotation(ROLES_ALLOWED);
+                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
                 one(webAnnotations).getAnnotationTargets();
                 will(returnValue(targets));
                 allowing(targets).getAnnotatedClasses(ROLES_ALLOWED);
