@@ -18,9 +18,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
-
-import org.omg.CORBA.IntHolder;
 
 import com.ibm.ws.install.internal.asset.UninstallAsset;
 import com.ibm.ws.kernel.feature.Visibility;
@@ -122,17 +121,18 @@ public class FeatureDependencyChecker {
         for (UninstallAsset ua : list) {
             assetsMap.put(ua.getProvisioningFeatureDefinition().getSymbolicName(), ua);
         }
-        IntHolder order = new IntHolder(list.size());
+        AtomicInteger order = new AtomicInteger(list.size()); // Doesn't really need to be atomic, just using it for an int holder object
         for (UninstallAsset ua : list) {
-            if (!!!visited.containsKey(ua.getProvisioningFeatureDefinition().getSymbolicName()))
+            if (!!!visited.containsKey(ua.getProvisioningFeatureDefinition().getSymbolicName())) {
                 DFS(ua, visited, assetsMap, order);
+            }
         }
 
         Collections.sort(list, new FeatureDependencyComparator(visited));
         return list;
     }
 
-    private void DFS(UninstallAsset asset, Map<String, Integer> visited, Map<String, UninstallAsset> assetsMap, IntHolder order) {
+    private void DFS(UninstallAsset asset, Map<String, Integer> visited, Map<String, UninstallAsset> assetsMap, AtomicInteger order) {
 
         visited.put(asset.getProvisioningFeatureDefinition().getSymbolicName(), -1);
         for (FeatureResource fr : asset.getProvisioningFeatureDefinition().getConstituents(null)) {
@@ -140,8 +140,8 @@ public class FeatureDependencyChecker {
             if (ua != null && !!!visited.containsKey(ua.getProvisioningFeatureDefinition().getSymbolicName()))
                 DFS(ua, visited, assetsMap, order);
         }
-        visited.put(asset.getProvisioningFeatureDefinition().getSymbolicName(), order.value);
-        order.value--;
+        visited.put(asset.getProvisioningFeatureDefinition().getSymbolicName(), order.get());
+        order.decrementAndGet();
 
     }
 
