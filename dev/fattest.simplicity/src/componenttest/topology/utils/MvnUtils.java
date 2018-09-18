@@ -371,6 +371,10 @@ public class MvnUtils {
                 printStdOutAndScreenIfLocal("                               " + failedTest);
             }
             printStdOutAndScreenIfLocal("\n");
+            new File("output").mkdirs();
+            try (FileOutputStream fos = new FileOutputStream("output/fail.log")) {
+                fos.write("Test FAILED".getBytes());
+            }
         }
         return failingTestsList;
     }
