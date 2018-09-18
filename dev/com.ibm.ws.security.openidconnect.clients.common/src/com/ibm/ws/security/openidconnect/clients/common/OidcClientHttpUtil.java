@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -206,7 +206,6 @@ public class OidcClientHttpUtil {
         if (authMethod.contains(ClientConstants.METHOD_BASIC)) { // social constant differs
             String userpass = baUsername + ":" + baPassword;
             String basicAuth = "Basic " + Base64Coder.base64Encode(userpass);
-
             postMethod.setHeader(ClientConstants.AUTHORIZATION, basicAuth);
         }
 
