@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,8 +88,12 @@ public class FrameReadProcessor {
         H2StreamProcessor stream = muxLink.getStream(streamId);
 
         if (stream == null) {
-            // Even stream IDs must not originate from the client
             if ((streamId != 0) && (streamId % 2 == 0)) {
+                if (currentFrame.getFrameType().equals(FrameTypes.PRIORITY)) {
+                    // PRIORITY frames can be received in any stream state
+                    return;
+                }
+                // even stream IDs must not originate from the client
                 throw new ProtocolException("Cannot start a stream from the client with an even numbered ID. stream-id: " + streamId);
             }
             stream = startNewInboundSession(streamId);
