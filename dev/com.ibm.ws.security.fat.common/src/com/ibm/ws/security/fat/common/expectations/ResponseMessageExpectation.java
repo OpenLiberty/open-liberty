@@ -17,6 +17,10 @@ public class ResponseMessageExpectation extends Expectation {
 
     protected static Class<?> thisClass = ResponseMessageExpectation.class;
 
+    public ResponseMessageExpectation(String checkType, String searchFor, String failureMsg) {
+        this(null, checkType, searchFor, failureMsg);
+    }
+
     public ResponseMessageExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_MESSAGE, checkType, searchFor, failureMsg);
     }

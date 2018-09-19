@@ -11,6 +11,7 @@
 package com.ibm.ws.security.fat.common.expectations;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -257,7 +258,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
         try {
             Expectations exps = new Expectations();
             Expectation e1 = new ResponseTitleExpectation(ACTION1, null, null, null);
-            Expectation e2 = new ResponseFullExpectation(ACTION2, null, null, null);
+            Expectation e2 = new ResponseFullExpectation(null, null, null, null);
             Expectation e3 = null;
             Expectation e4 = new ResponseFullExpectation(ACTION3, null, null, null);
             exps.addExpectation(e1);
@@ -272,7 +273,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
             Expectation compareE = expList.get(0);
             assertEquals("First expectation action did not match expected value. Expectation was: " + compareE, ACTION1, compareE.getAction());
             compareE = expList.get(1);
-            assertEquals("Second expectation action did not match expected value. Expectation was: " + compareE, ACTION2, compareE.getAction());
+            assertNull("Second expectation action should have been null but was not. Expectation was: " + compareE, compareE.getAction());
             compareE = expList.get(2);
             assertEquals("Third expectation action did not match expected value. Expectation was: " + compareE, ACTION3, compareE.getAction());
 
@@ -356,7 +357,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
             // Add some known expectations
             expectations.addExpectation(new ResponseTitleExpectation(ACTION1, "e1-checkType", "e1-searchFor", "e1-failureMsg"));
             expectations.addExpectation(new ResponseFullExpectation(ACTION2, "e2-checkType", "e2-searchFor", "e2-failureMsg"));
-            expectations.addExpectation(new ResponseFullExpectation(ACTION2, "e2-checkType", "e2-searchFor-2", "e2-failureMsg-2"));
+            expectations.addExpectation(new ResponseFullExpectation(null, "e2-checkType", "e2-searchFor-2", "e2-failureMsg-2"));
 
             // Create some new expectations
             Expectations exps = new Expectations();
@@ -376,7 +377,7 @@ public class ExpectationsTest extends CommonExpectationTestClass {
             assertEquals("Second known expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_FULL, compareE.getSearchLocation());
             assertEquals("Second known expectation search location did not match expected value. Expectation was: " + compareE, "e2-searchFor", compareE.getValidationValue());
             compareE = expList.get(2);
-            assertEquals("Third known expectation action did not match expected value. Expectation was: " + compareE, ACTION2, compareE.getAction());
+            assertNull("Third known expectation action should have been null but wasn't. Expectation was: " + compareE, compareE.getAction());
             assertEquals("Third known expectation search location did not match expected value. Expectation was: " + compareE, Constants.RESPONSE_FULL, compareE.getSearchLocation());
             assertEquals("Third known expectation search location did not match expected value. Expectation was: " + compareE, "e2-searchFor-2", compareE.getValidationValue());
             // Other expectations should match the new expectations that were added
@@ -442,6 +443,23 @@ public class ExpectationsTest extends CommonExpectationTestClass {
     }
 
     @Test
+    public void test_addSuccessStatusCodes_singleNullTestAction() {
+        try {
+            expectations = new Expectations(new String[] { null });
+
+            expectations.addSuccessStatusCodes();
+
+            List<Expectation> expList = expectations.getExpectations();
+            assertEquals("Expectations list size did not match expected value. Expectations list was: " + expList, 1, expList.size());
+            Expectation compareE = expList.get(0);
+            verifySuccessfulResponseStatusExpectation(compareE, null);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_addSuccessStatusCodes_multipleTestActions() {
         try {
             expectations.addSuccessStatusCodes();
@@ -481,6 +499,23 @@ public class ExpectationsTest extends CommonExpectationTestClass {
 
             List<Expectation> expList = expectations.getExpectations();
             assertTrue("Expectations list should have been empty but was: " + expList, expList.isEmpty());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_addSuccessStatusCodes_exceptAction_singleNullTestAction() {
+        try {
+            expectations = new Expectations(new String[] { null });
+
+            expectations.addSuccessStatusCodes(ACTION1);
+
+            List<Expectation> expList = expectations.getExpectations();
+            assertEquals("Expectations list size did not match expected value. Expectations list was: " + expList, 1, expList.size());
+            Expectation compareE = expList.get(0);
+            verifySuccessfulResponseStatusExpectation(compareE, null);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

@@ -114,4 +114,9 @@ public class JsonObjectExpectationTest extends CommonSpecificExpectationTest {
         return new JsonObjectExpectation(TEST_ACTION, SEARCH_KEY, SEARCH_FOR_VAL, FAILURE_MESSAGE);
     }
 
+    @Override
+    protected Expectation createBasicExpectationWithNoAction() {
+        return new JsonObjectExpectation(null, SEARCH_KEY, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
 }
