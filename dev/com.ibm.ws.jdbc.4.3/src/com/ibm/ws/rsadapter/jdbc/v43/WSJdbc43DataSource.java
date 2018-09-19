@@ -17,6 +17,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.ShardingKeyBuilder;
 
 import javax.resource.spi.ConnectionManager;
+import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.ras.Tr;
@@ -40,7 +41,11 @@ public class WSJdbc43DataSource extends WSJdbcDataSource implements DataSource {
 
     @Override
     public ShardingKeyBuilder createShardingKeyBuilder() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        CommonDataSource ds = mcf.getUnderlyingDataSource();
+        if (ds == null) // not available because data source is backed by java.sql.Driver
+            throw new SQLFeatureNotSupportedException("java.sql.Driver.createShardingKeyBuilder");
+        else
+            return ds.createShardingKeyBuilder();
     }
 
     Connection getConnection(WSJdbc43ConnectionBuilder builder) throws SQLException {

@@ -173,6 +173,7 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
             shardingKey = (ShardingKey) args[0];
             if (args.length == 2)
                 superShardingKey = (ShardingKey) args[1];
+            return null;
         }
         if ("setShardingKeyIfValid".equals(methodName)) {
             boolean valid = (args[0] instanceof D43ShardingKey || args[0] == null)
