@@ -107,8 +107,8 @@ public class H2StreamProcessor {
     private long streamWindowUpdateWriteInitialSize;
     private long streamWindowUpdateWriteLimit;
 
-    //change to 5500 to track better if this is occurring
-    private final int MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS = 5500;
+    //change to 8192 to track better if this is occurring
+    private final int MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS = 8192;
 
     // the local window, which we're keeping track of as a receiver
     private long streamReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
