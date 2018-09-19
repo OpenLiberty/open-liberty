@@ -75,9 +75,10 @@ public abstract class Expectation {
     }
 
     /**
-     * Performs all of the steps necessary to verify that this particular expectation is met. If the current test action does not
-     * match the action for this expectation, validation is skipped.
-     *
+     * Performs all of the steps necessary to verify that this particular expectation is met. If this expectation's test action is
+     * set to {@code null}, validation will proceed regardless of the test action passed to this method. Otherwise, if the current
+     * test action does not match the action for this expectation, validation is skipped.
+     * 
      * @param currentTestAction
      * @param contentToValidate
      *            Some kind of object to validate against (typically some kind of HtmlUnit entity like a WebResponse)
@@ -99,7 +100,7 @@ public abstract class Expectation {
     abstract protected void validate(Object contentToValidate) throws Exception;
 
     public boolean isExpectationForAction(String testAction) {
-        if (testAction == null || !testAction.equals(this.testAction)) {
+        if ((this.testAction != null) && (testAction == null || !testAction.equals(this.testAction))) {
             return false;
         }
         return true;

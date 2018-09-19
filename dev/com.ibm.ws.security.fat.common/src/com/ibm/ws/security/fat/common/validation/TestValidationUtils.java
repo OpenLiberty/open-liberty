@@ -63,6 +63,10 @@ public class TestValidationUtils {
         return false;
     }
 
+    public void validateResult(Object response, Expectations expectations) throws Exception {
+        validateResult(response, null, expectations);
+    }
+
     public void validateResult(Object response, String currentAction, Expectations expectations) throws Exception {
         String thisMethod = "validateResult";
         loggingUtils.printMethodName(thisMethod, "Start of");

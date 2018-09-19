@@ -88,7 +88,7 @@ public class ResponseMessageExpectationTest extends CommonSpecificExpectationTes
     @Test
     public void test_validate_unknownCheckType() {
         try {
-            Expectation exp = new ResponseHeaderExpectation(TEST_ACTION, "check type", SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Expectation exp = new ResponseMessageExpectation(TEST_ACTION, "check type", SEARCH_FOR_VAL, FAILURE_MESSAGE);
             Object content = "Some content";
 
             runNegativeValidateTestForCheckType_unknown(exp, content);
@@ -104,6 +104,18 @@ public class ResponseMessageExpectationTest extends CommonSpecificExpectationTes
             Object content = new Long(0);
 
             runNegativeValidateTestForUnsupportedResponseType(exp, content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_validate_nullAction() {
+        try {
+            Expectation exp = new ResponseMessageExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+            Object content = "Some " + SEARCH_FOR_VAL + " content";
+
+            exp.validate(content);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -251,6 +263,11 @@ public class ResponseMessageExpectationTest extends CommonSpecificExpectationTes
     @Override
     protected Expectation createBasicExpectation() {
         return new ResponseMessageExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
+    @Override
+    protected Expectation createBasicExpectationWithNoAction() {
+        return new ResponseMessageExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
     }
 
     protected void setValidateTestExpectations(Object responseObject, final Object content) {

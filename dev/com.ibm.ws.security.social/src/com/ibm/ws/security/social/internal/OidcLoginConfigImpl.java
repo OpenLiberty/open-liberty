@@ -34,7 +34,7 @@ import com.ibm.ws.security.social.error.SocialLoginException;
 
 /**
  * This class was derived from GoogleLoginConfigImpl, it's purpose is to provide common superclass
- * and a metatype element for other OIDC based social services that will not use the Google metatypedefaults.
+ * and a metatype element for other OIDC based social services that will not use the Google metatype defaults.
  *
  * It provides two services:
  * . One is for the oidcConfig which extends from the generic OAuth2LoginConfig
@@ -63,6 +63,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     public static final String KEY_TRUSTED_ALIAS = "trustAliasName";
     private String trustAliasName = null;
+    
+    public static final String KEY_USERINFO_ENDPOINT = "userInfoEndpoint";
+    private String userInfoEndpoint = null;
+    public static final String KEY_USERINFO_ENDPOINT_ENABLED = "userInfoEndpointEnabled";
+    private boolean userInfoEndpointEnabled = true;
 
     public static final String KEY_RESPONSE_MODE = "responseMode";
     private String responseMode = null;
@@ -80,6 +85,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);
+        this.userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, this.userInfoEndpointEnabled);
         this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
         this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
         this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);
@@ -133,6 +140,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             Tr.debug(tc, KEY_clientSecret + " is null = " + (clientSecret == null));
             Tr.debug(tc, KEY_authorizationEndpoint + " = " + authorizationEndpoint);
             Tr.debug(tc, KEY_tokenEndpoint + " = " + tokenEndpoint);
+            Tr.debug(tc, KEY_USERINFO_ENDPOINT + " = " + userInfoEndpoint);
+            Tr.debug(tc, KEY_USERINFO_ENDPOINT_ENABLED + " = " + userInfoEndpointEnabled);
             Tr.debug(tc, KEY_jwksUri + " = " + jwksUri);
             Tr.debug(tc, KEY_scope + " = " + scope);
             Tr.debug(tc, KEY_userNameAttribute + " = " + userNameAttribute);
@@ -161,6 +170,16 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             Tr.debug(tc, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT + " = " + includeCustomCacheKeyInSubject);
             Tr.debug(tc, KEY_resource + " = " + resource);
         }
+    }
+    
+    @Override
+    public boolean isUserInfoEnabled(){
+        return this.userInfoEndpointEnabled;
+    }
+    
+    @Override
+    public String getUserInfoEndpointUrl(){
+        return this.userInfoEndpoint;
     }
 
     @Override

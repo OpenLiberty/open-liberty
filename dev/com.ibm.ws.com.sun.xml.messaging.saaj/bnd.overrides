@@ -35,5 +35,5 @@ Service-Component: \
   com.ibm.ws.com.sun.xml.messaging.saaj.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=optional; \
+    configuration-policy:=ignore; \
     properties:="resources=${app-resources}"
