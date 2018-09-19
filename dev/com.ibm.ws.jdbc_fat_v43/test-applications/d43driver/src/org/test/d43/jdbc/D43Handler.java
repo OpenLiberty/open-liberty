@@ -189,8 +189,10 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
             Object result = method.invoke(instance, args);
             if (returnType.isInterface() && (returnType.getPackage().getName().startsWith("java.sql")
                                              || returnType.getPackage().getName().startsWith("javax.sql")
-                                             || returnType.equals(XAResource.class)))
-                return Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { returnType }, new D43Handler(result, this, commonDataSource));
+                                             || returnType.equals(XAResource.class))) {
+                D43Handler handler = new D43Handler(result, this, commonDataSource, shardingKey, superShardingKey);
+                return Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { returnType }, handler);
+            }
             return result;
         } catch (InvocationTargetException x) {
             throw x.getCause();

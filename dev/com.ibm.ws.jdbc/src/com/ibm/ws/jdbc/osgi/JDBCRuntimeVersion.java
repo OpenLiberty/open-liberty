@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,11 @@ import java.sql.Statement;
 import java.util.concurrent.Executor;
 
 import javax.resource.spi.ConnectionManager;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
+import javax.sql.PooledConnection;
+import javax.sql.XAConnection;
+import javax.sql.XADataSource;
 
 import org.osgi.framework.Version;
 
@@ -33,6 +38,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcResultSet;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
+import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 
@@ -89,7 +95,10 @@ public interface JDBCRuntimeVersion {
     // JDBC 4.2 BatchUpdateException constructor
     public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage);
 
-    // JDBC 4.3 Connection methods
+    // JDBC 4.3 connection builder and Connection methods
+    public Connection buildConnection(DataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException;
+    public PooledConnection buildPooledConnection(ConnectionPoolDataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException;
+    public XAConnection buildXAConnection(XADataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException;
     public void doSetShardingKeys(Connection con, Object shardingKey, Object superShardingKey) throws SQLException;
     public void beginRequest(Connection con) throws SQLException;
     public void endRequest(Connection con) throws SQLException;

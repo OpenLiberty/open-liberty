@@ -178,13 +178,13 @@ public class JDBC43TestServlet extends FATServlet {
             Connection con1 = conbuilderA.build();
             assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
             con1.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-            String k1 = con1.getClientInfo("SHARDING_KEY");
+            String k1 = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
             assertTrue(k1, k1.endsWith("|VARCHAR:DSCBKey;"));
 
             Connection con2 = conbuilderB.build();
             // If connection handle is shared, it will report the isolation level value of con1,
             assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
-            String k2 = con2.getClientInfo("SHARDING_KEY");
+            String k2 = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
             assertTrue(k2, k2.endsWith("|VARCHAR:DSCBKey;"));
 
             con2.close();
@@ -197,7 +197,7 @@ public class JDBC43TestServlet extends FATServlet {
         ShardingKey key3 = keybuilderA.subkey(3, JDBCType.INTEGER).build();
         Connection con3 = conbuilderA.shardingKey(key3).build();
         try {
-            String k3 = con3.getClientInfo("SHARDING_KEY");
+            String k3 = con3.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
             assertTrue(k3, k3.endsWith("|VARCHAR:DSCBKey;INTEGER:3;"));
         } finally {
             con3.close();
@@ -206,7 +206,7 @@ public class JDBC43TestServlet extends FATServlet {
         // Clear the sharding key that is specified on the builder,
         Connection con4 = conbuilderB.shardingKey(null).build();
         try {
-            String k4 = con4.getClientInfo("SHARDING_KEY");
+            String k4 = con4.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
             assertNull(k4, k4);
         } finally {
             con4.close();
@@ -788,6 +788,52 @@ public class JDBC43TestServlet extends FATServlet {
         }
 
         assertEquals(ends + 1, requests[END].get());
+    }
+
+    /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a
+     * javax.sql.ConnectionPoolDataSource implementation. This test only does matching on ShardingKey.
+     * It does not cover user, password, or super sharding key.
+     */
+    @Test
+    public void testPooledConnectionBuilderMatchShardingKey() throws Exception {
+        ShardingKeyBuilder keybuilderA = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKeyBuilder keybuilderB = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKey keyA = keybuilderA.subkey("PCBKey", JDBCType.CLOB).build();
+        ShardingKey keyB = keybuilderB.subkey("PCBKey", JDBCType.CLOB).build();
+        ConnectionBuilder conbuilderA = sharablePool1DataSourceWithAppAuth.createConnectionBuilder().shardingKey(keyA);
+        ConnectionBuilder conbuilderB = sharablePool1DataSourceWithAppAuth.createConnectionBuilder().shardingKey(keyB);
+
+        tx.begin();
+        try {
+            Connection con1 = conbuilderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            String k1 = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k1, k1.endsWith("|CLOB:PCBKey;"));
+
+            Connection con2 = conbuilderB.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE, con2.getTransactionIsolation());
+            String k2 = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k2, k2.endsWith("|CLOB:PCBKey;"));
+
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Specify a different sharding key on the builder,
+        ShardingKeyBuilder keybuilderC = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKey key3 = keybuilderC.subkey("PCBKey", JDBCType.NCLOB).build();
+        Connection con3 = conbuilderA.shardingKey(key3).build();
+        try {
+            String k3 = con3.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k3, k3.endsWith("|NCLOB:PCBKey;"));
+        } finally {
+            con3.close();
+        }
     }
 
     /**
@@ -1740,6 +1786,93 @@ public class JDBC43TestServlet extends FATServlet {
             ps.close();
         } finally {
             c.close();
+        }
+    }
+
+    /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a
+     * javax.sql.XADataSource implementation. This test only does matching on ShardingKey.
+     * It does not cover user, password, or super sharding key.
+     */
+    @Test
+    public void testXAConnectionBuilderMatchShardingKey() throws Exception {
+        ShardingKeyBuilder keybuilderA = sharableXADataSource.createShardingKeyBuilder();
+        ShardingKeyBuilder keybuilderB = sharableXADataSource.createShardingKeyBuilder();
+        ShardingKey keyA = keybuilderA.subkey("XACBKey", JDBCType.CHAR).subkey(true, JDBCType.BOOLEAN).build();
+        ShardingKey keyB = keybuilderB.subkey("XACBKey", JDBCType.CHAR).subkey(true, JDBCType.BOOLEAN).build();
+        ConnectionBuilder conbuilderA = sharableXADataSource.createConnectionBuilder().shardingKey(keyA);
+        ConnectionBuilder conbuilderB = sharableXADataSource.createConnectionBuilder().shardingKey(keyB);
+
+        AtomicInteger[] requests2;
+        int begins2;
+
+        tx.begin();
+        try {
+            Connection con1 = conbuilderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            String k1 = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k1, k1.endsWith("|CHAR:XACBKey;BOOLEAN:true;"));
+
+            Connection con2 = conbuilderB.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con2.getTransactionIsolation());
+            String k2 = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k2, k2.endsWith("|CHAR:XACBKey;BOOLEAN:true;"));
+
+            PreparedStatement ps2 = con2.prepareStatement("INSERT INTO STREETS VALUES (?, ?, ?)");
+            ps2.setString(1, "Plummer Circle SW");
+            ps2.setString(2, "Rochester");
+            ps2.setString(3, "MN");
+            ps2.executeUpdate();
+            ps2.close();
+
+            requests2 = (AtomicInteger[]) con2.unwrap(Supplier.class).get();
+            begins2 = requests2[BEGIN].get();
+
+            // enlist another resource to prove that the prior connection is two-phase capable
+            Connection con3 = sharablePool1DataSourceWithAppAuth.getConnection("user43", "pwd43");
+            PreparedStatement ps3 = con3.prepareStatement("INSERT INTO STREETS VALUES (?, ?, ?)");
+            ps3.setString(1, "Rocky Creek Drive NE");
+            ps3.setString(2, "Rochester");
+            ps3.setString(3, "MN");
+            ps3.executeUpdate();
+            ps3.close();
+
+            con3.close();
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Specify a similar, but different (subkeys are reversed) sharding key on the builder,
+        ShardingKeyBuilder keybuilderD = sharableXADataSource.createShardingKeyBuilder();
+        ShardingKey key4 = keybuilderD.subkey(true, JDBCType.BOOLEAN).subkey("XACBKey", JDBCType.CHAR).build();
+        Connection con4 = conbuilderA.shardingKey(key4).build();
+        try {
+            String k4 = con4.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k4, k4.endsWith("|BOOLEAN:true;CHAR:XACBKey;"));
+        } finally {
+            con4.close();
+        }
+
+        // Specify a match for the first sharding key
+        ShardingKey key5 = keybuilderB.build();
+        Connection con5 = conbuilderB.shardingKey(key5).build();
+        try {
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con5.getTransactionIsolation());
+            String k5 = con5.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k5, k5.endsWith("|CHAR:XACBKey;BOOLEAN:true;"));
+
+            // verify this is the same instance, matched and reused from the pool
+            AtomicInteger[] requests5 = (AtomicInteger[]) con5.unwrap(Supplier.class).get();
+            // yes, we do mean to compare instances here - it demonstrates the same underlying connection was reused from the pool
+            assertSame(requests2[BEGIN], requests5[BEGIN]);
+            int begins5 = requests5[BEGIN].get();
+            assertEquals(begins2 + 1, begins5);
+        } finally {
+            con5.close();
         }
     }
 
