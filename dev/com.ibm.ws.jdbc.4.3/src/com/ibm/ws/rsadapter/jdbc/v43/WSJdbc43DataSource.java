@@ -19,15 +19,11 @@ import java.sql.ShardingKeyBuilder;
 import javax.resource.spi.ConnectionManager;
 import javax.sql.DataSource;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
 public class WSJdbc43DataSource extends WSJdbcDataSource implements DataSource {
-    private static final TraceComponent tc = Tr.register(WSJdbc43DataSource.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 
     public WSJdbc43DataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) {
         super(mcf, connMgr);
