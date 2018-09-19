@@ -529,7 +529,14 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         }
 
         // Complete inheritance information requires a class loader.
-        cdiContainerAnnotations.setClassLoader( getClassLoader() );
+        ClassLoader useClassLoader = getClassLoader();
+        if ( useClassLoader == null ) {
+            String message =
+                "CDI archive [ " + appName + " : " + archivePath + " ]:" +
+                " Null class loader during query for inherited annotations [ " + annotationClassNames + " ]";
+            throw new IllegalArgumentException(message);
+        }
+        cdiContainerAnnotations.setClassLoader(useClassLoader);
 
         return cdiContainerAnnotations.getClassesWithSpecifiedInheritedAnnotations(annotationClassNames);
     }

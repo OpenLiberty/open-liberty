@@ -20,8 +20,7 @@ import com.ibm.wsspi.anno.info.ClassInfo;
 
 public class DelayedClassInfoImpl extends ClassInfoImpl {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
-
-    private static final String CLASS_NAME = "DelayedClassInfoImpl";
+    private static final String CLASS_NAME = DelayedClassInfoImpl.class.getSimpleName();
 
     // Top O' the World ...
 

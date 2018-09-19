@@ -26,22 +26,13 @@ import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.Info;
 
 public abstract class InfoImpl implements Info {
+    private static final String CLASS_NAME = InfoImpl.class.getSimpleName();
 
-    private static final String CLASS_NAME = "ClassInfoImpl";
-
-    protected String hashText;
+    protected final String hashText;
 
     @Override
     public String getHashText() {
-        if (hashText == null) {
-            hashText = computeHashText();
-        }
-
         return hashText;
-    }
-
-    protected String computeHashText() {
-        return getClass().getName() + "@" + Integer.toHexString(hashCode()) + " ( " + getName() + " )";
     }
 
     @Override
@@ -51,7 +42,8 @@ public abstract class InfoImpl implements Info {
 
     // Top O' the world ...
 
-    public InfoImpl(String name, int modifiers, InfoStoreImpl infoStore) {
+    public InfoImpl(String name, int modifiers, InfoStoreImpl infoStore, String hashSuffix) {
+        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) + "(" + hashSuffix + ")";
 
         this.infoStore = infoStore;
 

@@ -635,7 +635,14 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     //
 
-    protected void ensureInternalResults() {
+    // 'ensureInternalResults' and 'ensureExternalResults',
+    // which are invoked before accessing data, and which are the
+    // primary steps which update internal state, must be synchronized.
+    //
+    // After the data is ensured, the subsequent access is safe to access
+    // the respective internal or external data.
+
+    protected synchronized void ensureInternalResults() {
         String methodName = "ensureInternalResults";
 
         if ( hasInternalTable() ) {
@@ -695,7 +702,14 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     private static final int NS_IN_MS = 1000 * 1000;
 
-    protected void ensureExternalResults() {
+    // 'ensureInternalResults' and 'ensureExternalResults',
+    // which are invoked before accessing data, and which are the
+    // primary steps which update internal state, must be synchronized.
+    //
+    // After the data is ensured, the subsequent access is safe to access
+    // the respective internal or external data.
+
+    protected synchronized void ensureExternalResults() {
         String methodName = "ensureExternalResults";
 
         if ( externalTable != null ) {

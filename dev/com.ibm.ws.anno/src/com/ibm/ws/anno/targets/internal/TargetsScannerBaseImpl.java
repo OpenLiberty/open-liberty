@@ -73,6 +73,12 @@ public class TargetsScannerBaseImpl {
         
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
+        if ( targets == null ) {
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": " + this.hashText + " created with null targets");
+        } else if ( rootClassSource == null ) {
+            throw new IllegalArgumentException(getClass().getSimpleName() + ": " + this.hashText + " created with null class source");
+        }
+
         this.targets = targets;
 
         this.factory = targets.getFactory();

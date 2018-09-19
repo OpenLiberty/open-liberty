@@ -53,10 +53,8 @@ import com.ibm.wsspi.anno.info.AnnotationValue;
  * information cannot be resolved.</p>
  */
 public class AnnotationInfoImpl implements AnnotationInfo {
-
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno");
-
-    private static final String CLASS_NAME = "AnnotationInfoImpl";
+    private static final String CLASS_NAME = AnnotationInfoImpl.class.getSimpleName();
 
     protected String hashText;
 

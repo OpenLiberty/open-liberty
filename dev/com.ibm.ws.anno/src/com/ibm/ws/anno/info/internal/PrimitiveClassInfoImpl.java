@@ -18,8 +18,7 @@ import java.util.logging.Logger;
 
 public class PrimitiveClassInfoImpl extends ClassInfoImpl {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
-
-    private static final String CLASS_NAME = "PrimitiveClassInfoImpl";
+    private static final String CLASS_NAME = PrimitiveClassInfoImpl.class.getSimpleName();
 
     //
 

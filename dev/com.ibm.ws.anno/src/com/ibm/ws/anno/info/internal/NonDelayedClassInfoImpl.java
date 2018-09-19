@@ -32,8 +32,7 @@ import com.ibm.wsspi.anno.info.ClassInfo;
 
 public class NonDelayedClassInfoImpl extends ClassInfoImpl {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
-
-    private static final String CLASS_NAME = "NonDelayedClassInfoImpl";
+    private static final String CLASS_NAME = NonDelayedClassInfoImpl.class.getSimpleName();
 
     //
 
@@ -80,13 +79,13 @@ public class NonDelayedClassInfoImpl extends ClassInfoImpl {
     }
 
     public NonDelayedClassInfoImpl(String name, String superClassName, int modifiers, String[] interfaceNames,
-                               InfoStoreImpl infoStore) {
+                                   InfoStoreImpl infoStore) {
         this(name, superClassName, modifiers, interfaceNames, IS_NOT_ARTIFICIAL, infoStore);
     }
 
     public NonDelayedClassInfoImpl(String name, String superClassName, int modifiers, String[] interfaceNames,
-                               boolean isArtificial,
-                               InfoStoreImpl infoStore) {
+                                   boolean isArtificial,
+                                   InfoStoreImpl infoStore) {
 
         super(name, modifiers, infoStore);
 

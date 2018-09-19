@@ -24,16 +24,11 @@ import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.MethodInfo;
 
 public class MethodInfoImpl extends InfoImpl implements MethodInfo {
-    private static final String CLASS_NAME = "MethodInfoImpl";
-
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
+    private static final String CLASS_NAME = MethodInfoImpl.class.getSimpleName();
 
-    @Override
-    protected String computeHashText() {
-        return
-            getClass().getName() +
-            "@" + Integer.toHexString(hashCode()) +
-            " ( " + getQualifiedName() + getDescription() + " )";
+    private static String getHashSuffix(NonDelayedClassInfoImpl declaringClass, String name, String description) {
+        return ( declaringClass.getName() + "." + name + ", " + description );
     }
 
     //
@@ -43,7 +38,8 @@ public class MethodInfoImpl extends InfoImpl implements MethodInfo {
                           int modifiers,
                           NonDelayedClassInfoImpl declaringClass) {
 
-        super(name, modifiers, declaringClass.getInfoStore());
+        super( name, modifiers, declaringClass.getInfoStore(),
+               getHashSuffix(declaringClass, name, description) );
 
         String methodName = "<init>";
 

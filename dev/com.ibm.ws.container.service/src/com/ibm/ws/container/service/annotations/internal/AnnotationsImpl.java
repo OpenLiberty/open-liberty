@@ -46,16 +46,17 @@ import com.ibm.ws.container.service.annotations.SpecificAnnotations;
  */
 public abstract class AnnotationsImpl implements Annotations {
     public static final TraceComponent tc = Tr.register(AnnotationsImpl.class);
-
     private static final String CLASS_NAME = AnnotationsImpl.class.getSimpleName();
 
-    public static String getPath(Container useContainer) throws UnableToAdaptException {
+    //
+
+    public static String getPath(Container container) throws UnableToAdaptException {
         StringBuilder pathBuilder = new StringBuilder();
 
         Entry entry;
-        while ( (entry = useContainer.adapt(Entry.class)) != null ) { // throws UnableToAdaptException
+        while ( (entry = container.adapt(Entry.class)) != null ) { // throws UnableToAdaptException
             pathBuilder.insert(0,  entry.getPath() );
-            useContainer = entry.getRoot();
+            container = entry.getRoot();
         }
 
         return pathBuilder.toString();
@@ -88,7 +89,7 @@ public abstract class AnnotationsImpl implements Annotations {
             pathCase = "non-root-of-roots (full path)";
         }
 
-        String message = CLASS_NAME + ": Container [ " + container + " ] Path [ " + containerPath + " ]: " + pathCase;
+        String message = getClass().getSimpleName() + ": Container [ " + container + " ] Path [ " + containerPath + " ]: " + pathCase;
         Tr.info(tc, message);
         (new Throwable(message)).printStackTrace(System.out);
 
@@ -160,7 +161,6 @@ public abstract class AnnotationsImpl implements Annotations {
         this.modName = modName;
         this.modCatName = modCatName;
 
-        this.isSetClassSource = false;
         this.rootClassSource = null;
 
         this.isSetTargets = false;
@@ -312,7 +312,7 @@ public abstract class AnnotationsImpl implements Annotations {
             }
             modName = useModName;
 
-            System.out.println(CLASS_NAME +
+            System.out.println(getClass().getSimpleName() +
                 ": App [ " + getAppName() + " ]" +
                 " Container [ " + getContainer() + " ]" +
                 " Forced Mod [ " + modName + " ] (" + modNameCase + ")");
@@ -340,7 +340,6 @@ public abstract class AnnotationsImpl implements Annotations {
 
     protected ClassLoader classLoader;
 
-    protected boolean isSetClassSource;
     protected ClassSource_Aggregate rootClassSource;
 
     protected boolean addContainerClassSource(String path, Container container) {
@@ -375,7 +374,6 @@ public abstract class AnnotationsImpl implements Annotations {
         return true;
     }
 
-    
     @Override
     public ClassLoader getClassLoader() {
         synchronized ( classSourceLock ) {
@@ -404,16 +402,12 @@ public abstract class AnnotationsImpl implements Annotations {
     @Override
     public ClassSource_Aggregate releaseClassSource() {
         synchronized ( classSourceLock ) { 
-            if ( !isSetClassSource ) {
+            if ( rootClassSource == null ) {
                 return null;
             }
 
-            isSetClassSource = false;
-
             ClassSource_Aggregate oldClassSource = rootClassSource;
             rootClassSource = null;
-
-            cacheRemove(ClassSource_Aggregate.class);
 
             return oldClassSource;
         }
@@ -424,6 +418,14 @@ public abstract class AnnotationsImpl implements Annotations {
         synchronized( classSourceLock ) {
             if ( rootClassSource == null ) {
                 rootClassSource = createRootClassSource();
+                if ( rootClassSource == null ) {
+                    String message =
+                        "Null class source created for " +
+                        " app [ " + appName + " ]" +
+                        " module [ " + modName + " ]" +
+                        " module category [ " + modCatName + " ]";
+                    Tr.warning(tc, getClass().getName() + ": " + message);
+                }
                 addInternalToClassSource();
                 addExternalToClassSource();
             }
@@ -546,12 +548,33 @@ public abstract class AnnotationsImpl implements Annotations {
     protected AnnotationTargets_Targets createTargets() {
         ClassSource_Aggregate useClassSource = getClassSource();
         if ( useClassSource == null ) {
+            String message =
+                "Null class source creating targets for " +
+                " app [ " + appName + " ]" +
+                " module [ " + modName + " ]" +
+                " module category [ " + modCatName + " ]";
+            Tr.warning(tc, getClass().getName() + ": " + message);
             return null;
         }
 
         AnnotationTargets_Factory targetsFactory = getTargetsFactory();
         if ( targetsFactory == null ) {
+            String message =
+                "Null factory creating targets for " +
+                " app [ " + appName + " ]" +
+                " module [ " + modName + " ]" +
+                " module category [ " + modCatName + " ]";
+            Tr.warning(tc, getClass().getName() + ": " + message);
             return null;
+        }
+
+        if ( classLoader == null ) {
+            String message =
+                "Null class loader creating targets for " +
+                " app [ " + appName + " ]" +
+                " module [ " + modName + " ]" +
+                " module category [ " + modCatName + " ]";
+            Tr.warning(tc, getClass().getName() + ": " + message);
         }
 
         AnnotationTargets_Targets useTargets;
@@ -560,6 +583,11 @@ public abstract class AnnotationsImpl implements Annotations {
         } catch ( AnnotationTargets_Exception e ) {
             return null; // FFDC
         }
+
+        // Set the class source here, before the targets are stored
+        // to the non-persistent cache.  The class source can then
+        // be stored only when the targets are initially created, and
+        // the store does not need synchronization.
 
         useTargets.scan(useClassSource);
 
@@ -626,37 +654,37 @@ public abstract class AnnotationsImpl implements Annotations {
     //
 
     @Override
-   public boolean isIncludedClass(String className) {
+    public boolean isIncludedClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
         if ( useTargets == null ) {
             return false;
         } else {
             return useTargets.isSeedClassName(className);
         }
-   }
+    }
 
     @Override
-   public boolean isPartialClass(String className) {
+    public boolean isPartialClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
         if ( useTargets == null ) {
             return false;
         } else {
             return useTargets.isPartialClassName(className);
         }
-   }
+    }
 
     @Override
-   public boolean isExcludedClass(String className) {
+    public boolean isExcludedClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
         if ( useTargets == null ) {
             return false;
         } else {
             return useTargets.isExcludedClassName(className);
         }
-   }
+    }
 
     @Override
-   public boolean isExternalClass(String className) {
+    public boolean isExternalClass(String className) {
         AnnotationTargets_Targets useTargets = getTargets();
         if ( useTargets == null ) {
             return false;

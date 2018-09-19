@@ -21,11 +21,10 @@ import com.ibm.wsspi.anno.info.FieldInfo;
 public class FieldInfoImpl extends InfoImpl implements FieldInfo {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
 
-    private static final String CLASS_NAME = "FieldInfoImpl";
+    private static final String CLASS_NAME = FieldInfoImpl.class.getSimpleName();
 
-    @Override
-    protected String computeHashText() {
-        return getClass().getName() + "@" + Integer.toHexString(hashCode()) + " ( " + getQualifiedName() + " )";
+    private static String getHashSuffix(String name, NonDelayedClassInfoImpl declaringClass) {
+        return declaringClass.getName() + '.' + name;
     }
 
     //
@@ -33,7 +32,8 @@ public class FieldInfoImpl extends InfoImpl implements FieldInfo {
     public FieldInfoImpl(String name, String desc, int modifiers, Object defaultValue,
                          NonDelayedClassInfoImpl declaringClass) {
 
-        super(name, modifiers, declaringClass.getInfoStore());
+        super( name, modifiers, declaringClass.getInfoStore(),
+               getHashSuffix(name, declaringClass) );
 
         String methodName = "<init>";
 

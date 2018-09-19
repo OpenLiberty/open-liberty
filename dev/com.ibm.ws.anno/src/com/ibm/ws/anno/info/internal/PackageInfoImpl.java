@@ -18,8 +18,7 @@ import com.ibm.wsspi.anno.info.PackageInfo;
 
 public class PackageInfoImpl extends InfoImpl implements PackageInfo {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.anno.info");
-
-    private static final String CLASS_NAME = "PackageInfoImpl";
+    private static final String CLASS_NAME = PackageInfoImpl.class.getSimpleName();
 
     //
 
@@ -39,8 +38,12 @@ public class PackageInfoImpl extends InfoImpl implements PackageInfo {
 
     //
 
+    private static String getHashSuffix(String name) {
+        return name;
+    }
+
     public PackageInfoImpl(String name, int modifiers, InfoStoreImpl infoStore) {
-        super(name, modifiers, infoStore);
+        super( name, modifiers, infoStore, getHashSuffix(name) );
 
         String methodName = "<init>";
         

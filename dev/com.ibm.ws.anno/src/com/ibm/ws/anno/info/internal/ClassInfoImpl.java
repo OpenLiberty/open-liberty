@@ -45,8 +45,12 @@ public abstract class ClassInfoImpl extends InfoImpl implements ClassInfo {
 
     // Instance state ...
 
+    private static String getHashSuffix(String name) {
+        return name;
+    }
+
     public ClassInfoImpl(String name, int modifiers, InfoStoreImpl infoStore) {
-        super(name, modifiers, infoStore);
+        super( name, modifiers, infoStore, getHashSuffix(name) );
     }
 
     //
