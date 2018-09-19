@@ -71,6 +71,7 @@ public class SpringBootThinUtil {
     }
 
     public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache, File libIndexCacheParent) throws IOException {
+        validateNotNull(sourceFatJar, targetThinJar, libIndexCache);
         this.sourceFatJar = new JarFile(sourceFatJar);
         this.targetThinJar = targetThinJar;
         this.libIndexCache = libIndexCache;
@@ -87,6 +88,18 @@ public class SpringBootThinUtil {
         }
         this.springBootLibProvidedPath = springBootLibProvidedPath;
         this.starterFilter = getStarterFilter(this.sourceFatJar);
+    }
+
+    private void validateNotNull(File sourceFatJar, File targetThinJar, File libIndexCache) {
+        if (sourceFatJar == null) {
+            throw new IllegalStateException("Spring Boot source archive cannot be null");
+        }
+        if (targetThinJar == null) {
+            throw new IllegalStateException("Target thin archive cannot be null");
+        }
+        if (libIndexCache == null) {
+            throw new IllegalStateException("Library cache cannot be null");
+        }
     }
 
     public void execute() throws IOException, NoSuchAlgorithmException {
