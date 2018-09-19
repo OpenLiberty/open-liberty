@@ -328,7 +328,7 @@ public class MvnUtils {
             init(server);
         }
 
-        String[] cmd = mvnCliRoot;
+        String[] cmd = mvnCliTckRoot;
         if (addedProps != null) {
             for (Iterator<Entry<String, String>> iterator = addedProps.entrySet().iterator(); iterator.hasNext();) {
                 Entry<String, String> entry = iterator.next();
