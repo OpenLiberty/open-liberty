@@ -11,8 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.6
-javac.target: 1.6
+javac.source: 1.7
+javac.target: 1.7
 
 Bundle-Name: WLP Lib Extract
 Bundle-SymbolicName: wlp.lib.extract

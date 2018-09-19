@@ -40,9 +40,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import wlp.lib.extract.Container.Entry;
 import wlp.lib.extract.SelfExtractor.ExternalDependency;
 import wlp.lib.extract.platform.PlatformUtils;
 
@@ -90,7 +90,7 @@ public class SelfExtractUtils {
         return s;
     }
 
-    static final ZipEntry getLicenseFile(ZipFile zipFile, String prefix) {
+    static final Entry getLicenseFile(Container container, String prefix) {
         if (!!!prefix.endsWith("_")) {
             prefix = prefix + "_";
         }
@@ -99,15 +99,15 @@ public class SelfExtractUtils {
         String lang = locale.getLanguage();
         String country = locale.getCountry();
 
-        ZipEntry zipEntry = null;
+        Entry entry = null;
         String[] suffixes = new String[] { lang + '_' + country, lang, "en" };
         for (int i = 0; i < suffixes.length; i++) {
-            zipEntry = zipFile.getEntry(prefix + suffixes[i]);
-            if (zipEntry != null) {
+            entry = container.getEntry(prefix + suffixes[i]);
+            if (entry != null) {
                 break;
             }
         }
-        return zipEntry;
+        return entry;
     }
 
     /**
@@ -218,6 +218,7 @@ public class SelfExtractUtils {
 
     private static Thread copyAsync(final InputStream in, final OutputStream out) {
         Thread thread = new Thread() {
+            @Override
             public void run() {
                 byte[] buf = new byte[4096];
                 try {
@@ -372,9 +373,9 @@ public class SelfExtractUtils {
     }
 
     /**
-     * @param ep - The object that will invoke the chmod commands.
+     * @param ep        - The object that will invoke the chmod commands.
      * @param outputDir - The Liberty runtime install root.
-     * @param filter - A zip file containing files that we want to do the chmod against.
+     * @param filter    - A zip file containing files that we want to do the chmod against.
      */
     public static ReturnCode fixScriptPermissions(ExtractProgress ep, File outputDir, ZipFile filter) {
         // We've extracted the files, now apply some permission changes
@@ -530,8 +531,10 @@ public class SelfExtractUtils {
 
         // Get an Array of all manifest files in the specified directory.
         File[] manifestFiles = (File[]) AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 File[] manifestFiles = featureDir.listFiles(new FileFilter() {
+                    @Override
                     public boolean accept(File pathname) {
                         boolean result = false;
                         // Store any files ending in .mf
@@ -552,6 +555,7 @@ public class SelfExtractUtils {
 
     private static String[] getSubSystemContentFromManifest(final File manifestFile) throws PrivilegedActionException {
         Manifest manifest = (Manifest) AccessController.doPrivileged(new PrivilegedExceptionAction() {
+            @Override
             public Object run() throws FileNotFoundException, IOException {
                 FileInputStream fin = null;
                 Manifest mf = new Manifest();
