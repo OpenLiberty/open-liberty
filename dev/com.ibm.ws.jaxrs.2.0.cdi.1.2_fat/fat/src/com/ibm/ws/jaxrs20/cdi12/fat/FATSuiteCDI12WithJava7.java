@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat;
 
-import org.junit.ClassRule;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -25,8 +23,6 @@ import com.ibm.ws.jaxrs20.cdi12.fat.test.LifeCycleMismatch12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.LoadOnStartup12Test;
 import com.ibm.ws.jaxrs20.cdi12.fat.test.ResourceInfoAtStartupTest;
 
-import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
-
 @RunWith(Suite.class)
 @SuiteClasses({
                 DisableTest.class,
@@ -39,6 +35,4 @@ import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
                 ResourceInfoAtStartupTest.class
 })
 public class FATSuiteCDI12WithJava7 {
-    @ClassRule
-    public static final TestRule java7Rule = new OnlyRunInJava7Rule();
 }

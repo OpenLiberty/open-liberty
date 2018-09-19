@@ -19,7 +19,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * Test that will pass in all test modes on all platforms with any JDK.
  *
  * Intended for use in test buckets where all other tests may be filtered out
- * for some test modes or environments (such as only for Java 7). Since the build
+ * for some test modes or environments (such as only for Java 8). Since the build
  * requires at lest one passing test, this provides a simple way to insure one
  * test is not filtered, and always reports passing.
  */
@@ -27,7 +27,7 @@ public class AlwaysPassesTest {
 
     @Test
     @Mode(TestMode.LITE)
-    @MinimumJavaLevel(javaLevel = 6)
+    @MinimumJavaLevel(javaLevel = 7)
     public void testThatWillAlwaysPass() throws Exception {}
 
 }
