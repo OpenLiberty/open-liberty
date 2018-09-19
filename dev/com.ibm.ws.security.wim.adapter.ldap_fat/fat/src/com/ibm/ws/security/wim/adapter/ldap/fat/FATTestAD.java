@@ -538,7 +538,7 @@ public class FATTestAD {
          * First test WITHOUT the matching rule in the filter. We expect to find all of the users.
          */
         ServerConfiguration clone = serverConfiguration.clone();
-        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null, null), new SearchResultsCache(false, null, null, null)));
+        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null), new SearchResultsCache(false, null, null, null)));
         LdapFilters filters = clone.getActivedLdapFilterProperties().get(0);
         filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user))");
         updateConfigDynamically(server, clone);
@@ -585,7 +585,7 @@ public class FATTestAD {
          * account will be returned.
          */
         ServerConfiguration clone = serverConfiguration.clone();
-        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null, null), new SearchResultsCache(false, null, null, null)));
+        clone.getLdapRegistries().get(0).setLdapCache(new LdapCache(new AttributesCache(false, null, null, null), new SearchResultsCache(false, null, null, null)));
         LdapFilters filters = clone.getActivedLdapFilterProperties().get(0);
         filters.setUserFilter("(&(sAMAccountName=%v)(objectclass=user))");
         updateConfigDynamically(server, clone);
