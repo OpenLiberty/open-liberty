@@ -129,7 +129,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     private static final WebReply PERMIT_REPLY = new PermitReply();
     private static final WebReply DENY_AUTHZ_FAILED = new DenyReply("AuthorizationFailed");
     private static final String AUTH_TYPE = "AUTH_TYPE";
-    private static final String SYNC_USER = "SYNC_USER";
+    private static final String SECURITY_CONTEXT = "SECURITY_CONTEXT";
 
     // '**' will represent the Servlet 3.1 defined all authenticated Security constraint
     private static final String ALL_AUTHENTICATED_ROLE = "**";
@@ -537,7 +537,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
             try {
                 resetSyncToOSThread(webSecurityContext);
-                // Possibly remove private attribute, but we don't have the request here
+                HttpServletRequest req = (HttpServletRequest) extraAuditData.get("HTTP_SERVLET_REQUEST");
+                SRTServletRequestUtils.removePrivateAttribute(req, SECURITY_CONTEXT);
             } catch (ThreadIdentityException e) {
                 throw new ServletException(e);
             }
@@ -559,7 +560,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         Subject receivedSubject = subjectManager.getCallerSubject();
 
         WebSecurityContext webSecurityContext = new WebSecurityContext(invokedSubject, receivedSubject);
-        SRTServletRequestUtils.setPrivateAttribute(req, SYNC_USER, webSecurityContext);
+        SRTServletRequestUtils.setPrivateAttribute(req, SECURITY_CONTEXT, webSecurityContext);
         setUnauthenticatedSubjectIfNeeded(invokedSubject, receivedSubject);
 
         if (enforceSecurity) {
@@ -1152,6 +1153,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         SRTServletRequestUtils.setPrivateAttribute(req, AUTH_TYPE, authType);
         try {
             Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subjectManager.getInvocationSubject());
+            WebSecurityContext webSecurityContext = (WebSecurityContext) SRTServletRequestUtils.getPrivateAttribute(req, SECURITY_CONTEXT);
+            webSecurityContext.setSyncToOSThreadToken(loginToken);
+
         } catch (ThreadIdentityException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore

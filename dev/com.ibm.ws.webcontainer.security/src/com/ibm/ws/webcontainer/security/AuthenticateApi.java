@@ -509,10 +509,10 @@ public class AuthenticateApi {
         try {
             Object token = ThreadIdentityManager.setAppThreadIdentity(subject);
 
-            Object savedToken = SRTServletRequestUtils.getPrivateAttribute(req, "AUTH_TYPE");
+            Object savedToken = SRTServletRequestUtils.getPrivateAttribute(req, "SECURITY_CONTEXT");
 
             if (savedToken == null) {
-                // Do some stuff here
+                SRTServletRequestUtils.setPrivateAttribute(req, "SECURITY_CONTEXT", token);
             }
         } catch (ThreadIdentityException e) {
             // TODO Auto-generated catch block
