@@ -1,0 +1,12 @@
+<server description="default server">
+	<applicationMonitor dropins="dropins(fish)"/>
+	
+    <featureManager>
+	   <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <application id="app1" name="foo" type="war" location="foo.war"/>
+    <application id="app2" name="bar" type="war" location="bar.war"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>

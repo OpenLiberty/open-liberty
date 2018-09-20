@@ -1,0 +1,13 @@
+<server description="default server">
+
+    <include location="../fatTestPorts.xml"/>
+
+	<applicationMonitor dropins="dropins(fish)"/>
+
+    <featureManager>
+	   <feature>servlet-3.1</feature>
+    </featureManager>
+    
+    <applicationManager />
+    
+</server>

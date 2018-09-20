@@ -1,0 +1,12 @@
+<server description="default server">
+	<applicationMonitor dropins="dropins(fish)"/>
+	
+    <featureManager>
+	   <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <application id="snoop" name="snoop" type="war" location="snoop.war"/>
+    <application id="snoop2" name="snoop" type="war" location="snoop.war"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>
