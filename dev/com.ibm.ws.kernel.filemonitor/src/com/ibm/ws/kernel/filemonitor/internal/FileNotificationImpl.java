@@ -55,4 +55,17 @@ public class FileNotificationImpl extends StandardMBean implements FileNotificat
             // this will FFDC because we caught it, no need to do anything else
         }
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void processConfigurationChanges() {
+        notificationDelegate.processConfigurationChanges();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void processApplicationChanges() {
+        notificationDelegate.processApplicationChanges();
+
+    }
 }

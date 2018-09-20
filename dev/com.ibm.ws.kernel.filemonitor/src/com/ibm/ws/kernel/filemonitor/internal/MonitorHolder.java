@@ -745,8 +745,10 @@ public abstract class MonitorHolder implements Runnable {
      * @param notifiedCreated the canonical paths of any created files
      * @param notifiedDeleted the canonical paths of any deleted files
      * @param notifiedModified the canonical paths of any modified files
+     * @param filter true = process only the file specified in the sets
+     *            false = process all the files without filtering
      */
-    void externalScan(Set<File> notifiedCreated, Set<File> notifiedDeleted, Set<File> notifiedModified) {
+    void externalScan(Set<File> notifiedCreated, Set<File> notifiedDeleted, Set<File> notifiedModified, boolean filter) {
         // only do anything if this is an 'external' monitor
         if (!!!FileMonitor.MONITOR_TYPE_EXTERNAL.equals(monitorRef.getProperty(FileMonitor.MONITOR_TYPE)))
             return;
@@ -808,12 +810,15 @@ public abstract class MonitorHolder implements Runnable {
                 unnotifiedFileDeletes.clear();
                 unnotifiedFileModifies.clear();
 
-                // Now take the notified changes and compare it against all the possible
-                // valid choices, unrequested changes are placed into the unnotified set
-                // so they can be used by the caller on subsequent calls
-                filterSets(created, notifiedCreated, unnotifiedFileCreates);
-                filterSets(deleted, notifiedDeleted, unnotifiedFileDeletes);
-                filterSets(modified, notifiedModified, unnotifiedFileModifies);
+                //Check if filter is needed for the current call
+                if (filter) {
+                    // Now take the notified changes and compare it against all the possible
+                    // valid choices, unrequested changes are placed into the unnotified set
+                    // so they can be used by the caller on subsequent calls
+                    filterSets(created, notifiedCreated, unnotifiedFileCreates);
+                    filterSets(deleted, notifiedDeleted, unnotifiedFileDeletes);
+                    filterSets(modified, notifiedModified, unnotifiedFileModifies);
+                }
 
                 if (!created.isEmpty() || !modified.isEmpty() || !deleted.isEmpty()) {
                     // changes were discovered: trace & call the registered file monitor
@@ -1103,6 +1108,14 @@ public abstract class MonitorHolder implements Runnable {
             Tr.warning(tc, "badInterval", FileMonitor.MONITOR_INTERVAL, fullValue);
             throw new IllegalArgumentException("Invalid interval (" + intervalString + ") from " + fullValue);
         }
+    }
+
+    /**
+     * Processing configuration and application update
+     * Calls the existing externalScan method and sets the filter boolean to false
+     */
+    void processFileRefresh() {
+        externalScan(null, null, null, false);
     }
 
 }
