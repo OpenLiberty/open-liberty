@@ -1,0 +1,11 @@
+<server description="default server">
+
+    <featureManager>
+	   <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <application id="snoop" type="war" location="snoop.war"/>
+    <application id="testWarApplication" name="" type="war" location="testWarApplication.war"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>
