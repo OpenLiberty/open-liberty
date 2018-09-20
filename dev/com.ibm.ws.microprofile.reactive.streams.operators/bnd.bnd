@@ -57,7 +57,6 @@ testsrc: test/src
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
   com.ibm.ws.kernel.service;version=latest, \
-  com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.context;version=latest, \
   com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
