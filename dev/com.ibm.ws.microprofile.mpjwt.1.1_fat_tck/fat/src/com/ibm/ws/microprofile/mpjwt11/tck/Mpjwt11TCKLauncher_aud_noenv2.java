@@ -48,7 +48,7 @@ public class Mpjwt11TCKLauncher_aud_noenv2 {
 
     @Test
     // @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchMpjwt11TCKLauncher_aud_noenv() throws Exception {
+    public void launchMpjwt11TCKLauncher_aud_noenv2() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.setSuiteFileName("tck_suite_aud_noenv2.xml", server);
         // need to pass the correct url for PublicKeyAsJWKLocationURLTest

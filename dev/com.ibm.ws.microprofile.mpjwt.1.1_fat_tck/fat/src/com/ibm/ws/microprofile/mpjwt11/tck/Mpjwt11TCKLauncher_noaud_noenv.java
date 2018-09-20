@@ -44,7 +44,7 @@ public class Mpjwt11TCKLauncher_noaud_noenv {
 
     @Test
     //@AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchMpjwt11TCKLauncher_noaud_env() throws Exception {
+    public void launchMpjwt11TCKLauncher_noaud_noenv() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.setSuiteFileName("tck_suite_noaud_noenv.xml", server);
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName);
