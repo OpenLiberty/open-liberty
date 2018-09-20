@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * WLP Copyright IBM Corp. 2014
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package web;
 
 import java.io.IOException;
@@ -68,14 +67,12 @@ public class MBeanServlet extends HttpServlet {
         String test = request.getQueryString();
 
         try {
-            
+
             if (test.equals("setupNotificationListener")) {
                 setupNotificationListener(writer);
-            }
-            else if (test.equals("checkForNotifications")) {
+            } else if (test.equals("checkForNotifications")) {
                 checkForNotifications(writer);
-            }
-            else {
+            } else {
                 writer.println(FAIL + "Unrecognized test name");
             }
 
@@ -96,7 +93,7 @@ public class MBeanServlet extends HttpServlet {
         mbs.addNotificationListener(MBEAN_NAME, listener, null, null);
         writer.println(PASS);
     }
-    
+
     private void checkForNotifications(PrintWriter writer) throws Exception {
         final RuntimeUpdateNotificationListener listener = notificationListener.get();
         if (listener == null) {
@@ -113,19 +110,19 @@ public class MBeanServlet extends HttpServlet {
             if (!listener.configUpdatesDelivered()) {
                 writer.println(FAIL + "ConfigUpdatesDelivered notification was received but the server.xml updates did not complete successfully.");
                 return;
-            }  
-        }
-        finally {
+            }
+        } finally {
             MBeanServer mbs = getMBS();
             try {
                 mbs.removeNotificationListener(MBEAN_NAME, listener);
             }
             // No listener was registered. Ignore it.
-            catch (ListenerNotFoundException e) {}
+            catch (ListenerNotFoundException e) {
+            }
         }
         writer.println(PASS);
     }
-    
+
     private boolean waitOnLatchRelease(RuntimeUpdateNotificationListener listener) {
         boolean done = false;
         boolean countDownLatchReachZero = false;
@@ -142,33 +139,34 @@ public class MBeanServlet extends HttpServlet {
     private MBeanServer getMBS() {
         return ManagementFactory.getPlatformMBeanServer();
     }
-    
+
     public static class RuntimeUpdateNotificationListener implements NotificationListener {
-        
+
         private boolean configUpdatesDelivered = false;
         public final CountDownLatch latchForListener = new CountDownLatch(1);
-        
+
         @Override
         public synchronized void handleNotification(Notification notification, Object handback) {
             if (RuntimeUpdateNotificationMBean.RUNTIME_UPDATE_NOTIFICATION_TYPE.equals(notification.getType()) && latchForListener.getCount() > 0) {
                 // UserData for "com.ibm.websphere.runtime.update.notification" type will always be a Map<String,Object>
                 @SuppressWarnings("unchecked")
-                Map<String,Object> userData = (Map<String,Object>)notification.getUserData();
+                Map<String, Object> userData = (Map<String, Object>) notification.getUserData();
                 // Filter on runtime update notifications with the "ConfigUpdatesDelivered" name.
-                if (userData != null && 
-                        "ConfigUpdatesDelivered".equals(userData.get(RuntimeUpdateNotificationMBean.RUNTIME_UPDATE_NOTIFICATION_KEY_NAME))) {
+                if (userData != null &&
+                    "ConfigUpdatesDelivered".equals(userData.get(RuntimeUpdateNotificationMBean.RUNTIME_UPDATE_NOTIFICATION_KEY_NAME))) {
                     configUpdatesDelivered = Boolean.TRUE.equals(userData.get(RuntimeUpdateNotificationMBean.RUNTIME_UPDATE_NOTIFICATION_KEY_STATUS));
-                    configUpdatesDelivered = configUpdatesDelivered && 
-                            userData.get(RuntimeUpdateNotificationMBean.RUNTIME_UPDATE_NOTIFICATION_KEY_MESSAGE) == null;
+                    configUpdatesDelivered = configUpdatesDelivered &&
+                                             userData.get(RuntimeUpdateNotificationMBean.RUNTIME_UPDATE_NOTIFICATION_KEY_MESSAGE) == null;
                     latchForListener.countDown();
                 }
             }
         }
+
         public boolean configUpdatesDelivered() {
             return configUpdatesDelivered;
         }
     }
-    
+
     public static class MBeanServerNotificationListener implements NotificationListener {
 
         private boolean registered = false;
@@ -181,11 +179,12 @@ public class MBeanServlet extends HttpServlet {
                 latchForListener.countDown();
             }
         }
+
         public boolean isRegistered() {
             return registered;
         }
     }
-    
+
     public static class MBeanRegistrationCheckAndWait {
 
         public static void waitForRegistrationForMBean(MBeanServerConnection mbsc, ObjectName objName) throws InstanceNotFoundException, IOException {
@@ -218,7 +217,7 @@ public class MBeanServlet extends HttpServlet {
             registerFilter.disableType(MBeanServerNotification.UNREGISTRATION_NOTIFICATION);
 
             mbsc.addNotificationListener(MBeanServerDelegate.DELEGATE_NAME, listener, registerFilter, null);
-            // check again right after the listener is added 
+            // check again right after the listener is added
             if (mbsc.isRegistered(objName)) {
                 return false;
             }
@@ -238,15 +237,15 @@ public class MBeanServlet extends HttpServlet {
                     String exMessage = "The MBean with object name" + objName + ", cannot be registered.";
                     throw new IOException(exMessage);
                 }
-            } 
-            finally {
+            } finally {
                 if (listener != null) {
                     try {
                         mbsc.removeNotificationListener(MBeanServerDelegate.DELEGATE_NAME, listener);
                         listener = null;
                     }
                     // No listener was registered. Ignore it.
-                    catch (ListenerNotFoundException e) {}
+                    catch (ListenerNotFoundException e) {
+                    }
                 }
             }
         }
