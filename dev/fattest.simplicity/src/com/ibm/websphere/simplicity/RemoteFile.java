@@ -19,8 +19,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.nio.Files;
-import java.nio.Path;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 import com.ibm.websphere.simplicity.log.Log;
