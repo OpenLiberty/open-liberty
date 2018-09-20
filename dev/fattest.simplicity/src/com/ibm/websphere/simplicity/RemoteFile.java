@@ -19,6 +19,9 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.nio.Files;
+import java.nio.Path;
+
 
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.common.apiservices.cmdline.LocalProvider;
@@ -447,6 +450,16 @@ public class RemoteFile {
         return RemoteFile.copy(srcFile, this, false, true, binary);
     }
 
+    public boolean deleteExecutionWrapper(File path) {
+        try{
+            java.nio.file.Files.delete(path.toPath());
+            return true;
+        }catch(Exception e){
+            Log.info(c, "deleteExecutionWrapper", "Delete Operation for [" + path + "] could not be completed.\n" + e.toString());
+            return false;
+        }
+    }
+
     /**
      * Deletes the file or directory denoted by this abstract pathname.
      * 
@@ -458,7 +471,8 @@ public class RemoteFile {
             if (localFile.isDirectory()) {
                 return this.deleteLocalDirectory(localFile);
             } else
-                return this.localFile.delete();
+                return this.deleteExecutionWrapper(localFile);
+                
         } else
             return LocalProvider.delete(this);
     }
@@ -471,20 +485,20 @@ public class RemoteFile {
      *         otherwise
      */
     public boolean deleteLocalDirectory(File path) {
-        if (path.exists()) {
+        if (path.exists() && path.isDirectory()) {
             File[] files = path.listFiles();
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
                     deleteLocalDirectory(files[i]);
                 } else {
-                    boolean b = files[i].delete();
+                    boolean b = this.deleteExecutionWrapper(files[i]);
                     if (!b) {
                         Log.info(c, "deleteLocalDirectory", "couldn't delete localfile = " + files[i]);
                     }
                 }
             }
         }
-        return (path.delete());
+        return (this.deleteExecutionWrapper(path));
     }
 
     /**
