@@ -13,6 +13,7 @@ package jdbc.fat.v43.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -21,10 +22,13 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ConnectionBuilder;
 import java.sql.DatabaseMetaData;
+import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.ShardingKey;
+import java.sql.ShardingKeyBuilder;
 import java.sql.Statement;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -73,6 +77,9 @@ public class JDBC43TestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ds", authenticationType = AuthenticationType.APPLICATION)
     DataSource dataSourceWithAppAuth;
+
+    @Resource(lookup = "jdbc/ds", authenticationType = AuthenticationType.CONTAINER, name = "java:module/env/jdbc/ds-with-container-auth")
+    DataSource dataSourceWithContainerAuth;
 
     @Resource(lookup = "jdbc/poolOf1", authenticationType = AuthenticationType.APPLICATION)
     DataSource sharablePool1DataSourceWithAppAuth;
@@ -149,6 +156,60 @@ public class JDBC43TestServlet extends FATServlet {
         } catch (SQLFeatureNotSupportedException ex) {
             if (!ex.getMessage().contains("DSRA9130E"))
                 throw ex;
+        }
+    }
+
+    /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a
+     * javax.sql.DataSource implementation. This test only does matching on ShardingKey.
+     * It does not cover user, password, or super sharding key.
+     */
+    @Test
+    public void testDataSourceConnectionBuilderMatchShardingKey() throws Exception {
+        ShardingKeyBuilder keybuilderA = dataSourceWithContainerAuth.createShardingKeyBuilder();
+        ShardingKeyBuilder keybuilderB = dataSourceWithContainerAuth.createShardingKeyBuilder();
+        ShardingKey keyA = keybuilderA.subkey("DSCBKey", JDBCType.VARCHAR).build();
+        ShardingKey keyB = keybuilderB.subkey("DSCBKey", JDBCType.VARCHAR).build();
+        ConnectionBuilder conbuilderA = dataSourceWithContainerAuth.createConnectionBuilder().shardingKey(keyA);
+        ConnectionBuilder conbuilderB = dataSourceWithContainerAuth.createConnectionBuilder().shardingKey(keyB);
+
+        tx.begin();
+        try {
+            Connection con1 = conbuilderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            String k1 = con1.getClientInfo("SHARDING_KEY");
+            assertTrue(k1, k1.endsWith("|VARCHAR:DSCBKey;"));
+
+            Connection con2 = conbuilderB.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
+            String k2 = con2.getClientInfo("SHARDING_KEY");
+            assertTrue(k2, k2.endsWith("|VARCHAR:DSCBKey;"));
+
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Specify a different sharding key on the builder,
+        ShardingKey key3 = keybuilderA.subkey(3, JDBCType.INTEGER).build();
+        Connection con3 = conbuilderA.shardingKey(key3).build();
+        try {
+            String k3 = con3.getClientInfo("SHARDING_KEY");
+            assertTrue(k3, k3.endsWith("|VARCHAR:DSCBKey;INTEGER:3;"));
+        } finally {
+            con3.close();
+        }
+
+        // Clear the sharding key that is specified on the builder,
+        Connection con4 = conbuilderB.shardingKey(null).build();
+        try {
+            String k4 = con4.getClientInfo("SHARDING_KEY");
+            assertNull(k4, k4);
+        } finally {
+            con4.close();
         }
     }
 
@@ -1237,6 +1298,19 @@ public class JDBC43TestServlet extends FATServlet {
 
         assertEquals(begins + 2, requests[BEGIN].get());
         assertEquals(ends + 3, requests[END].get());
+    }
+
+    /**
+     * When using a data source that is backed by java.sql.Driver, the ShardingKeyBuilder is unavailable,
+     * and attempts to create it must result in SQLFeatureNotSupportedException.
+     */
+    @Test
+    public void testShardingKeyBuilderNotAvailableWithDriver() throws Exception {
+        try {
+            ShardingKeyBuilder keybuilder = defaultDataSource.createShardingKeyBuilder();
+            fail("Should not be able to create ShardingKeyBuilder when using java.sql.Driver. " + keybuilder);
+        } catch (SQLFeatureNotSupportedException x) {
+        }
     }
 
     /**

@@ -20,6 +20,8 @@
 
   <application location="app43.war"/>
 
+  <authData id="user43Auth" user="user43" password="{xor}Lyg7a2w="/>
+
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="D43Lib"/>
     <properties url="jdbc:d43:memory:testdb;create=true" user="user43" password="{xor}Lyg7a2w="/>
