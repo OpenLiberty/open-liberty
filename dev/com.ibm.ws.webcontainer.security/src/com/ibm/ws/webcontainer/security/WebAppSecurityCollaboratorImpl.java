@@ -346,7 +346,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected void updateComponents() {
         WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
-        authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+        authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
+                                                                     unauthenticatedSubjectService);
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
         providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
                                                                                               webAuthenticatorRef);
@@ -1153,8 +1154,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         SRTServletRequestUtils.setPrivateAttribute(req, AUTH_TYPE, authType);
         try {
             Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subjectManager.getInvocationSubject());
-            WebSecurityContext webSecurityContext = (WebSecurityContext) SRTServletRequestUtils.getPrivateAttribute(req, SECURITY_CONTEXT);
-            webSecurityContext.setSyncToOSThreadToken(loginToken);
+            //SRTServletRequestUtils.setPrivateAttribute(req, SECURITY_CONTEXT, loginToken);
 
         } catch (ThreadIdentityException e) {
             // TODO Auto-generated catch block
@@ -1497,7 +1497,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     protected AuthenticateApi getAuthenticateApi() {
         if (authenticateApi == null) {
             SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
-            authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+            authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
+                                                                         unauthenticatedSubjectService);
         }
         return authenticateApi;
     }
