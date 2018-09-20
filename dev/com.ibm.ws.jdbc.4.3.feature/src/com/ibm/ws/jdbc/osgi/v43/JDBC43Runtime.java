@@ -18,6 +18,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.ShardingKey;
 import java.sql.Statement;
 import java.util.concurrent.Executor;
 
@@ -153,6 +154,15 @@ public class JDBC43Runtime implements JDBCRuntimeVersion {
         try {
             return sqlConn.getNetworkTimeout();
         } catch (IncompatibleClassChangeError e) { // pre-4.1 driver
+            throw new SQLFeatureNotSupportedException(e);
+        }
+    }
+
+    @Override
+    public void doSetShardingKeys(Connection con, Object shardingKey, Object superShardingKey) throws SQLException {
+        try {
+            con.setShardingKey((ShardingKey) shardingKey, (ShardingKey) superShardingKey);
+        } catch (IncompatibleClassChangeError e) { // pre-4.3 driver
             throw new SQLFeatureNotSupportedException(e);
         }
     }

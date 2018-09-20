@@ -90,6 +90,7 @@ public interface JDBCRuntimeVersion {
     public BatchUpdateException newBatchUpdateException(BatchUpdateException copyFrom, String newMessage);
 
     // JDBC 4.3 Connection methods
+    public void doSetShardingKeys(Connection con, Object shardingKey, Object superShardingKey) throws SQLException;
     public void beginRequest(Connection con) throws SQLException;
     public void endRequest(Connection con) throws SQLException;
 }
