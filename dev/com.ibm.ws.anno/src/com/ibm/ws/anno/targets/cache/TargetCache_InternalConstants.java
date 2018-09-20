@@ -159,7 +159,7 @@ public interface TargetCache_InternalConstants {
     String ENCODING_TAG  = "Encoding";
     String TABLE_TAG     = "Table";
     String VERSION_TAG   = "Version";
-    String TIMESTAMP_TAG = "TimeStamp";
+    String TIMESTAMP_TAG = "Written";
 
     // Common constants:
 

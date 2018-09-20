@@ -171,11 +171,15 @@ public class TargetsScannerBaseImpl {
     protected TargetsTableImpl createTargetsTable(ScanPolicy scanPolicy) {
         // Use the intern maps of this scanner, which are the intern maps
         // of the annotations targets.
-        return new TargetsTableImpl( getFactory(),
-                                     getClassNameInternMap(),
-                                     getFieldNameInternMap(),
-                                     getMethodSignatureInternMap(),
-                                     scanPolicy.name() );
+        TargetsTableImpl resultTable =
+            new TargetsTableImpl( getFactory(),
+                                  getClassNameInternMap(),
+                                  getFieldNameInternMap(),
+                                  getMethodSignatureInternMap(),
+                                  scanPolicy.name() );
+        // A stamp is not available for result tables.
+        resultTable.setStamp(ClassSource.UNRECORDED_STAMP);
+        return resultTable;
     }
 
     /**

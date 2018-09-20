@@ -24,6 +24,7 @@ import java.util.Set;
 import org.objectweb.asm.Opcodes;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.anno.util.internal.UtilImpl_Utils;
 import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.ws.anno.targets.cache.TargetCache_InternalConstants;
 import com.ibm.ws.anno.targets.internal.TargetsTableClassesImpl;
@@ -601,7 +602,8 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeValue(ENCODING_TAG, getEncoding());
         writeValue(TABLE_TAG, tableTag);
         writeValue(VERSION_TAG, tableVersion);
-        writeValue(TIMESTAMP_TAG, "TBD");
+
+        writeValue(TIMESTAMP_TAG, UtilImpl_Utils.getDateAndTime());
     }
 
     protected void writeTrailer() throws IOException {

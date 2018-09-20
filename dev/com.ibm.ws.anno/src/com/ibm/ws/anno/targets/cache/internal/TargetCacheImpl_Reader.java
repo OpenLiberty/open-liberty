@@ -147,7 +147,7 @@ public class TargetCacheImpl_Reader implements TargetCache_Reader, TargetCache_I
         }
 
         protected String parseLine() {
-            int separatorOffset = line.lastIndexOf(COLON_TAG);
+            int separatorOffset = line.indexOf(COLON_TAG);
 
             if (separatorOffset == -1) {
                 return "Colon delimited value expected.";

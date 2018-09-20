@@ -13,7 +13,9 @@ package com.ibm.ws.anno.util.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -23,7 +25,6 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import com.ibm.wsspi.anno.util.Util_InternMap;
-
 
 public class UtilImpl_Utils {
     private static final String CLASS_NAME = "UtilImpl_Utils";
@@ -319,5 +320,14 @@ public class UtilImpl_Utils {
         Map<String, String> duplicateMap = new IdentityHashMap<String, String>();
         duplicateMap.putAll(map);
         return duplicateMap;
+    }
+
+    //
+
+    public static final String SIMPLE_DATE_FORMAT_TEXT = "EEE, dd-MMM-yyyy HH:mm:ss Z";
+    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(SIMPLE_DATE_FORMAT_TEXT);
+
+    public static String getDateAndTime() {
+        return SIMPLE_DATE_FORMAT.format( new Date() );
     }
 }

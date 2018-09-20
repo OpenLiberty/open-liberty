@@ -761,7 +761,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         } else if ( conData == null ) {
             isChanged = true;
             isChangedReason = "Cache miss";
-            
+
         } else if ( !conData.shouldRead("Time Stamp") ) {
             isChanged = true;
             isChangedReason = "Cache miss (disabled)";
@@ -779,11 +779,11 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
             } else {
                 String cachedStamp = cachedStampTable.getStamp();
-                isChanged = cachedStamp.equals(currentStamp);
+                isChanged = !cachedStamp.equals(currentStamp);
                 if ( isChanged ) {
-                    isChangedReason = "Cache hit (valid stamp " + currentStamp + ")";
-                } else {
                     isChangedReason = "Cache hit (invalid stamp; current " + currentStamp + " prior " + cachedStamp + ")";
+                } else {
+                    isChangedReason = "Cache hit (valid stamp " + currentStamp + ")";
                 }
             }
         }
@@ -795,7 +795,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                         "[ {0} ] RETURN [ {1} ]: {2} ]",
                         new Object[] { getHashText(), Boolean.valueOf(isChanged), isChangedReason });
         }
-        return isChanged;
+        return !isChanged;
     }
 
     protected boolean validInternalContainers_Select() {

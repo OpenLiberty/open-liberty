@@ -93,7 +93,7 @@ public interface TargetCache_ExternalConstants {
     // Third / container detail level
 
     // Name of the container time stamp file:
-    String TIMESTAMP_NAME = "time.stamp";
+    String TIMESTAMP_NAME = "stamp";
     // Name of the container class references file:
     String CLASS_REFS_NAME = "class.refs";
     // Name of the container annotation targets file:
