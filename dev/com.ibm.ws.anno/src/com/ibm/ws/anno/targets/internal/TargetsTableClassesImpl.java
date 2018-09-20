@@ -977,40 +977,83 @@ public class TargetsTableClassesImpl
         }
     }
 
+    @Trivial
     public boolean sameAs(TargetsTableClassesImpl otherTable) {
+        String methodName = "sameAs";
+
+        boolean sameAs;
+        String sameAsReason;
+
         if ( otherTable == null ) {
-            return false;
+            sameAs = false;
+            sameAsReason = "Null other table";
         } else if ( otherTable == this ) {
-            return true;
+            sameAs = true;
+            sameAsReason = "Same table";
+        } else {
+            sameAsReason = basicSameAs(otherTable);
+            if ( sameAs = (sameAsReason == null) ) {
+                sameAsReason = "Same";
+            }
         }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] [ {1} ] ({2})",
+                        new Object[] { hashText, Boolean.valueOf(sameAs), sameAsReason });
+        }
+        return sameAs;
+    }
+
+    protected String basicSameAs(TargetsTableClassesImpl otherTable) {
+        boolean doLog = logger.isLoggable(Level.FINER);
 
         Map<String, String> i_useClassNames = i_classNames;
         Map<String, String> i_otherClassNames = otherTable.i_classNames;
         if ( i_useClassNames.size() != i_otherClassNames.size() ) {
-            return false;
+            if ( !doLog ) {
+                return "different";
+            } else {
+                return "Classes [ " + i_useClassNames.size() + " ] Other [ " + i_otherClassNames.size() + " ]";
+            }
         }
 
         Map<String, String> i_useSuperclassNames = i_superclassNames;
         Map<String, String> i_otherSuperclassNames = otherTable.i_superclassNames;
         if ( i_useSuperclassNames.size() != i_otherSuperclassNames.size() ) {
-            return false;
+            if ( !doLog ) {
+                return "different";
+            } else {
+                return "Super classes [ " + i_useSuperclassNames.size() + " ] Other [ " + i_otherSuperclassNames.size() + " ]";
+            }
         }
 
         Map<String, String[]> i_useInterfaceNames = i_interfaceNames;
         Map<String, String[]> i_otherInterfaceNames = otherTable.i_interfaceNames;
-        if ( i_interfaceNames.size() != i_otherInterfaceNames.size() ) {
-            return false;
+        if ( i_useInterfaceNames.size() != i_otherInterfaceNames.size() ) {
+            if ( !doLog ) {
+                return "different";
+            } else {
+                return "Interfaces [ " + i_useInterfaceNames.size() + " ] Other [ " + i_otherInterfaceNames.size() + " ]";
+            }
         }
         
         Map<String, Integer> i_useModifiers = i_modifiers ;
         Map<String, Integer> i_otherModifiers = otherTable.i_modifiers;
-        if ( i_modifiers.size() != i_otherModifiers.size() ) {
-            return false;
+        if ( i_useModifiers.size() != i_otherModifiers.size() ) {
+            if ( !doLog ) {
+                return "different";
+            } else {
+                return "Modifiers [ " + i_useModifiers.size() + " ] Other [ " + i_otherModifiers.size() + " ]";
+            }
         }        
 
         for ( String i_className : i_useClassNames.keySet() ) {
             if ( !i_otherClassNames.containsKey(i_className) ) {
-                return false;
+                if ( !doLog ) {
+                    return "different";
+                } else {
+                    return "Other missing class [ " + i_className + " ]";
+                }
             }
         }
 
@@ -1019,12 +1062,20 @@ public class TargetsTableClassesImpl
 
             String i_otherSuperclassName = i_otherSuperclassNames.get(i_className);
             if ( i_otherSuperclassName == null ) {
-                return false;
+                if ( !doLog ) {
+                    return "different";
+                } else {
+                    return "Other missing superclass of [ " + i_className + " ]";
+                }
             }
 
             String i_superclassName = i_superclassEntry.getValue();
             if ( i_superclassName != i_otherSuperclassName ) {
-                return false;
+                if ( !doLog ) {
+                    return "different";
+                } else {
+                    return "Changed superclass of [ " + i_className + " ] from [ " + i_superclassName + " ] to [ " + i_otherSuperclassName + " ]";
+                }
             }
         }
 
@@ -1033,17 +1084,29 @@ public class TargetsTableClassesImpl
 
             String[] i_otherNames = i_otherInterfaceNames.get(i_className);
             if ( i_otherNames == null ) {
-                return false;
+                if ( !doLog ) {
+                    return "different";
+                } else {
+                    return "Other missing interfaces of [ " + i_className + " ]";
+                }
             }
 
             String[] i_names = i_interfaceNamesEntry.getValue();
             if ( i_names.length != i_otherNames.length ) {
-                return false;
+                if ( !doLog ) {
+                    return "different";
+                } else {
+                    return "Changed interface count of [ " + i_className + " ] from [ " + i_names.length + " ] to [ " + i_otherNames.length + " ]";
+                }
             }
 
             for ( int offset = 0; offset < i_names.length; offset++ ) {
                 if ( i_names[offset] != i_otherNames[offset] ) {
-                    return false;
+                    if ( !doLog ) {
+                        return "different";
+                    } else {
+                        return "Changed interface of [ " + i_className + " ] [ " + offset + " ] from [ " + i_names[offset] + " ] to [ " + i_otherNames[offset] + " ]";
+                    }
                 }
             }
         }
@@ -1053,16 +1116,24 @@ public class TargetsTableClassesImpl
 
             Integer otherModifier = i_otherModifiers.get(i_className);
             if ( otherModifier == null ) {
-                return false;
+                if ( !doLog ) {
+                    return "different";
+                } else {
+                    return "Other missing modifiers of [ " + i_className + " ]";
+                }
             }
 
             Integer modifier = i_modifiersEntry.getValue();
             if ( modifier.intValue() != otherModifier.intValue() ) {
-                return false;
+                if ( !doLog ) {
+                    return "different";
+                } else {
+                    return "Changed modifier of [ " + i_className + " ] from [ " + modifier + " ] to [ " + otherModifier + " ]";
+                }
             }
         }
-        
-        return true;
+
+        return null;
     }
 
     //

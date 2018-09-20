@@ -215,6 +215,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         this.changedTargets = new HashSet<String>();
         this.changedTargetsReasons = new HashMap<String, String>();
 
+        this.changedAnyTargetsReason = null;
+        this.changedAnyTargets = false;
+
         // The class table is in the superclass.
 
         this.changedClassTableReason = null;
@@ -459,6 +462,19 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
 
         putTargetsTable(classSourceName, targetsTable);
         setChangedTargetsTable(classSourceName, reason, isChanged);
+    }
+
+    // Summary for the targets tables.
+
+    protected String changedAnyTargetsReason;
+    protected boolean changedAnyTargets;
+
+    public String getChangedAnyTargetsReason() {
+        return changedAnyTargetsReason;
+    }
+
+    public boolean isChangedAnyTargets() {
+        return changedAnyTargets;
     }
 
     // Change information for the overall class table.
@@ -799,21 +815,43 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     }
 
     protected boolean validInternalContainers_Select() {
-        boolean isValid;
-        if ( isScanSingleThreaded() || isScanSingleSource() ) {
-            isValid = validInternalContainers();
-        } else {
-            isValid = validInternalContainers_Concurrent();
-        }
-        return isValid;
-    }
+        String methodName = "validInternalContainers_Select";
 
-    protected boolean validInternalContainers() {
-        String methodName = "validInternalContainers";
+        if ( changedAnyTargetsReason != null ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                    "[ {0} ] ENTER / RETURN [ {1} ] {2}",
+                    new Object[] { getHashText(), Boolean.valueOf(!changedAnyTargets), changedAnyTargetsReason });
+            }
+            return !changedAnyTargets;
+        }
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", getHashText());
         }
+
+        if ( isScanSingleThreaded() || isScanSingleSource() ) {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Single-threaded scanning", getHashText());
+            }
+            validInternalContainers();
+        } else {
+            if ( logger.isLoggable(Level.FINER) ) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Multi-threaded scanning", getHashText());
+            }
+            validInternalContainers_Concurrent();
+        }
+
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "[ {0} ] ENTER / RETURN [ {1} ] {2}",
+                new Object[] { getHashText(), Boolean.valueOf(!changedAnyTargets), changedAnyTargetsReason });
+        }
+        return !changedAnyTargets;
+    }
+
+    protected void validInternalContainers() {
+        String methodName = "validInternalContainers";
 
         boolean changedTable = validContainerTable();
 
@@ -833,25 +871,29 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             }
         }
 
-        boolean changed = ( changedTable || (changedContainers != 0) );
+        boolean changed = false;
+        String changedReason = null;
 
-        if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "[ {0} ] Changed Containers [ {1} ]",
-                    new Object[] { getHashText(), Integer.valueOf(changedContainers) });
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "[ {0} ] RETURN [ {1} ]",
-                    new Object[] { getHashText(), Boolean.valueOf(!changed) });
+        if ( changedTable ) {
+            changed = true;
+            changedReason = "changed containers list";
         }
-        return !changed;
+
+        if ( changedContainers > 0 ) {
+            changed = true;
+            if ( changedTable ) {
+                changedReason += "; changed tables [ " + Integer.valueOf(changedContainers) + " ]";
+            } else {
+                changedReason += "changed tables [ " + Integer.valueOf(changedContainers) + " ]";
+            }
+        }
+
+        changedAnyTargetsReason = changedReason;
+        changedAnyTargets = changed;
     }
 
-    protected boolean validInternalContainers_Concurrent() {
+    protected void validInternalContainers_Concurrent() {
         String methodName = "validInternalContainers_Concurrent";
-
-        if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER", getHashText());
-        }
 
         boolean changedTable = validContainerTable();
 
@@ -912,33 +954,39 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         try {
             validatorPool.waitForCompletion(); // throws InterruptedException
         } catch ( InterruptedException e ) {
-               // CWWKC00??W 
-               logger.logp(Level.WARNING, CLASS_NAME, methodName,
-                       "[ {0} ] ANNO_TARGETS_CACHE_EXCEPTION [ {1} ]",
-                       new Object[] { getHashText(), e });
+           // CWWKC00??W 
+            logger.logp(Level.WARNING, CLASS_NAME, methodName,
+               "[ {0} ] ANNO_TARGETS_CACHE_EXCEPTION [ {1} ]",
+               new Object[] { getHashText(), e });
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
         }
 
-        boolean changedAnyContainer = false;
+        int changedContainers = 0;
         for ( boolean validContainer : validContainers ) {
             if ( !validContainer ) {
-                changedAnyContainer = true;
-                break;
+                changedContainers++;
             }
         }
 
-        boolean changed = ( changedTable || changedAnyContainer );
+        boolean changed = false;
+        String changedReason = null;
 
-        if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                    "[ {0} ] Changed Container [ {1} ]",
-                    new Object[] { getHashText(), Boolean.valueOf(changedAnyContainer) });
-
-            logger.logp(Level.FINER, CLASS_NAME, methodName,
-                        "[ {0} ] RETURN [ {1} ]",
-                        new Object[] { getHashText(), Boolean.valueOf(!changed) });
+        if ( changedTable ) {
+            changed = true;
+            changedReason = "changed containers list";
         }
-        return !changed;
+
+        if ( changedContainers > 0 ) {
+            changed = true;
+            if ( changedTable ) {
+                changedReason += "; changed tables [ " + Integer.valueOf(changedContainers) + " ]";
+            } else {
+                changedReason += "Changed tables [ " + Integer.valueOf(changedContainers) + " ]";
+            }
+        }
+
+        changedAnyTargetsReason = changedReason;
+        changedAnyTargets = changed;
     }
 
     //
