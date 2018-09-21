@@ -895,7 +895,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     protected void validInternalContainers_Concurrent() {
         String methodName = "validInternalContainers_Concurrent";
 
-        boolean changedTable = validContainerTable();
+        boolean changedTable = !validContainerTable();
 
         // Don't return until all internal containers were checked!
         // That forces data to be present for all internal containers.
