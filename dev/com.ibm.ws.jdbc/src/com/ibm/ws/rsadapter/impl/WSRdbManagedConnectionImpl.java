@@ -293,13 +293,13 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     // getAutoCommit() will depend on this                      
     private boolean rrsTransactional = false; 
 
-    // defaultXXX are used for reset the value after we put MC back to the pool
+    // defaultXXX and initialXXX are used for reset the value after we put MC back to the pool
     private String defaultCatalog;
     private Map<String, Class<?>> defaultTypeMap;
     private boolean defaultReadOnly;
     private String defaultSchema, currentSchema = null;
-    private Object defaultShardingKey, currentShardingKey;
-    private Object defaultSuperShardingKey, currentSuperShardingKey;
+    private Object initialShardingKey, currentShardingKey; 
+    private Object initialSuperShardingKey, currentSuperShardingKey;
     private int defaultNetworkTimeout;
     public int currentNetworkTimeout = 0;
 
@@ -492,7 +492,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (!cri.isCRIChangable())
             cri = WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri);
         cri.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema,
-                             defaultNetworkTimeout, defaultShardingKey, defaultSuperShardingKey);
+                             defaultNetworkTimeout);
 
         // Check to make sure a datasource configured with 'NONE (0)' is compatible with the driver being used. 
         if(config.isolationLevel == Connection.TRANSACTION_NONE) {
@@ -657,7 +657,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                 _criHold.setDefaultValues(cri.defaultCatalog, cri.defaultHoldability, 
                                           cri.defaultReadOnly, cri.defaultTypeMap, cri.defaultSchema,
-                                          cri.defaultNetworkTimeout, cri.defaultShardingKey, cri.defaultSuperShardingKey); 
+                                          cri.defaultNetworkTimeout); 
 
                 // now set the cri as changable, otherwise, setters to follow will fail
                 _criHold.markAsChangable();
@@ -1020,8 +1020,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             defaultCatalog = sqlConn.getCatalog();
             defaultReadOnly = mcf.supportsIsReadOnly ? sqlConn.isReadOnly() : false;
             defaultTypeMap = getTypeMapSafely();
-            currentShardingKey = defaultShardingKey = null; // spec provides no getter method
-            currentSuperShardingKey = defaultSuperShardingKey = null; // spec provides no getter method
+            currentShardingKey = initialShardingKey = cri.ivShardingKey;
+            currentSuperShardingKey = initialSuperShardingKey = cri.ivSuperShardingKey;
             currentSchema = defaultSchema = getSchemaSafely();
             currentNetworkTimeout = defaultNetworkTimeout = getNetworkTimeoutSafely();
             currentHoldability = defaultHoldability; 
@@ -1955,7 +1955,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (!newCRI.isCRIChangable())
             newCRI = WSConnectionRequestInfoImpl.createChangableCRIFromNon(newCRI);
         newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema,
-                                defaultNetworkTimeout, defaultShardingKey, defaultSuperShardingKey);
+                                defaultNetworkTimeout);
 
         cri = newCRI;
 
@@ -1998,7 +1998,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (!newCRI.isCRIChangable())
             newCRI = WSConnectionRequestInfoImpl.createChangableCRIFromNon(newCRI);
         newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema,
-                                defaultNetworkTimeout, defaultShardingKey, defaultSuperShardingKey);
+                                defaultNetworkTimeout);
         cri = newCRI;
 
         //  -- don't intialize the properties, deplay to synchronizePropertiesWithCRI().
@@ -2099,8 +2099,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 helper.setReadOnly(this, cri.ivReadOnly.booleanValue(), false); 
             }
 
-            if (cri.ivShardingKey != null && !cri.ivShardingKey.equals(defaultShardingKey)
-             || cri.ivSuperShardingKey != null && !cri.ivSuperShardingKey.equals(defaultShardingKey)) {
+            if (!AdapterUtil.match(cri.ivShardingKey, currentShardingKey)
+             || !AdapterUtil.match(cri.ivSuperShardingKey, currentSuperShardingKey)) {
                 setShardingKeys(cri.ivShardingKey, cri.ivSuperShardingKey);
             }
 
@@ -2145,8 +2145,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                                    "/" + AdapterUtil.getIsolationLevelString(currentTransactionIsolation),
                                    "Catalog:       " + defaultCatalog + "/" + (cri.ivCatalog == null ? defaultCatalog : cri.ivCatalog),
                                    "Schema:        " + defaultSchema + "/" + (cri.ivSchema == null ? defaultSchema : cri.ivSchema),
-                                   "ShardingKey:   " + defaultShardingKey + "/" + (cri.ivShardingKey == null ? defaultShardingKey : cri.ivShardingKey),
-                                   "SuperShardingK:" + defaultSuperShardingKey + "/" + (cri.ivSuperShardingKey == null ? defaultSuperShardingKey : cri.ivSuperShardingKey),
+                                   "ShardingKey:   " + initialShardingKey + "/" + cri.ivShardingKey,
+                                   "SuperShardingK:" + initialSuperShardingKey + "/" + cri.ivSuperShardingKey,
                                    "NetworkTimeout:" + defaultNetworkTimeout + "/" + (cri.ivNetworkTimeout == 0 ? defaultNetworkTimeout : cri.ivNetworkTimeout),
                                    "IsReadOnly:    " + defaultReadOnly + "/" + (cri.ivReadOnly == null ? defaultReadOnly : cri.ivReadOnly), 
                                    "TypeMap:       " + defaultTypeMap + "/" + (cri.ivTypeMap == null ? defaultTypeMap : cri.ivTypeMap),
@@ -2587,8 +2587,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         defaultCatalog = null; 
         defaultTypeMap = null; 
         defaultSchema = null;
-        defaultShardingKey = null;
-        defaultSuperShardingKey = null;
+        initialShardingKey = null;
+        initialSuperShardingKey = null;
 
         handlesInUse = null;
 
@@ -2943,10 +2943,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
             }
 
-            if (!AdapterUtil.match(currentShardingKey, defaultShardingKey)
-             || !AdapterUtil.match(currentSuperShardingKey, defaultSuperShardingKey)) {
+            if (!AdapterUtil.match(currentShardingKey, initialShardingKey)
+             || !AdapterUtil.match(currentSuperShardingKey, initialSuperShardingKey)) {
                 try {
-                    setShardingKeys(defaultShardingKey, defaultSuperShardingKey);
+                    setShardingKeys(initialShardingKey, initialSuperShardingKey);
 
                     // Update the connection request information after switching back to the
                     // default sharding keys.
@@ -2955,8 +2955,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                         if (!cri.isCRIChangable()) // create a changable CRI if existing one is not
                             setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
 
-                        cri.setShardingKey(defaultShardingKey);
-                        cri.setSuperShardingKey(defaultSuperShardingKey);
+                        cri.setShardingKey(initialShardingKey);
+                        cri.setSuperShardingKey(initialSuperShardingKey);
                     }
                 } catch (SQLException sqle) {
                     FFDCFilter.processException(sqle, getClass().getName(), "2959", this);
