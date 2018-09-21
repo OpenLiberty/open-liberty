@@ -4,9 +4,11 @@
 		<feature>jaxrs-2.0</feature>
 		<feature>jsp-2.3</feature>
 		<feature>appSecurity-2.0</feature>
+		<feature>timedexit-1.0</feature> <!-- required since we can't import fatTestPorts.xml due to
+		                                      RepeatTests reordering elements in server.xml causing
+		                                      port conflicts between the 2 servers  -->
 	</featureManager>
-   
-  	<include location="../fatTestPorts.xml"/>
+
   	<httpEndpoint host="localhost" httpPort="8888" httpsPort="8889"
 		id="defaultHttpEndpoint" />
 

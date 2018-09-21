@@ -115,7 +115,7 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
 
             HttpEndpoint mainEndpoint = new HttpEndpoint();
             endpoints.add(mainEndpoint);
-            mainEndpoint.setHttpPort(OVERRIDE_MAIN_PORT);
+            mainEndpoint.setHttpPort(Integer.toString(OVERRIDE_MAIN_PORT));
             mainEndpoint.setId("main");
 
             VirtualHost actuatorHost = new VirtualHost();
@@ -125,7 +125,7 @@ public class ConfigActuatorXMLOverrideTests extends AbstractSpringTests {
 
             HttpEndpoint actuatorEndpoint = new HttpEndpoint();
             endpoints.add(actuatorEndpoint);
-            actuatorEndpoint.setHttpPort(OVERRIDE_ACTUATOR_PORT);
+            actuatorEndpoint.setHttpPort(Integer.toString(OVERRIDE_ACTUATOR_PORT));
             actuatorEndpoint.setId("actuator");
         }
     }
