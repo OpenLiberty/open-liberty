@@ -855,7 +855,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
     protected void validInternalContainers() {
         String methodName = "validInternalContainers";
 
-        boolean changedTable = validContainerTable();
+        boolean changedTable = !validContainerTable();
 
         // Don't return until all internal containers were checked!
         // That forces data to be present for all internal containers.
@@ -867,7 +867,6 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             if ( childScanPolicy == ScanPolicy.EXTERNAL ) {
                 continue;
             }
-
             if ( !validInternalContainer(childClassSource, childScanPolicy) ) {
                 changedContainers++;
             }
@@ -880,7 +879,6 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
             changed = true;
             changedReason = "changed containers list";
         }
-
         if ( changedContainers > 0 ) {
             changed = true;
             if ( changedTable ) {
