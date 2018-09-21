@@ -207,7 +207,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     @Override
     public void postInvoke(EJBRequestData request, SecurityCookieImpl preInvokeResult) throws EJBAccessDeniedException {
         if (preInvokeResult != null) {
-			JaccService js = jaccService.getService();
+            JaccService js = jaccService.getService();
             if (js != null) {
                 js.resetPolicyContextHandlerInfo();
             }
