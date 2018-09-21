@@ -715,7 +715,9 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                     TargetsVisitorClassImpl.DONT_RECORD_RESOLVED,
                     TargetsVisitorClassImpl.DONT_RECORD_UNRESOLVED);
 
-                if ( !useTargetsTable.sameAs(newTargetsTable) ) {
+                boolean isCongruent = (isScanSingleThreaded() || isScanSingleSource());
+
+                if ( !useTargetsTable.sameAs(newTargetsTable, isCongruent) ) {
                     useTargetsTable = internTargetsTable(newTargetsTable);
 
                     isChangedAll = true;
@@ -809,7 +811,7 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] RETURN [ {1} ]: {2} ]",
-                        new Object[] { getHashText(), Boolean.valueOf(isChanged), isChangedReason });
+                        new Object[] { getHashText(), Boolean.valueOf(!isChanged), isChangedReason });
         }
         return !isChanged;
     }

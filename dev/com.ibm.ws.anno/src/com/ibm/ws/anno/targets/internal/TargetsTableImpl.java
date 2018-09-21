@@ -1244,15 +1244,15 @@ public class TargetsTableImpl implements TargetsTable {
 
     //
 
-    public boolean sameAs(TargetsTableImpl otherTable) {
+    public boolean sameAs(TargetsTableImpl otherTable, boolean isCongruent) {
         if ( otherTable == null ) {
             return false;
         } else if ( otherTable == this ) {
             return true;
         }
 
-        return ( getClassTable().sameAs( otherTable.getClassTable() ) &&
-                 getAnnotationTable().sameAs( otherTable.getAnnotationTable() ) );
+        return ( getClassTable().sameAs( otherTable.getClassTable(), isCongruent ) &&
+                 getAnnotationTable().sameAs( otherTable.getAnnotationTable(), isCongruent ) );
     }
 
     //

@@ -560,61 +560,60 @@ public class UtilImpl_BidirectionalMap implements Util_BidirectionalMap {
      * <p>Tell if two maps have the same contents.</p>
      *
      * @param otherMap The map to test against this map.
-     *
+     * @param isCongruent Control parameter: Tells if the other map uses
+     *     the same intern maps as this map.
      * @return True if the maps have the same contents.
      */
-    public boolean i_equals(UtilImpl_BidirectionalMap otherMap) {
-        // The other map is assumed to use the same intern maps as this
-        // map.  That assumption ties to the use of 'containsAll' on the
-        // held and holder sets, which are identity maps.
-        //
-        // If the other map uses string which do not use the same intern maps,
-        // an extra layer of intern'ing of the other key and set element strings
-        // would be necessary.
-
+    public boolean i_equals(UtilImpl_BidirectionalMap otherMap, boolean isCongruent) {
         if ( otherMap == null ) {
-            return false;
+            return false; // Null other map.
         } else if ( otherMap == this ) {
-            return true;
+            return true; // Identical other map.
         }
 
         if ( i_holderToHeldMap.keySet().size() != otherMap.i_holderToHeldMap.keySet().size() ) {
-            return false;
+            return false; // Unequal sizes of key sets.
         }
 
         for ( Map.Entry<String, Set<String>> i_holderEntry : i_holderToHeldMap.entrySet() ) {
             String i_holderName = i_holderEntry.getKey();
             Set<String> i_held = i_holderEntry.getValue();
 
-            Set<String> i_otherHeld = otherMap.i_holderToHeldMap.get(i_holderName);
-            if ( i_otherHeld == null ) {
-                return false;
-            } else if ( i_held.size() != i_otherHeld.size() ) {
-                return false;
-            } else if ( !i_held.containsAll(i_otherHeld) ) {
-                return false;
-            }
+            if ( isCongruent ) {
+                Set<String> i_otherHeld = otherMap.i_holderToHeldMap.get(i_holderName);
+                if ( i_otherHeld == null ) {
+                    return false; // Other does not have the same key.
+                } else if ( i_held.size() != i_otherHeld.size() ) {
+                    return false; // Other has different count of values for the key.
+                } else if ( !i_held.containsAll(i_otherHeld) ) {
+                    return false; // Other does not have the same values for the key.
+                }
 
-            // // Alternate for comparing maps which do not share the same intern maps:
-            //
-            // Set<String> i_otherHeld = otherMap.selectHeldOf(i_holderName);
-            // if ( i_otherHeld == null ) {
-            //     return false;
-            // } else if ( i_held.size() != i_otherHeld.size() ) {
-            //     return false;
-            // } else {
-            //     for ( String i_heldName : i_held ) {
-            //         String i_otherHeldName = otherMap.internHeld(i_heldName, Util_InternMap.DO_NOT_FORCE);
-            //         if ( i_otherHeldName == null ) {
-            //             return false;
-            //         } else if ( !i_otherHeld.contains(i_otherHeldName)) {
-            //             return false;
-            //         }
-            //     }
-            // }
+            } else {
+                String i_otherHolderName = otherMap.internHolder(i_holderName, Util_InternMap.DO_NOT_FORCE);
+                if ( i_otherHolderName == null ) {
+                    return false; // Other does not even store the key.
+                }
+
+                Set<String> i_otherHeld = otherMap.selectHeldOf(i_otherHolderName);
+                if ( i_otherHeld == null ) {
+                    return false; // Other does not have the same key.
+                } else if ( i_held.size() != i_otherHeld.size() ) {
+                    return false; // Other has different count of values for the key.
+                } else {
+                    for ( String i_heldName : i_held ) {
+                        String i_otherHeldName = otherMap.internHeld(i_heldName, Util_InternMap.DO_NOT_FORCE);
+                        if ( i_otherHeldName == null ) {
+                            return false; // Other does not even store the value.
+                        } else if ( !i_otherHeld.contains(i_otherHeldName)) {
+                            return false; // Other does not have the value for the key.
+                        }
+                    }
+                }
+            }
         }
 
-        return true;
+        return true; // All the same.
     }
 
     //

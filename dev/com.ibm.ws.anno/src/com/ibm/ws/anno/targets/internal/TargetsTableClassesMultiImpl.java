@@ -481,6 +481,8 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
         }
     }
 
+    public static final boolean IS_CONGRUENT = true; // Uses the same intern maps.
+
     public boolean sameAs(TargetsTableClassesMultiImpl otherTable) {
         if ( otherTable == null ) {
             return false;
@@ -488,7 +490,7 @@ public class TargetsTableClassesMultiImpl extends TargetsTableClassesImpl
             return true;
         }
 
-        if ( !sameAs( (TargetsTableClassesImpl) otherTable) ) {
+        if ( !sameAs(otherTable, IS_CONGRUENT) ) {
             return false;
         }
 

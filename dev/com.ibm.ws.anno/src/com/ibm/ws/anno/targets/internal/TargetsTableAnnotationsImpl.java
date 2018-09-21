@@ -520,26 +520,26 @@ public class TargetsTableAnnotationsImpl
 
     //
 
-    public boolean sameAs(TargetsTableAnnotationsImpl otherTable) {
+    public boolean sameAs(TargetsTableAnnotationsImpl otherTable, boolean isCongruent) {
         if ( otherTable == null ) {
             return false;
         } else if ( otherTable == this ) {
             return true;
         }
 
-        if ( !i_getPackageAnnotations().i_equals( otherTable.i_getPackageAnnotations() ) ) {
+        if ( !i_getPackageAnnotations().i_equals( otherTable.i_getPackageAnnotations(), isCongruent ) ) {
             return false;
         }
 
-        if ( !i_getClassAnnotations().i_equals( otherTable.i_getClassAnnotations() ) ) {
+        if ( !i_getClassAnnotations().i_equals( otherTable.i_getClassAnnotations(), isCongruent ) ) {
             return false;
         }
 
-        if ( !i_getFieldAnnotations().i_equals( otherTable.i_getFieldAnnotations() ) ) {
+        if ( !i_getFieldAnnotations().i_equals( otherTable.i_getFieldAnnotations(), isCongruent ) ) {
             return false;
         }
 
-        if ( !i_getMethodAnnotations().i_equals( otherTable.i_getMethodAnnotations() ) ) {
+        if ( !i_getMethodAnnotations().i_equals( otherTable.i_getMethodAnnotations(), isCongruent ) ) {
             return false;
         }
 
