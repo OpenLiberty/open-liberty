@@ -30,7 +30,7 @@ Export-Package: \
 	com.ibm.ws.collector.manager.buffer
 instrument.disabled: true
 
-publish.wlp.jar.disabled: true
+publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
 	com.ibm.ws.kernel.boot.logging;version=latest,\
