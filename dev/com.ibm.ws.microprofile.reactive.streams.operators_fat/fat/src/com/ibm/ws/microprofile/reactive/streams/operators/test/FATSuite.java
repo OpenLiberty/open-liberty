@@ -8,20 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.microprofile.reactive.streams.operators.test;
 
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
+@RunWith(Suite.class)
+@SuiteClasses({
+                ReactiveStreamsTest.class
+})
+public class FATSuite {
+    // this page intentionally left blank
 }
