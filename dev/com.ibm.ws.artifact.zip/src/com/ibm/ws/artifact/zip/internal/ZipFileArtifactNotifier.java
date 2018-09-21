@@ -51,7 +51,7 @@ import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
  *       representation of the zip file.  The artifact file system does not
  *       guarantee that containers or container entries are unique.
  */
-public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, ArtifactListener {
+public class ZipFileArtifactNotifier implements ArtifactNotifier, com.ibm.ws.kernel.filemonitor.FileMonitor, ArtifactListener {
     static final TraceComponent tc = Tr.register(ZipFileArtifactNotifier.class);
 
     /**
@@ -382,6 +382,8 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, FileMonitor, A
         serviceProperties.put(FileMonitor.MONITOR_DIRECTORIES, new String[] { a_exposedRootPath });
         serviceProperties.put(FileMonitor.MONITOR_RECURSE, Boolean.TRUE);
         serviceProperties.put(FileMonitor.MONITOR_FILTER, ".*");
+        // Adding INTERNAL parameter MONITOR_IDENTIFICATION_NAME to identify this monitor.
+        serviceProperties.put(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
     }
 
     //
