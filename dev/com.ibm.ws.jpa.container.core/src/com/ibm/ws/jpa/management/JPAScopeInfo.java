@@ -247,10 +247,18 @@ public class JPAScopeInfo {
             pxmlsInfoCopy.putAll(pxmlsInfo);
         }
 
+        final JPAIntrospection jpaIntro = JPAIntrospection.getJPAIntrospection();
+
         for (Map.Entry<String, JPAPxmlInfo> entry : pxmlsInfoCopy.entrySet()) {
             final JPAPxmlInfo value = entry.getValue();
-            out.println();
-            value.doIntrospect(out);
+
+            jpaIntro.beginPXmlInfoVisit(value);
+            try {
+                out.println();
+                value.doIntrospect(out);
+            } finally {
+                jpaIntro.endPXmlInfoVisit();
+            }
         }
     }
 }
