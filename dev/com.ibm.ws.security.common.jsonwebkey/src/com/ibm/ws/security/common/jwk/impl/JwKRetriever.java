@@ -139,17 +139,17 @@ public class JwKRetriever {
 
     /**
      * Either kid or x5t will work. But not both
-     *
-     * @param kid
-     * @param x5t
-     * @return
-     * @throws PrivilegedActionException
-     * @throws IOException
-     * @throws KeyStoreException
-     * @throws InterruptedException
+     */
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t)
+            throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
+        return getPublicKeyFromJwk(kid, x5t, null);
+    }
+
+    /**
+     * Either kid, x5t, or use will work, but not all
      */
     @FFDCIgnore({ KeyStoreException.class })
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t)
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String use)
             throws PrivilegedActionException, IOException, KeyStoreException, InterruptedException {
         PublicKey key = null;
         KeyStoreException errKeyStoreException = null;
@@ -158,9 +158,9 @@ public class JwKRetriever {
         boolean isHttp = remoteHttpCall(this.jwkEndpointUrl, this.publicKeyText, this.keyLocation);
         try {
             if (isHttp) {
-                key = this.getJwkRemote(kid, x5t);
+                key = this.getJwkRemote(kid, x5t, use);
             } else {
-                key = this.getJwkLocal(kid, x5t, publicKeyText, keyLocation);
+                key = this.getJwkLocal(kid, x5t, publicKeyText, keyLocation, use);
             }
         } catch (KeyStoreException e) {
             errKeyStoreException = e;
@@ -188,11 +188,13 @@ public class JwKRetriever {
         return jwkSet.getPublicKeyByKid(null);
     }
 
-    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t) {
+    private PublicKey getJwkFromJWKSet(String setId, String kid, String x5t, String use) {
         if (kid != null) {
             return jwkSet.getPublicKeyBySetIdAndKid(setId, kid);
         } else if (x5t != null) {
             return jwkSet.getPublicKeyBySetIdAndx5t(setId, x5t);
+        } else if (use != null) {
+            return jwkSet.getPublicKeyBySetIdAndUse(setId, use);
         }
         return jwkSet.getPublicKeyBySetId(setId);
     }
@@ -210,7 +212,7 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore({ PrivilegedActionException.class, Exception.class })
-    protected PublicKey getPublicKeyFromFile(String location, String kid, String x5t) {
+    protected PublicKey getPublicKeyFromFile(String location, String kid, String x5t, String use) {
         PublicKey publicKey = null;
         String keyString = null;
         InputStream inputStream = null;
@@ -251,11 +253,11 @@ public class JwKRetriever {
 
             if (inputStream != null) {
                 synchronized (jwkSet) {
-                    publicKey = getJwkFromJWKSet(locationUsed, kid, x5t);
+                    publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                     if (publicKey == null) {
                         keyString = getKeyAsString(inputStream);
                         parseJwk(keyString, null, jwkSet, sigAlg);
-                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t);
+                        publicKey = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                     }
                 }
             }
@@ -267,17 +269,17 @@ public class JwKRetriever {
         return publicKey;
     }
 
-    protected PublicKey getJwkLocal(String kid, String x5t, String publicKeyText, String location) {
+    protected PublicKey getJwkLocal(String kid, String x5t, String publicKeyText, String location, String use) {
         if (publicKeyText == null && location != null) {
-            return getPublicKeyFromFile(location, kid, x5t);
+            return getPublicKeyFromFile(location, kid, x5t, use);
         }
 
         if (publicKeyText != null) {
             synchronized (jwkSet) {
-                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t);
+                PublicKey publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
                 if (publicKey == null) {
                     parseJwk(publicKeyText, null, jwkSet, sigAlg);
-                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t);
+                    publicKey = getJwkFromJWKSet(publicKeyText, kid, x5t, use);
                 }
                 return publicKey;
             }
@@ -310,7 +312,7 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore({ KeyStoreException.class })
-    protected PublicKey getJwkRemote(String kid, String x5t) throws KeyStoreException, InterruptedException {
+    protected PublicKey getJwkRemote(String kid, String x5t, String use) throws KeyStoreException, InterruptedException {
         locationUsed = jwkEndpointUrl;
         if (locationUsed == null) {
             locationUsed = keyLocation;
@@ -321,9 +323,9 @@ public class JwKRetriever {
         PublicKey key = null;
         try {
             synchronized (jwkSet) {
-                key = getJwkFromJWKSet(locationUsed, kid, x5t);
+                key = getJwkFromJWKSet(locationUsed, kid, x5t, use);
                 if (key == null) {
-                    key = doJwkRemote(kid, x5t);
+                    key = doJwkRemote(kid, x5t, use);
                 }
             }
         } catch (KeyStoreException e) {
@@ -333,7 +335,7 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore({ Exception.class, KeyStoreException.class })
-    protected PublicKey doJwkRemote(String kid, String x5t) throws KeyStoreException {
+    protected PublicKey doJwkRemote(String kid, String x5t, String use) throws KeyStoreException {
 
         String jsonString = null;
         locationUsed = jwkEndpointUrl;
@@ -370,7 +372,7 @@ public class JwKRetriever {
             }
         }
 
-        return getJwkFromJWKSet(locationUsed, kid, x5t);
+        return getJwkFromJWKSet(locationUsed, kid, x5t, use);
     }
 
     // separate to be an independent method for unit tests
