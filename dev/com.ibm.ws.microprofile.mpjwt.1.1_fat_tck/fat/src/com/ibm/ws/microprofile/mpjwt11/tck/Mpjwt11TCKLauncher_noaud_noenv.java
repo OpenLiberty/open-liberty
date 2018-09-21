@@ -25,9 +25,9 @@ import componenttest.topology.utils.MvnUtils;
  */
 //@Mode(TestMode.QUARANTINE)
 @RunWith(FATRunner.class)
-public class Mpjwt11TCKLauncher_noaud_env {
+public class Mpjwt11TCKLauncher_noaud_noenv {
 
-    @Server("tckNoaudEnv")
+    @Server("tckNoaudNoEnv")
     public static LibertyServer server;
 
     @BeforeClass
@@ -44,9 +44,9 @@ public class Mpjwt11TCKLauncher_noaud_env {
 
     @Test
     //@AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchMpjwt11TCKLauncher_noaud_env() throws Exception {
+    public void launchMpjwt11TCKLauncher_noaud_noenv() throws Exception {
         String bucketAndTestName = this.getClass().getCanonicalName();
-        MvnUtils.setSuiteFileName("tck_suite_noaud_env.xml", server);
+        MvnUtils.setSuiteFileName("tck_suite_noaud_noenv.xml", server);
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName);
 
     }

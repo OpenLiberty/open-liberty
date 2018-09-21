@@ -90,6 +90,17 @@ public class MvnUtils {
     private static Set<String> versionedJars;
     private static Map<String, String> mavenVersionBindingJarPatches = new HashMap<String, String>();
     private static String overrideSuiteFileName = null;
+    private static String[] additionalMvnProps = null;
+
+    /**
+     * pass additional -Dproperty=value strings or other params to the maven command to run
+     *
+     * @param propDefs - each entry should have the form -Dproperty=value, or some other valid maven param.
+     */
+    public static void setAdditionalMvnProps(String[] propDefs, LibertyServer server) throws Exception {
+        additionalMvnProps = propDefs;
+        init(server);
+    }
 
     /**
      * Changes the name of the suite file used from default value to a new name.
@@ -100,11 +111,10 @@ public class MvnUtils {
      * @param server - server that will run this suite
      * @throws Exception
      */
-    public static void overrideSuiteFileName(String newName, LibertyServer server) throws Exception {
+    public static void setSuiteFileName(String newName, LibertyServer server) throws Exception {
         overrideSuiteFileName = newName;
         mvnOutputFilename = "mvnOutput_" + newName.replace(".xml", "");
         targetFolder = defaultTargetFolder + "_" + newName.replace(".xml", "");
-
         init(server);
     }
 
@@ -164,6 +174,9 @@ public class MvnUtils {
         // be different.
         String suiteFile = overrideSuiteFileName == null ? defaultSuiteFile : overrideSuiteFileName;
         mvnCliTckRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=" + suiteFile });
+
+        // add any properties passed in through addMvnProps()
+        mvnCliTckRoot = concatStringArray(mvnCliTckRoot, additionalMvnProps);
 
         mvnOutput = new File(resultsDir, mvnOutputFilename);
 
@@ -315,7 +328,7 @@ public class MvnUtils {
             init(server);
         }
 
-        String[] cmd = mvnCliRoot;
+        String[] cmd = mvnCliTckRoot;
         if (addedProps != null) {
             for (Iterator<Entry<String, String>> iterator = addedProps.entrySet().iterator(); iterator.hasNext();) {
                 Entry<String, String> entry = iterator.next();

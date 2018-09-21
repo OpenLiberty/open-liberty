@@ -72,25 +72,22 @@
 	
         
         
-          <!-- This is the MP-JWT TCK base extension and utility classes -->
+        <!-- This is the MP-JWT TCK base extension and utility classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>1.1</version>
+            <version>1.1.1-RC2</version>
         </dependency>
+       
         <!-- This is the actual MP-JWT TCK test classes -->
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
             <artifactId>microprofile-jwt-auth-tck</artifactId>
-            <version>1.2-SNAPSHOT</version>
-            <type>test-jar</type>
-            
-            
-            <scope>system</scope>
-              
-            <!--  TODO: WHEN TCK IS COMPLETE, REMOVE SYSTEMPATH AND SCOPE SO TESTS WILL PULL FROM GITHUB -->            
-            <!-- <systemPath>C:\projects\work\mpjwt\tck\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> -->
-            <systemPath>${componentRootDir}/lib/microprofile-jwt-auth-tck-1.2-20180821.143915-1.jar</systemPath>
+            <version>1.1.1-RC2</version>
+            <type>test-jar</type>        
+            <!-- <systemPath>C:\mpjwt\tck\microprofile-jwt-auth\tck\target\microprofile-jwt-auth-tck-1.2-SNAPSHOT-tests.jar</systemPath> -->
+            <!-- <scope>system</scope> -->
+           
            
         </dependency>
         

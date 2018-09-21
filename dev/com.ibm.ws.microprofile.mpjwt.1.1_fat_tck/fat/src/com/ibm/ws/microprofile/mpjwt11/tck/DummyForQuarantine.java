@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 
 /**
- * This is a dummy test so the quarantined build won't fail for not having any tests.
+ * This is a dummy test so the quarantined bucket won't fail a build for not having any tests.
  */
 
 @RunWith(FATRunner.class)

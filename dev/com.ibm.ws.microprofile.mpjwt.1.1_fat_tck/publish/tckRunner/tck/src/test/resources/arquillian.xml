@@ -25,6 +25,7 @@
             <property name="failSafeUndeployment">true</property>
             <property name="appDeployTimeout">${tck_appDeployTimeout}</property>
             <property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
+            <property name="deployType">xml</property> <!--  avoid windows file locking issues -->
         </configuration>
     </container>
 </arquillian>
