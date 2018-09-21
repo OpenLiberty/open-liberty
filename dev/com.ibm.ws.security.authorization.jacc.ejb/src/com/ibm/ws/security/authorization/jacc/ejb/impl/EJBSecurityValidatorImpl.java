@@ -74,7 +74,8 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
             Tr.error(tc, "JACC_EJB_IMPLIES_FAILURE", new Object[] { contextId, pae.getException() });
         } finally {
             try {
-                resetHandlerInfo();
+                // Not resetting Handler Info here, resetting in EJB postInvoke instead.
+				//resetHandlerInfo();
             } catch (PrivilegedActionException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Exception when resetting setHandler data. Ignore the error : " + e.getException());
