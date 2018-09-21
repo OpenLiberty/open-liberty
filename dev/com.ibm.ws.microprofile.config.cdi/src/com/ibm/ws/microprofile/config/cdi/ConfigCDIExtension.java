@@ -113,11 +113,12 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
             //instance must have exactly one type arg
             Type type = aTypes[0];
             //Check if the Provider provides an optional property. 
-
             if (type instanceof ParameterizedType) {
                 ParameterizedType maybeOptionalType = (ParameterizedType) type;
                 if  (Optional.class.isAssignableFrom((Class<?>) maybeOptionalType.getRawType())) {
                     configException = processConversionType(injectionPoint, type, classLoader, true);
+                } else {
+                    configException = processConversionType(injectionPoint, type, classLoader, false);
                 }
             } else { 
                 configException = processConversionType(injectionPoint, type, classLoader, false);

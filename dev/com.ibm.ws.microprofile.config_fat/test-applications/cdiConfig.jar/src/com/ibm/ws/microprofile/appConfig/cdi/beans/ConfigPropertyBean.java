@@ -11,9 +11,14 @@
 package com.ibm.ws.microprofile.appConfig.cdi.beans;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Provider;
+
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
@@ -40,6 +45,14 @@ public class ConfigPropertyBean {
     @ConfigProperty(name = "FAKE_URL_KEY", defaultValue = "http://www.default.com")
     URL DEFAULT_URL_KEY;
 
+    @Inject
+    @ConfigProperty(name = "providerForOptionalThatExists")
+    Provider<Optional<String>> optoinalExists;
+
+    @Inject
+    @ConfigProperty(name = "providerForOptionalThatDoesNotExist")
+    Provider<Optional<String>> optionalNotExists;
+
     /**
      * @return the nullKey
      */
@@ -61,5 +74,13 @@ public class ConfigPropertyBean {
 
     public URL getDEFAULT_URL_KEY() {
         return DEFAULT_URL_KEY;
+    }
+
+    public String getfromOptionalThatExists() {
+        return optoinalExists.get().orElse("error: should exist");
+    }
+
+    public String getelseFromOptionalThatExists() {
+        return optionalNotExists.get().orElse("passed: should not exist");
     }
 }

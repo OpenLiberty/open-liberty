@@ -54,4 +54,14 @@ public class ConfigPropertyTestServlet extends AbstractBeanServlet {
     public void testDefaultValue() throws Exception {
         test("DEFAULT_URL_KEY", "http://www.default.com");
     }
+
+    @Test
+    public void testOptionalThatExists() throws Exception {
+        test("fromOptionalThatExists", "itExists");
+    }
+
+    @Test
+    public void testOptionalThatDoesNotExist() throws Exception {
+        test("elseFromOptionalThatExists", "passed: should not exist");
+    }
 }
