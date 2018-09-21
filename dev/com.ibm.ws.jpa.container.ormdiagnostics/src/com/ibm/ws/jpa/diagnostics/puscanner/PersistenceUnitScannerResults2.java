@@ -37,6 +37,7 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInform
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ExceptionType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.FieldInfoType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.FieldsType;
+import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.InterfacesType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ListEntryType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ListInstanceType;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.MapEntryType;
@@ -337,6 +338,28 @@ public class PersistenceUnitScannerResults2 {
         }
 
         sb.append(cit.getName());
+        final String superclassName = cit.getSuperclassName();
+        if (superclassName != null && !superclassName.trim().isEmpty() && !superclassName.trim().equals("java.lang.Object")) {
+            sb.append(" extends ").append(superclassName.replace("/", ".")).append(" ");
+        }
+
+        final InterfacesType ifaces = cit.getInterfaces();
+        if (ifaces != null) {
+            List<String> ifaceList = ifaces.getInterface();
+            if (ifaceList.size() > 0) {
+                sb.append(" implements ");
+                boolean first = true;
+                for (String iface : ifaceList) {
+                    if (!first) {
+                        sb.append(", ");
+                    } else {
+                        first = false;
+                    }
+                    sb.append(iface.replace("/", "."));
+                }
+            }
+        }
+
         sb.append(" {\n");
 
         printFields(cit, sb);
