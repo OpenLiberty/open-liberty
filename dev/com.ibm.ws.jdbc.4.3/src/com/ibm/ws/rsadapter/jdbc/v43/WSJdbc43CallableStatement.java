@@ -13,17 +13,12 @@ package com.ibm.ws.rsadapter.jdbc.v43;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcUtil;
 import com.ibm.ws.rsadapter.jdbc.v42.WSJdbc42CallableStatement;
 
 public class WSJdbc43CallableStatement extends WSJdbc42CallableStatement implements CallableStatement {
-
-    private static final TraceComponent tc = Tr.register(WSJdbc43CallableStatement.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 
     public WSJdbc43CallableStatement(CallableStatement cstmtImplObject, WSJdbcConnection connWrapper,
                                      int theHoldability, String cstmtSQL) throws SQLException {
