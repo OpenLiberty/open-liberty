@@ -36,8 +36,8 @@ public class MetricsConnection {
     public static final String METRICS_ENDPOINT = "/metrics/";
     public static final String ADMINISTRATOR_USERNAME = "admin";
     public static final String ADMINISTRATOR_PASSWORD = "adminpwd";
-    public static final String MONITOR_USERNAME = "monitor";
-    public static final String MONITOR_PASSWORD = "monitorpwd";
+    public static final String VIEWER_USERNAME = "viewer";
+    public static final String VIEWER_PASSWORD = "viewerpwd";
     public static final String UNAUTHORIZED_USER_USERNAME = "user";
     public static final String UNAUTHORIZED_USER_PASSWORD = "userpwd";
     public static final String INVALID_USER_USERNAME = "idontexist";
@@ -206,15 +206,15 @@ public class MetricsConnection {
 
     /**
      * Creates a connection for private (authorized) docs endpoint using HTTPS
-     * and the Monitor role
+     * and the Viewer role
      *
      * @param server - server to connect to
      * @return
      */
-    public static MetricsConnection connection_monitorRole(LibertyServer server) {
+    public static MetricsConnection connection_viewerRole(LibertyServer server) {
         return new MetricsConnection(server, METRICS_ENDPOINT).secure(true)
                         .header("Authorization",
-                                "Basic " + Base64Coder.base64Encode(MONITOR_USERNAME + ":" + MONITOR_PASSWORD));
+                                "Basic " + Base64Coder.base64Encode(VIEWER_USERNAME + ":" + VIEWER_PASSWORD));
     }
 
     /**

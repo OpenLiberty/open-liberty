@@ -58,14 +58,14 @@
   </security-constraint>
 
   <security-constraint id="SecurityConstraint_3">
-    <display-name>ibm/api REST Security Constraint - Monitor Role</display-name>
+    <display-name>ibm/api REST Security Constraint - Viewer Role</display-name>
     <web-resource-collection id="WebResourceCollection_3">
       <web-resource-name>ibm/api REST URL</web-resource-name>
       <url-pattern>/*</url-pattern>
       <http-method>GET</http-method>
     </web-resource-collection>
     <auth-constraint>
-      <role-name>Monitor</role-name>
+      <role-name>Viewer</role-name>
     </auth-constraint>
     <user-data-constraint id="UserDataConstraint_3">
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
@@ -83,8 +83,8 @@
   </security-role>
 
   <security-role id="SecurityRole_3">
-    <description>Monitor Role</description>
-    <role-name>Monitor</role-name>
+    <description>Viewer Role</description>
+    <role-name>Viewer</role-name>
   </security-role>
 
   <login-config id="LoginConfig_1">

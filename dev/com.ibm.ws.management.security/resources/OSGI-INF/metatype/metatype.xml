@@ -30,8 +30,8 @@
         <Object ocdref="com.ibm.ws.management.security.role.administrator.metatype" />
     </Designate>
 
-    <OCD id="com.ibm.ws.management.security.role.monitor.metatype" name="%role.monitor" description="%role.monitor.desc"
-         ibm:alias="monitor-role" ibm:objectClass="com.ibm.ws.management.security.ManagementRole">
+    <OCD id="com.ibm.ws.management.security.role.viewer.metatype" name="%role.viewer" description="%role.viewer.desc"
+         ibm:alias="viewer-role" ibm:objectClass="com.ibm.ws.management.security.ManagementRole">
         <AD id="user" name="%role.user" description="%role.user.desc"
             required="false" type="String" cardinality="2147483647" />
         <AD id="user-access-id" name="%role.userAccessId" description="%role.userAccessId.desc"
@@ -43,8 +43,8 @@
             required="false" type="String" cardinality="2147483647" />
     </OCD>
 
-    <Designate pid="com.ibm.ws.management.security.role.monitor">
-        <Object ocdref="com.ibm.ws.management.security.role.monitor.metatype" />
+    <Designate pid="com.ibm.ws.management.security.role.viewer">
+        <Object ocdref="com.ibm.ws.management.security.role.viewer.metatype" />
     </Designate>
 
 </metatype:MetaData>

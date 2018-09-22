@@ -20,12 +20,12 @@ import com.ibm.ws.management.security.ManagementSecurityConstants;
 /**
  *
  */
-public class MonitorRoleTest {
+public class ViewerRoleTest {
 
     @Test
     public void checkRoleName() {
-        ManagementRole role = new MonitorRole();
-        assertEquals(ManagementSecurityConstants.MONITOR_ROLE_NAME,
+        ManagementRole role = new ViewerRole();
+        assertEquals(ManagementSecurityConstants.VIEWER_ROLE_NAME,
                      role.getRoleName());
     }
 

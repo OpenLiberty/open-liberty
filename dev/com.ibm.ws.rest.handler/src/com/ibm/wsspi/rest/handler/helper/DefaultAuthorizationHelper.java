@@ -32,14 +32,14 @@ public class DefaultAuthorizationHelper {
         if (request.isUserInRole("Administrator")) {
             return true;
         }
-        if (isGetMethod && request.isUserInRole("Monitor")) {
+        if (isGetMethod && request.isUserInRole("Viewer")) {
             return true;
         }
 
         // Not in admin role, so built error msg
         // TODO: Translate msg
         if (isGetMethod) {
-            response.sendError(403, "Administrator or Monitor role needed.");
+            response.sendError(403, "Administrator or Viewer role needed.");
         } else {
             response.sendError(403, "Administrator role needed.");
         }

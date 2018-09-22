@@ -54,11 +54,11 @@ public class DefaultAuthorizationHelperTest {
      * {@link com.ibm.wsspi.rest.handler.helper.DefaultAuthorizationHelper#checkAdministratorRole(com.ibm.wsspi.rest.handler.RESTRequest, com.ibm.wsspi.rest.handler.RESTResponse)}.
      */
     @Test
-    public void get_with_Monitor_is_authorized() throws Exception {
+    public void get_with_Vewier_is_authorized() throws Exception {
         DefaultAuthorizationHelper authz = new DefaultAuthorizationHelper();
-        RESTRequest request = new MockRESTRequest("GET", "Monitor");
+        RESTRequest request = new MockRESTRequest("GET", "Vewier");
         RESTResponse response = new MockRESTResponse();
-        assertTrue("GET method should be authorized when the user is in the Monitor role",
+        assertTrue("GET method should be authorized when the user is in the Vewier role",
                    authz.checkAdministratorRole(request, response));
     }
 
@@ -67,11 +67,11 @@ public class DefaultAuthorizationHelperTest {
      * {@link com.ibm.wsspi.rest.handler.helper.DefaultAuthorizationHelper#checkAdministratorRole(com.ibm.wsspi.rest.handler.RESTRequest, com.ibm.wsspi.rest.handler.RESTResponse)}.
      */
     @Test
-    public void post_with_Monitor_is_unauthorized() throws Exception {
+    public void post_with_Vewier_is_unauthorized() throws Exception {
         DefaultAuthorizationHelper authz = new DefaultAuthorizationHelper();
-        RESTRequest request = new MockRESTRequest("POST", "Monitor");
+        RESTRequest request = new MockRESTRequest("POST", "Vewier");
         RESTResponse response = new MockRESTResponse(403, "Administrator role needed.");
-        assertFalse("POST method should be authorized when the user is in the Monitor role",
+        assertFalse("POST method should be authorized when the user is in the Vewier role",
                     authz.checkAdministratorRole(request, response));
     }
 
@@ -83,7 +83,7 @@ public class DefaultAuthorizationHelperTest {
     public void get_with_no_role_is_unauthorized() throws Exception {
         DefaultAuthorizationHelper authz = new DefaultAuthorizationHelper();
         RESTRequest request = new MockRESTRequest("GET", "");
-        RESTResponse response = new MockRESTResponse(403, "Administrator or Monitor role needed.");
+        RESTResponse response = new MockRESTResponse(403, "Administrator or Vewier role needed.");
         assertFalse("GET method should not be authorized if the user has no role", authz.checkAdministratorRole(request, response));
     }
 
