@@ -31,11 +31,10 @@ import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
-import com.ibm.ws.security.social.internal.utils.ClientConstants;
 
 /**
  * This class was derived from GoogleLoginConfigImpl, it's purpose is to provide common superclass
- * and a metatype element for other OIDC based social services that will not use the Google metatypedefaults.
+ * and a metatype element for other OIDC based social services that will not use the Google metatype defaults.
  *
  * It provides two services:
  * . One is for the oidcConfig which extends from the generic OAuth2LoginConfig
@@ -64,6 +63,19 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     public static final String KEY_TRUSTED_ALIAS = "trustAliasName";
     private String trustAliasName = null;
+    
+    public static final String KEY_USERINFO_ENDPOINT = "userInfoEndpoint";
+    private String userInfoEndpoint = null;
+    public static final String KEY_USERINFO_ENDPOINT_ENABLED = "userInfoEndpointEnabled";
+    private boolean userInfoEndpointEnabled = true;
+
+    public static final String KEY_RESPONSE_MODE = "responseMode";
+    private String responseMode = null;
+
+    public static final String KEY_NONCE_ENABLED = "nonceEnabled";
+
+    public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
+    private boolean includeCustomCacheKeyInSubject = true;
 
     @Override
     protected void setRequiredConfigAttributes(Map<String, Object> props) {
@@ -73,6 +85,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     @Override
     protected void setOptionalConfigAttributes(Map<String, Object> props) throws SocialLoginException {
+        this.userInfoEndpoint = configUtils.getConfigAttribute(props, KEY_USERINFO_ENDPOINT);
+        this.userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, this.userInfoEndpointEnabled);
         this.authorizationEndpoint = configUtils.getConfigAttribute(props, KEY_authorizationEndpoint);
         this.tokenEndpoint = configUtils.getConfigAttribute(props, KEY_tokenEndpoint);
         this.jwksUri = configUtils.getConfigAttribute(props, KEY_jwksUri);
@@ -94,7 +108,12 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         this.tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
         this.redirectToRPHostAndPort = configUtils.getConfigAttribute(props, KEY_redirectToRPHostAndPort);
         this.hostNameVerificationEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, this.hostNameVerificationEnabled);
-        this.nonce = true;
+        this.responseType = configUtils.getConfigAttribute(props, KEY_responseType);
+        this.responseMode = configUtils.getConfigAttribute(props, KEY_RESPONSE_MODE);
+        this.nonce = configUtils.getBooleanConfigAttribute(props, KEY_NONCE_ENABLED, this.nonce);
+        this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
+        this.includeCustomCacheKeyInSubject = configUtils.getBooleanConfigAttribute(props, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, this.includeCustomCacheKeyInSubject);
+        this.resource = configUtils.getConfigAttribute(props, KEY_resource);
     }
 
     @Override
@@ -102,13 +121,13 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         // OIDC configs do not use userApi, so this method overrides the version in Oauth2LoginConfigImpl to remove that step
         initializeJwt(props);
         resetLazyInitializedMembers();
+        setGrantType();
     }
 
     @Override
     protected void resetLazyInitializedMembers() {
         super.resetLazyInitializedMembers();
 
-        this.responseType = ClientConstants.CODE;
         this.jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
         this.consumerUtils = null; // the parameters in consumerUtils may have been changed during dynamic changing
     }
@@ -121,6 +140,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             Tr.debug(tc, KEY_clientSecret + " is null = " + (clientSecret == null));
             Tr.debug(tc, KEY_authorizationEndpoint + " = " + authorizationEndpoint);
             Tr.debug(tc, KEY_tokenEndpoint + " = " + tokenEndpoint);
+            Tr.debug(tc, KEY_USERINFO_ENDPOINT + " = " + userInfoEndpoint);
+            Tr.debug(tc, KEY_USERINFO_ENDPOINT_ENABLED + " = " + userInfoEndpointEnabled);
             Tr.debug(tc, KEY_jwksUri + " = " + jwksUri);
             Tr.debug(tc, KEY_scope + " = " + scope);
             Tr.debug(tc, KEY_userNameAttribute + " = " + userNameAttribute);
@@ -143,7 +164,22 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             Tr.debug(tc, KEY_redirectToRPHostAndPort + " = " + redirectToRPHostAndPort);
             Tr.debug(tc, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED + " = " + hostNameVerificationEnabled);
             Tr.debug(tc, KEY_nonce + " = " + nonce);
+            Tr.debug(tc, KEY_responseType + " = " + responseType);
+            Tr.debug(tc, KEY_RESPONSE_MODE + " = " + responseMode);
+            Tr.debug(tc, KEY_realmName + " = " + realmName);
+            Tr.debug(tc, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT + " = " + includeCustomCacheKeyInSubject);
+            Tr.debug(tc, KEY_resource + " = " + resource);
         }
+    }
+    
+    @Override
+    public boolean isUserInfoEnabled(){
+        return this.userInfoEndpointEnabled;
+    }
+    
+    @Override
+    public String getUserInfoEndpointUrl(){
+        return this.userInfoEndpoint;
     }
 
     @Override
@@ -296,6 +332,15 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     public boolean getTokenReuse() {
         // The common JWT code is not allowed to reuse JWTs. This could be revisited later as a potential config option.
         return false;
+    }
+
+    @Override
+    public String getResponseMode() {
+        return responseMode;
+    }
+
+    public boolean includeCustomCacheKeyInSubject() {
+        return includeCustomCacheKeyInSubject;
     }
 
     @Override

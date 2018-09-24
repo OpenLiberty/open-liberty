@@ -56,6 +56,7 @@ public class GithubLoginConfigImpl extends Oauth2LoginConfigImpl {
         haveUserApiResponseIdentifier(userApi, userNameAttribute);
         initializeJwt(props);
         resetLazyInitializedMembers();
+        setGrantType();
     }
 
     @Override

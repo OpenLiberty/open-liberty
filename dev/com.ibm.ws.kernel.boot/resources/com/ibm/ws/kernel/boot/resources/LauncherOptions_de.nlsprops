@@ -82,7 +82,8 @@ Die Option --archive kann verwendet werden.    \n\
 \t"minify", "wlp", "runnable", "all,runnable" und "minify,runnable"\n\
 \tverwendet werden. Die Werte "runnable" und "all,runnable" sind \n\
 \t\u00e4quivalent. Der Wert "runnable" funktioniert nur f\u00fcr Archive\n\
-\tdes Typs "jar".
+\tdes Typs "jar". Mit der Option --server-root kann der\n\
+\tStammordner im Paketarchiv angegeben werden.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tSpeichert Diagnoseinformationen des Servers in einem Archiv. \
@@ -183,3 +184,6 @@ option-desc.os=\tGibt die Betriebssysteme an, die der gepackte Server unterst\u0
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tInaktiviert die Generierung des Standard-Keystore-Kennworts.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="Serverstammordner im Archiv"
+option-desc.package.server-root=\tGibt den Namen des Serverstammordners in der Archivdatei an.

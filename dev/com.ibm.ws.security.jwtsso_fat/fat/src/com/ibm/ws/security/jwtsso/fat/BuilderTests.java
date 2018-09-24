@@ -29,6 +29,7 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
@@ -44,15 +45,15 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class BuilderTests extends CommonJwtFat {
+public class BuilderTests extends CommonSecurityFat {
 
     protected static Class<?> thisClass = BuilderTests.class;
 
     @Server("com.ibm.ws.security.jwtsso.fat")
     public static LibertyServer server;
 
-    private JwtFatActions actions = new JwtFatActions();
-    private TestValidationUtils validationUtils = new TestValidationUtils();
+    private final JwtFatActions actions = new JwtFatActions();
+    private final TestValidationUtils validationUtils = new TestValidationUtils();
 
     String protectedUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + JwtFatConstants.SIMPLE_SERVLET_PATH;
     String defaultUser = JwtFatConstants.TESTUSER;
@@ -60,7 +61,9 @@ public class BuilderTests extends CommonJwtFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAndStartServer(server, JwtFatConstants.COMMON_CONFIG_DIR + "/server_withFeature.xml");
+        server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
+        serverTracker.addServer(server);
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml");
     }
 
     /**
@@ -72,9 +75,9 @@ public class BuilderTests extends CommonJwtFat {
      */
     @Test
     public void test_jwkEnabled() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_builder_jwkEnabled.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_builder_jwkEnabled.xml");
 
-        WebClient webClient = getHtmlUnitWebClient();
+        WebClient webClient = actions.createWebClient();
 
         String builderId = "builder_jwkEnabled";
 
@@ -83,7 +86,7 @@ public class BuilderTests extends CommonJwtFat {
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
@@ -111,16 +114,16 @@ public class BuilderTests extends CommonJwtFat {
      */
     @Test
     public void test_noBuilderRef_mpJwtJwksUriConfigured() throws Exception {
-        server.reconfigureServer(JwtFatConstants.COMMON_CONFIG_DIR + "/server_noBuilder_jwksUriConfigured.xml");
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noBuilder_jwksUriConfigured.xml");
 
-        WebClient webClient = getHtmlUnitWebClient();
+        WebClient webClient = actions.createWebClient();
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
         Expectations expectations = new Expectations();
         expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(currentAction));
 
-        Page response = actions.invokeUrl(testName.getMethodName(), webClient, protectedUrl);
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
         validationUtils.validateResult(response, currentAction, expectations);
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;

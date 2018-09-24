@@ -79,7 +79,8 @@ action-desc.package=\tEmpaquetar un servidor en un archivo. Puede utilizarse la 
 \tLa opci\u00f3n --include se puede utilizar con los valores "all", "usr", "minify", \n\
 \t"wlp", "runnable", "all,runnable" y "minify,runnable". Los valores \n\
 \t"runnable" y "all,runnable" son equivalentes. El valor "runnable" \n\
-\tfunciona solamente con archivos del tipo "jar".
+\tfunciona solamente con archivos del tipo "jar". La opci\u00f3n --server-root puede \n\
+\tutilizarse para especificar la carpeta ra\u00edz del archivador de paquete.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
 action-desc.dump=\tVolcar informaci\u00f3n de diagn\u00f3stico del servidor en un archivo. Puede     \n\
@@ -173,3 +174,6 @@ option-desc.os=\tEspecifica los sistemas operativos a los que debe dar soporte e
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tInhabilitar la generaci\u00f3n de contrase\u00f1a de almac\u00e9n de claves predeterminada
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.server-root=\ \ \ \ --server-root="carpeta de servidor ra\u00edz del archivador"
+option-desc.package.server-root=\tEspecifica el nombre de la carpeta de servidor ra\u00edz en el archivo de archivado.

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    id="WebApp_ID">
+
+  <display-name>ServiceLookup</display-name>
+  <description>This is a web app designed to test JNDI lookup of a service.</description>
+
+
+  <servlet id="ServiceLookupServlet">
+    <servlet-name>ServiceLookupServlet</servlet-name>
+    <display-name>ServiceLookupServlet</display-name>
+    <description>Servlet for testing JNDI lookups</description>
+    <servlet-class>com.ibm.ws.injection.service.lookup.web.ServiceLookupServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+
+  <!-- SERVLET MAPPINGS
+
+  <servlet-mapping id="ServletMapping_JNDIEntry">
+    <servlet-name>ServiceLookupServlet</servlet-name>
+    <url-pattern>/ServiceLookupServlet</url-pattern>
+  </servlet-mapping>
+
+  -->
+
+  
+  <!-- RESOURCE REFERENCES -->
+
+  <resource-ref>
+    <res-ref-name>jdbc/Service</res-ref-name>
+    <res-type>com.ibm.ws.injection.lookup.MyService</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>my/Service</res-ref-name>
+    <res-type>com.ibm.ws.injection.lookup.MyService</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>my/multiPart/Service</res-ref-name>
+    <res-type>com.ibm.ws.injection.lookup.MyService</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>my\backslash\Service</res-ref-name>
+    <res-type>com.ibm.ws.injection.lookup.MyService</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+
+</web-app>

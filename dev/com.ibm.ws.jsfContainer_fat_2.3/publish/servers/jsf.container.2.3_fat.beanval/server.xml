@@ -13,6 +13,7 @@
 		<feature>jsfContainer-2.3</feature>
         <feature>beanValidation-2.0</feature>
 	    <feature>componenttest-1.0</feature>
+        <feature>jaxb-2.2</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

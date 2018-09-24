@@ -541,3 +541,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=V\u00e9rifiez que la configuration
 REQUEST_URL_NOT_VALID=CWWKS5499E: La fonction de login social ne peut pas rediriger la demande vers l''URL de demande originelle, [{0}], car l''URL n''est pas valide. {1}
 REQUEST_URL_NOT_VALID.explanation=L'URL de demande originelle n'est pas une URL valide. Il se peut que l'URL contienne des caract\u00e8res non valides ou soit incorrectement form\u00e9e.
 REQUEST_URL_NOT_VALID.useraction=V\u00e9rifiez que l'URL de demande sp\u00e9cifi\u00e9e dans le message correspond \u00e0 l'URL originelle de demande de ressource prot\u00e9g\u00e9e. V\u00e9rifiez que l'URL est form\u00e9e correctement et ne contient que des caract\u00e8res d'URI valides.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Un param\u00e8tre de configuration requis {0} manque ou poss\u00e8de une valeur non valide {1}
+INVALID_CONFIG_PARAM.explanation=Le code d'ex\u00e9cution du login social n'a pas trouv\u00e9 un param\u00e8tre obligatoire lors du traitement de la demande du client.
+INVALID_CONFIG_PARAM.useraction=V\u00e9rifiez le param\u00e8tre manquant dans la configuration et assurez-vous qu'il a \u00e9t\u00e9 sp\u00e9cifi\u00e9 et qu'il est correct.

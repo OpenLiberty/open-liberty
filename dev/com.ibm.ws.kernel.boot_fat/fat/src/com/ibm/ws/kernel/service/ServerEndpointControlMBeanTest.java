@@ -433,8 +433,8 @@ public class ServerEndpointControlMBeanTest {
             // Add specified number of <httpEndpoint httpPort="9012" httpsPort="9415" id="httpEndpointN"/> elements to server config
             HttpEndpoint httpEndpoint = new HttpEndpoint();
             httpEndpoint.setId(httpEndpointBaseName + i);
-            httpEndpoint.setHttpPort(httpPortBase + i);
-            httpEndpoint.setHttpsPort(httpsPortBase + i);
+            httpEndpoint.setHttpPort(Integer.toString(httpPortBase + i));
+            httpEndpoint.setHttpsPort(Integer.toString(httpsPortBase + i));
             config.getHttpEndpoints().add(httpEndpoint);
             targets += httpEndpointBaseName + i + ",";
         }

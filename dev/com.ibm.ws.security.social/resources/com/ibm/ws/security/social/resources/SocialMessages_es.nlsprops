@@ -31,6 +31,7 @@ SELECTION_PAGE_HEADER=Inicio de sesi\u00f3n
 SELECTION_PAGE_ALTERNATE_TEXT=O
 
 SELECTION_PAGE_USERNAME=Nombre de usuario
+
 SELECTION_PAGE_PASSWORD=Contrase\u00f1a
 
 SELECTION_PAGE_SUBMIT=Someter
@@ -540,3 +541,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Compruebe que la configuraci\u00f3
 REQUEST_URL_NOT_VALID=CWWKS5499E: La caracter\u00edstica Social Login no puede redireccionar la solicitud de vuelta al URL de solicitud original [{0}] porque el URL no es v\u00e1lido. {1}
 REQUEST_URL_NOT_VALID.explanation=El URL de solicitud original no es un URL v\u00e1lido. Es posible que el URL incluya caracteres que no sean v\u00e1lidos o que est\u00e9 incorrectamente formado.
 REQUEST_URL_NOT_VALID.useraction=Compruebe que el URL de solicitud especificado en el mensaje coincide con el URL de solicitud de recurso protegido original. Compruebe que el URL est\u00e1 correctamente formato y que contiene s\u00f3lo caracteres de URI v\u00e1lidos.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Falta un par\u00e1metro de configuraci\u00f3n obligatorio {0} o su valor no es v\u00e1lido {1}
+INVALID_CONFIG_PARAM.explanation=El c\u00f3digo de tiempo de ejecuci\u00f3n del inicio de sesi\u00f3n social no ha encontrado el par\u00e1metro necesario al procesar la solicitud del cliente.
+INVALID_CONFIG_PARAM.useraction=Compruebe el par\u00e1metro que falta en la configuraci\u00f3n y aseg\u00farese de que est\u00e9 especificado y sea correcto.

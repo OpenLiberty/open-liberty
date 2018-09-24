@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
@@ -30,20 +31,33 @@ public class DisableEnableServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
+    @ConfigProperty(name = "fault.tolerance.version")
+    String faultToleranceVersion;
+
+    @Inject
     DisableEnableClient client;
 
     @Test
     public void testDisableAtClassLevel() {
-        // Note, Retry is disabled for DisableEnableClient using config
-        // so we expect no retries here
         assertThrows(ConnectException.class, client::failWithOneRetryAgain);
-        assertThat(client.getFailWithOneRetryAgainCounter(), is(1));
+
+        System.out.println("FT Version: " + faultToleranceVersion);
+
+        // Note, Retry is disabled for DisableEnableClient using config, but that option is only available in FT 1.1
+        if (faultToleranceVersion.equals("1.0")) {
+            // Expect retries for FT 1.0
+            assertThat(client.getFailWithOneRetryAgainCounter(), is(2));
+        } else {
+            // Expect no retries for FT 1.1+
+            assertThat(client.getFailWithOneRetryAgainCounter(), is(1));
+        }
     }
 
     @Test
     public void testDisableAtClassLevelEnableAtMethodLevel() {
-        // Note, Retry is disabled for DisableEnableClient but explicitly enabled for the failWithOneRetry method using config
+        // Note, for FT 1.1, Retry is disabled for DisableEnableClient but explicitly enabled for the failWithOneRetry method using config
         // so we do expect a retry here
+        // For FT 1.0, all these options are ignored so we also expect a retry
         assertThrows(ConnectException.class, client::failWithOneRetry);
         assertThat(client.getFailWithOneRetryCounter(), is(2));
     }

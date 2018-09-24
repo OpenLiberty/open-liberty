@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Nepou\u017e\u00edvejte tuto funkci nebo p\u01
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: Platn\u00e1 t\u0159\u00edda implementace ovlada\u010de JDBC nebyla nalezena pro atribut jdbcDriver {0} pomoc\u00ed knihovny {1}.
-DSRA4000.no.suitable.driver.explanation=Nelze naj\u00edt platnou t\u0159\u00eddu implementace ovlada\u010de JDBC.
-DSRA4000.no.suitable.driver.useraction=Aktualizujte konfiguraci, aby knihovna obsahovala cestu k rozpoznan\u00e9mu ovlada\u010di JDBC nebo aby t\u0159\u00edda implementace byla ur\u010dena na zdroji dat.
+DSRA4000.no.suitable.driver=DSRA4000E: Nejsou nalezeny \u017e\u00e1dn\u00e9 implementace {0} pro {1} s knihovnou {2}. N\u00e1zev nebo um\u00edst\u011bn\u00ed soubor\u016f JAR ovlada\u010de JDBC m\u016f\u017ee b\u00fdt chybn\u00fd nebo nep\u0159\u00edstupn\u00fd. Vyhled\u00e1no v: {3}. Vyhled\u00e1no v bal\u00edc\u00edch: {4}.
+DSRA4000.no.suitable.driver.explanation=Implementace zdroje dat nebo ovlada\u010de nemus\u00ed b\u00fdt nalezena z r\u016fzn\u00fdch d\u016fvod\u016f. N\u00e1zev nebo um\u00edst\u011bn\u00ed soubor\u016f JAR ovlada\u010de JDBC m\u016f\u017ee b\u00fdt chybn\u00fd nebo nep\u0159\u00edstupn\u00fd. Ovlada\u010d JDBC nemus\u00ed spr\u00e1vn\u011b identifikovat implementaci java.sql.Driver nebo nemus\u00ed m\u00edt implementaci java.sql.Driver. Nebo se vestav\u011bn\u00e1 logika serveru, kter\u00e1 m\u00e1 identifikovat implementa\u010dn\u00ed t\u0159\u00eddy zdroje dat, neuplatn\u00ed na v\u0161echny ovlada\u010de.
+DSRA4000.no.suitable.driver.useraction=Ov\u011b\u0159te, \u017ee konfigurace ovlada\u010de JDBC a knihovny jsou spr\u00e1vn\u00e9. Pokud se implementa\u010dn\u00ed t\u0159\u00eddy op\u011bt nezobraz\u00ed, ru\u010dn\u011b je ur\u010dete v konfiguraci.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: Platn\u00e1 t\u0159\u00edda implementace ovlada\u010de JDBC nebyla nalezena ve vno\u0159en\u00e9 knihovn\u011b pou\u017e\u00edvan\u00e9 ovlada\u010dem jdbcDriver {0}.
-DSRA4001.no.suitable.driver.nested.explanation=Nelze naj\u00edt platnou t\u0159\u00eddu implementace ovlada\u010de JDBC.
-DSRA4001.no.suitable.driver.nested.useraction=Aktualizujte konfiguraci, aby vno\u0159en\u00e1 knihovna obsahovala cestu k rozpoznan\u00e9mu ovlada\u010di JDBC nebo aby t\u0159\u00edda implementace byla ur\u010dena na zdroji dat.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Nebyly nalezeny \u017e\u00e1dn\u00e9 implementace {0} pro {1}. Hled\u00e1no v: {2}. N\u00e1zev nebo um\u00edst\u011bn\u00ed soubor\u016f JAR ovlada\u010de JDBC m\u016f\u017ee b\u00fdt chybn\u00fd nebo nep\u0159\u00edstupn\u00fd. Hled\u00e1no v bal\u00edc\u00edch: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=Implementace zdroje dat nebo ovlada\u010de nemus\u00ed b\u00fdt nalezena z r\u016fzn\u00fdch d\u016fvod\u016f. N\u00e1zev nebo um\u00edst\u011bn\u00ed soubor\u016f JAR ovlada\u010de JDBC m\u016f\u017ee b\u00fdt chybn\u00fd nebo nep\u0159\u00edstupn\u00fd. Ovlada\u010d JDBC nemus\u00ed spr\u00e1vn\u011b identifikovat implementaci java.sql.Driver nebo nemus\u00ed m\u00edt implementaci java.sql.Driver. Nebo se vestav\u011bn\u00e1 logika serveru, kter\u00e1 m\u00e1 identifikovat implementa\u010dn\u00ed t\u0159\u00eddy zdroje dat, neuplatn\u00ed na v\u0161echny ovlada\u010de.
+DSRA4001.no.suitable.driver.nested.useraction=Ov\u011b\u0159te, \u017ee konfigurace ovlada\u010de JDBC a knihovny jsou spr\u00e1vn\u00e9. Pokud se implementa\u010dn\u00ed t\u0159\u00eddy op\u011bt nezobraz\u00ed, ru\u010dn\u011b je ur\u010dete v konfiguraci.
 
 DSRA4003.driver.null=DSRA4003E: Nelze naj\u00edt platn\u00fd prvek jdbcDriver pro zdroj dat dataSource {0}.
 DSRA4003.driver.null.explanation=Nelze naj\u00edt platn\u00fd prvek jdbcDriver pro zadan\u00fd zdroj dat dataSource.
@@ -244,6 +244,32 @@ DSRA4003.driver.null.useraction=Aktualizujte konfiguraci, aby obsahovala platn\u
 DSRA4004.onconnect.sql=DSRA4004E: Nelze prov\u00e9st p\u0159\u00edkaz onConnect SQL \"{0}\" u p\u0159ipojen\u00ed z\u00edskan\u00e9ho ze zdroje dat {1}. Dal\u0161\u00ed informace naleznete v p\u0159\u00ed\u010dinn\u00e9 v\u00fdjimce.
 DSRA4004.onconnect.sql.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o proveden\u00ed ur\u010den\u00e9ho p\u0159\u00edkazu SQL.
 DSRA4004.onconnect.sql.useraction=Na z\u00e1klad\u011b zpr\u00e1vy v\u00fdjimky ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: Server nepodporuje vlastnost loginTimeout uvedenou v adrese URL nebo ve vlastnostech zdroje dat {0}.
+DSRA4005.invalid.logintimeout.explanation=Vlastnost loginTimeout nen\u00ed podporov\u00e1na, kdy\u017e je ur\u010dena pro zdroj dat, kter\u00fd je z\u00e1lohov\u00e1n implementac\u00ed java.sql.Driver, proto\u017ee server nem\u016f\u017ee volat getLoginTimeout ve t\u0159\u00edd\u011b java.sql.Driver.
+DSRA4005.invalid.logintimeout.useraction=Upravte konfiguraci zdroje dat pro pou\u017eit\u00ed implementace zdroje dat nam\u00edsto implementace java.sql.Driver nebo odeberte vlastnost loginTimeout.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: Zdroj dat {0} se nem\u016f\u017ee p\u0159ipojit k datab\u00e1zi, proto\u017ee {1} vr\u00e1til p\u0159ipojen\u00ed s hodnotou null pro adresu URL za\u010d\u00ednaj\u00edc\u00ed na {2}. To znamen\u00e1, \u017ee ovlada\u010d JDBC je v rozporu se specifikac\u00ed JDBC.
+DSRA4006.null.connection.explanation=P\u0159esto\u017ee implementace java.sql.Driver indikovala, \u017ee akceptovala dodanou adresu URL, je vr\u00e1ceno p\u0159ipojen\u00ed s hodnotou null. Tato chyba ozna\u010duje chybu v ovlada\u010di JDBC.
+DSRA4006.null.connection.useraction=Oznamte chybu dodavateli ovlada\u010de JDBC a ujist\u011bte se, \u017ee ovlada\u010d JDBC a konfigurace zdroje dat jsou spr\u00e1vn\u00e9.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: Ovlada\u010d JDBC nepodporuje \u00farove\u0148 izolace TRANSACTION_NONE, kter\u00e1 je nakonfigurov\u00e1na ve zdroji dat {0}.
+DSRA4008.tran.none.unsupported.explanation=\u00darove\u0148 izolace TRANSACTION_NONE, kter\u00e1 je nakonfigurov\u00e1na ve zdroji dat, nen\u00ed podporov\u00e1na ovlada\u010dem JDBC.
+DSRA4008.tran.none.unsupported.useraction=Bu\u010f aktualizujte konfiguraci zdroje dat pro pou\u017eit\u00ed \u00farovn\u011b izolace, kter\u00e1 je podporov\u00e1na ovlada\u010dem, nebo pou\u017eijte ovlada\u010d, kter\u00fd podporuje \u00farove\u0148 izolace TRANSACTION_NONE. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Zdroj dat {0} nelze nakonfigurovat s \u00farovn\u00ed izolace TRANSACTION_NONE a transactional=true.
+DSRA4009.tran.none.transactional.unsupported.explanation=Ovlada\u010d JDBC, kter\u00fd je nakonfigurov\u00e1n s \u00farovn\u00ed izolace TRANSACTION_NONE, nebude podporovat transakce.
+DSRA4009.tran.none.transactional.unsupported.useraction=Nastavte transactional=false ve zdroji dat.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: Automatick\u00e9 potvrzen\u00ed je nezbytn\u00e9, p\u0159i pou\u017eit\u00ed \u00farovn\u011b izolace TRANSACTION_NONE, kter\u00e1 je nakonfigurov\u00e1na ve zdroji dat {0}.
+DSRA4010.tran.none.autocommit.required.explanation=Ovlada\u010d JDBC je nakonfigurov\u00e1n s \u00farovn\u00ed izolace TRANSACTION_NONE a vy\u017eaduje pou\u017eit\u00ed automatick\u00e9ho potvrzen\u00ed.
+DSRA4010.tran.none.autocommit.required.useraction=Ponechejte automatick\u00e9 potvrzov\u00e1n\u00ed nastaven\u00e9 na true.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Ovlada\u010d JDBC nepodporuje p\u0159ep\u00edn\u00e1n\u00ed na \u00farove\u0148 izolace TRANSACTION_NONE ve zdroji dat {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=Specifikace JDBC nepodporuje p\u0159ep\u00edn\u00e1n\u00ed na \u00farove\u0148 izolace TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Zabra\u0148te p\u0159ep\u00edn\u00e1n\u00ed na \u00farove\u0148 izolace TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 
@@ -594,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Aplika\u010dn\u00ed server nepodporu
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Zaka\u017ete ov\u011b\u0159ov\u00e1n\u00ed Kerberos nebo pou\u017eijte datab\u00e1zi DB2 typu back-end s ovlada\u010dem DB2 Universal JDBC Driver.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

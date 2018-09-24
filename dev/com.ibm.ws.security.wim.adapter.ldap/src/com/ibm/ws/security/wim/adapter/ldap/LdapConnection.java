@@ -39,7 +39,6 @@ import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_PAGE_SIZE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_RESULTS_SIZE_LIMIT;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SEARCH_TIME_OUT;
-import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SERVER_TTL_ATTRIBUTE;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_PROP_SSL_ENABLED;
 import static com.ibm.websphere.security.wim.ConfigConstants.CONFIG_REUSE_CONNECTION;
 import static com.ibm.websphere.security.wim.ConfigConstants.SEARCH_CACHE_CONFIG;
@@ -159,9 +158,6 @@ public class LdapConnection {
     /** default attributes cache size limit */
     private int iAttrsSizeLmit = 2000;
 
-    /** default server time to live */
-    private String iServerTTLAttr = null;
-
     /** The search result count limit. This is initialized as part of server initialization. */
     private int iCountLimit = 1000;
 
@@ -205,9 +201,9 @@ public class LdapConnection {
      * Returns a hash key for the name|filter|cons tuple used in the search
      * query-results cache.
      *
-     * @param name The name of the object from which to retrieve attributes.
+     * @param name   The name of the object from which to retrieve attributes.
      * @param filter the filter used in the search.
-     * @param cons The search controls used in the search.
+     * @param cons   The search controls used in the search.
      * @throws NamingException If a naming exception is encountered.
      */
     @Trivial
@@ -238,10 +234,10 @@ public class LdapConnection {
      * Returns a hash key for the name|filterExpr|filterArgs|cons tuple used in the search
      * query-results cache.
      *
-     * @param name The name of the context or object to search
+     * @param name       The name of the context or object to search
      * @param filterExpr the filter expression used in the search.
      * @param filterArgs the filter arguments used in the search.
-     * @param cons The search controls used in the search.
+     * @param cons       The search controls used in the search.
      * @throws NamingException If a naming exception is encountered.
      */
     @Trivial
@@ -550,8 +546,6 @@ public class LdapConnection {
                     iAttrsCacheSize = (Integer) attrCacheConfig.get(CONFIG_PROP_CACHE_SIZE);
                     iAttrsCacheTimeOut = (Long) attrCacheConfig.get(CONFIG_PROP_CACHE_TIME_OUT);
                     iAttrsSizeLmit = (Integer) attrCacheConfig.get(CONFIG_PROP_ATTRIBUTE_SIZE_LIMIT);
-                    iServerTTLAttr = (String) attrCacheConfig.get(CONFIG_PROP_SERVER_TTL_ATTRIBUTE);
-
                     /*
                      * TODO:: Cache Distribution is not yet needed.
                      * String cacheDistPolicy = attrCacheConfig.getString(CONFIG_PROP_CACHE_DIST_POLICY);
@@ -646,7 +640,6 @@ public class LdapConnection {
                         strBuf.append("\tCacheSize: ").append(iAttrsCacheSize).append("\n");
                         strBuf.append("\tCacheTimeOut: ").append(iAttrsCacheTimeOut).append("\n");
                         strBuf.append("\tCacheSizeLimit: ").append(iAttrsSizeLmit).append("\n");
-                        strBuf.append("\tCacheTTLAttr: ").append(iServerTTLAttr).append("\n");
                         Tr.debug(tc, strBuf.toString());
                     }
                 }
@@ -683,8 +676,8 @@ public class LdapConnection {
      * parameters can be set in a single call. If all parameters are null, then this
      * operation no-ops.
      *
-     * @param DN The distinguished name of the entity to invalidate attributes on.
-     * @param extId The external ID of the entity to invalidate attributes on.
+     * @param DN         The distinguished name of the entity to invalidate attributes on.
+     * @param extId      The external ID of the entity to invalidate attributes on.
      * @param uniqueName The unique name of the entity to invalidate attributes on.
      */
     public void invalidateAttributes(String DN, String extId, String uniqueName) {
@@ -755,11 +748,11 @@ public class LdapConnection {
     /**
      * Get an LDAP entity by an identifier.
      *
-     * @param id An {@link IdentifierType} entity.
-     * @param inEntityTypes The acceptable entity types to look up.
-     * @param propNames The property names to return in the LdapEntry.
+     * @param id             An {@link IdentifierType} entity.
+     * @param inEntityTypes  The acceptable entity types to look up.
+     * @param propNames      The property names to return in the LdapEntry.
      * @param getMbrshipAttr Whether to return the membership attribute.
-     * @param getMbrAttr Whether to return the member attribute.
+     * @param getMbrAttr     Whether to return the member attribute.
      * @return The {@link LdapEntry} corresponding to the identifier.
      * @throws WIMException If there was an error retrieving the LDAP entity.
      */
@@ -772,13 +765,13 @@ public class LdapConnection {
     /**
      * Get an LDAP entity by an identifier. One of 'dn', 'extId' or 'uniqueName' must be non-null.
      *
-     * @param dn The distinguished name for the entity.
-     * @param extId The external name for the entity.
-     * @param uniqueName The unique name for the entity.
-     * @param inEntityTypes The acceptable entity types to look up.
-     * @param propNames The property names to return in the LdapEntry.
+     * @param dn             The distinguished name for the entity.
+     * @param extId          The external name for the entity.
+     * @param uniqueName     The unique name for the entity.
+     * @param inEntityTypes  The acceptable entity types to look up.
+     * @param propNames      The property names to return in the LdapEntry.
      * @param getMbrshipAttr Whether to return the membership attribute.
-     * @param getMbrAttr Whether to return the member attribute.
+     * @param getMbrAttr     Whether to return the member attribute.
      * @return The {@link LdapEntry} corresponding to the identifier.
      * @throws WIMException If there was an error retrieving the LDAP entity.
      */
@@ -829,9 +822,9 @@ public class LdapConnection {
     /**
      * Get the unique name for the specified distinguished name.
      *
-     * @param dn The distinguished name.
+     * @param dn         The distinguished name.
      * @param entityType The entity type for the distinguished name.
-     * @param attrs The attributes for the entity.
+     * @param attrs      The attributes for the entity.
      * @return The unique name.
      * @throws WIMException If there was an error retrieving portions of the unique name.
      */
@@ -904,7 +897,7 @@ public class LdapConnection {
     /**
      * Get the specified attributes for the distinguished name.
      *
-     * @param name The distinguished name.
+     * @param name    The distinguished name.
      * @param attrIds The attribute IDs to retrieve.
      * @return The {@link Attributes} instance.
      * @throws WIMException If there was an error retrieving the attributes from the LDAP server.
@@ -954,7 +947,7 @@ public class LdapConnection {
     /**
      * Get the specified attributes for the distinguished name taking into consideration range attributes.
      *
-     * @param name The distinguished name.
+     * @param name    The distinguished name.
      * @param attrIds The attribute IDs to retrieve.
      * @return The {@link Attributes} instance.
      * @throws WIMException If there was an error retrieving the attributes from the LDAP server.
@@ -992,7 +985,7 @@ public class LdapConnection {
      * Check the attributes cache for the attributes on the distinguished name.
      * If any of the attributes are missing, a call to the LDAP server will be made to retrieve them.
      *
-     * @param name The distinguished name to look up the attributes in the cache for.
+     * @param name    The distinguished name to look up the attributes in the cache for.
      * @param attrIds The attributes to retrieve.
      * @return The {@link Attributes}.
      * @throws WIMException If a call to the LDAP server was necessary and failed.
@@ -1058,7 +1051,7 @@ public class LdapConnection {
      * Add attributes new attributes to an existing {@link Attributes} instance.
      *
      * @param sourceAttrs The attributes to add.
-     * @param descAttrs The attributes to add to.
+     * @param descAttrs   The attributes to add to.
      */
     @Trivial
     private void addAttributes(Attributes sourceAttrs, Attributes descAttrs) {
@@ -1072,10 +1065,10 @@ public class LdapConnection {
      * and mapping the distinguished name to the updated attributes.
      *
      * @param uniqueNameKey The unique name to map the distinguished name to.
-     * @param dn The distinguished name to map to the unique name. This will also be used to map
-     *            the attributes to.
-     * @param newAttrs The new attributes.
-     * @param attrIds The attribute IDs.
+     * @param dn            The distinguished name to map to the unique name. This will also be used to map
+     *                          the attributes to.
+     * @param newAttrs      The new attributes.
+     * @param attrIds       The attribute IDs.
      */
     private void updateAttributesCache(String uniqueNameKey, String dn, Attributes newAttrs, String[] attrIds) {
         final String METHODNAME = "updateAttributesCache(key,dn,newAttrs)";
@@ -1105,8 +1098,8 @@ public class LdapConnection {
      * Update the cached attributes for the specified key. Only attribute IDs that are in the
      * "missAttrIds" array will be added into the cached attributes.
      *
-     * @param key The key for the cached attributes. This is usually the distinguished name.
-     * @param missAttrs The missing/new attributes.
+     * @param key         The key for the cached attributes. This is usually the distinguished name.
+     * @param missAttrs   The missing/new attributes.
      * @param cachedAttrs The cached attributes.
      * @param missAttrIds The missing/new attribute IDs.
      */
@@ -1165,8 +1158,8 @@ public class LdapConnection {
     /**
      * Update the attributes cache for the specified key.
      *
-     * @param key The key for the cached attributes. This is usually the distinguished name.
-     * @param missAttrs The missing/new attributes.
+     * @param key         The key for the cached attributes. This is usually the distinguished name.
+     * @param missAttrs   The missing/new attributes.
      * @param cachedAttrs The cached attributes.
      */
     private void updateAttributesCache(String key, Attributes missAttrs, Attributes cachedAttrs) {
@@ -1200,12 +1193,12 @@ public class LdapConnection {
      * <p/>Will first query the search cache. If there is a cache miss, the search will be
      * sent to the LDAP server.
      *
-     * @param name The name of the context or object to search
-     * @param filter the filter expression to use for the search. May not be null.
-     * @param scope The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
-     *            {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
+     * @param name    The name of the context or object to search
+     * @param filter  the filter expression to use for the search. May not be null.
+     * @param scope   The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
+     *                    {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
      * @param attrIds The identifiers of the attributes to return along with the entry.
-     *            If null, return all attributes. If empty return no attributes.
+     *                    If null, return all attributes. If empty return no attributes.
      * @return The {@link NamingEnumeration} containing the search results.
      * @throws WIMException If the search failed.
      */
@@ -1218,10 +1211,10 @@ public class LdapConnection {
      * Check the search cache for previously performed searches. If the result is not cached,
      * query the LDAP server.
      *
-     * @param name The name of the context or object to search
+     * @param name       The name of the context or object to search
      * @param filterExpr the filter expression used in the search.
      * @param filterArgs the filter arguments used in the search.
-     * @param cons The search controls used in the search.
+     * @param cons       The search controls used in the search.
      * @return The {@link CachedNamingEnumeration} if the search is still in the cache, null otherwise.
      * @throws WIMException If the search failed with an error.
      */
@@ -1260,8 +1253,8 @@ public class LdapConnection {
      * Update the search cache with search results.
      *
      * @param searchBase The base entry the search was made from.
-     * @param key The key for the entry in the search cache.
-     * @param neu The search results.
+     * @param key        The key for the entry in the search cache.
+     * @param neu        The search results.
      * @param reqAttrIds The attribute IDs that were requested.
      * @return The {@link CachedNamingEnumeration} with the original search results.
      * @throws WIMSystemException If the results could not be cloned into the search cache.
@@ -1314,8 +1307,8 @@ public class LdapConnection {
      * Clone the given {@link NamingNumeration}.
      *
      * @param results The results to clone.
-     * @param clone1 {@link CachedNamingEnumeration} with the original results.
-     * @param clone2 {@link CachedNamingEnumeration} with the cloned results.
+     * @param clone1  {@link CachedNamingEnumeration} with the original results.
+     * @param clone2  {@link CachedNamingEnumeration} with the cloned results.
      * @return The number of entries in the results.
      * @throws WIMSystemException If the results could not be cloned.
      */
@@ -1350,14 +1343,14 @@ public class LdapConnection {
      * Searches in the named context or object for entries that satisfy the given search filter.
      * Performs the search as specified by the search controls.
      *
-     * @param name The name of the context or object to search
-     * @param filterExpr the filter expression to use for the search. The expression may contain
-     *            variables of the form "{i}" where i is a nonnegative integer. May not be null.
-     * @param filterArgs the array of arguments to substitute for the variables in filterExpr. The
-     *            value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
-     *            to an empty array.
-     * @param cons the search controls that control the search. If null, the default search controls
-     *            are used (equivalent to (new SearchControls())).
+     * @param name            The name of the context or object to search
+     * @param filterExpr      the filter expression to use for the search. The expression may contain
+     *                            variables of the form "{i}" where i is a nonnegative integer. May not be null.
+     * @param filterArgs      the array of arguments to substitute for the variables in filterExpr. The
+     *                            value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
+     *                            to an empty array.
+     * @param cons            the search controls that control the search. If null, the default search controls
+     *                            are used (equivalent to (new SearchControls())).
      * @param requestControls Request controls to set on the request; may be null.
      * @return The {@link NamingEnumeration} containing the search results.
      * @throws WIMException If the search failed.
@@ -1508,8 +1501,8 @@ public class LdapConnection {
      * Get the attributes for the entity with the specified unique name. This method will make
      * use of the attribute cache when possible.
      *
-     * @param uniqueName The unique name to get the attributes for.
-     * @param attrIds The attribute IDs to retrieve.
+     * @param uniqueName  The unique name to get the attributes for.
+     * @param attrIds     The attribute IDs to retrieve.
      * @param entityTypes The entity types to consider. This includes all sub-types.
      * @return The entities.
      * @throws WIMException If there was an issue calling the LDAP server to get the attributes.
@@ -1626,8 +1619,8 @@ public class LdapConnection {
     /**
      * Get dynamic groups.
      *
-     * @param bases Search bases.
-     * @param propNames Properties to return.
+     * @param bases          Search bases.
+     * @param propNames      Properties to return.
      * @param getMbrshipAttr Whether to request the membership attribute.
      * @return Map of group distinguished names to {@link LdapEntry}.
      * @throws WIMException If there was an error resolving the dynamic groups from the LDAP server.
@@ -1667,7 +1660,7 @@ public class LdapConnection {
      * Determine whether the distinguished name is in the LDAP URL query.
      *
      * @param urls The {@link LdapURL}s to query.
-     * @param dn The distinguished name to check.
+     * @param dn   The distinguished name to check.
      * @return True if the distinguished name is resolved by one of the {@link LdapURL}s.
      * @throws WIMException If there were issues resolving any of the LDAP URLs.
      */
@@ -1730,18 +1723,18 @@ public class LdapConnection {
      * <p/>Will first query the search cache. If there is a cache miss, the search will be
      * sent to the LDAP server.
      *
-     * @param name The name of the context or object to search
-     * @param filterExpr the filter expression to use for the search. The expression may contain
-     *            variables of the form "{i}" where i is a nonnegative integer. May not be null.
-     * @param filterArgs the array of arguments to substitute for the variables in filterExpr. The
-     *            value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
-     *            to an empty array.
-     * @param scope The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
-     *            {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
-     * @param inEntityTypes The entity types to return.
-     * @param propNames The property names to return for the entities.
+     * @param name           The name of the context or object to search
+     * @param filterExpr     the filter expression to use for the search. The expression may contain
+     *                           variables of the form "{i}" where i is a nonnegative integer. May not be null.
+     * @param filterArgs     the array of arguments to substitute for the variables in filterExpr. The
+     *                           value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
+     *                           to an empty array.
+     * @param scope          The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
+     *                           {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
+     * @param inEntityTypes  The entity types to return.
+     * @param propNames      The property names to return for the entities.
      * @param getMbrshipAttr Whether to request the configured membership attribute to be returned.
-     * @param getMbrAttr Whether to request the configured member attribute to be returned.
+     * @param getMbrAttr     Whether to request the configured member attribute to be returned.
      * @return The {@link LdapEntry}s that match the search criteria.
      * @throws WIMException If the search failed with an error.
      */
@@ -1758,14 +1751,14 @@ public class LdapConnection {
      * <p/>Will first query the search cache. If there is a cache miss, the search will be
      * sent to the LDAP server.
      *
-     * @param name The name of the context or object to search
-     * @param filter the filter expression to use for the search. May not be null.
-     * @param scope The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
-     *            {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
-     * @param attrIds The identifiers of the attributes to return along with the entry.
-     *            If null, return all attributes. If empty return no attributes.
+     * @param name       The name of the context or object to search
+     * @param filter     the filter expression to use for the search. May not be null.
+     * @param scope      The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
+     *                       {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
+     * @param attrIds    The identifiers of the attributes to return along with the entry.
+     *                       If null, return all attributes. If empty return no attributes.
      * @param countLimit The maximum number of entries to return. If 0, return all entries that satisfy filter.
-     * @param timeLimit The number of milliseconds to wait before returning. If 0, wait indefinitely.
+     * @param timeLimit  The number of milliseconds to wait before returning. If 0, wait indefinitely.
      * @return The {@link NamingEnumeration} containing the search results.
      * @throws WIMException If the search failed with an error.
      */
@@ -1782,18 +1775,18 @@ public class LdapConnection {
      * <p/>Will first query the search cache. If there is a cache miss, the search will be
      * sent to the LDAP server.
      *
-     * @param name The name of the context or object to search
+     * @param name       The name of the context or object to search
      * @param filterExpr the filter expression to use for the search. The expression may contain
-     *            variables of the form "{i}" where i is a nonnegative integer. May not be null.
+     *                       variables of the form "{i}" where i is a nonnegative integer. May not be null.
      * @param filterArgs the array of arguments to substitute for the variables in filterExpr. The
-     *            value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
-     *            to an empty array.
-     * @param scope The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
-     *            {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
-     * @param attrIds The identifiers of the attributes to return along with the entry.
-     *            If null, return all attributes. If empty return no attributes.
+     *                       value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
+     *                       to an empty array.
+     * @param scope      The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
+     *                       {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
+     * @param attrIds    The identifiers of the attributes to return along with the entry.
+     *                       If null, return all attributes. If empty return no attributes.
      * @param countLimit The maximum number of entries to return. If 0, return all entries that satisfy filter.
-     * @param timeLimit The number of milliseconds to wait before returning. If 0, wait indefinitely.
+     * @param timeLimit  The number of milliseconds to wait before returning. If 0, wait indefinitely.
      * @return The {@link NamingEnumeration} containing the search results.
      * @throws WIMException If the search failed with an error.
      */
@@ -1810,20 +1803,20 @@ public class LdapConnection {
      * <p/>Will first query the search cache. If there is a cache miss, the search will be
      * sent to the LDAP server.
      *
-     * @param name The name of the context or object to search
-     * @param filterExpr the filter expression to use for the search. The expression may contain
-     *            variables of the form "{i}" where i is a nonnegative integer. May not be null.
-     * @param filterArgs the array of arguments to substitute for the variables in filterExpr. The
-     *            value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
-     *            to an empty array.
-     * @param scope The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
-     *            {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
-     * @param inEntityTypes The entity types to return.
-     * @param propNames The property names to return for the entities.
+     * @param name           The name of the context or object to search
+     * @param filterExpr     the filter expression to use for the search. The expression may contain
+     *                           variables of the form "{i}" where i is a nonnegative integer. May not be null.
+     * @param filterArgs     the array of arguments to substitute for the variables in filterExpr. The
+     *                           value of filterArgs[i] will replace each occurrence of "{i}". If null, equivalent
+     *                           to an empty array.
+     * @param scope          The search scope. One of: {@link SearchControls#OBJECT_SCOPE},
+     *                           {@link SearchControls#ONELEVEL_SCOPE}, {@link SearchControls#SUBTREE_SCOPE}.
+     * @param inEntityTypes  The entity types to return.
+     * @param propNames      The property names to return for the entities.
      * @param getMbrshipAttr Whether to request the configured membership attribute to be returned.
-     * @param getMbrAttr Whether to request the configured member attribute to be returned.
-     * @param countLimit The maximum number of entries to return. If 0, return all entries that satisfy filter.
-     * @param timeLimit The number of milliseconds to wait before returning. If 0, wait indefinitely.
+     * @param getMbrAttr     Whether to request the configured member attribute to be returned.
+     * @param countLimit     The maximum number of entries to return. If 0, return all entries that satisfy filter.
+     * @param timeLimit      The number of milliseconds to wait before returning. If 0, wait indefinitely.
      * @return The {@link LdapEntry}s that match the search criteria.
      * @throws WIMException If the search failed with an error.
      */
@@ -1853,11 +1846,11 @@ public class LdapConnection {
     /**
      * Populate the {@link Set} with {@link LdapEntry}s from the {@link NamingEnumeration} results.
      *
-     * @param neu The {@link NamingEnumeration}.
-     * @param base The base entry for the search.
-     * @param scope The scope of the search.
+     * @param neu           The {@link NamingEnumeration}.
+     * @param base          The base entry for the search.
+     * @param scope         The scope of the search.
      * @param inEntityTypes The entity types to return.
-     * @param attrIds The attribute IDs to return for the {@link LdapEntry}s.
+     * @param attrIds       The attribute IDs to return for the {@link LdapEntry}s.
      * @return The {@link Set} of {@link LdapEntry}s.
      * @throws WIMException
      */
@@ -1912,7 +1905,7 @@ public class LdapConnection {
      * Get a list of all ancestor distinguished names for the input distinguished name. For example;
      * if the input distinguished name was "uid=user,o=ibm,c=us" the results would be ["o=ibm,c=us", "c=us"].
      *
-     * @param DN The distinguished name to get the ancestor distinguished names for.
+     * @param DN    The distinguished name to get the ancestor distinguished names for.
      * @param level the number of levels to return. If not set, all will be returned.
      * @return The list of ancestor DNs.
      * @throws WIMException If there was an error parsing the input DN.
@@ -1947,9 +1940,9 @@ public class LdapConnection {
      * of the attributes that fall outside the range.
      *
      * @param attributes The attributes returned (so far).
-     * @param dn The distinguished name of the entity containing the attributes.
-     * @param ctx The context to use to request the remainder of the range attributes.
-     * @throws WIMException If there was an error recreating a context in the case of a connection error.
+     * @param dn         The distinguished name of the entity containing the attributes.
+     * @param ctx        The context to use to request the remainder of the range attributes.
+     * @throws WIMException    If there was an error recreating a context in the case of a connection error.
      * @throws NamingException If there was an error retrieving the attributes from the LDAP server.
      */
     @FFDCIgnore({ NumberFormatException.class, NamingException.class })
@@ -2043,11 +2036,11 @@ public class LdapConnection {
     /**
      * Search using operational attribute specified in the parameter.
      *
-     * @param dn The DN to search on
-     * @param filter The LDAP filter for the search.
+     * @param dn            The DN to search on
+     * @param filter        The LDAP filter for the search.
      * @param inEntityTypes The entity types to search for.
-     * @param propNames The property names to return.
-     * @param oprAttribute The operational attribute.
+     * @param propNames     The property names to return.
+     * @param oprAttribute  The operational attribute.
      * @return The search results or null if there are no results.
      * @throws WIMException If the entity types do not exist or the search failed.
      */
@@ -2108,13 +2101,13 @@ public class LdapConnection {
     /**
      * Modify the given LDAP name according to the specified modification items.
      *
-     * @param dn The distinguished name to modify attributes on.
+     * @param dn     The distinguished name to modify attributes on.
      * @param mod_op The operation to perform.
-     * @param mods The modification items.
+     * @param mods   The modification items.
      * @throws NamingException If there was an issue writing the new attribute values.
-     * @throws WIMException If there was an issue getting or releasing a context, or the context is on a
-     *             fail-over server and writing to fail-over servers is prohibited, or the distinguished
-     *             name does not exist.
+     * @throws WIMException    If there was an issue getting or releasing a context, or the context is on a
+     *                             fail-over server and writing to fail-over servers is prohibited, or the distinguished
+     *                             name does not exist.
      */
     public void modifyAttributes(String name, ModificationItem[] mods) throws NamingException, WIMException {
         TimedDirContext ctx = iContextManager.getDirContext();
@@ -2142,13 +2135,13 @@ public class LdapConnection {
     /**
      * Modify the attributes for the specified distinguished name.
      *
-     * @param dn The distinguished name to modify attributes on.
+     * @param dn     The distinguished name to modify attributes on.
      * @param mod_op The operation to perform.
-     * @param attrs The attributes to modify.
+     * @param attrs  The attributes to modify.
      * @throws NamingException If there was an issue writing the new attribute values.
-     * @throws WIMException If there was an issue getting or releasing a context, or the context is on a
-     *             fail-over server and writing to fail-over servers is prohibited, or the distinguished
-     *             name does not exist.
+     * @throws WIMException    If there was an issue getting or releasing a context, or the context is on a
+     *                             fail-over server and writing to fail-over servers is prohibited, or the distinguished
+     *                             name does not exist.
      */
     public void modifyAttributes(String dn, int mod_op, Attributes attrs) throws NamingException, WIMException {
         TimedDirContext ctx = iContextManager.getDirContext();
@@ -2178,11 +2171,11 @@ public class LdapConnection {
     /**
      * Rename an entity.
      *
-     * @param dn The distinguished name to rename.
+     * @param dn    The distinguished name to rename.
      * @param newDn The new distinguished name.
      * @throws WIMException If there was an issue getting or releasing a context, or the context is on a
-     *             fail-over server and writing to fail-over servers is prohibited, or the distinguished
-     *             name does not exist.
+     *                          fail-over server and writing to fail-over servers is prohibited, or the distinguished
+     *                          name does not exist.
      */
     public void rename(String dn, String newDn) throws WIMException {
         TimedDirContext ctx = iContextManager.getDirContext();
@@ -2220,7 +2213,6 @@ public class LdapConnection {
         sb.append(this.getClass().getName()).append(":{");
         sb.append("Repository ID=").append(iReposId).append("\n");
         sb.append(", SSL Factory=").append(iSSLFactory).append("\n");
-        sb.append(", Server TTL Attribute=").append(iServerTTLAttr).append("\n");
         sb.append(", Page Size=").append(iPageSize).append("\n");
         sb.append(", Attribute Range Step=").append(iAttrRangeStep).append("\n");
         sb.append(", Ignore DN Case=").append(ignoreDNCase).append("\n");

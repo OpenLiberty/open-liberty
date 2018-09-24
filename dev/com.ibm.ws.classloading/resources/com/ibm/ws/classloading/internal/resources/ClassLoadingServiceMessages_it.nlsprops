@@ -139,3 +139,19 @@ slf.no.acf.useraction=Consultare le informazioni sulla determinazione dei proble
 slf.failed.delete=CWWKL0072W: Il file cache [{0}] non pu\u00f2 essere eliminato. Questo risultato pu\u00f2 portare alla corruzione degli archivi nidificati.
 slf.failed.delete.explanation=Il sistema non \u00e8 riuscito ad eliminare il file cache. Poich\u00e9 il file esiste ancora nel sistema, pu\u00f2 verificarsi una corruzione degli archivi nidificati.
 slf.failed.delete.useraction=Verificare che il file cache non sia in stato bloccato, ci\u00f2 potrebbe causare la non riuscita dell'eliminazione del file.
+
+cls.classloader.config.duplicate=CWWKL0080E: Il tipo API [{0}] \u00e8 gi\u00e0 stato utilizzato in questo elenco [{1}].  Rimuovere il tipo API duplicato.
+cls.classloader.config.duplicate.explanation=Ogni tipo API pu\u00f2 essere specificato al massimo una volta.
+cls.classloader.config.duplicate.useraction=Controllare se nella configurazione del server sono presenti tipi API duplicati per accertarsi che i tipi API siano corretti.
+
+cls.classloader.config.not.allowed=CWWKL0081E: Il tipo API [{0}] \u00e8 gi\u00e0 stato aggiunto all''elenco utilizzando il prefisso + o -.  Rimuovere [{0}] dall''elenco [{1}].
+cls.classloader.config.not.allowed.explanation=Tutti i tipi API predefiniti sono stati aggiunti, rimuovere i duplicati.
+cls.classloader.config.not.allowed.useraction=Controllare la configurazione del server e rimuovere il tipo API predefinito per accertarsi che i tipi API siano corretti.
+
+cls.classloader.config.typo=CWWKL0082E: Il tipo API [{0}] non \u00e8 valido in questo elenco [{1}] e deve essere modificato in uno dei tipi API {2} validi.
+cls.classloader.config.typo.explanation=Modificare il tipo API non valido in un tipo valido.
+cls.classloader.config.typo.useraction=Controllare se nella configurazione del server sono presenti tipi API non validi per accertarsi che i tipi API siano corretti.
+
+cls.classloader.config.typo2=CWWKL0083E: Quando si utilizza il prefisso + o -, il tipo API [{0}] non \u00e8 valido in questo elenco [{1}].  Tutti i tipi API devono avere un prefisso + o -
+cls.classloader.config.typo2.explanation=Modificare il tipo API non valido in un tipo valido con + o -.
+cls.classloader.config.typo2.useraction=Controllare se nella configurazione del server sono presenti tipi API non validi per accertarsi che i tipi API siano corretti.

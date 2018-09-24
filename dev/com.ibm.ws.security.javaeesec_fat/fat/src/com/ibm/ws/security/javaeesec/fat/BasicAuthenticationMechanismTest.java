@@ -209,6 +209,15 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
         }
     }
 
+    // check everyone role.
+    @Test
+    public void testEveryoneRole() throws Exception {
+        String path = "/JavaEESecAnnotatedBasicAuthServlet/Everyone";
+        httpclient.getCredentialsProvider().clear();
+        String response = accessPageNoChallenge(httpclient, urlHttp + path, 200, path);
+        verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
+    }
+
     private String driveResourceFlow(String resource) throws Exception, IOException {
         HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, resource, Constants.javaeesec_basicRoleLDAPUser, Constants.javaeesec_basicRolePwd);
         String response = processResponse(httpResponse, HttpServletResponse.SC_OK);

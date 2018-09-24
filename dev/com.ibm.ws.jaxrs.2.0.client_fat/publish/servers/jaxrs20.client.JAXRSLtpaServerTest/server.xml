@@ -1,0 +1,39 @@
+<server>
+  	<!-- Enable features -->
+	<featureManager>
+		<feature>jaxrs-2.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>timedexit-1.0</feature> <!-- required since we can't import fatTestPorts.xml due to
+		                                      RepeatTests reordering elements in server.xml causing
+		                                      port conflicts between the 2 servers  -->
+	</featureManager>
+
+  	<httpEndpoint host="localhost" httpPort="8888" httpsPort="8889"
+		id="defaultHttpEndpoint" />
+
+	<webAppSecurity ssoUseDomainFromURL="true" />
+
+	<webApplication id="jaxrs20ltpa" location="jaxrs20ltpa.war"
+		name="jaxrs20ltpa">
+		<application-bnd>
+			<security-role name="BasicLogin_WebUsers">
+				<user name="user1" />
+			</security-role>
+		</application-bnd>
+	</webApplication>
+
+	<basicRegistry id="myRegistry">
+		<user name="user1" password="pass1" />
+		<user name="user2" password="pass2" />
+		<group name="group1">
+			<member name="user1" />
+		</group>
+	</basicRegistry>
+  	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+  	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+
+</server>

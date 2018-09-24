@@ -100,7 +100,7 @@ public class ConfigServerXMLOverrideTests extends AbstractSpringTests {
 
             HttpEndpoint endpoint = new HttpEndpoint();
             endpoints.add(endpoint);
-            endpoint.setHttpPort(TEST_PORT);
+            endpoint.setHttpPort(Integer.toString(TEST_PORT));
         }
 
         else if (methodName.endsWith(OVERRIDE_HTTP_ENDPOINT)) {
@@ -111,7 +111,7 @@ public class ConfigServerXMLOverrideTests extends AbstractSpringTests {
             endpoints.add(endpoint);
             endpoint.setId(ID_HTTP_ENDPOINT + REQUESTED_PORT);
             // configure SSL for this test
-            endpoint.setHttpsPort(REQUESTED_PORT);
+            endpoint.setHttpsPort(Integer.toString(REQUESTED_PORT));
             endpoint.getSslOptions().setSslRef("ssl-test");
 
             SSLConfig ssl = new SSLConfig();

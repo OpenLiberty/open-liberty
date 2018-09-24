@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Unikaj u\u017cywania tej funkcji lub, je\u015
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: Nie mo\u017cna znale\u017a\u0107 poprawnej klasy implementacji sterownika JDBC dla sterownika jdbcDriver {0} przy u\u017cyciu biblioteki {1}.
-DSRA4000.no.suitable.driver.explanation=Nie mo\u017cna znale\u017a\u0107 poprawnej klasy implementacji sterownika JDBC.
-DSRA4000.no.suitable.driver.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby biblioteka zawiera\u0142a \u015bcie\u017ck\u0119 do rozpoznanego sterownika JDBC lub aby klasa implementacji zosta\u0142a okre\u015blona w \u017ar\u00f3dle danych.
+DSRA4000.no.suitable.driver=DSRA4000E: Nie znaleziono implementacji {0} dla {1} z bibliotek\u0105 {2}. Nazwa lub po\u0142o\u017cenie plik\u00f3w JAR sterownika JDBC mog\u0105 by\u0107 niepoprawne lub pliki te mog\u0105 by\u0107 niedost\u0119pne. Wyszukiwano w: {3}. Wyszukiwano w pakietach: {4}.
+DSRA4000.no.suitable.driver.explanation=Mo\u017ce istnie\u0107 kilka przyczyn braku mo\u017cliwo\u015bci znalezienia \u017ar\u00f3d\u0142a danych lub implementacji sterownika. Nazwa lub po\u0142o\u017cenie plik\u00f3w JAR sterownika JDBC mog\u0105 by\u0107 niepoprawne lub pliki te mog\u0105 by\u0107 niedost\u0119pne. Sterownik JDBC m\u00f3g\u0142 nie zidentyfikowa\u0107 poprawnie implementacji java.sql.Driver lub implementacja java.sql.Driver mo\u017ce nie istnie\u0107. Ewentualnie wbudowana logika serwera umo\u017cliwiaj\u0105ca identyfikacj\u0119 klas implementacji \u017ar\u00f3d\u0142a danych nie ma zastosowania do wszystkich sterownik\u00f3w.
+DSRA4000.no.suitable.driver.useraction=Sprawd\u017a, czy konfiguracje sterownika JDBC i biblioteki s\u0105 poprawne. Je\u015bli nadal nie mo\u017cna znale\u017a\u0107 klas implementacji, podaj je r\u0119cznie w konfiguracji.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: Nie mo\u017cna znale\u017a\u0107 poprawnej klasy implementacji sterownika JDBC w zagnie\u017cd\u017conej bibliotece u\u017cywanej przez sterownik jdbcDriver {0}.
-DSRA4001.no.suitable.driver.nested.explanation=Nie mo\u017cna znale\u017a\u0107 poprawnej klasy implementacji sterownika JDBC.
-DSRA4001.no.suitable.driver.nested.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b, aby zagnie\u017cd\u017cona biblioteka zawiera\u0142a \u015bcie\u017ck\u0119 do rozpoznanego sterownika JDBC lub aby klasa implementacji zosta\u0142a okre\u015blona w \u017ar\u00f3dle danych.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Nie znaleziono implementacji {0} dla {1}. Wyszukiwano w: {2}. Nazwa lub po\u0142o\u017cenie plik\u00f3w JAR sterownika JDBC mog\u0105 by\u0107 niepoprawne lub pliki te mog\u0105 by\u0107 niedost\u0119pne. Wyszukiwano w pakietach: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=Mo\u017ce istnie\u0107 kilka przyczyn braku mo\u017cliwo\u015bci znalezienia \u017ar\u00f3d\u0142a danych lub implementacji sterownika. Nazwa lub po\u0142o\u017cenie plik\u00f3w JAR sterownika JDBC mog\u0105 by\u0107 niepoprawne lub pliki te mog\u0105 by\u0107 niedost\u0119pne. Sterownik JDBC m\u00f3g\u0142 nie zidentyfikowa\u0107 poprawnie implementacji java.sql.Driver lub implementacja java.sql.Driver mo\u017ce nie istnie\u0107. Ewentualnie wbudowana logika serwera umo\u017cliwiaj\u0105ca identyfikacj\u0119 klas implementacji \u017ar\u00f3d\u0142a danych nie ma zastosowania do wszystkich sterownik\u00f3w.
+DSRA4001.no.suitable.driver.nested.useraction=Sprawd\u017a, czy konfiguracje sterownika JDBC i biblioteki s\u0105 poprawne. Je\u015bli nadal nie mo\u017cna znale\u017a\u0107 klas implementacji, podaj je r\u0119cznie w konfiguracji.
 
 DSRA4003.driver.null=DSRA4003E: Nie mo\u017cna znale\u017a\u0107 poprawnego elementu sterownika jdbcDriver dla \u017ar\u00f3d\u0142a danych dataSource {0}.
 DSRA4003.driver.null.explanation=Nie mo\u017cna znale\u017a\u0107 poprawnego elementu sterownika jdbcDriver dla okre\u015blonego \u017ar\u00f3d\u0142a danych dataSource.
@@ -245,6 +245,27 @@ DSRA4004.onconnect.sql=DSRA4004E: Nie mo\u017cna wykona\u0107 komendy SQL onConn
 DSRA4004.onconnect.sql.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by wykonania podanej komendy SQL.
 DSRA4004.onconnect.sql.useraction=Przejrzyj komunikat wyj\u0105tku, aby znale\u017a\u0107 przyczyn\u0119 b\u0142\u0119du.
 
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: Serwer nie obs\u0142uguje w\u0142a\u015bciwo\u015bci loginTimeout, kt\u00f3ra zosta\u0142a podana w adresie URL lub we w\u0142a\u015bciwo\u015bciach \u017ar\u00f3d\u0142a danych {0}.
+DSRA4005.invalid.logintimeout.explanation=W\u0142a\u015bciwo\u015b\u0107 loginTimeout nie jest obs\u0142ugiwana, je\u015bli zosta\u0142a podana dla \u017ar\u00f3d\u0142a danych bazuj\u0105cego na implementacji java.sql.Driver, poniewa\u017c serwer nie mo\u017ce wywo\u0142a\u0107 metody getLoginTimeout w klasie java.sql.Driver.
+DSRA4005.invalid.logintimeout.useraction=Zmodyfikuj konfiguracj\u0119 \u017ar\u00f3d\u0142a danych, aby u\u017cy\u0107 implementacji \u017ar\u00f3d\u0142a danych zamiast implementacji java.sql.Driver, lub usu\u0144 w\u0142a\u015bciwo\u015b\u0107 loginTimeout. 
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: \u0179r\u00f3d\u0142o danych {0} nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z baz\u0105 danych, poniewa\u017c klasa {1} zwr\u00f3ci\u0142a po\u0142\u0105czenie o warto\u015bci NULL dla adresu URL rozpoczynaj\u0105cego si\u0119 od {2}. Oznacza to, \u017ce sterownik JDBC jest niezgodny ze specyfikacj\u0105 JDBC.
+DSRA4006.null.connection.explanation=Chocia\u017c interfejs java.sql.Driver wskaza\u0142, \u017ce zaakceptowa\u0142 podany adres URL, zwr\u00f3ci\u0142 po\u0142\u0105czenie o warto\u015bci NULL. Ten b\u0142\u0105d wskazuje na defekt w sterowniku JDBC.
+DSRA4006.null.connection.useraction=Zg\u0142o\u015b b\u0142\u0105d do dostawcy sterownika JDBC i upewnij si\u0119, \u017ce sterownik JDBC i konfiguracja \u017ar\u00f3d\u0142a danych s\u0105 poprawne. 
+DSRA4008.tran.none.unsupported=DSRA4008E: Sterownik JDBC nie obs\u0142uguje poziomu odseparowania TRANSACTION_NONE, kt\u00f3ry zosta\u0142 skonfigurowany w \u017ar\u00f3dle danych {0}.
+DSRA4008.tran.none.unsupported.explanation=Poziom odseparowania TRANSACTION_NONE, kt\u00f3ry zosta\u0142 skonfigurowany w \u017ar\u00f3dle danych, nie jest obs\u0142ugiwany przez sterownik JDBC.
+DSRA4008.tran.none.unsupported.useraction=Zaktualizuj konfiguracj\u0119 \u017ar\u00f3d\u0142a danych, tak aby korzysta\u0142a z poziomu odseparowania obs\u0142ugiwanego przez ten sterownik, lub u\u017cyj sterownika obs\u0142uguj\u0105cego poziom odseparowania TRANSACTION_NONE. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Nie mo\u017cna skonfigurowa\u0107 \u017ar\u00f3d\u0142a danych {0} z poziomem odseparowania TRANSACTION_NONE i parametrem transactional=true.
+DSRA4009.tran.none.transactional.unsupported.explanation=Sterownik JDBC skonfigurowany z poziomem odseparowania TRANSACTION_NONE nie b\u0119dzie obs\u0142ugiwa\u0107 transakcji.
+DSRA4009.tran.none.transactional.unsupported.useraction=Ustaw parametr transactional=false w \u017ar\u00f3dle danych. 
+DSRA4010.tran.none.autocommit.required=DSRA4010E: W przypadku u\u017cycia poziomu odseparowania TRANSACTION_NONE skonfigurowanego w \u017ar\u00f3dle danych {0} wymagane jest automatyczne zatwierdzanie.
+DSRA4010.tran.none.autocommit.required.explanation=Sterownik JDBC zosta\u0142 skonfigurowany z poziomem odseparowania TRANSACTION_NONE i wymaga u\u017cycia automatycznego zatwierdzania.
+DSRA4010.tran.none.autocommit.required.useraction=Ustaw automatyczne zatwierdzanie na warto\u015b\u0107 true. 
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Sterownik JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE w \u017ar\u00f3dle danych {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=Specyfikacja JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Unikaj prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE. 
 # ----------------------------------------------------------------------------
 # 
 # Using 7000-7599 for DataStore Helper exception messages and warnings
@@ -594,5 +615,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Serwer aplikacji nie obs\u0142uguje 
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Wy\u0142\u0105cz uwierzytelnianie Kerberos lub u\u017cyj bazy danych zaplecza DB2 ze sterownikiem uniwersalnym JDBC DB2.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

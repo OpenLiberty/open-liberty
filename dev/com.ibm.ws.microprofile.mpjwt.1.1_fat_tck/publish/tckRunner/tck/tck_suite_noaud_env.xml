@@ -25,16 +25,11 @@
             </run>
         </groups>
         <classes>
-             <!--  these next two tests are marked skip in the test case -->
+             <!--  these next two tests are marked skip (enabled=false) in the test case -->
              <!-- 
              <class name="org.eclipse.microprofile.jwt.tck.config.IssNoValidationNoIssTest" />
              <class name="org.eclipse.microprofile.jwt.tck.config.IssNoValidationBadIssTest" />
              -->
-             <!-- this one requires no audience,  test is invalid , checks for mp.jwt.verify.requireiss=false returns HTTP_OK -->
-             <!--  <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationFailTest" />   -->
-             
-              <!-- this one is INVALID  key does not have begin or end marks -->
-              <!--   <class name="org.eclipse.microprofile.jwt.tck.config.PublicKeyAsPEMTest" />-->
              
              <!--  these 3 require no audience  -->
              <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsTest" />

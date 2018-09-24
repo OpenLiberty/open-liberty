@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.common;
 
@@ -19,6 +19,7 @@ public class Constants {
     public static final String SCOPE = "scope";
     public static final String CLIENT_ID = "client_id";
     public static final String CLIENT_SECRET = "client_secret";
+    public static final String USERINFO_STR = "userinfo_string";
     public static final String ID_TOKEN = "id_token";
     public static final String ID_TOKEN_OBJECT = "id_token_object";
     public static final String ACCESS_TOKEN = "access_token";

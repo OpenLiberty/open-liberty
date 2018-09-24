@@ -19,12 +19,12 @@ Each mpjwt11TckLauncher*  wraps some maven-based tests into a single Liberty FAT
 
 The build\libs\autoFVT\results\junit.html\index.html results file is just a summary.  
 
-The details are in 3 more files, build\libs\autoFVT\results\tck_(server name)\surefire-reports\index.html
+The details are in 4 more files, build\libs\autoFVT\results\tck_(server name)\surefire-reports\index.html
 
 Each of those contains the detailed test results for a test suite.
 
 The tck requires multiple server configurations to run, it won't all run under a single server config.
-For this reason the tck suite has been broken into 3 separate suites, each with it's own server.
+For this reason the tck suite has been broken into 4 separate suites, each with it's own server.
 
 Servers and test suites are configured as follows:
 
@@ -33,6 +33,8 @@ Servers and test suites are configured as follows:
 	              
 	tck_aud_noenv -  audiences are defined, but mpjwt properties are not, 
 	                 so tests that contain microprofile-config.properties file can exercise their properties.
+	                 
+	tck_aud_noenv2 - same but requires a different maven prop passed in
 	
 	tck_noaud_env - these tests omit an audience so the server is configured for that.
 	

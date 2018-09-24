@@ -139,3 +139,19 @@ slf.no.acf.useraction=Consulte as informa\u00e7\u00f5es sobre determina\u00e7\u0
 slf.failed.delete=CWWKL0072W: O arquivo de cache [{0}] n\u00e3o pode ser exclu\u00eddo. Esse resultado pode ocasionar a distor\u00e7\u00e3o dos arquivos aninhados.
 slf.failed.delete.explanation=O sistema falhou ao excluir o arquivo de cache. Como o arquivo ainda existe no sistema, isso pode causar distor\u00e7\u00e3o nos arquivos aninhados.
 slf.failed.delete.useraction=Verifique se o arquivo de cache n\u00e3o est\u00e1 em estado de bloqueio, o que pode fazer com que a exclus\u00e3o do arquivo falhe.
+
+cls.classloader.config.duplicate=CWWKL0080E: O tipo de API [{0}] j\u00e1 foi usado nessa lista [{1}]. Remova o tipo de API duplicado.
+cls.classloader.config.duplicate.explanation=Cada tipo de API pode ser especificado somente uma vez.
+cls.classloader.config.duplicate.useraction=Verifique a configura\u00e7\u00e3o do servidor para o tipo de API duplicado para garantir que o tipo de API esteja correto.
+
+cls.classloader.config.not.allowed=CWWKL0081E: O tipo de API [{0}] j\u00e1 est\u00e1 inclu\u00eddo na lista ao usar o prefixo + ou -. Remova [{0}] da lista [{1}].
+cls.classloader.config.not.allowed.explanation=Todos os tipos de API padr\u00e3o s\u00e3o inclu\u00eddos, remova as duplicatas.
+cls.classloader.config.not.allowed.useraction=Verifique a configura\u00e7\u00e3o do servidor e remova o tipo de API padr\u00e3o para garantir que o tipo de API esteja correto.
+
+cls.classloader.config.typo=CWWKL0082E: O tipo de API [{0}] n\u00e3o \u00e9 v\u00e1lido nessa lista [{1}] e precisa ser mudado para um dos tipos de API {2} v\u00e1lidos.
+cls.classloader.config.typo.explanation=Mude o tipo de API inv\u00e1lido para um tipo de API v\u00e1lido.
+cls.classloader.config.typo.useraction=Verifique se h\u00e1 um tipo de API inv\u00e1lido na configura\u00e7\u00e3o do servidor, garantindo que o tipo de API esteja correto.
+
+cls.classloader.config.typo2=CWWKL0083E: Ao usar o prefixo + ou -, o tipo de API [{0}] n\u00e3o \u00e9 v\u00e1lido nessa lista [{1}]. Todos os tipos de API devem possuir um prefixo de + ou -
+cls.classloader.config.typo2.explanation=Mude o tipo de API inv\u00e1lido para um tipo de API v\u00e1lido com + ou -.
+cls.classloader.config.typo2.useraction=Verifique se h\u00e1 um tipo de API inv\u00e1lido na configura\u00e7\u00e3o do servidor, garantindo que o tipo de API esteja correto.

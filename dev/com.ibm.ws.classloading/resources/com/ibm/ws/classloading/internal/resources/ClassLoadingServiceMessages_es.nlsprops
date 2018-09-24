@@ -139,3 +139,19 @@ slf.no.acf.useraction=Consulte la informaci\u00f3n sobre determinaci\u00f3n de p
 slf.failed.delete=CWWKL0072W: No se puede suprimir el archivo de cach\u00e9 [{0}]. Este resultado puede dar lugar a la corrupci\u00f3n de los archivos anidados.
 slf.failed.delete.explanation=El sistema no ha podido suprimir el archivo de cach\u00e9. Puesto que el archivo a\u00fan existe en el sistema, esto podr\u00eda provocar una corrupci\u00f3n de los archivos anidados.
 slf.failed.delete.useraction=Compruebe que el archivo de cach\u00e9 no se encuentre en estado bloqueado, lo que podr\u00eda provocar que la supresi\u00f3n del archivo fallara.
+
+cls.classloader.config.duplicate=CWWKL0080E: El tipo de API [{0}] ya se ha utilizado en esta lista [{1}].  Elimine el tipo de API duplicado.
+cls.classloader.config.duplicate.explanation=Cada tipo de API se puede especificar como m\u00e1ximo una vez.
+cls.classloader.config.duplicate.useraction=Para asegurarse de que el tipo de API es correcto, compruebe en la configuraci\u00f3n del servidor que no haya tipos de API duplicados.
+
+cls.classloader.config.not.allowed=CWWKL0081E: El tipo de API [{0}] ya se ha a\u00f1adido a la lista al utilizar el prefijo + o -.  Elimine [{0}] de la lista [{1}].
+cls.classloader.config.not.allowed.explanation=Se han a\u00f1adido todos los tipos de API predeterminados, elimine los duplicados.
+cls.classloader.config.not.allowed.useraction=Para asegurarse de que el tipo de API es correcto, compruebe la configuraci\u00f3n del servidor y elimine los tipos de API duplicados.
+
+cls.classloader.config.typo=CWWKL0082E: El tipo de API [{0}] no es v\u00e1lido en esta lista [{1}] y se debe cambiar por uno de los tipos de API v\u00e1lidos {2}.
+cls.classloader.config.typo.explanation=Cambie el tipo de API no v\u00e1lido por un tipo de API v\u00e1lido.
+cls.classloader.config.typo.useraction=Para asegurarse de que el tipo de API es correcto, compruebe en la configuraci\u00f3n del servidor que no haya tipos de API no v\u00e1lidos.
+
+cls.classloader.config.typo2=CWWKL0083E: Al utilizar el prefijo + o -, el tipo de API [{0}] no es v\u00e1lido en esta lista [{1}].  Todos los tipos de API deben tener un prefijo de + o -
+cls.classloader.config.typo2.explanation=Cambie el tipo de API no v\u00e1lido por un tipo de API v\u00e1lido con + o -.
+cls.classloader.config.typo2.useraction=Para asegurarse de que el tipo de API es correcto, compruebe en la configuraci\u00f3n del servidor que no haya tipos de API no v\u00e1lidos.

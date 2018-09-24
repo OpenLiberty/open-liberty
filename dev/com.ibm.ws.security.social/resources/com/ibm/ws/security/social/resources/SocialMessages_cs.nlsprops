@@ -541,3 +541,7 @@ FAILED_TO_CREATE_JWT_FROM_ID_TOKEN.useraction=Ov\u011b\u0159te, \u017ee konfigur
 REQUEST_URL_NOT_VALID=CWWKS5499E: Funkce p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nem\u016f\u017ee p\u0159esm\u011brovat po\u017eadavek zp\u011bt na p\u016fvodn\u00ed adresu URL po\u017eadavku [{0}], proto\u017ee  adresa URL nen\u00ed platn\u00e1. {1}
 REQUEST_URL_NOT_VALID.explanation=P\u016fvodn\u00ed adresa URL po\u017eadavku nen\u00ed platnou adresou URL. Adresa URL m\u016f\u017ee obsahovat znaky, kter\u00e9 nejsou platn\u00e9, nebo adresa URL m\u016f\u017ee b\u00fdt chybn\u00e1.
 REQUEST_URL_NOT_VALID.useraction=Ov\u011b\u0159te, \u017ee adresa URL po\u017eadavku, kter\u00fd je uvedena ve zpr\u00e1v\u011b, odpov\u00edd\u00e1 p\u016fvodn\u00ed adrese URL po\u017eadavku na chr\u00e1n\u011bn\u00fd prost\u0159edek. Ov\u011b\u0159te, \u017ee adresa URL je dob\u0159e formovan\u00e1 a obsahuje pouze platn\u00e9 znaky identifik\u00e1toru URI.
+
+INVALID_CONFIG_PARAM=CWWKS5500E: Povinn\u00fd konfigura\u010dn\u00ed parametr {0} chyb\u00ed nebo m\u00e1 neplatnou hodnotu {1}
+INVALID_CONFIG_PARAM.explanation=B\u011bhov\u00fd k\u00f3d p\u0159ihl\u00e1\u0161en\u00ed do soci\u00e1ln\u00ed s\u00edt\u011b nena\u0161el p\u0159i zpracov\u00e1n\u00ed po\u017eadavku klienta povinn\u00fd parametr.
+INVALID_CONFIG_PARAM.useraction=Zkontrolujte chyb\u011bj\u00edc\u00ed parametr v konfiguraci a ujist\u011bte se, \u017ee je zad\u00e1n a je spr\u00e1vn\u00fd.

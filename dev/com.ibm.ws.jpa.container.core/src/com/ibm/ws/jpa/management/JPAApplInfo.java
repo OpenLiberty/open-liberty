@@ -94,7 +94,7 @@ public abstract class JPAApplInfo {
      * and archive name. <p>
      *
      * @param pxml provides access to a persistence.xml file as well
-     *            as the archive name and scope.
+     *                 as the archive name and scope.
      */
     public void addPersistenceUnits(JPAPXml pxml) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -300,9 +300,17 @@ public abstract class JPAApplInfo {
             puScopesClone.putAll(puScopes);
         }
 
+        final JPAIntrospection jpaIntro = JPAIntrospection.getJPAIntrospection();
+
         for (Map.Entry<String, JPAScopeInfo> entry : puScopesClone.entrySet()) {
             final JPAScopeInfo scopeInfo = entry.getValue();
-            scopeInfo.doIntrospect(out);
+
+            jpaIntro.beginPUScopeVisit(scopeInfo);
+            try {
+                scopeInfo.doIntrospect(out);
+            } finally {
+                jpaIntro.endPUScopeVisit();
+            }
         }
     }
 }

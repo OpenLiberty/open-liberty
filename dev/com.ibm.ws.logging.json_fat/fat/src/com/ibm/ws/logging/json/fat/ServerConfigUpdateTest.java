@@ -44,17 +44,18 @@ public class ServerConfigUpdateTest {
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.logs");
         server.startServer();
         Assert.assertNotNull("Test app LogstashApp does not appear to have started.", server.waitForStringInLog("CWWKT0016I:.*LogstashApp"));
-    }
 
-    @Test
-    public void enableAndDisableMessagesLog() throws Exception {
         // Server is start with basic logging
         String line = server.waitForStringInLog("CWWKF0011I");
         Assert.assertNotNull("CWWKF0011I is not found", line);
         Assert.assertFalse("Log is in unexepcted JSON format. line=" + line, line.startsWith("{"));
+    }
+
+    @Test
+    public void enableAndDisableMessagesLog() throws Exception {
 
         // Switch to JSON format
-        line = setConfig(SERVER_XML_JSON_MESSAGES);
+        String line = setConfig(SERVER_XML_JSON_MESSAGES);
         Assert.assertNotNull("Both CWWKG0017I and CWWKG0018I are not found", line);
         Assert.assertTrue("Log is in unexpected basic format.  line=" + line, line.startsWith("{"));
 

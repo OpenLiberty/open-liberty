@@ -46,7 +46,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="Google" />
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://accounts.google.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                <Option label="client_secret_basic" value="client_secret_basic" />
                <Option label="client_secret_post"  value="client_secret_post" /> 
@@ -65,8 +65,18 @@
             required="false" type="Integer" default="300000" />
         <AD id="signatureAlgorithm" name="%signatureAlgorithm"  description="%signatureAlgorithm.desc"
             required="false" type="String" default="RS256" /> 
-            
-            
+        <AD id="responseType" name="internal" description="internal use only" required="false" type="String" default="code">
+            <Option label="%responseType.code" value="code" />
+            <Option label="%responseType.idTokenToken" value="id_token token" />
+            <Option label="%responseType.token" value="token" />
+        </AD>
+        <AD id="responseMode" name="internal" description="internal use only" required="false" type="String">
+            <Option label="%responseMode.formPost" value="form_post" />
+        </AD>
+        <AD id="nonceEnabled" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+        <AD id="realmName" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
+        <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+        <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.social.google">
@@ -144,7 +154,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="Facebook" /> 
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://www.facebook.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                 <Option label="client_secret_basic" value="client_secret_basic" />
                 <Option label="client_secret_post"  value="client_secret_post" /> 
@@ -187,7 +197,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="GitHub" /> 
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://github.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                <Option label="client_secret_basic" value="client_secret_basic" />
                <Option label="client_secret_post"  value="client_secret_post" />
@@ -230,7 +240,7 @@
         <AD id="displayName" name="%displayName" description="%displayName.desc"
             required="false" type="String" default="Linkedin" /> 
         <AD id="website" name="%website" description="%website.desc" required="false" type="String" ibm:type="token" default="https://www.linkednin.com" />
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                 <Option label="client_secret_basic" value="client_secret_basic" />
                 <Option label="client_secret_post"  value="client_secret_post" />
@@ -266,7 +276,7 @@
             	 </AD>
             	-->
        
-        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                 <Option label="client_secret_basic" value="client_secret_basic" />
                 <Option label="client_secret_post"  value="client_secret_post" />               
@@ -321,7 +331,12 @@
         <AD id="authorizationEndpoint" name="%authorizationEndpoint" description="%authorizationEndpoint.desc"
             required="false" type="String" />
         <AD id="tokenEndpoint" name="%tokenEndpoint" description="%tokenEndpoint.desc"
+            required="false" type="String" />
+        <!--  userInfoEndpoint is not required, but if used successfully, results are available in an api.  -->
+        <AD id="userInfoEndpoint" name="%userInfoEndpoint" description="%userInfoEndpoint.desc"
             required="false" type="String" />  
+        <AD id="userInfoEndpointEnabled" name="%userInfoEndpointEnabled" description="%userInfoEndpointEnabled.desc"
+            required="false" type="Boolean" default="true" />            
         <AD id="jwksUri" name="%jwksUri" description="%jwksUri.desc"
             required="false" type="String" />
         <AD id="scope" name="%scope" description="%scope.desc"
@@ -355,13 +370,25 @@
         <AD id="signatureAlgorithm" name="%signatureAlgorithm"  description="%signatureAlgorithm.desc"
             required="false" type="String"  default="RS256" /> 
         <!-- todo: might need a name for this next one in metatype.properties after 2q --> 
-        <AD id="tokenEndpointAuthMethod" name="internal" description="internal use only" required="false" 
+        <AD id="tokenEndpointAuthMethod" name="%tokenEndpointAuthMethod" description="%tokenEndpointAuthMethod.desc" required="false"
              type="String" default="client_secret_post" >
                <Option label="client_secret_basic" value="client_secret_basic" />
                <Option label="client_secret_post"  value="client_secret_post" /> 
          </AD>
         <AD id="redirectToRPHostAndPort" name="%redirectToRPHostAndPort" description="%redirectToRPHostAndPort.desc" required="false" type="String" />
-        <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="true"/>       
+        <AD id="hostNameVerificationEnabled" name="%hostNameVerificationEnabled" description="%hostNameVerificationEnabled.desc" required="false" type="Boolean" default="true"/>
+        <AD id="responseType" name="internal" description="internal use only" required="false" type="String" default="code">
+            <Option label="%responseType.code" value="code" />
+            <Option label="%responseType.idTokenToken" value="id_token token" />
+            <Option label="%responseType.token" value="token" />
+        </AD>
+        <AD id="responseMode" name="internal" description="internal use only" required="false" type="String">
+            <Option label="%responseMode.formPost" value="form_post" />
+        </AD>
+        <AD id="nonceEnabled" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+        <AD id="realmName" name="internal" description="internal use only" required="false" type="String" ibm:type="token" />
+        <AD id="includeCustomCacheKeyInSubject" name="internal" description="internal use only" required="false" type="Boolean" default="true" />
+        <AD id="resource" name="internal" description="internal use only" required="false" type="String" cardinality="2147483647" />
     </OCD>
 
      <!-- 238750, configurable context root.

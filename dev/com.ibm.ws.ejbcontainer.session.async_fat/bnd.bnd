@@ -1,0 +1,52 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+     fat/src,\
+     test-applications/AsyncAErrIntf.jar/src,\
+     test-applications/AsyncAWarnIntf.jar/src,\
+     test-applications/AsyncErr1Bean.jar/src,\
+     test-applications/AsyncErr2Bean.jar/src,\
+     test-applications/AsyncErrTest.war/src,\
+     test-applications/AsyncInLocalIf1Bean.jar/src,\
+     test-applications/AsyncInLocalIf2Bean.jar/src,\
+     test-applications/AsyncInLocalIf3Bean.jar/src,\
+     test-applications/AsyncInRemoteIf1Bean.jar/src,\
+     test-applications/AsyncInRemoteIf2Bean.jar/src,\
+     test-applications/AsyncInRemoteIf3Bean.jar/src,\
+     test-applications/AsyncNotInLocalIf1Bean.jar/src,\
+     test-applications/AsyncNotInLocalIf2Bean.jar/src,\
+     test-applications/AsyncNotInLocalIf3Bean.jar/src,\
+     test-applications/AsyncNotInRemoteIf1Bean.jar/src,\
+     test-applications/AsyncNotInRemoteIf2Bean.jar/src,\
+     test-applications/AsyncNotInRemoteIf3Bean.jar/src,\
+     test-applications/AsyncWarnTestBean.jar/src,\
+     test-applications/AsyncWarnTest.war/src,\
+     test-applications/AsyncXMLErr1Bean.jar/src,\
+     test-applications/AsyncXMLErr2Bean.jar/src,\
+     test-applications/AsyncXMLErr3Bean.jar/src
+
+javac.source: 1.8
+javac.target: 1.8
+
+fat.project: true
+
+tested.features: \
+	servlet-4.0, ejbLite-3.2, ejbRemote-3.2, mdb-3.2
+
+-buildpath: \
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
+	com.ibm.websphere.javaee.jms.1.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.ejbcontainer.fat_tools; version=latest

@@ -69,6 +69,7 @@ import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupObjectFactory;
 import com.ibm.ws.jpa.management.AbstractJPAComponent;
 import com.ibm.ws.jpa.management.JPAApplInfo;
 import com.ibm.ws.jpa.management.JPAEMFPropertyProvider;
+import com.ibm.ws.jpa.management.JPAIntrospection;
 import com.ibm.ws.jpa.management.JPAPuScope;
 import com.ibm.ws.jpa.management.JPARuntime;
 import com.ibm.ws.kernel.LibertyProcess;
@@ -373,9 +374,9 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * The jar file or directory whose META-INF directory contains the persistence.xml
      * file is termed the root of the persistence unit. <p>
      *
-     * @param appName name of the application that contains the persistence.xml file
+     * @param appName     name of the application that contains the persistence.xml file
      * @param archiveName name of the archive that contains the persistence.xml file
-     * @param pxml reference to the persistence.xml file
+     * @param pxml        reference to the persistence.xml file
      */
     private URL getPXmlRootURL(String appName, String archiveName, Entry pxml) {
         URL pxmlUrl = pxml.getResource();
@@ -395,12 +396,12 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Common routine that will locate and process persistence.xml files in the
      * library directory of either an EAR or WAR archive. <p>
      *
-     * @param applInfo the application archive information
+     * @param applInfo    the application archive information
      * @param archiveName name of the archive containing the persistence.xml
-     * @param rootPrefix the persistence unit root prefix; prepended to the library
-     *            jar name if not null; otherwise archiveName is used
-     * @param libEntry the library directory entry from the enclosing container
-     * @param scope the scope to be applied to all persistence units found
+     * @param rootPrefix  the persistence unit root prefix; prepended to the library
+     *                        jar name if not null; otherwise archiveName is used
+     * @param libEntry    the library directory entry from the enclosing container
+     * @param scope       the scope to be applied to all persistence units found
      * @param classLaoder ClassLoader of the corresponding scope
      */
     private void processLibraryJarPersistenceXml(JPAApplInfo applInfo, Container libContainer,
@@ -447,7 +448,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Locates and processes all persistence.xml file in a WAR module. <p>
      *
      * @param applInfo the application archive information
-     * @param module the WAR module archive information
+     * @param module   the WAR module archive information
      */
     private void processWebModulePersistenceXml(JPAApplInfo applInfo, ContainerInfo warContainerInfo, ClassLoader warClassLoader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -502,7 +503,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Locates and processes persistence.xml file in an EJB module. <p>
      *
      * @param applInfo the application archive information
-     * @param module the EJB module archive information
+     * @param module   the EJB module archive information
      */
     private void processEJBModulePersistenceXml(JPAApplInfo applInfo, ContainerInfo module, ClassLoader appClassloader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -542,7 +543,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      * Locates and processes persistence.xml file in an Application Client module. <p>
      *
      * @param applInfo the application archive information
-     * @param module the client module archive information
+     * @param module   the client module archive information
      */
     private void processClientModulePersistenceXml(JPAApplInfo applInfo, ContainerInfo module, ClassLoader loader) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
@@ -585,7 +586,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
      *
      * The ValidatorFactory is supported in WAS.
      *
-     * @param xmlSchemaVersion the schema version of the persistence.xml
+     * @param xmlSchemaVersion      the schema version of the persistence.xml
      * @param integrationProperties the current set of integration-level properties
      */
     // F743-12524
@@ -898,21 +899,30 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         }
         out.println();
 
-        out.println("Applications with JPA: ");
+        // Collect all JPAApplInfo instances known by the JPA Runtime
         final Map<String, JPAApplInfo> appMap = new HashMap<String, JPAApplInfo>();
         synchronized (applList) {
             appMap.putAll(applList);
         }
 
-        for (Map.Entry<String, JPAApplInfo> entry : appMap.entrySet()) {
-            final String appName = entry.getKey();
-            final OSGiJPAApplInfo appl = (OSGiJPAApplInfo) entry.getValue();
+        // Find all JPA enabled applications, scopeinfo, pxmlinfo, and persistence unit info
+        final JPAIntrospection jpai = JPAIntrospection.getJPAIntrospection();
+        try {
+            for (Map.Entry<String, JPAApplInfo> entry : appMap.entrySet()) {
+                final String appName = entry.getKey();
+                final OSGiJPAApplInfo appl = (OSGiJPAApplInfo) entry.getValue();
 
-            out.println();
-            out.println("################################################################################");
-            out.println();
-            out.println("Application \"" + appName + "\":");
-            appl.introspect(out);
+                jpai.beginApplicationVisit(appName, appl);
+                try {
+                    appl.introspect(out);
+                } finally {
+                    jpai.endApplicationVisit();
+                }
+            }
+
+            jpai.executeIntrospectionAnalysis(out);
+        } finally {
+            JPAIntrospection.endJPAIntrospection();
         }
     }
 }

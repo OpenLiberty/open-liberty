@@ -24,6 +24,15 @@ public class ServerMessageExpectation extends Expectation {
 
     private LibertyServer server = null;
 
+    public ServerMessageExpectation(LibertyServer server, String searchFor) {
+        this(null, server, searchFor);
+    }
+
+    public ServerMessageExpectation(LibertyServer server, String logFile, String searchFor) {
+        super(null, logFile, Constants.STRING_MATCHES, searchFor, String.format(DEFAULT_FAILURE_MSG, searchFor));
+        this.server = server;
+    }
+
     public ServerMessageExpectation(String testAction, LibertyServer server, String searchFor) {
         this(testAction, server, searchFor, String.format(DEFAULT_FAILURE_MSG, searchFor));
     }
@@ -47,9 +56,19 @@ public class ServerMessageExpectation extends Expectation {
     }
 
     boolean isMessageLogged() {
-        String errorMsg = server.waitForStringInLogUsingMark(validationValue, 100);
-        Log.info(getClass(), "isMessageLogged", "Found message: " + errorMsg);
-        return (errorMsg != null);
+        String errorMsg = waitForStringInLogFile();
+        boolean isMessageLogged = errorMsg != null;
+        String logMsg = isMessageLogged ? ("Found message: " + errorMsg) : "Did NOT find message [" + validationValue + "] in " + server.getServerName() + " server log!";
+        Log.info(getClass(), "isMessageLogged", logMsg);
+        return isMessageLogged;
+    }
+
+    String waitForStringInLogFile() {
+        if (Constants.TRACE_LOG.equals(searchLocation)) {
+            return server.waitForStringInTraceUsingMark(validationValue, 100);
+        } else {
+            return server.waitForStringInLogUsingMark(validationValue, 100);
+        }
     }
 
 }

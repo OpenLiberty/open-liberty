@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+-sub: *.bnd
+
 src: \
 	fat/src,\
 	test-applications/DSDAnnEJB.jar/src,\
@@ -32,13 +34,15 @@ src: \
 	test-applications/RepeatableEnvEntryMixWeb.war/src,\
 	test-applications/RepeatableTransactionWeb.war/src,\
 	test-applications/ResourceRefWeb.war/src,\
-	test-applications/TransactionWeb.war/src
+	test-applications/ServiceLookupWeb.war/src,\
+	test-applications/TransactionWeb.war/src,\
+	test-bundles/ServiceLookup/src
 
 javac.source: 1.8
 javac.target: 1.8
 
 # Opt out of the --release javac flag for JDK 9+, which will allow us to add our own javax.annotation.* packages to the classpath
-javac.args.release: false
+javac.args.release: off
 
 fat.project: true
 

@@ -124,15 +124,11 @@ import com.ibm.wsspi.injectionengine.InjectionMetaData;
 import com.ibm.wsspi.injectionengine.InjectionMetaDataListener;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
-public abstract class AbstractEJBRuntime
-                implements EJBRuntime,
-                InjectionMetaDataListener
-{
+public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDataListener {
     private static final String CLASS_NAME = AbstractEJBRuntime.class.getName();
     private static TraceComponent tc = Tr.register(AbstractEJBRuntime.class, "EJBContainer", "com.ibm.ejs.container.container");
 
-    private static final ThreadContextAccessor svThreadContextAccessor =
-                    AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction()); // F743-12528.1
+    private static final ThreadContextAccessor svThreadContextAccessor = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction()); // F743-12528.1
 
     protected EJSContainer ivContainer;
     protected boolean ivInitAtStartup;
@@ -163,7 +159,7 @@ public abstract class AbstractEJBRuntime
      *
      * @return true if the runtime is stopping
      */
-    protected abstract boolean isStopping();
+    public abstract boolean isStopping();
 
     /**
      * Creates a new EJBModuleConfigData. This is only needed in runtimes that
@@ -187,8 +183,7 @@ public abstract class AbstractEJBRuntime
      * @param checkDatabase only initialize the timer service if is known that
      *            persistent timers exist in the database
      */
-    protected abstract void initializeTimerService(boolean checkDatabase)
-                    throws EJBContainerException, ContainerException;
+    protected abstract void initializeTimerService(boolean checkDatabase) throws EJBContainerException, ContainerException;
 
     /**
      * Register both the Module and Component Mbeans. This method is called at
@@ -213,8 +208,7 @@ public abstract class AbstractEJBRuntime
     /**
      * Start the MDBs of a module.
      */
-    protected abstract void startMDBs(ModuleInitData mid, EJBModuleMetaDataImpl mmd)
-                    throws RuntimeWarning;
+    protected abstract void startMDBs(ModuleInitData mid, EJBModuleMetaDataImpl mmd) throws RuntimeWarning;
 
     /**
      * Returns true if reference processing needs to occur for the specified
@@ -228,16 +222,13 @@ public abstract class AbstractEJBRuntime
      * @throws RuntimeWarning
      */
     protected abstract boolean isReferenceProcessingNeededAtStart(BeanMetaData bmd) // F743-29417
-    throws RuntimeWarning;
-
-    protected abstract void fireMetaDataCreated(EJBModuleMetaDataImpl mmd)
                     throws RuntimeWarning;
 
-    protected abstract void fireMetaDataCreated(BeanMetaData bmd)
-                    throws RuntimeWarning;
+    protected abstract void fireMetaDataCreated(EJBModuleMetaDataImpl mmd) throws RuntimeWarning;
 
-    protected abstract void fireMetaDataDestroyed(BeanMetaData bmd)
-                    throws RuntimeWarning;
+    protected abstract void fireMetaDataCreated(BeanMetaData bmd) throws RuntimeWarning;
+
+    protected abstract void fireMetaDataDestroyed(BeanMetaData bmd) throws RuntimeWarning;
 
     /**
      * Returns the runtime environment specific UserTransaction implementation.
@@ -245,8 +236,7 @@ public abstract class AbstractEJBRuntime
     // F84120
     protected abstract UserTransaction getUserTransaction();
 
-    protected AbstractEJBRuntime()
-    {
+    protected AbstractEJBRuntime() {
         // no common constructor initialization
     }
 
@@ -256,9 +246,7 @@ public abstract class AbstractEJBRuntime
      * @param config the configuration
      * @throws CSIException if the container fails to start
      */
-    public void start(EJBRuntimeConfig config)
-                    throws CSIException
-    {
+    public void start(EJBRuntimeConfig config) throws CSIException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "start");
@@ -274,8 +262,7 @@ public abstract class AbstractEJBRuntime
         //             on a bean-by-bean basis.
         // Moved from processBean via defect 294477
         String ias = ContainerProperties.InitializeEJBsAtStartup; // 391302
-        if (ias != null)
-        {
+        if (ias != null) {
             ivInitAtStartupSet = true;
             ivInitAtStartup = ias.equalsIgnoreCase("true");
         }
@@ -303,20 +290,14 @@ public abstract class AbstractEJBRuntime
         poolMgr.setScheduledExecutorService(ivScheduledExecutorService);
 
         Cache ejbCache = new Cache("EJB Cache", cacheSize, false);
-        BackgroundLruEvictionStrategy evictor = new BackgroundLruEvictionStrategy(ejbCache,
-                        (int) cacheSize,
-                        cacheSweepInterval,
-                        ivScheduledExecutorService,
-                        deferrableScheduledExecutorService); // F73234
+        BackgroundLruEvictionStrategy evictor = new BackgroundLruEvictionStrategy(ejbCache, (int) cacheSize, cacheSweepInterval, ivScheduledExecutorService, deferrableScheduledExecutorService); // F73234
         ejbCache.setEvictionStrategy(evictor);
         evictor.start();
 
         Cache wrapperCache = new Cache("Wrapper Cache", 2 * cacheSize, true);
-        SweepLruEvictionStrategy wrapperEvictor = new SweepLruEvictionStrategy(wrapperCache,
-                        (int) (2 * cacheSize),
-                        3 * cacheSweepInterval,
-                        ivScheduledExecutorService,
-                        deferrableScheduledExecutorService); // d118138, F73234
+        SweepLruEvictionStrategy wrapperEvictor = new SweepLruEvictionStrategy(wrapperCache, (int) (2
+                                                                                                    * cacheSize), 3
+                                                                                                                  * cacheSweepInterval, ivScheduledExecutorService, deferrableScheduledExecutorService); // d118138, F73234
         wrapperCache.setEvictionStrategy(wrapperEvictor);
         wrapperEvictor.start();
 
@@ -334,29 +315,12 @@ public abstract class AbstractEJBRuntime
         // -------------------------------------------------------------------------
         // Initialize EJSContainer with configuration values...
         // -------------------------------------------------------------------------
-        ContainerConfig containerConfig = new ContainerConfig(
-                        this,
-                        null,
-                        config.getName(),
-                        ejbCache,
-                        wrapperManager,
-                        passivationpolicy, // LIDB2775-23.4
-                        config.getPersisterFactory(),
-                        config.getEntityHelper(),
-                        pmiFactory,
-                        securityCollaborator,
-                        statefulPassivator,
-                        sessionKeyFactory, // LIDB2775-23.7
+        ContainerConfig containerConfig = new ContainerConfig(this, null, config.getName(), ejbCache, wrapperManager, passivationpolicy, // LIDB2775-23.4
+                        config.getPersisterFactory(), config.getEntityHelper(), pmiFactory, securityCollaborator, statefulPassivator, sessionKeyFactory, // LIDB2775-23.7
                         config.getStatefulSessionHandleFactory(), // F743-13024
-                        poolMgr,
-                        j2eeNameFactory,
-                        config.getObjectCopier(), // RTC102299
+                        poolMgr, j2eeNameFactory, config.getObjectCopier(), // RTC102299
                         config.getOrbUtils(), // F743-13024
-                        ivUOWControl,
-                        afterActivationCollaborators,
-                        beforeActivationCollaborators,
-                        beforeActivationAfterCompletionCollaborators,
-                        cef, // 125942
+                        ivUOWControl, afterActivationCollaborators, beforeActivationCollaborators, beforeActivationAfterCompletionCollaborators, cef, // 125942
                         config.getStatefulBeanEnqDeq(), // d646413.2
                         config.getDispatchEventListenerManager(), // d646413.2
                         ivSfFailoverCache, // LIDB2018-1
@@ -366,8 +330,7 @@ public abstract class AbstractEJBRuntime
 
         InjectionEngine injectionEngine = getInjectionEngine();
 
-        try
-        {
+        try {
             // Register ObjectFactory for EJBContext and subinterfaces.      F48603
             injectionEngine.registerObjectFactory(Resource.class, EntityContext.class, EJBContextObjectFactory.class, false, null, false);
             injectionEngine.registerObjectFactory(Resource.class, EntityContextExtension.class, EJBContextObjectFactory.class, false, null, false);
@@ -380,8 +343,7 @@ public abstract class AbstractEJBRuntime
 
             // Register ObjectFactory to handle TimerService refs.           F48603
             injectionEngine.registerObjectFactory(Resource.class, TimerService.class, TimerServiceObjectFactory.class, false, null, false);
-        } catch (InjectionException ex)
-        {
+        } catch (InjectionException ex) {
             throw new CSIException("Failed to register injection engine object factories", ex);
         }
 
@@ -400,8 +362,7 @@ public abstract class AbstractEJBRuntime
      */
     public void stop() // F743-15582
     {
-        if (ivContainer != null)
-        {
+        if (ivContainer != null) {
             ivContainer.terminate();
         }
     }
@@ -413,8 +374,7 @@ public abstract class AbstractEJBRuntime
      *            false indicates beans should start at first use;
      *            null indicates the setting from ibm-ejb-jar-ext.xml should be used.
      */
-    protected void updateStartEjbsAtAppStart(Boolean startEjbsAtAppStart)
-    {
+    protected void updateStartEjbsAtAppStart(Boolean startEjbsAtAppStart) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "updateStartEjbsAtAppStart : "
                          + (ContainerProperties.InitializeEJBsAtStartup == null ? "Update : " : "Ignore : ")
@@ -438,9 +398,7 @@ public abstract class AbstractEJBRuntime
      * starting separate applications. WebSphere runtime will still prevent
      * multiple modules within the same EAR from starting simultaneously. <p>
      */
-    public void startModule(EJBModuleMetaDataImpl mmd)
-                    throws RuntimeError
-    {
+    public void startModule(EJBModuleMetaDataImpl mmd) throws RuntimeError {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "startModule", mmd.getJ2EEName());
@@ -451,8 +409,7 @@ public abstract class AbstractEJBRuntime
         Object origCL = ThreadContextAccessor.UNCHANGED;
         NameSpaceBinder<?> binder = null;
         boolean postInvokeNeeded = false;
-        try
-        {
+        try {
             // Fire the ModuleMetaData event to the listeners.
             // TODO - why is this here rather than createMetaData?
             if (isTraceOn && tc.isDebugEnabled()) //203449
@@ -484,12 +441,9 @@ public abstract class AbstractEJBRuntime
             // or if the default database exists (i.e. it might have timers).
             // Otherwise, for EJB 3.0 and later, the Scheduler will be
             // created and started on first use by a Timer bean.      d438133
-            if (mid.ivHasTimers == null)
-            {
+            if (mid.ivHasTimers == null) {
                 initializeTimerService(true);
-            }
-            else if (mid.ivHasTimers)
-            {
+            } else if (mid.ivHasTimers) {
                 initializeTimerService(false);
             }
 
@@ -498,12 +452,10 @@ public abstract class AbstractEJBRuntime
             binder.beginBind();
 
             boolean hasEJB = false;
-            for (BeanInitData bid : mid.ivBeans)
-            {
+            for (BeanInitData bid : mid.ivBeans) {
                 // Create the BeanMetaData if it hasn't already been created.
                 BeanMetaData bmd = mmd.ivBeanMetaDatas.get(bid.ivName);
-                if (bmd == null)
-                {
+                if (bmd == null) {
                     bmd = createBeanMetaData(bid, mmd);
                 }
 
@@ -512,8 +464,7 @@ public abstract class AbstractEJBRuntime
                 // F743-4950 - If this EJB is a Singleton Session bean, then
                 // add it to the application metadata to finish its processing
                 // when the application finishes its startup processing.
-                if (bmd.isSingletonSessionBean())
-                {
+                if (bmd.isSingletonSessionBean()) {
                     mmd.getEJBApplicationMetaData().addSingleton(bmd, bid.ivStartup, bid.ivDependsOn);
                 }
             }
@@ -534,10 +485,8 @@ public abstract class AbstractEJBRuntime
 
             // d664917.2 - Process all BeanMetaData.  Note that metadata
             // processing must be done using the runtime class loader.
-            for (BeanMetaData bmd : bmds)
-            {
-                if (isTraceOn && tc.isDebugEnabled())
-                {
+            for (BeanMetaData bmd : bmds) {
+                if (isTraceOn && tc.isDebugEnabled()) {
                     bmd.dump();
                 }
                 validateMergedXML(bmd); // d680497
@@ -556,10 +505,8 @@ public abstract class AbstractEJBRuntime
             origCL = svThreadContextAccessor.pushContextClassLoader(mid.getContextClassLoader()); // F85059
 
             // Start all EJBs unless they're deferred.
-            for (BeanMetaData bmd : bmds)
-            {
-                if (!bmd.ivDeferEJBInitialization)
-                {
+            for (BeanMetaData bmd : bmds) {
+                if (!bmd.ivDeferEJBInitialization) {
                     fireMetaDataCreatedAndStartBean(bmd); // d648522, d739043
                 }
             }
@@ -567,19 +514,15 @@ public abstract class AbstractEJBRuntime
             // All EJBs have either been started, or their metadata has been
             // sufficiently processed to allow deferred initialization, so make
             // the EJB visible.
-            for (BeanMetaData bmd : bmds)
-            {
+            for (BeanMetaData bmd : bmds) {
                 // Add the EJB to HomeOfHomes (remote, serialized refs, etc.).
                 addHome(bmd);
 
                 // Bind non-MDB into JNDI.
-                if (bmd.type != InternalConstants.TYPE_MESSAGE_DRIVEN)
-                {
-                    try
-                    {
+                if (bmd.type != InternalConstants.TYPE_MESSAGE_DRIVEN) {
+                    try {
                         bindInterfaces(binder, bmd);
-                    } catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         FFDCFilter.processException(e, CLASS_NAME + ".install", "950", this);
                         if (isTraceOn && tc.isDebugEnabled())
                             Tr.debug(tc, "startModule: exception", e);
@@ -590,8 +533,7 @@ public abstract class AbstractEJBRuntime
 
             // d608829.1 - If a bean failed to start, then there's no need to
             // finish starting the module.
-            if (error == null)
-            {
+            if (error == null) {
                 // If any Remote bindings were made (component or business) then an
                 // EJBFactory also needs to be bound to support ejb-link / auto-link
                 // from the client.                                             d440604
@@ -602,11 +544,9 @@ public abstract class AbstractEJBRuntime
                 // d604213 - Modules can be started after the application is running,
                 // so we must create automatic timers at module start and not at
                 // application start.
-                if (mmd.ivAutomaticTimerBeans != null)
-                {
+                if (mmd.ivAutomaticTimerBeans != null) {
                     // The EJB TimerService does not run in the z/OS CRA.
-                    if (!EJSPlatformHelper.isZOSCRA())
-                    {
+                    if (!EJSPlatformHelper.isZOSCRA()) {
                         int numPersistentCreated = 0;
                         int numNonPersistentCreated = 0;
                         if (mmd.ivHasNonPersistentAutomaticTimers)
@@ -634,12 +574,10 @@ public abstract class AbstractEJBRuntime
             mid.unload();
         }
         //d607801: removed catch block
-        catch (Throwable t)
-        {
+        catch (Throwable t) {
             FFDCFilter.processException(t, CLASS_NAME + ".install", "982", this);
             error = new RuntimeError(t); // 119723
-        } finally
-        {
+        } finally {
             // The following code was reordered so that the context classloader       @MD20022A
             // is reset after the call to executeBatchedOperation.  On 390,           @MD20022A
             // executeBatchedOperation drives a remote operation to the control       @MD20022A
@@ -663,15 +601,11 @@ public abstract class AbstractEJBRuntime
                 }
             }
 
-            if (binder != null)
-            {
-                try
-                {
+            if (binder != null) {
+                try {
                     binder.end(); // F69147.2
-                } catch (Throwable t)
-                {
-                    if (error == null)
-                    {
+                } catch (Throwable t) {
+                    if (error == null) {
                         error = new RuntimeError(t);
                     }
                 }
@@ -679,17 +613,14 @@ public abstract class AbstractEJBRuntime
 
             svThreadContextAccessor.popContextClassLoader(origCL); // F85059
 
-            if (error != null)
-            {
+            if (error != null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "startModule: " + error);
 
-                try
-                {
+                try {
                     mmd.getEJBApplicationMetaData().stoppingModule(mmd); // F743-26072
                     uninstall(mmd, true); // d127220 //d130898
-                } catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     FFDCFilter.processException(t, CLASS_NAME + ".startModule", "980", this);
                 }
 
@@ -703,8 +634,7 @@ public abstract class AbstractEJBRuntime
         }
     }
 
-    protected void preInvokeStartModule(EJBModuleMetaDataImpl mmd, EJBModuleConfigData moduleConfig)
-    {
+    protected void preInvokeStartModule(EJBModuleMetaDataImpl mmd, EJBModuleConfigData moduleConfig) {
         // This method is overridden in WASEJBRuntimeImpl to allow for Persistence
         // Manager logic to be moved out of shared logic and into specific
         // traditional WAS logic.
@@ -718,8 +648,7 @@ public abstract class AbstractEJBRuntime
     }
 
     protected void beanInstall(BeanMetaData bmd) // RTC112791
-    throws RemoteException
-    {
+                    throws RemoteException {
         // This method is overridden in WASEJBRuntimeImpl to allow for Persistence
         // Manager logic to be moved out of shared logic and into specific
         // traditional WAS logic.
@@ -730,13 +659,10 @@ public abstract class AbstractEJBRuntime
      *
      * @param mmd the module metadata
      */
-    public void stopModule(EJBModuleMetaDataImpl mmd)
-    {
-        try
-        { //210058
+    public void stopModule(EJBModuleMetaDataImpl mmd) {
+        try { //210058
             uninstall(mmd, false);
-        } catch (Throwable t)
-        { //210058
+        } catch (Throwable t) { //210058
             FFDCFilter.processException(t, CLASS_NAME + ".stop", "3059", this);
             throw new ContainerEJBException("Failed to stop - caught Throwable", t);
         }
@@ -755,8 +681,7 @@ public abstract class AbstractEJBRuntime
      * @exception CSIException is thrown if an unexpected exception
      *                is caught.
      */
-    private void uninstall(EJBModuleMetaDataImpl mmd, boolean unbindNow)
-                    throws RuntimeWarning //d210058
+    private void uninstall(EJBModuleMetaDataImpl mmd, boolean unbindNow) throws RuntimeWarning //d210058
     {//d130898
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
@@ -768,8 +693,7 @@ public abstract class AbstractEJBRuntime
 
         NameSpaceBinder<?> binder = createNameSpaceBinder(mmd); // F69147.2
 
-        try
-        {
+        try {
             binder.beginUnbind(unbindNow); // F69147.2
 
             try {
@@ -783,8 +707,7 @@ public abstract class AbstractEJBRuntime
                 }
             }
 
-            for (BeanMetaData bmd : mmd.ivBeanMetaDatas.values())
-            {
+            for (BeanMetaData bmd : mmd.ivBeanMetaDatas.values()) {
                 J2EEName j2eeName = bmd.j2eeName;
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -850,15 +773,13 @@ public abstract class AbstractEJBRuntime
             // d465081 start // d510405
             // Remove the module map from the application map in the full set of MessageDestinationLinks
             Map<String, Map<String, String>> appMap = InjectionEngineAccessor.getMessageDestinationLinkInstance().getMessageDestinationLinks().get(appName); //d49167
-            if (appMap != null)
-            { //d475701
+            if (appMap != null) { //d475701
                 String moduleName = mmd.getJ2EEName().getModule();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Remove module from appMap of MessageDestinationLinks : " + mmd.getJ2EEName());
                 appMap.remove(moduleName); // d462512
 
-                if (appMap.size() == 0)
-                {
+                if (appMap.size() == 0) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(tc, "Remove appMap from MessageDestinationLinks : " + appName);
                     InjectionEngineAccessor.getMessageDestinationLinkInstance().getMessageDestinationLinks().remove(appName); //d493167
@@ -867,13 +788,10 @@ public abstract class AbstractEJBRuntime
 
             // Unbind any EJBFactories that may have been bound during start.
             // There may be one per app, and one per module.                d440604
-            try
-            {
+            try {
                 binder.unbindEJBFactory(); // F69147.2
-            } catch (NamingException ex)
-            {
-                if (warning == null)
-                {
+            } catch (NamingException ex) {
+                if (warning == null) {
                     warning = new RuntimeWarning(ex);
                 }
             }
@@ -896,22 +814,17 @@ public abstract class AbstractEJBRuntime
                 Tr.debug(tc, "Exception:", t);
             warning = new RuntimeWarning(t); // 210058 set warning to last exception
 
-        } finally
-        {
-            try
-            {
+        } finally {
+            try {
                 binder.end(); // F69147.2
-            } catch (NamingException ex)
-            {
-                if (warning == null)
-                {
+            } catch (NamingException ex) {
+                if (warning == null) {
                     warning = new RuntimeWarning(ex);
                 }
             }
         }
 
-        if (warning != null)
-        {
+        if (warning != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "uninstall: " + warning);
             throw warning;
@@ -921,8 +834,7 @@ public abstract class AbstractEJBRuntime
             Tr.exit(tc, "uninstall");
     }
 
-    protected void postInvokeStopModule(EJBModuleMetaDataImpl mmd)
-    {
+    protected void postInvokeStopModule(EJBModuleMetaDataImpl mmd) {
         // This method is overridden in WASEJBRuntimeImpl to allow for Persistence
         // Manager logic to be moved out of shared logic and into specific
         // traditional WAS logic.
@@ -936,13 +848,10 @@ public abstract class AbstractEJBRuntime
      * @param homeSet the remote and local home wrappers, or <tt>null</tt> if
      *            deferred initialization bindings should be used
      */
-    protected void bindInterfaces(NameSpaceBinder<?> binder, BeanMetaData bmd)
-                    throws Exception
-    {
+    protected void bindInterfaces(NameSpaceBinder<?> binder, BeanMetaData bmd) throws Exception {
         HomeWrapperSet homeSet = null;
         EJSHome home = bmd.homeRecord.getHome();
-        if (home != null)
-        {
+        if (home != null) {
             homeSet = home.getWrapperSet();
         }
 
@@ -998,10 +907,7 @@ public abstract class AbstractEJBRuntime
                                 boolean local,
                                 int numInterfaces,
                                 boolean singleGlobalInterface) // F743-23167
-    throws NamingException,
-                    RemoteException,
-                    CreateException
-    {
+                    throws NamingException, RemoteException, CreateException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "bindInterfaces: " + bmd.j2eeName +
@@ -1017,8 +923,7 @@ public abstract class AbstractEJBRuntime
         // interface, or multiple business interfaces), and simple binding name
         // was specified, then issue a warning message that simple binding name
         // is misused.
-        if (numInterfaces > 1 && bmd.simpleJndiBindingName != null)
-        {
+        if (numInterfaces > 1 && bmd.simpleJndiBindingName != null) {
             Tr.warning(tc, "SIMPLE_BINDING_NAME_MISSUSED_CNTR0168W",
                        new Object[] { bmd.enterpriseBeanName, bmd._moduleMetaData.ivName, bmd._moduleMetaData.ivAppName });
         }
@@ -1026,26 +931,22 @@ public abstract class AbstractEJBRuntime
         HomeRecord hr = bmd.homeRecord;
 
         // Bind the home interface, if any.
-        if (homeInterfaceClassName != null)
-        {
+        if (homeInterfaceClassName != null) {
             bindInterface(binder, hr, homeSet, numInterfaces, singleGlobalInterface,
                           homeInterfaceClassName, -1, local);
         }
 
         // Bind the no-interface view, if any.
         int interfaceIndex = 0;
-        if (hasLocalBean)
-        {
+        if (hasLocalBean) {
             bindInterface(binder, hr, homeSet, numInterfaces, singleGlobalInterface,
                           bmd.enterpriseBeanClassName, interfaceIndex, local);
             interfaceIndex++;
         }
 
         // Bind business interfaces, if any.
-        if (businessInterfaceNames != null)
-        {
-            for (String businessInterfaceName : businessInterfaceNames)
-            {
+        if (businessInterfaceNames != null) {
+            for (String businessInterfaceName : businessInterfaceNames) {
                 bindInterface(binder, hr, homeSet, numInterfaces, singleGlobalInterface,
                               businessInterfaceName, interfaceIndex, local);
                 interfaceIndex++;
@@ -1078,11 +979,7 @@ public abstract class AbstractEJBRuntime
                                    boolean singleGlobalInterface,
                                    String interfaceName,
                                    int interfaceIndex,
-                                   boolean local)
-                    throws NamingException,
-                    RemoteException,
-                    CreateException
-    {
+                                   boolean local) throws NamingException, RemoteException, CreateException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "bindInterface: " + hr.getJ2EEName() +
@@ -1161,8 +1058,7 @@ public abstract class AbstractEJBRuntime
     private <T> void bindRemoteInterfaceToContextRoot(Map<EJBModuleMetaDataImpl, NameSpaceBinder<?>> binders,
                                                       HomeRecord hr,
                                                       String interfaceName,
-                                                      int interfaceIndex)
-    {
+                                                      int interfaceIndex) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "bindRemoteInterfaceToContextRoot : " + interfaceName);
@@ -1218,9 +1114,7 @@ public abstract class AbstractEJBRuntime
                                                 boolean singleGlobalInterface,
                                                 String interfaceName,
                                                 int interfaceIndex,
-                                                boolean local)
-                    throws NamingException
-    {
+                                                boolean local) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "bindObjectToJavaNameSpaces");
@@ -1230,12 +1124,10 @@ public abstract class AbstractEJBRuntime
         String beanName = j2eeName.getComponent();
 
         List<String> jndiNames = new ArrayList<String>();
-        if (hr.bindInterfaceNames())
-        {
+        if (hr.bindInterfaceNames()) {
             jndiNames.add(beanName + '!' + interfaceName);
         }
-        if (singleGlobalInterface)
-        {
+        if (singleGlobalInterface) {
             jndiNames.add(beanName);
         }
 
@@ -1243,17 +1135,13 @@ public abstract class AbstractEJBRuntime
             Tr.debug(tc, "names=" + jndiNames + ", global=" + hr.bindToJavaGlobalNameSpace());
 
         // d660700 - Bind to java:global if necessary.
-        if (hr.bindToJavaGlobalNameSpace())
-        {
-            if (bindingObject != null)
-            {
+        if (hr.bindToJavaGlobalNameSpace()) {
+            if (bindingObject != null) {
                 sendBindingMessage(bmd, beanName, interfaceName, interfaceIndex, local);
             }
 
-            for (String jndiName : jndiNames)
-            {
-                if (bindingObject != null)
-                {
+            for (String jndiName : jndiNames) {
+                if (bindingObject != null) {
                     binder.bindJavaGlobal(jndiName, bindingObject); // F69147.2
                 }
                 hr.ivJavaGlobalBindings.add(jndiName);
@@ -1261,20 +1149,16 @@ public abstract class AbstractEJBRuntime
         }
 
         // d660700 - Bind to java:app.
-        for (String jndiName : jndiNames)
-        {
-            if (bindingObject != null)
-            {
+        for (String jndiName : jndiNames) {
+            if (bindingObject != null) {
                 binder.bindJavaApp(jndiName, bindingObject); // F69147.2
             }
             hr.ivJavaAppBindings.add(jndiName);
         }
 
         // d660700 - Bind to java:module.
-        if (bindingObject != null)
-        {
-            for (String jndiName : jndiNames)
-            {
+        if (bindingObject != null) {
+            for (String jndiName : jndiNames) {
                 binder.bindJavaModule(jndiName, bindingObject); // F69147.2
             }
         }
@@ -1290,21 +1174,19 @@ public abstract class AbstractEJBRuntime
                                       String beanName,
                                       String interfaceName,
                                       int interfaceIndex,
-                                      boolean local)
-    {
+                                      boolean local) {
         EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
         String logicalAppName = mmd.getEJBApplicationMetaData().getLogicalName();
         String logicalModuleName = mmd.ivLogicalName;
-        String jndiName = logicalAppName == null ?
-                        "java:global/" + logicalModuleName + '/' + beanName + '!' + interfaceName :
-                        "java:global/" + logicalAppName + '/' + logicalModuleName + '/' + beanName + '!' + interfaceName;
+        String jndiName = logicalAppName == null ? "java:global/" + logicalModuleName + '/' + beanName + '!'
+                                                   + interfaceName : "java:global/" + logicalAppName + '/' + logicalModuleName + '/' + beanName + '!' + interfaceName;
 
         Tr.info(tc, "JNDI_BINDING_LOCATION_INFO_CNTR0167I",
                 new Object[] { interfaceName,
-                              bmd.j2eeName.getComponent(),
-                              bmd.j2eeName.getModule(),
-                              bmd.j2eeName.getApplication(),
-                              jndiName });
+                               bmd.j2eeName.getComponent(),
+                               bmd.j2eeName.getModule(),
+                               bmd.j2eeName.getApplication(),
+                               jndiName });
     }
 
     /**
@@ -1313,17 +1195,15 @@ public abstract class AbstractEJBRuntime
      * @param bmd the bean metadata for a message-driven bean
      */
     // d744887
-    public void sendMDBBindingMessage(BeanMetaData bmd)
-    {
+    public void sendMDBBindingMessage(BeanMetaData bmd) {
         // Currently, an information message is only logged for message endpoints
         // that use a JCA resource adapter, not a message listener port.
-        if (bmd.ivActivationSpecJndiName != null)
-        {
+        if (bmd.ivActivationSpecJndiName != null) {
             Tr.info(tc, "MDB_ACTIVATION_SPEC_INFO_CNTR0180I",
                     new Object[] { bmd.j2eeName.getComponent(),
-                                  bmd.j2eeName.getModule(),
-                                  bmd.j2eeName.getApplication(),
-                                  bmd.ivActivationSpecJndiName });
+                                   bmd.j2eeName.getModule(),
+                                   bmd.j2eeName.getApplication(),
+                                   bmd.ivActivationSpecJndiName });
         }
     }
 
@@ -1332,8 +1212,7 @@ public abstract class AbstractEJBRuntime
         Throwable root = t;
         Throwable cause;
 
-        while ((cause = root.getCause()) != null)
-        {
+        while ((cause = root.getCause()) != null) {
             root = cause;
         }
 
@@ -1347,8 +1226,7 @@ public abstract class AbstractEJBRuntime
      * is usable, {@link #finishBMDInit} must be called.
      */
     public BeanMetaData createBeanMetaData(BeanInitData bid, EJBModuleMetaDataImpl mmd) // d640935
-    throws EJBConfigurationException, ContainerException
-    {
+                    throws EJBConfigurationException, ContainerException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createBeanMetaData: " + bid.ivJ2EEName);
@@ -1382,8 +1260,7 @@ public abstract class AbstractEJBRuntime
         return bmd;
     }
 
-    protected HomeRecord createHomeRecord(BeanMetaData bmd, HomeOfHomes homeOfHomes)
-    {
+    protected HomeRecord createHomeRecord(BeanMetaData bmd, HomeOfHomes homeOfHomes) {
         return new HomeRecord(bmd, homeOfHomes);
     }
 
@@ -1392,14 +1269,10 @@ public abstract class AbstractEJBRuntime
      *
      * @param bmd the bean
      */
-    protected void addHome(BeanMetaData bmd)
-                    throws ContainerException
-    {
-        try
-        {
+    protected void addHome(BeanMetaData bmd) throws ContainerException {
+        try {
             EJSContainer.homeOfHomes.addHome(bmd); //d200714 d429866.2 F743-26072
-        } catch (Throwable ex)
-        {
+        } catch (Throwable ex) {
             ContainerException ex2 = new ContainerException(ex);
             Tr.error(tc, "CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CNTR0035E",
                      new Object[] { ex, ex2.toString() });
@@ -1408,10 +1281,8 @@ public abstract class AbstractEJBRuntime
     }
 
     @Override
-    public ActivationStrategy createActivationStrategy(Activator activator, int type, PassivationPolicy passivationPolicy)
-    {
-        switch (type)
-        {
+    public ActivationStrategy createActivationStrategy(Activator activator, int type, PassivationPolicy passivationPolicy) {
+        switch (type) {
             case Activator.UNCACHED_ACTIVATION_STRATEGY:
                 return new UncachedActivationStrategy(activator);
 
@@ -1419,8 +1290,7 @@ public abstract class AbstractEJBRuntime
                 return new StatefulActivateOnceActivationStrategy(activator, passivationPolicy);
 
             case Activator.STATEFUL_ACTIVATE_TRAN_ACTIVATION_STRATEGY:
-                return new StatefulActivateTranActivationStrategy(activator, passivationPolicy,
-                                ivContainer.getSfFailoverCache());
+                return new StatefulActivateTranActivationStrategy(activator, passivationPolicy, ivContainer.getSfFailoverCache());
         }
 
         return null;
@@ -1434,11 +1304,9 @@ public abstract class AbstractEJBRuntime
 
         // Non-deferred initialization during application start runs on a runtime
         // thread, so run deferred initialization with the same privileges.
-        EJSHome result = AccessController.doPrivileged(new PrivilegedAction<EJSHome>()
-        {
+        EJSHome result = AccessController.doPrivileged(new PrivilegedAction<EJSHome>() {
             @Override
-            public EJSHome run()
-            {
+            public EJSHome run() {
                 // @251260 Begin
                 Object credentialToken = pushServerIdentity();
 
@@ -1462,11 +1330,7 @@ public abstract class AbstractEJBRuntime
                     return runAsSystem(new PrivilegedExceptionAction<EJSHome>() // d658192, RTC71814
                     {
                         @Override
-                        public EJSHome run()
-                                        throws CSIException,
-                                        ContainerException,
-                                        EJBConfigurationException
-                        {
+                        public EJSHome run() throws CSIException, ContainerException, EJBConfigurationException {
                             return initializeDeferredEJBImpl(hr);
                         }
                     });
@@ -1480,18 +1344,14 @@ public abstract class AbstractEJBRuntime
                     // Fire the a destroyed event only if we fired a created
                     // event; we might have failed prior to the create event.
                     BeanMetaData bmd = hr.getBeanMetaData();
-                    if (bmd.ivMetaDataDestroyRequired)
-                    {
+                    if (bmd.ivMetaDataDestroyRequired) {
                         // Reset the flag in case we fail on a subsequent
                         // initialization before we successfully create.
                         bmd.ivMetaDataDestroyRequired = false;
 
-                        try
-                        {
+                        try {
                             fireMetaDataDestroyed(bmd);
-                        }
-                        catch (RuntimeWarning rtw)
-                        {
+                        } catch (RuntimeWarning rtw) {
                             // The fireMetaDataDestroyed method already did FFDC and logging of error message,
                             // do no need to do it again.  However, we want to eat the exception thrown by it
                             // since we want to throw the ContainerEJBException that is created
@@ -1506,8 +1366,7 @@ public abstract class AbstractEJBRuntime
                     throw cex;
                 } finally { //d200714
                     // @251260 Begin
-                    if (credentialToken != null)
-                    {
+                    if (credentialToken != null) {
                         popServerIdentity(credentialToken); // d646413.2
                     }
                     // @251260 End
@@ -1519,8 +1378,7 @@ public abstract class AbstractEJBRuntime
                         FFDCFilter.processException(e, CLASS_NAME + ".initializeDeferredEJB", "4420", this);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                             Tr.exit(tc, "initializeDeferredEJB", "Unexpected exception in initializeDeferredEJB when trying to resume the previously suspended UOW: " + e);
-                        ContainerEJBException cex = new ContainerEJBException
-                                        ("Unexpected exception in initializeDeferredEJB when trying to resume the previously suspended UOW.");
+                        ContainerEJBException cex = new ContainerEJBException("Unexpected exception in initializeDeferredEJB when trying to resume the previously suspended UOW.");
                         throw cex;
                     }
 
@@ -1542,8 +1400,7 @@ public abstract class AbstractEJBRuntime
      * @throws PrivilegedActionException if a checked exception is thrown
      */
     // RTC71814
-    protected abstract <T> T runAsSystem(PrivilegedExceptionAction<T> action)
-                    throws PrivilegedActionException;
+    protected abstract <T> T runAsSystem(PrivilegedExceptionAction<T> action) throws PrivilegedActionException;
 
     /**
      * Actually initializes the deferred EJB. Assumes that a "runtime thread
@@ -1552,15 +1409,11 @@ public abstract class AbstractEJBRuntime
      * @param hr
      * @return
      */
-    protected EJSHome initializeDeferredEJBImpl(HomeRecord hr)
-                    throws ContainerException,
-                    EJBConfigurationException
-    {
+    protected EJSHome initializeDeferredEJBImpl(HomeRecord hr) throws ContainerException, EJBConfigurationException {
         BeanMetaData bmd = hr.getBeanMetaData();
         Object originalLoader = ThreadContextAccessor.UNCHANGED;
 
-        try
-        {
+        try {
             if (!bmd.fullyInitialized) // d664917.1
             {
                 // The server class loader must be used during metadata processing
@@ -1586,15 +1439,13 @@ public abstract class AbstractEJBRuntime
             //d200714 end
 
             return fireMetaDataCreatedAndStartBean(bmd); // d648522, d739043
-        } finally
-        {
+        } finally {
             svThreadContextAccessor.popContextClassLoader(originalLoader);
 
             // d659020 - If an error occurs while initializing, then the wccm
             // field will not be cleared, so we need to unload its references.
             // The next attempt to initialize the bean will reload them again.
-            if (bmd.wccm != null)
-            {
+            if (bmd.wccm != null) {
                 bmd.wccm.unload();
             }
         }
@@ -1609,8 +1460,7 @@ public abstract class AbstractEJBRuntime
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createReferenceContext: " + bmd.j2eeName);
 
-        if (bmd.ivReferenceContext == null)
-        {
+        if (bmd.ivReferenceContext == null) {
             bmd.ivReferenceContext = getInjectionEngine().createReferenceContext();
             bmd.ivReferenceContext.add(new ComponentNameSpaceConfigurationProviderImpl(bmd, this)); // F85115
         }
@@ -1625,25 +1475,19 @@ public abstract class AbstractEJBRuntime
      * <p>
      * This method can be overridden by subclasses.
      */
-    protected void initializeBMD(BeanMetaData bmd)
-                    throws Exception
-    {
-        if (bmd.ivDeferEJBInitialization)
-        {
+    protected void initializeBMD(BeanMetaData bmd) throws Exception {
+        if (bmd.ivDeferEJBInitialization) {
             // Before WCCM data structures are cleared, determine if
             // early reference processing is needed for this EJB.  For
             // example, if the bean has java:global modules, those need
             // to be bound at module startup.                   F743-29417
-            if (isReferenceProcessingNeededAtStart(bmd))
-            {
+            if (isReferenceProcessingNeededAtStart(bmd)) {
                 ReferenceContext rc = createReferenceContext(bmd);
                 rc.process();
             }
 
             ivEJBMDOrchestrator.processDeferredBMD(bmd);
-        }
-        else
-        {
+        } else {
             finishBMDInit(bmd);
         }
     }
@@ -1654,10 +1498,7 @@ public abstract class AbstractEJBRuntime
      * called if this field is already true. The context class loader must be
      * the runtime class loader when calling this method.
      */
-    private void finishBMDInit(BeanMetaData bmd)
-                    throws ContainerException,
-                    EJBConfigurationException
-    {
+    private void finishBMDInit(BeanMetaData bmd) throws ContainerException, EJBConfigurationException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "finishBMDInit: " + bmd.j2eeName); // d640935.1
 
@@ -1681,9 +1522,7 @@ public abstract class AbstractEJBRuntime
      *
      * @return the component namespace configuration
      */
-    public ComponentNameSpaceConfiguration finishBMDInitForReferenceContext(BeanMetaData bmd)
-                    throws EJBConfigurationException, ContainerException
-    {
+    public ComponentNameSpaceConfiguration finishBMDInitForReferenceContext(BeanMetaData bmd) throws EJBConfigurationException, ContainerException {
         return ivEJBMDOrchestrator.finishBMDInitForReferenceContext(bmd,
                                                                     ivDefaultDataSourceJNDIName,
                                                                     ivWebServicesHandlerResolver);
@@ -1700,12 +1539,10 @@ public abstract class AbstractEJBRuntime
      * @return the home
      */
     private EJSHome fireMetaDataCreatedAndStartBean(BeanMetaData bmd) // d648522
-    throws ContainerException
-    {
+                    throws ContainerException {
         if (!bmd.isManagedBean()) // F743-34301.1
         {
-            try
-            {
+            try {
                 // Fire the ComponentMetaData event to the listeners
                 // (ie. we have loaded a new bean folks... )
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -1723,16 +1560,12 @@ public abstract class AbstractEJBRuntime
         return startBean(bmd); // d739043
     }
 
-    protected EJSHome startBean(BeanMetaData bmd)
-                    throws ContainerException
-    {
+    protected EJSHome startBean(BeanMetaData bmd) throws ContainerException {
         // Register the bean metadata with the container.
         return ivContainer.startBean(bmd);
     }
 
-    protected void stopBean(BeanMetaData bmd)
-                    throws CSIException
-    {
+    protected void stopBean(BeanMetaData bmd) throws CSIException {
         ivContainer.stopBean(bmd);
     }
 
@@ -1757,21 +1590,18 @@ public abstract class AbstractEJBRuntime
      * @param resolver WebService Handler Resolver to be used by EJB Container.
      **/
     // d495644
-    public final void setWebServiceHandlerResolver(WSEJBHandlerResolver resolver)
-    {
+    public final void setWebServiceHandlerResolver(WSEJBHandlerResolver resolver) {
         ivWebServicesHandlerResolver = resolver;
     }
 
     @Override
     public void injectionMetaDataCreated(InjectionMetaData injectionMetaData) // F48603
-    throws InjectionException
-    {
+                    throws InjectionException {
         ComponentNameSpaceConfiguration compNSConfig = injectionMetaData.getComponentNameSpaceConfiguration();
         ComponentNameSpaceConfiguration.ReferenceFlowKind flow = compNSConfig.getOwningFlow();
 
         if (flow == ComponentNameSpaceConfiguration.ReferenceFlowKind.EJB ||
-            flow == ComponentNameSpaceConfiguration.ReferenceFlowKind.HYBRID)
-        {
+            flow == ComponentNameSpaceConfiguration.ReferenceFlowKind.HYBRID) {
             injectionMetaData.bindJavaComp(
                                            "EJBContext", new Reference(EJBContext.class.getName(), EJBContextObjectFactory.class.getName(), null));
             injectionMetaData.bindJavaComp(
@@ -1783,8 +1613,7 @@ public abstract class AbstractEJBRuntime
     public ContainerTx createContainerTx(EJSContainer ejsContainer,
                                          boolean isLocal,
                                          SynchronizationRegistryUOWScope currTxKey,
-                                         UOWControl uowCtrl)
-    {
+                                         UOWControl uowCtrl) {
         return new ContainerTx(ejsContainer, isLocal, currTxKey, uowCtrl);
     }
 
@@ -1795,15 +1624,12 @@ public abstract class AbstractEJBRuntime
      */
     // F88119
     @Override
-    public BeanOFactory getBeanOFactory(BeanOFactoryType type, BeanMetaData bmd)
-    {
+    public BeanOFactory getBeanOFactory(BeanOFactoryType type, BeanMetaData bmd) {
         BeanOFactory factory = null;
-        switch (type)
-        {
+        switch (type) {
             case CM_STATELESS_BEANO_FACTORY:
                 factory = ivCMStatelessBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new CMStatelessBeanOFactory();
                     ivCMStatelessBeanOFactory = factory;
                 }
@@ -1811,8 +1637,7 @@ public abstract class AbstractEJBRuntime
 
             case BM_STATELESS_BEANO_FACTORY:
                 factory = ivBMStatelessBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new BMStatelessBeanOFactory();
                     ivBMStatelessBeanOFactory = factory;
                 }
@@ -1820,8 +1645,7 @@ public abstract class AbstractEJBRuntime
 
             case CM_STATEFUL_BEANO_FACTORY:
                 factory = ivCMStatefulBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new CMStatefulBeanOFactory();
                     ivCMStatefulBeanOFactory = factory;
                 }
@@ -1829,8 +1653,7 @@ public abstract class AbstractEJBRuntime
 
             case BM_STATEFUL_BEANO_FACTORY:
                 factory = ivBMStatefulBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new BMStatefulBeanOFactory();
                     ivBMStatefulBeanOFactory = factory;
                 }
@@ -1838,8 +1661,7 @@ public abstract class AbstractEJBRuntime
 
             case SINGLETON_BEANO_FACTORY:
                 factory = ivSingletonBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new SingletonBeanOFactory();
                     ivSingletonBeanOFactory = factory;
                 }
@@ -1847,8 +1669,7 @@ public abstract class AbstractEJBRuntime
 
             case MANAGED_BEANO_FACTORY:
                 factory = ivManagedBeanOFactory;
-                if (factory == null)
-                {
+                if (factory == null) {
                     factory = new ManagedBeanOFactory();
                     ivManagedBeanOFactory = factory;
                 }
@@ -1864,8 +1685,7 @@ public abstract class AbstractEJBRuntime
 
     @Override
     // F88119
-    public Class<?> getMessageEndpointFactoryImplClass(BeanMetaData bmd) throws ClassNotFoundException
-    {
+    public Class<?> getMessageEndpointFactoryImplClass(BeanMetaData bmd) throws ClassNotFoundException {
         // Not expected this method would ever be called when MessageEndpoint
         // MDBs are not supported, but throw something better than an NPE.
         throw new UnsupportedOperationException("Message-Driven beans are not supported in the current environment : " +
@@ -1874,8 +1694,7 @@ public abstract class AbstractEJBRuntime
 
     @Override
     // F88119
-    public Class<?> getMessageEndpointImplClass(BeanMetaData bmd) throws ClassNotFoundException
-    {
+    public Class<?> getMessageEndpointImplClass(BeanMetaData bmd) throws ClassNotFoundException {
         // Not expected this method would ever be called when MessageEndpoint
         // MDBs are not supported, but throw something better than an NPE.
         throw new UnsupportedOperationException("Message-Driven beans are not supported in the current environment : " +
@@ -1901,24 +1720,18 @@ public abstract class AbstractEJBRuntime
      * @return the number of timers created
      */
     // F743-506 RTC109678
-    protected int createNonPersistentAutomaticTimers(String appName, String moduleName, List<AutomaticTimerBean> timerBeans)
-    {
+    protected int createNonPersistentAutomaticTimers(String appName, String moduleName, List<AutomaticTimerBean> timerBeans) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "createNonPersistentAutomaticTimers: " + moduleName);
 
         int numCreated = 0;
 
-        for (AutomaticTimerBean timerBean : timerBeans)
-        {
-            if (timerBean.getNumNonPersistentTimers() != 0)
-            {
-                for (TimerMethodData timerMethod : timerBean.getMethods())
-                {
-                    for (TimerMethodData.AutomaticTimer timer : timerMethod.getAutomaticTimers())
-                    {
-                        if (!timer.isPersistent())
-                        {
+        for (AutomaticTimerBean timerBean : timerBeans) {
+            if (timerBean.getNumNonPersistentTimers() != 0) {
+                for (TimerMethodData timerMethod : timerBean.getMethods()) {
+                    for (TimerMethodData.AutomaticTimer timer : timerMethod.getAutomaticTimers()) {
+                        if (!timer.isPersistent()) {
                             if (isTraceOn && tc.isDebugEnabled())
                                 Tr.debug(tc, "creating non-persistent automatic timer " + timer);
 
@@ -1941,16 +1754,11 @@ public abstract class AbstractEJBRuntime
     // RTC109678
     protected void createNonPersistentAutomaticTimer(AutomaticTimerBean timerBean,
                                                      TimerMethodData.AutomaticTimer timer,
-                                                     TimerMethodData timerMethod)
-    {
+                                                     TimerMethodData timerMethod) {
         BeanMetaData bmd = timerBean.getBeanMetaData();
         ParsedScheduleExpression parsedSchedule = timerBean.parseScheduleExpression(timer); // F743-14447
-        TimerNpImpl ejbTimer = new TimerNpImpl(bmd.container,
-                        bmd, // d589357
-                        timerBean.getBeanId(),
-                        timerMethod.getMethodId(),
-                        parsedSchedule,
-                        timer.getInfo());
+        TimerNpImpl ejbTimer = new TimerNpImpl(bmd.container, bmd, // d589357
+                        timerBean.getBeanId(), timerMethod.getMethodId(), parsedSchedule, timer.getInfo());
         ejbTimer.start(); // d589357
     }
 
@@ -1968,12 +1776,9 @@ public abstract class AbstractEJBRuntime
      * @param timerBeans the beans with automatic timers
      * @return the number of timers created
      */
-    protected int createPersistentAutomaticTimers(String appName, String moduleName, List<AutomaticTimerBean> timerBeans) throws RuntimeWarning
-    {
-        for (AutomaticTimerBean timerBean : timerBeans)
-        {
-            if (timerBean.getNumPersistentTimers() != 0)
-            {
+    protected int createPersistentAutomaticTimers(String appName, String moduleName, List<AutomaticTimerBean> timerBeans) throws RuntimeWarning {
+        for (AutomaticTimerBean timerBean : timerBeans) {
+            if (timerBean.getNumPersistentTimers() != 0) {
                 Tr.warning(tc, "AUTOMATIC_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR0330W",
                            new Object[] { timerBean.getBeanMetaData().getName(), moduleName, appName });
             }
@@ -2059,8 +1864,7 @@ public abstract class AbstractEJBRuntime
         if (isTraceOn && tc.isDebugEnabled())
             Tr.entry(tc, "createNonPersistentExpirationTimer : " + beanO);
 
-        if (beanO.getHome().getBeanMetaData().isEntityBean())
-        {
+        if (beanO.getHome().getBeanMetaData().isEntityBean()) {
             IllegalStateException ise = new IllegalStateException("Timer Service: Entity beans cannot use non-persistent timers : " + beanO.getId().getJ2EEName());
 
             if (isTraceOn && tc.isEntryEnabled())
@@ -2117,12 +1921,10 @@ public abstract class AbstractEJBRuntime
      * @throws EJBException if the application is being stopped or timer fails to start
      */
     // RTC107334
-    private void queueOrStartNpTimer(BeanO beanO, TimerNpImpl timer) throws EJBException
-    {
+    private void queueOrStartNpTimer(BeanO beanO, TimerNpImpl timer) throws EJBException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        try
-        {
+        try {
             // d589357 - Prevent NP timers from being created after the
             // application has been stopped.  This call will race if it occurs on
             // a thread other than the one stopping the application, but
@@ -2132,21 +1934,17 @@ public abstract class AbstractEJBRuntime
             mmd.getEJBApplicationMetaData().checkIfCreateNonPersistentTimerAllowed(mmd);
 
             ContainerTx tx = beanO.getContainerTx();
-            if (tx == null)
-            {
+            if (tx == null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "queueOrStartNpTimer found ivContainerTx null.  Calling getCurrentTx(false)");
 
                 tx = beanO.getContainer().getCurrentContainerTx();
             }
 
-            if (tx != null)
-            {
+            if (tx != null) {
                 // Will queue timer for global / start immediately for local transactions
                 tx.queueTimerToStart(timer);
-            }
-            else
-            {
+            } else {
                 // Here for backward compatibility. Could only occur for EJB 1.1
                 // module with BMT bean, which the customer has re-coded to
                 // implement TimedObject. Start the timer immediately, as this
@@ -2155,8 +1953,7 @@ public abstract class AbstractEJBRuntime
                     Tr.debug(tc, "Container Tx not found; starting timer immediately.");
                 timer.start();
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             throw ExceptionUtil.EJBException(e);
         }
     }
@@ -2178,11 +1975,11 @@ public abstract class AbstractEJBRuntime
                 long secondsLate = lateTime / 1000;
                 Tr.warning(tc, "TIMER_FIRING_LATE_CNTR0333W",
                            new Object[] { timerId,
-                                         j2eeName.getComponent(),
-                                         j2eeName.getModule(),
-                                         j2eeName.getApplication(),
-                                         scheduledRunTime, new Date(currentTime),
-                                         secondsLate });
+                                          j2eeName.getComponent(),
+                                          j2eeName.getModule(),
+                                          j2eeName.getApplication(),
+                                          scheduledRunTime, new Date(currentTime),
+                                          secondsLate });
             }
         }
     }

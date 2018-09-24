@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Evita\u0163i utilizarea caracteristicii sau c
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103 pentru jdbcDriver {0} folosind biblioteca {1}.
-DSRA4000.no.suitable.driver.explanation=Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103.
-DSRA4000.no.suitable.driver.useraction=Actualiza\u0163i configura\u0163ia pentru ca biblioteca s\u0103 con\u0163in\u0103 o cale spre un driver JDBC recunoscut sau clasa de implementare s\u0103 fie specificat\u0103 pe sursa de date.
+DSRA4000.no.suitable.driver=DSRA4000E: Nu sunt g\u0103site implement\u0103ri ale {0} pentru {1} cu biblioteca {2}. Numele sau loca\u0163ia fi\u015fierelor JAR ale driver-ului JDBC ar putea fi incorect sau inaccesibil\u0103. S-a c\u0103utat \u00een: {3}. S-a c\u0103utat sub pachetele: {4}.
+DSRA4000.no.suitable.driver.explanation=O implementare de surs\u0103 de date sau driver ar putea s\u0103 nu fie g\u0103sit\u0103 din mai multe motive. Numele sau loca\u0163ia fi\u015fierelor JAR ale driver-ului JDBC ar putea fi incorect sau inaccesibil\u0103. Driver-ul JDBC s-ar putea s\u0103 nu identifice corect implementarea sa java.sql.Driver sau s-ar putea s\u0103 nu aib\u0103 o implementare java.sql.Driver. Sau logica \u00eencorporat\u0103 a serverului pentru identificarea surselor de datenu se aplic\u0103 la toate driver-ele.
+DSRA4000.no.suitable.driver.useraction=Verifica\u0163i c\u0103 sunt corecte configura\u0163iile de bibliotec\u0103 \u015fi driver JDBC. Dac\u0103 clasele de implementare nu sunt g\u0103site \u00een continuare, specifica\u0163i-le manual \u00een configura\u0163ie.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103 \u00een biblioteca imbricat\u0103 folosit\u0103 de jdbcDriver {0}.
-DSRA4001.no.suitable.driver.nested.explanation=Nu s-a g\u0103sit o clas\u0103 de implementare driver JDBC valid\u0103.
-DSRA4001.no.suitable.driver.nested.useraction=Actualiza\u0163i configura\u0163ia pentru ca biblioteca imbricat\u0103 s\u0103 con\u0163in\u0103 o cale spre un driver JDBC recunoscut sau clasa de implementare s\u0103 fie specificat\u0103 pe sursa de date.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Nu sunt g\u0103site implement\u0103ri ale {0} pentru {1}. S-a c\u0103utat \u00een: {2}. Numele sau loca\u0163ia fi\u015fierelor JAR ale driver-ului JDBC ar putea fi incorect sau inaccesibil\u0103. S-a c\u0103utat sub pachetele: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=O implementare de surs\u0103 de date sau driver ar putea s\u0103 nu fie g\u0103sit\u0103 din mai multe motive. Numele sau loca\u0163ia fi\u015fierelor JAR ale driver-ului JDBC ar putea fi incorect sau inaccesibil\u0103. Driver-ul JDBC s-ar putea s\u0103 nu identifice corect implementarea sa java.sql.Driver sau s-ar putea s\u0103 nu aib\u0103 o implementare java.sql.Driver. Sau logica \u00eencorporat\u0103 a serverului pentru identificarea surselor de datenu se aplic\u0103 la toate driver-ele.
+DSRA4001.no.suitable.driver.nested.useraction=Verifica\u0163i c\u0103 sunt corecte configura\u0163iile de bibliotec\u0103 \u015fi driver JDBC. Dac\u0103 clasele de implementare nu sunt g\u0103site \u00een continuare, specifica\u0163i-le manual \u00een configura\u0163ie.
 
 DSRA4003.driver.null=DSRA4003E: Nu s-a putut g\u0103si un element jdbcDriver valid pentru dataSource {0}.
 DSRA4003.driver.null.explanation=Nu s-a putut g\u0103si un element jdbcDriver valid pentru dataSource specificat.
@@ -244,6 +244,32 @@ DSRA4003.driver.null.useraction=Actualiza\u0163i configura\u0163ia pentru a incl
 DSRA4004.onconnect.sql=DSRA4004E: Nu se poate executa comanda SQL onConnect \"{0}\" pe conexiunea ob\u0163inut\u0103 din dataSource {1}. Referi\u0163i-v\u0103 la excep\u0163ia cauz\u0103 pentru informa\u0163ii suplimentare.
 DSRA4004.onconnect.sql.explanation=A ap\u0103rut o eroare la \u00eencercarea de a executa comanda SQL specificat\u0103.
 DSRA4004.onconnect.sql.useraction=Referi\u0163i-v\u0103 la mesajul de excep\u0163ie pentru a ajuta la determinarea cauzei problemei.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: Serverul nu suport\u0103 proprietatea loginTimeout care este specificat\u0103 \u00een URL sau \u00een propriet\u0103\u0163ile sursei de date {0}.
+DSRA4005.invalid.logintimeout.explanation=O proprietate loginTimeout nu este suportat\u0103 c\u00e2nd este specificat pentru o surs\u0103 de date care are \u00een spate o implementare java.sql.Driver deoarece serverul este incapabil de a apela getLoginTimeout pe clasa java.sql.Driver
+DSRA4005.invalid.logintimeout.useraction=Modifica\u0163i configura\u0163ia DataSource s\u0103 foloseasc\u0103 o implementare DataSource, \u00een locul unei implement\u0103ri java.sql.Driver, sau \u00eenl\u0103tura\u0163i proprietatea loginTimeout.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: Sursa de date {0} nu este capabil\u0103 s\u0103 se conecteze la baza de date pentru c\u0103 {1} a returnat o conexiune nul\u0103 pentru URL-ul care \u00eencepe cu {2}. Acest lucru indic\u0103 faptul c\u0103 driver-ul JDBC \u00eencalc\u0103 specifica\u0163ia JDBC.
+DSRA4006.null.connection.explanation=De\u015fi java.sql.Driver a indicat c\u0103 a acceptat URL-ul furnizat, a returnat o conexiune nul\u0103. Aceast\u0103 eroare indic\u0103 un bug \u00een driver-ul JDBC.
+DSRA4006.null.connection.useraction=Raporta\u0163i eroarea la v\u00e2nz\u0103torul driver-ului JDBC \u015fi asigura\u0163i-v\u0103 c\u0103 driver-ul JDBC \u015fi configura\u0163ia DataSource sunt corecte.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: Driver-ul JDBC nu suport\u0103 un nivel de izolare de TRANSACTION_NONE, care este configurat pe sursa de date {0}.
+DSRA4008.tran.none.unsupported.explanation=Nivelul de izolare TRANSACTION_NONE care este configurat pe sursa de date nu este suportat de driver-ul JDBC.
+DSRA4008.tran.none.unsupported.useraction=Fie actualiza\u0163i configura\u0163ia sursei de date pentru a utiliza un nivel de izolare care este suportat de driver, fie folosi\u0163i un driver care suport\u0103 un nivel de isolation TRANSACTION_NONE.
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Sursa de date {0} nu poate fi configurat cu un nivel de izolare TRANSACTION_NONE \u015fi transactional= true.
+DSRA4009.tran.none.transactional.unsupported.explanation=Un driver JDBC care este configurat cu un nivel de izolare TRANSACTION_NONE nu va suporta tranzac\u0163ii.
+DSRA4009.tran.none.transactional.unsupported.useraction=Seta\u0163i transactional=false pe sursa de date.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: Comiterea automat\u0103 este necesar\u0103 c\u00e2nd folosi\u0163i nivelul de izolare TRANSACTION_NONE, care este configurat pe sursa de date {0}.
+DSRA4010.tran.none.autocommit.required.explanation=Driver-ul JDBC este configurat cu un nivel de izolare TRANSACTION_NONE, \u015fi necesit\u0103 utilizarea comiterii automate.
+DSRA4010.tran.none.autocommit.required.useraction=Seta\u0163i auto commit la true.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Driver-ul JDBC nu suport\u0103 comutarea la un nivel de izolare de TRANSACTION_NONE, care este configurat pe sursa de date {0}.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=Specifica\u0163ia JDBC nu suport\u0103 comutarea la un nivel de izolare TRANSACTION_NONE.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Evita\u0163i comutarea la un nivel de izolare TRANSACTION_NONE.
 
 # ----------------------------------------------------------------------------
 # 
@@ -594,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Serverul de aplica\u0163ii nu suport
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Dezactiva\u0163i Kerberos sau utiliza\u0163i un back-end DB2 cu driver-ul JDBC universal DB2.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted

@@ -89,7 +89,7 @@ public class CollectorJsonUtils1_1 {
     private static String jsonifyGCEvent(int maxFieldLength, String wlpUserDir,
                                          String serverName, String hostName, String eventType, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         KeyValuePair kvp = null;
         String key = null;
 
@@ -317,7 +317,7 @@ public class CollectorJsonUtils1_1 {
 
     public static String jsonifyAudit(String wlpUserDir, String serverName, String hostName, Object event, String[] tags) {
         GenericData genData = (GenericData) event;
-        ArrayList<KeyValuePair> pairs = genData.getPairs();
+        KeyValuePair[] pairs = genData.getPairs();
         String key = null;
         StringBuilder sb = CollectorJsonHelpers.startAuditJson1_1(hostName, wlpUserDir, serverName);
 

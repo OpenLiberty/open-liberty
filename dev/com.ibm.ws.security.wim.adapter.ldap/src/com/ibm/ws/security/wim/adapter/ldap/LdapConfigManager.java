@@ -1946,7 +1946,7 @@ public class LdapConfigManager {
      * Return the sub-list of properties, for the given entity, supported by this repository, from a given list of properties.
      *
      * @param inEntityTypes : List of entity types
-     * @param propNames : List of property names read from data object
+     * @param propNames     : List of property names read from data object
      * @return list of properties supported by repository for given entity type
      *         If the list propNames contain VALUE_ALL_PROPERTIES i.e '*', then return the list of properties without any modification
      *         Code will handle '*' later on
@@ -1988,7 +1988,7 @@ public class LdapConfigManager {
      * This is an overloaded method to support getSupportedProperties(String, List)
      *
      * @param ldapEntity : A given LDAP entity
-     * @param propNames : List of property names read from data object
+     * @param propNames  : List of property names read from data object
      * @return list of properties supported by repository for given LDAP entity
      *         If the list propNames contain VALUE_ALL_PROPERTIES i.e '*', then return the list of properties without any modification
      *         Code will handle '*' later on

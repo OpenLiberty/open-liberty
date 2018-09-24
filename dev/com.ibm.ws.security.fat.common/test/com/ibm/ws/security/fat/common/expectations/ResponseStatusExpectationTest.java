@@ -152,6 +152,18 @@ public class ResponseStatusExpectationTest extends CommonSpecificExpectationTest
     }
 
     @Test
+    public void test_validate_nullAction() {
+        try {
+            Expectation exp = new ResponseStatusExpectation(null, Constants.STRING_CONTAINS, "200", FAILURE_MESSAGE);
+            Object content = 200;
+
+            exp.validate(content);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_validate_checkTypeContains_fails() {
         try {
             Expectation exp = new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
@@ -266,6 +278,11 @@ public class ResponseStatusExpectationTest extends CommonSpecificExpectationTest
     @Override
     protected Expectation createBasicExpectation() {
         return new ResponseStatusExpectation(TEST_ACTION, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
+    }
+
+    @Override
+    protected Expectation createBasicExpectationWithNoAction() {
+        return new ResponseStatusExpectation(null, Constants.STRING_CONTAINS, SEARCH_FOR_VAL, FAILURE_MESSAGE);
     }
 
     protected void setValidateTestExpectations(Object responseObject, final Object content) {

@@ -45,6 +45,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
     private final String checkType = "check type";
     private final String searchFor = "search for me";
     private final String failureMsg = "This is a failure message.";
+    private final String exceptionMsg = "Some exception happened";
 
     TestValidationUtils utils = new TestValidationUtils();
 
@@ -377,6 +378,148 @@ public class TestValidationUtilsTest extends CommonTestClass {
 
     /**
      * Tests:
+     * - Provided action is null
+     * - Provided Expectation object is null
+     * Expects:
+     * - Message saying the expectations are null should be logged; nothing else should happen
+     */
+    @Test
+    public void test_validateResult_noTestAction_nullExpectations() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = null;
+
+            utils.validateResult(contentToValidate, expectations);
+
+            assertRegexInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided action is null
+     * - Provided Expectation object is empty
+     * Expects:
+     * - Nothing should happen
+     */
+    @Test
+    public void test_validateResult_noTestAction_emptyExpectations() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = new Expectations();
+
+            utils.validateResult(contentToValidate, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+            assertRegexNotInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided action is null
+     * - One expectation provided
+     * - Expectation validation fails
+     * Expects:
+     * - Validation error should be logged and exception should be re-thrown
+     */
+    @Test
+    public void test_validateResult_noTestAction_oneExpectation_validationFails() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = new Expectations();
+            expectations.addSuccessStatusCodesForActions(new String[] { null });
+
+            try {
+                utils.validateResult(contentToValidate, expectations);
+                fail("Should have thrown an exception because of a validation failing for an expectation, but did not. Expectations were: " + expectations.getExpectations());
+            } catch (Throwable e) {
+                verifyException(e, String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "200", "-1"));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided action is null
+     * - One expectation provided
+     * - Expectation validation fails
+     * Expects:
+     * - Validation error should be logged and exception should be re-thrown
+     */
+    @Test
+    public void test_validateResult_noTestAction_oneExpectation_validationSucceeds() {
+        try {
+            Object contentToValidate = "This is some response content";
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createResponseExpectation(null, "response content", "Should have found \"response content\" in full response."));
+
+            utils.validateResult(contentToValidate, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided action is null
+     * - One expectation provided with a non-null action
+     * Expects:
+     * - Validation should be skipped since the expectation has an associated action and the action being checked against is null
+     */
+    @Test
+    public void test_validateResult_noTestAction_oneExpectation_nonNullExpectationAction() {
+        try {
+            Object contentToValidate = null;
+            Expectations expectations = new Expectations();
+            expectations.addSuccessStatusCodesForActions(new String[] { action });
+
+            utils.validateResult(contentToValidate, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided action is null
+     * - Multiple expectations provided for various test actions
+     * - Expectations for the action being validated all pass, other expectations for other actions would fail
+     * Expects:
+     * - Validation should succeed and no errors should be logged
+     */
+    @Test
+    public void test_validateResult_noTestAction_multipleExpectationsForDifferentActions_allPassValidationForGivenStep() {
+        try {
+            Object contentToValidate = "This is some response content";
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createResponseExpectation(null, "This", "Should have found \"This\" in full response."));
+            expectations.addExpectation(Expectation.createResponseExpectation(null, "some", "Should have found \"some\" in full response."));
+            expectations.addExpectation(Expectation.createResponseExpectation("some other action", "DO NOT FIND", failureMsg));
+            expectations.addExpectation(Expectation.createResponseExpectation(action, "response content", "Did not find expected string in full response."));
+            expectations.addExpectation(new ResponseStatusExpectation("yet another action", 403));
+            expectations.addExpectation(Expectation.createResponseExpectation(null, "content", "Should have found \"content\" in full response."));
+
+            utils.validateResult(contentToValidate, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
      * - Provided Expectation object is null
      * Expects:
      * - Message saying the expectations are null should be logged; nothing else should happen
@@ -456,11 +599,9 @@ public class TestValidationUtilsTest extends CommonTestClass {
             try {
                 utils.validateResult(contentToValidate, action, expectations);
                 fail("Should have thrown an exception because of a validation failing for an expectation, but did not.");
-            } catch (Exception e) {
-                verifyException(e, "Failed to validate response status.+" + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "200", "-1"));
+            } catch (Throwable e) {
+                verifyException(e, String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "200", "-1"));
             }
-
-            assertStringInTrace(outputMgr, "Error validating response");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -511,10 +652,155 @@ public class TestValidationUtilsTest extends CommonTestClass {
             try {
                 utils.validateResult(contentToValidate, action, expectations);
                 fail("Should have thrown an exception because of a validation failing for an expectation, but did not.");
-            } catch (Exception e) {
-                verifyException(e, "Failed to validate response text.+" + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "DO NOT FIND", contentToValidate.toString()));
+            } catch (Throwable e) {
+                verifyException(e, String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "DO NOT FIND", contentToValidate.toString()));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** validateResult **************************************/
+
+    /**
+     * Tests:
+     * - Provided Expectation object is null
+     * Expects:
+     * - Message saying the expectations are null should be logged; nothing else should happen
+     */
+    @Test
+    public void test_validateException_nullExpectations() {
+        try {
+            Exception exceptionToValidate = new Exception(exceptionMsg);
+            Expectations expectations = null;
+
+            utils.validateException(exceptionToValidate, action, expectations);
+
+            assertRegexInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Provided Expectation object is empty
+     * Expects:
+     * - Nothing should happen
+     */
+    @Test
+    public void test_validateException_emptyExpectations() {
+        try {
+            Exception exceptionToValidate = new Exception(exceptionMsg);
+            Expectations expectations = new Expectations();
+
+            utils.validateResult(exceptionToValidate, action, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+            assertRegexNotInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - One expectation provided
+     * - Action for expectation does not match the action provided to the validateResult method
+     * Expects:
+     * - Nothing should happen
+     */
+    @Test
+    public void test_validateException_oneExpectation_doesNotMatchAction() {
+        try {
+            Exception exceptionToValidate = new Exception(exceptionMsg);
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createExceptionExpectation("expectation action does not match", searchFor, failureMsg));
+
+            utils.validateResult(exceptionToValidate, action, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+            assertRegexNotInTrace(outputMgr, "Expectations.+null");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - One expectation provided
+     * - Expectation validation fails
+     * Expects:
+     * - Validation error should be logged and exception should be re-thrown
+     */
+    @Test
+    public void test_validateException_oneExpectation_expectationFailsValidation() {
+        try {
+            Exception exceptionToValidate = new Exception(exceptionMsg);
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createExceptionExpectation(action, searchFor, failureMsg));
+
+            try {
+                utils.validateException(exceptionToValidate, action, expectations);
+                fail("Should have thrown an exception because of a validation failing for an expectation, but did not.");
+            } catch (Throwable e) {
+                verifyException(e, String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, searchFor, exceptionMsg));
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Multiple expectations provided for various test actions
+     * - Expectations for the action being validated all pass, other expectations for other actions would fail
+     * Expects:
+     * - Validation should succeed and no errors should be logged
+     */
+    @Test
+    public void test_validateException_multipleExpectationsForDifferentActions_allPassValidationForGivenStep() {
+        try {
+            Exception exceptionToValidate = new Exception(exceptionMsg);
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createExceptionExpectation(action, "Some", "Should have found \"Some\" in the exception."));
+            expectations.addExpectation(Expectation.createExceptionExpectation("some other action", "DO NOT FIND", failureMsg));
+            expectations.addExpectation(Expectation.createExceptionExpectation(action, "happened", "Did not find expected string in full response."));
+            expectations.addExpectation(new ResponseStatusExpectation("yet another action", 403));
+
+            utils.validateResult(exceptionToValidate, action, expectations);
+
+            assertStringNotInTrace(outputMgr, "Error");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Tests:
+     * - Multiple expectations provided for various test actions
+     * - One expectation will fail for the specified test action
+     * Expects:
+     * - Validation should stop at the first expectation that fails validation and an error should be logged
+     */
+    @Test
+    public void test_validateException_multipleExpectations_oneFails() {
+        try {
+            Exception exceptionToValidate = new Exception(exceptionMsg);
+            Expectations expectations = new Expectations();
+            expectations.addExpectation(Expectation.createExceptionExpectation(action, "Some", "Should have found \"Some\" in the exception."));
+            expectations.addExpectation(Expectation.createExceptionExpectation(action, "DO NOT FIND", failureMsg));
+            expectations.addExpectation(Expectation.createExceptionExpectation("another action", "happened", "Did not find expected string in full response."));
+            expectations.addExpectation(new ResponseStatusExpectation("yet another action", 403));
+
+            try {
+                utils.validateResult(exceptionToValidate, action, expectations);
+                fail("Should have thrown an exception because of a validation failing for an expectation, but did not.");
+            } catch (Throwable e) {
+                verifyException(e, Pattern.quote(failureMsg) + String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, "DO NOT FIND", exceptionMsg));
             }
 
+            // Shouldn't get far enough to fail for the response status check (that would have failed had we gotten there)
             assertStringNotInTrace(outputMgr, "Failed to validate response status");
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -558,7 +844,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             try {
                 utils.validateStringContent(expectation, contentToValidate);
                 fail("Should have thrown an exception but did not.");
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 verifyException(e, String.format(UnitTestUtils.ERR_COMPARISON_TYPE_UNKNOWN, "null"));
             }
         } catch (Throwable t) {
@@ -580,7 +866,7 @@ public class TestValidationUtilsTest extends CommonTestClass {
             try {
                 utils.validateStringContent(expectation, contentToValidate);
                 fail("Should have thrown an exception but did not.");
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 verifyException(e, String.format(UnitTestUtils.ERR_COMPARISON_TYPE_UNKNOWN, Pattern.quote(checkType)));
             }
         } catch (Throwable t) {

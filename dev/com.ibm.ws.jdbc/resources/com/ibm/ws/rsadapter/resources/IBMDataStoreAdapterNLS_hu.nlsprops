@@ -227,13 +227,13 @@ FEATURE_NOT_IMPLEMENTED.useraction=Ker\u00fclje a szolg\u00e1ltat\u00e1s haszn\u
 # Using 4000-4999 for Liberty-only messages
 # 
 
-DSRA4000.no.suitable.driver=DSRA4000E: Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes JDBC illeszt\u0151program megval\u00f3s\u00edt\u00e1si oszt\u00e1ly a(z) {0} jdbcDriver eset\u00e9ben a(z) {1} f\u00fcggv\u00e9nyt\u00e1r haszn\u00e1lat\u00e1val.
-DSRA4000.no.suitable.driver.explanation=Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes JDBC illeszt\u0151program megval\u00f3s\u00edt\u00e1si oszt\u00e1ly.
-DSRA4000.no.suitable.driver.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t, hogy a f\u00fcggv\u00e9nyt\u00e1r tartalmazzon \u00fatvonalat egy felismert JDBC illeszt\u0151programhoz, vagy a megval\u00f3s\u00edt\u00e1si oszt\u00e1ly meg legyen adva az adatok k\u00f6zt.
+DSRA4000.no.suitable.driver=DSRA4000E: Nem tal\u00e1lhat\u00f3k {0} megval\u00f3s\u00edt\u00e1sok a k\u00f6vetkez\u0151h\u00f6z: {1}, a(z) {2} f\u00fcggv\u00e9nyt\u00e1rral. A JDBC illeszt\u0151program JAR f\u00e1jlok neve vagy helye helytelen vagy el\u00e9rhetetlen lehet. A program itt keresett: {3}. A program a k\u00f6vetkez\u0151 csomagok alatt keresett: {4}.
+DSRA4000.no.suitable.driver.explanation=Annak, hogy egy adatforr\u00e1s vagy illeszt\u0151program megval\u00f3s\u00edt\u00e1s nem tal\u00e1lhat\u00f3, t\u00f6bb oka lehet. A JDBC illeszt\u0151program JAR f\u00e1jlok neve vagy helye helytelen vagy el\u00e9rhetetlen lehet. Lehets\u00e9ges, hogy a JDBC illeszt\u0151program nem azonos\u00edtja megfelel\u0151en a java.sql.Driver megval\u00f3s\u00edt\u00e1s\u00e1t, vagy nem rendelkezik java.sql.Driver megval\u00f3s\u00edt\u00e1ssal. Vagy a kiszolg\u00e1l\u00f3 adatforr\u00e1s megval\u00f3s\u00edt\u00e1si oszt\u00e1lyok azonos\u00edt\u00e1s\u00e1ra szolg\u00e1l\u00f3 logik\u00e1ja nem \u00e9rv\u00e9nyes az \u00f6sszes illeszt\u0151programra.
+DSRA4000.no.suitable.driver.useraction=Ellen\u0151rizze a JDBC illeszt\u0151program \u00e9s f\u00fcggv\u00e9nyt\u00e1r konfigur\u00e1ci\u00f3j\u00e1nak helyess\u00e9g\u00e9t. Ha a megval\u00f3s\u00edt\u00e1si oszt\u00e1lyok tov\u00e1bbra sem tal\u00e1lhat\u00f3k, akkor k\u00e9zzel adja meg azokat a konfigur\u00e1ci\u00f3ban.
 
-DSRA4001.no.suitable.driver.nested=DSRA4001E: Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes JDBC illeszt\u0151program megval\u00f3s\u00edt\u00e1si oszt\u00e1ly a(z) {0} jdbcDriver \u00e1ltal haszn\u00e1lt egym\u00e1sba \u00e1gyazott f\u00fcggv\u00e9nyt\u00e1rban.
-DSRA4001.no.suitable.driver.nested.explanation=Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes JDBC illeszt\u0151program megval\u00f3s\u00edt\u00e1si oszt\u00e1ly.
-DSRA4001.no.suitable.driver.nested.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t, hogy az egym\u00e1sba \u00e1gyazott f\u00fcggv\u00e9nyt\u00e1r tartalmazzon \u00fatvonalat egy felismert JDBC illeszt\u0151programhoz, vagy a megval\u00f3s\u00edt\u00e1si oszt\u00e1ly meg legyen adva az adatok k\u00f6zt.
+DSRA4001.no.suitable.driver.nested=DSRA4001E: Nem tal\u00e1lhat\u00f3k {0} megval\u00f3s\u00edt\u00e1sok a k\u00f6vetkez\u0151h\u00f6z: {1}. A program itt keresett: {2}. A JDBC illeszt\u0151program JAR f\u00e1jlok neve vagy helye helytelen vagy el\u00e9rhetetlen lehet. A program a k\u00f6vetkez\u0151 csomagok alatt keresett: {3}.
+DSRA4001.no.suitable.driver.nested.explanation=Annak, hogy egy adatforr\u00e1s vagy illeszt\u0151program megval\u00f3s\u00edt\u00e1s nem tal\u00e1lhat\u00f3, t\u00f6bb oka lehet. A JDBC illeszt\u0151program JAR f\u00e1jlok neve vagy helye helytelen vagy el\u00e9rhetetlen lehet. Lehets\u00e9ges, hogy a JDBC illeszt\u0151program nem azonos\u00edtja megfelel\u0151en a java.sql.Driver megval\u00f3s\u00edt\u00e1s\u00e1t, vagy nem rendelkezik java.sql.Driver megval\u00f3s\u00edt\u00e1ssal. Vagy a kiszolg\u00e1l\u00f3 adatforr\u00e1s megval\u00f3s\u00edt\u00e1si oszt\u00e1lyok azonos\u00edt\u00e1s\u00e1ra szolg\u00e1l\u00f3 logik\u00e1ja nem \u00e9rv\u00e9nyes az \u00f6sszes illeszt\u0151programra.
+DSRA4001.no.suitable.driver.nested.useraction=Ellen\u0151rizze a JDBC illeszt\u0151program \u00e9s f\u00fcggv\u00e9nyt\u00e1r konfigur\u00e1ci\u00f3j\u00e1nak helyess\u00e9g\u00e9t. Ha a megval\u00f3s\u00edt\u00e1si oszt\u00e1lyok tov\u00e1bbra sem tal\u00e1lhat\u00f3k, akkor k\u00e9zzel adja meg azokat a konfigur\u00e1ci\u00f3ban.
 
 DSRA4003.driver.null=DSRA4003E: Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes jdbcDriver elem a(z) {0} dataSource eset\u00e9ben.
 DSRA4003.driver.null.explanation=Nem tal\u00e1lhat\u00f3 \u00e9rv\u00e9nyes jdbcDriver elem a megadott dataSource eset\u00e9ben.
@@ -244,6 +244,32 @@ DSRA4003.driver.null.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t \u00fag
 DSRA4004.onconnect.sql=DSRA4004E: Nem lehet v\u00e9grehajtani a(z) \"{0}\"  onConnect SQL parancsot a(z) {1} adatforr\u00e1sb\u00f3l beszerzett kapcsolaton. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel sz\u00f6veg\u00e9t.
 DSRA4004.onconnect.sql.explanation=Hiba t\u00f6rt\u00e9nt a megadott SQL parancs v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
 DSRA4004.onconnect.sql.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1ban seg\u00edts\u00e9g\u00e9re lehet a kiv\u00e9tel \u00fczenete.
+
+# {0} name of the DataSource
+DSRA4005.invalid.logintimeout=DSRA4005E: A kiszolg\u00e1l\u00f3 nem t\u00e1mogatja az URL c\u00edmben vagy a(z) {0} adatforr\u00e1s tulajdons\u00e1gaiban megadott loginTimeout tulajdons\u00e1got.
+DSRA4005.invalid.logintimeout.explanation=A loginTimeout tulajdons\u00e1g nem t\u00e1mogatott, amikor egy java.sql.Driver megval\u00f3s\u00edt\u00e1s DataSource param\u00e9terek\u00e9nt van megadva, mert a kiszolg\u00e1l\u00f3 nem tudja megh\u00edvni a getLoginTimeout met\u00f3dust a java.sql.Driver oszt\u00e1lyhoz.
+DSRA4005.invalid.logintimeout.useraction=M\u00f3dos\u00edtsa a DataSource konfigur\u00e1ci\u00f3t, hogy egy DataSource megval\u00f3s\u00edt\u00e1st haszn\u00e1ljon egy java.sql.Driver megval\u00f3s\u00edt\u00e1s helyett, vagy t\u00e1vol\u00edtsa el a loginTimeout tulajdons\u00e1got.
+
+# {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
+DSRA4006.null.connection=DSRA4006E: A(z) {0} adatforr\u00e1s nem tud csatlakozni az adatb\u00e1zishoz, mert a(z) {1} null kapcsolatot adott vissza a(z) {2} kezdet\u0171 URL c\u00edmhez. Ez azt jelzi, hogy a JDBC illeszt\u0151program megs\u00e9rti a JDBC specifik\u00e1ci\u00f3t.
+DSRA4006.null.connection.explanation=Hab\u00e1r a java.sql.Driver azt jelezte, hogy elfogadta a biztos\u00edtott URL c\u00edmet, null kapcsolatot adott vissza. Ez a hiba egy programhib\u00e1t jelez a JDBC illeszt\u0151programban.
+DSRA4006.null.connection.useraction=Jelentse a hib\u00e1t a JDBC illeszt\u0151program sz\u00e1ll\u00edt\u00f3j\u00e1nak, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JDBC illeszt\u0151program \u00e9s a DataSource konfigur\u00e1ci\u00f3 helyes.
+
+DSRA4008.tran.none.unsupported=DSRA4008E: A JDBC illeszt\u0151program nem t\u00e1mogatja a TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintet, ami a(z) {0} adatforr\u00e1shoz konfigur\u00e1lva van.
+DSRA4008.tran.none.unsupported.explanation=Az adatforr\u00e1shoz konfigur\u00e1lt TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintet a JDBC illeszt\u0151program nem t\u00e1mogatja.
+DSRA4008.tran.none.unsupported.useraction=Friss\u00edtse az adatforr\u00e1s konfigur\u00e1ci\u00f3j\u00e1t, hogy az illeszt\u0151program \u00e1ltal t\u00e1mogatott elk\u00fcl\u00f6n\u00edt\u00e9si szintet haszn\u00e1ljon, vagy haszn\u00e1ljon egy olyan illeszt\u0151programot, amely t\u00e1mogatja a TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintet. 
+
+DSRA4009.tran.none.transactional.unsupported=DSRA4009E: A(z) {0} adatforr\u00e1s nem konfigur\u00e1lhat\u00f3 TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szinttel \u00e9s transactional=true be\u00e1ll\u00edt\u00e1ssal.
+DSRA4009.tran.none.transactional.unsupported.explanation=Egy TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szinttel konfigur\u00e1lt JDBC illeszt\u0151program nem fogja t\u00e1mogatni a tranzakci\u00f3kat.
+DSRA4009.tran.none.transactional.unsupported.useraction=\u00c1ll\u00edtsa be a transactional=false tulajdons\u00e1got az adatforr\u00e1shoz.
+
+DSRA4010.tran.none.autocommit.required=DSRA4010E: A(z) {0} adatforr\u00e1shoz konfigur\u00e1lt TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szint haszn\u00e1latakor automatikus v\u00e9gleges\u00edt\u00e9s sz\u00fcks\u00e9ges.
+DSRA4010.tran.none.autocommit.required.explanation=A JDBC illeszt\u0151program TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szinttel van konfigur\u00e1lva, \u00e9s automatikus v\u00e9gleges\u00edt\u00e9s haszn\u00e1lat\u00e1t ig\u00e9nyli.
+DSRA4010.tran.none.autocommit.required.useraction=Az automatikus v\u00e9gleges\u00edt\u00e9st \u00e1ll\u00edtsa be true \u00e9rt\u00e9kre.
+
+DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: A JDBC illeszt\u0151program nem t\u00e1mogatja az \u00e1tv\u00e1lt\u00e1st TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintre a(z) {0} adatforr\u00e1s eset\u00e9n.
+DSRA4011.tran.none.iso.switch.unsupported.explanation=A JDBC specifik\u00e1ci\u00f3 nem t\u00e1mogatja az \u00e1tv\u00e1lt\u00e1st TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintre.
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Ker\u00fclje az \u00e1tv\u00e1lt\u00e1st a TRANSACTION_NONE elk\u00fcl\u00f6n\u00edt\u00e9si szintre.
 
 # ----------------------------------------------------------------------------
 # 
@@ -594,5 +620,6 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Az alkalmaz\u00e1skiszolg\u00e1l\u00
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Kapcsolja ki a Kerberos hiteles\u00edt\u00e9st, vagy haszn\u00e1ljon DB2 h\u00e1tteret DB2 Universal JDBC illeszt\u0151programmal.
 
 # 9544-9548 deleted
+
 # 9600-9603 deleted 
 # 9900 deleted
