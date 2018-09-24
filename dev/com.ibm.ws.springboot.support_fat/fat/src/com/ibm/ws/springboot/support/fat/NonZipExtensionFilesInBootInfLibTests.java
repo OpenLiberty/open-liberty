@@ -12,8 +12,8 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -134,11 +134,11 @@ public class NonZipExtensionFilesInBootInfLibTests extends AbstractSpringTests {
         JarFile appJar = new JarFile(appFile);
         byte[] buffer = new byte[4096];
         int len;
-        File newEntry = createNonZipEntry();
+        String newEntry = "BOOT-INF/lib/test.txt";
         try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempFile))) {
             for (Enumeration<JarEntry> entries = appJar.entries(); entries.hasMoreElements();) {
                 JarEntry entry = entries.nextElement();
-                if (!entry.getName().equals(newEntry.getName())) {
+                if (!entry.getName().equals(newEntry)) {
                     jos.putNextEntry(entry);
                     try (InputStream entryStream = appJar.getInputStream(entry)) {
                         while ((len = entryStream.read(buffer)) != -1) {
@@ -147,26 +147,14 @@ public class NonZipExtensionFilesInBootInfLibTests extends AbstractSpringTests {
                     }
                 }
             }
-            //Add a new entry
-            jos.putNextEntry(new ZipEntry("BOOT-INF/lib/" + newEntry.getName()));
-            try (FileInputStream fis = new FileInputStream(newEntry)) {
-                while ((len = fis.read(buffer)) > 0) {
+            //Add a non zip entry BOOT-INF/lib/test.txt
+            jos.putNextEntry(new ZipEntry(newEntry));
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(new byte[] { 't', 'e', 's', 't' })) {
+                while ((len = bis.read(buffer)) != -1) {
                     jos.write(buffer, 0, len);
                 }
             }
         }
-        newEntry.delete();
-
-    }
-
-    private File createNonZipEntry() throws IOException {
-        File newEntryFile = new File("test.txt");
-        Files.createFile(newEntryFile.toPath());
-        byte[] byteArray = new byte[] { 'a', 'b', 'c' };
-        try (FileOutputStream fos = new FileOutputStream(newEntryFile)) {
-            fos.write(byteArray);
-        }
-        return newEntryFile;
     }
 
     /**
