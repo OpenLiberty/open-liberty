@@ -1095,7 +1095,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * 
      * @return the underlying DataSource, null if a Driver is used
      */
-    public CommonDataSource getUnderlyingDataSource() throws SQLException
+    public CommonDataSource getUnderlyingDataSource()
     {
         if(Driver.class.equals(type))
             return null;
