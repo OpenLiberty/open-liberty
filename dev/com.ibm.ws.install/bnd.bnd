@@ -65,10 +65,4 @@ instrument.disabled: true
     com.ibm.ws.repository.resolver;version=latest,\
     wlp.lib.extract;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.core.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.osgi.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.util.1.5;version=latest
+    com.ibm.wsspi.org.osgi.service.component.annotations

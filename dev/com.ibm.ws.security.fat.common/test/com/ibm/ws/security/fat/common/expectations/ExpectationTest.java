@@ -178,4 +178,39 @@ public class ExpectationTest extends CommonExpectationTestClass {
         }
     }
 
+    /************************************** createExceptionExpectation **************************************/
+
+    @Test
+    public void test_createExceptionExpectation_nullArgs() {
+        try {
+            String testAction = null;
+            String searchForValue = null;
+            String failureMsg = null;
+
+            Expectation exp = Expectation.createExceptionExpectation(testAction, searchForValue, failureMsg);
+
+            verifyExpectationValues(exp, testAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, null, searchForValue, failureMsg);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_createExceptionExpectation() {
+        try {
+
+            String testAction = "testAction";
+            String searchForValue = "I'm looking for this value.";
+            String failureMsg = "Some failure message.";
+
+            Expectation exp = Expectation.createExceptionExpectation(testAction, searchForValue, failureMsg);
+
+            verifyExpectationValues(exp, testAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, null, searchForValue, failureMsg);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
 }

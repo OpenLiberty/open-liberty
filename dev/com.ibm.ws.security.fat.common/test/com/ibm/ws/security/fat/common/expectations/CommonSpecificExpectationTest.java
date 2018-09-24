@@ -36,6 +36,11 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
      */
     protected abstract Expectation createBasicExpectation();
 
+    /**
+     * Sublcasses must override this method to return the appropriate object type for the class under test.
+     */
+    protected abstract Expectation createBasicExpectationWithNoAction();
+
     @Test
     public void test_validate_nullContentObject() {
         try {
@@ -119,6 +124,38 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
     /************************************** isExpectationForAction **************************************/
 
     @Test
+    public void test_isExpectationForAction_expectationActionNull_testActionNull() {
+        try {
+            Expectation exp = createBasicExpectationWithNoAction();
+            assertTrue("Null expectation test action + null test action should be considered to match this expectation, but it did not. Expectation was " + exp, exp.isExpectationForAction(null));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_isExpectationForAction_expectationActionNull_testActionEmpty() {
+        try {
+            Expectation exp = createBasicExpectationWithNoAction();
+            String testAction = "";
+            assertTrue("Null expectation test action + test action (" + testAction + ") should be considered to match this expectation, but it did not. Expectation was " + exp, exp.isExpectationForAction(testAction));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_isExpectationForAction_expectationActionNull_testActionNonEmpty() {
+        try {
+            Expectation exp = createBasicExpectationWithNoAction();
+            String testAction = ACTION1;
+            assertTrue("Null expectation test action + test action (" + testAction + ") should be considered to match this expectation, but it did not. Expectation was " + exp, exp.isExpectationForAction(testAction));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
     public void test_isExpectationForAction_testActionNull() {
         try {
             Expectation exp = createBasicExpectation();
@@ -192,7 +229,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
         try {
             exp.validate(content);
             fail("Should have thrown an error because the response object type was not an expected type, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, String.format(UnitTestUtils.ERR_UNKNOWN_RESPONSE_TYPE, Pattern.quote(content.getClass().getName())));
         }
     }
@@ -205,7 +242,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
         try {
             exp.validate(content);
             fail("Should have thrown an error because the content type was not an expected type, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, UnitTestUtils.CONTENT_TO_VALIDATE_NULL);
         }
     }
@@ -214,7 +251,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
         try {
             exp.validate(content);
             fail("Should have thrown an exception because of an unknown expectation type but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, String.format(UnitTestUtils.ERR_COMPARISON_TYPE_UNKNOWN, Pattern.quote(exp.getCheckType())));
         }
     }
@@ -223,7 +260,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
         try {
             exp.validate(content);
             fail("Should have thrown an assertion error because the expected string was not found, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, String.format(UnitTestUtils.ERR_STRING_NOT_FOUND, exp.getValidationValue(), actualContentValue));
         }
     }
@@ -232,7 +269,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
         try {
             exp.validate(content);
             fail("Should have thrown an assertion error because the string was found when it shouldn't have been, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, String.format(UnitTestUtils.ERR_STRING_FOUND, exp.getValidationValue(), actualContentValue));
         }
     }
@@ -241,7 +278,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
         try {
             exp.validate(content);
             fail("Should have thrown an assertion error because the expected regex was not found, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, String.format(UnitTestUtils.ERR_REGEX_NOT_FOUND, Pattern.quote(exp.getValidationValue()), actualContentValue));
         }
     }
@@ -250,7 +287,7 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
         try {
             exp.validate(content);
             fail("Should have thrown an assertion error because the regex was found, but did not.");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             verifyException(e, String.format(UnitTestUtils.ERR_REGEX_FOUND, Pattern.quote(exp.getValidationValue()), actualContentValue));
         }
     }

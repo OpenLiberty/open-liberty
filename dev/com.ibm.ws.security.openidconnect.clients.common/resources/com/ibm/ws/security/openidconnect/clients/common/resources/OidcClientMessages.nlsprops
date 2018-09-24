@@ -180,5 +180,12 @@ JWK_RETRIEVE_FAILED=CWWKS1747E: A JSON Web Key (JWK) was not returned from the U
 JWK_RETRIEVE_FAILED.explanation=A JSON Web Key cannot be returned from the specified URL. The URL might not be valid, the URL might not be configured to return a JWK, the response from the URL might be empty, or an unknown error occurred.
 JWK_RETRIEVE_FAILED.useraction=Verify that the URL is formatted correctly and specifies a location that is capable of returning JSON Web Keys. Check the status code and content of the response for more information.
 
+USERINFO_RETREIVE_FAILED=CWWKS1748E: The UserInfo URL [{0}] could not be contacted.  The response status was [{1}] and the content returned was [{2}].
+USERINFO_RETREIVE_FAILED.explanation=User Info data could not be obtained from the specified URL. The URL might not be valid, the supplied access token might not be valid, the response from the URL might be empty, or an unknown error occurred.
+USERINFO_RETREIVE_FAILED.useraction=Verify that the URL is formatted correctly and specifies a location that is capable of returning User Info data. Check the status code and content of the response for more information.
+
+USERINFO_INVALID=CWWKS1749E: The User Info data [{0}] is invalid because the sub claim does not match the sub claim of the ID Token [{1}].
+USERINFO_INVALID.explanation=The sub claim of user info data is required to match the sub claim of the ID token, but it does not. 
+USERINFO_INVALID.useraction=Ensure that the OpenID Connect provider generates valid User Info data.
 
 # STOP HERE, OIDC COMMON HAS RESERVED 1751 - 1799 

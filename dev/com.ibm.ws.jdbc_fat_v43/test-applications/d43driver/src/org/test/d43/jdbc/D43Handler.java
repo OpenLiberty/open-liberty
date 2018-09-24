@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.ShardingKey;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -32,6 +33,8 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
     private final AtomicInteger beginRequests = new AtomicInteger();
     private final AtomicInteger endRequests = new AtomicInteger();
 
+    private final D43CommonDataSource commonDataSource;
+
     private final Object instance;
 
     private boolean isAborted;
@@ -39,11 +42,23 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
 
     private final D43Handler parent;
 
+    private ShardingKey shardingKey;
+    private ShardingKey superShardingKey;
+
     private final static TransactionManager tm = TransactionManagerFactory.getTransactionManager();
 
-    D43Handler(Object instance, D43Handler parent) {
+    D43Handler(Object instance, D43Handler parent, D43CommonDataSource commonDataSource) {
+        this.commonDataSource = commonDataSource;
         this.instance = instance;
         this.parent = parent;
+    }
+
+    D43Handler(Object instance, D43Handler parent, D43CommonDataSource commonDataSource, ShardingKey shardingKey, ShardingKey superShardingKey) {
+        this.commonDataSource = commonDataSource;
+        this.instance = instance;
+        this.parent = parent;
+        this.shardingKey = shardingKey;
+        this.superShardingKey = superShardingKey;
     }
 
     // Accessible via wrapper pattern for obtaining the count of Connection.beginRequest/endRequest
@@ -135,6 +150,15 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
                 throw new AbortedException(method.getDeclaringClass());
             return null;
         }
+        // Abuse getClientInfo to expose the sharding key value to the application so that tests can compare it
+        if ("getClientInfo".equals(methodName) && args != null && args.length == 1 && "SHARDING_KEY".equals(args[0]))
+            return shardingKey != null ? shardingKey.toString() //
+                            : commonDataSource != null && commonDataSource.defaultShardingKey != null ? commonDataSource.defaultShardingKey.toString() //
+                                            : null;
+        if ("getClientInfo".equals(methodName) && args != null && args.length == 1 && "SUPER_SHARDING_KEY".equals(args[0]))
+            return superShardingKey != null ? superShardingKey.toString() //
+                            : commonDataSource != null && commonDataSource.defaultSuperShardingKey != null ? commonDataSource.defaultSuperShardingKey.toString() //
+                                            : null;
         if ("getJDBCMajorVersion".equals(methodName))
             return 4;
         if ("getJDBCMinorVersion".equals(methodName))
@@ -145,12 +169,30 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
             && connectionHandler != null && connectionHandler.isAborted) {
             return null;
         }
+        if ("setShardingKey".equals(methodName)) {
+            shardingKey = (ShardingKey) args[0];
+            if (args.length == 2)
+                superShardingKey = (ShardingKey) args[1];
+            return null;
+        }
+        if ("setShardingKeyIfValid".equals(methodName)) {
+            boolean valid = (args[0] instanceof D43ShardingKey || args[0] == null)
+                            && (args.length == 2 || args[1] instanceof D43ShardingKey || args[1] == null);
+            if (valid) {
+                shardingKey = (ShardingKey) args[0];
+                if (args.length == 2)
+                    superShardingKey = (ShardingKey) args[1];
+            }
+            return valid;
+        }
         try {
             Object result = method.invoke(instance, args);
             if (returnType.isInterface() && (returnType.getPackage().getName().startsWith("java.sql")
                                              || returnType.getPackage().getName().startsWith("javax.sql")
-                                             || returnType.equals(XAResource.class)))
-                return Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { returnType }, new D43Handler(result, this));
+                                             || returnType.equals(XAResource.class))) {
+                D43Handler handler = new D43Handler(result, this, commonDataSource, shardingKey, superShardingKey);
+                return Proxy.newProxyInstance(D43Handler.class.getClassLoader(), new Class[] { returnType }, handler);
+            }
             return result;
         } catch (InvocationTargetException x) {
             throw x.getCause();

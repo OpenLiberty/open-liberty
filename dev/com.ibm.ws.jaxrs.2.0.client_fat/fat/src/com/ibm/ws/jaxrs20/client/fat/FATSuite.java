@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -39,6 +40,8 @@ import com.ibm.ws.jaxrs20.client.fat.test.ThirdpartyJerseyClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.TimeoutClientTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -67,4 +70,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 ClientContextInjectionTest.class,
                 JAXRSClientSSLProxyAuthTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+}

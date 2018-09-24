@@ -47,6 +47,21 @@ public class CapturedOutputHolder extends BaseTraceService {
     private final DelegateTrWriter messageDelegate = new DelegateTrWriter();
     private final DelegateTrWriter traceDelegate = new DelegateTrWriter();
 
+    public CapturedOutputHolder() {
+        super();
+        /*
+         * CaputuredOutputHolder is created frequently for Junits.
+         * The Parent class BaseTraceSerivce creates a Timer object
+         * that will remove the earlyMessageQueue and earlyTraceQueue.
+         *
+         * Due to the frequency of Junit executions that create new
+         * CapturedOutputHolders, this can lead to a scenario with multiple
+         * Timer objects which can cause an OOM during builds.
+         */
+        earlyMessageTraceKiller_Timer.cancel();
+        earlyMessageTraceKiller_Timer = null;
+    }
+
     /**
      * This is not to be used by the SharedOutputManager! This is an override
      * of the BaseTraceService method that captures system streams.

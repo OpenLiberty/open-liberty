@@ -46,8 +46,6 @@ public class RepertoireConfigService extends GenericSSLConfigService implements 
         servicePid = (String) properties.get("service.pid");
 
         // Put SSL properties in the map.
-
-        //TODO:  think about not passing transportSecurity value
         try {
             SSLConfigManager.getInstance().addSSLPropertiesToMap(properties, true);
         } catch (Exception e) {

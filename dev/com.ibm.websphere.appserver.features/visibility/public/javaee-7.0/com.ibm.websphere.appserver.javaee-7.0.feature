@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaee-7.0
 visibility=public
+singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-ShortName: javaee-7.0

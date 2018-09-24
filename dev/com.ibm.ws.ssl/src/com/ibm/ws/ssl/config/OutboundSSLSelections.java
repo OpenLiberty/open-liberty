@@ -496,20 +496,17 @@ public class OutboundSSLSelections {
     public void removeDynamicSelectionsWithSSLConfig(String sslConfig) {
         for (String dynamicSelectionInfo : dynamicSelections.keySet()) {
             String configName = dynamicSelections.get(dynamicSelectionInfo);
-            if (configName.equals(sslConfig) || (configName + ":").equals(sslConfig))
+            if (configName != null && (configName.equals(sslConfig) || (configName + ":").equals(sslConfig)))
                 dynamicSelections.remove(dynamicSelectionInfo);
-        }
-        for (String dynamicSelectionInfo : dynamicHostSelections.keySet()) {
-            String configName = dynamicHostSelections.get(dynamicSelectionInfo);
-            if (configName.equals(sslConfig) || (configName + ":").equals(sslConfig))
+
+            configName = dynamicHostSelections.get(dynamicSelectionInfo);
+            if (configName != null && (configName.equals(sslConfig) || (configName + ":").equals(sslConfig)))
                 dynamicHostSelections.remove(dynamicSelectionInfo);
-        }
-        for (String dynamicSelectionInfo : dynamicHostPortSelections.keySet()) {
-            String configName = dynamicHostPortSelections.get(dynamicSelectionInfo);
-            if (configName.equals(sslConfig) || (configName + ":").equals(sslConfig))
+
+            configName = dynamicHostPortSelections.get(dynamicSelectionInfo);
+            if (configName != null && (configName.equals(sslConfig) || (configName + ":").equals(sslConfig)))
                 dynamicHostPortSelections.remove(dynamicSelectionInfo);
         }
-
     }
 
 }

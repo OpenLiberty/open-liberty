@@ -146,10 +146,6 @@ public class LDAPRegistryContextPoolNoConfigTest {
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());
 
-        tr = "CacheTTLAttr: null";
-        errMsgs = server.findStringsInLogsAndTrace(tr);
-        assertFalse("Should have found, " + tr, errMsgs.isEmpty());
-
         tr = "CacheResultSizeLimit: 2000";
         errMsgs = server.findStringsInLogsAndTrace(tr);
         assertFalse("Should have found, " + tr, errMsgs.isEmpty());

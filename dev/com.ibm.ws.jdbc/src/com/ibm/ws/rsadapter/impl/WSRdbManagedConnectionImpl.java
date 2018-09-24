@@ -293,11 +293,13 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     // getAutoCommit() will depend on this                      
     private boolean rrsTransactional = false; 
 
-    // defaultXXX are used for reset the value after we put MC back to the pool
+    // defaultXXX and initialXXX are used for reset the value after we put MC back to the pool
     private String defaultCatalog;
     private Map<String, Class<?>> defaultTypeMap;
     private boolean defaultReadOnly;
     private String defaultSchema, currentSchema = null;
+    private Object initialShardingKey, currentShardingKey; 
+    private Object initialSuperShardingKey, currentSuperShardingKey;
     private int defaultNetworkTimeout;
     public int currentNetworkTimeout = 0;
 
@@ -307,7 +309,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     /** Indicates whether transaction isolation has been changed. */
     private boolean isolationChanged;
 
-    /** Indicates whether catalog, typeMap, readOnly, schema, or networkTimeout has been changed. */
+    /** Indicates whether catalog, typeMap, readOnly, schema, sharding key, super sharding key, or networkTimeout has been changed. */
     private boolean connectionPropertyChanged;
 
     /** current cursor holdability */
@@ -489,7 +491,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         if (!cri.isCRIChangable())
             cri = WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri);
-        cri.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);
+        cri.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema,
+                             defaultNetworkTimeout);
 
         // Check to make sure a datasource configured with 'NONE (0)' is compatible with the driver being used. 
         if(config.isolationLevel == Connection.TRANSACTION_NONE) {
@@ -642,7 +645,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                 cri.ivPassword,
                                 isolationChanged ? currentTransactionIsolation : cri.ivIsoLevel,
                                 connectionPropertyChanged ? getCatalog() : cri.ivCatalog,
-                                connectionPropertyChanged && mcf.supportsIsReadOnly ? Boolean.valueOf(isReadOnly()) : cri.ivReadOnly, 
+                                connectionPropertyChanged && mcf.supportsIsReadOnly ? Boolean.valueOf(isReadOnly()) : cri.ivReadOnly,
+                                connectionPropertyChanged ? currentShardingKey : cri.ivShardingKey,
+                                connectionPropertyChanged ? currentSuperShardingKey : cri.ivSuperShardingKey,
                                 connectionPropertyChanged && mcf.supportsGetTypeMap ? getTypeMap() : cri.ivTypeMap,
                                 holdabilityChanged ? getHoldability() : cri.ivHoldability,
                                 connectionPropertyChanged && mcf.supportsGetSchema ? getSchemaSafely() : cri.ivSchema,
@@ -651,7 +656,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                 cri.supportIsolvlSwitching);
 
                 _criHold.setDefaultValues(cri.defaultCatalog, cri.defaultHoldability, 
-                                          cri.defaultReadOnly, cri.defaultTypeMap, cri.defaultSchema, cri.defaultNetworkTimeout); 
+                                          cri.defaultReadOnly, cri.defaultTypeMap, cri.defaultSchema,
+                                          cri.defaultNetworkTimeout); 
 
                 // now set the cri as changable, otherwise, setters to follow will fail
                 _criHold.markAsChangable();
@@ -1014,6 +1020,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             defaultCatalog = sqlConn.getCatalog();
             defaultReadOnly = mcf.supportsIsReadOnly ? sqlConn.isReadOnly() : false;
             defaultTypeMap = getTypeMapSafely();
+            currentShardingKey = initialShardingKey = cri.ivShardingKey;
+            currentSuperShardingKey = initialSuperShardingKey = cri.ivSuperShardingKey;
             currentSchema = defaultSchema = getSchemaSafely();
             currentNetworkTimeout = defaultNetworkTimeout = getNetworkTimeoutSafely();
             currentHoldability = defaultHoldability; 
@@ -1064,7 +1072,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         info.append("The gssCredential is: ").append(mc_gssCredential == null ? null : mc_gssCredential.toString());
         info.append("The gssName is: ").append(mc_gssName == null ? null : mc_gssName.toString());
 
-        info.append("Catalog, IsReadOnly, TypeMap, Schema, or NetworkTimeout has changed? :", 
+        info.append("Catalog, IsReadOnly, TypeMap, Schema, ShardingKey, SuperShardingKey, or NetworkTimeout has changed? :", 
                     connectionPropertyChanged ? Boolean.TRUE : Boolean.FALSE); 
 
         info.append("Default Holdability:",
@@ -1946,7 +1954,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         if (!newCRI.isCRIChangable())
             newCRI = WSConnectionRequestInfoImpl.createChangableCRIFromNon(newCRI);
-        newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);
+        newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema,
+                                defaultNetworkTimeout);
 
         cri = newCRI;
 
@@ -1988,7 +1997,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // The ManagedConnection should use the new CRI value in place of its current CRI.
         if (!newCRI.isCRIChangable())
             newCRI = WSConnectionRequestInfoImpl.createChangableCRIFromNon(newCRI);
-        newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema, defaultNetworkTimeout);
+        newCRI.setDefaultValues(defaultCatalog, defaultHoldability, defaultReadOnly, defaultTypeMap, defaultSchema,
+                                defaultNetworkTimeout);
         cri = newCRI;
 
         //  -- don't intialize the properties, deplay to synchronizePropertiesWithCRI().
@@ -2089,6 +2099,11 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 helper.setReadOnly(this, cri.ivReadOnly.booleanValue(), false); 
             }
 
+            if (!AdapterUtil.match(cri.ivShardingKey, currentShardingKey)
+             || !AdapterUtil.match(cri.ivSuperShardingKey, currentSuperShardingKey)) {
+                setShardingKeys(cri.ivShardingKey, cri.ivSuperShardingKey);
+            }
+
             if (cri.ivTypeMap != null && defaultTypeMap != cri.ivTypeMap && mcf.supportsGetTypeMap) {
                 setTypeMap(cri.ivTypeMap);
             }
@@ -2130,6 +2145,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                                    "/" + AdapterUtil.getIsolationLevelString(currentTransactionIsolation),
                                    "Catalog:       " + defaultCatalog + "/" + (cri.ivCatalog == null ? defaultCatalog : cri.ivCatalog),
                                    "Schema:        " + defaultSchema + "/" + (cri.ivSchema == null ? defaultSchema : cri.ivSchema),
+                                   "ShardingKey:   " + initialShardingKey + "/" + cri.ivShardingKey,
+                                   "SuperShardingK:" + initialSuperShardingKey + "/" + cri.ivSuperShardingKey,
                                    "NetworkTimeout:" + defaultNetworkTimeout + "/" + (cri.ivNetworkTimeout == 0 ? defaultNetworkTimeout : cri.ivNetworkTimeout),
                                    "IsReadOnly:    " + defaultReadOnly + "/" + (cri.ivReadOnly == null ? defaultReadOnly : cri.ivReadOnly), 
                                    "TypeMap:       " + defaultTypeMap + "/" + (cri.ivTypeMap == null ? defaultTypeMap : cri.ivTypeMap),
@@ -2570,6 +2587,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         defaultCatalog = null; 
         defaultTypeMap = null; 
         defaultSchema = null;
+        initialShardingKey = null;
+        initialSuperShardingKey = null;
 
         handlesInUse = null;
 
@@ -2923,7 +2942,28 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     }
                 }
             }
-            
+
+            if (!AdapterUtil.match(currentShardingKey, initialShardingKey)
+             || !AdapterUtil.match(currentSuperShardingKey, initialSuperShardingKey)) {
+                try {
+                    setShardingKeys(initialShardingKey, initialSuperShardingKey);
+
+                    // Update the connection request information after switching back to the
+                    // default sharding keys.
+                    if (connectionSharing == ConnectionSharing.MatchCurrentState)
+                    {
+                        if (!cri.isCRIChangable()) // create a changable CRI if existing one is not
+                            setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
+
+                        cri.setShardingKey(initialShardingKey);
+                        cri.setSuperShardingKey(initialSuperShardingKey);
+                    }
+                } catch (SQLException sqle) {
+                    FFDCFilter.processException(sqle, getClass().getName(), "2959", this);
+                    throw new DataStoreAdapterException("DSA_ERROR", sqle, getClass());
+                }
+            }
+
             if(mcf.supportsGetNetworkTimeout){
                 try{
                     ExecutorService libertyThreadPool = mcf.connectorSvc.getLibertyThreadPool();
@@ -2987,7 +3027,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     currentHoldability = mcf.getHelper().getHoldability(sqlConn);
 
                     // Update the connection request information after switching back to the
-                    // default catalog.
+                    // default holdability.
                     if (connectionSharing == ConnectionSharing.MatchCurrentState)
                     {
                         if (!cri.isCRIChangable()) // create a changable CRI if existing one is not
@@ -3997,6 +4037,25 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             Tr.debug(this, tc, "Set readOnly to " + isReadOnly); 
         sqlConn.setReadOnly(isReadOnly);
         connectionPropertyChanged = true; 
+    }
+
+    /**
+     * Updates the value of the sharding keys.
+     * 
+     * @param shardingKey the new sharding key.
+     * @param superShardingKey the new super sharding key.
+     */
+    public final void setShardingKeys(Object shardingKey, Object superShardingKey) throws SQLException {
+        if (mcf.beforeJDBCVersion(JDBCRuntimeVersion.VERSION_4_3))
+            throw new SQLFeatureNotSupportedException();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Set sharding key/super sharding key to " + shardingKey + "/" + superShardingKey); 
+
+        mcf.jdbcRuntime.doSetShardingKeys(sqlConn, shardingKey, superShardingKey);
+        currentShardingKey = shardingKey;
+        currentSuperShardingKey = superShardingKey;
+        connectionPropertyChanged = true;
     }
 
     /**

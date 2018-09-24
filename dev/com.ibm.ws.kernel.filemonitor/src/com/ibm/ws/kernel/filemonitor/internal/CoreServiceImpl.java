@@ -323,6 +323,38 @@ public abstract class CoreServiceImpl implements CoreService, FileNotification {
         Set<File> absoluteDeleted = PathUtils.getFixedPathFiles(deleted);
         Set<File> absoluteModified = PathUtils.getFixedPathFiles(modified);
         for (MonitorHolder mh : fileMonitors.values())
-            mh.externalScan(absoluteCreated, absoluteDeleted, absoluteModified);
+            mh.externalScan(absoluteCreated, absoluteDeleted, absoluteModified, true);
+    }
+
+    /**
+     * Processing the pending configuration update by checking the filemonitors for the identification
+     * name of com.ibm.ws.kernel.monitor.config and calling the
+     * triggeredScan on that <code>MonitorHolder</code>
+     *
+     */
+    @Override
+    public void processConfigurationChanges() {
+        for (ServiceReference<FileMonitor> mh : fileMonitors.keySet()) {
+            String monitorId = (String) mh.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
+            if (monitorId != null && monitorId.equals("com.ibm.ws.kernel.monitor.config")) {
+                fileMonitors.get(mh).processFileRefresh();
+            }
+        }
+    }
+
+    /**
+     * Processing the pending application update by checking the filemonitors for the identification
+     * name of com.ibm.ws.kernel.monitor.artifact and calling the
+     * triggeredScan on that <code>MonitorHolder</code>
+     *
+     */
+    @Override
+    public void processApplicationChanges() {
+        for (ServiceReference<FileMonitor> mh : fileMonitors.keySet()) {
+            String monitorId = (String) mh.getProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME);
+            if (monitorId != null && monitorId.equals("com.ibm.ws.kernel.monitor.artifact")) {
+                fileMonitors.get(mh).processFileRefresh();
+            }
+        }
     }
 }

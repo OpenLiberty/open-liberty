@@ -913,7 +913,7 @@ public class DatabaseHelper {
      * @param String userName to get the pooled connection
      * @param String password to get the pooled connection
      * @param is2Phase indicates what type of Connection to retrieve (one-phase or two-phase).
-     * @param WSConnectionRequestInfoImpl cri
+     * @param WSConnectionRequestInfoImpl connection request information, possibly including sharding keys
      * @param useKerberos a boolean that specifies if kerberos should be used when getting a connection to the database.
      * @param gssCredential the kerberose Credential to be used if useKerberos is true.
      * 
@@ -922,7 +922,7 @@ public class DatabaseHelper {
      *             not match the DataSource type.
      */
     public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
-                                                 WSConnectionRequestInfoImpl cri, boolean useKerberos, Object gssCredential) throws ResourceException {
+                                                 final WSConnectionRequestInfoImpl cri, boolean useKerberos, Object gssCredential) throws ResourceException {
         if (tc.isEntryEnabled())
             Tr.entry(this, tc, "getPooledConnection",
                      AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase", cri, useKerberos, gssCredential);
@@ -934,28 +934,29 @@ public class DatabaseHelper {
             Tr.warning(tc, "KERBEROS_NOT_SUPPORTED_WARNING");
         }
 
-        final String user = userName == null ? null : userName.trim();
-        final String pwd = password == null ? null : password.trim();
-
-        PrivilegedExceptionAction<Object> innerAction = new PrivilegedExceptionAction<Object>()
-        {
-            public Object run() throws Exception
-            {
-                return is2Phase ?
-                                (user == null ?
-                                                ((XADataSource) ds).getXAConnection() :
-                                                ((XADataSource) ds).getXAConnection(user, pwd)) :
-                                (user == null ?
-                                                ((ConnectionPoolDataSource) ds).getPooledConnection() :
-                                                ((ConnectionPoolDataSource) ds).getPooledConnection(user, pwd));
-            }
-        };
-
         try {
-            PooledConnection pConn;
-            // The doPrivileged may be redundant here, but assuming it is not,
-            // the runAsSystem needs to be nested within it.
-            pConn = (PooledConnection) AccessController.doPrivileged(innerAction);
+            final String user = userName == null ? null : userName.trim();
+            final String pwd = password == null ? null : password.trim();
+
+            PooledConnection pConn = AccessController.doPrivileged(new PrivilegedExceptionAction<PooledConnection>() {
+                public PooledConnection run() throws SQLException {
+                    boolean buildConnection = cri.ivShardingKey != null || cri.ivSuperShardingKey != null;
+                    if (is2Phase)
+                        if (buildConnection)
+                            return mcf.jdbcRuntime.buildXAConnection((XADataSource) ds, user, pwd, cri);
+                        else if (user == null)
+                            return ((XADataSource) ds).getXAConnection();
+                        else
+                            return ((XADataSource) ds).getXAConnection(user, pwd);
+                    else
+                        if (buildConnection)
+                            return mcf.jdbcRuntime.buildPooledConnection((ConnectionPoolDataSource) ds, user, pwd, cri);
+                        else if (user == null)
+                            return ((ConnectionPoolDataSource) ds).getPooledConnection();
+                        else
+                            return ((ConnectionPoolDataSource) ds).getPooledConnection(user, pwd);
+                }
+            });
 
             if (tc.isEntryEnabled())
                 Tr.exit(this, tc, "getPooledConnection", AdapterUtil.toString(pConn));

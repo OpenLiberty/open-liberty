@@ -21,10 +21,9 @@ public class JwtFatConstants extends Constants {
     public static final String LTPA_COOKIE_NAME = "LtpaToken2";
 
     public static final String JWT_REGEX = BASE_64_REGEX + "+\\." + BASE_64_REGEX + "+\\." + BASE_64_REGEX + "+";
-    public static final String TOKEN_TYPE_BEARER = "Bearer";
 
     public static final String DEFAULT_ISS_CONTEXT = "/jwt/defaultJwtSso";
-    public static final String DEFAULT_ISS_REGEX = "https://" + "[^/]+" + JwtFatConstants.DEFAULT_ISS_CONTEXT;
+    public static final String DEFAULT_ISS_REGEX = "https?://" + "[^/]+" + JwtFatConstants.DEFAULT_ISS_CONTEXT;
 
     public static final String FORMLOGIN_CONTEXT_ROOT = "/formlogin";
     public static final String JWT_BUILDER_CONTEXT_ROOT = "/jwtbuilder";
@@ -33,8 +32,6 @@ public class JwtFatConstants extends Constants {
 
     public static final String USER_1 = "user1";
     public static final String USER_1_PWD = "user1pwd";
-
-    public static final String COMMON_CONFIG_DIR = "configs";
 
     public static final boolean SECURE = true;
     public static final boolean NOT_SECURE = false;

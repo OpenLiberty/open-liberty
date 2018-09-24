@@ -581,27 +581,33 @@ public class KeyStoreManager {
      * This method is used to clear KeyStore configurations when the entire config
      * is being reloaded.
      ***/
-    public synchronized void clearKSMap() {
+    public void clearKSMap() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Clearing keystore maps");
-        keyStoreMap.clear();
+        synchronized (keyStoreMap) {
+            keyStoreMap.clear();
+        }
     }
 
     /***
      * This method is used to clear a specific KeyStore configuration when adding
      * a signer to it.
      ***/
-    public synchronized void clearKeyStoreFromMap(String keyStoreName) {
+    public void clearKeyStoreFromMap(String keyStoreName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "clearKeyStoreFromMap: " + keyStoreName);
-        keyStoreMap.remove(keyStoreName);
+        synchronized (keyStoreMap) {
+            keyStoreMap.remove(keyStoreName);
+        }
     }
 
     /***
      * This method is used to clear the Java KeyStores held within the WSKeyStores
      * in the KeyStoreMap. It's called after a federation.
      ***/
-    public synchronized void clearJavaKeyStoresFromKeyStoreMap() {
+    public void clearJavaKeyStoresFromKeyStoreMap() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "clearJavaKeyStoresFromKeyStoreMap");
         synchronized (keyStoreMap) {
             for (Entry<String, WSKeyStore> entry : keyStoreMap.entrySet()) {
                 WSKeyStore ws = entry.getValue();

@@ -26,8 +26,8 @@ public class HttpEndpoint extends ConfigElement {
     @XmlElement(name = "sslOptions")
     private SslOptions sslOptions;
     private String host;
-    private Integer httpPort;
-    private Integer httpsPort;
+    private String httpPort;
+    private String httpsPort;
     private String protocolVersion;
 
     /**
@@ -68,7 +68,7 @@ public class HttpEndpoint extends ConfigElement {
     /**
      * @return the port to use for non-secure traffic
      */
-    public Integer getHttpPort() {
+    public String getHttpPort() {
         return this.httpPort;
     }
 
@@ -76,14 +76,14 @@ public class HttpEndpoint extends ConfigElement {
      * @param httpPort the port to use for non-secure traffic
      */
     @XmlAttribute
-    public void setHttpPort(Integer httpPort) {
+    public void setHttpPort(String httpPort) {
         this.httpPort = httpPort;
     }
 
     /**
      * @return the port to use for secure traffic
      */
-    public Integer getHttpsPort() {
+    public String getHttpsPort() {
         return this.httpsPort;
     }
 
@@ -91,7 +91,7 @@ public class HttpEndpoint extends ConfigElement {
      * @param httpsPort the port to use for secure traffic
      */
     @XmlAttribute
-    public void setHttpsPort(Integer httpsPort) {
+    public void setHttpsPort(String httpsPort) {
         this.httpsPort = httpsPort;
     }
 

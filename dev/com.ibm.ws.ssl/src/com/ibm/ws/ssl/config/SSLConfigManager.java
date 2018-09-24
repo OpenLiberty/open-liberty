@@ -43,7 +43,6 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.internal.LibertyConstants;
-import com.ibm.ws.ssl.internal.SSLConfigValidator;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
@@ -88,8 +87,6 @@ public class SSLConfigManager {
 
     private Map<String, String> aliasPIDs = null; // map LDAP ssl ref, example com.ibm.ws.ssl.repertoire_102 to LDAPSettings. Issue 876
 
-    private SSLConfigValidator validator = new SSLConfigValidator();
-
     /**
      * Private constructor, use getInstance().
      */
@@ -110,8 +107,6 @@ public class SSLConfigManager {
      * This method parses the configuration.
      *
      * @param map Global SSL configuration properties, most likely injected from SSLComponent
-     * @param repertoires Map of ID-indexed repertoire properties
-     * @param keystores Map of ID-indexed WSKeySTore objects
      * @param reinitialize Boolean flag to indicate if the configuration should be re-loaded
      * @param isServer Boolean flag to indiciate if the code is running within a server process
      * @param transportSecurityEnabled Boolean flag to indicate if the transportSecurity-1.0 feature is enabled
@@ -119,8 +114,6 @@ public class SSLConfigManager {
      * @throws Exception
      ***/
     public synchronized void initializeSSL(Map<String, Object> map,
-                                           Map<String, Map<String, Object>> repertoires,
-                                           Map<String, WSKeyStore> keystores,
                                            boolean reinitialize,
                                            boolean isServer, boolean transportSecurityEnabled, Map<String, String> aliasPIDs) throws SSLException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -159,8 +152,6 @@ public class SSLConfigManager {
         }
 
         checkURLHostNameVerificationProperty(reinitialize);
-
-        validator.validate(map, repertoires, keystores);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Total Number of SSLConfigs: " + sslConfigMap.size());
@@ -426,8 +417,7 @@ public class SSLConfigManager {
 
         if (wsks_key != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, ""
-                             + ".");
+                Tr.debug(tc, "Adding keystore properties from KeyStore object.");
             sslprops.setProperty(Constants.SSLPROP_KEY_STORE_NAME, keyStoreName);
             addSSLPropertiesFromKeyStore(wsks_key, sslprops);
         }
@@ -1701,7 +1691,4 @@ public class SSLConfigManager {
         return aliasPIDs == null ? null : aliasPIDs.get(aliasPID);
     }
 
-    public void setConfigValidator(SSLConfigValidator validator) {
-        this.validator = validator;
-    }
 }

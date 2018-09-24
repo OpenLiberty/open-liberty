@@ -24,6 +24,12 @@ src: \
 
 fat.project: true
 
+# These features get added programatically
+tested.features: \
+  jaxrs-2.1,\
+  cdi-2.0,\
+  beanvalidation-2.0
+
 -buildpath: \
     com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\

@@ -100,8 +100,8 @@ public class H2StreamResult {
                                                                 + frame);
 
         if (frame.flagEndStreamSet()) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.logp(Level.INFO, CLASS_NAME, "addActualRespone", "Frame = " + frame.getFrameType() + " has end of stream flag on.");
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "addActualRespone", "Frame = " + frame.getFrameType() + " has end of stream flag on.");
             endOfStreamFlagReceived = true;
             //If we got an empty data frame to signal EOS, add it to the expected frames
             if (streamId != 0 && frame.getPayloadLength() == 0)
@@ -130,8 +130,8 @@ public class H2StreamResult {
         if (frame.getFrameType() == FrameTypes.SETTINGS && frame.flagAckSet())
             this.expectedResponse.add(ackSettingsFrame);
 
-        if (LOGGER.isLoggable(Level.INFO)) {
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addActualRespone", "adding frame to actualResponse Frame Type: " + frame.getFrameType() + " stream-id: " + frame.getStreamId());
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addActualRespone", "adding frame to actualResponse Frame Type: " + frame.getFrameType() + " stream-id: " + frame.getStreamId());
         }
 
         // don't add DATA frames the have "DoNotAdd" as part of the data payload
@@ -189,8 +189,8 @@ public class H2StreamResult {
      * @return True if this stream has received the same number of expected streams.
      */
     public boolean receivedExpectedNumberOfFrames() {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "receivedExpectedNumberOfFrames",
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedExpectedNumberOfFrames",
                         "receivedExpectedNumberOfFrames: actualResponse.size() = " + actualResponse.size() + " expectedResponse.size() = " + expectedResponse.size());
         if (onlyCheckFrameTypes) {
             return actualResponseTypes.size() == expectedResponseTypes.size();
@@ -204,15 +204,15 @@ public class H2StreamResult {
      */
     public boolean receivedAtLeastExpectedNumberOfFrames() {
         if (!onlyCheckFrameTypes) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAtLeastExpectedNumberOfFrames",
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAtLeastExpectedNumberOfFrames",
                             "receivedExpectedNumberOfFrames: actualResponse.size() = " + actualResponse.size()
-                                                                                             + " expectedResponse.size() = " + expectedResponse.size());
+                                                                                               + " expectedResponse.size() = " + expectedResponse.size());
         } else {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAtLeastExpectedNumberOfFrames",
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAtLeastExpectedNumberOfFrames",
                             "receivedExpectedNumberOfFrames: actualResponseTypes.size() = " + actualResponseTypes.size()
-                                                                                             + " expectedResponseTypes.size() = " + expectedResponseTypes.size());
+                                                                                               + " expectedResponseTypes.size() = " + expectedResponseTypes.size());
         }
 
         if (onlyCheckFrameTypes) {

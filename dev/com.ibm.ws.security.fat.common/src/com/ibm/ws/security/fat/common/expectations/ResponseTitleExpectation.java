@@ -17,6 +17,10 @@ public class ResponseTitleExpectation extends Expectation {
 
     protected static Class<?> thisClass = ResponseTitleExpectation.class;
 
+    public ResponseTitleExpectation(String checkType, String searchFor, String failureMsg) {
+        this(null, checkType, searchFor, failureMsg);
+    }
+
     public ResponseTitleExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_TITLE, checkType, searchFor, failureMsg);
     }
@@ -26,7 +30,7 @@ public class ResponseTitleExpectation extends Expectation {
         try {
             String responseTitle = getResponseTitle(contentToValidate);
             validationUtils.validateStringContent(this, responseTitle);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception(failureMsg + " Failed to validate response title: " + e.getMessage());
         }
     }

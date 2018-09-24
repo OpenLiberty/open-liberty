@@ -8,9 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-test {
-    systemProperty "a-system-property", "true"
-}
 
 buildscript {
   repositories {

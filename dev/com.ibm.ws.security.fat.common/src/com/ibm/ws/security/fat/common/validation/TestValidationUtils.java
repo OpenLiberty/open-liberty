@@ -17,7 +17,7 @@ public class TestValidationUtils {
 
     private final Class<?> thisClass = TestValidationUtils.class;
 
-    private CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
+    private final CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
     /**
      * Logs the state of the test assertion and then invokes the JUnit assertTrue method to record the test "status"
@@ -63,6 +63,10 @@ public class TestValidationUtils {
         return false;
     }
 
+    public void validateResult(Object response, Expectations expectations) throws Exception {
+        validateResult(response, null, expectations);
+    }
+
     public void validateResult(Object response, String currentAction, Expectations expectations) throws Exception {
         String thisMethod = "validateResult";
         loggingUtils.printMethodName(thisMethod, "Start of");
@@ -78,6 +82,26 @@ public class TestValidationUtils {
             }
         } catch (Exception e) {
             Log.error(thisClass, thisMethod, e, "Error validating response");
+            throw e;
+        }
+        loggingUtils.printMethodName(thisMethod, "End of");
+    }
+
+    public void validateException(Exception exception, String currentAction, Expectations expectations) throws Exception {
+        String thisMethod = "validateException";
+        loggingUtils.printMethodName(thisMethod, "Start of");
+
+        Log.info(thisClass, thisMethod, "currentAction is: " + currentAction);
+        if (expectations == null) {
+            Log.info(thisClass, thisMethod, "Expectations are null");
+            return;
+        }
+        try {
+            for (Expectation expectation : expectations.getExpectations()) {
+                expectation.validate(currentAction, exception);
+            }
+        } catch (Exception e) {
+            Log.error(thisClass, thisMethod, e, "Error validating exception");
             throw e;
         }
         loggingUtils.printMethodName(thisMethod, "End of");

@@ -17,6 +17,10 @@ public class ResponseMessageExpectation extends Expectation {
 
     protected static Class<?> thisClass = ResponseMessageExpectation.class;
 
+    public ResponseMessageExpectation(String checkType, String searchFor, String failureMsg) {
+        this(null, checkType, searchFor, failureMsg);
+    }
+
     public ResponseMessageExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_MESSAGE, checkType, searchFor, failureMsg);
     }
@@ -26,7 +30,7 @@ public class ResponseMessageExpectation extends Expectation {
         try {
             String responseMessage = getResponseMessage(contentToValidate);
             validationUtils.validateStringContent(this, responseMessage);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new Exception(failureMsg + " Failed to validate response message: " + e.getMessage());
         }
     }

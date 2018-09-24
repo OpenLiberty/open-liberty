@@ -20,8 +20,8 @@ import javax.sql.XAConnection;
 import javax.sql.XAConnectionBuilder;
 import javax.sql.XADataSource;
 
-public class D43XADataSource implements XADataSource {
-    private final org.apache.derby.jdbc.EmbeddedXADataSource ds;
+public class D43XADataSource extends D43CommonDataSource implements XADataSource {
+    final org.apache.derby.jdbc.EmbeddedXADataSource ds;
 
     public D43XADataSource() {
         ds = new org.apache.derby.jdbc.EmbeddedXADataSource();
@@ -29,9 +29,7 @@ public class D43XADataSource implements XADataSource {
 
     @Override
     public XAConnectionBuilder createXAConnectionBuilder() throws SQLException {
-        return (XAConnectionBuilder) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
-                                                            new Class[] { XAConnectionBuilder.class },
-                                                            new D43Handler(ds.createXAConnectionBuilder(), null));
+        return new D43XAConnectionBuilder(this);
     }
 
     public String getDatabaseName() {
@@ -57,14 +55,14 @@ public class D43XADataSource implements XADataSource {
     public XAConnection getXAConnection() throws SQLException {
         return (XAConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                      new Class[] { XAConnection.class },
-                                                     new D43Handler(ds.getXAConnection(), null));
+                                                     new D43Handler(ds.getXAConnection(), null, this));
     }
 
     @Override
     public XAConnection getXAConnection(String user, String pwd) throws SQLException {
         return (XAConnection) Proxy.newProxyInstance(D43Handler.class.getClassLoader(),
                                                      new Class[] { XAConnection.class },
-                                                     new D43Handler(ds.getXAConnection(user, pwd), null));
+                                                     new D43Handler(ds.getXAConnection(user, pwd), null, this));
     }
 
     public void setDatabaseName(String value) {
