@@ -90,15 +90,16 @@ public class FrameReadProcessor {
         if (stream == null) {
             if ((streamId != 0) && (streamId % 2 == 0)) {
                 if (currentFrame.getFrameType().equals(FrameTypes.PRIORITY)) {
-                    // PRIORITY frames can be received in any stream state
+                    // ignore PRIORITY frames in any state
                     return;
+                } else if (currentFrame.getFrameType().equals(FrameTypes.RST_STREAM) && streamId < muxLink.getHighestClientStreamId()) {
+                    // tolerate RST_STREAM frames that are sent on closed push streams
+                    return;
+                } else {
+                    throw new ProtocolException("Cannot start a stream from the client with an even numbered ID. stream-id: " + streamId);
                 }
-                // even stream IDs must not originate from the client
-                throw new ProtocolException("Cannot start a stream from the client with an even numbered ID. stream-id: " + streamId);
             }
-            stream = startNewInboundSession(streamId);
         }
-
         if (frameSizeError) {
             currentFrame = new FrameRstStream(streamId, 4, (byte) 0, false, FrameDirection.READ);
             ((FrameRstStream) currentFrame).setErrorCode(Constants.FRAME_SIZE_ERROR);
