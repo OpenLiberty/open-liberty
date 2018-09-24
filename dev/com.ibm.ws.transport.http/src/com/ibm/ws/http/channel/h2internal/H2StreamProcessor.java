@@ -219,8 +219,12 @@ public class H2StreamProcessor {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: stream is closed - cannot write out anything else on stream-id: " + myID);
                 }
-                // ignore
-                return;
+                if (frame.getFrameType().equals(FrameTypes.DATA)) {
+                    // pass an exception to whatever servlet is writing
+                    throw new StreamClosedException("stream was already closed!");
+                } else {
+                    return;
+                }
             } else if (direction.equals(Constants.Direction.READ_IN) &&
                        !frame.getFrameType().equals(FrameTypes.PUSH_PROMISE)) {
                 // handle a frame recieved after stream closure
@@ -425,6 +429,9 @@ public class H2StreamProcessor {
                 }
                 if (frameType == FrameTypes.RST_STREAM) {
                     processRstFrame();
+                    synchronized (this) {
+                        this.notifyAll();
+                    }
                     return;
                 }
 
@@ -1762,7 +1769,9 @@ public class H2StreamProcessor {
                             synchronized (this) {
                                 this.wait(MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS);
                             }
-                            if (System.currentTimeMillis() - startTime > MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS) {
+                            if (state.equals(StreamState.CLOSED) || muxLink.checkIfGoAwaySendingOrClosing()) {
+                                return false;
+                            } else if (System.currentTimeMillis() - startTime > MAX_TIME_TO_WAIT_FOR_WINDOW_UPDATE_MS) {
                                 timedOut = true;
                             }
                         }
