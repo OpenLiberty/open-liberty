@@ -1403,6 +1403,46 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
+     * When beginRequest and endRequest are invoked by the application (or an external connection manager)
+     * they must be ignored.
+     */
+    @Test
+    public void testSuppressBeginAndEndRequest() throws Exception {
+        AtomicInteger[] requests;
+        int begins, ends;
+
+        Connection con = unsharablePool1DataSource.getConnection();
+        try {
+            requests = (AtomicInteger[]) con.unwrap(Supplier.class).get();
+            begins = requests[BEGIN].get();
+            ends = requests[END].get();
+            assertEquals(ends + 1, begins);
+
+            con.beginRequest();
+            // expect no change:
+            assertEquals(begins, requests[BEGIN].get());
+            assertEquals(ends, requests[END].get());
+
+            PreparedStatement ps = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps.setString(1, "Northern Valley Drive NE");
+            ps.setString(2, "Rochester");
+            ps.setString(3, "MN");
+            ps.executeUpdate();
+            ps.close();
+
+            con.endRequest();
+            // still no change:
+            assertEquals(begins, requests[BEGIN].get());
+            assertEquals(ends, requests[END].get());
+        } finally {
+            con.close();
+        }
+
+        assertEquals(begins, requests[BEGIN].get());
+        assertEquals(ends + 1, requests[END].get());
+    }
+
+    /**
      * Begin a request (using a sharable connection) within one global transaction. Suspend that transaction
      * and use the connection handle within a different global transaction, which must be considered a different
      * request. After committing the second global transaction, resume the first global transaction and perform

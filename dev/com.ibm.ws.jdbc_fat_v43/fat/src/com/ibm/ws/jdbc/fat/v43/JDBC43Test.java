@@ -61,6 +61,7 @@ public class JDBC43Test extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("DSRA0302E.*XA_RBOTHER", // raised by mock JDBC driver for XA operations after abort
+                          "DSRA8790W", // expected for begin/endRequest invoked by application being ignored
                           "WLTC0018E"); // TODO remove once transactions bug is fixed
     }
 }
