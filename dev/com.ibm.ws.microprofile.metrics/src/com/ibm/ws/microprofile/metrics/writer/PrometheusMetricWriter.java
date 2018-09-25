@@ -241,7 +241,7 @@ public class PrometheusMetricWriter implements OutputWriter {
         try {
             writer.write(builder.toString());
         } finally {
-            writer.close();
+            writer.flush();
         }
     }
 }
