@@ -29,7 +29,8 @@ Private-Package: com.ibm.ws.runtime.update.internal*
 
 -dsannotations: \
   com.ibm.ws.runtime.update.internal.RuntimeUpdateManagerImpl, \
-  com.ibm.ws.runtime.update.internal.RuntimeUpdateNotificationMBeanImpl
+  com.ibm.ws.runtime.update.internal.RuntimeUpdateNotificationMBeanImpl, \
+  com.ibm.ws.runtime.update.internal.PauseableComponentQuiesceListener
 
 instrument.classesExcludes: com/ibm/ws/runtime/update/internal/resources/*.class
 

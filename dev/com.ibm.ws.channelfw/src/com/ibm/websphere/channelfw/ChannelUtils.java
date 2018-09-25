@@ -46,7 +46,7 @@ import com.ibm.wsspi.channelfw.exception.RetryableChannelException;
  * <ul>
  * <li>printDebugStackTrace - for pretty-printing a debug stack trace
  * </ul>
- * 
+ *
  * Utility methods for displaying Channel and Channel Chain configuration
  * <ul>
  * <li>displayChannels - displays all configured channels
@@ -56,10 +56,9 @@ import com.ibm.wsspi.channelfw.exception.RetryableChannelException;
  */
 public final class ChannelUtils extends ChannelUtilsBase {
     /** Trace service */
-    private static final TraceComponent tc =
-                    Tr.register(ChannelUtils.class,
-                                ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                ChannelFrameworkConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(ChannelUtils.class,
+                                                         ChannelFrameworkConstants.BASE_TRACE_NAME,
+                                                         ChannelFrameworkConstants.BASE_BUNDLE);
 
     /** Configuration items unable to be processed during loadConfig */
     private static Map<String, Object> delayedConfig = new HashMap<String, Object>();
@@ -74,7 +73,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Print debug stacktrace using given trace component.
-     * 
+     *
      * @param logger
      * @param t
      * @param message
@@ -88,7 +87,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Print debug stacktrace using given trace component.
-     * 
+     *
      * @param logger
      * @param thread
      */
@@ -100,7 +99,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Print channel configuration - for debug.
-     * 
+     *
      * @param logger
      * @param cfw
      * @param message
@@ -115,7 +114,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Display configured channel chains.
-     * 
+     *
      * @param logger
      * @param cfw
      * @param factory
@@ -132,7 +131,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Display configured channel chains.
-     * 
+     *
      * @param logger
      * @param cfw
      * @param groupName
@@ -149,7 +148,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Display configured channel chains (convert array of chains to list).
-     * 
+     *
      * @param logger
      * @param chains
      *            Array of chains to trace
@@ -170,7 +169,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Display configured channel chains.
-     * 
+     *
      * @param logger
      * @param lchain
      * @param message
@@ -187,7 +186,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Debug trace using either Tr or Logger
-     * 
+     *
      * @param logTool
      *            Caller's LogTool (should be Logger OR TraceComponent)
      * @param msg
@@ -202,7 +201,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Convert the input string to a list of strings based on the
      * provided delimiter.
-     * 
+     *
      * @param input
      * @param delimiter
      * @return String[]
@@ -230,7 +229,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
      * Extract the key of a key=value pair contained withint the
      * provided string. If no equals sign is found, then the input
      * is returned with white space trimmed.
-     * 
+     *
      * @param input
      * @return String
      */
@@ -246,7 +245,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
      * Extract the value of a key=value pair contained within the
      * provided string. If no value exists, then an empty string
      * is returned.
-     * 
+     *
      * @param input
      * @return String
      */
@@ -272,7 +271,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Extract the various types of objects from the full configuration into
      * separate, discrete groupings.
-     * 
+     *
      * @param config
      * @return Map<String,Map<String,String[]>>
      */
@@ -324,7 +323,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Load and possibly start the provided configuration information.
-     * 
+     *
      * @param config
      * @param start
      * @param restart
@@ -373,13 +372,13 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Using the provided configuration, create or update channels,
      * chains, and groups within the channel framework.
-     * 
+     *
      * This will return a map containing lists of created objects. The
      * keys include "factory", "chain", "group", and "channel". The
      * lists will contains the name of the objects such as channel names,
      * chain names, etc. Each list is guarenteed to be non-null; however,
      * might easily be empty.
-     * 
+     *
      * @param config
      * @return Map<String,List<String>>
      */
@@ -493,12 +492,12 @@ public final class ChannelUtils extends ChannelUtilsBase {
      * to decide whether to stop and restart that chain. Note that some
      * configuration values would require a restart of the chain to take
      * effect (such as TCP bind information).
-     * 
+     *
      * This returns map of the started chains and groups. Each is a list
      * under either the key "chain" or the key "group". The list has the
      * names of the channel framework items, ie. channel names, chains names, etc.
      * Each list is guaranteed to be non-null but might be empty.
-     * 
+     *
      * @param config
      * @param restart
      * @return Map<String,List<String>>
@@ -536,9 +535,9 @@ public final class ChannelUtils extends ChannelUtilsBase {
      * and handle changes between the two. Deleted objects will be removed from
      * runtime and updates will stop and restart those specific chains. New chains
      * will be handled as normal.
-     * 
+     *
      * This is same as startConfig(Dictionary,boolean) as to what it returns.
-     * 
+     *
      * @param oldconfig
      * @param newconfig
      * @return Map<String,List<String>>
@@ -785,7 +784,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
             unloadChains(chainsToDelete.iterator());
         }
 
-        // first stop/quiesce the chains (AND WAIT FOR COMPLETION), 
+        // first stop/quiesce the chains (AND WAIT FOR COMPLETION),
         // then destroy them for updates to happen correctly
         stopChains(chainsToStop, -1L, null);
         for (String chainname : chainsToStop) {
@@ -839,7 +838,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
      * Utility method that stops any of the chains created by the configuration
      * that might still be running. The provided timeout is used to quiesce any
      * active connections on the chains.
-     * 
+     *
      * @param chains
      * @param timeout in milliseconds - a timeout value of -1 will use the channel framework
      *            default quiesce timeout setting
@@ -872,10 +871,12 @@ public final class ChannelUtils extends ChannelUtilsBase {
                 if (bTrace && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Stopping chain: " + chain);
                 }
-                if (quiesceTimeout > 0) {
+
+                if (quiesceTimeout > 0 ) {
                     listener.watchChain(cd);
                 }
                 cf.stopChain(cd, quiesceTimeout);
+
             } catch (Throwable t) {
                 // framework already FFDCs on stopChain failure
                 if (bTrace && tc.isDebugEnabled()) {
@@ -887,7 +888,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
         if (runOnStop != null) {
             ExecutorService executorService = CHFWBundle.getExecutorService();
             if (null != executorService) {
-                // Use a different thread to wait for chain stop and then finish.. 
+                // Use a different thread to wait for chain stop and then finish..
                 Runnable runner = new Runnable() {
                     @Override
                     public void run() {
@@ -915,7 +916,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Load channel factories in the framework based on the provided factory
      * configurations.
-     * 
+     *
      * @param factories
      * @return List<String> - factories created successfully
      */
@@ -967,7 +968,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Define a new endpoint definition using the input name and list of
      * properties.
-     * 
+     *
      * @param name
      * @param config
      * @return EndPointInfo
@@ -989,7 +990,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
 
     /**
      * Load chain endpoints based on the provided configuration.
-     * 
+     *
      * @param endpoints
      * @return List<String> - endpoints created successfully
      */
@@ -1017,7 +1018,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Load individual channels in the framework based on the provided
      * channel configurations.
-     * 
+     *
      * @param channels
      * @return List<String> - channels created succesfully
      */
@@ -1143,7 +1144,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Stop and unload any of the provided chain names that might exist and be
      * currently running.
-     * 
+     *
      * @param chains
      */
     private static void unloadChains(Iterator<String> chains) {
@@ -1174,7 +1175,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
             }
         }
 
-        // Stop chains, and wait for stop to complete... 
+        // Stop chains, and wait for stop to complete...
         stopChains(runningChains, -1L, null);
         for (String name : runningChains) {
             ChainData cd = cf.getChain(name);
@@ -1197,7 +1198,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Load chains within the channel framework based on the provided
      * chain configurations.
-     * 
+     *
      * @param chains
      * @param start
      * @param restart
@@ -1234,8 +1235,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
                         }
                     }
                 } else if ("flow".equalsIgnoreCase(key)) {
-                    flow = "inbound".equalsIgnoreCase(value)
-                                    ? FlowType.INBOUND : FlowType.OUTBOUND;
+                    flow = "inbound".equalsIgnoreCase(value) ? FlowType.INBOUND : FlowType.OUTBOUND;
                 }
             }
             if (null == chanList) {
@@ -1281,7 +1281,7 @@ public final class ChannelUtils extends ChannelUtilsBase {
     /**
      * Load chain groups in the framework based on the provided group
      * configurations.
-     * 
+     *
      * @param groups
      * @param start
      * @param restart
