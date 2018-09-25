@@ -98,6 +98,8 @@ public class FrameReadProcessor {
                 } else {
                     throw new ProtocolException("Cannot start a stream from the client with an even numbered ID. stream-id: " + streamId);
                 }
+            } else {
+                stream = startNewInboundSession(streamId);
             }
         }
         if (frameSizeError) {

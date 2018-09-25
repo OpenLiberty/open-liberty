@@ -860,7 +860,9 @@ public class H2InboundLink extends HttpInboundLink {
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
             // notify streams waiting for a window update
-            stream.notifyAll();
+            synchronized (stream) {
+                stream.notifyAll();
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "destroying " + stream + ", " + stream.getId());
             }
