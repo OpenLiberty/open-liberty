@@ -1,0 +1,324 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2018 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_id" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+	metadata-complete="false" version="3.0">
+
+	<enterprise-beans>
+		<!-- Stateful Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+		<session>
+			<ejb-name>ManyXManyTestSFEJB</ejb-name>
+			<business-local>com.ibm.ws.jpa.fvt.relationships.manyXmany.ejblocal.ManyXManySFEJBLocal</business-local>
+			<ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+			<session-type>Stateful</session-type>
+			<remove-method>
+				<bean-method>
+					<method-name>release</method-name>
+				</bean-method>
+			</remove-method>
+			<transaction-type>Bean</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/JPA_DS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+			</resource-ref>
+			<resource-ref>
+				<res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+			</resource-ref>
+
+			<!-- Persistence Context Definitions -->
+			<persistence-context-ref>
+				<description>Transaction-Scoped Persistence Context</description>
+				<persistence-context-ref-name>jpa/ManyXMany_CMTS</persistence-context-ref-name>
+				<persistence-unit-name>ManyXMany_JTA</persistence-unit-name>
+				<persistence-context-type>Transaction</persistence-context-type>
+			</persistence-context-ref>
+			<persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_Uni_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_Bi_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_Container_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Container_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_CompoundPK_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            
+			<persistence-unit-ref>
+				<description>Application-Managed JTA-Tran Persistence Context</description>
+				<persistence-unit-ref-name>jpa/ManyXMany_AMJTA</persistence-unit-ref-name>
+				<persistence-unit-name>ManyXMany_JTA</persistence-unit-name>
+			</persistence-unit-ref>
+			<persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Uni_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Bi_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Container_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Container_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_CompoundPK_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+
+			<persistence-unit-ref>
+				<description>Application-Managed RL-Tran Persistence Context</description>
+				<persistence-unit-ref-name>jpa/ManyXMany_AMRL</persistence-unit-ref-name>
+				<persistence-unit-name>ManyXMany_RL</persistence-unit-name>
+			</persistence-unit-ref>
+			<persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Uni_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Bi_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Container_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Container_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_CompoundPK_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_RL</persistence-unit-name>
+            </persistence-unit-ref>
+
+			<persistence-unit-ref>
+				<description>Cleanup Persistence Context</description>
+				<persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+				<persistence-unit-name>Cleanup</persistence-unit-name>
+			</persistence-unit-ref>
+		</session>
+		
+		<!-- Stateful Session Bean, PC: CM-ES -->
+		<session>
+			<ejb-name>ManyXManyTestSFEXEJB</ejb-name>
+			<business-local>com.ibm.ws.jpa.fvt.relationships.manyXmany.ejblocal.ManyXManySFEXEJBLocal</business-local>
+			<ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+			<session-type>Stateful</session-type>
+			<remove-method>
+				<bean-method>
+					<method-name>release</method-name>
+				</bean-method>
+			</remove-method>
+			<transaction-type>Bean</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/JPA_DS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+			</resource-ref>
+			<resource-ref>
+				<res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+			</resource-ref>
+
+			<!-- Persistence Context Definitions -->
+			<persistence-context-ref>
+				<persistence-context-ref-name>jpa/ManyXMany_CMEX</persistence-context-ref-name>
+				<persistence-unit-name>ManyXMany_JTA</persistence-unit-name>
+				<persistence-context-type>Extended</persistence-context-type>
+			</persistence-context-ref>
+			<persistence-context-ref>
+                <persistence-context-ref-name>jpa/ManyXMany_Uni_CMEX</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref><persistence-context-ref>
+                <persistence-context-ref-name>jpa/ManyXMany_Bi_CMEX</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ManyXMany_Container_CMEX</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Container_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <persistence-context-ref-name>jpa/ManyXMany_CompoundPK_CMEX</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_JTA</persistence-unit-name>
+                <persistence-context-type>Extended</persistence-context-type>
+            </persistence-context-ref>
+
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Uni_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Bi_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Container_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Container_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_CompoundPK_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_RL</persistence-unit-name>
+            </persistence-unit-ref>
+			<persistence-unit-ref>
+				<description>Cleanup Persistence Context</description>
+				<persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+				<persistence-unit-name>Cleanup</persistence-unit-name>
+			</persistence-unit-ref>
+		</session>
+
+		<!-- Stateless Session Bean, PC: AM-JTA, AM-RL, CM-TS -->
+		<session>
+			<ejb-name>ManyXManyTestSLEJB</ejb-name>
+			<business-local>com.ibm.ws.jpa.fvt.relationships.manyXmany.ejblocal.ManyXManySLEJBLocal</business-local>
+			<ejb-class>com.ibm.ws.testtooling.vehicle.ejb.BMTEJBTestVehicle</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Bean</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/JPA_DS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+			</resource-ref>
+			<resource-ref>
+				<res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+				<res-sharing-scope>Shareable</res-sharing-scope>
+			</resource-ref>
+
+			<!-- Persistence Context Definitions -->
+			<persistence-context-ref>
+				<description>Transaction-Scoped Persistence Context</description>
+				<persistence-context-ref-name>jpa/ManyXMany_CMTS</persistence-context-ref-name>
+				<persistence-unit-name>ManyXMany_JTA</persistence-unit-name>
+				<persistence-context-type>Transaction</persistence-context-type>
+			</persistence-context-ref>
+			<persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_Uni_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_Bi_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_Container_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_Container_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+            <persistence-context-ref>
+                <description>Transaction-Scoped Persistence Context</description>
+                <persistence-context-ref-name>jpa/ManyXMany_CompoundPK_CMTS</persistence-context-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_JTA</persistence-unit-name>
+                <persistence-context-type>Transaction</persistence-context-type>
+            </persistence-context-ref>
+
+			<persistence-unit-ref>
+				<description>Application-Managed JTA-Tran Persistence Context</description>
+				<persistence-unit-ref-name>jpa/ManyXMany_AMJTA</persistence-unit-ref-name>
+				<persistence-unit-name>ManyXMany_JTA</persistence-unit-name>
+			</persistence-unit-ref>
+			<persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Uni_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Bi_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Container_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Container_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed JTA-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_CompoundPK_AMJTA</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_JTA</persistence-unit-name>
+            </persistence-unit-ref>
+
+			<persistence-unit-ref>
+				<description>Application-Managed RL-Tran Persistence Context</description>
+				<persistence-unit-ref-name>jpa/ManyXMany_AMRL</persistence-unit-ref-name>
+				<persistence-unit-name>ManyXMany_RL</persistence-unit-name>
+			</persistence-unit-ref>
+			<persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Uni_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Uni_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Bi_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Bi_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_Container_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_Container_RL</persistence-unit-name>
+            </persistence-unit-ref>
+            <persistence-unit-ref>
+                <description>Application-Managed RL-Tran Persistence Context</description>
+                <persistence-unit-ref-name>jpa/ManyXMany_CompoundPK_AMRL</persistence-unit-ref-name>
+                <persistence-unit-name>ManyXMany_CompoundPK_RL</persistence-unit-name>
+            </persistence-unit-ref>
+
+			<persistence-unit-ref>
+				<description>Cleanup Persistence Context</description>
+				<persistence-unit-ref-name>jpa/cleanup</persistence-unit-ref-name>
+				<persistence-unit-name>Cleanup</persistence-unit-name>
+			</persistence-unit-ref>
+		</session>
+	</enterprise-beans>
+</ejb-jar>
