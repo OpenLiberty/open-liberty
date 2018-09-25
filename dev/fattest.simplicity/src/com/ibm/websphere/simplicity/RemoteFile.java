@@ -461,8 +461,11 @@ public class RemoteFile {
      */
     private boolean deleteExecutionWrapper(File path) {
         try{
-            java.nio.file.Files.delete(path.toPath());;
+            
+            java.nio.file.Files.delete(path.toPath());
+            return true;
         }catch(Exception e){
+
             Log.info(c, "deleteExecutionWrapper", "Delete Operation for [" + path + "] could not be completed.\n" + e.getMessage());
             return false;
         }
