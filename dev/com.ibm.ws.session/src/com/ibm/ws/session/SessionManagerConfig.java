@@ -190,7 +190,7 @@ public class SessionManagerConfig implements Cloneable {
     private boolean sessionTableSkipIndexCreation = false; // PM37139
     private boolean checkSessionNewOnIsValidRequest = true; //PM57590
     
-    private int delayInvalidationAlarmDuringServerStartup = 0; //PM74718
+    private int delayInvalidationAlarmDuringServerStartup = 5; //PM74718
     
     //Please keep variable set to true unless there is a crucial reason as to why the thread 
     //scheduler should be java.util.Timer
