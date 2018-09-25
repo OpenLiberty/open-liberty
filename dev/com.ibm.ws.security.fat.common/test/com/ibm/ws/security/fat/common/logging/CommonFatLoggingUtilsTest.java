@@ -432,6 +432,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
                     one(webRequest).getAdditionalHeaders();
                     will(returnValue(headers));
                     one(webRequest).getRequestParameters();
+                    one(webRequest).getRequestBody();
                 }
             });
 
@@ -475,6 +476,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
                     one(webRequest).getAdditionalHeaders();
                     one(webRequest).getRequestParameters();
                     will(returnValue(requestParams));
+                    one(webRequest).getRequestBody();
                 }
             });
 
@@ -1955,6 +1957,7 @@ public class CommonFatLoggingUtilsTest extends CommonTestClass {
                 will(returnValue(new URL(SIMPLE_URL)));
                 one(webRequest).getAdditionalHeaders();
                 one(webRequest).getRequestParameters();
+                one(webRequest).getRequestBody();
             }
         });
     }
