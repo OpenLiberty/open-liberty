@@ -450,12 +450,20 @@ public class RemoteFile {
         return RemoteFile.copy(srcFile, this, false, true, binary);
     }
 
-    public boolean deleteExecutionWrapper(File path) {
+    /**
+     * Uses the {@link Files} class for the deletion operation because
+     * it throws informational exception on operation failure. Outputs 
+     * exception message to liberty output for debugging.
+     * 
+     * @param path
+     *              The {@link File} object that represents a file to be deleted
+     * @return true if deletetion was successful, false if failure
+     */
+    private boolean deleteExecutionWrapper(File path) {
         try{
-            java.nio.file.Files.delete(path.toPath());
-            return true;
+            java.nio.file.Files.delete(path.toPath());;
         }catch(Exception e){
-            Log.info(c, "deleteExecutionWrapper", "Delete Operation for [" + path + "] could not be completed.\n" + e.toString());
+            Log.info(c, "deleteExecutionWrapper", "Delete Operation for [" + path + "] could not be completed.\n" + e.getMessage());
             return false;
         }
     }
