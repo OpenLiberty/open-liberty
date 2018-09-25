@@ -42,5 +42,6 @@
 	</application>
 
 	<include location="../fatTestPorts.xml" />
-
+	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
+	<javaPermission className="java.net.SocketPermission" name="*" actions="resolve" />
 </server>
