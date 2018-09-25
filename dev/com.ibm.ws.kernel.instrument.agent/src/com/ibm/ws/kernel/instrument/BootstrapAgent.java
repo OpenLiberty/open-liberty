@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * Copyright (c) 2010, 2014, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.kernel.instrument;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -104,6 +105,63 @@ public final class BootstrapAgent {
                 Method premain = clazz.getMethod("premain", String.class);
                 premain.invoke(null, targetAgentArgs);
             }
+        }
+    }
+
+    /**
+     * Loads an agent. Assuming that premain had called before calling this method in order to set Instrumentation object.
+     * @param agentJarName an relative path name from the location of bootstrap agent of jar name which is loaded.
+     * @param arg argument for the agent.
+     */
+    public static void loadAgent(String agentJarName, String arg) throws Exception {
+        // Get the bootstrap agent location
+        CodeSource bootstrapCodeSource = BootstrapAgent.class.getProtectionDomain().getCodeSource();
+        URI bootstrapLocationURI = bootstrapCodeSource.getLocation().toURI();
+        assert ("file".equals(bootstrapLocationURI.getScheme()));
+
+        // Build target agent URI relative to our own
+        URI agentURI = bootstrapLocationURI.resolve(agentJarName);
+
+        // Crack open the agent's jar and read the manifest
+        File agentFile = new File(agentURI);
+        if (!agentFile.isDirectory() && agentFile.exists()) {
+            JarFile jarFile = new JarFile(agentFile);
+
+            Manifest manifest = jarFile.getManifest();
+            jarFile.close();
+            Attributes attrs = manifest.getMainAttributes();
+
+            // Read the agent class name
+            String agentClassName = attrs.getValue("Premain-Class");
+            if (agentClassName == null) {
+                return;
+            }
+
+            // Get the required class path
+            String agentClassPath = attrs.getValue("Class-Path");
+            List<URL> classpath = new ArrayList<URL>();
+            classpath.add(agentURI.toURL());
+            if (agentClassPath != null) {
+                for (String pathEntry : agentClassPath.split("\\s+")) {
+                    URI pathURI = agentURI.resolve(pathEntry.trim());
+                    classpath.add(pathURI.toURL());
+                }
+            }
+
+            // Create the class loader and load the target agent with it
+            ClassLoader loader = URLClassLoader.newInstance(classpath.toArray(new URL[0]));
+            Class<?> clazz = Class.forName(agentClassName, true, loader);
+
+            // Find and invoke the agent's premain method
+            try {
+                Method premain = clazz.getMethod("premain", String.class, Instrumentation.class);
+                premain.invoke(null, arg, BootstrapAgent.instrumentation);
+            } catch (NoSuchMethodException e) {
+                Method premain = clazz.getMethod("premain", String.class);
+                premain.invoke(null, arg);
+            }
+        } else {
+            throw new FileNotFoundException(agentFile.getAbsolutePath());
         }
     }
 
