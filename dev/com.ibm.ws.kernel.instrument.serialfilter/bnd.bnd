@@ -1,0 +1,40 @@
+#*******************************************************************************
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.6
+javac.target: 1.6
+
+Private-Package: com.ibm.ws.kernel.instrument.serialization.*
+Can-Redefine-Classes: false
+Can-Retransform-Classes: true
+Main-Class: com.ibm.ws.kernel.instrument.serialization.agent.PreMain
+Premain-Class: com.ibm.ws.kernel.instrument.serialization.agent.PreMain
+Agent-Class: com.ibm.ws.kernel.instrument.serialization.agent.PreMain
+# the bootagent could be located underneath wlp/bin/tools or wlp/lib directory, so the class path for asm is set to support either paths.
+Class-Path: com.ibm.ws.org.objectweb.asm_${bFullVersion}.jar ../../lib/com.ibm.ws.org.objectweb.asm_${bFullVersion}.jar
+-outputmask: ws-serializationagent.jar
+
+instrument.disabled: true
+
+publish.wlp.jar.include: ws-serializationagent.jar
+publish.wlp.jar.rename: false
+
+-removeheaders=Bnd-LastModified, Bundle-ManifestVersion, Bundle-Name, Private-Package, Require-Capability, Tool
+
+-includeresource: \
+ com/ibm/ws/kernel/instrument/serialization/config/default.properties=resources/com/ibm/ws/kernel/instrument/serialization/config/default.properties
+
+
+-buildpath: \
+    com.ibm.ws.kernel.instrument.agent;version=latest, \
+    com.ibm.ws.org.objectweb.asm;version=latest
