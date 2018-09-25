@@ -23,6 +23,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.ws.management.security.ManagementSecurityConstants;
+import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.SSOCookieHelper;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
@@ -43,6 +44,7 @@ import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
 public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator {
     protected volatile WebAppSecurityConfig webAdminSecConfig = new WebAdminSecurityConfigImpl(null);
     private SecurityMetadata secMetadata = null;
+    private UnauthenticatedSubjectService unauthenticatedSubjectService;
 
     @Override
     @Activate
@@ -54,9 +56,11 @@ public class WebAdminSecurityCollaboratorImpl extends WebAppSecurityCollaborator
     protected void activateComponents() {
         webAppSecConfig = webAdminSecConfig;
         SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
-        authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+        authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef,
+                                                                     unauthenticatedSubjectService);
         postParameterHelper = new PostParameterHelper(webAppSecConfig);
-        providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig, webAuthenticatorRef);
+        providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
+                                                                                              webAuthenticatorRef);
         authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
     }
 
