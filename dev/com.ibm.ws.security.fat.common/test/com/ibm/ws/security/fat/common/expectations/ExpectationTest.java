@@ -145,39 +145,6 @@ public class ExpectationTest extends CommonExpectationTestClass {
         }
     }
 
-    /************************************** createJsonExpectation **************************************/
-
-    @Test
-    public void test_createJsonExpectation_nullArgs() {
-        try {
-            String testAction = null;
-            String searchForKey = null;
-            String searchForVal = null;
-            String failureMsg = null;
-
-            Expectation exp = Expectation.createJsonExpectation(testAction, searchForKey, searchForVal, failureMsg);
-
-            verifyExpectationValues(exp, testAction, Constants.JSON_OBJECT, null, searchForKey, searchForVal, failureMsg);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void test_createJsonExpectation() {
-        try {
-            String searchForKey = "searchForKey";
-
-            Expectation exp = Expectation.createJsonExpectation(TEST_ACTION, searchForKey, SEARCH_FOR_VAL, FAILURE_MESSAGE);
-
-            verifyExpectationValues(exp, TEST_ACTION, Constants.JSON_OBJECT, null, searchForKey, SEARCH_FOR_VAL, FAILURE_MESSAGE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
     /************************************** createExceptionExpectation **************************************/
 
     @Test

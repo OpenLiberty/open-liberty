@@ -56,7 +56,9 @@ publish.wlp.jar.disabled: true
     org.eclipse.jetty.websocket:websocket-api;version=9.4.5.v20170502, \
     org.eclipse.jetty.websocket:websocket-client;version=9.4.5.v20170502, \
     org.eclipse.jetty.websocket:websocket-common;version=9.4.5.v20170502, \
-    org.eclipse.jetty:jetty-util;version=9.4.7.RC0
+    org.eclipse.jetty:jetty-util;version=9.4.7.RC0, \
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
+    org.glassfish:javax.json;version=1.0
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
