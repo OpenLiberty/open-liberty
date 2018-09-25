@@ -23,6 +23,11 @@ public class RepeatTestFilter {
     public static String CURRENT_REPEAT_ACTION = null;
 
     public static boolean shouldRun(FrameworkMethod method) {
+        //if we're not repeating then there is no point checking the SkipForRepeat annotation; always run
+        if (CURRENT_REPEAT_ACTION == null) {
+            return true;
+        }
+
         SkipForRepeat anno = method.getMethod().getAnnotation(SkipForRepeat.class);
 
         // No annotation at method or class level, so always run
@@ -40,6 +45,11 @@ public class RepeatTestFilter {
     }
 
     public static boolean shouldRun(Class<?> clazz) {
+        //if we're not repeating then there is no point checking the SkipForRepeat annotation; always run
+        if (CURRENT_REPEAT_ACTION == null) {
+            return true;
+        }
+
         SkipForRepeat anno = clazz.getAnnotation(SkipForRepeat.class);
 
         // No annotation at class level, so always run

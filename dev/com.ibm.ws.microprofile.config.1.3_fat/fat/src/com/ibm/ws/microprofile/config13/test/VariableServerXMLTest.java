@@ -22,15 +22,19 @@ import java.net.URL;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig13EE7;
+import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfig14EE8;
 import com.ibm.ws.microprofile.config13.variableServerXML.web.VariableServerXMLServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -56,6 +60,11 @@ public class VariableServerXMLTest extends FATServletClient {
     @TestServlet(servlet = VariableServerXMLServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests
+                    .with(new RepeatConfig13EE7("ServerXMLVariableServer"))
+                    .andWith(new RepeatConfig14EE8("ServerXMLVariableServer"));
+
     @BeforeClass
     public static void setUp() throws Exception {
         // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
@@ -65,6 +74,11 @@ public class VariableServerXMLTest extends FATServletClient {
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.microprofile.config13.variableServerXML.*");
 
         server.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
     @Test
@@ -84,10 +98,10 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=varPropertiesBeforeTest");
 
         // switch to new configuration
-        server.copyFileToLibertyServerRoot("refreshVariables/server.xml");
+        server.copyFileToLibertyServerRoot("refreshVariables/variableServerXMLApp.xml");
 
         // Wait for message: "the server configuration was successfully updated"
-        assertNotNull("The server.xml was not updated",
+        assertNotNull("The variableServerXMLApp.xml was not updated",
                       server.waitForStringInLog("CWWKG0017I"));
         Thread.sleep(1000); // We need this pause so that the config change is picked up through the polling mechanism,
                             // Something more deterministic would be better.
@@ -106,21 +120,16 @@ public class VariableServerXMLTest extends FATServletClient {
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesBeforeTest");
 
         // switch to new configuration
-        server.copyFileToLibertyServerRoot("refreshAppProperties/server.xml");
+        server.copyFileToLibertyServerRoot("refreshAppProperties/variableServerXMLApp.xml");
 
         // Wait for message: "the server configuration was successfully updated"
-        assertNotNull("The server.xml was not updated",
+        assertNotNull("The variableServerXMLApp.xml was not updated",
                       server.waitForStringInLog("CWWKG0017I"));
         Thread.sleep(1000); // We need this pause so that the config change is picked up through the polling mechanism,
                             // Something more deterministic would be better.
 
         // run the "after" test to check the value of the variable after the server.xml is updated
         test(server, "/variableServerXMLApp/ServerXMLVariableServlet?testMethod=appPropertiesAfterTest");
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer();
     }
 
     private void test(LibertyServer server, String testUri) throws Exception {

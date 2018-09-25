@@ -165,6 +165,14 @@ public abstract class AbstractConfig implements WebSphereConfig {
 
     /** {@inheritDoc} */
     @Override
+    public <T> T convertValue(String rawValue, Class<T> type) {
+        @SuppressWarnings("unchecked")
+        T value = (T) conversionManager.convert(rawValue, type);
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object convertValue(String rawValue, Type type) {
         assertNotClosed();
         Object value = conversionManager.convert(rawValue, type);
