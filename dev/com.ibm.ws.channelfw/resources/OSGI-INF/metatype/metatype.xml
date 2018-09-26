@@ -72,6 +72,12 @@
         	  
         <AD name="%tcp.hostNameExcludeList" description="%tcp.hostNameExcludeList.desc"
         	id="hostNameExcludeList" required="false" type="String" default="" />
+        	
+        <AD name="%tcp.waitToAccept" description="%tcp.waitToAccept.desc" 
+        	id="waitToAccept" required="false" type="Boolean" default="false" />
+        	
+        <AD name="%tcp.acceptThread" description="%tcp.acceptThread.desc"
+        	id="acceptThread" required="false" type="Boolean" default="false" />
 
         <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>
