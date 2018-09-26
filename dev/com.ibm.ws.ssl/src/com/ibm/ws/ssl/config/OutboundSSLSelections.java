@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -37,13 +38,13 @@ public class OutboundSSLSelections {
     private static boolean warningIssued = false;
 
     // used to hold SSL configurations and outbound connection info
-    private final Map<String, String> dynamicHostPortSelections = new HashMap<String, String>();
+    private final Map<String, String> dynamicHostPortSelections = new ConcurrentHashMap<String, String>();
 
     // used to hold SSL configurations and outbound connection info
-    private final Map<String, String> dynamicHostSelections = new HashMap<String, String>();
+    private final Map<String, String> dynamicHostSelections = new ConcurrentHashMap<String, String>();
 
     // used to hold SSL configurations and outbound connection info
-    private final Map<String, String> dynamicSelections = new HashMap<String, String>();
+    private final Map<String, String> dynamicSelections = new ConcurrentHashMap<String, String>();
 
     // used to cache lookups for future use.
     private final Map<Map<String, Object>, SSLConfig> dynamicLookupCache = new HashMap<Map<String, Object>, SSLConfig>();
@@ -96,7 +97,7 @@ public class OutboundSSLSelections {
                     sslCfgAlias = sslCfgAlias + ":" + certAlias;
                 }
 
-                String port = (String) outboundEntry.get("port");
+                Integer port = (Integer) outboundEntry.get("port");
                 if (port != null) {
                     key = host + "," + port.toString();
                     if (dynamicHostPortSelections.containsKey(key)) {
@@ -104,7 +105,7 @@ public class OutboundSSLSelections {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "loadOutboundConnectionInfo", "Existing " + key + " : " + dynamicHostPortSelections.get(key) + ",  trying to add " + sslCfgAlias);
                             }
-                            issueConflictWarning(host, port, dynamicHostPortSelections.get(key));
+                            issueConflictWarning(host, port.toString(), dynamicHostPortSelections.get(key));
                         }
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -490,6 +491,22 @@ public class OutboundSSLSelections {
             match = true;
 
         return match;
+    }
+
+    public void removeDynamicSelectionsWithSSLConfig(String sslConfig) {
+        for (String dynamicSelectionInfo : dynamicSelections.keySet()) {
+            String configName = dynamicSelections.get(dynamicSelectionInfo);
+            if (configName != null && (configName.equals(sslConfig) || (configName + ":").equals(sslConfig)))
+                dynamicSelections.remove(dynamicSelectionInfo);
+
+            configName = dynamicHostSelections.get(dynamicSelectionInfo);
+            if (configName != null && (configName.equals(sslConfig) || (configName + ":").equals(sslConfig)))
+                dynamicHostSelections.remove(dynamicSelectionInfo);
+
+            configName = dynamicHostPortSelections.get(dynamicSelectionInfo);
+            if (configName != null && (configName.equals(sslConfig) || (configName + ":").equals(sslConfig)))
+                dynamicHostPortSelections.remove(dynamicSelectionInfo);
+        }
     }
 
 }
