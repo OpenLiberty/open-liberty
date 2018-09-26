@@ -39,6 +39,7 @@ import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.websphere.servlet.event.ServletErrorEvent;
 import com.ibm.websphere.servlet.event.ServletEvent;
 import com.ibm.websphere.servlet.filter.ChainedResponse;
+import com.ibm.ws.http2.upgrade.H2Exception;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor;
 import com.ibm.ws.webcontainer.srt.SRTOutputStream;
@@ -975,6 +976,10 @@ public abstract class FileServletWrapper implements IServletWrapper, IServletWra
                         "com.ibm.ws.webcontainer.servlet.FileServletWrapper.writeResponseToClient", "689", this);
       }
         } catch (IOException ioexp) {
+            if (ioexp.getCause() instanceof H2Exception) {
+                // HTTP/2 write exception: don't log as severe
+                return;
+            }
       // ignore as browser will close stream on write back
       // if last modified date is the same, defect PQ41741
       if (rethrowIOException)

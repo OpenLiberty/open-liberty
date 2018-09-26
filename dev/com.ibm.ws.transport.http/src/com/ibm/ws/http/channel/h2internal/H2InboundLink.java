@@ -859,6 +859,10 @@ public class H2InboundLink extends HttpInboundLink {
         H2StreamProcessor stream;
         for (Integer i : streamTable.keySet()) {
             stream = streamTable.get(i);
+            // notify streams waiting for a window update
+            synchronized (stream) {
+                stream.notifyAll();
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "destroying " + stream + ", " + stream.getId());
             }
@@ -1259,6 +1263,10 @@ public class H2InboundLink extends HttpInboundLink {
 
     public int getHighestClientStreamId() {
         return highestClientStreamId;
+    }
+
+    public int getHighestServerStreamId() {
+        return highestLocalStreamId;
     }
 
     /**

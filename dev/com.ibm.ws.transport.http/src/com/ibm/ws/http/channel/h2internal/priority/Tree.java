@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -506,9 +506,12 @@ public class Tree {
         while (iter.hasNext()) {
             Node depNode = iter.next();
             depNode.setParent(newParent, false);
-            int priority = (nodeToRemovePriority * depNode.getPriority()) / prioritySum;
-            if (priority == 0) {
-                priority = 1;
+            if (prioritySum != 0) {
+                int priority = (nodeToRemovePriority * depNode.getPriority()) / prioritySum;
+                if (priority == 0) {
+                    priority = 1;
+                }
+                depNode.setPriority(priority);
             }
         }
         nodeToRemove.clearDependents();
