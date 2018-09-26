@@ -52,13 +52,16 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
         ShrinkHelper.exportDropinAppToServer(server, invalidBeansXml);
     }
 
+    /**
+     * Test to ensure that an old beans.xml which was parsed by OWB is rejected as long as validation is enabled.
+     */
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEnablingBeansXmlValidation() throws Exception {
         boolean foundNetworkError = false;
         try {
-            server.startServer(true);
+            server.startServer(true); // Expect exception thrown here because the app does not start
             if (server.waitForStringInLog("WELD-001210") != null) {
                 /*
                  * WELD-001210 means that the server could not get the schema document from java.sun.com.
@@ -73,7 +76,7 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
             //I saw a failure with WELD-001208 in the logs, but not CWWKZ0002E, so I'm adding a fallback WELD-001210 check.
             //If we saw WELD-001210 before or we see it now skip the asserts.
             if (foundNetworkError == false && server.waitForStringInLog("WELD-001210") == null) {
-                assertNotNull("WELD-001208 Warning message not found", server.waitForStringInLog("WELD-001208: Error when validating wsjar:file:.*"));
+                // We don't care about what exception weld threw as long as the app failed to start
                 assertNotNull("CWWKZ0002E: An exception occurred while starting the application",
                               server.waitForStringInLog("CWWKZ0002E: An exception occurred while starting the application.*"));
             }
