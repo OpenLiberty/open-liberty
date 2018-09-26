@@ -58,5 +58,5 @@ quiesce.listeners.not.complete.explanation=One or more operations that were init
 quiesce.listeners.not.complete.useraction=No action is required.
 
 quiesce.waiting.on.threads=CWWKE1107W: {0} threads did not complete during the quiesce period. 
-quiesce.waiting.on.threads.explanation=One or more threads that was active before shutting down the server was still active at the end of the quiesce period.
+quiesce.waiting.on.threads.explanation=One or more threads that were active before shutting down the server were still active at the end of the quiesce period.
 quiesce.waiting.on.threads.useraction=No action is required. 
