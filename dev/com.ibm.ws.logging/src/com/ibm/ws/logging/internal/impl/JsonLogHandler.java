@@ -212,17 +212,17 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
     protected String getSourceNameFromDataObject(Object event) {
 
         GenericData genData = (GenericData) event;
-        String sourceType = genData.getSourceName();
+        String sourceName = genData.getSourceName();
 
-        if (sourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
+        if (sourceName.equals(CollectorConstants.MESSAGES_SOURCE)) {
             return CollectorConstants.MESSAGES_SOURCE;
-        } else if (sourceType.equals(CollectorConstants.TRACE_SOURCE)) {
+        } else if (sourceName.equals(CollectorConstants.TRACE_SOURCE)) {
             return CollectorConstants.TRACE_SOURCE;
-        } else if (sourceType.equals(CollectorConstants.ACCESS_LOG_SOURCE)) {
+        } else if (sourceName.equals(CollectorConstants.ACCESS_LOG_SOURCE)) {
             return CollectorConstants.ACCESS_LOG_SOURCE;
-        } else if (sourceType.equals(CollectorConstants.FFDC_SOURCE)) {
+        } else if (sourceName.equals(CollectorConstants.FFDC_SOURCE)) {
             return CollectorConstants.FFDC_SOURCE;
-        } else if (sourceType.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
+        } else if (sourceName.contains(CollectorConstants.AUDIT_LOG_SOURCE)) {
             return CollectorConstants.AUDIT_LOG_SOURCE;
         } else {
             return "";
