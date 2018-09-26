@@ -22,11 +22,22 @@ public class GenericData {
 
     private Integer lastIndex = -1;
 
+    //to be removed
     public GenericData() {
         pairs = new KeyValuePair[DEFAULT_SIZE];
     }
 
+    //to be removed
     public GenericData(int size) {
+        pairs = new KeyValuePair[size];
+    }
+
+    public GenericData(String sourceName) {
+        this(sourceName, DEFAULT_SIZE);
+    }
+
+    public GenericData(String sourceName, int size) {
+        this.sourceName = sourceName;
         pairs = new KeyValuePair[size];
     }
 
