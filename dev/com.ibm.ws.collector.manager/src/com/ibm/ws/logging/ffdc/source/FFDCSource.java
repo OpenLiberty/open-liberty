@@ -134,7 +134,7 @@ public class FFDCSource implements Source {
 
                 String sequenceVal = timeStampVal + "_" + String.format("%013X", seq.incrementAndGet());
                 ffdcData.setSequence(sequenceVal);
-                ffdcData.setSourceType(sourceName);
+                ffdcData.setSourceName(sourceName);
                 bufferMgr.add(ffdcData);
 
             }

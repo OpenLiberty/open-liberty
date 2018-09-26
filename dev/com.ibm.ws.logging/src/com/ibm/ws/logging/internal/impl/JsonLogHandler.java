@@ -209,10 +209,10 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         return "";
     }
 
-    protected String getSourceTypeFromDataObject(Object event) {
+    protected String getSourceNameFromDataObject(Object event) {
 
         GenericData genData = (GenericData) event;
-        String sourceType = genData.getSourceType();
+        String sourceType = genData.getSourceName();
 
         if (sourceType.equals(CollectorConstants.MESSAGES_SOURCE)) {
             return CollectorConstants.MESSAGES_SOURCE;

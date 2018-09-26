@@ -16,7 +16,7 @@ public class GenericData {
 
     private KeyValuePair[] pairs;
 
-    private String sourceType;
+    private String sourceName;
 
     private String jsonMessage = null;
 
@@ -114,12 +114,22 @@ public class GenericData {
         return pairs;
     }
 
+    // to be removed
     public String getSourceType() {
-        return sourceType;
+        return getSourceName();
     }
 
+    // to be removed
     public void setSourceType(String sourceType) {
-        this.sourceType = sourceType;
+        setSourceName(sourceType);
+    }
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 
     /** {@inheritDoc} */
@@ -130,13 +140,21 @@ public class GenericData {
         StringBuilder sb = new StringBuilder();
         String comma = ",";
         sb.append("GenericData [");
-        sb.append("type=" + sourceType);
+        /*
+         * Current FAT tests currently query logs for type=<sourceName>
+         *
+         * The source name (e.g. com.ibm.ws.logging.source.message) is essentially the "type"
+         * Do not confuse this with the "logging event type" (e.g. liberty_message) that is used for JSON logging
+         * for the JSON data object
+         *
+         */
+        sb.append("type=" + sourceName);
         for (KeyValuePair p : pairs) {
             if (p != null && !p.isList()) {
                 kvp = p;
                 key = kvp.getKey();
                 sb.append(comma);
-                if (sourceType.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
+                if (sourceName.equals("com.ibm.ws.logging.ffdc.source.ffdcsource") && key.equals("ibm_threadId")) {
                     key = "threadID";
                 }
                 if (kvp.isInteger()) {

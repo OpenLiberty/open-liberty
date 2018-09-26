@@ -76,7 +76,7 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
             throw new IllegalArgumentException("event not an instance of GenericData");
         }
 
-        String eventSourceType = getSourceTypeFromDataObject(genData);
+        String eventSourceName = getSourceNameFromDataObject(genData);
 
         /*
          * To write out to the console must determine if we are JSON or BASIC
@@ -98,13 +98,12 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
          * c) Lastly this leaves message origin from publishLogRecord()
          * - We must check if it is above consoleLogLevel to format it
          */
-        if ((format.equals(LoggingConstants.JSON_FORMAT) || !eventSourceType.equals(CollectorConstants.MESSAGES_SOURCE))
-            && (!(format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && eventSourceType.equals(CollectorConstants.TRACE_SOURCE) && isTraceStdout))) {
-            String eventsourceType = getSourceTypeFromDataObject(genData);
+        if ((format.equals(LoggingConstants.JSON_FORMAT) || !eventSourceName.equals(CollectorConstants.MESSAGES_SOURCE))
+            && (!(format.equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT) && eventSourceName.equals(CollectorConstants.TRACE_SOURCE) && isTraceStdout))) {
 
             //First retrieve a cached JSON  message if possible, if not, format it and store it.
             if (genData.getJsonMessage() == null) {
-                genData.setJsonMessage((String) formatEvent(eventsourceType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
+                genData.setJsonMessage((String) formatEvent(eventSourceName, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH));
             }
             messageOutput = genData.getJsonMessage();
 
@@ -114,17 +113,17 @@ public class ConsoleLogHandler extends JsonLogHandler implements SynchronousHand
              * we don't want to print this message out. Then check if messageOutput is null. This shouldn't happen, but if it is we need to generate the formatted
              * output
              */
-            if (eventsourceType.equals(CollectorConstants.MESSAGES_SOURCE) && levelVal != null) {
+            if (eventSourceName.equals(CollectorConstants.MESSAGES_SOURCE) && levelVal != null) {
                 if (levelVal >= consoleLogLevel || (copySystemStreams && (levelVal == WsLevel.CONFIG.intValue()))) {
                     if (messageOutput == null) {
-                        messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+                        messageOutput = (String) formatEvent(eventSourceName, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
                     }
                 } else {
                     return;
                 }
             } else {
                 if (messageOutput == null) {
-                    messageOutput = (String) formatEvent(eventsourceType, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
+                    messageOutput = (String) formatEvent(eventSourceName, CollectorConstants.MEMORY, genData, null, MAXFIELDLENGTH);
                 }
             }
 

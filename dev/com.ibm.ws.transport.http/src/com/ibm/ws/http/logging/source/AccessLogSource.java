@@ -131,7 +131,7 @@ public class AccessLogSource implements Source {
                 String sequenceVal = requestStartTimeVal + "_" + String.format("%013X", seq.incrementAndGet());
                 accessLogData.setSequence(sequenceVal);
 
-                accessLogData.setSourceType(sourceName);
+                accessLogData.setSourceName(sourceName);
 
                 bufferMgr.add(accessLogData);
 

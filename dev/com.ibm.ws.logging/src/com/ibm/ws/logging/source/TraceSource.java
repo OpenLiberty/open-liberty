@@ -144,7 +144,7 @@ public class TraceSource implements Source {
             traceData.setObjectId(objid);
         }
 
-        traceData.setSourceType(sourceName);
+        traceData.setSourceName(sourceName);
 
         return traceData;
     }
