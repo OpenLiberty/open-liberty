@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.ShardingKey;
 
+import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 import com.ibm.ws.rsadapter.jdbc.v41.WSJdbc41Connection;
 
@@ -25,12 +26,12 @@ public class WSJdbc43Connection extends WSJdbc41Connection implements Connection
 
     @Override
     public void beginRequest() throws SQLException {
-        throw new UnsupportedOperationException();
+        AdapterUtil.suppressBeginAndEndRequest();
     }
 
     @Override
     public void endRequest() throws SQLException {
-        throw new UnsupportedOperationException();
+        AdapterUtil.suppressBeginAndEndRequest();
     }
 
     @Override
