@@ -85,7 +85,7 @@ public class WSKeyStoreTest {
      */
     private String getJCEKSProviderIfAvailable() {
         String providerName = null;
-        Provider[] jceksProviders = Security.getProviders("KeyStore.JKS");
+        Provider[] jceksProviders = Security.getProviders("KeyStore.PKCS12");
         if (jceksProviders.length > 0) {
             providerName = jceksProviders[0].getName();
         }
@@ -100,8 +100,8 @@ public class WSKeyStoreTest {
         Hashtable<String, Object> storeconfig = new Hashtable<String, Object>();
         storeconfig.put("id", "allPropsKeyStore");
         storeconfig.put("password", "mytestpassword");
-        storeconfig.put("location", "testKey.jks");
-        storeconfig.put("type", "JKS");
+        storeconfig.put("location", "testKey.p12");
+        storeconfig.put("type", "PKCS12");
         storeconfig.put("fileBased", Boolean.TRUE);
         storeconfig.put("readOnly", Boolean.TRUE);
         storeconfig.put("initializeAtStartup", "false");
@@ -111,11 +111,11 @@ public class WSKeyStoreTest {
             storeconfig.put("provider", providerName);
         }
 
-        final File testKeyFile = new File("test/files/testKey.jks");
+        final File testKeyFile = new File("test/files/testKey.p12");
 
         mock.checking(new Expectations() {
             {
-                one(locMgr).resolveString("testKey.jks");
+                one(locMgr).resolveString("testKey.p12");
                 will(returnValue(testKeyFile.getAbsolutePath()));
                 one(locMgr).resolveString(testKeyFile.getAbsolutePath());
                 will(returnValue(testKeyFile.getAbsolutePath()));
@@ -125,8 +125,8 @@ public class WSKeyStoreTest {
         WSKeyStore keystore = new WSKeyStore("allPropsKeyStore", storeconfig, testConfigService);
 
         assertEquals("allPropsKeyStore", keystore.getProperty("com.ibm.ssl.keyStoreName"));
-        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("testKey.jks"));
-        assertEquals("JKS", keystore.getProperty("com.ibm.ssl.keyStoreType"));
+        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("testKey.p12"));
+        assertEquals("PKCS12", keystore.getProperty("com.ibm.ssl.keyStoreType"));
         assertEquals("true", keystore.getProperty("com.ibm.ssl.keyStoreFileBased"));
         assertEquals("true", keystore.getProperty("com.ibm.ssl.keyStoreReadOnly"));
         assertEquals("false", keystore.getProperty("com.ibm.ssl.keyStoreInitializeAtStartup"));
@@ -144,14 +144,14 @@ public class WSKeyStoreTest {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", "testKeyStore");
         props.put("password", "mytestpassword");
-        props.put("location", "testKey.jks");
-        props.put("type", "JKS");
+        props.put("location", "testKey.p12");
+        props.put("type", "PKCS12");
 
-        final File testKeyFile = new File("test/files/testKey.jks");
+        final File testKeyFile = new File("test/files/testKey.p12");
 
         mock.checking(new Expectations() {
             {
-                one(locMgr).resolveString("testKey.jks");
+                one(locMgr).resolveString("testKey.p12");
                 will(returnValue(testKeyFile.getAbsolutePath()));
                 one(locMgr).resolveString(testKeyFile.getAbsolutePath());
                 will(returnValue(testKeyFile.getAbsolutePath()));
@@ -162,8 +162,8 @@ public class WSKeyStoreTest {
 
         assertEquals("testKeyStore", keystore.getProperty("com.ibm.ssl.keyStoreName"));
         assertEquals("mytestpassword", keystore.getProperty("com.ibm.ssl.keyStorePassword"));
-        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("testKey.jks"));
-        assertEquals("JKS", keystore.getProperty("com.ibm.ssl.keyStoreType"));
+        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("testKey.p12"));
+        assertEquals("PKCS12", keystore.getProperty("com.ibm.ssl.keyStoreType"));
     }
 
     /**
@@ -178,7 +178,7 @@ public class WSKeyStoreTest {
         props.put("password", "mytestpassword");
 
         final String defaultFileName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
-        final File projectBuild = new File("../com.ibm.ws.ssl/build/tmp/key.jks");
+        final File projectBuild = new File("../com.ibm.ws.ssl/build/tmp/key.p12");
 
         mock.checking(new Expectations() {
             {
@@ -197,8 +197,8 @@ public class WSKeyStoreTest {
         WSKeyStore keystore = new WSKeyStore(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, props, testConfigService);
 
         assertEquals(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, keystore.getProperty("com.ibm.ssl.keyStoreName"));
-        assertEquals("JKS", keystore.getProperty("com.ibm.ssl.keyStoreType"));
-        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("key.jks"));
+        assertEquals("PKCS12", keystore.getProperty("com.ibm.ssl.keyStoreType"));
+        assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("key.p12"));
         assertEquals("true", keystore.getProperty("com.ibm.ssl.keyStoreInitializeAtStartup"));
     }
 
@@ -244,7 +244,7 @@ public class WSKeyStoreTest {
     public void missingLocation() throws Exception {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", "testKeyStore");
-        props.put("type", "JKS");
+        props.put("type", "PKCS12");
         props.put("password", "mytestpassword");
 
         try {
@@ -265,7 +265,7 @@ public class WSKeyStoreTest {
     public void missingType() throws Exception {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", "testKeyStore");
-        props.put("location", "key.jks");
+        props.put("location", "key.p12");
         props.put("password", "mytestpassword");
 
         try {
