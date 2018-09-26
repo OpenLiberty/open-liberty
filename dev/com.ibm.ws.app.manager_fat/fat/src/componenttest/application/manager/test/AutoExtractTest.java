@@ -41,6 +41,9 @@ import test.utils.TestUtils;
  */
 public class AutoExtractTest extends AbstractAppManagerTest {
 
+    // Our tests delete binaries while they are still defined in server.xml, so we expect this warning.
+    private static final String COULD_NOT_FIND_APP_WARNING = "CWWKZ0014W";
+
     private final Class<?> c = AutoExtractTest.class;
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("autoExtractTestServer");
@@ -264,7 +267,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
             server.removeAllInstalledAppsForValidation();
             // Ignore warning that happens because we deleted the app with it still defined in server.xml
-            server.stopServer("CWWKZ0014W");
+            server.stopServer(COULD_NOT_FIND_APP_WARNING);
         }
 
     }
@@ -398,6 +401,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             //if we failed to delete file before, try to delete it now.
             pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
             server.removeAllInstalledAppsForValidation();
+            server.stopServer(COULD_NOT_FIND_APP_WARNING);
         }
 
     }
@@ -511,7 +515,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             //if we failed to delete file before, try to delete it now.
             pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
             server.removeAllInstalledAppsForValidation();
-            server.stopServer("CWWKZ0014W");
+            server.stopServer(COULD_NOT_FIND_APP_WARNING);
         }
     }
 
