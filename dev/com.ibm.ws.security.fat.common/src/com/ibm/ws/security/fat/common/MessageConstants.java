@@ -13,5 +13,6 @@ package com.ibm.ws.security.fat.common;
 public class MessageConstants {
 
     public static final String CWWKT0016I_WEB_APP_AVAILABLE = "CWWKT0016I";
+    public static final String CWWKG0032W_CONFIG_INVALID_VALUE = "CWWKG0032W";
 
 }

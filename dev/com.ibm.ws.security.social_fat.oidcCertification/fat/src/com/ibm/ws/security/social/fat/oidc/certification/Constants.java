@@ -29,6 +29,8 @@ public class Constants extends SocialConstants {
     public static final String CONFIG_VAR_AUTHORIZATION_ENDPOINT = "oidc.certification.authorizationEndpoint";
     public static final String CONFIG_VAR_TOKEN_ENDPOINT = "oidc.certification.tokenEndpoint";
     public static final String CONFIG_VAR_JWKS_URI = "oidc.certification.jwksUri";
+    public static final String CONFIG_VAR_SIGNATURE_ALGORITHM = "oidc.certification.signatureAlgorithm";
+    public static final String CONFIG_VAR_TOKEN_ENDPOINT_AUTH_METHOD = "oidc.certification.tokenEndpointAuthMethod";
 
     public static final String CLIENT_REGISTRATION_KEY_REDIRECT_URIS = "redirect_uris";
     public static final String CLIENT_REGISTRATION_KEY_CONTACTS = "contacts";

@@ -16,9 +16,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.security.MessageDigest;
@@ -128,16 +131,21 @@ public class ThinAppTaskTest {
 
         File fatJar = workingArea.newFile(MYAPP_JAR);
         JarOutputStream fatJarStream = new JarOutputStream(new FileOutputStream(fatJar), manifest);
-        byte i = 0;
+        byte i = 0, j = 0;
         for (String filePath : FILE_PATHS) {
             ZipEntry ze = new ZipEntry(filePath);
             fatJarStream.putNextEntry(ze);
             if (!filePath.endsWith("/")) {
-                //if this is an actual file entry write some data. The content is irrelevant
-                // to the test. We only care about the structure of the zip file.
-                byte[] content = new byte[] { 'H', 'e', 'l', 'l', 'o', i++ };
                 if (LIB_PATHS.contains(filePath)) {
-                    hashes.put(filePath, hash(content));
+                    byte[] libContent = createBootInfLibContent(manifest, j++);
+                    try (InputStream is = new ByteArrayInputStream(libContent)) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            fatJarStream.write(buffer, 0, bytesRead);
+                        }
+                    }
+                    hashes.put(filePath, hash(libContent));
                     if (filePath.equals("BOOT-INF/lib/hibernate-jpa-2.1-api-1.0.0.Final.jar")) {
                         String hash = hashes.get(filePath);
                         String prefix = hash.substring(0, 2);
@@ -146,14 +154,27 @@ public class ThinAppTaskTest {
                         libraryFile = new File(libraryFile, suffix);
                         libraryFile = new File(libraryFile, "hibernate-jpa-2.1-api-1.0.0.Final.jar");
                         libraryFile.getParentFile().mkdirs();
-                        Files.write(libraryFile.toPath(), content);
+                        Files.write(libraryFile.toPath(), libContent);
                     }
+                } else {
+                    //if this is an actual file entry write some data. The content is irrelevant
+                    // to the test. We only care about the structure of the zip file.
+                    fatJarStream.write(new byte[] { 'H', 'e', 'l', 'l', 'o', i++ }, 0, 6);
                 }
-                fatJarStream.write(content, 0, 6);
+
             }
         }
         fatJarStream.close();
         return fatJar;
+    }
+
+    private byte[] createBootInfLibContent(Manifest manifest, byte j) throws IOException, FileNotFoundException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (JarOutputStream libJarStream = new JarOutputStream(out, manifest)) {
+            libJarStream.putNextEntry(new ZipEntry("hello.txt"));
+            libJarStream.write(new byte[] { 'H', 'e', 'l', 'l', 'o', j }, 0, 6);
+        }
+        return out.toByteArray();
     }
 
     private static String hash(byte[] content) throws NoSuchAlgorithmException {

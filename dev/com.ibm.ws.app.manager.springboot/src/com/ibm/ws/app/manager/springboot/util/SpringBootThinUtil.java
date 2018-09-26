@@ -36,6 +36,7 @@ import java.util.jar.JarOutputStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -55,11 +56,22 @@ public class SpringBootThinUtil {
     public static final String SPRING_LIB_INDEX_FILE = "META-INF/spring.lib.index";
     private static final String SPRING_BOOT_LOADER_CLASSPATH = "org/springframework/boot/loader/";
 
+    private static final String[] ZIP_EXTENSIONS = new String[] {
+                                                                  "jar",
+                                                                  "zip",
+                                                                  "ear", "war", "rar",
+                                                                  "eba", "esa",
+                                                                  "sar"
+    };
+
+    private static final String ZIP_EXTENSION_SPRING = "spring";
+
     public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache) throws IOException {
         this(sourceFatJar, targetThinJar, libIndexCache, null);
     }
 
     public SpringBootThinUtil(File sourceFatJar, File targetThinJar, File libIndexCache, File libIndexCacheParent) throws IOException {
+        validateNotNull(sourceFatJar, targetThinJar, libIndexCache);
         this.sourceFatJar = new JarFile(sourceFatJar);
         this.targetThinJar = targetThinJar;
         this.libIndexCache = libIndexCache;
@@ -76,6 +88,18 @@ public class SpringBootThinUtil {
         }
         this.springBootLibProvidedPath = springBootLibProvidedPath;
         this.starterFilter = getStarterFilter(this.sourceFatJar);
+    }
+
+    private void validateNotNull(File sourceFatJar, File targetThinJar, File libIndexCache) {
+        if (sourceFatJar == null) {
+            throw new IllegalStateException("Spring Boot source archive cannot be null");
+        }
+        if (targetThinJar == null) {
+            throw new IllegalStateException("Target thin archive cannot be null");
+        }
+        if (libIndexCache == null) {
+            throw new IllegalStateException("Library cache cannot be null");
+        }
     }
 
     public void execute() throws IOException, NoSuchAlgorithmException {
@@ -108,15 +132,83 @@ public class SpringBootThinUtil {
                 String hashPrefix = hash.substring(0, 2);
                 String hashSuffix = hash.substring(2, hash.length());
 
-                storeLibraryInDir(entry, hashPrefix, hashSuffix);
-
-                String libLine = "/" + path + '=' + hash;
-                libEntries.add(libLine);
+                //check if the entry is zip entry
+                if (isZip(entry)) {
+                    if (!hasZipExtension(path)) {
+                        path = path + ".jar";
+                    }
+                    storeLibraryInDir(entry, path, hashPrefix, hashSuffix);
+                    String libLine = "/" + path + '=' + hash;
+                    libEntries.add(libLine);
+                } else {
+                    throw new IllegalStateException("The entry " + path + " is not a valid zip.");
+                }
             }
         } else {
             try (InputStream is = sourceFatJar.getInputStream(entry)) {
                 writeEntry(is, thinJar, path);
             }
+        }
+    }
+
+    /**
+     * Check whether the jar entry is a zip, regardless of the extension.
+     *
+     * @param entry
+     * @return true or false telling if the jar entry is a valid zip
+     * @throws IOException
+     *
+     */
+
+    private boolean isZip(JarEntry entry) throws IOException {
+        try (InputStream entryInputStream = sourceFatJar.getInputStream(entry)) {
+            try (ZipInputStream zipInputStream = new ZipInputStream(entryInputStream)) {
+                ZipEntry ze = zipInputStream.getNextEntry();
+                if (ze == null) {
+                    return false;
+                }
+                return true;
+            }
+        }
+    }
+
+    /**
+     * Tell if a file name has a zip file type extension.
+     *
+     * These are: "jar", "zip", "ear", "war", "rar", "eba", "esa",
+     * "sar", and "spring".
+     *
+     *
+     * @param name The file name to test.
+     *
+     * @return True or false telling if the file has one of the
+     *         zip file type extensions.
+     */
+    private static boolean hasZipExtension(String name) {
+        int nameLen = name.length();
+
+        // Need '.' plus at least three characters.
+        if (nameLen < 4) {
+            return false;
+        }
+
+        // Need '.' plus at least six characters for ".spring".
+        if (nameLen >= 7) {
+            if ((name.charAt(nameLen - 7) == '.') &&
+                name.regionMatches(true, nameLen - 6, ZIP_EXTENSION_SPRING, 0, 6)) {
+                return true;
+            }
+        }
+
+        if (name.charAt(nameLen - 4) != '.') {
+            return false;
+        } else {
+            for (String ext : ZIP_EXTENSIONS) {
+                if (name.regionMatches(true, nameLen - 3, ext, 0, 3)) { // ignore case
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -158,9 +250,9 @@ public class SpringBootThinUtil {
         return stringBuffer.toString();
     }
 
-    private void storeLibraryInDir(JarEntry entry, String hashPrefix, String hashSuffix) throws IOException, NoSuchAlgorithmException {
+    private void storeLibraryInDir(JarEntry entry, String path, String hashPrefix, String hashSuffix) throws IOException, NoSuchAlgorithmException {
         String hashPath = hashPrefix + '/' + hashSuffix;
-        String libName = entry.getName();
+        String libName = path;
         int lastSlash = libName.lastIndexOf('/');
         if (lastSlash >= 0) {
             libName = libName.substring(lastSlash + 1);

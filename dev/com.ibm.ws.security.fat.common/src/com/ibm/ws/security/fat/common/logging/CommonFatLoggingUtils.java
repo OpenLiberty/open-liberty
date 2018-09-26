@@ -100,6 +100,7 @@ public class CommonFatLoggingUtils {
         Log.info(thisClass, testName, "Request URL: " + request.getUrl());
         printRequestHeaders(request, testName);
         printRequestParameters(request, testName);
+        printRequestBody(request, testName);
     }
 
     void printRequestHeaders(WebRequest request, String testName) {
@@ -118,6 +119,10 @@ public class CommonFatLoggingUtils {
                 Log.info(thisClass, testName, "Request parameter: " + req.getName() + ", set to: " + req.getValue());
             }
         }
+    }
+
+    void printRequestBody(WebRequest request, String testName) {
+        Log.info(thisClass, testName, "Request body: " + request.getRequestBody());
     }
 
     public void printResponseParts(Object response, String testName) throws Exception {
