@@ -48,4 +48,11 @@ public class WSJdbc43DataSource extends WSJdbcDataSource implements DataSource {
         WSConnectionRequestInfoImpl conRequest = new WSConnectionRequestInfoImpl(mcf, cm, builder.user, builder.password, builder.shardingKey, builder.superShardingKey);
         return super.getConnection(conRequest);
     }
+
+    /**
+     * @return true if the data source is backed by a java.sql.Driver implementation, otherwise false.
+     */
+    final boolean isBackedByDriver() {
+        return mcf.getUnderlyingDataSource() == null;
+    }
 }

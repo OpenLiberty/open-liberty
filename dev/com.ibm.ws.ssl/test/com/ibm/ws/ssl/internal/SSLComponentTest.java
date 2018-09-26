@@ -244,7 +244,6 @@ public class SSLComponentTest {
             // on each activate call.
             sslComponent.setKeyStore(keyConfig);
             sslComponent.setRepertoire(repConfig);
-            sslComponent.setSSLConfigValidator(new SSLConfigValidator());
             sslComponent.activate(componentContext, map);
 
             Map<String, Object> globalPropMap = sslComponent.getGlobalProps();
@@ -270,7 +269,6 @@ public class SSLComponentTest {
             map.put(LibertyConstants.KEY_DEFAULT_REPERTOIRE, "DefaultSSLSettings");
             map.put("com.ibm.test", "testValue");
 
-            sslComponent.setSSLConfigValidator(new SSLConfigValidator());
             sslComponent.activate(componentContext, map);
             sslComponent.setKeyStore(keyConfig);
             sslComponent.setRepertoire(repConfig);
@@ -297,7 +295,6 @@ public class SSLComponentTest {
             final Map<String, Object> map = new HashMap<String, Object>();
 
             sslComponent.setRepertoire(repConfig);
-            sslComponent.setSSLConfigValidator(new SSLConfigValidator());
             sslComponent.activate(componentContext, map);
             sslComponent.setKeyStore(keyConfig);
 
@@ -341,7 +338,6 @@ public class SSLComponentTest {
                 }
             });
 
-            sslComponent.setSSLConfigValidator(new SSLConfigValidator());
             sslComponent.activate(componentContext, new HashMap<String, Object>());
 
             Dictionary<String, Object> props = componentContext.getProperties();

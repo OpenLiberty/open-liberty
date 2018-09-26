@@ -30,6 +30,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.ShardingKey;
 import java.sql.ShardingKeyBuilder;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -1356,6 +1357,48 @@ public class JDBC43TestServlet extends FATServlet {
             ShardingKeyBuilder keybuilder = defaultDataSource.createShardingKeyBuilder();
             fail("Should not be able to create ShardingKeyBuilder when using java.sql.Driver. " + keybuilder);
         } catch (SQLFeatureNotSupportedException x) {
+        }
+    }
+
+    /**
+     * A ShardingKey that is obtained from a data source that supports sharding cannot be supplied
+     * to the connection builder for a data source that is backed by java.sql.Driver and therefore
+     * does not support sharding. When this is attempted, it must result in SQLFeatureNotSupportedException.
+     */
+    @Test
+    public void testShardingKeyNotUsableWithDriversConnectionBuilder() throws Exception {
+        ShardingKeyBuilder keybuilder = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKey key = keybuilder.subkey(Arrays.asList(23, 41, 86, 17, 95), JDBCType.ARRAY).build();
+
+        ConnectionBuilder conbuilder = defaultDataSource.createConnectionBuilder();
+
+        try {
+            conbuilder.shardingKey(key);
+            fail("Should not be able to set sharding key on connection builder that is backed by java.sql.Driver. " + keybuilder);
+        } catch (UnsupportedOperationException x) {
+        }
+
+        try {
+            conbuilder.superShardingKey(key);
+            fail("Should not be able to set super sharding key on connection builder that is backed by java.sql.Driver. " + keybuilder);
+        } catch (UnsupportedOperationException x) {
+        }
+
+        // Null values are acceptable
+
+        conbuilder.shardingKey(null);
+        conbuilder.superShardingKey(null);
+
+        Connection con = conbuilder.build();
+        try {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps.setString(1, "Northern Hills Drive NE");
+            ps.setString(2, "Rochester");
+            ps.setString(3, "MN");
+            ps.executeUpdate();
+            ps.close();
+        } finally {
+            con.close();
         }
     }
 
