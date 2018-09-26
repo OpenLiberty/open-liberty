@@ -17,8 +17,6 @@ import java.util.regex.Pattern;
 
 import javax.management.remote.JMXServiceURL;
 
-import junit.framework.Assert;
-
 import org.junit.rules.ExternalResource;
 
 import com.ibm.ws.fat.util.browser.WebBrowser;
@@ -28,9 +26,11 @@ import com.ibm.ws.fat.util.jmx.JmxException;
 import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 import com.ibm.ws.fat.util.jmx.mbeans.PluginConfigMBean;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
+import junit.framework.Assert;
 
 /**
  * <p>Encapsulates a {@link LibertyServer} and provides helper methods. Automatically starts the server before the annotated test fixture starts.</p>
@@ -177,6 +177,33 @@ public class SharedServer extends ExternalResource {
         }
     }
 
+    /**
+     * Start the server if it is not running, or do nothing if it's already running
+     *
+     * To start server without cleaning server directory or validating apps do:
+     * startIfNotStarted(false, false, false);
+     *
+     * @throws Exception if server start fails
+     */
+    public void startIfNotStarted(boolean preClean, boolean cleanStart, boolean validateApps) throws Exception {
+        LibertyServer server = this.getLibertyServer();
+        if (!server.isStarted()) {
+            String delimiter = Props.getInstance().getProperty(Props.LOGGING_BREAK_SMALL);
+            installRequiredFeatures();
+            LOG.info(delimiter);
+            LOG.info("Starting server: " + server.getServerName());
+            LOG.info(delimiter);
+            server.startServerAndValidate(preClean, cleanStart, validateApps); // throws exception if start fails
+            if (this.waitForSecurity) {
+                server.waitForStringInLog(".*CWWKS4105I: LTPA configuration is ready.*");
+                server.waitForStringInLog(".*CWWKS0008I: The security service is ready.*");
+            }
+            LOG.info(delimiter);
+            LOG.info("Server is running: " + server.getServerName());
+            LOG.info(delimiter);
+        }
+    }
+
     private void installRequiredFeatures() throws Exception {
         if (featuresToInstall.length > 0) {
             LibertyServer server = this.getLibertyServer();
@@ -231,6 +258,31 @@ public class SharedServer extends ExternalResource {
         LOG.info("Response from webBrowser: " + response.getResponseBody());
         response.verifyResponseBodyContains(expectedResponse);
         return response;
+    }
+
+    /**
+     * Submits an HTTP request at the path specified by <code>resource</code>,
+     * and verifies than an exception is thrown. For testing that servlet URL does not exist.
+     * <code>expectedResponse</code>.
+     *
+     * @param webBrowser the browser used to submit the request
+     * @param resource the resource on the shared server to request
+     *
+     * @return the HTTP response (in case further validation is required)
+     * @throws Exception if the <code>expectedResponse</code> is not contained in the HTTP response body
+     */
+    public void verifyBadUrl(WebBrowser webBrowser, String resource) throws Exception {
+        String url = this.getServerUrl(true, resource);
+        WebResponse response = null;
+        try {
+            response = webBrowser.request(url);
+        } catch (com.ibm.ws.fat.util.browser.WebBrowserException wbe) {
+            LOG.info("Caught WebBrowserException for resource [ " + resource + "].  This is expected.");
+            return; // success
+        }
+
+        LOG.info("Unexpected response from webBrowser: [" + response == null ? null : response.getResponseBody() + "]");
+        throw new Exception("Unexpected response from webBrowser");
     }
 
     /**
