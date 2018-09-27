@@ -24,6 +24,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -36,16 +38,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  * The server logs will be collected at the end, in the tearDown.
  */
 public class RuntimeQuiesceTest {
-
-    private static final String QUIESCE_LISTENER_EXCEPTION_MESSAGE = "WOOPS!";
-    private static final String QUIESCE_LISTENER_CALLED_MESSAGE = "WHEE!";
-    private static final String QUIESCE_START_MESSAGE = "CWWKE1100I";
-    private static final String SERVER_STOPPED_MESSAGE = "CWWKE0036I";
-    private static final String QUIESCE_THREADS_HUNG_WARNING = "CWWKE1107W";
-    private static final String QUIESCE_LISTENER_HUNG_WARNING = "CWWKE1106W";
-    private static final String QUIESCE_FAILURE_WARNING = "CWWKE1102W";
-    private static final String QUIESCE_SUCCESS_MESSAGE = "CWWKE1101I";
-
     private static final Class<?> c = RuntimeQuiesceTest.class;
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.runtime.quiesce.fat");
 
@@ -71,9 +63,8 @@ public class RuntimeQuiesceTest {
         }
     }
 
-    enum TestType {
-        EXCEPTION, QUIESCE_HANG, THREAD_HANG, SUCCESS
-    }
+    boolean throwException = false;
+    boolean takeForever = false;
 
     @Before
     public void setup() {
@@ -127,7 +118,7 @@ public class RuntimeQuiesceTest {
 
         // These messages flat out shouldn't be in there!
         Assert.assertNull("FAIL: for " + method.getMethodName() + ", " + server.getServerName() + " should not contain information about server quiesce",
-                          server.waitForStringInLog(QUIESCE_START_MESSAGE, 1));
+                          server.waitForStringInLog("CWWKE1100I", 1));
     }
 
     /**
@@ -142,7 +133,7 @@ public class RuntimeQuiesceTest {
         server.installSystemBundle("test.server.quiesce");
         server.installSystemFeature("quiescelistener-1.0");
 
-        startStopServer(TestType.SUCCESS);
+        startStopServer();
     }
 
     /**
@@ -158,7 +149,7 @@ public class RuntimeQuiesceTest {
         server.installUserBundle("test.server.quiesce");
         server.installUserFeature("quiescelistener-1.0");
 
-        startStopServer(TestType.SUCCESS);
+        startStopServer();
     }
 
     /**
@@ -175,7 +166,8 @@ public class RuntimeQuiesceTest {
         server.installSystemBundle("test.server.quiesce");
         server.installSystemFeature("quiescelistener-1.0");
 
-        startStopServer(TestType.EXCEPTION);
+        throwException = true;
+        startStopServer();
     }
 
     /**
@@ -187,34 +179,18 @@ public class RuntimeQuiesceTest {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testLongRunningQuiesceListener() throws Exception {
         // Add a single quiesce listener as a usr feature/bundle (SPI)
         server.setServerConfigurationFile("longrunning-quiesce-listener.server.xml");
         server.installSystemBundle("test.server.quiesce");
         server.installSystemFeature("quiescelistener-1.0");
 
-        startStopServer(TestType.QUIESCE_HANG);
+        takeForever = true;
+        startStopServer();
     }
 
-    @Test
-    public void testLongRunningThreads() throws Exception {
-        server.setServerConfigurationFile("longrunning-threads-server.xml");
-        server.installSystemBundle("test.server.quiesce");
-        server.installSystemFeature("quiescelistener-1.0");
-
-        startStopServer(TestType.THREAD_HANG);
-    }
-
-    @Test
-    public void testNonBlockingThreads() throws Exception {
-        server.setServerConfigurationFile("non-blocking-threads-server.xml");
-        server.installSystemBundle("test.server.quiesce");
-        server.installSystemFeature("quiescelistener-1.0");
-
-        startStopServer(TestType.SUCCESS);
-    }
-
-    private void startStopServer(TestType type) throws Exception {
+    private void startStopServer() throws Exception {
         // start the server, do a clean start, and do not pre-clean the logs dir
         server.startServer(method.getMethodName() + ".console.log", true, false);
 
@@ -224,53 +200,37 @@ public class RuntimeQuiesceTest {
 
         // stop the server, do not clean up the archive
         server.setMarkToEndOfLog(server.getDefaultLogFile());
-        if (type == TestType.QUIESCE_HANG)
-            server.stopServer(false, QUIESCE_LISTENER_HUNG_WARNING, QUIESCE_FAILURE_WARNING);
-        else if (type == TestType.THREAD_HANG)
-            server.stopServer(false, QUIESCE_THREADS_HUNG_WARNING, QUIESCE_FAILURE_WARNING);
+        if (takeForever)
+            server.stopServer(false, "CWWKE1102W");
         else
             server.stopServer(false);
 
         // Make sure stop has completed
         Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain warning msg about the failure to complete server quiesce",
-                             server.waitForStringInLog(SERVER_STOPPED_MESSAGE));
+                             server.waitForStringInLog("CWWKE0036I"));
 
         Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain info msg about the start of server quiesce",
-                             server.waitForStringInLog(QUIESCE_START_MESSAGE, 0));
+                             server.waitForStringInLog("CWWKE1100I", 0));
 
         Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain WHEE! because the test quiesce listener was called",
-                             server.waitForStringInLog(QUIESCE_LISTENER_CALLED_MESSAGE, 0));
+                             server.waitForStringInLog("WHEE!", 0));
 
-        if (type == TestType.EXCEPTION) {
+        if (throwException) {
             Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName()
                                  + " should contain WOOPS! because the test quiesce listener threw an exception",
-                                 server.waitForStringInLog(QUIESCE_LISTENER_EXCEPTION_MESSAGE, 0));
+                                 server.waitForStringInLog("WOOPS!", 0));
+        }
 
-        } else if (type == TestType.QUIESCE_HANG) {
+        if (takeForever) {
             Assert.assertNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should NOT contain info msg about the completion of server quiesce",
-                              server.waitForStringInLog(QUIESCE_SUCCESS_MESSAGE, 0));
+                              server.waitForStringInLog("CWWKE1101I", 0));
             Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain warning msg about the failure to complete server quiesce",
-                                 server.waitForStringInLog(QUIESCE_FAILURE_WARNING, 0));
-            Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain warning message indicating that 1 quiesce listener hung",
-                                 server.waitForStringInLog(QUIESCE_LISTENER_HUNG_WARNING, 0));
-        } else if (type == TestType.THREAD_HANG) {
-            Assert.assertNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should NOT contain info msg about the completion of server quiesce",
-                              server.waitForStringInLog(QUIESCE_SUCCESS_MESSAGE, 0));
-            Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain warning msg about the failure to complete server quiesce",
-                                 server.waitForStringInLog(QUIESCE_FAILURE_WARNING, 0));
-            String threadWarning = server.waitForStringInLog(QUIESCE_THREADS_HUNG_WARNING, 0);
-            Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain warning message about hung threads",
-                                 threadWarning);
-            threadWarning = threadWarning.substring(threadWarning.indexOf(QUIESCE_THREADS_HUNG_WARNING));
-            // We should report two hung threads, not four
-            Assert.assertTrue("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should be blocked by two threads, not four",
-                              threadWarning.contains("2") && !threadWarning.contains("4"));
-
+                                 server.waitForStringInLog("CWWKE1102W", 0));
         } else {
             Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain information about the completion of server quiesce",
-                                 server.waitForStringInLog(QUIESCE_SUCCESS_MESSAGE, 0));
+                                 server.waitForStringInLog("CWWKE1101I", 0));
             Assert.assertNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should NOT contain information about the failure to complete server quiesce",
-                              server.waitForStringInLog(QUIESCE_FAILURE_WARNING, 0));
+                              server.waitForStringInLog("CWWKE1102W", 0));
         }
     }
 
