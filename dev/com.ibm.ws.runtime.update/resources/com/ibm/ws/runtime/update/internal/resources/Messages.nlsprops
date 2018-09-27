@@ -48,3 +48,15 @@ client.quiesce.begin.useraction=No action is required.
 client.quiesce.end=CWWKE1104I: Client quiesce complete.
 client.quiesce.end.explanation=The quiesce operation completed successfully.
 client.quiesce.end.useraction=No action is required.
+
+notifications.not.complete=CWWKE1105W: {0} runtime updates did not complete during the quiesce period. 
+notifications.not.complete.explanation=One or more updates to features, configuration, or applications did not complete before the server shutdown.
+notifications.not.complete.useraction=No action is required. 
+
+quiesce.listeners.not.complete=CWWKE1106W: {0} shutdown operations did not complete during the quiesce period. 
+quiesce.listeners.not.complete.explanation=One or more operations that were initiated during the shutdown operation did not complete. 
+quiesce.listeners.not.complete.useraction=No action is required.
+
+quiesce.waiting.on.threads=CWWKE1107W: {0} threads did not complete during the quiesce period. 
+quiesce.waiting.on.threads.explanation=One or more threads that were active before shutting down the server were still active at the end of the quiesce period.
+quiesce.waiting.on.threads.useraction=No action is required. 
