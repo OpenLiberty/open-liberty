@@ -20,6 +20,9 @@ public class WebResponseUtils {
             Log.info(thisClass, "getResponseText", "pageOrResponse is null");
             return null;
         }
+        if (pageOrResponse instanceof String) {
+            return (String) pageOrResponse;
+        }
         if (pageOrResponse instanceof com.meterware.httpunit.WebResponse) {
             return ((com.meterware.httpunit.WebResponse) pageOrResponse).getText();
         }
