@@ -14,11 +14,41 @@
  * Depends on bnd_* values from gradle.properties.
  */
 
+pluginManagement {
+    repositories {
+      Properties props = new Properties()
+
+      File usrHomeProps = file(System.properties['user.home'] + '/gradle.startup.properties')
+      if (!usrHomeProps.exists()) {
+        if (System.properties['build.properties.path']!=null) {
+          usrHomeProps = file(System.properties['build.properties.path']);
+        }
+      }
+
+      if (usrHomeProps.exists()) {
+        usrHomeProps.withInputStream { props.load(it) }
+      }
+
+      if ((props.getProperty("artifactory.download.server") != null) && !props.getProperty('artifactory.force.external.repo')) {
+        maven {
+            credentials {
+                username props.getProperty("artifactory.download.user")
+                password props.getProperty("artifactory.download.token")
+            }
+            url ("https://" + props.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+        }
+      } else {
+        maven {
+          url "https://plugins.gradle.org/m2/"
+        }
+      }
+    }
+}
+
 /* Construct a properties file to store build-time variables. generated.properties is used to pass information from
  * Gradle during initialization into bnd during configuration for use in cnf/build.bnd.
  */
 buildscript {
-  
   Properties props = new Properties()
 
   // Properties for automated-build relevant tasks. These assignments below are defaults for when building locally
@@ -243,21 +273,13 @@ buildscript {
 
 }
 
-
-
 private boolean parseBoolean(String value) {
   return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
 }
 
-
-/* Add bnd gradle plugin as a script dependency */
-
-
-
 /* Initialize the bnd workspace */
 import aQute.bnd.build.Workspace
 import aQute.bnd.osgi.Constants
-
 import java.text.SimpleDateFormat
 
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
