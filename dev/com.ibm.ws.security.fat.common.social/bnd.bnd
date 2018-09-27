@@ -26,7 +26,8 @@ Import-Package: \
 Private-Package: \
 
 src: \
-    src
+    src, \
+    test-applications/formlogin.social/src
 
 test.project: true
 publish.wlp.jar.disabled: true
@@ -46,7 +47,10 @@ publish.wlp.jar.disabled: true
     net.sourceforge.htmlunit:htmlunit;version=2.27, \
     com.ibm.ws.org.apache.commons.lang3;version=latest, \
     com.ibm.ws.security.fat.common;version=latest, \
-    com.ibm.ws.security.social;version=latest
+    com.ibm.ws.security.social;version=latest, \
+    com.ibm.websphere.security;version=latest, \
+    com.ibm.ws.security.token;version=latest, \
+    com.ibm.ws.security.jwt;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
