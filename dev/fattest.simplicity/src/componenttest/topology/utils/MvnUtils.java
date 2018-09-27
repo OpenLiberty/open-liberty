@@ -69,6 +69,7 @@ public class MvnUtils {
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "30";
     private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "20";
+    private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
     public static File resultsDir;
     public static File componentRootDir;
     public static String wlp;
@@ -163,7 +164,8 @@ public class MvnUtils {
                                    "-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT,
                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost),
                                    "-DtargetDirectory=" + resultsDir.getAbsolutePath() + "/" + targetFolder,
-                                   "-DcomponentRootDir=" + componentRootDir
+                                   "-DcomponentRootDir=" + componentRootDir,
+                                   "-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT
         };
 
         mvnCliRoot = concatStringArray(mvnCliRaw, getJarCliProperties(server, jarsFromWlp));
