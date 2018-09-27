@@ -14,9 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAnyAttribute;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -27,12 +24,12 @@ import org.w3c.dom.Element;
  */
 public class ConfigElement implements Cloneable {
 
-    @XmlAnyAttribute
     private Map<QName, Object> extraAttributes;
 
-    @XmlAnyElement
+    @SuppressWarnings("unused")
     private List<Element> extraElements;
 
+    public static String XML_ATTRIBUTE_NAME_ID = "id";
     private String id;
 
     /**
@@ -45,14 +42,14 @@ public class ConfigElement implements Cloneable {
     /**
      * @param id the unique identifier of this configuration element
      */
-    @XmlAttribute
     public void setId(String id) {
         this.id = getValue(id);
     }
 
-    /**  Sets an attribute on this element that does not have an explicit setter.
-     *     
-     * @param name the name
+    /**
+     * Sets an attribute on this element that does not have an explicit setter.
+     *
+     * @param name  the name
      * @param value the value
      */
     public void setExtraAttribute(String name, String value) {
@@ -72,7 +69,7 @@ public class ConfigElement implements Cloneable {
      * syntax and return a real or null value
      *
      * @param value
-     *            an unchecked input value
+     *                  an unchecked input value
      * @return the real value described by the input value
      */
     public static String getValue(String value) {
@@ -91,7 +88,7 @@ public class ConfigElement implements Cloneable {
      * exist.
      *
      * @param arg
-     *            The argument you want to parse
+     *                The argument you want to parse
      * @return The argument, without leading and trailing quotes
      */
     public static String removeQuotes(String arg) {
@@ -110,8 +107,9 @@ public class ConfigElement implements Cloneable {
      * For example, with this in server config: {@code <variable name="key" value="val"/>}
      *
      * Calling <code> expandVariable(config, "${key}"); </code> would return "val"
+     *
      * @param config The server configuration
-     * @param value The raw value of a variable with brackets
+     * @param value  The raw value of a variable with brackets
      * @return The value of the expanded string.
      */
     public static String expand(ServerConfiguration config, String value) {

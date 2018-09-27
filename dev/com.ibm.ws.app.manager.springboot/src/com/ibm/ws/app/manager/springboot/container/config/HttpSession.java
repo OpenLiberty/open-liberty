@@ -10,51 +10,109 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * Defines configuration attributes of the HTTP Session Manager
  *
  */
 public class HttpSession extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_STORAGE_REF = "storageRef";
     private String storageRef;
+
+    public final static String XML_ATTRIBUTE_NAME_SSL_TRACKING_ENABLED = "sslTrackingEnabled";
     private Boolean sslTrackingEnabled;
+
+    public final static String XML_ATTRIBUTE_NAME_URL_REWRITING_ENABLED = "urlRewritingEnabled";
     private Boolean urlRewritingEnabled;
+
+    public final static String XML_ATTRIBUTE_NAME_PROTOCOL_SWITCH_REWRITING_ENABLED = "protocolSwitchRewritingEnabled";
     private Boolean protocolSwitchRewritingEnabled;
+
+    public final static String XML_ATTRIBUTE_NAME_COOKIES_ENABLED = "cookiesEnabled";
     private Boolean cookiesEnabled;
+
+    public final static String XML_ATTRIBUTE_NAME_COOKIE_NAME = "cookieName";
     private String cookieName;
+
+    public final static String XML_ATTRIBUTE_NAME_COOKIE_DOMAIN = "cookieDomain";
     private String cookieDomain;
+
+    public final static String XML_ATTRIBUTE_NAME_COOKIE_MAX_AGE = "cookieMaxAge";
     private Integer cookieMaxAge;
+
+    public final static String XML_ATTRIBUTE_NAME_COOKIE_PATH = "cookiePath";
     private String cookiePath;
+
+    public final static String XML_ATTRIBUTE_NAME_COOKIE_SECURE = "cookieSecure";
     private Boolean cookieSecure;
+
+    public final static String XML_ATTRIBUTE_NAME_COOKIE_HTTP_ONLY = "cookieHttpOnly";
     private Boolean cookieHttpOnly;
+
+    public final static String XML_ATTRIBUTE_NAME_MAX_IN_MEMORY_SESSION_COUNT = "maxInMemorySessionCount";
     private Integer maxInMemorySessionCount;
+
+    public final static String XML_ATTRIBUTE_NAME_ALLOW_OVERFLOW = "allowOverflow";
     private Boolean allowOverflow;
+
+    public final static String XML_ATTRIBUTE_NAME_INVALIDATION_TIMEOUT = "invalidationTimeout";
     private Integer invalidationTimeout;
+
+    public final static String XML_ATTRIBUTE_NAME_SECURITY_INTEGRATION_ENABLED = "securityIntegrationEnabled";
     private Boolean securityIntegrationEnabled;
+
+    public final static String XML_ATTRIBUTE_NAME_ID_LENGTH = "idLength";
     private Integer idLength;
+
+    public final static String XML_ATTRIBUTE_NAMEUSE_CONTEXT_ROOT_AS_COOKIE_PATH = "useContextRootAsCookiePath";
     private Boolean useContextRootAsCookiePath;
+
+    public final static String XML_ATTRIBUTE_NAME_ALWAYS_ENCODE_URL = "alwaysEncodeUrl";
     private Boolean alwaysEncodeUrl;
+
+    public final static String XML_ATTRIBUTE_NAME_CLONE_ID = "cloneId";
     private String cloneId;
+
+    public final static String XML_ATTRIBUTE_NAME_CLONE_SEPARATOR = "cloneSeparator";
     private String cloneSeparator;
+
+    public final static String XML_ATTRIBUTE_NAME_DEBUG_CROSSOVER = "debugCrossover";
     private Boolean debugCrossover;
+
+    public final static String XML_ATTRIBUTE_NAME_FORCE_INVALIDATION_MULTIPLE = "forceInvalidationMultiple";
     private Integer forceInvalidationMultiple;
+
+    public final static String XML_ATTRIBUTE_NAME_ID_REUSE = "idReuse";
     private Boolean idReuse;
+
+    public final static String XML_ATTRIBUTE_NAME_NO_ADDITIONAL_INFO = "noAdditionalInfo";
     private Boolean noAdditionalInfo;
+
+    public final static String XML_ATTRIBUTE_NAME_REAPER_POLL_INTERVAL = "reaperPollInterval";
     private Long reaperPollInterval;
+
+    public final static String XML_ATTRIBUTE_NAME_REWRITE_ID = "rewriteId";
     private String rewriteId;
+
+    public final static String XML_ATTRIBUTE_NAME_SECURITY_USER_IGNORE_CASE = "securityUserIgnoreCase";
     private Boolean securityUserIgnoreCase;
+
+    public final static String XML_ATTRIBUTE_NAME_THROW_SECURITY_EXCEPTION_ON_GET_SESSION_FALSE = "throwSecurityExceptionOnGetSessionFalse";
     private Boolean throwSecurityExceptionOnGetSessionFalse;
+
+    public final static String XML_ATTRIBUTE_NAME_ALLOW_SERIALIZE_ACCESS = "allowSerializedAccess";
     private Boolean allowSerializedAccess;
+
+    public final static String XML_ATTRIBUTE_NAME_ACCES_ON_TIMEOUT = "accessOnTimeout";
     private Boolean accessOnTimeout;
+
+    public final static String XML_ATTRIBUTE_NAME_MAX_WAIT_TIME = "maxWaitTime";
     private Integer maxWaitTime;
 
     public String getStorageRef() {
         return storageRef;
     }
 
-    @XmlAttribute
     public void setStorageRef(String storageRef) {
         this.storageRef = storageRef;
     }
@@ -69,7 +127,6 @@ public class HttpSession extends ConfigElement {
     /**
      * @param invalidationTimeout the number of minutes before sessions become eligible for invalidation
      */
-    @XmlAttribute
     public void setInvalidationTimeout(Integer invalidationTimeout) {
         this.invalidationTimeout = invalidationTimeout;
     }
@@ -78,7 +135,6 @@ public class HttpSession extends ConfigElement {
         return this.sslTrackingEnabled;
     }
 
-    @XmlAttribute
     public void setSslTrackingEnabled(Boolean sslTrackingEnabled) {
         this.sslTrackingEnabled = sslTrackingEnabled;
     }
@@ -87,7 +143,6 @@ public class HttpSession extends ConfigElement {
         return this.urlRewritingEnabled;
     }
 
-    @XmlAttribute
     public void setUrlRewritingEnabled(Boolean urlRewritingEnabled) {
         this.urlRewritingEnabled = urlRewritingEnabled;
     }
@@ -96,7 +151,6 @@ public class HttpSession extends ConfigElement {
         return this.protocolSwitchRewritingEnabled;
     }
 
-    @XmlAttribute
     public void setProtocolSwitchRewritingEnabled(Boolean protocolSwitchRewritingEnabled) {
         this.protocolSwitchRewritingEnabled = protocolSwitchRewritingEnabled;
     }
@@ -105,7 +159,6 @@ public class HttpSession extends ConfigElement {
         return this.cookiesEnabled;
     }
 
-    @XmlAttribute
     public void setCookiesEnabled(Boolean cookiesEnabled) {
         this.cookiesEnabled = cookiesEnabled;
     }
@@ -114,7 +167,6 @@ public class HttpSession extends ConfigElement {
         return this.cookieName;
     }
 
-    @XmlAttribute
     public void setCookieName(String cookieName) {
         this.cookieName = ConfigElement.getValue(cookieName);
     }
@@ -123,7 +175,6 @@ public class HttpSession extends ConfigElement {
         return this.cookieDomain;
     }
 
-    @XmlAttribute
     public void setCookieDomain(String cookieDomain) {
         this.cookieDomain = ConfigElement.getValue(cookieDomain);
     }
@@ -132,7 +183,6 @@ public class HttpSession extends ConfigElement {
         return this.cookieMaxAge;
     }
 
-    @XmlAttribute
     public void setCookieMaxAge(Integer cookieMaxAge) {
         this.cookieMaxAge = cookieMaxAge;
     }
@@ -141,7 +191,6 @@ public class HttpSession extends ConfigElement {
         return this.cookiePath;
     }
 
-    @XmlAttribute
     public void setCookiePath(String cookiePath) {
         this.cookiePath = ConfigElement.getValue(cookiePath);
     }
@@ -150,7 +199,6 @@ public class HttpSession extends ConfigElement {
         return this.cookieSecure;
     }
 
-    @XmlAttribute
     public void setCookieSecure(Boolean cookieSecure) {
         this.cookieSecure = cookieSecure;
     }
@@ -159,7 +207,6 @@ public class HttpSession extends ConfigElement {
         return this.maxInMemorySessionCount;
     }
 
-    @XmlAttribute
     public void setMaxInMemorySessionCount(Integer maxInMemorySessionCount) {
         this.maxInMemorySessionCount = maxInMemorySessionCount;
     }
@@ -168,7 +215,6 @@ public class HttpSession extends ConfigElement {
         return this.allowOverflow;
     }
 
-    @XmlAttribute
     public void setAllowOverflow(Boolean allowOverflow) {
         this.allowOverflow = allowOverflow;
     }
@@ -177,7 +223,6 @@ public class HttpSession extends ConfigElement {
         return this.securityIntegrationEnabled;
     }
 
-    @XmlAttribute
     public void setSecurityIntegrationEnabled(Boolean securityIntegrationEnabled) {
         this.securityIntegrationEnabled = securityIntegrationEnabled;
     }
@@ -186,7 +231,6 @@ public class HttpSession extends ConfigElement {
         return this.idLength;
     }
 
-    @XmlAttribute
     public void setIdLength(Integer idLength) {
         this.idLength = idLength;
     }
@@ -195,7 +239,6 @@ public class HttpSession extends ConfigElement {
         return useContextRootAsCookiePath;
     }
 
-    @XmlAttribute
     public void setUseContextRootAsCookiePath(Boolean useContextRootAsCookiePath) {
         this.useContextRootAsCookiePath = useContextRootAsCookiePath;
     }
@@ -204,7 +247,6 @@ public class HttpSession extends ConfigElement {
         return alwaysEncodeUrl;
     }
 
-    @XmlAttribute
     public void setAlwaysEncodeUrl(Boolean alwaysEncodeUrl) {
         this.alwaysEncodeUrl = alwaysEncodeUrl;
     }
@@ -213,7 +255,6 @@ public class HttpSession extends ConfigElement {
         return cloneId;
     }
 
-    @XmlAttribute
     public void setCloneId(String cloneId) {
         this.cloneId = cloneId;
     }
@@ -222,7 +263,6 @@ public class HttpSession extends ConfigElement {
         return cloneSeparator;
     }
 
-    @XmlAttribute
     public void setCloneSeparator(String cloneSeparator) {
         this.cloneSeparator = cloneSeparator;
     }
@@ -231,7 +271,6 @@ public class HttpSession extends ConfigElement {
         return debugCrossover;
     }
 
-    @XmlAttribute
     public void setDebugCrossover(Boolean debugCrossover) {
         this.debugCrossover = debugCrossover;
     }
@@ -240,7 +279,6 @@ public class HttpSession extends ConfigElement {
         return forceInvalidationMultiple;
     }
 
-    @XmlAttribute
     public void setForceInvalidationMultiple(Integer forceInvalidationMultiple) {
         this.forceInvalidationMultiple = forceInvalidationMultiple;
     }
@@ -249,7 +287,6 @@ public class HttpSession extends ConfigElement {
         return idReuse;
     }
 
-    @XmlAttribute
     public void setIdReuse(Boolean idReuse) {
         this.idReuse = idReuse;
     }
@@ -258,7 +295,6 @@ public class HttpSession extends ConfigElement {
         return noAdditionalInfo;
     }
 
-    @XmlAttribute
     public void setNoAdditionalInfo(Boolean noAdditionalInfo) {
         this.noAdditionalInfo = noAdditionalInfo;
     }
@@ -267,7 +303,6 @@ public class HttpSession extends ConfigElement {
         return reaperPollInterval;
     }
 
-    @XmlAttribute
     public void setReaperPollInterval(Long reaperPollInterval) {
         this.reaperPollInterval = reaperPollInterval;
     }
@@ -276,7 +311,6 @@ public class HttpSession extends ConfigElement {
         return rewriteId;
     }
 
-    @XmlAttribute
     public void setRewriteId(String rewriteId) {
         this.rewriteId = rewriteId;
     }
@@ -285,7 +319,6 @@ public class HttpSession extends ConfigElement {
         return securityUserIgnoreCase;
     }
 
-    @XmlAttribute
     public void setSecurityUserIgnoreCase(Boolean securityUserIgnoreCase) {
         this.securityUserIgnoreCase = securityUserIgnoreCase;
     }
@@ -314,7 +347,6 @@ public class HttpSession extends ConfigElement {
         return this.cookieHttpOnly;
     }
 
-    @XmlAttribute
     public void setCookieHttpOnly(Boolean cookieHttpOnly) {
         this.cookieHttpOnly = cookieHttpOnly;
     }
@@ -331,7 +363,6 @@ public class HttpSession extends ConfigElement {
         return throwSecurityExceptionOnGetSessionFalse;
     }
 
-    @XmlAttribute
     public void setThrowSecurityExceptionOnGetSessionFalse(Boolean throwSecurityExceptionOnGetSessionFalse) {
         this.throwSecurityExceptionOnGetSessionFalse = throwSecurityExceptionOnGetSessionFalse;
     }
@@ -340,7 +371,6 @@ public class HttpSession extends ConfigElement {
         return allowSerializedAccess;
     }
 
-    @XmlAttribute
     public void setAllowSerializedAccess(Boolean allowSerializedAccess) {
         this.allowSerializedAccess = allowSerializedAccess;
     }
@@ -349,7 +379,6 @@ public class HttpSession extends ConfigElement {
         return accessOnTimeout;
     }
 
-    @XmlAttribute
     public void setAccessOnTimeout(Boolean accessOnTimeout) {
         this.accessOnTimeout = accessOnTimeout;
     }
@@ -358,7 +387,6 @@ public class HttpSession extends ConfigElement {
         return maxWaitTime;
     }
 
-    @XmlAttribute
     public void setMaxWaitTime(Integer maxWaitTime) {
         this.maxWaitTime = maxWaitTime;
     }

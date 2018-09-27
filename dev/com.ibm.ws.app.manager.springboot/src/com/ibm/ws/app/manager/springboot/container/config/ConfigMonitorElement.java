@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * <p>
  * This represents an XML element for the server configuration monitor such as:
@@ -20,8 +18,10 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class ConfigMonitorElement extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_UPDATE_TRIGGER = "updateTrigger";
     private String updateTrigger;
 
+    public final static String XML_ATTRIBUTE_NAME_MONITOR_INTERVAL = "monitorInterval";
     private String monitorInterval;
 
     /**
@@ -34,7 +34,6 @@ public class ConfigMonitorElement extends ConfigElement {
     /**
      * @param updateTrigger the updateTrigger to set
      */
-    @XmlAttribute(name = "updateTrigger")
     public void setUpdateTrigger(String updateTrigger) {
         this.updateTrigger = updateTrigger;
     }
@@ -49,7 +48,6 @@ public class ConfigMonitorElement extends ConfigElement {
     /**
      * @param monitorInterval the monitorInterval to set
      */
-    @XmlAttribute(name = "monitorInterval")
     public void setMonitorInterval(String monitorInterval) {
         this.monitorInterval = monitorInterval;
     }

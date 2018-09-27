@@ -10,16 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * A file on the file system local to the server configuration. Note
  * that these file may be remote to the local JVM.
- * 
- * 
+ *
+ *
  */
 public class File extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_NAME = "name";
     private String name;
 
     /**
@@ -32,7 +31,6 @@ public class File extends ConfigElement {
     /**
      * @param name value to use for the name attribute
      */
-    @XmlAttribute
     public void setName(String name) {
         this.name = ConfigElement.getValue(name);
     }
