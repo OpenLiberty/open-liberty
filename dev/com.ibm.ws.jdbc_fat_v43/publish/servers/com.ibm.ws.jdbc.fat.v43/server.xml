@@ -32,6 +32,11 @@
     <properties databaseName="memory:testdb;create=true"/>
   </dataSource>
 
+  <dataSource jndiName="jdbc/matchCurrentState" type="javax.sql.ConnectionPoolDataSource" connectionSharing="MatchCurrentState">
+    <jdbcDriver libraryRef="D43Lib"/>
+    <properties databaseName="memory:testdb;create=true"/>
+  </dataSource>
+
   <dataSource jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource">
     <connectionManager maxPoolSize="1"/>
     <jdbcDriver libraryRef="D43Lib"/>
