@@ -11,12 +11,9 @@
 package test.server.quiesce;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
@@ -28,8 +25,6 @@ public class TestQuiesceListener implements ServerQuiesceListener {
 
     boolean throwException = false;
     boolean takeForever = false;
-    boolean startThreadsAfterStop = false;
-    ExecutorService executorService;
 
     @Activate
     protected void activate(Map<String, Object> newConfig) {
@@ -37,23 +32,6 @@ public class TestQuiesceListener implements ServerQuiesceListener {
 
         throwException = (Boolean) newConfig.get("throwException");
         takeForever = (Boolean) newConfig.get("takeForever");
-        startThreadsAfterStop = (Boolean) newConfig.get("startThreadsAfterStop");
-
-        if ((Boolean) newConfig.get("startThreadsWhileRunning")) {
-            // Start a couple of threads. These should block shutdown
-            Runnable r = new Runnable() {
-
-                @Override
-                public void run() {
-                    while (true) {
-                    }
-
-                }
-            };
-            executorService.submit(r);
-            executorService.submit(r);
-        }
-
     }
 
     @Override
@@ -75,27 +53,5 @@ public class TestQuiesceListener implements ServerQuiesceListener {
             while (true) {
             }
         }
-
-        if (startThreadsAfterStop) {
-            // Start a couple of threads. These should not block shutdown
-            Runnable r = new Runnable() {
-
-                @Override
-                public void run() {
-                    while (true) {
-                    }
-
-                }
-            };
-            executorService.submit(r);
-            executorService.submit(r);
-        }
     }
-
-    @Reference(service = ExecutorService.class,
-               cardinality = ReferenceCardinality.MANDATORY)
-    protected void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
 }
