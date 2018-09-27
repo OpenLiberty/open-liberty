@@ -218,7 +218,10 @@ public class JDBC43Runtime implements JDBCRuntimeVersion {
     @Override
     public void doSetShardingKeys(Connection con, Object shardingKey, Object superShardingKey) throws SQLException {
         try {
-            con.setShardingKey((ShardingKey) shardingKey, (ShardingKey) superShardingKey);
+            if (superShardingKey == SUPER_SHARDING_KEY_UNCHANGED)
+                con.setShardingKey((ShardingKey) shardingKey);
+            else
+                con.setShardingKey((ShardingKey) shardingKey, (ShardingKey) superShardingKey);
         } catch (IncompatibleClassChangeError e) { // pre-4.3 driver
             throw new SQLFeatureNotSupportedException(e);
         }
