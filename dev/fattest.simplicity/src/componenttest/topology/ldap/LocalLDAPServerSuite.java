@@ -43,11 +43,11 @@ public class LocalLDAPServerSuite {
     public static void setUp() throws Exception {
         String method = "setUp";
         Log.entering(c, method);
-
+        System.setProperty("com.sun.jndi.ldap.object.disableEndpointIdentification", "true");
+        Log.info(c, method, "Endpoint identification was set to true");
         // Check if physical LDAP servers are up, if not then use in-memory LDAP
         if (!LDAPUtils.USE_LOCAL_LDAP_SERVER || !isInMemoryAllowed) {
             // Workaround property for OpenJDKs sun JNDI implementation
-            System.setProperty("com.sun.jndi.ldap.object.disableEndpointIdentification", "true");
             boolean isLdapServersAvailable = false;
             if (testServers != null) {
                 Set<String> primaryServers = testServers.keySet();
