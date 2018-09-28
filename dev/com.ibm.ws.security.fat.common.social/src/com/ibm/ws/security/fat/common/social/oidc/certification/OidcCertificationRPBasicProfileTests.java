@@ -8,21 +8,15 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.social.fat.oidc.certification;
+package com.ibm.ws.security.fat.common.social.oidc.certification;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -34,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebRequest;
@@ -42,7 +35,6 @@ import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.Constants.JsonCheckType;
 import com.ibm.ws.security.fat.common.Constants.StringCheckType;
@@ -59,8 +51,6 @@ import com.ibm.ws.security.fat.common.utils.FatStringUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
-import componenttest.annotation.Server;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -71,55 +61,41 @@ import componenttest.topology.impl.LibertyServer;
  * This class should encompass all tests required for the minimal certification for the Basic RP profile.
  */
 @Mode(TestMode.LITE)
-@RunWith(FATRunner.class)
-public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
+public abstract class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
 
     public static Class<?> thisClass = OidcCertificationRPBasicProfileTests.class;
 
-    @Server("com.ibm.ws.security.social_fat.oidcCertification")
-    public static LibertyServer server;
+    public static final String CERTIFICATION_HOST_AND_PORT = "https://rp.certification.openid.net:8080";
 
-    static TestActions actions = new TestActions();
-    static TestValidationUtils validationUtils = new TestValidationUtils();
+    protected static TestActions actions = new TestActions();
+    protected static TestValidationUtils validationUtils = new TestValidationUtils();
 
-    /** Identifies the RP so the certification host can keep track of server-visible results for us */
-    private static final String RP_ID = Constants.CERTIFICATION_RP_ID + ".code";
-    private static final String CERTIFICATION_HOST_AND_PORT = "https://rp.certification.openid.net:8080";
-    private static final String CERTIFICATION_BASE_URL = CERTIFICATION_HOST_AND_PORT + "/" + RP_ID;
-
-    private final String defaultOidcLogin = "oidcLogin1";
-    private final String protectedUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + "/formlogin/SimpleServlet";
-    private final String codeCookiePatternString = Pattern.quote("cookie: " + Constants.CODE_COOKIE_NAME + " value: ") + "([^_]+)_";
     /** Required for the certification provider's client registration request. Must have a valid email format. */
-    private final String clientRegistrationContact = "oidc_certification_contact@us.ibm.com";
-    private final String defaultScope = "openid";
-    private final String defaultSignatureAlgorithm = "RS256";
-    private final String defaultTokenEndpointAuthMethod = "client_secret_post";
+    protected final String clientRegistrationContact = "oidc_certification_contact@us.ibm.com";
+    protected final String defaultScope = "openid";
+    protected final String defaultSignatureAlgorithm = "RS256";
 
-    private enum UserInfo {
+    // NOTE: These values must be set by extending classes in order for the tests to work
+    protected static LibertyServer server;
+    protected static String protectedUrl = null;
+    protected static String certificationBaseUrl = null;
+    /** Identifies the RP so the certification host can keep track of server-visible results for us */
+    protected static String rpId = null;
+    protected static String clientId = null;
+    protected static String defaultTokenEndpointAuthMethod = "client_secret_post";
+
+    protected enum UserInfo {
         DISABLED, ENABLED
     };
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void commonBeforeClass() {
         verifyCertificationEndpointIsResponding();
-
-        serverTracker.addServer(server);
-
-        List<String> waitForMessages = new ArrayList<String>();
-        waitForMessages.add(MessageConstants.CWWKT0016I_WEB_APP_AVAILABLE + ".*" + Constants.DEFAULT_CONTEXT_ROOT);
-
-        List<String> ignoreStartupMessages = new ArrayList<String>();
-        ignoreStartupMessages.add(MessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".*" + "tokenEndpointAuthMethod");
-        ignoreStartupMessages.add(MessageConstants.CWWKG0083W_CONFIG_INVALID_VALUE_USING_DEFAULT + ".*" + "userInfoEndpointEnabled");
-        server.addIgnoredErrors(ignoreStartupMessages);
-
-        server.startServerUsingConfiguration(Constants.CONFIGS_DIR + "server_oidcCertification.xml", waitForMessages);
     }
 
-    private static void verifyCertificationEndpointIsResponding() {
+    protected static void verifyCertificationEndpointIsResponding() {
         String method = "verifyCertificationEndpointIsResponding";
-        String endpoint = CERTIFICATION_BASE_URL;
+        String endpoint = CERTIFICATION_HOST_AND_PORT;
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(method, HttpServletResponse.SC_OK));
         try {
@@ -141,14 +117,20 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         String conformanceTestName = "rp-response_type-code";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
-
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
 
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.DISABLED);
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_response_type_code(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_response_type_code(String conformanceTestName, String assignedUserName) {
+        return getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.DISABLED);
     }
 
     /**
@@ -157,23 +139,27 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - The "iss" claim in the ID token returned from the OP does not match the expected issuer of the token
      * Expected Results:
      * - 401 when accessing the protected resource
-     * - CWWKS1751E message should be logged saying the issuer in the ID token does not match the expected issuer value
+     * - Error message should be logged saying the issuer in the ID token does not match the expected issuer value
      */
     @Test
     public void test_idTokenIssuerMismatch() throws Exception {
         String conformanceTestName = "rp-id_token-issuer-mismatch";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        JsonObject rpConfig = registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        String clientId = clientConfig.getString(Constants.RP_KEY_CLIENT_ID);
-
-        Expectations expectations = getUnauthorizedResponseExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR + ".+" + clientId));
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        Expectations expectations = getTestExpectations_rp_id_token_issuer_mismatch(rpConfig);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
         validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_issuer_mismatch(JsonObject rpConfig) {
+        String clientId = rpConfig.getString(Constants.RP_KEY_CLIENT_ID);
+        Expectations expectations = getUnauthorizedResponseExpectations();
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR + ".+" + clientId));
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        return expectations;
     }
 
     /**
@@ -182,23 +168,26 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - The ID token returned from the OP does not contain a "sub" claim
      * Expected Results:
      * - 401 when accessing the protected resource
-     * - CWWKS1706E message should be logged saying the OIDC client failed to validate the ID token because the "sub" claim was
-     * missing
+     * - Error message should be logged saying the OIDC client failed to validate the ID token because the "sub" claim was missing
      */
     @Test
     public void test_idTokenMissingSub() throws Exception {
         String conformanceTestName = "rp-id_token-sub";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        JsonObject rpConfig = registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        String clientId = clientConfig.getString(Constants.RP_KEY_CLIENT_ID);
-
-        Expectations expectations = getUnauthorizedResponseExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId + ".+" + "No Subject.+claim"));
+        Expectations expectations = getTestExpectations_rp_id_token_sub(rpConfig);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
         validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_sub(JsonObject rpConfig) {
+        String clientId = rpConfig.getString(Constants.RP_KEY_CLIENT_ID);
+        Expectations expectations = getUnauthorizedResponseExpectations();
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId + ".+" + "No Subject.+claim"));
+        return expectations;
     }
 
     /**
@@ -207,23 +196,26 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - The ID token returned from the OP does not contain an "aud" claim
      * Expected Results:
      * - 401 when accessing the protected resource
-     * - CWWKS1754E message should be logged saying the OIDC client failed to validate the ID token because the "aud" claim
-     * doesn't match the client ID
+     * - Error message should be logged saying ID token validation failed because the "aud" claim doesn't match the client ID
      */
     @Test
     public void test_idTokenInvalidAud() throws Exception {
         String conformanceTestName = "rp-id_token-aud";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        JsonObject rpConfig = registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        String clientId = clientConfig.getString(Constants.RP_KEY_CLIENT_ID);
-
-        Expectations expectations = getUnauthorizedResponseExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId + ".+" + MessageConstants.CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR));
+        Expectations expectations = getTestExpectations_rp_id_token_aud(rpConfig);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
         validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_aud(JsonObject rpConfig) {
+        String clientId = rpConfig.getString(Constants.RP_KEY_CLIENT_ID);
+        Expectations expectations = getUnauthorizedResponseExpectations();
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId + ".+" + MessageConstants.CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR));
+        return expectations;
     }
 
     /**
@@ -232,24 +224,27 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - The ID token returned from the OP does not contain an "iat" claim
      * Expected Results:
      * - 401 when accessing the protected resource
-     * - CWWKS1775E message should be logged saying the OIDC client failed to validate the ID token because the "iat" claim is
-     * missing
+     * - Error message should be logged saying ID token validation failed because the "iat" claim is missing
      */
     @Test
     public void test_idTokenMissingIat() throws Exception {
         String conformanceTestName = "rp-id_token-iat";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        JsonObject rpConfig = registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        String clientId = clientConfig.getString(Constants.RP_KEY_CLIENT_ID);
-
-        Expectations expectations = getUnauthorizedResponseExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1775E_OIDC_ID_VERIFY_IAT_ERR + ".+" + clientId));
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        Expectations expectations = getTestExpectations_rp_id_token_iat(rpConfig);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
         validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_iat(JsonObject rpConfig) {
+        String clientId = rpConfig.getString(Constants.RP_KEY_CLIENT_ID);
+        Expectations expectations = getUnauthorizedResponseExpectations();
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1775E_OIDC_ID_VERIFY_IAT_ERR + ".+" + clientId));
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        return expectations;
     }
 
     /**
@@ -265,14 +260,20 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         String conformanceTestName = "rp-id_token-kid-absent-single-jwks";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
-
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
 
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.DISABLED);
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_id_token_kid_absent_single_jwks(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_kid_absent_single_jwks(String conformanceTestName, String assignedUserName) {
+        return getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.DISABLED);
     }
 
     /**
@@ -282,23 +283,27 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - The JWKS endpoint returns multiple keys
      * Expected Results:
      * - 401 when accessing the protected resource
-     * - CWWKS1739E message should be logged saying a signing key was not available
+     * - Error message should be logged saying a signing key was not available
      */
     @Test
     public void test_idTokenMissingKid_multipleJwksReturnedFromJwksUri() throws Exception {
         String conformanceTestName = "rp-id_token-kid-absent-multiple-jwks";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        JsonObject rpConfig = registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        String clientId = clientConfig.getString(Constants.RP_KEY_CLIENT_ID);
-
-        Expectations expectations = getUnauthorizedResponseExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1739E_OIDC_CLIENT_NO_VERIFYING_KEY));
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        Expectations expectations = getTestExpectations_rp_id_token_kid_absent_multiple_jwks(rpConfig);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
         validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_kid_absent_multiple_jwks(JsonObject rpConfig) {
+        String clientId = rpConfig.getString(Constants.RP_KEY_CLIENT_ID);
+        Expectations expectations = getUnauthorizedResponseExpectations();
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1739E_OIDC_CLIENT_NO_VERIFYING_KEY));
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        return expectations;
     }
 
     /**
@@ -312,14 +317,20 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         String conformanceTestName = "rp-id_token-sig-rs256";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
-
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
 
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.DISABLED);
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_id_token_sig_rs256(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_sig_rs256(String conformanceTestName, String assignedUserName) {
+        return getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.DISABLED);
     }
 
     /**
@@ -333,18 +344,24 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         String conformanceTestName = "rp-id_token-sig-none";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
         Map<String, String> varsToSet = new HashMap<String, String>();
         varsToSet.put(Constants.CONFIG_VAR_SIGNATURE_ALGORITHM, "none");
         setServerConfigurationVariables(varsToSet);
 
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
-
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
 
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.DISABLED);
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_id_token_sig_none(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_sig_none(String conformanceTestName, String assignedUserName) {
+        return getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.DISABLED);
     }
 
     /**
@@ -352,23 +369,27 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - ID token is signed with an invalid signature
      * Expected Results:
      * - 401 when accessing the protected resource
-     * - CWWKS1756E message should be logged saying ID token validation failed because of a signature verification failure
+     * - Error message should be logged saying ID token validation failed because of a signature verification failure
      */
     @Test
     public void test_idTokenInvalidSignature_rs256() throws Exception {
         String conformanceTestName = "rp-id_token-bad-sig-rs256";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        JsonObject rpConfig = registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        String clientId = clientConfig.getString(Constants.RP_KEY_CLIENT_ID);
-
-        Expectations expectations = getUnauthorizedResponseExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR + ".+" + clientId));
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        Expectations expectations = getTestExpectations_rp_id_token_bad_sig_rs256(rpConfig);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
         validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_id_token_bad_sig_rs256(JsonObject rpConfig) {
+        String clientId = rpConfig.getString(Constants.RP_KEY_CLIENT_ID);
+        Expectations expectations = getUnauthorizedResponseExpectations();
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR + ".+" + clientId));
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1706E_OIDC_CLIENT_IDTOKEN_VERIFY_ERR + ".+" + clientId));
+        return expectations;
     }
 
     /**
@@ -376,23 +397,27 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - ID token includes a "nonce" value that does not match the original nonce value provided in the authentication request
      * Expected Results:
      * - 401 when accessing the protected resource
-     * - CWWKS1714E message should be logged saying ID token validation failed because the nonce in the token didn't match the
-     * original value
+     * - Error message should be logged saying ID token validation failed because the nonce in the token didn't match the original
+     * value
      */
     @Test
     public void test_idTokenInvalidNonce() throws Exception {
         String conformanceTestName = "rp-nonce-invalid";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        JsonObject rpConfig = registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        String clientId = clientConfig.getString(Constants.RP_KEY_CLIENT_ID);
-
-        Expectations expectations = getUnauthorizedResponseExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1714E_OIDC_CLIENT_REQUEST_NONCE_FAILED + ".+" + clientId));
+        Expectations expectations = getTestExpectations_rp_nonce_invalid(rpConfig);
 
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
         validationUtils.validateResult(response, expectations);
+    }
+
+    protected Expectations getTestExpectations_rp_nonce_invalid(JsonObject rpConfig) {
+        String clientId = rpConfig.getString(Constants.RP_KEY_CLIENT_ID);
+        Expectations expectations = getUnauthorizedResponseExpectations();
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1714E_OIDC_CLIENT_REQUEST_NONCE_FAILED + ".+" + clientId));
+        return expectations;
     }
 
     /**
@@ -406,18 +431,29 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         String conformanceTestName = "rp-token_endpoint-client_secret_basic";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        Map<String, String> varsToSet = new HashMap<String, String>();
-        varsToSet.put(Constants.CONFIG_VAR_TOKEN_ENDPOINT_AUTH_METHOD, "client_secret_basic");
+        Map<String, String> varsToSet = getUpdatedConfigVariables_rp_token_endpoint_client_secret_basic();
         setServerConfigurationVariables(varsToSet);
 
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
-
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
 
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.DISABLED);
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_token_endpoint_client_secret_basic(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Map<String, String> getUpdatedConfigVariables_rp_token_endpoint_client_secret_basic() {
+        Map<String, String> varsToSet = new HashMap<String, String>();
+        varsToSet.put(Constants.CONFIG_VAR_TOKEN_ENDPOINT_AUTH_METHOD, "client_secret_basic");
+        return varsToSet;
+    }
+
+    protected Expectations getTestExpectations_rp_token_endpoint_client_secret_basic(String conformanceTestName, String assignedUserName) {
+        return getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.DISABLED);
     }
 
     /**
@@ -431,22 +467,35 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         String conformanceTestName = "rp-userinfo-bearer-header";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        Map<String, String> varsToSet = new HashMap<String, String>();
-        varsToSet.put(Constants.CONFIG_VAR_USER_INFO_ENDPOINT_ENABLED, "true");
+        Map<String, String> varsToSet = getUpdatedConfigVariables_rp_userinfo_bearer_header();
         setServerConfigurationVariables(varsToSet);
 
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
+        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
+
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_userinfo_bearer_header(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Map<String, String> getUpdatedConfigVariables_rp_userinfo_bearer_header() {
+        Map<String, String> varsToSet = new HashMap<String, String>();
+        varsToSet.put(Constants.CONFIG_VAR_USER_INFO_ENDPOINT_ENABLED, "true");
+        return varsToSet;
+    }
+
+    protected Expectations getTestExpectations_rp_userinfo_bearer_header(String conformanceTestName, String assignedUserName) {
+        Expectations expectations = getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.ENABLED);
+        expectations.addExpectation(new UserInfoJsonExpectation("sub", StringCheckType.EQUALS, assignedUserName));
         expectations.addExpectation(new UserInfoJsonExpectation("name", JsonCheckType.KEY_DOES_NOT_EXIST, null));
         expectations.addExpectation(new UserInfoJsonExpectation("address", JsonCheckType.KEY_DOES_NOT_EXIST, null));
         expectations.addExpectation(new UserInfoJsonExpectation("email", JsonCheckType.KEY_DOES_NOT_EXIST, null));
         expectations.addExpectation(new UserInfoJsonExpectation("phone_number", JsonCheckType.KEY_DOES_NOT_EXIST, null));
-
-        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
-
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.ENABLED);
+        return expectations;
     }
 
     /**
@@ -454,27 +503,38 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * - UserInfo response returns a "sub" value that doesn't match the "sub" claim in the ID token
      * Expected Results:
      * - Should successfully access the protected resource, but the UserProfile credential should be missing the UserInfo string
-     * - CWWKS1749E message should be logged saying the UserInfo data is not valid because the "sub" claims do not match
+     * - Error message should be logged saying the UserInfo data is not valid because the "sub" claims do not match
      */
     @Test
     public void test_userInfoEndpoint_invalidSub() throws Exception {
         String conformanceTestName = "rp-userinfo-bad-sub-claim";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
-        Map<String, String> varsToSet = new HashMap<String, String>();
-        varsToSet.put(Constants.CONFIG_VAR_USER_INFO_ENDPOINT_ENABLED, "true");
+        Map<String, String> varsToSet = getUpdatedConfigVariables_rp_userinfo_bad_sub_claim();
         setServerConfigurationVariables(varsToSet);
 
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
-        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1749E_USERINFO_INVALID));
-
         Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
 
-        // UserInfo is enabled, but the expected behavior is that of when the UserInfo endpoint is disabled
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.DISABLED);
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_userinfo_bad_sub_claim(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Map<String, String> getUpdatedConfigVariables_rp_userinfo_bad_sub_claim() {
+        Map<String, String> varsToSet = new HashMap<String, String>();
+        varsToSet.put(Constants.CONFIG_VAR_USER_INFO_ENDPOINT_ENABLED, "true");
+        return varsToSet;
+    }
+
+    protected Expectations getTestExpectations_rp_userinfo_bad_sub_claim(String conformanceTestName, String assignedUserName) {
+        Expectations expectations = getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.DISABLED);
+        expectations.addExpectation(new ServerMessageExpectation(server, MessageConstants.CWWKS1749E_USERINFO_INVALID));
+        return expectations;
     }
 
     /**
@@ -491,39 +551,50 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         String conformanceTestName = "rp-scope-userinfo-claims";
 
         JsonObject opConfig = getOpConfigurationForConformanceTest(conformanceTestName);
-        JsonObject clientConfig = registerClientAndUpdateSystemProperties(opConfig, defaultOidcLogin);
+        registerClientAndUpdateSystemProperties(opConfig, clientId);
 
         String scopeString = createScopeStringBasedOnOpSupportedScopes(opConfig);
+        Map<String, String> varsToSet = getUpdatedConfigVariables_rp_scope_userinfo_claims(scopeString);
+        setServerConfigurationVariables(varsToSet);
+
+        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
+
+        String assignedUserName = extractAssignedUserNameFromResponse(response);
+        Log.info(thisClass, _testName, "Extracted remote user: [" + assignedUserName + "]");
+
+        Expectations expectations = getTestExpectations_rp_scope_userinfo_claims(conformanceTestName, assignedUserName);
+
+        validationUtils.validateResult(response, expectations);
+    }
+
+    protected Map<String, String> getUpdatedConfigVariables_rp_scope_userinfo_claims(String scopeString) {
         Map<String, String> varsToSet = new HashMap<String, String>();
         varsToSet.put(Constants.CONFIG_VAR_USER_INFO_ENDPOINT_ENABLED, "true");
         varsToSet.put(Constants.CONFIG_VAR_SCOPE, scopeString.trim());
-        setServerConfigurationVariables(varsToSet);
+        return varsToSet;
+    }
 
-        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl, clientConfig);
-
-        Page response = actions.invokeUrl(testName.getMethodName(), protectedUrl);
-        validationUtils.validateResult(response, expectations);
-
-        verifySuccessfulConformanceTestResponse(response, conformanceTestName, clientConfig, UserInfo.ENABLED);
-
-        String assignedUserName = extractAssignedUserNameFromResponse(response);
-
-        Log.info(thisClass, _testName, "Validating UserInfo string data...");
-        expectations = new Expectations();
+    protected Expectations getTestExpectations_rp_scope_userinfo_claims(String conformanceTestName, String assignedUserName) {
+        Expectations expectations = getSuccessfulConformanceTestExpectations(conformanceTestName, assignedUserName, UserInfo.ENABLED);
         expectations.addExpectation(new UserInfoJsonExpectation("sub", StringCheckType.EQUALS, assignedUserName));
         expectations.addExpectation(new UserInfoJsonExpectation("name"));
         expectations.addExpectation(new UserInfoJsonExpectation("address", ValueType.OBJECT));
         expectations.addExpectation(new UserInfoJsonExpectation("email"));
         expectations.addExpectation(new UserInfoJsonExpectation("phone_number"));
-
-        validationUtils.validateResult(response, expectations);
+        return expectations;
     }
 
     /************************************************ Helper methods ************************************************/
 
-    private JsonObject getOpConfigurationForConformanceTest(String conformanceTestName) throws Exception {
+    /**
+     * Extending classes must implement this method to return the appropriate redirect URI for the specified client for the
+     * feature under test.
+     */
+    protected abstract String getRedirectUriForClient(String clientId);
+
+    protected JsonObject getOpConfigurationForConformanceTest(String conformanceTestName) throws Exception {
         String method = "getOpConfigurationForConformanceTest";
-        String configUrl = CERTIFICATION_BASE_URL + "/" + conformanceTestName + "/.well-known/openid-configuration";
+        String configUrl = certificationBaseUrl + "/" + conformanceTestName + "/.well-known/openid-configuration";
         try {
             Object response = actions.invokeUrl(method, configUrl);
             String responseText = WebResponseUtils.getResponseText(response);
@@ -539,11 +610,11 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * Performs dynamic registration to register the client for the conformance test and updates system properties to use the OP
      * and RP values returned from the certification host (e.g. OP's authorization/token/jwks endpoints, RP's client ID/secret).
      */
-    private JsonObject registerClientAndUpdateSystemProperties(JsonObject opConfig, String oidcLoginId) throws Exception {
+    protected JsonObject registerClientAndUpdateSystemProperties(JsonObject opConfig, String clientId) throws Exception {
         try {
             String registrationUrl = opConfig.getString(Constants.OP_KEY_REGISTRATION_ENDPOINT);
 
-            Page response = submitAndValidateRegistrationRequest(oidcLoginId, registrationUrl);
+            Page response = submitAndValidateRegistrationRequest(clientId, registrationUrl);
             JsonObject clientConfig = parseClientConfigFromResponse(response);
             setServerConfigurationVariables(clientConfig, opConfig);
 
@@ -553,8 +624,8 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         }
     }
 
-    private Page submitAndValidateRegistrationRequest(String oidcLoginId, String registrationUrl) throws Exception {
-        WebRequest request = createClientRegistrationRequest(oidcLoginId, registrationUrl);
+    protected Page submitAndValidateRegistrationRequest(String clientId, String registrationUrl) throws Exception {
+        WebRequest request = createClientRegistrationRequest(clientId, registrationUrl);
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_CREATED));
@@ -564,23 +635,23 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         return response;
     }
 
-    private WebRequest createClientRegistrationRequest(String oidcLoginId, String registrationUrl) throws MalformedURLException {
-        JsonObject requestBody = buildClientRegistrationRequestBody(oidcLoginId);
+    protected WebRequest createClientRegistrationRequest(String clientId, String registrationUrl) throws MalformedURLException {
+        JsonObject requestBody = buildClientRegistrationRequestBody(clientId);
         WebRequest request = actions.createPostRequest(registrationUrl, requestBody.toString());
         request.setAdditionalHeader("Content-Type", "application/json");
         return request;
     }
 
-    private JsonObject buildClientRegistrationRequestBody(String oidcLoginId) {
+    protected JsonObject buildClientRegistrationRequestBody(String clientId) {
         JsonObjectBuilder bodyBuilder = Json.createObjectBuilder();
 
         JsonArrayBuilder redirectUris = Json.createArrayBuilder();
-        redirectUris.add("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + Constants.DEFAULT_CONTEXT_ROOT + "/redirect/" + oidcLoginId);
+        redirectUris.add(getRedirectUriForClient(clientId));
 
         bodyBuilder.add(Constants.CLIENT_REGISTRATION_KEY_REDIRECT_URIS, redirectUris.build());
         bodyBuilder.add(Constants.CLIENT_REGISTRATION_KEY_CONTACTS, clientRegistrationContact);
-        if (!testName.getMethodName().contains("clientSecretBasic")) {
-            // client_secret_post is the default token endpoint auth method for our oidcLogin element, however the default per the OIDC spec is client_secret_basic.
+        if (!_testName.contains("clientSecretBasic")) {
+            // client_secret_post is the default token endpoint auth method for our OIDC client, however the default per the OIDC spec is client_secret_basic.
             // We therefore must include this entry to ensure the right authentication method is used (except for the conformance test that's supposed to use
             // client_secret_basic).
             bodyBuilder.add(Constants.CLIENT_REGISTRATION_KEY_TOKEN_ENDPOINT_AUTH_METHOD, "client_secret_post");
@@ -588,7 +659,7 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         return bodyBuilder.build();
     }
 
-    private JsonObject parseClientConfigFromResponse(Page response) throws Exception {
+    protected JsonObject parseClientConfigFromResponse(Page response) throws Exception {
         String responseText = WebResponseUtils.getResponseText(response);
         return Json.createReader(new StringReader(responseText)).readObject();
     }
@@ -598,12 +669,12 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
      * client secret). This allows us to dynamically change the variable values in the server configuration without having to
      * reboot the server.
      */
-    private void setServerConfigurationVariables(JsonObject rpConfig, JsonObject opConfig) throws Exception {
+    protected void setServerConfigurationVariables(JsonObject rpConfig, JsonObject opConfig) throws Exception {
         Map<String, String> variablesToSet = getDefaultServerVariables(rpConfig, opConfig);
         setServerConfigurationVariables(variablesToSet);
     }
 
-    private Map<String, String> getDefaultServerVariables(JsonObject rpConfig, JsonObject opConfig) {
+    protected Map<String, String> getDefaultServerVariables(JsonObject rpConfig, JsonObject opConfig) {
         Map<String, String> variablesToSet = new HashMap<String, String>();
         variablesToSet.put(Constants.CONFIG_VAR_CLIENT_ID, rpConfig.getString(Constants.RP_KEY_CLIENT_ID));
         variablesToSet.put(Constants.CONFIG_VAR_CLIENT_SECRET, rpConfig.getString(Constants.RP_KEY_CLIENT_SECRET));
@@ -618,7 +689,7 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         return variablesToSet;
     }
 
-    private void setServerConfigurationVariables(Map<String, String> variablesToSet) throws Exception {
+    protected void setServerConfigurationVariables(Map<String, String> variablesToSet) throws Exception {
         server.setMarkToEndOfLog();
         ServerConfiguration config = server.getServerConfiguration();
         ConfigElementList<Variable> varList = config.getVariables();
@@ -631,7 +702,7 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         server.waitForConfigUpdateInLogUsingMark(server.listAllInstalledAppsForValidation());
     }
 
-    void addOrUpdateConfigVariable(ConfigElementList<Variable> vars, String name, String value) {
+    protected void addOrUpdateConfigVariable(ConfigElementList<Variable> vars, String name, String value) {
         Variable var = vars.getBy("name", name);
         if (var == null) {
             vars.add(new Variable(name, value));
@@ -640,67 +711,67 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
         }
     }
 
-    private void verifySuccessfulConformanceTestResponse(Page response, String conformanceTestName, JsonObject clientConfig, UserInfo userInfo) throws Exception {
-        verifyResponseServletContent(response, clientConfig, userInfo);
-        verifyCodeCookieValues(response, conformanceTestName, clientConfig);
+    protected Expectations getUnauthorizedResponseExpectations() {
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_EQUALS, protectedUrl, "Did not reach the expected protected URL."));
+        return expectations;
     }
 
-    private void verifyResponseServletContent(Page response, JsonObject clientConfig, UserInfo userInfo) throws Exception {
-        String assignedUserName = extractAssignedUserNameFromResponse(response);
-        Log.info(thisClass, "verifyResponseServletContent", "Extracted remote user: [" + assignedUserName + "]");
+    protected Expectations getSuccessfulConformanceTestExpectations(String conformanceTestName, String assignedUserName, UserInfo userInfo) {
+        Expectations expectations = getSuccessfulAccessExpectations(protectedUrl);
+        expectations.addExpectations(getResponseServletContentExpectations(conformanceTestName, assignedUserName, userInfo));
+        return expectations;
+    }
 
+    protected Expectations getSuccessfulAccessExpectations(String protectedResourceUrl) {
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_MATCHES, codeCookiePatternString, "Did not find the expected " + Constants.CODE_COOKIE_NAME + " cookie pattern in the servlet output."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_EQUALS, protectedResourceUrl, "Did not reach the expected protected URL."));
+        return expectations;
+    }
+
+    protected Expectations getResponseServletContentExpectations(String conformanceTestName, String assignedUserName, UserInfo userInfo) {
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(getServletOutputPublicCredentialExpectations(conformanceTestName, assignedUserName));
+        expectations.addExpectations(getServletOutputUserInfoPresenceExpectations(userInfo));
+        return expectations;
+    }
+
+    protected Expectations getServletOutputPublicCredentialExpectations(String conformanceTestName, String assignedUserName) {
+        String realm = getExpectedRealm(conformanceTestName);
+        Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, "uniqueSecurityName=" + assignedUserName, "Did not find the expected unique security name in the servlet output."));
-        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, "accessId=user:" + CERTIFICATION_HOST_AND_PORT + "/" + assignedUserName, "Did not find the expected access ID in the servlet output."));
-        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, "realmName=" + CERTIFICATION_HOST_AND_PORT, "Did not find the expected realm name in the servlet output."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, "accessId=user:" + realm + "/" + assignedUserName, "Did not find the expected access ID in the servlet output."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, "realmName=" + realm, "Did not find the expected realm name in the servlet output."));
+        return expectations;
+    }
+
+    protected String getExpectedRealm(String conformanceTestName) {
+        return CERTIFICATION_HOST_AND_PORT + "/" + rpId + "/" + conformanceTestName;
+    }
+
+    protected Expectations getServletOutputUserInfoPresenceExpectations(UserInfo userInfo) {
+        Expectations expectations = new Expectations();
         if (userInfo == UserInfo.ENABLED) {
             // If UserInfo is enabled, the UserInfo information must, at at minimum, include the "sub" claim
             expectations.addExpectation(new UserInfoJsonExpectation("sub"));
         } else {
             expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, BaseServlet.OUTPUT_PREFIX + "string: null", "UserInfo string in the subject's private credentials should have been null because the UserInfo endpoint is not enabled."));
         }
-
-        validationUtils.validateResult(response, expectations);
+        return expectations;
     }
 
     /**
      * The OIDC certification OP creates a random user name as the authenticated user in each test. This method extracts that
      * username from the test servlet response text.
      */
-    private String extractAssignedUserNameFromResponse(Page response) throws Exception {
+    protected String extractAssignedUserNameFromResponse(Page response) throws Exception {
         String responseText = WebResponseUtils.getResponseText(response);
         return FatStringUtils.extractRegexGroup(responseText, "getRemoteUser: (.+)");
     }
 
-    /**
-     * Extracts the code cookie value from the response text, decodes it, reads it into a JSON object, and verifies some of the
-     * values within the resulting object.
-     */
-    private void verifyCodeCookieValues(Page response, String conformanceTestName, JsonObject clientConfig) throws Exception, UnsupportedEncodingException {
-        String codeCookieValue = extractCodeCookieValueFromResponse(response);
-        Log.info(thisClass, testName.getMethodName(), "Found code cookie value: [" + codeCookieValue + "]");
-
-        String decodedValue = new String(Base64Coder.base64DecodeString(codeCookieValue), "UTF-8");
-        Log.info(thisClass, testName.getMethodName(), "Decoded cookie value: [" + decodedValue + "]");
-
-        Log.info(thisClass, "verifyCodeCookieValues", "Verifying the issuer and client ID values in the code cookie");
-        JsonObject codeObject = Json.createReader(new StringReader(decodedValue)).readObject();
-        assertEquals("The issuer value found does not match the expected value for this conformance test.", CERTIFICATION_BASE_URL + "/" + conformanceTestName, codeObject.getString("iss"));
-        assertEquals("The client_id value found does not match the expected value for this conformance test.", clientConfig.getString(Constants.RP_KEY_CLIENT_ID), codeObject.getString("client_id"));
-    }
-
-    private String extractCodeCookieValueFromResponse(Page response) throws Exception {
-        String responseText = WebResponseUtils.getResponseText(response);
-        Pattern codeCookieValuePattern = Pattern.compile(codeCookiePatternString);
-        Matcher cookieValuleMatcher = codeCookieValuePattern.matcher(responseText);
-        if (!cookieValuleMatcher.find()) {
-            fail("Failed to find the code cookie pattern (" + codeCookiePatternString + ") in the response text. The response text was: " + responseText);
-        }
-        return cookieValuleMatcher.group(1);
-    }
-
-    private String createScopeStringBasedOnOpSupportedScopes(JsonObject opConfig) {
+    protected String createScopeStringBasedOnOpSupportedScopes(JsonObject opConfig) {
         String scopeString = "";
         JsonArray scopesSupported = opConfig.getJsonArray(Constants.OP_KEY_SCOPES_SUPPORTED);
         for (int i = 0; i < scopesSupported.size(); i++) {
@@ -711,21 +782,6 @@ public class OidcCertificationRPBasicProfileTests extends CommonSecurityFat {
             }
         }
         return scopeString;
-    }
-
-    private Expectations getSuccessfulAccessExpectations(String protectedResourceUrl, JsonObject rpConfig) {
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
-        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_EQUALS, protectedResourceUrl, "Did not reach the expected protected URL."));
-        return expectations;
-    }
-
-    private Expectations getUnauthorizedResponseExpectations() {
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_EQUALS, protectedUrl, "Did not reach the expected protected URL."));
-        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWWKS5489E_PUBLIC_FACING_ERROR, "Should have found the public-facing error message in the protected resource invocation response but did not."));
-        return expectations;
     }
 
 }

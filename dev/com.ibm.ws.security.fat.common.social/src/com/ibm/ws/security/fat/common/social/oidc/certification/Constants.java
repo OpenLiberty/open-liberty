@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.social.fat.oidc.certification;
+package com.ibm.ws.security.fat.common.social.oidc.certification;
 
 import com.ibm.ws.security.fat.common.social.SocialConstants;
 
@@ -40,7 +40,5 @@ public class Constants extends SocialConstants {
     public static final String CLIENT_REGISTRATION_KEY_REDIRECT_URIS = "redirect_uris";
     public static final String CLIENT_REGISTRATION_KEY_CONTACTS = "contacts";
     public static final String CLIENT_REGISTRATION_KEY_TOKEN_ENDPOINT_AUTH_METHOD = "token_endpoint_auth_method";
-
-    public static final String CODE_COOKIE_NAME = "WASOidcCode";
 
 }

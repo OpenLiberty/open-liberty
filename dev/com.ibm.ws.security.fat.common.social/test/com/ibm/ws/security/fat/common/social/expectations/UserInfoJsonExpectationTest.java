@@ -168,7 +168,7 @@ public class UserInfoJsonExpectationTest extends CommonTestClass {
             final String content = null;
             mockery.checking(new Expectations() {
                 {
-                    one(webResponse).getContentAsString();
+                    allowing(webResponse).getContentAsString();
                     will(returnValue(content));
                 }
             });
@@ -191,7 +191,7 @@ public class UserInfoJsonExpectationTest extends CommonTestClass {
             final String content = "";
             mockery.checking(new Expectations() {
                 {
-                    one(webResponse).getContentAsString();
+                    allowing(webResponse).getContentAsString();
                     will(returnValue(content));
                 }
             });
@@ -288,7 +288,7 @@ public class UserInfoJsonExpectationTest extends CommonTestClass {
             final String content = UserInfoJsonExpectation.SERVLET_OUTPUT_PREFIX + "{\n\r\"key\":\t \n\"value\"\r }";
             mockery.checking(new Expectations() {
                 {
-                    one(webResponse).getContentAsString();
+                    allowing(webResponse).getContentAsString();
                     will(returnValue(content));
                 }
             });
