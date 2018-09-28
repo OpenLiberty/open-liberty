@@ -11,8 +11,12 @@
 package com.ibm.ws.jsf23.fat.converter_validator.beans;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.faces.component.behavior.ClientBehaviorBase;
+import javax.faces.component.behavior.FacesBehavior;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.faces.validator.FacesValidator;
+import javax.faces.validator.Validator;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -27,25 +31,23 @@ public class JSFArtifactsInjectionBean {
     @FacesConverter(value = "testConverter", managed = true)
     private Converter converter;
 
-    // NOTE: Uncomment this once we pull the latest MyFaces 2.3.x
-//    @Inject
-//    @FacesValidator(value = "testValidator", managed = true)
-//    private Validator validator;
-//
-//    @Inject
-//    @FacesBehavior(value = "testBehavior", managed = true)
-//    private ClientBehaviorBase behavior;
+    @Inject
+    @FacesValidator(value = "testValidator", managed = true)
+    private Validator validator;
+
+    @Inject
+    @FacesBehavior(value = "testBehavior", managed = true)
+    private ClientBehaviorBase behavior;
 
     public Converter getConverter() {
         return converter;
     }
 
-    // NOTE: Uncomment this once we pull the latest MyFaces 2.3.x
-//    public Validator getValidator() {
-//        return validator;
-//    }
-//
-//    public ClientBehaviorBase getBehavior() {
-//        return behavior;
-//    }
+    public Validator getValidator() {
+        return validator;
+    }
+
+    public ClientBehaviorBase getBehavior() {
+        return behavior;
+    }
 }

@@ -904,6 +904,21 @@ public class Http2FullModeTests extends FATServletClient {
     }
 
     /**
+     * Test Coverage: Sending a priority frame on an idle stream
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.3
+     *
+     * Test Notes:
+     * An endpoint MUST NOT send frames other than PRIORITY on a closed stream.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPriorityFrameOnIdlePushStream() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
      * Test Coverage: Send RST_FRAME frame on stream 0
      * Test Outcome: respond with a connection error of type PROTOCOL_ERROR.
      * Spec Section: 6.4
