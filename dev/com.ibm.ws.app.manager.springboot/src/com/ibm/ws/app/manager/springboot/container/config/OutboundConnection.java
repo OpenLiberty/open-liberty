@@ -10,15 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * KeyStore element is defined here:<br>
  * /com.ibm.ws.ssl/resources/OSGI-INF/metatype/metatype.xml
  */
 public class OutboundConnection extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_HOST = "host";
     private String host;
+
+    public final static String XML_ATTRIBUTE_NAME_PORT = "port";
     private String port;
 
     /**
@@ -31,7 +32,7 @@ public class OutboundConnection extends ConfigElement {
     /**
      * @param host to set
      */
-    @XmlAttribute(name = "host")
+
     public void setHost(String host) {
         this.host = host;
     }
@@ -46,7 +47,6 @@ public class OutboundConnection extends ConfigElement {
     /**
      * @param port to set
      */
-    @XmlAttribute(name = "port")
     public void setPort(String port) {
         this.port = port;
     }

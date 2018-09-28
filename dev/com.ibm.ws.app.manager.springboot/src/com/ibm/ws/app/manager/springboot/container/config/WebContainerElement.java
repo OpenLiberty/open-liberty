@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  *
  */
@@ -86,7 +84,7 @@ public class WebContainerElement extends ConfigElement {
 
     private Boolean reInitServletOnInitUnavailableException;
     private Boolean setContentLengthOnClose; //PM71666
-    private Boolean allowdotsinname; // PM83452
+    private Boolean allowdotsinname; //PM83452
     private Boolean useoriginalrequeststate; //PM88028
     private Boolean destroyservletonserviceunavailableexception; //PM98245
     private Boolean normalizerequesturi; //PI05525
@@ -96,12 +94,12 @@ public class WebContainerElement extends ConfigElement {
     private Boolean limitBuffer; //PK95332
     private Boolean allowdefaulterrorpage; //PI05845
     private Boolean preserveRequestParameterValues; //PI20210
-    private Boolean writerOnEmptyBuffer; // PK90190
+    private Boolean writerOnEmptyBuffer; //PK90190
     private Boolean emptyServletMappings; //PI23529
     private Boolean parameterReturnEmptyString; //PK56156
-    private Boolean redirectWithPathInfo; // PK23779
+    private Boolean redirectWithPathInfo; //PK23779
     private Boolean deferServletRequestListenerDestroyOnError; //PI26908
-    private Boolean allowExpressionFactoryPerApp; // PI31922
+    private Boolean allowExpressionFactoryPerApp; //PI31922
     private Boolean useMaxRequestsizeforMultipart; //PI75528
 
     /**
@@ -544,7 +542,7 @@ public class WebContainerElement extends ConfigElement {
         return setContentLengthOnClose;
     }
 
-    //PM83452 // PM82876
+    //PM83452,PM82876
     /**
      * @return the allowdotsinname
      */
@@ -601,30 +599,30 @@ public class WebContainerElement extends ConfigElement {
 
     public Boolean getWriterOnEmptyBuffer() {
         return writerOnEmptyBuffer;
-    } // PK90190
+    } //PK90190
 
     public Boolean getEmptyServletMappings() {
         return emptyServletMappings;
-    } // PI23529
+    } //PI23529
 
     public Boolean getParameterReturnEmptyString() {
         return parameterReturnEmptyString;
-    } // PK56156
+    } //PK56156
 
     public Boolean getRedirectWithPathInfo() {
         return redirectWithPathInfo;
-    } // PK23779
+    } //PK23779
 
     /**
      * @return the deferservletrequestlistenerdestroyonerror
      */
     public Boolean getDeferServletRequestListenerDestroyOnError() {
         return deferServletRequestListenerDestroyOnError;
-    } // PI26908
+    } //PI26908
 
     public Boolean getAllowExpressionFactoryPerApp() {
         return allowExpressionFactoryPerApp;
-    } // PI31922
+    } //PI31922
 
     /**
      * @return the useMaxRequestsizeforMultipart
@@ -633,323 +631,387 @@ public class WebContainerElement extends ConfigElement {
         return useMaxRequestsizeforMultipart;
     }
 
-    @XmlAttribute(name = "listeners")
+    public final static String XML_ATTRIBUTE_NAME_LISTENERS = "listeners";
+
     public void setListeners(String s) {
         this.listeners = s;
     }
 
-    @XmlAttribute(name = "decodeurlasutf8")
+    public final static String XML_ATTRIBUTE_NAME_DECODE_URL_AS_UTF8 = "decodeurlasutf8";
+
     public void setDecodeurlasutf8(Boolean b) {
         this.decodeurlasutf8 = b;
     }
 
-    @XmlAttribute(name = "fileservingenabled")
+    public final static String XML_ATTRIBUTE_NAME_FILE_SERVING_ENABLED = "fileservingenabled";
+
     public void setFileservingenabled(Boolean b) {
         this.fileservingenabled = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.disallowAllFileServing")
+    public final static String XML_ATTRIBUTE_NAME_DISALLOW_ALL_FILE_SERVING = "com.ibm.ws.webcontainer.disallowAllFileServing";
+
     public void setDisallowAllFileServing(Boolean b) {
         this.disallowAllFileServing = b;
     }
 
-    @XmlAttribute(name = "directorybrowsingenabled")
+    public final static String XML_ATTRIBUTE_NAME_DIRECTORY_BROWSING_ENABLED = "directorybrowsingenabled";
+
     public void setDirectorybrowsingenabled(Boolean b) {
         this.directorybrowsingenabled = b;
     }
 
-    @XmlAttribute(name = "serveServletsByClassnameEnabled")
+    public final static String XML_ATTRIBUTE_NAME_SERVE_SERVLETS_BY_CLASSNAME_ENABLED = "serveServletsByClassnameEnabled";
+
     public void setServeServletsByClassnameEnabled(Boolean b) {
         this.serveServletsByClassnameEnabled = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.disallowserveservletsbyclassname")
+    public final static String XML_ATTRIBUTE_NAME_DISALLOW_SERVE_SERVLET_BY_CLASSNAME = "com.ibm.ws.webcontainer.disallowserveservletsbyclassname";
+
     public void setDisallowserveservletsbyclassname(Boolean b) {
         this.disallowserveservletsbyclassname = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.donotservebyclassname")
+    public final static String XML_ATTRIBUTE_NAME_DO_NOT_SERVER_BY_CLASSNAME = "com.ibm.ws.webcontainer.donotservebyclassname";
+
     public void setDonotservebyclassname(String s) {
         this.donotservebyclassname = s;
     }
 
-    @XmlAttribute(name = "trusthostheaderport")
+    public final static String XML_ATTRIBUTE_NAME_TRUST_HOST_HEADER_PORT = "trusthostheaderport";
+
     public void setTrusthostheaderport(Boolean b) {
         this.trusthostheaderport = b;
     }
 
-    @XmlAttribute(name = "trusted")
+    public final static String XML_ATTRIBUTE_NAME_TRUSTED = "trusted";
+
     public void setTrusted(Boolean b) {
         this.trusted = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.extracthostheaderport")
+    public final static String XML_ATTRIBUTE_NAME_EXTRACT_HOST_HEADER_PORT = "com.ibm.ws.webcontainer.extracthostheaderport";
+
     public void setExtracthostheaderport(Boolean b) {
         this.extracthostheaderport = b;
     }
 
-    @XmlAttribute(name = "httpsindicatorheader")
+    public final static String XML_ATTRIBUTE_NAME_HTTPS_INDICATOR_HEADER = "httpsindicatorheader";
+
     public void setHttpsindicatorheader(String s) {
         this.httpsindicatorheader = s;
     }
 
-    @XmlAttribute(name = "ExposeWebInfOnDispatch")
+    public final static String XML_ATTRIBUTE_NAME_EXPOSE_WEB_INF_ON_DISPATCH = "ExposeWebInfOnDispatch";
+
     public void setExposeWebInfOnDispatch(Boolean b) {
         this.ExposeWebInfOnDispatch = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.decodeurlplussign")
+    public final static String XML_ATTRIBUTE_NAME_DECODE_URL_PLUS_SIGN = "com.ibm.ws.webcontainer.decodeurlplussign";
+
     public void setDecodeurlplussign(Boolean b) {
         this.decodeurlplussign = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.channelwritetype")
+    public final static String XML_ATTRIBUTE_NAME_CHANNEL_WRITE_TYPE = "com.ibm.ws.webcontainer.channelwritetype";
+
     public void setChannelwritetype(String s) {
         this.channelwritetype = s;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.suppressHtmlRecursiveErrorOutput")
+    public final static String XML_ATTRIBUTE_NAME_SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = "com.ibm.ws.webcontainer.suppressHtmlRecursiveErrorOutput";
+
     public void setSuppressHtmlRecursiveErrorOutput(Boolean b) {
         this.suppressHtmlRecursiveErrorOutput = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.fileWrapperEvents")
+    public final static String XML_ATTRIBUTE_NAME_FILE_WRAPPER_EVENTS = "com.ibm.ws.webcontainer.fileWrapperEvents";
+
     public void setFilewrapperevents(Boolean b) {
         this.fileWrapperEvents = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.webgroupvhostnotfound")
+    public final static String XML_ATTRIBUTE_NAME_WEB_GROUP_HOST_NOT_FOUND = "com.ibm.ws.webcontainer.webgroupvhostnotfound";
+
     public void setWebgroupvhostnotfound(String s) {
         this.webgroupvhostnotfound = s;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.invokefilterscompatibility")
+    public final static String XML_ATTRIBUTE_NAME_INVOKE_FILTERS_COMPATIBILITY = "com.ibm.ws.webcontainer.invokefilterscompatibility";
+
     public void setInvokefilterscompatibility(Boolean b) {
         this.invokeFiltersCompatibility = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.DefaultTraceRequestBehavior")
+    public final static String XML_ATTRIBUTE_NAME_DEFAULT_TRACE_REQUEST_BEHAVIOR = "com.ibm.ws.webcontainer.DefaultTraceRequestBehavior";
+
     public void setDefaultTraceRequestBehavior(Boolean b) {
         this.defaultTraceRequestBehavior = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.DefaultHeadRequestBehavior")
+    public final static String XML_ATTRIBUTE_NAME_DEFAULT_HEAD_REQUEST_BEHAVIOR = "com.ibm.ws.webcontainer.DefaultHeadRequestBehavior";
+
     public void setDefaultHeadRequestBehavior(Boolean b) {
         this.defaultHeadRequestBehavior = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.TolerateSymbolicLinks")
+    public final static String XML_ATTRIBUTE_NAME_TOLERATE_SYMBOLIC_LINKS = "com.ibm.ws.webcontainer.TolerateSymbolicLinks";
+
     public void setTolerateSymbolicLinks(Boolean b) {
         this.tolerateSymbolicLinks = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.SymbolicLinksCacheSize")
+    public final static String XML_ATTRIBUTE_NAME_SYMBOLIC_LINKS_CACHE_SIZE = "com.ibm.ws.webcontainer.SymbolicLinksCacheSize";
+
     public void setSymbolicLinksCacheSize(Integer i) {
         this.symbolicLinksCacheSize = i;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.enableErrorExceptionTypeFirst")
+    public final static String XML_ATTRIBUTE_NAME_ENABLE_ERROR_EXCEPTION_TYPE_FIRST = "com.ibm.ws.webcontainer.enableErrorExceptionTypeFirst";
+
     public void setEnableErrorExceptionTypeFirst(Boolean b) {
         this.enableErrorExceptionTypeFirst = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.enablemultireadofpostdata")
+    public final static String XML_ATTRIBUTE_NAME_ENABLE_MULTI_READ_OF_POST_DATA = "com.ibm.ws.webcontainer.enablemultireadofpostdata";
+
     public void setEnablemultireadofpostdata(Boolean b) {
         this.enablemultireadofpostdata = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.skipinputstreamread")
+    public final static String XML_ATTRIBUTE_NAME_SKIP_INPUT_STREAM_READ = "com.ibm.ws.webcontainer.skipinputstreamread";
+
     public void setSkipinputstreamread(Boolean b) {
         this.skipInputStreamRead = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.httponlycookies")
+    public final static String XML_ATTRIBUTE_NAME_HTTP_ONLY_COOKIES = "com.ibm.ws.webcontainer.httponlycookies";
+
     public void setHttponlycookies(String b) {
         this.httpOnlyCookies = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.invokeFilterInitAtStartup")
+    public final static String XML_ATTRIBUTE_NAME_INVOKE_FILTER_AT_STARTUP = "com.ibm.ws.webcontainer.invokeFilterInitAtStartup";
+
     public void setInvokeFilterInitAtStartup(Boolean b) {
         this.invokeFilterInitAtStartup = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.enablejspmappingoverride")
+    public final static String XML_ATTRIBUTE_NAME_ENABLE_JSP_MAPPING_OVERRIDE = "com.ibm.ws.webcontainer.enablejspmappingoverride";
+
     public void setEnablejspmappingoverride(Boolean b) {
         this.enablejspmappingoverride = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.jsp.enabledefaultiselignoredintag")
+    public final static String XML_ATTRIBUTE_NAME_ENABLE_DEFAULT_IS_EL_IGNORED_IN_TAG = "com.ibm.ws.jsp.enabledefaultiselignoredintag";
+
     public void setEnabledefaultiselignoredintag(Boolean b) {
         this.enabledefaultiselignoredintag = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.parseutf8postdata")
+    public final static String XML_ATTRIBUTE_NAME_PARSE_UTF8_POST_DATA = "com.ibm.ws.webcontainer.parseutf8postdata";
+
     public void setParseutf8postdata(Boolean b) {
         this.parseutf8postdata = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.logservletcontainerinitializerclassloadingerrors")
+    public final static String XML_ATTRIBUTE_NAME_LOG_SERVLET_CONTAINER_INITIALIZER_CLASSLOADING_ERRORS = "com.ibm.ws.webcontainer.logservletcontainerinitializerclassloadingerrors";
+
     public void setLogservletcontainerinitializerclassloadingerrors(Boolean b) {
         this.logservletcontainerinitializerclassloadingerrors = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.allowincludesenderror")
+    public final static String XML_ATTRIBUTE_NAME_ALLOWS_INCLUDES_END_ERROR = "com.ibm.ws.webcontainer.allowincludesenderror";
+
     public void setAllowincludesenderror(Boolean b) {
         this.allowincludesenderror = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.skipmetainfresourcesprocessing")
+    public final static String XML_ATTRIBUTE_NAME_SKIP_META_RESOURCES_PROCESSING = "com.ibm.ws.webcontainer.skipmetainfresourcesprocessing";
+
     public void setSkipmetainfresourcesprocessing(Boolean b) {
         this.skipmetainfresourcesprocessing = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.metainfresourcescachesize")
+    public final static String XML_ATTRIBUTE_NAME_META_INF_RESOURCES_CACHE_SIZE = "com.ibm.ws.webcontainer.metainfresourcescachesize";
+
     public void setMetainfresourcescachesize(Integer i) {
         this.metainfresourcescachesize = i;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.asyncmaxsizetaskpool")
+    public final static String XML_ATTRIBUTE_NAME_ASYNC_MAX_SIZE_TASK_POOL = "com.ibm.ws.webcontainer.asyncmaxsizetaskpool";
+
     public void setAsyncmaxsizetaskpool(Integer i) {
         this.asyncmaxsizetaskpool = i;
     }
 
-    @XmlAttribute(name = "deferServletLoad")
+    public final static String XML_ATTRIBUTE_NAME_DEFER_SERVLET_LOAD = "deferServletLoad";
+
     public void setDeferServletLoad(Boolean deferServletLoad) {
         this.deferServletLoad = deferServletLoad;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.asyncpurgeinterval")
+    public final static String XML_ATTRIBUTE_NAME_ASYNC_PURGE_INTERVAL = "com.ibm.ws.webcontainer.asyncpurgeinterval";
+
     public void setAsyncpurgeinterval(Integer i) {
         this.asyncpurgeinterval = i;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.asynctimeoutdefault")
+    public final static String XML_ATTRIBUTE_NAME_ASYNC_TIMOUT_DEFAULT = "com.ibm.ws.webcontainer.asynctimeoutdefault";
+
     public void setAsynctimeoutdefault(Integer i) {
         this.asynctimeoutdefault = i;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.asynctimerthreads")
+    public final static String XML_ATTRIBUTE_NAME_ASYNC_TIMER_THREADS = "com.ibm.ws.webcontainer.asynctimerthreads";
+
     public void setAsynctimerthreads(Integer i) {
         this.asynctimerthreads = i;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.xpoweredby")
+    public final static String XML_ATTRIBUTE_NAME_X_POWERED_BY = "com.ibm.ws.webcontainer.xpoweredby";
+
     public void setXpoweredby(String s) {
         this.xpoweredby = s;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.disablexpoweredby")
+    public final static String XML_ATTRIBUTE_NAME_DISABLE_X_POWERED_BY = "com.ibm.ws.webcontainer.disablexpoweredby";
+
     public void setDisablexpoweredby(Boolean b) {
         this.disablexpoweredby = b;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.enabledefaultservletrequestpathelements")
+    public final static String XML_ATTRIBUTE_NAME_ENABLE_DEFAULT_SERVLET_REQUEST_PATH_ELEMENTS = "com.ibm.ws.webcontainer.enabledefaultservletrequestpathelements";
+
     public void setEnableDefaultServletRequestPathElements(Boolean e) {
         this.enableDefaultServletRequestPathElements = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.copyattributeskeyset")
+    public final static String XML_ATTRIBUTE_NAME_COPY_ATTRIBUTE_KEY_SET = "com.ibm.ws.webcontainer.copyattributeskeyset";
+
     public void setCopyattributeskeyset(Boolean e) {
         this.copyattributeskeyset = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.contenttypecompatibility")
+    public final static String XML_ATTRIBUTE_NAME_CONTENT_TYPE_COMPATIBILITY = "com.ibm.ws.webcontainer.contenttypecompatibility";
+
     public void setContenttype(String v) {
         this.contentType = v;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.mapfilterstoasterisk")
+    public final static String XML_ATTRIBUTE_NAME_MAP_FILTERS_TO_ASTERISK_ = "com.ibm.ws.webcontainer.mapfilterstoasterisk";
+
     public void setMapfilterstoasterisk(Boolean e) {
         this.mapFiltersToAsterisk = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.disablesetcharacterencodingafterparametersread")
+    public final static String XML_ATTRIBUTE_NAME_DISABLE_SET_CHARACTER_ENCODING_AFTER_PARAMETERS_READ = "com.ibm.ws.webcontainer.disablesetcharacterencodingafterparametersread";
+
     public void setDisablesetcharacterencodingafterparametersread(Boolean e) {
         this.DisableSetCharacterEncodingAfterParametersRead = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.provideqstringtowelcomefile")
+    public final static String XML_ATTRIBUTE_NAME_PROVIDE_STRING_TO_WELCOME_FILE = "com.ibm.ws.webcontainer.provideqstringtowelcomefile";
+
     public void setProvideqstringtowelcomefile(Boolean e) {
         this.provideqStringToWelcomeFile = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.toleratelocalemismatchforservingfiles")
+    public final static String XML_ATTRIBUTE_NAME_TOLERATE_LOCALE_MISMATCH_FOR_SERVING_FILES = "com.ibm.ws.webcontainer.toleratelocalemismatchforservingfiles";
+
     public void setToleratelocalemismatchforservingfiles(Boolean e) {
         this.tolerateLocaleMismatchForServingFiles = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.servewelcomefilefromextendeddocumentroot")
+    public final static String XML_ATTRIBUTE_NAME_SERVER_WELCOME_FILE_FROM_EXTENDED_DOCUMENT_ROOT = "com.ibm.ws.webcontainer.servewelcomefilefromextendeddocumentroot";
+
     public void setServewelcomefilefromextendeddocumentroot(Boolean e) {
         this.serveWelcomeFileFromExtendedDocumentRoot = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.discernunavailableservlet")
+    public final static String XML_ATTRIBUTE_NAME_DISCERN_UNAVAILABLE_SERVLET = "com.ibm.ws.webcontainer.discernunavailableservlet";
+
     public void setDiscernunavailableservlet(Boolean e) {
         this.discernUnavailableServlet = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.reinitservletoninitunavailableexception")
+    public final static String XML_ATTRIBUTE_NAME_REINIT_SERVLET_ON_INIT_UNAVAILABLE_EXCEPTION = "com.ibm.ws.webcontainer.reinitservletoninitunavailableexception";
+
     public void setReInitServletOnInitUnavailableException(Boolean e) {
         this.reInitServletOnInitUnavailableException = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.setunencodedhtmlinsenderror")
+    public final static String XML_ATTRIBUTE_NAME_SET_UNENCODED_HTML_IN_SEND_ERROR = "com.ibm.ws.webcontainer.setunencodedhtmlinsenderror";
+
     public void setSetUnencodedhtmlinsenderror(Boolean e) {
         this.setUnencodedHTMLinSendError = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.sendresponsetoclientwhenresponseiscomplete")
+    public final static String XML_ATTRIBUTE_NAME_SEND_RESPONSE_TO_CLIENT_WHEN_RESPONSE_IS_COMPLETE = "com.ibm.ws.webcontainer.sendresponsetoclientwhenresponseiscomplete";
+
     public void setSendresponsetoclientwhenresponseiscomplete(Boolean e) {
         this.sendResponseToClientWhenResponseIsComplete = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.sendresponsetoclientaspartofsendredirect")
+    public final static String XML_ATTRIBUTE_NAME_SEND_RESPONSE_TO_CLIENT_AS_PART_OF_SEND_DIRECT = "com.ibm.ws.webcontainer.sendresponsetoclientaspartofsendredirect";
+
     public void setSendresponsetoclientaspartofsendredirect(Boolean e) {
         this.sendResponseToClientAsPartOfSendRedirect = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.keepunreadpostdataafterresponsesenttoclient")
+    public final static String XML_ATTRIBUTE_NAME_KEEP_UNREAD_POST_DATA_AFTER_RESPONSE_SENT_TO_CLIENT = "com.ibm.ws.webcontainer.keepunreadpostdataafterresponsesenttoclient";
+
     public void setKeepunreadpostdataafterresponsesenttoclient(Boolean e) {
         this.keepUnReadPostDataAfterResponseSentToClient = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.finishresponseonclose")
+    public final static String XML_ATTRIBUTE_NAME_FINISH_RESPONSE_ON_CLOSE = "com.ibm.ws.webcontainer.finishresponseonclose";
+
     public void setFinishresponseonclose(Boolean e) {
         this.finishResponseOnClose = e;
     }
 
-    @XmlAttribute(name = "com.ibm.webcontainer.fvt.listeners.globallistener")
+    public final static String XML_ATTRIBUTE_NAME_GLOBAL_LISTENER = "com.ibm.webcontainer.fvt.listeners.globallistener";
+
     public void setGloballistener(Boolean e) {
         this.globalListener = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.checkforceworkrejected")
+    public final static String XML_ATTRIBUTE_NAME_CHECK_FORCE_WORK_REJECTED = "com.ibm.ws.webcontainer.checkforceworkrejected";
+
     public void setCheckforceworkrejected(Boolean e) {
         this.checkForceWorkRejected = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.enablepartialurltoextendeddocumentroot")
+    public final static String XML_ATTRIBUTE_NAME_ENABLE_ = "com.ibm.ws.webcontainer.enablepartialurltoextendeddocumentroot";
+
     public void setEnablepartialurltoextendeddocumentroot(Boolean e) {
         this.enablePartialURLtoExtendedDocumentRoot = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.checkedringetrealpath")
+    public final static String XML_ATTRIBUTE_NAME_CHECKED_R_IN_GET_REAL_PATH = "com.ibm.ws.webcontainer.checkedringetrealpath";
+
     public void setCheckedringetrealpath(Boolean e) {
         this.checkedRingetRealPath = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.disableServletContainerInitializersOnPreV8Apps")
+    public final static String XML_ATTRIBUTE_NAME_DISABLE_SERVLET_CONTAINER_INITIALIZERS_ON_PRE_V8_APPS = "com.ibm.ws.webcontainer.disableServletContainerInitializersOnPreV8Apps";
+
     public void setdisableServletContainerInitializersOnPreV8Apps(Boolean e) {
         this.disableServletContainerInitializersOnPreV8Apps = e;
     }
 
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.ignoreInvalidQueryString")
+    public final static String XML_ATTRIBUTE_NAME_IGNORE_INVALID_QUERY_STRING = "com.ibm.ws.webcontainer.ignoreInvalidQueryString";
+
     public void setIgnoreInvalidQueryString(Boolean e) {
         this.ignoreInvalidQueryString = e;
     }
 
     //PM71666
-    @XmlAttribute(name = "setcontentlengthonclose")
+    public final static String XML_ATTRIBUTE_NAME_SET_CONTEXT_LENGTH_ON_CLOSE = "setcontentlengthonclose";
+
     public void setSetContentLengthOnClose(Boolean setContentLengthOnClose) {
         this.setContentLengthOnClose = setContentLengthOnClose;
     }
@@ -957,7 +1019,8 @@ public class WebContainerElement extends ConfigElement {
     /**
      * @param allowdotsinname the allowdotsinname to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.allowdotsinname")
+    public final static String XML_ATTRIBUTE_NAME_ALLOW_DOTS_IN_NAME = "com.ibm.ws.webcontainer.allowdotsinname";
+
     public void setAllowdotsinname(Boolean allowdotsinname) {
         this.allowdotsinname = allowdotsinname;
     }
@@ -973,25 +1036,27 @@ public class WebContainerElement extends ConfigElement {
     /**
      * @param useoriginalrequeststate the useoriginalrequeststate to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.useoriginalrequeststate")
+    public final static String XML_ATTRIBUTE_NAME_USE_ORIGINAL_REQUEST_STATE = "com.ibm.ws.webcontainer.useoriginalrequeststate";
+
     public void setUseoriginalrequeststate(Boolean useoriginalrequeststate) {
         this.useoriginalrequeststate = useoriginalrequeststate;
     }
-
     //PM88028 End
 
     /**
      * @param destroyservletonserviceunavailableexception the destroyservletonserviceunavailableexception to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.destroyservletonserviceunavailableexception")
+    public final static String XML_ATTRIBUTE_NAME_DESTROY_SERVLET_ON_SERVICE_UNAVAILABLE_EXCEPTION = "com.ibm.ws.webcontainer.destroyservletonserviceunavailableexception";
+
     public void setDestroyservletonserviceunavailableexception(Boolean destroyservletonserviceunavailableexception) {
         this.destroyservletonserviceunavailableexception = destroyservletonserviceunavailableexception;
-    }//PM98245
+    } //PM98245
 
     /**
      * @param normalizerequesturi the normalizerequesturi to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.normalizerequesturi")
+    public final static String XML_ATTRIBUTE_NAME_NORMALIZE_REQUEST_URI = "com.ibm.ws.webcontainer.normalizerequesturi";
+
     public void setNormalizerequesturi(Boolean normalizerequesturi) {
         this.normalizerequesturi = normalizerequesturi;
     }
@@ -999,12 +1064,14 @@ public class WebContainerElement extends ConfigElement {
     /**
      * @param displaytextwhennoerrorpagedefined the displaytextwhennoerrorpagedefined to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.displaytextwhennoerrorpagedefined")
+    public final static String XML_ATTRIBUTE_NAME_DISPLAY_TEST_WHEN_NO_ERROR_PAGE_DEFINED = "com.ibm.ws.webcontainer.displaytextwhennoerrorpagedefined";
+
     public void setDisplaytextwhennoerrorpagedefined(String displaytextwhennoerrorpagedefined) {
         this.displaytextwhennoerrorpagedefined = displaytextwhennoerrorpagedefined;
     } //PI09474
 
-    @XmlAttribute(name = "com.ibm.ws.jsp.throwExceptionForAddELResolver")
+    public final static String XML_ATTRIBUTE_NAME_THROW_EXCEPTION_FOR_ADD_EL_RESOLVER = "com.ibm.ws.jsp.throwExceptionForAddELResolver";
+
     public void setThrowExceptionForAddELResolver(Boolean throwExceptionForAddELResolver) {
         this.throwExceptionForAddELResolver = throwExceptionForAddELResolver;
     } //PM05903
@@ -1012,31 +1079,35 @@ public class WebContainerElement extends ConfigElement {
     /**
      * @param evalExpressionFollowingTwoBackslashes the evalExpressionFollowingTwoBackslashes to set
      */
-    @XmlAttribute(name = "com.ibm.ws.jsp.evalexpressionfollowingtwobackslashes")
+    public final static String XML_ATTRIBUTE_NAME_EVAL_EXPRESSION_FOLLOWING_TWO_BACKSLASHES = "com.ibm.ws.jsp.evalexpressionfollowingtwobackslashes";
+
     public void setEvalExpressionFollowingTwoBackslashes(Boolean evalExpressionFollowingTwoBackslashes) {
         this.evalExpressionFollowingTwoBackslashes = evalExpressionFollowingTwoBackslashes;
-    }//PM81674
+    } //PM81674
 
     /**
      * @param limitBuffer the limitBuffer to set
      */
-    @XmlAttribute(name = "com.ibm.ws.jsp.limitBuffer")
+    public final static String XML_ATTRIBUTE_NAME_LIMIT_BUFFER = "com.ibm.ws.jsp.limitBuffer";
+
     public void setLimitBuffer(Boolean limitBuffer) {
         this.limitBuffer = limitBuffer;
-    }//PK95332
+    } //PK95332
 
     /**
      * @param allowdefaulterrorpage the allowdefaulterrorpage to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.allowdefaulterrorpage")
+    public final static String XML_ATTRIBUTE_NAME_ALLOW_DEFAULT_ERROR_PAGE = "com.ibm.ws.webcontainer.allowdefaulterrorpage";
+
     public void setAllowdefaulterrorpage(Boolean allowdefaulterrorpage) {
         this.allowdefaulterrorpage = allowdefaulterrorpage;
-    }//PI05845
+    } //PI05845
 
     /**
      * @param preserveRequestParameterValues to return a clone of the original request param values
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.preserverequestparametervalues")
+    public final static String XML_ATTRIBUTE_NAME_PRESERVE_REQUEST_PARAMETER_VALUES = "com.ibm.ws.webcontainer.preserverequestparametervalues";
+
     public void setPreserveRequestParameterValues(Boolean preserveRequestParameterValues) {
         this.preserveRequestParameterValues = preserveRequestParameterValues;
     } //PI20210
@@ -1044,7 +1115,8 @@ public class WebContainerElement extends ConfigElement {
     /**
      * @param writerOnEmptyBuffer the writerOnEmptyBuffer to set
      */
-    @XmlAttribute(name = "com.ibm.ws.jsp.getwriteronemptybuffer")
+    public final static String XML_ATTRIBUTE_NAME_WRITE_ON_EMPTY_BUFFER = "com.ibm.ws.jsp.getwriteronemptybuffer";
+
     public void setWriterOnEmptyBuffer(Boolean writerOnEmptyBuffer) {
         this.writerOnEmptyBuffer = writerOnEmptyBuffer;
     } //PK90190
@@ -1052,89 +1124,59 @@ public class WebContainerElement extends ConfigElement {
     /**
      * @param emptyServletMappings - true to return an empty list when mappings are empty, false to return null
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.emptyservletmappings")
+    public final static String XML_ATTRIBUTE_NAME_EMPTY_SERVLET_MAPPINGS = "com.ibm.ws.webcontainer.emptyservletmappings";
+
     public void setEmptyServletMappings(Boolean emptyServletMappings) {
         this.emptyServletMappings = emptyServletMappings;
     } //PI23529
 
     /**
      * @param parameterReturnEmptyString - true to return an empty string when calling jsp:getProperty on a property that has
-     *            not been set , false to return null
+     *                                       not been set , false to return null
      */
-    @XmlAttribute(name = "com.ibm.ws.jsp.getparameterreturnemptystring")
+    public final static String XML_ATTRIBUTE_NAME_PARAMETER_RETURN_EMPTY_STRING = "com.ibm.ws.jsp.getparameterreturnemptystring";
+
     public void setParameterReturnEmptyString(Boolean parameterReturnEmptyString) {
         this.parameterReturnEmptyString = parameterReturnEmptyString;
     } //PK56156
 
     /**
      * @param redirectWithPathInfo - true to allow redirect with the request URI's path info, false to redirect using
-     *            only the request URI
+     *                                 only the request URI
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.redirectwithpathinfo")
+    public final static String XML_ATTRIBUTE_NAME_REDIRECT_WITH_PATH_INFO = "com.ibm.ws.webcontainer.redirectwithpathinfo";
+
     public void setRedirectWithPathInfo(Boolean redirectWithPathInfo) {
         this.redirectWithPathInfo = redirectWithPathInfo;
-    } // PK23779
+    } //PK23779
 
     /**
      * @param deferServletRequestListenerDestroyOnError the deferServletRequestListenerDestroyOnError to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror")
+    public final static String XML_ATTRIBUTE_NAME_DESTROY_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR = "com.ibm.ws.webcontainer.deferservletrequestlistenerdestroyonerror";
+
     public void setDeferServletRequestListenerDestroyOnError(Boolean deferServletRequestListenerDestroyOnError) {
         this.deferServletRequestListenerDestroyOnError = deferServletRequestListenerDestroyOnError;
     } //PI26908
 
     /**
      * @param allowExpressionFactoryPerApp - true to allow multiple ExpressionFactory implementations, false to only use
-     *            ExpressionFactory of first loaded application
+     *                                         ExpressionFactory of first loaded application
      */
-    @XmlAttribute(name = "com.ibm.ws.jsp.allowexpressionfactoryperapp")
+    public final static String XML_ATTRIBUTE_NAME_ALLOW_EXPRESSION_FACTORY_PER_APP = "com.ibm.ws.jsp.allowexpressionfactoryperapp";
+
     public void setAllowExpressionFactoryPerApp(Boolean allowExpressionFactoryPerApp) {
         this.allowExpressionFactoryPerApp = allowExpressionFactoryPerApp;
-    } // PI31922
+    } //PI31922
 
     /**
      * @param useMaxRequestsizeforMultipart the useMaxRequestsizeforMultipart to set
      */
-    @XmlAttribute(name = "com.ibm.ws.webcontainer.usemaxrequestsizeformultipart")
+    public final static String XML_ATTRIBUTE_NAME_USE_MAX_REQUEST_SIZE_FORM_MULTIPART = "com.ibm.ws.webcontainer.usemaxrequestsizeformultipart";
+
     public void setUseMaxRequestsizeforMultipart(Boolean useMaxRequestsizeforMultipart) {
         this.useMaxRequestsizeforMultipart = useMaxRequestsizeforMultipart;
-    }//PI75528
-
-    /*
-     * listeners
-     * decodeurlasutf8
-     * fileservingenabled
-     * directorybrowsingenabled
-     * serveServletsByClassnameEnabled
-     * com.ibm.ws.webcontainer.disallowserveservletsbyclassname
-     * com.ibm.ws.webcontainer.donotservebyclassname
-     * trusthostheaderport
-     * trusted
-     * com.ibm.ws.webcontainer.extracthostheaderport
-     * httpsindicatorheader
-     * ExposeWebInfOnDispatch
-     * com.ibm.ws.webcontainer.decodeurlplussign
-     * com.ibm.ws.webcontainer.channelwritetype
-     * com.ibm.ws.webcontainer.suppressHtmlRecursiveErrorOutput
-     * com.ibm.ws.webcontainer.fileWrapperEvents
-     * com.ibm.ws.webcontainer.webgroupvhostnotfound
-     * com.ibm.ws.webcontainer.DefaultTraceRequestBehavior
-     * com.ibm.ws.webcontainer.DefaultHeadRequestBehavior
-     * com.ibm.ws.webcontainer.TolerateSymbolicLinks
-     * com.ibm.ws.webcontainer.SymbolicLinksCacheSize
-     * com.ibm.ws.webcontainer.enableErrorExceptionTypeFirst
-     * com.ibm.ws.webcontainer.enablemultireadofpostdata
-     * com.ibm.ws.webcontainer.invokeFilterInitAtStartup
-     * com.ibm.ws.webcontainer.enablejspmappingoverride
-     * com.ibm.ws.jsp.enabledefaultiselignoredintag
-     * com.ibm.ws.webcontainer.parseutf8postdata
-     * com.ibm.ws.webcontainer.logservletcontainerinitializerclassloadingerrors
-     * com.ibm.ws.webcontainer.allowincludesenderror
-     * com.ibm.ws.webcontainer.skipmetainfresourcesprocessing
-     * com.ibm.ws.webcontainer.metainfresourcescachesize
-     * com.ibm.ws.webcontainer.xpoweredby
-     * com.ibm.ws.webcontainer.disablexpoweredby
-     */
+    } //PI75528
 
     @Override
     public String toString() {

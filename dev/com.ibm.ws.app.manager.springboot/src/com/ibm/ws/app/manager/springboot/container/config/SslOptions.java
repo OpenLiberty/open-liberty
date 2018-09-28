@@ -10,21 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * Defines Ssl options for channel framework
  *
  */
 public class SslOptions extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_SSL_REF = "sslRef";
     private String sslRef;
 
     public String getSslRef() {
         return this.sslRef;
     }
 
-    @XmlAttribute
     public void setSslRef(String sslRef) {
         this.sslRef = sslRef;
     }

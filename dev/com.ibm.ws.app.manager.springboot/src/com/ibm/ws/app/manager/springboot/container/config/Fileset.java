@@ -10,19 +10,26 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * A set of files on the file system local to the server configuration. Note
  * that these files may be remote to the local JVM.
- * 
+ *
  */
 public class Fileset extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_CASE_SENSITIVE = "caseSensitive";
     private String caseSensitive;
+
+    public final static String XML_ATTRIBUTE_NAME_DIR = "dir";
     private String dir;
+
+    public final static String XML_ATTRIBUTE_NAME_EXCLUDES = "excludes";
     private String excludes;
+
+    public final static String XML_ATTRIBUTE_NAME_INCLUDES = "includes";
     private String includes;
+
+    public final static String XML_ATTRIBUTE_NAME_SCAN_INTERVAL = "scanInterval";
     private String scanInterval;
 
     /**
@@ -35,7 +42,6 @@ public class Fileset extends ConfigElement {
     /**
      * @param caseSensitive value to use for the caseSensitive attribute
      */
-    @XmlAttribute
     public void setCaseSensitive(String caseSensitive) {
         this.caseSensitive = ConfigElement.getValue(caseSensitive);
     }
@@ -50,7 +56,6 @@ public class Fileset extends ConfigElement {
     /**
      * @param dir the parent directory represented by this instance
      */
-    @XmlAttribute
     public void setDir(String dir) {
         this.dir = ConfigElement.getValue(dir);
     }
@@ -65,7 +70,6 @@ public class Fileset extends ConfigElement {
     /**
      * @param excludes the pattern to exclude from the target directory
      */
-    @XmlAttribute
     public void setExcludes(String excludes) {
         this.excludes = ConfigElement.getValue(excludes);
     }
@@ -80,7 +84,6 @@ public class Fileset extends ConfigElement {
     /**
      * @param includes the pattern to include from the target directory
      */
-    @XmlAttribute
     public void setIncludes(String includes) {
         this.includes = ConfigElement.getValue(includes);
     }
@@ -95,7 +98,6 @@ public class Fileset extends ConfigElement {
     /**
      * @param scanInterval the scan interval
      */
-    @XmlAttribute
     public void setScanInterval(String scanInterval) {
         this.scanInterval = ConfigElement.getValue(scanInterval);
     }
