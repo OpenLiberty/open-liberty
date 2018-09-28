@@ -5,13 +5,13 @@ publishing {
         if (isRemotePublishing) {
             maven {
                 if(project.version.endsWith('-SNAPSHOT')) {
-                    url ('https://' + generatedProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty' + matrixParams)
+                    url ('https://' + userProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty' + matrixParams)
                 } else {
-                    url ('https://' + generatedProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty' + matrixParams)
+                    url ('https://' + userProps.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty' + matrixParams)
                 }
                 credentials {
-                    username generatedProps.getProperty("artifactory.upload.user")
-                    password generatedProps.getProperty("artifactory.upload.token")
+                    username userProps.getProperty("artifactory.upload.user")
+                    password userProps.getProperty("artifactory.upload.token")
                 }
             }
         } else {
