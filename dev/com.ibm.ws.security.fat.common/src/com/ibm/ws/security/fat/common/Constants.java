@@ -20,6 +20,26 @@ public class Constants {
     public static final String STRING_NULL = "null";
     public static final String STRING_NOT_NULL = "not null";
 
+    /**
+     * This interface allows us to create a simple check type inheritance structure to divide up different categories of check
+     * types (e.g. string checks, object checks, JSON-type checks. etc.). New check type categories can be defined as a new enum
+     * that extends this interface and defines whatever category-specific check types that make sense.
+     */
+    public interface CheckType {
+    }
+
+    public static enum StringCheckType implements CheckType {
+        NULL, NOT_NULL, EQUALS, CONTAINS, DOES_NOT_CONTAIN, CONTAINS_REGEX, DOES_NOT_CONTAIN_REGEX
+    };
+
+    public static enum ObjectCheckType implements CheckType {
+        EQUALS
+    };
+
+    public static enum JsonCheckType implements CheckType {
+        KEY_EXISTS, KEY_DOES_NOT_EXIST, VALUE_TYPE
+    };
+
     public static final String CONSOLE_LOG = "console.log";
     public static final String MESSAGES_LOG = "messages.log";
     public static final String TRACE_LOG = "trace.log";
