@@ -74,7 +74,6 @@ import com.ibm.wsspi.kernel.service.utils.PathUtils;
 
 abstract class ContainerClassLoader extends IdentifiedLoader {
     static final TraceComponent tc = Tr.register(ContainerClassLoader.class);
-    static final URL[] EMPTY_URL_ARRAY = {};
 
     /**
      * This class will stop JARs from being cached when they are being read from. This will prevent java from keeping a stream open to the file and thus locking it so

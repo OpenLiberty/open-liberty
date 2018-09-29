@@ -45,12 +45,12 @@ public class ThreadContextClassLoaderForBundles extends ThreadContextClassLoader
     }
 
     @Override
-    protected URL findResource(String arg0) {
+    public URL findResource(String arg0) {
         return super.findResource(arg0);
     }
 
     @Override
-    protected Enumeration<URL> findResources(String arg0) throws IOException {
+    public Enumeration<URL> findResources(String arg0) throws IOException {
         return super.findResources(arg0);
     }
 }

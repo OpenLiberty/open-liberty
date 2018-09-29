@@ -120,7 +120,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
     }
 
     @Override
-    protected URL findResource(String arg0) {
+    public URL findResource(String arg0) {
         URL result = null;
         for (ClassLoader cl : followOnClassLoaders) {
             result = cl.getResource(arg0);
@@ -131,7 +131,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
     }
 
     @Override
-    protected Enumeration<URL> findResources(String arg0) throws IOException {
+    public Enumeration<URL> findResources(String arg0) throws IOException {
         List<Enumeration<URL>> rawResult = new ArrayList<Enumeration<URL>>();
 
         for (ClassLoader cl : followOnClassLoaders) {

@@ -10,7 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.classloading;
 
-import java.security.SecureClassLoader;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.EnumSet;
 
 import com.ibm.wsspi.classloading.ApiType;
@@ -23,9 +24,12 @@ import com.ibm.wsspi.classloading.ApiType;
  * Do not create your own extension of this class as it will <strong>not
  * </strong> work predictably with the Liberty
  */
-public abstract class LibertyClassLoader extends SecureClassLoader {
+public abstract class LibertyClassLoader extends URLClassLoader {
+
+    private static final URL[] EMPTY_URL_ARRAY = {};
+
     protected LibertyClassLoader(ClassLoader parent) {
-        super(parent);
+        super(EMPTY_URL_ARRAY, parent);
     }
 
     /** @return the set of {@link ApiType}s which this class provider can access */
