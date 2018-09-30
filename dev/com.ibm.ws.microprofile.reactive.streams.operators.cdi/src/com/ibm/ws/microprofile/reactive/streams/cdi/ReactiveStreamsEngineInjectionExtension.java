@@ -68,12 +68,4 @@ public class ReactiveStreamsEngineInjectionExtension implements Extension, WebSp
         return configException;
     }
 
-    protected Throwable processConversionType(InjectionPoint injectionPoint, Type injectionType, ClassLoader classLoader,
-                                              boolean optional) {
-        Throwable configException = null;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "ReactiveStreamsEngineInjectionExtension pct");
-        }
-        return configException;
-    }
 }
