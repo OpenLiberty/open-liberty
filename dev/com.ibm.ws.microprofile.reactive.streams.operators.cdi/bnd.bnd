@@ -17,7 +17,9 @@ javac.target: 1.8
 Bundle-Name: com.ibm.ws.microprofile.reactive.streams.operators.cdi
 Bundle-SymbolicName: com.ibm.ws.microprofile.reactive.streams.operators.cdi
 
-Export-Package: com.ibm.ws.microprofile.reactive.streams.cdi*; version=1.0
+Export-Package: \
+  !com.ibm.ws.microprofile.reactive.streams.cdi.resources, \
+  com.ibm.ws.microprofile.reactive.streams.cdi*
     
 Import-Package: \
   javax.enterprise.event;version="[1.1,2.1)",\
@@ -34,6 +36,8 @@ Import-Package: \
 Include-Resource: \
   META-INF=resources/META-INF
 
+WS-TraceGroup: REACTIVESTREAMS
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.reactive.streams.cdi.ReactiveStreamsEngineInjectionExtension
 
@@ -44,9 +48,15 @@ testsrc: test/src
 
 app-resources= \
   META-INF/services/javax.enterprise.inject.spi.Extension
+  
+Service-Component: \
+  com.ibm.ws.microprofile.reactive.streams.operators.cdi.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
 
 -buildpath: \
-	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2;version=latest,\
@@ -55,6 +65,8 @@ app-resources= \
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.com.lightbend.microprofile.reactive.streams.zerodep;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest, \
 	com.ibm.ws.logging.core;version=latest,\
