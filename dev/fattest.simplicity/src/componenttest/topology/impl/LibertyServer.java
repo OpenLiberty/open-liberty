@@ -2152,7 +2152,7 @@ public class LibertyServer implements LogMonitorClient {
         // Get all warnings and errors in logs - default to an empty list
         List<String> errorsInLogs = new ArrayList<String>();
         try {
-            errorsInLogs = this.findStringsInLogs(".*[EW] .*\\d{4}[EW]:.*");
+            errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$");
             if (!errorsInLogs.isEmpty()) {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return

@@ -36,6 +36,11 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
      */
     protected abstract Expectation createBasicExpectation();
 
+    /**
+     * Sublcasses must override this method to return the appropriate object type for the class under test.
+     */
+    protected abstract Expectation createBasicExpectationWithNoAction();
+
     @Test
     public void test_validate_nullContentObject() {
         try {
@@ -117,6 +122,38 @@ public abstract class CommonSpecificExpectationTest extends CommonExpectationTes
     }
 
     /************************************** isExpectationForAction **************************************/
+
+    @Test
+    public void test_isExpectationForAction_expectationActionNull_testActionNull() {
+        try {
+            Expectation exp = createBasicExpectationWithNoAction();
+            assertTrue("Null expectation test action + null test action should be considered to match this expectation, but it did not. Expectation was " + exp, exp.isExpectationForAction(null));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_isExpectationForAction_expectationActionNull_testActionEmpty() {
+        try {
+            Expectation exp = createBasicExpectationWithNoAction();
+            String testAction = "";
+            assertTrue("Null expectation test action + test action (" + testAction + ") should be considered to match this expectation, but it did not. Expectation was " + exp, exp.isExpectationForAction(testAction));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_isExpectationForAction_expectationActionNull_testActionNonEmpty() {
+        try {
+            Expectation exp = createBasicExpectationWithNoAction();
+            String testAction = ACTION1;
+            assertTrue("Null expectation test action + test action (" + testAction + ") should be considered to match this expectation, but it did not. Expectation was " + exp, exp.isExpectationForAction(testAction));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     @Test
     public void test_isExpectationForAction_testActionNull() {

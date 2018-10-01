@@ -17,6 +17,10 @@ public class ResponseTitleExpectation extends Expectation {
 
     protected static Class<?> thisClass = ResponseTitleExpectation.class;
 
+    public ResponseTitleExpectation(String checkType, String searchFor, String failureMsg) {
+        this(null, checkType, searchFor, failureMsg);
+    }
+
     public ResponseTitleExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_TITLE, checkType, searchFor, failureMsg);
     }

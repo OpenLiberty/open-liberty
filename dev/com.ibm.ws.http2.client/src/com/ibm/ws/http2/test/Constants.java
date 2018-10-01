@@ -53,4 +53,9 @@ public class Constants {
     public static final byte MASK_80 = (byte) 0x80;
     public static final byte MASK_7F = (byte) 0x7F;
 
+    // Stress test Parameter
+    // This value and the interval defined in http2.test.war.servlets.H2MultiDataFrame
+    // should work together to not have writing issues (FlowControlException)
+    public static final int STRESS_WINDOW_UPDATE_STREAM_INC = 512 * 20;
+
 }

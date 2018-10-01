@@ -208,4 +208,11 @@ public class TestActions {
         return new WebRequest(new URL(url), HttpMethod.GET);
     }
 
+    public WebRequest createPostRequest(String url, String body) throws MalformedURLException {
+        URL reqUrl = new URL(url);
+        WebRequest request = new WebRequest(reqUrl, HttpMethod.POST);
+        request.setRequestBody(body);
+        return request;
+    }
+
 }

@@ -34,6 +34,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
+import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -44,7 +45,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * for that configuration (or retrieves one it already created), verifies that the
  * attributes make sense and are valid, and then registers the KeystoreConfig
  * into the service registry so that it will play well with the rest of the services.
- * 
+ *
  * This is a managed service factory (rather than another DS service) to ensure that
  * we can yank/deregister/table/remove the service if the configuration is bad.
  * It is hard to do this kind of on-the-fly verification within a modified method
@@ -75,17 +76,11 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             return;
         }
 
-        String id = (String) properties.get(LibertyConstants.KEY_ID);
-        if (id == null) {
-            // if id is missing lets assume it's the default keystore
-            id = LibertyConstants.DEFAULT_KEY_STORE_NAME;
-            properties.put(LibertyConstants.KEY_ID, LibertyConstants.DEFAULT_KEY_STORE_NAME);
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "updated " + pid, properties);
+            Tr.event(this, tc, "updated keystore " + pid, properties);
         }
 
+        String id = (String) properties.get(LibertyConstants.KEY_ID);
         KeystoreConfig svc = null;
         KeystoreConfig old = keyConfigs.get(pid);
 
@@ -101,8 +96,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
         // Try to update the keystore (which involves generating a new WSKeyStore.. )
         // If it succeeds, register the service in the bundle context
         // If it fails, unregister it.
-        try
-        {
+        try {
             if (svc.updateKeystoreConfig(properties)) {
                 svc.updateRegistration(bContext);
 
@@ -116,9 +110,8 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
                 svc.unregister();
             }
 
-        } catch (IllegalStateException e)
-        {
-            // This must mean the bundle was stopped, which happens only if 
+        } catch (IllegalStateException e) {
+            // This must mean the bundle was stopped, which happens only if
             // we're trying to update and shut down simultaneously.
             // Harmless, so discard the exception rather than report FFDC.
         }
@@ -126,13 +119,15 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
 
     @Override
     public void deleted(String pid) {
-        KeystoreConfig old = keyConfigs.remove(pid);
+        KeystoreConfig old = keyConfigs.get(pid);
         if (old != null) {
+            KeyStoreManager.getInstance().clearKeyStoreFromMap(pid);
+            KeyStoreManager.getInstance().clearKeyStoreFromMap(keyConfigs.get(pid).getId());
             old.unregister();
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "deleted " + pid,
-                     (old == null ? "not found" : old.getId()));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "deleted keystore " + pid);
+            }
         }
     }
 
@@ -161,7 +156,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
     /**
      * Set the reference to the location manager.
      * Dynamic service: always use the most recent.
-     * 
+     *
      * @param locSvc Location service
      */
     @Reference(service = WsLocationAdmin.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -191,8 +186,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
             com.ibm.ws.ssl.config.KeyStoreManager.getInstance().clearJavaKeyStoresFromKeyStoreMap();
             com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedFiles);
             Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedFiles.toArray());
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception while trying to reload keystore file, exception is: " + e.getMessage());
             }
@@ -205,7 +199,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
      * Retrieves the BundleContext, assuming we're still valid. If we've been
      * deactivated, then the registration no longer needs / can happen and in
      * that case return null.
-     * 
+     *
      * @return The BundleContext if available, {@code null} otherwise.
      */
     @Override
@@ -232,7 +226,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
 
     /**
      * Sets the keystore file monitor registration.
-     * 
+     *
      * @param keyStoreFileMonitorRegistration
      */
     protected void setFileMonitorRegistration(ServiceRegistration<FileMonitor> keyStoreFileMonitorRegistration) {

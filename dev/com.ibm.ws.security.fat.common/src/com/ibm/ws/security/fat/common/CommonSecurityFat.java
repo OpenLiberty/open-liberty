@@ -56,7 +56,7 @@ public class CommonSecurityFat {
 
     @After
     public void commonAfterTest() {
-        restoreTestServers() ;
+        restoreTestServers();
         loggingUtils.printMethodName("ENDING TEST CASE: " + _testName);
         logTestCaseInServerLogs("ENDING");
     }
@@ -94,7 +94,7 @@ public class CommonSecurityFat {
             }
         }
     }
-    
+
     @Rule
     public FatWatcher watchman = new FatWatcher() {
         @Override

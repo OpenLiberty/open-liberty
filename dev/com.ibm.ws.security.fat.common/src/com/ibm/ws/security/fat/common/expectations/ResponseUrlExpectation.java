@@ -17,6 +17,10 @@ public class ResponseUrlExpectation extends Expectation {
 
     protected static Class<?> thisClass = ResponseUrlExpectation.class;
 
+    public ResponseUrlExpectation(String checkType, String searchFor, String failureMsg) {
+        this(null, checkType, searchFor, failureMsg);
+    }
+
     public ResponseUrlExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_URL, checkType, searchFor, failureMsg);
     }

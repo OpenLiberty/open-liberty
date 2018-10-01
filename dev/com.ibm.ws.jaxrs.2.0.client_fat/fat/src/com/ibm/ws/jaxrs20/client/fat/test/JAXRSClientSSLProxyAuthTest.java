@@ -197,7 +197,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "100");
+        p.put("timeout", "1000");
 
         this.runTestOnServer(target, "testProxyToHTTPTimeout_ClientBuilder", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
 
@@ -293,7 +293,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "100");
+        p.put("timeout", "1000");
 
         this.runTestOnServer(target, "testProxyToHTTPTimeout_Client", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
 
@@ -388,7 +388,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "100");
+        p.put("timeout", "1000");
 
         this.runTestOnServer(target, "testProxyToHTTPTimeout_WebTarget", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
 
@@ -485,7 +485,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         p.put("proxytype", "HTTP");
         p.put("proxyusername", "jaxrsUser");
         p.put("proxypassword", "USE_PASSWORD_FROM_SERVLET");
-        p.put("timeout", "100");
+        p.put("timeout", "1000");
 
         this.runTestOnServer(target, "testProxyToHTTPTimeout_Builder", p, "[Proxy Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: ");
 

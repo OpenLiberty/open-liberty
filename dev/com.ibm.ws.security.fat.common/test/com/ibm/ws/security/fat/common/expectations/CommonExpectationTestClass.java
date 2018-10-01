@@ -22,7 +22,7 @@ public class CommonExpectationTestClass extends CommonTestClass {
 
     public static final String TEST_ACTION = "testAction";
     public static final String SEARCH_FOR_VAL = "searchForVal";
-    public static final String FAILURE_MESSAGE = "This is a failure message.";
+    public static final String FAILURE_MESSAGE = "This is an expectation-defined failure message.";
     public static final String ACTION1 = "action1";
     public static final String ACTION2 = "action2";
     public static final String ACTION3 = "action3";

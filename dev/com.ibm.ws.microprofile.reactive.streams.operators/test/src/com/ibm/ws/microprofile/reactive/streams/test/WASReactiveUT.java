@@ -21,7 +21,7 @@ import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
 
-import com.ibm.ws.microprofile.reactive.streams.WASReactiveStreamsEngineImpl;
+import com.ibm.ws.microprofile.reactive.streams.spi.impl.WASReactiveStreamsEngineImpl;
 
 /**
  *
@@ -39,7 +39,7 @@ public class WASReactiveUT {
 
     /**
      * Waits for things to complete (with a timeout) and returns the actual result
-     * 
+     *
      * @param future
      * @return the stage's CompletableFuture.get()
      */
@@ -61,7 +61,7 @@ public class WASReactiveUT {
 
     /**
      * Just an initial unit test timeout of 10 seconds
-     * 
+     *
      * @return 10000
      */
     private long getTimeout() {

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="WebApp_ID">
+  <display-name>Liberty Snoop</display-name>
+  <description>This is the Liberty version of the Snoop servlet.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <servlet-name>Liberty Snoop Servlet</servlet-name>
+    <display-name>Liberty Snoop Servlet</display-name>
+    <description>This servlet returns information about the request which includes information about  existing sessions, application attributes, and request attributes.</description>
+    <servlet-class>com.ibm.ws.security.web.saml.sample.SnoopServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="BasicAuth">
+    <servlet-name>Liberty Snoop Servlet with Basic Auth</servlet-name>
+    <display-name>Liberty Snoop Servlet with Basic Auth</display-name>
+    <description>This servlet must pass basic authentication then returns information about the request which includes information about  existing sessions, application attributes, and request attributes.</description>
+    <servlet-class>com.ibm.ws.security.web.saml.sample.SnoopServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="SSL">
+    <servlet-name>Liberty Snoop Servlet with SSL</servlet-name>
+    <display-name>Liberty Snoop Servlet with SSL</display-name>
+    <description>This servlet uses SSL then returns information about the request which includes information about  existing sessions, application attributes, and request attributes.</description>
+    <servlet-class>com.ibm.ws.security.web.saml.sample.SnoopServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="RoleBased">
+    <servlet-name>Liberty Snoop Servlet with Role-Based</servlet-name>
+    <display-name>Liberty Snoop Servlet with Role-Based</display-name>
+    <description>This servlet uses role-based security check then returns information about the request which includes information about  existing sessions, application attributes, and request attributes.</description>
+    <servlet-class>com.ibm.ws.security.web.saml.sample.SnoopServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <servlet id="SessionTest">
+    <servlet-name>SessionTest Servlet</servlet-name>
+    <display-name>SessionTest Servlet</display-name>
+    <description>This servlet is used to test Session related monitoring.</description>
+    <servlet-class>com.ibm.app.monitor.SessionTest</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>Liberty Snoop Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_BasicAuth">
+    <servlet-name>Liberty Snoop Servlet with Basic Auth</servlet-name>
+    <url-pattern>/basic/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_SSL">
+    <servlet-name>Liberty Snoop Servlet with SSL</servlet-name>
+    <url-pattern>/ssl/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_RoleBased">
+    <servlet-name>Liberty Snoop Servlet with Role-Based</servlet-name>
+    <url-pattern>/role/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping id="ServletMapping_SessionTest">
+    <servlet-name>SessionTest Servlet</servlet-name>
+    <url-pattern>/SessionTest</url-pattern>
+  </servlet-mapping>
+
+  <!-- SECURITY CONSTRAINTS -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Liberty Snoop Servlet with Basic Auth</web-resource-name>
+      <url-pattern>/basic/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <!-- Only user can access this area -->
+      <role-name>user</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>NONE</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Liberty Snoop Servlet with SSL</web-resource-name>
+      <url-pattern>/ssl/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <!-- Only user can access this area -->
+      <role-name>user</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Liberty Snoop Servlet with Role-Based</web-resource-name>
+      <url-pattern>/role/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <!-- Only user can access this area -->
+      <role-name>user</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- AUTHENTICATION METHOD: Customized for original Jetty -->
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>Test Realm</realm-name>
+  </login-config> 
+
+  <!-- SECURITY ROLES: Customized for original Jetty -->
+  <security-role>
+    <role-name>user</role-name>
+  </security-role>
+</web-app>
+<!--
+Example URLs:
+  Default:
+    http://localhost:9080/snoop/
+  Basic Auth:
+    http://localhost:9080/snoop/basic/
+  SSL + Basic Auth:
+    https://localhost:9443/snoop/ssl/
+  Role-Based:
+    http://localhost:9080/snoop/role/
+-->

@@ -51,6 +51,9 @@ public class WSJdbc43ConnectionBuilder implements ConnectionBuilder {
 
     @Override
     public ConnectionBuilder shardingKey(ShardingKey value) {
+        if (value != null && ds.isBackedByDriver())
+            throw new UnsupportedOperationException("java.sql.Driver.createConnectionBuilder().shardingKey(value)");
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "shardingKey", value);
         shardingKey = value;
@@ -59,6 +62,9 @@ public class WSJdbc43ConnectionBuilder implements ConnectionBuilder {
 
     @Override
     public ConnectionBuilder superShardingKey(ShardingKey value) {
+        if (value != null && ds.isBackedByDriver())
+            throw new UnsupportedOperationException("java.sql.Driver.createConnectionBuilder().superShardingKey(value)");
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "superShardingKey", value);
         superShardingKey = value;

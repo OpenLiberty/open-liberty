@@ -4105,14 +4105,16 @@ public abstract class EJBMDOrchestrator {
                                                                            bmd.j2eeName.toString(), // d443878
                                                                            runtime.getClassDefiner()); // F70650
 
-                    bmd.homeRemoteTieClass = JITDeploy.generate_Tie // d413752
-                    (classLoader,
-                     classNameToLoad,
-                     bmd.homeInterfaceClass,
-                     bmd.j2eeName.toString(), // d443878
-                     runtime.getClassDefiner(), // F70650
-                     mmd.getRMICCompatible(),
-                     runtime.isRemoteUsingPortableServer());
+                    // Only generate the Tie if remote is supported (CORBA classes are available)
+                    if (runtime.isRemoteSupported()) {
+                        bmd.homeRemoteTieClass = JITDeploy.generate_Tie(classLoader,
+                                                                        classNameToLoad,
+                                                                        bmd.homeInterfaceClass,
+                                                                        bmd.j2eeName.toString(), // d443878
+                                                                        runtime.getClassDefiner(), // F70650
+                                                                        mmd.getRMICCompatible(),
+                                                                        runtime.isRemoteUsingPortableServer());
+                    }
                 }
 
                 // load generated local Home ('Wrapper') Impl class - EJSLocal[Type]HomeItf

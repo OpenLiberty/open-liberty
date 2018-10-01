@@ -122,7 +122,7 @@ public class LogSource implements Source {
         logData.setDatetime(dateVal);
 
         String messageVal = extractMessage(routedMessage, logRecord);
-        
+
         logData.setMessageId(null); // needs to be null to satisfy HandlerTest.java testMessageSource()
 
         int threadIdVal = (int) Thread.currentThread().getId();
@@ -179,7 +179,7 @@ public class LogSource implements Source {
 
         logData.setExtensions(extensions);
 
-        logData.setSourceType(sourceName);
+        logData.setSourceName(sourceName);
 
         return logData;
     }

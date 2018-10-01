@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.Constants.CheckType;
+import com.ibm.ws.security.fat.common.Constants.StringCheckType;
 import com.ibm.ws.security.fat.common.expectations.Expectation;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
@@ -63,6 +65,10 @@ public class TestValidationUtils {
         return false;
     }
 
+    public void validateResult(Object response, Expectations expectations) throws Exception {
+        validateResult(response, null, expectations);
+    }
+
     public void validateResult(Object response, String currentAction, Expectations expectations) throws Exception {
         String thisMethod = "validateResult";
         loggingUtils.printMethodName(thisMethod, "Start of");
@@ -108,20 +114,21 @@ public class TestValidationUtils {
             throw new Exception("The provided expectation is null; the specified content cannot be validated.");
         }
         String checkType = expected.getCheckType();
+        CheckType checkTypeEnum = expected.getExpectedCheckType();
 
-        if (Constants.STRING_NULL.equals(checkType)) {
+        if (Constants.STRING_NULL.equals(checkType) || checkTypeEnum == StringCheckType.NULL) {
             validateStringNull(expected, contentToValidate);
-        } else if (Constants.STRING_NOT_NULL.equals(checkType)) {
+        } else if (Constants.STRING_NOT_NULL.equals(checkType) || checkTypeEnum == StringCheckType.NOT_NULL) {
             validateStringNotNull(expected, contentToValidate);
-        } else if (Constants.STRING_EQUALS.equals(checkType)) {
+        } else if (Constants.STRING_EQUALS.equals(checkType) || checkTypeEnum == StringCheckType.EQUALS) {
             validateStringEquals(expected, contentToValidate);
-        } else if (Constants.STRING_CONTAINS.equals(checkType)) {
+        } else if (Constants.STRING_CONTAINS.equals(checkType) || checkTypeEnum == StringCheckType.CONTAINS) {
             validateStringContains(expected, contentToValidate);
-        } else if (Constants.STRING_DOES_NOT_CONTAIN.equals(checkType)) {
+        } else if (Constants.STRING_DOES_NOT_CONTAIN.equals(checkType) || checkTypeEnum == StringCheckType.DOES_NOT_CONTAIN) {
             validateStringDoesNotContain(expected, contentToValidate);
-        } else if (Constants.STRING_MATCHES.equals(checkType)) {
+        } else if (Constants.STRING_MATCHES.equals(checkType) || checkTypeEnum == StringCheckType.CONTAINS_REGEX) {
             validateRegexFound(expected, contentToValidate);
-        } else if (Constants.STRING_DOES_NOT_MATCH.equals(checkType)) {
+        } else if (Constants.STRING_DOES_NOT_MATCH.equals(checkType) || checkTypeEnum == StringCheckType.DOES_NOT_CONTAIN_REGEX) {
             validateRegexNotFound(expected, contentToValidate);
         } else {
             throw new Exception("String comparison type (" + checkType + ") unknown. Check that the offending test case has coded its expectations correctly.");

@@ -17,6 +17,10 @@ public class ResponseFullExpectation extends Expectation {
 
     protected static Class<?> thisClass = ResponseFullExpectation.class;
 
+    public ResponseFullExpectation(String checkType, String searchFor, String failureMsg) {
+        this(null, checkType, searchFor, failureMsg);
+    }
+
     public ResponseFullExpectation(String testAction, String checkType, String searchFor, String failureMsg) {
         super(testAction, Constants.RESPONSE_FULL, checkType, searchFor, failureMsg);
     }

@@ -18,8 +18,6 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.MvnUtils;
 
@@ -27,7 +25,7 @@ import componenttest.topology.utils.MvnUtils;
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  *
  */
-@Mode(TestMode.QUARANTINE)
+//@Mode(TestMode.QUARANTINE)
 @RunWith(FATRunner.class)
 public class Mpjwt11TCKLauncher_aud_noenv {
 
@@ -47,10 +45,13 @@ public class Mpjwt11TCKLauncher_aud_noenv {
     }
 
     @Test
-    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
+    @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtSignatureException")
     public void launchMpjwt11TCKLauncher_aud_noenv() throws Exception {
+        String port = String.valueOf(server.getBvtPort());
         String bucketAndTestName = this.getClass().getCanonicalName();
-        MvnUtils.overrideSuiteFileName("tck_suite_aud_noenv.xml", server);
+        MvnUtils.setSuiteFileName("tck_suite_aud_noenv.xml", server);
+        // need to pass the correct url for PublicKeyAsPEMLocationURLTest
+        MvnUtils.setAdditionalMvnProps(new String[] { "-Dmp.jwt.tck.jwks.baseURL=http://localhost:" + port + "/PublicKeyAsPEMLocationURLTest/" }, server);
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName);
 
     }

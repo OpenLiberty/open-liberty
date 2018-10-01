@@ -448,7 +448,6 @@ public class ConcurrentRxTestServlet extends FATServlet {
         assertNotSame(servletThread, increment3.executionThread);
 
         // Async action 4 might run on the thread that executed the previous stage, or on the servlet thread if cf3.get finds it first
-        assertEquals(increment3.executionThread, increment4.executionThread);
         assertTrue("Expecting to run on " + increment3.executionThread + " or " + servletThread + ". Instead: " + increment4.executionThread,
                    increment4.executionThread.equals(increment3.executionThread) || increment4.executionThread.equals(servletThread));
     }

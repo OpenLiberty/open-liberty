@@ -495,7 +495,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             @Override
             protected void update() {
                 Object cl = get();
-                if (cl instanceof AppClassLoader)
+                if (cl instanceof AppClassLoader && aclStore != null)
                     aclStore.remove((AppClassLoader) cl);
                 deregister();
             }

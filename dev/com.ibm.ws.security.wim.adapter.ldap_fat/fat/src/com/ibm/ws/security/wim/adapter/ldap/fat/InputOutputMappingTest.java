@@ -195,7 +195,7 @@ public class InputOutputMappingTest {
         ldap.setBindDN(EmbeddedApacheDS.getBindDN());
         ldap.setBindPassword(EmbeddedApacheDS.getBindPassword());
         ldap.setLdapType("Custom");
-        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s", null), new SearchResultsCache(false, 0, 0, "0s")));
+        ldap.setLdapCache(new LdapCache(new AttributesCache(false, 0, 0, "0s"), new SearchResultsCache(false, 0, 0, "0s")));
 
         /*
          * Include both postalCode and mail in the filter b/c postalCode is used to login and mail

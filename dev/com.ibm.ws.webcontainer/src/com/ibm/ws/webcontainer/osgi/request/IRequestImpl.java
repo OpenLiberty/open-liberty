@@ -62,6 +62,8 @@ public class IRequestImpl implements IRequestExtended
   private boolean isHttpsIndicatorSecure; 
   private boolean isHttpsIndicatorSecureSet;
   private String normalizedURI= null; // PI05525
+  
+  private String contentType;
   private static boolean normalizeRequestURI = WCCustomProperties.NORMALIZE_REQUEST_URI; //PI05525
 
   /**
@@ -174,7 +176,11 @@ public class IRequestImpl implements IRequestExtended
 
   public String getContentType()
   {
-    return this.request.getHeader("Content-Type");
+      if (this.contentType == null) {
+          this.contentType = this.request.getHeader("Content-Type");
+      }
+      
+      return this.contentType;
   }
 
   public byte[] getCookieValue(String cookieName)

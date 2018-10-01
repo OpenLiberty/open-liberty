@@ -13,16 +13,15 @@ package com.ibm.ws.app.manager.springboot.container.config;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-
 /**
  * Defines an HTTP endpoint (host/port mapping)
  */
 public class VirtualHost extends ConfigElement {
 
-    @XmlElement(name = "hostAlias")
+    public static String XML_ELEMENT_NAME_HOST_ALIAS = "hostAlias";
     private Set<String> hostAliases;
+
+    public static String XML_ATTRIBUTE_NAME_ALLOW_FROM_ENDPOINT_REF = "allowFromEndpointRef";
     private String allowFromEndpointRef;
 
     public Set<String> getHostAliases() {
@@ -36,7 +35,6 @@ public class VirtualHost extends ConfigElement {
         return allowFromEndpointRef;
     }
 
-    @XmlAttribute(name = "allowFromEndpointRef")
     public void setAllowFromEndpointRef(String allowFromEndpoint) {
         this.allowFromEndpointRef = allowFromEndpoint;
     }

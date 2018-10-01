@@ -10,26 +10,40 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-
 /**
  * ssl element is defined here:<br>
  * /com.ibm.ws.ssl/resources/OSGI-INF/metatype/metatype.xml
  */
 public class SSLConfig extends ConfigElement {
 
+    public static final String XML_ATTRIBUTE_NAME_SSL_PROTOCOL = "sslProtocol";
     private String sslProtocol;
+
+    public static final String XML_ATTRIBUTE_NAME_KEY_STORE_REF = "keyStoreRef";
     private String keyStoreRef;
+
+    public static final String XML_ATTRIBUTE_NAME_TRUST_STORE_REF = "trustStoreRef";
     private String trustStoreRef;
+
+    public static final String XML_ATTRIBUTE_NAME_SECURITY_LEVEL = "securityLevel";
     private String securityLevel;
+
+    public static final String XML_ATTRIBUTE_NAME_ENABLED_CIPHERS = "enabledCiphers";
     private String enabledCiphers;
+
+    public static final String XML_ATTRIBUTE_NAME_CLIENT_KEY_ALIAS = "clientKeyAlias";
     private String clientKeyAlias;
+
+    public static final String XML_ATTRIBUTE_NAME_SERVER_KEY_ALIAS = "serverKeyAlias";
     private String serverKeyAlias;
+
+    public static final String XML_ATTRIBUTE_NAME_CLIENT_AUTH = "clientAuthentication";
     private Boolean clientAuthentication;
+
+    public static final String XML_ATTRIBUTE_NAME_CLIENT_AUTH_SUPPORTED = "clientAuthenticationSupported";
     private Boolean clientAuthenticationSupported;
 
-    @XmlElement(name = "outboundConnection")
+    public static final String XML_ELEMENT_NAME_OUTBOUND_CONNECTION = "outboundConnection";
     private ConfigElementList<OutboundConnection> outboundConnections;
 
     /**
@@ -43,7 +57,6 @@ public class SSLConfig extends ConfigElement {
      * @param keyStoreRef
      *                        the keyStoreRef to set
      */
-    @XmlAttribute(name = "keyStoreRef")
     public void setKeyStoreRef(String keyStoreRef) {
         this.keyStoreRef = keyStoreRef;
     }
@@ -59,7 +72,6 @@ public class SSLConfig extends ConfigElement {
      * @param trustStoreRef
      *                          the trustStoreRef to set
      */
-    @XmlAttribute(name = "trustStoreRef")
     public void setTrustStoreRef(String trustStoreRef) {
         this.trustStoreRef = trustStoreRef;
     }
@@ -75,7 +87,6 @@ public class SSLConfig extends ConfigElement {
      * @param sslProtocol
      *                        the sslProtocol to set
      */
-    @XmlAttribute(name = "sslProtocol")
     public void setSslProtocol(String sslProtocol) {
         this.sslProtocol = sslProtocol;
     }
@@ -91,7 +102,6 @@ public class SSLConfig extends ConfigElement {
      * @param securityLevel
      *                          the securityLevel to set
      */
-    @XmlAttribute(name = "securityLevel")
     public void setSecurityLevel(String securityLevel) {
         this.securityLevel = securityLevel;
     }
@@ -107,7 +117,6 @@ public class SSLConfig extends ConfigElement {
      * @param enabledCiphers
      *                           the enabledCiphers to set
      */
-    @XmlAttribute(name = "enabledCiphers")
     public void setEnabledCiphers(String enabledCiphers) {
         this.enabledCiphers = enabledCiphers;
     }
@@ -123,7 +132,6 @@ public class SSLConfig extends ConfigElement {
      * @param clientKeyAlias
      *                           the clientKeyAlias to set
      */
-    @XmlAttribute(name = "clientKeyAlias")
     public void setClientKeyAlias(String clientKeyAlias) {
         this.clientKeyAlias = clientKeyAlias;
     }
@@ -139,7 +147,6 @@ public class SSLConfig extends ConfigElement {
      * @param serverKeyAlias
      *                           the serverKeyAlias to set
      */
-    @XmlAttribute(name = "serverKeyAlias")
     public void setServerKeyAlias(String serverKeyAlias) {
         this.serverKeyAlias = serverKeyAlias;
     }
@@ -156,7 +163,6 @@ public class SSLConfig extends ConfigElement {
      * @param clientAuthentication
      *                                 the clientAuthentication to set
      */
-    @XmlAttribute(name = "clientAuthentication")
     public void setClientAuthentication(Boolean clientAuthentication) {
         this.clientAuthentication = clientAuthentication;
     }
@@ -173,7 +179,6 @@ public class SSLConfig extends ConfigElement {
      * @param clientAuthenticationSupported
      *                                          the clientAuthenticationSupoorted to set
      */
-    @XmlAttribute(name = "clientAuthenticationSupported")
     public void setClientAuthenticationSupported(Boolean clientAuthenticationSupported) {
         this.clientAuthenticationSupported = clientAuthenticationSupported;
     }

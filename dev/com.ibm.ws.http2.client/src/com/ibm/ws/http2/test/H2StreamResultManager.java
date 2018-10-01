@@ -12,9 +12,9 @@ package com.ibm.ws.http2.test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,8 +36,11 @@ public class H2StreamResultManager {
     /*
      * hashtable to store the H2StreamResult objects
      */
-    private final Hashtable<Integer, H2StreamResult> streamHashtable;
-    private final Hashtable<FramePushPromiseClient, H2StreamResult> pushPromiseH2StreamResults;
+    //WDW private final Hashtable<Integer, H2StreamResult> streamHashtable;
+    //WDW private final Hashtable<FramePushPromiseClient, H2StreamResult> pushPromiseH2StreamResults;
+    private final ConcurrentHashMap<Integer, H2StreamResult> streamHashtable;
+    private final ConcurrentHashMap<FramePushPromiseClient, H2StreamResult> pushPromiseH2StreamResults;
+
     private FramesListener framesListener;
     private H2Connection h2Connection;
 
@@ -47,16 +50,18 @@ public class H2StreamResultManager {
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
     public H2StreamResultManager() {
-        this.streamHashtable = new Hashtable<Integer, H2StreamResult>();
-        this.pushPromiseH2StreamResults = new Hashtable<FramePushPromiseClient, H2StreamResult>();
+        //WDW this.streamHashtable = new Hashtable<Integer, H2StreamResult>();
+        //WDW this.pushPromiseH2StreamResults = new Hashtable<FramePushPromiseClient, H2StreamResult>();
+        this.streamHashtable = new ConcurrentHashMap<Integer, H2StreamResult>();
+        this.pushPromiseH2StreamResults = new ConcurrentHashMap<FramePushPromiseClient, H2StreamResult>();
     }
 
     public H2StreamResultManager(H2Connection h2Connection) {
         this();
         this.h2Connection = h2Connection;
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "constructor", "Adding connection " + h2Connection + " to result manager: " + this);
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "constructor", "Adding connection " + h2Connection + " to result manager: " + this);
     }
 
     /*
@@ -64,8 +69,8 @@ public class H2StreamResultManager {
      */
     public int addResponseFrame(Frame frame) throws CompressionException, IOException, ReceivedFrameAfterEndOfStream, ReceivedHeadersFrameAfterEndOfHeaders, ReceivedUnexpectedGoAwayExcetion {
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addResponseFrame", "H2StreamResultmanager.addResponseFrame: entry (object: " + this + ")");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addResponseFrame", "H2StreamResultmanager.addResponseFrame: entry (object: " + this + ")");
         frame = processFrame(frame, false, false);
         framesListener.receivedFrame(frame);
 
@@ -76,8 +81,8 @@ public class H2StreamResultManager {
                 if (((FrameGoAway) frame).getErrorCode() > 0)
                     throw new ReceivedUnexpectedGoAwayExcetion("The following GoAway frame was not expected and has an error message: " + frame);
 
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "addResponseFrame", "Calling listener's receivedFrameGoAway()");
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "addResponseFrame", "Calling listener's receivedFrameGoAway()");
                 framesListener.receivedFrameGoAway();
                 return 0;
             } else { //it is an expected GoAway, so start finishing test
@@ -108,8 +113,8 @@ public class H2StreamResultManager {
             framesListener.receivedLastFrame(!receivedExpectedGoAway);
         }
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addResponseFrame", "H2StreamResultmanager.addResponseFrame: exit");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addResponseFrame", "H2StreamResultmanager.addResponseFrame: exit");
 
         return 0;
     }
@@ -120,8 +125,8 @@ public class H2StreamResultManager {
      */
     public int addExpectedFrames(ArrayList<Frame> frames) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedFrames", "H2StreamResultManager.addExpectedFrames: entry (object: " + this + ")");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedFrames", "H2StreamResultManager.addExpectedFrames: entry (object: " + this + ")");
 
         Frame frame = null;
 
@@ -131,8 +136,8 @@ public class H2StreamResultManager {
             addExpectedFrame(frame);
         }
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedFrames", "H2StreamResultManager.addExpectedFrames: exit");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedFrames", "H2StreamResultManager.addExpectedFrames: exit");
 
         return 0;
     }
@@ -148,8 +153,8 @@ public class H2StreamResultManager {
      */
     public H2StreamResult addExpectedFrame(Frame frame) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedFrame", "H2StreamResultManager.addExpectedFrame: entry (object: " + this + ")");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedFrame", "H2StreamResultManager.addExpectedFrame: entry (object: " + this + ")");
 
         if (frame.getFrameType() == FrameTypes.PUSH_PROMISE)
             return addExpectedPushPromiseFrame((FramePushPromiseClient) frame);
@@ -165,8 +170,8 @@ public class H2StreamResultManager {
 
         streamResult.addExpectedResponse(frame);
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedFrame", "H2StreamResultManager.addExpectedFrame: exit");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedFrame", "H2StreamResultManager.addExpectedFrame: exit");
 
         return null;
     }
@@ -175,15 +180,15 @@ public class H2StreamResultManager {
      */
     public H2StreamResult addExpectedFrame(FrameTypes type, int stream) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedFrame(FrameTypes, int)", "H2StreamResultManager.addExpectedFrame: entry (object: " + this + ")");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedFrame(FrameTypes, int)", "H2StreamResultManager.addExpectedFrame: entry (object: " + this + ")");
 
         H2StreamResult streamResult = getStreamResult(stream);
 
         streamResult.addExpectedResponse(type);
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedFrame", "H2StreamResultManager.addExpectedFrame: exit");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedFrame", "H2StreamResultManager.addExpectedFrame: exit");
 
         return null;
     }
@@ -199,8 +204,8 @@ public class H2StreamResultManager {
      */
     private H2StreamResult addExpectedPushPromiseFrame(FramePushPromiseClient frame) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedPushPromiseFrame", "H2StreamResultManager.addExpectedPushPromiseFrame: entry (object: " + this + ")");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedPushPromiseFrame", "H2StreamResultManager.addExpectedPushPromiseFrame: entry (object: " + this + ")");
         boolean linkHeaderFound = false;
         for (HeaderEntry headerEntry : frame.getHeaderEntries()) {
             if (headerEntry.getH2HeaderField().getName().equalsIgnoreCase("link"))
@@ -219,8 +224,8 @@ public class H2StreamResultManager {
 
         pushPromiseH2StreamResults.put(frame, pushPromiseStreamResult);
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "addExpectedPushPromiseFrame", "H2StreamResultManager.addExpectedPushPromiseFrame: exit");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "addExpectedPushPromiseFrame", "H2StreamResultManager.addExpectedPushPromiseFrame: exit");
 
         return pushPromiseStreamResult;
     }
@@ -243,8 +248,8 @@ public class H2StreamResultManager {
      */
     private H2StreamResult getStreamResult(Integer streamId) {
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "getStreamResult", "H2StreamResultmanager.getStreamResult: entry (object: " + this + ")");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "getStreamResult", "H2StreamResultmanager.getStreamResult: entry (object: " + this + ")");
 
         /*
          * If this is a new stream, create a new H2streamResult and put it
@@ -253,12 +258,14 @@ public class H2StreamResultManager {
         H2StreamResult streamResult = streamHashtable.get(streamId);
 
         if (streamResult == null) {
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.logp(Level.INFO, CLASS_NAME, "getStreamResult", "Create new streamHashtable entry for id: " + streamId);
             streamResult = new H2StreamResult(streamId);
             streamHashtable.put(streamId, streamResult);
         }
 
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.logp(Level.INFO, CLASS_NAME, "getStreamResult", "H2StreamResultmanager.getStreamResult: exit");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.logp(Level.FINEST, CLASS_NAME, "getStreamResult", "H2StreamResultmanager.getStreamResult: exit");
 
         return streamResult;
 
@@ -293,8 +300,8 @@ public class H2StreamResultManager {
 
     public boolean receivedAllFrames() {
         if (h2Connection.getWaitingForACK().get()) {
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAllFrames", "All frames not received: still waiting for SETTINGS frame with ACK set");
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "All frames not received: still waiting for SETTINGS frame with ACK set");
             return false;
         }
         Set<Integer> streamIds = streamHashtable.keySet();
@@ -302,8 +309,8 @@ public class H2StreamResultManager {
             if (lookupStreamResult(streamId).getStreamId() != 0 && !lookupStreamResult(streamId).receivedEndOfStreamOrRstStream()
                 && !lookupStreamResult(streamId).isContinuationExpected()) {
 
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not finished.");
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not finished.");
                 return false;
             }
             //this is to process all the frame in stream id 0. These don't set end of stream flag nor RST_STREAM
@@ -318,8 +325,8 @@ public class H2StreamResultManager {
                     return false;
                 }
             }
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.logp(Level.INFO, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has finished.");
+            if (LOGGER.isLoggable(Level.FINEST))
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has finished.");
 
         }
 

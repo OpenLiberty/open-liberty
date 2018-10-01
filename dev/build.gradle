@@ -80,11 +80,11 @@ task testResults {
   dependsOn subprojects.test
 
   doLast {
-    generatedProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
-    generatedProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
+    userProps.setProperty('tests.total.failed', failedTestCountTotal.toString())
+    userProps.setProperty('tests.total.successful', successfulTestCountTotal.toString())
 
     File propsFile = new File('generated.properties')
-    generatedProps.store(propsFile.newWriter(), null)
+    userProps.store(propsFile.newWriter(), null)
   }
 }
 

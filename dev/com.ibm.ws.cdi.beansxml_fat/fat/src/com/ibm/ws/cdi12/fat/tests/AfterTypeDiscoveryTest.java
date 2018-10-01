@@ -59,7 +59,7 @@ public class AfterTypeDiscoveryTest extends LoggingTest {
         afterTypeDiscoveryApp.add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
         afterTypeDiscoveryApp.add(new FileAsset(new File("test-applications/afterTypeDiscoveryApp.war/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
                                   "/META-INF/services/javax.enterprise.inject.spi.Extension");
-        archives.put(afterTypeDiscoveryApp, "publish/servers/cdi12AfterTypeDiscoveryServer/apps");
+        archives.put(afterTypeDiscoveryApp, "/apps");
         return archives;
     }
 

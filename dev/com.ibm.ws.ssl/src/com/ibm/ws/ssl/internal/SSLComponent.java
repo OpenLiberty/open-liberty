@@ -51,6 +51,7 @@ import com.ibm.ws.ssl.config.SSLConfigManager;
 import com.ibm.ws.ssl.config.WSKeyStore;
 import com.ibm.ws.ssl.optional.SSLSupportOptional;
 import com.ibm.ws.ssl.protocol.LibertySSLSocketFactory;
+import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 
@@ -83,7 +84,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
     private volatile WsLocationAdmin locSvc;
 
     private FeatureProvisioner provisionerService;
-    private SSLConfigValidator validator;
 
     private boolean transportSecurityEnabled;
 
@@ -123,7 +123,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
 
         this.componentContext = (ExtComponentContext) ctx;
 
-        SSLConfigManager.getInstance().setConfigValidator(validator);
         processConfig(true);
 
     }
@@ -145,6 +144,9 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         repertoirePIDMap.clear();
         keystoreIdMap.clear();
         keystorePidMap.clear();
+        SSLConfigManager.getInstance().clearSSLConfigMap();
+        KeyStoreManager.getInstance().clearKSMap();
+        AbstractJSSEProvider.clearSSLContextCache();
         processConfig(true);
         this.componentContext = null;
 
@@ -198,6 +200,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         keystoreIdMap.remove(config.getId());
         keystorePidMap.remove(config.getPid());
         KeyStoreManager.getInstance().clearKeyStoreFromMap(config.getId());
+        KeyStoreManager.getInstance().clearKeyStoreFromMap(config.getPid());
         for (Iterator<Map.Entry<String, RepertoireConfigService>> it = repertoireMap.entrySet().iterator(); it.hasNext();) {
 
             RepertoireConfigService rep = it.next().getValue();
@@ -207,8 +210,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
                 repertoirePIDMap.remove(rep.getPID());
             }
         }
-        processConfig(true);
-
     }
 
     private void addKeyStores(boolean updateSSLConfigManager, KeystoreConfig... keystores) {
@@ -300,15 +301,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
         this.provisionerService = null;
     }
 
-    @Reference(service = SSLConfigValidator.class)
-    protected synchronized void setSSLConfigValidator(SSLConfigValidator validator) {
-        this.validator = validator;
-    }
-
-    protected synchronized void unsetSSLConfigValidator(SSLConfigValidator validator) {
-        this.validator = null;
-    }
-
     /**
      * Process configuration information.
      *
@@ -322,7 +314,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
             return;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Processing configuration");
+            Tr.event(tc, "Processing configuration " + updateSSLConfigManager);
         }
 
         boolean isServer = locSvc.resolveString(WsLocationConstants.SYMBOL_PROCESS_TYPE).equals(WsLocationConstants.LOC_PROCESS_TYPE_SERVER);
@@ -335,8 +327,6 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
             try {
                 // pass reinitialize=true to redo config
                 SSLConfigManager.getInstance().initializeSSL(getGlobalProps(),
-                                                             getRepertoireProps(),
-                                                             getKeyStores(),
                                                              true,
                                                              isServer,
                                                              transportSecurityEnabled,

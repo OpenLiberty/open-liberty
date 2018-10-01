@@ -545,6 +545,14 @@ public abstract class MonitorHolder implements Runnable {
         return monitorState.get() == MonitorState.DESTROYED.ordinal();
     }
 
+    private boolean isStopped = false;
+
+    // Stop scanning for changes during server quiesce period
+    void serverStopping() {
+        this.isStopped = true;
+        stop();
+    }
+
     @Override
     public void run() {
         scheduledScan();
@@ -562,6 +570,10 @@ public abstract class MonitorHolder implements Runnable {
     @Trivial
     @FFDCIgnore(InterruptedException.class)
     void scheduledScan() {
+        // Don't perform a scheduled scan if this monitor holder is paused
+        if (isStopped)
+            return;
+
         // 152229: Changed this code to get the monitor type locally.  That is, now we save the monitor type in the constructor.
         // We used to get the monitor type here by monitorRef.getProperty(FileMonitor.MONITOR_TYPE)). That caused a
         // ConcurrentModificationException because of interference from the JMocked FileMonitor in the unit test code.
@@ -745,8 +757,14 @@ public abstract class MonitorHolder implements Runnable {
      * @param notifiedCreated the canonical paths of any created files
      * @param notifiedDeleted the canonical paths of any deleted files
      * @param notifiedModified the canonical paths of any modified files
+     * @param filter true = process only the file specified in the sets
+     *            false = process all the files without filtering
      */
-    void externalScan(Set<File> notifiedCreated, Set<File> notifiedDeleted, Set<File> notifiedModified) {
+    void externalScan(Set<File> notifiedCreated, Set<File> notifiedDeleted, Set<File> notifiedModified, boolean filter) {
+        // Don't perform the external scan if this monitor holder is paused
+        if (isStopped)
+            return;
+
         // only do anything if this is an 'external' monitor
         if (!!!FileMonitor.MONITOR_TYPE_EXTERNAL.equals(monitorRef.getProperty(FileMonitor.MONITOR_TYPE)))
             return;
@@ -808,12 +826,15 @@ public abstract class MonitorHolder implements Runnable {
                 unnotifiedFileDeletes.clear();
                 unnotifiedFileModifies.clear();
 
-                // Now take the notified changes and compare it against all the possible
-                // valid choices, unrequested changes are placed into the unnotified set
-                // so they can be used by the caller on subsequent calls
-                filterSets(created, notifiedCreated, unnotifiedFileCreates);
-                filterSets(deleted, notifiedDeleted, unnotifiedFileDeletes);
-                filterSets(modified, notifiedModified, unnotifiedFileModifies);
+                //Check if filter is needed for the current call
+                if (filter) {
+                    // Now take the notified changes and compare it against all the possible
+                    // valid choices, unrequested changes are placed into the unnotified set
+                    // so they can be used by the caller on subsequent calls
+                    filterSets(created, notifiedCreated, unnotifiedFileCreates);
+                    filterSets(deleted, notifiedDeleted, unnotifiedFileDeletes);
+                    filterSets(modified, notifiedModified, unnotifiedFileModifies);
+                }
 
                 if (!created.isEmpty() || !modified.isEmpty() || !deleted.isEmpty()) {
                     // changes were discovered: trace & call the registered file monitor
@@ -1103,6 +1124,14 @@ public abstract class MonitorHolder implements Runnable {
             Tr.warning(tc, "badInterval", FileMonitor.MONITOR_INTERVAL, fullValue);
             throw new IllegalArgumentException("Invalid interval (" + intervalString + ") from " + fullValue);
         }
+    }
+
+    /**
+     * Processing configuration and application update
+     * Calls the existing externalScan method and sets the filter boolean to false
+     */
+    void processFileRefresh() {
+        externalScan(null, null, null, false);
     }
 
 }

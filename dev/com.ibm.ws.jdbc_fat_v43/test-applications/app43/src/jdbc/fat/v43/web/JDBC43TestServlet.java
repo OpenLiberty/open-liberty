@@ -13,6 +13,7 @@ package jdbc.fat.v43.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -21,11 +22,15 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ConnectionBuilder;
 import java.sql.DatabaseMetaData;
+import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.sql.ShardingKey;
+import java.sql.ShardingKeyBuilder;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -73,6 +78,12 @@ public class JDBC43TestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ds", authenticationType = AuthenticationType.APPLICATION)
     DataSource dataSourceWithAppAuth;
+
+    @Resource(lookup = "jdbc/ds", authenticationType = AuthenticationType.CONTAINER, name = "java:module/env/jdbc/ds-with-container-auth")
+    DataSource dataSourceWithContainerAuth;
+
+    @Resource(lookup = "jdbc/matchCurrentState", authenticationType = AuthenticationType.APPLICATION)
+    DataSource sharablePoolDataSourceMatchCurrentState;
 
     @Resource(lookup = "jdbc/poolOf1", authenticationType = AuthenticationType.APPLICATION)
     DataSource sharablePool1DataSourceWithAppAuth;
@@ -149,6 +160,60 @@ public class JDBC43TestServlet extends FATServlet {
         } catch (SQLFeatureNotSupportedException ex) {
             if (!ex.getMessage().contains("DSRA9130E"))
                 throw ex;
+        }
+    }
+
+    /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a
+     * javax.sql.DataSource implementation. This test only does matching on ShardingKey.
+     * It does not cover user, password, or super sharding key.
+     */
+    @Test
+    public void testDataSourceConnectionBuilderMatchShardingKey() throws Exception {
+        ShardingKeyBuilder keybuilderA = dataSourceWithContainerAuth.createShardingKeyBuilder();
+        ShardingKeyBuilder keybuilderB = dataSourceWithContainerAuth.createShardingKeyBuilder();
+        ShardingKey keyA = keybuilderA.subkey("DSCBKey", JDBCType.VARCHAR).build();
+        ShardingKey keyB = keybuilderB.subkey("DSCBKey", JDBCType.VARCHAR).build();
+        ConnectionBuilder conbuilderA = dataSourceWithContainerAuth.createConnectionBuilder().shardingKey(keyA);
+        ConnectionBuilder conbuilderB = dataSourceWithContainerAuth.createConnectionBuilder().shardingKey(keyB);
+
+        tx.begin();
+        try {
+            Connection con1 = conbuilderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            String k1 = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k1, k1.endsWith("|VARCHAR:DSCBKey;"));
+
+            Connection con2 = conbuilderB.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_READ_UNCOMMITTED, con2.getTransactionIsolation());
+            String k2 = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k2, k2.endsWith("|VARCHAR:DSCBKey;"));
+
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Specify a different sharding key on the builder,
+        ShardingKey key3 = keybuilderA.subkey(3, JDBCType.INTEGER).build();
+        Connection con3 = conbuilderA.shardingKey(key3).build();
+        try {
+            String k3 = con3.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k3, k3.endsWith("|VARCHAR:DSCBKey;INTEGER:3;"));
+        } finally {
+            con3.close();
+        }
+
+        // Clear the sharding key that is specified on the builder,
+        Connection con4 = conbuilderB.shardingKey(null).build();
+        try {
+            String k4 = con4.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertNull(k4, k4);
+        } finally {
+            con4.close();
         }
     }
 
@@ -730,6 +795,52 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a
+     * javax.sql.ConnectionPoolDataSource implementation. This test only does matching on ShardingKey.
+     * It does not cover user, password, or super sharding key.
+     */
+    @Test
+    public void testPooledConnectionBuilderMatchShardingKey() throws Exception {
+        ShardingKeyBuilder keybuilderA = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKeyBuilder keybuilderB = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKey keyA = keybuilderA.subkey("PCBKey", JDBCType.CLOB).build();
+        ShardingKey keyB = keybuilderB.subkey("PCBKey", JDBCType.CLOB).build();
+        ConnectionBuilder conbuilderA = sharablePool1DataSourceWithAppAuth.createConnectionBuilder().shardingKey(keyA);
+        ConnectionBuilder conbuilderB = sharablePool1DataSourceWithAppAuth.createConnectionBuilder().shardingKey(keyB);
+
+        tx.begin();
+        try {
+            Connection con1 = conbuilderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            String k1 = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k1, k1.endsWith("|CLOB:PCBKey;"));
+
+            Connection con2 = conbuilderB.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE, con2.getTransactionIsolation());
+            String k2 = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k2, k2.endsWith("|CLOB:PCBKey;"));
+
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Specify a different sharding key on the builder,
+        ShardingKeyBuilder keybuilderC = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKey key3 = keybuilderC.subkey("PCBKey", JDBCType.NCLOB).build();
+        Connection con3 = conbuilderA.shardingKey(key3).build();
+        try {
+            String k3 = con3.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k3, k3.endsWith("|NCLOB:PCBKey;"));
+        } finally {
+            con3.close();
+        }
+    }
+
+    /**
      * Verify that user and password supplied via connection builder are used when sharing a PooledConnection,
      * as well as when requesting a new PooledConnection.
      */
@@ -1240,6 +1351,373 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
+     * When using a data source that is backed by java.sql.Driver, the ShardingKeyBuilder is unavailable,
+     * and attempts to create it must result in SQLFeatureNotSupportedException.
+     */
+    @Test
+    public void testShardingKeyBuilderNotAvailableWithDriver() throws Exception {
+        try {
+            ShardingKeyBuilder keybuilder = defaultDataSource.createShardingKeyBuilder();
+            fail("Should not be able to create ShardingKeyBuilder when using java.sql.Driver. " + keybuilder);
+        } catch (SQLFeatureNotSupportedException x) {
+        }
+    }
+
+    /**
+     * Test matching of sharding key and super sharding key based on current connection state.
+     * This means that connection handles that are requested with attributes matching the current state
+     * of a connection are considered to match and will share that connection, even if the connection
+     * state has changed from the original connection request.
+     */
+    @ExpectedFFDC("java.sql.SQLException") // for intentional sharing violation error caused by the test
+    @Test
+    public void testShardingKeyMatchCurrentState() throws Exception {
+        ShardingKey key1 = sharablePoolDataSourceMatchCurrentState.createShardingKeyBuilder().subkey("SKMCS1", JDBCType.NCHAR).build();
+        ShardingKey key2 = sharablePoolDataSourceMatchCurrentState.createShardingKeyBuilder().subkey("SKMCS2", JDBCType.NCHAR).build();
+        ShardingKey key3 = sharablePoolDataSourceMatchCurrentState.createShardingKeyBuilder().subkey("SKMCS3", JDBCType.NCHAR).build();
+        ShardingKey superkey1 = sharablePoolDataSourceMatchCurrentState.createShardingKeyBuilder().subkey("SUPER", JDBCType.NCLOB).build();
+        ShardingKey superkey2 = sharablePoolDataSourceMatchCurrentState.createShardingKeyBuilder().subkey("SUPER", JDBCType.CHAR).build();
+        ShardingKey superkey3 = sharablePoolDataSourceMatchCurrentState.createShardingKeyBuilder().subkey("SUPER", JDBCType.CLOB).build();
+        String k;
+
+        Connection con1;
+        tx.begin();
+        try {
+            ConnectionBuilder builder1 = sharablePoolDataSourceMatchCurrentState.createConnectionBuilder();
+            con1 = builder1.user("user43").password("pwd43").shardingKey(key1).superShardingKey(superkey1).build();
+
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS1;"));
+            k = con1.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|NCLOB:SUPER;"));
+
+            con1.setShardingKey(key2, superkey2);
+            con1.createStatement().executeQuery("VALUES 1").close();
+
+            // Share the same connection based on current connection state
+            ConnectionBuilder builder2 = sharablePoolDataSourceMatchCurrentState.createConnectionBuilder();
+            Connection con2 = builder2.user("user43").password("pwd43").shardingKey(key2).superShardingKey(superkey2).build();
+
+            con2.createStatement().executeQuery("VALUES 2").close();
+
+            k = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS2;"));
+            k = con2.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER;"));
+
+            // Cannot change it now because there are 2 handles open
+            try {
+                con1.setShardingKey(key1);
+                fail("Should not be able to alter the sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            try {
+                con1.setShardingKey(key1, superkey2);
+                fail("Should not be able to alter the sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            try {
+                con2.setShardingKey(key2, superkey1);
+                fail("Should not be able to alter the super sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            try {
+                con2.setShardingKey(key1, superkey1);
+                fail("Should not be able to alter the sharding key and super sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            // set to current value is a no-op
+            con2.setShardingKey(key2);
+            con2.setShardingKey(key2, superkey2);
+
+            con2.close();
+
+            // only one connection handle remains, can change it now
+            con1.setShardingKey(key3);
+
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS3;"));
+            k = con1.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER;"));
+
+            // can also change the super sharding key
+            con1.setShardingKey(key3, superkey3);
+
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS3;"));
+            k = con1.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CLOB:SUPER;"));
+
+            // remove the super sharding key, but not the sharding key
+            con1.setShardingKey(key3, null);
+
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS3;"));
+            assertNull(con1.getClientInfo("SUPER_SHARDING_KEY")); // extension by mock JDBC driver to determine the super sharding key
+
+            // Match on current state again
+            ConnectionBuilder builder3 = sharablePoolDataSourceMatchCurrentState.createConnectionBuilder();
+            Connection con3 = builder3.user("user43").password("pwd43").shardingKey(key3).build();
+
+            con3.createStatement().executeQuery("VALUES 3").close();
+
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS3;"));
+            assertNull(con1.getClientInfo("SUPER_SHARDING_KEY")); // extension by mock JDBC driver to determine the super sharding key
+
+            k = con3.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS3;"));
+            assertNull(con3.getClientInfo("SUPER_SHARDING_KEY")); // extension by mock JDBC driver to determine the super sharding key
+
+            con3.close();
+
+            con1.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            con1.setShardingKey(key2, superkey2);
+        } finally {
+            tx.commit();
+        }
+
+        // Connection handle reassociation across transaction boundary
+        try {
+            assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con1.getTransactionIsolation());
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NCHAR:SKMCS2;"));
+            k = con1.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER;"));
+        } finally {
+            con1.close();
+        }
+
+        // Non-matching request
+        ConnectionBuilder builder4 = sharablePoolDataSourceMatchCurrentState.createConnectionBuilder();
+        Connection con4 = builder4.user("user43").password("pwd43").build();
+        try {
+            assertNull(con4.getClientInfo("SHARDING_KEY"));
+            assertNull(con4.getClientInfo("SUPER_SHARDING_KEY"));
+        } finally {
+            con4.close();
+        }
+    }
+
+    /**
+     * Test matching of sharding key and super sharding key based on original connection request.
+     * This means that connection handles that were requested with the same attributes within the same
+     * sharing scope are considered to match, even if the state of the underlying connection has changed
+     * in between the requests.
+     */
+    @ExpectedFFDC("java.sql.SQLException") // for intentional sharing violation error caused by the test
+    @Test
+    public void testShardingKeyMatchOriginalRequest() throws Exception {
+        ShardingKey key1 = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder().subkey("SKMOR1", JDBCType.NVARCHAR).build();
+        ShardingKey key2 = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder().subkey("SKMOR2", JDBCType.NVARCHAR).build();
+        ShardingKey key3 = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder().subkey("SKMOR3", JDBCType.NVARCHAR).build();
+        ShardingKey superkey1 = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder().subkey("SUPER1", JDBCType.CHAR).build();
+        ShardingKey superkey2 = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder().subkey("SUPER2", JDBCType.CHAR).build();
+        ShardingKey superkey3 = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder().subkey("SUPER3", JDBCType.CHAR).build();
+
+        AtomicInteger[] requests;
+        int begins;
+
+        tx.begin();
+        try {
+            Connection con1 = sharablePool1DataSourceWithAppAuth.getConnection("user43", "pwd43");
+            requests = (AtomicInteger[]) con1.unwrap(Supplier.class).get();
+            begins = requests[BEGIN].get();
+            assertNull(con1.getClientInfo("SHARDING_KEY"));
+            assertNull(con1.getClientInfo("SUPER_SHARDING_KEY"));
+
+            con1.setShardingKey(key1, superkey1);
+
+            String k;
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NVARCHAR:SKMOR1;"));
+            k = con1.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER1;"));
+
+            Connection con2 = sharablePool1DataSourceWithAppAuth.getConnection("user43", "pwd43");
+
+            k = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NVARCHAR:SKMOR1;"));
+            k = con2.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER1;"));
+
+            // set to current value is a no-op
+            con2.setShardingKey(key1);
+            con2.setShardingKey(key1, superkey1);
+
+            try {
+                con2.setShardingKey(key2);
+                fail("Should not be able to alter the sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            try {
+                con2.setShardingKey(key2, superkey1);
+                fail("Should not be able to alter the sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            try {
+                con2.setShardingKey(key1, superkey2);
+                fail("Should not be able to alter the super sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            try {
+                con2.setShardingKey(key2, superkey2);
+                fail("Should not be able to alter the sharding key and super sharding key of a shared connection");
+            } catch (SQLException x) {
+                if (x.getCause() == null || !"javax.resource.spi.SharingViolationException".equals(x.getCause().getClass().getName()))
+                    throw x;
+            }
+
+            // sharding key values should not have changed
+            k = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NVARCHAR:SKMOR1;"));
+            k = con2.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER1;"));
+
+            con1.close();
+
+            // only one connection handle remains, can change it now
+            con2.setShardingKey(key2);
+
+            k = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NVARCHAR:SKMOR2;"));
+            k = con2.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER1;"));
+
+            // can also change the super sharding key
+            con2.setShardingKey(key3, superkey3);
+
+            k = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|NVARCHAR:SKMOR3;"));
+            k = con2.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|CHAR:SUPER3;"));
+
+            con2.close();
+        } finally {
+            tx.commit();
+        }
+
+        // outside of sharing scope, the default values (null) apply
+        Connection con3 = sharablePool1DataSourceWithAppAuth.getConnection("user43", "pwd43");
+        try {
+            assertNull(con3.getClientInfo("SHARDING_KEY"));
+            assertNull(con3.getClientInfo("SUPER_SHARDING_KEY"));
+
+            // verify that the same connection was found in the pool (which has maxPoolSize=1) and reused
+            assertEquals(begins + 1, requests[BEGIN].get());
+
+            con3.commit(); // TODO why is it that without this commit, a Derby error is recorded in FFDC when a
+            // subsequent test needs to discard the connection as victim when creating a new matching connection?
+            // ERROR 25001: Cannot close a connection while a transaction is still active
+        } finally {
+            con3.close();
+        }
+    }
+
+    /**
+     * A ShardingKey that is obtained from a data source that supports sharding cannot be supplied
+     * to the connection builder for a data source that is backed by java.sql.Driver and therefore
+     * does not support sharding. When this is attempted, it must result in SQLFeatureNotSupportedException.
+     */
+    @Test
+    public void testShardingKeyNotUsableWithDriversConnectionBuilder() throws Exception {
+        ShardingKeyBuilder keybuilder = sharablePool1DataSourceWithAppAuth.createShardingKeyBuilder();
+        ShardingKey key = keybuilder.subkey(Arrays.asList(23, 41, 86, 17, 95), JDBCType.ARRAY).build();
+
+        ConnectionBuilder conbuilder = defaultDataSource.createConnectionBuilder();
+
+        try {
+            conbuilder.shardingKey(key);
+            fail("Should not be able to set sharding key on connection builder that is backed by java.sql.Driver. " + keybuilder);
+        } catch (UnsupportedOperationException x) {
+        }
+
+        try {
+            conbuilder.superShardingKey(key);
+            fail("Should not be able to set super sharding key on connection builder that is backed by java.sql.Driver. " + keybuilder);
+        } catch (UnsupportedOperationException x) {
+        }
+
+        // Null values are acceptable
+
+        conbuilder.shardingKey(null);
+        conbuilder.superShardingKey(null);
+
+        Connection con = conbuilder.build();
+        try {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps.setString(1, "Northern Hills Drive NE");
+            ps.setString(2, "Rochester");
+            ps.setString(3, "MN");
+            ps.executeUpdate();
+            ps.close();
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * When beginRequest and endRequest are invoked by the application (or an external connection manager)
+     * they must be ignored.
+     */
+    @Test
+    public void testSuppressBeginAndEndRequest() throws Exception {
+        AtomicInteger[] requests;
+        int begins, ends;
+
+        Connection con = unsharablePool1DataSource.getConnection();
+        try {
+            requests = (AtomicInteger[]) con.unwrap(Supplier.class).get();
+            begins = requests[BEGIN].get();
+            ends = requests[END].get();
+            assertEquals(ends + 1, begins);
+
+            con.beginRequest();
+            // expect no change:
+            assertEquals(begins, requests[BEGIN].get());
+            assertEquals(ends, requests[END].get());
+
+            PreparedStatement ps = con.prepareStatement("INSERT INTO STREETS VALUES(?, ?, ?)");
+            ps.setString(1, "Northern Valley Drive NE");
+            ps.setString(2, "Rochester");
+            ps.setString(3, "MN");
+            ps.executeUpdate();
+            ps.close();
+
+            con.endRequest();
+            // still no change:
+            assertEquals(begins, requests[BEGIN].get());
+            assertEquals(ends, requests[END].get());
+        } finally {
+            con.close();
+        }
+
+        assertEquals(begins, requests[BEGIN].get());
+        assertEquals(ends + 1, requests[END].get());
+    }
+
+    /**
      * Begin a request (using a sharable connection) within one global transaction. Suspend that transaction
      * and use the connection handle within a different global transaction, which must be considered a different
      * request. After committing the second global transaction, resume the first global transaction and perform
@@ -1666,6 +2144,93 @@ public class JDBC43TestServlet extends FATServlet {
             ps.close();
         } finally {
             c.close();
+        }
+    }
+
+    /**
+     * Verify that connection builder can be used on a Liberty data source that is backed by a
+     * javax.sql.XADataSource implementation. This test only does matching on ShardingKey.
+     * It does not cover user, password, or super sharding key.
+     */
+    @Test
+    public void testXAConnectionBuilderMatchShardingKey() throws Exception {
+        ShardingKeyBuilder keybuilderA = sharableXADataSource.createShardingKeyBuilder();
+        ShardingKeyBuilder keybuilderB = sharableXADataSource.createShardingKeyBuilder();
+        ShardingKey keyA = keybuilderA.subkey("XACBKey", JDBCType.CHAR).subkey(true, JDBCType.BOOLEAN).build();
+        ShardingKey keyB = keybuilderB.subkey("XACBKey", JDBCType.CHAR).subkey(true, JDBCType.BOOLEAN).build();
+        ConnectionBuilder conbuilderA = sharableXADataSource.createConnectionBuilder().shardingKey(keyA);
+        ConnectionBuilder conbuilderB = sharableXADataSource.createConnectionBuilder().shardingKey(keyB);
+
+        AtomicInteger[] requests2;
+        int begins2;
+
+        tx.begin();
+        try {
+            Connection con1 = conbuilderA.build();
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con1.getTransactionIsolation());
+            con1.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            String k1 = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k1, k1.endsWith("|CHAR:XACBKey;BOOLEAN:true;"));
+
+            Connection con2 = conbuilderB.build();
+            // If connection handle is shared, it will report the isolation level value of con1,
+            assertEquals(Connection.TRANSACTION_REPEATABLE_READ, con2.getTransactionIsolation());
+            String k2 = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k2, k2.endsWith("|CHAR:XACBKey;BOOLEAN:true;"));
+
+            PreparedStatement ps2 = con2.prepareStatement("INSERT INTO STREETS VALUES (?, ?, ?)");
+            ps2.setString(1, "Plummer Circle SW");
+            ps2.setString(2, "Rochester");
+            ps2.setString(3, "MN");
+            ps2.executeUpdate();
+            ps2.close();
+
+            requests2 = (AtomicInteger[]) con2.unwrap(Supplier.class).get();
+            begins2 = requests2[BEGIN].get();
+
+            // enlist another resource to prove that the prior connection is two-phase capable
+            Connection con3 = sharablePool1DataSourceWithAppAuth.getConnection("user43", "pwd43");
+            PreparedStatement ps3 = con3.prepareStatement("INSERT INTO STREETS VALUES (?, ?, ?)");
+            ps3.setString(1, "Rocky Creek Drive NE");
+            ps3.setString(2, "Rochester");
+            ps3.setString(3, "MN");
+            ps3.executeUpdate();
+            ps3.close();
+
+            con3.close();
+            con2.close();
+            con1.close();
+        } finally {
+            tx.commit();
+        }
+
+        // Specify a similar, but different (subkeys are reversed) sharding key on the builder,
+        ShardingKeyBuilder keybuilderD = sharableXADataSource.createShardingKeyBuilder();
+        ShardingKey key4 = keybuilderD.subkey(true, JDBCType.BOOLEAN).subkey("XACBKey", JDBCType.CHAR).build();
+        Connection con4 = conbuilderA.shardingKey(key4).build();
+        try {
+            String k4 = con4.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k4, k4.endsWith("|BOOLEAN:true;CHAR:XACBKey;"));
+        } finally {
+            con4.close();
+        }
+
+        // Specify a match for the first sharding key
+        ShardingKey key5 = keybuilderB.build();
+        Connection con5 = conbuilderB.shardingKey(key5).build();
+        try {
+            assertEquals(Connection.TRANSACTION_READ_COMMITTED, con5.getTransactionIsolation());
+            String k5 = con5.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k5, k5.endsWith("|CHAR:XACBKey;BOOLEAN:true;"));
+
+            // verify this is the same instance, matched and reused from the pool
+            AtomicInteger[] requests5 = (AtomicInteger[]) con5.unwrap(Supplier.class).get();
+            // yes, we do mean to compare instances here - it demonstrates the same underlying connection was reused from the pool
+            assertSame(requests2[BEGIN], requests5[BEGIN]);
+            int begins5 = requests5[BEGIN].get();
+            assertEquals(begins2 + 1, begins5);
+        } finally {
+            con5.close();
         }
     }
 
