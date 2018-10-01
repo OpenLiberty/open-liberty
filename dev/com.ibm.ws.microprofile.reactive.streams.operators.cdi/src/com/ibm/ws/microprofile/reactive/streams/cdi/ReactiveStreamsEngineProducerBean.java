@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 /*
  * This class is used for creating the Injected ReactiveStreamEngine instances.
  */
+@ApplicationScoped
 public class ReactiveStreamsEngineProducerBean {
 
     private final static TraceComponent tc = Tr.register(ReactiveStreamsEngineProducerBean.class);
