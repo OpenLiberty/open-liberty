@@ -102,6 +102,7 @@ public interface JDBCRuntimeVersion {
     public PooledConnection buildPooledConnection(ConnectionPoolDataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException;
     public XAConnection buildXAConnection(XADataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException;
     public void doSetShardingKeys(Connection con, Object shardingKey, Object superShardingKey) throws SQLException;
+    public boolean doSetShardingKeysIfValid(Connection con, Object shardingKey, Object superShardingKey, int timeout) throws SQLException;
     public void beginRequest(Connection con) throws SQLException;
     public void endRequest(Connection con) throws SQLException;
 }
