@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
@@ -30,7 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 /*
  * This class is used for creating the Injected ReactiveStreamEngine instances.
  */
-@ApplicationScoped
+@Dependent
 public class ReactiveStreamsEngineProducerBean {
 
     private final static TraceComponent tc = Tr.register(ReactiveStreamsEngineProducerBean.class);
