@@ -37,7 +37,7 @@ public class ReactiveStreamsEngineInjectionExtension implements Extension, WebSp
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "ReactiveStreamsEngineInjectionExtension bbd ");
         }
-        AnnotatedType<RSBean> producer = bm.createAnnotatedType(RSBean.class);
+        AnnotatedType<ReactiveStreamsEngineProducerBean> producer = bm.createAnnotatedType(ReactiveStreamsEngineProducerBean.class);
         bbd.addAnnotatedType(producer);
     }
 }
