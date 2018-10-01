@@ -13,14 +13,20 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/mprs.war/src
+	test-applications/mprs.war/src, \
+	test-applications/mprs.war/resources
+	
 
 javac.source: 1.8
 javac.target: 1.8
 	
 fat.project: true
 
-tested.features: mpReactiveStreams-1.0
+tested.features: mpReactiveStreams-1.0, \
+                 cdi-1.2,\
+                 cdi-2.0,\
+                 servlet-3.1,\
+                 servlet-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
