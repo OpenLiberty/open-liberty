@@ -44,7 +44,7 @@ public class FileServiceUtil {
      * If sourcePath is a file, then it is archived to the target location.
      * If sourcePath is a directory, then all subordinate files and directories are archived to the target location.
      * <p>
-     * 
+     *
      * @param sourcePath entity to be archived
      * @param targetPath location where srcPath is archived
      *            <p>
@@ -107,7 +107,6 @@ public class FileServiceUtil {
     private void archiveFile(File src, ZipOutputStream out) throws Exception {
 
         byte[] buf = new byte[1024];
-
         FileInputStream in = (FileInputStream) FileUtils.getInputStream(src);
 
         // construct the relative path for the zipEntry (ie. relative to the specified sourcePath)
@@ -152,7 +151,7 @@ public class FileServiceUtil {
     /**
      * Expand the specified archive to the specified location
      * <p>
-     * 
+     *
      * @param sourcePath path of the archive to be expanded.
      * @param targetPath location to where the archive is to be expanded.
      *            <p>
@@ -209,7 +208,7 @@ public class FileServiceUtil {
         if (path.length() == 3 &&
             (isAlpha(path.charAt(0)) &&
              (path.charAt(1) == ':') &&
-            (path.charAt(2) == '/'))) {
+             (path.charAt(2) == '/'))) {
             return true;
         }
 
@@ -233,7 +232,7 @@ public class FileServiceUtil {
 
     /**
      * Returns true if the targetPath is contained within one of the allowedPaths.
-     * 
+     *
      * Assumption: the "allowedPaths" point to directories, and the "targetPath" is already normalized.
      */
     public static boolean isPathContained(List<String> allowedPaths, String targetPath) {
@@ -296,7 +295,7 @@ public class FileServiceUtil {
     /*
      * Returns the normalized parent of the specified path.
      * If a parent doesn't exist, return null.
-     * 
+     *
      * Assumption: path is normalized.
      */
     private static String getNormalizedParent(String filePath) {
