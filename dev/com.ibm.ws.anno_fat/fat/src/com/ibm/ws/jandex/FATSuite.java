@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.caching.tests.BasicAnnoCacheUsageTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jandex.tests.JandexAppDefaultAppMgrDefaultTest;
 import com.ibm.ws.jandex.tests.JandexAppDefaultAppMgrTrueTest;
@@ -46,6 +47,7 @@ import com.ibm.ws.jandex.tests.JandexAppTrueAppMgrTrueTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+              	BasicAnnoCacheUsageTest.class,
                 JandexAppDefaultAppMgrDefaultTest.class,
                 JandexAppDefaultAppMgrTrueTest.class,
                 JandexAppFalseAppMgrFalseTest.class,
