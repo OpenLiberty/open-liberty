@@ -140,20 +140,23 @@ public final class Classpath
         }
         if (dirExists && dir.isDirectory())
         {
-            for (File file : dir.listFiles())
+            File[] dirFiles = dir.listFiles();
+            if (dirFiles != null) 
             {
-                String path = file.getAbsolutePath();
-                if (file.isDirectory())
+                for (File file : dirFiles)
                 {
-                    _searchDir(result, file, suffix);
+                    String path = file.getAbsolutePath();
+                    if (file.isDirectory())
+                    {
+                        _searchDir(result, file, suffix);
+                    }
+                    else if (path.endsWith(suffix))
+                    {
+                        result.add(file.toURI().toURL());
+                    }
                 }
-                else if (path.endsWith(suffix))
-                {
-                    result.add(file.toURI().toURL());
-                }
+                return true;
             }
-
-            return true;
         }
 
         return false;
