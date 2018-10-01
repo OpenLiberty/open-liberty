@@ -123,7 +123,7 @@ public class ByteCodeMetaData extends ClassVisitor {
      * @param publicMethods all public methods on the implementation class
      */
     ByteCodeMetaData(Class<?> implClass, Method[] publicMethods) {
-        super(Opcodes.ASM7_EXPERIMENTAL);
+        super(Opcodes.ASM7);
         ivClass = implClass;
         ivPublicMethods = publicMethods;
     }
@@ -328,7 +328,7 @@ public class ByteCodeMetaData extends ClassVisitor {
 
     private abstract class AbstractMethodVisitor extends MethodVisitor {
         public AbstractMethodVisitor() {
-            super(Opcodes.ASM7_EXPERIMENTAL);
+            super(Opcodes.ASM7);
         }
 
         @Override
