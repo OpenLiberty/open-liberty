@@ -45,17 +45,7 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 src: src
 testsrc: test/src
-
-app-resources= \
-  META-INF/services/javax.enterprise.inject.spi.Extension
   
-Service-Component: \
-  com.ibm.ws.microprofile.reactive.streams.operators.cdi.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=optional; \
-    properties:="resources=${app-resources}"
-
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
