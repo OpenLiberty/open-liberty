@@ -38,7 +38,7 @@ public class ReactiveStreamsEngineProducerBean {
 
     @Produces
     @ApplicationScoped
-    public ReactiveStreamsEngine getEngine(InjectionPoint injectionPoint) {
+    public ReactiveStreamsEngine getEngine() {
         Iterator<ReactiveStreamsEngine> engines = ServiceLoader.load(ReactiveStreamsEngine.class).iterator();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
