@@ -32,9 +32,9 @@ import com.ibm.websphere.ras.TraceComponent;
  * This class is used for creating the Injected ReactiveStreamEngine instances.
  */
 @Dependent
-public class ReactiveStreamsEngineProducerBean {
+public class ReactiveStreamsEngineProducer {
 
-    private final static TraceComponent tc = Tr.register(ReactiveStreamsEngineProducerBean.class);
+    private final static TraceComponent tc = Tr.register(ReactiveStreamsEngineProducer.class);
 
     @Produces
     @ApplicationScoped

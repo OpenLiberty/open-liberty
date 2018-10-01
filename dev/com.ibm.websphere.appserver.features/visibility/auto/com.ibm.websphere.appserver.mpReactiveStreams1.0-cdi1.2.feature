@@ -8,4 +8,4 @@ IBM-Provision-Capability: \
 -bundles=com.ibm.ws.microprofile.reactive.streams.operators.cdi
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=core
+edition=full
