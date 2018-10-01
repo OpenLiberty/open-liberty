@@ -32,19 +32,7 @@ import com.ibm.websphere.ras.TraceComponent;
  */
 public class ReactiveStreamsEngineProducerBean {
 
-    private final Class<?> clientInterface;
-    private final BeanManager beanManager;
-
     private final static TraceComponent tc = Tr.register(ReactiveStreamsEngineProducerBean.class);
-
-    public ReactiveStreamsEngineProducerBean(Class<?> clientInterface, BeanManager beanManager) {
-        this.clientInterface = clientInterface;
-        this.beanManager = beanManager;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "<init> - clientInterface=" + clientInterface + " beanManager=" + beanManager);
-        }
-    }
 
     @Produces
     @ApplicationScoped
@@ -54,7 +42,6 @@ public class ReactiveStreamsEngineProducerBean {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Engines has next came out at " + engines.hasNext());
         }
-
         
         if (engines.hasNext()) {
             return engines.next();
@@ -72,20 +59,4 @@ public class ReactiveStreamsEngineProducerBean {
         // Left for now
     }
 
-    
-    public void scanMyClasses(@Observes ProcessAnnotatedType pat)
-                    throws Exception
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Scanning class " + pat.getAnnotatedType().getJavaClass().getName() );
-        }
-    }
-
-    public void finished(@Observes AfterDeploymentValidation adv)
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "We are almost finished with the CDI container boot now...");
-    
-        }
-    }
 }
