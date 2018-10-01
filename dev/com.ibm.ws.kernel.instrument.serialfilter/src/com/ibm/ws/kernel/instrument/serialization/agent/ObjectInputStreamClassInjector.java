@@ -22,11 +22,8 @@ import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import static java.util.Arrays.asList;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.FINEST;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -36,8 +33,6 @@ import static org.objectweb.asm.Opcodes.*;
  * any call to resolveClass().
  */
 public class ObjectInputStreamClassInjector extends ClassVisitor {
-    private static final Logger log = Logger.getLogger(ObjectInputStreamClassInjector.class.getName());
-
     /**
      * This field name corresponds to a field already provided in recent IBM Java class libraries.
      * If it is changed, the logic for discovering the pre-enabled ObjectInputStream classes in those
@@ -71,13 +66,19 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
                     factoryField.setAccessible(true);
                     return (Map<?, ?>) factoryField.get(null);
                 } catch (NoSuchFieldException e) {
-                    log.severe("Unable to locate field " + oisc.getName() + "." + FACTORY_FIELD + ".");
+                    if (PreMain.isDebugEnabled()) {
+                        System.out.println("Unable to locate field " + oisc.getName() + "." + FACTORY_FIELD + ".");
+                    }
                     throw new Error("ObjectInputStream class has not been modified as expected.", e);
                 } catch (IllegalAccessException e) {
-                    log.severe("Could not access field " + oisc.getName() + "." + FACTORY_FIELD + ".");
+                    if (PreMain.isDebugEnabled()) {
+                        System.out.println("Could not access field " + oisc.getName() + "." + FACTORY_FIELD + ".");
+                    }
                     throw new Error(e);
                 } catch (SecurityException e) {
-                    log.severe("Could not access field " + oisc.getName() + "." + FACTORY_FIELD + ". Ensure the code is suitably privileged.");
+                    if (PreMain.isDebugEnabled()) {
+                        System.out.println("Could not access field " + oisc.getName() + "." + FACTORY_FIELD + ". Ensure the code is suitably privileged.");
+                    }
                     throw new Error(e);
                 }
             }
@@ -91,28 +92,39 @@ public class ObjectInputStreamClassInjector extends ClassVisitor {
      */
     static boolean injectionNeeded() {
         // first check whether we need to modify ObjectInputStream
+        boolean debugEnabled = PreMain.isDebugEnabled();
         InputStream is = String.class.getResourceAsStream("/java/io/ObjectInputStream.class");
         if (is == null) {
-            log.warning("Could not locate /java/io/ObjectInputStream.class as a resource");
+            if (debugEnabled) {
+                System.out.println("Could not locate /java/io/ObjectInputStream.class as a resource");
+            }
         } else {
             try {
                 ClassReader cr = new ClassReader(is);
                 final Set<String> fieldsToLookFor = new HashSet<String>(asList(FACTORY_FIELD, VALIDATOR_FIELD));
-                if (log.isLoggable(FINE)) log.fine("Searching ObjectInputStream.class bytes for fields: " + fieldsToLookFor);
+                if (debugEnabled) {
+                    System.out.println("Searching ObjectInputStream.class bytes for fields: " + fieldsToLookFor);
+                }
                 cr.accept(new ClassVisitor(Opcodes.ASM5) {
                     @Override
                     public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-                        if (log.isLoggable(FINEST)) log.finest("Found field '" + name + "' with description '" + desc + "'");
+                        if (PreMain.isDebugEnabled()) {
+                            System.out.println("Found field '" + name + "' with description '" + desc + "'");
+                        }
                         fieldsToLookFor.remove(name);
                         return null;
                     }
                 }, 0);
                 if (fieldsToLookFor.isEmpty()) {
-                    log.config("Found all fields already in ObjectInputStream.class");
+                    if (debugEnabled) {
+                        System.out.println("Found all fields already in ObjectInputStream.class");
+                    }
                     return false;
                 }
             } catch (IOException e) {
-                log.warning("Could not read /java/io/ObjectInputStream.class as a resource");
+                if (debugEnabled) {
+                    System.out.println("Could not read /java/io/ObjectInputStream.class as a resource");
+                }
             }
         }
         return true;

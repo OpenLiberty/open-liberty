@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import static java.util.logging.Level.*;
 
 final class ConfigImpl implements Config {
-    private static final Logger log = Logger.getLogger(ConfigImpl.class.getName());
     private static final Checksums CHECKSUMS = Checksums.getInstance();
     private static final Class<Externalizable> EXTERN = Externalizable.class;
     private static final Class<Serializable> SERIAL = Serializable.class;
@@ -49,6 +48,7 @@ final class ConfigImpl implements Config {
 
     static final Initializer READ_INTERNAL_CONFIG = new Initializer() {
         void init(ConfigImpl cfg) {
+            Logger log = Logger.getLogger(ConfigImpl.class.getName());
             final String defaultConfigPropsFile = "default.properties";
             InputStream in = ConfigImpl.class.getResourceAsStream(defaultConfigPropsFile);
             if (in == null) {
@@ -73,6 +73,7 @@ final class ConfigImpl implements Config {
 
     static final Initializer READ_SYSTEM_CONFIG = new Initializer() {
         void init(ConfigImpl cfg) {
+            Logger log = Logger.getLogger(ConfigImpl.class.getName());
             String filename = AccessController.doPrivileged(new PrivilegedAction<String>() {
                 public String run() {
                     return System.getProperty(Config.FILE_PROPERTY);
@@ -122,7 +123,7 @@ final class ConfigImpl implements Config {
         // instead store the default setting — read this from the parsed config
         defaultValidationMode = validationModes.get(DEFAULT_KEY);
         if (defaultValidationMode == null) {
-            log.warning("Could not find a default validation mode");
+            Logger.getLogger(ConfigImpl.class.getName()).warning("Could not find a default validation mode");
             throw new Error("No default validation mode specified");
         }
         validationModes.remove(DEFAULT_KEY);
@@ -141,6 +142,7 @@ final class ConfigImpl implements Config {
 
     @Override
     public boolean allows(final Class<?> cls, final Class<?> [] toSkip) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         // short-circuit if this parent hierarchy has already been checked
         if (cls != toSkip[0]) {
             if (isForbidden(cls)) {
@@ -167,6 +169,7 @@ final class ConfigImpl implements Config {
     }
 
     private boolean isForbidden(Class<?> c) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         final String cName = c.getName();
         final String name = SpecifierFormat.internalize(cName);
         final Trie.Entry<PermissionMode> e = permissions.getLongestPrefixEntry(name);
@@ -177,6 +180,7 @@ final class ConfigImpl implements Config {
 
     @Override
     public ValidationMode getModeForStack(Class<?> caller) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         // Avoid examining the stack if there are no context-specific settings
         if (validationModes.isEmpty()) return defaultValidationMode;
         CallStackWalker stack = CallStackWalker.forCurrentThread().skipTo(ObjectInputStream.class);
@@ -229,6 +233,7 @@ final class ConfigImpl implements Config {
 
     @Override
     public ValidationMode getValidationMode(String s) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         SpecifierFormat f = SpecifierFormat.fromString(s);
         switch (f) {
             case CLASS:
@@ -250,6 +255,7 @@ final class ConfigImpl implements Config {
 
     @Override
     public boolean setValidationMode(ValidationMode mode, String s) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         if (log.isLoggable(FINEST)) log.finest("Setting validation mode " + mode + " for '" + s + "'");
         SpecifierFormat f = SpecifierFormat.fromString(s);
         switch (f) {
@@ -270,6 +276,7 @@ final class ConfigImpl implements Config {
 
     @Override
     public boolean setPermission(final PermissionMode mode, final String s) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         if (log.isLoggable(FINEST)) log.finest("Setting permission " + mode + " for '" + s + "'");
         SpecifierFormat f = SpecifierFormat.fromString(s);
         switch (f) {
@@ -290,6 +297,7 @@ final class ConfigImpl implements Config {
 
     @Override
     public void load(Properties props) {
+        Logger log = Logger.getLogger(ConfigImpl.class.getName());
         for (Entry<Object, Object> entry : props.entrySet()) {
             if (!!! (entry.getKey() instanceof String)) {
                 log.warning("Property key must be a string:" + entry.getKey() + "=" + entry.getValue());
