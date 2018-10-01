@@ -21,7 +21,6 @@ import java.util.logging.Logger;
  */
 
 final class Configurator<T> {
-    private static final Logger log = Logger.getLogger(Configurator.class.getName());
     private final Map<Object, Object> configTarget;
 
     @SuppressWarnings("unchecked")
@@ -53,12 +52,12 @@ final class Configurator<T> {
                 Class<E> enumClass = (Class<E>)Class.forName(classname);
                 return Enum.valueOf(enumClass, memberName);
             } catch (ClassNotFoundException e) {
-                log.warning("Could not find configuration option class: " + classname);
+                Logger.getLogger(Configurator.class.getName()).warning("Could not find configuration option class: " + classname);
             } catch (IllegalArgumentException e) {
-                log.warning("Could not locate enum member: " + classname + "." + memberName);
+                Logger.getLogger(Configurator.class.getName()).warning("Could not locate enum member: " + classname + "." + memberName);
             }
         } else {
-            log.warning("Could not parse config key:" + s);
+            Logger.getLogger(Configurator.class.getName()).warning("Could not parse config key:" + s);
         }
         return null;
     }

@@ -17,7 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class RejectingClassValidator extends ClassValidator {
-    private static final Logger log = Logger.getLogger(RejectingClassValidator.class.getName());
+    private final Logger log;
+
+    RejectingClassValidator() {
+        log = Logger.getLogger(RejectingClassValidator.class.getName());
+    }
+
     @Override
     protected Class<?> apply(Class<?> cls) throws InvalidClassException {
         if (cls == null)

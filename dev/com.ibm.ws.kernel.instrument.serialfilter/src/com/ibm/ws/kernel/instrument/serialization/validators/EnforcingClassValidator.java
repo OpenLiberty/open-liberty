@@ -19,19 +19,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class EnforcingClassValidator extends ClassValidator {
-    private static final Logger log = Logger.getLogger(EnforcingClassValidator.class.getName());
+    private final Logger log;
     private final Class<?>[] skipOnce = {null};
     private final Config config;
 
     EnforcingClassValidator(Config config) {
         this.config = config;
+        log = Logger.getLogger(EnforcingClassValidator.class.getName());
     }
 
     @Override
     protected Class<?> apply(Class<?> cls) throws InvalidClassException {
         if (cls == null) return null;
         if (cls.isArray()) return cls;
-        if (log.isLoggable(Level.FINEST)) log.finest(String.format("Validating class - loaded by [%s] with name [%s]%n", getLoader(cls), cls.getName()));
+        if (log.isLoggable(Level.FINEST)) log.finest(String.format("log Validating class - loaded by [%s] with name [%s]%n", getLoader(cls), cls.getName()));
         if (config.allows(cls, skipOnce)) return cls;
         // TODO NLS-ify this message
         throw new InvalidClassException(cls.getName(), "Class is not whitelisted for deserialization.");

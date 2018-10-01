@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 import static java.util.logging.Level.INFO;
 
 class DiscoveringClassValidator extends ClassValidator {
-    private static final Logger log = Logger.getLogger(DiscoveringClassValidator.class.getName());
+    private final Logger log;
     private static final AtomicInteger NEXT_INT = new AtomicInteger(1);
     private final Class<?>[] skipOnce = {null};
     private final int id = NEXT_INT.getAndIncrement();
@@ -28,6 +28,7 @@ class DiscoveringClassValidator extends ClassValidator {
 
     DiscoveringClassValidator(Config config) {
         this.config = config;
+        log = Logger.getLogger(DiscoveringClassValidator.class.getName());
     }
 
     @Override

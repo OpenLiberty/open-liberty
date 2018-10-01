@@ -21,13 +21,13 @@ import java.util.logging.Logger;
 import static java.util.logging.Level.FINEST;
 
 final class ClassValidatorFactory extends ConfigHolder {
-    private static final Logger log = Logger.getLogger(ClassValidatorFactory.class.getName());
-
+    private final Logger log;
     private final Config config;
 
     ClassValidatorFactory(Config config) {
         super(config);
         this.config = config;
+        log = Logger.getLogger(ClassValidatorFactory.class.getName());
     }
 
     /**

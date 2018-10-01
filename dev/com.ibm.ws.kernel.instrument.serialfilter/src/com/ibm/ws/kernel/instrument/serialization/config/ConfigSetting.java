@@ -11,7 +11,6 @@
 package com.ibm.ws.kernel.instrument.serialization.config;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 interface ConfigSetting<I, O> extends ConfigurationSetting<SimpleConfig, I, O> {
     enum Resetter implements ConfigSetting<Void, Void> {
@@ -31,8 +30,6 @@ interface ConfigSetting<I, O> extends ConfigurationSetting<SimpleConfig, I, O> {
 
     enum PropertiesSetter implements ConfigSetting<Properties, Void> {
         LOAD;
-
-        private static final Logger log = Logger.getLogger(PropertiesSetter.class.getName());
 
         @Override
         public Class<Properties> getInputType() {
