@@ -359,7 +359,13 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
 
                 Container entryContainer = getContainer(entry);
                 if ( entryContainer != null ) {
-                    collectClassNames(entryContainer, entryName, storage);
+                    String subPackageName;
+                    if ( packageName == null ) {
+                        subPackageName = entryName;
+                    } else {
+                        subPackageName = packageName + CDIUtils.DOT + entryName;
+                    }
+                    collectClassNames(entryContainer, subPackageName, storage);
                 }
 
             } else {

@@ -12,9 +12,12 @@
 
 package com.ibm.ws.anno.targets.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -27,9 +30,11 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.ws.anno.targets.cache.TargetCache_Options;
+import com.ibm.ws.anno.targets.cache.TargetCache_InternalConstants.QueryType;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataApp;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataApps;
 import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataMod;
+import com.ibm.ws.anno.targets.cache.internal.TargetCacheImpl_DataQueries;
 import com.ibm.ws.anno.targets.delta.internal.TargetsDeltaImpl;
 import com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap;
 import com.ibm.ws.anno.util.internal.UtilImpl_EmptyBidirectionalMap;
@@ -216,6 +221,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         this.externalTable = null;
 
         this.classTable = null;
+
+        this.queriesData = null;
 
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
@@ -672,6 +679,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         putInternalResults(useOverallScanner);
 
+        putQueriesData(appData);
+
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashName());
         }
@@ -976,14 +985,22 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     @Override
-    public Set<String> getAnnotatedPackages(String annotationName) {
+    public Set<String> getAnnotatedPackages(String annotationClassName) {
         TargetsTableImpl useSeedTable = getSeedTable();
 
+        Set<String> annotatedPackages;
+
         if ( useSeedTable == null ) {
-            return Collections.emptySet();
+            annotatedPackages = Collections.emptySet();
         } else {
-            return useSeedTable.getAnnotatedTargets(AnnotationCategory.PACKAGE, annotationName);
+            annotatedPackages = useSeedTable.getAnnotatedTargets(AnnotationCategory.PACKAGE, annotationClassName);
         }
+
+        writeQuery(CLASS_NAME + "." + "getAnnotatedPackages",
+                   ScanPolicy.SEED, QueryType.PACKAGE,
+                   annotationClassName, annotatedPackages);
+
+        return annotatedPackages;
     }
 
     @Override
@@ -1019,40 +1036,84 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         }
     }
 
+    /**
+     * Answer the SEED classes which have a specified class annotation.
+     *
+     * Do not answer subclasses.  This method does not handle inheritance
+     * cases.
+     *
+     * This query is logged.
+     *
+     * @param annotationClassName The name of the target class annotation.
+     *
+     * @return Names of SEED classes which have ths specified class annotation.
+     */
     @Override
-    public Set<String> getAnnotatedClasses(String annotationName) {
+    public Set<String> getAnnotatedClasses(String annotationClassName) {
         String methodName = "getAnnotatedClasses";
         
+        Set<String> annotatedClasses;
+
         TargetsTableImpl useSeedTable = getSeedTable();
 
         if ( useSeedTable == null ) {
             if ( logger.isLoggable(Level.FINER) ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER [ {0} ] RETURN [ 0 ]", annotationName);
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "ENTER [ {0} ] RETURN [ 0 ]", annotationClassName);
             }
-            return Collections.emptySet();
+            annotatedClasses = Collections.emptySet();
 
         } else {
-            Set<String> result = useSeedTable.getAnnotatedTargets(AnnotationCategory.CLASS, annotationName);
+            annotatedClasses = useSeedTable.getAnnotatedTargets(AnnotationCategory.CLASS, annotationClassName);
 
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "ENTER [ {0} ] RETURN [ {1} ]",
-                        new Object[] { annotationName, Integer.valueOf(result.size()) });
-                for ( String annotatedClassName : result ) {
+                        new Object[] { annotationClassName, Integer.valueOf(annotatedClasses.size()) });
+                for ( String annotatedClassName : annotatedClasses ) {
                     logger.logp(Level.FINER, CLASS_NAME, methodName, "  [ {0} ]", annotatedClassName);
                 }
             }
-
-            return result;
         }
+
+        writeQuery(CLASS_NAME + "." + methodName,
+                   ScanPolicy.SEED, QueryType.CLASS,
+                   annotationClassName, annotatedClasses);
+
+        return annotatedClasses;
     }
 
+    /**
+     * Answer the SEED annotations which have the specified class annotation
+     * and which are in the specified class source.
+     *
+     * Do not answer subclasses.  This method does not handle inheritance
+     * cases.
+     *
+     * Answer only class names which are also in the specified class source.
+     *
+     * TODO: This seems unnecessarily restrictive: If the target class source
+     *       does not have the SEED policy, an empty result must occur.
+     *
+     * This query is logged.
+     *
+     * @param classSourceName The name of the class source to which to
+     *     restrict results.
+     * @param annotationClassName The name of the target class annotation.
+     *
+     * @return Names of SEED classes which have ths specified class annotation.
+     */
     @Override
-    public Set<String> getAnnotatedClasses(String classSourceName, String annotationName) {
-        Set<String> annotatedClassNames = getAnnotatedClasses(annotationName);
+    public Set<String> getAnnotatedClasses(String classSourceName, String annotationClassName) {
+        Set<String> annotatedClassNames = getAnnotatedClasses(annotationClassName);
         Set<String> classSourceClassNames = getInternalClassNames(classSourceName);
 
-        return ( UtilImpl_Utils.restrict(annotatedClassNames, classSourceClassNames) );
+        Set<String> annotatedClasses = ( UtilImpl_Utils.restrict(annotatedClassNames, classSourceClassNames) );
+
+        writeQuery(CLASS_NAME + "." + "getAnnotatedClasses",
+                   classSourceName, QueryType.CLASS,
+                   annotationClassName, annotatedClasses);
+
+        return annotatedClasses;
     }
 
     @Override
@@ -1087,15 +1148,32 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         }
     }
 
+    /**
+     * Answer the SEED annotations which have the specified field annotation.
+     *
+     * This query is logged.
+     *
+     * @param annotationClassName The name of the target field annotation.
+     *
+     * @return Names of SEED classes which have ths specified field annotation.
+     */
     @Override
-    public Set<String> getClassesWithFieldAnnotation(String annotationName) {
+    public Set<String> getClassesWithFieldAnnotation(String annotationClassName) {
         TargetsTableImpl useSeedTable = getSeedTable();
 
+        Set<String> annotatedClasses;
+
         if ( useSeedTable == null ) {
-            return Collections.emptySet();
+            annotatedClasses = Collections.emptySet();
         } else {
-            return useSeedTable.getAnnotatedTargets(AnnotationCategory.FIELD, annotationName);
+            annotatedClasses = useSeedTable.getAnnotatedTargets(AnnotationCategory.FIELD, annotationClassName);
         }
+
+        writeQuery(CLASS_NAME + "." + "getClassesWithFieldAnnotations",
+                   ScanPolicy.SEED, QueryType.FIELD,
+                   annotationClassName, annotatedClasses);
+
+        return annotatedClasses;
     }
 
     @Override
@@ -1130,15 +1208,32 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         }
     }
 
+    /**
+     * Answer the SEED annotations which have the specified method annotation.
+     *
+     * This query is logged.
+     *
+     * @param annotationClassName The name of the target method annotation.
+     *
+     * @return Names of SEED classes which have ths specified method annotation.
+     */
     @Override
-    public Set<String> getClassesWithMethodAnnotation(String annotationName) {
+    public Set<String> getClassesWithMethodAnnotation(String annotationClassName) {
         TargetsTableImpl useSeedTable = getSeedTable();
 
+        Set<String> annotatedClasses;
+
         if ( useSeedTable == null ) {
-            return Collections.emptySet();
+            annotatedClasses = Collections.emptySet();
         } else {
-            return useSeedTable.getAnnotatedTargets(AnnotationCategory.METHOD, annotationName);
+            annotatedClasses = useSeedTable.getAnnotatedTargets(AnnotationCategory.METHOD, annotationClassName);
         }
+
+        writeQuery(CLASS_NAME + "." + "getClassesWithMethodAnnotations",
+                   ScanPolicy.SEED, QueryType.METHOD,
+                   annotationClassName, annotatedClasses);
+
+        return annotatedClasses;
     }
 
     @Override
@@ -1175,8 +1270,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     @Override
-    public Set<String> getAnnotatedPackages(String annotationName, int scanPolicies) {
-        return selectAnnotatedTargets(annotationName, scanPolicies, AnnotationCategory.PACKAGE);
+    public Set<String> getAnnotatedPackages(String annotationClassName, int scanPolicies) {
+        // logging in 'selectAnnotatedTargets'
+        return selectAnnotatedTargets(annotationClassName, scanPolicies, AnnotationCategory.PACKAGE);
     }
 
     @Override
@@ -1196,24 +1292,68 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return selectAnnotatedTargets(scanPolicies, AnnotationCategory.CLASS);
     }
 
+    /**
+     * Answer the annotations which have the specified class annotation,
+     * and which are in the specified class source, and which are in a source
+     * which has a specified policy.
+     *
+     * Do not answer subclasses.  This method does not handle inheritance
+     * cases.
+     *
+     * Answer only classes which are in a region which has one of the specified
+     * policies.
+     *
+     * Answer only class names which are also in the specified class source.
+     *
+     * TODO: This seems unnecessarily restrictive: If the target class source
+     *       does not have one of the specified policies, an empty result must
+     *       occur.
+     *
+     * This query is logged.
+     *
+     * @param classSourceName The name of the class source to which to
+     *     restrict results.
+     * @param annotationClassName The name of the target class annotation.
+     * @param scanPolicies The scan policies to which to restrict the results.
+     *
+     * @return Names of SEED classes which have ths specified class annotation.
+     */
     @Override
-    public Set<String> getAnnotatedClasses(String classSourceName, String annotationName, int scanPolicies) {
-        Set<String> annotatedClassNames = getAnnotatedClasses(annotationName, scanPolicies);
+    public Set<String> getAnnotatedClasses(String classSourceName, String annotationClassName, int scanPolicies) {
+        Set<String> annotatedClassNames = getAnnotatedClasses(annotationClassName, scanPolicies);
         Set<String> classSourceClassNames = getClassNames(classSourceName);
 
-        return (UtilImpl_Utils.restrict(annotatedClassNames, classSourceClassNames));
+        Set<String> annotatedClasses = ( UtilImpl_Utils.restrict(annotatedClassNames, classSourceClassNames) );
+
+        writeQuery(CLASS_NAME + "." + "getAnnotatedClasses",
+                   scanPolicies, classSourceName, QueryType.CLASS,
+                   annotationClassName, annotatedClasses);
+
+        return annotatedClasses;
     }
 
+    /**
+     * Select classes which have a specified class annotation.
+     *
+     * This query is logged.
+     *
+     * @param annotationClassName The name of the target method annotation.
+     * @param scanPolicies The scan policies to which to restrict the annotated
+     *     classes.
+     *
+     * @return Names of classes which have ths specified class annotation.
+     */
     @Override
-    public Set<String> getAnnotatedClasses(String annotationName, int scanPolicies) {
+    public Set<String> getAnnotatedClasses(String annotationClassName, int scanPolicies) {
         String methodName = "getAnnotatedClasses";
 
-        Set<String> annotatedClassNames = selectAnnotatedTargets(annotationName, scanPolicies, AnnotationCategory.CLASS);
+        // logging in 'selectAnnotatedTargets'
+        Set<String> annotatedClassNames = selectAnnotatedTargets(annotationClassName, scanPolicies, AnnotationCategory.CLASS);
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "Annotated classes [ {0} ] [ {1} ]: [ {2} ]",
-                new Object[] { annotationName,
+                new Object[] { annotationClassName,
                                Integer.valueOf(scanPolicies),
                                Integer.valueOf(annotatedClassNames.size()) });
 
@@ -1243,8 +1383,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     @Override
-    public Set<String> getClassesWithFieldAnnotation(String annotationName, int scanPolicies) {
-        return selectAnnotatedTargets(annotationName, scanPolicies, AnnotationCategory.FIELD);
+    public Set<String> getClassesWithFieldAnnotation(String annotationClassName, int scanPolicies) {
+        // logging in 'selectAnnotatedTargets'
+        return selectAnnotatedTargets(annotationClassName, scanPolicies, AnnotationCategory.FIELD);
     }
 
     @Override
@@ -1265,8 +1406,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     @Override
-    public Set<String> getClassesWithMethodAnnotation(String annotationName, int scanPolicies) {
-        return selectAnnotatedTargets(annotationName, scanPolicies, AnnotationCategory.METHOD);
+    public Set<String> getClassesWithMethodAnnotation(String annotationClassName, int scanPolicies) {
+        // logging in 'selectAnnotatedTargets'
+        return selectAnnotatedTargets(annotationClassName, scanPolicies, AnnotationCategory.METHOD);
     }
 
     @Override
@@ -1572,7 +1714,21 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         }
     }
 
-    protected Set<String> selectAnnotatedTargets(String annotationName,
+    /**
+     * Select classes which have a specified annotation.  The annotation may
+     * be a package, class, field, or method annotation.  Restrict the results
+     * to classes which are in regions having the specifed scan policies.
+     *
+     * This query is logged.
+     *
+     * @param annotationClassName The name of the target method annotation.
+     * @param scanPolicies The scan policies to which to restrict the annotated
+     *     classes.
+     * @param category The type of annotation to select.
+     *
+     * @return Names of classes which have ths specified annotation.
+     */
+    protected Set<String> selectAnnotatedTargets(String annotationClassName,
                                                  int scanPolicies,
                                                  AnnotationCategory category) {
 
@@ -1580,23 +1736,34 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         // To this point, no steps have been taken to ensure that scans have been performed,
         // meaning, no steps have been taken to ensure the intern maps are populated.
 
+        Set<String> annotatedClasses;
+
         if ( scanPolicies == 0 ) {
-            return Collections.emptySet();
-        } else if ( ScanPolicy.EXTERNAL.accept(scanPolicies) ) {
-            ensureExternalResults();
+            annotatedClasses = Collections.emptySet();
+
         } else {
-            ensureInternalResults();
+            if ( ScanPolicy.EXTERNAL.accept(scanPolicies) ) {
+                ensureExternalResults();
+            } else {
+                ensureInternalResults();
+            }
+
+            String i_annotationClassName = internClassName(annotationClassName, Util_InternMap.DO_NOT_FORCE);
+            if ( i_annotationClassName == null ) {
+                annotatedClasses = Collections.emptySet();
+            } else {
+                annotatedClasses =  uninternClassNames( i_selectAnnotatedTargets(i_annotationClassName, scanPolicies, category) );
+            }
         }
 
-        String i_annotationName = internClassName(annotationName, Util_InternMap.DO_NOT_FORCE);
-        if ( i_annotationName == null ) {
-            return Collections.emptySet();
-        } else {
-            return uninternClassNames( i_selectAnnotatedTargets(i_annotationName, scanPolicies, category) );
-        }
+        writeQuery(CLASS_NAME + "." + "selectedAnnotatedTargets",
+                   scanPolicies, asQueryType(category),
+                   annotationClassName, annotatedClasses);
+        
+        return annotatedClasses;
     }
 
-    protected Set<String> i_selectAnnotatedTargets(String i_annotationName,
+    protected Set<String> i_selectAnnotatedTargets(String i_annotationClassName,
                                                    int scanPolicies,
                                                    AnnotationCategory category) {
 
@@ -1607,7 +1774,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         if ( ScanPolicy.SEED.accept(scanPolicies) ) {
             TargetsTableImpl useSeedTable = getSeedTable();
             if ( useSeedTable != null ) {
-                i_selectedSeed = useSeedTable.getAnnotatedTargets(category, i_annotationName);
+                i_selectedSeed = useSeedTable.getAnnotatedTargets(category, i_annotationClassName);
                 if ( i_selectedSeed.isEmpty() ) {
                     i_selectedSeed = null;
                 } else {
@@ -1621,7 +1788,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         if ( ScanPolicy.PARTIAL.accept(scanPolicies) ) {
             TargetsTableImpl usePartialTable = getPartialTable();
             if ( usePartialTable != null ) {
-                i_selectedPartial = usePartialTable.getAnnotatedTargets(category, i_annotationName);
+                i_selectedPartial = usePartialTable.getAnnotatedTargets(category, i_annotationClassName);
                 if ( i_selectedPartial.isEmpty() ) {
                     i_selectedPartial = null;
                 } else {
@@ -1635,7 +1802,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         if ( ScanPolicy.EXCLUDED.accept(scanPolicies) ) {
             TargetsTableImpl useExcludedTable = getExcludedTable();
             if ( useExcludedTable != null ) {
-                i_selectedExcluded = useExcludedTable.getAnnotatedTargets(category, i_annotationName);
+                i_selectedExcluded = useExcludedTable.getAnnotatedTargets(category, i_annotationClassName);
                 if ( i_selectedExcluded.isEmpty() ) {
                     i_selectedExcluded = null;
                 } else {
@@ -1708,13 +1875,13 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     @Override
     @Trivial
-    public Set<String> getAllInheritedAnnotatedClasses(String annotationName, int scanPolicies) {
-        return getAllInheritedAnnotatedClasses(annotationName, scanPolicies, scanPolicies);
+    public Set<String> getAllInheritedAnnotatedClasses(String annotationClassName, int scanPolicies) {
+        return getAllInheritedAnnotatedClasses(annotationClassName, scanPolicies, scanPolicies);
     }
 
     @Override
     @Trivial
-    public Set<String> getAllInheritedAnnotatedClasses(String annotationName,
+    public Set<String> getAllInheritedAnnotatedClasses(String annotationClassName,
                                                        int declarerScanPolicies,
                                                        int inheritorScanPolicies) {
         String methodName = "getAllInheritedAnnotatedClasses";
@@ -1723,7 +1890,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         if ( logger.isLoggable(Level.FINER) ) {
             logParms = new Object[] {
                 getHashName(),
-                annotationName,
+                annotationClassName,
                 Integer.toHexString(declarerScanPolicies),
                 Integer.toHexString(inheritorScanPolicies) };
             logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -1737,7 +1904,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         // For each class which has the specified annotation as a class annotation ...
 
-        for ( String className : getAnnotatedClasses(annotationName, declarerScanPolicies) ) {
+        for ( String className : getAnnotatedClasses(annotationClassName, declarerScanPolicies) ) {
             if ( logParms != null ) {
                 logParms[1] = className;
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -1776,33 +1943,33 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     @Override
     @Trivial
-    public Set<String> getAllInheritedAnnotatedClasses(String annotationName) {
+    public Set<String> getAllInheritedAnnotatedClasses(String annotationClassName) {
         String methodName = "getAllInheritedAnnotatedClasses";
         Object[] logParms;
         if ( logger.isLoggable(Level.FINER) ) {
-            logParms = new Object[] { getHashName(), annotationName };
+            logParms = new Object[] { getHashName(), annotationClassName };
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] ENTER [ {1} ]", logParms);
         } else {
             logParms = null;
         }
 
-        Set<String> allClassNames = new HashSet<String>();
+        Set<String> annotatedClassNames = new HashSet<String>();
 
         // For each class which has the specified annotation as a class annotation ...
 
-        for ( String className : getAnnotatedClasses(annotationName) ) {
+        for ( String annotatedClassName : getAnnotatedClasses(annotationClassName) ) {
             if ( logParms != null ) {
-                logParms[1] = className;
+                logParms[1] = annotatedClassName;
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Add immediate [ {1} ]", logParms);
             }
-            allClassNames.add(className);
+            annotatedClassNames.add(annotatedClassName);
 
-            Set<String> subclassNames =  getSubclassNames(className);
+            Set<String> subclassNames =  getSubclassNames(annotatedClassName);
             if ( logParms != null ) {
                 logParms[1] = printString(subclassNames);
                 logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Add subclasses [ {1} ]", logParms);
             }
-            allClassNames.addAll(subclassNames);
+            annotatedClassNames.addAll(subclassNames);
 
             // The result of 'getSubclassnames' can never be null for
             // a class which is recorded as a declared class annotation
@@ -1810,11 +1977,15 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             // scanned, and such never answer null from 'getSubclassNames'.
         }
 
+        writeQuery(CLASS_NAME + "." + methodName,
+                   ScanPolicy.SEED, QueryType.INHERITED,
+                   annotationClassName, annotatedClassNames);
+
         if ( logParms != null ) {
-            logParms[1] = printString(allClassNames);
+            logParms[1] = printString(annotatedClassNames);
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] RETURN [ {1} ]", logParms);
         }
-        return allClassNames;
+        return annotatedClassNames;
     }
 
     @Override
@@ -2241,5 +2412,76 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
             getFactory(),
             getAppName(), getModName(), getModCatName(),
             this, initialTargets);
+    }
+
+    //
+
+    protected TargetCacheImpl_DataQueries queriesData;
+
+    @Trivial
+    public TargetCacheImpl_DataQueries getQueriesData() {
+        return queriesData;
+    }
+
+    protected void putQueriesData(TargetCacheImpl_DataApp appData) {
+        this.queriesData = appData.getApps().getQueriesForcing( getAppName(), getModFullName() );
+    }
+
+    //
+
+    protected void writeQuery(
+        String title,
+        ScanPolicy scanPolicy, QueryType queryType,
+        String annotationClass, Collection<String> resultClasses) {
+
+        getQueriesData().writeQuery(title, scanPolicy.getValue(), queryType.getTag(), annotationClass, resultClasses);
+    }
+
+    protected void writeQuery(
+        String title,
+        int policies, QueryType queryType,
+        String annotationClass, Collection<String> resultClasses) {
+
+        getQueriesData().writeQuery(title, policies, queryType.getTag(), annotationClass, resultClasses);
+    }
+
+    protected void writeQuery(
+        String title,
+        String source, QueryType queryType,
+        String annotationClass, Collection<String> resultClasses) {
+
+        List<String> sources = new ArrayList<String>(1);
+        sources.add(source);
+
+        getQueriesData().writeQuery(title,
+                                    sources, queryType.getTag(),
+                                    annotationClass, resultClasses);
+    }
+
+    protected void writeQuery(
+        String title,
+        int policies, String source, QueryType queryType,
+        String annotationClass, Collection<String> resultClasses) {
+
+        List<String> sources = new ArrayList<String>(1);
+        sources.add(source);
+
+        getQueriesData().writeQuery(title,
+                                    policies, sources, queryType.getTag(),
+                                    annotationClass, resultClasses);
+    }
+
+    protected QueryType asQueryType(AnnotationCategory category) {
+        if ( category == AnnotationCategory.PACKAGE ) {
+            return QueryType.PACKAGE;
+        } else if ( category == AnnotationCategory.CLASS ) {
+            return QueryType.CLASS;
+        } else if ( category == AnnotationCategory.FIELD ) {
+            return QueryType.FIELD;
+        } else if ( category == AnnotationCategory.METHOD ) {
+            return QueryType.METHOD;
+        } else {
+            throw new IllegalArgumentException("Unknown annotation category [ " + category + " ]");
+        }
     }
 }

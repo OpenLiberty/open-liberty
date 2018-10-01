@@ -170,6 +170,29 @@ public class UtilImpl_FileUtils {
         }
     }
 
+    public static final boolean DO_APPEND = true;
+    public static final boolean DO_NOT_APPEND = false;
+
+    public static FileOutputStream createFileOutputStream(final File target, boolean append) throws IOException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
+                @Override
+                public FileOutputStream run() throws IOException {
+                    return new FileOutputStream(target, append);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            Exception innerException = e.getException();
+            if (innerException instanceof IOException) {
+                throw (IOException) innerException;
+            } else if (innerException instanceof RuntimeException) {
+                throw (RuntimeException) innerException;
+            } else {
+                throw new UndeclaredThrowableException(e);
+            }
+        }
+    }
+
     public static FileInputStream createFileInputStream(final File target) throws IOException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<FileInputStream>() {

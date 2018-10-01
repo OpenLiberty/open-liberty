@@ -57,6 +57,11 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
                 WCGetMappingTest.class,
                 WCEncodingTest.class,
                 WCTrailersTest.class,
+                    // TFB:
+                    // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
+                    // the gradlew 'buildandrun' invocation.
+                    // And, when WCTrailersTest fails, it causes most of the tests to fail with errors.
+                    // I'm still determining if this is purely a local problem.
 //              WCPushBuilderSecurityTest.class,
                 WCAddJspFileTest.class
 })

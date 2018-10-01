@@ -218,7 +218,15 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
 
     //
 
-    @Trivial
+    protected TargetCacheImpl_DataQueries createQueriesData(
+        String appName, String e_appName,
+        String modName, String e_modName, File modDir) {
+
+        return new TargetCacheImpl_DataQueries(this, appName, e_appName, modName, e_modName, modDir);
+    }
+
+    //
+
     protected TargetCacheImpl_Reader createReader(File inputFile) throws IOException {
         String inputPath = inputFile.getPath();
 
@@ -227,27 +235,20 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
         return createReader(inputPath, inputStream);
     }
 
-    @Trivial
     protected TargetCacheImpl_Reader createReader(String path, InputStream stream) {
         try {
             return new TargetCacheImpl_Reader(this, path, stream, TargetCache_InternalConstants.SERIALIZATION_ENCODING);
         } catch ( UnsupportedEncodingException e ) {
-            throw new IllegalStateException( badEncoding(TargetCache_InternalConstants.SERIALIZATION_ENCODING), e);
+            return null; // FFDC
         }
     }
 
-    @Trivial
     protected TargetCacheImpl_Writer createWriter(String path, OutputStream stream) {
         try {
             return new TargetCacheImpl_Writer(this, path, stream, TargetCache_InternalConstants.SERIALIZATION_ENCODING);
         } catch ( UnsupportedEncodingException e ) {
-            throw new IllegalStateException( badEncoding(TargetCache_InternalConstants.SERIALIZATION_ENCODING), e);
+            return null; // FFDC
         }
-    }
-
-    @Trivial
-    protected String badEncoding(String encoding) {
-        return "Unable to use encoding [ " + encoding + " ]";
     }
 
     //

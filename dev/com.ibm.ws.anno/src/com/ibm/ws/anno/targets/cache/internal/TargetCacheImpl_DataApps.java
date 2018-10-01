@@ -16,6 +16,7 @@ import java.util.WeakHashMap;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.targets.cache.TargetCache_ExternalConstants;
+import com.ibm.ws.anno.util.internal.UtilImpl_FileUtils;
 import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 
 /**
@@ -54,6 +55,9 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
 
         this.appsLock = new AppsLock();
         this.apps = new WeakHashMap<String, TargetCacheImpl_DataApp>();
+
+        this.queriesLock = new QueriesLock();
+        this.queries = new WeakHashMap<String, TargetCacheImpl_DataQueries>();
     }
 
     //
@@ -108,6 +112,64 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
                 apps.put(appName, app);
             }
             return app;
+        }
+    }
+
+    //
+
+    @Trivial
+    protected File e_getModDir(String e_appName, String e_modName) {
+        if ( (e_appName == null) || (e_modName == null) ) {
+            return null;
+        }
+        return new File( e_getAppDir(e_appName), e_addModPrefix(e_modName) );
+    }
+
+    @Trivial    
+    protected TargetCacheImpl_DataQueries createQueriesData(
+        String appName, String e_appName,
+        String modName, String e_modName,
+        File modDir) {
+
+        return getFactory().createQueriesData(
+            appName, e_appName,
+            modName, e_modName, modDir);
+    }
+
+    @Trivial
+    protected TargetCacheImpl_DataQueries createQueriesData(String appName, String modName) {
+        String e_appName = encode(appName);
+        String e_modName = encode(modName);
+
+        return createQueriesData(
+            appName, e_appName,
+            modName, e_modName, e_getModDir(e_appName, e_modName) );
+    }
+
+    //
+
+    private class QueriesLock {
+        // EMPTY
+    }
+    private final QueriesLock queriesLock;
+    private final WeakHashMap<String, TargetCacheImpl_DataQueries> queries;
+
+    public TargetCacheImpl_DataQueries getQueriesForcing(String appName, String modName) {
+        // Unnamed data always create new data.
+        if ( (appName == ClassSource_Factory.UNNAMED_APP) ||
+             (modName == ClassSource_Factory.UNNAMED_MOD) ) {
+            return createQueriesData(appName, modName);
+        }
+
+        String queryKey = appName + '!' + modName;
+
+        synchronized( queriesLock ) {
+            TargetCacheImpl_DataQueries queriesData = queries.get(queryKey);
+            if ( queriesData == null ) {
+                queriesData = createQueriesData(appName, modName);
+                queries.put(queryKey, queriesData);
+            }
+            return queriesData;
         }
     }
 }

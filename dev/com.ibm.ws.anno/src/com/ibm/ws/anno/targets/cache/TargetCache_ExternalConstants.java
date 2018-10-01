@@ -100,4 +100,8 @@ public interface TargetCache_ExternalConstants {
     String ANNO_TARGETS_NAME = "anno.targets";
     // Name of the container annotation details file:
     String ANNO_DETAILS_NAME = "anno.details";
+
+    // Fourth / query log
+
+    String QUERIES_NAME = "queries";
 }

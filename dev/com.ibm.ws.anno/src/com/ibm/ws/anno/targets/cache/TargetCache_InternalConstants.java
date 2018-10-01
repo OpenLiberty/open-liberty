@@ -237,4 +237,61 @@ public interface TargetCache_InternalConstants {
 
     String ANNOTATION_TAG          = "Annotation";
     String DETAIL_TAG              = "Detail";
+
+    //
+
+    // Query
+    //
+    // Table: Annotation Queries
+    //
+    // # ============================================================
+    // Query: <title>
+    // Timestamp: <Date-Time>
+    // Policies: (SEED, PARTIAL, EXCLUDED, EXTERNAL)
+    // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // Annotation: <annotation class>
+    // Result: <result class>
+
+    // # ============================================================
+    // Query: <title>
+    // Timestamp: <Date-Time>
+    // Source: <source name>
+    // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // Annotation: <annotation class>
+    // Result: <result class>
+
+    String QUERIES_TABLE_TAG = "Annotation Queries";
+    String QUERIES_TABLE_VERSION = "1.0";
+
+    String QUERY_TAG = "Query";
+    String QUERY_TIMESTAMP_TAG      = "Timestamp";
+    String QUERY_POLICIES_TAG       = "Policies";
+    String QUERY_SOURCE_TAG         = "Source";
+    String QUERY_TYPE_TAG           = "Type";
+    String QUERY_ANNOTATION_TAG     = "Annotation";
+    String QUERY_RESULT_TAG         = "Result";
+
+    String QUERY_TYPE_TAG_PACKAGE   = "Package";
+    String QUERY_TYPE_TAG_CLASS     = "Class";
+    String QUERY_TYPE_TAG_INHERITED = "Inherited";
+    String QUERY_TYPE_TAG_FIELD     = "Field";
+    String QUERY_TYPE_TAG_METHOD    = "Method";
+
+    public enum QueryType {
+        PACKAGE  (QUERY_TYPE_TAG_PACKAGE),
+        CLASS    (QUERY_TYPE_TAG_CLASS),
+        INHERITED(QUERY_TYPE_TAG_INHERITED),
+        FIELD    (QUERY_TYPE_TAG_FIELD),
+        METHOD   (QUERY_TYPE_TAG_METHOD);
+
+        private QueryType(String tag) {
+            this.tag = tag;
+        }
+
+        private final String tag;
+
+        public String getTag() {
+            return tag;
+        }
+    }
 }

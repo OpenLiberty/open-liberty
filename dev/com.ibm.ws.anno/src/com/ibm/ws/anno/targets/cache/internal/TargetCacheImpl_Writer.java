@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 // import java.util.ConcurrentModificationException;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -110,6 +111,10 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
     @Trivial
     protected void closeWriter(String methodName) throws IOException {
         bufferedWriter.close(); // throws IOException
+    }
+
+    protected void flushWriter() throws IOException {
+        bufferedWriter.flush(); // throws IOException
     }
 
     //
@@ -603,7 +608,7 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
         writeValue(TABLE_TAG, tableTag);
         writeValue(VERSION_TAG, tableVersion);
 
-        writeValue(TIMESTAMP_TAG, UtilImpl_Utils.getDateAndTime());
+        writeValue(TIMESTAMP_TAG, getTimeStamp());
     }
 
     protected void writeTrailer() throws IOException {
@@ -671,4 +676,176 @@ public class TargetCacheImpl_Writer implements TargetCache_InternalConstants {
 
         writeLine(methodName, valueText);
     }
+
+    public String getTimeStamp() {
+        return UtilImpl_Utils.getDateAndTime();
+    }
+
+    //
+
+    public void writeQueryHeader() throws IOException {
+        writeHeader(QUERIES_TABLE_TAG, QUERIES_TABLE_VERSION);
+    }
+
+    // # ============================================================
+    // Query: <title>
+    // Timestamp: <Date-Time>
+    // Policies: (SEED, PARTIAL, EXCLUDED, EXTERNAL)
+    // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // Annotation: <annotation class>
+    // Result: <result class>
+
+    // Query: <title>
+    // Timestamp: <Date-Time>
+    // Source: <source name>
+    // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // Annotation: <annotation class>
+    // Result: <result class>
+
+    // Query: <title>
+    // Timestamp: <Date-Time>
+    // Policies: (SEED, PARTIAL, EXCLUDED, EXTERNAL)
+    // Source: <source name>
+    // Type: (PACKAGE, CLASS, CLASS INHERITED, FIELD, METHOD)
+    // Annotation: <annotation class>
+    // Result: <result class>
+
+    public void writeQuery(
+        String title,
+        int policies, String type,
+        String annotationClass, Collection<String> resultClasses) throws IOException {
+
+        writeQuery(title, getTimeStamp(), policies, type, annotationClass, resultClasses);
+        // 'writeQuery' throws IOException
+    }
+
+    public void writeQuery(
+        String title, String timeStamp,
+        int policies, String type,
+        String annotationClass, Collection<String> resultClasses) throws IOException {
+
+        writeComment(DELIMITER_TAG);
+
+        writeValue(QUERY_TAG, title);
+        writeValue(QUERY_TIMESTAMP_TAG, timeStamp);
+
+        writeValue(QUERY_POLICIES_TAG, policiesText(policies));
+        writeValue(QUERY_TYPE_TAG, type);
+
+        writeValue(QUERY_ANNOTATION_TAG, annotationClass);
+        for ( String resultClass : resultClasses ) {
+            writeSubValue(QUERY_RESULT_TAG, resultClass);
+        }
+
+        flushWriter();
+    }
+
+    public void writeQuery(
+        String title,
+        Collection<String> sources, String type,
+        String annotationClass, Collection<String> resultClasses) throws IOException {
+
+        writeQuery(title, getTimeStamp(), sources, type, annotationClass, resultClasses);
+        // 'writeQuery' throws IOException
+    }
+
+    public void writeQuery(
+        String title, String timeStamp,
+        Collection<String> sources, String type,
+        String annotationClass, Collection<String> resultClasses) throws IOException {
+
+        writeComment(DELIMITER_TAG);
+
+        writeValue(QUERY_TAG, title);
+        writeValue(QUERY_TIMESTAMP_TAG, timeStamp);
+
+        for ( String source : sources ) {
+            writeValue(QUERY_SOURCE_TAG, source);
+        }
+        writeValue(QUERY_TYPE_TAG, type);
+
+        writeValue(QUERY_ANNOTATION_TAG, annotationClass);
+        for ( String resultClass : resultClasses ) {
+            writeSubValue(QUERY_RESULT_TAG, resultClass);
+        }
+
+        flushWriter();
+    }
+
+    public void writeQuery(
+        String title,
+        int policies, Collection<String> sources, String type,
+        String annotationClass, Collection<String> resultClasses) throws IOException {
+
+        writeQuery(title, getTimeStamp(),
+                   policies, sources, type,
+                   annotationClass, resultClasses);
+        // 'writeQuery' throws IOException
+    }
+
+    public void writeQuery(
+        String title, String timeStamp,
+        int policies, Collection<String> sources, String type,
+        String annotationClass, Collection<String> resultClasses) throws IOException {
+
+        writeComment(DELIMITER_TAG);
+
+        writeValue(QUERY_TAG, title);
+        writeValue(QUERY_TIMESTAMP_TAG, timeStamp);
+
+        writeValue(QUERY_POLICIES_TAG, policiesText(policies));
+        for ( String source : sources ) {
+            writeValue(QUERY_SOURCE_TAG, source);
+        }
+        writeValue(QUERY_TYPE_TAG, type);
+
+        writeValue(QUERY_ANNOTATION_TAG, annotationClass);
+        for ( String resultClass : resultClasses ) {
+            writeSubValue(QUERY_RESULT_TAG, resultClass);
+        }
+
+        flushWriter();
+    }
+
+    protected String policiesText(int policies) {
+        // Empty policies is unexpected, but handle it anyways.
+        if ( policies == 0 ) {
+            return "";
+
+            // Common single policy settings.
+            // SEED by itself is most common.
+        } else if ( policies == ScanPolicy.SEED.getValue() ) {
+            return ScanPolicy.SEED.toString();
+        } else if ( policies == ScanPolicy.PARTIAL.getValue() ) {
+            return ScanPolicy.PARTIAL.toString();
+        } else if ( policies == ScanPolicy.PARTIAL.getValue() ) {
+            return ScanPolicy.PARTIAL.toString();
+        } else if ( policies == ScanPolicy.EXCLUDED.getValue() ) {
+            return ScanPolicy.EXCLUDED.toString();
+        } else if ( policies == ScanPolicy.EXTERNAL.getValue() ) {
+            return ScanPolicy.EXTERNAL.toString();
+
+            // Next common: Used by servlet container initializer queries
+        } else if ( policies == (ScanPolicy.SEED.getValue() & ScanPolicy.PARTIAL.getValue()) ) {
+            return ScanPolicy.SEED.toString() + ", " + ScanPolicy.PARTIAL.toString();
+
+            // Uncommon combination: Iterate and build dynamically.
+        } else {
+            StringBuffer result = new StringBuffer();
+
+            for ( ScanPolicy policy : ScanPolicy.values() ) {
+                if ( (policies & policy.getValue()) == 0 ) {
+                    continue;
+                }
+                if ( result.length() > 0 ) {
+                    result.append(',');
+                    result.append(' ');
+                }
+                result.append( policy.toString() );
+            }
+            return result.toString();
+        }
+    }
+
+
 }
