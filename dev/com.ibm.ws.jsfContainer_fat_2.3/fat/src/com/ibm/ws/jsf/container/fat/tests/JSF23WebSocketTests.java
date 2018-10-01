@@ -18,7 +18,6 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -88,7 +87,6 @@ public class JSF23WebSocketTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @Ignore
     public void testPushWebsocket() throws Exception {
         WebClient webClient = new WebClient();
         //webClient.getOptions().setThrowExceptionOnScriptError(false);
@@ -147,7 +145,6 @@ public class JSF23WebSocketTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @Ignore
     public void testOpenAndCloseWebsocket() throws Exception {
         WebClient webClient = new WebClient();
 

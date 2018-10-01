@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CollectingAlertHandler;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -179,7 +178,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
     @WebArchiveInfo(name = "CDIManagedProperty", pkgs = { "com.ibm.ws.jsf23.fat.cdi.managedproperty" })
     public void testCDIManagedProperty() throws Exception {
         String contextRoot = "CDIManagedProperty";
-        WebClient webClient = new WebClient(BrowserVersion.FIREFOX_24);
+        WebClient webClient = new WebClient();
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 
         String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
