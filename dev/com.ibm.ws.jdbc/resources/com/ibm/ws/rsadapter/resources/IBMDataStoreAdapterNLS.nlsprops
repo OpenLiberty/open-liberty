@@ -486,6 +486,10 @@ DEFAULT_MATCH_ORIGINAL.useraction=Verify that the data source custom property is
 
 # 8780 deleted
 
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: The beginRequest and endRequest methods must only be used by connection managers. The JDBC specification does not account for multiple connection managers that can manage a connection. Usage of beginRequest and endRequest by other connection managers is suppressed when connection management is provided by the application server. The following stack indicates the code path on which the beginRequest or endRequest operation was invoked: {0}.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=The beginRequest and endRequest hints are suppressed to avoid side effects that interfere with connection management.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=To avoid this warning, remove the code that invokes beginRequest and endRequest as identified by the supplied stack.
+
 # ----------------------------------------------------------------------------
 # 
 # Using the 9000's for JDBC wrapper messages.

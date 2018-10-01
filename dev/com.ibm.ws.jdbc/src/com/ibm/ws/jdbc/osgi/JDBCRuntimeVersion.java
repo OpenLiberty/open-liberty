@@ -54,6 +54,8 @@ public interface JDBCRuntimeVersion {
     public static final Version VERSION_4_2 = new Version(4, 2, 0);
     public static final Version VERSION_4_3 = new Version(4, 3, 0);
 
+    public static final String SUPER_SHARDING_KEY_UNCHANGED = "UNCHANGED";
+
     public Version getVersion();
 
     // JDBC wrapper object constructor delegates

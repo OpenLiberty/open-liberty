@@ -47,10 +47,11 @@ public class Mpjwt11TCKLauncher_aud_noenv {
     @Test
     @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtSignatureException")
     public void launchMpjwt11TCKLauncher_aud_noenv() throws Exception {
+        String port = String.valueOf(server.getBvtPort());
         String bucketAndTestName = this.getClass().getCanonicalName();
         MvnUtils.setSuiteFileName("tck_suite_aud_noenv.xml", server);
         // need to pass the correct url for PublicKeyAsPEMLocationURLTest
-        MvnUtils.setAdditionalMvnProps(new String[] { "-Dmp.jwt.tck.jwks.baseURL=http://localhost:8010/PublicKeyAsPEMLocationURLTest/" }, server);
+        MvnUtils.setAdditionalMvnProps(new String[] { "-Dmp.jwt.tck.jwks.baseURL=http://localhost:" + port + "/PublicKeyAsPEMLocationURLTest/" }, server);
         MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName);
 
     }

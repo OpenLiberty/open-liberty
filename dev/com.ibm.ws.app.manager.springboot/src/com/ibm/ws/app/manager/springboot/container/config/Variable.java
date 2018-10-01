@@ -10,13 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * {@code <variable>} element in server.xml
  */
 public class Variable extends ConfigElement {
+
+    public final static String XML_ATTRIBUTE_NAME_NAME = "name";
     private String name;
+
+    public final static String XML_ATTRIBUTE_NAME_VALUE = "value";
     private String value;
 
     public Variable() {}
@@ -30,7 +32,6 @@ public class Variable extends ConfigElement {
         return name;
     }
 
-    @XmlAttribute
     public void setName(String name) {
         this.name = name;
     }
@@ -39,14 +40,13 @@ public class Variable extends ConfigElement {
         return value;
     }
 
-    @XmlAttribute
     public void setValue(String value) {
         this.value = value;
     }
 
     /**
      * Returns a string representing this {@code <variable>} element
-     * 
+     *
      * @return String representing this {@code <variable>} element
      */
     @Override

@@ -44,7 +44,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
     
     ```./gradlew cnf:initialize```
     
-    ```./gradlew assemble :com.ibm.websphere.appserver.features:releaseNeeded```
+    ```./gradlew assemble```
 
 3. Run the unit or FAT tests.
 

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * Allows you to configure logging (group=kernal, component=com.ibm.ws.logging,
  * see resources/OSGI-INF/metatype/metatype.xml)
@@ -19,14 +17,31 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class Logging extends ConfigElement {
 
+    public final static String XML_ATTRIBUTE_NAME_MAX_FILE_SIZE = "maxFileSize";
     private Integer maxFileSize;
+
+    public final static String XML_ATTRIBUTE_NAME_MAX_FILES = "maxFiles";
     private Integer maxFiles;
+
+    public final static String XML_ATTRIBUTE_NAME_CONSOLE_LOG_LEVEL = "consoleLogLevel";
     private String consoleLogLevel;
+
+    public final static String XML_ATTRIBUTE_NAME_ = "messageFileName";
     private String messageFileName;
+
+    public final static String XML_ATTRIBUTE_NAME_TRACE_FILE_NAME = "traceFileName";
     private String traceFileName;
+
+    public final static String XML_ATTRIBUTE_NAME_TRACE_SPECIFICATION = "traceSpecification";
     private String traceSpecification;
+
+    public final static String XML_ATTRIBUTE_NAME_TRACE_FORMAT = "traceFormat";
     private String traceFormat;
+
+    public final static String XML_ATTRIBUTE_NAME_LOG_DIRECTORY = "logDirectory";
     private String logDirectory;
+
+    public final static String XML_ATTRIBUTE_NAME_ISO_DATE_FORMAT = "isoDateFormat";
     private boolean isoDateFormat;
 
     /**
@@ -39,7 +54,6 @@ public class Logging extends ConfigElement {
     /**
      * @param logDirectory new log directory
      */
-    @XmlAttribute(name = "logDirectory")
     public void setLogDirectory(String logDirectory) {
         this.logDirectory = ConfigElement.getValue(logDirectory);
     }
@@ -54,7 +68,7 @@ public class Logging extends ConfigElement {
     /**
      * @param traceSpecification the traceSpecification to set
      */
-    @XmlAttribute(name = "traceSpecification")
+
     public void setTraceSpecification(String traceSpecification) {
         this.traceSpecification = ConfigElement.getValue(traceSpecification);
     }
@@ -71,7 +85,7 @@ public class Logging extends ConfigElement {
      *
      * @param traceFileName the traceFileName to set
      */
-    @XmlAttribute(name = "traceFileName")
+
     public void setTraceFileName(String traceFileName) {
         this.traceFileName = ConfigElement.getValue(traceFileName);
     }
@@ -88,7 +102,7 @@ public class Logging extends ConfigElement {
      *
      * @param maxFileSize the max file size to set
      */
-    @XmlAttribute(name = "maxFileSize")
+
     public void setMaxFileSize(Integer maxFileSize) {
         this.maxFileSize = maxFileSize;
     }
@@ -105,7 +119,7 @@ public class Logging extends ConfigElement {
      *
      * @param maxFiles the new value for maximum number of files
      */
-    @XmlAttribute(name = "maxFiles")
+
     public void setMaxFiles(Integer maxFiles) {
         this.maxFiles = maxFiles;
     }
@@ -122,7 +136,7 @@ public class Logging extends ConfigElement {
      *
      * @param traceFormat the traceFormat to set
      */
-    @XmlAttribute(name = "traceFormat")
+
     public void setTraceFormat(String traceFormat) {
         this.traceFormat = ConfigElement.getValue(traceFormat);
     }
@@ -139,7 +153,7 @@ public class Logging extends ConfigElement {
      *
      * @param messageFileName the messageFileName to set
      */
-    @XmlAttribute(name = "messageFileName")
+
     public void setMessageFileName(String messageFileName) {
         this.messageFileName = ConfigElement.getValue(messageFileName);
     }
@@ -149,7 +163,7 @@ public class Logging extends ConfigElement {
      *
      * @param consoleLogLevel The level filter for messages sent to system out or system err.
      */
-    @XmlAttribute(name = "consoleLogLevel")
+
     public void setConsoleLogLevel(String consoleLogLevel) {
         this.consoleLogLevel = ConfigElement.getValue(consoleLogLevel);
     }
@@ -166,7 +180,7 @@ public class Logging extends ConfigElement {
      *
      * @param isoDateFormat A boolean to determine if the date and time in the Liberty logs should be in ISO-8601 format.
      */
-    @XmlAttribute(name = "isoDateFormat")
+
     public void setIsoDateFormat(boolean isoDateFormat) {
         this.isoDateFormat = isoDateFormat;
     }

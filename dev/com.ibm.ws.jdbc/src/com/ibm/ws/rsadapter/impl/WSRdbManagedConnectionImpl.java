@@ -4039,11 +4039,19 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         connectionPropertyChanged = true; 
     }
 
+    public final Object getCurrentShardingKey() {
+        return currentShardingKey;
+    }
+
+    public final Object getCurrentSuperShardingKey() {
+        return currentSuperShardingKey;
+    }
+
     /**
      * Updates the value of the sharding keys.
      * 
      * @param shardingKey the new sharding key.
-     * @param superShardingKey the new super sharding key.
+     * @param superShardingKey the new super sharding key. The 'unchanged' constant can be used to avoid changing it.
      */
     public final void setShardingKeys(Object shardingKey, Object superShardingKey) throws SQLException {
         if (mcf.beforeJDBCVersion(JDBCRuntimeVersion.VERSION_4_3))
@@ -4054,7 +4062,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         mcf.jdbcRuntime.doSetShardingKeys(sqlConn, shardingKey, superShardingKey);
         currentShardingKey = shardingKey;
-        currentSuperShardingKey = superShardingKey;
+        if (superShardingKey != JDBCRuntimeVersion.SUPER_SHARDING_KEY_UNCHANGED)
+            currentSuperShardingKey = superShardingKey;
         connectionPropertyChanged = true;
     }
 

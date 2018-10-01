@@ -10,32 +10,61 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.springboot.container.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 /**
  * A connectionManager element for holding a set of properties
  * relating to a connection manager;
  */
 public class ConnectionManager extends ConfigElement {
+
+    public final static String XML_ATTRIBUTE_NAME_AGED_TIMEOUT = "agedTimeout";
     private String agedTimeout;
+
+    public final static String XML_ATTRIBUTE_NAME_CONNECTION_TIMEOUT = "connectionTimeout";
     private String connectionTimeout;
+
+    public final static String XML_ATTRIBUTE_NAME_MAX_IDLE_TIME = "maxIdleTime";
     private String maxIdleTime;
+
+    public final static String XML_ATTRIBUTE_NAME_MAX_POOL_SIZE = "maxPoolSize";
     private String maxPoolSize;
+
+    public final static String XML_ATTRIBUTE_NAME_MIN_POOL_SIZE = "minPoolSize";
     private String minPoolSize;
+
+    public final static String XML_ATTRIBUTE_NAME_PURGE_POLICY = "purgePolicy";
     private String purgePolicy;
+
+    public final static String XML_ATTRIBUTE_NAME_REAP_TIME = "reapTime";
     private String reapTime;
+
+    public final static String XML_ATTRIBUTE_NAME_MAX_CONNECTIONS_PER_THREAD = "maxConnectionsPerThread";
     private String maxConnectionsPerThread;
+
+    public final static String XML_ATTRIBUTE_NAME_NUM_CONNECTIONS_PER_THREAD_LOCAL = "numConnectionsPerThreadLocal";
     private String numConnectionsPerThreadLocal;
+
+    public final static String XML_ATTRIBUTE_NAME_MAX_RESERVE_POOL_CONNECTIONS_ALLOWED = "maxReservePoolConnectionsAllowed";
     private String maxReservePoolConnectionsAllowed;
+
+    public final static String XML_ATTRIBUTE_NAME_NUM_OF_RESERVE_POOLS = "numberOfReservePools";
     private String numberOfReservePools;
+
+    public final static String XML_ATTRIBUTE_NAME_STUCK_THRESHOLD = "stuckThreshold";
     private String stuckThreshold;
+
+    public final static String XML_ATTRIBUTE_NAME_STUCK_TIMER_TIME = "stuckTimerTime";
     private String stuckTimerTime;
+
+    public final static String XML_ATTRIBUTE_NAME_STUCK_TIME = "stuckTime";
     private String stuckTime;
+
+    public final static String XML_ATTRIBUTE_NAME_SURGE_CREATION_INTERVAL = "surgeCreationInterval";
     private String surgeCreationInterval;
+
+    public final static String XML_ATTRIBUTE_NAME_SURGE_THRESHOLD = "surgeThreshold";
     private String surgeThreshold;
 
     // Not supported yet.
-    @XmlAttribute(name = "stuckThreshold")
     public void setStuckThreshold(String stuckThreshold) {
         this.stuckThreshold = stuckThreshold;
     }
@@ -46,7 +75,6 @@ public class ConnectionManager extends ConfigElement {
     }
 
     // Not supported yet.
-    @XmlAttribute(name = "stuckTimerTime")
     public void setStuckTimerTime(String stuckTimerTime) {
         this.stuckTimerTime = stuckTimerTime;
     }
@@ -57,7 +85,6 @@ public class ConnectionManager extends ConfigElement {
     }
 
     // Not supported yet.
-    @XmlAttribute(name = "stuckTime")
     public void setStuckTime(String stuckTime) {
         this.stuckTime = stuckTime;
     }
@@ -68,7 +95,6 @@ public class ConnectionManager extends ConfigElement {
     }
 
     // Not supported yet.
-    @XmlAttribute(name = "surgeCreationInterval")
     public void setSurgeCreationInterval(String surgeCreationInterval) {
         this.surgeCreationInterval = surgeCreationInterval;
     }
@@ -79,7 +105,6 @@ public class ConnectionManager extends ConfigElement {
     }
 
     // Not supported yet.
-    @XmlAttribute(name = "surgeThreshold")
     public void setSurgeThreshold(String surgeThreshold) {
         this.surgeThreshold = surgeThreshold;
     }
@@ -90,7 +115,6 @@ public class ConnectionManager extends ConfigElement {
     }
 
     // Not supported yet.
-    @XmlAttribute(name = "maxReservePoolConnectionsAllowed")
     public void setMaxReservePoolConnectionsAllowed(String maxReservePoolConnectionsAllowed) {
         this.maxReservePoolConnectionsAllowed = maxReservePoolConnectionsAllowed;
     }
@@ -101,7 +125,6 @@ public class ConnectionManager extends ConfigElement {
     }
 
     // Not supported yet.
-    @XmlAttribute(name = "numberOfReservePools")
     public void setNumberOfReservePools(String numberOfReservePools) {
         this.numberOfReservePools = numberOfReservePools;
     }
@@ -111,7 +134,6 @@ public class ConnectionManager extends ConfigElement {
         return this.numberOfReservePools;
     }
 
-    @XmlAttribute
     public void setAgedTimeout(String agedTimeout) {
         this.agedTimeout = agedTimeout;
     }
@@ -120,7 +142,6 @@ public class ConnectionManager extends ConfigElement {
         return agedTimeout;
     }
 
-    @XmlAttribute
     public void setConnectionTimeout(String connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
@@ -129,7 +150,6 @@ public class ConnectionManager extends ConfigElement {
         return connectionTimeout;
     }
 
-    @XmlAttribute
     public void setMaxIdleTime(String maxIdleTime) {
         this.maxIdleTime = maxIdleTime;
     }
@@ -138,7 +158,6 @@ public class ConnectionManager extends ConfigElement {
         return maxIdleTime;
     }
 
-    @XmlAttribute
     public void setMaxPoolSize(String maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
     }
@@ -147,7 +166,6 @@ public class ConnectionManager extends ConfigElement {
         return maxPoolSize;
     }
 
-    @XmlAttribute
     public void setMinPoolSize(String minPoolSize) {
         this.minPoolSize = minPoolSize;
     }
@@ -156,7 +174,6 @@ public class ConnectionManager extends ConfigElement {
         return minPoolSize;
     }
 
-    @XmlAttribute
     public void setPurgePolicy(String purgePolicy) {
         this.purgePolicy = purgePolicy;
     }
@@ -165,7 +182,6 @@ public class ConnectionManager extends ConfigElement {
         return purgePolicy;
     }
 
-    @XmlAttribute
     public void setReapTime(String reapTime) {
         this.reapTime = reapTime;
     }
@@ -178,7 +194,6 @@ public class ConnectionManager extends ConfigElement {
         return maxConnectionsPerThread;
     }
 
-    @XmlAttribute(name = "maxConnectionsPerThread")
     public void setMaxConnectionsPerThread(String maxConnectionsPerThread) {
         this.maxConnectionsPerThread = maxConnectionsPerThread;
     }
@@ -187,7 +202,6 @@ public class ConnectionManager extends ConfigElement {
         return numConnectionsPerThreadLocal;
     }
 
-    @XmlAttribute(name = "numConnectionsPerThreadLocal")
     public void setNumConnectionsPerThreadLocal(String numConnectionsPerThreadLocal) {
         this.numConnectionsPerThreadLocal = numConnectionsPerThreadLocal;
     }

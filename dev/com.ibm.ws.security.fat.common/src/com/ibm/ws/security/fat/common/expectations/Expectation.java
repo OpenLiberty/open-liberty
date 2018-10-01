@@ -12,6 +12,7 @@ package com.ibm.ws.security.fat.common.expectations;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.Constants.CheckType;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
 public abstract class Expectation {
@@ -21,6 +22,7 @@ public abstract class Expectation {
     protected String testAction;
     protected String searchLocation;
     protected String checkType;
+    protected CheckType expCheckType = null;
     protected String validationKey;
     protected String validationValue;
     protected String failureMsg;
@@ -53,6 +55,10 @@ public abstract class Expectation {
     public String getCheckType() {
         return checkType;
     };
+
+    public CheckType getExpectedCheckType() {
+        return expCheckType;
+    }
 
     public String getValidationKey() {
         return validationKey;
@@ -118,10 +124,6 @@ public abstract class Expectation {
         return new ResponseFullExpectation(action, Constants.STRING_DOES_NOT_CONTAIN, value, failureMsg);
     }
 
-    public static Expectation createJsonExpectation(String testAction, String key, String value, String failureMsg) {
-        return new JsonObjectExpectation(testAction, key, value, failureMsg);
-    }
-
     public static Expectation createExceptionExpectation(String testAction, String searchForValue, String failureMsg) {
         return new ExceptionMessageExpectation(testAction, Constants.STRING_CONTAINS, searchForValue, failureMsg);
     }
@@ -129,6 +131,6 @@ public abstract class Expectation {
     @Override
     public String toString() {
         return String.format("Expectation: [ Action: %s | Search In: %s | Check Type: %s | Search Key: %s | Search For: %s | Failure message: %s ]",
-                testAction, searchLocation, checkType, validationKey, validationValue, failureMsg);
+                testAction, searchLocation, (checkType != null) ? checkType : expCheckType, validationKey, validationValue, failureMsg);
     }
 }
