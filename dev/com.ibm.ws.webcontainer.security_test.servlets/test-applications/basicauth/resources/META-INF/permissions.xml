@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+b<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Copyright (c) 2017 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
@@ -23,6 +23,19 @@
    <permission>
        <class-name>javax.security.auth.AuthPermission</class-name>
        <name>wssecurity.getRunAsSubject</name>
+   </permission>
+   
+   <permission>
+       <class-name>java.net.SocketPermission</class-name>
+       <name>*</name>
+       <actions>resolve</actions>
+   </permission>
+   
+   
+   <permission>
+       <class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+       <name>*</name>
+       <actions>read</actions>
    </permission>
 
 </permissions>
