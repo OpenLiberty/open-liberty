@@ -11,16 +11,13 @@
 package com.ibm.ws.install.internal;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +25,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import org.apache.aries.util.manifest.ManifestProcessor;
 import org.apache.tools.ant.BuildException;
 
 import com.ibm.ws.install.CancelException;
@@ -57,12 +59,14 @@ import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.connections.RepositoryConnectionList;
 import com.ibm.ws.repository.connections.SingleFileRepositoryConnection;
 import com.ibm.ws.repository.connections.liberty.ProductInfoProductDefinition;
-import com.ibm.ws.repository.exceptions.RepositoryBackendException;
 import com.ibm.ws.repository.exceptions.RepositoryException;
-import com.ibm.ws.repository.parsers.internal.CreateJsonRepositoryFiles;
+import com.ibm.ws.repository.parsers.EsaParser;
+import com.ibm.ws.repository.parsers.Parser;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
+import com.ibm.ws.repository.resources.writeable.RepositoryResourceWritable;
+import com.ibm.ws.repository.strategies.writeable.AddThenDeleteStrategy;
 
 /**
  *
@@ -101,6 +105,9 @@ public class InstallKernelMap implements Map {
     private static final String MESSAGE_LOCALE = "message.locale";
     private static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
     private static final String INDIVIDUAL_ESAS = "individual.esas";
+
+    //Headers in Manifest File
+    private static final String SHORTNAME_HEADER_NAME = "IBM-ShortName";
 
     // Return code
     private static final Integer OK = Integer.valueOf(0);
@@ -538,19 +545,37 @@ public class InstallKernelMap implements Map {
                 RepositoryConnection repo = new SingleFileRepositoryConnection(jsonRepo);
                 repoList.add(repo);
             }
-            //TODO
-            //check if we do the deleteOnExit or not
-            if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
-                Path tempDir = Files.createTempDirectory("individualEsas");
-                tempDir.toFile().deleteOnExit();
-                repoList.add(individualESAInstall(tempDir));
-            }
 
             ManifestFileProcessor m_ManifestFileProcessor = new ManifestFileProcessor();
             Collection<ProvisioningFeatureDefinition> installedFeatures = m_ManifestFileProcessor.getFeatureDefinitions().values();
 
             int alreadyInstalled = 0;
             Collection<String> featureToInstall = (Collection<String>) data.get(FEATURES_TO_RESOLVE);
+            try {
+                if (data.get(INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
+                    Path tempDir = Files.createTempDirectory("generatedJson");
+                    tempDir.toFile().deleteOnExit();
+                    Map<String, String> shortNameMap = new HashMap<String, String>();
+                    File individualEsaJson = generateJsonFromIndividualESAs(tempDir, shortNameMap);
+
+                    RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
+                    repoList.add(repo);
+                    for (String feature : featureToInstall) {
+                        if (feature.endsWith(".esa")) {
+                            if (shortNameMap.containsKey(feature)) {
+                                String shortName = shortNameMap.get(feature);
+                                featureToInstall.remove(feature);
+                                featureToInstall.add(shortName);
+                            }
+                        }
+                    }
+                }
+            } catch (NullPointerException e) {
+                data.put(ACTION_RESULT, ERROR);
+                data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+                data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+            }
+
             Collection<String> featuresAlreadyPresent = new ArrayList<String>();
             for (ProvisioningFeatureDefinition feature : installedFeatures) {
                 if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
@@ -740,53 +765,77 @@ public class InstallKernelMap implements Map {
         return OK;
     }
 
-    //accept List of Files
-    private DirectoryRepositoryConnection individualESAInstall(Path individualEsas) throws RepositoryBackendException, IOException, BuildException {
-
-        String dir = individualEsas.toString();
-        List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
-
-        //copy esas to temp folder
-        for (File esa : esas) {
-            InputStream is = null;
-            OutputStream os = null;
-            File dest = new File(dir + "/" + esa.getName());
-            try {
-                is = new FileInputStream(esa);
-                os = new FileOutputStream(dest);
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = is.read(buffer)) > 0) {
-                    os.write(buffer, 0, length);
+    private static void populateShortNameFromManifest(File esa, Map<String, String> shortNameMap) throws IOException {
+        String esaLocation = esa.getCanonicalPath();
+        ZipFile zip = null;
+        try {
+            zip = new ZipFile(esaLocation);
+            Enumeration<? extends ZipEntry> zipEntries = zip.entries();
+            ZipEntry subsystemEntry = null;
+            while (zipEntries.hasMoreElements()) {
+                ZipEntry nextEntry = zipEntries.nextElement();
+                if ("OSGI-INF/SUBSYSTEM.MF".equalsIgnoreCase(nextEntry.getName())) {
+                    subsystemEntry = nextEntry;
+                    break;
                 }
-            } finally {
-                is.close();
-                os.close();
+            }
+            if (subsystemEntry != null) {
+                Manifest m = ManifestProcessor.parseManifest(zip.getInputStream(subsystemEntry));
+                Attributes manifestAttrs = m.getMainAttributes();
+                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
+                shortNameMap.put(esa.getCanonicalPath(), shortNameAttr);
+            }
+        } finally {
+            if (zip != null) {
+                zip.close();
+            }
+        }
+    }
+
+    /**
+     * generate a JSON from provided individual ESA files
+     *
+     * @param generatedJson path
+     * @param shortNameMap contains features parsed from individual esa files
+     * @return singleJson file
+     * @throws IOException
+     * @throws BuildException
+     * @throws RepositoryException
+     * @throws InstallException
+     */
+    private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException, InstallException {
+
+        String dir = jsonDirectory.toString();
+        List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
+        File singleJson = new File(dir + "/SingleJson.json");
+
+        for (File esa : esas) {
+            try {
+                populateShortNameFromManifest(esa, shortNameMap);
+            } catch (IOException e) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_ESA_NOT_FOUND", esa.getAbsolutePath()));
             }
 
-            //generate json file using given code
-            CreateJsonRepositoryFiles jsonCreator = new CreateJsonRepositoryFiles();
-            jsonCreator.setAssetFile(dest);
-            jsonCreator.setAssetType("FEATURE");
-            jsonCreator.setOutputLocation(dir);
-            jsonCreator.execute();
+            SingleFileRepositoryConnection mySingleFileRepo = null;
+            if (singleJson.exists()) {
+                mySingleFileRepo = new SingleFileRepositoryConnection(singleJson);
+            } else {
+                try {
+                    mySingleFileRepo = SingleFileRepositoryConnection.createEmptyRepository(singleJson);
+                } catch (IOException e) {
+                    throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_SINGLE_REPO_CONNECTION_FAILED", dir,
+                                                                                              esa.getAbsolutePath()));
+                }
+            }
+            Parser<? extends RepositoryResourceWritable> parser = new EsaParser(true);
+            RepositoryResourceWritable resource = parser.parseFileToResource(esa, null, null);
+            resource.updateGeneratedFields(true);
+            resource.setRepositoryConnection(mySingleFileRepo);
+            resource.uploadToMassive(new AddThenDeleteStrategy());
 
         }
 
-        //use temp directory as DirectoryRepositoryConnection
-        DirectoryRepositoryConnection conn = new DirectoryRepositoryConnection(new File(dir));
-
-        //TODO
-        //remove after testing
-        for (RepositoryResource res : conn.getAllResources()) {
-            res.dump(System.out);
-        }
-
-        //add connection to list of connected repos ( Include the ESA feature names in the list of features to install )
-        //  RepositoryConnectionList repoList = new RepositoryConnectionList();
-        //  repoList.add(conn);
-
-        return conn;
+        return singleJson;
 
     }
 
