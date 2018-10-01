@@ -15,10 +15,12 @@ import java.util.logging.Logger;
 
 /** Perform no validation at all. */
 class InactiveClassValidator extends ClassValidator {
-    private static final Logger log = Logger.getLogger(InactiveClassValidator.class.getName());
+    private final Logger log;
     public static final InactiveClassValidator INSTANCE = new InactiveClassValidator();
 
-    private InactiveClassValidator(){}
+    private InactiveClassValidator(){
+        log = Logger.getLogger(InactiveClassValidator.class.getName());
+    }
 
     @Override
     protected Class<?> apply(Class<?> cls) {

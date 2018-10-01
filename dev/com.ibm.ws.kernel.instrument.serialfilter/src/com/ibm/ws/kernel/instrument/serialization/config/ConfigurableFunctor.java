@@ -36,10 +36,13 @@ import java.util.logging.Logger;
  * able to explain why Class and Enum are declared the way they are.
  */
 public abstract class ConfigurableFunctor<T, R, D> extends Functor<R, D> {
-    private static final Logger log = Logger.getLogger(ConfigurableFunctor.class.getName());
+    private final Logger log;
     private final T target;
 
-    ConfigurableFunctor(T target) {this.target = target;}
+    ConfigurableFunctor(T target) {
+        this.target = target;
+        log = Logger.getLogger(ConfigurableFunctor.class.getName());
+    }
 
     @SuppressWarnings("unchecked")
     public final D put(final R key, final D value) {
