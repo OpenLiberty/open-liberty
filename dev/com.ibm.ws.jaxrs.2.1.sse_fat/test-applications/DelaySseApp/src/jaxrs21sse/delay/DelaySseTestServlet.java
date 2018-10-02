@@ -59,7 +59,7 @@ public class DelaySseTestServlet extends FATServlet {
 
         final List<String> receivedEvents = new ArrayList<String>();
         final List<String> eventSourceTimes = new ArrayList<String>();
-        final CountDownLatch executionLatch = new CountDownLatch(4);
+        final CountDownLatch executionLatch = new CountDownLatch(2);
 
         Client client = ClientBuilder.newClient();
         int port = req.getServerPort();
@@ -102,7 +102,7 @@ public class DelaySseTestServlet extends FATServlet {
             source.open();
             System.out.println("DelaySseTestServlet:  client source open");
 
-            boolean success = executionLatch.await(300, TimeUnit.SECONDS);
+            boolean success = executionLatch.await(120, TimeUnit.SECONDS);
             if (!success) {
                 for (String re : receivedEvents) {
                     int i = 0;
@@ -125,19 +125,7 @@ public class DelaySseTestServlet extends FATServlet {
         assertEquals("Received an unexpected number of events", 2, receivedEvents.size());
         assertEquals("Unexpected results", "Retry Test Successful", receivedEvents.get(0));
         assertEquals("Unexpected results", "Reset Test Successful", receivedEvents.get(1));
-        assertEquals("Unexpected time results", "3", eventSourceTimes.get(0));
-        // Second time is from an HTTP Date.  Converting from seconds to ms may result in variations that
-        // we will need to account for.
-        long time = Long.valueOf(eventSourceTimes.get(1));
-        boolean goodTime = false;
-        if (time >= 8000) {
-            goodTime = true;
-        } else {
-            System.out.println("DelaySseTestServlet:  eventSource time was less than 8 seconds:  " + time);
-        }
-        assertTrue("Incorrect Delay time less than 8 seconds", goodTime);
-        assertEquals("Unexpected time results", "5000", eventSourceTimes.get(2));
-        assertEquals("Unexpected time results", "-1", eventSourceTimes.get(3));
+        assertEquals("Unexpected time results", "5000", eventSourceTimes.get(0));
     }
 
 }
