@@ -24,4 +24,5 @@ Export-Package: com.ibm.websphere.logging.hpel,com.ibm.websphere.logging.hpel.re
 publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
-	com.ibm.ws.logging.hpel;version=latest
+	com.ibm.ws.logging.hpel;version=latest, \
+	com.ibm.ws.logging.core;version=latest
