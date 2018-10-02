@@ -64,6 +64,7 @@ public class WSKeyStoreTest {
         public String resolveString(String path) {
             return locMgr.resolveString(path);
         }
+
     };
 
     // Test double that always throws java.io.Exception to test error handling and messages.
@@ -111,14 +112,18 @@ public class WSKeyStoreTest {
             storeconfig.put("provider", providerName);
         }
 
-        final File testKeyFile = new File("test/files/testKey.p12");
+        final File testKeyFileP12 = new File("test/files/testKey.p12");
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
 
         mock.checking(new Expectations() {
             {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
                 one(locMgr).resolveString("testKey.p12");
-                will(returnValue(testKeyFile.getAbsolutePath()));
-                one(locMgr).resolveString(testKeyFile.getAbsolutePath());
-                will(returnValue(testKeyFile.getAbsolutePath()));
+                will(returnValue(testKeyFileP12.getAbsolutePath()));
+                one(locMgr).resolveString(testKeyFileP12.getAbsolutePath());
+                will(returnValue(testKeyFileP12.getAbsolutePath()));
             }
         });
 
@@ -147,14 +152,18 @@ public class WSKeyStoreTest {
         props.put("location", "testKey.p12");
         props.put("type", "PKCS12");
 
-        final File testKeyFile = new File("test/files/testKey.p12");
+        final File testKeyFileP12 = new File("test/files/testKey.p12");
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
 
         mock.checking(new Expectations() {
             {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
                 one(locMgr).resolveString("testKey.p12");
-                will(returnValue(testKeyFile.getAbsolutePath()));
-                one(locMgr).resolveString(testKeyFile.getAbsolutePath());
-                will(returnValue(testKeyFile.getAbsolutePath()));
+                will(returnValue(testKeyFileP12.getAbsolutePath()));
+                one(locMgr).resolveString(testKeyFileP12.getAbsolutePath());
+                will(returnValue(testKeyFileP12.getAbsolutePath()));
             }
         });
 
@@ -164,6 +173,8 @@ public class WSKeyStoreTest {
         assertEquals("mytestpassword", keystore.getProperty("com.ibm.ssl.keyStorePassword"));
         assertTrue(keystore.getProperty("com.ibm.ssl.keyStore").endsWith("testKey.p12"));
         assertEquals("PKCS12", keystore.getProperty("com.ibm.ssl.keyStoreType"));
+        assertEquals("false", keystore.getProperty("com.ibm.ssl.keyStoreInitializeAtStartup"));
+
     }
 
     /**
@@ -180,11 +191,16 @@ public class WSKeyStoreTest {
         final String defaultFileName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
         final File projectBuild = new File("../com.ibm.ws.ssl/build/tmp/key.p12");
 
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
         mock.checking(new Expectations() {
             {
                 // default location (containing symbol) would get an absolute file back
                 // there should be no other calls to resolve string once an absolute path
                 // is returned.
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
                 one(locMgr).resolveString(defaultFileName);
                 will(returnValue(projectBuild.getAbsolutePath()));
                 one(locMgr).resolveString(LibertyConstants.DEFAULT_OUTPUT_LOCATION);
@@ -211,6 +227,16 @@ public class WSKeyStoreTest {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
 
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
+        mock.checking(new Expectations() {
+            {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+            }
+        });
+
         try {
             new WSKeyStore(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, props, testConfigService);
             fail("Expecting an exception");
@@ -227,6 +253,16 @@ public class WSKeyStoreTest {
     public void missingPasswordForDefaultKeyStore() throws Exception {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
+
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
+        mock.checking(new Expectations() {
+            {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+            }
+        });
 
         try {
             new WSKeyStore(LibertyConstants.DEFAULT_KEYSTORE_REF_ID, props, testConfigService);
@@ -246,6 +282,16 @@ public class WSKeyStoreTest {
         props.put("id", "testKeyStore");
         props.put("type", "PKCS12");
         props.put("password", "mytestpassword");
+
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
+        mock.checking(new Expectations() {
+            {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+            }
+        });
 
         try {
             new WSKeyStore("testKeyStore", props, testConfigService);
@@ -267,6 +313,16 @@ public class WSKeyStoreTest {
         props.put("id", "testKeyStore");
         props.put("location", "key.p12");
         props.put("password", "mytestpassword");
+
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
+        mock.checking(new Expectations() {
+            {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+            }
+        });
 
         try {
             new WSKeyStore("testKeyStore", props, testConfigService);
@@ -290,6 +346,16 @@ public class WSKeyStoreTest {
         props.put("location", "safkeyring:///doesNotExist");
         props.put("type", "JCERACFKS");
         props.put("fileBased", Boolean.FALSE);
+
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
+        mock.checking(new Expectations() {
+            {
+                one(locMgr).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+            }
+        });
 
         try {
             new WSKeyStoreTestDouble("safKeyringThatDoesNotExist", props, testConfigService);

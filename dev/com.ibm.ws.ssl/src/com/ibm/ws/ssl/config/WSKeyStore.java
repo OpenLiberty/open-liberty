@@ -255,7 +255,8 @@ public class WSKeyStore extends Properties {
             }
         } else {
             // this is not the default keystore, but a location has been specified.  If the keystore is a JKS or JCEKS type, set the type to JKS
-            if (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS) || this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JCEKS)) {
+            if (this.location != null
+                && (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS) || this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JCEKS))) {
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
                 this.type = Constants.KEYSTORE_TYPE_JKS;
             }

@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -175,8 +176,14 @@ public class KeystoreConfigTest {
         props.put("id", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
         props.put(LibertyConstants.KEY_KEYSTORE_LOCATION, "someBadLoc");
 
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
         mock.checking(new Expectations() {
             {
+                one(locSrv).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+
                 one(locSrv).resolveString("someBadLoc");
                 will(returnValue("key.p12"));
             }
@@ -256,6 +263,16 @@ public class KeystoreConfigTest {
      */
     @Test
     public void updateRegistration_registeredWithProps() {
+        final String defaultKeyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File defaultKeyStoreJKS = new File(defaultKeyStore);
+
+        mock.checking(new Expectations() {
+            {
+                one(locSrv).resolveString(defaultKeyStore);
+                will(returnValue(defaultKeyStoreJKS.getAbsolutePath()));
+            }
+        });
+
         ksConfig = new KeystoreConfig(null, null, locSrvRef);
 
         ksConfig.updateKeystoreConfig(props);
