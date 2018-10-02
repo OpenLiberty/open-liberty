@@ -3,6 +3,9 @@ symbolicName=com.ibm.websphere.appserver.javax.annotation-1.3
 singleton=true
 IBM-Process-Types: server, \
  client
--bundles=com.ibm.websphere.javaee.annotation.1.3; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.annotation:javax.annotation-api:1.3.2"
+-features=\
+  com.ibm.websphere.appserver.javaeeCompatible-8.0
+-bundles=\
+  com.ibm.websphere.javaee.annotation.1.3; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.annotation:javax.annotation-api:1.3.2"
 kind=ga
 edition=core
