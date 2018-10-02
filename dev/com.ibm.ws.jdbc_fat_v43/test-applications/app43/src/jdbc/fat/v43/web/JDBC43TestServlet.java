@@ -431,6 +431,111 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
+     * Supply invalid sharding key to the setShardingKeyIfValid methods and verify that the
+     * method returns false and the sharding keys are not set.
+     */
+    @Test
+    public void testInvalidShardingKey() throws Exception {
+        ShardingKeyBuilder keybuilder1 = unsharableXADataSource.createShardingKeyBuilder();
+        keybuilder1.subkey("ISK1", JDBCType.LONGVARCHAR);
+        ShardingKey validKey1 = keybuilder1.build();
+
+        ShardingKeyBuilder keybuilder2 = unsharableXADataSource.createShardingKeyBuilder();
+        keybuilder2.subkey("ISK2", JDBCType.LONGNVARCHAR);
+        ShardingKey validKey2 = keybuilder2.build();
+
+        ShardingKeyBuilder keybuilder3 = unsharableXADataSource.createShardingKeyBuilder();
+        keybuilder3.subkey("ISK3", JDBCType.OTHER);
+        ShardingKey validKey3 = keybuilder3.build();
+
+        keybuilder1.subkey("INVALID", JDBCType.BOOLEAN); // Mock JDBC driver will consider this key invalid due to this subkey
+        ShardingKey invalidKey = keybuilder1.build();
+
+        String k;
+
+        ConnectionBuilder conbuilder = unsharableXADataSource.createConnectionBuilder();
+        Connection con = conbuilder.shardingKey(validKey1).superShardingKey(validKey2).build();
+        try {
+            assertFalse(con.setShardingKeyIfValid(invalidKey, 101));
+
+            // values must not change
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGVARCHAR:ISK1;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+
+            assertFalse(con.setShardingKeyIfValid(invalidKey, validKey3, 102));
+
+            // values must not change
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGVARCHAR:ISK1;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+
+            assertFalse(con.setShardingKeyIfValid(validKey3, invalidKey, 103));
+
+            // values must not change
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGVARCHAR:ISK1;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+
+            assertFalse(con.setShardingKeyIfValid(invalidKey, invalidKey, 104));
+
+            // values must not change
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGVARCHAR:ISK1;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+
+            assertFalse(con.setShardingKeyIfValid(null, invalidKey, 105));
+
+            // values must not change
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGVARCHAR:ISK1;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+
+            assertFalse(con.setShardingKeyIfValid(invalidKey, null, 106));
+
+            // values must not change
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGVARCHAR:ISK1;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+
+            assertTrue(con.setShardingKeyIfValid(validKey3, 107));
+
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|OTHER:ISK3;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+
+            assertTrue(con.setShardingKeyIfValid(validKey2, validKey1, 108));
+
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGNVARCHAR:ISK2;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|LONGVARCHAR:ISK1;"));
+
+            assertTrue(con.setShardingKeyIfValid(validKey3, null, 109));
+
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|OTHER:ISK3;"));
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertNull(k);
+
+            assertTrue(con.setShardingKeyIfValid(null, 110));
+            k = con.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertNull(k);
+            k = con.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertNull(k);
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
      * Tests that the new JDBC 4.3 method isSimpleIdentifier is functional when using the default implementations.
      */
     @Test
