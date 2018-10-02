@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -564,15 +565,17 @@ public class InstallKernelMap implements Map {
 
                     RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
                     repoList.add(repo);
-                    for (String feature : featureToInstall) {
-                        if (feature.endsWith(".esa")) {
-                            if (shortNameMap.containsKey(feature)) {
-                                String shortName = shortNameMap.get(feature);
-                                featureToInstall.remove(feature);
-                                featureToInstall.add(shortName);
-                            }
+
+                    List<String> shortNamesToInstall = new ArrayList<String>();
+                    Iterator<String> it = featureToInstall.iterator();
+                    while (it.hasNext()) {
+                        String feature = it.next();
+                        if (feature.endsWith(".esa") && shortNameMap.containsKey(feature)) {
+                            it.remove();
+                            shortNamesToInstall.add(shortNameMap.get(feature));
                         }
                     }
+                    featureToInstall.addAll(shortNamesToInstall);
                 }
             } catch (NullPointerException e) {
                 data.put(ACTION_RESULT, ERROR);
