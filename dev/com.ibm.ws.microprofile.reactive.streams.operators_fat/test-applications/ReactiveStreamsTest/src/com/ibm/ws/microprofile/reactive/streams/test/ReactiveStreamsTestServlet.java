@@ -14,8 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
+import java.util.ServiceLoader;
 import java.util.function.Function;
 
+import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.reactive.streams.GraphAccessor;
@@ -24,6 +26,7 @@ import org.eclipse.microprofile.reactive.streams.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.ReactiveStreams;
 import org.eclipse.microprofile.reactive.streams.SubscriberBuilder;
 import org.eclipse.microprofile.reactive.streams.spi.Graph;
+import org.eclipse.microprofile.reactive.streams.spi.ReactiveStreamsEngine;
 import org.eclipse.microprofile.reactive.streams.spi.Stage;
 import org.junit.Test;
 import org.reactivestreams.Subscriber;
@@ -38,9 +41,15 @@ import componenttest.app.FATServlet;
 public class ReactiveStreamsTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
+    @Inject
+    ReactiveStreamsEngine engine1;
+
     String value = "v";
     String expectedValue = "v";
 
+    /*
+     * A very simple test that accesses some of the SPI
+     */
     @Test
     public void builderShouldBeImmutable() {
         ProcessorBuilder<Integer, Integer> builder = builder();
@@ -52,6 +61,9 @@ public class ReactiveStreamsTestServlet extends FATServlet {
         getAddedStage(Stage.Cancel.class, GraphAccessor.buildGraphFor(cancelled));
     }
 
+    /*
+     * Another simple test that plumbs a list to Subscriber
+     */
     @Test
     public void helloReactiveWorld() {
 
@@ -87,6 +99,26 @@ public class ReactiveStreamsTestServlet extends FATServlet {
 
         data.via(filter).to(console).run();
 
+    }
+
+    /**
+     * A simple test that checks that user code can
+     *
+     * @Inject a ReactiveStreamsEngine
+     */
+    @Test
+    public void injectReactiveStreamsEngineTest() {
+        assertTrue("Reactive Streams Engine has been injected as null", engine1 != null);
+    }
+
+    /**
+     * A simple test that checks that user code can
+     * SericeLoader.load a ReactiveStreamsEngine
+     */
+    @Test
+    public void serviceLoadReactiveStreamsEngineTest() {
+        Iterator<ReactiveStreamsEngine> engines = ServiceLoader.load(ReactiveStreamsEngine.class).iterator();
+        assertTrue("Reactive Streams Engine has been injected as null", engines.hasNext());
     }
 
     private ProcessorBuilder<Integer, Integer> builder() {
