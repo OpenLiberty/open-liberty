@@ -62,6 +62,7 @@ import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.asset.SubsytemEntry;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.HashUtils;
 import com.ibm.ws.kernel.feature.internal.subsystem.SubsystemFeatureDefinitionImpl;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
@@ -69,7 +70,6 @@ import com.ibm.ws.kernel.provisioning.ProductExtension;
 import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
 import com.ibm.ws.product.utility.CommandConsole;
 import com.ibm.ws.repository.common.enums.ResourceType;
-import com.ibm.ws.repository.common.enums.Visibility;
 import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
 import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.exceptions.RepositoryBackendException;
@@ -1068,6 +1068,11 @@ public class InstallUtils {
     public static String getEditionName(String editionCode) {
 
         String editionCodeUpperCase = editionCode.toUpperCase();
+
+        if (editionCodeUpperCase.equals("OPEN")) {
+
+        }
+
         if (editionCodeUpperCase.equals("BASE"))
             return "";
         else if (editionCodeUpperCase.equals("BASE_ILAN"))
@@ -1092,6 +1097,16 @@ public class InstallUtils {
             return editionCode;
         }
 
+    }
+
+    public static String getEditionName(File installRoot, String editionCode) {
+
+        String editionCodeUpperCase = editionCode.toUpperCase();
+
+        if (editionCodeUpperCase.equals("OPEN")) {
+            editionCodeUpperCase = new Product(installRoot).getProductEdition().toUpperCase();
+        }
+        return getEditionName(editionCodeUpperCase);
     }
 
     public static boolean containsIgnoreCase(Collection<String> assetNames, String name) {

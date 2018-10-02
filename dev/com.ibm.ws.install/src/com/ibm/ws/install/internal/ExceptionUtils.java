@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
+import com.ibm.ws.install.repository.RepositoryException;
 import com.ibm.ws.install.repository.download.RepositoryDownloadUtil;
 import com.ibm.ws.kernel.productinfo.DuplicateProductInfoException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
@@ -39,7 +40,6 @@ import com.ibm.ws.repository.connections.RepositoryConnection;
 import com.ibm.ws.repository.connections.RestRepositoryConnectionProxy;
 import com.ibm.ws.repository.exceptions.RepositoryBackendException;
 import com.ibm.ws.repository.exceptions.RepositoryBackendIOException;
-import com.ibm.ws.repository.exceptions.RepositoryException;
 import com.ibm.ws.repository.exceptions.RepositoryResourceException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException.MissingRequirement;
@@ -511,7 +511,7 @@ public class ExceptionUtils {
 
                 @SuppressWarnings("unchecked")
                 List<String> editions = (List<String>) params[matchEdition];
-                String edition = InstallUtils.getEditionName((String) params[productEdition]);
+                String edition = InstallUtils.getEditionName(installDir, (String) params[productEdition]);
                 StringBuilder applicableProducts = new StringBuilder();
                 applicableProducts.append(InstallUtils.NEWLINE);
 
