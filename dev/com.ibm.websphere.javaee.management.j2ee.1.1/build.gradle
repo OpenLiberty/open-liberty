@@ -14,7 +14,7 @@ plugins {
 }
 
 audit {
-    failOnError = false
+    failOnError = true
 }
 
 // This task no longer runs as part of the build, since rmic -iiop was removed in JDK 11 we now check in the generate java stubs

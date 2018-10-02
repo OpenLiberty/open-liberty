@@ -14,7 +14,7 @@ plugins {
 }
 
 audit {
-    failOnError = false
+    failOnError = true
 }
 
 import org.apache.tools.ant.filters.HeadFilter

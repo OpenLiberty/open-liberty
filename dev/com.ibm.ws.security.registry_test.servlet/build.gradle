@@ -14,7 +14,7 @@ plugins {
 }
 
 audit {
-    failOnError = false
+    failOnError = true
 }
 
 apply plugin: 'war'
