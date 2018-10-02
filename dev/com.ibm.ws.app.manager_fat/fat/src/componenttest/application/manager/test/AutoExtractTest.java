@@ -134,6 +134,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             con.disconnect();
 
             // remove file
+            server.setMarkToEndOfLog();
 
             boolean deleted = deleteFile(server.getMachine(),
                                          server.getServerRoot() + "/" + DROPINS_DIR + "/testWarApplication.war");
@@ -162,6 +163,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             //if we failed to delete file before, try to delete it now.
             pathsToCleanup.add(server.getServerRoot() + "/" + DROPINS_DIR);
             server.removeAllInstalledAppsForValidation();
+            server.stopServer(COULD_NOT_FIND_APP_WARNING);
         }
 
     }
