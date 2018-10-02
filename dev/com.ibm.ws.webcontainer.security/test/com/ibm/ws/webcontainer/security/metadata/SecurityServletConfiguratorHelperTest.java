@@ -218,11 +218,17 @@ public class SecurityServletConfiguratorHelperTest {
 
                 one(webAnnotations).getInfoStore();
                 will(returnValue(infoStore));
+                allowing(webAnnotations).openInfoStore();
+                allowing(webAnnotations).closeInfoStore();
 
-                allowing(infoStore).getDelayableClassInfo("FooClass");
+                allowing(webAnnotations).getClassInfo("FooClass");
                 will(returnValue(classInfo));
+
                 allowing(classInfo).getSuperclassName();
                 will(returnValue("javax.ws.rs.core.Application"));
+                allowing(classInfo).isInstanceOf("javax.ws.rs.core.Application");
+                will(returnValue(true));
+
                 one(classInfo).getAnnotation(annoName);
                 will(returnValue(annoInfo));
                 one(annoInfo).getValue("authMethod");
@@ -1461,6 +1467,8 @@ public class SecurityServletConfiguratorHelperTest {
                 will(returnValue(fragmentAnnotationsMock));
                 one(fragmentAnnotationsMock).selectAnnotatedClasses(DeclareRoles.class);
                 will(returnValue(annotatedClasses));
+                allowing(webAnnotationsMock).openInfoStore();
+                allowing(webAnnotationsMock).closeInfoStore();
                 one(webAnnotationsMock).getClassInfo(className);
                 will(returnValue(classInfo));
                 one(classInfo).getAnnotation(DeclareRoles.class);
