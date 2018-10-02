@@ -44,7 +44,7 @@ import java.security.PrivilegedAction;
  * @author Jacob Hookom
  * @author Roland Huss
  * @author Ales Justin (ales.justin@jboss.org)
- * @version $Id: Classpath.java 1368982 2012-08-03 14:33:13Z lu4242 $
+ * @version $Id$
  */
 public final class Classpath
 {
