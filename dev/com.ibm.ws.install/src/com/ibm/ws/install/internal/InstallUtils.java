@@ -1065,14 +1065,19 @@ public class InstallUtils {
         return null;
     }
 
-    public static String getEditionName(String editionCode) {
+    public static String getEditionName(File installRoot, String editionCode) {
 
         String editionCodeUpperCase = editionCode.toUpperCase();
 
         if (editionCodeUpperCase.equals("OPEN")) {
-
+            editionCodeUpperCase = new Product(installRoot).getProductEdition().toUpperCase();
         }
+        return getEditionName(editionCodeUpperCase);
+    }
 
+    public static String getEditionName(String editionCode) {
+
+        String editionCodeUpperCase = editionCode.toUpperCase();
         if (editionCodeUpperCase.equals("BASE"))
             return "";
         else if (editionCodeUpperCase.equals("BASE_ILAN"))
@@ -1097,16 +1102,6 @@ public class InstallUtils {
             return editionCode;
         }
 
-    }
-
-    public static String getEditionName(File installRoot, String editionCode) {
-
-        String editionCodeUpperCase = editionCode.toUpperCase();
-
-        if (editionCodeUpperCase.equals("OPEN")) {
-            editionCodeUpperCase = new Product(installRoot).getProductEdition().toUpperCase();
-        }
-        return getEditionName(editionCodeUpperCase);
     }
 
     public static boolean containsIgnoreCase(Collection<String> assetNames, String name) {
