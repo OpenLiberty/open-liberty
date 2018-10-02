@@ -15,8 +15,6 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/appClientAdvanced.jar,\
-	test-applications/appClientSecurity.jar,\
 	test-applications/beanManagerLookupApp.war/src,\
 	test-applications/cdi12helloworldtest.war/src,\
 	test-applications/HelloAppClient.jar/src,\
