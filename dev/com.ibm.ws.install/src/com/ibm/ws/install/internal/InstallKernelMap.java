@@ -604,6 +604,7 @@ public class InstallKernelMap implements Map {
                     if (license != null && !(license.startsWith(LICENSE_EPL_PREFIX) || license.startsWith(LICENSE_FEATURE_TERMS_PREFIX))) {
                         Boolean accepted = (Boolean) data.get(LICENSE_ACCEPT);
                         if (accepted == null || !accepted) {
+                            featuresResolved.clear(); // clear the result since the licenses were not accepted
                             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
                         }
                     }
@@ -636,6 +637,10 @@ public class InstallKernelMap implements Map {
             data.put(ACTION_ERROR_MESSAGE, ie.toString());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
         } catch (InstallException e) {
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        } catch (RepositoryException e) {
             data.put(ACTION_RESULT, ERROR);
             data.put(ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
