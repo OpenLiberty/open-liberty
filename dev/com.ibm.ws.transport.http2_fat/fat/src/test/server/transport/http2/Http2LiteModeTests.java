@@ -149,10 +149,11 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testHeaderAndDataPost() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Currently in Http2FullTracingTests
+    //@Test
+    //public void testHeaderAndDataPost() throws Exception {
+    //    runTest(defaultServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage: Client sends two HTTP/2 Requests on two HTTP/2 Streams.

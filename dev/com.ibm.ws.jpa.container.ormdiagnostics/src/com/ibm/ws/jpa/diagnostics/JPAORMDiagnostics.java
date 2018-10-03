@@ -17,6 +17,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.spi.PersistenceUnitInfo;
@@ -28,7 +29,10 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.EntityMappingsScannerResults
 import com.ibm.ws.jpa.diagnostics.ormparser.EntityMappingsDefinition;
 import com.ibm.ws.jpa.diagnostics.ormparser.entitymapping.IEntityMappings;
 import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScanner;
+import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScanner2;
+import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScannerException;
 import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScannerResults;
+import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScannerResults2;
 import com.ibm.ws.jpa.diagnostics.utils.encapsulation.EncapsulatedData;
 import com.ibm.ws.jpa.diagnostics.utils.encapsulation.EncapsulatedDataGroup;
 
@@ -48,6 +52,22 @@ public class JPAORMDiagnostics {
                                                                                   return Boolean.getBoolean("com.ibm.websphere.persistence.enablejpadump");
                                                                               }
                                                                           });
+
+    public static PersistenceUnitScannerResults2 performJPAORMDiagnostics(List<PersistenceUnitInfo> puiList, HashMap<URL, String> pxmlMap, PrintWriter out) {
+        if (puiList == null || pxmlMap == null || out == null || puiList.isEmpty() || pxmlMap.isEmpty()) {
+            return null;
+        }
+
+        try {
+            PersistenceUnitScannerResults2 results = PersistenceUnitScanner2.scan(puiList, pxmlMap);
+            results.printReport(out);
+            results.generateORMDump(out);
+            return results;
+        } catch (PersistenceUnitScannerException e) {
+            FFDCFilter.processException(e, JPAORMDiagnostics.class.getName() + ".performJPAORMDiagnostics", "64");
+            return null;
+        }
+    }
 
     public static void writeJPAORMDiagnostics(PersistenceUnitInfo pui, InputStream pxmlIS, PrintWriter out) {
         if (jpaDumpEnabled == false || pui == null || out == null) {

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -64,7 +64,7 @@ public class ClientConstants {
     public final static String RESPONSEMAP_CODE = "RESPONSEMAP_CODE";
     public final static String RESPONSEMAP_METHOD = "RESPONSEMAP_METHOD";
     public final static String AUTHORIZATION = "Authorization";
-    public final static String BEARER = "bearer ";
+    public final static String BEARER = "Bearer ";
     public final static List<String> primaryKeys = Arrays.asList(new String[] { JTI, SUB, SCOPE, CLIENT_ID, CID, GRANT_TYPE,
             USER_ID, USER_NAME, EMAIL, IAT, EXP, ISS, AUD });
     public final static String METHOD_BASIC = "basic";

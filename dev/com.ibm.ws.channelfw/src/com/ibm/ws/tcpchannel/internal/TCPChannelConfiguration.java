@@ -285,9 +285,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                     if (key.equalsIgnoreCase(ACCEPT_THREAD)) {
                         // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = ValidateUtils.ACCEPT_THREAD_MIN;
-                        maxValue = ValidateUtils.ACCEPT_THREAD_MAX;
+                        keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                         this.acceptThread = convertBooleanValue(value);
                         result = ValidateUtils.VALIDATE_OK;
 
@@ -301,9 +299,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                     if (key.equalsIgnoreCase(WAIT_TO_ACCEPT)) {
                         // convert and check
-                        keyType = ValidateUtils.KEY_TYPE_INT;
-                        minValue = ValidateUtils.ACCEPT_THREAD_MIN;
-                        maxValue = ValidateUtils.ACCEPT_THREAD_MAX;
+                        keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                         this.waitToAccept = convertBooleanValue(value);
                         result = ValidateUtils.VALIDATE_OK;
 
@@ -359,6 +355,18 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     }
 
                     if (key.equalsIgnoreCase(NAME_INC_LIST)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(WAIT_TO_ACCEPT)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(ACCEPT_THREAD)) {
                         //This is a valid configuration option but outbound channels do not use it
                         //Adding this prevents a message from being output saying it's invalid
                         continue;
@@ -723,7 +731,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                 if (key.equalsIgnoreCase(ACCEPT_THREAD)) {
                     // convert and check
-                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                     oldBool = this.acceptThread;
                     if (convertBooleanValue(value) != oldBool) {
                         result = ValidateUtils.VALIDATE_NOT_EQUAL;
@@ -733,7 +741,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
                 if (key.equalsIgnoreCase(WAIT_TO_ACCEPT)) {
                     // convert and check
-                    keyType = ValidateUtils.KEY_TYPE_INT;
+                    keyType = ValidateUtils.KEY_TYPE_BOOLEAN;
                     oldBool = this.waitToAccept;
                     if (convertBooleanValue(value) != oldBool) {
                         result = ValidateUtils.VALIDATE_NOT_EQUAL;

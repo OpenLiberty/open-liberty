@@ -97,11 +97,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
     Boolean defaultReadOnly;
     Map<String, Class<?>> defaultTypeMap;
     String defaultSchema;
-    Object defaultShardingKey;
-    Object defaultSuperShardingKey;
     int defaultNetworkTimeout;
-
-    Properties oracleProperties; // parameter to the OracleDataSource.getConnection(Properties) method  
 
     GSSName gssName; // used to compare if identities are different
     GSSCredential gssCredential; // used to reset identity on the connection
@@ -146,21 +142,6 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "ConnectionRequestInfo created", this); 
-    }
-
-    /**
-     * Construct a connection request that is used for
-     * oracle.jdbc.pool.OracleDataSource.getConnection(Properties)
-     * 
-     * This special type of connection request can only be made when WAS connection pooling is
-     * disabled, so we aren't concerned with matching.
-     * 
-     * @param isolationLevel the transaction isolation level.
-     * @param props parameter to the method.
-     */
-    public WSConnectionRequestInfoImpl(int isolationLevel, Properties props) {
-        ivIsoLevel = isolationLevel;
-        oracleProperties = props;
     }
 
     /**
@@ -394,14 +375,6 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
     }
 
     /**
-     * @return the oracle properties parameter to OracleDataSource.getConnection(properties),
-     *         or NULL if this is not a request for getConnection(properties)
-     */
-    public final Properties getOracleProperties() {
-        return oracleProperties;
-    }
-
-    /**
      * @return relevant FFDC information for this class, formatted as a String array.
      */
     public String[] introspectSelf() {
@@ -423,7 +396,6 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
         info.append("Support isolation switching on connection:", supportIsolvlSwitching); 
         info.append("gssName = ").append(gssName == null ? null : gssName.toString()); 
         info.append("gssCredential = ").append(gssCredential == null ? null : gssCredential.toString()); 
-        info.append("oracle properties = ").append(oracleProperties == null ? null : oracleProperties.toString()); 
 
         return info.toStringArray();
     }
@@ -447,6 +419,14 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
     public final boolean isReconfigurable(WSConnectionRequestInfoImpl cri, boolean reauth) 
     {
         // The CRI is only reconfigurable if all fields which cannot be changed already match.
+        // Although sharding keys can sometimes be changed via connection.setShardingKey,
+        // the spec does not guarantee that this method will allow all sharding keys
+        // (even ones that are known to be valid) to be set on any connection.  It leaves open
+        // the possibility that the JDBC driver implementation can decide not to allow switching
+        // between certain sharding keys.  Given that we don't have any way of knowing in
+        // advance that a switching will be accepted (without preemptively trying to change it),
+        // we must consider sharding keys to be non-reconfigurable for the purposes of
+        // selecting a connection from the pool.
 
         if (reauth) 
         {
@@ -454,6 +434,8 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
         } else {
             return match(ivUserName, cri.ivUserName) &&
                    match(ivPassword, cri.ivPassword) &&
+                   match(ivShardingKey, cri.ivShardingKey) &&
+                   match(ivSuperShardingKey, cri.ivSuperShardingKey) &&
                    ivConfigID == cri.ivConfigID;
         }
 
@@ -490,7 +472,6 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
                     result = (hasIsolationLevelOnly && wscri.hasIsolationLevelOnly) ||
                                                     (match(ivUserName, wscri.ivUserName) &&
                                                      match(ivPassword, wscri.ivPassword) &&
-                                                     match(oracleProperties, wscri.oracleProperties) &&
                                                      match(ivShardingKey, wscri.ivShardingKey) &&
                                                      match(ivSuperShardingKey, wscri.ivSuperShardingKey) &&
                                                      matchKerberosIdentities(wscri) && 
@@ -508,9 +489,8 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
                              (hashcode == wscri.hashcode && // shortcut for detecting inequality 
                               match(ivUserName, wscri.ivUserName) &&
                               match(ivPassword, wscri.ivPassword) &&
-                              match(oracleProperties, wscri.oracleProperties) &&
-                              matchShardingKey(wscri) &&
-                              matchSuperShardingKey(wscri) &&
+                              match(ivShardingKey, wscri.ivShardingKey) &&
+                              match(ivSuperShardingKey, wscri.ivSuperShardingKey) &&
                               matchKerberosIdentities(wscri) && 
                               matchHoldability(wscri) && 
                               matchCatalog(wscri) && 
@@ -669,40 +649,6 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
     }
 
     /**
-     * Determine if the sharding key property matches. It is considered to match if
-     * - Both sharding key values are unspecified.
-     * - Both sharding key values are the same reference or are .equals.
-     * - One of the sharding key values is unspecified and the other CRI requested the default value.
-     * 
-     * @return true if the sharding key values match, otherwise false.
-     */
-    private final boolean matchShardingKey(WSConnectionRequestInfoImpl cri) {
-        // At least one of the CRIs should know the default value.
-        Object defaultValue = defaultShardingKey == null ? cri.defaultShardingKey : defaultShardingKey;
-
-        return match(ivShardingKey, cri.ivShardingKey)
-               || ivShardingKey == null && match(defaultValue, cri.ivShardingKey)
-               || cri.ivShardingKey == null && match(ivShardingKey, defaultValue);
-    }
-
-    /**
-     * Determine if the super sharding key property matches. It is considered to match if
-     * - Both super sharding key values are unspecified.
-     * - Both super sharding key values are the same reference or are .equals.
-     * - One of the super sharding key values is unspecified and the other CRI requested the default value.
-     * 
-     * @return true if the sharding key values match, otherwise false.
-     */
-    private final boolean matchSuperShardingKey(WSConnectionRequestInfoImpl cri) {
-        // At least one of the CRIs should know the default value.
-        Object defaultValue = defaultSuperShardingKey == null ? cri.defaultSuperShardingKey : defaultSuperShardingKey;
-
-        return match(ivSuperShardingKey, cri.ivSuperShardingKey)
-               || ivSuperShardingKey == null && match(defaultValue, cri.ivSuperShardingKey)
-               || cri.ivSuperShardingKey == null && match(ivSuperShardingKey, defaultValue);
-    }
-
-    /**
      * Determine if the type map property matches. It is considered to match if
      * - Both type map values are unspecified.
      * - Both type map values are the same value.
@@ -754,19 +700,15 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
      * @param typeMap the default type map value, or NULL if not supported.
      * @param schema the default schema value, or NULL if not supported.
      * @param networkTimeout the default network timeout.
-     * @param shardingKey the default sharding key, always NULL for now because the spec does not include a getter. Also NULL if not supported. 
-     * @param superShardingKey the default super sharding key, always NULL for now because the spec does not include a getter. Also NULL if not supported.
      */
     public void setDefaultValues(String catalog, int holdability, Boolean readOnly, Map<String, Class<?>> typeMap,
-                                 String schema, int networkTimeout, Object shardingKey, Object superShardingKey) {
+                                 String schema, int networkTimeout) {
         defaultCatalog = catalog;
         defaultHoldability = holdability;
         defaultReadOnly = readOnly;
         defaultTypeMap = typeMap;
         defaultSchema = schema;
         defaultNetworkTimeout = networkTimeout;
-        defaultShardingKey = shardingKey;
-        defaultSuperShardingKey = superShardingKey;
     }
 
     /**
@@ -791,13 +733,9 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
         if (defaultSchema != null)
             sb.append(" / ").append(defaultSchema);
 
-        sb.append(lineSeparator).append("  ShardingKey/default   = ").append(ivShardingKey);
-        if (defaultShardingKey != null)
-            sb.append(" / ").append(defaultShardingKey);
+        sb.append(lineSeparator).append("  ShardingKey           = ").append(ivShardingKey);
 
-        sb.append(lineSeparator).append("  SuperShardingKey/def  = ").append(ivSuperShardingKey);
-        if (defaultSuperShardingKey != null)
-            sb.append(" / ").append(defaultSuperShardingKey);
+        sb.append(lineSeparator).append("  SuperShardingKey      = ").append(ivSuperShardingKey);
 
         sb.append(lineSeparator).append("  NetworkTimeout/default= ").append(ivNetworkTimeout);
         sb.append(" / ").append(defaultNetworkTimeout);
@@ -822,8 +760,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
         sb.append(lineSeparator).append("  ConfigID              = ").append(ivConfigID) 
           .append(lineSeparator).append("  Isolation             = ")
           .append(AdapterUtil.getIsolationLevelString(ivIsoLevel))
-          .append(lineSeparator).append("  Isolation switching?    ").append(supportIsolvlSwitching) 
-          .append(lineSeparator).append("  oracle props          = ").append(oracleProperties);
+          .append(lineSeparator).append("  Isolation switching?    ").append(supportIsolvlSwitching);
         return new String(sb);
     }
 
@@ -1079,8 +1016,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
 
         connInfo.setDefaultValues(oldCRI.defaultCatalog, oldCRI.defaultHoldability, 
                                   oldCRI.defaultReadOnly, oldCRI.defaultTypeMap, oldCRI.defaultSchema,
-                                  oldCRI.defaultNetworkTimeout, oldCRI.defaultShardingKey, oldCRI.defaultSuperShardingKey);
-        connInfo.oracleProperties = oldCRI.oracleProperties; 
+                                  oldCRI.defaultNetworkTimeout);
         connInfo.markAsChangable();
 
         return connInfo;

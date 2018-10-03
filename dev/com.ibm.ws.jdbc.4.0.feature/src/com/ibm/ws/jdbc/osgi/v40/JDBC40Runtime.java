@@ -22,6 +22,11 @@ import java.sql.Statement;
 import java.util.concurrent.Executor;
 
 import javax.resource.spi.ConnectionManager;
+import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
+import javax.sql.PooledConnection;
+import javax.sql.XAConnection;
+import javax.sql.XADataSource;
 
 import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
@@ -29,6 +34,7 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
+import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcCallableStatement;
@@ -127,6 +133,21 @@ public class JDBC40Runtime implements JDBCRuntimeVersion {
 
     @Override
     public int doGetNetworkTimeout(Connection sqlConn) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Connection buildConnection(DataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public PooledConnection buildPooledConnection(ConnectionPoolDataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public XAConnection buildXAConnection(XADataSource ds, String user, String password, WSConnectionRequestInfoImpl cri) throws SQLException {
         throw new SQLFeatureNotSupportedException();
     }
 

@@ -72,14 +72,7 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
             result = checkMethodConstraints(fci, ma, b, p, s, ho);
         } catch (PrivilegedActionException pae) {
             Tr.error(tc, "JACC_EJB_IMPLIES_FAILURE", new Object[] { contextId, pae.getException() });
-        } finally {
-            try {
-                resetHandlerInfo();
-            } catch (PrivilegedActionException e) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception when resetting setHandler data. Ignore the error : " + e.getException());
-            }
-        }
+        } // Moved resetHandlerInfo to postInvoke.
         return result;
     }
 
@@ -135,18 +128,6 @@ public class EJBSecurityValidatorImpl implements EJBSecurityValidator {
                             }
                         });
         return result.booleanValue();
-    }
-
-    private void resetHandlerInfo() throws PrivilegedActionException {
-        AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Object>()
-        {
-            @Override
-            public Object run() {
-                // resetting the handler info as per spec..
-                PolicyContext.setHandlerData(null);
-                return null;
-            }
-        });
     }
 
     @FFDCIgnore({ NamingException.class, IllegalStateException.class })

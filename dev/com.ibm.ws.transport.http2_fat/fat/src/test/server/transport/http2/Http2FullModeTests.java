@@ -572,10 +572,11 @@ public class Http2FullModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
-    public void testPingFrameBadFlags() throws Exception {
-        runTest(defaultServletPath, testName.getMethodName());
-    }
+    // Moved to Tracing test bucket - build break 258154
+    //@Test
+    //public void testPingFrameBadFlags() throws Exception {
+    //    runTest(defaultServletPath, testName.getMethodName());
+    //}
 
     /**
      * Test Coverage Send a Ping that has the reserve bit set
@@ -899,6 +900,21 @@ public class Http2FullModeTests extends FATServletClient {
      */
     @Test
     public void testPriorityFrameLength4() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Sending a priority frame on an idle stream
+     * Test Outcome: Process all Frames as valid.
+     * Spec Section: 6.3
+     *
+     * Test Notes:
+     * An endpoint MUST NOT send frames other than PRIORITY on a closed stream.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testPriorityFrameOnIdlePushStream() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
 

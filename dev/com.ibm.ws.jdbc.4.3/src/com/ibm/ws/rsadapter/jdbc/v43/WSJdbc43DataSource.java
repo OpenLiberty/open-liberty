@@ -17,17 +17,14 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.ShardingKeyBuilder;
 
 import javax.resource.spi.ConnectionManager;
+import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
 public class WSJdbc43DataSource extends WSJdbcDataSource implements DataSource {
-    private static final TraceComponent tc = Tr.register(WSJdbc43DataSource.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
 
     public WSJdbc43DataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) {
         super(mcf, connMgr);
@@ -40,11 +37,22 @@ public class WSJdbc43DataSource extends WSJdbcDataSource implements DataSource {
 
     @Override
     public ShardingKeyBuilder createShardingKeyBuilder() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        CommonDataSource ds = mcf.getUnderlyingDataSource();
+        if (ds == null) // not available because data source is backed by java.sql.Driver
+            throw new SQLFeatureNotSupportedException("java.sql.Driver.createShardingKeyBuilder");
+        else
+            return ds.createShardingKeyBuilder();
     }
 
     Connection getConnection(WSJdbc43ConnectionBuilder builder) throws SQLException {
         WSConnectionRequestInfoImpl conRequest = new WSConnectionRequestInfoImpl(mcf, cm, builder.user, builder.password, builder.shardingKey, builder.superShardingKey);
         return super.getConnection(conRequest);
+    }
+
+    /**
+     * @return true if the data source is backed by a java.sql.Driver implementation, otherwise false.
+     */
+    final boolean isBackedByDriver() {
+        return mcf.getUnderlyingDataSource() == null;
     }
 }

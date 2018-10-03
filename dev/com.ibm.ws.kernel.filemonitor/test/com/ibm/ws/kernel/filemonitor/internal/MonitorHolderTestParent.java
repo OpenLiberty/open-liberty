@@ -49,14 +49,14 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-import test.utils.TestUtils;
-
 import com.ibm.ws.kernel.filemonitor.internal.MonitorHolder.MonitorState;
 import com.ibm.ws.kernel.filemonitor.internal.scan.ScanningCoreServiceImpl;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
+
+import test.common.SharedOutputManager;
+import test.utils.TestUtils;
 
 /**
  *
@@ -571,7 +571,7 @@ public abstract class MonitorHolderTestParent {
         Set<File> canonicalDeleted = PathUtils.getFixedPathFiles(paths);
         Set<File> canonicalModified = PathUtils.getFixedPathFiles(paths);
 
-        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified);
+        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified, true);
 
         // check that scanComplete() was called
         context.assertIsSatisfied();
@@ -600,13 +600,13 @@ public abstract class MonitorHolderTestParent {
         Set<File> canonicalDeleted = PathUtils.getFixedPathFiles(paths);
         Set<File> canonicalModified = PathUtils.getFixedPathFiles(paths);
 
-        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified);
+        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified, true);
 
         // delete the file then trigger an 'external' scan
         subFile.delete();
         subDir.delete();
 
-        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified);
+        monitor.externalScan(canonicalCreated, canonicalDeleted, canonicalModified, true);
 
         // check that scanComplete() was called
         context.assertIsSatisfied();

@@ -675,8 +675,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     if (http != null) {
                         Log.info(c, method, "Using ports from <httpEndpoint> element in " + serverName + " server.xml");
                         // If there is an <httpEndpoint> element in the server config, use those ports
-                        serv.setHttpDefaultPort(http.getHttpPort());
-                        serv.setHttpDefaultSecurePort(http.getHttpsPort());
+                        serv.setHttpDefaultPort(Integer.parseInt(http.getHttpPort()));
+                        serv.setHttpDefaultSecurePort(Integer.parseInt(http.getHttpsPort()));
                     } else if (include != null) {
                         Log.info(c, method, "Using BVT HTTP port defaults in fatTestPorts.xml for " + serverName);
                         serv.setHttpDefaultPort(8010);

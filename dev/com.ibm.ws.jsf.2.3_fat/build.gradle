@@ -17,7 +17,6 @@ dependencies {
       'org.apache.httpcomponents:httpmime:4.5.3',
       'org.apache.httpcomponents:httpclient:4.5.4',
       'org.apache.httpcomponents:httpcore:4.4.9',
-      'org.apache.httpcomponents:httpmime:4.3.1',
       'org.eclipse.jetty:jetty-io:9.2.15.v20160210',
       'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
       'org.eclipse.jetty.websocket:websocket-client:9.2.15.v20160210',

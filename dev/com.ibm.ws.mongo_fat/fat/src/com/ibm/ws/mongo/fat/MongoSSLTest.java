@@ -61,12 +61,12 @@ public class MongoSSLTest extends FATServletClient {
                           "CWKKD0023E:.*mongo-invalid-certauth-driver-level.*", "CWPKI0023E:.*wibblewibblewibble.*",
                           "SRVE0315E:.*com.mongodb.CommandFailureException.*client_not_known.*", "CWPKI0022E:.*", // SSL HANDSHAKE
                           // FAILURE
-                          "SRVE0315E:.*javax.net.ssl.SSLHandshakeException.*", "CWWKE0701E" // TODO: Circular reference detected
-                                                                                            // trying to get service
-                                                                                            // {org.osgi.service.cm.ManagedServiceFactory,
-                                                                                            // com.ibm.wsspi.logging.Introspector,
-                                                                                            // com.ibm.ws.runtime.update.RuntimeUpdateListener,
-                                                                                            // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
+                          "SRVE0315E:.*javax.net.ssl.SSLHandshakeException.*", "CWWKE0701E", "CWWKG0033W" // TODO: Circular reference detected
+        // trying to get service
+        // {org.osgi.service.cm.ManagedServiceFactory,
+        // com.ibm.wsspi.logging.Introspector,
+        // com.ibm.ws.runtime.update.RuntimeUpdateListener,
+        // com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator}
         );
     }
 

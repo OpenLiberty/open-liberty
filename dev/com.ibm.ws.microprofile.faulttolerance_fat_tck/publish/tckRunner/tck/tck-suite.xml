@@ -24,7 +24,8 @@
                         !method.getName().startsWith("testBulkheadClassAsynchFutureDoneWithoutGet") &&
                         !method.getName().startsWith("testBulkheadClassAsynchronousQueueing10") &&
                         !method.getName().startsWith("testBulkheadMethodAsynchronousQueueing10") &&
-                        !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") 
+                        !method.getName().startsWith("testBulkheadMethodAsynchronousRetry55Trip") &&
+                        !method.getName().startsWith("testBulkheadQueReplacesDueToClassRetryFailures")
                     ]]>
                     </script>
                 </method-selector>

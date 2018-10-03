@@ -51,7 +51,7 @@ import java.util.jar.Manifest;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -464,7 +464,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                 ServerConfigurationWriter.getInstance().write(libertyConfig, result);
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } catch (JAXBException e) {
+            } catch (XMLStreamException e) {
                 throw new RuntimeException(e);
             }
             return result.toString();
@@ -951,6 +951,6 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     }
 
     protected final ClassLoadingService getClassLoadingService() {
-    	return this.classLoadingService;
+        return this.classLoadingService;
     }
 }

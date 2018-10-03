@@ -9,6 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+plugins {
+  id "net.ossindex.audit" version "0.3.8-beta"
+}
+
+audit {
+    failOnError = false
+}
+
 task addRestConnector(type: Copy) {
   shouldRunAfter jar
   from buildImage.file('wlp/clients/restConnector.jar')
@@ -40,25 +48,6 @@ task zipConfigExtJar(type: Zip) {
   from new File(autoFvtDir, 'extracted')
 }
 
-
-
 addRequiredLibraries {
   dependsOn zipConfigExtJar, addRestConnector, addConfigAPIJars
-}
-
-buildscript {
-  repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
-  }
-  dependencies {
-    classpath "gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.3.8-beta"
-  }
-}
-
-apply plugin: "net.ossindex.audit"
-
-audit {
-    failOnError = false
 }

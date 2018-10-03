@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>
+	test-web1</display-name>
+	<servlet id="Servlet_1178205214475">
+		<display-name>
+		DummyServlet</display-name>
+		<servlet-name>DummyServlet</servlet-name>
+		<servlet-class>
+		web.DummyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DummyServlet</servlet-name>
+		<url-pattern>/DummyServlet</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<exception-type>web.MyException</exception-type>
+		<location>/MyException.html</location>
+	</error-page>
+	<!--
+	<error-page>
+		<exception-type>web.MySubException</exception-type>
+		<location>/MyException.html</location>
+	</error-page>-->
+	<error-page>
+		<exception-type>java.lang.RuntimeException</exception-type>
+		<location>/RuntimeException.html</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.html</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.html</location>
+	</error-page>
+</web-app>

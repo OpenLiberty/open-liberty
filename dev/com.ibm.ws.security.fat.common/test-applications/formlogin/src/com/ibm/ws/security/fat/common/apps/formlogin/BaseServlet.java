@@ -116,7 +116,7 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
-    private void printBasicInfo(HttpServletRequest req, StringBuffer sb) {
+    protected void printBasicInfo(HttpServletRequest req, StringBuffer sb) {
         writeLine(sb, "getRequestURL: " + req.getRequestURL().toString());
         writeLine(sb, "getAuthType: " + req.getAuthType());
         writeLine(sb, "getRemoteUser: " + req.getRemoteUser());
@@ -126,7 +126,7 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
-    private void printUserRoleInfo(HttpServletRequest req, StringBuffer sb) {
+    protected void printUserRoleInfo(HttpServletRequest req, StringBuffer sb) {
         writeLine(sb, "isUserInRole(Employee): " + req.isUserInRole("Employee"));
         writeLine(sb, "isUserInRole(Manager): " + req.isUserInRole("Manager"));
         String role = req.getParameter("role");
@@ -136,7 +136,7 @@ public abstract class BaseServlet extends HttpServlet {
         writeLine(sb, "isUserInRole(" + role + "): " + req.isUserInRole(role));
     }
 
-    private void printCookies(HttpServletRequest req, StringBuffer sb) {
+    protected void printCookies(HttpServletRequest req, StringBuffer sb) {
         Cookie[] cookies = req.getCookies();
         writeLine(sb, "Getting cookies");
         if (cookies != null) {
@@ -146,16 +146,11 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
-    private void printCallerSubjectInfo(Subject callerSubject, StringBuffer sb) throws WSSecurityException {
+    protected void printCallerSubjectInfo(Subject callerSubject, StringBuffer sb) throws WSSecurityException {
         writeLine(sb, "callerSubject: " + callerSubject);
         // Get the public credential from the CallerSubject
         if (callerSubject != null) {
-            WSCredential callerCredential = callerSubject.getPublicCredentials(WSCredential.class).iterator().next();
-            if (callerCredential != null) {
-                writeLine(sb, "callerCredential: " + callerCredential);
-            } else {
-                writeLine(sb, "callerCredential: null");
-            }
+            printSubjectCredentials(callerSubject, sb);
         } else {
             writeLine(sb, "callerCredential: null");
         }
@@ -165,7 +160,29 @@ public abstract class BaseServlet extends HttpServlet {
         writeLine(sb, "RunAs subject: " + runAsSubject);
     }
 
-    private void printCustomCacheKey(Subject callerSubject, StringBuffer sb) {
+    protected void printSubjectCredentials(Subject callerSubject, StringBuffer sb) {
+        printPublicCredentials(callerSubject, sb);
+        printPrivateCredentials(callerSubject, sb);
+    }
+
+    protected void printPublicCredentials(Subject callerSubject, StringBuffer sb) {
+        WSCredential callerCredential = callerSubject.getPublicCredentials(WSCredential.class).iterator().next();
+        if (callerCredential != null) {
+            writeLine(sb, "callerCredential: " + callerCredential);
+        } else {
+            writeLine(sb, "callerCredential: null");
+        }
+    }
+
+    /**
+     * Prints the various private credentials of the subject. Can be overridden by extending classes to print specific types of
+     * private credentials (JWTs, UserProfile, etc.).
+     */
+    protected void printPrivateCredentials(Subject callerSubject, StringBuffer sb) {
+        // To be overridden, if desired
+    }
+
+    protected void printCustomCacheKey(Subject callerSubject, StringBuffer sb) {
         // Check for cache key for hashtable login test. Will return null otherwise
         String customCacheKey = null;
         if (callerSubject != null) {
@@ -177,7 +194,7 @@ public abstract class BaseServlet extends HttpServlet {
         writeLine(sb, "customCacheKey: " + customCacheKey);
     }
 
-    private String getCustomCacheKeyFromSubjectCustomProps(Subject callerSubject) {
+    protected String getCustomCacheKeyFromSubjectCustomProps(Subject callerSubject) {
         String[] properties = { AttributeNameConstants.WSCREDENTIAL_CACHE_KEY };
         SubjectHelper subjectHelper = new SubjectHelper();
         Hashtable<String, ?> customProperties = subjectHelper.getHashtableFromSubject(callerSubject, properties);
@@ -187,7 +204,7 @@ public abstract class BaseServlet extends HttpServlet {
         return null;
     }
 
-    private String getCustomCacheKeyFromSsoToken(Subject callerSubject, StringBuffer sb) {
+    protected String getCustomCacheKeyFromSsoToken(Subject callerSubject, StringBuffer sb) {
         SingleSignonToken ssoToken = getSsoToken(callerSubject, sb);
         if (ssoToken != null) {
             String[] attrs = ssoToken.getAttributes(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY);
@@ -204,7 +221,7 @@ public abstract class BaseServlet extends HttpServlet {
      * @param subject
      *            {@code null} is not supported.
      */
-    private SingleSignonToken getSsoToken(Subject subject, StringBuffer sb) {
+    protected SingleSignonToken getSsoToken(Subject subject, StringBuffer sb) {
         SingleSignonToken ssoToken = null;
         Set<SingleSignonToken> ssoTokens = subject.getPrivateCredentials(SingleSignonToken.class);
         writeLine(sb, "Number of SSO token: " + ssoTokens.size());
@@ -227,7 +244,7 @@ public abstract class BaseServlet extends HttpServlet {
      * @param msg
      *            Message to write
      */
-    void writeLine(StringBuffer sb, String msg) {
+    protected void writeLine(StringBuffer sb, String msg) {
         sb.append(msg + "\n");
     }
 

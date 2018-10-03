@@ -108,11 +108,11 @@ public class InboundSseEventProcessor {
                 if (builder != null) {
                     listener.onNext(builder.build(factory, message));
                 }
-
-                // complete the stream
-                listener.onComplete();
             } catch (final Exception ex) {
                 listener.onError(ex);
+            } finally {
+             // complete the stream
+                listener.onComplete();
             }
 
             if (response != null) {

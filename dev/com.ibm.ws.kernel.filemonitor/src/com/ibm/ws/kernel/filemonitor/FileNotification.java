@@ -19,11 +19,20 @@ public interface FileNotification {
      * This is the notification method. Only {@link FileMonitor}s that
      * have external monitoring enabled will receive these notifications
      * and then only for the files they are monitoring.
-     * 
+     *
      * @param createdFiles the absolute paths of any created files
      * @param modifiedFiles the absolute paths of any modified files
      * @param deletedFiles the absolute paths of any deleted files
      */
     void notifyFileChanges(Collection<String> createdFiles, Collection<String> modifiedFiles, Collection<String> deletedFiles);
 
+    /**
+     * Processed pending server configuration changes {see#link: FileNotificationImpl}
+     */
+    void processConfigurationChanges();
+
+    /**
+     * Processed pending application updates {see#link: FileNotificationImpl}
+     */
+    void processApplicationChanges();
 }

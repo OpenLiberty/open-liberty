@@ -247,15 +247,15 @@ public class OpenAPITestUtil {
         if (http == null) {
             http = new HttpEndpoint();
             http.setId("defaultHttpEndpoint");
-            http.setHttpPort(httpPort);
-            http.setHttpsPort(httpsPort);
+            http.setHttpPort(Integer.toString(httpPort));
+            http.setHttpsPort(Integer.toString(httpsPort));
             config.getHttpEndpoints().add(http);
-        } else if (http.getHttpPort() == httpPort && http.getHttpsPort() == httpsPort) {
+        } else if (Integer.parseInt(http.getHttpPort()) == httpPort && Integer.parseInt(http.getHttpsPort()) == httpsPort) {
             return;
         }
 
-        http.setHttpPort(httpPort);
-        http.setHttpsPort(httpsPort);
+        http.setHttpPort(Integer.toString(httpPort));
+        http.setHttpsPort(Integer.toString(httpsPort));
 
         if (server.isStarted()) {
             // Set the mark to the current end of log
