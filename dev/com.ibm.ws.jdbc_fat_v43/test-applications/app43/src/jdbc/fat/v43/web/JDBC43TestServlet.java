@@ -82,6 +82,9 @@ public class JDBC43TestServlet extends FATServlet {
     @Resource(lookup = "jdbc/ds", authenticationType = AuthenticationType.CONTAINER, name = "java:module/env/jdbc/ds-with-container-auth")
     DataSource dataSourceWithContainerAuth;
 
+    @Resource(lookup = "jdbc/defaultShardingMatchCurrentState")
+    DataSource dataSourceWithDefaultSharding; // shardingKey=CHAR:DefaultShardingKey; superShardingKey=VARCHAR:DefaultSuperKey;
+
     @Resource(lookup = "jdbc/matchCurrentState", authenticationType = AuthenticationType.APPLICATION)
     DataSource sharablePoolDataSourceMatchCurrentState;
 
@@ -566,7 +569,7 @@ public class JDBC43TestServlet extends FATServlet {
             assertEquals(4, mdata.getJDBCMajorVersion());
             assertEquals(3, mdata.getJDBCMinorVersion());
 
-            assertFalse(mdata.supportsSharding());
+            assertTrue(mdata.supportsSharding());
         } finally {
             con.close();
         }
@@ -2396,6 +2399,59 @@ public class JDBC43TestServlet extends FATServlet {
             ps.close();
         } finally {
             c.close();
+        }
+    }
+
+    @Test
+    public void testVendorSpecificDefaultShardingKeys() throws Exception {
+        ShardingKey key1 = dataSourceWithDefaultSharding.createShardingKeyBuilder().subkey("VSDSK", JDBCType.LONGVARBINARY).build();
+        ConnectionBuilder conbuilder1 = dataSourceWithDefaultSharding.createConnectionBuilder();
+        ConnectionBuilder conbuilder2 = dataSourceWithDefaultSharding.createConnectionBuilder().shardingKey(null);
+        ConnectionBuilder conbuilder3 = dataSourceWithDefaultSharding.createConnectionBuilder().shardingKey(key1).superShardingKey(null);
+        String k;
+
+        tx.begin();
+        try {
+            Connection con1 = conbuilder1.build();
+            // expect default sharding keys from the data source config in server.xml
+            k = con1.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|CHAR:DefaultShardingKey;"));
+            k = con1.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|VARCHAR:DefaultSuperKey;"));
+
+            // connection request (with null/unspecified keys) that shares the same connection by matching current state
+            Connection con2 = conbuilder2.build();
+            k = con2.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|CHAR:DefaultShardingKey;"));
+            k = con2.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|VARCHAR:DefaultSuperKey;"));
+            con2.close();
+
+            con1.setShardingKey(key1);
+
+            // connection request (with key1/null keys) that shares the same connection by matching current state
+            Connection con3 = conbuilder3.build();
+            k = con3.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|LONGVARBINARY:VSDSK;"));
+            k = con3.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|VARCHAR:DefaultSuperKey;"));
+            con3.close();
+
+            con1.setShardingKey(key1, key1);
+            con1.close();
+        } finally {
+            tx.rollback();
+        }
+
+        // Are the values reset to null/defaults when reusing a connection from the pool?
+        Connection con4 = conbuilder2.build();
+        try {
+            k = con4.getClientInfo("SHARDING_KEY"); // extension by mock JDBC driver to determine the sharding key
+            assertTrue(k, k.endsWith("|CHAR:DefaultShardingKey;"));
+            k = con4.getClientInfo("SUPER_SHARDING_KEY"); // extension by mock JDBC driver to determine the super sharding key
+            assertTrue(k, k.endsWith("|VARCHAR:DefaultSuperKey;"));
+        } finally {
+            con4.close();
         }
     }
 
