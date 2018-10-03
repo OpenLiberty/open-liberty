@@ -592,7 +592,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 peersToRecover.remove(recoveryIdentity);
 
                 int numPeers = peersToRecover.size();
-                Tr.audit(tc, "WTRN0108I: Have checked leases for peers in recovery group " + recoveryGroup + " - need to Recover " + numPeers + " peer servers");
+                Tr.audit(tc, "WTRN0108I: Have checked leases for " + peerLeaseTable.size() + " peer" + (peerLeaseTable.size() != 1 ? "s" : "") + " in recovery group "
+                             + recoveryGroup + " - need to Recover " + numPeers + " peer servers");
 
             } catch (Exception e) {
                 System.out.println("Caught exception when trying to get leases for peers: " + e);

@@ -93,15 +93,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
         // There is additional work to do if we are storing transaction log in an RDBMS. The key
         // determinant that we are using an RDBMS is the specification of the dataSourceRef
-        // attribute of the transaction stanza in the server.xml. So start by checking this 
+        // attribute of the transaction stanza in the server.xml. So start by checking this
         // attribute. If it is present, set the _isSQLRecoveryLog flag and set the logDir
         // to "custom" <- this will allow compatibility with tWAS code.
         //
         // Drive the getTransactionLogDirectory() method if we're working against the filesys.
         checkDataSourceRef();
 
-        if (_isSQLRecoveryLog)
-        {
+        if (_isSQLRecoveryLog) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "activate  working with Tran Log in an RDBMS");
             ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
@@ -110,16 +109,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                              ", underlying reference: " + serviceRef);
             dataSourceFactoryRef.activate(_cc);
 
-            if (serviceRef != null)
-            {
+            if (serviceRef != null) {
                 // RTC 175005 - add additional check to ensure that the underlying Data Source Factory
                 // is available. This defect revealed that it is possible for the serviceRef to be non-null
                 // while the factory has yet to be resolved.
                 theDataSourceFactory = getDataSourceFactory();
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "retrieved datasourceFactory " + theDataSourceFactory);
-                if (theDataSourceFactory != null)
-                {
+                if (theDataSourceFactory != null) {
                     // The DataSource is available, which means that we are able to drive recovery
                     // processing. This is driven through the reference to the TransactionManagerService,
                     // assuming that it is available
@@ -127,9 +124,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                         tmsRef.doStartup(this, theDataSourceFactory, _isSQLRecoveryLog);
                 }
             }
-        }
-        else
-        {
+        } else {
             getTransactionLogDirectory();
             if (tmsRef != null)
                 tmsRef.doStartup(this, theDataSourceFactory, _isSQLRecoveryLog);
@@ -185,8 +180,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
         // If the JTMConfigurationProvider has been activated, we can proceed to set
         // the DataSourceFactory and initiate recovery
-        if (_cc != null)
-        {
+        if (_cc != null) {
             theDataSourceFactory = dataSourceFactoryRef.getServiceWithException();
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setDataSourceFactory to " + theDataSourceFactory);
@@ -260,9 +254,9 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.tx.jta.config.DefaultConfigurationProvider#getTraceLevel()
-     * 
+     *
      * Use Tr configuration for 'transaction' group.
      */
     @Override
@@ -282,8 +276,29 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
-    public String getServerName()
-    {
+    public String getLeaseLogDirectory() {
+        return (String) _props.get("leaseLogDirectory");
+    }
+
+    @Override
+    public String getLeaseCheckStrategy() {
+        return (String) _props.get("leaseCheckStrategy");
+    }
+
+    @Override
+    public int getLeaseCheckInterval() {
+        Number num = (Number) _props.get("leaseCheckInterval");
+        return num.intValue();
+    }
+
+    @Override
+    public int getLeaseLength() {
+        Number num = (Number) _props.get("leaseLength");
+        return num.intValue();
+    }
+
+    @Override
+    public String getServerName() {
         String serverName = "";
         synchronized (this) {
             if (locationService != null)
@@ -355,16 +370,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
-    public ResourceFactory getResourceFactory()
-    {
+    public ResourceFactory getResourceFactory() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getResourceFactory " + theDataSourceFactory);
         return theDataSourceFactory;
     }
 
     @Override
-    public RuntimeMetaDataProvider getRuntimeMetaDataProvider()
-    {
+    public RuntimeMetaDataProvider getRuntimeMetaDataProvider() {
         return _runtimeMetaDataProvider;
     }
 
@@ -386,33 +399,26 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return _recoveryGroup;
     }
 
-    public void setTMS(TransactionManagerService tms)
-    {
+    public void setTMS(TransactionManagerService tms) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setTMS " + tms);
         tmsRef = tms;
-        if (!_isSQLRecoveryLog)
-        {
-            if (_cc != null)
-            {
+        if (!_isSQLRecoveryLog) {
+            if (_cc != null) {
                 tmsRef.doStartup(this, theDataSourceFactory, _isSQLRecoveryLog);
             }
-        }
-        else
-        {
+        } else {
             // If the JTMConfigurationProvider has been activated, and if the DataSourceFactory
             // has been provided, we can initiate recovery
             ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
-            if (_cc != null && serviceRef != null)
-            {
+            if (_cc != null && serviceRef != null) {
                 // RTC 175005 - add additional check to ensure that the underlying Data Source Factory
                 // is available. This defect revealed that it is possible for the serviceRef to be non-null
                 // while the factory has yet to be resolved.
                 theDataSourceFactory = getDataSourceFactory();
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "retrieved datasourceFactory " + theDataSourceFactory);
-                if (theDataSourceFactory != null)
-                {
+                if (theDataSourceFactory != null) {
                     tmsRef.doStartup(this, theDataSourceFactory, _isSQLRecoveryLog);
                 }
             }
@@ -421,29 +427,25 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     /**
      * Is the Transaction Log hosted in a database?
-     * 
+     *
      * @return true if it is
      */
-    public boolean isSQLRecoveryLog()
-    {
+    public boolean isSQLRecoveryLog() {
         return _isSQLRecoveryLog;
     }
 
     /**
      * Retrieve the DataSourceFactory reference if it is available, return null otherwise.
-     * 
+     *
      * @return
      */
     @FFDCIgnore({ IllegalStateException.class })
-    private ResourceFactory getDataSourceFactory()
-    {
+    private ResourceFactory getDataSourceFactory() {
         ResourceFactory dataSourceFactory = null;
-        try
-        {
+        try {
             if (dataSourceFactoryRef != null)
                 dataSourceFactory = dataSourceFactoryRef.getServiceWithException();
-        } catch (IllegalStateException iex)
-        {
+        } catch (IllegalStateException iex) {
             // RTC 175513. Tolerate an IllegalStateException at this point but trace it. Allow the calling method method to
             // continue with a null DataSourceFactory.
             if (tc.isDebugEnabled())
@@ -458,14 +460,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     private void checkDataSourceRef() {
 
         Object configuredDSR = _props.get("dataSourceRef");
-        if (configuredDSR == null)
-        {
+        if (configuredDSR == null) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "dataSourceRef is not specified, log to filesys");
             _isSQLRecoveryLog = false;
-        }
-        else
-        {
+        } else {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "dataSourceRef is specified, log to RDBMS");
             // We'll set the logDir to maintain tWAS code compatibility. First we need to
@@ -475,13 +474,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "suffixStr is " + suffixStr + ", of length " + suffixStr.length());
 
-            if (suffixStr != null && !suffixStr.trim().isEmpty())
-            {
+            if (suffixStr != null && !suffixStr.trim().isEmpty()) {
                 suffixStr = suffixStr.trim();
                 logDir = "custom://com.ibm.rls.jdbc.SQLRecoveryLogFactory?datasource=Liberty" +
                          ",tablesuffix=" + suffixStr;
-            }
-            else
+            } else
                 logDir = "custom://com.ibm.rls.jdbc.SQLRecoveryLogFactory?datasource=Liberty";
 
             if (tc.isDebugEnabled())
@@ -492,7 +489,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     /**
      * This method should only be used where logging to a file system.
-     * 
+     *
      * @return the full path of the log directory
      */
     private String parseTransactionLogDirectory() {
@@ -553,8 +550,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
-    public void setApplId(byte[] name)
-    {
+    public void setApplId(byte[] name) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setApplId - " + Arrays.toString(name));
         // Store the applId.
@@ -562,8 +558,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
-    public byte[] getApplId()
-    {
+    public byte[] getApplId() {
         // Determine the applId.
         final byte[] result = _applId;
 
@@ -576,8 +571,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     public void shutDownFramework() {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "JTMConfigurationProvider shutDownFramework has been called");
-        if (tmsRef != null)
-        {
+        if (tmsRef != null) {
             tmsRef.shutDownFramework();
         }
     }
