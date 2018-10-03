@@ -18,7 +18,6 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -88,10 +87,9 @@ public class JSF23WebSocketTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @Ignore
     public void testPushWebsocket() throws Exception {
         WebClient webClient = new WebClient();
-        //webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
 
         // Construct the URL for the test
         String contextRoot = "WebSocket";
@@ -120,7 +118,6 @@ public class JSF23WebSocketTests extends FATServletClient {
 
         // Now click the button and get the resulted page.
         HtmlPage resultPage = sendButton.click();
-        webClient.waitForBackgroundJavaScript(1000);
 
         // Log the page for debugging if necessary in the future.
         Log.info(c, name.getMethodName(), resultPage.asText());
@@ -128,10 +125,8 @@ public class JSF23WebSocketTests extends FATServletClient {
 
         // Verify that the page contains the expected messages.
         assertTrue(resultPage.asText().contains("JSF 2.3 WebSocket - Test message pushed from server to client"));
-        assertTrue(resultPage.asText().contains("Message from the server via push!"));
-
-        /* TODO: This works manually, but can't seem to get HtmlUnit to show the message. */
-        // assertTrue(resultPage.asText().contains("Called onclose listener"));
+        assertTrue(JSFUtils.waitForPageResponse(resultPage, "Message from the server via push!"));
+        assertTrue(JSFUtils.waitForPageResponse(resultPage, "Called onclose listener"));
 
         String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
@@ -147,9 +142,9 @@ public class JSF23WebSocketTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    @Ignore
     public void testOpenAndCloseWebsocket() throws Exception {
         WebClient webClient = new WebClient();
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
 
         // Construct the URL for the test
         String contextRoot = "WebSocket";
@@ -187,8 +182,7 @@ public class JSF23WebSocketTests extends FATServletClient {
         HtmlPage closePage = closeButton.click();
         webClient.waitForBackgroundJavaScript(1000);
 
-        /* TODO: This works manually, but can't seem to get HtmlUnit to show the message. */
-        //assertTrue(closePage.asText().contains("Called onclose listener"));
+        assertTrue(closePage.asText().contains("Called onclose listener"));
 
         String result2 = jsf23CDIWSOCServer.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
