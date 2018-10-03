@@ -107,12 +107,24 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
         ModuleInfo moduleInfo) throws UnableToAdaptException {
 
+    	this( annotationsAdapter,
+              rootContainer, rootOverlayContainer,
+              rootArtifactContainer, rootAdaptableContainer,
+              moduleInfo, ClassSource_Factory.UNSET_CATEGORY_NAME );
+    }
+
+    public ModuleAnnotationsImpl(
+        AnnotationsAdapterImpl annotationsAdapter,
+        Container rootContainer, OverlayContainer rootOverlayContainer,
+        ArtifactContainer rootArtifactContainer, Container rootAdaptableContainer,
+        ModuleInfo moduleInfo, String modCatName) throws UnableToAdaptException {
+
         super( annotationsAdapter,
                rootContainer, rootOverlayContainer,
                rootArtifactContainer, rootAdaptableContainer,
                moduleInfo.getApplicationInfo().getName(),
                AnnotationsImpl.getPath( moduleInfo.getContainer() ), // 'getPath' throws UnableToAdaptException
-               ClassSource_Factory.UNSET_CATEGORY_NAME );
+               modCatName );
 
         this.moduleInfo = moduleInfo;
         this.classLoader = moduleInfo.getClassLoader();
@@ -123,6 +135,7 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         System.out.println(CLASS_NAME + ": Module Container [ " + moduleInfo.getContainer() + " ]");
         System.out.println(CLASS_NAME + ": Application Name [ " + this.getAppName() + " ]");
         System.out.println(CLASS_NAME + ": Module Name [ " + this.getModName() + " ]");
+        System.out.println(CLASS_NAME + ": Module Category Name [ " + this.getModCategoryName() + " ]");
         System.out.println(CLASS_NAME + ": Module Classloader [ " + this.classLoader + " ]");
     }
 

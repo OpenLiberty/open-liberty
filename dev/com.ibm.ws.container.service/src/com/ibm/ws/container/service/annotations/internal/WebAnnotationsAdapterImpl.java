@@ -11,7 +11,6 @@
 package com.ibm.ws.container.service.annotations.internal;
 
 import com.ibm.websphere.ras.Tr;
-import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.wsspi.adaptable.module.Container;

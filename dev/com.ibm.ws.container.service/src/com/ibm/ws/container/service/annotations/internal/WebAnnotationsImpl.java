@@ -74,7 +74,6 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
  * completion of a scan.
  */
 public class WebAnnotationsImpl extends ModuleAnnotationsImpl implements WebAnnotations {
-    private static final String CLASS_NAME = ModuleAnnotationsImpl.class.getSimpleName();
 
     public WebAnnotationsImpl(
         AnnotationsAdapterImpl annotationsAdapter,
