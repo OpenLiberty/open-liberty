@@ -57,6 +57,8 @@
 
   <javaPermission codebase="${server.config.dir}/drivers/d43driver.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.sql.SQLPermission" name="callAbort"/>
+  <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+ 
 
   <variable name="onError" value="FAIL"/>
 </server>
