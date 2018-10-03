@@ -11,6 +11,8 @@
 package com.ibm.ws.jaxws.client;
 
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -63,23 +65,44 @@ public class LibertyProviderImpl extends ProviderImpl {
             }
         }
 
+        final Bus fBus = bus;
         WebServiceRefInfo wsrInfo = wsRefInfo.get();
+        final WebServiceRefInfo fWsrInfo = wsrInfo;
         List<WebServiceFeature> serviceFeatures = wsFeatures.get();
+        final List<WebServiceFeature> fServiceFeatures = serviceFeatures;
 
         AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
         JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
+        final JaxWsSecurityConfigurationService fSecurityConfigService = securityConfigService;
+        final URL fUrl = url;
+        final QName fQname = qname;
+        final Class fCls = cls;
 
         if (serviceFeatures != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Thread context features are configured with " + serviceFeatures);
             }
-            return new LibertyServiceImpl(securityConfigService, wsrInfo, bus, url, qname, cls, serviceFeatures.toArray(new WebServiceFeature[serviceFeatures.size()]));
+            LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
+                @Override
+                public LibertyServiceImpl run() {
+                    return new LibertyServiceImpl(fSecurityConfigService, fWsrInfo, fBus, fUrl, fQname, fCls, fServiceFeatures.toArray(new WebServiceFeature[fServiceFeatures.size()]));
+                }
+            });
+            return lsl;
+
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Thread context features are not set");
             }
 
-            return new LibertyServiceImpl(securityConfigService, wsrInfo, bus, url, qname, cls);
+            LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
+                @Override
+                public LibertyServiceImpl run() {
+                    return new LibertyServiceImpl(fSecurityConfigService, fWsrInfo, fBus, fUrl, fQname, fCls);
+                }
+            });
+            return lsl;
+
         }
     }
 

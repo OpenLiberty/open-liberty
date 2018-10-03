@@ -11,6 +11,8 @@
 package com.ibm.ws.jaxws.client;
 
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,7 +47,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.xml.ws.spi.Provider#createServiceDelegate(java.net.URL, javax.xml.namespace.QName, java.lang.Class)
      */
     @Override
@@ -69,23 +71,45 @@ public class LibertyProviderImpl extends ProviderImpl {
         AtomicServiceReference<JaxWsSecurityConfigurationService> secConfigSR = securityConfigSR.get();
         JaxWsSecurityConfigurationService securityConfigService = secConfigSR == null ? null : secConfigSR.getService();
 
+        final Bus fBus = bus;
+        final WebServiceRefInfo fWsrInfo = wsrInfo;
+        final List<WebServiceFeature> fServiceFeatures = serviceFeatures;
+        final JaxWsSecurityConfigurationService fSecurityConfigService = securityConfigService;
+        final URL fUrl = url;
+        final QName fQname = qname;
+        final Class fCls = cls;
+
         if (serviceFeatures != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Thread context features are configured with " + serviceFeatures);
             }
-            return new LibertyServiceImpl(securityConfigService, wsrInfo, bus, url, qname, cls, serviceFeatures.toArray(new WebServiceFeature[serviceFeatures.size()]));
+
+            LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
+                @Override
+                public LibertyServiceImpl run() {
+                    return new LibertyServiceImpl(fSecurityConfigService, fWsrInfo, fBus, fUrl, fQname, fCls, fServiceFeatures.toArray(new WebServiceFeature[fServiceFeatures.size()]));
+                }
+            });
+            return lsl;
+
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Thread context features are not set");
             }
 
-            return new LibertyServiceImpl(securityConfigService, wsrInfo, bus, url, qname, cls);
+            LibertyServiceImpl lsl = AccessController.doPrivileged(new PrivilegedAction<LibertyServiceImpl>() {
+                @Override
+                public LibertyServiceImpl run() {
+                    return new LibertyServiceImpl(fSecurityConfigService, fWsrInfo, fBus, fUrl, fQname, fCls);
+                }
+            });
+            return lsl;
         }
     }
 
     /**
      * set the feature list for the current thread
-     * 
+     *
      * @param features
      */
     public static void setWebServiceFeatures(List<WebServiceFeature> features) {
@@ -94,7 +118,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * return the feature list for the current thread
-     * 
+     *
      * @return
      */
     public static List<WebServiceFeature> getWebServiceFeatures() {
@@ -110,7 +134,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * set the serviceRefInfo for the current thread
-     * 
+     *
      * @param wsrInfo
      */
     public static void setWebServiceRefInfo(WebServiceRefInfo wsrInfo) {
@@ -126,7 +150,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * return the serviceREfInfo for the current thread
-     * 
+     *
      * @return
      */
     public static WebServiceRefInfo getWebServiceRefInfo() {
@@ -135,7 +159,7 @@ public class LibertyProviderImpl extends ProviderImpl {
 
     /**
      * Set the security configuration service
-     * 
+     *
      * @param securityConfigService the securityConfigService to set
      */
     public static void setSecurityConfigService(AtomicServiceReference<JaxWsSecurityConfigurationService> serviceRefer) {
