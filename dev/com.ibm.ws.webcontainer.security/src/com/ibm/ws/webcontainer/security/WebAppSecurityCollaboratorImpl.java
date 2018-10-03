@@ -1154,8 +1154,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         SRTServletRequestUtils.setPrivateAttribute(req, AUTH_TYPE, authType);
         try {
             Object loginToken = ThreadIdentityManager.setAppThreadIdentity(subjectManager.getInvocationSubject());
-            //SRTServletRequestUtils.setPrivateAttribute(req, SECURITY_CONTEXT, loginToken);
-
         } catch (ThreadIdentityException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
