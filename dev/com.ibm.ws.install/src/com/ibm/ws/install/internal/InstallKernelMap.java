@@ -794,7 +794,7 @@ public class InstallKernelMap implements Map {
             if (subsystemEntry != null) {
                 Manifest m = ManifestProcessor.parseManifest(zip.getInputStream(subsystemEntry));
                 Attributes manifestAttrs = m.getMainAttributes();
-                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME);
+                String shortNameAttr = manifestAttrs.getValue(SHORTNAME_HEADER_NAME); // TODO also try with Subsystem-SymbolicName
                 shortNameMap.put(esa.getCanonicalPath(), shortNameAttr);
             }
         } finally {
@@ -816,7 +816,6 @@ public class InstallKernelMap implements Map {
      * @throws InstallException
      */
     private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, BuildException, RepositoryException, InstallException {
-
         String dir = jsonDirectory.toString();
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
         File singleJson = new File(dir + "/SingleJson.json");
@@ -843,8 +842,11 @@ public class InstallKernelMap implements Map {
             RepositoryResourceWritable resource = parser.parseFileToResource(esa, null, null);
             resource.updateGeneratedFields(true);
             resource.setRepositoryConnection(mySingleFileRepo);
-            resource.uploadToMassive(new AddThenDeleteStrategy());
 
+            // Overload the Maven coordinates field with the file path, since the ESA should be installed from that path
+            resource.setMavenCoordinates(esa.getAbsolutePath());
+
+            resource.uploadToMassive(new AddThenDeleteStrategy());
         }
 
         return singleJson;
