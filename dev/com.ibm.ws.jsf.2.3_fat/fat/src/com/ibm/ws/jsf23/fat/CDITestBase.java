@@ -240,7 +240,7 @@ public abstract class CDITestBase {
         LOG.info("Factory output value: " + output);
 
         // Verify we are matching each of the factories configured in faces-config.xml ( or Annotated configuration populator config)
-        assertTrue("Did not find FactoryCount:11 in response.", output.contains("FactoryCount:12"));
+        assertTrue("Did not find FactoryCount:13 in response.", output.contains("FactoryCount:13"));
 
         // Format:  Class | Method | Method injected class: Field injected class : <option> constructor injected class
 
@@ -256,6 +256,7 @@ public abstract class CDITestBase {
         findInResponse(output, "CustomVisitContextFactory|getVisitContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
         findInResponse(output, "CustomPhaseListener|beforePhase|FactoryDepBean:FactoryAppBean:PostConstructCalled");
         findInResponse(output, "CustomSystemEventListener|processEvent|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+        findInResponse(output, "CustomClientWindowFactory|getClientWindow|FactoryDepBean:FactoryAppBean:PostConstructCalled");
 
     }
 

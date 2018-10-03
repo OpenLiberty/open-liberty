@@ -42,7 +42,6 @@ src: \
     test-applications/ConvertDateTime.war/src,\
     test-applications/ConverterValidatorBehaviorInjectionTarget.war/src,\
     test-applications/ELImplicitObjectsViaCDIErrorApp.war/src,\
-    test-applications/JSF23CDITests.war/src,\
     test-applications/JSF23Spec1433.jar/src,\
     test-applications/CDIIntegrationTest.war/src,\
     test-applications/CDIInjectionTests.war/src,\
