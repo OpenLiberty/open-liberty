@@ -20,11 +20,13 @@ src: \
 	test-applications/appclient/src,\
 	test-applications/jpabootstrap/src,\
 	test-applications/jpa10/callback/src,\
+	test-applications/jpa10/relationships/manyXmany/src,\
 	test-applications/jpa22/bval/src,\
 	test-applications/jpa22/cdi/src,\
 	test-applications/jpa22/jpa22injection/src,\
 	test-applications/jpa22/jpa22query/src,\
-	test-applications/jpa22/jpa22timeapi/src
+	test-applications/jpa22/jpa22timeapi/src,\
+	test-framework/src
 
 fat.project: true
 
@@ -32,6 +34,8 @@ fat.project: true
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+    com.ibm.websphere.javaee.jms.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
