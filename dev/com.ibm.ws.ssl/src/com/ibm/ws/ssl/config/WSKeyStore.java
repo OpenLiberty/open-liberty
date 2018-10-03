@@ -157,11 +157,15 @@ public class WSKeyStore extends Properties {
             // ignore
         }
 
+        System.out.println("EFT: res: " + res);
+
         String specifiedType = null;
         Enumeration<String> keys = properties.keys();
         while (keys.hasMoreElements()) {
             final String key = keys.nextElement();
             final Object oValue = properties.get(key);
+
+            System.out.println("EFT, key: " + key);
             if (!(oValue instanceof String)) {
                 if (key.equalsIgnoreCase(KEY_STORE_POLLING_RATE) &&
                     oValue instanceof Long) {
@@ -179,18 +183,23 @@ public class WSKeyStore extends Properties {
             }
 
             final String value = (String) oValue;
+            System.out.println("EFT, value: " + value);
             if (key.equalsIgnoreCase("location")) {
                 this.location = value;
+                System.out.println("EFT: location = " + location);
             } else if (key.equalsIgnoreCase("provider")) {
                 this.provider = value;
             } else if (key.equalsIgnoreCase("type")) {
                 this.type = value;
                 specifiedType = value;
-                // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
-                if (type.equals(LibertyConstants.DEFAULT_FALLBACK_TYPE)) {
-                    this.location = res;
-                }
-            } else if (key.equalsIgnoreCase("initializeAtStartup")) {
+/*
+ * System.out.println("EFT: type = " + type + " specifiedType = " + specifiedType);
+ * // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
+ * if (type.equals(LibertyConstants.DEFAULT_FALLBACK_TYPE)) {
+ * this.location = res;
+ * System.out.println("EFT: type is fallback type of JKS, location is reset to res: " + this.location);
+ * }
+ */ } else if (key.equalsIgnoreCase("initializeAtStartup")) {
                 this.initializeAtStartup = Boolean.valueOf(value);
             } else if (key.equalsIgnoreCase("createStashFileForCMS")) {
                 this.stashFile = Boolean.valueOf(value);
@@ -222,16 +231,31 @@ public class WSKeyStore extends Properties {
             this.password = SerializableProtectedString.EMPTY_PROTECTED_STRING;
         }
 
+        System.out.println("EFT: password: " + this.password);
+
         this.isDefault = LibertyConstants.DEFAULT_KEYSTORE_REF_ID.equals(name);
 
+        System.out.println("EFT: isDefault: " + this.isDefault);
+
         if (this.isDefault) {
+
+            System.out.println("EFT: this is default keystore,  type = " + type + " specifiedType = " + specifiedType);
+            // if a type is specified in server.xml, and it's JKS, use the default location for the key.jks keystore; else we'll use PKCS12
+            if (type.equals(LibertyConstants.DEFAULT_FALLBACK_TYPE) && this.location.contains("key.p12")) {
+                this.location = res;
+                System.out.println("EFT: type is fallback type of JKS, location is reset to res: " + this.location);
+            }
+
             // check if we have an existing key.jks.  If so, use that instead of creating a PKCS12 keystore
             File f = new File(res);
+            System.out.println("EFT: check if we have an existing key.jks");
             if (f.exists()) {
+                System.out.println("EFT: we do, so will use that");
                 // make sure we set the location and type to JKS
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
                 this.type = Constants.KEYSTORE_TYPE_JKS;
+                System.out.println("EFT: resetting, this.location: " + this.location + " specifiedType: " + specifiedType + " this.type: " + this.type);
             }
 
             // This is the default key store.. some things we'll just fill in if they
@@ -239,8 +263,10 @@ public class WSKeyStore extends Properties {
 
             // if no type was specified for the default keytore in server.xml and we have no location, use PKCS12 as the default keystore
             if (this.location == null && specifiedType == null) {
+                System.out.println("EFT: this.location and specifiedType were both null, using PKCS12 as default keystore");
                 this.location = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
                 specifiedType = this.type = Constants.KEYSTORE_TYPE_PKCS12;
+                System.out.println("EFT: resetting, this.location: " + this.location + " specifiedType: " + specifiedType);
             }
 
             if (password.isEmpty()) {
@@ -255,10 +281,12 @@ public class WSKeyStore extends Properties {
             }
         } else {
             // this is not the default keystore, but a location has been specified.  If the keystore is a JKS or JCEKS type, set the type to JKS
+            System.out.println("EFT: this is not the default keystore: " + this.location);
             if (this.location != null
                 && (this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JKS) || this.location.toUpperCase().endsWith(Constants.KEYSTORE_TYPE_JCEKS))) {
                 specifiedType = Constants.KEYSTORE_TYPE_JKS;
                 this.type = Constants.KEYSTORE_TYPE_JKS;
+                System.out.println("EFT: ressting specifiedType: " + specifiedType + " this.type: " + this.type);
             }
         }
 
@@ -677,6 +705,8 @@ public class WSKeyStore extends Properties {
         final String storeFile = this.location;
         final boolean create = createIfNotPresent;
 
+        System.out.println("EFT: do_getKeyStore, getting storeFile: " + storeFile);
+
         try {
             myKeyStore = obtainKeyStore(storeFile, create);
         } catch (PrivilegedActionException e) {
@@ -726,11 +756,15 @@ public class WSKeyStore extends Properties {
                     String createStash = getProperty(Constants.SSLPROP_KEY_STORE_CREATE_CMS_STASH);
                     String keyStoreLocation = null;
 
+                    System.out.println("EFT, obtainKeyStore, password: " + password + " type: " + type + " fileBased: " + fileBased + " storeFile: " + storeFile);
+
                     if (fileBased && storeFile != null) {
                         keyStoreLocation = cfgSvc.resolveString(storeFile);
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "File path for store: " + keyStoreLocation);
+
+                        System.out.println("EFT: File path for store: " + keyStoreLocation);
 
                         // Check if the filename exists as a File.
                         File kFile = new File(keyStoreLocation).getAbsoluteFile();
@@ -766,7 +800,12 @@ public class WSKeyStore extends Properties {
                             return ks1;
                         } // end-storefile-exists
 
+                        System.out.println("EFT: create: " + create);
+                        System.out.println("EFT: name: " + name);
+
                         if (create || name.endsWith(LibertyConstants.DEFAULT_KEY_STORE_FILE)) {
+
+                            System.out.println("EFT: create was true or name ended with key.p12");
 
                             long start = System.currentTimeMillis();
                             Tr.info(tc, "ssl.create.certificate.start");
