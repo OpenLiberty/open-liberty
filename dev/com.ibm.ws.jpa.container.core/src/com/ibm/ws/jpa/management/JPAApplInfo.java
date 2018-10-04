@@ -114,7 +114,12 @@ public abstract class JPAApplInfo {
         }
 
         // delegate to scopeInfo to read in the persistence-unit data
-        scopeInfo.processPersistenceUnit(pxml, this);
+        JPAIntrospection.beginPUScopeVisit(scopeInfo);
+        try {
+            scopeInfo.processPersistenceUnit(pxml, this);
+        } finally {
+            JPAIntrospection.endPUScopeVisit();
+        }
     }
 
     protected abstract JPAPUnitInfo createJPAPUnitInfo(JPAPuId puId, JPAPXml pxml, JPAScopeInfo scopeInfo);
@@ -300,16 +305,14 @@ public abstract class JPAApplInfo {
             puScopesClone.putAll(puScopes);
         }
 
-        final JPAIntrospection jpaIntro = JPAIntrospection.getJPAIntrospection();
-
         for (Map.Entry<String, JPAScopeInfo> entry : puScopesClone.entrySet()) {
             final JPAScopeInfo scopeInfo = entry.getValue();
 
-            jpaIntro.beginPUScopeVisit(scopeInfo);
+            JPAIntrospection.beginPUScopeVisit(scopeInfo);
             try {
                 scopeInfo.doIntrospect(out);
             } finally {
-                jpaIntro.endPUScopeVisit();
+                JPAIntrospection.endPUScopeVisit();
             }
         }
     }
