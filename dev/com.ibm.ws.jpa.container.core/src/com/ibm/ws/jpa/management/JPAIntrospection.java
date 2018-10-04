@@ -37,7 +37,7 @@ import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScannerResults;
  *
  */
 public class JPAIntrospection {
-    private static final TraceComponent tc = Tr.register(JPAORMDiagnostics.class,
+    private static final TraceComponent tc = Tr.register(JPAIntrospection.class,
                                                          "JPAORM",
                                                          "com.ibm.ws.jpa.jpa");
 
@@ -60,7 +60,11 @@ public class JPAIntrospection {
     public static final void beginApplicationVisit(String appname, JPAApplInfo appl) {
         final JPAIntrospection jpaIntrospector = getJPAIntrospection();
         if (jpaIntrospector != null) {
-            jpaIntrospector.doBeginApplicationVisit(appname, appl);
+            try {
+                jpaIntrospector.doBeginApplicationVisit(appname, appl);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "66");
+            }
         }
     }
 
@@ -74,7 +78,12 @@ public class JPAIntrospection {
     public static final void beginPUScopeVisit(JPAScopeInfo scopeInfo) {
         final JPAIntrospection jpaIntrospector = getJPAIntrospection();
         if (jpaIntrospector != null) {
-            jpaIntrospector.doBeginPUScopeVisit(scopeInfo);
+            try {
+                jpaIntrospector.doBeginPUScopeVisit(scopeInfo);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "84");
+            }
+
         }
     }
 
@@ -88,7 +97,11 @@ public class JPAIntrospection {
     public static final void beginPXmlInfoVisit(JPAPxmlInfo pxmlInfo) {
         final JPAIntrospection jpaIntrospector = getJPAIntrospection();
         if (jpaIntrospector != null) {
-            jpaIntrospector.doBeginPXmlInfoVisit(pxmlInfo);
+            try {
+                jpaIntrospector.doBeginPXmlInfoVisit(pxmlInfo);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "103");
+            }
         }
     }
 
@@ -102,21 +115,33 @@ public class JPAIntrospection {
     public static final void visitJPAPUnitInfo(String puName, JPAPUnitInfo jpaPuInfo) {
         final JPAIntrospection jpaIntrospector = getJPAIntrospection();
         if (jpaIntrospector != null) {
-            jpaIntrospector.doVisitJPAPUnitInfo(puName, jpaPuInfo);
+            try {
+                jpaIntrospector.doVisitJPAPUnitInfo(puName, jpaPuInfo);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "121");
+            }
         }
     }
 
     public static final void executeIntrospectionAnalysis(final PrintWriter dout) {
         final JPAIntrospection jpaIntrospector = getJPAIntrospection();
         if (jpaIntrospector != null) {
-            jpaIntrospector.doExecuteIntrospectionAnalysis(dout);
+            try {
+                jpaIntrospector.doExecuteIntrospectionAnalysis(dout);
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "132");
+            }
         }
     }
 
     public static final void executeTraceAnalysis() {
         final JPAIntrospection jpaIntrospector = getJPAIntrospection();
         if (jpaIntrospector != null) {
-            jpaIntrospector.doExecuteTraceAnalysis();
+            try {
+                jpaIntrospector.doExecuteTraceAnalysis();
+            } catch (Throwable t) {
+                FFDCFilter.processException(t, JPAIntrospection.class.getName() + ".executeTraceAnalysis", "143");
+            }
         }
     }
 
