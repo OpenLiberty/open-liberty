@@ -10,10 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.equinox.region.Region;
 import org.eclipse.equinox.region.RegionDigraph;
@@ -33,6 +38,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.dynamic.bundle.BundleFactory;
 import com.ibm.ws.dynamic.bundle.DynamicBundleException;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ApiRegion;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.classloading.ApiType;
@@ -44,7 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 /**
  * This class uses OSGi semantics to define a bundle on the fly that has clearly defined access to
  * specific other bundles within the OSGi framework.
- * 
+ *
  */
 class GatewayBundleFactory {
     private static final TraceComponent tc = Tr.register(GatewayBundleFactory.class);
@@ -52,6 +58,7 @@ class GatewayBundleFactory {
     private static final String REGION_PREFIX = "liberty.gateway";
     private static final String REGION_POSTFIX = ".hub";
     private static final String REGION_PRODUCT_HUB = "liberty.product.api.spi.hub";
+    private final static int BUNDLE_START_WAIT_TIME;
     //package visibility for the hook factory..
     static final String MANIFEST_GATEWAY_ALLOWEDTYPES_PROPERTY_KEY = "IBM-ApiTypeVisibility";
     static final String GATEWAY_BUNDLE_MARKER = "IBM-GatewayBundle";
@@ -59,12 +66,27 @@ class GatewayBundleFactory {
     private final FrameworkWiring frameworkWiring;
     private final RegionDigraph digraph;
     final Map<Bundle, Set<GatewayClassLoader>> classloaders;
+    private final ExecutorService executor;
 
-    GatewayBundleFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders) {
+    static {
+        BUNDLE_START_WAIT_TIME = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+
+            @Override
+            public Integer run() {
+                // TODO Auto-generated method stub
+                return Integer.getInteger("com.ibm.ws.classloading.internal.GateWayBundleFactoryStartWaitTime", 10000);
+            }
+        });
+    }
+
+    GatewayBundleFactory(BundleContext bundleContext, RegionDigraph digraph,
+                         Map<Bundle, Set<GatewayClassLoader>> classloaders,
+                         ExecutorService executor) {
         this.bundleContext = bundleContext;
         this.frameworkWiring = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class);
         this.digraph = digraph;
         this.classloaders = classloaders;
+        this.executor = executor;
     }
 
     private void setStartLevel(Bundle b) {
@@ -79,6 +101,7 @@ class GatewayBundleFactory {
         }
     }
 
+    @FFDCIgnore(InterruptedException.class)
     GatewayClassLoader createGatewayBundleClassLoader(GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig, CompositeResourceProvider resourceProviders) {
         // Needs syncToOSThread protection.  Problems were encountered
         // while creating the shared-library for a lazy-activated JDBC bundle.
@@ -86,13 +109,12 @@ class GatewayBundleFactory {
         try {
             Bundle b = createGatewayBundle(gwConfig, clConfig);
             setStartLevel(b);
+            CountDownLatch startLatch;
             try {
-                start(b);
+                startLatch = start(b);
             } catch (BundleException e) {
                 // Failed to resolve gateway bundle;
-                throw new ClassLoadingServiceException(
-                                Tr.formatMessage(tc, "cls.gateway.not.resolvable", gwConfig.getApplicationName(), gwConfig.getApplicationVersion()),
-                                e);
+                throw new ClassLoadingServiceException(Tr.formatMessage(tc, "cls.gateway.not.resolvable", gwConfig.getApplicationName(), gwConfig.getApplicationVersion()), e);
 
             }
             BundleWiring bw = b.adapt(BundleWiring.class);
@@ -100,40 +122,70 @@ class GatewayBundleFactory {
             if (bw == null) {
                 // The BundleWiring can be null if the bundle is no longer resolved
 
-                // The most likely cause of this is that the server is shutting down. If that's the case, 
+                // The most likely cause of this is that the server is shutting down. If that's the case,
                 // create a GatewayClassLoader using a null bundleLoader. This allows us to avoid logging FFDCs
-                // and dereferencing a null classloader upstream. 
+                // and dereferencing a null classloader upstream.
                 //
                 // If it's something else weird, throw an exception
                 if (!FrameworkState.isStopping())
-                    throw new ClassLoadingServiceException(
-                                    Tr.formatMessage(tc, "cls.gateway.not.resolvable", gwConfig.getApplicationName(), gwConfig.getApplicationVersion()));
+                    throw new ClassLoadingServiceException(Tr.formatMessage(tc, "cls.gateway.not.resolvable", gwConfig.getApplicationName(), gwConfig.getApplicationVersion()));
             } else {
                 bundleLoader = bw.getClassLoader();
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "The state of started bundle {0} is {1}", b, b.getState());
+                Tr.debug(this, tc, "The state of gateway bundle {0} is {1}", b, b.getState());
             }
-            return GatewayClassLoader.createGatewayClassLoader(classloaders, gwConfig, bundleLoader, resourceProviders);
+
+            final GatewayClassLoader loader = GatewayClassLoader.createGatewayClassLoader(classloaders, gwConfig, bundleLoader, resourceProviders);
+
+            // Ensure that the gateway bundle is started before exiting this method
+            try {
+                startLatch.await(BUNDLE_START_WAIT_TIME, TimeUnit.MILLISECONDS);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "The state of gateway bundle {0} is {1}", b, b.getState());
+                }
+            } catch (InterruptedException ex) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "createGatewayBundleClassLoader interrupted waiting on bundle start", b, ex);
+                }
+            }
+            return loader;
         } finally {
             ThreadIdentityManager.reset(token);
         }
     }
 
-    private void start(Bundle b) throws BundleException {
+    private CountDownLatch start(final Bundle b) throws BundleException {
+        final CountDownLatch startLatch = new CountDownLatch(1);
         BundleException resolverException = null;
         for (int i = 0; i < 2; i++) {
             resolverException = null;
             try {
                 b.start(Bundle.START_ACTIVATION_POLICY);
-                return;
+                // start is asynchronous, but we need to ensure that the gw bundle is started
+                // before an app tries to load a class with it. This will poll the bundle state
+                // until it is active or until the max wait time has expired.
+                executor.submit(new Callable<Void>() {
+
+                    @Override
+                    public Void call() throws Exception {
+                        int timeWaiting = 0;
+                        while (Bundle.ACTIVE != b.getState() && BUNDLE_START_WAIT_TIME > timeWaiting) {
+                            Thread.sleep(250);
+                            timeWaiting += 250;
+                        }
+                        startLatch.countDown();
+                        return null;
+                    }
+                });
+                return startLatch;
             } catch (BundleException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "An exception occurred while starting bundle {0}: {1}", b, e);
                 }
                 if (e.getType() == BundleException.RESOLVE_ERROR) {
-                    // Failed to resolve; 
+                    // Failed to resolve;
                     // typically the bundle exception message will have some useful resolver error information
                     resolverException = e;
                 }
@@ -142,24 +194,15 @@ class GatewayBundleFactory {
         if (resolverException != null) {
             throw resolverException;
         }
+        startLatch.countDown(); // don't make anybody wait if there was an exception starting, countdown here
+        return startLatch;
     }
 
     private Bundle createGatewayBundle(GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig) {
-        return new BundleFactory()
-                        .setBundleName(getAppName(gwConfig, clConfig))
-                        .setBundleVersion(getAppVersion(gwConfig))
-                        .setBundleSymbolicName(getSymbolicName(clConfig))
-                        .importPackages(gwConfig.getImportPackage())
-                        .requireBundles(gwConfig.getRequireBundle())
-                        .dynamicallyImportPackages(gwConfig.getDynamicImportPackage())
-                        .addAttributeValues(GATEWAY_BUNDLE_MARKER, "true")
-                        .addManifestAttribute(MANIFEST_GATEWAY_ALLOWEDTYPES_PROPERTY_KEY, gwConfig.getApiTypeVisibility())
-                        .setBundleLocationPrefix(BUNDLE_LOCATION_PREFIX)
-                        .setBundleLocation(clConfig.getId().toString())
-                        .setBundleContext(bundleContext)
-                        .setRegion(getRegion(gwConfig.getApiTypeVisibility()))
-                        .setLazyActivation(true)
-                        .createBundle();
+        return new BundleFactory().setBundleName(getAppName(gwConfig,
+                                                            clConfig)).setBundleVersion(getAppVersion(gwConfig)).setBundleSymbolicName(getSymbolicName(clConfig)).importPackages(gwConfig.getImportPackage()).requireBundles(gwConfig.getRequireBundle()).dynamicallyImportPackages(gwConfig.getDynamicImportPackage()).addAttributeValues(GATEWAY_BUNDLE_MARKER,
+                                                                                                                                                                                                                                                                                                                                           "true").addManifestAttribute(MANIFEST_GATEWAY_ALLOWEDTYPES_PROPERTY_KEY,
+                                                                                                                                                                                                                                                                                                                                                                        gwConfig.getApiTypeVisibility()).setBundleLocationPrefix(BUNDLE_LOCATION_PREFIX).setBundleLocation(clConfig.getId().toString()).setBundleContext(bundleContext).setRegion(getRegion(gwConfig.getApiTypeVisibility())).setLazyActivation(true).createBundle();
     }
 
     private Region getRegion(EnumSet<ApiType> apiTypeVisibility) {
@@ -235,7 +278,7 @@ class GatewayBundleFactory {
 
     private void connectProductHubToGatewayRegion(Region region, RegionDigraph copy) throws BundleException {
         RegionFilterBuilder builder = copy.createRegionFilterBuilder();
-        // allow all services into the product hub so that all services registered by 
+        // allow all services into the product hub so that all services registered by
         //  gateway bundles are visible for all to use (JNDI needs this).
         builder.allowAll(RegionFilter.VISIBLE_SERVICE_NAMESPACE);
         Region productHub = copy.getRegion(REGION_PRODUCT_HUB);
