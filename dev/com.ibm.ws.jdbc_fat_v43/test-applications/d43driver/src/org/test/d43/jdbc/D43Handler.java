@@ -187,6 +187,8 @@ public class D43Handler implements InvocationHandler, Supplier<AtomicInteger[]> 
             }
             return valid;
         }
+        if ("supportsSharding".equals(methodName))
+            return true;
         try {
             Object result = method.invoke(instance, args);
             if (returnType.isInterface() && (returnType.getPackage().getName().startsWith("java.sql")
