@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                     CONNECTION_MANAGER_REF = "connectionManagerRef",
                     CONNECTION_SHARING = "connectionSharing",
                     CONTAINER_AUTH_DATA_REF = "containerAuthDataRef",
+                    ENABLE_BEGIN_END_REQUEST = "enableBeginEndRequest", // Not a supported property. Only for internal testing/experimentation.
                     ENABLE_CONNECTION_CASTING = "enableConnectionCasting",
                     ENABLE_MULTITHREADED_ACCESS_DETECTION = "enableMultithreadedAccessDetection", // currently disabled in liberty profile
                     JDBC_DRIVER_REF = "jdbcDriverRef",
@@ -68,6 +69,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                                                                CONNECTION_SHARING,
                                                                CONTAINER_AUTH_DATA_REF,
                                                                DataSourceDef.isolationLevel.name(),
+                                                               ENABLE_BEGIN_END_REQUEST, // Not a supported property. Only for internal testing/experimentation.
                                                                ENABLE_CONNECTION_CASTING,
                                                                JDBC_DRIVER_REF,
                                                                ON_CONNECT,
@@ -112,6 +114,21 @@ public class DSConfig implements FFDCSelfIntrospectable {
      * Component with access to various core services needed for JDBC/connection management
      */
     public final ConnectorService connectorSvc;
+
+    /**
+     * Not a supported property. Only for internal testing/experimentation.
+     *
+     * Controls whether the Connection.beginRequest and Connection.endRequest hints are sent to the
+     * JDBC driver. These methods were introduced in JDBC 4.3, but without any guarantee that they
+     * will not lead to the JDBC driver corrupting the connection state while connections are in the
+     * pool. Therefore, beginRequest/endRequests are not supplied by the application server.
+     * This property can be used in internal development code to force the application server
+     * to send beginRequest/endRequest hints to the JDBC driver.
+     *
+     * WARNING: usage of this property can lead to unstable and unpredictable behavior.
+     * Do not enable this in production. 
+     */
+    public final boolean enableBeginEndRequest;
 
     /**
      * Indicates to automatically create a dynamic proxy for interfaces implemented by the connection. 
@@ -232,6 +249,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         beginTranForVendorAPIs = remove(BEGIN_TRAN_FOR_VENDOR_APIS, true);
         CommitOrRollbackOnCleanup commitOrRollback = remove(COMMIT_OR_ROLLBACK_ON_CLEANUP, null, CommitOrRollbackOnCleanup.class);
         connectionSharing = remove(CONNECTION_SHARING, ConnectionSharing.MatchOriginalRequest, ConnectionSharing.class);
+        enableBeginEndRequest = remove(ENABLE_BEGIN_END_REQUEST, false); // Not a supported property. Only for internal testing/experimentation.
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);

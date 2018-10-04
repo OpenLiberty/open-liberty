@@ -543,7 +543,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      */
     private final void addHandle(WSJdbcConnection handle) throws ResourceException {
         (numHandlesInUse < handlesInUse.length - 1 ? handlesInUse : resizeHandleList())[numHandlesInUse++] = handle;
-        if (!inRequest)
+        if (!inRequest && dsConfig.get().enableBeginEndRequest)
             try {
                 inRequest = true;
                 mcf.jdbcRuntime.beginRequest(sqlConn);
