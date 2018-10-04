@@ -23,6 +23,10 @@ import org.junit.runners.Suite.SuiteClasses;
                 PackageJsonBTestNoFeature.class,
                 PackageJsonBTestWithFeature.class,
                 FormBehaviorTest.class,
+<<<<<<< HEAD
                 MutableHeadersTest.class
+=======
+				SubResourceTest.class
+>>>>>>> 5049 - set the content-type on the jaxrs sub resource out message so that we can find the correct message body writer
 })
 public class FATSuite {}

@@ -19,7 +19,11 @@ src: \
   test-applications/cdiApp/src,\
   test-applications/jsonbapp/src,\
   test-applications/formApp/src,\
+<<<<<<< HEAD
   test-applications/mutableHeadersApp/src
+=======
+  test-applications/subResourceApp
+>>>>>>> 5049 - set the content-type on the jaxrs sub resource out message so that we can find the correct message body writer
 
 fat.project: true
 

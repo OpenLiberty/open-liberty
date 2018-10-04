@@ -79,6 +79,10 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
                         // Liberty perf change - avoid resize operation to set init size 16 and factor 1
                         outMessage = new MessageImpl(16, 1);
                         outMessage.setExchange(exchange);
+
+                        // Liberty change OLGH5049 - createMessage() is expecting Content-Type to be set by invoke()
+                        outMessage.put(Message.CONTENT_TYPE, exchange.get(Message.CONTENT_TYPE));
+
                         outMessage = ep.getBinding().createMessage(outMessage);
                         exchange.setOutMessage(outMessage);
                     }
